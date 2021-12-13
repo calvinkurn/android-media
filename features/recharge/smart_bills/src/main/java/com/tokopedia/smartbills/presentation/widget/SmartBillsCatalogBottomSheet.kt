@@ -33,6 +33,10 @@ class SmartBillsCatalogBottomSheet(val listener: CatalogCallback): BottomSheetUn
         }
         setChild(smartBillsCatalogRecycleView)
         setTitle(getString(R.string.smart_bills_add_bills_title_bottom_sheet_catalog))
+        setCloseClickListener {
+            listener.onCloseCatalogBottomSheet()
+            dismiss()
+        }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -58,7 +62,6 @@ class SmartBillsCatalogBottomSheet(val listener: CatalogCallback): BottomSheetUn
     }
 
     override fun dismiss() {
-        listener.onCloseCatalogBottomSheet()
         super.dismiss()
     }
 

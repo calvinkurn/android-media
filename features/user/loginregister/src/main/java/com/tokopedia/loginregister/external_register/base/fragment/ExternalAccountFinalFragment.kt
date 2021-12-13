@@ -6,12 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.databinding.FragmentBaseSuccessExternalAccountBinding
 import com.tokopedia.loginregister.external_register.base.data.ExternalRegisterPreference
 import com.tokopedia.loginregister.external_register.base.di.ExternalRegisterComponent
 import com.tokopedia.loginregister.external_register.base.listener.BaseFinalListener
 import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAnalytics
 import com.tokopedia.utils.image.ImageUtils
-import kotlinx.android.synthetic.main.fragment_base_success_external_account.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 /**
@@ -30,6 +31,8 @@ open class ExternalAccountFinalFragment: BaseDaggerFragment() {
     lateinit var externalRegisterPreference: ExternalRegisterPreference
     override fun getScreenName(): String = ""
 
+    private val binding: FragmentBaseSuccessExternalAccountBinding? by viewBinding()
+
     override fun initInjector() {
         getComponent(ExternalRegisterComponent::class.java).inject(this)
     }
@@ -46,31 +49,33 @@ open class ExternalAccountFinalFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.fragment_base_success_main_btn?.setOnClickListener {
+        binding?.fragmentBaseSuccessMainBtn?.setOnClickListener {
             listener?.onMainSuccessButtonClicked()
         }
     }
 
     fun setMainImage(imgResId: Int = 0, imgUrl: String = ""){
         if(imgResId != 0){
-            view?.fragment_base_success_main_img?.setImageResource(imgResId)
+            binding?.fragmentBaseSuccessMainImg?.setImageResource(imgResId)
         } else if(imgUrl.isNotEmpty()){
-            view?.run {
-                ImageUtils.loadImageWithoutPlaceholderAndError(fragment_base_success_main_img, imgUrl)
+            binding?.fragmentBaseSuccessMainImg?.let { mainImg ->
+                view?.run {
+                    ImageUtils.loadImageWithoutPlaceholderAndError(mainImg, imgUrl)
+                }
             }
         }
     }
 
     fun setTitle(title: String) {
-        view?.fragment_base_success_title?.text = title
+        binding?.fragmentBaseSuccessTitle?.text = title
     }
 
     fun setDescription(description: String){
-        view?.fragment_base_success_description?.text = description
+        binding?.fragmentBaseSuccessDescription?.text = description
     }
 
     fun setButtonText(text: String) {
-        view?.fragment_base_success_main_btn?.text = text
+        binding?.fragmentBaseSuccessMainBtn?.text = text
     }
 
     fun setSuccessListener(listener: BaseFinalListener) {

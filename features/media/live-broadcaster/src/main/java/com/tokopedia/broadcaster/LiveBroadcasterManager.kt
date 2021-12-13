@@ -409,7 +409,9 @@ class LiveBroadcasterManager constructor(
         statisticUpdateTimer?.schedule(object : TimerTask() {
             override fun run() {
                 mHandler?.post {
-                    mContext?.let { statistic.update(it, mConnection.uri, mConfig) }
+                    if (mContext != null && mConnection.uri != null) {
+                        statistic.update(mContext, mConnection.uri, mConfig)
+                    }
                     mListener?.onUpdateLivePusherStatistic(statistic)
                 }
             }
