@@ -192,6 +192,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun launchAutoRefresh(isVisibleToUser: Boolean = true) {
         if (isVisibleToUser && isAutoRefreshEnabled()) {
+            turnOffBulkDeleteMode()
             doResetFilter()
             binding?.run {
                 rvWishlist.scrollToPosition(0)
@@ -1066,14 +1067,18 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             }
 
         } else {
-            setSwipeRefreshLayout()
-            wishlistV2Adapter.hideCheckbox()
-            binding?.run {
-                containerDelete.gone()
-                clWishlistHeader.visible()
-            }
+            turnOffBulkDeleteMode()
         }
         WishlistV2Analytics.clickAturOnWishlist()
+    }
+
+    private fun turnOffBulkDeleteMode() {
+        setSwipeRefreshLayout()
+        wishlistV2Adapter.hideCheckbox()
+        binding?.run {
+            containerDelete.gone()
+            clWishlistHeader.visible()
+        }
     }
 
     private fun showPopupBulkDeleteConfirmation(listBulkDelete: ArrayList<String>) {
