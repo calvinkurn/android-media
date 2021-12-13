@@ -453,6 +453,7 @@ object SearchTracking {
             SearchTrackingConstant.RELATED_KEYWORD, generalSearchTrackingModel.relatedKeyword,
             SearchTrackingConstant.PAGE_SOURCE, generalSearchTrackingModel.pageSource,
             SearchTrackingConstant.SEARCHFILTER, generalSearchTrackingModel.searchFilter,
+            SearchTrackingConstant.ANDROID_ID, TrackApp.getInstance().appsFlyer.googleAdId,
             SearchComponentTrackingConst.COMPONENT, generalSearchTrackingModel.componentId,
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(value)
