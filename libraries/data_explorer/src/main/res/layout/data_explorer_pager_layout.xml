@@ -13,23 +13,23 @@
             android:id="@+id/arrowBack"
             android:layout_width="@dimen/unify_space_32"
             android:layout_height="@dimen/unify_space_32"
-            android:layout_marginStart="@dimen/unify_space_16"
             android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/unify_space_12"
             app:icon_name="CHEVRON_LEFT"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/currentPageNumber"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/currentPageNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            android:text="1"
             android:textColor="@color/Unify_G500"
             app:layout_constraintBottom_toBottomOf="@id/arrowBack"
-            app:layout_constraintStart_toEndOf="@+id/arrowBack"
+            app:layout_constraintEnd_toStartOf="@+id/arrowForward"
             app:layout_constraintTop_toTopOf="@+id/arrowBack"
-            app:typographyType="heading_4"
-            android:text="1" />
+            app:typographyType="heading_4" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/arrowForward"
@@ -37,65 +37,45 @@
             android:layout_height="@dimen/unify_space_32"
             android:layout_marginStart="@dimen/unify_space_16"
             app:icon_name="CHEVRON_RIGHT"
-            app:layout_constraintStart_toEndOf="@+id/currentPageNumber"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/arrowBack" />
 
+
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/routeToPage"
+            android:id="@+id/goToPageText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginEnd="@dimen/unify_space_4"
+            android:text="@string/data_explorer_select_page_text"
             android:textColor="@color/Unify_G500"
-            app:layout_constraintBottom_toBottomOf="@id/arrowGo"
-            app:layout_constraintEnd_toStartOf="@+id/arrowGo"
-            app:layout_constraintTop_toTopOf="@+id/arrowGo"
-            app:typographyType="heading_4"
-            android:text="Go" />
+            app:layout_constraintBottom_toBottomOf="@id/arrowForward"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/arrowForward"
+            app:typographyType="heading_4" />
+
+        <EditText
+            android:id="@+id/pageNumberEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/unify_space_8"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/goToPageText"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="@dimen/unify_font_14"
+            android:text="@string/data_explorer_page_number_initial_text"
+            android:textColor="@color/Unify_N700_96"
+            />
+
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/arrowGo"
             android:layout_width="@dimen/unify_space_32"
             android:layout_height="@dimen/unify_space_32"
             app:icon_name="CHEVRON_RIGHT"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/arrowBack" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.75"/>
-
-        <com.tokopedia.unifycomponents.TextAreaUnify
-            android:id="@+id/pageNumberEditText"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:padding="@dimen/unify_space_4"
-            app:layout_constraintEnd_toStartOf="@+id/routeToPage"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/guideline"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            app:text_area_clearable="false"
-            app:text_area_label_static="false"
-            app:text_area_max_lines="1"
-            app:text_field_input_type="number"
-            app:text_field_message="1" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/goToPageText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_68"
-            app:layout_constraintBottom_toBottomOf="@id/arrowGo"
-            app:layout_constraintEnd_toStartOf="@id/guideline"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@id/arrowForward"
-            app:layout_constraintTop_toTopOf="@+id/arrowGo"
-            android:layout_marginEnd="@dimen/unify_space_4"
-            app:typographyType="heading_4"
-            android:text="Go To Page" />
+            app:layout_constraintStart_toEndOf="@+id/pageNumberEditText"
+            app:layout_constraintTop_toTopOf="@id/arrowForward" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

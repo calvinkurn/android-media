@@ -24,7 +24,7 @@ internal class ContentViewModel @Inject constructor(
     val resultRowLiveData = MutableLiveData<Boolean>()
 
     var totalResults: Int = 0
-    var currentPage: Int = 1
+    private var currentPage: Int = 1
 
     fun getTableInfo(
         databasePath: String,
@@ -54,9 +54,9 @@ internal class ContentViewModel @Inject constructor(
         )
     }
 
-    fun getTableContent(databasePath: String, schemaName: String, page: Int? = 1) {
+    fun getTableContent(databasePath: String, schemaName: String, page: Int = 1) {
+        currentPage = page
         if (totalResults != 0 && validatePageRequest(page)) {
-            currentPage = page ?: 1
             getTableContentUseCase.getTable(
                 ::onTableContentFetched,
                 ::onTablesError,

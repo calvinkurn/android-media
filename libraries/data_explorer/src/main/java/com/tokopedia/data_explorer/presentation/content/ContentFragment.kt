@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
@@ -70,18 +71,26 @@ class ContentFragment : BaseDaggerFragment() {
     }
 
     private fun initListeners() {
-        arrowForward.setOnClickListener { queryContent(viewModel.currentPage + 1) }
-        arrowBack.setOnClickListener { queryContent(viewModel.currentPage - 1) }
-        routeToPage.setOnClickListener { queryContent(getPageNumberFromEditText()) }
-        arrowGo.setOnClickListener { queryContent(getPageNumberFromEditText()) }
+        pageNumberEditor.apply {
+            setValue(1)
+            stepValue = 1
+            minValue = 1
+            editText.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    queryContent(getValue())
+                    return@setOnEditorActionListener true
+                }
+                return@setOnEditorActionListener false
+            }
+            setAddClickListener { queryContent(getValue()) }
+            setSubstractListener { queryContent(getValue()) }
+            setValueChangedListener { newValue, _, _ ->
+                queryContent(newValue)
+            }
+        }
     }
 
-    private fun getPageNumberFromEditText(): Int {
-        val page = pageNumberEditText.textAreaInput.text?.toString().orEmpty()
-        return page.toIntOrNull() ?: 1
-    }
-
-    private fun queryContent(page: Int? = 1) {
+    private fun queryContent(page: Int = 1) {
         viewModel.getTableContent(databasePath, schemaName, page)
     }
 
@@ -108,7 +117,6 @@ class ContentFragment : BaseDaggerFragment() {
         viewModel.contentLiveData.observe(viewLifecycleOwner, { cells ->
             rvContent.adapter = contentAdapter
             contentAdapter.submitList(cells)
-            currentPageNumber.text = viewModel.currentPage.toString()
         })
         viewModel.errorLiveData.observe(viewLifecycleOwner, {
             when (it) {
@@ -123,7 +131,6 @@ class ContentFragment : BaseDaggerFragment() {
             }
         })
     }
-
 
     override fun getScreenName() = ""
     override fun initInjector() = getComponent(DataExplorerComponent::class.java).inject(this)
