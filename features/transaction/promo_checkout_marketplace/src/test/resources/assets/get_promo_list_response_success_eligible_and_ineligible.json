@@ -13,8 +13,9 @@
       },
       "promo_recommendation": {
         "codes": [
-          "KRDCICIL598GSNML0AM",
-          "POMAH09JBL"
+          "THIRX598GSA7MADK2X7",
+          "POMA3A96FB",
+          "AATHIRX598GSA7MADK2X7"
         ],
         "message": "Kamu bisa hemat Rp168.100"
       },
@@ -42,27 +43,30 @@
                 {
                   "id": 1,
                   "count": 1
+                },
+                {
+                  "id": 2,
+                  "count": 1
                 }
               ],
               "coupons": [
                 {
-                  "code": "KRDCICIL598GSNML0AM",
-                  "title": "Discount Rp143.100",
+                  "code": "THIRX598GSA7MADK2X7",
+                  "title": "Cashback Rp42.930",
                   "message": "",
-                  "expiry_info": "Berakhir 3 hari lagi!",
-                  "expiry_count_down": 1593536399,
+                  "expiry_info": "Berakhir 1 hari lagi!",
+                  "expiry_count_down": 1593363599,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://ecs7.tokopedia.net/img/blog/promo/2020/05/Kredivo-1.png"
-                  ],
-                  "benefit_amount": 143100,
-                  "is_recommended": true,
-                  "is_selected": true,
+                  "tag_image_urls": [],
+                  "benefit_amount": 42930,
+                  "is_recommended": false,
+                  "is_selected": false,
                   "is_attempted": false,
                   "radio_check_state": "enabled",
+                  "currency_details_str": "(20.000 TokoPoints)",
                   "clashing_infos": [],
                   "is_highlighted": true,
                   "group_id": 1,
@@ -89,6 +93,44 @@
                       "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
                     }
                   ]
+                },
+                {
+                  "code": "AATHIRX598GSA7MADK2X7",
+                  "title": "Cashback Rp21.930",
+                  "message": "",
+                  "expiry_info": "Berakhir 2 hari lagi!",
+                  "expiry_count_down": 1593363599,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [],
+                  "benefit_amount": 21930,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [],
+                  "is_highlighted": false,
+                  "group_id": 2,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "coupon_info",
+                      "title": "ini kupon info <b>ini kupon info</b>",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berlaku <b>hingga 1 jam lagi</b> yah",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                    },
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus <b>pengguna baru</b>",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                    }
+                  ]
                 }
               ]
             },
@@ -98,7 +140,7 @@
               "sub_title": "Promo dipilih",
               "icon_url": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
               "is_enabled": true,
-              "is_collapsed": true,
+              "is_collapsed": false,
               "tags": [],
               "coupon_groups": [
                 {
@@ -108,8 +150,8 @@
               ],
               "coupons": [
                 {
-                  "code": "POMAH09JBL",
-                  "title": "Cashback Rp25.000",
+                  "code": "POMA3A96FB",
+                  "title": "Cashback Rp15.000",
                   "message": "",
                   "expiry_info": "Berakhir 29 menit lagi!",
                   "expiry_count_down": 1593275350,
@@ -118,9 +160,9 @@
                   "unique_id": "239594-0-301643",
                   "shop_id": 239594,
                   "tag_image_urls": [],
-                  "benefit_amount": 25000,
-                  "is_recommended": true,
-                  "is_selected": true,
+                  "benefit_amount": 15000,
+                  "is_recommended": false,
+                  "is_selected": false,
                   "is_attempted": false,
                   "radio_check_state": "enabled",
                   "clashing_infos": [],
@@ -158,7 +200,6 @@
           "is_collapsed": false,
           "tags": [],
           "coupons": [],
-          "coupon_groups": [],
           "sub_sections": [
             {
               "id" : "",
@@ -172,7 +213,7 @@
                 {
                   "id": 1,
                   "count": 1
-                }
+                },
               ],
               "coupons": [
                 {
