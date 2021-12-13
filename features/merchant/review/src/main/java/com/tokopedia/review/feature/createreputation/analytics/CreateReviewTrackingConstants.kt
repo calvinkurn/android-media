@@ -24,6 +24,7 @@ object CreateReviewTrackingConstants {
     const val EVENT_ACTION_VIEW_UNSAVED_DIALOG = "view - ulasanmu nanti hilang pop up"
     const val EVENT_ACTION_CLICK_BAD_RATING_REASON = "click - bad review template checkbox"
     const val EVENT_ACTION_IMPRESS_BAD_RATING_REASON = "impression - bad review template checkbox"
+    const val EVENT_ACTION_CLICK_THANK_YOU_BOTTOM_SHEET_BUTTON = "click - %s on %s"
 
     const val EVENT_CATEGORY = "product review detail page"
     const val EVENT_CATEGORY_REVIEW_BOTTOM_SHEET =
