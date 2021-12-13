@@ -1809,6 +1809,20 @@ class PlayViewModel @Inject constructor(
         else handleClickLikeNonLive(isFromLogin, newStatusHandler)
     }
 
+    private suspend fun handleCopyLink() {
+        val shareInfo = _channelDetail.value.shareInfo
+
+        _uiEvent.emit(
+            CopyToClipboardEvent(shareInfo.content)
+        )
+
+        _uiEvent.emit(
+            ShowInfoEvent(
+                UiString.Resource(R.string.play_link_copied)
+            )
+        )
+    }
+
     private fun handleClickShare() {
         viewModelScope.launch {
             if(playShareExperience.isCustomSharingAllow()) {
@@ -1818,31 +1832,9 @@ class PlayViewModel @Inject constructor(
                 ))
             }
             else {
-                val playShareExperienceData = getPlayShareExperienceData()
-                playShareExperience.setData(playShareExperienceData)
-
-                _uiEvent.emit(
-                    OpenNativeSharingOptionEvent(
-                        title = playShareExperienceData.title,
-                        description = playShareExperience.generateShareString(),
-                        url = playShareExperienceData.redirectUrl
-                    )
-                )
+                handleCopyLink()
             }
         }
-//        val shareInfo = _channelDetail.value.shareInfo
-//
-//        viewModelScope.launch {
-//            _uiEvent.emit(
-//                CopyToClipboardEvent(shareInfo.content)
-//            )
-//
-//            _uiEvent.emit(
-//                ShowInfoEvent(
-//                    UiString.Resource(R.string.play_link_copied)
-//                )
-//            )
-//        }
     }
 
     private fun handleRefreshLeaderboard() {
@@ -1880,13 +1872,7 @@ class PlayViewModel @Inject constructor(
 
                     override fun onError(e: Exception, shareString: String) {
                         viewModelScope.launch {
-                            _uiEvent.emit(
-                                OpenNativeSharingOptionEvent(
-                                    title = playShareExperienceData.title,
-                                    description = shareString,
-                                    url = playShareExperienceData.redirectUrl
-                                )
-                            )
+                            handleCopyLink()
                         }
                     }
                 }

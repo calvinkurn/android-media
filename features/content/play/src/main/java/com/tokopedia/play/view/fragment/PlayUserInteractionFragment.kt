@@ -962,10 +962,6 @@ class PlayUserInteractionFragment @Inject constructor(
                     is OpenSharingOptionEvent -> {
                         shareExperienceView?.showSharingOptions(event.title, event.coverUrl)
                     }
-                    is OpenNativeSharingOptionEvent -> {
-                        openNativeShareIntent(event.title, event.description, event.url)
-                        shareExperienceView?.dismiss()
-                    }
                     is OpenSelectedSharingOptionEvent -> {
                         SharingUtil.executeShareIntent(event.shareModel, event.linkerShareResult, activity, view, event.shareString)
                         shareExperienceView?.dismiss()
@@ -983,20 +979,6 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
     //endregion
-
-    private fun openNativeShareIntent(title: String, description: String, url: String) {
-        val intent = Intent().apply {
-            action = Intent.ACTION_SEND
-            type = "text/plain"
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            putExtra(Intent.EXTRA_REFERRER, url)
-            putExtra(Intent.EXTRA_TITLE, title)
-            putExtra(Intent.EXTRA_SUBJECT, title)
-            putExtra(Intent.EXTRA_TEXT, description)
-            putExtra(Intent.EXTRA_HTML_TEXT, description)
-        }
-        activity?.startActivity(Intent.createChooser(intent, title))
-    }
 
     private fun sendCastAnalytic(cast: PlayCastUiModel) {
         when {
