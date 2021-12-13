@@ -112,10 +112,10 @@ object OvoP2pUtil {
                             onClickListener: View.OnClickListener,
                             errorMsg: String): Snackbar {
         return if (!TextUtils.isEmpty(errorMsg))
-            Toaster.build( activity.findViewById(android.R.id.content), errorMsg, Snackbar.LENGTH_LONG, type =  Toaster.TYPE_ERROR,  context.getString(
+            Toaster.build( activity.findViewById(android.R.id.content), errorMsg, Snackbar.LENGTH_LONG, type =  Toaster.TYPE_ERROR,  activity.getString(
                             R.string.ovop2p_oke),onClickListener)
         else
-            Toaster.build( activity.findViewById(android.R.id.content), "Retry", Snackbar.LENGTH_LONG, type =  Toaster.TYPE_ERROR,  activity.getString(R.string.ovop2p_oke),onClickListener)
+            Toaster.build( activity.findViewById(android.R.id.content), activity.getString(R.string.ovop2p_tryagain_later), Snackbar.LENGTH_LONG, type =  Toaster.TYPE_ERROR,  activity.getString(R.string.ovop2p_oke),onClickListener)
 
     }
 

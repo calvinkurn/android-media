@@ -155,7 +155,7 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
                                 AnalyticsUtil.EventCategory.OVO_CONF_TRANSFER, "", AnalyticsUtil.EventAction.CLK_TRNSFR)
                     }
                 }
-              else -> {
+              R.id.snackbar_btn -> {
                     errorSnackbar.let {
                         if (it.isShownOrQueued)
                             it.dismiss()
@@ -296,6 +296,7 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
 
 
     private fun getTransferReqObserver(loaderUiListener: LoaderUiListener): Observer<TransferRequestState> {
+
         return Observer {
             loaderUiListener.hideProgressDialog()
             when (it) {
