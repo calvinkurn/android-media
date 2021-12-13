@@ -3564,7 +3564,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun screenShotTaken() {
-        Log.d("<LOG>", "screenshot taken")
         shareProduct()
     }
 
