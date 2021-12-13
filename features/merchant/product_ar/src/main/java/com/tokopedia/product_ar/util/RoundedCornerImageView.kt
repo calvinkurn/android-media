@@ -1,4 +1,4 @@
-package com.tokopedia.product_ar.view
+package com.tokopedia.product_ar.util
 
 import android.content.Context
 import android.graphics.Canvas

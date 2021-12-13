@@ -70,7 +70,7 @@ class GetProductArUseCase @Inject constructor(graphqlRepository: GraphqlReposito
     init {
         setGraphqlQuery(PdpGetARData())
         setCacheStrategy(GraphqlCacheStrategy
-                .Builder(CacheType.CACHE_FIRST).build())
+                .Builder(CacheType.ALWAYS_CLOUD).build())
         setTypeClass(ProductArResponse::class.java)
     }
 

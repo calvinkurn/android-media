@@ -12,7 +12,7 @@ import com.tokopedia.product_ar.model.ModifaceUiModel
 import com.tokopedia.product_ar.model.ProductAr
 import com.tokopedia.product_ar.model.ProductArUiModel
 import com.tokopedia.product_ar.usecase.GetProductArUseCase
-import com.tokopedia.product_ar.util.ProductArMapper.mapToModifaceUiModel
+import com.tokopedia.product_ar.util.ProductArMapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -22,7 +22,7 @@ import javax.inject.Named
 
 
 class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
-                                             @Named(PRODUCT_ID_PROVIDED) private val productId: String,
+                                             @Named(PRODUCT_ID_PROVIDED) private val initialProductId: String,
                                              @Named(SHOP_ID_PROVIDED) private val shopId: String,
                                              private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
                                              private val getProductArUseCase: GetProductArUseCase)
@@ -33,6 +33,8 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     }
 
     private var productArUiModel: ProductArUiModel = ProductArUiModel()
+
+    fun getProductArUiModel(): ProductArUiModel = productArUiModel
 
     private val _selectedProductArData = MutableLiveData<Result<ProductAr>>()
     val selectedProductArData: LiveData<Result<ProductAr>>
@@ -45,14 +47,21 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private fun getArData() {
         viewModelScope.launchCatchError(block = {
             val result = getProductArUseCase.executeOnBackground(
-                    GetProductArUseCase.createParams(productId, shopId, chosenAddressRequestHelper)
+                    GetProductArUseCase.createParams(initialProductId, shopId, chosenAddressRequestHelper)
             )
             productArUiModel = result
 
-            _productArList.postValue(Success(mapToModifaceUiModel(result)))
-            _selectedProductArData.postValue(Success(result.options[productId] ?: ProductAr()))
+            _productArList.postValue(Success(ProductArMapper.mapToModifaceUiModel(initialProductId, result)))
+            _selectedProductArData.postValue(Success(result.options[initialProductId] ?: ProductAr()))
         }, onError = {
             _selectedProductArData.postValue(Fail(it))
         })
+    }
+
+    fun onVariantClicked(productId: String, uiModel: ProductArUiModel, currentList:List<ModifaceUiModel>) {
+        val updatedData = ProductArMapper.updateListAfterChangeSelection(productId, currentList)
+        _productArList.postValue(Success(updatedData))
+
+        _selectedProductArData.postValue(Success(uiModel.options[productId] ?: ProductAr()))
     }
 }

@@ -8,7 +8,7 @@
     android:paddingRight="8dp"
     tools:ignore="RtlSymmetry">
 
-    <com.tokopedia.product_ar.view.ImageRoundedBorderSelectionView
+    <com.tokopedia.product_ar.util.ImageRoundedBorderSelectionView
         android:id="@+id/img_item_variant_ar"
         android:layout_width="56dp"
         android:layout_height="56dp"

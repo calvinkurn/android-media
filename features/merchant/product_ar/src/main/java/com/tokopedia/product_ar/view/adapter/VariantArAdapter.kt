@@ -2,28 +2,34 @@ package com.tokopedia.product_ar.view.adapter
 
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.model.ModifaceProvider
 import com.tokopedia.product_ar.model.ModifaceUiModel
-import com.tokopedia.product_ar.view.ImageRoundedBorderSelectionView
-import com.tokopedia.product_ar.view.SELECTMODE
+import com.tokopedia.product_ar.util.ImageRoundedBorderSelectionView
+import com.tokopedia.product_ar.view.ProductArListener
 import com.tokopedia.unifyprinciples.Typography
 
-class VariantArAdapter : RecyclerView.Adapter<VariantArAdapter.ItemArImage>() {
+class VariantArAdapter(private val listener: ProductArListener) : RecyclerView.Adapter<VariantArAdapter.ItemArImage>() {
 
-    var counter: Int = 1
+    private var arImageDatas: MutableList<ModifaceUiModel> = mutableListOf()
 
-    private var arImageDatas: List<ModifaceUiModel> = listOf()
+    fun getCurrentArImageDatas(): MutableList<ModifaceUiModel> = arImageDatas
 
-    fun setInitialData(arImageDatas: List<ModifaceUiModel>) {
-        this.arImageDatas = arImageDatas
-        notifyDataSetChanged()
+    fun updateList(newList: List<ModifaceUiModel>) {
+        val diffResult = DiffUtil.calculateDiff(VariantArDiffutilCallback(arImageDatas.toMutableList(), newList))
+
+        arImageDatas.clear()
+        arImageDatas.addAll(newList)
+
+        diffResult.dispatchUpdatesTo(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemArImage {
@@ -37,6 +43,16 @@ class VariantArAdapter : RecyclerView.Adapter<VariantArAdapter.ItemArImage>() {
         holder.bind(arImageDatas[position])
     }
 
+    override fun onBindViewHolder(holder: ItemArImage, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isEmpty() || payloads[0] !is Bundle) {
+            super.onBindViewHolder(holder, position, payloads)
+        } else {
+            //4
+            val bundle = payloads[0] as Bundle
+            holder.bind(arImageDatas[position], bundle)
+        }
+    }
+
     override fun getItemCount(): Int = arImageDatas.size
 
     inner class ItemArImage(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -47,28 +63,41 @@ class VariantArAdapter : RecyclerView.Adapter<VariantArAdapter.ItemArImage>() {
         fun bind(data: ModifaceUiModel) {
             imgVariant.loadImage(data.backgroundUrl)
             txtVariantName.text = data.productName
-            setupImageColor(data.modifaceProvider)
 
+            imgVariant?.setSelected = data.isSelected
+            renderText(data.isSelected)
+            setupImageColor(data.modifaceProvider)
+            bindClickListener(data)
+        }
+
+        fun bind(data: ModifaceUiModel, bundle: Bundle) {
+            if (bundle.containsKey("asdf")) {
+                bindClickListener(data)
+                renderText(data.isSelected)
+                imgVariant?.setSelected = data.isSelected
+            }
+        }
+
+        private fun bindClickListener(data: ModifaceUiModel) {
             itemView.setOnClickListener {
                 imgVariant?.run {
-
-                    imgVariant.mode = SELECTMODE.MULTIPLE
-                    imgVariant.textCounter = counter.toString()
-                    if (setSelected) {
-                        txtVariantName.setTextColor(
-                                ContextCompat.getColor(this.context,
-                                        com.tokopedia.unifyprinciples.R.color.Unify_NN400)
-                        )
-                        counter--
-                    } else {
-                        txtVariantName.setTextColor(
-                                ContextCompat.getColor(this.context,
-                                        com.tokopedia.unifyprinciples.R.color.Unify_NN950)
-                        )
-                        counter++
-                    }
-                    imgVariant.setSelected = !imgVariant.setSelected
+                    setSelected = data.isSelected
+                    listener.onVariantClicked(data.productId, data.isSelected)
                 }
+            }
+        }
+
+        private fun renderText(isSelected: Boolean) {
+            if (isSelected) {
+                txtVariantName.setTextColor(
+                        ContextCompat.getColor(itemView.context,
+                                com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                )
+            } else {
+                txtVariantName.setTextColor(
+                        ContextCompat.getColor(itemView.context,
+                                com.tokopedia.unifyprinciples.R.color.Unify_NN400)
+                )
             }
         }
 

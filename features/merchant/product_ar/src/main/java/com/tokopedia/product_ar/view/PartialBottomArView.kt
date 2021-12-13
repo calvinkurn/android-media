@@ -14,10 +14,10 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-class PartialBottomArView private constructor(val view: View) {
+class PartialBottomArView private constructor(val view: View, val listener: ProductArListener) {
 
     companion object {
-        fun build(view: View) = PartialBottomArView(view)
+        fun build(view: View, listener: ProductArListener) = PartialBottomArView(view, listener)
     }
 
     private val atcButton = view.findViewById<UnifyButton>(R.id.btn_atc_ar)
@@ -27,16 +27,19 @@ class PartialBottomArView private constructor(val view: View) {
     private val lblDiscounted = view.findViewById<Label>(R.id.lbl_discounted_ar)
     private val rvVariant = view.findViewById<RecyclerView>(R.id.rv_ar)
 
-    private val adapter = VariantArAdapter()
+    val adapter = VariantArAdapter(listener)
+
+    init {
+        rvVariant.adapter = adapter
+    }
 
     fun renderRecyclerView(data: List<ModifaceUiModel>) {
-        rvVariant.adapter = adapter
-        adapter.setInitialData(data)
+        adapter.updateList(data)
     }
 
     fun renderBottomInfo(data: ProductAr) {
         atcButton.text = data.button.text
-        txtStock.text = data.stock
+        txtStock.text = data.stockCopy
         renderCampaign(data)
     }
 

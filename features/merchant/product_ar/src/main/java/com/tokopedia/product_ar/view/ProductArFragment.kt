@@ -21,7 +21,12 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class ProductArFragment : Fragment() {
+class ProductArFragment : Fragment(), ProductArListener {
+
+    companion object {
+        @JvmStatic
+        fun newInstance() = ProductArFragment()
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -65,7 +70,7 @@ class ProductArFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         mMakeupView = view.findViewById(R.id.main_img)
         mMakeupEngine?.attachMakeupView(mMakeupView)
-        partialBottomArView = PartialBottomArView.build(view)
+        partialBottomArView = PartialBottomArView.build(view, this)
 
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.CAMERA), 123)
@@ -114,8 +119,13 @@ class ProductArFragment : Fragment() {
         }
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance() = ProductArFragment()
+    override fun onVariantClicked(productId: String, isSelected: Boolean) {
+        if (isSelected) return
+        viewModel?.let {
+            it.onVariantClicked(
+                    productId, it.getProductArUiModel(),
+                    partialBottomArView?.adapter?.getCurrentArImageDatas() ?: listOf()
+            )
+        }
     }
 }
