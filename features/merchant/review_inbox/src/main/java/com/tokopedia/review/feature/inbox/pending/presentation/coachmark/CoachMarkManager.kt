@@ -50,7 +50,7 @@ class CoachMarkManager(
 
     private fun onDismiss() {
         coachMarkItemsManager.updateHasShownStatus(rootView.context)
-        resetCoachMarkState()
+        coachMarkItemsManager.reset()
     }
 
     private fun createStepHandler(): CoachMark2.OnStepListener {

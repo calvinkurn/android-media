@@ -329,6 +329,7 @@ class ReviewPendingFragment :
     }
 
     override fun onSwipeRefresh() {
+        coachMarkManager?.resetCoachMarkState()
         super.onSwipeRefresh()
         reviewInboxListener?.reloadCounter()
     }
