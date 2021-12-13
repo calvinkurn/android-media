@@ -26,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Companion.SCREEN_LANDING_SHOP_CREATION
+import com.tokopedia.loginregister.databinding.FragmentLandingShopCreationBinding
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoByID
@@ -39,6 +40,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 /**
@@ -74,13 +76,11 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     override fun initInjector() = getComponent(ShopCreationComponent::class.java).inject(this)
 
+    private val binding: FragmentLandingShopCreationBinding? by viewBinding()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_landing_shop_creation, container, false)
         toolbarShopCreation = view.findViewById(R.id.toolbar_shop_creation)
-        buttonOpenShop = view.findViewById(R.id.btn_continue)
-        landingImage = view.findViewById(R.id.landing_shop_creation_image)
-        loading = view.findViewById(R.id.loading)
-        mainView = view.findViewById(R.id.main_view)
         activity?.let {
             baseView = it.findViewById(R.id.base_view)
         }
@@ -91,6 +91,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setViewBinding()
         initObserver()
         initView()
     }
@@ -168,6 +169,15 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 shopCreationAnalytics.eventClickOpenShopLanding()
                 goToPhoneShopCreation()
             }
+        }
+    }
+
+    private fun setViewBinding() {
+        binding?.let {
+            buttonOpenShop = it.btnContinue
+            landingImage = it.landingShopCreationImage
+            loading = it.loading
+            mainView = it.mainView
         }
     }
 
