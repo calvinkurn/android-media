@@ -161,8 +161,10 @@ class AddEditProductDescriptionViewModelTest {
         coEvery {
             validateProductDescriptionUseCase.executeOnBackground()
         } throws Throwable()
+        
         viewModel.validateDescriptionChanged("test")
-
+        viewModel.descriptionValidationMessage.getOrAwaitValue()
+        
         coVerify {
             AddEditProductErrorHandler.logExceptionToCrashlytics(any())
         }
