@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.data_explorer.R
 import com.tokopedia.data_explorer.db_explorer.presentation.databases.DbExplorerActivity
-import kotlinx.android.synthetic.main.fragment_dataexplorer_layout.*
+import kotlinx.android.synthetic.main.fragment_data_explorer_layout.*
 
 class DataExplorerFragment : BaseDaggerFragment() {
 
@@ -17,7 +17,7 @@ class DataExplorerFragment : BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_dataexplorer_layout, container, false)
+        return inflater.inflate(R.layout.fragment_data_explorer_layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

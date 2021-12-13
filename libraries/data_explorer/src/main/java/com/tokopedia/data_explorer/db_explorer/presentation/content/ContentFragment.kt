@@ -13,12 +13,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.data_explorer.R
 import com.tokopedia.data_explorer.db_explorer.di.DataExplorerComponent
 import com.tokopedia.data_explorer.db_explorer.domain.shared.models.DataBaseController
+import com.tokopedia.data_explorer.db_explorer.extensions.setupGrid
 import com.tokopedia.data_explorer.db_explorer.presentation.Constants
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.data_explorer_fragment_content_layout.*
-import kotlinx.android.synthetic.main.data_explorer_pager_layout.*
 import javax.inject.Inject
 
 class ContentFragment : BaseDaggerFragment() {

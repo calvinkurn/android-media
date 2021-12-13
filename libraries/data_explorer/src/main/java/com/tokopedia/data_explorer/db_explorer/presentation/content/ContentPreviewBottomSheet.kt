@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.data_explorer.R
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.data_explorer_content_preview_layout.*
 
 class ContentPreviewBottomSheet: BottomSheetUnify() {
