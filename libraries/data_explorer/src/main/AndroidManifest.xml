@@ -4,7 +4,7 @@
 
     <application>
         <activity
-            android:name="com.tokopedia.data_explorer.presentation.databases.DataExplorerActivity"
+            android:name="com.tokopedia.data_explorer.db_explorer.presentation.DataExplorerActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTask"
             android:label="@string/title_app_data_explorer"
@@ -24,12 +24,17 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.tokopedia.data_explorer.presentation.schema.SchemaActivity"
+        <activity android:name="com.tokopedia.data_explorer.db_explorer.presentation.schema.SchemaActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_app_db_explorer"
+            android:theme="@style/Theme.WhiteUnify"/>
+
+        <activity android:name="com.tokopedia.data_explorer.db_explorer.presentation.databases.DbExplorerActivity"
             android:screenOrientation="portrait"
             android:label="@string/title_schema"
             android:theme="@style/Theme.WhiteUnify"/>
 
-        <activity android:name="com.tokopedia.data_explorer.presentation.content.ContentActivity"
+        <activity android:name="com.tokopedia.data_explorer.db_explorer.presentation.content.ContentActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"/>
 
