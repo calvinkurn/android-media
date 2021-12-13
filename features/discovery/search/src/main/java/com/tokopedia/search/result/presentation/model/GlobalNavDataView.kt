@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 
+@Suppress("LongParameterListLongParameterList")
 class GlobalNavDataView(
         val source: String = "",
         val title: String = "",
@@ -22,6 +23,7 @@ class GlobalNavDataView(
         return typeFactory?.type(this) ?: 0
     }
 
+    @Suppress("LongParameterListLongParameterList")
     class Item(
         val categoryName: String = "",
         val name: String = "",
