@@ -28,6 +28,7 @@ import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.recharge_component.RechargeComponentTypeFactory
 import com.tokopedia.recharge_component.listener.RechargeBUWidgetListener
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
@@ -63,7 +64,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val bannerComponentListener: BannerComponentListener?,
                          private val dynamicIconComponentListener: DynamicIconComponentListener,
                          private val legoSixAutoListener: Lego6AutoBannerListener,
-                         private val campaignWidgetComponentListener: CampaignWidgetComponentListener
+                         private val campaignWidgetComponentListener: CampaignWidgetComponentListener,
+                         private val questWidgetCallbacks: QuestWidgetCallbacks
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
@@ -269,6 +271,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return 0
     }
 
+    override fun type(questWidgetModel: QuestWidgetModel): Int {
+        return QuestWidgetViewHolder.LAYOUT
+    }
+
     override fun type(campaignWidgetDataModel: CampaignWidgetDataModel): Int {
         return CampaignWidgetViewHolder.LAYOUT
     }
@@ -438,12 +444,13 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             ShimmeringIconViewHolder.LAYOUT -> viewHolder = ShimmeringIconViewHolder(view, listener)
             HomeAtfErrorViewHolder.LAYOUT -> viewHolder = HomeAtfErrorViewHolder(view, listener)
             DynamicLegoBannerSixAutoViewHolder.LAYOUT -> viewHolder =
-                DynamicLegoBannerSixAutoViewHolder(
-                    view,
-                    legoSixAutoListener,
-                    homeComponentListener,
-                    parentRecycledViewPool
-                )
+                    DynamicLegoBannerSixAutoViewHolder(
+                            view,
+                            legoSixAutoListener,
+                            homeComponentListener,
+                            parentRecycledViewPool)
+            QuestWidgetViewHolder.LAYOUT -> viewHolder =
+                QuestWidgetViewHolder(view, questWidgetCallbacks)
             CampaignWidgetViewHolder.LAYOUT -> viewHolder = CampaignWidgetViewHolder(
                 view,
                 homeComponentListener,
@@ -451,6 +458,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                 parentRecycledViewPool
             )
             else -> viewHolder = super.createViewHolder(view, type)
+
         }
 
         return viewHolder

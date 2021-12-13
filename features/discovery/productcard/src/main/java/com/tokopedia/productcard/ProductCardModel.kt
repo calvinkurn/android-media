@@ -57,6 +57,9 @@ data class ProductCardModel (
         val variant: Variant? = null,
         val nonVariant: NonVariant? = null,
         val hasSimilarProductButton: Boolean = false,
+        val hasButtonThreeDotsWishlist: Boolean = false,
+        val hasAddToCartWishlist: Boolean = false,
+        val hasSimilarProductWishlist: Boolean = false,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -256,6 +259,8 @@ data class ProductCardModel (
     fun isShowLabelCostPerUnit() = getLabelCostPerUnit()?.title?.isNotEmpty() == true
 
     fun isShowCategoryAndCostPerUnit() = isShowLabelCategory() && isShowLabelCostPerUnit()
+
+    fun willShowPrimaryButtonWishlist() = hasAddToCartWishlist || hasSimilarProductWishlist
 
     fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
         val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant()

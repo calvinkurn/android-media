@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,15 +18,18 @@ import com.tokopedia.affiliate.interfaces.AffiliateDatePickerRangeChangeInterfac
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateRangePickerModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import java.util.ArrayList
+import java.util.*
 
 class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterface {
     private var contentView: View? = null
 
     private var rangeSelected = TODAY
     private lateinit var rangeChangeInterface: AffiliateDatePickerRangeChangeInterface
+    private var identifier = IDENTIFIER_HOME
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -37,14 +41,18 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
         const val YESTERDAY = "Kemarin"
         const val SEVEN_DAYS = "7 Hari Terakhir"
         const val THIRTY_DAYS = "30 Hari Terakhir"
-        fun newInstance(selected: String,onRangeChangeInterface: AffiliateDatePickerRangeChangeInterface): AffiliateBottomDatePicker {
+        const val IDENTIFIER_HOME = "home_fragment"
+        const val IDENTIFIER_WITHDRAWAL = "income_fragment"
+        fun newInstance(selected: String,onRangeChangeInterface: AffiliateDatePickerRangeChangeInterface,identify: String = IDENTIFIER_WITHDRAWAL,): AffiliateBottomDatePicker {
             return AffiliateBottomDatePicker().apply {
                 rangeSelected = selected
                 rangeChangeInterface = onRangeChangeInterface
+                identifier = identify
             }
         }
     }
-    private var dateRV:RecyclerView?=null
+    private var dateRV: RecyclerView? = null
+    private var tickerCv: CardView? = null
     private fun init() {
         showCloseIcon = true
         showKnob = false
@@ -52,9 +60,21 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
             R.layout.affiliate_date_range_picker_bottom_sheet, null)
         setTitle(getString(R.string.affiliate_date_picker_header))
         dateRV = contentView?.findViewById(R.id.date_picker_rv)
+        tickerCv = contentView?.findViewById(R.id.affiliate_filter_announcement_ticker_cv)
+        setTicker()
         setData()
         initClickListener(contentView)
         setChild(contentView)
+    }
+
+    private fun setTicker() {
+        if(identifier == IDENTIFIER_HOME){
+            when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
+                in 0..9 -> tickerCv?.show()
+                else -> tickerCv?.hide()
+            }
+        }
+
     }
 
     private fun initClickListener(contentView: View?) {

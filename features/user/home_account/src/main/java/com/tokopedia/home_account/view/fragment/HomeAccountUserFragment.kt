@@ -1106,7 +1106,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun showDialogLogout() {
-
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(getString(R.string.new_home_account_label_logout))

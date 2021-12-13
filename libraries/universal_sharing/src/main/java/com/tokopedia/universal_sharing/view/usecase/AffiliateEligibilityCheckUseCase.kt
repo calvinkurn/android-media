@@ -19,7 +19,7 @@ class AffiliateEligibilityCheckUseCase constructor(
     override suspend fun executeOnBackground(): GenerateAffiliateLinkEligibility {
         val gqlRequest = GraphqlRequest(QUERY, GenerateAffiliateLinkEligibility.Response::class.java, params)
         val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
-            .Builder(CacheType.CACHE_FIRST).build())
+            .Builder(CacheType.ALWAYS_CLOUD).build())
 
         val response = gqlResponse.getData<GenerateAffiliateLinkEligibility.Response>(GenerateAffiliateLinkEligibility.Response::class.java)
         if (response.generateAffiliateLinkEligibility.affiliateEligibility?.isEligible == true) {

@@ -44,7 +44,6 @@ import com.tokopedia.officialstore.category.presentation.data.OSChooseAddressDat
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
-import com.tokopedia.officialstore.official.data.model.Banner
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
@@ -656,7 +655,7 @@ class OfficialHomeFragment :
     }
 
     override fun onShopImpression(categoryName: String, position: Int, shopData: Shop) {
-        tracking?.eventImpressionFeatureBrand(
+        tracking?.eventImpressionShop(
                 categoryName = categoryName,
                 shopPosition = position,
                 shopName = shopData.name.orEmpty(),
@@ -669,7 +668,7 @@ class OfficialHomeFragment :
     }
 
     override fun onShopClick(categoryName: String, position: Int, shopData: Shop) {
-        tracking?.eventClickFeaturedBrand(
+        tracking?.eventClickShop(
                 categoryName = categoryName,
                 shopPosition = position,
                 shopName = shopData.name.orEmpty(),
