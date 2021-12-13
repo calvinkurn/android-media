@@ -868,7 +868,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         val response = ProductrevGetPostSubmitBottomSheetResponse(type = "standard")
         val expected = PostSubmitUiState.ShowThankYouBottomSheet(
             data = response,
-            hasPendingIncentive = false
+            hasPendingIncentive = true
         )
         onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse()))
         onGetPostSubmitBottomSheetData_thenReturn(ProductrevGetPostSubmitBottomSheetResponseWrapper(response))
@@ -917,27 +917,11 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `when getIncentiveOvo results amount is zero should set isInboxEmpty param as true`() {
-        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse()))
-        onGetPostSubmitBottomSheetData_thenReturn(mockk())
-        viewModel.getPostSubmitBottomSheetData("", "")
-        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), true, any()) }
-    }
-
-    @Test
     fun `when getIncentiveOvo results is error should set isInboxEmpty param as true`() {
         onGetOvoIncentiveError_thenReturn(mockk())
         onGetPostSubmitBottomSheetData_thenReturn(mockk())
         viewModel.getPostSubmitBottomSheetData("", "")
         verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), true, any()) }
-    }
-
-    @Test
-    fun `when getIncentiveOvo results amount is more than zero should set isInboxEmpty param as false`() {
-        onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse(amount = 10)))
-        onGetPostSubmitBottomSheetData_thenReturn(mockk())
-        viewModel.getPostSubmitBottomSheetData("", "")
-        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), false, any()) }
     }
 
     @Test
