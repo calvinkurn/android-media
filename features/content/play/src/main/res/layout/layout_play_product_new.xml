@@ -73,55 +73,55 @@
         app:typographyType="body_2"
         tools:text="Alyssa Suede Flats Alyssa Suede Flats  Alyssa Suede Flats " />
 
-    <LinearLayout
-        android:id="@+id/ll_product_discount"
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_current_price"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="@id/tv_product_title"
-        app:layout_constraintTop_toBottomOf="@id/tv_product_title"
-        app:layout_constraintVertical_chainStyle="packed"
-        tools:visibility="visible">
+        android:paddingStart="0dp"
+        android:paddingEnd="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toStartOf="@+id/tv_product_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_product_title"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Rp150.000" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_current_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_lvl1"
-            android:paddingStart="0dp"
-            android:paddingEnd="@dimen/spacing_lvl2"
-            android:textColor="@color/Unify_N700_96"
-            app:typographyType="body_2"
-            app:typographyWeight="bold"
-            tools:text="Rp150.000" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_product_discount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_play_discount_badge"
-            android:paddingStart="@dimen/spacing_lvl2"
-            android:paddingTop="@dimen/spacing_lvl1"
-            android:paddingEnd="@dimen/spacing_lvl2"
-            android:paddingBottom="@dimen/spacing_lvl1"
-            android:textColor="@color/Unify_R400"
-            app:typographyType="small"
-            app:typographyWeight="bold"
-            tools:ignore="TextContrastCheck,TextContrastCheck"
-            tools:text="57%" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_discount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_play_discount_badge"
+        android:paddingStart="@dimen/spacing_lvl2"
+        android:paddingTop="@dimen/spacing_lvl1"
+        android:paddingEnd="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_R400"
+        android:paddingBottom="@dimen/spacing_lvl1"
+        android:layout_marginBottom="@dimen/spacing_lvl1"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_current_price"
+        app:layout_constraintStart_toEndOf="@+id/tv_current_price"
+        app:layout_constraintTop_toTopOf="@+id/tv_current_price"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:ignore="TextContrastCheck,TextContrastCheck"
+        tools:text="57%" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_original_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl2"
-            android:textColor="@color/Unify_N700_44"
-            app:typographyType="small"
-            tools:ignore="TextContrastCheck"
-            tools:text="Rp349.000" />
-
-    </LinearLayout>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_original_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_44"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_product_discount"
+        app:layout_constraintStart_toEndOf="@+id/tv_product_discount"
+        app:layout_constraintTop_toTopOf="@+id/tv_product_discount"
+        app:layout_constraintVertical_bias="1.0"
+        android:layout_marginBottom="@dimen/spacing_lvl1"
+        app:typographyType="small"
+        tools:ignore="TextContrastCheck"
+        tools:text="Rp349.000" />
 
     <LinearLayout
         android:id="@+id/layout_product_button"
@@ -135,7 +135,7 @@
         app:layout_constraintEnd_toEndOf="@+id/tv_product_title"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/iv_product_image"
-        app:layout_constraintTop_toBottomOf="@+id/ll_product_discount"
+        app:layout_constraintTop_toBottomOf="@+id/tv_current_price"
         app:layout_constraintVertical_bias="0.0">
 
         <com.tokopedia.unifycomponents.UnifyButton
