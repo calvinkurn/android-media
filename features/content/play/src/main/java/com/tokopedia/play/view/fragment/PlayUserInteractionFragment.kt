@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
@@ -92,6 +93,7 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -966,18 +968,13 @@ class PlayUserInteractionFragment @Inject constructor(
                     RemindToLikeEvent -> likeView.playReminderAnimation()
                     is PreloadLikeBubbleIconEvent -> likeBubbleView.preloadIcons(event.urls)
                     is OpenSharingOptionEvent -> {
-                        if(UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
-                            shareExperienceView?.showSharingOptions(event.title, event.coverUrl)
-                        }
-                        else {
-                            // TODO("Provide data for this")
-//                            openNativeShareIntent(event.title, event.description, event.url)
-                        }
+                        shareExperienceView?.showSharingOptions(event.title, event.coverUrl)
+                    }
+                    is OpenNativeSharingOptionEvent -> {
+                        openNativeShareIntent(event.title, event.description, event.url)
+                        shareExperienceView?.dismiss()
                     }
                     is OpenSelectedSharingOptionEvent -> {
-                        openNativeShareIntent(event.title, event.description, event.url)
-                    }
-                    is OpenShareExperienceEvent -> {
                         SharingUtil.executeShareIntent(event.shareModel, event.linkerShareResult, activity, view, event.shareString)
                         shareExperienceView?.dismiss()
                     }
@@ -1007,7 +1004,6 @@ class PlayUserInteractionFragment @Inject constructor(
             putExtra(Intent.EXTRA_HTML_TEXT, description)
         }
         activity?.startActivity(Intent.createChooser(intent, title))
-        shareExperienceView?.dismiss()
     }
 
     private fun sendCastAnalytic(cast: PlayCastUiModel) {

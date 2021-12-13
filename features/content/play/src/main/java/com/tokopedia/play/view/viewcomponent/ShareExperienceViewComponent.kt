@@ -28,6 +28,8 @@ class ShareExperienceViewComponent(
 
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
+    private var isShow = false
+
     init {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(object: ShareBottomsheetListener {
@@ -56,10 +58,14 @@ class ShareExperienceViewComponent(
             tnImage = coverUrl,
         )
         universalShareBottomSheet?.show(fragmentManager, fragment)
+        isShow = true
     }
 
     fun dismiss() {
-        universalShareBottomSheet?.dismiss()
+        if(isShow) {
+            universalShareBottomSheet?.dismiss()
+            isShow = false
+        }
     }
 
     interface Listener {

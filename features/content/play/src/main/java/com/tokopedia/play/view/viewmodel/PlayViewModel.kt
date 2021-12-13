@@ -1810,10 +1810,24 @@ class PlayViewModel @Inject constructor(
 
     private fun handleClickShare() {
         viewModelScope.launch {
-            _uiEvent.emit(OpenSharingOptionEvent(
-                title = _channelDetail.value.channelInfo.title,
-                coverUrl = _channelDetail.value.channelInfo.coverUrl
-            ))
+            if(playShareExperience.isCustomSharingAllow()) {
+                _uiEvent.emit(OpenSharingOptionEvent(
+                    title = _channelDetail.value.channelInfo.title,
+                    coverUrl = _channelDetail.value.channelInfo.coverUrl
+                ))
+            }
+            else {
+                val playShareExperienceData = getPlayShareExperienceData()
+                playShareExperience.setData(playShareExperienceData)
+
+                _uiEvent.emit(
+                    OpenNativeSharingOptionEvent(
+                        title = playShareExperienceData.title,
+                        description = playShareExperience.generateShareString(),
+                        url = playShareExperienceData.redirectUrl
+                    )
+                )
+            }
         }
 //        val shareInfo = _channelDetail.value.shareInfo
 //
@@ -1841,17 +1855,7 @@ class PlayViewModel @Inject constructor(
 
     private fun handleSharingOption(shareModel: ShareModel) {
         viewModelScope.launch {
-            val (channelInfo, shareInfo) = _channelDetail.let {
-                return@let Pair(it.value.channelInfo, it.value.shareInfo)
-            }
-
-            val playShareExperienceData = PlayShareExperienceData(
-                id = channelId,
-                title = channelInfo.title,
-                partnerName = _partnerInfo.value.name,
-                coverUrl = channelInfo.coverUrl,
-                redirectUrl = shareInfo.redirectUrl,
-            )
+            val playShareExperienceData = getPlayShareExperienceData()
 
             playShareExperience
                 .setShareModel(shareModel)
@@ -1864,7 +1868,7 @@ class PlayViewModel @Inject constructor(
                     ) {
                         viewModelScope.launch {
                             _uiEvent.emit(
-                                OpenShareExperienceEvent(
+                                OpenSelectedSharingOptionEvent(
                                     linkerShareData,
                                     shareModel,
                                     shareString
@@ -1876,10 +1880,10 @@ class PlayViewModel @Inject constructor(
                     override fun onError(e: Exception, shareString: String) {
                         viewModelScope.launch {
                             _uiEvent.emit(
-                                OpenSelectedSharingOptionEvent(
-                                    title = channelInfo.title,
+                                OpenNativeSharingOptionEvent(
+                                    title = playShareExperienceData.title,
                                     description = shareString,
-                                    url = shareInfo.redirectUrl
+                                    url = playShareExperienceData.redirectUrl
                                 )
                             )
                         }
@@ -1928,6 +1932,20 @@ class PlayViewModel @Inject constructor(
             model.currentState = castState
         }
         _observableCastState.value = model
+    }
+
+    private fun getPlayShareExperienceData(): PlayShareExperienceData {
+        val (channelInfo, shareInfo) = _channelDetail.let {
+            return@let Pair(it.value.channelInfo, it.value.shareInfo)
+        }
+
+        return PlayShareExperienceData(
+            id = channelId,
+            title = channelInfo.title,
+            partnerName = _partnerInfo.value.name,
+            coverUrl = channelInfo.coverUrl,
+            redirectUrl = shareInfo.redirectUrl,
+        )
     }
 
     companion object {

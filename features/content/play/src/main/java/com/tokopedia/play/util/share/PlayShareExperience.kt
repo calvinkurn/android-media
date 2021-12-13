@@ -9,9 +9,13 @@ import kotlin.Exception
  */
 interface PlayShareExperience {
 
+    fun isCustomSharingAllow(): Boolean
+
     fun setData(data: PlayShareExperienceData): PlayShareExperience
 
     fun setShareModel(shareModel: ShareModel): PlayShareExperience
+
+    fun generateShareString(): String
 
     fun createUrl(listener: Listener)
 

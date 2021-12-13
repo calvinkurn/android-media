@@ -80,8 +80,4 @@ abstract class PlayBindModule {
     @Binds
     @PlayScope
     abstract fun bindTimerFactory(timerFactory: PlayTimerFactory): TimerFactory
-
-    @Binds
-    @PlayScope
-    abstract fun bindPlayShareExperience(playShareExperienceImpl: PlayShareExperienceImpl): PlayShareExperience
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.play.util.share
 
+import android.content.Context
 import android.util.Log
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -8,16 +9,22 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on December 10, 2021
  */
-class PlayShareExperienceImpl @Inject constructor(): PlayShareExperience {
+class PlayShareExperienceImpl @Inject constructor(
+    private val context: Context
+): PlayShareExperience {
 
     private lateinit var shareModel: ShareModel
     private lateinit var data: PlayShareExperienceData
+
+    override fun isCustomSharingAllow(): Boolean =
+        UniversalShareBottomSheet.isCustomSharingEnabled(context)
 
     override fun setShareModel(shareModel: ShareModel): PlayShareExperience {
         this.shareModel = shareModel
@@ -29,7 +36,8 @@ class PlayShareExperienceImpl @Inject constructor(): PlayShareExperience {
         return this
     }
 
-    private fun generateShareString(): String {
+    // TODO("This hardcoded text should be moved")
+    override fun generateShareString(): String {
         val description = "Coba nonton video ini ya di Tokopedia Play!"
         return "${data.title}.\n$description\n${data.redirectUrl}"
     }
