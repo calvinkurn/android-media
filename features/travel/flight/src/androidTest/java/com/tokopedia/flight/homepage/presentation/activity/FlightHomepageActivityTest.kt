@@ -3,11 +3,9 @@ package com.tokopedia.flight.homepage.presentation.activity
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
@@ -25,14 +23,12 @@ import com.tokopedia.test.application.environment.interceptor.mock.MockModelConf
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.utils.date.DateUtil
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.text.SimpleDateFormat
 
 /**
  * @author by furqan on 04/08/2020
@@ -187,11 +183,10 @@ class FlightHomepageActivityTest {
         onView(withId(R.id.tvFlightDepartureDate)).perform(click())
         Thread.sleep(500)
 
-        // select today
-        val sdf = SimpleDateFormat("d")
-        val dateToday = sdf.format(DateUtil.getCurrentDate())
-        onView(getElementFromMatchAtPosition(withText(dateToday), 1)).perform(click())
-
+        // select static date - 8
+        onView(getElementFromMatchAtPosition(withText("8"), 1)).check(matches(isDisplayed()))
+        Thread.sleep(3000)
+        onView(getElementFromMatchAtPosition(withText("8"), 1)).perform(click())
         Thread.sleep(3000)
     }
 
