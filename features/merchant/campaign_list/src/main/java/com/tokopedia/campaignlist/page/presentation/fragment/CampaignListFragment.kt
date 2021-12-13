@@ -309,7 +309,7 @@ class CampaignListFragment : BaseDaggerFragment(),
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.SHOP_LOGO , value = shopData.logo)
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.SHOP_NAME , value = shopData.name)
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.BADGE , value = shopData.badge.Title)
-            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.DATE , value = campaignData.startDate)
+            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.DATE , value = campaignData.endDate)
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.ONGOING , value = _isOngoing.toString())
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCTS_COUNT , value = _totalProducts.toString())
 
