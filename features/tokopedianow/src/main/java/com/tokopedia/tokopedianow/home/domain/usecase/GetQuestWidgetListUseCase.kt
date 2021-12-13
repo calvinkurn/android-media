@@ -20,7 +20,7 @@ class GetQuestWidgetListUseCase @Inject constructor(
         setTypeClass(GetQuestListResponse::class.java)
     }
 
-    suspend fun execute(channelSlug: String = "tokonow_main_quest"): GetQuestListResponse {
+    suspend fun execute(channelSlug: String = "tokonow-main-quest"): GetQuestListResponse {
         setRequestParams(RequestParams.create().apply {
             putString(CHANNEL_SLUG, channelSlug)
         }.parameters)
