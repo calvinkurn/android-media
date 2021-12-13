@@ -47,6 +47,9 @@ class DigitalUnifyCardViewHolder(
         // render price and discount
         renderPriceAndDiscount(element)
 
+        // render cashback label
+        renderCashbackLabel(element.cashback)
+
         // render subtitle
         renderSubtitle(element)
 
@@ -176,7 +179,11 @@ class DigitalUnifyCardViewHolder(
 
     private fun renderPriceAndDiscount(element: DigitalUnifyModel) {
         // render price
-        renderPrice(element.priceData.price, element.priceData.pricePrefix, element.priceData.priceSuffix)
+        renderPrice(
+            element.priceData.price,
+            element.priceData.pricePrefix,
+            element.priceData.priceSuffix
+        )
 
         // render discount label
         renderDiscountLabel(element.priceData.discountLabel, element.priceData.discountLabelType)
@@ -397,6 +404,17 @@ class DigitalUnifyCardViewHolder(
                 dguDiscountLabel.show()
             } else {
                 dguDiscountLabel.hide()
+            }
+        }
+    }
+
+    private fun renderCashbackLabel(label: String) {
+        with(binding) {
+            if (label.isNotEmpty()) {
+                dguCashbackLabel.text = label
+                dguCashbackLabel.show()
+            } else {
+                dguCashbackLabel.hide()
             }
         }
     }

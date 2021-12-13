@@ -478,6 +478,7 @@ data class RechargeProductCardUnifyModel(val section: RechargeHomepageSections.S
                         pricePrefix = it.attributes.pricePrefix,
                         priceSuffix = it.attributes.priceSuffix
                     ),
+                    cashback = it.attributes.cashback,
                     subtitle = it.attributes.soldValue,
                     soldPercentage = DigitalCardSoldPercentageModel(
                         showPercentage = it.attributes.showSoldPercentage,

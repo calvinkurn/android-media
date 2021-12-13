@@ -22,6 +22,7 @@ data class DigitalUnifyModel(
     val rating: DigitalCardRatingModel,
     val specialInfo: DigitalCardInfoModel,
     val priceData: DigitalCardPriceModel,
+    val cashback: String,
     val subtitle: String,
     val soldPercentage: DigitalCardSoldPercentageModel,
     val actionButton: DigitalCardActionModel
