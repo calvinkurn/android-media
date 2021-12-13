@@ -5,13 +5,13 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingRight="12dp"
+    android:paddingRight="8dp"
     tools:ignore="RtlSymmetry">
 
     <com.tokopedia.product_ar.view.ProductRoundedBorderImageView
         android:id="@+id/img_item_variant_ar"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         app:borderRadius="12dp"

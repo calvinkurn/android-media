@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.product_ar.di.PRODUCT_ID_PROVIDED
 import com.tokopedia.product_ar.di.SHOP_ID_PROVIDED
-import com.tokopedia.product_ar.model.ProductArUiModel
+import com.tokopedia.product_ar.model.ProductAr
 import com.tokopedia.product_ar.usecase.GetProductArUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -29,18 +29,19 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         getArData()
     }
 
-    private val _productArLiveData = MutableLiveData<Result<ProductArUiModel>>()
-    val productArLiveData: LiveData<Result<ProductArUiModel>>
-        get() = _productArLiveData
+    private val _selectedProductArData = MutableLiveData<Result<ProductAr>>()
+    val selectedProductArData: LiveData<Result<ProductAr>>
+        get() = _selectedProductArData
+
 
     private fun getArData() {
         viewModelScope.launchCatchError(block = {
             val result = getProductArUseCase.executeOnBackground(
                     GetProductArUseCase.createParams(productId, shopId, chosenAddressRequestHelper)
             )
-            _productArLiveData.postValue(Success(result))
+            _selectedProductArData.postValue(Success(result.options[productId] ?: ProductAr()))
         }, onError = {
-            _productArLiveData.postValue(Fail(it))
+            _selectedProductArData.postValue(Fail(it))
         })
     }
 }

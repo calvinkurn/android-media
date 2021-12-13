@@ -19,21 +19,24 @@ class PartialBottomArView private constructor(val view: View) {
         fun build(view: View) = PartialBottomArView(view)
     }
 
-    val atcButton = view.findViewById<UnifyButton>(R.id.btn_atc_ar)
-    val txtStock = view.findViewById<Typography>(R.id.txt_stock_ar)
-    val txtMainPrice = view.findViewById<Typography>(R.id.txt_main_price_ar)
-    val txtSlashPrice = view.findViewById<Typography>(R.id.txt_slash_price_ar)
-    val lblDiscounted = view.findViewById<Label>(R.id.lbl_discounted_ar)
-    val rvVariant = view.findViewById<RecyclerView>(R.id.rv_ar)
+    private val atcButton = view.findViewById<UnifyButton>(R.id.btn_atc_ar)
+    private val txtStock = view.findViewById<Typography>(R.id.txt_stock_ar)
+    private val txtMainPrice = view.findViewById<Typography>(R.id.txt_main_price_ar)
+    private val txtSlashPrice = view.findViewById<Typography>(R.id.txt_slash_price_ar)
+    private val lblDiscounted = view.findViewById<Label>(R.id.lbl_discounted_ar)
+    private val rvVariant = view.findViewById<RecyclerView>(R.id.rv_ar)
 
-    val adapter = VariantArAdapter()
+    private val adapter = VariantArAdapter()
 
-    fun setupView(data: ProductAr) {
+    fun renderRecyclerView(data: ProductAr) {
+        renderVariantRv(data)
+    }
+
+    fun renderBottomInfo(data: ProductAr) {
         atcButton.text = data.button.text
         txtStock.text = data.stock
-
         renderCampaign(data)
-        renderVariantRv(data)
+        renderVariantRv(ProductAr())
     }
 
     private fun renderVariantRv(data: ProductAr) {
@@ -50,8 +53,8 @@ class PartialBottomArView private constructor(val view: View) {
 
     private fun renderCampaign(data: ProductAr) = with(view) {
         if (data.campaignInfo.isActive) {
-            txtMainPrice.text = data.campaignInfo.discountedPriceFmt
-            txtSlashPrice.text = data.campaignInfo.originalPriceFmt
+            txtMainPrice.text = data.campaignInfo.discountedPrice.getCurrencyFormatted()
+            txtSlashPrice.text = data.campaignInfo.originalPrice.getCurrencyFormatted()
             lblDiscounted.text = context.getString(
                     com.tokopedia.product.detail.common.R.string.template_campaign_off,
                     data.campaignInfo.percentageAmount.toString())

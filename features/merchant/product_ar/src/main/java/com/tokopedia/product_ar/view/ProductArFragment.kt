@@ -16,7 +16,6 @@ import com.modiface.mfemakeupkit.MFEMakeupEngine
 import com.modiface.mfemakeupkit.data.MFEMakeupRenderingParameters
 import com.modiface.mfemakeupkit.widgets.MFEMakeupView
 import com.tokopedia.product_ar.R
-import com.tokopedia.product_ar.model.ProductAr
 import com.tokopedia.product_ar.viewmodel.ProductArViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -82,10 +81,10 @@ class ProductArFragment : Fragment() {
     }
 
     private fun observeData() {
-        viewModel?.productArLiveData?.observe(viewLifecycleOwner) {
+        viewModel?.selectedProductArData?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    partialBottomArView?.setupView(it.data.options["1234"] ?: ProductAr())
+                    partialBottomArView?.renderBottomInfo(it.data)
                     Log.e("datanya", it.data.toString())
                 }
                 is Fail -> {

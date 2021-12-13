@@ -7,9 +7,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.view.ProductRoundedBorderImageView
+import com.tokopedia.product_ar.view.SELECTMODE
 import com.tokopedia.unifyprinciples.Typography
 
 class VariantArAdapter : RecyclerView.Adapter<VariantArAdapter.ItemArImage>() {
+
+    var counter: Int = 1
 
     private var arImageDatas: List<String> = listOf()
 
@@ -41,7 +44,16 @@ class VariantArAdapter : RecyclerView.Adapter<VariantArAdapter.ItemArImage>() {
             txtVariantName.text = "Normal"
 
             itemView.setOnClickListener {
-                imgVariant.setSelected = !imgVariant.setSelected
+                imgVariant?.run {
+                    imgVariant.mode = SELECTMODE.MULTIPLE
+                    imgVariant.textCounter = counter.toString()
+                    if (setSelected) {
+                        counter--
+                    } else {
+                        counter++
+                    }
+                    imgVariant.setSelected = !imgVariant.setSelected
+                }
             }
         }
     }
