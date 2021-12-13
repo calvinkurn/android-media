@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhome.testcase.cassava
 
-import android.app.Application
 import android.content.Context
 import androidx.test.espresso.IdlingPolicies
 import androidx.test.espresso.IdlingRegistry
@@ -23,7 +22,6 @@ import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
-import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
@@ -299,15 +297,6 @@ class SellerHomeTrackerValidationTest {
         if (performanceData?.isSuccess == true) {
             sellerHomeLoadTimeMonitoringListener.onStopPltMonitoring()
         }
-    }
-
-    private fun login() {
-        InstrumentationAuthHelper.loginToAnUser(
-            InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as Application,
-            SellerHomeIdlingResource.idlingResource,
-            "try.sugiharto+02@tokopedia.com",
-            "tokopedia789"
-        )
     }
 
     private fun setUpTimeoutPolicy() {

@@ -13,8 +13,13 @@ class UserSessionStub @Inject constructor(
     @ApplicationContext
     context: Context
 ) : UserSession(context) {
-    var mockUserId = "1430196"
-    var mockShopId = "1430195"
+
+    private var mockShopName = "Sojol Fishing Shop"
+    private var mockUserId = "1430196"
+    private var mockShopId = "1430195"
+    private var mockSasShop = true
+    private var mockIsLoggedIn = true
+
 
     override fun getUserId(): String {
         return mockUserId
@@ -22,5 +27,17 @@ class UserSessionStub @Inject constructor(
 
     override fun getShopId(): String {
         return mockShopId
+    }
+
+    override fun hasShop(): Boolean {
+        return mockSasShop
+    }
+
+    override fun isLoggedIn(): Boolean {
+        return mockIsLoggedIn
+    }
+
+    override fun getShopName(): String {
+        return mockShopName
     }
 }
