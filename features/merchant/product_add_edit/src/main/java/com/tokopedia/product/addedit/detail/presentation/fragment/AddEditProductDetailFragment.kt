@@ -675,14 +675,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             submitTextView?.hide()
             submitLoadingIndicator?.show()
             validateInput()
-            if (viewModel.isInputValid.value == true && viewModel.isAdding) {
-                // if user in add mode then validate product name before submit data
-                viewModel.validateProductNameInputFromNetwork(productNameField.getText())
-            } else {
-                submitInputDataWithCondition(viewModel.isInputValid.value.orFalse())
-                submitTextView?.show()
-                submitLoadingIndicator?.hide()
-            }
+            // validate product name before submit data
+            viewModel.validateProductNameInputFromNetwork(productNameField.getText())
         }
 
         setupDefaultFieldMessage()
@@ -819,15 +813,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         getNavigationResult(REQUEST_KEY_ADD_MODE)?.removeObservers(this)
     }
 
-    private fun submitInputDataWithCondition(isValid: Boolean) {
-        if (isValid) {
-            val isAdding = viewModel.isAdding
-            val isDrafting = viewModel.isDrafting
-            val isFirstMoved = viewModel.isFirstMoved
-            if (isAdding && isFirstMoved) moveToDescriptionActivity()
-            else if (isAdding && !isDrafting) submitInput()
-            else submitInputEdit()
-        }
+    private fun submitInputData() {
+        val isAdding = viewModel.isAdding
+        val isDrafting = viewModel.isDrafting
+        val isFirstMoved = viewModel.isFirstMoved
+        if (isAdding && isFirstMoved) moveToDescriptionActivity()
+        else if (isAdding && !isDrafting) submitInput()
+        else submitInputEdit()
     }
 
     private fun updateAddNewWholeSalePriceButtonVisibility() {
@@ -1572,7 +1564,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         // set live data to null so it cannot commit observing twice when back from previous page
                         viewModel.setProductNameInputFromNetwork(null)
                         viewModel.setIsProductNameInputError(false)
-                        submitInputDataWithCondition(true)
+                        submitInputData()
                     }
                 }
                 is Fail -> {
