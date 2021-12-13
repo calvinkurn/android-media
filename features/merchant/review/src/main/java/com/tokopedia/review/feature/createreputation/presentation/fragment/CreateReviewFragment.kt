@@ -726,10 +726,12 @@ class CreateReviewFragment : BaseDaggerFragment(),
                             if (ovoIncentiveBottomSheet == null) {
                                 ovoIncentiveBottomSheet =
                                     IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(
-                                        context,
-                                        data,
-                                        this@CreateReviewFragment,
-                                        ""
+                                        context = context,
+                                        productRevIncentiveOvoDomain = data,
+                                        hasIncentive = hasIncentive(),
+                                        hasOngoingChallenge = hasOngoingChallenge(),
+                                        incentiveOvoListener = this@CreateReviewFragment,
+                                        category = ""
                                     )
                             }
                             ovoIncentiveBottomSheet?.let { bottomSheet ->
