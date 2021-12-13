@@ -49,5 +49,6 @@ object SetChannelActiveAction : PlayViewerNewAction()
  * Sharing Experience
  */
 data class ClickSharingOption(val shareModel: ShareModel): PlayViewerNewAction()
+object ScreenshotTaken: PlayViewerNewAction()
 
 data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()

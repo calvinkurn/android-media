@@ -733,6 +733,7 @@ class PlayViewModel @Inject constructor(
             ClickLikeAction -> handleClickLike(isFromLogin = false)
             ClickShareAction -> handleClickShare()
             RefreshLeaderboard -> handleRefreshLeaderboard()
+            ScreenshotTaken -> handleClickShare()
             is ClickSharingOption -> handleSharingOption(action.shareModel)
         }
     }
