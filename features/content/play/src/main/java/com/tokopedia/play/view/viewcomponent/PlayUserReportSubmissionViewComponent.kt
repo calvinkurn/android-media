@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.R
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
@@ -27,6 +28,7 @@ class PlayUserReportSubmissionViewComponent(
     private val tvDesc: TextView = findViewById(R.id.tv_user_report_desc)
     private val etSubmission: TextAreaUnify2 = findViewById(R.id.et_detail_report)
     private val btnSubmit: UnifyButton = findViewById(R.id.btn_action)
+    private val tvFooter: TextView = findViewById(R.id.tv_user_report_footer)
 
     init {
         btnBack.setImage(IconUnify.ARROW_BACK)
@@ -37,6 +39,11 @@ class PlayUserReportSubmissionViewComponent(
             }
 
         findViewById<TextView>(com.tokopedia.play_common.R.id.tv_sheet_title).text = getString(R.string.play_kebab_report_title)
+
+        tvFooter.text = MethodChecker.fromHtml(getString(R.string.play_user_report_footer))
+        tvFooter.setOnClickListener {
+            listener.onFooterClicked(this@PlayUserReportSubmissionViewComponent)
+        }
     }
 
 
@@ -72,5 +79,6 @@ class PlayUserReportSubmissionViewComponent(
     interface Listener {
         fun onCloseButtonClicked(view: PlayUserReportSubmissionViewComponent)
         fun onSubmitUserReport(view: PlayUserReportSubmissionViewComponent)
+        fun onFooterClicked(view: PlayUserReportSubmissionViewComponent)
     }
 }

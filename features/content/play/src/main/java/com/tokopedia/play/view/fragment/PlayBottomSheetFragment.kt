@@ -252,6 +252,10 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.hideUserReportSheet()
     }
 
+    override fun onFooterClicked(view: PlayUserReportSheetViewComponent) {
+        openApplink(applink = getString(R.string.play_user_report_footer_weblink))
+    }
+
     /**
      * UserReportSubmissionSheet View Component Listener
      */
@@ -262,6 +266,10 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onSubmitUserReport(view: PlayUserReportSubmissionViewComponent) {
         TODO("Not yet implemented")
+    }
+
+    override fun onFooterClicked(view: PlayUserReportSubmissionViewComponent) {
+        openApplink(applink = getString(R.string.play_user_report_footer_weblink))
     }
 
     /**

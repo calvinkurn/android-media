@@ -12,6 +12,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -35,6 +36,7 @@ class PlayUserReportSheetViewComponent(
     private val globalError: GlobalError = findViewById(R.id.global_error_user_report)
     private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
     private val rvCategory: RecyclerView = findViewById(R.id.rv_category)
+    private val tvFooter: TextView = findViewById(R.id.tv_user_report_footer)
 
     private val categoryAdapter = UserReportReasoningAdapter(object : UserReportReasoningViewHolder.Listener {
         override fun onItemCategoryClicked(item: PlayUserReportReasoningUiModel.Reasoning) {
@@ -76,6 +78,11 @@ class PlayUserReportSheetViewComponent(
             clContent.setPadding(clContent.paddingLeft, clContent.paddingTop, clContent.paddingRight, insets.systemWindowInsetBottom)
 
             insets
+        }
+
+        tvFooter.text = MethodChecker.fromHtml(getString(R.string.play_user_report_footer))
+        tvFooter.setOnClickListener {
+            listener.onFooterClicked(this@PlayUserReportSheetViewComponent)
         }
     }
 
@@ -134,5 +141,6 @@ class PlayUserReportSheetViewComponent(
     interface Listener{
         fun onCloseButtonClicked(view: PlayUserReportSheetViewComponent)
         fun onItemReportClick(view: PlayUserReportSheetViewComponent, item: PlayUserReportReasoningUiModel.Reasoning)
+        fun onFooterClicked(view: PlayUserReportSheetViewComponent)
     }
 }
