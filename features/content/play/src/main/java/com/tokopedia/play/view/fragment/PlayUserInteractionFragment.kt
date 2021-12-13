@@ -244,7 +244,6 @@ class PlayUserInteractionFragment @Inject constructor(
         setupView(view)
         setupInsets(view)
         setupObserve()
-        setupScreenshotDetector()
 
         invalidateSystemUiVisibility()
     }
@@ -328,6 +327,10 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onShareOptionClosed(view: ShareExperienceViewComponent) {
 
+    }
+
+    override fun onScreenshotTaken(view: ShareExperienceViewComponent) {
+        playViewModel.submitAction(ScreenshotTaken)
     }
 
     override fun onPartnerNameClicked(view: PartnerInfoViewComponent) {
@@ -656,18 +659,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
         observeLoggedInInteractionEvent()
         observeCastState()
-    }
-
-    private fun setupScreenshotDetector() {
-        context?.let {
-            UniversalShareBottomSheet.createAndStartScreenShotDetector(
-                it, object: ScreenShotListener {
-                    override fun screenShotTaken() {
-                        Log.d("<LOG>", "screenshottaken")
-                        playViewModel.submitAction(ScreenshotTaken)
-                    }
-                }, this, addFragmentLifecycleObserver = true)
-        }
     }
 
     private fun invalidateSystemUiVisibility() {
