@@ -573,11 +573,13 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                         if (ovoIncentiveBottomSheet == null) {
                             ovoIncentiveBottomSheet = context?.let { context ->
                                 IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(
-                                    context,
-                                    ovoDomain,
-                                    this@CreateReviewBottomSheet,
-                                    "",
-                                    getTncBottomSheetTrackerData()
+                                    context = context,
+                                    productRevIncentiveOvoDomain = ovoDomain,
+                                    hasIncentive = hasIncentive(),
+                                    hasOngoingChallenge = hasOngoingChallenge(),
+                                    incentiveOvoListener = this@CreateReviewBottomSheet,
+                                    category = "",
+                                    trackerData = getTncBottomSheetTrackerData()
                                 )
                             }
                         }

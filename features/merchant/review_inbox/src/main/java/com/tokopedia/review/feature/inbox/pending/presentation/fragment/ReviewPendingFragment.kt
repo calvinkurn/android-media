@@ -523,10 +523,12 @@ class ReviewPendingFragment :
         if (ovoIncentiveBottomSheet == null) {
             ovoIncentiveBottomSheet = context?.let {
                 IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(
-                    it,
-                    productRevIncentiveOvoDomain,
-                    this,
-                    ReviewInboxTrackingConstants.PENDING_TAB
+                    context = it,
+                    productRevIncentiveOvoDomain = productRevIncentiveOvoDomain,
+                    hasIncentive = true,
+                    hasOngoingChallenge = false,
+                    incentiveOvoListener = this,
+                    category = ReviewInboxTrackingConstants.PENDING_TAB
                 )
             }
         }

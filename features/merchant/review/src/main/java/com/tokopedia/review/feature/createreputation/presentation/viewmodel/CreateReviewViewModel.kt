@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
@@ -338,13 +340,13 @@ class CreateReviewViewModel @Inject constructor(
 
     fun hasIncentive(): Boolean {
         return incentiveOvo.getSuccessData()?.let {
-            it.productrevIncentiveOvo?.hasIncentive()
+            it.productrevIncentiveOvo?.amount.isMoreThanZero()
         }.orFalse()
     }
 
     fun hasOngoingChallenge(): Boolean {
         return incentiveOvo.getSuccessData()?.let {
-            it.productrevIncentiveOvo?.hasOngoingPromo()
+            it.productrevIncentiveOvo?.amount.isZero()
         }.orFalse()
     }
 
