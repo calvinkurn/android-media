@@ -56,10 +56,15 @@ class CustomProductLogisticActivity : BaseSimpleActivity() {
             val isAccelerometerRotationEnabled = Settings.System.getInt(
                     contentResolver,
                     Settings.System.ACCELEROMETER_ROTATION,
-                    0
-            ) == 1
+                    ROTATION_DEFAULT_VALUE
+            ) == USE_ROTATION_VALUE
             requestedOrientation =
                     if (isAccelerometerRotationEnabled) ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
+    }
+
+    companion object {
+        private const val ROTATION_DEFAULT_VALUE = 0
+        private const val USE_ROTATION_VALUE = 1
     }
 }
