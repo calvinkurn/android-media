@@ -4,10 +4,8 @@ import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.YOUTU_BE_URL
-import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.domain.model.ValidateProductDescriptionResponse
 import com.tokopedia.product.addedit.description.domain.usecase.ValidateProductDescriptionUseCase
@@ -18,6 +16,7 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.util.setPrivateProperty
 import com.tokopedia.product.addedit.variant.presentation.model.*
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -27,7 +26,10 @@ import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import org.junit.*
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import java.lang.reflect.Type
 
 @FlowPreview
@@ -153,20 +155,6 @@ class AddEditProductDescriptionViewModelTest {
 
         coVerify {
             validateProductDescriptionUseCase.executeOnBackground()
-        }
-    }
-
-    @Test
-    fun `When user insert product description and usecase is failed expect return throwable`() = coroutineTestRule.runBlockingTest {
-        coEvery {
-            validateProductDescriptionUseCase.executeOnBackground()
-        } throws Throwable()
-        
-        viewModel.validateDescriptionChanged("test")
-        viewModel.descriptionValidationMessage.getOrAwaitValue()
-        
-        coVerify {
-            AddEditProductErrorHandler.logExceptionToCrashlytics(any())
         }
     }
 
