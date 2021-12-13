@@ -10,7 +10,7 @@
         android:id="@+id/tv_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/clr_6b767e"
+        android:textColor="@color/ovop2p_clr_6b767e"
         android:textSize="14sp"
         tools:text="Batatia" />
 
@@ -18,7 +18,7 @@
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/clr_6b767e"
+        android:textColor="@color/ovop2p_clr_6b767e"
         android:textSize="14sp"
         tools:text="Number" />
 </LinearLayout>

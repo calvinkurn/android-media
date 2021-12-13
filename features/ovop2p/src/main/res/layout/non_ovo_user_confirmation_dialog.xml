@@ -12,7 +12,7 @@
         android:layout_marginLeft="@dimen/dp_30"
         android:paddingBottom="24dp"
         android:text="@string/ovop2p_perhtn"
-        android:textColor="@color/clr_4c2a86"
+        android:textColor="@color/ovop2p_clr_4c2a86"
         android:textSize="@dimen/sp_16" />
 
     <TextView
@@ -21,7 +21,7 @@
         android:layout_marginLeft="@dimen/dp_30"
         android:layout_marginRight="@dimen/dp_30"
         android:lineSpacingExtra="@dimen/sp_10"
-        android:textColor="@color/clr_2d263b"
+        android:textColor="@color/ovop2p_clr_2d263b"
         android:textSize="14sp"
         android:text="@string/ovop2p_nonovo_conf_msg"/>
     <Button
@@ -53,6 +53,6 @@
         android:padding="5dp"
         android:textAllCaps="true"
         android:text="@string/tutup"
-        android:textColor="@color/clr_06b3ba"
+        android:textColor="@color/ovop2p_clr_06b3ba"
         android:textSize="14sp" />
 </LinearLayout>
