@@ -20,6 +20,8 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.TitleValidationModel
+import com.tokopedia.product.addedit.preview.data.model.responses.ValidateProductNameResponse
+import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryResponse
@@ -50,6 +52,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.mockito.ArgumentMatchers.any
 import java.io.IOException
+import java.lang.Exception
 import kotlin.reflect.KFunction0
 
 @FlowPreview
@@ -67,6 +70,9 @@ class AddEditProductDetailViewModelTest {
 
     @RelaxedMockK
     lateinit var validateProductUseCase: ValidateProductUseCase
+
+    @RelaxedMockK
+    lateinit var validateProductNameUseCase: ValidateProductNameUseCase
 
     @RelaxedMockK
     lateinit var getShopEtalaseUseCase: GetShopEtalaseUseCase
@@ -144,7 +150,7 @@ class AddEditProductDetailViewModelTest {
     private val viewModel: AddEditProductDetailViewModel by lazy {
         AddEditProductDetailViewModel(provider, CoroutineTestDispatchersProvider,
                 getNameRecommendationUseCase, getCategoryRecommendationUseCase,
-                validateProductUseCase, getShopEtalaseUseCase, annotationCategoryUseCase,
+                validateProductUseCase, validateProductNameUseCase, getShopEtalaseUseCase, annotationCategoryUseCase,
                 productPriceSuggestionSuggestedPriceGetUseCase,
                 priceSuggestionSuggestedPriceGetByKeywordUseCase, getProductTitleValidationUseCase,
                 userSession)
@@ -813,6 +819,66 @@ class AddEditProductDetailViewModelTest {
             validateProductUseCase.executeOnBackground()
         }
         Assert.assertTrue(!isError && viewModel.productSkuMessage.isBlank())
+    }
+
+    @Test
+    fun `validateProductNameInputFromNetwork should valid when productNameValidationFromNetwork returns blank message`() = coroutineTestRule.runBlockingTest {
+        coEvery {
+            validateProductNameUseCase.executeOnBackground()
+        } returns ValidateProductNameResponse()
+
+        viewModel.validateProductNameInputFromNetwork("book")
+
+        coVerify {
+            validateProductNameUseCase.executeOnBackground()
+        }
+
+        val result = viewModel.productNameValidationFromNetwork.getOrAwaitValue()
+        Assert.assertTrue(result is Success)
+    }
+
+    @Test
+    fun `validateProductNameInputFromNetwork should valid when productNameValidationFromNetwork returns message`() = coroutineTestRule.runBlockingTest {
+        val errorMessage = "Error Message"
+
+        coEvery {
+            validateProductNameUseCase.executeOnBackground()
+        } returns ValidateProductNameResponse(
+            productValidateV3 = com.tokopedia.product.addedit.preview.data.model.responses.ProductValidateV3(
+                data = com.tokopedia.product.addedit.preview.data.model.responses.ProductValidateData(
+                    validationResults = listOf(errorMessage)
+                )
+            )
+        )
+
+        viewModel.validateProductNameInputFromNetwork("book")
+
+        coVerify {
+            validateProductNameUseCase.executeOnBackground()
+        }
+
+        val result = viewModel.productNameValidationFromNetwork.getOrAwaitValue()
+        Assert.assertTrue((result as Success).data == errorMessage)
+    }
+
+    @Test
+    fun `set data to productNameInputFromNetwork and isProductNameInputError, the value should the same with the latest provided variable`()  {
+        var productName: Success<String>? = null
+        viewModel.setProductNameInputFromNetwork(productName)
+        productName = Success("Error Message")
+        viewModel.setProductNameInputFromNetwork(productName)
+
+        var isProductNameInput = false
+        viewModel.setIsProductNameInputError(isProductNameInput)
+        isProductNameInput = true
+        viewModel.setIsProductNameInputError(isProductNameInput)
+
+
+        Assert.assertTrue(viewModel.productNameValidationFromNetwork.value == productName)
+
+        println(viewModel.isProductNameInputError.value)
+        println(isProductNameInput)
+        Assert.assertTrue(viewModel.isProductNameInputError.value == isProductNameInput)
     }
 
     @Test
@@ -1525,4 +1591,5 @@ class AddEditProductDetailViewModelTest {
         verify { provider() }
         return result
     }
+
 }
