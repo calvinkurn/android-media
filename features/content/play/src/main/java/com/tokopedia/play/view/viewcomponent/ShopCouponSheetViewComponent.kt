@@ -36,6 +36,8 @@ class ShopCouponSheetViewComponent(
     private val clContent: ConstraintLayout = findViewById(R.id.cl_coupon_content)
     private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
 
+    private var isShopCouponSheetsInitialized = false
+
     private val voucherAdapter =
         MerchantVoucherAdapter(object : MerchantVoucherNewViewHolder.Listener {
             override fun onCopyItemVoucherClicked(voucher: MerchantVoucherUiModel) {
@@ -117,6 +119,7 @@ class ShopCouponSheetViewComponent(
             rootView.layoutParams = layoutParams
         }
         show()
+        sendImpression()
     }
 
     fun getVisibleVouchers(): List<MerchantVoucherUiModel> {
@@ -131,6 +134,14 @@ class ShopCouponSheetViewComponent(
             }
         }
         return emptyList()
+    }
+
+    private fun sendImpression() {
+        if (isShopCouponSheetsInitialized) {
+            listener.onVouchersImpressed(this@ShopCouponSheetViewComponent, getVisibleVouchers())
+        }
+        else isShopCouponSheetsInitialized = true
+
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
