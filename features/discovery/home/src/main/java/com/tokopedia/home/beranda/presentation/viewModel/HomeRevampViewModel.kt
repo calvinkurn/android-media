@@ -60,6 +60,7 @@ import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -124,6 +125,7 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeDispatcher: Lazy<CoroutineDispatchers>,
     private val playWidgetTools: Lazy<PlayWidgetTools>,
     private val getWalletAppBalanceUseCase: Lazy<GetWalletAppBalanceUseCase>,
+    private val getWalletEligibilityUseCase: Lazy<GetWalletEligibilityUseCase>,
     private val getWalletEligibilityUseCase: Lazy<GetWalletEligibilityUseCase>,
     private val getCMHomeWidgetDataUseCase: Lazy<GetCMHomeWidgetDataUseCase>,
     private val deleteCMHomeWidgetUseCase: Lazy<DeleteCMHomeWidgetUseCase>
@@ -1728,5 +1730,11 @@ open class HomeRevampViewModel @Inject constructor(
             it.printStackTrace()
             _beautyFestLiveData.postValue(HomeRevampFragment.BEAUTY_FEST_NOT_SET)
         })
+    }
+
+    fun deleteQuestWidget() {
+        findWidget<QuestWidgetModel> { questWidgetModel, index ->
+            deleteWidget(questWidgetModel, index)
+        }
     }
 }

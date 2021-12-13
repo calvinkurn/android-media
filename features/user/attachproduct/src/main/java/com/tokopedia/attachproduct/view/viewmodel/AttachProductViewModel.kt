@@ -38,7 +38,7 @@ class AttachProductViewModel @Inject constructor
     fun loadProductData(query: String, shopId: String, page: Int, warehouseId: String) {
         launchCatchError(block = {
             val start = (page * ROW) - ROW
-            val result = useCase(hashMapOf<String, Any>(PARAM to "device=android&source=shop_product&rows=$ROW&q=$query&shop_id=" +
+            val result = useCase(hashMapOf<String, Any>(PARAM to "device=android&source=attach_product&rows=$ROW&q=$query&shop_id=" +
                     "$shopId&start=$start&user_warehouseId=$warehouseId"))
             val resultModel = result.mapToListProduct().toDomainModelMapper()
             _products.value = Success(resultModel)
