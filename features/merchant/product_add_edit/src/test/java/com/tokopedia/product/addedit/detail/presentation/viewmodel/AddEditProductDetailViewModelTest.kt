@@ -873,11 +873,7 @@ class AddEditProductDetailViewModelTest {
         isProductNameInput = true
         viewModel.setIsProductNameInputError(isProductNameInput)
 
-
         Assert.assertTrue(viewModel.productNameValidationFromNetwork.value == productName)
-
-        println(viewModel.isProductNameInputError.value)
-        println(isProductNameInput)
         Assert.assertTrue(viewModel.isProductNameInputError.value == isProductNameInput)
     }
 
