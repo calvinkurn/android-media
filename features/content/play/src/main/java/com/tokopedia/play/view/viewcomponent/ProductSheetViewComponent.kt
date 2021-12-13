@@ -114,10 +114,8 @@ class ProductSheetViewComponent(
             insets
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            clVoucherContent.outlineProvider = RectangleShadowOutlineProvider()
-            clVoucherContent.clipToOutline = true
-        }
+        clVoucherContent.outlineProvider = RectangleShadowOutlineProvider()
+        clVoucherContent.clipToOutline = true
     }
 
     override fun show() {

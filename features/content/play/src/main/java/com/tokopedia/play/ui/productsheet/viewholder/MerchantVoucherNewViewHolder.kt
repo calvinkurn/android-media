@@ -18,7 +18,7 @@ class MerchantVoucherNewViewHolder(
 ) : BaseViewHolder(itemView) {
 
     private val tvVoucherTitle: TextView = itemView.findViewById(R.id.tv_coupon_title)
-    private val tvVoucherDescription: TextView = itemView.findViewById(R.id.tv_min_tranx)
+    private val tvVoucherDescription: TextView = itemView.findViewById(R.id.tv_min_transaction)
     private val tvVoucherExpiredDate: TextView = itemView.findViewById(R.id.tv_expired_date)
     private val ivCopyVoucher: IconUnify = itemView.findViewById(R.id.iv_copy_voucher)
 

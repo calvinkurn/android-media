@@ -60,8 +60,8 @@
         android:maxLines="1"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/tv_min_tranx"
-        app:layout_constraintTop_toBottomOf="@+id/tv_min_tranx"
+        app:layout_constraintStart_toStartOf="@+id/tv_min_transaction"
+        app:layout_constraintTop_toBottomOf="@+id/tv_min_transaction"
         app:typographyType="body_3"
         tools:text="Berakhir dalam 10 hari"
         tools:visibility="visible" />
@@ -85,7 +85,7 @@
         tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_min_tranx"
+        android:id="@+id/tv_min_transaction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl1"
