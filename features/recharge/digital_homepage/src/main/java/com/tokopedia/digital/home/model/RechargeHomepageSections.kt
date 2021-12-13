@@ -165,7 +165,19 @@ data class RechargeHomepageSections(
         val specialInfoText: String = "",
         @SerializedName("special_info_color")
         @Expose
-        val specialInfoColor: String = ""
+        val specialInfoColor: String = "",
+        @SerializedName("special_discount")
+        @Expose
+        val specialDiscount: String = "",
+        @SerializedName("cashback")
+        @Expose
+        val cashback: String = "",
+        @SerializedName("price_prefix")
+        @Expose
+        val pricePrefix: String = "",
+        @SerializedName("price_suffix")
+        @Expose
+        val priceSuffix: String = ""
     )
 
     data class Tracking(
@@ -441,14 +453,14 @@ data class RechargeProductCardUnifyModel(val section: RechargeHomepageSections.S
                         backgroundUrl = it.attributes.campaignLabelBackgroundUrl
                     ),
                     productInfoLeft = DigitalCardInfoModel(
-                        text = "",
-                        textColor = ""
+                        text = it.title,
+                        textColor = it.attributes.titleColor
                     ),
                     productInfoRight = DigitalCardInfoModel(
-                        text = "",
-                        textColor = ""
+                        text = it.subtitle,
+                        textColor = it.attributes.subtitleColor
                     ),
-                    title = it.title,
+                    title = it.content,
                     rating = DigitalCardRatingModel(
                         ratingType = DigitalCardRatingModel.getRatingType(it.attributes.ratingType),
                         rating = it.attributes.rating,
@@ -462,7 +474,9 @@ data class RechargeProductCardUnifyModel(val section: RechargeHomepageSections.S
                         price = it.label2,
                         discountLabel = it.label3,
                         discountLabelType = Label.HIGHLIGHT_LIGHT_RED,
-                        slashedPrice = it.label1
+                        slashedPrice = it.label1,
+                        pricePrefix = it.attributes.pricePrefix,
+                        priceSuffix = it.attributes.priceSuffix
                     ),
                     subtitle = it.attributes.soldValue,
                     soldPercentage = DigitalCardSoldPercentageModel(

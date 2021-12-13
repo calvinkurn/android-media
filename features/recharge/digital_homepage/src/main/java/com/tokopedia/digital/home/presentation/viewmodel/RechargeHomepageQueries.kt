@@ -83,6 +83,10 @@ object RechargeHomepageQueries {
                             review
                             special_info_text
                             special_info_color
+                            special_discount
+                            cashback
+                            price_prefix
+                            price_suffix
                         }
                       }
                     }

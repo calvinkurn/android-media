@@ -176,7 +176,7 @@ class DigitalUnifyCardViewHolder(
 
     private fun renderPriceAndDiscount(element: DigitalUnifyModel) {
         // render price
-        renderPrice(element.priceData.price)
+        renderPrice(element.priceData.price, element.priceData.pricePrefix, element.priceData.priceSuffix)
 
         // render discount label
         renderDiscountLabel(element.priceData.discountLabel, element.priceData.discountLabelType)
@@ -361,13 +361,30 @@ class DigitalUnifyCardViewHolder(
         }
     }
 
-    private fun renderPrice(price: String) {
+    private fun renderPrice(price: String, prefix: String, suffix: String) {
         with(binding) {
+            // render price
             if (price.isNotEmpty()) {
                 dguPriceValue.text = price
                 dguPriceValue.show()
             } else {
                 dguPriceValue.hide()
+            }
+
+            // render prefix
+            if (prefix.isNotEmpty()) {
+                dguPricePrefix.text = prefix
+                dguPricePrefix.show()
+            } else {
+                dguPricePrefix.hide()
+            }
+
+            // render suffix
+            if (suffix.isNotEmpty()) {
+                dguPriceSuffix.text = suffix
+                dguPriceSuffix.show()
+            } else {
+                dguPriceSuffix.hide()
             }
         }
     }

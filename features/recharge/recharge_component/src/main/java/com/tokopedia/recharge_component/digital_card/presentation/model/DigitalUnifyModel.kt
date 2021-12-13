@@ -74,7 +74,9 @@ data class DigitalCardPriceModel(
     val price: String,
     val discountLabel: String,
     val discountLabelType: Int,
-    val slashedPrice: String
+    val slashedPrice: String,
+    val pricePrefix: String,
+    val priceSuffix: String
 ) : Parcelable
 
 @Parcelize
