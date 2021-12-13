@@ -348,7 +348,11 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                 component.needPagination = true
                 component.userAddressData = localCacheModel
                 listComponents.addAll(List(SHIMMER_ITEMS_LIST_SIZE) {
-                    ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName).apply {
+                    ComponentsItem(name =
+                    if(component.name == ComponentNames.CalendarWidgetGrid.componentName)
+                        ComponentNames.ShimmerCalendarWidget.componentName
+                    else
+                        ComponentNames.ShimmerProductCard.componentName).apply {
                         properties = component.properties
                         parentComponentName = component.name
                     }

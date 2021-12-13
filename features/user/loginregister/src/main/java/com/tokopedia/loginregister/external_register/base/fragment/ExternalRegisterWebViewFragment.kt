@@ -12,8 +12,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.databinding.FragmentBaseWebViewBinding
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
-import kotlinx.android.synthetic.main.fragment_base_web_view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by Yoris Prayogo on 25/11/20.
@@ -28,6 +29,8 @@ class ExternalRegisterWebViewFragment: BaseDaggerFragment() {
 
     private var mUrl = ""
 
+    private val binding: FragmentBaseWebViewBinding? by viewBinding()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_base_web_view, container, false)
     }
@@ -39,7 +42,7 @@ class ExternalRegisterWebViewFragment: BaseDaggerFragment() {
     }
 
     fun setupWebview(url: String){
-        base_web_view?.run {
+        binding?.baseWebView?.run {
             webViewClient = object: WebViewClient() {
                 override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
                     val response = if(url?.contains("authCode") == true) url else ""
