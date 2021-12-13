@@ -132,4 +132,14 @@
         app:layout_constraintStart_toStartOf="parent"
         android:background="@drawable/shadow_top" />
 
+    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+        android:id="@+id/wishlist_v2_fb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:fbType="back_to_top"
+        android:layout_marginBottom="15dp"
+        android:layout_marginEnd="15dp"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

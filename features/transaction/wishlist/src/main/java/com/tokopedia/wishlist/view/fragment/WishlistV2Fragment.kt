@@ -314,6 +314,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             }
             wishlistNavtoolbar.setIcon(icons)
             wishlistV2StickyCountManageLabel.wishlistManageLabel.setOnClickListener { onStickyManageClicked() }
+            wishlistV2Fb.circleMainMenu.setOnClickListener {
+                rvWishlist.smoothScrollToPosition(0)
+            }
         }
 
         wishlistV2Adapter = WishlistV2Adapter().apply {
@@ -363,6 +366,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
 
         rvScrollListener = object : EndlessRecyclerViewScrollListener(glm) {
+
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 currentPage += 1
                 onLoadMore = true
@@ -381,6 +385,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         wishlistNavtoolbar.clearFocus()
                         wishlistNavtoolbar.hideKeyboard()
                         topLayoutShadow.visible()
+
+                        if (dy > 0) {
+                            wishlistV2Fb.gone()
+                        } else {
+                            wishlistV2Fb.visible()
+                        }
                     }
                 }
 
