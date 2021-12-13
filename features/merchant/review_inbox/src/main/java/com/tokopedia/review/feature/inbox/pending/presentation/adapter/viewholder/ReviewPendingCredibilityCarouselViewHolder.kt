@@ -46,6 +46,7 @@ class ReviewPendingCredibilityCarouselViewHolder(
         freeMode = false
         infinite = false
         centerMode = false
+        autoplay = true
         slideToScroll = SLIDE_TO_SCROLL
         indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
         slideToShow = if (itemCount == 1) {
