@@ -663,6 +663,7 @@ class PlayUserInteractionFragment @Inject constructor(
             UniversalShareBottomSheet.createAndStartScreenShotDetector(
                 it, object: ScreenShotListener {
                     override fun screenShotTaken() {
+                        Log.d("<LOG>", "screenshottaken")
                         playViewModel.submitAction(ScreenshotTaken)
                     }
                 }, this, addFragmentLifecycleObserver = true)
