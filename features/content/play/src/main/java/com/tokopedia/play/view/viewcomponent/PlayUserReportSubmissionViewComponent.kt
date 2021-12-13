@@ -72,13 +72,15 @@ class PlayUserReportSubmissionViewComponent(
         etSubmission.setMessage(charMin)
 
         btnSubmit.setOnClickListener {
-            listener.onSubmitUserReport(this@PlayUserReportSubmissionViewComponent)
+            val desc = etSubmission.editText.text.toString()
+            listener.onSubmitUserReport(this@PlayUserReportSubmissionViewComponent,
+            reasonId = item.reasoningId, description = desc)
         }
     }
 
     interface Listener {
         fun onCloseButtonClicked(view: PlayUserReportSubmissionViewComponent)
-        fun onSubmitUserReport(view: PlayUserReportSubmissionViewComponent)
+        fun onSubmitUserReport(view: PlayUserReportSubmissionViewComponent, reasonId: Int, description: String)
         fun onFooterClicked(view: PlayUserReportSubmissionViewComponent)
     }
 }

@@ -7,6 +7,7 @@ import com.tokopedia.play.data.UserReportOptions
  */
 sealed class PlayUserReportReasoningUiModel {
     data class Reasoning(
+        val reasoningId: Int,
         val title: String,
         val detail: String,
         val submissionData: UserReportOptions.OptionAdditionalField

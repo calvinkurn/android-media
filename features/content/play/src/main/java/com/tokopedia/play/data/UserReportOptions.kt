@@ -1,13 +1,15 @@
 package com.tokopedia.play.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 /**
  * @author by astidhiyaa on 09/12/21
  */
 data class UserReportOptions(
+    @SuppressLint("Invalid Data Type")
     @SerializedName("category_id")
-    val id: String = "",
+    val id: Int = 0,
     @SerializedName("value")
     val value: String = "",
     @SerializedName("detail")

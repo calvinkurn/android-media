@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.data.CartFeedbackResponseModel
-import com.tokopedia.play.domain.GetUserReportListUseCase
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.DiscountedPrice
@@ -17,7 +16,6 @@ import com.tokopedia.play.view.uimodel.CartFeedbackUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportUiModel
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
-import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
@@ -34,10 +32,8 @@ import javax.inject.Inject
  */
 class PlayBottomSheetViewModel @Inject constructor(
     private val getProductVariantUseCase: GetProductVariantUseCase,
-    private val getUserReportReasoningUseCase: GetUserReportListUseCase,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
-    private val playUiModelMapper: PlayUiModelMapper,
     private val repo: PlayViewerRepository,
 ) : ViewModel() {
 
@@ -123,10 +119,10 @@ class PlayBottomSheetViewModel @Inject constructor(
 
         viewModelScope.launchCatchError(block = {
             val userReportUiModel = withContext(dispatchers.io){
-                getUserReportReasoningUseCase.executeOnBackground()
+                repo.getReasoningList()
             }
             val data = PlayUserReportUiModel.Loaded(
-                reasoningList = playUiModelMapper.mapUserReport(userReportUiModel.data)
+                reasoningList = userReportUiModel
             )
             _observableUserReportReasoning.value = PlayResult.Success(data = data)
 

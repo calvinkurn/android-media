@@ -1,0 +1,51 @@
+package com.tokopedia.play.data.repository
+
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.domain.GetUserReportListUseCase
+import com.tokopedia.play.domain.PostUserReportUseCase
+import com.tokopedia.play.domain.repository.PlayViewerUserReportRepository
+import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
+import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
+
+/**
+ * @author by astidhiyaa on 13/12/21
+ */
+class PlayViewerUserReportRepositoryImpl @Inject constructor(
+    private val getUserReportListUseCase: GetUserReportListUseCase,
+    private val postUserReportUseCase: PostUserReportUseCase,
+    private val playUiModelMapper: PlayUiModelMapper,
+    private val dispatchers: CoroutineDispatchers
+) : PlayViewerUserReportRepository {
+
+    override suspend fun getReasoningList(): List<PlayUserReportReasoningUiModel> =
+        withContext(dispatchers.io) {
+            val response = getUserReportListUseCase.executeOnBackground()
+            return@withContext playUiModelMapper.mapUserReport(response.data)
+        }
+
+    override suspend fun submitReport(
+        reporterId: Long,
+        channelId: Long,
+        mediaUrl: String,
+        ownerChannelUserId: Long,
+        reasonId: Int,
+        timestamp: Long,
+        reportDesc: String
+    ): Boolean = withContext(dispatchers.io)
+    {
+        val request = postUserReportUseCase.createParam(
+            reporterId,
+            channelId,
+            mediaUrl,
+            ownerChannelUserId,
+            reasonId,
+            timestamp,
+            reportDesc
+        )
+        postUserReportUseCase.setRequestParams(request)
+        val response = postUserReportUseCase.executeOnBackground()
+        return@withContext response.submissionReport.status
+    }
+}

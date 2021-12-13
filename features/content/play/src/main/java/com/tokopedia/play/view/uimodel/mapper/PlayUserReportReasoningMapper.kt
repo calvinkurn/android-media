@@ -13,6 +13,7 @@ import javax.inject.Inject
 class PlayUserReportReasoningMapper @Inject constructor(){
     fun mapUserReportReasoning(reasoning: UserReportOptions) : PlayUserReportReasoningUiModel{
         return PlayUserReportReasoningUiModel.Reasoning(
+            reasoningId = reasoning.id,
             title = reasoning.value,
             detail = reasoning.detail,
             submissionData = if(reasoning.additionalField.isNotEmpty()) reasoning.additionalField.first() else UserReportOptions.OptionAdditionalField()

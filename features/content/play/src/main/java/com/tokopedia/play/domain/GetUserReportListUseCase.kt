@@ -31,8 +31,8 @@ class GetUserReportListUseCase @Inject constructor(graphqlRepository: GraphqlRep
         private const val LANGUAGE_PARAM_ID = "id"
         const val QUERY_NAME = "GetUserReportListUseCaseQuery"
         const val QUERY = """
-            query x(${'$'}lang: String) {
-              visionGetReportVideoReason(lang:${'$'}lang) {
+            query x(${'$'}$LANGUAGE_PARAM: String) {
+              visionGetReportVideoReason($LANGUAGE_PARAM:${'$'}$LANGUAGE_PARAM) {
                 category_id
                 detail
                 value

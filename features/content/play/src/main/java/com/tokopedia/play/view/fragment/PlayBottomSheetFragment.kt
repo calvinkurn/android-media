@@ -264,8 +264,12 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.hideUserReportSubmissionSheet()
     }
 
-    override fun onSubmitUserReport(view: PlayUserReportSubmissionViewComponent) {
-        TODO("Not yet implemented")
+    override fun onSubmitUserReport(
+        view: PlayUserReportSubmissionViewComponent,
+        reasonId: Int,
+        description: String
+    ) {
+        val partnerInfo = playViewModel.latestCompleteChannelData.partnerInfo
     }
 
     override fun onFooterClicked(view: PlayUserReportSubmissionViewComponent) {
