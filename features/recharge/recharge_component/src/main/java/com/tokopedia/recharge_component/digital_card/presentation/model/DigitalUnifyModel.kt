@@ -91,6 +91,15 @@ data class DigitalCardSoldPercentageModel(
 @Parcelize
 data class DigitalCardActionModel(
     val text: String,
-    val textColor: String,
+    val buttonType: CTAButtonType,
     val applink: String
-) : Parcelable
+) : Parcelable {
+    companion object {
+        fun getButtonType(buttonType: String): CTAButtonType =
+            when (buttonType) {
+                CTAButtonType.ENABLE.value -> CTAButtonType.ENABLE
+                CTAButtonType.DISABLE.value -> CTAButtonType.DISABLE
+                else -> CTAButtonType.ENABLE
+            }
+    }
+}

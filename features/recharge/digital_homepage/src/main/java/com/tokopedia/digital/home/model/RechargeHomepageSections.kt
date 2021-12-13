@@ -488,7 +488,7 @@ data class RechargeProductCardUnifyModel(val section: RechargeHomepageSections.S
                     ),
                     actionButton = DigitalCardActionModel(
                         text = it.textlink,
-                        textColor = it.buttonType,
+                        buttonType = DigitalCardActionModel.getButtonType(it.buttonType),
                         applink = it.applink
                     )
                 )

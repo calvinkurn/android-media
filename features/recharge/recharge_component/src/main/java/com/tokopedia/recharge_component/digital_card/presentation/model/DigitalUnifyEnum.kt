@@ -9,3 +9,8 @@ enum class RatingType(val value: String) {
     SQUARE("square"),
     STAR("star")
 }
+
+enum class CTAButtonType(val value: String) {
+    ENABLE("enable"),
+    DISABLE("disable")
+}

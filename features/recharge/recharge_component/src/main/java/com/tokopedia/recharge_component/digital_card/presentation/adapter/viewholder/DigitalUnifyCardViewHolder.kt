@@ -19,6 +19,7 @@ import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.ItemDigitalUnifyCardBinding
 import com.tokopedia.recharge_component.digital_card.presentation.model.*
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.UnifyButton
 
 class DigitalUnifyCardViewHolder(
     private val binding: ItemDigitalUnifyCardBinding,
@@ -121,24 +122,24 @@ class DigitalUnifyCardViewHolder(
             )
         }
 
-        with(binding) {
+        with(binding.dguProductInfo) {
             if (leftProductInfoText.isNotEmpty() || rightProductInfoText.isNotEmpty()) {
-                dguProductInfo.text = leftProductInfoText
-                dguProductInfo.append(rightProductInfoText)
-                dguProductInfo.show()
+                text = leftProductInfoText
+                append(rightProductInfoText)
+                show()
             } else {
-                dguProductInfo.hide()
+                hide()
             }
         }
     }
 
     private fun renderTitle(element: DigitalUnifyModel) {
-        with(binding) {
+        with(binding.dguTitleLabel) {
             if (element.title.isNotEmpty()) {
-                dguTitleLabel.text = element.title
-                dguTitleLabel.show()
+                text = element.title
+                show()
             } else {
-                dguTitleLabel.hide()
+                hide()
             }
         }
     }
@@ -159,20 +160,20 @@ class DigitalUnifyCardViewHolder(
     }
 
     private fun renderSpecialInfo(element: DigitalUnifyModel) {
-        with(binding) {
+        with(binding.dguSpecialInfo) {
             if (element.specialInfo.text.isNotEmpty()) {
                 try {
-                    dguSpecialInfo.setTextColor(
+                    setTextColor(
                         Color.parseColor(element.specialInfo.textColor)
                     )
                 } catch (t: Throwable) {
                     t.printStackTrace()
                 }
 
-                dguSpecialInfo.text = element.specialInfo.text
-                dguSpecialInfo.show()
+                text = element.specialInfo.text
+                show()
             } else {
-                dguSpecialInfo.hide()
+                hide()
             }
         }
     }
@@ -193,12 +194,12 @@ class DigitalUnifyCardViewHolder(
     }
 
     private fun renderSubtitle(element: DigitalUnifyModel) {
-        with(binding) {
+        with(binding.dguSubtitle) {
             if (element.subtitle.isNotEmpty()) {
-                dguSubtitle.text = element.subtitle
-                dguSubtitle.show()
+                text = element.subtitle
+                show()
             } else {
-                dguSubtitle.hide()
+                hide()
             }
         }
     }
@@ -215,6 +216,11 @@ class DigitalUnifyCardViewHolder(
         with(binding.dguActionButton) {
             if (element.actionButton.text.isNotEmpty()) {
                 text = element.actionButton.text
+                buttonType = when (element.actionButton.buttonType) {
+                    CTAButtonType.ENABLE -> UnifyButton.Type.MAIN
+                    CTAButtonType.DISABLE -> UnifyButton.Type.ALTERNATE
+                }
+
                 setOnClickListener {
                     listener?.onItemClicked(element, adapterPosition)
                     RouteManager.route(context, element.actionButton.applink)
@@ -227,26 +233,26 @@ class DigitalUnifyCardViewHolder(
     }
 
     private fun renderMediaImage(mediaUrl: String, mediaType: MediaType) {
-        with(binding) {
+        with(binding.dguMediaImage) {
             if (mediaUrl.isNotEmpty()) {
-                val layoutParams = dguMediaImage.layoutParams as ConstraintLayout.LayoutParams
-                layoutParams.dimensionRatio = mediaType.ratio
-                dguMediaImage.layoutParams = layoutParams
-                dguMediaImage.loadImage(mediaUrl)
-                dguMediaImage.show()
+                val mlayoutParams = layoutParams as ConstraintLayout.LayoutParams
+                mlayoutParams.dimensionRatio = mediaType.ratio
+                layoutParams = mlayoutParams
+                loadImage(mediaUrl)
+                show()
             } else {
-                dguMediaImage.hide()
+                hide()
             }
         }
     }
 
     private fun renderLabelOnImage(label: String) {
-        with(binding) {
+        with(binding.dguLabelOnImage) {
             if (label.isNotEmpty()) {
-                dguLabelOnImage.text = label
-                dguLabelOnImage.show()
+                text = label
+                show()
             } else {
-                dguLabelOnImage.hide()
+                hide()
             }
         }
     }
@@ -265,48 +271,48 @@ class DigitalUnifyCardViewHolder(
     }
 
     private fun renderIconBackground(iconBackgroundColor: String) {
-        with(binding) {
+        with(binding.dguIconBackground) {
             if (iconBackgroundColor.isNotEmpty()) {
                 try {
-                    (dguIconBackground.background as? GradientDrawable)?.setColor(
+                    (background as? GradientDrawable)?.setColor(
                         Color.parseColor(iconBackgroundColor)
                     )
-                    dguIconBackground.show()
+                    show()
                 } catch (throwable: Throwable) {
                     throwable.printStackTrace()
-                    dguIconBackground.hide()
+                    hide()
                 }
             } else {
-                dguIconBackground.hide()
+                hide()
             }
         }
     }
 
     private fun renderCampaignBackground(backgroundUrl: String) {
-        with(binding) {
+        with(binding.dguCampaignImageBackground) {
             if (backgroundUrl.isNotEmpty()) {
-                dguCampaignImageBackground.loadImage(backgroundUrl)
-                dguCampaignImageBackground.show()
+                loadImage(backgroundUrl)
+                show()
             } else {
-                dguCampaignImageBackground.hide()
+                hide()
             }
         }
     }
 
-    private fun renderCampaignText(text: String, textColor: String) {
-        with(binding) {
+    private fun renderCampaignText(label: String, textColor: String) {
+        with(binding.dguCampaignLabel) {
             if (text.isNotEmpty()) {
-                dguCampaignLabel.text = text
+                text = label
 
                 try {
-                    dguCampaignLabel.setTextColor(Color.parseColor(textColor))
+                    setTextColor(Color.parseColor(textColor))
                 } catch (throwable: Throwable) {
                     throwable.printStackTrace()
                 }
 
-                dguCampaignLabel.show()
+                show()
             } else {
-                dguCampaignLabel.hide()
+                hide()
             }
         }
     }
@@ -397,37 +403,36 @@ class DigitalUnifyCardViewHolder(
     }
 
     private fun renderDiscountLabel(label: String, type: Int) {
-        with(binding) {
+        with(binding.dguDiscountLabel) {
             if (label.isNotEmpty()) {
-                dguDiscountLabel.text = label
-                dguDiscountLabel.setLabelType(type)
-                dguDiscountLabel.show()
+                text = label
+                setLabelType(type)
+                show()
             } else {
-                dguDiscountLabel.hide()
+                hide()
             }
         }
     }
 
     private fun renderCashbackLabel(label: String) {
-        with(binding) {
+        with(binding.dguCashbackLabel) {
             if (label.isNotEmpty()) {
-                dguCashbackLabel.text = label
-                dguCashbackLabel.show()
+                text = label
+                show()
             } else {
-                dguCashbackLabel.hide()
+                hide()
             }
         }
     }
 
     private fun renderSlashedPrice(slashedPrice: String) {
-        with(binding) {
+        with(binding.dguDiscountSlashPrice) {
             if (slashedPrice.isNotEmpty()) {
-                dguDiscountSlashPrice.text = slashedPrice
-                dguDiscountSlashPrice.paintFlags =
-                    dguDiscountSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                dguDiscountSlashPrice.show()
+                text = slashedPrice
+                paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                show()
             } else {
-                dguDiscountSlashPrice.hide()
+                hide()
             }
         }
     }
