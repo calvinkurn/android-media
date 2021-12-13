@@ -71,7 +71,7 @@ class PlayShareExperienceImpl @Inject constructor(
                     ogImageUrl = shareModel.ogImgUrl
                 }
                 Log.d("<LOG>", "ogImageUrl : ${shareModel.ogImgUrl}")
-                isAffiliate = shareModel.isAffiliate
+                isAffiliate = true
             }
 
             val linkerShareData = LinkerShareData()

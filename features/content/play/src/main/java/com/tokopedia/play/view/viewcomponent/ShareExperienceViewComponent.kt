@@ -1,6 +1,5 @@
 package com.tokopedia.play.view.viewcomponent
 
-import android.util.Log
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
@@ -9,7 +8,6 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.view.uimodel.action.ScreenshotTaken
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -61,16 +59,16 @@ class ShareExperienceViewComponent(
     }
 
     fun showSharingOptions(title: String, coverUrl: String) {
-        universalShareBottomSheet?.setMetaData(
+        universalShareBottomSheet.setMetaData(
             tnTitle = title,
             tnImage = coverUrl,
         )
-        universalShareBottomSheet?.show(fragmentManager, fragment, screenshotDetector)
+        universalShareBottomSheet.show(fragmentManager, fragment, screenshotDetector)
     }
 
     fun dismiss() {
         try {
-            universalShareBottomSheet?.dismiss()
+            universalShareBottomSheet.dismiss()
         }
         catch (e: Exception){ }
     }
