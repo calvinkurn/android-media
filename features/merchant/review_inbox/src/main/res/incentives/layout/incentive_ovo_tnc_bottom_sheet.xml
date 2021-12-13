@@ -55,13 +55,14 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvIncentiveOvoAddRating"
-            android:layout_width="wrap_content"
+            android:layout_width="96dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/layout_lvl1"
-            app:layout_constraintStart_toStartOf="@id/incentive_ovo_add_rating"
+            android:gravity="center"
             app:layout_constraintEnd_toEndOf="@id/incentive_ovo_add_rating"
+            app:layout_constraintStart_toStartOf="@id/incentive_ovo_add_rating"
             app:layout_constraintTop_toBottomOf="@id/incentive_ovo_add_rating"
-            app:typographyType="small"/>
+            app:typographyType="small" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/incentive_ovo_add_image"
