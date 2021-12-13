@@ -126,7 +126,6 @@ open class HomeRevampViewModel @Inject constructor(
     private val playWidgetTools: Lazy<PlayWidgetTools>,
     private val getWalletAppBalanceUseCase: Lazy<GetWalletAppBalanceUseCase>,
     private val getWalletEligibilityUseCase: Lazy<GetWalletEligibilityUseCase>,
-    private val getWalletEligibilityUseCase: Lazy<GetWalletEligibilityUseCase>,
     private val getCMHomeWidgetDataUseCase: Lazy<GetCMHomeWidgetDataUseCase>,
     private val deleteCMHomeWidgetUseCase: Lazy<DeleteCMHomeWidgetUseCase>
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
