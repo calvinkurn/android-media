@@ -1260,11 +1260,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         )
     }
 
-    private fun goToReviewPending() {
-        RouteManager.route(context, ApplinkConst.REPUTATION)
-        activity?.finish()
-    }
-
     private fun getThankYouBottomSheetTrackerData(): ThankYouBottomSheetTrackerData {
         return ThankYouBottomSheetTrackerData(
             getReputationId(),
