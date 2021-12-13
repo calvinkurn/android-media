@@ -7,7 +7,6 @@ import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
-import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -17,7 +16,6 @@ import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.di.ChatScope
 import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
-import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
@@ -33,24 +31,6 @@ import dagger.Provides
 
 @Module
 class ChatRoomFakeUseCaseModule {
-
-    @Provides
-    @ChatScope
-    fun provideGetChatUseCase(
-        stub: GetChatUseCaseStub
-    ): GetChatUseCase = stub
-
-    @Provides
-    @ChatScope
-    fun provideGetChatUseCaseStub(
-        gqlUseCase: GraphqlUseCaseStub<GetExistingChatPojo>,
-        mapper: TopChatRoomGetExistingChatMapper,
-        dispatchers: CoroutineDispatchers
-    ): GetChatUseCaseStub {
-        return GetChatUseCaseStub(gqlUseCase, mapper, dispatchers)
-    }
-
-    // -- separator -- //
 
     @Provides
     @ChatScope
@@ -423,5 +403,22 @@ class ChatRoomFakeUseCaseModule {
         dispatchers: CoroutineDispatchers
     ): GetSmartReplyQuestionUseCaseStub {
         return GetSmartReplyQuestionUseCaseStub(repository, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideGetChatUseCase(
+        stub: GetChatUseCaseStub
+    ): GetChatUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideGetChatUseCaseStub(
+        repository: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
+    ): GetChatUseCaseStub {
+        return GetChatUseCaseStub(repository, dispatchers)
     }
 }

@@ -493,7 +493,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun setupBeforeReplyTime() {
         if (createTime.isNotEmpty()) {
-            presenter.setBeforeReplyTime(createTime)
+            viewModel.setBeforeReplyTime(createTime)
         }
     }
 
@@ -503,16 +503,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 rv?.post {
                     showTopLoading()
                 }
-                presenter.loadTopChat(messageId, ::onErrorGetTopChat, ::onSuccessGetTopChat)
+                viewModel.loadTopChat(messageId)
             }
 
             override fun loadMoreDown() {
                 showBottomLoading()
-                presenter.loadBottomChat(
-                    messageId,
-                    ::onErrorGetBottomChat,
-                    ::onSuccessGetBottomChat
-                )
+                viewModel.loadBottomChat(messageId)
             }
         }.also {
             rv?.addOnScrollListener(it)
@@ -616,11 +612,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun loadInitialData() {
         showLoading()
         if (messageId.isNotEmpty()) {
-            presenter.getExistingChat(
-                messageId,
-                ::onErrorInitiateData,
-                ::onSuccessGetExistingChatFirstTime
-            )
+            viewModel.getExistingChat(messageId, true)
             presenter.connectWebSocket(messageId)
             viewModel.getOrderProgress(messageId)
         } else {
@@ -746,7 +738,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun setupFirstTimeForSeller() {
         viewModel.adjustInterlocutorWarehouseId(messageId)
-        if (!presenter.isInTheMiddleOfThePage()) {
+        if (!viewModel.isInTheMiddleOfThePage()) {
             viewModel.getTickerReminder()
         }
     }
@@ -772,7 +764,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun checkReplyBubbleOnBoardingFirstRender() {
         val hasShowOnBoarding = replyBubbleOnBoarding.hasBeenShown()
-        if (!hasShowOnBoarding && !presenter.isInTheMiddleOfThePage()) {
+        if (!hasShowOnBoarding && !viewModel.isInTheMiddleOfThePage()) {
             replyBubbleOnBoarding.showReplyBubbleOnBoarding(
                 rv, adapter, commentArea, context
             )
@@ -812,7 +804,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun addBroadCastSpamHandler(isFollow: Boolean) {
         if (topchatViewState?.blockStatus?.isPromoBlocked == true ||
-            isFollow || presenter.isInTheMiddleOfThePage()
+            isFollow || viewModel.isInTheMiddleOfThePage()
         ) return
         val broadCastHandlerPosition = adapter.addBroadcastSpamHandler()
         if (broadCastHandlerPosition != RecyclerView.NO_POSITION) {
@@ -999,9 +991,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         tvTotalUnreadMessage?.text = newUnreadMessage.toString()
         fbNewUnreadMessage?.setOnClickListener {
             resetItemList()
-            presenter.getExistingChat(
-                messageId, ::onErrorResetChatToFirstPage, ::onSuccessResetChatToFirstPage
-            )
+            viewModel.getExistingChat(messageId)
             onViewReachBottomMostChat()
         }
         if (fbNewUnreadMessage?.isVisible == false) {
@@ -1080,12 +1070,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onSendButtonClicked() {
-        if (presenter.isInTheMiddleOfThePage() && isValidComposedMessage()) {
+        if (viewModel.isInTheMiddleOfThePage() && isValidComposedMessage()) {
             resetItemList()
             delaySendMessage()
-            presenter.getExistingChat(
-                messageId, ::onErrorResetChatToFirstPage, ::onSuccessResetChatToFirstPage
-            )
+            viewModel.getExistingChat(messageId)
         } else {
             sendMessage()
             onSendAndReceiveMessage()
@@ -1095,7 +1083,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun resetItemList() {
         rvScrollListener?.reset()
         adapter.reset()
-        presenter.resetChatUseCase()
+        viewModel.resetChatUseCase()
+        presenter.setInTheMiddleOfChat(viewModel.isInTheMiddleOfThePage())
         showLoading()
         topchatViewState?.hideProductPreviewLayout()
         topchatViewState?.scrollToBottom()
@@ -1160,12 +1149,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickSticker(sticker: Sticker) {
-        if (presenter.isInTheMiddleOfThePage()) {
+        if (viewModel.isInTheMiddleOfThePage()) {
             resetItemList()
             delaySendSticker(sticker)
-            presenter.getExistingChat(
-                messageId, ::onErrorResetChatToFirstPage, ::onSuccessResetChatToFirstPage
-            )
+            viewModel.getExistingChat(messageId)
         } else {
             sendSticker(sticker)
         }
@@ -1889,7 +1876,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun requestNetworkAddToWishList(productId: String, success: () -> Unit) {
-        presenter.addToWishList(productId, session.userId, object : WishListActionListener {
+        viewModel.addToWishList(productId, session.userId, object : WishListActionListener {
             override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
             override fun onSuccessRemoveWishlist(productId: String?) {}
             override fun onSuccessAddWishlist(productId: String?) {
@@ -1925,7 +1912,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) {
         analytics.eventClickRemoveFromWishList(productId)
-        presenter.removeFromWishList(productId, session.userId, object : WishListActionListener {
+        viewModel.removeFromWishList(productId, session.userId, object : WishListActionListener {
             override fun onSuccessAddWishlist(productId: String?) {}
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
             override fun onSuccessRemoveWishlist(productId: String?) {
@@ -2235,12 +2222,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickSrwQuestion(question: QuestionUiModel) {
-        if (presenter.isInTheMiddleOfThePage()) {
+        if (viewModel.isInTheMiddleOfThePage()) {
             resetItemList()
             delaySendSrwQuestion(question)
-            presenter.getExistingChat(
-                messageId, ::onErrorResetChatToFirstPage, ::onSuccessResetChatToFirstPage
-            )
+            viewModel.getExistingChat(messageId)
         } else {
             sendSrwQuestion(question)
         }
@@ -2528,6 +2513,46 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         viewModel.srw.observe(viewLifecycleOwner, {
             rvSrw?.updateStatus(it)
             updateSrwPreviewState()
+        })
+
+        viewModel.existingChat.observe(viewLifecycleOwner, {
+            presenter.setInTheMiddleOfChat(viewModel.isInTheMiddleOfThePage())
+            presenter.updateRoomMetaData(viewModel.roomMetaData)
+            val result = it.first
+            val isInit = it.second
+            when(result) {
+                is Success -> {
+                    if (isInit) {
+                        onSuccessGetExistingChatFirstTime(
+                            result.data.chatroomViewModel, result.data.chatReplies)
+                    } else {
+                        onSuccessResetChatToFirstPage(
+                            result.data.chatroomViewModel, result.data.chatReplies)
+                    }
+                }
+                is Fail -> {
+                    if (isInit) {
+                        onErrorInitiateData(result.throwable)
+                    } else {
+                        onErrorResetChatToFirstPage(result.throwable)
+                    }
+                }
+            }
+        })
+
+        viewModel.topChat.observe(viewLifecycleOwner, {
+            when(it) {
+                is Success -> onSuccessGetTopChat(it.data.chatroomViewModel, it.data.chatReplies)
+                is Fail -> onErrorGetTopChat(it.throwable)
+            }
+        })
+
+        viewModel.bottomChat.observe(viewLifecycleOwner, {
+            presenter.setInTheMiddleOfChat(viewModel.isInTheMiddleOfThePage())
+            when(it) {
+                is Success -> onSuccessGetBottomChat(it.data.chatroomViewModel, it.data.chatReplies)
+                is Fail -> onErrorGetBottomChat(it.throwable)
+            }
         })
     }
 

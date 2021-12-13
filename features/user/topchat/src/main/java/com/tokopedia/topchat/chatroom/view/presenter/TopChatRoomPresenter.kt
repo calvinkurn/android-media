@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatroom.view.presenter
 
-import android.content.SharedPreferences
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.lifecycle.LiveData
@@ -20,7 +19,6 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_API
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.attachcommon.preview.ProductPreview
-import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.chat_common.network.ChatUrl
@@ -61,9 +59,6 @@ import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.RxWebSocketUtil
 import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.websocket.WebSocketSubscriber
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import okhttp3.Interceptor
@@ -82,15 +77,11 @@ open class TopChatRoomPresenter @Inject constructor(
     fingerprintInterceptor: FingerprintInterceptor,
     userSession: UserSessionInterface,
     protected val webSocketUtil: RxWebSocketUtil,
-    private var getChatUseCase: GetChatUseCase,
     private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
     private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
     private var replyChatUseCase: ReplyChatUseCase,
     private var compressImageUseCase: CompressImageUseCase,
-    private var addWishListUseCase: AddWishListUseCase,
-    private var removeWishListUseCase: RemoveWishListUseCase,
     private var uploadImageUseCase: TopchatUploadImageUseCase,
-    private val sharedPref: SharedPreferences,
     private val dispatchers: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
@@ -119,6 +110,9 @@ open class TopChatRoomPresenter @Inject constructor(
     private val _srw = MutableLiveData<Resource<ChatSmartReplyQuestionResponse>>()
     val srw: LiveData<Resource<ChatSmartReplyQuestionResponse>>
         get() = _srw
+
+    //Variable temp for flag middle chat from viewModel
+    private var isInTheMiddleOfChat = false
 
     init {
         mSubscription = CompositeSubscription()
@@ -263,48 +257,8 @@ open class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    override fun getExistingChat(
-        messageId: String,
-        onError: (Throwable) -> Unit,
-        onSuccessGetExistingMessage: (ChatroomViewModel, ChatReplies) -> Unit
-    ) {
-        if (messageId.isNotEmpty()) {
-            getChatUseCase.getFirstPageChat(
-                messageId = messageId,
-                onSuccess = onSuccessGetExistingMessage,
-                onErrorGetChat = onError
-            ) {
-                updateRoomMetaData(it)
-            }
-        }
-    }
-
-    private fun updateRoomMetaData(roomMetaData: RoomMetaData) {
+    fun updateRoomMetaData(roomMetaData: RoomMetaData) {
         this.roomMetaData = roomMetaData
-    }
-
-    override fun loadTopChat(
-        messageId: String,
-        onError: (Throwable) -> Unit,
-        onSuccessGetPreviousChat: (ChatroomViewModel, ChatReplies) -> Unit
-    ) {
-        if (messageId.isNotEmpty()) {
-            getChatUseCase.getTopChat(
-                messageId = messageId,
-                onSuccess = onSuccessGetPreviousChat,
-                onErrorGetChat = onError
-            )
-        }
-    }
-
-    override fun loadBottomChat(
-        messageId: String,
-        onError: (Throwable) -> Unit,
-        onsuccess: (ChatroomViewModel, ChatReplies) -> Unit
-    ) {
-        if (messageId.isNotEmpty()) {
-            getChatUseCase.getBottomChat(messageId, onsuccess, onError)
-        }
     }
 
     fun getTemplate(isSeller: Boolean) {
@@ -681,7 +635,6 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun detachView() {
         destroyWebSocket()
-        getChatUseCase.unsubscribe()
         getTemplateChatRoomUseCase.unsubscribe()
         replyChatUseCase.unsubscribe()
         compressImageSubscription.unsubscribe()
@@ -746,30 +699,13 @@ open class TopChatRoomPresenter @Inject constructor(
         initAttachmentPreview()
     }
 
-    override fun addToWishList(
-        productId: String,
-        userId: String,
-        wishlistActionListener: WishListActionListener
-    ) {
-        addWishListUseCase.createObservable(productId, userId, wishlistActionListener)
-    }
-
-    override fun removeFromWishList(
-        productId: String, userId: String, wishListActionListener: WishListActionListener
-    ) {
-        removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
-    }
-
-    override fun setBeforeReplyTime(createTime: String) {
-        getChatUseCase.minReplyTime = createTime
-    }
-
     override fun isInTheMiddleOfThePage(): Boolean {
-        return getChatUseCase.isInTheMiddleOfThePage()
+        return isInTheMiddleOfChat
     }
 
-    override fun resetChatUseCase() {
-        getChatUseCase.reset()
+    //Setup flag for temporary until all migrated to viewModel
+    fun setInTheMiddleOfChat(value: Boolean) {
+        isInTheMiddleOfChat = value
     }
 
     override fun resetUnreadMessage() {

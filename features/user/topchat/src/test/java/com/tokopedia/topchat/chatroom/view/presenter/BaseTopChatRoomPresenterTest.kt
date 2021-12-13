@@ -29,8 +29,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.RxWebSocketUtil
 import com.tokopedia.websocket.WebSocketInfo
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -60,9 +58,6 @@ abstract class BaseTopChatRoomPresenterTest {
     protected lateinit var webSocketUtil: RxWebSocketUtil
 
     @RelaxedMockK
-    protected lateinit var getChatUseCase: GetChatUseCase
-
-    @RelaxedMockK
     protected lateinit var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase
 
     @RelaxedMockK
@@ -70,12 +65,6 @@ abstract class BaseTopChatRoomPresenterTest {
 
     @RelaxedMockK
     protected lateinit var compressImageUseCase: CompressImageUseCase
-
-    @RelaxedMockK
-    protected lateinit var addWishListUseCase: AddWishListUseCase
-
-    @RelaxedMockK
-    protected lateinit var removeWishListUseCase: RemoveWishListUseCase
 
     @RelaxedMockK
     protected lateinit var uploadImageUseCase: TopchatUploadImageUseCase
@@ -221,15 +210,11 @@ abstract class BaseTopChatRoomPresenterTest {
                 fingerprintInterceptor,
                 userSession,
                 webSocketUtil,
-                getChatUseCase,
                 topChatRoomWebSocketMessageMapper,
                 getTemplateChatRoomUseCase,
                 replyChatUseCase,
                 compressImageUseCase,
-                addWishListUseCase,
-                removeWishListUseCase,
                 uploadImageUseCase,
-                sharedPref,
                 dispatchers,
                 remoteConfig
             )

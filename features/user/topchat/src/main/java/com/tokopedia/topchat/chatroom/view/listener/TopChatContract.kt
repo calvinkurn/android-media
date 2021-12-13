@@ -90,29 +90,11 @@ interface TopChatContract {
 
         fun stopTyping()
 
-        fun getExistingChat(
-            messageId: String,
-            onError: (Throwable) -> Unit,
-            onSuccessGetExistingMessage: (ChatroomViewModel, ChatReplies) -> Unit
-        )
-
         fun readMessage()
 
         fun startCompressImages(it: ImageUploadUiModel)
 
         fun startUploadImages(image: ImageUploadUiModel)
-
-        fun loadTopChat(
-            messageId: String,
-            onError: (Throwable) -> Unit,
-            onSuccessGetPreviousChat: (ChatroomViewModel, ChatReplies) -> Unit
-        )
-
-        fun loadBottomChat(
-            messageId: String,
-            onError: (Throwable) -> Unit,
-            onsuccess: (ChatroomViewModel, ChatReplies) -> Unit
-        )
 
         fun isUploading(): Boolean
 
@@ -134,23 +116,7 @@ interface TopChatContract {
 
         fun initProductPreviewFromAttachProduct(resultProducts: ArrayList<ResultProduct>)
 
-        fun addToWishList(
-            productId: String,
-            userId: String,
-            wishlistActionListener: WishListActionListener
-        )
-
-        fun removeFromWishList(
-            productId: String,
-            userId: String,
-            wishListActionListener: WishListActionListener
-        )
-
-        fun setBeforeReplyTime(createTime: String)
-
         fun isInTheMiddleOfThePage(): Boolean
-
-        fun resetChatUseCase()
 
         fun resetUnreadMessage()
 

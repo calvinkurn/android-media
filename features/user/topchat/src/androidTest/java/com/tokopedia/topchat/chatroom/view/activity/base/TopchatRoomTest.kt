@@ -40,6 +40,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.action.ClickChildViewWithIdAction
 import com.tokopedia.topchat.action.RecyclerViewAction
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
+import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.FavoriteData.Companion.IS_FOLLOW
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.background.ChatBackgroundResponse
@@ -162,6 +163,9 @@ abstract class TopchatRoomTest {
 
     @Inject
     protected lateinit var moveChatToTrashUseCase: MutationMoveChatToTrashUseCaseStub
+
+    @Inject
+    protected lateinit var existingChatMapper: TopChatRoomGetExistingChatMapper
 
     @Inject
     protected lateinit var cacheManager: TopchatCacheManager

@@ -13,6 +13,7 @@ import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -23,6 +24,8 @@ import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
+import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
+import com.tokopedia.topchat.chatroom.domain.pojo.GetChatResult
 import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
@@ -43,6 +46,9 @@ import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -65,9 +71,13 @@ class TopChatViewModel @Inject constructor(
     private val getChatListGroupStickerUseCase: GetChatListGroupStickerUseCase,
     private val chatSrwUseCase: GetSmartReplyQuestionUseCase,
     private val tokoNowWHUsecase: GetChatTokoNowWarehouseUseCase,
+    private var addWishListUseCase: AddWishListUseCase,
+    private var removeWishListUseCase: RemoveWishListUseCase,
+    private var getChatUseCase: GetChatUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig,
-    private val mapper: ChatAttachmentMapper
+    private val chatAttachmentMapper: ChatAttachmentMapper,
+    private val existingChatMapper: TopChatRoomGetExistingChatMapper
 ) : BaseViewModel(dispatcher.main) {
 
     private val _messageId = MutableLiveData<Result<String>>()
@@ -131,8 +141,21 @@ class TopChatViewModel @Inject constructor(
     val srw: LiveData<Resource<ChatSmartReplyQuestionResponse>>
         get() = _srw
 
+    private val _existingChat = MutableLiveData<Pair<Result<GetChatResult>, Boolean>>()
+    val existingChat: LiveData<Pair<Result<GetChatResult>, Boolean>>
+        get() = _existingChat
+
+    private val _topChat = MutableLiveData<Result<GetChatResult>>()
+    val topChat: LiveData<Result<GetChatResult>>
+        get() = _topChat
+
+    private val _bottomChat = MutableLiveData<Result<GetChatResult>>()
+    val bottomChat: LiveData<Result<GetChatResult>>
+        get() = _bottomChat
+
     var attachProductWarehouseId = "0"
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
+    var roomMetaData: RoomMetaData = RoomMetaData()
     private var userLocationInfo = LocalCacheModel()
 
     fun initUserLocation(userLocation: LocalCacheModel?) {
@@ -403,12 +426,12 @@ class TopChatViewModel @Inject constructor(
             if (chatRoom.hasAttachment() && msgId != 0L) {
                 val params = generateAttachmentParams(msgId, chatRoom.replyIDs)
                 val result = chatAttachmentUseCase(params)
-                val mapAttachment = mapper.map(result)
+                val mapAttachment = chatAttachmentMapper.map(result)
                 attachments.putAll(mapAttachment.toMap())
                 _chatAttachments.value = attachments
             }
         }, onError = {
-            val mapErrorAttachment = mapper.mapError(chatRoom.replyIDs)
+            val mapErrorAttachment = chatAttachmentMapper.mapError(chatRoom.replyIDs)
             attachments.putAll(mapErrorAttachment.toMap())
             _chatAttachments.value = attachments
         })
@@ -474,6 +497,77 @@ class TopChatViewModel @Inject constructor(
             onError = {
                 it.printStackTrace()
             })
+    }
+
+    fun addToWishList(
+        productId: String,
+        userId: String,
+        wishlistActionListener: WishListActionListener
+    ) {
+        addWishListUseCase.createObservable(productId, userId, wishlistActionListener)
+    }
+
+    fun removeFromWishList(
+        productId: String, userId: String, wishListActionListener: WishListActionListener
+    ) {
+        removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
+    }
+
+    fun getExistingChat(messageId: String, isInit: Boolean = false) {
+        if (messageId.isNotEmpty()) {
+            launchCatchError(block = {
+                val response = getChatUseCase.getFirstPageChat(messageId)
+                val metaData = existingChatMapper.generateRoomMetaData(messageId, response)
+                updateRoomMetaData(metaData)
+                val chatroomViewModel = existingChatMapper.map(response)
+                val result = GetChatResult(chatroomViewModel, response.chatReplies)
+                _existingChat.value = Pair(Success(result), isInit)
+            }, onError = {
+                _existingChat.value = Pair(Fail(it), isInit)
+            })
+        }
+    }
+
+    private fun updateRoomMetaData(roomMetaData: RoomMetaData) {
+        this.roomMetaData = roomMetaData
+    }
+
+    fun loadTopChat(messageId: String) {
+        if (messageId.isNotEmpty()) {
+            launchCatchError(block = {
+                val response = getChatUseCase.getTopChat(messageId = messageId)
+                val chatroomViewModel = existingChatMapper.map(response)
+                val result = GetChatResult(chatroomViewModel, response.chatReplies)
+                _topChat.value = Success(result)
+            }, onError = {
+                _topChat.value = Fail(it)
+            })
+        }
+    }
+
+    fun loadBottomChat(messageId: String) {
+        if (messageId.isNotEmpty()) {
+            launchCatchError(block = {
+                val response = getChatUseCase.getBottomChat(messageId = messageId)
+                val chatroomViewModel = existingChatMapper.map(response)
+                val result = GetChatResult(chatroomViewModel, response.chatReplies)
+                _bottomChat.value = Success(result)
+            }, onError = {
+                _bottomChat.value = Fail(it)
+            })
+        }
+    }
+
+    fun setBeforeReplyTime(createTime: String) {
+        getChatUseCase.minReplyTime = createTime
+    }
+
+    fun isInTheMiddleOfThePage(): Boolean {
+        return getChatUseCase.isInTheMiddleOfThePage()
+    }
+
+    fun resetChatUseCase() {
+        getChatUseCase.reset()
     }
 
 }

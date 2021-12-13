@@ -6,15 +6,12 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.usecase.TopChatWebSocketParam
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exMessageId
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exProductId
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exResultProduct
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exSendMessage
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exSticker
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exUserId
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.generateSendAbleInvoicePreview
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.generateSendAbleProductPreview
 import com.tokopedia.websocket.RxWebSocket
-import com.tokopedia.wishlist.common.listener.WishListActionListener
 import io.mockk.*
 import junit.framework.Assert.assertTrue
 import org.hamcrest.CoreMatchers.`is`
@@ -29,7 +26,7 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         // Given
         val stickerReq = slot<String>()
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { presenter.isInTheMiddleOfThePage() } returns false
         every { RxWebSocket.send(capture(stickerReq), listInterceptor) } just Runs
 
         // When
@@ -48,7 +45,7 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         // Given
         val srwQuestion = QuestionUiModel()
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { presenter.isInTheMiddleOfThePage() } returns false
 
         // When
         presenter.connectWebSocket(exMessageId)
@@ -66,7 +63,7 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
         val paramSendMessage = "paramSendMessage"
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { presenter.isInTheMiddleOfThePage() } returns false
         every {
             TopChatWebSocketParam.generateParamSendMessage(
                 any(), any(), any(), any(), any(), any(), any()
@@ -89,7 +86,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         // Then
         verify {
             presenter.destroyWebSocket()
-            getChatUseCase.unsubscribe()
             getTemplateChatRoomUseCase.unsubscribe()
             replyChatUseCase.unsubscribe()
         }
@@ -100,7 +96,7 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         //Given
         val typingParam = TopChatWebSocketParam.generateParamStartTyping(exMessageId)
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { presenter.isInTheMiddleOfThePage() } returns false
 
         // When
         presenter.connectWebSocket(exMessageId)
@@ -115,7 +111,7 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         //Given
         val stopTypingParam = TopChatWebSocketParam.generateParamStopTyping(exMessageId)
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { presenter.isInTheMiddleOfThePage() } returns false
 
         // When
         presenter.connectWebSocket(exMessageId)
@@ -208,43 +204,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         verify(exactly = 1) {
             presenter.initAttachmentPreview()
         }
-    }
-
-    @Test
-    fun `on toggle add and remove WishList`() {
-        // Given
-        val wishlistActionListener: WishListActionListener = mockk(relaxed = true)
-
-        // When
-        presenter.addToWishList(exProductId, exUserId, wishlistActionListener)
-        presenter.removeFromWishList(exProductId, exUserId, wishlistActionListener)
-
-        // Then
-        verify(exactly = 1) {
-            addWishListUseCase.createObservable(exProductId, exUserId, wishlistActionListener)
-            removeWishListUseCase.createObservable(exProductId, exUserId, wishlistActionListener)
-        }
-    }
-
-    @Test
-    fun `check setBeforeReplyTime`() {
-        //Given
-        val exCreateTime = "1234532"
-
-        // When
-        presenter.setBeforeReplyTime(exCreateTime)
-
-        // Then
-        verify(exactly = 1) { getChatUseCase.minReplyTime = exCreateTime }
-    }
-
-    @Test
-    fun `check resetChatUseCase`() {
-        // When
-        presenter.resetChatUseCase()
-
-        // Then
-        verify(exactly = 1) { getChatUseCase.reset() }
     }
 
     @Test

@@ -42,7 +42,7 @@ class ChatAttachmentViewModelTest: BaseTopChatViewModelTest() {
             chatAttachmentUseCase(any())
         } returns expectedResponse
         every {
-            mapper.map(any())
+            chatAttachmentMapper.map(any())
         } returns expectedMap
 
         //When
@@ -81,7 +81,7 @@ class ChatAttachmentViewModelTest: BaseTopChatViewModelTest() {
             chatAttachmentUseCase(any())
         } returns expectedResponse
         every {
-            mapper.map(any())
+            chatAttachmentMapper.map(any())
         } returns expectedMap
 
         //When
@@ -120,7 +120,7 @@ class ChatAttachmentViewModelTest: BaseTopChatViewModelTest() {
             chatAttachmentUseCase(any())
         } returns expectedResponse
         every {
-            mapper.map(any())
+            chatAttachmentMapper.map(any())
         } returns expectedMap
 
         //When
@@ -159,7 +159,7 @@ class ChatAttachmentViewModelTest: BaseTopChatViewModelTest() {
             chatAttachmentUseCase(any())
         } returns expectedResponse
         every {
-            mapper.map(any())
+            chatAttachmentMapper.map(any())
         } returns expectedMap
 
         //When
@@ -235,7 +235,7 @@ class ChatAttachmentViewModelTest: BaseTopChatViewModelTest() {
             chatAttachmentUseCase(any())
         } throws expectedThrowable
         every {
-            mapper.mapError(any())
+            chatAttachmentMapper.mapError(any())
         } returns expectedMap
 
         //When

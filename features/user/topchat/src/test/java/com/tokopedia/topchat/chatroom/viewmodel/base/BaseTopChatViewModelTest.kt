@@ -8,11 +8,14 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
+import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
@@ -74,6 +77,15 @@ abstract class BaseTopChatViewModelTest {
     @RelaxedMockK
     lateinit var getChatTokoNowWarehouseUseCase: GetChatTokoNowWarehouseUseCase
 
+    @RelaxedMockK
+    lateinit var addWishListUseCase: AddWishListUseCase
+
+    @RelaxedMockK
+    lateinit var removeWishListUseCase: RemoveWishListUseCase
+
+    @RelaxedMockK
+    lateinit var getChatUseCase: GetChatUseCase
+
     //Misc
     @RelaxedMockK
     lateinit var remoteConfig: RemoteConfig
@@ -82,7 +94,10 @@ abstract class BaseTopChatViewModelTest {
     lateinit var cacheManager: TopchatCacheManager
 
     @RelaxedMockK
-    lateinit var mapper: ChatAttachmentMapper
+    lateinit var chatAttachmentMapper: ChatAttachmentMapper
+
+    @RelaxedMockK
+    lateinit var existingChatMapper: TopChatRoomGetExistingChatMapper
 
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
@@ -115,9 +130,13 @@ abstract class BaseTopChatViewModelTest {
             getChatListGroupStickerUseCase,
             getSmartReplyQuestionUseCase,
             getChatTokoNowWarehouseUseCase,
+            addWishListUseCase,
+            removeWishListUseCase,
+            getChatUseCase,
             dispatchers,
             remoteConfig,
-            mapper
+            chatAttachmentMapper,
+            existingChatMapper
         )
     }
 }
