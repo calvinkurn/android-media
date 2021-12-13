@@ -13,7 +13,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.product_ar.R
 
-class ProductRoundedBorderImageView : AppCompatImageView {
+class ImageRoundedBorderSelectionView : AppCompatImageView {
 
     private val DEFAULT_RADIUS = 4f.toPx()
     var setSelected: Boolean = false

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product_ar.R
-import com.tokopedia.product_ar.view.ProductRoundedBorderImageView
+import com.tokopedia.product_ar.view.ImageRoundedBorderSelectionView
 import com.tokopedia.product_ar.view.SELECTMODE
 import com.tokopedia.unifyprinciples.Typography
 
@@ -36,7 +36,7 @@ class VariantArAdapter : RecyclerView.Adapter<VariantArAdapter.ItemArImage>() {
 
     inner class ItemArImage(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val imgVariant = itemView.findViewById<ProductRoundedBorderImageView>(R.id.img_item_variant_ar)
+        private val imgVariant = itemView.findViewById<ImageRoundedBorderSelectionView>(R.id.img_item_variant_ar)
         private val txtVariantName = itemView.findViewById<Typography>(R.id.txt_variant_ar)
 
         fun bind(url: String) {
