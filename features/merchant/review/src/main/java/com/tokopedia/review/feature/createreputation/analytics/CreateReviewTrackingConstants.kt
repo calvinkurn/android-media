@@ -6,10 +6,7 @@ object CreateReviewTrackingConstants {
     const val EVENT_ACTION_CLICK_CONTINUE_IN_DIALOG = "click - lanjut tulis ulasan on %s"
     const val EVENT_ACTION_CLICK_EXPAND_TEXTBOX = "click - expand textbox"
     const val EVENT_ACTION_CLICK_INCENTIVES_TICKER = "click - pelajari on ovo incentives ticker"
-    const val EVENT_ACTION_CLICK_LATER = "click - nanti aja deh on %s"
     const val EVENT_ACTION_CLICK_LEAVE_PAGE = "click - ya keluar on %s"
-    const val EVENT_ACTION_CLICK_OK = "click - ok sip on %s"
-    const val EVENT_ACTION_CLICK_SEND_ANOTHER = "click - kirim ulasan lagi on %s"
     const val EVENT_ACTION_CLICK_SEND_NOW = "click - kirim sekarang aja on %s"
     const val EVENT_ACTION_CLICK_SEND_RATING_OPTION = "click - kirim rating on pop up"
     const val EVENT_ACTION_CLICK_STAY_OPTION = "click - tetap disini on pop up"
@@ -41,9 +38,6 @@ object CreateReviewTrackingConstants {
     const val EVENT_LABEL_VIEW_TEMPLATE = "template_impressed:%d"
     const val EVENT_LABEL_VIEW_THANK_YOU_BOTTOM_SHEET =
         "pop up title:%s;reputation_id:%s;order_id:%s;product_id:%s;feedback_id:%s;"
-    const val EVENT_LABEL_DISMISS_TNC = "message:%s;reputation_id:%s;order_id:%s;product_id:%s;"
-    const val EVENT_LABEL_CLICK_CONTINUE_TNC =
-        "title:%s;reputation_id:%s;order_id:%s;product_id:%s;"
     const val EVENT_LABEL_VIEW_INCENTIVES_TICKER =
         "message:%s;reputation_id:%s;order_id:%s;product_id:%s;"
     const val EVENT_LABEL_CLICK_BAD_RATING_REASON = "order_id:%s;product_id:%s;reason:%s;is_active:%s;"
