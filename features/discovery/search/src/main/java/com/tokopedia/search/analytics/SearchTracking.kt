@@ -14,6 +14,10 @@ import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.remoteconfig.RollenceKey.SEARCH_BROAD_MATCH_TRACKER_UNIFICATION
 import com.tokopedia.search.analytics.SearchEventTracking.Action.Companion.CLICK_BROAD_MATCH_LIHAT_SEMUA
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.CLICK
+import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.CURRENCY_CODE
+import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.IDR
+import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.IMPRESSIONS
+import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.LIST
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.PRODUCTS
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -736,8 +740,8 @@ object SearchTracking {
             SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
             SearchTrackingConstant.USER_ID, userId,
             ECOMMERCE, DataLayer.mapOf(
-                "currencyCode", "IDR",
-                "impressions", DataLayer.listOf(*broadMatchItems.toTypedArray())
+                CURRENCY_CODE, IDR,
+                IMPRESSIONS, DataLayer.listOf(*broadMatchItems.toTypedArray())
             )
         ) as HashMap<String, Any>
 
@@ -796,11 +800,11 @@ object SearchTracking {
                 SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
                 SearchTrackingConstant.USER_ID, userId,
                 ECOMMERCE, DataLayer.mapOf(
-                    "click", DataLayer.mapOf(
-                        "actionField", DataLayer.mapOf(
-                            "list", getBroadMatchListName(isOrganicAds, componentId)
+                    CLICK, DataLayer.mapOf(
+                        ACTION_FIELD, DataLayer.mapOf(
+                            LIST, getBroadMatchListName(isOrganicAds, componentId)
                         ),
-                        "products", DataLayer.listOf(*broadMatchItems.toTypedArray())
+                        PRODUCTS, DataLayer.listOf(*broadMatchItems.toTypedArray())
                     )
                 )
             )
