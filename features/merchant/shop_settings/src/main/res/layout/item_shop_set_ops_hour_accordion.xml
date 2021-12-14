@@ -23,7 +23,6 @@
             android:text="@string/shop_operational_hour_24_hours"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginTop="@dimen/dp_12"
             />
 
         <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
@@ -68,8 +67,8 @@
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/ic_copy_to_all_day"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_marginTop="4dp"
                 app:icon_name="COPY"
                 app:icon_color_light_enable="@color/Unify_G500"
@@ -83,11 +82,12 @@
                 android:layout_height="wrap_content"
                 android:text="@string/shop_operational_hour_apply_to_all_day"
                 app:layout_constraintTop_toTopOf="@id/ic_copy_to_all_day"
+                app:layout_constraintBottom_toBottomOf="@+id/ic_copy_to_all_day"
                 app:layout_constraintLeft_toRightOf="@id/ic_copy_to_all_day"
                 app:typographyType="body_3"
                 app:typographyWeight="bold"
                 android:textColor="@color/Unify_G500"
-                android:layout_marginStart="6dp"
+                android:layout_marginStart="8dp"
                 />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

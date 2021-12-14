@@ -546,11 +546,19 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         val selectedStartTime = currentSetShopOperationalHourList[DEFAULT_FIRST_INDEX].startTime
         val selectedEndTime = currentSetShopOperationalHourList[DEFAULT_FIRST_INDEX].endTime
         val copiedOpsHourList = mutableListOf<ShopOperationalHour>()
+        var totalChangedData = 0
         currentSetShopOperationalHourList.forEach {
+            if (!(it.startTime == selectedStartTime && it.endTime == selectedEndTime)) {
+                totalChangedData++
+            }
             it.startTime = selectedStartTime
             it.endTime = selectedEndTime
             it.status = OperationalHoursUtil.CAN_ATC_STATUS
             copiedOpsHourList.add(it)
+        }
+        if (totalChangedData.isMoreThanZero()) {
+            isOperationalHourDataChanged = true
+            changeResetButtonState()
         }
         clearAccordion()
         setupAccordion(copiedOpsHourList)
