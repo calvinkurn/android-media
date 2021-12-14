@@ -1061,7 +1061,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         feedXCard.followers.isFollowed,
                                         false,
                                         positionInFeed,
-                                        feedXCard.author.name
+                                        feedXCard.author.name,
+                                        shopName = feedXCard.author.name
                                     )
                                 }
                             }
@@ -1122,7 +1123,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             setGridASGCLayout(feedXCard)
         }
     }
-
+    private val TAG = "TESTTINNGGGG"
     private fun setVODLayout(feedXCard: FeedXCard){
             val media = feedXCard.media
             val postId = feedXCard.id.toIntOrZero()
