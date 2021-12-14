@@ -253,13 +253,13 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     activity?.finish()
                 } else {
                     hideLoader()
-                    showToaster(getString(R.string.shop_operational_hour_set_holiday_schedule_failed), Toaster.TYPE_ERROR)
+                    showToaster(getString(R.string.shop_operational_failed_update_operational_hours), Toaster.TYPE_ERROR)
                     opsHourAccordion?.collapseAllGroup()
                 }
             }
             if (result is Fail) {
                 hideLoader()
-                showToaster(getString(R.string.shop_operational_hour_set_holiday_schedule_failed), Toaster.TYPE_ERROR)
+                showToaster(getString(R.string.shop_operational_failed_update_operational_hours), Toaster.TYPE_ERROR)
             }
         }
     }
