@@ -5,8 +5,9 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestSequenceWidgetBinding
@@ -20,6 +21,8 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWid
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestTitleUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestWidgetViewHolder.Companion.STATUS_CLAIMED
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeQuestSequenceWidgetViewHolder(
@@ -28,6 +31,9 @@ class HomeQuestSequenceWidgetViewHolder(
 ): AbstractViewHolder<HomeQuestSequenceWidgetUiModel>(itemView) {
 
     companion object {
+        private const val QUEST_DETAIL_STAGING_URL = "https://1079-staging-feature.tokopedia.com/now/quest-channel/"
+        private const val QUEST_DETAIL_PRODUCTION_URL = "https://www.tokopedia.com/now/quest-channel/"
+
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_quest_sequence_widget
     }
@@ -62,7 +68,11 @@ class HomeQuestSequenceWidgetViewHolder(
         val currentQuestFinished = element.questList.filter { it.currentProgress == it.totalProgress }.size
         val totalQuestTarget = element.questList.size
         if (currentQuestFinished != totalQuestTarget) {
-            setSeeAll(getString(R.string.tokopedianow_quest_sequence_widget_see_all), "tokopedia://now")
+            if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+                setSeeAll(getString(R.string.tokopedianow_quest_sequence_widget_see_all), QUEST_DETAIL_STAGING_URL)
+            } else {
+                setSeeAll(getString(R.string.tokopedianow_quest_sequence_widget_see_all), QUEST_DETAIL_PRODUCTION_URL)
+            }
         } else {
             setSeeAll(getString(R.string.tokopedianow_quest_sequence_widget_see_all))
         }
@@ -134,13 +144,13 @@ class HomeQuestSequenceWidgetViewHolder(
         }
     }
 
-    private fun setSeeAll(seeAll: String, appLink: String = "") {
+    private fun setSeeAll(seeAll: String, linkUrl: String = "") {
         binding?.tvSeeAll?.apply {
-            if (seeAll.isNotBlank() && appLink.isNotBlank()) {
+            if (seeAll.isNotBlank() && linkUrl.isNotBlank()) {
                 show()
                 text = seeAll
                 setOnClickListener {
-                    RouteManager.route(itemView.context, appLink)
+                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, linkUrl)
                 }
             } else {
                 visibility = View.INVISIBLE
