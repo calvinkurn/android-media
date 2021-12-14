@@ -10,6 +10,7 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -90,8 +91,8 @@ class DigitalUnifyCardViewHolder(
 
     private fun renderProductInfo(element: DigitalUnifyModel) {
         // setup left product info
-        val leftString = URLDecoder.decode(element.productInfoLeft.text, "UTF-8")
-        val leftProductInfoText: Spannable = SpannableString(leftString)
+        val leftProductInfoText: Spannable =
+            SpannableString(MethodChecker.fromHtml(element.productInfoLeft.text).toString())
         val leftProductInfoColor = try {
             Color.parseColor(element.productInfoLeft.textColor)
         } catch (throwable: Throwable) {
@@ -108,8 +109,8 @@ class DigitalUnifyCardViewHolder(
         }
 
         // setup right product info
-        val rightString = URLDecoder.decode(element.productInfoRight.text, "UTF-8")
-        val rightProductInfoText: Spannable = SpannableString(rightString)
+        val rightProductInfoText =
+            SpannableString(MethodChecker.fromHtml(element.productInfoRight.text).toString())
         val rightProductInfoColor = try {
             Color.parseColor(element.productInfoRight.textColor)
         } catch (throwable: Throwable) {
