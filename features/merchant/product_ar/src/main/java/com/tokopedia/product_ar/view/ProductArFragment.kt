@@ -135,6 +135,11 @@ class ProductArFragment : Fragment(), ProductArListener {
         super.onPause()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        getMakeUpEngine()?.close()
+    }
+
     override fun onVariantClicked(productId: String,
                                   isSelected: Boolean,
                                   selectedMfeProduct: MFEMakeupProduct) {
@@ -149,6 +154,5 @@ class ProductArFragment : Fragment(), ProductArListener {
     }
 
     private fun getMakeUpEngine(): MFEMakeupEngine? = (activity as? ProductArActivity)?.getMakeUpEngine()
-
 
 }
