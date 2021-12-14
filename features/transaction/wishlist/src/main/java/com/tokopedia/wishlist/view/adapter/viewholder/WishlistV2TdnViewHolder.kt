@@ -1,6 +1,5 @@
 package com.tokopedia.wishlist.view.adapter.viewholder
 
-import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
@@ -12,14 +11,7 @@ import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.WishlistV2TdnItemBinding
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 import android.widget.LinearLayout
-
-import android.R.layout
-import android.view.View
-import android.widget.RelativeLayout
-
-
-
-
+import com.tokopedia.unifycomponents.toPx
 
 class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, private val actionListener: WishlistV2Adapter.ActionListener?) :
     RecyclerView.ViewHolder(binding.root) {
@@ -32,6 +24,7 @@ class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, pri
         } else {
             if (item.dataObject is TopAdsImageViewModel) {
                 binding.root.visible()
+                binding.root.setPadding(18.toPx(), 0, 18.toPx(), 0)
                 val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT)
                 binding.root.layoutParams = params
@@ -43,7 +36,7 @@ class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, pri
                         }
                     })
 
-                    loadImage(item.dataObject)
+                    loadImage(item.dataObject, 24)
 
                     setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
                         override fun onTopAdsImageViewImpression(viewUrl: String) {
