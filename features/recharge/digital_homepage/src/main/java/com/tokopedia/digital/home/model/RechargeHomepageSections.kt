@@ -453,12 +453,12 @@ data class RechargeProductCardUnifyModel(val section: RechargeHomepageSections.S
                         backgroundUrl = it.attributes.campaignLabelBackgroundUrl
                     ),
                     productInfoLeft = DigitalCardInfoModel(
-                        text = it.title,
-                        textColor = it.attributes.titleColor
-                    ),
-                    productInfoRight = DigitalCardInfoModel(
                         text = it.subtitle,
                         textColor = it.attributes.subtitleColor
+                    ),
+                    productInfoRight = DigitalCardInfoModel(
+                        text = it.title,
+                        textColor = it.attributes.titleColor
                     ),
                     title = it.content,
                     rating = DigitalCardRatingModel(

@@ -20,6 +20,7 @@ import com.tokopedia.recharge_component.databinding.ItemDigitalUnifyCardBinding
 import com.tokopedia.recharge_component.digital_card.presentation.model.*
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import java.net.URLDecoder
 
 class DigitalUnifyCardViewHolder(
     private val binding: ItemDigitalUnifyCardBinding,
@@ -89,7 +90,8 @@ class DigitalUnifyCardViewHolder(
 
     private fun renderProductInfo(element: DigitalUnifyModel) {
         // setup left product info
-        val leftProductInfoText: Spannable = SpannableString(element.productInfoLeft.text)
+        val leftString = URLDecoder.decode(element.productInfoLeft.text, "UTF-8")
+        val leftProductInfoText: Spannable = SpannableString(leftString)
         val leftProductInfoColor = try {
             Color.parseColor(element.productInfoLeft.textColor)
         } catch (throwable: Throwable) {
@@ -106,7 +108,8 @@ class DigitalUnifyCardViewHolder(
         }
 
         // setup right product info
-        val rightProductInfoText: Spannable = SpannableString(element.productInfoRight.text)
+        val rightString = URLDecoder.decode(element.productInfoRight.text, "UTF-8")
+        val rightProductInfoText: Spannable = SpannableString(rightString)
         val rightProductInfoColor = try {
             Color.parseColor(element.productInfoRight.textColor)
         } catch (throwable: Throwable) {
