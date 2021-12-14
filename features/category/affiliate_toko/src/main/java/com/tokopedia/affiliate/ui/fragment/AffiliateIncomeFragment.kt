@@ -165,7 +165,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
             errorSecondaryAction.gone()
             errorAction.text = if(!defaultSelected) getString(R.string.affiliate_choose_date) else getString(R.string.affiliate_promote_product_cta)
             setActionClickListener {
-                if (!defaultSelected) AffiliateBottomDatePicker.newInstance(AffiliateBottomDatePicker.TODAY,this@AffiliateIncomeFragment).show(childFragmentManager, "")
+                if (!defaultSelected) AffiliateBottomDatePicker.newInstance(affiliateIncomeViewModel.getSelectedDate(),this@AffiliateIncomeFragment).show(childFragmentManager, "")
                 else bottomNavBarClickListener?.selectItem(AffiliateActivity.PROMO_MENU,R.id.menu_promo_affiliate)
             }
         }
