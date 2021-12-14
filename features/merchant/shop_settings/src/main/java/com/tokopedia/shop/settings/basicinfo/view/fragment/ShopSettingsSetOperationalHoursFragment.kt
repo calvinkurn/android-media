@@ -155,6 +155,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
     private fun initListener() {
         headerSetOpsHour?.apply {
             // set listener for "Reset" header action
+            actionTextView?.isEnabled = false
             actionTextView?.setOnClickListener {
                 clearAccordion()
                 getShopOperationalHoursList()
@@ -409,6 +410,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
             // set on checked listener radio button
             optionsGroup.setOnCheckedChangeListener { _, checkedId ->
                 isOperationalHourDataChanged = true
+                changeResetButtonState()
                 when (checkedId) {
                     ALL_DAY_OPTION_ID -> {
                         // set time for selected day to 24 hours
@@ -742,20 +744,23 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
 
     private fun updateStartTimeByPosition(position: Int, selectedHour: String?, selectedMinutes: String?) {
         // update new startTime for selected day
-        isOperationalHourDataChanged = true
         currentSelectedStartTime = OperationalHoursUtil.generateServerDateTimeFormat(selectedHour.toIntOrZero(), selectedMinutes.toIntOrZero())
-        currentSetShopOperationalHourList[position].startTime = OperationalHoursUtil.generateServerDateTimeFormat(
-                selectedHour.toIntOrZero(), selectedMinutes.toIntOrZero()
-        )
+        isOperationalHourDataChanged = currentSelectedStartTime != currentSetShopOperationalHourList[position].startTime
+        currentSetShopOperationalHourList[position].startTime = currentSelectedStartTime
+        changeResetButtonState()
     }
 
     private fun updateEndTimeByPosition(position: Int, selectedHour: String?, selectedMinutes: String?) {
         // update new startTime for selected day
-        isOperationalHourDataChanged = true
         currentSelectedEndTime = OperationalHoursUtil.generateServerDateTimeFormat(selectedHour.toIntOrZero(), selectedMinutes.toIntOrZero())
-        currentSetShopOperationalHourList[position].endTime = OperationalHoursUtil.generateServerDateTimeFormat(
-                selectedHour.toIntOrZero(), selectedMinutes.toIntOrZero()
-        )
+        isOperationalHourDataChanged = currentSelectedEndTime != currentSetShopOperationalHourList[position].endTime
+        currentSetShopOperationalHourList[position].endTime = currentSelectedEndTime
+        changeResetButtonState()
+    }
+
+    private fun changeResetButtonState() {
+        headerSetOpsHour?.actionTextView?.isEnabled = isOperationalHourDataChanged
+        opsHourFooter?.showWithCondition(isOperationalHourDataChanged)
     }
 
     private fun showConfirmDialog(
@@ -800,7 +805,5 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
     private fun hideLoader() {
         loader?.hide()
         opsHourListContainer?.show()
-        opsHourFooter?.show()
-        headerSetOpsHour?.actionTextView?.isEnabled = true
     }
 }
