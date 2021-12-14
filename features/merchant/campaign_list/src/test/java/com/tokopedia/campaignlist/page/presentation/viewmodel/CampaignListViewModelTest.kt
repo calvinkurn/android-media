@@ -18,6 +18,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.runBlocking
@@ -124,7 +125,7 @@ class CampaignListViewModelTest {
     }
 
     @Test
-    fun `When set campaign name, should set correct campaign name`() = runBlocking {
+    fun `When set campaign name, should set correct campaign name`() {
         val campaignName = "Flash Sale 12.12"
         val expected = "Flash Sale 12.12"
 
@@ -136,7 +137,7 @@ class CampaignListViewModelTest {
     }
 
     @Test
-    fun `When set campaign type id, should set correct campaign type`() = runBlocking {
+    fun `When set campaign type id, should set correct campaign type`() {
         val campaignType = 20
         val expected = 20
 
@@ -148,7 +149,7 @@ class CampaignListViewModelTest {
     }
 
     @Test
-    fun `When set campaign status, should set correct campaign status`() = runBlocking {
+    fun `When set campaign status, should set correct campaign status`() {
         val campaignType = listOf(5,6,7)
         val expected = listOf(5,6,7)
 
@@ -174,7 +175,7 @@ class CampaignListViewModelTest {
     }
 
     @Test
-    fun `When set default campaign type, when we get default campaign type should return only selected campaign type`() = runBlocking {
+    fun `When set default campaign type, when we get default campaign type should return only selected campaign type`() {
         val selectedCampaignType = listOf(
             CampaignTypeSelection(campaignTypeName = "Flash Sale 11.11", isSelected = true),
             CampaignTypeSelection(campaignTypeName = "Flash Sale 12.12", isSelected = false)
@@ -190,7 +191,7 @@ class CampaignListViewModelTest {
     }
 
     @Test
-    fun `When set default campaign type and there are no selected campaign type, should return null`() = runBlocking {
+    fun `When set default campaign type and there are no selected campaign type, should return null`() {
         val selectedCampaignType = listOf(
             CampaignTypeSelection(campaignTypeName = "Flash Sale 11.11", isSelected = false),
             CampaignTypeSelection(campaignTypeName = "Flash Sale 12.12", isSelected = false)
@@ -206,7 +207,7 @@ class CampaignListViewModelTest {
     }
 
     @Test
-    fun `When set merchant banner, should set correct merchant banner`() = runBlocking {
+    fun `When set merchant banner, should set correct merchant banner`() {
         val merchantBanner = GetMerchantCampaignBannerGeneratorData()
         val expected = GetMerchantCampaignBannerGeneratorData()
 
@@ -218,7 +219,7 @@ class CampaignListViewModelTest {
     }
 
     @Test
-    fun `When map campaign list data, should correctly map to active campaign`() = runBlocking {
+    fun `When map campaign list data, should correctly map to active campaign`() {
         val campaigns = listOf(
             CampaignListV2(
                 campaignName = "Flash Sale 11.11",
@@ -262,7 +263,7 @@ class CampaignListViewModelTest {
     }
 
     @Test
-    fun `When map campaign type data, should correctly map to selected campaign type`() = runBlocking {
+    fun `When map campaign type data, should correctly map to selected campaign type`() {
         val unknownCampaignTypeId = "70"
         val specialReleaseCampaignTypeId = NPL_CAMPAIGN_TYPE.toString()
 
@@ -295,7 +296,7 @@ class CampaignListViewModelTest {
     }
 
     @Test
-    fun `When map campaign status, should correctly map to campaign status ui model`() = runBlocking {
+    fun `When map campaign status, should correctly map to campaign status ui model`() {
         val campaigns = listOf(
             CampaignStatus(statusText = "Berlangsung"),
             CampaignStatus(statusText = "Mendatang")
@@ -316,6 +317,51 @@ class CampaignListViewModelTest {
         assertEquals(expected, actual)
     }
 
+    @Test
+    fun `When get bottomsheet title success, should return correct title`() {
+        val shopName = "Compass Official"
+        val expected = "Rilisan Spesial dari $shopName"
+
+        every { resourceProvider.getShareTitle() } returns "Rilisan Spesial dari %s"
+
+        val actual = viewModel.getShareBottomSheetTitle(shopName)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When get bottomsheet title error, should return empty title`() {
+        val shopName = "Compass Official"
+        val expected = ""
+
+        every { resourceProvider.getShareTitle() } returns null
+
+        val actual = viewModel.getShareBottomSheetTitle(shopName)
+
+        assertEquals(expected, actual)
+    }
+
+
+    @Test
+    fun `When get share description wording success, should return correct wording`() {
+        val campaignStatusOngoing = "7"
+        val shareUri = "https://api.whatsapp.com?phone=082210000000"
+        val shop = ShopData(name = "Compass Official")
+        val campaign = Campaign(name = "Flash Deal", startDate = "26-11-2021 11:30")
+        val expected =
+            "Wah, ada ${campaign.name} dari ${shop.name} di @Tokopedia, lho. Mulai 26-11-2021 pukul 11:30 WIB! Cek sekarang, yuk! $shareUri"
+
+        every { resourceProvider.getShareCampaignDescriptionWording() } returns "Wah, ada %s dari %s di @Tokopedia, lho. Mulai %s pukul %s WIB! Cek sekarang, yuk!"
+
+        val actual = viewModel.getShareDescriptionWording(
+            shop,
+            campaign,
+            shareUri,
+            campaignStatusOngoing
+        )
+
+        assertEquals(expected, actual)
+    }
 
     @After
     fun tearDown() {
