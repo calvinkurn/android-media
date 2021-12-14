@@ -184,7 +184,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
             errorAction.text = getString(R.string.affiliate_promote_affiliatw)
             errorSecondaryAction.gone()
             setActionClickListener {
-                bottomNavBarClickListener?.selectItem(AffiliateActivity.PROMO_MENU,R.id.menu_promo_affiliate)
+                bottomNavBarClickListener?.selectItem(AffiliateActivity.PROMO_MENU,R.id.menu_promo_affiliate,true)
             }
         }
     }
@@ -425,7 +425,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
             }
             LINK_HISTORY_BUTTON_CLICKED -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    bottomNavBarClickListener?.selectItem(AffiliateActivity.PROMO_MENU,R.id.menu_promo_affiliate)
+                    bottomNavBarClickListener?.selectItem(AffiliateActivity.PROMO_MENU,R.id.menu_promo_affiliate,true)
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
