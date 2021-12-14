@@ -561,6 +561,13 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                         dismiss()
                     }
                 }
+                setOnDismissListener {
+                    if (isDateChanged) {
+                        showConfirmDialogForDataChanged()
+                    } else {
+                        dismiss()
+                    }
+                }
             }
         }
     }
