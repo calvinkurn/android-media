@@ -80,6 +80,7 @@
     <string name="shop_operational_hour_set_holiday_schedule_success">Tanggal toko libur disimpan.</string>
     <string name="shop_operational_hour_set_holiday_schedule_failed">Oops, tanggal libur tidak tersimpan. Cek koneksi dan ulangi lagi, ya.</string>
     <string name="shop_operational_hour_abort_holiday_schedule_success">Tanggal toko libur dihapus.</string>
+    <string name="shop_operational_hour_abort_ongoing_holiday_schedule_success">Tokomu sudah buka kembali. Cek jam operasional hari ini, ya.</string>
     <string name="shop_operational_hour_abort_holiday_schedule_failed">Oops, gagal hapus tanggal libur. Cek koneksi dan ulangi lagi, ya.</string>
     <string name="shop_operational_hour_set_holiday_schedule_dialog_title">Simpan tanggal libur tokomu?</string>
     <string name="shop_operational_hour_delete_holiday_schedule_dialog_title">Hapus tanggal libur tokomu?</string>
