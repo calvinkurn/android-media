@@ -38,9 +38,15 @@ class CMHomeWidgetProductCardViewHolder(
             dataItem.badgeImageUrl?.let { badgeImageUrl ->
                 ivCmHomeWidgetProductBadge.setImageUrl(badgeImageUrl)
             }
-            btnCmHomeWidgetProduct.text = dataItem.cmHomeWidgetActionButtons?.get(0)?.text
-            btnCmHomeWidgetProduct.setOnClickListener {
-                listener.onBuyDirectBtnClick(dataItem)
+            if (dataItem.cmHomeWidgetActionButtons.isNullOrEmpty()) {
+                btnCmHomeWidgetProduct.visibility = View.GONE
+                btnCmHomeWidgetProduct.setOnClickListener(null)
+            } else {
+                btnCmHomeWidgetProduct.visibility = View.VISIBLE
+                btnCmHomeWidgetProduct.text = dataItem.cmHomeWidgetActionButtons[0].text
+                btnCmHomeWidgetProduct.setOnClickListener {
+                    listener.onBuyDirectBtnClick(dataItem)
+                }
             }
             root.setOnClickListener {
                 listener.onProductCardClick(dataItem)
