@@ -76,6 +76,7 @@ class HomeQuestWidgetViewHolder(
     }
 
     private fun setCircularRefreshButton() {
+        binding?.container?.setCardBackgroundColor(ContextCompat.getColor(itemView.context, R.color.tokopedianow_cardview_background_dms_color))
         binding?.circularProgressBar?.apply {
             setImageResId(getIconUnifyDrawable(context, IconUnify.RELOAD, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)), true)
             setOnClickListener {
