@@ -85,11 +85,11 @@ class BuyerCancellationViewModelTest {
     fun getCancelReasonData_shouldReturnSuccess() {
         //given
         coEvery {
-            getCancellationUseCase.execute(any(), any())
+            getCancellationUseCase.execute(any())
         } returns Success(BuyerGetCancellationReasonData.Data(BuyerGetCancellationReasonData.Data.GetCancellationReason(reasons = listReason)))
 
         //when
-        buyerCancellationViewModel.getCancelReasons("", "", "")
+        buyerCancellationViewModel.getCancelReasons("", "")
 
         //then
         assert(buyerCancellationViewModel.cancelReasonResult.value is Success)
@@ -100,11 +100,11 @@ class BuyerCancellationViewModelTest {
     fun getCancelReasonData_shouldReturnFail() {
         //given
         coEvery {
-            getCancellationUseCase.execute(any(), any())
+            getCancellationUseCase.execute(any())
         } returns Fail(Throwable())
 
         //when
-        buyerCancellationViewModel.getCancelReasons("", "", "")
+        buyerCancellationViewModel.getCancelReasons("", "")
 
         //then
         assert(buyerCancellationViewModel.cancelReasonResult.value is Fail)
@@ -114,11 +114,11 @@ class BuyerCancellationViewModelTest {
     fun getCancelReasonData_shouldNotReturnEmpty() {
         //given
         coEvery {
-            getCancellationUseCase.execute(any(), any())
+            getCancellationUseCase.execute(any())
         } returns Success(BuyerGetCancellationReasonData.Data(BuyerGetCancellationReasonData.Data.GetCancellationReason(reasons = listReason)))
 
         //when
-        buyerCancellationViewModel.getCancelReasons("", "", "")
+        buyerCancellationViewModel.getCancelReasons("", "")
 
         //then
         assert(buyerCancellationViewModel.cancelReasonResult.value is Success)
@@ -130,11 +130,11 @@ class BuyerCancellationViewModelTest {
     fun getInstantCancel_shouldReturnSuccess() {
         //given
         coEvery {
-            buyerInstantCancelUseCase.execute(any(), any())
+            buyerInstantCancelUseCase.execute(any())
         } returns Success(BuyerInstantCancelData.Data(BuyerInstantCancelData.Data.BuyerInstantCancel(success = 1)))
 
         //when
-        buyerCancellationViewModel.instantCancellation("", "", "", "")
+        buyerCancellationViewModel.instantCancellation("", "", "")
 
         //then
         assert(buyerCancellationViewModel.buyerInstantCancelResult.value is Success)
@@ -145,11 +145,11 @@ class BuyerCancellationViewModelTest {
     fun getInstantCancel_shouldReturnFail() {
         //given
         coEvery {
-            buyerInstantCancelUseCase.execute(any(), any())
+            buyerInstantCancelUseCase.execute(any())
         } returns Fail(Throwable())
 
         //when
-        buyerCancellationViewModel.instantCancellation("", "", "", "")
+        buyerCancellationViewModel.instantCancellation("", "", "")
 
         //then
         assert(buyerCancellationViewModel.buyerInstantCancelResult.value is Fail)
@@ -159,11 +159,11 @@ class BuyerCancellationViewModelTest {
     fun getInstantCancel_shouldNotReturnTitleEmpty() {
         //given
         coEvery {
-            buyerInstantCancelUseCase.execute(any(), any())
+            buyerInstantCancelUseCase.execute(any())
         } returns Success(BuyerInstantCancelData.Data(BuyerInstantCancelData.Data.BuyerInstantCancel(message = "test")))
 
         //when
-        buyerCancellationViewModel.instantCancellation("", "", "", "")
+        buyerCancellationViewModel.instantCancellation("", "", "")
 
         //then
         assert(buyerCancellationViewModel.buyerInstantCancelResult.value is Success)
@@ -279,11 +279,11 @@ class BuyerCancellationViewModelTest {
                     haveProductBundle = false
                 ))
         coEvery {
-            getCancellationUseCase.execute(any(), any())
+            getCancellationUseCase.execute(any())
         } returns Success(cancellationReason)
 
         //when
-        buyerCancellationViewModel.getCancelReasons("", "", "")
+        buyerCancellationViewModel.getCancelReasons("", "")
 
         //then
         val result = buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.value
@@ -309,11 +309,11 @@ class BuyerCancellationViewModelTest {
                     )
                 ))
         coEvery {
-            getCancellationUseCase.execute(any(), any())
+            getCancellationUseCase.execute(any())
         } returns Success(cancellationReason)
 
         //when
-        buyerCancellationViewModel.getCancelReasons("", "", "")
+        buyerCancellationViewModel.getCancelReasons("", "")
 
         //then
         val result = buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.value

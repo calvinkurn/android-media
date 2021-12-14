@@ -22,7 +22,7 @@ class GetCancelReasonBottomSheetAdapter(private var listener: ActionListener): R
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.bottomsheet_cancel_item, parent, false))
+        return ViewHolder(BottomsheetCancelItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun getItemCount(): Int {
@@ -35,9 +35,7 @@ class GetCancelReasonBottomSheetAdapter(private var listener: ActionListener): R
         }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        private val binding = BottomsheetCancelItemBinding.bind(itemView)
+    inner class ViewHolder(private val binding: BottomsheetCancelItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(data: String) {
             binding.run {

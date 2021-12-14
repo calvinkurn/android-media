@@ -445,8 +445,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private fun getCancelReasons() {
         userSession = UserSession(context)
         userSession?.let {
-            buyerCancellationViewModel.getCancelReasons(
-                    GraphqlHelper.loadRawString(resources, R.raw.get_cancel_reason), it.userId, orderId)
+            buyerCancellationViewModel.getCancelReasons(it.userId, orderId)
         }
     }
 
@@ -684,8 +683,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
     private fun submitRequestCancel() {
         userSession?.let {
-            buyerCancellationViewModel.requestCancel(
-                    GraphqlHelper.loadRawString(resources, R.raw.buyer_request_cancel), it.userId, orderId, "$reasonCode", reasonCancel)
+            buyerCancellationViewModel.requestCancel(it.userId, orderId, "$reasonCode", reasonCancel)
         }
     }
 
@@ -751,8 +749,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
 
     private fun submitInstantCancel() {
-        buyerCancellationViewModel.instantCancellation(
-                GraphqlHelper.loadRawString(resources, R.raw.buyer_instant_cancel), orderId, "$reasonCode", reasonCancel)
+        buyerCancellationViewModel.instantCancellation(orderId, "$reasonCode", reasonCancel)
     }
 
     private fun observingInstantCancel() {

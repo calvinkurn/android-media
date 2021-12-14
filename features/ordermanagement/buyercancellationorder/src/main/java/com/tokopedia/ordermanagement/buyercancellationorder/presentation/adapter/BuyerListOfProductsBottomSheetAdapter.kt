@@ -1,11 +1,9 @@
 package com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.ordermanagement.buyercancellationorder.R
 import com.tokopedia.ordermanagement.buyercancellationorder.data.getcancellationreason.BuyerGetCancellationReasonData
 import com.tokopedia.ordermanagement.buyercancellationorder.databinding.BottomsheetProductItemBinding
 
@@ -16,7 +14,7 @@ class BuyerListOfProductsBottomSheetAdapter : RecyclerView.Adapter<BuyerListOfPr
     var listProducts = listOf<BuyerGetCancellationReasonData.Data.GetCancellationReason.OrderDetailsCancellation>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.bottomsheet_product_item, parent, false))
+        return ViewHolder(BottomsheetProductItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun getItemCount(): Int {
@@ -29,9 +27,7 @@ class BuyerListOfProductsBottomSheetAdapter : RecyclerView.Adapter<BuyerListOfPr
         }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        private val binding = BottomsheetProductItemBinding.bind(itemView)
+    inner class ViewHolder(private val binding: BottomsheetProductItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(data: BuyerGetCancellationReasonData.Data.GetCancellationReason.OrderDetailsCancellation) {
             binding.run {

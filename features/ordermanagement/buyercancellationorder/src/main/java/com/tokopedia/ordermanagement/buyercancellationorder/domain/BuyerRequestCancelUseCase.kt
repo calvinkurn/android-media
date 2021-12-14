@@ -14,8 +14,8 @@ import javax.inject.Inject
  */
 class BuyerRequestCancelUseCase @Inject constructor(private val useCase: GraphqlUseCase<BuyerRequestCancelData.Data>) {
 
-    suspend fun execute(query: String, requestCancelParam: BuyerRequestCancelParam): Result<BuyerRequestCancelData.Data> {
-        useCase.setGraphqlQuery(query)
+    suspend fun execute(requestCancelParam: BuyerRequestCancelParam): Result<BuyerRequestCancelData.Data> {
+        useCase.setGraphqlQuery(getQuery())
         useCase.setTypeClass(BuyerRequestCancelData.Data::class.java)
         useCase.setRequestParams(generateParam(requestCancelParam))
 
@@ -29,5 +29,20 @@ class BuyerRequestCancelUseCase @Inject constructor(private val useCase: Graphql
 
     private fun generateParam(requestCancelParam: BuyerRequestCancelParam): Map<String, BuyerRequestCancelParam> {
         return mapOf(BuyerConsts.PARAM_INPUT to requestCancelParam)
+    }
+
+    private fun getQuery(): String {
+        return """
+            mutation BuyerRequestCancel(${'$'}input :BuyerRequestCancelRequest!) {
+              buyer_request_cancel(input:  ${'$'}input) {
+                success
+                message
+                popup {
+                  title
+                  body
+                }
+              }
+            }
+        """.trimIndent()
     }
 }

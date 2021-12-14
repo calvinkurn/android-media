@@ -14,8 +14,8 @@ import javax.inject.Inject
  */
 class BuyerGetCancellationReasonUseCase @Inject constructor(private val useCase: GraphqlUseCase<BuyerGetCancellationReasonData.Data>) {
 
-    suspend fun execute(query: String, getCancellationReasonParam: BuyerGetCancellationReasonParam): Result<BuyerGetCancellationReasonData.Data> {
-        useCase.setGraphqlQuery(query)
+    suspend fun execute(getCancellationReasonParam: BuyerGetCancellationReasonParam): Result<BuyerGetCancellationReasonData.Data> {
+        useCase.setGraphqlQuery(getQuery())
         useCase.setTypeClass(BuyerGetCancellationReasonData.Data::class.java)
         useCase.setRequestParams(generateParam(getCancellationReasonParam))
 
@@ -29,5 +29,63 @@ class BuyerGetCancellationReasonUseCase @Inject constructor(private val useCase:
 
     private fun generateParam(cancellationReasonParam: BuyerGetCancellationReasonParam): Map<String, BuyerGetCancellationReasonParam> {
         return mapOf(PARAM_INPUT to cancellationReasonParam)
+    }
+
+    private fun getQuery(): String {
+        return """
+            query GETCANCELREASON(${'$'}input :CancelReasonRequest!) {
+              get_cancellation_reason(input: ${'$'}input) {
+                is_requested_cancel,
+                is_requested_cancel_available,
+                is_eligible_instant_cancel,
+                is_show_ticker,
+                cancellation_min_time,
+                cancellation_notes,
+                ticker_info{
+                    text,
+                    type,
+                    action_text,
+                    action_key,
+                    action_url
+                },
+                reasons{
+                  title,
+                  question,
+                  sub_reasons{
+                    r_code,
+                    reason
+                  }
+                },
+                have_product_bundle,
+                bundle_detail {
+                  total_product,
+                  product_bundling_icon,
+                  bundle {
+                    bundle_name,
+                    order_detail {
+                      product_id,
+                      product_name,
+                      product_price,
+                      picture
+                    }
+                  },
+                  non_bundle {
+                    product_id,
+                    product_name,
+                    product_price,
+                    picture
+                  }
+                },
+                order_details{
+                    product_id,
+                    product_name,
+                    product_price,
+                    picture,
+                    bundle_id,
+                    bundle_variant_id
+                }
+              }
+            }
+        """.trimIndent()
     }
 }

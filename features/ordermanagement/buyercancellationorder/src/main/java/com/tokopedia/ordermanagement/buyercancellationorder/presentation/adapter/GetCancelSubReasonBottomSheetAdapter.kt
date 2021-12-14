@@ -26,8 +26,9 @@ class GetCancelSubReasonBottomSheetAdapter(private var listener: ActionListener)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.bottomsheet_cancel_item, parent, false)
+            BottomsheetCancelItemBinding.inflate(
+                LayoutInflater.from(parent.context), parent, false
+            )
         )
     }
 
@@ -41,9 +42,7 @@ class GetCancelSubReasonBottomSheetAdapter(private var listener: ActionListener)
         }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        private val binding = BottomsheetCancelItemBinding.bind(itemView)
+    inner class ViewHolder(private val binding: BottomsheetCancelItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(data: BuyerGetCancellationReasonData.Data.GetCancellationReason.ReasonsItem.SubReasonsItem) {
             binding.run {

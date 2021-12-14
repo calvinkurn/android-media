@@ -120,21 +120,21 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
         }
     }
 
-    fun getCancelReasons(cancelReasonQuery: String, userId: String, orderId: String) {
+    fun getCancelReasons(userId: String, orderId: String) {
         launch {
-            _cancelReasonResult.postValue(getCancellationReasonUseCase.execute(cancelReasonQuery, BuyerGetCancellationReasonParam(userId = userId, orderId = orderId)))
+            _cancelReasonResult.postValue(getCancellationReasonUseCase.execute(BuyerGetCancellationReasonParam(userId = userId, orderId = orderId)))
         }
     }
 
-    fun instantCancellation(instantCancelQuery: String, orderId: String, reasonCode: String, reasonStr: String) {
+    fun instantCancellation(orderId: String, reasonCode: String, reasonStr: String) {
         launch {
-            _buyerInstantCancelResult.postValue(buyerInstantCancelUseCase.execute(instantCancelQuery, BuyerInstantCancelParam(orderId = orderId, reasonCode = reasonCode, reason = reasonStr)))
+            _buyerInstantCancelResult.postValue(buyerInstantCancelUseCase.execute(BuyerInstantCancelParam(orderId = orderId, reasonCode = reasonCode, reason = reasonStr)))
         }
     }
 
-    fun requestCancel(requestCancelQuery: String, userId: String, orderId: String, reasonCode: String, reasonStr: String) {
+    fun requestCancel(userId: String, orderId: String, reasonCode: String, reasonStr: String) {
         launch {
-            _requestCancelResult.postValue(buyerRequestCancelUseCase.execute(requestCancelQuery, BuyerRequestCancelParam(userId = userId, orderId = orderId, reasonCode = reasonCode, reason = reasonStr)))
+            _requestCancelResult.postValue(buyerRequestCancelUseCase.execute(BuyerRequestCancelParam(userId = userId, orderId = orderId, reasonCode = reasonCode, reason = reasonStr)))
         }
     }
 
