@@ -259,7 +259,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                     countSoldRating = item.rating,
                     slashedPrice = item.originalPriceFmt,
                     freeOngkir = ProductCardModel.FreeOngkir(item.bebasOngkir.imageUrl.isNotEmpty(), item.bebasOngkir.imageUrl),
-                    isOutOfStock = item.available)
+                    isOutOfStock = !item.available)
             listItem.add(WishlistV2TypeLayoutData(productModel, typeLayout, item))
         }
         return listItem
