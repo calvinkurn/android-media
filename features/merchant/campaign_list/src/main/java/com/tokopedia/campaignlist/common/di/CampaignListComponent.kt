@@ -15,8 +15,7 @@ import retrofit2.Retrofit
 
 @CampaignListScope
 @Component(
-    modules = [CampaignListModule::class, CampaignListViewModelModule::class, CampaignListResourceModule::class],
-    dependencies = [BaseAppComponent::class]
+    modules = [CampaignListModule::class, CampaignListViewModelModule::class], dependencies = [BaseAppComponent::class]
 )
 interface CampaignListComponent {
 
