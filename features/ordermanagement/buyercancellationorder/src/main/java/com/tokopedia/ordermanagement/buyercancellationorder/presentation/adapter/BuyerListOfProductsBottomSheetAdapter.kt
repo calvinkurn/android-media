@@ -30,7 +30,7 @@ class BuyerListOfProductsBottomSheetAdapter : RecyclerView.Adapter<BuyerListOfPr
     inner class ViewHolder(private val binding: BottomsheetProductItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(data: BuyerGetCancellationReasonData.Data.GetCancellationReason.OrderDetailsCancellation) {
-            binding.run {
+            with(binding) {
                 ivProduct.loadImage(data.picture)
                 labelProductName.text = data.productName
                 labelPrice.text = data.productPrice

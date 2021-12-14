@@ -45,7 +45,7 @@ class GetCancelSubReasonBottomSheetAdapter(private var listener: ActionListener)
     inner class ViewHolder(private val binding: BottomsheetCancelItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(data: BuyerGetCancellationReasonData.Data.GetCancellationReason.ReasonsItem.SubReasonsItem) {
-            binding.run {
+            with(binding) {
                 labelCancel.text = data.reason
                 if (data.rCode == currReasonCode) {
                     icGreenCheck.visible()
