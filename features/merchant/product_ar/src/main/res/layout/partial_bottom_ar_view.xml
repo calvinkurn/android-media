@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/partial_bottom_ar_container"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
     <androidx.recyclerview.widget.RecyclerView

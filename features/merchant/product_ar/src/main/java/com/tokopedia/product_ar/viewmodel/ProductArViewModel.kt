@@ -3,6 +3,9 @@ package com.tokopedia.product_ar.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.modiface.mfemakeupkit.effects.MFEMakeupLayer
+import com.modiface.mfemakeupkit.effects.MFEMakeupLook
+import com.modiface.mfemakeupkit.effects.MFEMakeupProduct
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
@@ -44,6 +47,10 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     val productArList: LiveData<Result<List<ModifaceUiModel>>>
         get() = _productArList
 
+    private val _mfeMakeUpLook = MutableLiveData<Result<MFEMakeupLook>>()
+    val mfeMakeUpLook: LiveData<Result<MFEMakeupLook>>
+        get() = _mfeMakeUpLook
+
     private fun getArData() {
         viewModelScope.launchCatchError(block = {
             val result = getProductArUseCase.executeOnBackground(
@@ -51,17 +58,40 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             )
             productArUiModel = result
 
-            _productArList.postValue(Success(ProductArMapper.mapToModifaceUiModel(initialProductId, result)))
-            _selectedProductArData.postValue(Success(result.options[initialProductId] ?: ProductAr()))
+
+            val listUiModel = ProductArMapper.mapToModifaceUiModel(initialProductId, result)
+
+            val selectedProductMfeData = listUiModel.firstOrNull {
+                it.productId == initialProductId
+            }?.modifaceProductData ?: MFEMakeupProduct()
+
+            MFEMakeupLook().apply {
+                lipLayers.add(MFEMakeupLayer(selectedProductMfeData))
+            }.let {
+                _mfeMakeUpLook.postValue(Success(it))
+            }
+
+            _productArList.postValue(Success(listUiModel))
+            _selectedProductArData.postValue(Success(result.options[initialProductId]
+                    ?: ProductAr()))
+
+
         }, onError = {
             _selectedProductArData.postValue(Fail(it))
         })
     }
 
-    fun onVariantClicked(productId: String, uiModel: ProductArUiModel, currentList:List<ModifaceUiModel>) {
+    fun onVariantClicked(productId: String,
+                         uiModel: ProductArUiModel,
+                         currentList: List<ModifaceUiModel>,
+                         mfeMakeUpProduct: MFEMakeupProduct) {
         val updatedData = ProductArMapper.updateListAfterChangeSelection(productId, currentList)
+        MFEMakeupLook().apply {
+            lipLayers.add(MFEMakeupLayer(mfeMakeUpProduct))
+        }.let {
+            _mfeMakeUpLook.postValue(Success(it))
+        }
         _productArList.postValue(Success(updatedData))
-
         _selectedProductArData.postValue(Success(uiModel.options[productId] ?: ProductAr()))
     }
 }

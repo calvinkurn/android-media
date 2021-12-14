@@ -6,55 +6,58 @@ import com.google.gson.annotations.SerializedName
 data class ModifaceProvider(
         @SerializedName("gamma")
         @Expose
-        val gamma: Double = 0.0,
+        val gamma: Float = 0.0F,
+        @SerializedName("glossDetail")
+        @Expose
+        val glossDetail: Float = 0.0F,
         @SerializedName("sparkle_a")
         @Expose
-        val sparkleA: Double = 0.0,
+        val sparkleA: Float = 0.0F,
         @SerializedName("sparkle_r")
         @Expose
-        val sparkleR: Double = 0.0,
+        val sparkleR: Float = 0.0F,
         @SerializedName("sparkle_g")
         @Expose
-        val sparkleG: Double = 0.0,
+        val sparkleG: Float = 0.0F,
         @SerializedName("sparkle_b")
         @Expose
-        val sparkleB: Double = 0.0,
+        val sparkleB: Float = 0.0F,
         @SerializedName("color_a")
         @Expose
-        val colorA: Double = 0.0,
+        val colorA: Float = 0.0F,
         @SerializedName("color_r")
         @Expose
-        val colorR: Double = 0.0,
+        val colorR: Float = 0.0F,
         @SerializedName("color_g")
         @Expose
-        val colorG: Double = 0.0,
+        val colorG: Float = 0.0F,
         @SerializedName("color_b")
         @Expose
-        val colorB: Double = 0.0,
+        val colorB: Float = 0.0F,
         @SerializedName("placement")
         @Expose
         val placement: String = "",
         @SerializedName("sparkleDensity")
         @Expose
-        val sparkleDensity: Double = 0.0,
+        val sparkleDensity: Float = 0.0F,
         @SerializedName("sparkleSize")
         @Expose
-        val sparkleSize: Double = 0.0,
+        val sparkleSize: Float = 0.0F,
         @SerializedName("sparkleColorVariation")
         @Expose
-        val sparkleColorVariation: Double = 0.0,
+        val sparkleColorVariation: Float = 0.0F,
         @SerializedName("sparkleSizeVariation")
         @Expose
-        val sparkleSizeVariation: Double = 0.0,
+        val sparkleSizeVariation: Float = 0.0F,
         @SerializedName("sparkleBaseReflectivity")
         @Expose
-        val sparkleBaseReflectivity: Double = 0.0,
+        val sparkleBaseReflectivity: Float = 0.0F,
         @SerializedName("metallicIntensity")
         @Expose
-        val metallicIntensity: Double = 0.0,
+        val metallicIntensity: Float = 0.0F,
         @SerializedName("vinylIntensity")
         @Expose
-        val vinylIntensity: Double = 0.0,
+        val vinylIntensity: Float = 0.0F,
         @SerializedName("finish")
         @Expose
         val finish: String = "",

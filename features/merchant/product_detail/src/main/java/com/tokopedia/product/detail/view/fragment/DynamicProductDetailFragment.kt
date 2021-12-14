@@ -1206,7 +1206,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 //        DynamicProductDetailTracking.Click.eventProductImageClicked(viewModel.getDynamicProductInfoP1, componentTrackDataModel
 //                ?: ComponentTrackDataModel())
 //        onImageClicked(position)
-        RouteManager.route(requireContext(), ApplinkConst.PRODUCT_AR, "123")
+        RouteManager.route(requireContext(), ApplinkConst.PRODUCT_AR, "1234")
     }
 
     override fun onImageClicked(position: Int) {

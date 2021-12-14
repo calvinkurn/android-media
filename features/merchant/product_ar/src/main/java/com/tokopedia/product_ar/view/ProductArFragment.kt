@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.modiface.mfemakeupkit.MFEMakeupEngine
-import com.modiface.mfemakeupkit.data.MFEMakeupRenderingParameters
+import com.modiface.mfemakeupkit.effects.MFEMakeupProduct
 import com.modiface.mfemakeupkit.widgets.MFEMakeupView
 import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.viewmodel.ProductArViewModel
@@ -37,7 +37,6 @@ class ProductArFragment : Fragment(), ProductArListener {
     private var viewModel: ProductArViewModel? = null
 
     private var mMakeupView: MFEMakeupView? = null
-    private var mMakeupEngine: MFEMakeupEngine? = null
 
     private var partialBottomArView: PartialBottomArView? = null
 
@@ -60,22 +59,17 @@ class ProductArFragment : Fragment(), ProductArListener {
         }
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(ProductArViewModel::class.java)
-
-        mMakeupEngine = MFEMakeupEngine(requireActivity().applicationContext, MFEMakeupEngine.Region.US)
-        mMakeupEngine?.loadResources(requireActivity().applicationContext, null)
-        mMakeupEngine?.setMakeupRenderingParameters(MFEMakeupRenderingParameters(false));
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mMakeupView = view.findViewById(R.id.main_img)
-        mMakeupEngine?.attachMakeupView(mMakeupView)
+        getMakeUpEngine()?.attachMakeupView(mMakeupView)
         partialBottomArView = PartialBottomArView.build(view, this)
-
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.CAMERA), 123)
         } else {
-            mMakeupEngine?.startRunningWithCamera(context)
+            getMakeUpEngine()?.startRunningWithCamera(context)
         }
     }
 
@@ -104,12 +98,24 @@ class ProductArFragment : Fragment(), ProductArListener {
                 }
             }
         }
+
+        viewModel?.mfeMakeUpLook?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    getMakeUpEngine()?.clearMakeupLook()
+                    getMakeUpEngine()?.setMakeupLook(it.data)
+                }
+                is Fail -> {
+                    // still noop
+                }
+            }
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (requestCode == 123) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                mMakeupEngine?.startRunningWithCamera(context)
+                getMakeUpEngine()?.startRunningWithCamera(context)
             } else {
                 AlertDialog.Builder(requireContext())
                         .setTitle("Permission Error")
@@ -119,13 +125,30 @@ class ProductArFragment : Fragment(), ProductArListener {
         }
     }
 
-    override fun onVariantClicked(productId: String, isSelected: Boolean) {
+    override fun onResume() {
+        super.onResume()
+        getMakeUpEngine()?.onResume(context)
+    }
+
+    override fun onPause() {
+        getMakeUpEngine()?.onPause()
+        super.onPause()
+    }
+
+    override fun onVariantClicked(productId: String,
+                                  isSelected: Boolean,
+                                  selectedMfeProduct: MFEMakeupProduct) {
         if (isSelected) return
         viewModel?.let {
             it.onVariantClicked(
                     productId, it.getProductArUiModel(),
-                    partialBottomArView?.adapter?.getCurrentArImageDatas() ?: listOf()
+                    partialBottomArView?.adapter?.getCurrentArImageDatas() ?: listOf(),
+                    selectedMfeProduct
             )
         }
     }
+
+    private fun getMakeUpEngine(): MFEMakeupEngine? = (activity as? ProductArActivity)?.getMakeUpEngine()
+
+
 }

@@ -98,5 +98,4 @@ class GetProductArUseCase @Inject constructor(graphqlRepository: GraphqlReposito
         return gson.fromJson(modifaceRawJson, Array<ModifaceProvider>::class.java).firstOrNull()
                 ?: ModifaceProvider()
     }
-
 }
