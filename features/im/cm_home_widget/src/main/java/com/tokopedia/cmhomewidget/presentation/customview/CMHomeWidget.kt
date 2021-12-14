@@ -125,7 +125,13 @@ class CMHomeWidget @JvmOverloads constructor(
         cmHomeWidgetData?.cmHomeWidgetViewAllCardData?.let {
             itemsList.add(it)
         }
-        if (itemsList.isNotEmpty()) adapter.get().loadData(itemsList)
+        if (itemsList.isNotEmpty()) {
+            binding.root.visibility = View.VISIBLE
+            adapter.get().loadData(itemsList)
+        } else {
+            adapter.get().clearAllElements()
+            binding.root.visibility = View.GONE
+        }
     }
 
     fun setOnCMHomeWidgetCloseClickListener(cmHomeWidgetCloseClickListener: CMHomeWidgetCloseClickListener) {
@@ -145,12 +151,14 @@ class CMHomeWidget @JvmOverloads constructor(
 
     private fun sendCMWidgetReceivedEvent() {
         cmHomeWidgetData?.let {
-            cmHomeWidgetAnalytics.get().sendCMHomeWidgetReceivedEvent(
-                it.parentId,
-                it.campaignId,
-                it.notificationId,
-                it.messageId
-            )
+            if (!it.isTest) {
+                cmHomeWidgetAnalytics.get().sendCMHomeWidgetReceivedEvent(
+                    it.parentId,
+                    it.campaignId,
+                    it.notificationId,
+                    it.messageId
+                )
+            }
         }
     }
 
