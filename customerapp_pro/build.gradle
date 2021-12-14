@@ -263,10 +263,6 @@ android {
         dynamicFeatures = getDynamicFeatureIfEnabled(project)
         generateAssetFile(project, dynamicFeatures)
     }
-
-    buildFeatures {
-        buildConfig true
-    }
 }
 
 dependencies {
