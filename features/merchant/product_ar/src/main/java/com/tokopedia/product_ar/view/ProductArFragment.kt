@@ -29,6 +29,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.util.AnimatedTextIcon
+import com.tokopedia.product_ar.view.bottomsheet.ProductArBottomSheetBuilder
 import com.tokopedia.product_ar.viewmodel.ProductArViewModel
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -108,11 +109,12 @@ class ProductArFragment : Fragment(), ProductArListener {
                 productArToolbar?.setIcon(
                         IconBuilder()
                                 .addIcon(IconUnify.INFORMATION) {
-
+                                    context?.let { ctx ->
+                                        ProductArBottomSheetBuilder.getArInfoBottomSheet(ctx)
+                                                .show(activity.supportFragmentManager,"info ar")
+                                    }
                                 }
-                                .addIcon(IconList.ID_CART) {
-
-                                }
+                                .addIcon(IconList.ID_CART) {}
                 )
                 viewLifecycleOwner.lifecycle.addObserver(it)
             }

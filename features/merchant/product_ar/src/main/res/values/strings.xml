@@ -1,3 +1,5 @@
 <resources>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="txt_bs_info_desc">Makeup yang kamu coba akan membantumu sebagai referensi sebelum belanja. Warna barang bisa berbeda tergantung cahaya, warna kulit, jarak, atau resolusi kamera HP.</string>
+    <string name="txt_bs_info_title">Tentang fitur ini</string>
 </resources>

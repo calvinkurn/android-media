@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifyprinciples.Typography xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/txt_bs_ar_info"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    app:typographyType="body_2"
+    android:textColor="@color/Unify_NN600"
+    tools:text="Makeup yang kamu coba akan membantumu sebagai referensi sebelum belanja. Warna barang bisa berbeda tergantung cahaya, warna kulit, jarak, atau resolusi kamera HP."
+    tools:ignore="MissingDefaultResource" />
