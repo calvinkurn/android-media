@@ -1,22 +1,23 @@
 package com.tokopedia.sellerhome.domain.mapper
 
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.domain.model.ShopClosedInfoDetailResponse
 import com.tokopedia.sellerhome.domain.model.ShopOperationalHourResponse
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.ShopOperationalUiModel
+import com.tokopedia.shop.common.util.OperationalHoursUtil
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.utils.time.DateFormatUtils
+import java.util.*
 
 object ShopOperationalHourMapper {
 
     private const val OPERATIONAL_HOUR_RESPONSE_FORMAT = "HH:mm:ss"
     private const val OPERATIONAL_HOUR_UI_FORMAT = "HH:mm"
     private const val OPERATIONAL_HOUR_TIMEZONE = "WIB"
-    private const val OPERATIONAL_YEAR_FORMAT = "yyyy"
     private const val SHOP_CLOSED_INFO_DATE_FORMAT = "dd MMM"
-    private const val SHOP_CLOSED_INFO_DATE_FORMAT_FULL = "dd MMM yy"
 
     fun mapTopShopOperational(
         operationalHourResponse: ShopOperationalHourResponse,
@@ -150,34 +151,13 @@ object ShopOperationalHourMapper {
                 // scheduled holiday
                 operationalTimeIcon = IconUnify.CALENDAR
                 operationalTimeColorRes = com.tokopedia.unifyprinciples.R.color.Unify_RN500
-                val startTimeYear =
-                        DateFormatUtils.getFormattedDate(
-                                closedInfoResponse.startDate,
-                                OPERATIONAL_YEAR_FORMAT
-                        )
-
-                val endTimeYear =
-                        DateFormatUtils.getFormattedDate(
-                                closedInfoResponse.endDate,
-                                OPERATIONAL_YEAR_FORMAT
-                        )
-                val dateFormat =
-                        if (startTimeYear == endTimeYear) {
-                            SHOP_CLOSED_INFO_DATE_FORMAT
-                        } else {
-                            SHOP_CLOSED_INFO_DATE_FORMAT_FULL
-                        }
-                startTime =
-                        DateFormatUtils.getFormattedDate(
-                                closedInfoResponse.startDate,
-                                dateFormat
-                        )
-                endTime =
-                        DateFormatUtils.getFormattedDate(
-                                closedInfoResponse.endDate,
-                                dateFormat
-                        )
-                timeLabel = "$startTime - $endTime"
+                val startDate = Date(closedInfoResponse.startDate.toLongOrZero() * 1000L)
+                val endDate = Date(closedInfoResponse.endDate.toLongOrZero() * 1000L)
+                timeLabel = OperationalHoursUtil.toIndonesianDateRangeFormat(
+                        startDate = startDate,
+                        endDate = endDate,
+                        isShortDateFormat = true,
+                )
                 timeLabelRes = null
             }
             else -> {

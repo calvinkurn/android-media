@@ -183,7 +183,7 @@ object OperationalHoursUtil {
             formattedDates = if (formattedStartDate == formattedEndDate) {
                 // given start date && end date are same
                 // 15 Okt 21
-                formattedStartDate
+                formattedStartDateParts.joinToString(" ")
             } else if (isSameMonth && isSameYear) {
                 // given start date && end date different but same month and year
                 // 24 - 30 Okt
