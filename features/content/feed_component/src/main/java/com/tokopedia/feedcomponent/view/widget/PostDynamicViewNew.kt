@@ -1082,7 +1082,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                                 feedXCard.followers.isFollowed,
                                                 feedMedia.type,
                                                 positionInFeed,
-                                                feedXCard.author.name,
+                                                feedXCard.playChannelID,
                                                 shopName = feedXCard.author.name
                                         )
                                     }

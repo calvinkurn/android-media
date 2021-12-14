@@ -2248,7 +2248,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         shopName: String,
         mediaType: String
     ) {
-        val isLongVideo = mediaType == TYPE_LONG_VIDEO
+            val isLongVideo = mediaType == TYPE_LONG_VIDEO
+
         if (type == TYPE_FEED_X_CARD_PLAY || type == TYPE_TOPADS_HEADLINE_NEW || isLongVideo)
             feedAnalytics.eventAddToCartFeedVOD(
                 if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else activityId,
