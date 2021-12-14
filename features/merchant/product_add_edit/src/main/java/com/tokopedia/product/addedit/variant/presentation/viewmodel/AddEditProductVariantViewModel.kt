@@ -31,6 +31,7 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_IDENTIFIER_HAS_SIZECHART
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_COUNT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_COUNT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -184,7 +185,8 @@ class AddEditProductVariantViewModel @Inject constructor(
     fun validateVariantTitle(
         productName: String,
         selectedVariantDetails: List<VariantDetail>,
-        customVariantDetails: List<VariantDetail>
+        customVariantDetails: List<VariantDetail>,
+        variantDetails: List<VariantDetail>
     ) {
         when {
             productName.length < MIN_CHAR_VARIANT_TYPE_NAME -> {
@@ -198,6 +200,10 @@ class AddEditProductVariantViewModel @Inject constructor(
             }
             customVariantDetails.any { it.variantID == CUSTOM_VARIANT_TYPE_ID &&
                     it.name.equals(productName, ignoreCase = true) } -> {
+                mVariantTitleValidationStatus.value = VariantTitleValidationStatus.USED_NAME
+            }
+            variantDetails.any { it.name.equals(productName, ignoreCase = true) } &&
+                    selectedVariantDetails.size == VARIANT_VALUE_LEVEL_TWO_COUNT -> {
                 mVariantTitleValidationStatus.value = VariantTitleValidationStatus.USED_NAME
             }
             else -> validateIllegalVariantTitle(productName)

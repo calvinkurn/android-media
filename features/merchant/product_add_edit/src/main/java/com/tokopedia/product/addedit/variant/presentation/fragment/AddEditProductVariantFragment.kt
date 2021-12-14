@@ -37,10 +37,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_TRACE
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
-import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandler
-import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
-import com.tokopedia.product.addedit.common.util.RecyclerViewItemDecoration
-import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil
+import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.databinding.FragmentAddEditProductVariantBinding
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -178,7 +175,7 @@ class AddEditProductVariantFragment :
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
         binding = FragmentAddEditProductVariantBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -187,17 +184,15 @@ class AddEditProductVariantFragment :
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        context?.let { activity?.window?.decorView?.setBackgroundColor(
-            androidx.core.content.ContextCompat.getColor(it,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+        setFragmentToUnifyBgColor()
 
+        // setup views
         setupButtonAddVariantType()
         setupTitleLayoutVariantType()
         setupVariantRecyclerViews()
         setupBaseCancelationDialog()
         setupButtonSave()
         setupToolbarActions()
-
         showCoachmarkCustomVariantType()
 
         // sizechart onclick picture listener
@@ -710,7 +705,8 @@ class AddEditProductVariantFragment :
         buttonAddVariantType.setOnClickListener {
             val bottomSheet = CustomVariantInputBottomSheet(
                 selectedVariantDetails = variantTypeAdapter?.getSelectedItems().orEmpty(),
-                customVariantDetails = variantTypeAdapter?.getCustomVariantTypeItems().orEmpty()
+                customVariantDetails = variantTypeAdapter?.getCustomVariantTypeItems().orEmpty(),
+                variantDetails = variantTypeAdapter?.getItems().orEmpty()
             )
 
             bottomSheet.setOnCustomVariantTypeSubmitted {
