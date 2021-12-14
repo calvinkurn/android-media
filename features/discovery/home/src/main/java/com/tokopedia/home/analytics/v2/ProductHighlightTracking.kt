@@ -9,6 +9,11 @@ object ProductHighlightTracking : BaseTrackerConst() {
     private const val EVENT_ACTION_CLICK_PRODUCT_DYNAMIC_CHANNEL_HERO = "click on product dynamic channel hero"
 
     private const val PRODUCT_DYNAMIC_CHANNEL_HERO = "dynamic channel hero - product"
+    private const val LIST_DYNAMIC_CHANNEL_PRODUCT_HIGHLIGHT = "/ - p%s - dynamic channel hero - product - %s - carousel - %s - %s - %s - %s"
+    // / - p{x} - dynamic channel hero - product - {topads/non topads} - {carousel/non carousel} - {recommendation_type} - {recomm_page_name} - {bu_type} - {header name}
+
+    private const val TOPADS = "topads"
+    private const val NON_TOPADS = "non topads"
 
     fun sendRecommendationListClick(
             channelId: String,
@@ -25,7 +30,9 @@ object ProductHighlightTracking : BaseTrackerConst() {
             isTopAds: Boolean,
             recommendationType: String,
             pageName: String,
-            positionOnHome: Int) {
+            positionOnHome: Int,
+            channelModel: ChannelModel
+    ) {
         getTracker().sendEnhanceEcommerceEvent(getProductHighlightClick(
                 channelId,
                 headerName,
@@ -41,7 +48,9 @@ object ProductHighlightTracking : BaseTrackerConst() {
                 recommendationType,
                 pageName,
                 position,
-                positionOnHome))
+                positionOnHome,
+                channelModel
+        ))
     }
 
     //componentSection
@@ -99,7 +108,9 @@ object ProductHighlightTracking : BaseTrackerConst() {
             recommendationType: String,
             pageName: String,
             position: Int,
-            positionOnHome: Int) : Map<String, Any> {
+            positionOnHome: Int,
+            channelModel: ChannelModel
+    ) : Map<String, Any> {
         val trackerBuilder = BaseTrackerBuilder()
         return trackerBuilder.constructBasicProductClick(
                 event = Event.PRODUCT_CLICK,
@@ -128,7 +139,13 @@ object ProductHighlightTracking : BaseTrackerConst() {
                         )
                 ),
                 list = String.format(
-                        Value.LIST, positionOnHome, PRODUCT_DYNAMIC_CHANNEL_HERO
+                        LIST_DYNAMIC_CHANNEL_PRODUCT_HIGHLIGHT,
+                        positionOnHome,
+                        if (isTopAds) TOPADS else NON_TOPADS,
+                        recommendationType,
+                        pageName,
+                        channelModel.trackingAttributionModel.galaxyAttribution,
+                        channelModel.channelHeader.name
                 ))
                 .appendChannelId(channelId)
                 .appendCampaignCode(campaignCode)
