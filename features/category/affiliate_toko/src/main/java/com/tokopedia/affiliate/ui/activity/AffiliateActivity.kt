@@ -14,7 +14,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentSelected
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentUnSelected
-import com.tokopedia.affiliate.*
+import com.tokopedia.affiliate.AFFILIATE_HELP_URL
+import com.tokopedia.affiliate.AFFILIATE_SPLASH_TIME
+import com.tokopedia.affiliate.AFFILIATE_TRX_ENABLED
+import com.tokopedia.affiliate.PAGE_SEGMENT_HELP
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
@@ -47,10 +50,10 @@ import javax.inject.Inject
 
 
 class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomClickListener,
-    AffiliateBottomNavBarInterface , AffiliateActivityInterface{
+    AffiliateBottomNavBarInterface, AffiliateActivityInterface {
 
     @Inject
-    lateinit var userSessionInterface : UserSessionInterface
+    lateinit var userSessionInterface: UserSessionInterface
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -62,10 +65,6 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
     private var isUserBlackListed = false
     private var isAffiliateWalletEnabled = false
-
-    private val affiliateWalletVariant : String
-        get() = RemoteConfigInstance.getInstance().abTestPlatform.getString(AFFILIATE_TRX_ENABLED, "")
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,10 +95,10 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun getComponent(): AffiliateComponent =
-            DaggerAffiliateComponent
-                    .builder()
-                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                    .build()
+        DaggerAffiliateComponent
+            .builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
 
     override fun setViewModel(viewModel: BaseViewModel) {
         affiliateVM = viewModel as AffiliateViewModel
@@ -119,10 +118,14 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun initRollence() {
-        isAffiliateWalletEnabled = when(affiliateWalletVariant){
-            AFFILIATE_TRX_ENABLED -> true
-            else -> false
-        }
+        isAffiliateWalletEnabled =
+            when (RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                AFFILIATE_TRX_ENABLED,
+                ""
+            )) {
+                AFFILIATE_TRX_ENABLED -> true
+                else -> false
+            }
     }
 
     private fun showLoginPortal() {
@@ -137,7 +140,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun clearBackStack() {
-        for(frag in supportFragmentManager.fragments){
+        for (frag in supportFragmentManager.fragments) {
             supportFragmentManager.popBackStack()
         }
         fragmentStack.clear()
@@ -148,10 +151,10 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
             findViewById(R.id.bottom_navbar),
             this, this, isAffiliateWalletEnabled
         )
-        if(isAffiliateWalletEnabled){
+        if (isAffiliateWalletEnabled) {
             INCOME_MENU = 2
             HELP_MENU = 3
-        }else {
+        } else {
             INCOME_MENU = 3
             HELP_MENU = 2
         }
@@ -161,8 +164,12 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         when (position) {
             HOME_MENU -> openFragment(AffiliateHomeFragment.getFragmentInstance(this))
             PROMO_MENU -> openFragment(AffiliatePromoFragment.getFragmentInstance())
-            INCOME_MENU -> openFragment(AffiliateIncomeFragment.getFragmentInstance(userSessionInterface.name,
-            userSessionInterface.profilePicture,this))
+            INCOME_MENU -> openFragment(
+                AffiliateIncomeFragment.getFragmentInstance(
+                    userSessionInterface.name,
+                    userSessionInterface.profilePicture, this
+                )
+            )
             HELP_MENU -> openFragment(AffiliateHelpFragment.getFragmentInstance(AFFILIATE_HELP_URL))
         }
         return true
@@ -176,20 +183,25 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         affiliateVM.getValidateUserdata().observe(this, { validateUserdata ->
             if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true) {
                 showAffiliatePortal()
-            }else if(validateUserdata.validateAffiliateUserStatus.data?.isEligible == false &&
-                    validateUserdata.validateAffiliateUserStatus.data?.isRegistered == false){
+            } else if (validateUserdata.validateAffiliateUserStatus.data?.isEligible == false &&
+                validateUserdata.validateAffiliateUserStatus.data?.isRegistered == false
+            ) {
                 showFraudTicker()
-            }else {
-                if(!userActionRequiredForRegister)
+            } else {
+                if (!userActionRequiredForRegister)
                     navigateToPortfolioFragment()
             }
         })
 
-        affiliateVM.getErrorMessage().observe(this , { error ->
-            when(error) {
+        affiliateVM.getErrorMessage().observe(this, { error ->
+            when (error) {
                 is UnknownHostException, is SocketTimeoutException -> {
-                    Toaster.build(findViewById<FrameLayout>(R.id.parent_view), getString(com.tokopedia.affiliate_toko.R.string.affiliate_internet_error),
-                            Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                    Toaster.build(
+                        findViewById<FrameLayout>(R.id.parent_view),
+                        getString(com.tokopedia.affiliate_toko.R.string.affiliate_internet_error),
+                        Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_ERROR
+                    ).show()
                 }
                 else -> {
                     showLoginPortal()
@@ -199,8 +211,9 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun showFraudTicker() {
-        val currentFragment = supportFragmentManager.findFragmentByTag(AffiliateLoginFragment::class.java.simpleName)
-        if(currentFragment != null){
+        val currentFragment =
+            supportFragmentManager.findFragmentByTag(AffiliateLoginFragment::class.java.simpleName)
+        if (currentFragment != null) {
             (currentFragment as? AffiliateLoginFragment)?.showFraudTicker()
         }
     }
@@ -262,25 +275,24 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     override fun onBackPressed() {
-        val currentFragment = supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.simpleName)
-        if(currentFragment != null && currentFragment.isVisible){
+        val currentFragment =
+            supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.simpleName)
+        if (currentFragment != null && currentFragment.isVisible) {
             (currentFragment as? AffiliatePromoFragment)?.handleBack()
-        }
-        else {
-           handleBackButton()
+        } else {
+            handleBackButton()
         }
     }
 
-    override fun handleBackButton(){
-        if(!fragmentStack.empty()) {
+    override fun handleBackButton() {
+        if (!fragmentStack.empty()) {
             fragmentStack.pop()
             if (!fragmentStack.empty()) {
                 handleBackStack()
-            } else{
+            } else {
                 super.onBackPressed()
             }
-        }
-        else{
+        } else {
             super.onBackPressed()
         }
     }
@@ -305,7 +317,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
                 PROMO_MENU
             )
             AffiliateIncomeFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
-                    INCOME_MENU
+                INCOME_MENU
             )
             BaseSessionWebViewFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
                 HELP_MENU
@@ -313,20 +325,21 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         }
     }
 
-    fun setBlackListedStatus(blackListed : Boolean) {
+    fun setBlackListedStatus(blackListed: Boolean) {
         isUserBlackListed = blackListed
     }
 
-    fun getBlackListedStatus() : Boolean{
-        return  isUserBlackListed
+    fun getBlackListedStatus(): Boolean {
+        return isUserBlackListed
     }
 
-    override fun navigateToTermsFragment(channels : ArrayList<OnBoardingRequest.Channel>) {
+    override fun navigateToTermsFragment(channels: ArrayList<OnBoardingRequest.Channel>) {
         openFragment(AffiliateTermsAndConditionFragment.getFragmentInstance(this).apply {
             setChannels(channels)
         })
-        val currentFragment = supportFragmentManager.findFragmentByTag(AffiliateTermsAndConditionFragment::class.java.simpleName)
-        if(currentFragment != null){
+        val currentFragment =
+            supportFragmentManager.findFragmentByTag(AffiliateTermsAndConditionFragment::class.java.simpleName)
+        if (currentFragment != null) {
             (currentFragment as? AffiliateTermsAndConditionFragment)?.setChannels(channels)
         }
     }
