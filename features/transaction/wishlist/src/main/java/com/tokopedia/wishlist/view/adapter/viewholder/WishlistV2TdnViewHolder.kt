@@ -16,6 +16,11 @@ import com.tokopedia.unifycomponents.toPx
 class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, private val actionListener: WishlistV2Adapter.ActionListener?) :
     RecyclerView.ViewHolder(binding.root) {
 
+    private companion object {
+        private const val PADDING_TOPADS = 18
+        private const val RADIUS_TOPADS = 24
+    }
+
     fun bind(item: WishlistV2TypeLayoutData, adapterPosition: Int, isShowCheckbox: Boolean) {
         if (isShowCheckbox) {
             binding.root.gone()
@@ -24,7 +29,7 @@ class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, pri
         } else {
             if (item.dataObject is TopAdsImageViewModel) {
                 binding.root.visible()
-                binding.root.setPadding(18.toPx(), 0, 18.toPx(), 0)
+                binding.root.setPadding(PADDING_TOPADS.toPx(), 0, PADDING_TOPADS.toPx(), 0)
                 val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT)
                 binding.root.layoutParams = params
@@ -36,7 +41,7 @@ class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, pri
                         }
                     })
 
-                    loadImage(item.dataObject, 24)
+                    loadImage(item.dataObject, RADIUS_TOPADS)
 
                     setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
                         override fun onTopAdsImageViewImpression(viewUrl: String) {

@@ -147,6 +147,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         private const val FILTER_OFFERS_LABEL = "Penawaran"
         private const val FILTER_STOCK_LABEL = "Stok"
         private const val FILTER_CATEGORIES_LABEL = "Kategori"
+        private const val PADDING_RV = 10
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -252,7 +253,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun addPaddingRv() {
         binding?.run {
-            rvWishlist.setPadding(10.toPx(), 0, 10.toPx(), 0)
+            rvWishlist.setPadding(PADDING_RV.toPx(), 0, PADDING_RV.toPx(), 0)
         }
     }
 
