@@ -174,23 +174,6 @@ data class DynamicHomeChannel(
             )
         }
 
-        fun convertProductEnhanceSprintSaleCarouselDataLayerForCombination(): List<Any> {
-            val list: MutableList<Any> = ArrayList()
-
-            for (i in grids.indices) {
-                val grid: Grid = grids[i]
-                list.add(
-                        DataLayer.mapOf(
-                                "id", grid.id,
-                                "name", "/ - p2 - sprint sale banner",
-                                "creative", grid.name,
-                                "position", (i + 1).toString())
-                )
-            }
-
-            return list
-        }
-
         fun convertPromoEnhanceLegoBannerDataLayerForCombination(): List<Any> {
             val list: MutableList<Any> = ArrayList()
             for (i in grids.indices) {
@@ -321,7 +304,6 @@ data class DynamicHomeChannel(
             const val LAYOUT_LEGO_4_IMAGE: String = "lego_4_image"
             const val LAYOUT_LEGO_2_IMAGE: String = "1x2_banner"
             const val LAYOUT_LEGO_4_AUTO: String = "4_banners_auto"
-            const val LAYOUT_SPRINT_CAROUSEL: String = "sprint_carousel"
             const val LAYOUT_TOPADS: String = "topads"
             const val LAYOUT_SPOTLIGHT: String = "spotlight"
             const val LAYOUT_HOME_WIDGET: String = "home_widget"
