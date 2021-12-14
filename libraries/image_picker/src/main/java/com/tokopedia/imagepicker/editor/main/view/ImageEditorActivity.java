@@ -153,6 +153,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     private int watermarkType = Constant.TYPE_WATERMARK_TOPED;
     private String pageSource = ImageEditorTracking.UNKNOWN_PAGE;
 
+    private int removeBackgroundType = Constant.TYPE_REMOVE_BG_NORMAL;
     private int currentRemoveBackgroundState = 0;
 
     public static Intent getIntent(Context context, ImageEditorBuilder imageEditorBuilder) {
@@ -409,6 +410,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                 case ACTION_REMOVE_BACKGROUND:
                     if (fragment != null) {
                         fragment.saveRemoveBackground();
+                        trackClickSave(getLabelRemoveBackground());
                     }
                     break;
             }
@@ -684,6 +686,8 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         } else if (type == Constant.TYPE_REMOVE_BG_BLACK) {
             setRemoveBackgroundColor(2, preview, Color.parseColor("#D6DFEB"));
         }
+
+        removeBackgroundType = type;
     }
 
     private void setRemoveBackgroundColor(int position, String imagePath, int color) {
@@ -1275,6 +1279,21 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                 return ImageEditorTrackingConstant.LABEL_WATERMARK_DESIGN_ONE;
             case Constant.TYPE_WATERMARK_CENTER_TOPED:
                 return ImageEditorTrackingConstant.LABEL_WATERMARK_DESGIN_TWO;
+            default:
+                break;
+        }
+        return label;
+    }
+
+    private String getLabelRemoveBackground() {
+        String label = "";
+        switch (removeBackgroundType) {
+            case Constant.TYPE_REMOVE_BG_NORMAL:
+                return ImageEditorTrackingConstant.LABEL_REMOVE_BACKGROUND_NORMAL;
+            case Constant.TYPE_REMOVE_BG_WHITE:
+                return ImageEditorTrackingConstant.LABEL_REMOVE_BACKGROUND_WHITE;
+            case Constant.TYPE_REMOVE_BG_BLACK:
+                return ImageEditorTrackingConstant.LABEL_REMOVE_BACKGROUND_GREY;
             default:
                 break;
         }
