@@ -307,7 +307,11 @@ object WishlistV2Analytics {
                 ITEM_BRAND, "",
                 ITEM_VARIANT, "",
                 ITEM_CATEGORY, "",
-                INDEX, position
+                INDEX, position,
+                DIMENSION_38, "",
+                DIMENSION_40, WISHLIST,
+                DIMENSION_79, wishlistItem.shop.id,
+                DIMENSION_83, ""
         ))
     }
 
