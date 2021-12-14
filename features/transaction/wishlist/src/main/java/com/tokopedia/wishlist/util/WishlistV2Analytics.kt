@@ -330,7 +330,7 @@ object WishlistV2Analytics {
             putString(ITEM_ID, wishlistItem.id)
             putString(ITEM_CATEGORY, "")
             putString(PRICE, wishlistItem.price)
-            putString(QUANTITY, "1")
+            putString(QUANTITY, wishlistItem.minOrder)
             putString(SHOP_ID, wishlistItem.shop.id)
             putString(SHOP_NAME, wishlistItem.shop.name)
             putString(SHOP_TYPE, "")
