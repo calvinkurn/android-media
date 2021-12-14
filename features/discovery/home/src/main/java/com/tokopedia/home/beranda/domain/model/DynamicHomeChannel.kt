@@ -6,7 +6,6 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
-import java.util.*
 import kotlin.collections.ArrayList
 
 data class DynamicHomeChannel(
