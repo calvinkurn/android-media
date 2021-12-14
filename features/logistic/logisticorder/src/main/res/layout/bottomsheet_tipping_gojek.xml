@@ -18,15 +18,12 @@
         android:visibility="visible"
         tools:visibility="gone">
 
-        <com.tokopedia.unifycomponents.ticker.Ticker
+        <com.tokopedia.unifycomponents.TipsUnify
             android:id="@+id/ticker_tipping_gojek"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:closeButtonVisibility="gone"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tickerShapeType="loose"
-            app:tickerType="announcement" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_tipping_gojek"

@@ -2,8 +2,8 @@ package com.tokopedia.logisticorder.view.bottomsheet
 
 import android.graphics.Rect
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
+import android.text.*
+import android.text.style.BulletSpan
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -152,7 +152,8 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
 
 
                 binding.tickerTippingGojek.apply {
-                    setHtmlDescription(String.format(getString(R.string.driver_tipping_ticker_new), logisticDriverModel.prepayment.info.first(), logisticDriverModel.prepayment.info.last()))
+                    descriptionView.elevation = 2f
+                    description = setTippingDescription(logisticDriverModel.prepayment.info)
                 }
 
                 binding.etNominalTip.editText.addTextChangedListener(setWrapperWatcherTipping(binding.etNominalTip.textInputLayout))
@@ -200,6 +201,18 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
 
             }
         }
+    }
+
+    private fun setTippingDescription(descriptionList: List<String>) : CharSequence {
+        val description = descriptionList.joinToString("\n")
+        val result = SpannableString(description)
+        var last = 0
+        descriptionList.forEach { desc ->
+            val start = description.indexOf(desc, last)
+            last = start + desc.length
+            result.setSpan(BulletSpan(16), start, last, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        return result
     }
 
     private fun setWrapperWatcherTipping(wrapper: TextInputLayout): TextWatcher {
