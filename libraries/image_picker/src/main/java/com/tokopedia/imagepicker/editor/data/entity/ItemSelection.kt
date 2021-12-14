@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 data class ItemSelection(
     val name: String = "",
     val preview: String = "",
+    val previewWithResId: Int = 0,
     val placeholderText: String = "",
     val placeholderResId: Int = 0,
     val placeholderBitmap: Bitmap? = null,
@@ -28,6 +29,23 @@ data class ItemSelection(
                 placeholderText = placeholderText,
                 itemType = itemType,
                 isSingleLabel = isSingleLabel,
+                isSelected = isSelected
+            )
+        }
+
+        @JvmStatic
+        fun createWithPlaceholderResourceId(
+            name: String,
+            preview: Int,
+            itemType: Int,
+            isSelected: Boolean
+        ): ItemSelection {
+            return ItemSelection(
+                name = name,
+                previewWithResId = preview,
+                placeholderResId = 0,
+                itemType = itemType,
+                isSingleLabel = false,
                 isSelected = isSelected
             )
         }

@@ -13,10 +13,8 @@ import android.webkit.URLUtil;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
@@ -29,9 +27,6 @@ import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
 import com.tokopedia.imagepicker.editor.analytics.ImageEditorTracking;
 import com.tokopedia.imagepicker.editor.analytics.ImageEditorTrackingConstant;
-import com.tokopedia.imagepicker.editor.di.DaggerImageEditorComponent;
-import com.tokopedia.imagepicker.editor.di.ImageEditorComponent;
-import com.tokopedia.imagepicker.editor.di.module.ImageEditorModule;
 import com.tokopedia.imagepicker.editor.main.Constant;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditCropListWidget;
@@ -68,7 +63,6 @@ import static com.tokopedia.imagepicker.editor.main.Constant.HALF_BRIGHTNESS_RAN
 import static com.tokopedia.imagepicker.editor.main.Constant.HALF_CONTRAST_RANGE;
 import static com.tokopedia.imagepicker.editor.main.Constant.HALF_ROTATE_RANGE;
 import static com.tokopedia.imagepicker.editor.main.Constant.INITIAL_CONTRAST_VALUE;
-import static com.tokopedia.imagepicker.editor.main.Constant.TYPE_REMOVE_BG_BLACK;
 import static com.tokopedia.imagepicker.editor.main.Constant.TYPE_REMOVE_BG_NORMAL;
 
 /**
@@ -667,34 +661,24 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
 
         if (fragment == null) return;
 
-        String preview = edittedImagePaths
-                .get(currentImageIndex)
-                .get(getCurrentStepForCurrentImage());
-
         items.add(ItemSelection.createWithPlaceholderResourceId(
-                "Normal",
-                preview,
-                0,
+                getString(com.tokopedia.imagepicker.R.string.editor_remove_bg_original),
+                R.drawable.ic_toped_icon_remove_bg_normal,
                 Constant.TYPE_REMOVE_BG_NORMAL,
-                false,
                 true
         ));
 
         items.add(ItemSelection.createWithPlaceholderResourceId(
-                "Latar Putih",
-                preview,
-                0,
+                getString(com.tokopedia.imagepicker.R.string.editor_remove_bg_white),
+                R.drawable.ic_toped_icon_remove_bg_white,
                 Constant.TYPE_REMOVE_BG_WHITE,
-                false,
                 false
         ));
 
         items.add(ItemSelection.createWithPlaceholderResourceId(
-                "Latar Hitam",
-                preview,
-                0,
+                getString(com.tokopedia.imagepicker.R.string.editor_remove_bg_grey),
+                R.drawable.ic_toped_icon_remove_bg_grey,
                 Constant.TYPE_REMOVE_BG_BLACK,
-                false,
                 false
         ));
 
@@ -732,7 +716,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         } else if (lastRemoveBackgroundState == 2) {
             fragment.setRemoveBackground(
                     tempTransparentImageFilePath,
-                    Color.BLACK
+                    Color.parseColor("#D6DFEB")
             );
         }
     }

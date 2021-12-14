@@ -106,11 +106,16 @@ class EditorItemSelectionAdapter constructor(
                 txtItem.visibility = View.GONE
             }
 
-            imgItemSelection.loadImageRounded(
-                item.preview,
-                radius.toFloat()
-            ) {
-                centerCrop()
+            if (item.preview.isNotEmpty()) {
+                imgItemSelection.loadImage(item.preview) {
+                    setRoundedRadius(radius.toFloat())
+                    centerCrop()
+                }
+            } else {
+                imgItemSelection.loadImage(item.previewWithResId) {
+                    setRoundedRadius(radius.toFloat())
+                    centerCrop()
+                }
             }
 
             // visible the placeholder bitmap by bitmap or resourceId
