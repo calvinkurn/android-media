@@ -54,12 +54,13 @@ class HomeQuestWidgetViewHolder(
                 STATUS_IDLE -> {
                     setImageUrl(element.iconUrl, true, AppCompatResources.getDrawable(context, R.drawable.tokopedianow_ic_quest_default))
                     binding?.let {
-                        it.container.setCardBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50))
+                        it.container.setCardBackgroundColor(ContextCompat.getColor(itemView.context, R.color.tokopedianow_cardview_inactive_background_dms_color))
                         it.title.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
                         it.desc.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
                     }
                 }
                 STATUS_ON_PROGRESS -> {
+                    binding?.container?.setCardBackgroundColor(ContextCompat.getColor(itemView.context, R.color.tokopedianow_cardview_background_dms_color))
                     val result = (element.currentProgress / element.totalProgress) * PERCENT_MULTIPLIER
                     if (!result.isNaN()) {
                         setImageUrl(element.iconUrl, false, AppCompatResources.getDrawable(context, R.drawable.tokopedianow_ic_quest_default))

@@ -42,7 +42,7 @@ class HomeQuestTitleViewHolder(
 
     private fun showShimmering() {
         binding?.apply {
-            binding?.container?.setBackgroundColor(ContextCompat.getColor(itemView.context,com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            binding?.container?.setBackgroundColor(ContextCompat.getColor(itemView.context,R.color.tokopedianow_cardview_background_dms_color))
             questTitleWidgetShimmering.root.show()
             questTitleWidgetErrorState.root.hide()
             questTitleWidget.hide()

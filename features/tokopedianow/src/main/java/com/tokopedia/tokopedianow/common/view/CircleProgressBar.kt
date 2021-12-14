@@ -66,7 +66,7 @@ class CircularProgressView : View {
             imageRect.set(25f, 25f, diameter - 25f, diameter - 25f)
             imageShadowRect.set(5f, 5f, diameter - 5f, diameter - 5f)
             imageShadowPaint.color = Color.WHITE
-            imageShadowPaint.setShadowLayer(4f, 0f, 2f, Color.GRAY)
+            imageShadowPaint.setShadowLayer(3f, 0f, 0f, Color.GRAY)
             imageShadowPaint.maskFilter = BlurMaskFilter(1f, BlurMaskFilter.Blur.OUTER)
             canvas.drawArc(imageShadowRect, startAngle, maxAngle, false, imageShadowPaint)
         } else {
