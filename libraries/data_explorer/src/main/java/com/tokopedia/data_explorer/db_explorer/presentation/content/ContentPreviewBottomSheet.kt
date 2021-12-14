@@ -34,7 +34,7 @@ class ContentPreviewBottomSheet: BottomSheetUnify() {
         isHideable = true
         showCloseIcon = true
         showHeader = true
-        customPeekHeight = getScreenHeight().toDp()
+        customPeekHeight = (getScreenHeight()/2).toDp()
     }
 
     private fun initBottomSheet() {

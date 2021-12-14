@@ -11,6 +11,7 @@ internal class ContentAdapter : ListAdapter<Cell, RecyclerView.ViewHolder>(CellD
 
     var headersCount: Int = 0
     var onClick: ((Cell) -> Unit)? = null
+    var headerItemClick: ((Cell) -> Unit)? = null
 
     companion object {
         const val TYPE_HEADER = 1
@@ -22,7 +23,7 @@ internal class ContentAdapter : ListAdapter<Cell, RecyclerView.ViewHolder>(CellD
             ColumnHeaderViewHolder.getViewHolder(
                 LayoutInflater.from(parent.context),
                 parent,
-                onClick
+                headerItemClick
             )
             else ContentViewHolder.getViewHolder(
                 LayoutInflater.from(parent.context),
@@ -40,5 +41,9 @@ internal class ContentAdapter : ListAdapter<Cell, RecyclerView.ViewHolder>(CellD
 
     override fun getItemViewType(position: Int) =
         if (position < headersCount) TYPE_HEADER else TYPE_CONTENT
+
+    fun updateHeader(header: Cell) {
+
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.data_explorer.db_explorer.domain.shared.models
 
 import com.tokopedia.data_explorer.db_explorer.data.Data.Constants.Limits.PAGE_SIZE
+import com.tokopedia.data_explorer.db_explorer.data.models.cursor.input.Order
 import com.tokopedia.data_explorer.db_explorer.domain.shared.models.parameters.pragma
 
 internal object Statements {
@@ -11,6 +12,7 @@ internal object Statements {
             pragma {
                 name("user_version")
             }
+
         fun tableInfo(name: String) =
             pragma {
                 name("table_info")
@@ -25,11 +27,17 @@ internal object Statements {
         fun count(name: String?) =
             "SELECT COUNT(*) FROM $name"
 
-        fun table(name: String?, page: Int?) : String {
-            val offsetString = page?.let {
-                "${(it-1)*PAGE_SIZE},"
+        fun table(name: String?, orderByColumns: String?, sort: Order, page: Int?): String {
+            val orderBySql = if (orderByColumns.isNullOrEmpty()) {
+                ""
+            } else {
+                "ORDER BY $orderByColumns ${sort.rawValue}"
             }
-            return "SELECT * FROM $name LIMIT ${offsetString ?: ""}$PAGE_SIZE"
+
+            val offsetString = page?.let { "${(it - 1) * PAGE_SIZE}," }
+            val limit = "LIMIT ${offsetString ?: ""}$PAGE_SIZE"
+
+            return "SELECT * FROM $name $orderBySql $limit"
         }
     }
 }

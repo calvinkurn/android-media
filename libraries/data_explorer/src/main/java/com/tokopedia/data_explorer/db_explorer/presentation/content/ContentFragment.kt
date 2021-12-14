@@ -11,11 +11,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.data_explorer.R
+import com.tokopedia.data_explorer.db_explorer.data.models.cursor.input.Order
 import com.tokopedia.data_explorer.db_explorer.di.DataExplorerComponent
+import com.tokopedia.data_explorer.db_explorer.domain.shared.models.Cell
 import com.tokopedia.data_explorer.db_explorer.domain.shared.models.DataBaseController
+import com.tokopedia.data_explorer.db_explorer.extensions.InvalidPageRequestException
 import com.tokopedia.data_explorer.db_explorer.extensions.setupGrid
 import com.tokopedia.data_explorer.db_explorer.presentation.Constants
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.data_explorer_fragment_content_layout.*
@@ -54,43 +58,47 @@ class ContentFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (dataBaseController.hasSchemaData)
-            viewModel.getTableInfo(databasePath, schemaName)
-        else showDatabaseError(GlobalError.PAGE_NOT_FOUND)
+        if (dataBaseController.hasSchemaData) {
+            viewModel.databasePath = databasePath
+            viewModel.getTableInfo(schemaName)
+
+        } else showDatabaseError(GlobalError.PAGE_NOT_FOUND)
         observeViewModels()
         initListeners()
-        contentAdapter.onClick = { cell ->
-            cell.text?.let { cellText ->
-                ContentPreviewBottomSheet.show(
-                    cellText,
-                    childFragmentManager
-                )
-            }
-        }
     }
 
     private fun initListeners() {
+        contentAdapter.onClick = { cell -> onCellClicked(cell)}
+        contentAdapter.headerItemClick = { header ->
+            queryContent(header.text, header.order)
+            viewModel.updateHeader(header)
+        }
+
         pageNumberEditor.apply {
             setValue(1)
             stepValue = 1
             minValue = 1
             editText.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    queryContent(getValue())
+                    viewModel.currentPage = getValue()
+                    queryContent()
                     return@setOnEditorActionListener true
                 }
                 return@setOnEditorActionListener false
             }
-            setAddClickListener { queryContent(getValue()) }
-            setSubstractListener { queryContent(getValue()) }
-            setValueChangedListener { newValue, _, _ ->
-                queryContent(newValue)
+            setAddClickListener {
+                viewModel.currentPage = getValue()
+                queryContent()
+            }
+            setSubstractListener {
+                viewModel.currentPage = getValue()
+                queryContent()
             }
         }
     }
 
-    private fun queryContent(page: Int = 1) {
-        viewModel.getTableContent(databasePath, schemaName, page)
+    private fun queryContent(orderBy: String? = null, sort: Order = Order.ASCENDING) {
+        viewModel.getTableContent(schemaName, orderBy, sort)
     }
 
     private fun showDatabaseError(errorType: Int) {
@@ -108,20 +116,21 @@ class ContentFragment : BaseDaggerFragment() {
                 RecyclerView.VERTICAL,
                 false
             )
-            viewModel.getTableRowsCount(databasePath, schemaName)
+            viewModel.getTableRowsCount(schemaName)
         })
         viewModel.resultRowLiveData.observe(viewLifecycleOwner, {
             if (it) queryContent() else showDatabaseError(GlobalError.MAINTENANCE)
         })
         viewModel.contentLiveData.observe(viewLifecycleOwner, { cells ->
+            dataExplorerGlobalError.gone()
             rvContent.adapter = contentAdapter
             contentAdapter.submitList(cells)
         })
         viewModel.errorLiveData.observe(viewLifecycleOwner, {
             when (it) {
-                is IllegalStateException -> Toaster.build(
+                is IllegalStateException, is InvalidPageRequestException -> Toaster.build(
                     rvContent,
-                    "Incorrect Request",
+                    it.message ?: "Incorrect Request",
                     Toaster.LENGTH_SHORT,
                     Toaster.TYPE_ERROR
                 ).show()
@@ -129,6 +138,15 @@ class ContentFragment : BaseDaggerFragment() {
 
             }
         })
+    }
+
+    private fun onCellClicked(cell: Cell) {
+        cell.text?.let { cellText ->
+            ContentPreviewBottomSheet.show(
+                cellText,
+                childFragmentManager
+            )
+        }
     }
 
     override fun getScreenName() = ""

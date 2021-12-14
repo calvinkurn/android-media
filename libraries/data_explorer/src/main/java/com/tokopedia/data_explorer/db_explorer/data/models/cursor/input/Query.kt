@@ -3,6 +3,7 @@ package com.tokopedia.data_explorer.db_explorer.data.models.cursor.input
 import android.database.sqlite.SQLiteDatabase
 import androidx.annotation.DrawableRes
 import com.tokopedia.data_explorer.db_explorer.data.Data
+import com.tokopedia.iconunify.IconUnify
 
 internal data class Query(
     val databasePath: String = "",
@@ -14,8 +15,8 @@ internal data class Query(
 )
 
 internal enum class Order(val rawValue: String, @DrawableRes val icon: Int) {
-    ASCENDING("ASC", com.tokopedia.iconunify.R.drawable.iconunify_arrow_up),
-    DESCENDING("DESC", com.tokopedia.iconunify.R.drawable.iconunify_arrow_down);
+    ASCENDING("ASC", IconUnify.CHEVRON_UP),
+    DESCENDING("DESC", IconUnify.CHEVRON_DOWN);
 
     companion object {
 
