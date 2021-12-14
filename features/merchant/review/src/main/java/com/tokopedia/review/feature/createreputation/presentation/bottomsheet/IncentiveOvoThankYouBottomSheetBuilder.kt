@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.createreputation.presentation.bottomsheet
 import android.content.Context
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -68,27 +69,49 @@ object IncentiveOvoThankYouBottomSheetBuilder {
         hasPendingIncentive: Boolean,
         trackerData: ThankYouBottomSheetTrackerData
     ) {
-        setShowListener {
-            with(childView) {
-                setupBottomSheetTitle(postSubmitBottomSheetData)
-                setupBottomSheetDescription(postSubmitBottomSheetData)
-                setupBottomSheetImage(postSubmitBottomSheetData)
-                setupPrimaryButton(
-                    postSubmitBottomSheetData = postSubmitBottomSheetData,
-                    bottomSheetUnify = this@setupShowListener,
-                    hasPendingIncentive = hasPendingIncentive
-                )
-                setupSecondaryButton(
-                    postSubmitBottomSheetData = postSubmitBottomSheetData,
-                    bottomSheetUnify = this@setupShowListener,
-                    hasPendingIncentive = hasPendingIncentive
-                )
-                sendViewThankYouBottomSheetTracker(
-                    postSubmitBottomSheetData,
-                    trackerData,
-                    context
-                )
+        val bottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_EXPANDED, BottomSheetBehavior.STATE_HALF_EXPANDED -> {
+                        onBottomSheetExpanded(childView, postSubmitBottomSheetData, hasPendingIncentive, trackerData)
+                    }
+                }
             }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // noop
+            }
+        }
+        setShowListener {
+            bottomSheet.addBottomSheetCallback(bottomSheetCallback)
+        }
+    }
+
+    private fun BottomSheetUnify.onBottomSheetExpanded(
+        childView: View,
+        postSubmitBottomSheetData: ProductrevGetPostSubmitBottomSheetResponse,
+        hasPendingIncentive: Boolean,
+        trackerData: ThankYouBottomSheetTrackerData
+    ) {
+        with(childView) {
+            setupBottomSheetTitle(postSubmitBottomSheetData)
+            setupBottomSheetDescription(postSubmitBottomSheetData)
+            setupBottomSheetImage(postSubmitBottomSheetData)
+            setupPrimaryButton(
+                postSubmitBottomSheetData = postSubmitBottomSheetData,
+                bottomSheetUnify = this@onBottomSheetExpanded,
+                hasPendingIncentive = hasPendingIncentive
+            )
+            setupSecondaryButton(
+                postSubmitBottomSheetData = postSubmitBottomSheetData,
+                bottomSheetUnify = this@onBottomSheetExpanded,
+                hasPendingIncentive = hasPendingIncentive
+            )
+            sendViewThankYouBottomSheetTracker(
+                postSubmitBottomSheetData,
+                trackerData,
+                context
+            )
         }
     }
 
