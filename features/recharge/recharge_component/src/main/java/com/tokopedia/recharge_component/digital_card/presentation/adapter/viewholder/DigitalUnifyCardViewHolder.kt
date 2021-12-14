@@ -129,6 +129,7 @@ class DigitalUnifyCardViewHolder(
         with(binding.dguProductInfo) {
             if (leftProductInfoText.isNotEmpty() || rightProductInfoText.isNotEmpty()) {
                 text = leftProductInfoText
+                append(" ")
                 append(rightProductInfoText)
                 show()
             } else {
