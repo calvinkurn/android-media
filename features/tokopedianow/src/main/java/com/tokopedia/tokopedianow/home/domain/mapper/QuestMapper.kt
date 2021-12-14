@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.home.domain.mapper
 
+import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
@@ -11,13 +12,6 @@ import java.lang.Exception
 
 object QuestMapper {
 
-    private const val PREFIX_CURLY_BRACKET = "{"
-    private const val SUFFIX_CURLY_BRACKET = "}"
-    private const val DELIMITER_COMMA = ","
-    private const val DELIMITER_COLON = ":"
-    private const val DELIMITER_QUOTE = "\""
-    private const val HTTP = "http"
-    private const val DEFAULT_INDEX = 0
     private const val BANNER_TITLE = "banner_title"
     private const val ICON_URL = "banner_icon_url"
 
@@ -47,33 +41,12 @@ object QuestMapper {
     }
 
     private fun getValueFromConfig(config: String, key: String): String {
-        return mapConfig(config)[key].orEmpty()
-    }
-
-    private fun mapConfig(config: String): Map<String,String> {
-        try {
-            val list: List<String> = config.removeSurrounding(PREFIX_CURLY_BRACKET, SUFFIX_CURLY_BRACKET).split(DELIMITER_COMMA)
-            val map = hashMapOf<String, String>()
-            list.forEach {
-                var key = ""
-                var value = ""
-                val keyValueList = it.split(DELIMITER_COLON)
-                keyValueList.forEach { keyValue ->
-                    if (keyValue != keyValueList[DEFAULT_INDEX]) {
-                        if (keyValue.contains(HTTP)) {
-                            value = "$keyValue:"
-                        } else {
-                            value += keyValue
-                        }
-                    } else {
-                        key = keyValue.removeSurrounding(DELIMITER_QUOTE)
-                    }
-                }
-                map[key] =  value.removeSurrounding(DELIMITER_QUOTE)
-            }
-            return map
+        var map: Map<String, String> = HashMap()
+        map = try {
+            Gson().fromJson(config, map.javaClass)
         } catch (e: Exception) {
-            return hashMapOf()
+            mapOf()
         }
+        return map[key].orEmpty()
     }
 }
