@@ -60,8 +60,8 @@
                 android:id="@+id/holiday_toggle_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -145,7 +145,7 @@
                     android:id="@+id/tv_title_shop_ops_hour"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="18dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="18dp"
                     android:text="@string/shop_operational_hour_title_set_hour"
                     app:layout_constraintTop_toTopOf="parent"
@@ -172,7 +172,7 @@
                     android:id="@+id/tv_desc_shop_ops_hour"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="18dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:text="@string/shop_operational_hour_desc_set_hour"
                     app:typographyType="body_3"
@@ -201,7 +201,7 @@
                 android:id="@+id/tv_title_shop_holiday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="18dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/shop_operational_hour_title_holiday"
                 app:typographyType="heading_4"
@@ -211,8 +211,8 @@
                 android:id="@+id/tv_desc_shop_holiday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="18dp"
-                android:layout_marginEnd="18dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/shop_operational_hour_desc_holiday"
                 app:typographyType="body_3"
@@ -224,8 +224,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
-                android:layout_marginStart="18dp"
-                android:layout_marginEnd="18dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="4dp">
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -256,8 +256,8 @@
                 app:unifyButtonSize="small"
                 app:unifyButtonType="main"
                 android:visibility="gone"
-                android:layout_marginStart="18dp"
-                android:layout_marginEnd="18dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginTop="16dp"
                 />
 
