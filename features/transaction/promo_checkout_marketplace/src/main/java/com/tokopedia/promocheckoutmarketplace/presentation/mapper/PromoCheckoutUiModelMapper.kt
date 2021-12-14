@@ -144,9 +144,9 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     clashingInfoMessage = tmpErrorMessage.toString()
                     clashingInfoIcon = tmpClashingIconUrl
                     promoInfos = couponItem.promoInfos
-                    remainingPromoCount = couponSubSection.couponGroups.filter {
+                    remainingPromoCount = couponSubSection.couponGroups.firstOrNull {
                         it.id == couponItem.groupId
-                    }.firstOrNull()?.count ?: 0
+                    }?.count ?: 0
                     tabId = if (couponSubSection.isEnabled) {
                         couponSubSection.id
                     } else {

@@ -20,7 +20,7 @@ object GetPromoListDataProvider {
     }
 
     fun provideGetPromoListResponseSuccessAllExpanded(): CouponListRecommendationResponse {
-        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_all_expanded.json"), CouponListRecommendationResponse::class.java)
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_success_eligible_and_ineligible.json"), CouponListRecommendationResponse::class.java)
     }
 
     fun provideGetPromoListResponseSuccessWithPreSelectedPromo(): CouponListRecommendationResponse {

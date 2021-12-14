@@ -489,7 +489,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         return preSelectedPromoList
     }
 
-    fun initPromoInput() {
+    private fun initPromoInput() {
         // Initialize promo input model
         val promoInputUiModel = uiModelMapper.mapPromoInputUiModel()
         _promoInputUiModel.value = promoInputUiModel

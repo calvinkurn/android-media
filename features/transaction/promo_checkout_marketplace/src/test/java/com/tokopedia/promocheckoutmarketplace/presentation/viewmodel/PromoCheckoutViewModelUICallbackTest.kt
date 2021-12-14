@@ -1,11 +1,11 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.viewmodel
 
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider
-import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEligibilityHeaderUiModel
-import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListHeaderUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoRecommendationUiModel
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
 import org.junit.Test
 
 class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
@@ -26,20 +26,6 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
     fun `WHEN call reset promo THEN should have expanded promo items`() {
         //given
         viewModel.setPromoListValue(GetPromoListDataProvider.provideCurrentSelectedExpandedMerchantPromoData())
-
-        every { analytics.eventClickResetPromo(any()) } just Runs
-
-        //when
-        viewModel.resetPromo()
-
-        //then
-        assert(viewModel.promoListUiModel.value?.size ?: 0 > 0)
-    }
-
-    @Test
-    fun `WHEN call reset promo THEN should have collapsed promo items`() {
-        //given
-        viewModel.setPromoListValue(GetPromoListDataProvider.provideCurrentSelectedCollapsedMerchantPromoData())
 
         every { analytics.eventClickResetPromo(any()) } just Runs
 
@@ -80,39 +66,6 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
 
         //then
         assert(viewModel.promoRecommendationUiModel.value?.uiState?.isButtonSelectEnabled == true)
-    }
-
-    @Test
-    fun `WHEN click promo list header on collapsed items THEN promoListUiModel should contain expanded promo item`() {
-        //given
-        val data = GetPromoListDataProvider.provideNoCurrentSelectedCollapsedMerchantPromoData()
-        val promoListHeaderUiModel = data[0] as PromoListHeaderUiModel
-        viewModel.setPromoListValue(data)
-
-        //when
-        viewModel.updatePromoListAfterClickPromoHeader(promoListHeaderUiModel)
-
-        //then
-        promoListHeaderUiModel.uiData.tmpPromoItemList.forEach {
-            assert(viewModel.promoListUiModel.value?.contains(it) == true)
-        }
-    }
-
-    @Test
-    fun `WHEN click promo list header on expanded items THEN promoListUiModel should not contain expanded promo item`() {
-        //given
-        val data = GetPromoListDataProvider.provideNoCurrentSelectedCollapsedMerchantPromoData()
-        val promoListHeaderUiModel = data[0] as PromoListHeaderUiModel
-        viewModel.setPromoListValue(data)
-        viewModel.updatePromoListAfterClickPromoHeader(promoListHeaderUiModel)
-
-        //when
-        viewModel.updatePromoListAfterClickPromoHeader(promoListHeaderUiModel)
-
-        //then
-        promoListHeaderUiModel.uiData.tmpPromoItemList.forEach {
-            assert(viewModel.promoListUiModel.value?.contains(it) == false)
-        }
     }
 
     @Test
@@ -213,55 +166,6 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
 
         //then
         assert(viewModel.promoRecommendationUiModel.value?.uiState?.isButtonSelectEnabled == false)
-    }
-
-    @Test
-    fun `WHEN apply recommended promo of collapsed item THEN should be applied`() {
-        //given
-        val data = GetPromoListDataProvider.provideCurrentSelectedCollapsedMerchantPromoData()
-        viewModel.setPromoListValue(data)
-        viewModel.setPromoRecommendationValue(PromoRecommendationUiModel(
-                uiData = PromoRecommendationUiModel.UiData().apply { promoCodes = listOf("POMAH09JBL") },
-                uiState = PromoRecommendationUiModel.UiState())
-        )
-
-        every { analytics.eventClickPilihPromoRecommendation(any(), any()) } just Runs
-
-        //when
-        viewModel.applyRecommendedPromo()
-
-        //then
-        assert(viewModel.promoRecommendationUiModel.value?.uiState?.isButtonSelectEnabled == false)
-    }
-
-    @Test
-    fun `WHEN update expanded ineligible promo list header state THEN should be collapsed`() {
-        //given
-        val data = GetPromoListDataProvider.provideExpandedPromoIneligibleData()
-        val promoEligibilityHeaderUiModel = data[0] as PromoEligibilityHeaderUiModel
-        viewModel.setPromoListValue(data)
-
-        //when
-        viewModel.updateIneligiblePromoList(promoEligibilityHeaderUiModel)
-
-        //then
-        assert(viewModel.promoListUiModel.value?.size == 1)
-    }
-
-    @Test
-    fun `WHEN update collapsed ineligible promo list header state THEN should be expanded`() {
-        //given
-        val data = GetPromoListDataProvider.provideCollapsedPromoIneligibleData()
-        val promoEligibilityHeaderUiModel = data[0] as PromoEligibilityHeaderUiModel
-        viewModel.setPromoListValue(data)
-
-        every { analytics.eventClickExpandIneligiblePromoList(any()) } just Runs
-
-        //when
-        viewModel.updateIneligiblePromoList(promoEligibilityHeaderUiModel)
-
-        //then
-        assert(viewModel.promoListUiModel.value?.size ?: 0 > 1)
     }
 
     @Test
@@ -374,23 +278,6 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
     }
 
     @Test
-    fun `WHEN has any collapsed promo item unchecked but exist as pre applied promo item THEN should has different pre applied state`() {
-        //given
-        val fragmentData = GetPromoListDataProvider.provideFragmentData()
-        fragmentData.uiData.preAppliedPromoCode = listOf("KRDCICIL598GSNML0AM")
-        viewModel.setFragmentUiModelValue(fragmentData)
-
-        val promoData = GetPromoListDataProvider.provideCurrentUnSelectedCollapsedGlobalAndMerchantPromoData()
-        viewModel.setPromoListValue(promoData)
-
-        //when
-        val hasDifferentPreAppliedState = viewModel.hasDifferentPreAppliedState()
-
-        //then
-        assert(hasDifferentPreAppliedState)
-    }
-
-    @Test
     fun `WHEN has any expanded promo item checked but have not been applied THEN should has different pre applied state`() {
         //given
         val fragmentData = GetPromoListDataProvider.provideFragmentData()
@@ -398,22 +285,6 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         viewModel.setFragmentUiModelValue(fragmentData)
 
         val promoData = GetPromoListDataProvider.provideCurrentSelectedExpandedGlobalPromoData()
-        viewModel.setPromoListValue(promoData)
-
-        //when
-        val hasDifferentPreAppliedState = viewModel.hasDifferentPreAppliedState()
-
-        //then
-        assert(hasDifferentPreAppliedState)
-    }
-
-    @Test
-    fun `WHEN has any collapsed promo item checked but have not been applied THEN should has different pre applied state`() {
-        val fragmentData = GetPromoListDataProvider.provideFragmentData()
-        fragmentData.uiData.preAppliedPromoCode = listOf("CODE")
-        viewModel.setFragmentUiModelValue(fragmentData)
-
-        val promoData = GetPromoListDataProvider.provideCurrentSelectedCollapsedGlobalPromoData()
         viewModel.setPromoListValue(promoData)
 
         //when
