@@ -16,6 +16,8 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceAdapter
 import com.tokopedia.home.beranda.presentation.view.helper.*
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselEmptyCardViewHolder
@@ -59,6 +61,7 @@ private const val CHOOSE_ADDRESS_EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
  */
 
 fun disableCoachMark(context: Context){
+    disableHomeAnimation()
     disableChooseAddressCoachmark(context)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK, true)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_INBOX, true)
@@ -70,6 +73,7 @@ fun disableCoachMark(context: Context){
 }
 
 fun enableCoachMark(context: Context){
+    disableHomeAnimation()
     enableChooseAddressCoachmark(context)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_INBOX, false)
@@ -80,6 +84,11 @@ fun enableCoachMark(context: Context){
     setCoachmarkSharedPrefValue(context, PREF_KEY_NEW_WALLETAPP_COACHMARK_BALANCE, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_NEW_TOKOPOINT_COACHMARK_BALANCE, false)
     setHomeTokonowCoachmarkSharedPrefValue(context, false)
+}
+
+fun disableHomeAnimation() {
+    BalanceWidgetView.disableAnimation = true
+    BalanceAdapter.disableAnimation = true
 }
 
 fun setCoachmarkSharedPrefValue(context: Context, key: String, value: Boolean) {
@@ -303,23 +312,17 @@ private fun clickBUWidgetTab() {
 }
 
 private fun clickTickerItem(view: View) {
-    val childView = view
-    val textApplink = childView.findViewById<View>(R.id.ticker_description)
-    val closeButton = childView.findViewById<View>(R.id.ticker_close_icon)
-    if (textApplink.visibility == View.VISIBLE) {
-        try {
-            Espresso.onView(firstView(AllOf.allOf(ViewMatchers.withId(R.id.ticker_description), ViewMatchers.isDisplayed()))).perform(ViewActions.click())
-        } catch (e: PerformException) {
-            e.printStackTrace()
-        }
+    try {
+        Espresso.onView(firstView(AllOf.allOf(ViewMatchers.withId(R.id.ticker_description), ViewMatchers.isDisplayed()))).perform(ViewActions.click())
+    } catch (e: PerformException) {
+        e.printStackTrace()
     }
-    if (closeButton.visibility == View.VISIBLE) {
-        try {
-            Espresso.onView(firstView(ViewMatchers.withId(R.id.ticker_close_icon)))
-                    .perform(ViewActions.click())
-        } catch (e: PerformException) {
-            e.printStackTrace()
-        }
+
+    try {
+        Espresso.onView(firstView(ViewMatchers.withId(R.id.ticker_close_icon)))
+                .perform(ViewActions.click())
+    } catch (e: PerformException) {
+        e.printStackTrace()
     }
 }
 

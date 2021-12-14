@@ -1563,6 +1563,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onButtonAddToCartClicked(productModel: Any) {
+        if (dPresenter.dataHasChanged()) {
+            dPresenter.processUpdateCartData(true)
+        }
         dPresenter.processAddToCart(productModel)
     }
 

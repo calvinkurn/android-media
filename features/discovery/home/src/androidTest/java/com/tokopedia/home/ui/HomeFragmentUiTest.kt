@@ -49,6 +49,7 @@ class HomeFragmentUiTest {
         InstrumentationHomeRevampTestActivity::class.java
     ) {
         override fun beforeActivityLaunched() {
+            InstrumentationRegistry.getInstrumentation().context.deleteHomeDatabase()
             InstrumentationAuthHelper.clearUserSession()
             gtmLogDBSource.deleteAll().subscribe()
             InstrumentationAuthHelper.loginInstrumentationTestUser1()
@@ -68,7 +69,6 @@ class HomeFragmentUiTest {
             limitCountToIdle = totalData
         )
         IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
-        activityRule.deleteHomeDatabase()
     }
 
     @After

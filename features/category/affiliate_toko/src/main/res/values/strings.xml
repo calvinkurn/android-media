@@ -99,6 +99,7 @@
     <string name="affiliate_link">Link</string>
     <string name="affiliate_internet_error">Wah, internet putus. Cek paket data atau WiFi-mu.</string>
     <string name="terms_and_condition_upper">Syarat &amp; Ketentuan</string>
+    <string name="affilite_filter_ticker_description">Selain data hari ini, Performa Affiliate akan di-update setiap 24:00 - 09:00 WIB.</string>
     <string name="affiliate_saldo">Saldo Affiliate</string>
     <string name="affiliate_tarik_saldo">Tarik Saldo</string>
     <string name="affiliate_transaction_history">Riwayat Transaksi</string>

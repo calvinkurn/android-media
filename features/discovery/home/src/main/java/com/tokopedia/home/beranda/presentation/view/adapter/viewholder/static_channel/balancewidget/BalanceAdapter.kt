@@ -66,6 +66,10 @@ class BalanceAdapter(
     var attachedRecyclerView: RecyclerView? = null
     private var itemMap: HomeBalanceModel = HomeBalanceModel()
 
+    companion object {
+        var disableAnimation: Boolean = false
+    }
+
     @Suppress("TooGenericExceptionCaught")
     fun setItemMap(itemMap: HomeBalanceModel) {
         this.itemMap = itemMap
@@ -145,8 +149,13 @@ class BalanceAdapter(
             /**
              * Initial state
              */
-            home_iv_logo_shimmering?.show()
-            home_progress_bar_balance_layout?.show()
+            if (!disableAnimation) {
+                home_iv_logo_shimmering?.show()
+                home_progress_bar_balance_layout?.show()
+            } else {
+                home_iv_logo_shimmering?.gone()
+                home_progress_bar_balance_layout?.gone()
+            }
             home_tv_btn_action_balance?.show()
 
             animationJob?.cancel()
@@ -158,8 +167,10 @@ class BalanceAdapter(
                     home_tv_balance?.invisible()
                     home_tv_btn_action_balance?.invisible()
 
-                    home_iv_logo_shimmering?.show()
-                    home_progress_bar_balance_layout?.show()
+                    if (!disableAnimation) {
+                        home_iv_logo_shimmering?.show()
+                        home_progress_bar_balance_layout?.show()
+                    }
                 }
                 BalanceDrawerItemModel.STATE_SUCCESS -> {
                     home_progress_bar_balance_layout?.gone()
@@ -366,7 +377,9 @@ class BalanceAdapter(
                     element?.alternateBalanceDrawerItem?.let {
                         this.element = element
                         this.alternateDrawerItem = it
-                        setDrawerItemWithAnimation()
+                        if (!disableAnimation) {
+                            setDrawerItemWithAnimation()
+                        }
                     }
                 }
                 BalanceDrawerItemModel.STATE_ERROR -> {
@@ -406,7 +419,11 @@ class BalanceAdapter(
                         home_iv_logo_balance?.setImageDrawable(itemView.context.getDrawable(it))
                     } else {
                         home_iv_logo_balance?.invisible()
-                        home_iv_logo_shimmering?.visible()
+                        if (!disableAnimation) {
+                            home_iv_logo_shimmering?.visible()
+                        } else {
+                            home_iv_logo_shimmering?.gone()
+                        }
                     }
                 }
                 element?.iconImageUrl?.let {

@@ -16,7 +16,8 @@
       "relatedKeyword": ".+ - .+",
       "sessionIris": ".+",
       "pageSource": ".*",
-      "searchFilter": ".*"
+      "searchFilter": ".*",
+      "androidId": ".*"
     },
     {
       "event": "view_item_list",

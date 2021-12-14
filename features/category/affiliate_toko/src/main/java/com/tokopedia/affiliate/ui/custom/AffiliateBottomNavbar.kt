@@ -27,11 +27,11 @@ class AffiliateBottomNavbar(private val bottomNavigation: LottieBottomNavbar?,
                 com.tokopedia.unifyprinciples.R.color.Unify_G500,com.tokopedia.unifyprinciples.R.color.Unify_NN600, true, 1f, 3f))
         bottomNavigation?.setMenu(menu, isNewNavigation)
         bottomNavigation?.setMenuClickListener(menuListener)
-        setSelected(AffiliateActivity.HOME_MENU)
+        setSelected(AffiliateActivity.HOME_MENU,true)
     }
 
-    fun setSelected(position : Int){
-        bottomNavigation?.setSelected(position)
+    fun setSelected(position : Int, isNotFromBottom : Boolean = false){
+        bottomNavigation?.setSelected(position,isNotFromBottom)
     }
 
     fun showBottomNav() {
@@ -48,5 +48,5 @@ class AffiliateBottomNavbar(private val bottomNavigation: LottieBottomNavbar?,
 }
 
 interface AffiliateBottomNavBarInterface{
-    fun selectItem(position : Int, id  : Int)
+    fun selectItem(position : Int, id  : Int, isNotFromBottom : Boolean = false)
 }

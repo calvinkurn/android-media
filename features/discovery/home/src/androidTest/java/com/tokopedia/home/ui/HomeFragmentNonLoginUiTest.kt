@@ -47,6 +47,7 @@ class HomeFragmentNonLoginUiTest {
         InstrumentationHomeRevampTestActivity::class.java
     ) {
         override fun beforeActivityLaunched() {
+            InstrumentationRegistry.getInstrumentation().context.deleteHomeDatabase()
             InstrumentationAuthHelper.clearUserSession()
             gtmLogDBSource.deleteAll().subscribe()
             setupGraphqlMockResponse(HomeMockResponseConfig())
@@ -65,7 +66,6 @@ class HomeFragmentNonLoginUiTest {
             limitCountToIdle = totalData
         )
         IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
-        activityRule.deleteHomeDatabase()
     }
 
     @After
