@@ -242,7 +242,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
         }
     }
 
-    //    override fun getVMFactory(): ViewModelProvider.Factory {
+//    override fun getVMFactory(): ViewModelProvider.Factory {
 //        return viewModelProvider
 //    }
 //
