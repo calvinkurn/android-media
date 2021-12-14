@@ -511,8 +511,8 @@ class CampaignListViewModelTest {
         val shareModel = ShareModel.Whatsapp()
 
         val expected = LinkerData().apply {
-            name = EMPTY_STRING
-            ogTitle  = EMPTY_STRING
+            description = EMPTY_STRING
+            ogDescription  = EMPTY_STRING
         }
 
         every { resourceProvider.getShareOngoingCampaignDescriptionWording() } returns null
@@ -524,8 +524,8 @@ class CampaignListViewModelTest {
             campaignStatusOngoing
         )
 
-        assertEquals(expected.name, actual.linkerData.name)
-        assertEquals(expected.ogTitle, actual.linkerData.ogTitle)
+        assertEquals(expected.description, actual.linkerData.description)
+        assertEquals(expected.ogDescription, actual.linkerData.ogDescription)
     }
 
     @Test
@@ -562,8 +562,8 @@ class CampaignListViewModelTest {
         val shareModel = ShareModel.Whatsapp()
 
         val expected = LinkerData().apply {
-            name = EMPTY_STRING
-            ogTitle  = EMPTY_STRING
+            description = EMPTY_STRING
+            ogDescription  = EMPTY_STRING
         }
 
         every { resourceProvider.getShareOgDescription() } returns null
@@ -575,8 +575,8 @@ class CampaignListViewModelTest {
             campaignStatusUpcoming
         )
 
-        assertEquals(expected.name, actual.linkerData.name)
-        assertEquals(expected.ogTitle, actual.linkerData.ogTitle)
+        assertEquals(expected.description, actual.linkerData.description)
+        assertEquals(expected.ogDescription, actual.linkerData.ogDescription)
     }
 
     @Test
