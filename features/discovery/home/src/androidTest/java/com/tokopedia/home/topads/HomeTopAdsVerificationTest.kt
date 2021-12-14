@@ -154,7 +154,7 @@ class HomeTopAdsVerificationTest {
             }
             is MixLeftComponentViewHolder -> {
                 val childRecyclerView: RecyclerView = viewHolder.itemView.findViewById(R.id.rv_product)
-                val childItemCount = childRecyclerView.adapter!!.itemCount
+                val childItemCount = childRecyclerView.adapter?.itemCount?:0
                 if (childItemCount >= MIX_LEFT_ITEM_COUNT_THRESHOLD) {
                     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
                 }
