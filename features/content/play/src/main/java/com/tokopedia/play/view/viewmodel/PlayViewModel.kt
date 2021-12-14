@@ -756,6 +756,8 @@ class PlayViewModel @Inject constructor(
         return playVideoPlayer.getVideoDuration()
     }
 
+    fun getVideoTimestamp(): Long = playVideoPlayer.getCurrentPosition()
+
     fun requestWatchInPiP() {
         _observableEventPiPState.value = Event(PiPState.Requesting(PiPMode.WatchInPiP))
     }

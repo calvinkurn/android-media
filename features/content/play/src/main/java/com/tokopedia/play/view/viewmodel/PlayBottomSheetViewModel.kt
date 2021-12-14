@@ -40,6 +40,7 @@ class PlayBottomSheetViewModel @Inject constructor(
     private val _observableAddToCart = MutableLiveData<PlayResult<Event<CartFeedbackUiModel>>>()
     private val _observableProductVariant = MutableLiveData<PlayResult<VariantSheetUiModel>>()
     private val _observableUserReportReasoning = MutableLiveData<PlayResult<PlayUserReportUiModel.Loaded>>()
+    private val _observableUserReportSubmission = MutableLiveData<PlayResult<Event<Unit>>>()
 
     private val _observableLoggedInInteractionEvent = MutableLiveData<Event<LoginStateEvent>>()
     val observableLoggedInInteractionEvent: LiveData<Event<LoginStateEvent>> = _observableLoggedInInteractionEvent
@@ -47,6 +48,7 @@ class PlayBottomSheetViewModel @Inject constructor(
     val observableAddToCart: LiveData<PlayResult<Event<CartFeedbackUiModel>>> = _observableAddToCart
     val observableProductVariant: LiveData<PlayResult<VariantSheetUiModel>> = _observableProductVariant
     val observableUserReportReasoning : LiveData<PlayResult<PlayUserReportUiModel.Loaded>> = _observableUserReportReasoning
+    val observableUserReportSubmission : LiveData<PlayResult<Event<Unit>>> = _observableUserReportSubmission
 
     fun getProductVariant(product: PlayProductUiModel.Product, action: ProductAction) {
         _observableProductVariant.value = PlayResult.Loading(true)
@@ -131,6 +133,33 @@ class PlayBottomSheetViewModel @Inject constructor(
                 getUserReportList()
             }
         }
+    }
+
+    fun submitUserReport(channelId: Long,
+               mediaUrl: String,
+               ownerChannelUserId: Long,
+               reasonId: Int,
+               timestamp: Long,
+               reportDesc: String){
+        _observableUserReportSubmission.value = PlayResult.Loading(true)
+        viewModelScope.launchCatchError(block = {
+           val isSuccess = withContext(dispatchers.io) {
+                repo.submitReport(
+                    channelId = channelId,
+                    mediaUrl = mediaUrl,
+                    ownerChannelUserId = ownerChannelUserId,
+                    reasonId = reasonId,
+                    timestamp = timestamp,
+                    reportDesc = reportDesc
+                )
+           }
+            if(isSuccess){
+                _observableUserReportSubmission.value = PlayResult.Success(Event(Unit))
+            }
+        }){
+            _observableUserReportSubmission.value = PlayResult.Failure(it)
+        }
+
     }
 
     fun onFreezeBan() {

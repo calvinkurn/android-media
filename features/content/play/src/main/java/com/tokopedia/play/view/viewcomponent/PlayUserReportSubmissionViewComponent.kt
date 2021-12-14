@@ -67,6 +67,7 @@ class PlayUserReportSubmissionViewComponent(
     fun setView(item: PlayUserReportReasoningUiModel.Reasoning){
         tvTitle.text = item.title
         tvDesc.text = item.detail
+        etSubmission.setCounter(item.submissionData.max)
         etSubmission.setLabel(item.submissionData.label)
         val charMin = getString(R.string.play_user_report_text_area_min, item.submissionData.min)
         etSubmission.setMessage(charMin)
@@ -76,6 +77,10 @@ class PlayUserReportSubmissionViewComponent(
             listener.onSubmitUserReport(this@PlayUserReportSubmissionViewComponent,
             reasonId = item.reasoningId, description = desc)
         }
+    }
+
+    fun setBtnLoader(isLoading: Boolean){
+        btnSubmit.isLoading = isLoading
     }
 
     interface Listener {

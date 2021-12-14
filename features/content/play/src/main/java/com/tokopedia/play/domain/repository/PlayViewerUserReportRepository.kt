@@ -10,7 +10,6 @@ interface PlayViewerUserReportRepository {
     suspend fun getReasoningList() : List<PlayUserReportReasoningUiModel>
 
     suspend fun submitReport(
-        reporterId: Long,
         channelId: Long,
         mediaUrl: String,
         ownerChannelUserId: Long,

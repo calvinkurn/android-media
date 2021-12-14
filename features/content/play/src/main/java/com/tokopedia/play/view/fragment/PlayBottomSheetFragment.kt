@@ -17,6 +17,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.ProductAnalyticHelper
@@ -51,6 +52,7 @@ import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import java.net.ConnectException
 import java.net.UnknownHostException
+import java.util.Calendar
 import javax.inject.Inject
 
 /**
@@ -74,6 +76,8 @@ class PlayBottomSheetFragment @Inject constructor(
 
         private const val PERCENT_VARIANT_SHEET_HEIGHT = 0.6
         private const val PERCENT_FULL_SHEET_HEIGHT = 0.9
+
+        private const val TO_SECONDS_DIVIDER = 1000L
     }
 
     private val productSheetView by viewComponent { ProductSheetViewComponent(it, this) }
@@ -103,6 +107,9 @@ class PlayBottomSheetFragment @Inject constructor(
     private lateinit var loadingDialog: PlayLoadingDialogFragment
 
     private lateinit var productAnalyticHelper: ProductAnalyticHelper
+
+    private var userReportTimeMillis: Long = 0L
+
 
     override fun getScreenName(): String = "Play Bottom Sheet"
 
@@ -244,6 +251,7 @@ class PlayBottomSheetFragment @Inject constructor(
      */
 
     override fun onItemReportClick(view: PlayUserReportSheetViewComponent, item: PlayUserReportReasoningUiModel.Reasoning) {
+        userReportTimeMillis = Calendar.getInstance().timeInMillis
         playViewModel.onShowUserReportSubmissionSheet(userReportSheetHeight)
         userReportSubmissionSheetView.setView(item)
     }
@@ -269,7 +277,25 @@ class PlayBottomSheetFragment @Inject constructor(
         reasonId: Int,
         description: String
     ) {
-        val partnerInfo = playViewModel.latestCompleteChannelData.partnerInfo
+        val channelData = playViewModel.latestCompleteChannelData
+        viewModel.submitUserReport(
+            channelId = channelData.id.toLongOrZero(),
+            ownerChannelUserId = channelData.partnerInfo.id,
+            mediaUrl = channelData.channelDetail.shareInfo.content,
+            timestamp = getTimestampVideo(channelData.channelDetail.channelInfo.startTime),
+            reportDesc = description,
+            reasonId = reasonId
+        )
+    }
+
+    private fun getTimestampVideo(startTime: String): Long{
+        return if(playViewModel.channelType.isLive){
+            val startTimeInSecond = startTime.toLongOrZero()
+            val duration = (userReportTimeMillis - startTimeInSecond) / TO_SECONDS_DIVIDER
+            duration
+        }else{
+            playViewModel.getVideoTimestamp()
+        }
     }
 
     override fun onFooterClicked(view: PlayUserReportSubmissionViewComponent) {
@@ -297,6 +323,7 @@ class PlayBottomSheetFragment @Inject constructor(
         observeBuyEvent()
         observeStatusInfo()
         observeUserReport()
+        observeUserReportSubmission()
 
         observeUiState()
     }
@@ -358,7 +385,7 @@ class PlayBottomSheetFragment @Inject constructor(
             actionClickListener: View.OnClickListener = View.OnClickListener {}
     ) {
         when (bottomSheetType) {
-            BottomInsetsType.ProductSheet ->
+            BottomInsetsType.ProductSheet, BottomInsetsType.UserReportSubmissionSheet ->
                 Toaster.build(
                         view = requireView(),
                         text = message,
@@ -493,6 +520,20 @@ class PlayBottomSheetFragment @Inject constructor(
                 is PlayResult.Failure -> userReportSheetView.showError(
                     isConnectionError = it.error is ConnectException || it.error is UnknownHostException,
                     onError = it.onRetry
+                )
+            }
+        })
+    }
+
+    private fun observeUserReportSubmission(){
+        viewModel.observableUserReportSubmission.observe(viewLifecycleOwner, DistinctObserver {
+            when (it) {
+                is PlayResult.Loading -> userReportSubmissionSheetView.setBtnLoader(it.showPlaceholder)
+                is PlayResult.Success -> playViewModel.hideInsets(true)
+                is PlayResult.Failure -> doShowToaster(
+                    bottomSheetType = BottomInsetsType.UserReportSubmissionSheet,
+                    toasterType = Toaster.TYPE_ERROR,
+                    message = it.error.message.toString()
                 )
             }
         })
