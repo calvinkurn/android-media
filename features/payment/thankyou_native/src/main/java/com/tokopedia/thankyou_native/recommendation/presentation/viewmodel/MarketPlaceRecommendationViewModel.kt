@@ -16,10 +16,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class MarketPlaceRecommendationViewModel @Inject constructor(
-        @ApplicationContext val context: Context,
-        @CoroutineMainDispatcher val mainDispatcher: dagger.Lazy<CoroutineDispatcher>,
+        @CoroutineMainDispatcher val mainDispatcher:CoroutineDispatcher,
         private val recommendationUseCase: dagger.Lazy<TYPGetRecommendationUseCase>,
-        val userSession: dagger.Lazy<UserSessionInterface>) : BaseViewModel(mainDispatcher.get()) {
+       ) : BaseViewModel(mainDispatcher) {
 
     val recommendationMutableData = MutableLiveData<Result<ProductRecommendationData>>()
 
