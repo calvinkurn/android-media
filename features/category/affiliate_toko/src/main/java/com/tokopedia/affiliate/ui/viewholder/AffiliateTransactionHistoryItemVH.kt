@@ -10,6 +10,7 @@ import com.tokopedia.affiliate.ui.activity.AffiliateSaldoWithdrawalDetailActivit
 import com.tokopedia.affiliate.ui.activity.AffiliateTransactionDetailActivity
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTransactionHistoryItemModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Label
@@ -33,27 +34,34 @@ class AffiliateTransactionHistoryItemVH(itemView: View)
     }
 
     override fun bind(element: AffiliateTransactionHistoryItemModel?) {
-        itemView.findViewById<ConstraintLayout>(R.id.transaction_history_parent_view).setOnClickListener {
-            when(element?.transaction?.transactionType){
-                TRANSACTION_TYPE_DEPOSIT -> {
-                    AffiliateAnalytics.sendEvent(
-                            AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
-                            AffiliateAnalytics.CategoryKeys.PENDAPATAN_PAGE,
-                            AffiliateAnalytics.ActionKeys.CLICK_TRANSACTION_CARD,
-                            "${element.transaction.transactionID} ${AffiliateAnalytics.LabelKeys.INCOMING}",
-                            UserSession(itemView.context).userId)
-                    itemView.context.startActivity(AffiliateTransactionDetailActivity.createIntent(itemView.context, element?.transaction?.transactionID))
-                }
-                TRANSACTION_TYPE_WITHDRAWAL -> {
-                    AffiliateAnalytics.sendEvent(
-                            AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
-                            AffiliateAnalytics.CategoryKeys.PENDAPATAN_PAGE,
-                            AffiliateAnalytics.ActionKeys.CLICK_TRANSACTION_CARD,
-                            "${element.transaction.transactionID} ${AffiliateAnalytics.LabelKeys.OUTGOING}",
-                            UserSession(itemView.context).userId)
-                    itemView.context.startActivity(AffiliateSaldoWithdrawalDetailActivity.newInstance(itemView.context, element.transaction.transactionID))
+
+        if(element?.transaction?.hasDetail == true){
+            itemView.findViewById<IconUnify>(R.id.transaction_history_chevron).show()
+            itemView.findViewById<ConstraintLayout>(R.id.transaction_history_parent_view).setOnClickListener {
+                when(element?.transaction?.transactionType){
+                    TRANSACTION_TYPE_DEPOSIT -> {
+                        AffiliateAnalytics.sendEvent(
+                                AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
+                                AffiliateAnalytics.CategoryKeys.PENDAPATAN_PAGE,
+                                AffiliateAnalytics.ActionKeys.CLICK_TRANSACTION_CARD,
+                                "${element.transaction.transactionID} ${AffiliateAnalytics.LabelKeys.INCOMING}",
+                                UserSession(itemView.context).userId)
+                        itemView.context.startActivity(AffiliateTransactionDetailActivity.createIntent(itemView.context, element?.transaction?.transactionID))
+                    }
+                    TRANSACTION_TYPE_WITHDRAWAL -> {
+                        AffiliateAnalytics.sendEvent(
+                                AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
+                                AffiliateAnalytics.CategoryKeys.PENDAPATAN_PAGE,
+                                AffiliateAnalytics.ActionKeys.CLICK_TRANSACTION_CARD,
+                                "${element.transaction.transactionID} ${AffiliateAnalytics.LabelKeys.OUTGOING}",
+                                UserSession(itemView.context).userId)
+                        itemView.context.startActivity(AffiliateSaldoWithdrawalDetailActivity.newInstance(itemView.context, element.transaction.transactionID))
+                    }
                 }
             }
+        } else{
+            itemView.findViewById<IconUnify>(R.id.transaction_history_chevron).hide()
+            itemView.findViewById<ConstraintLayout>(R.id.transaction_history_parent_view).setOnClickListener(null)
         }
         itemView.findViewById<Typography>(R.id.transaction_history_heading).text = element?.transaction?.title
         itemView.findViewById<Typography>(R.id.transaction_history_amount).apply {
