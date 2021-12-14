@@ -28,3 +28,7 @@ const val ON_BOARDING_TUTORIAL_IMAGE_3 = "https://images.tokopedia.net/img/andro
 const val AFFILIATE_SPLASH_TIME = 4000L
 
 const val AFFILIATE_WALLET_TRANSACTION_ENABLE = "app_affiliate_wallet_transaction_enable"
+
+const val AFFILIATE_TRX_ENABLED = "aff_trx_history"
+
+const val DEFAULT_VALUE = false

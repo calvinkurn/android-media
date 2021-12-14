@@ -35,6 +35,7 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -60,11 +61,10 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     private var userActionRequiredForRegister = false
 
     private var isUserBlackListed = false
+    private var isAffiliateWalletEnabled = false
 
-    private val affiliateRemoteConfigUtils by lazy { AffiliateRemoteConfigUtils(applicationContext) }
-
-    private val isAffiliateWalletEnabled : Boolean
-        get() = affiliateRemoteConfigUtils.getBooleanRemoteConfig(AFFILIATE_WALLET_TRANSACTION_ENABLE, false)
+    private val affiliateWalletVariant : String
+        get() = RemoteConfigInstance.getInstance().abTestPlatform.getString(AFFILIATE_TRX_ENABLED, "")
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,11 +110,19 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun afterViewCreated() {
+        initRollence()
         initBottomNavigationView()
         setObservers()
         showAffiliatePortal()
 //        if(userSessionInterface.isLoggedIn)
 //            affiliateVM.getAffiliateValidateUser()
+    }
+
+    private fun initRollence() {
+        isAffiliateWalletEnabled = when(affiliateWalletVariant){
+            AFFILIATE_TRX_ENABLED -> true
+            else -> false
+        }
     }
 
     private fun showLoginPortal() {
