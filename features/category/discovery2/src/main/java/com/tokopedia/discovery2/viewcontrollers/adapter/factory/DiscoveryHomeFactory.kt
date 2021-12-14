@@ -28,6 +28,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cate
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navigationChips.NavigationChipsItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.DefaultComponentViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannedview.BannedViewViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.*
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.CalendarWidgetItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselerrorload.CarouselErrorLoadViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorybestseller.CategoryBestSellerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorybestseller.CategoryBestSellerViewModel
@@ -100,6 +102,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merc
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.MerchantVoucherCarouselViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerCalendarViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tdnbanner.DiscoveryTDNBannerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tdnbanner.DiscoveryTDNBannerViewModel
 
@@ -198,6 +201,12 @@ class DiscoveryHomeFactory {
 
             //Topads Headline View
             initializeComponent(ComponentsList.TopadsHeadlineView, ::TopAdsHeadlineViewHolder, ::TopAdsHeadlineViewModel)
+
+            //Calendar View
+            initializeComponent(ComponentsList.CalendarWidgetCarousel, ::CalendarWidgetCarouselViewHolder, ::CalendarWidgetCarouselViewModel)
+            initializeComponent(ComponentsList.CalendarWidgetGrid, ::CalendarWidgetGridViewHolder, ::CalendarWidgetGridViewModel)
+            initializeComponent(ComponentsList.CalendarWidgetItem, ::CalendarWidgetItemViewHolder, ::CalendarWidgetItemViewModel)
+            initializeComponent(ComponentsList.ShimmerCalendarWidget, ::ShimmerCalendarViewHolder, ::ShimmerViewModel)
 
         }
 

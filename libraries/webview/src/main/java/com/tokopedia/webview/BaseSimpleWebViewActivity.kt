@@ -89,7 +89,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         if (showTitleBar) {
             inflater.inflate(R.menu.menu_web_view, menu)
         }
-        return true
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

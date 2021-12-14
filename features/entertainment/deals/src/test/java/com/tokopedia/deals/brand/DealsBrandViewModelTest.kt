@@ -10,12 +10,16 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.coEvery
-import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import com.tokopedia.deals.DealsJsonMapper.getJson
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.verify
+import io.mockk.mockk
+import io.mockk.just
+import io.mockk.runs
 import junit.framework.Assert.assertEquals
 
 class DealsBrandViewModelTest {
@@ -123,5 +127,16 @@ class DealsBrandViewModelTest {
         // then
         assert(viewModel.dealsSearchResponse.value is Success)
         assertEquals((viewModel.dealsSearchResponse.value as Success).data, mockBrand)
+    }
+
+    @Test
+    fun onClearedViewModel(){
+        every { useCase.cancelJobs() } just runs
+
+        val method = viewModel::class.java.getDeclaredMethod("onCleared")
+        method.isAccessible = true
+        method.invoke(viewModel)
+
+        verify { useCase.cancelJobs() }
     }
 }

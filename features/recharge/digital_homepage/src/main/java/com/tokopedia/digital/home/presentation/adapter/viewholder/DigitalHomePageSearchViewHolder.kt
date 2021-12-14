@@ -1,17 +1,18 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.StyleSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeSearchCategoryItemBinding
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.digital.home.presentation.listener.SearchAutoCompleteListener
+import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.media.loader.loadImage
 
-class DigitalHomePageSearchViewHolder(itemView: View?, private val onSearchCategoryClickListener: OnSearchCategoryClickListener) :
+class DigitalHomePageSearchViewHolder(itemView: View?, private val onSearchCategoryClickListener: OnSearchCategoryClickListener,
+                                      private val listener: SearchAutoCompleteListener
+) :
         AbstractViewHolder<DigitalHomePageSearchCategoryModel>(itemView) {
 
     override fun bind(element: DigitalHomePageSearchCategoryModel) {
@@ -20,15 +21,21 @@ class DigitalHomePageSearchViewHolder(itemView: View?, private val onSearchCateg
             digitalHomepageSearchCategoryImage.loadImage(element.icon)
 
             // Add search query shading to category name
-            val spannableString = SpannableStringBuilder(element.label)
-            val searchQueryIndex = element.label.indexOf(element.searchQuery, ignoreCase = true)
-            if (searchQueryIndex > -1) {
-                spannableString.setSpan(StyleSpan(Typeface.BOLD), 0, searchQueryIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                spannableString.setSpan(StyleSpan(Typeface.BOLD), searchQueryIndex + element.searchQuery.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            }
-            digitalHomepageSearchCategoryName.text = spannableString
+            digitalHomepageSearchCategoryName.text = RechargeHomepageSectionMapper.boldReverseSearchAutoComplete(element.label, element.searchQuery)
 
-            root.setOnClickListener { onSearchCategoryClickListener.onSearchCategoryClicked(element, adapterPosition) }
+            itemView.addOnImpressionListener(element, {
+                if (!element.trackerUser.keyword.isNullOrEmpty()){
+                 listener.impressCategoryListener(element.trackerUser, element.trackerItem)
+                }
+            })
+
+            root.setOnClickListener {
+                if (!element.trackerUser.keyword.isNullOrEmpty()) {
+                    listener.clickCategoryListener(element, element.trackerUser, element.trackerItem)
+                } else {
+                    onSearchCategoryClickListener.onSearchCategoryClicked(element, adapterPosition)
+                }
+            }
         }
     }
 

@@ -15,13 +15,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.common.bottomsheet.TokoNowEducationalInformationBottomSheet
 import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
 import com.tokopedia.product.detail.view.util.ProductSeparatorItemDecoration
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
@@ -172,12 +173,12 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
             val ratesEstimateRequest = sharedViewModel.rateEstimateRequest.value
             ProductDetailShippingTracking.onPelajariTokoCabangClicked(ratesEstimateRequest?.userId
                     ?: "")
-            val bottomSheet = if (ratesEstimateRequest?.isTokoNow == true) {
-                TokoNowEducationalInformationBottomSheet()
+            if (ratesEstimateRequest?.isTokoNow == true) {
+                RouteManager.route(context, EDUCATIONAL_INFO)
             } else {
-                ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(it, freeOngkirUrl, uspTokoCabangImgUrl)
+                val bottomSheet = ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(it, freeOngkirUrl, uspTokoCabangImgUrl)
+                bottomSheet.show(childFragmentManager, ProductDetailCommonBottomSheetBuilder.TAG_USP_BOTTOM_SHEET)
             }
-            bottomSheet.show(childFragmentManager, ProductDetailCommonBottomSheetBuilder.TAG_USP_BOTTOM_SHEET)
         }
     }
 

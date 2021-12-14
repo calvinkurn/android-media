@@ -50,14 +50,21 @@ object RollenceKey {
     //Home account
     const val HOME_ACCOUNT_SHOW_VIEW_MORE_WALLET_TOGGLE = "akun_widget_button"
 
-    //Add Bills SBM
-    const val SBM_ADD_BILLS_KEY = "sbm_addbills2"
-    const val SBM_ADD_BILLS_FALSE = "sbm_addbills_False"
-    const val SBM_ADD_BILLS_TRUE = "sbm_addbills_True"
-
     //User
     const val USER_DARK_MODE_TOGGLE = "dark_mode_nakama_v2"
     const val EXPERIMENT_NAME_REVIEW_CREDIBILITY = "review_credibility"
     const val VARIANT_REVIEW_CREDIBILITY_WITHOUT_BOTTOM_SHEET = "without_bottomsheet"
     const val VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET = "with_bottomsheet"
+
+    //Auto Complete
+    const val AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING = "keyword_track_init"
+    const val AUTOCOMPLETE_SUGGESTION_COMPONENT_TRACKING = "keyword_track_autoc"
+
+    //Search
+    const val SEARCH_CAROUSEL_CONTENT_TRACKER_UNIFICATION = "ContentTrackerUni"
+
+    // Purchase Platform
+    const val WISHLIST_V2_REVAMP = "Wishlist_revamp_apps"
+    const val WISHLIST_OLD_VARIANT = "control_variant"
+    const val WISHLIST_V2_VARIANT = "experiment_variant"
 }

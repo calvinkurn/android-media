@@ -5,7 +5,7 @@
     android:id="@+id/base_main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:visibility="gone">
 
     <TextView

@@ -62,6 +62,15 @@ class BannerCarouselViewHolder(itemView: View, private val fragment: Fragment) :
         }
     }
 
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+        super.removeObservers(lifecycleOwner)
+        lifecycleOwner?.let {
+            mBannerCarouselComponentViewModel.getComponentData().removeObservers(it)
+            mBannerCarouselComponentViewModel.getTitleLiveData().removeObservers(it)
+            mBannerCarouselComponentViewModel.getComponents().removeObservers(it)
+        }
+    }
+
     private fun updateHeaderUI(title: String) {
         if (title.isEmpty()) {
             titleTextView.hide()

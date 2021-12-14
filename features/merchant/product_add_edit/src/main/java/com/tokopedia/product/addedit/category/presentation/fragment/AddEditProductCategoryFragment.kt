@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.core.common.category.domain.model.CategoriesResponse
 import com.tokopedia.core.common.category.view.model.CategoryViewModel
@@ -27,9 +28,10 @@ import com.tokopedia.product.addedit.category.presentation.adapter.AddEditProduc
 import com.tokopedia.product.addedit.category.presentation.model.CategoryUiModel
 import com.tokopedia.product.addedit.category.presentation.viewholder.AddEditProductCategoryViewHolder
 import com.tokopedia.product.addedit.category.presentation.viewmodel.AddEditProductCategoryViewModel
+import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_add_edit_product_category.*
 import java.util.*
 import javax.inject.Inject
 
@@ -48,6 +50,9 @@ class AddEditProductCategoryFragment : BaseDaggerFragment(), AddEditProductCateg
     @Inject
     lateinit var viewModel: AddEditProductCategoryViewModel
 
+    private var rvCategory: RecyclerView? = null
+    private var geCategory: GlobalError? = null
+    private var loaderUnify: LoaderUnify? = null
     private var adapter: AddEditProductCategoryAdapter? = null
     private var selectedCategory: Long? = null
     private var resultCategories = mutableListOf<CategoryUiModel>()
@@ -71,7 +76,7 @@ class AddEditProductCategoryFragment : BaseDaggerFragment(), AddEditProductCateg
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setup()
+        setup(view)
         observer()
     }
 
@@ -110,15 +115,19 @@ class AddEditProductCategoryFragment : BaseDaggerFragment(), AddEditProductCateg
         return sb.toString()
     }
 
-    private fun setup() {
+    private fun setup(view: View) {
+        rvCategory = view.findViewById(R.id.rvCategory)
+        geCategory = view.findViewById(R.id.geCategory)
+        loaderUnify = view.findViewById(R.id.loaderUnify)
+
         viewModel.getCategoryLiteTree()
         displayLoader()
         adapter = AddEditProductCategoryAdapter(this, resultCategories)
-        rvCategory.adapter = adapter
-        rvCategory.layoutManager = LinearLayoutManager(context)
+        rvCategory?.adapter = adapter
+        rvCategory?.layoutManager = LinearLayoutManager(context)
 
         // set bg color programatically, to reduce overdraw
-        requireActivity().window.decorView.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        setFragmentToUnifyBgColor()
     }
 
     private fun observer() {
@@ -136,14 +145,14 @@ class AddEditProductCategoryFragment : BaseDaggerFragment(), AddEditProductCateg
     }
 
     private fun displayLoader() {
-        geCategory.hide()
-        loaderUnify.show()
-        rvCategory.hide()
+        geCategory?.hide()
+        loaderUnify?.show()
+        rvCategory?.hide()
     }
 
     private fun dismissLoader() {
-        loaderUnify.hide()
-        rvCategory.show()
+        loaderUnify?.hide()
+        rvCategory?.show()
     }
 
     private fun onSuccessGetCategory(data: CategoriesResponse) {
@@ -153,13 +162,13 @@ class AddEditProductCategoryFragment : BaseDaggerFragment(), AddEditProductCateg
     }
 
     private fun onFailGetCategory() {
-        geCategory.apply {
+        geCategory?.apply {
             setType(GlobalError.SERVER_ERROR)
             setActionClickListener {
                 viewModel.getCategoryLiteTree()
                 displayLoader()
             }
-        }.show()
-        rvCategory.hide()
+        }?.show()
+        rvCategory?.hide()
     }
 }
