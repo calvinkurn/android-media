@@ -66,7 +66,10 @@ class ShopStatusViewHolder(itemView: View?,
     }
 
     private fun setShopStatusSuccessLayout(shopType: ShopType) {
-        shopStatusDescTextView?.setOnClickListener(null)
+        shopStatusDescTextView?.run {
+            setOnClickListener(null)
+            isClickable = false
+        }
 
         when (shopType) {
             is RegularMerchant -> setRegularMerchantLayout()
@@ -85,7 +88,7 @@ class ShopStatusViewHolder(itemView: View?,
     }
 
     private fun setRegularMerchantLayout() {
-        setTitle(R.string.regular_merchant)
+        setTitle(com.tokopedia.seller.menu.common.R.string.regular_merchant)
         setDescription(
             R.string.sah_new_other_status_upgrade,
             com.tokopedia.unifyprinciples.R.color.Unify_GN500
@@ -102,7 +105,7 @@ class ShopStatusViewHolder(itemView: View?,
     }
 
     private fun setPowerMerchantLayout(powerMerchantStatus: PowerMerchantStatus) {
-        setTitle(R.string.power_merchant_upgrade)
+        setTitle(com.tokopedia.seller.menu.common.R.string.power_merchant_upgrade)
         when (powerMerchantStatus) {
             is PowerMerchantStatus.Active -> {
                 setDescription(
@@ -110,13 +113,16 @@ class ShopStatusViewHolder(itemView: View?,
                     com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
                 warningIcon?.gone()
-                shopStatusDescTextView?.setOnClickListener {
-                    onGoToPowerMerchant(TAB_PM_PRO, true)
+                shopStatusDescTextView?.run {
+                    isClickable = true
+                    setOnClickListener {
+                        onGoToPowerMerchant(TAB_PM_PRO, true)
+                    }
                 }
             }
             is PowerMerchantStatus.NotActive -> {
                 setDescription(
-                    R.string.setting_not_active,
+                    com.tokopedia.seller.menu.common.R.string.setting_not_active,
                     com.tokopedia.unifyprinciples.R.color.Unify_RN500
                 )
                 warningIcon?.show()
