@@ -146,14 +146,14 @@ object AffiliateAnalytics {
 
     interface ScreenKeys{
         companion object{
-            const val AFFILIATE_HOME_SCREEN_NAME = "affiliate portal - home page"
+            const val AFFILIATE_HOME_SCREEN_NAME = "/affiliate portal - home page"
         }
     }
 
     interface ItemKeys{
         companion object{
-            const val AFFILIATE_PERNAH_DIBEL = "affiliate - promosikan pernah dibeli"
-            const val AFFILIATE_PERNAH_DILIHAT = "affiliate - promosikan pernah dilihat"
+            const val AFFILIATE_PERNAH_DIBEL = "/affiliate - promosikan pernah dibeli"
+            const val AFFILIATE_PERNAH_DILIHAT = "/affiliate - promosikan pernah dilihat"
         }
     }
 
