@@ -1,5 +1,6 @@
 package com.tokopedia.campaignlist.page.presentation.viewmodel
 
+import android.text.TextUtils
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.campaignlist.common.data.model.response.*
@@ -22,6 +23,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockkStatic
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -610,6 +612,43 @@ class CampaignListViewModelTest {
 
         assertEquals(expected.description, actual.linkerData.description)
         assertEquals(expected.ogDescription, actual.linkerData.ogDescription)
+    }
+
+
+    @Test
+    fun `When get linker data while share model image url is specified, should set it to linker data`() {
+        val campaignStatus = null
+        val imageUrl = "https://aws.tokopedia.com/whatsapp.png"
+
+        val shareModel = ShareModel.Whatsapp()
+        shareModel.ogImgUrl = imageUrl
+
+        val actual = viewModel.generateLinkerShareData(
+            shop,
+            campaign,
+            shareModel,
+            campaignStatus
+        )
+
+        assertEquals(imageUrl, actual.linkerData.ogImageUrl)
+    }
+
+    @Test
+    fun `When get linker data while share model image url is null, should not set it to linker data`() {
+        val campaignStatus = null
+        val shareModel = ShareModel.Whatsapp()
+
+        mockkStatic(TextUtils::class)
+        every { TextUtils.isEmpty(any()) } answers { true }
+
+        val actual = viewModel.generateLinkerShareData(
+            shop,
+            campaign,
+            shareModel,
+            campaignStatus
+        )
+
+        assertEquals(null, actual.linkerData.ogImageUrl)
     }
 
     @After
