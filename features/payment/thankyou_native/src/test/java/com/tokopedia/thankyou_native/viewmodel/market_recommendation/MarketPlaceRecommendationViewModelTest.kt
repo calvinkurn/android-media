@@ -20,8 +20,9 @@ import org.junit.Test
 
 class MarketPlaceRecommendationViewModelTest {
 
+
     @get:Rule
-    val rule = InstantTaskExecutorRule()
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
     lateinit var typGetRecommendationUseCase: dagger.Lazy<TYPGetRecommendationUseCase>
