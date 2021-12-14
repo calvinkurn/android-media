@@ -34,8 +34,9 @@ class ProductrevGetPostSubmitBottomSheetUseCase @Inject constructor(
                     buttonList {
                       type
                       text
-                      backgroundColor
-                      fontColor
+                      unifyType
+                      unifyVariant
+                      unifySize
                       webLink
                       appLink
                     }

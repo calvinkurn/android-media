@@ -9,6 +9,9 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
+import com.tokopedia.review.common.util.mapToUnifyButtonSize
+import com.tokopedia.review.common.util.mapToUnifyButtonType
+import com.tokopedia.review.common.util.mapToUnifyButtonVariant
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.model.ProductrevGetPostSubmitBottomSheetResponse
 import com.tokopedia.review.feature.ovoincentive.data.ThankYouBottomSheetTrackerData
@@ -134,13 +137,16 @@ object IncentiveOvoThankYouBottomSheetBuilder {
         val buttonText = button?.text ?: context.getString(
             R.string.review_create_thank_you_default_button
         )
-        val buttonType = button?.type
+        val actionType = button?.type
             ?: ProductrevGetPostSubmitBottomSheetResponse.Button.TYPE_CLOSE
         incentiveOvoSendAnother?.apply {
             text = buttonText
+            buttonType = button?.unifyType.mapToUnifyButtonType()
+            buttonVariant = button?.unifyVariant.mapToUnifyButtonVariant()
+            buttonSize = button?.unifySize.mapToUnifyButtonSize()
             setOnClickListener(
                 createButtonClickListener(
-                    buttonType,
+                    actionType,
                     button?.appLink.orEmpty(),
                     bottomSheetUnify,
                     hasPendingIncentive,
@@ -162,13 +168,16 @@ object IncentiveOvoThankYouBottomSheetBuilder {
         } else null
         button?.let { button ->
             val buttonText = button.text.orEmpty()
-            val buttonType = button.type
+            val actionType = button.type
                 ?: ProductrevGetPostSubmitBottomSheetResponse.Button.TYPE_CLOSE
             incentiveOvoLater?.apply {
                 text = buttonText
+                buttonType = button.unifyType.mapToUnifyButtonType()
+                buttonVariant = button.unifyVariant.mapToUnifyButtonVariant()
+                buttonSize = button.unifySize.mapToUnifyButtonSize()
                 setOnClickListener(
                     createButtonClickListener(
-                        buttonType,
+                        actionType,
                         button.appLink.orEmpty(),
                         bottomSheetUnify,
                         hasPendingIncentive,
@@ -201,7 +210,7 @@ object IncentiveOvoThankYouBottomSheetBuilder {
     }
 
     private fun createButtonClickListener(
-        buttonType: String,
+        actionType: String,
         appLink: String,
         bottomSheetUnify: BottomSheetUnify,
         hasPendingIncentive: Boolean,
@@ -210,7 +219,7 @@ object IncentiveOvoThankYouBottomSheetBuilder {
     ): View.OnClickListener {
         return View.OnClickListener { view ->
             bottomSheetUnify.dismiss()
-            when (buttonType) {
+            when (actionType) {
                 ProductrevGetPostSubmitBottomSheetResponse.Button.TYPE_STANDARD,
                 ProductrevGetPostSubmitBottomSheetResponse.Button.TYPE_WEB_VIEW -> {
                     CreateReviewTracking.eventClickPostSubmitBottomSheetButton(

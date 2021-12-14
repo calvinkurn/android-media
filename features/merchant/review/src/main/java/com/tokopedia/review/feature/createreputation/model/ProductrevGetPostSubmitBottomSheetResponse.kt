@@ -27,12 +27,15 @@ data class ProductrevGetPostSubmitBottomSheetResponse(
         @SerializedName("text")
         @Expose
         val text: String? = null,
-        @SerializedName("backgroundColor")
+        @SerializedName("unifyType")
         @Expose
-        val backgroundColor: String? = null,
-        @SerializedName("fontColor")
+        val unifyType: String? = null,
+        @SerializedName("unifyVariant")
         @Expose
-        val fontColor: String? = null,
+        val unifyVariant: String? = null,
+        @SerializedName("unifySize")
+        @Expose
+        val unifySize: String? = null,
         @SerializedName("webLink")
         @Expose
         val webLink: String? = null,
