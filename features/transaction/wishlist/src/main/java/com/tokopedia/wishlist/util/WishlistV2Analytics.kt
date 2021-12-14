@@ -292,6 +292,7 @@ object WishlistV2Analytics {
                 EVENT_LABEL, "${wishlistItem.id} - ${if (wishlistItem.available) "available" else "unavailable"}",
                 CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
                 USER_ID, userId,
+                WISHLIST_ID, wishlistItem.id,
                 BUSINESS_UNIT, PURCHASE_PLATFORM,
                 ECOMMERCE, DataLayer.mapOf(
                 CURRENCY_CODE, IDR,
