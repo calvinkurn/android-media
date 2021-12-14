@@ -67,8 +67,8 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     public static final int ROTATE_WIDGET_SENSITIVITY = 1;
 
     private String edittedImagePath;
-    private int minResolution = 0;
-    private boolean isCirclePreview;
+    private int minResolution = 0, removeBackgroundColor = 0;
+    private boolean isCirclePreview, hasRequestRemoveBackground = false;
     private float brightness = 0, contrast = INITIAL_CONTRAST_VALUE;
 
     private View progressBar;
@@ -92,10 +92,6 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     private UserSessionInterface userSession;
 
     private Bitmap lastStateImage;
-
-    private int color = -1;
-    private boolean isTransparent = false;
-    private Bitmap tempRevertRemoveBackground = null;
 
     public interface OnImageEditPreviewFragmentListener {
         boolean isInEditCropMode();
@@ -121,10 +117,6 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         ImageRatioType getCurrentRatio();
 
         void itemSelectionWidgetPreview(Bitmap[] bitmap);
-
-        void transparentImageFilePath(String filePath, int lastBackgroundColor);
-
-        void normalStateOfBitmap(Bitmap bitmap);
     }
 
     public static ImageEditPreviewFragment newInstance(
@@ -303,44 +295,35 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         imageEditPreviewPresenter.setTokopediaWatermark(userInfo, bitmap);
     }
 
-    public void setRemoveBackground(String tempTransparentCacheFilePath, int tempTransparentBackgroundColor) {
-        if (!isTransparent && tempTransparentCacheFilePath.isEmpty()) {
-            showLoadingAndHidePreview();
-            Bitmap bitmap = gestureCropImageView.getViewBitmap();
-            Bitmap.CompressFormat compressFormat = ImageProcessingUtil.getCompressFormat(edittedImagePath);
+    public void setRemoveBackground(int color) {
+        removeBackgroundColor = color;
 
-            // save state first
-            try {
-                onImageEditPreviewFragmentListener.normalStateOfBitmap(tempRevertRemoveBackground);
-            } catch (Exception ignored) {}
-
-            imageEditPreviewPresenter.setRemoveBackground(bitmap, compressFormat);
-        } else if (!tempTransparentCacheFilePath.isEmpty()){
-            gestureCropImageView.setBackgroundColor(tempTransparentBackgroundColor);
-            setImageData(tempTransparentCacheFilePath);
+        if (hasRequestRemoveBackground) {
+            gestureCropImageView.setBackgroundColor(removeBackgroundColor);
+            return;
         }
+
+        showLoadingAndHidePreview();
+
+        Bitmap bitmap = gestureCropImageView.getViewBitmap();
+        Bitmap.CompressFormat compressFormat = ImageProcessingUtil.getCompressFormat(edittedImagePath);
+
+        imageEditPreviewPresenter.setRemoveBackground(bitmap, compressFormat);
     }
 
     public void saveRemoveBackground() {
+        if (removeBackgroundColor == 0) {
+            onImageEditPreviewFragmentListener.onEditDoNothing();
+            return;
+        }
+
         Bitmap.CompressFormat compressFormat = ImageProcessingUtil.getCompressFormat(edittedImagePath);
-        imageEditPreviewPresenter.saveRemoveBackground(gestureCropImageView, compressFormat, color);
+        imageEditPreviewPresenter.saveRemoveBackground(gestureCropImageView, compressFormat, 0);
     }
 
     public void cancelRemoveBackground() {
-        isTransparent = false;
-        hideLoadingAndShowPreview();
-        imageEditPreviewPresenter.cancelRequestRemoveBackground();
-        //gestureCropImageView.setImageBitmap(tempRevertRemoveBackground);
-        onImageEditPreviewFragmentListener.undoToPrevImage(imageIndex);
-        onImageEditPreviewFragmentListener.transparentImageFilePath("", -1);
-    }
-
-    public void normalModeOfRemoveBackground(Bitmap bitmap) {
-        if (tempRevertRemoveBackground == null) {
-            gestureCropImageView.setImageBitmap(bitmap);
-        } else {
-            gestureCropImageView.setImageBitmap(tempRevertRemoveBackground);
-        }
+        removeBackgroundColor = 0;
+        hasRequestRemoveBackground = false;
     }
 
     @Override
@@ -358,9 +341,10 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
     @Override
     public void onSuccessGetRemoveBackground(String filePath) {
-        isTransparent = true;
         hideLoadingAndShowPreview();
-        onImageEditPreviewFragmentListener.transparentImageFilePath(filePath, color);
+        hasRequestRemoveBackground = true;
+        gestureCropImageView.setBackgroundColor(removeBackgroundColor);
+        setImageData(filePath);
     }
 
     @Override
@@ -505,7 +489,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         setImageData(edittedImagePath);
     }
 
-    private void setImageData(String filePath) {
+    void setImageData(String filePath) {
         Uri inputUri = Uri.fromFile(new File(filePath));
         Uri outputUri = Uri.parse(ImageProcessingUtil.getTokopediaPhotoPath(filePath).toString());
 

@@ -153,12 +153,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     private int watermarkType = Constant.TYPE_WATERMARK_TOPED;
     private String pageSource = ImageEditorTracking.UNKNOWN_PAGE;
 
-    private String tempTransparentImageFilePath = "";
-    private int tempTransparentBackgroundColor = -1;
-
-    private Bitmap normalStateOfBitmap = null;
-
-    private int lastRemoveBackgroundState = -1;
+    private int currentRemoveBackgroundState = 0;
 
     public static Intent getIntent(Context context, ImageEditorBuilder imageEditorBuilder) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
@@ -351,6 +346,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     fragment.cancelContrast();
                     break;
                 case ACTION_REMOVE_BACKGROUND:
+                    currentRemoveBackgroundState = 0;
                     fragment.cancelRemoveBackground();
                     break;
             }
@@ -583,7 +579,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     if (fragment != null && !isSetWatermark) {
                         hideAllControls();
                         watermarkItemSelection.clearData();
-                        setLastStateWatermarkImage();
+                        setLastStateImageBitmap();
                         watermarkType = Constant.TYPE_WATERMARK_TOPED;
                         isSetWatermark = true;
                         fragment.setWatermark();
@@ -594,15 +590,10 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                 case ACTION_REMOVE_BACKGROUND:
                     hideAllControls();
                     removeBgItemSelection.clearData();
+                    setLastStateImageBitmap();
                     setupRemoveBackgroundWidget();
                     layoutRemoveBackground.setVisibility(View.VISIBLE);
                     tvActionTitle.setText(getString(R.string.remove_background));
-                    if (fragment != null) {
-                        fragment.setRemoveBackground(
-                                tempTransparentImageFilePath,
-                                tempTransparentBackgroundColor
-                        );
-                    }
                     break;
                 case ACTION_CROP_ROTATE:
                     //currently not supported.
@@ -656,10 +647,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     }
 
     private void setupRemoveBackgroundWidget() {
-        ImageEditPreviewFragment fragment = getCurrentFragment();
         List<ItemSelection> items = new ArrayList<>();
-
-        if (fragment == null) return;
 
         items.add(ItemSelection.createWithPlaceholderResourceId(
                 getString(com.tokopedia.imagepicker.R.string.editor_remove_bg_original),
@@ -682,58 +670,35 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                 false
         ));
 
-        removeBgItemSelection.setData(
-                items, (bitmap, type) -> {
-                    if (type == TYPE_REMOVE_BG_NORMAL) {
-                        lastRemoveBackgroundState = 0;
-                    } else if (type == Constant.TYPE_REMOVE_BG_WHITE) {
-                        lastRemoveBackgroundState = 1;
-                    } else if (type == Constant.TYPE_REMOVE_BG_BLACK) {
-                        lastRemoveBackgroundState = 2;
-                    }
+        removeBgItemSelection.setData(items, (bitmap, type) -> setupRemoveBackgroundWidgetSelection(type));
+        removeBgItemSelection.setActiveItem(currentRemoveBackgroundState);
+    }
 
-                    setRemoveBackgroundColor();
-                }
-        );
+    private void setupRemoveBackgroundWidgetSelection(int type) {
+        String preview = edittedImagePaths.get(currentImageIndex).get(getCurrentStepForCurrentImage());
 
-        removeBgItemSelection.setActiveItem(lastRemoveBackgroundState);
-
-        if (lastRemoveBackgroundState != -1) {
-            setRemoveBackgroundColor();
+        if (type == TYPE_REMOVE_BG_NORMAL) {
+            setRemoveBackgroundColor(0, preview, 0);
+        } else if (type == Constant.TYPE_REMOVE_BG_WHITE) {
+            setRemoveBackgroundColor(1, preview, Color.WHITE);
+        } else if (type == Constant.TYPE_REMOVE_BG_BLACK) {
+            setRemoveBackgroundColor(2, preview, Color.parseColor("#D6DFEB"));
         }
     }
 
-    private void setRemoveBackgroundColor() {
-        ImageEditPreviewFragment fragment = getCurrentFragment();
-
-        if (lastRemoveBackgroundState == 0) {
-            fragment.normalModeOfRemoveBackground(normalStateOfBitmap);
-        } else if (lastRemoveBackgroundState == 1) {
-            fragment.setRemoveBackground(
-                    tempTransparentImageFilePath,
-                    Color.WHITE
-            );
-        } else if (lastRemoveBackgroundState == 2) {
-            fragment.setRemoveBackground(
-                    tempTransparentImageFilePath,
-                    Color.parseColor("#D6DFEB")
-            );
-        }
-    }
-
-    @Override
-    public void transparentImageFilePath(String filePath, int lastBackgroundColor) {
-        tempTransparentImageFilePath = filePath;
-        tempTransparentBackgroundColor = lastBackgroundColor;
-    }
-
-    @Override
-    public void normalStateOfBitmap(Bitmap bitmap) {
+    private void setRemoveBackgroundColor(int position, String imagePath, int color) {
         ImageEditPreviewFragment fragment = getCurrentFragment();
         if (fragment == null) return;
 
-        normalStateOfBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-        fragment.normalModeOfRemoveBackground(normalStateOfBitmap);
+        if (position == 0) {
+            fragment.cancelRemoveBackground();
+            fragment.setImageData(imagePath);
+            return;
+        }
+
+        currentRemoveBackgroundState = position;
+
+        fragment.setRemoveBackground(color);
     }
 
     private void setupBrightnessWidget() {
@@ -944,7 +909,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         }
     }
 
-    public void setLastStateWatermarkImage() {
+    public void setLastStateImageBitmap() {
         ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
 
         if (imageEditPreviewFragment != null) {
