@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.text.format.DateUtils
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -547,6 +548,14 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         }
     }
 
+    private fun handleDismissCalendarPickerBottomSheet() {
+        if (isDateChanged) {
+            showConfirmDialogForDataChanged()
+        } else {
+            holidayBottomSheet?.dismiss()
+        }
+    }
+
     private fun setupHolidayCalendarPickerBottomSheet() {
         context?.let { ctx ->
             isDateChanged = false
@@ -555,18 +564,16 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 setTitle(ctx.getString(R.string.shop_operational_hour_set_holiday_schedule_title))
                 setChild(getHolidayDatePickerBottomSheetView())
                 setCloseClickListener {
-                    if (isDateChanged) {
-                        showConfirmDialogForDataChanged()
-                    } else {
-                        dismiss()
-                    }
+                    handleDismissCalendarPickerBottomSheet()
                 }
-                setOnDismissListener {
-                    if (isDateChanged) {
-                        showConfirmDialogForDataChanged()
-                    } else {
-                        dismiss()
+            }
+            holidayBottomSheet?.setShowListener {
+                holidayBottomSheet?.dialog?.setOnKeyListener { _, keyCode, event ->
+                    if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_DOWN) {
+                        // handle dialog if bottomSheet dismissed through device back button
+                        handleDismissCalendarPickerBottomSheet()
                     }
+                    true
                 }
             }
         }
