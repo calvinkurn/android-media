@@ -1,8 +1,11 @@
 package com.tokopedia.product_ar.view
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,12 +17,27 @@ import androidx.lifecycle.ViewModelProvider
 import com.modiface.mfemakeupkit.MFEMakeupEngine
 import com.modiface.mfemakeupkit.effects.MFEMakeupProduct
 import com.modiface.mfemakeupkit.widgets.MFEMakeupView
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerPageSource
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.imagepicker.common.putParamPageSource
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product_ar.R
+import com.tokopedia.product_ar.util.AnimatedTextIcon
 import com.tokopedia.product_ar.viewmodel.ProductArViewModel
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+
 
 class ProductArFragment : Fragment(), ProductArListener {
 
@@ -39,6 +57,9 @@ class ProductArFragment : Fragment(), ProductArListener {
     private var mMakeupView: MFEMakeupView? = null
 
     private var partialBottomArView: PartialBottomArView? = null
+    private var animatedTextIcon1: AnimatedTextIcon? = null
+    private var animatedTextIcon2: AnimatedTextIcon? = null
+    private var productArToolbar: NavToolbar? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -66,11 +87,53 @@ class ProductArFragment : Fragment(), ProductArListener {
         mMakeupView = view.findViewById(R.id.main_img)
         getMakeUpEngine()?.attachMakeupView(mMakeupView)
         partialBottomArView = PartialBottomArView.build(view, this)
+
+        renderAnimatedTextIcon(view)
+        setupNavToolbar(view)
+
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.CAMERA), 123)
         } else {
             getMakeUpEngine()?.startRunningWithCamera(context)
         }
+    }
+
+    private fun setupNavToolbar(view: View) {
+        productArToolbar = view.findViewById(R.id.product_ar_toolbar)
+        activity?.let { activity ->
+            productArToolbar?.let {
+                productArToolbar?.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
+                productArToolbar?.setToolbarTitle("")
+                productArToolbar?.setupToolbarWithStatusBar(activity, NavToolbar.Companion.StatusBar.STATUS_BAR_DARK)
+                productArToolbar?.setIcon(
+                        IconBuilder()
+                                .addIcon(IconUnify.INFORMATION) {
+
+                                }
+                                .addIcon(IconList.ID_CART) {
+
+                                }
+                )
+                viewLifecycleOwner.lifecycle.addObserver(it)
+            }
+        }
+    }
+
+    private fun renderAnimatedTextIcon(view: View) {
+        animatedTextIcon2 = view.findViewById(R.id.animated_txt_icon_2)
+        animatedTextIcon1 = view.findViewById(R.id.animated_txt_icon_1)
+        renderInitialAnimatedTextIcon()
+    }
+
+    private fun renderInitialAnimatedTextIcon() {
+        animatedTextIcon2?.apply {
+            renderText("Ambil dari Galeri", IconUnify.IMAGE)
+            setOnClickListener {
+                onAddImageClick()
+            }
+            show()
+        }
+        animatedTextIcon1?.hide()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -150,6 +213,49 @@ class ProductArFragment : Fragment(), ProductArListener {
                     partialBottomArView?.adapter?.getCurrentArImageDatas() ?: listOf(),
                     selectedMfeProduct
             )
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            123 -> {
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    val result = ImagePickerResultExtractor.extract(data)
+                    val selectedImage = BitmapFactory.decodeFile(result.imageUrlOrPathList.first())
+
+                    updateAnimatedIconAfterChoosePhoto()
+                    getMakeUpEngine()?.clearMakeupLook()
+                    getMakeUpEngine()?.startRunningWithPhoto(selectedImage, false)
+                    getMakeUpEngine()?.setMakeupLook((viewModel?.mfeMakeUpLook?.value as? Success)?.data)
+                }
+            }
+        }
+    }
+
+    private fun updateAnimatedIconAfterChoosePhoto() {
+        animatedTextIcon1?.renderText("Pakai Kamera", IconUnify.CAMERA)
+        animatedTextIcon1?.show()
+        animatedTextIcon1?.setOnClickListener {
+            getMakeUpEngine()?.startRunningWithCamera(context)
+            renderInitialAnimatedTextIcon()
+        }
+
+        animatedTextIcon2?.renderText("Ganti Foto", IconUnify.IMAGE)
+        animatedTextIcon2?.show()
+
+    }
+
+    private fun onAddImageClick() {
+        context?.let {
+            val builder = ImagePickerBuilder.getSquareImageBuilder(it)
+                    .withSimpleEditor()
+                    .apply {
+                        title = "Pilih Media"
+                    }
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
+            intent.putImagePickerBuilder(builder)
+            intent.putParamPageSource(ImagePickerPageSource.PRODUCT_AR)
+            startActivityForResult(intent, 123)
         }
     }
 

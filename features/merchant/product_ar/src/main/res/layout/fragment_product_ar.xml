@@ -10,13 +10,59 @@
         android:id="@+id/main_img"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/partial_bottom_ar_container"
+        app:layout_constraintBottom_toTopOf="@+id/rv_ar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <include
-        android:id="@+id/partial_bottom_ar_container"
-        layout="@layout/partial_bottom_ar_view" />
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
+        android:id="@+id/product_ar_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:toolbarAlwaysShowShadow="false"
+        app:toolbarInitialFillColor="transparent"
+        app:toolbarContentType="typeTitle"
+        app:toolbarInitialTheme="dark" />
+
+    <com.tokopedia.product_ar.util.AnimatedTextIcon
+        android:id="@+id/animated_txt_icon_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/animated_txt_icon_2"
+        app:layout_constraintEnd_toEndOf="@+id/ic_compare_ar"
+        tools:visibility="visible" />
+
+    <com.tokopedia.product_ar.util.AnimatedTextIcon
+        android:id="@+id/animated_txt_icon_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/ic_compare_ar"
+        app:layout_constraintEnd_toEndOf="@+id/ic_compare_ar"
+        app:layout_constraintWidth_percent="0.5"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ic_compare_ar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/rv_ar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_compare_icon" />
+
+    <include layout="@layout/partial_bottom_ar_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,6 +8,7 @@ import com.modiface.mfemakeupkit.data.MFEMakeupRenderingParameters
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.di.DaggerProductArComponent
 import com.tokopedia.product_ar.di.ProductArComponent
 import com.tokopedia.product_ar.di.ProductArModule
@@ -25,6 +26,10 @@ class ProductArActivity : BaseSimpleActivity(), HasComponent<ProductArComponent>
     private var mMakeupEngine: MFEMakeupEngine? = null
 
     fun getMakeUpEngine(): MFEMakeupEngine? = mMakeupEngine
+
+    override fun getLayoutRes(): Int = R.layout.activity_product_ar
+
+    override fun getParentViewResourceID(): Int = R.id.product_ar_parent_view
 
     override fun getNewFragment(): Fragment = ProductArFragment.newInstance()
 
