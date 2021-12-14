@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhome.settings.view.adapter.uimodel
 
-import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 
 data class ShopOperationalData(
@@ -8,8 +7,6 @@ data class ShopOperationalData(
     val isShopClosed: Boolean,
     val isWeeklyOperationalClosed: Boolean,
     val isShopActive: Boolean,
-    val operationalIconType: Int,
-    @ColorRes val operationalIconColorRes: Int,
     @StringRes val timeDescriptionRes: Int? = null,
     val timeDescription: String? = null,
     val shopSettingAccess: Boolean

@@ -220,8 +220,6 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
                 ShopOperationalData(
                     isShopOpen = true,
                     isShopClosed = false,
-                    operationalIconType = IconUnify.RELOAD_24H,
-                    operationalIconColorRes = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
                     timeDescriptionRes = R.string.shop_operational_hour_24_hour,
                     timeDescription = "",
                     shopSettingAccess = true
@@ -434,8 +432,6 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             val uiModel = ShopOperationalData(
                 isShopOpen = true,
                 isShopClosed = false,
-                operationalIconType = IconUnify.RELOAD_24H,
-                operationalIconColorRes = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
                 timeDescriptionRes = R.string.shop_operational_hour_24_hour,
                 timeDescription = "",
                 shopSettingAccess = true

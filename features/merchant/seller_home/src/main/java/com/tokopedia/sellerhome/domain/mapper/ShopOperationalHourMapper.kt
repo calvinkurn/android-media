@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhome.domain.mapper
 
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.domain.model.ShopClosedInfoDetailResponse
@@ -99,8 +98,6 @@ object ShopOperationalHourMapper {
         val isShopActive = operationalHourResponse.statusActive
         val is24Hour = operationalHourResponse.is24Hour()
 
-        val operationalTimeIcon: Int
-        val operationalTimeColorRes: Int
         val timeLabelRes: Int?
         val timeLabel: String?
         val startTime: String
@@ -109,15 +106,11 @@ object ShopOperationalHourMapper {
         when {
             is24Hour && isShopOpen -> {
                 // operational 24 Jam
-                operationalTimeIcon = IconUnify.RELOAD_24H
-                operationalTimeColorRes = com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 timeLabelRes = R.string.shop_operational_hour_24_hour
                 timeLabel = null
             }
             !is24Hour && !isWeeklyOperationalClosed && isShopOpen -> {
                 // operational hours range : 09:00 - 18:00 WIB
-                operationalTimeIcon = IconUnify.CLOCK
-                operationalTimeColorRes = com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 startTime =
                         DateFormatUtils.formatDate(
                                 OPERATIONAL_HOUR_RESPONSE_FORMAT,
@@ -135,34 +128,27 @@ object ShopOperationalHourMapper {
             }
             isWeeklyOperationalClosed && isShopActive -> {
                 // operational weekly closed, but buyer still can buy product
-                operationalTimeIcon = IconUnify.PRODUCT_VERIFIED
-                operationalTimeColorRes = com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 timeLabelRes = R.string.shop_operational_hour_weekly_close_can_atc
                 timeLabel = null
             }
             isWeeklyOperationalClosed && !isShopActive -> {
                 // operational weekly closed, buyer can't buy product
-                operationalTimeIcon = IconUnify.PRODUCT_REPORT
-                operationalTimeColorRes = com.tokopedia.unifyprinciples.R.color.Unify_RN500
                 timeLabelRes = R.string.shop_operational_hour_weekly_close_cannot_atc
                 timeLabel = null
             }
             isShopClosed && !isWeeklyOperationalClosed -> {
                 // scheduled holiday
-                operationalTimeIcon = IconUnify.CALENDAR
-                operationalTimeColorRes = com.tokopedia.unifyprinciples.R.color.Unify_RN500
                 val startDate = Date(closedInfoResponse.startDate.toLongOrZero() * 1000L)
                 val endDate = Date(closedInfoResponse.endDate.toLongOrZero() * 1000L)
                 timeLabel = OperationalHoursUtil.toIndonesianDateRangeFormat(
                         startDate = startDate,
                         endDate = endDate,
                         isShortDateFormat = true,
+                        isShowYear = false
                 )
                 timeLabelRes = null
             }
             else -> {
-                operationalTimeIcon = IconUnify.CLOCK
-                operationalTimeColorRes = com.tokopedia.unifyprinciples.R.color.Unify_NN600
                 timeLabelRes = R.string.shop_operational_hour_set_operational_time
                 timeLabel = null
             }
@@ -173,8 +159,6 @@ object ShopOperationalHourMapper {
                 isShopClosed,
                 isWeeklyOperationalClosed,
                 isShopActive,
-                operationalTimeIcon,
-                operationalTimeColorRes,
                 timeLabelRes,
                 timeLabel,
                 shopSettingsAccess

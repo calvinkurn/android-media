@@ -152,7 +152,7 @@ object OperationalHoursUtil {
         return "$newSelectedHour:$newSelectedMinutes:00"
     }
 
-    fun toIndonesianDateRangeFormat(startDate: Date, endDate: Date, isShortDateFormat: Boolean = false): String {
+    fun toIndonesianDateRangeFormat(startDate: Date, endDate: Date, isShortDateFormat: Boolean = false, isShowYear: Boolean = true): String {
         val formattedStartDate = toIndonesianDateFormat(startDate, isRequireSimpleFormat = isShortDateFormat)
         val formattedEndDate = toIndonesianDateFormat(endDate, isRequireSimpleFormat = isShortDateFormat)
         val formattedStartDateParts = formattedStartDate.split(" ").toMutableList()
@@ -174,6 +174,8 @@ object OperationalHoursUtil {
             "${formattedStartDateParts[DEFAULT_FIRST_INDEX]} ${formattedStartDateParts[MONTH_INDEX]}  " +
                     "- $formattedEndDate"
         } else {
+            // given start date && end date different month and different year
+            // 24 Desember 2021 - 20 Januari 2022
             "$formattedStartDate - $formattedEndDate"
         }
 
@@ -183,6 +185,9 @@ object OperationalHoursUtil {
             formattedDates = if (formattedStartDate == formattedEndDate) {
                 // given start date && end date are same
                 // 15 Okt 21
+                if (!isShowYear) {
+                    formattedStartDateParts[YEAR_INDEX] = ""
+                }
                 formattedStartDateParts.joinToString(" ")
             } else if (isSameMonth && isSameYear) {
                 // given start date && end date different but same month and year
@@ -194,6 +199,8 @@ object OperationalHoursUtil {
                 "${formattedStartDateParts[DEFAULT_FIRST_INDEX]} ${formattedStartDateParts[MONTH_INDEX]}" +
                         " - ${formattedEndDateParts[DEFAULT_FIRST_INDEX]} ${formattedEndDateParts[MONTH_INDEX]}"
             } else {
+                // given start date && end date different month and different year
+                // 24 Des 21 - 20 Jan 22
                 "${formattedStartDateParts.joinToString(" ")} - ${formattedEndDateParts.joinToString(" ")}"
             }
         }
