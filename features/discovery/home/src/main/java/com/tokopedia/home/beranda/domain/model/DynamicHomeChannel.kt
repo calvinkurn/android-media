@@ -150,30 +150,6 @@ data class DynamicHomeChannel(
             )
         }
 
-        fun getEnhanceClickSprintSaleCarouselHomePage(position: Int, countDown: String?, label: String?): Map<String, Any> {
-            return DataLayer.mapOf(
-                    "event", "promoClick",
-                    "eventCategory", "homepage",
-                    "eventAction", "sprint sale banner click",
-                    "eventLabel", String.format("%s - %s", countDown, label),
-                    channelId, id,
-                    "ecommerce", DataLayer.mapOf(
-                    "promoClick", DataLayer.mapOf(
-                    "promotions", DataLayer.listOf(
-                    DataLayer.mapOf(
-                            "id", grids[position].id,
-                            "name", "/ - p2 - sprint sale banner",
-                            "position", (position + 1).toString(),
-                            "creative", grids[position].name,
-                            "creative_url", grids[position].imageUrl
-                    )
-            )
-            )
-            ),
-                    "attribution", getHomeAttribution(position + 1, grids[position].id)
-            )
-        }
-
         fun convertPromoEnhanceLegoBannerDataLayerForCombination(): List<Any> {
             val list: MutableList<Any> = ArrayList()
             for (i in grids.indices) {
@@ -334,9 +310,6 @@ data class DynamicHomeChannel(
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
             const val DIVIDER_NO_DIVIDER = 0
-            const val DIVIDER_TOP = 1
-            const val DIVIDER_BOTTOM = 2
-            const val DIVIDER_TOP_AND_BOTTOM = 3
         }
     }
 
