@@ -343,7 +343,7 @@ class CampaignListViewModelTest {
 
 
     @Test
-    fun `When get share description wording success, should return correct wording`() {
+    fun `When get share description wording while campaign status is ongoing, should return correct wording`() {
         val campaignStatusOngoing = "7"
         val shareUri = "https://api.whatsapp.com?phone=082210000000"
         val shop = ShopData(name = "Compass Official")
@@ -352,6 +352,88 @@ class CampaignListViewModelTest {
             "Wah, ada ${campaign.name} dari ${shop.name} di @Tokopedia, lho. Mulai 26-11-2021 pukul 11:30 WIB! Cek sekarang, yuk! $shareUri"
 
         every { resourceProvider.getShareCampaignDescriptionWording() } returns "Wah, ada %s dari %s di @Tokopedia, lho. Mulai %s pukul %s WIB! Cek sekarang, yuk!"
+
+        val actual = viewModel.getShareDescriptionWording(
+            shop,
+            campaign,
+            shareUri,
+            campaignStatusOngoing
+        )
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When get wording ongoing campaign return null, should return share uri only`() {
+        val campaignStatusOngoing = "7"
+        val shareUri = "https://api.whatsapp.com?phone=082210000000"
+        val shop = ShopData(name = "Compass Official")
+        val campaign = Campaign(name = "Flash Deal", startDate = "26-11-2021 11:30")
+        val expected = " https://api.whatsapp.com?phone=082210000000"
+
+        every { resourceProvider.getShareCampaignDescriptionWording() } returns null
+
+        val actual = viewModel.getShareDescriptionWording(
+            shop,
+            campaign,
+            shareUri,
+            campaignStatusOngoing
+        )
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When get share description wording while campaign status is not ongoing, should return correct wording`() {
+        val campaignStatusUpcoming = "6"
+        val shareUri = "https://api.whatsapp.com?phone=082210000000"
+        val shop = ShopData(name = "Compass Official")
+        val campaign = Campaign(name = "Flash Deal", endDate = "30-11-2021 12:00")
+        val expected =
+            "Kejar eksklusif launching ${campaign.name} dari ${shop.name} hanya di @Tokopedia. Hanya sampai 30-11-2021 pukul 12:00 WIB! $shareUri"
+
+        every { resourceProvider.getShareOngoingCampaignDescriptionWording() } returns "Kejar eksklusif launching %s dari %s hanya di @Tokopedia. Hanya sampai %s pukul %s WIB!"
+
+        val actual = viewModel.getShareDescriptionWording(
+            shop,
+            campaign,
+            shareUri,
+            campaignStatusUpcoming
+        )
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When get share description wording while campaign status is not specified, should return correct wording`() {
+        val campaignStatus = null
+        val shareUri = "https://api.whatsapp.com?phone=082210000000"
+        val shop = ShopData(name = "Compass Official")
+        val campaign = Campaign(name = "Flash Deal", endDate = "30-11-2021 12:00")
+        val expected =
+            "Kejar eksklusif launching ${campaign.name} dari ${shop.name} hanya di @Tokopedia. Hanya sampai 30-11-2021 pukul 12:00 WIB! $shareUri"
+
+        every { resourceProvider.getShareOngoingCampaignDescriptionWording() } returns "Kejar eksklusif launching %s dari %s hanya di @Tokopedia. Hanya sampai %s pukul %s WIB!"
+
+        val actual = viewModel.getShareDescriptionWording(
+            shop,
+            campaign,
+            shareUri,
+            campaignStatus
+        )
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When get wording non-ongoing campaign return null, should return share uri only`() {
+        val campaignStatusOngoing = "7"
+        val shareUri = "https://api.whatsapp.com?phone=082210000000"
+        val shop = ShopData(name = "Compass Official")
+        val campaign = Campaign(name = "Flash Deal", startDate = "26-11-2021 11:30")
+        val expected = " https://api.whatsapp.com?phone=082210000000"
+
+        every { resourceProvider.getShareOngoingCampaignDescriptionWording() } returns null
 
         val actual = viewModel.getShareDescriptionWording(
             shop,
