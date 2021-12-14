@@ -451,7 +451,11 @@ class SearchActivity : BaseActivity(),
         )
     }
 
-    private fun onSearchNavigationSearchBarClicked(keyword: String) {
+    /**
+     * keyword => ignored
+     * need to replace unused param variable following detekt guidelines
+     */
+    private fun onSearchNavigationSearchBarClicked(ignored: String) {
         moveToAutoCompleteActivity()
     }
 
