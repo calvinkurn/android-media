@@ -22,7 +22,7 @@
 
     <!-- share template -->
     <string name="campaign_list_share_bottom_sheet_title">Rilisan Spesial dari %s</string>
-    <string name="campaign_list_share_text">Wah, ada %s dari %s di \@Tokopedia, lho. Mulai % pukul % WIB! Cek sekarang, yuk!</string>
+    <string name="campaign_list_share_text">Wah, ada %s dari %s di \@Tokopedia, lho. Mulai %s pukul %s WIB! Cek sekarang, yuk!</string>
     <string name="campaign_list_ongoing_share_text">Kejar eksklusif launching %s dari %s hanya di @Tokopedia. Hanya sampai %s pukul %s WIB!</string>
     <string name="campaign_list_share_title_og">%s dari %s</string>
     <string name="campaign_list_share_desc_og">Dapatkan produk Rilisan Spesial dari %s, selama stok tersedia. Yuk, pasang pengingatnya!</string>
