@@ -78,6 +78,9 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         private const val MIN_OPEN_MINUTE = 0
         private const val MAX_CLOSE_HOUR = 23
         private const val MAX_CLOSE_MINUTE = 59
+        private const val DEFAULT_OPERATIONAL_HOURS_RANGE = 9
+        private const val DEFAULT_TIME_PICKER_MINUTE_INTERVAL = 5
+        private const val MAX_OPEN_MINUTE_BY_TIME_PICKER = 50
         private const val MAX_CLOSE_MINUTE_BY_TIME_PICKER = 55
         private const val WEBVIEW_APPLINK_FORMAT = "%s?url=%s"
         private const val ACCORDION_ITEM_VIEW_HEIGHT = 250f
@@ -613,7 +616,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
             )
 
             // set time picker minute interval
-            endTimePicker?.minuteInterval = 5
+            endTimePicker?.minuteInterval = DEFAULT_TIME_PICKER_MINUTE_INTERVAL
 
             // set button wording and listener
             endTimePicker?.datePickerButton?.text = getString(R.string.label_choose)
@@ -660,13 +663,13 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     },
                     maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
                         set(Calendar.HOUR_OF_DAY, MAX_CLOSE_HOUR)
-                        set(Calendar.MINUTE, MAX_CLOSE_MINUTE)
+                        set(Calendar.MINUTE, MAX_OPEN_MINUTE_BY_TIME_PICKER)
                     },
                     type = DateTimePickerUnify.TYPE_TIMEPICKER
             )
 
             // set time picker minute interval
-            startTimePicker?.minuteInterval = 5
+            startTimePicker?.minuteInterval = DEFAULT_TIME_PICKER_MINUTE_INTERVAL
 
             // set button wording and listener
             startTimePicker?.datePickerButton?.text = getString(R.string.label_choose)
@@ -678,33 +681,31 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                 // set new startTime info to selected textField
                 setNewStartTimeInfo(selectedChildView, selectedHour, selectedMinute)
 
-                // update endTime to +1 hour after, to avoid endTime < startTime
-                val oneHourAfterAheadSelectedStartTime = if (selectedHour.toIntOrZero() < MAX_CLOSE_HOUR) {
-                    selectedHour.toIntOrZero() + 1
-                } else if(selectedHour.toIntOrZero() == MAX_CLOSE_HOUR && selectedMinute.toIntOrZero() == MAX_CLOSE_MINUTE_BY_TIME_PICKER) {
-                    selectedMinute = "0${MIN_OPEN_MINUTE}"
-                    MIN_OPEN_HOUR
+                // set new updated startTime for selected day
+                updateStartTimeByPosition(currentExpandedAccordionPosition, selectedHour, selectedMinute)
+
+                // update endTime to +9 hour after, to avoid endTime < startTime
+                val nineHourAfterSelectedStartTime = selectedHour.toIntOrZero() + DEFAULT_OPERATIONAL_HOURS_RANGE
+                val autoSelectedEndTime = if (nineHourAfterSelectedStartTime < MAX_CLOSE_HOUR) {
+                    nineHourAfterSelectedStartTime
                 } else {
-                    selectedHour.toIntOrZero()
+                    MAX_CLOSE_HOUR
                 }
 
-                val oneHourAheadAfterSelectedStartTimeString = if (oneHourAfterAheadSelectedStartTime < 10) {
-                    "0${oneHourAfterAheadSelectedStartTime}"
+                val autoSelectedEndTimeString = if (nineHourAfterSelectedStartTime < 10) {
+                    "0${autoSelectedEndTime}"
                 } else {
-                    oneHourAfterAheadSelectedStartTime.toString()
+                    autoSelectedEndTime.toString()
                 }
 
-                selectedMinute = if (oneHourAfterAheadSelectedStartTime == MAX_CLOSE_HOUR) {
+                selectedMinute = if (nineHourAfterSelectedStartTime > MAX_CLOSE_HOUR) {
                     MAX_CLOSE_MINUTE_BY_TIME_PICKER.toString()
                 } else {
                     selectedMinute
                 }
 
-                setNewEndTimeInfo(selectedChildView, oneHourAheadAfterSelectedStartTimeString, selectedMinute)
-                updateEndTimeByPosition(currentExpandedAccordionPosition, oneHourAheadAfterSelectedStartTimeString, selectedMinute)
-
-                // set new updated startTime for selected day
-                updateStartTimeByPosition(currentExpandedAccordionPosition, selectedHour, selectedMinute)
+                setNewEndTimeInfo(selectedChildView, autoSelectedEndTimeString, selectedMinute)
+                updateEndTimeByPosition(currentExpandedAccordionPosition, autoSelectedEndTimeString, selectedMinute)
 
                 startTimePicker?.dismiss()
             }
