@@ -99,7 +99,10 @@ class GetMerchantBannerUseCase @Inject constructor(
                     }
                     formatted_start_date
                     formatted_end_date
-                    formatted_review_end_date                    
+                    formatted_review_end_date
+                    formatted_sharing_start_date
+                    formatted_sharing_end_date
+                    formatted_sharing_review_end_date
                 }
             }
         """.trimIndent()

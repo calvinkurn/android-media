@@ -21,7 +21,13 @@ data class GetMerchantCampaignBannerGeneratorData(
         @SerializedName("formatted_end_date")
         @Expose val formattedEndDate: String = "",
         @SerializedName("formatted_review_end_date")
-        @Expose val formattedReviewEndDate: String = ""
+        @Expose val formattedReviewEndDate: String = "",
+        @SerializedName("formatted_sharing_start_date")
+        @Expose val formattedSharingStartDate: String = "",
+        @SerializedName("formatted_sharing_end_date")
+        @Expose val formattedSharingEndDate: String = "",
+        @SerializedName("formatted_sharing_review_end_date")
+        @Expose val formattedSharingReviewEndDate: String = ""
 )
 
 data class ResponseHeader(
