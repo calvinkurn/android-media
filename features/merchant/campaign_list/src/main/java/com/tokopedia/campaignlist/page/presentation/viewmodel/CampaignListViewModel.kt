@@ -26,16 +26,15 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CampaignListViewModel @Inject constructor(
-        private val resourceProvider: ResourceProvider,
-        private val dispatchers: CoroutineDispatchers,
-        private val getCampaignListUseCase: GetCampaignListUseCase,
-        private val getMerchantBannerUseCase: GetMerchantBannerUseCase,
-        private val getSellerMetaDataUseCase: GetSellerMetaDataUseCase
+    private val resourceProvider: ResourceProvider,
+    private val dispatchers: CoroutineDispatchers,
+    private val getCampaignListUseCase: GetCampaignListUseCase,
+    private val getMerchantBannerUseCase: GetMerchantBannerUseCase,
+    private val getSellerMetaDataUseCase: GetSellerMetaDataUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
         const val NPL_ICON_URL = "https://images.tokopedia.net/img/android/campaign_list/npl_icon.png"
-        const val SHARE_REDIRECTION_URL = "https://www.tokopedia.com/%s"
         private const val ONGOING_STATUS_ID = "7"
     }
 

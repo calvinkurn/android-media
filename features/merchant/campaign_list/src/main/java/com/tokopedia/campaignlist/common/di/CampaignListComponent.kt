@@ -14,7 +14,9 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
 @CampaignListScope
-@Component(modules = [CampaignListModule::class, CampaignListViewModelModule::class], dependencies = [BaseAppComponent::class])
+@Component(
+    modules = [CampaignListModule::class, CampaignListViewModelModule::class], dependencies = [BaseAppComponent::class]
+)
 interface CampaignListComponent {
 
     @ApplicationContext
