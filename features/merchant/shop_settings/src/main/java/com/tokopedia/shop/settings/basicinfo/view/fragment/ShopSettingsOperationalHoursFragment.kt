@@ -340,7 +340,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
     private fun setupToolbar() {
         headerOpsHour?.apply {
-            addRightIcon(R.drawable.ic_ops_hour_help)
+            addRightIcon(R.drawable.ic_ops_hour_header_help_circle)
             setNavigationOnClickListener {
                 activity?.onBackPressed()
             }
