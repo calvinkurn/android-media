@@ -2,15 +2,14 @@ package com.tokopedia.campaignlist.page.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.campaignlist.common.data.model.response.GetCampaignListV2Response
-import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorData
-import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorDataResponse
-import com.tokopedia.campaignlist.common.data.model.response.GetSellerCampaignSellerAppMetaResponse
+import com.tokopedia.campaignlist.common.data.model.response.*
 import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase
+import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase.Companion.NPL_CAMPAIGN_TYPE
 import com.tokopedia.campaignlist.common.usecase.GetMerchantBannerUseCase
 import com.tokopedia.campaignlist.common.usecase.GetSellerMetaDataUseCase
 import com.tokopedia.campaignlist.common.util.ResourceProvider
 import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
+import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -214,6 +213,105 @@ class CampaignListViewModelTest {
         viewModel.setMerchantBannerData(merchantBanner)
 
         val actual = viewModel.getMerchantBannerData()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When map campaign list data, should correctly map to active campaign`() = runBlocking {
+        val campaigns = listOf(
+            CampaignListV2(
+                campaignName = "Flash Sale 11.11",
+                campaignBanner = emptyList(),
+                campaignDynamicRule = CampaignDynamicRule(),
+                sellerCampaignInfo = SellerCampaignInfo(AcceptedProduct = 20),
+                startDate = "26-11-2021 11:25",
+                endDate = "20-12-2021 22:00"
+            ),
+            CampaignListV2(
+                campaignName = "Flash Sale 12.12",
+                campaignBanner = emptyList(),
+                campaignDynamicRule = CampaignDynamicRule(),
+                sellerCampaignInfo = SellerCampaignInfo(AcceptedProduct = 20),
+                startDate = "26-11-2021 11:30",
+                endDate = "30-12-2021 23:00",
+            )
+        )
+        val expected = listOf(
+            ActiveCampaign(
+                campaignName = "Flash Sale 11.11",
+                startDate = "26-11-2021",
+                endDate = "20-12-2021",
+                startTime = "11:25",
+                endTime = "22:00",
+                productQty = "20"
+            ),
+            ActiveCampaign(
+                campaignName = "Flash Sale 12.12",
+                startDate = "26-11-2021",
+                endDate = "30-12-2021",
+                startTime = "11:30",
+                endTime = "23:00",
+                productQty = "20"
+            )
+        )
+
+        val actual = viewModel.mapCampaignListDataToActiveCampaignList(campaigns)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When map campaign type data, should correctly map to selected campaign type`() = runBlocking {
+        val unknownCampaignTypeId = "70"
+        val specialReleaseCampaignTypeId = NPL_CAMPAIGN_TYPE.toString()
+
+        val campaigns = listOf(
+            CampaignTypeData(
+                campaignTypeId = unknownCampaignTypeId,
+                campaignTypeName = "Rilisan Khusus",
+            ),
+            CampaignTypeData(
+                campaignTypeId = specialReleaseCampaignTypeId,
+                campaignTypeName = "Rilisan Special",
+            )
+        )
+        val expected = listOf(
+            CampaignTypeSelection(
+                campaignTypeId = unknownCampaignTypeId,
+                campaignTypeName = "Rilisan Khusus",
+                isSelected = false
+            ),
+            CampaignTypeSelection(
+                campaignTypeId = specialReleaseCampaignTypeId,
+                campaignTypeName = "Rilisan Special",
+                isSelected = true
+            )
+        )
+
+        val actual = viewModel.mapCampaignTypeDataToCampaignTypeSelections(campaigns)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When map campaign status, should correctly map to campaign status ui model`() = runBlocking {
+        val campaigns = listOf(
+            CampaignStatus(statusText = "Berlangsung"),
+            CampaignStatus(statusText = "Mendatang")
+        )
+        val expected = listOf(
+            CampaignStatusSelection(
+                statusText = "Berlangsung",
+                isSelected = false
+            ),
+            CampaignStatusSelection(
+                statusText = "Mendatang",
+                isSelected = false
+            )
+        )
+
+        val actual = viewModel.mapCampaignStatusToCampaignStatusSelections(campaigns)
 
         assertEquals(expected, actual)
     }
