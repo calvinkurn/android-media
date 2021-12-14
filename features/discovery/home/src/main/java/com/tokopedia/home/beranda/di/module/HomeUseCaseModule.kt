@@ -15,13 +15,12 @@ import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
 import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.data.model.HomeWidget
-import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.home.beranda.data.repository.HomeRevampRepository
 import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.di.HomeScope
+import com.tokopedia.home.beranda.di.module.query.QueryBusinessWidget
 import com.tokopedia.home.beranda.di.module.query.QueryBusinessWidget.businessUnitDataQuery
-import com.tokopedia.home.beranda.di.module.query.QueryBusinessWidget.businessWidgetQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.atfQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.closeChannel
 import com.tokopedia.home.beranda.di.module.query.QueryHome.dynamicChannelQuery
@@ -32,7 +31,6 @@ import com.tokopedia.home.beranda.di.module.query.QueryHome.homeSlidesQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.recommendationQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.pendingCashBackQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.tokopointsListQuery
-import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.tokopointsQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.walletBalanceQuery
 import com.tokopedia.home.beranda.di.module.query.QueryPopularKeyword.popularKeywordQuery
 import com.tokopedia.home.beranda.di.module.query.QuerySuggestedReview.dismissSuggestedQuery
@@ -150,7 +148,7 @@ class HomeUseCaseModule {
     @Provides
     fun getBusinessWidgetTab(graphqlRepository: GraphqlRepository): GetBusinessWidgetTab {
         val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeWidget.Data>(graphqlRepository)
-        usecase.setGraphqlQuery(businessWidgetQuery)
+        usecase.setGraphqlQuery(QueryBusinessWidget.BUSINESS_WIDGET_QUERY)
         return GetBusinessWidgetTab(usecase)
     }
 

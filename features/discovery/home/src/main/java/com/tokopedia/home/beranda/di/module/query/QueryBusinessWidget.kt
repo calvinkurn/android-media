@@ -1,7 +1,11 @@
 package com.tokopedia.home.beranda.di.module.query
 
-object QueryBusinessWidget {
-    val businessWidgetQuery : String = "query HomeWidget() {\n" +
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.home.beranda.di.module.query.QueryBusinessWidget.BUSINESS_WIDGET_QUERY
+
+@GqlQuery("BusinessWidgetQuery", BUSINESS_WIDGET_QUERY)
+internal object QueryBusinessWidget {
+    const val BUSINESS_WIDGET_QUERY : String = "query HomeWidget() {\n" +
             "  home_widget {\n" +
             "    widget_tab {\n" +
             "      id\n" +
