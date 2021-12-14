@@ -175,11 +175,11 @@ class BuyerCancellationViewModelTest {
     fun requestCancel_shouldReturnSuccess() {
         //given
         coEvery {
-            buyerRequestCancelUseCase.execute(any(), any())
+            buyerRequestCancelUseCase.execute(any())
         } returns Success(BuyerRequestCancelData.Data(BuyerRequestCancelData.Data.BuyerRequestCancel(success = 1)))
 
         //when
-        buyerCancellationViewModel.requestCancel("", "", "", "", "")
+        buyerCancellationViewModel.requestCancel("", "", "", "")
 
         //then
         assert(buyerCancellationViewModel.requestCancelResult.value is Success)
@@ -190,11 +190,11 @@ class BuyerCancellationViewModelTest {
     fun requestCancel_shouldReturnFail() {
         //given
         coEvery {
-            buyerRequestCancelUseCase.execute(any(), any())
+            buyerRequestCancelUseCase.execute(any())
         } returns Fail(Throwable())
 
         //when
-        buyerCancellationViewModel.requestCancel("", "", "", "", "")
+        buyerCancellationViewModel.requestCancel("", "", "", "")
 
         //then
         assert(buyerCancellationViewModel.requestCancelResult.value is Fail)
@@ -204,11 +204,11 @@ class BuyerCancellationViewModelTest {
     fun requestCancel_shouldNotReturnEmptyMessage() {
         //given
         coEvery {
-            buyerRequestCancelUseCase.execute(any(), any())
+            buyerRequestCancelUseCase.execute(any())
         } returns Success(BuyerRequestCancelData.Data(BuyerRequestCancelData.Data.BuyerRequestCancel(message = listMsg)))
 
         //when
-        buyerCancellationViewModel.requestCancel("", "", "", "", "")
+        buyerCancellationViewModel.requestCancel("", "", "", "")
 
         //then
         assert(buyerCancellationViewModel.requestCancelResult.value is Success)
