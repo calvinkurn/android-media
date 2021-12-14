@@ -52,6 +52,8 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
     public interface ImageEditPreviewView extends CustomerView {
         Context getContext();
 
+        // brightness
+
         void onSuccessGetBrightnessMatrix(ColorMatrixColorFilter colorMatrixColorFilter);
 
         void onErrorGetBrightnessMatrix(Throwable e);
@@ -59,6 +61,8 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
         void onSuccessSaveBrightnessImage(String filePath);
 
         void onErrorSaveBrightnessImage(Throwable e);
+
+        // contrast
 
         void onSuccessGetContrastMatrix(ColorMatrixColorFilter colorMatrixColorFilter);
 
@@ -68,19 +72,23 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
 
         void onErrorSaveContrastImage(Throwable e);
 
+        // watermark
+
         void onSuccessGetWatermarkImage(Bitmap[] bitmap);
 
         void onSuccessSaveWatermarkImage(String filePath);
 
         void onErrorWatermarkImage(Throwable e);
 
-        void onSuccessSaveRemoveBackground(String filePath);
-
-        void onErrorSaveRemoveBackground(Throwable e);
+        // remove background
 
         void onSuccessGetRemoveBackground(String filePath);
 
         void onErrorGetRemoveBackground(Throwable e);
+
+        void onSuccessSaveRemoveBackground(String filePath);
+
+        void onErrorSaveRemoveBackground(Throwable e);
     }
 
     @Inject
@@ -354,9 +362,7 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                 .flatMap(new Func1<View, Observable<Bitmap>>() {
                     @Override
                     public Observable<Bitmap> call(View view) {
-                        return Observable.just(
-                                BitmapConverter.toBitmapWithBackgroundColor(view, backgroundColor)
-                        );
+                        return Observable.just(BitmapConverter.toBitmapWithBackgroundColor(view, backgroundColor));
                     }
                 })
                 .flatMap(new Func1<Bitmap, Observable<String>>() {
@@ -397,25 +403,17 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
 
         requestRemoveBackground =
                 Observable.just(bitmap).flatMap(new Func1<Bitmap, Observable<File>>() {
-
-                    // first, convert image to base64
-                    // remove.bg service didn't work if we trying to upload with blob,
-                    // still figure out the root cause of that
                     @Override
                     public Observable<File> call(Bitmap bitmap) {
                         File file = ImageProcessingUtil.writeImageToTkpdPath(bitmap, compressFormat);
                         return Observable.just(file);
                     }
                 }).flatMap(new Func1<File, Observable<ResponseBody>>() {
-
-                    // storing base64 image into remove.bg service
                     @Override
-                    public Observable<ResponseBody> call(File base64) {
-                        return removeBackgroundUseCase.invoke(base64);
+                    public Observable<ResponseBody> call(File file) {
+                        return removeBackgroundUseCase.invoke(file);
                     }
                 }).flatMap(new Func1<ResponseBody, Observable<String>>() {
-
-                    // convert byteStream into file
                     @Override
                     public Observable<String> call(ResponseBody result) {
                         File file = ImageProcessingUtil.writeImageToTkpdPath(result.byteStream(), compressFormat);

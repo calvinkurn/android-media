@@ -311,21 +311,13 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
             // save state first
             try {
-                tempRevertRemoveBackground = gestureCropImageView
-                        .getViewBitmap()
-                        .copy(Bitmap.Config.ARGB_8888, true);
-
                 onImageEditPreviewFragmentListener.normalStateOfBitmap(tempRevertRemoveBackground);
             } catch (Exception ignored) {}
 
             imageEditPreviewPresenter.setRemoveBackground(bitmap, compressFormat);
         } else if (!tempTransparentCacheFilePath.isEmpty()){
             gestureCropImageView.setBackgroundColor(tempTransparentBackgroundColor);
-
-            Glide.with(requireContext())
-                    .asBitmap()
-                    .load(tempTransparentCacheFilePath)
-                    .into(gestureCropImageView);
+            setImageData(tempTransparentCacheFilePath);
         }
     }
 
@@ -338,7 +330,8 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         isTransparent = false;
         hideLoadingAndShowPreview();
         imageEditPreviewPresenter.cancelRequestRemoveBackground();
-        gestureCropImageView.setImageBitmap(tempRevertRemoveBackground);
+        //gestureCropImageView.setImageBitmap(tempRevertRemoveBackground);
+        onImageEditPreviewFragmentListener.undoToPrevImage(imageIndex);
         onImageEditPreviewFragmentListener.transparentImageFilePath("", -1);
     }
 
@@ -500,10 +493,6 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         gestureCropImageView.setImageBitmap(bitmap);
     }
 
-    void setRemoveBackground(Bitmap bitmap) {
-        Toast.makeText(getContext(), "Hi", Toast.LENGTH_LONG).show();
-    }
-
     private void initProgressBar(View view) {
         progressBar = view.findViewById(R.id.progressbar);
     }
@@ -511,15 +500,14 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setImageData();
-    }
-
-    private void setImageData() {
         showLoadingAndHidePreview();
         processOptions();
+        setImageData(edittedImagePath);
+    }
 
-        Uri inputUri = Uri.fromFile(new File(edittedImagePath));
-        Uri outputUri = Uri.parse(ImageProcessingUtil.getTokopediaPhotoPath(edittedImagePath).toString());
+    private void setImageData(String filePath) {
+        Uri inputUri = Uri.fromFile(new File(filePath));
+        Uri outputUri = Uri.parse(ImageProcessingUtil.getTokopediaPhotoPath(filePath).toString());
 
         try {
             gestureCropImageView.setImageUri(inputUri, outputUri);
