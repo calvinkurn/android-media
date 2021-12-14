@@ -506,7 +506,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                     init(minDate, maxDate, listOf()).inMode(CalendarPickerView.SelectionMode.RANGE)
                 } else {
                     init(minDate, maxDate, listOf()).inMode(CalendarPickerView.SelectionMode.RANGE).withSelectedDates(
-                            listOf(selectedStartDate, selectedEndDate)
+                            listOf(minDate, selectedEndDate)
                     )
                 }
                 setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
