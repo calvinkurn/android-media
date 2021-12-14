@@ -284,12 +284,10 @@ class SomGetOrderDetailUseCase @Inject constructor(
                 payment_data {
                   label
                   value
-                  text_color
                 }
                 pricing_data{
                   label
                   value
-                  text_color
                 }
                 promo_shipping {
                   label

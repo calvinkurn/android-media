@@ -351,7 +351,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (activity != null) GraphqlClient.init(requireActivity())
         performanceMonitoring = PerformanceMonitoring.start(FEED_TRACE)
         Embrace.getInstance().startEvent(FEED_TRACE, null, false)
         super.onCreate(savedInstanceState)
@@ -2064,8 +2063,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         isFollowed: Boolean,
         playChannelId: String
     ) {
-        if (type == TYPE_FEED_X_CARD_PLAY)
-            feedAnalytics.eventAddToCartFeedVOD(playChannelId, postTagItem.id, postTagItem.productName, postTagItem.price.toString(), 1,shopId,postTagItem.authorName, type, isFollowed)
+        if (type == TYPE_FEED_X_CARD_PLAY || type == TYPE_TOPADS_HEADLINE_NEW)
+            feedAnalytics.eventAddToCartFeedVOD(if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else activityId, postTagItem.id, postTagItem.name, postTagItem.priceFmt, 1, shopId, postTagItem.authorName, type, isFollowed)
         else
         feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
         if (userSession.isLoggedIn) {

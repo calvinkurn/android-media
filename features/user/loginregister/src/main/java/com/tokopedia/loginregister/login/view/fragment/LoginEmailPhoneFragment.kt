@@ -52,7 +52,10 @@ import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
@@ -166,6 +169,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var isShowTicker: Boolean = false
     private var isShowBanner: Boolean = false
     private var isEnableFingerprint = true
+    private var isEnableSilentVerif = false
     private var isHitRegisterPushNotif: Boolean = false
     private var isEnableEncryptConfig: Boolean = false
     private var activityShouldEnd = true
@@ -294,7 +298,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun setupBackgroundColor() {
         context?.let {
             activity?.window?.decorView?.setBackgroundColor(
-                    MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                    MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background)
             )
         }
     }
@@ -535,6 +539,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             isEnableFingerprint = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_LOGIN_FP, true)
             isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_REGISTER_PUSH_NOTIF, false)
             isEnableEncryptConfig = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_LOGIN_ENCRYPTION)
+            isEnableSilentVerif = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_SILENT_VERIFICATION)
         }
     }
 
@@ -644,7 +649,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             val email = emailPhoneEditText?.text.toString()
             onChangeButtonClicked()
             emailPhoneEditText?.setText(email)
-            emailPhoneEditText?.setSelection(emailPhoneEditText?.text?.length.orZero())
         }
 
         activity?.let { it ->
@@ -1565,7 +1569,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             onChangeButtonClicked()
             emailPhoneEditText?.let {
                 it.setText(email)
-                it.setSelection(it.text.length)
             }
         } else if (activity != null) {
             activity?.finish()

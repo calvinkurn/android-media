@@ -11,4 +11,8 @@
     <color name="pm_static_g200_dms">#D6FFDE</color>
     <color name="pm_static_g500_dms">#03AC0E</color>
     <color name="pm_static_525A67_dms">#525A67</color>
+    <color name="pm_static_tn400_dms">#11CEBC</color>
+    <color name="pm_static_yn400_dms">#FFA617</color>
+    <color name="pm_static_nn950_light_dms">#212121</color>
+    <color name="pm_static_nn950_night_dms">#DCE4ED</color>
 </resources>

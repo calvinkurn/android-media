@@ -41,6 +41,9 @@ public class ShakeCampaignSubscriber extends Subscriber<GraphqlResponse> {
 
     @Override
     public void onCompleted() {
+        if(view == null) {
+            return;
+        }
         view.finish();
     }
 

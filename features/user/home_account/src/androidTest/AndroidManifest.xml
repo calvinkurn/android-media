@@ -10,7 +10,8 @@
         android:label="New Home Account Test"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:replace="android:debuggable,android:label">
-
+        <activity android:name="com.tokopedia.home_account.stub.view.activity.InstrumentationNewHomeAccountTestActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".stub.view.activity.HomeAccountUserActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">

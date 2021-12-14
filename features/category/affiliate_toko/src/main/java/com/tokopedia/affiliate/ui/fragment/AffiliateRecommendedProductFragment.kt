@@ -18,7 +18,7 @@ import com.tokopedia.affiliate.adapter.AffiliateItemOffSetDecoration
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
-import com.tokopedia.affiliate.model.AffiliateSearchData
+import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.viewmodel.AffiliateRecommendedProductViewModel
@@ -98,11 +98,11 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
             errorSecondaryAction.gone()
             setButtonFull(true)
             if(identifier == BOUGHT_IDENTIFIER){
-                errorTitle.text = getString(R.string.no_product_bought_on_tokopedia_yet)
-                errorDescription.text = getString(R.string.no_product_bought_on_tokopedia_yet_content)
+                errorTitle.text = getString(R.string.affiliate_no_product_bought_on_tokopedia_yet)
+                errorDescription.text = getString(R.string.affiliate_no_product_bought_on_tokopedia_yet_content)
             }else {
-                errorTitle.text = getString(R.string.no_product_seen_on_tokopedia_yet)
-                errorDescription.text = getString(R.string.no_product_seen_on_tokopedia_yet_content)
+                errorTitle.text = getString(R.string.affiliate_no_product_seen_on_tokopedia_yet)
+                errorDescription.text = getString(R.string.affiliate_no_product_seen_on_tokopedia_yet_content)
             }
             errorAction.text = getString(R.string.affiliate_paste_link)
             errorAction.setOnClickListener {
@@ -257,7 +257,9 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
     }
 
     override fun onPromotionClick(productId: String, productName: String, productImage: String, productUrl: String, productIdentifier: String) {
-        AffiliatePromotionBottomSheet.newInstance(productId, productName, productImage, productUrl,
+        AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
+                null,null,
+                productId, productName, productImage, productUrl,
                 productIdentifier,AffiliatePromotionBottomSheet.ORIGIN_PROMOSIKAN).show(childFragmentManager, "")
     }
 

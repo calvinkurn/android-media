@@ -71,6 +71,11 @@ class TopAdsHeadlineKeySelectedAdapter(private val onCheck: ((position: Int, key
                         holder.view.keywordBid.setMessage(String.format(holder.view.context.getString(R.string.topads_common_max_bid), maxBid))
                         onBidChange(false, items[holder.adapterPosition])
                     }
+                    result % 50 != 0 -> {
+                        holder.view.keywordBid.setError(true)
+                        holder.view.keywordBid.setMessage(holder.view.context.getString(R.string.error_bid_multiple_50))
+                        onBidChange(false, items[holder.adapterPosition])
+                    }
                     else -> {
                         holder.view.keywordBid.setError(false)
                         holder.view.keywordBid.setMessage("")

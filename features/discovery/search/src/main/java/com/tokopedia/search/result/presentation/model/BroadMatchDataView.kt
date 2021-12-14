@@ -10,6 +10,7 @@ data class BroadMatchDataView(
         val isAppendTitleInTokopedia: Boolean = false,
         val broadMatchItemDataViewList: List<BroadMatchItemDataView> = listOf(),
         val dimension90: String = "",
+        val carouselOptionType: CarouselOptionType,
 ) : Visitable<ProductListTypeFactory> {
 
     override fun type(typeFactory: ProductListTypeFactory): Int {

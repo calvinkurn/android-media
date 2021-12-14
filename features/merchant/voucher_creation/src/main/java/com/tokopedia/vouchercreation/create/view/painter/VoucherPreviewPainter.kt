@@ -19,12 +19,15 @@ import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.whenAlive
+import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.utils.getTextSizeFromDimens
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageTextType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.enums.getScaledValuePair
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.BannerBaseUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
 
+@Suppress("MagicNumber")
 class VoucherPreviewPainter(private val context: Context,
                             private val bitmap: Bitmap,
                             var onSuccessGetBitmap: (Bitmap) -> Unit = { _ -> },
@@ -74,14 +77,14 @@ class VoucherPreviewPainter(private val context: Context,
     private val shopNamePaint by lazy {
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.BLACK
-            textSize = 30f
+            textSize = getTextSizeFromDimens(context, R.dimen.mvc_voucher_preview_shop_name_text_size)
             typeface = Typeface.DEFAULT_BOLD
         }
     }
     private val promoNamePaint by lazy {
         TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.WHITE
-            textSize = 40f
+            textSize = getTextSizeFromDimens(context, R.dimen.mvc_voucher_preview_promo_name_text_size)
             typeface = Typeface.DEFAULT_BOLD
         }
     }
@@ -354,7 +357,7 @@ class VoucherPreviewPainter(private val context: Context,
                 visibility = View.VISIBLE
                 typeface = Typeface.DEFAULT_BOLD
                 text = value
-                textSize = type.textSize
+                textSize = getTextSizeFromDimens(context, type.textSize)
                 setTextColor(Color.WHITE)
                 if (type != VoucherImageTextType.VALUE) {
                     layoutParams = linearLayoutParams
