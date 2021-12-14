@@ -92,7 +92,7 @@ object OperationalHoursUtil {
 
     /**
      * Generate Shop operational hours wording
-     * Example : "Jam 10.00 - 16.00 WIB"
+     * Example : "Jam 10:00 - 16:00 WIB"
      * @return [String]
      */
     fun generateDatetime(startTime: String, endTime: String, status: Int): String {
@@ -112,11 +112,11 @@ object OperationalHoursUtil {
     }
 
     /**
-     * Convert "17:00:00" to "17.00 WIB"
+     * Convert "17:00:00" to "17:00 WIB"
      * @return [String]
      */
     fun formatDateTimeWithDefaultTimezone(time: String): String {
-        return "${time.replace(":", ".").substring(DEFAULT_FIRST_INDEX, SUBSTRING_END_TIME_INDEX)} $DEFAULT_TIMEZONE"
+        return "${time.substring(DEFAULT_FIRST_INDEX, SUBSTRING_END_TIME_INDEX)} $DEFAULT_TIMEZONE"
     }
 
     /**
@@ -265,11 +265,11 @@ object OperationalHoursUtil {
     }
 
     /**
-     * Convert time from 18:00:00 -> 18.00 without timezone
+     * Convert time from 18:00:00 -> 18:00 without timezone
      * @return [String]
      */
     private fun formatDateTime(time: String): String {
-        return time.replace(":", ".").substring(DEFAULT_FIRST_INDEX, SUBSTRING_END_TIME_INDEX)
+        return time.substring(DEFAULT_FIRST_INDEX, SUBSTRING_END_TIME_INDEX)
     }
 
     /**
