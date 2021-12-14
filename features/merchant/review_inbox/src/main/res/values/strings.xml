@@ -108,8 +108,8 @@
     </string-array>
     <string name="review_expand">&lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
     <string name="review_create_rating_condition_incentive">Kasih ratingnya</string>
-    <string name="review_create_rating_condition_challenge">Kasih rating buat belanjaanmu</string>
-    <string name="review_create_photo_condition">Lanjut foto barang, min. 1</string>
-    <string name="review_create_review_condition">Tulis ulasan min. 40 karakter</string>
+    <string name="review_create_rating_condition_challenge">Kasih rating\nbuat belanjaanmu</string>
+    <string name="review_create_photo_condition">Lanjut foto\nbarang, min. 1</string>
+    <string name="review_create_review_condition">Tulis ulasan\nmin. 40 karakter</string>
 
 </resources>
