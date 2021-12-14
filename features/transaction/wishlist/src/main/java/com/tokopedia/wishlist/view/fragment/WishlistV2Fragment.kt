@@ -47,6 +47,7 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
@@ -219,10 +220,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         rvScrollListener.setHasNextPage(wishlistV2.hasNextPage)
 
                         if (wishlistV2.totalData == 0) {
+                            addPaddingRv()
                             isFetchRecommendation = true
                             hideTotalLabel()
                             hideSortFilter(wishlistV2.sortFilters)
                         } else {
+                            removePaddingRv()
                             updateTotalLabel(wishlistV2.totalData)
                         }
 
@@ -245,6 +248,18 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 }
             }
         })
+    }
+
+    private fun addPaddingRv() {
+        binding?.run {
+            rvWishlist.setPadding(10.toPx(), 0, 10.toPx(), 0)
+        }
+    }
+
+    private fun removePaddingRv() {
+        binding?.run {
+            rvWishlist.setPadding(0, 0, 0, 0)
+        }
     }
 
     private fun observingWishlistData() {
