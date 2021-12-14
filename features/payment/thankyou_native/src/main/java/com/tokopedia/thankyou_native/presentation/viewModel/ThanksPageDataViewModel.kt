@@ -35,7 +35,7 @@ class ThanksPageDataViewModel @Inject constructor(
 
     val topAdsDataLiveData = MutableLiveData<TopAdsRequestParams>()
 
-    private val gyroResponseLiveData = MutableLiveData<FeatureEngineData>()
+     val gyroResponseLiveData = MutableLiveData<FeatureEngineData>()
 
 
     fun getThanksPageData(paymentId: String, merchant: String) {
@@ -67,7 +67,7 @@ class ThanksPageDataViewModel @Inject constructor(
         }
     }
 
-    private fun loadTopAdsViewModelData(
+     fun loadTopAdsViewModelData(
         topAdsRequestParams: TopAdsRequestParams,
         thanksPageData: ThanksPageData
     ) {
@@ -84,7 +84,7 @@ class ThanksPageDataViewModel @Inject constructor(
         return FeatureRecommendationMapper.getTopAdsParams(engineData)
     }
 
-    private fun postGyroRecommendation(engineData: FeatureEngineData?) {
+     fun postGyroRecommendation(engineData: FeatureEngineData?) {
         gyroEngineMapperUseCase.cancelJobs()
         gyroEngineMapperUseCase.getFeatureListData(engineData, {
             gyroRecommendationLiveData.postValue(it)
