@@ -417,12 +417,14 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                     getString(R.string.shop_operational_hour_abort_ongoing_holiday_schedule_success)
                 }
                 setShopHolidayScheduleStatusType = Toaster.TYPE_NORMAL
+                getInitialData()
             }
             if (result is Fail) {
                 setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_hour_abort_holiday_schedule_failed)
                 setShopHolidayScheduleStatusType = Toaster.TYPE_ERROR
+                hideLoader()
+                showToaster(setShopHolidayScheduleStatusMessage, setShopHolidayScheduleStatusType)
             }
-            getInitialData()
         }
 
         // observe create shop close schedule
@@ -430,12 +432,14 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
             if (result is Success) {
                 setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_hour_set_holiday_schedule_success)
                 setShopHolidayScheduleStatusType = Toaster.TYPE_NORMAL
+                getInitialData()
             }
             if (result is Fail) {
                 setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_hour_set_holiday_schedule_failed)
                 setShopHolidayScheduleStatusType = Toaster.TYPE_ERROR
+                hideLoader()
+                showToaster(setShopHolidayScheduleStatusMessage, setShopHolidayScheduleStatusType)
             }
-            getInitialData()
         }
 
     }
@@ -772,5 +776,6 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         opsHourContainer?.visible()
         headerOpsHour?.visible()
         autoChatTicker?.visible()
+        shopIsOnHolidayContainer?.showWithCondition(isShopOnScheduledHoliday)
     }
 }
