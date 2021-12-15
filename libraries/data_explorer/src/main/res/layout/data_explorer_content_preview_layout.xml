@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/unify_space_32"
         app:typographyType="body_2"
+        android:textColor="@color/Unify_N700_96"
         tools:text="VERY LONG TEXT" />
 
 </ScrollView>
