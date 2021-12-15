@@ -1892,7 +1892,7 @@ class PlayViewModel @Inject constructor(
                         }
                     }
 
-                    override fun onError(e: Exception, shareString: String) {
+                    override fun onError(e: Exception) {
                         viewModelScope.launch {
                             handleCopyLink()
                         }

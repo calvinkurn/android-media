@@ -37,9 +37,9 @@ class PlayShareExperienceImpl @Inject constructor(
     }
 
     // TODO("This hardcoded text should be moved")
-    fun generateShareString(): String {
+    fun generateShareString(url: String): String {
         val description = "Coba nonton video ini ya di Tokopedia Play!"
-        return "${data.title}.\n$description\n${data.redirectUrl}"
+        return "${data.title}.\n$description\n$url"
     }
 
     private fun getShareTextContent(): String {
@@ -63,7 +63,7 @@ class PlayShareExperienceImpl @Inject constructor(
             val linkerData = LinkerData().apply {
                 id = data.id
                 name = data.title
-                description = generateShareString()
+                description = generateOgDescription()
                 textContent = getShareTextContent()
                 imgUri = data.coverUrl
                 deepLink = generateDeepLinkPath()
@@ -89,19 +89,19 @@ class PlayShareExperienceImpl @Inject constructor(
                 ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
                     Log.d("<LOG>", "LinkerShareData shareContents : ${linkerShareData?.shareContents}")
-                    listener.onUrlCreated(linkerShareData, shareModel, linkerShareData?.shareContents ?: generateShareString())
+                    listener.onUrlCreated(linkerShareData, shareModel, generateShareString(linkerShareData?.url ?: data.redirectUrl))
                 }
 
                 override fun onError(linkerError: LinkerError?) {
                     Log.d("<LOG>", "LinkerShareData Error : $linkerError")
-                    listener.onError(Exception(linkerError?.errorMessage), generateShareString())
+                    listener.onError(Exception(linkerError?.errorMessage))
                 }
             }))
         }
         catch (e: Exception) {
             Log.d("<LOG>", "Catch Error : ${e.message}")
             Log.d("<LOG>", "Catch Error : ${e.localizedMessage}")
-            listener.onError(e, generateShareString())
+            listener.onError(e)
         }
     }
 
