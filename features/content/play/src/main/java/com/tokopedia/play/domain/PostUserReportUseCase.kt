@@ -29,18 +29,19 @@ class PostUserReportUseCase @Inject constructor(
         reasonId: Int,
         timestamp: Long,
         reportDesc: String
-    ): HashMap<String, Any> {
-        return hashMapOf(
-            INPUT to hashMapOf(
-                REPORTER_ID_PARAM to reporterId,
-                CHANNEL_ID_PARAM to channelId,
-                MEDIA_URL_PARAM to mediaUrl,
-                USER_ID_PARAM to ownerChannelUserId,
-                REASON_ID_PARAM to reasonId,
-                TIMESTAMP_PARAM to timestamp,
-                DESCRIPTION_PARAM to reportDesc
-            )
+    ): RequestParams{
+        val params = mapOf(
+            REPORTER_ID_PARAM to reporterId,
+            CHANNEL_ID_PARAM to channelId,
+            MEDIA_URL_PARAM to mediaUrl,
+            USER_ID_PARAM to ownerChannelUserId,
+            REASON_ID_PARAM to reasonId,
+            TIMESTAMP_PARAM to timestamp,
+            DESCRIPTION_PARAM to reportDesc
         )
+        return RequestParams.create().apply {
+            putObject(INPUT, params)
+        }
     }
 
     override suspend fun executeOnBackground(): UserReportSubmissionResponse {
@@ -75,19 +76,8 @@ class PostUserReportUseCase @Inject constructor(
 
         const val QUERY_NAME = "PostUserReportUseCaseQuery"
         const val QUERY = """
-            mutation {
-             visionPostReportVideoPlay(
-                 $INPUT: {
-                    $REPORTER_ID_PARAM: Int64!,
-                    $CHANNEL_ID_PARAM: Int64,
-                    $MEDIA_URL_PARAM: String!,
-                    $USER_ID_PARAM: Int64,
-                    $REASON_ID_PARAM: Int,
-                    $TIMESTAMP_PARAM: Int64,
-                    $DESCRIPTION_PARAM: "String"
-                 }
-             ) 
-            {
+            mutation x(${'$'}input: ReportVideoPlayRequest!){
+             visionPostReportVideoPlay($INPUT: ${'$'}input) {
                 status
             }
         }
