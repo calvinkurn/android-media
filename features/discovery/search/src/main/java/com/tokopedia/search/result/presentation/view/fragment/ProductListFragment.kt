@@ -1490,13 +1490,17 @@ class ProductListFragment: BaseDaggerFragment(),
         inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data) {
             val productDataLayerList = createInspirationCarouselChipsProductDataLayer(product)
 
+            val inspirationCarouselAnalyticsData = InspirationCarouselAnalyticsData(
+                type = product.inspirationCarouselType,
+                chipsValue = product.optionTitle
+            )
+
             SearchTracking.trackImpressionInspirationCarouselChips(
                 trackingQueue,
-                product.inspirationCarouselType,
                 queryKey,
-                product.optionTitle,
                 getUserId(),
-                productDataLayerList
+                productDataLayerList,
+                inspirationCarouselAnalyticsData
             )
         }
     }

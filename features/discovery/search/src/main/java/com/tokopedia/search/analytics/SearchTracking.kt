@@ -645,17 +645,16 @@ object SearchTracking {
     @JvmStatic
     fun trackImpressionInspirationCarouselChips(
             trackingQueue: TrackingQueue,
-            type: String,
             keyword: String,
-            chipsValue: String,
             userId: String?,
-            list: List<Any>
+            list: List<Any>,
+            carouselAnalyticsData: InspirationCarouselAnalyticsData
     ) {
         val map = DataLayer.mapOf(
                 SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
                 SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
                 SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_INSPIRATION_CAROUSEL_CHIPS_PRODUCT,
-                SearchTrackingConstant.EVENT_LABEL, "$type - $keyword - $chipsValue",
+                SearchTrackingConstant.EVENT_LABEL, "${carouselAnalyticsData.type} - $keyword - ${carouselAnalyticsData.chipsValue}",
                 SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
                 SearchTrackingConstant.USER_ID, userId,
                 SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
