@@ -416,8 +416,14 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     fun removeVariant() {
         mIsRemovingVariant.value = true
-        val isRemoteDataHasVariant = productInputModel.value?.variantInputModel?.isRemoteDataHasVariant
-                ?: false // keep isRemoteDataHasVariant old data
+        // keep isRemoteDataHasVariant old data
+        val isRemoteDataHasVariant = productInputModel.value?.variantInputModel?.
+            isRemoteDataHasVariant ?: false
+        // keep the selections before being cleared
+        val selections = productInputModel.value?.variantInputModel?.selections.orEmpty().filter {
+            it.variantId != CUSTOM_VARIANT_TYPE_ID.toString()
+        }
+
         productInputModel.value?.variantInputModel = VariantInputModel(
                 isRemoteDataHasVariant = isRemoteDataHasVariant)
         selectedVariantDetails = mutableListOf()
@@ -430,9 +436,8 @@ class AddEditProductVariantViewModel @Inject constructor(
 
         productInputModel.value?.detailInputModel?.categoryId?.let {
             val categoryId = it.toIntOrNull()
-            categoryId?.run { getVariantCategoryCombination(this, emptyList()) }
+            categoryId?.run { getVariantCategoryCombination(this, selections) }
         }
-
     }
 
     private fun mapSelections(
