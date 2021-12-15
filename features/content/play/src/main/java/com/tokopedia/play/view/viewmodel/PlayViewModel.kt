@@ -1837,6 +1837,8 @@ class PlayViewModel @Inject constructor(
     private fun openSharingOption() {
         viewModelScope.launch {
             if(playShareExperience.isCustomSharingAllow()) {
+                playAnalytic.impressShareBottomSheet(channelId, channelType.value)
+
                 _uiEvent.emit(OpenSharingOptionEvent(
                     title = _channelDetail.value.channelInfo.title,
                     coverUrl = _channelDetail.value.channelInfo.coverUrl
