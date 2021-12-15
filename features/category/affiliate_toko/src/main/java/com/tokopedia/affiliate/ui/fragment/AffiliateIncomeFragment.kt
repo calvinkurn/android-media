@@ -32,6 +32,8 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import androidx.lifecycle.ViewModelProviders
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.appbar.AppBarLayout
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
@@ -91,6 +93,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
 
         affiliateIncomeViewModel.getAffiliateDataItems().observe(this, {
             adapter.removeShimmer(listSize)
+            stopSwipeRefresh()
             if(it.isEmpty() && listSize == 0){
                 showGlobalErrorEmptyState()
             } else {
@@ -104,8 +107,10 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
             if (visibility != null) {
                 if (visibility)
                     adapter.addShimmer()
-                else
+                else {
+                    stopSwipeRefresh()
                     adapter.removeShimmer(listSize)
+                }
             }
         })
         affiliateIncomeViewModel.getErrorMessage().observe(this, { error ->
@@ -137,6 +142,10 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
                 view?.findViewById<Typography>(R.id.date_range_text)?.text = affiliateIncomeViewModel.getSelectedDate()
             }
         })
+    }
+
+    private fun stopSwipeRefresh() {
+        view?.findViewById<SwipeRefreshLayout>(R.id.swipe)?.isRefreshing = false
     }
 
     private fun hideGlobalErrorEmptyState() {
@@ -200,6 +209,15 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     private fun afterViewCreated() {
         affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
         view?.findViewById<Typography>(R.id.withdrawal_user_name)?.text = userName
+        view?.findViewById<SwipeRefreshLayout>(R.id.swipe)?.let {
+            it.setOnRefreshListener {
+                affiliateIncomeViewModel.getAffiliateBalance()
+                resetItems()
+            }
+            view?.findViewById<AppBarLayout>(R.id.appbar)?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {appBarLayout, verticalOffset ->
+                it.isEnabled = verticalOffset == 0
+            })
+        }
         view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.setOnClickListener {
             RouteManager.route(context, "tokopedia://webview?titlebar=false&url=https://1002-staging-feature.tokopedia.com/portal/withdrawal")
         }
