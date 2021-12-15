@@ -9,6 +9,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -114,16 +115,22 @@ class WishlistV2ViewModelTest {
         val primaryButton4 = WishlistV2Response.Data.WishlistV2.Item.Buttons.PrimaryButton(action = "SEE_SIMILAR_PRODUCT")
         val primaryButton5 = WishlistV2Response.Data.WishlistV2.Item.Buttons.PrimaryButton(action = "ADD_TO_CART")
 
+        val listLabelGroup = arrayListOf<WishlistV2Response.Data.WishlistV2.Item.LabelGroupItem>()
+        listLabelGroup.add(WishlistV2Response.Data.WishlistV2.Item.LabelGroupItem(title = "test", url = "labelUrl"))
+
+        val listBadge = arrayListOf<WishlistV2Response.Data.WishlistV2.Item.BadgesItem>()
+        listBadge.add(WishlistV2Response.Data.WishlistV2.Item.BadgesItem(imageUrl = "badgeUrl", title = "testBadge"))
+
         val wishlistItem1 = WishlistV2Response.Data.WishlistV2.Item(name = "Test1",
-                buttons = WishlistV2Response.Data.WishlistV2.Item.Buttons(primaryButton = primaryButton1))
+                buttons = WishlistV2Response.Data.WishlistV2.Item.Buttons(primaryButton = primaryButton1), labelGroup = listLabelGroup, badges = listBadge)
         val wishlistItem2 = WishlistV2Response.Data.WishlistV2.Item(name = "Test2",
-                buttons = WishlistV2Response.Data.WishlistV2.Item.Buttons(primaryButton = primaryButton2))
+                buttons = WishlistV2Response.Data.WishlistV2.Item.Buttons(primaryButton = primaryButton2), labelGroup = listLabelGroup, badges = listBadge)
         val wishlistItem3 = WishlistV2Response.Data.WishlistV2.Item(name = "Test3",
-                buttons = WishlistV2Response.Data.WishlistV2.Item.Buttons(primaryButton = primaryButton3))
+                buttons = WishlistV2Response.Data.WishlistV2.Item.Buttons(primaryButton = primaryButton3), labelGroup = listLabelGroup, badges = listBadge)
         val wishlistItem4 = WishlistV2Response.Data.WishlistV2.Item(name = "Test4",
-                buttons = WishlistV2Response.Data.WishlistV2.Item.Buttons(primaryButton = primaryButton4))
+                buttons = WishlistV2Response.Data.WishlistV2.Item.Buttons(primaryButton = primaryButton4), labelGroup = listLabelGroup, badges = listBadge)
         val wishlistItem5 = WishlistV2Response.Data.WishlistV2.Item(name = "Test5",
-                buttons = WishlistV2Response.Data.WishlistV2.Item.Buttons(primaryButton = primaryButton5))
+                buttons = WishlistV2Response.Data.WishlistV2.Item.Buttons(primaryButton = primaryButton5), labelGroup = listLabelGroup, badges = listBadge)
 
         wishlistOneItemList = arrayListOf(wishlistItem1)
         wishlistTwoItemList = arrayListOf(wishlistItem1, wishlistItem2)
@@ -174,9 +181,15 @@ class WishlistV2ViewModelTest {
 
         listProductCardModel = listOf(productCardModel1, productCardModel2, productCardModel3)
 
-        val recommItem1 = RecommendationItem(name = "recomm1")
-        val recommItem2 = RecommendationItem(name = "recomm2")
-        val recommItem3 = RecommendationItem(name = "recomm3")
+        val badgesUrl = arrayListOf<String>()
+        badgesUrl.add("url")
+
+        val listRecommLabel = arrayListOf<RecommendationLabel>()
+        listRecommLabel.add(RecommendationLabel(title = "test", imageUrl = "testUrl"))
+
+        val recommItem1 = RecommendationItem(name = "recomm1", badgesUrl = badgesUrl, labelGroupList = listRecommLabel)
+        val recommItem2 = RecommendationItem(name = "recomm2", badgesUrl = badgesUrl, labelGroupList = listRecommLabel)
+        val recommItem3 = RecommendationItem(name = "recomm3", badgesUrl = badgesUrl, labelGroupList = listRecommLabel)
         listRecommendationItem = listOf(recommItem1, recommItem2, recommItem3)
 
         wishlistV2Response = WishlistV2Response(WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(items = wishlistThreeItemList)))
