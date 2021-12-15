@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="8dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -14,20 +13,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:unify_header_title="@string/shop_settings_operational_hours"
         app:unify_header_is_show_back_button="true" />
-
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ops_hour_chat_auto_ticker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:descriptionText="@string/shop_operational_hour_ticker_description_auto_chat"
-        app:closeButtonVisibility="gone"
-        app:tickerType="announcement"
-        app:tickerShapeType="full"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header_shop_operational_hours"
-        app:layout_constraintVertical_chainStyle="spread"
-        android:visibility="visible"
-        />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/ops_hour_loader"
@@ -43,9 +28,8 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/ops_hour_chat_auto_ticker"
+        app:layout_constraintTop_toBottomOf="@id/header_shop_operational_hours"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:paddingBottom="8dp"
         android:fillViewport="true">
 
         <LinearLayout
@@ -54,7 +38,19 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:focusableInTouchMode="true"
+            android:paddingBottom="18dp"
             android:background="@color/Unify_Background">
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ops_hour_chat_auto_ticker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:descriptionText="@string/shop_operational_hour_ticker_description_auto_chat"
+                app:closeButtonVisibility="gone"
+                app:tickerType="announcement"
+                app:tickerShapeType="full"
+                android:visibility="visible"
+                />
 
             <com.tokopedia.unifycomponents.CardUnify
                 android:id="@+id/holiday_toggle_container"
@@ -68,14 +64,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="visible"
-                    android:paddingBottom="12dp"
+                    android:paddingBottom="8dp"
                     app:layout_constraintVertical_chainStyle="spread">
 
                     <com.tokopedia.unifycomponents.ImageUnify
                         android:id="@+id/img_shop_holiday"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
-                        android:layout_marginTop="12dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginStart="12dp"
                         android:src="@drawable/ic_ongoing_holiday_image"
                         app:layout_constraintLeft_toLeftOf="parent"
@@ -127,7 +123,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         android:text="@string/label_open_shop"
-                        app:unifyButtonSize="medium"
+                        app:unifyButtonSize="small"
                         app:unifyButtonVariant="ghost"
                         android:layout_marginEnd="12dp"
                         android:layout_marginTop="12dp"
@@ -146,7 +142,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="18dp"
+                    android:layout_marginTop="8dp"
                     android:text="@string/shop_operational_hour_title_set_hour"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -162,7 +158,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginTop="18dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -225,8 +221,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="4dp">
+                android:layout_marginEnd="8dp">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_shop_holiday_schedule"
@@ -236,13 +231,12 @@
                     app:typographyType="body_2"
                     tools:text="25 Januari 2021 - 30 September 2021" />
 
-                <com.tokopedia.unifycomponents.ImageUnify
+                <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/ops_hour_img_schedule_action"
-                    android:layout_width="5dp"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ops_hour_ic_three_dots_more_menu"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:icon_name="MENU_KEBAB_VERTICAL"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginTop="1dp"
                     />
 
             </RelativeLayout>

@@ -99,7 +99,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private var holidayScheduleContainer: RelativeLayout? = null
     private var tvShopHolidaySchedule: Typography? = null
     private var autoChatTicker: Ticker? = null
-    private var holidayEditActionButton: ImageUnify? = null
+    private var holidayEditActionButton: IconUnify? = null
     private var startDateTextField: TextFieldUnify? = null
     private var endDateTextField: TextFieldUnify? = null
     private var calendarUnify: UnifyCalendar? = null
@@ -285,6 +285,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
             // set action delete schedule click listener
             actionDelete.setOnClickListener {
+                actionBottomSheet?.dismiss()
                 showConfirmDialogForDeleteHolidaySchedule()
             }
         }
@@ -715,7 +716,6 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 ctaPrimaryText = getString(R.string.action_delete),
                 ctaSecondaryText = getString(R.string.label_back),
                 primaryCTAListener = {
-                    actionBottomSheet?.dismiss()
                     showLoader()
                     deleteShopHolidaySchedule()
                 },
