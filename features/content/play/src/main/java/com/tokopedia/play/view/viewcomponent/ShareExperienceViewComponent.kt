@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -49,7 +50,11 @@ class ShareExperienceViewComponent(
                 Log.d("<LOG>", "screenshottaken")
                 listener.onScreenshotTaken(this@ShareExperienceViewComponent)
             }
-        }, fragment, addFragmentLifecycleObserver = true
+        }, fragment, addFragmentLifecycleObserver = true, permissionListener = object: PermissionListener {
+            override fun permissionAction(action: String, label: String) {
+                listener.onSharePermissionAction(this@ShareExperienceViewComponent, label)
+            }
+        }
     )
 
     init {
@@ -82,5 +87,6 @@ class ShareExperienceViewComponent(
         fun onShareOptionClick(view: ShareExperienceViewComponent, shareModel: ShareModel)
         fun onShareOptionClosed(view: ShareExperienceViewComponent)
         fun onScreenshotTaken(view: ShareExperienceViewComponent)
+        fun onSharePermissionAction(view: ShareExperienceViewComponent, label: String)
     }
 }

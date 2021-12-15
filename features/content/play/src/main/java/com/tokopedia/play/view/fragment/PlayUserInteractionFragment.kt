@@ -322,15 +322,22 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onShareOptionClick(view: ShareExperienceViewComponent, shareModel: ShareModel) {
-        playViewModel.submitAction(ClickSharingOption(shareModel))
+        playViewModel.submitAction(ClickSharingOptionAction(shareModel))
     }
 
     override fun onShareOptionClosed(view: ShareExperienceViewComponent) {
-        playViewModel.submitAction(CloseSharingOption)
+        playViewModel.submitAction(CloseSharingOptionAction)
     }
 
     override fun onScreenshotTaken(view: ShareExperienceViewComponent) {
-        playViewModel.submitAction(ScreenshotTaken)
+        playViewModel.submitAction(ScreenshotTakenAction)
+    }
+
+    override fun onSharePermissionAction(
+        view: ShareExperienceViewComponent,
+        label: String
+    ) {
+        playViewModel.submitAction(SharePermissionAction(label))
     }
 
     override fun onPartnerNameClicked(view: PartnerInfoViewComponent) {

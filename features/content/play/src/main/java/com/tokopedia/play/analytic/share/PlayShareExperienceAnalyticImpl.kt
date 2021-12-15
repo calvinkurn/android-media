@@ -98,11 +98,10 @@ class PlayShareExperienceAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickSharePermission(channelId: String, channelType: String, isAllow: Boolean) {
-        val status = if(isAllow) "allow" else "deny"
+    override fun clickSharePermission(channelId: String, channelType: String, label: String) {
         sendGeneralClickEvent(
             "access photo media and files",
-            "$channelId - $channelType - $status"
+            "$channelId - $channelType - $label"
         )
     }
 

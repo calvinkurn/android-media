@@ -733,9 +733,10 @@ class PlayViewModel @Inject constructor(
             ClickLikeAction -> handleClickLike(isFromLogin = false)
             RefreshLeaderboard -> handleRefreshLeaderboard()
             ClickShareAction -> handleClickShare()
-            CloseSharingOption -> handleCloseSharingOption()
-            ScreenshotTaken -> handleTakeScreenshotForSharing()
-            is ClickSharingOption -> handleSharingOption(action.shareModel)
+            CloseSharingOptionAction -> handleCloseSharingOption()
+            ScreenshotTakenAction -> handleTakeScreenshotForSharing()
+            is ClickSharingOptionAction -> handleSharingOption(action.shareModel)
+            is SharePermissionAction -> handleSharePermission(action.label)
         }
     }
 
@@ -1895,6 +1896,10 @@ class PlayViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+    private fun handleSharePermission(label: String) {
+        playAnalytic.clickSharePermission(channelId, channelType.value, label)
     }
 
     /**

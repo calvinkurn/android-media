@@ -13,7 +13,7 @@ interface PlayShareExperienceAnalytic {
 
     fun impressShareBottomSheet(channelId: String, channelType: String)
 
-    fun clickSharePermission(channelId: String, channelType: String, isAllow: Boolean)
+    fun clickSharePermission(channelId: String, channelType: String, label: String)
 
     fun takeScreenshotForSharing(channelId: String, channelType: String)
 }
