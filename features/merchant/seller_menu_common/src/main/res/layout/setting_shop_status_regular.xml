@@ -20,11 +20,13 @@
             android:id="@+id/titleShopStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
             android:gravity="center_vertical"
             android:text="@string/regular_merchant"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toStartOf="@id/leftGuideline"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/divider_stats_rm"
             app:typographyType="heading_5"
             app:typographyWeight="bold" />
 
@@ -53,10 +55,10 @@
             android:id="@+id/divider_stats_rm"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="1dp"
-            android:layout_marginTop="12dp"
             app:layout_constraintStart_toStartOf="@id/titleShopStatus"
             app:layout_constraintEnd_toEndOf="@id/regularMerchantStatus"
             app:layout_constraintTop_toBottomOf="@id/titleShopStatus"
+            app:layout_constraintBottom_toTopOf="@id/tx_stats_rm"
             tools:background="@drawable/ic_divider_stats_rm"
             tools:visibility="visible" />
 

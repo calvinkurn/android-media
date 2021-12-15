@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentSelected
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentUnSelected
 import com.tokopedia.affiliate.AFFILIATE_HELP_URL
+import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.AFFILIATE_SPLASH_TIME
 import com.tokopedia.affiliate.PAGE_SEGMENT_HELP
 import com.tokopedia.affiliate.di.AffiliateComponent
@@ -77,7 +78,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         super.onNewIntent(intent)
         Uri.parse(intent?.data?.path ?: "").pathSegments.firstOrNull()?.let {
             if (it.contains(PAGE_SEGMENT_HELP)) {
-                selectItem(HELP_MENU, R.id.menu_help_affiliate)
+                selectItem(HELP_MENU, R.id.menu_help_affiliate,true)
             }
         }
     }
@@ -121,6 +122,16 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         findViewById<ImageUnify>(R.id.affiliate_background_image)?.show()
         affiliateBottomNavigation?.showBottomNav()
         affiliateBottomNavigation?.populateBottomNavigationView()
+        pushOpenScreenEvent()
+    }
+
+    private fun pushOpenScreenEvent() {
+        AffiliateAnalytics.sendOpenScreenEvent(
+            AffiliateAnalytics.EventKeys.OPEN_SCREEN,
+            AffiliateAnalytics.ScreenKeys.AFFILIATE_HOME_SCREEN_NAME,
+            userSessionInterface.isLoggedIn,
+            userSessionInterface.userId
+        )
     }
 
     private fun clearBackStack() {
@@ -137,12 +148,13 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         )
     }
 
-    override fun menuClicked(position: Int, id: Int): Boolean {
+    override fun menuClicked(position: Int, id: Int, isNotFromBottom: Boolean): Boolean {
         when (position) {
             HOME_MENU -> openFragment(AffiliateHomeFragment.getFragmentInstance(this))
             PROMO_MENU -> openFragment(AffiliatePromoFragment.getFragmentInstance())
             HELP_MENU -> openFragment(AffiliateHelpFragment.getFragmentInstance(AFFILIATE_HELP_URL))
         }
+        if(!isNotFromBottom) sendBottomNavClickEvent(position)
         return true
     }
 
@@ -211,6 +223,17 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         ft.commitNowAllowingStateLoss()
     }
 
+    private fun sendBottomNavClickEvent(position: Int) {
+        var eventAction = ""
+        when (position) {
+            HOME_MENU -> eventAction = AffiliateAnalytics.ActionKeys.HOME_NAV_BAR_CLICK
+            PROMO_MENU -> eventAction = AffiliateAnalytics.ActionKeys.PROMOSIKAN_NAV_BAR_CLICK
+            HELP_MENU -> eventAction = AffiliateAnalytics.ActionKeys.BANUTAN_NAV_BAR_CLICK
+        }
+        AffiliateAnalytics.sendEvent(AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,eventAction,AffiliateAnalytics.CategoryKeys.HOME_PORTAL,"",userSessionInterface.userId)
+
+    }
+
     private fun showSelectedFragment(
         fragmentName: String,
         manager: FragmentManager,
@@ -234,8 +257,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         const val HELP_MENU = 2
     }
 
-    override fun selectItem(position: Int, id: Int) {
-        affiliateBottomNavigation?.setSelected(position)
+    override fun selectItem(position: Int, id: Int, isNotFromBottom : Boolean) {
+        affiliateBottomNavigation?.setSelected(position,isNotFromBottom)
     }
 
     override fun onBackPressed() {

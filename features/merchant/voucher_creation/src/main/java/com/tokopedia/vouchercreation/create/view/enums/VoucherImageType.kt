@@ -13,16 +13,16 @@ sealed class VoucherImageType(val value: Int,
     class Percentage(value: Int, val percentage: Int) : VoucherImageType(value, BenefitType.PERCENT, CouponType.CASHBACK)
 }
 
-enum class VoucherImageTextType(val textSize: Float) {
-    VALUE(40f),
-    SCALE(20f),
-    ASTERISK(15f)
+enum class VoucherImageTextType(val textSize: Int) {
+    VALUE(R.dimen.mvc_preview_value_text_size),
+    SCALE(R.dimen.mvc_preview_scale_text_size),
+    ASTERISK(R.dimen.mvc_preview_asterix_text_size)
 }
 
-enum class PostImageTextType(val textSize: Float) {
-    VALUE(50f),
-    SCALE(22f),
-    ASTERISK(15f)
+enum class PostImageTextType(val textSize: Int) {
+    VALUE(R.dimen.mvc_square_voucher_preview_value_text_size),
+    SCALE(R.dimen.mvc_square_voucher_preview_scale_text_size),
+    ASTERISK(R.dimen.mvc_square_voucher_asterix_text_size)
 }
 
 enum class ValueScaleType(@StringRes val stringRes: Int) {

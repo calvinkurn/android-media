@@ -39,6 +39,10 @@ class CashbackVoucherCreateViewModel @Inject constructor(
     var isRupiahInputError = false
     var isPercentageInputError = false
 
+    companion object {
+        private const val PERCENT = 100
+    }
+
     private val mRupiahMaximumDiscountLiveData = MutableLiveData<Int>()
     private val mRupiahMinimumPurchaseLiveData = MutableLiveData<Int>()
     private val mRupiahVoucherQuotaLiveData = MutableLiveData<Int>()
@@ -117,13 +121,13 @@ class CashbackVoucherCreateViewModel @Inject constructor(
     private val mTresholdValueLiveData = MediatorLiveData<Int>().apply {
         addSource(mPercentageMinimumPurchaseLiveData) { minimumPurchase ->
             mPercentageDiscountAmountLiveData.value?.let { percentage ->
-                val percentValue = minimumPurchase.toDouble() * percentage / 100
+                val percentValue = minimumPurchase.toDouble() * percentage / PERCENT
                 value = percentValue.toInt()
             }
         }
         addSource(mPercentageDiscountAmountLiveData) { percentage ->
             mPercentageMinimumPurchaseLiveData.value?.let { minimumPurchase ->
-                val percentValue = minimumPurchase.toDouble() * percentage / 100
+                val percentValue = minimumPurchase.toDouble() * percentage / PERCENT
                 value = percentValue.toInt()
             }
         }
