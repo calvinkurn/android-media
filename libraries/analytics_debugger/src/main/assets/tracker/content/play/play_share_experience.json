@@ -1,0 +1,86 @@
+{
+  "readme": "Play Viewer - Share Experience Analytics",
+  "mode": "exact",
+  "query": [
+    {
+      "eventAction": "click - share button",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod)",
+      "sessionIris": ".*",
+      "currentSite": ".*",
+      "userId": ".*",
+      "businessUnit": "sharingexperience"
+    },
+    {
+      "eventAction": "click - close share bottom sheet",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod)",
+      "sessionIris": ".*",
+      "currentSite": ".*",
+      "userId": ".*",
+      "businessUnit": "sharingexperience"
+    },
+    {
+      "eventAction": "click - sharing channel",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod) - .*",
+      "sessionIris": ".*",
+      "currentSite": ".*",
+      "userId": ".*",
+      "businessUnit": "sharingexperience"
+    },
+    {
+      "eventAction": "view on sharing channel",
+      "event": "viewGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod)",
+      "sessionIris": ".*",
+      "currentSite": ".*",
+      "userId": ".*",
+      "businessUnit": "sharingexperience"
+    },
+    {
+      "eventAction": "click - access photo media and files",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod) - (allow|deny)",
+      "sessionIris": ".*",
+      "currentSite": ".*",
+      "userId": ".*",
+      "businessUnit": "sharingexperience"
+    },
+    {
+      "eventAction": "view - screenshot share bottom sheet",
+      "event": "viewGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod)",
+      "sessionIris": ".*",
+      "currentSite": ".*",
+      "userId": ".*",
+      "businessUnit": "sharingexperience"
+    },
+    {
+      "eventAction": "click - close screenshot share bottom sheet",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod)",
+      "sessionIris": ".*",
+      "currentSite": ".*",
+      "userId": ".*",
+      "businessUnit": "sharingexperience"
+    },
+    {
+      "eventAction": "click - channel share bottom sheet - screenshot",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod) - .*",
+      "sessionIris": ".*",
+      "currentSite": ".*",
+      "userId": ".*",
+      "businessUnit": "sharingexperience"
+    }
+  ]
+}
