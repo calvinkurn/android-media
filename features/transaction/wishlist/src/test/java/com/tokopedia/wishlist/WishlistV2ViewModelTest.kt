@@ -657,14 +657,17 @@ class WishlistV2ViewModelTest {
 
     @Test
     fun mapToRecommandation_When_Index_IsMoreThanZero() {
-        val wishlistV2ResponseData = WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(page = 1, totalData = 5, hasNextPage = true))
+        val wishlistV2ResponseData = WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(page = 2, totalData = 5, hasNextPage = true, items = wishlistFiveItemList))
 
+        val recomItem = RecommendationItem(productId = 1L)
+        coEvery { getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget(recommendationItemList = listOf(recomItem)) }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns wishlistV2ResponseData
 
         wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
 
-        Assert.assertTrue(listWishlistV2FiveItemsHasNextPageSecondPageTypeLayoutData[4].typeLayout.equals(TYPE_RECOMMENDATION_TITLE_WITH_MARGIN))
-        Assert.assertTrue(listWishlistV2FiveItemsHasNextPageSecondPageTypeLayoutData[5].typeLayout.equals(TYPE_RECOMMENDATION_CAROUSEL))
+        assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
+        assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[4].typeLayout.equals(TYPE_RECOMMENDATION_TITLE_WITH_MARGIN))
+        assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[5].typeLayout.equals(TYPE_RECOMMENDATION_CAROUSEL))
     }
 
     @Test
