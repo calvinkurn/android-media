@@ -77,7 +77,7 @@ class PlayBottomSheetFragment @Inject constructor(
         private const val REQUEST_CODE_LOGIN = 191
 
         private const val PERCENT_VARIANT_SHEET_HEIGHT = 0.6
-        private const val PERCENT_FULL_SHEET_HEIGHT = 0.9
+        private const val PERCENT_FULL_SHEET_HEIGHT = 0.8
 
         private const val TO_SECONDS_DIVIDER = 1000L
     }
@@ -563,11 +563,11 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun observeUserReportSubmission(){
         viewModel.observableUserReportSubmission.observe(viewLifecycleOwner, DistinctObserver {
             when (it) {
-                is PlayResult.Success -> playFragment.onBottomInsetsViewHidden()
+                is PlayResult.Success -> playViewModel.hideInsets(false)
                 is PlayResult.Failure -> doShowToaster(
                     bottomSheetType = BottomInsetsType.UserReportSubmissionSheet,
                     toasterType = Toaster.TYPE_ERROR,
-                    message = it.error.message.toString()
+                    message = generalErrorMessage
                 )
             }
         })

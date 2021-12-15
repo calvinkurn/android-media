@@ -155,7 +155,7 @@ class PlayBottomSheetViewModel @Inject constructor(
             if(!isSuccess){
                 _observableUserReportSubmission.value = PlayResult.Success(Event(Unit))
             }else{
-                throw Throwable(message = "Terjadi kesalahan")
+                throw Throwable()
             }
         }){
             _observableUserReportSubmission.value = PlayResult.Failure(it)
