@@ -46,7 +46,7 @@
       "eventAction": "click - access photo media and files",
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - (live|vod) - .*",
+      "eventLabel": "\\d+ - (live|vod) - (allow|deny|Izinkan Akses|Lain Kali)",
       "sessionIris": ".*",
       "currentSite": ".*",
       "userId": ".*",
