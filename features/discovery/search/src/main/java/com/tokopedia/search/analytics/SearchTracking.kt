@@ -185,12 +185,9 @@ object SearchTracking {
     @JvmStatic
     fun trackEventClickSearchResultProduct(
         item: Any?,
-        isOrganicAds: Boolean,
-        topadsTag: Int,
         eventLabel: String,
-        filterSortParams: String,
         userId: String,
-        componentId: String,
+        productAnalyticsData: ProductClickAnalyticsData
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(
@@ -204,12 +201,16 @@ object SearchTracking {
                 ECOMMERCE, DataLayer.mapOf(
                     "click", DataLayer.mapOf(
                         "actionField", DataLayer.mapOf(
-                            "list", getActionFieldString(isOrganicAds, topadsTag, componentId)
+                            "list", getActionFieldString(
+                                productAnalyticsData.isOrganicAds,
+                                productAnalyticsData.topadsTag,
+                                productAnalyticsData.componentId
+                            )
                         ),
                         "products", DataLayer.listOf(item)
                     )
                 ),
-                "searchFilter", filterSortParams
+                "searchFilter", productAnalyticsData.filterSortParams
             )
         )
     }
