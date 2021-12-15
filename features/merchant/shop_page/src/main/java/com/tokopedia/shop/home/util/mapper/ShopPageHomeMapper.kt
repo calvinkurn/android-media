@@ -31,22 +31,6 @@ object ShopPageHomeMapper {
     private const val PRODUCT_RATING_DIVIDER = 20
     private const val ZERO_PRODUCT_DISCOUNT = "0"
 
-    fun mapToShopPageHomeLayoutUiModel(
-            response: ShopLayoutWidget,
-            myShop: Boolean,
-            isLoggedIn: Boolean
-    ): ShopPageHomeLayoutUiModel {
-        return ShopPageHomeLayoutUiModel(
-                response.layoutId,
-                response.masterLayoutID,
-                response.merchantTierID,
-                response.status,
-                response.maxWidgets,
-                response.publishDate,
-                mapToListWidgetUiModel(response.listWidget, myShop, isLoggedIn)
-        )
-    }
-
     fun mapToHomeProductViewModelForAllProduct(
             shopProduct: ShopProduct,
             isMyOwnProduct: Boolean
@@ -212,21 +196,6 @@ object ShopPageHomeMapper {
                 type = labelGroupUiModel.type,
                 imageUrl = labelGroupUiModel.url
         )
-    }
-
-    private fun mapToListWidgetUiModel(
-            shopLayoutWidgetResponse: List<ShopLayoutWidget.Widget>,
-            isMyOwnProduct: Boolean,
-            isLoggedIn: Boolean
-    ): List<BaseShopHomeWidgetUiModel> {
-        return mutableListOf<BaseShopHomeWidgetUiModel>().apply {
-            shopLayoutWidgetResponse.filter { it.data.isNotEmpty() || it.type.toLowerCase() == DYNAMIC.toLowerCase() || it.name == VOUCHER_STATIC}.onEach {
-                val widgetUiModel = mapToWidgetUiModel(it, isMyOwnProduct, isLoggedIn)
-                widgetUiModel?.let { model ->
-                    add(model)
-                }
-            }
-        }
     }
 
     private fun mapToWidgetUiModel(

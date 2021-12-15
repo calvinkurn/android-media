@@ -227,6 +227,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val NAVIGATION_SHIPMENT = 567
         const val NAVIGATION_TOKONOW_HOME_PAGE = 678
         const val NAVIGATION_EDIT_BUNDLE = 789
+        const val NAVIGATION_VERIFICATION = 890
         const val ADVERTISINGID = "ADVERTISINGID"
         const val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
         const val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
@@ -409,6 +410,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             NAVIGATION_WISHLIST -> refreshCartWithSwipeToRefresh()
             NAVIGATION_TOKONOW_HOME_PAGE -> refreshCartWithSwipeToRefresh()
             NAVIGATION_EDIT_BUNDLE -> onResultFromEditBundle(resultCode, data)
+            NAVIGATION_VERIFICATION -> refreshCartWithSwipeToRefresh()
         }
     }
 
@@ -1561,6 +1563,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onButtonAddToCartClicked(productModel: Any) {
+        if (dPresenter.dataHasChanged()) {
+            dPresenter.processUpdateCartData(true)
+        }
         dPresenter.processAddToCart(productModel)
     }
 
@@ -1580,6 +1585,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onFollowShopClicked(shopId: String, errorType: String) {
         cartPageAnalytics.eventClickFollowShop(userSession.userId, errorType, shopId)
         dPresenter.followShop(shopId)
+    }
+
+    override fun onVerificationClicked(applink: String) {
+        activity?.also {
+            val intent = RouteManager.getIntentNoFallback(it, applink) ?: return
+            startActivityForResult(intent, NAVIGATION_VERIFICATION)
+        }
     }
 
     override fun onSeeErrorProductsClicked() {
@@ -1980,7 +1992,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
         }
 
-        if (!snippetMode) {
+        if (!snippetMode && localizationChooseAddress.state == LocalizationChooseAddress.STATE_ADDRESS_ID_NOT_MATCH) {
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                     context = activity,
                     addressId = localizationChooseAddress.addressId,
@@ -2269,8 +2281,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun renderCheckboxGlobal(cartData: CartData) {
+        // Just add view item to fill space. This view item will always be covered by sticky global checkbox view.
         if (cartData.availableSection.availableGroupGroups.isNotEmpty()) {
-            cartAdapter.addItem(CartUiModelMapper.mapSelectAllUiModel())
+            cartAdapter.addItem(CartSelectAllHolderData())
         }
     }
 

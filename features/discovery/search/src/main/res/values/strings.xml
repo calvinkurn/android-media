@@ -21,6 +21,7 @@
 
     <string name="msg_remove_wishlist">Sukses menghapus wishlist</string>
     <string name="msg_add_wishlist">Sukses menambah wishlist</string>
+    <string name="cta_add_wishlist">Lihat</string>
     <string name="msg_remove_wishlist_failed">Gagal menghapus wishlist</string>
     <string name="msg_add_wishlist_failed">Gagal menambah wishlist</string>
 

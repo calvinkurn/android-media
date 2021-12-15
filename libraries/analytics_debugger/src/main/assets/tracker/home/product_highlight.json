@@ -16,7 +16,7 @@
         "item_id": ".*",
         "dimension96": ".*",
         "price": "\\d*.\\d*|\\d.\\d+E\\d",
-        "dimension40": ".*",
+        "dimension40": "/ - p.* - dynamic channel hero - product - (topads|non topads) - (carousel|non carousel) - .* - .* - .* - .*",
         "dimension84": ".*",
         "index": "\\d*.\\d*",
         "item_name": ".*",

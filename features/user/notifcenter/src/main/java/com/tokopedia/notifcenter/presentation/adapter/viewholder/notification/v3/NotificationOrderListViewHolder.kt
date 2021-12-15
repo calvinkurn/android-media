@@ -143,7 +143,7 @@ class NotificationOrderListViewHolder constructor(
         private val card: ItemOrderListLinearLayout? = itemView?.findViewById(R.id.ll_card_uoh)
         private val bg = ShadowGenerator.generateBackgroundWithShadow(
             card,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            com.tokopedia.unifyprinciples.R.color.Unify_Background,
             com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
             com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
             com.tokopedia.unifyprinciples.R.dimen.unify_space_8,

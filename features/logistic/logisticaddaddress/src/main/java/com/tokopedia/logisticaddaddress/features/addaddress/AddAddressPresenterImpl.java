@@ -68,6 +68,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
     @Override
     public void detachView() {
         networkInteractor.unsubscribe();
+        revGeocodeUseCase.unsubscribe();
         mView = null;
     }
 

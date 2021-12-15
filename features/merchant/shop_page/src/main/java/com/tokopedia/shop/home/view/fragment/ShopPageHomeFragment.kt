@@ -66,7 +66,9 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_GROUP_POSITION_FULFILLMENT
+import com.tokopedia.shop.common.constant.ShopPageConstant.VALUE_INT_ONE
 import com.tokopedia.shop.analytic.ShopPlayWidgetAnalyticListener
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
@@ -144,7 +146,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         SortFilterBottomSheet.Callback,
         PlayWidgetListener,
         ShopHomeShowcaseListWidgetListener,
-        InterfaceShopPageClickScrollToTop {
+        InterfaceShopPageClickScrollToTop,
+        ShopHomePlayWidgetListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -260,7 +263,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopProductChangeGridSectionListener= this,
                 playWidgetCoordinator = playWidgetCoordinator,
                 isShowTripleDot = !_isMyShop,
-                shopHomeShowcaseListWidgetListener = this
+                shopHomeShowcaseListWidgetListener = this,
+                this
         )
     }
 
@@ -910,12 +914,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopHomeProductViewModel?.name ?: "",
                 shopHomeProductViewModel?.id ?: "",
                 shopHomeProductViewModel?.displayedPrice ?: "",
-                dataModelAtc?.quantity ?: 1,
+                dataModelAtc?.quantity ?: VALUE_INT_ONE,
                 shopName,
-                parentPosition + 1,
+                ShopUtil.getActualPositionFromIndex(parentPosition),
                 shopHomeCarousellProductUiModel?.widgetId ?: "",
                 shopHomeCarousellProductUiModel?.header?.title ?: "",
-                shopHomeCarousellProductUiModel?.header?.isATC ?: 0,
+                shopHomeCarousellProductUiModel?.header?.isATC.orZero(),
                 customDimensionShopPage
         )
     }
@@ -930,7 +934,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopHomeProductViewModel?.name ?: "",
                 shopHomeProductViewModel?.id ?: "",
                 shopHomeProductViewModel?.displayedPrice ?: "",
-                dataModelAtc?.quantity ?: 1,
+                dataModelAtc?.quantity ?: VALUE_INT_ONE,
                 shopName,
                 viewModel?.userId.orEmpty(),
                 shopHomeCarousellProductUiModel?.header?.title ?: "",
@@ -950,7 +954,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopHomeProductViewModel?.name ?: "",
                 shopHomeProductViewModel?.id ?: "",
                 shopHomeProductViewModel?.displayedPrice ?: "",
-                dataModelAtc?.quantity ?: 1,
+                dataModelAtc?.quantity ?: VALUE_INT_ONE,
                 shopName,
                 viewModel?.userId.orEmpty(),
                 shopHomeCarousellProductUiModel?.header?.title ?: "",
@@ -994,6 +998,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun setShopHomeWidgetLayoutData(data: ShopPageHomeWidgetLayoutUiModel) {
+        shopPageHomeTracking.sendUserViewHomeTabWidgetTracker(
+            data.masterLayoutId,
+            shopId
+        )
         listWidgetLayout = data.listWidgetLayout.toMutableList()
         val shopHomeWidgetContentData = ShopPageHomeMapper.mapShopHomeWidgetLayoutToListShopHomeWidget(
                 data.listWidgetLayout,
@@ -1188,7 +1196,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun getListWidgetLayoutToLoad(lastCompletelyVisibleItemPosition: Int): MutableList<ShopPageHomeWidgetLayoutUiModel.WidgetLayout> {
         return if (listWidgetLayout.isNotEmpty()) {
             if (shopHomeAdapter.isLoadFirstWidgetContentData()) {
-                listWidgetLayout.subList(LIST_WIDGET_LAYOUT_START_INDEX, lastCompletelyVisibleItemPosition + 1)
+                listWidgetLayout.subList(LIST_WIDGET_LAYOUT_START_INDEX, ShopUtil.getActualPositionFromIndex(lastCompletelyVisibleItemPosition))
             } else {
                 val toIndex = LOAD_WIDGET_ITEM_PER_PAGE.takeIf { it <= listWidgetLayout.size }
                         ?: listWidgetLayout.size
@@ -1287,10 +1295,30 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
-    override fun onShowcaseListWidgetItemClicked(showcaseItem: ShopHomeShowcaseListItemUiModel, position: Int) {
+    override fun onShowcaseListWidgetImpression(model: ShopHomeShowcaseListSliderUiModel, position: Int) {
+        sendShopHomeWidgetImpressionTracker(
+                ShopPageTrackingConstant.VALUE_SHOP_DECOR_SHOWCASE,
+                model.name,
+                model.widgetId,
+                ShopUtil.getActualPositionFromIndex(position)
+        )
+    }
+
+    override fun onShowcaseListWidgetItemClicked(
+            shopHomeShowcaseListSliderUiModel: ShopHomeShowcaseListSliderUiModel,
+            showcaseItem: ShopHomeShowcaseListItemUiModel,
+            position: Int,
+            parentPosition: Int
+    ) {
+        sendShopHomeWidgetClickedTracker(
+                ShopPageTrackingConstant.VALUE_SHOP_DECOR_SHOWCASE,
+                shopHomeShowcaseListSliderUiModel.name,
+                shopHomeShowcaseListSliderUiModel.widgetId,
+                ShopUtil.getActualPositionFromIndex(parentPosition)
+        )
         shopPageHomeTracking.clickShowcaseListWidgetItem(
                 showcaseItem,
-                position,
+                ShopUtil.getActualPositionFromIndex(position),
                 customDimensionShopPage,
                 userId
         )
@@ -1308,7 +1336,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onShowcaseListWidgetItemImpression(showcaseItem: ShopHomeShowcaseListItemUiModel, position: Int) {
-        shopPageHomeTracking.onImpressionShowcaseListWidgetItem(showcaseItem, position, customDimensionShopPage, userId)
+        shopPageHomeTracking.onImpressionShowcaseListWidgetItem(showcaseItem, ShopUtil.getActualPositionFromIndex(position), customDimensionShopPage, userId)
     }
 
     override fun onDisplayItemImpression(displayWidgetUiModel: ShopHomeDisplayWidgetUiModel?, displayWidgetItem: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem, parentPosition: Int, adapterPosition: Int) {
@@ -1330,11 +1358,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
                 displayWidgetUiModel?.name ?: "",
                 displayWidgetUiModel?.widgetId ?: "",
-                parentPosition + 1,
+                ShopUtil.getActualPositionFromIndex(parentPosition),
                 displayWidgetUiModel?.header?.ratio ?: "",
                 destinationLink,
                 creativeUrl,
-                adapterPosition + 1,
+                ShopUtil.getActualPositionFromIndex(adapterPosition),
                 customDimensionShopPage
         )
     }
@@ -1352,17 +1380,31 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 creativeUrl = displayWidgetItem.imageUrl
             }
         }
+        val segmentName = when (displayWidgetUiModel?.name.orEmpty()) {
+            VIDEO -> {
+                ShopPageTrackingConstant.VALUE_SHOP_DECOR_VIDEO
+            }
+            else -> {
+                ShopPageTrackingConstant.VALUE_SHOP_DECOR_BANNER
+            }
+        }
+        sendShopHomeWidgetClickedTracker(
+                segmentName,
+                displayWidgetUiModel?.name.orEmpty(),
+                displayWidgetUiModel?.widgetId.orEmpty(),
+                ShopUtil.getActualPositionFromIndex(parentPosition)
+        )
         shopPageHomeTracking.clickDisplayWidget(
                 false,
                 shopId,
                 shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
                 displayWidgetUiModel?.name ?: "",
                 displayWidgetUiModel?.widgetId ?: "",
-                parentPosition + 1,
+                ShopUtil.getActualPositionFromIndex(parentPosition),
                 displayWidgetUiModel?.header?.ratio ?: "",
                 destinationLink,
                 creativeUrl,
-                adapterPosition + 1,
+                ShopUtil.getActualPositionFromIndex(adapterPosition),
                 customDimensionShopPage
         )
         context?.let {
@@ -1376,15 +1418,80 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             viewModel?.getVideoYoutube(videoUrl, widgetId)
     }
 
+    override fun onDisplayWidgetImpression(model: ShopHomeDisplayWidgetUiModel, position: Int) {
+        val segmentName = when (model.name) {
+            VIDEO -> {
+                ShopPageTrackingConstant.VALUE_SHOP_DECOR_VIDEO
+            }
+            else -> {
+                ShopPageTrackingConstant.VALUE_SHOP_DECOR_BANNER
+            }
+        }
+        sendShopHomeWidgetImpressionTracker(
+                segmentName,
+                model.name,
+                model.widgetId,
+                ShopUtil.getActualPositionFromIndex(position)
+        )
+    }
+
+    private fun sendShopHomeWidgetImpressionTracker(
+            segmentName: String,
+            widgetName: String,
+            widgetId: String,
+            position: Int
+    ) {
+        if(!isOwner) {
+            shopPageHomeTracking.onImpressionShopHomeWidget(
+                    segmentName,
+                    widgetName,
+                    widgetId,
+                    position,
+                    shopId,
+                    userId
+            )
+        }
+    }
+
+    private fun sendShopHomeWidgetClickedTracker(
+            segmentName: String,
+            widgetName: String,
+            widgetId: String,
+            position: Int
+    ) {
+        if(!isOwner) {
+            shopPageHomeTracking.onClickedShopHomeWidget(
+                    segmentName,
+                    widgetName,
+                    widgetId,
+                    position,
+                    shopId,
+                    userId
+            )
+        }
+    }
+
     override fun onVoucherReloaded() {
         getMvcWidgetData()
     }
 
-    override fun onVoucherImpression() {
+    override fun onVoucherImpression(model: ShopHomeVoucherUiModel, position: Int) {
+        sendShopHomeWidgetImpressionTracker(
+                ShopPageTrackingConstant.VALUE_SHOP_DECOR_VOUCHER,
+                model.name,
+                model.widgetId,
+                position
+        )
         shopPageHomeTracking.impressionSeeEntryPointMerchantVoucherCoupon(shopId, viewModel?.userId)
     }
 
-    override fun onVoucherTokoMemberInformationImpression() {
+    override fun onVoucherTokoMemberInformationImpression(model: ShopHomeVoucherUiModel, position: Int) {
+        sendShopHomeWidgetImpressionTracker(
+                ShopPageTrackingConstant.VALUE_SHOP_DECOR_VOUCHER,
+                model.name,
+                model.widgetId,
+                position
+        )
         shopPageHomeTracking.impressionSeeEntryPointMerchantVoucherCouponTokoMemberInformation(shopId)
     }
 
@@ -1399,8 +1506,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeProductViewModel.id ?: "",
                     shopHomeProductViewModel.displayedPrice ?: "",
                     shopName,
-                    shopHomeAdapter.getAllProductWidgetPosition() + 1,
-                    realItemPositonOnTheList + 1,
+                    ShopUtil.getActualPositionFromIndex(shopHomeAdapter.getAllProductWidgetPosition()),
+                    ShopUtil.getActualPositionFromIndex(realItemPositonOnTheList),
                     "",
                     "",
                     0,
@@ -1430,8 +1537,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeProductViewModel.id ?: "",
                     shopHomeProductViewModel.displayedPrice ?: "",
                     shopName,
-                    shopHomeAdapter.getAllProductWidgetPosition() + 1,
-                    realItemPositonOnTheList + 1,
+                    ShopUtil.getActualPositionFromIndex(shopHomeAdapter.getAllProductWidgetPosition()),
+                    ShopUtil.getActualPositionFromIndex(realItemPositonOnTheList),
                     "",
                     "",
                     0,
@@ -1464,6 +1571,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun onPersonalizationCarouselProductItemClicked(parentPosition: Int, itemPosition: Int, shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?, shopHomeProductViewModel: ShopHomeProductUiModel?) {
         shopHomeProductViewModel?.let {
+            sendShopHomeWidgetClickedTracker(
+                    ShopPageTrackingConstant.VALUE_SHOP_DECOR_PRODUCT,
+                    shopHomeCarousellProductUiModel?.name.orEmpty(),
+                    shopHomeCarousellProductUiModel?.widgetId.orEmpty(),
+                    ShopUtil.getActualPositionFromIndex(parentPosition)
+            )
             shopPageHomeTracking.clickProductPersonalization(
                     isOwner,
                     isLogin,
@@ -1473,7 +1586,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeProductViewModel.recommendationType ?: "",
                     shopName,
                     viewModel?.userId.orEmpty(),
-                    itemPosition + 1,
+                    ShopUtil.getActualPositionFromIndex(itemPosition),
                     shopHomeCarousellProductUiModel?.header?.title ?: "",
                     shopHomeCarousellProductUiModel?.name ?: "",
                     customDimensionShopPage
@@ -1488,6 +1601,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
             shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
+        sendShopHomeWidgetClickedTracker(
+                ShopPageTrackingConstant.VALUE_SHOP_DECOR_PRODUCT,
+                shopHomeCarousellProductUiModel?.name.orEmpty(),
+                shopHomeCarousellProductUiModel?.widgetId.orEmpty(),
+                ShopUtil.getActualPositionFromIndex(parentPosition)
+        )
         shopHomeProductViewModel?.let {
             shopPageHomeTracking.clickProductPersonalizationReminder(
                     isOwner,
@@ -1498,7 +1617,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeProductViewModel.recommendationType ?: "",
                     shopName,
                     viewModel?.userId.orEmpty(),
-                    itemPosition + 1,
+                    ShopUtil.getActualPositionFromIndex(itemPosition),
                     shopHomeCarousellProductUiModel?.header?.title ?: "",
                     customDimensionShopPage
             )
@@ -1633,7 +1752,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopHomeProductViewModel?.recommendationType ?: "",
                 viewModel?.userId.orEmpty(),
                 shopName,
-                itemPosition + 1,
+                ShopUtil.getActualPositionFromIndex(itemPosition),
                 shopHomeCarousellProductUiModel?.header?.title ?: "",
                 shopHomeCarousellProductUiModel?.name ?: "",
                 customDimensionShopPage
@@ -1655,7 +1774,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopHomeProductViewModel?.recommendationType ?: "",
                 viewModel?.userId.orEmpty(),
                 shopName,
-                itemPosition + 1,
+                ShopUtil.getActualPositionFromIndex(itemPosition),
                 shopHomeCarousellProductUiModel?.header?.title ?: "",
                 customDimensionShopPage
         )
@@ -1663,6 +1782,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun onCarouselProductItemClicked(parentPosition: Int, itemPosition: Int, shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?, shopHomeProductViewModel: ShopHomeProductUiModel?) {
         shopHomeProductViewModel?.let {
+            sendShopHomeWidgetClickedTracker(
+                    ShopPageTrackingConstant.VALUE_SHOP_DECOR_PRODUCT,
+                    shopHomeCarousellProductUiModel?.name.orEmpty(),
+                    shopHomeCarousellProductUiModel?.widgetId.orEmpty(),
+                    ShopUtil.getActualPositionFromIndex(parentPosition)
+            )
             shopPageHomeTracking.clickProduct(
                     isOwner,
                     isLogin,
@@ -1671,11 +1796,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeProductViewModel.id ?: "",
                     shopHomeProductViewModel.displayedPrice ?: "",
                     shopName,
-                    parentPosition + 1,
-                    itemPosition + 1,
+                    ShopUtil.getActualPositionFromIndex(parentPosition),
+                    ShopUtil.getActualPositionFromIndex(itemPosition),
                     shopHomeCarousellProductUiModel?.widgetId ?: "",
                     shopHomeCarousellProductUiModel?.header?.title ?: "",
-                    shopHomeCarousellProductUiModel?.header?.isATC ?: 0,
+                    shopHomeCarousellProductUiModel?.header?.isATC.orZero(),
                     CustomDimensionShopPageAttribution.create(
                             shopId,
                             isOfficialStore,
@@ -1706,11 +1831,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeProductViewModel.id ?: "",
                     shopHomeProductViewModel.displayedPrice ?: "",
                     shopName,
-                    parentPosition + 1,
-                    itemPosition + 1,
+                    ShopUtil.getActualPositionFromIndex(parentPosition),
+                    ShopUtil.getActualPositionFromIndex(itemPosition),
                     shopHomeCarousellProductUiModel?.widgetId ?: "",
                     shopHomeCarousellProductUiModel?.header?.title ?: "",
-                    shopHomeCarousellProductUiModel?.header?.isATC ?: 0,
+                    shopHomeCarousellProductUiModel?.header?.isATC.orZero(),
                     CustomDimensionShopPageAttribution.create(
                             shopId,
                             isOfficialStore,
@@ -1748,6 +1873,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeProductUiModel: ShopHomeProductUiModel?
     ) {
         shopHomeProductUiModel?.let {
+            sendShopHomeWidgetClickedTracker(
+                    ShopPageTrackingConstant.VALUE_SHOP_DECOR_PRODUCT,
+                    shopHomeCarousellProductUiModel?.name.orEmpty(),
+                    shopHomeCarousellProductUiModel?.widgetId.orEmpty(),
+                    ShopUtil.getActualPositionFromIndex(parentPosition)
+            )
             shopPageHomeTracking.clickCarouselProductShowcaseItem(
                     isOwner,
                     isLogin,
@@ -1756,8 +1887,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeProductUiModel.id ?: "",
                     shopHomeProductUiModel.displayedPrice ?: "",
                     shopName,
-                    parentPosition + 1,
-                    itemPosition + 1,
+                    ShopUtil.getActualPositionFromIndex(parentPosition),
+                    ShopUtil.getActualPositionFromIndex(itemPosition),
                     shopHomeCarousellProductUiModel?.header?.title ?: "",
                     userId,
                     CustomDimensionShopPageAttribution.create(
@@ -1790,8 +1921,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeProductUiModel.id ?: "",
                     shopHomeProductUiModel.displayedPrice ?: "",
                     shopName,
-                    parentPosition + 1,
-                    itemPosition + 1,
+                    ShopUtil.getActualPositionFromIndex(parentPosition),
+                    ShopUtil.getActualPositionFromIndex(itemPosition),
                     shopHomeCarousellProductUiModel?.header?.title ?: "",
                     userId,
                     CustomDimensionShopPageAttribution.create(
@@ -1873,9 +2004,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeProductUiModel.name ?: "",
                     shopHomeProductUiModel.id ?: "",
                     shopHomeProductUiModel.displayedPrice ?: "",
-                    dataModelAtc?.quantity ?: 1,
+                    dataModelAtc?.quantity ?: VALUE_INT_ONE,
                     shopName,
-                    parentPosition + 1,
+                    ShopUtil.getActualPositionFromIndex(parentPosition),
                     shopHomeCarouselProductUiModel?.header?.title ?: "",
                     userId,
                     dataModelAtc?.cartId.orEmpty(),
@@ -1904,6 +2035,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         context?.let {
             RouteManager.route(it, shopHomeCarouselProductUiModel?.header?.ctaLink)
         }
+    }
+
+    override fun onCarouselProductWidgetImpression(adapterPosition: Int, model: ShopHomeCarousellProductUiModel) {
+        val segmentName = ShopPageTrackingConstant.VALUE_SHOP_DECOR_PRODUCT
+        sendShopHomeWidgetImpressionTracker(
+                segmentName,
+                model.name,
+                model.widgetId,
+                ShopUtil.getActualPositionFromIndex(adapterPosition)
+        )
     }
 
     private fun onSuccessRemoveWishList(
@@ -1980,7 +2121,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun goToWishlist() {
-        RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
+        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 
     private fun onErrorAddWishlist(errorMessage: String?) {
@@ -2152,6 +2293,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onEtalaseFilterClicked() {
+        if(!isOwner) {
+            shopPageHomeTracking.clickEtalaseChip(getSelectedTabName(), shopId, userId)
+        }
         redirectToEtalasePicker()
     }
 
@@ -2212,6 +2356,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
             shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
+        sendShopHomeWidgetClickedTracker(
+                ShopPageTrackingConstant.VALUE_SHOP_DECOR_CAMPAIGN,
+                shopHomeNewProductLaunchCampaignUiModel.name,
+                shopHomeNewProductLaunchCampaignUiModel.widgetId,
+                ShopUtil.getActualPositionFromIndex(parentPosition)
+        )
         shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
             shopPageHomeTracking.clickCampaignNplProduct(
                     isOwner,
@@ -2220,7 +2370,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeProductViewModel?.id ?: "",
                     shopHomeProductViewModel?.displayedPrice ?: "",
                     shopName,
-                    parentPosition + 1,
+                    ShopUtil.getActualPositionFromIndex(parentPosition),
                     itemPosition,
                     isLogin,
                     customDimensionShopPage
@@ -2245,7 +2395,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeProductViewModel?.id ?: "",
                     shopHomeProductViewModel?.displayedPrice ?: "",
                     shopName,
-                    parentPosition + 1,
+                    ShopUtil.getActualPositionFromIndex(parentPosition),
                     itemPosition,
                     isLogin,
                     customDimensionShopPage
@@ -2419,10 +2569,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             } else {
                 null
             }
+            sendShopHomeWidgetImpressionTracker(
+                    ShopPageTrackingConstant.VALUE_SHOP_DECOR_CAMPAIGN,
+                    shopHomeNewProductLaunchCampaignUiModel.name,
+                    shopHomeNewProductLaunchCampaignUiModel.widgetId,
+                    ShopUtil.getActualPositionFromIndex(position)
+            )
             shopPageHomeTracking.impressionCampaignNplWidget(
                     it.statusCampaign,
                     shopId,
-                    position + 1,
+                    ShopUtil.getActualPositionFromIndex(position),
                     isSeeCampaign,
                     selectedBanner?.imageId.toString(),
                     selectedBanner?.imageUrl ?: "",
@@ -2488,11 +2644,15 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         shopHomeAdapter.changeProductCardGridType(gridType)
     }
 
-    override fun onChangeProductGridClicked(gridType: ShopProductViewGridType) {
-        shopPageHomeTracking.clickProductListToggle(productListName, isOwner, customDimensionShopPage)
-        changeProductListGridView(gridType)
+    override fun onChangeProductGridClicked(
+            initialGridType: ShopProductViewGridType,
+            finalGridType: ShopProductViewGridType
+    ) {
+        if(!isOwner)
+            shopPageHomeTracking.clickProductListToggle(initialGridType, finalGridType, shopId, userId)
+        changeProductListGridView(finalGridType)
         scrollToEtalaseTitlePosition()
-        shopChangeProductGridSharedViewModel?.changeSharedProductGridType(gridType)
+        shopChangeProductGridSharedViewModel?.changeSharedProductGridType(finalGridType)
     }
 
 
@@ -2540,17 +2700,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun applySortFilterTracking(selectedSortName: String, selectedFilterMap: Map<String, String>) {
-        if (selectedSortName.isNotBlank()) {
-            shopPageHomeTracking.clickFilterSortBy(productListName, selectedSortName, customDimensionShopPage)
-        }
-        if (!selectedFilterMap[PMAX_PARAM_KEY].isNullOrBlank() || !selectedFilterMap[PMIN_PARAM_KEY].isNullOrBlank()) {
-            shopPageHomeTracking.clickFilterPrice(productListName, selectedFilterMap[PMIN_PARAM_KEY]
-                    ?: "0", selectedFilterMap[PMAX_PARAM_KEY] ?: "0", customDimensionShopPage)
-        }
-        if (!selectedFilterMap[RATING_PARAM_KEY].isNullOrBlank()) {
-            shopPageHomeTracking.clickFilterRating(productListName, selectedFilterMap[RATING_PARAM_KEY]
-                    ?: "0", customDimensionShopPage)
-        }
+        if(!isOwner)
+            shopPageHomeTracking.clickApplyFilter(selectedSortName, selectedFilterMap, shopId, userId)
     }
 
     fun setInitialProductListData(productListData: ShopProduct.GetShopProduct) {
@@ -2577,6 +2728,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun showScrollToTopButton(){
         (parentFragment as? NewShopPageFragment)?.showScrollToTopButton()
     }
+
+    private fun getSelectedTabName(): String {
+        return (parentFragment as? NewShopPageFragment)?.getSelectedTabName().orEmpty()
+    }
+
 
     //region play widget
     /**
@@ -2659,7 +2815,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             viewScope.launch {
                                 parent.collapseAppBar()
                                 val widgetPosition = shopHomeAdapter.list.indexOfFirst { it is CarouselPlayWidgetUiModel }
-                                val finalPosition = min(widgetPosition + 1, shopHomeAdapter.itemCount)
+                                val finalPosition = min(ShopUtil.getActualPositionFromIndex(widgetPosition), shopHomeAdapter.itemCount)
                                 recyclerView.stepScrollToPositionWithDelay(finalPosition, PLAY_WIDGET_NEWLY_BROADCAST_SCROLL_DELAY)
                             }
                         }
@@ -2839,6 +2995,15 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         true
     } catch (e: PackageManager.NameNotFoundException) {
         false
+    }
+
+    override fun onPlayWidgetImpression(model: CarouselPlayWidgetUiModel, position: Int) {
+        sendShopHomeWidgetImpressionTracker(
+                ShopPageTrackingConstant.VALUE_SHOP_DECOR_PLAY,
+                model.name,
+                model.widgetId,
+                ShopUtil.getActualPositionFromIndex(position)
+        )
     }
     //endregion
 }

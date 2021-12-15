@@ -104,7 +104,7 @@ class LoginTextView : LinearLayout {
         shape?.shape = GradientDrawable.RECTANGLE
         shape?.cornerRadii = floatArrayOf(CORNER_RADII, CORNER_RADII, CORNER_RADII, CORNER_RADII, CORNER_RADII, CORNER_RADII, CORNER_RADII, CORNER_RADII)
         shape?.setColor(backgroundColorCustom)
-        if (backgroundColorCustom == MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)) shape?.setStroke(1,
+        if (backgroundColorCustom == MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background)) shape?.setStroke(1,
                 MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
     }
 

@@ -25,11 +25,13 @@ import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstan
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.USER_ID
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Category.SEARCH_COMPONENT
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_CANCEL_SEARCH
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_MANUAL_ENTER
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.INITIAL_STATE_CANCEL_SEARCH
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.INITIAL_STATE_MANUAL_ENTER
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingRollence
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.remoteconfig.RollenceKey.AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING
+import com.tokopedia.remoteconfig.RollenceKey.AUTOCOMPLETE_SUGGESTION_COMPONENT_TRACKING
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -80,6 +82,42 @@ open class AutoCompleteTracking(
         )
     }
 
+    open fun eventClickSubmitInitialState(
+        keyword: String,
+        pageSource: String,
+        searchResultApplink: String,
+        fallback: () -> Unit,
+    ) {
+        SearchComponentTrackingRollence.click(
+            searchComponentTracking(
+                keyword = keyword,
+                componentId = INITIAL_STATE_MANUAL_ENTER,
+                dimension90 = pageSource,
+                applink = searchResultApplink,
+            ),
+            AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING,
+            fallback,
+        )
+    }
+
+    open fun eventClickSubmitAutoComplete(
+        keyword: String,
+        pageSource: String,
+        searchResultApplink: String,
+        fallback: () -> Unit,
+    ) {
+        SearchComponentTrackingRollence.click(
+            searchComponentTracking(
+                keyword = keyword,
+                componentId = AUTO_COMPLETE_MANUAL_ENTER,
+                dimension90 = pageSource,
+                applink = searchResultApplink,
+            ),
+            AUTOCOMPLETE_SUGGESTION_COMPONENT_TRACKING,
+            fallback,
+        )
+    }
+
     open fun eventClickSubmitTokoNow(label: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
@@ -91,31 +129,6 @@ open class AutoCompleteTracking(
                 CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
             )
         )
-    }
-
-    open fun eventClickSubmitInitialState(
-        keyword: String,
-        pageSource: String,
-        searchResultApplink: String,
-    ) {
-        SearchComponentTrackingRollence.click(
-            searchComponentTracking(
-                keyword = keyword,
-                componentId = INITIAL_STATE_MANUAL_ENTER,
-                dimension90 = pageSource,
-                applink = searchResultApplink,
-            ),
-            AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING
-        ) {
-            eventClickSubmit(keyword)
-        }
-    }
-
-    /**
-     * Prepared for next task for auto complete tracking component
-     */
-    open fun eventClickSubmitAutoComplete(keyword: String, pageSource: String) {
-        eventClickSubmit(keyword)
     }
 
     open fun eventClickSubmit(label: String) {
