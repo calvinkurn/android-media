@@ -1,4 +1,4 @@
-package com.tokopedia.core;
+package com.tokopedia.app.common;
 
 
 import android.content.Intent;
@@ -15,7 +15,6 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.var.TkpdCache;

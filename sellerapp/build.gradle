@@ -210,6 +210,7 @@ dependencies {
         implementation projectOrAar(rootProject.ext.features.developerOptionsNoop)
     }
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation projectOrAar(rootProject.ext.features.appCommon)
     implementation projectOrAar(rootProject.ext.features.tkpdcore)
     implementation projectOrAar(rootProject.ext.features.sellerorder)
     implementation projectOrAar(rootProject.ext.features.sellerAppWidget)
