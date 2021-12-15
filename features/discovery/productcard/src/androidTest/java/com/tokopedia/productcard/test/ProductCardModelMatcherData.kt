@@ -1,14 +1,46 @@
 package com.tokopedia.productcard.test
 
-import android.view.View
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.ProductCardModel.*
-import com.tokopedia.productcard.test.utils.*
+import com.tokopedia.productcard.ProductCardModel.FreeOngkir
+import com.tokopedia.productcard.ProductCardModel.LabelGroup
+import com.tokopedia.productcard.ProductCardModel.LabelGroupVariant
+import com.tokopedia.productcard.ProductCardModel.NonVariant
+import com.tokopedia.productcard.ProductCardModel.ShopBadge
+import com.tokopedia.productcard.ProductCardModel.Variant
+import com.tokopedia.productcard.test.utils.campaignLabelUrl
+import com.tokopedia.productcard.test.utils.freeOngkirImageUrl
+import com.tokopedia.productcard.test.utils.fulfillmentBadgeImageUrl
+import com.tokopedia.productcard.test.utils.isDisplayedWithChildCount
+import com.tokopedia.productcard.test.utils.isDisplayedWithText
+import com.tokopedia.productcard.test.utils.isNotDisplayed
+import com.tokopedia.productcard.test.utils.isQuantityEditorDisplayedWithValue
+import com.tokopedia.productcard.test.utils.officialStoreBadgeImageUrl
 import com.tokopedia.productcard.test.utils.productImageUrl
-import com.tokopedia.productcard.utils.*
-import org.hamcrest.Matcher
+import com.tokopedia.productcard.test.utils.withDrawable
+import com.tokopedia.productcard.utils.DARK_GREY
+import com.tokopedia.productcard.utils.LABEL_BEST_SELLER
+import com.tokopedia.productcard.utils.LABEL_CAMPAIGN
+import com.tokopedia.productcard.utils.LABEL_CATEGORY
+import com.tokopedia.productcard.utils.LABEL_CATEGORY_BOTTOM
+import com.tokopedia.productcard.utils.LABEL_CATEGORY_SIDE
+import com.tokopedia.productcard.utils.LABEL_COST_PER_UNIT
+import com.tokopedia.productcard.utils.LABEL_ETA
+import com.tokopedia.productcard.utils.LABEL_FULFILLMENT
+import com.tokopedia.productcard.utils.LABEL_GIMMICK
+import com.tokopedia.productcard.utils.LABEL_INTEGRITY
+import com.tokopedia.productcard.utils.LABEL_PRICE
+import com.tokopedia.productcard.utils.LABEL_PRODUCT_STATUS
+import com.tokopedia.productcard.utils.LABEL_SHIPPING
+import com.tokopedia.productcard.utils.LIGHT_GREEN
+import com.tokopedia.productcard.utils.LIGHT_GREY
+import com.tokopedia.productcard.utils.TEXT_DARK_GREY
+import com.tokopedia.productcard.utils.TEXT_GREEN
+import com.tokopedia.productcard.utils.TRANSPARENT_BLACK
+import com.tokopedia.productcard.utils.TYPE_VARIANT_COLOR
+import com.tokopedia.productcard.utils.TYPE_VARIANT_CUSTOM
+import com.tokopedia.productcard.utils.TYPE_VARIANT_SIZE
 
 private const val PLUS_VARIAN_LAIN_TEXT = "+ Keranjang"
 
@@ -101,22 +133,22 @@ private fun testOneLineProductName(): ProductCardModelMatcher {
             hasThreeDots = true
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = isDisplayed()
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.linearLayoutImageRating to isDisplayed(),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -128,12 +160,12 @@ private fun testProductCardWithNameAndPdpView(): ProductCardModelMatcher {
             pdpViewCount = "17.9k view gaes"
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewPdpView] = isDisplayedWithText(productCardModel.pdpViewCount)
-        it[R.id.imageViewPdpView] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPdpView to isDisplayedWithText(productCardModel.pdpViewCount),
+        R.id.imageViewPdpView to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -146,12 +178,12 @@ private fun testProductCardWithNameAndStockBar(): ProductCardModelMatcher {
             stockBarPercentage = 20
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewStockLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
-        it[R.id.progressBarStock] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewStockLabel to isDisplayedWithText(productCardModel.stockBarLabel),
+        R.id.progressBarStock to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -164,12 +196,12 @@ private fun testProductCardWithNameAndStockBarTwoLine(): ProductCardModelMatcher
             stockBarPercentage = 20
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewStockLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
-        it[R.id.progressBarStock] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewStockLabel to isDisplayedWithText(productCardModel.stockBarLabel),
+        R.id.progressBarStock to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -182,12 +214,12 @@ private fun testProductCardWithNameAndStockBarTwoLineEmptyStock(): ProductCardMo
             stockBarPercentage = 0
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewStockLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
-        it[R.id.progressBarStock] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewStockLabel to isDisplayedWithText(productCardModel.stockBarLabel),
+        R.id.progressBarStock to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -201,14 +233,14 @@ private fun testProductCardWithNameAndStockBarPdpView(): ProductCardModelMatcher
             pdpViewCount = "17.7k View"
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewStockLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
-        it[R.id.progressBarStock] = isDisplayed()
-        it[R.id.textViewPdpView] = isDisplayedWithText(productCardModel.pdpViewCount)
-        it[R.id.imageViewPdpView]= isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewStockLabel to isDisplayedWithText(productCardModel.stockBarLabel),
+        R.id.progressBarStock to isDisplayed(),
+        R.id.textViewPdpView to isDisplayedWithText(productCardModel.pdpViewCount),
+        R.id.imageViewPdpView to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -223,15 +255,15 @@ private fun testProductCardWithNameAndStockBarPdpViewBebasOngkir(): ProductCardM
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl)
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewStockLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
-        it[R.id.progressBarStock] = isDisplayed()
-        it[R.id.textViewPdpView] = isDisplayedWithText(productCardModel.pdpViewCount)
-        it[R.id.imageViewPdpView]= isDisplayed()
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewStockLabel to isDisplayedWithText(productCardModel.stockBarLabel),
+        R.id.progressBarStock to isDisplayed(),
+        R.id.textViewPdpView to isDisplayedWithText(productCardModel.pdpViewCount),
+        R.id.imageViewPdpView to isDisplayed(),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -243,11 +275,11 @@ private fun testProductCardWithSpoilerPrice(): ProductCardModelMatcher {
             formattedPrice = "Rp ???.??0"
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewSlashedPrice] = isDisplayedWithText(productCardModel.slashedPrice)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -260,13 +292,13 @@ private fun testProductCardWithSpoilerPriceAndViewCount(): ProductCardModelMatch
             formattedPrice = "Rp ???.??0"
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.imageViewPdpView] = isDisplayed()
-        it[R.id.textViewPdpView] = isDisplayedWithText(productCardModel.pdpViewCount)
-        it[R.id.textViewSlashedPrice] = isDisplayedWithText(productCardModel.slashedPrice)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.imageViewPdpView to isDisplayed(),
+        R.id.textViewPdpView to isDisplayedWithText(productCardModel.pdpViewCount),
+        R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -280,13 +312,13 @@ private fun testProductCardWithSpoilerPriceAndStockBar(): ProductCardModelMatche
             stockBarPercentage = 20
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewSlashedPrice] = isDisplayedWithText(productCardModel.slashedPrice)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.textViewStockLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
-        it[R.id.progressBarStock] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.textViewStockLabel to isDisplayedWithText(productCardModel.stockBarLabel),
+        R.id.progressBarStock to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -302,15 +334,15 @@ private fun testProductCardWithNameAndStockBarAndStockBarLabelColor(): ProductCa
         stockBarLabelColor = "#ef144a",
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.imageViewPdpView]= isDisplayed()
-        it[R.id.textViewPdpView] = isDisplayedWithText(productCardModel.pdpViewCount)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.textViewStockLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
-        it[R.id.progressBarStock] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.imageProduct to isDisplayed(),
+        R.id.imageViewPdpView to isDisplayed(),
+        R.id.textViewPdpView to isDisplayedWithText(productCardModel.pdpViewCount),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.textViewStockLabel to isDisplayedWithText(productCardModel.stockBarLabel),
+        R.id.progressBarStock to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -335,22 +367,22 @@ private fun testLongerProductCardWithStockBar(): ProductCardModelMatcher {
         labelGroupList = listOf(labelIntegrity)
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.imageViewPdpView]= isDisplayed()
-        it[R.id.textViewPdpView] = isDisplayedWithText(productCardModel.pdpViewCount)
-        it[R.id.textViewPrice] = isDisplayed()
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayed()
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.textViewStockLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
-        it[R.id.progressBarStock] = isDisplayed()
-        it[R.id.imageSalesRatingFloat] = isDisplayed()
-        it[R.id.salesRatingFloat] = isDisplayed()
-        it[R.id.salesRatingFloatLine] = isDisplayed()
-        it[R.id.textViewSales] = isDisplayedWithText(labelIntegrity.title)
-    }
+    val productCardMatcher = mapOf(
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.imageProduct to isDisplayed(),
+        R.id.imageViewPdpView to isDisplayed(),
+        R.id.textViewPdpView to isDisplayedWithText(productCardModel.pdpViewCount),
+        R.id.textViewPrice to isDisplayed(),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayed(),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.textViewStockLabel to isDisplayedWithText(productCardModel.stockBarLabel),
+        R.id.progressBarStock to isDisplayed(),
+        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloatLine to isDisplayed(),
+        R.id.textViewSales to isDisplayedWithText(labelIntegrity.title),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -372,24 +404,24 @@ private fun testLabelDiscountAndSlashPrice(): ProductCardModelMatcher {
             hasThreeDots = true
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelDiscount] = isDisplayedWithText(productCardModel.discountPercentage)
-        it[R.id.textViewSlashedPrice] = isDisplayedWithText(productCardModel.slashedPrice)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = isDisplayed()
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelDiscount to isDisplayedWithText(productCardModel.discountPercentage),
+        R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.linearLayoutImageRating to isDisplayed(),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -410,23 +442,23 @@ private fun testSlashPriceWithoutLabelDiscount(): ProductCardModelMatcher {
             hasThreeDots = true
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewSlashedPrice] = isDisplayedWithText(productCardModel.slashedPrice)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = isDisplayed()
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.linearLayoutImageRating to isDisplayed(),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -447,23 +479,23 @@ private fun testLabelDiscountWithoutSlashPrice(): ProductCardModelMatcher {
             hasThreeDots = true
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelDiscount] = isDisplayedWithText(productCardModel.discountPercentage)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = isDisplayed()
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelDiscount to isDisplayedWithText(productCardModel.discountPercentage),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.linearLayoutImageRating to isDisplayed(),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -488,17 +520,17 @@ private fun testLabelPriceAndSlashPrice(): ProductCardModelMatcher {
             }
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelDiscount] = isDisplayedWithText(productCardModel.discountPercentage)
-        it[R.id.textViewSlashedPrice] = isDisplayedWithText(productCardModel.slashedPrice)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelDiscount to isDisplayedWithText(productCardModel.discountPercentage),
+        R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -518,22 +550,22 @@ private fun testTwoLinesProductName(): ProductCardModelMatcher {
             hasThreeDots = true
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = isDisplayed()
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.linearLayoutImageRating to isDisplayed(),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -563,26 +595,26 @@ private fun testMaximumInfoAndLabel(): ProductCardModelMatcher {
             }
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = isDisplayed()
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textTopAds to isDisplayed(),
+        R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.linearLayoutImageRating to isDisplayed(),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -608,23 +640,23 @@ private fun testLabelGimmickNumberOfStock(): ProductCardModelMatcher {
             }
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = isDisplayed()
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.linearLayoutImageRating to isDisplayed(),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -651,24 +683,24 @@ private fun testLabelSoldOut(): ProductCardModelMatcher {
             }
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = isDisplayed()
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.linearLayoutImageRating to isDisplayed(),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -693,17 +725,17 @@ private fun testLabelNewProduct(): ProductCardModelMatcher {
             }
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -728,17 +760,17 @@ private fun testLabelIntegrity(): ProductCardModelMatcher {
             }
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.textViewIntegrity] = isDisplayedWithText(labelIntegrity.title)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.textViewIntegrity to isDisplayedWithText(labelIntegrity.title),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -765,25 +797,25 @@ private fun testLabelFulfillment(): ProductCardModelMatcher {
             }
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewFulfillment] = isDisplayedWithText(labelFulfillment.title)
-        it[R.id.imageFulfillment] = isDisplayed()
-        it[R.id.dividerFulfillment] = isDisplayed()
-        it[R.id.linearLayoutImageRating] = isDisplayed()
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewFulfillment to isDisplayedWithText(labelFulfillment.title),
+        R.id.imageFulfillment to isDisplayed(),
+        R.id.dividerFulfillment to isDisplayed(),
+        R.id.linearLayoutImageRating to isDisplayed(),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -807,23 +839,23 @@ private fun testLabelFulfillmentWithNoShopBadge(): ProductCardModelMatcher {
             }
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.textViewFulfillment] = isDisplayedWithText(labelFulfillment.title)
-        it[R.id.imageFulfillment] = isDisplayed()
-        it[R.id.linearLayoutImageRating] = isDisplayed()
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.textViewFulfillment to isDisplayedWithText(labelFulfillment.title),
+        R.id.imageFulfillment to isDisplayed(),
+        R.id.linearLayoutImageRating to isDisplayed(),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -849,23 +881,23 @@ private fun testLabelShippingInfo(): ProductCardModelMatcher {
             }
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = isDisplayed()
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.textViewShipping] = isDisplayedWithText(labelShipping.title)
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.linearLayoutImageRating to isDisplayed(),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.textViewShipping to isDisplayedWithText(labelShipping.title),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -881,12 +913,12 @@ private fun testNoShopBadge(): ProductCardModelMatcher {
             shopLocation = "DKI Jakarta"
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -903,13 +935,13 @@ private fun testNoRatingButHasReviewCount(): ProductCardModelMatcher {
             reviewCount = 60
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -927,13 +959,13 @@ private fun testHasRatingButNoReviewCount(): ProductCardModelMatcher {
             reviewCount = 0
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -947,18 +979,18 @@ private fun testProductRatingStar1(): ProductCardModelMatcher {
             reviewCount = 60
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.linearLayoutImageRating] = isDisplayedWithChildCount(5)
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.linearLayoutImageRating to isDisplayedWithChildCount(5),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -972,18 +1004,18 @@ private fun testProductRatingStar2(): ProductCardModelMatcher {
             reviewCount = 60
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.linearLayoutImageRating] = isDisplayedWithChildCount(5)
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.linearLayoutImageRating to isDisplayedWithChildCount(5),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -997,18 +1029,18 @@ private fun testProductRatingStar3(): ProductCardModelMatcher {
             reviewCount = 60
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.linearLayoutImageRating] = isDisplayedWithChildCount(5)
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.linearLayoutImageRating to isDisplayedWithChildCount(5),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1022,18 +1054,18 @@ private fun testProductRatingStar4(): ProductCardModelMatcher {
             reviewCount = 60
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.linearLayoutImageRating] = isDisplayedWithChildCount(5)
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.linearLayoutImageRating to isDisplayedWithChildCount(5),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1047,18 +1079,18 @@ private fun testProductRatingStar5(): ProductCardModelMatcher {
             reviewCount = 60
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.linearLayoutImageRating] = isDisplayedWithChildCount(5)
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_active)
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.linearLayoutImageRating to isDisplayedWithChildCount(5),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_active),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1071,11 +1103,11 @@ private fun testPriceRange(): ProductCardModelMatcher {
             formattedPrice = "this string does not matter, should take price range"
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.priceRange)
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.priceRange),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1105,26 +1137,26 @@ private fun testAddToCartButton(): ProductCardModelMatcher {
             hasAddToCartButton = true
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = isDisplayed()
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.buttonAddToCart] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textTopAds to isDisplayed(),
+        R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.linearLayoutImageRating to isDisplayed(),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.buttonAddToCart to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1137,12 +1169,12 @@ private fun testAddToCartButtonAndShortContent(): ProductCardModelMatcher {
             hasAddToCartButton = true
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.buttonAddToCart] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.buttonAddToCart to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1172,24 +1204,24 @@ private fun testHasBadgeNoLocation(): ProductCardModelMatcher {
             }
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.linearLayoutImageRating] = isDisplayed()
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textTopAds to isDisplayed(),
+        R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.linearLayoutImageRating to isDisplayed(),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1221,26 +1253,26 @@ private fun testHasRatingReviewAndLabelIntegrity(): ProductCardModelMatcher {
             }
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = isDisplayed()
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textTopAds to isDisplayed(),
+        R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.linearLayoutImageRating to isDisplayed(),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1265,20 +1297,20 @@ private fun testHasRatingSales(): ProductCardModelMatcher {
             }
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageSalesRatingFloat] = isDisplayed()
-        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
-        it[R.id.salesRatingFloatLine] = isDisplayed()
-        it[R.id.textViewSales] = isDisplayedWithText(labelIntegrity.title)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textTopAds to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.salesRatingFloatLine to isDisplayed(),
+        R.id.textViewSales to isDisplayedWithText(labelIntegrity.title),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1298,18 +1330,18 @@ private fun testNoLabelIntegrityAndHasRatingFloat(): ProductCardModelMatcher {
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl)
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageSalesRatingFloat] = isDisplayed()
-        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textTopAds to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1331,17 +1363,17 @@ private fun testPriorityRatingAverage(): ProductCardModelMatcher {
             labelGroupList = listOf(labelIntegrity)
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageSalesRatingFloat] = isDisplayed()
-        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
-        it[R.id.salesRatingFloatLine] = isDisplayed()
-        it[R.id.textViewSales] = isDisplayedWithText(labelIntegrity.title)
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.salesRatingFloatLine to isDisplayed(),
+        R.id.textViewSales to isDisplayedWithText(labelIntegrity.title),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1375,26 +1407,26 @@ private fun testHasFreeOngkirAndLabelShipping(): ProductCardModelMatcher {
             }
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = isDisplayed()
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textTopAds to isDisplayed(),
+        R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.linearLayoutImageRating to isDisplayed(),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1429,28 +1461,28 @@ private fun testShopRatingBlue(): ProductCardModelMatcher {
             }
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = isDisplayed()
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageShopRating] = withDrawable(R.drawable.product_card_ic_shop_rating)
-        it[R.id.textViewShopRating] = isDisplayedWithText(MethodChecker.fromHtml(productCardModel.shopRating).toString())
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textTopAds to isDisplayed(),
+        R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.linearLayoutImageRating to isDisplayed(),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.imageShopRating to withDrawable(R.drawable.product_card_ic_shop_rating),
+        R.id.textViewShopRating to isDisplayedWithText(MethodChecker.fromHtml(productCardModel.shopRating).toString()),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1483,22 +1515,22 @@ private fun testShopRatingBlue2(): ProductCardModelMatcher {
             }
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.textViewIntegrity] = isDisplayedWithText(labelIntegrity.title)
-        it[R.id.imageShopRating] = withDrawable(R.drawable.product_card_ic_shop_rating)
-        it[R.id.textViewShopRating] = isDisplayedWithText("Nilai Toko 14.5 ")
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textTopAds to isDisplayed(),
+        R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.textViewIntegrity to isDisplayedWithText(labelIntegrity.title),
+        R.id.imageShopRating to withDrawable(R.drawable.product_card_ic_shop_rating),
+        R.id.textViewShopRating to isDisplayedWithText("Nilai Toko 14.5 "),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1531,22 +1563,22 @@ private fun testShopRatingBlue3(): ProductCardModelMatcher {
             }
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.textViewIntegrity] = isDisplayedWithText(labelIntegrity.title)
-        it[R.id.imageShopRating] = withDrawable(R.drawable.product_card_ic_shop_rating)
-        it[R.id.textViewShopRating] = isDisplayedWithText("Nilai Toko 14.5")
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textTopAds to isDisplayed(),
+        R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.textViewIntegrity to isDisplayedWithText(labelIntegrity.title),
+        R.id.imageShopRating to withDrawable(R.drawable.product_card_ic_shop_rating),
+        R.id.textViewShopRating to isDisplayedWithText("Nilai Toko 14.5"),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1579,22 +1611,22 @@ private fun testShopRatingBlue4(): ProductCardModelMatcher {
             }
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.textViewIntegrity] = isDisplayedWithText(labelIntegrity.title)
-        it[R.id.imageShopRating] = withDrawable(R.drawable.product_card_ic_shop_rating)
-        it[R.id.textViewShopRating] = isDisplayedWithText("Nilai 14.5 Toko")
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textTopAds to isDisplayed(),
+        R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.textViewIntegrity to isDisplayedWithText(labelIntegrity.title),
+        R.id.imageShopRating to withDrawable(R.drawable.product_card_ic_shop_rating),
+        R.id.textViewShopRating to isDisplayedWithText("Nilai 14.5 Toko"),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1627,22 +1659,22 @@ private fun testShopRatingBlue5(): ProductCardModelMatcher {
             }
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.textViewIntegrity] = isDisplayedWithText(labelIntegrity.title)
-        it[R.id.imageShopRating] = withDrawable(R.drawable.product_card_ic_shop_rating)
-        it[R.id.textViewShopRating] = isDisplayedWithText("14.5 Nilai bold Toko bold")
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textTopAds to isDisplayed(),
+        R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.textViewIntegrity to isDisplayedWithText(labelIntegrity.title),
+        R.id.imageShopRating to withDrawable(R.drawable.product_card_ic_shop_rating),
+        R.id.textViewShopRating to isDisplayedWithText("14.5 Nilai bold Toko bold"),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1678,28 +1710,28 @@ private fun testShopRatingYellow(): ProductCardModelMatcher {
             }
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = isDisplayed()
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageShopRating] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.textViewShopRating] = isDisplayedWithText(MethodChecker.fromHtml(productCardModel.shopRating).toString())
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textTopAds to isDisplayed(),
+        R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.linearLayoutImageRating to isDisplayed(),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.imageShopRating to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.textViewShopRating to isDisplayedWithText(MethodChecker.fromHtml(productCardModel.shopRating).toString()),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1726,27 +1758,27 @@ private fun testLabelCampaign(): ProductCardModelMatcher {
             labelGroupList = listOf(labelProductStatus, labelGimmick, labelPrice, labelCampaign)
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.labelCampaignBackground] = isDisplayed()
-        it[R.id.textViewLabelCampaign] = isDisplayedWithText(labelCampaign.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = isDisplayedWithChildCount(5)
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textTopAds to isDisplayed(),
+        R.id.labelCampaignBackground to isDisplayed(),
+        R.id.textViewLabelCampaign to isDisplayedWithText(labelCampaign.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.linearLayoutImageRating to isDisplayedWithChildCount(5),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1775,24 +1807,24 @@ private fun testLabelVariantColor(): ProductCardModelMatcher {
             labelGroupVariantList = listOf(labelColor1, labelColor2, labelColor3, labelColor4, labelColor5, labelCustom)
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelVariantContainer] = isDisplayedWithChildCount(6)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = isDisplayedWithChildCount(5)
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textTopAds to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelVariantContainer to isDisplayedWithChildCount(6),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.linearLayoutImageRating to isDisplayedWithChildCount(5),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1820,24 +1852,24 @@ private fun testLabelVariantSize(): ProductCardModelMatcher {
             labelGroupVariantList = listOf(labelSize1, labelSize2, labelSize3, labelSize4, labelCustom)
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelVariantContainer] = isDisplayedWithChildCount(4)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = isDisplayedWithChildCount(5)
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textTopAds to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelVariantContainer to isDisplayedWithChildCount(4),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.linearLayoutImageRating to isDisplayedWithChildCount(5),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1867,26 +1899,26 @@ private fun testNotifyMeButton(): ProductCardModelMatcher {
             hasNotifyMeButton = true
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = isDisplayed()
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.buttonNotify] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textTopAds to isDisplayed(),
+        R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.linearLayoutImageRating to isDisplayed(),
+        R.id.imageViewRating1 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating2 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating3 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating4 to withDrawable(R.drawable.product_card_ic_rating_active),
+        R.id.imageViewRating5 to withDrawable(R.drawable.product_card_ic_rating_default),
+        R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.buttonNotify to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1913,21 +1945,21 @@ private fun testLabelBestSeller(): ProductCardModelMatcher {
             labelGroupList = listOf(labelProductStatus, labelGimmick, labelPrice, labelCampaign, labelBestSeller)
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.labelBestSeller] = isDisplayedWithText(labelBestSeller.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageSalesRatingFloat] = isDisplayed()
-        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textTopAds to isDisplayed(),
+        R.id.labelBestSeller to isDisplayedWithText(labelBestSeller.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1951,20 +1983,20 @@ private fun testLabelBestSellerAndCategorySide(): ProductCardModelMatcher {
         labelGroupList = listOf(labelBestSeller, labelCategorySide)
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.labelBestSeller] = isDisplayedWithText(labelBestSeller.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageSalesRatingFloat] = isDisplayed()
-        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-        it[R.id.textCategorySide] = isDisplayedWithText(labelCategorySide.title)
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textTopAds to isDisplayed(),
+        R.id.labelBestSeller to isDisplayedWithText(labelBestSeller.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+        R.id.textCategorySide to isDisplayedWithText(labelCategorySide.title),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -1988,20 +2020,20 @@ private fun testLabelBestSellerAndCategoryBottom(): ProductCardModelMatcher {
         labelGroupList = listOf(labelBestSeller, labelCategoryBottom)
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.labelBestSeller] = isDisplayedWithText(labelBestSeller.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageSalesRatingFloat] = isDisplayed()
-        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-        it[R.id.textCategoryBottom] = isDisplayedWithText(labelCategoryBottom.title)
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textTopAds to isDisplayed(),
+        R.id.labelBestSeller to isDisplayedWithText(labelBestSeller.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+        R.id.textCategoryBottom to isDisplayedWithText(labelCategoryBottom.title),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -2025,18 +2057,18 @@ private fun testLabelCategorySideAndBottomWithoutBestSeller(): ProductCardModelM
         labelGroupList = listOf(labelCategorySide, labelCategoryBottom)
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageSalesRatingFloat] = isDisplayed()
-        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textTopAds to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -2059,19 +2091,19 @@ private fun testLabelETA(): ProductCardModelMatcher {
             labelGroupList = listOf(labelPrice, labelETA),
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageSalesRatingFloat] = isDisplayed()
-        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-        it[R.id.textViewETA] = isDisplayedWithText(labelETA.title)
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+        R.id.textViewETA to isDisplayedWithText(labelETA.title),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -2093,18 +2125,18 @@ private fun testLabelCategory(): ProductCardModelMatcher {
             labelGroupList = listOf(labelCategory),
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewCategory] = isDisplayedWithText(labelCategory.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageSalesRatingFloat] = isDisplayed()
-        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewCategory to isDisplayedWithText(labelCategory.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -2126,18 +2158,18 @@ private fun testLabelCostPerUnit(): ProductCardModelMatcher {
             labelGroupList = listOf(labelCostPerUnit),
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewCostPerUnit] = isDisplayedWithText(labelCostPerUnit.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageSalesRatingFloat] = isDisplayed()
-        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewCostPerUnit to isDisplayedWithText(labelCostPerUnit.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -2160,20 +2192,20 @@ private fun testLabelCategoryAndCostPerUnit(): ProductCardModelMatcher {
             labelGroupList = listOf(labelCategory, labelCostPerUnit),
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewCategory] = isDisplayedWithText(labelCategory.title)
-        it[R.id.dividerCategory] = isDisplayed()
-        it[R.id.textViewCostPerUnit] = isDisplayedWithText(labelCostPerUnit.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageSalesRatingFloat] = isDisplayed()
-        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewCategory to isDisplayedWithText(labelCategory.title),
+        R.id.dividerCategory to isDisplayed(),
+        R.id.textViewCostPerUnit to isDisplayedWithText(labelCostPerUnit.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -2202,21 +2234,21 @@ private fun testLabelVariantWithCategoryAndCostPerUnit(): ProductCardModelMatche
             labelGroupVariantList = listOf(labelSize1, labelSize2, labelSize3, labelCustom),
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelVariantContainer] = isDisplayedWithChildCount(4)
-        it[R.id.textViewCategory] = isDisplayedWithText(labelCategory.title)
-        it[R.id.dividerCategory] = isDisplayed()
-        it[R.id.textViewCostPerUnit] = isDisplayedWithText(labelCostPerUnit.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageSalesRatingFloat] = isDisplayed()
-        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelVariantContainer to isDisplayedWithChildCount(4),
+        R.id.textViewCategory to isDisplayedWithText(labelCategory.title),
+        R.id.dividerCategory to isDisplayed(),
+        R.id.textViewCostPerUnit to isDisplayedWithText(labelCostPerUnit.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.imageThreeDots to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -2250,21 +2282,21 @@ private fun testAddToCartButtonNonVariant(): ProductCardModelMatcher {
             )
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageSalesRatingFloat] = isDisplayed()
-        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.buttonAddToCart] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textTopAds to isDisplayed(),
+        R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.buttonAddToCart to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -2298,22 +2330,22 @@ private fun testAddToCartButtonNonVariantWithQuantity(): ProductCardModelMatcher
             nonVariant = nonVariant
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageSalesRatingFloat] = isDisplayed()
-        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.quantityEditorNonVariant] = isQuantityEditorDisplayedWithValue(nonVariant.quantity)
-        it[R.id.buttonDeleteCart] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textTopAds to isDisplayed(),
+        R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.quantityEditorNonVariant to isQuantityEditorDisplayedWithValue(nonVariant.quantity),
+        R.id.buttonDeleteCart to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -2347,22 +2379,22 @@ private fun testAddToCartButtonNonVariantIgnoreHasAddToCartFlag(): ProductCardMo
         nonVariant = nonVariant
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageSalesRatingFloat] = isDisplayed()
-        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.quantityEditorNonVariant] = isQuantityEditorDisplayedWithValue(nonVariant.quantity)
-        it[R.id.buttonDeleteCart] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textTopAds to isDisplayed(),
+        R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.quantityEditorNonVariant to isQuantityEditorDisplayedWithValue(nonVariant.quantity),
+        R.id.buttonDeleteCart to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -2406,22 +2438,22 @@ private fun testAddToCartVariantWithNoQuantity(): ProductCardModelMatcher {
             )
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelVariantContainer] = isDisplayedWithChildCount(6)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageSalesRatingFloat] = isDisplayed()
-        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.buttonAddVariant] = isDisplayedWithText(PLUS_VARIAN_LAIN_TEXT)
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textTopAds to isDisplayed(),
+        R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelVariantContainer to isDisplayedWithChildCount(6),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.buttonAddVariant to isDisplayedWithText(PLUS_VARIAN_LAIN_TEXT),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -2453,22 +2485,22 @@ private fun testAddToCartVariantWithQuantity(): ProductCardModelMatcher {
             )
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageSalesRatingFloat] = isDisplayed()
-        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.buttonAddVariant] = isDisplayedWithText(PLUS_VARIAN_LAIN_TEXT)
-        it[R.id.textVariantQuantity] = isDisplayedWithText("${productCardModel.variant?.quantity} pcs")
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textTopAds to isDisplayed(),
+        R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.buttonAddVariant to isDisplayedWithText(PLUS_VARIAN_LAIN_TEXT),
+        R.id.textVariantQuantity to isDisplayedWithText("${productCardModel.variant?.quantity} pcs"),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -2500,22 +2532,22 @@ private fun testAddToCartVariantWithQuantityAbove99(): ProductCardModelMatcher {
             )
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageSalesRatingFloat] = isDisplayed()
-        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.buttonAddVariant] = isDisplayedWithText(PLUS_VARIAN_LAIN_TEXT)
-        it[R.id.textVariantQuantity] = isDisplayedWithText("99+ pcs")
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textTopAds to isDisplayed(),
+        R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.buttonAddVariant to isDisplayedWithText(PLUS_VARIAN_LAIN_TEXT),
+        R.id.textVariantQuantity to isDisplayedWithText("99+ pcs"),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -2544,23 +2576,23 @@ private fun testAddToCartButtonWishlist(): ProductCardModelMatcher {
         hasButtonThreeDotsWishlist = true
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageSalesRatingFloat] = isDisplayed()
-        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.buttonAddToCart] = isNotDisplayed()
-        it[R.id.rlPrimaryButtonWishlist] = isDisplayed()
-        it[R.id.buttonAddToCartWishlist] = isDisplayed()
-        it[R.id.buttonThreeDotsWishlist] = isDisplayed()
-        it[R.id.imageButtonThreeDotsWishlist] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.buttonAddToCart to isNotDisplayed(),
+        R.id.rlPrimaryButtonWishlist to isDisplayed(),
+        R.id.buttonAddToCartWishlist to isDisplayed(),
+        R.id.buttonThreeDotsWishlist to isDisplayed(),
+        R.id.imageButtonThreeDotsWishlist to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -2589,24 +2621,24 @@ private fun testSeeSimilarProductButtonWishlist(): ProductCardModelMatcher {
         hasButtonThreeDotsWishlist = true
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageSalesRatingFloat] = isDisplayed()
-        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.buttonAddToCart] = isNotDisplayed()
-        it[R.id.rlPrimaryButtonWishlist] = isDisplayed()
-        it[R.id.buttonAddToCartWishlist] = isNotDisplayed()
-        it[R.id.buttonSeeSimilarProductWishlist] = isDisplayed()
-        it[R.id.buttonThreeDotsWishlist] = isDisplayed()
-        it[R.id.imageButtonThreeDotsWishlist] = isDisplayed()
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.imageShopBadge to isDisplayed(),
+        R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
+        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.buttonAddToCart to isNotDisplayed(),
+        R.id.rlPrimaryButtonWishlist to isDisplayed(),
+        R.id.buttonAddToCartWishlist to isNotDisplayed(),
+        R.id.buttonSeeSimilarProductWishlist to isDisplayed(),
+        R.id.buttonThreeDotsWishlist to isDisplayed(),
+        R.id.imageButtonThreeDotsWishlist to isDisplayed(),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -2623,13 +2655,13 @@ private fun testOutOfStock(): ProductCardModelMatcher {
         formattedPrice = "Rp7.999.000"
     )
 
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.outOfStockOverlay] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-    }
+    val productCardMatcher = mapOf(
+        R.id.imageProduct to isDisplayed(),
+        R.id.outOfStockOverlay to isDisplayed(),
+        R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+    )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
