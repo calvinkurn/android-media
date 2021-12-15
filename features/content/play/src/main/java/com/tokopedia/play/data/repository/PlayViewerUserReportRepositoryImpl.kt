@@ -2,7 +2,6 @@ package com.tokopedia.play.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.play.data.UserReportOptions
 import com.tokopedia.play.domain.GetUserReportListUseCase
 import com.tokopedia.play.domain.PostUserReportUseCase
 import com.tokopedia.play.domain.repository.PlayViewerUserReportRepository
@@ -26,14 +25,7 @@ class PlayViewerUserReportRepositoryImpl @Inject constructor(
     override suspend fun getReasoningList(): List<PlayUserReportReasoningUiModel> =
         withContext(dispatchers.io) {
             val response = getUserReportListUseCase.executeOnBackground()
-            val newList = mutableListOf<UserReportOptions>()
-            newList.addAll(response.data)
-
-            response.data.map {
-                newList.addAll(it.child)
-            }
-
-            return@withContext playUiModelMapper.mapUserReport(newList)
+            return@withContext playUiModelMapper.mapUserReport(response.data)
         }
 
     override suspend fun submitReport(
