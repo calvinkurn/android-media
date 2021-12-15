@@ -6,7 +6,7 @@
             android:name="com.tokopedia.logisticorder.view.TrackingPageActivity"
             android:label="@string/label_tracking_activity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -23,11 +23,11 @@
         <activity
             android:name="com.tokopedia.logisticorder.view.shipping_confirmation.view.barcodescanner.ReceiptShipmentBarcodeScannerActivity"
             android:label="@string/title_receipt_shipement_barcode_scanner"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name="com.tokopedia.logisticorder.view.shipping_confirmation.view.confirmshipment.ConfirmShippingActivity"
             android:label="@string/title_confirm_shipment_logistic_module"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -45,7 +45,7 @@
             android:name="com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity"
             android:label="@string/label_tracking_activity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

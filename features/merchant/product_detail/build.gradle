@@ -131,6 +131,7 @@ dependencies {
         transitive = true
     }
     implementation projectOrAar(rootProject.ext.features.promoMvcWidget)
+    implementation project(rootProject.ext.features.playWidget)
 
     // Embrace
     implementation rootProject.ext.miscDependencies.embraceSdk

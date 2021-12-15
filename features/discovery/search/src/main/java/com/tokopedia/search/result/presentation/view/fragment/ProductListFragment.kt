@@ -29,7 +29,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
 import com.tokopedia.discovery.common.constants.SearchConstant
@@ -175,6 +174,7 @@ class ProductListFragment: BaseDaggerFragment(),
         private const val SHOP = "shop"
         private const val DEFAULT_SPAN_COUNT = 2
         private const val ON_BOARDING_DELAY_MS: Long = 200
+        private const val ENABLE_REVAMP_WISHLIST_V2 = "android_revamp_wishlist_v2"
 
         fun newInstance(searchParameter: SearchParameter?): ProductListFragment {
             val args = Bundle().apply {
@@ -1554,7 +1554,7 @@ class ProductListFragment: BaseDaggerFragment(),
         val view = view ?: return
 
         if (isWishlisted)
-            Toaster.build(view, getString(R.string.msg_add_wishlist), Snackbar.LENGTH_SHORT, TYPE_NORMAL).show()
+            Toaster.build(view, getString(R.string.msg_add_wishlist), Snackbar.LENGTH_SHORT, TYPE_NORMAL, actionText = getString(R.string.cta_add_wishlist)) { goToWishlistPage() }.show()
         else
             Toaster.build(view, getString(R.string.msg_remove_wishlist), Snackbar.LENGTH_SHORT, TYPE_NORMAL).show()
     }
@@ -1608,11 +1608,17 @@ class ProductListFragment: BaseDaggerFragment(),
         broadMatchItem.add(broadMatchItemDataView.asClickObjectDataLayer())
 
         SearchTracking.trackEventClickBroadMatchItem(
-                queryKey,
-                broadMatchItemDataView.alternativeKeyword,
-                getUserId(),
-                broadMatchItem,
+            queryKey,
+            broadMatchItemDataView.alternativeKeyword,
+            getUserId(),
+            broadMatchItemDataView.isOrganicAds,
+            broadMatchItemDataView.componentId,
+            broadMatchItem,
         )
+    }
+
+    override fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView) {
+        presenter?.onBroadMatchImpressed(broadMatchDataView)
     }
 
     override fun onBroadMatchSeeMoreClicked(broadMatchDataView: BroadMatchDataView) {
@@ -1639,7 +1645,7 @@ class ProductListFragment: BaseDaggerFragment(),
         return productCardOptionsModel
     }
 
-    override fun trackBroadMatchImpression(broadMatchItemDataView: BroadMatchItemDataView) {
+    override fun trackEventImpressionBroadMatchItem(broadMatchItemDataView: BroadMatchItemDataView) {
         val trackingQueue = trackingQueue ?: return
         val broadMatchItemAsObjectDataLayer: MutableList<Any> = ArrayList()
         broadMatchItemAsObjectDataLayer.add(broadMatchItemDataView.asImpressionObjectDataLayer())
@@ -2006,8 +2012,20 @@ class ProductListFragment: BaseDaggerFragment(),
         }
     }
 
+    override fun trackEventImpressionBroadMatch(broadMatchDataView: BroadMatchDataView) {
+        SearchTracking.trackEventImpressionBroadMatch(
+            iris,
+            broadMatchDataView,
+        )
+    }
+
     override fun trackEventClickSeeMoreBroadMatch(broadMatchDataView: BroadMatchDataView) {
-        SearchTracking.trackEventClickBroadMatchSeeMore(queryKey, broadMatchDataView.keyword, broadMatchDataView.dimension90)
+        SearchTracking.trackEventClickBroadMatchSeeMore(
+            broadMatchDataView,
+            queryKey,
+            broadMatchDataView.keyword,
+            broadMatchDataView.dimension90,
+        )
     }
 
     override fun trackEventClickSeeMoreDynamicProductCarousel(
@@ -2069,5 +2087,9 @@ class ProductListFragment: BaseDaggerFragment(),
         productListAdapter?.removeLastFilterWidget()
 
         presenter?.closeLastFilter(searchParameterMap)
+    }
+
+    private fun goToWishlistPage() {
+        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 }

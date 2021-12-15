@@ -95,4 +95,11 @@
     <string name="dialog_silent_verif_lanjut">Lanjut Verifikasi</string>
     <string name="dialog_silent_verif_batal">Batal</string>
 
+    <!--  otp inactive phone  -->
+    <string name="inactive_phone_text_footer_have_not_email">Saya tidak punya akses ke e-mail</string>
+    <string name="inactive_phone_text_footer_email_challenge_meta">Tidak punya akses ke email?</string>
+    <string name="inactive_phone_text_footer_email_challenge_action">Ajukan perubahan nomor HP</string>
+    <string name="inactive_phone_text_footer_pin_challenge_meta">Lupa pin Tokopedia?</string>
+    <string name="inactive_phone_text_footer_pin_challenge_action">Ajukan perubahan nomor HP</string>
+    <string name="inactive_phone_text_footer_phone_not_active">Nomor saya sudah tidak aktif</string>
 </resources>

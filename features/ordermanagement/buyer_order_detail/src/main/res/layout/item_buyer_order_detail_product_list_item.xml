@@ -68,7 +68,7 @@
             app:typographyType="body_3"
             tools:text="43 Size. Packing rapi plis." />
 
-        <View
+        <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/dividerBuyerOrderDetailProduct"
             android:layout_width="match_parent"
             android:layout_height="1dp"

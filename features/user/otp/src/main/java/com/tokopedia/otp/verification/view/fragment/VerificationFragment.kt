@@ -171,7 +171,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         return true
     }
 
-    protected fun sendOtp() {
+    open fun sendOtp() {
         if (isCountdownFinished()) {
             if (otpData.accessToken.isNotEmpty() && otpData.userIdEnc.isNotEmpty()) {
                 viewModel.sendOtp2FA(
@@ -197,7 +197,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
     }
 
-    protected fun validate(code: String) {
+    open fun validate(code: String) {
         when (otpData.otpType) {
             OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
                 analytics.trackClickVerificationRegisterPhoneButton()
@@ -398,7 +398,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         handler?.postDelayed(characterAdder, DELAY_ANIMATE_TEXT.toLong())
     }
 
-    private fun isCountdownFinished(): Boolean {
+    open fun isCountdownFinished(): Boolean {
         return verificationPref.isExpired() || !verificationPref.hasTimer
     }
 

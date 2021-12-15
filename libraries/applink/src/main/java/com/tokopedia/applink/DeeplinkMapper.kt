@@ -60,6 +60,7 @@ import com.tokopedia.applink.order.DeeplinkMapperUohOrder
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
+import com.tokopedia.applink.purchaseplatform.DeeplinkMapperPurchasePlatform
 import com.tokopedia.applink.recommendation.getRegisteredNavigationRecommendation
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrah
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahOrderDetail
@@ -404,8 +405,10 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.INBOX_TICKET, ApplinkConstInternalOperational.INTERNAL_INBOX_LIST),
             DLP.exact(ApplinkConst.Navigation.MAIN_NAV, ApplinkConsInternalNavigation.MAIN_NAVIGATION),
             DLP.exact(ApplinkConst.RECENT_VIEW, ApplinkConsInternalHome.HOME_RECENT_VIEW),
-            DLP.exact(ApplinkConst.WISHLIST, ApplinkConsInternalHome.HOME_WISHLIST),
-            DLP.exact(ApplinkConst.NEW_WISHLIST, ApplinkConsInternalHome.HOME_WISHLIST),
+
+            DLP.exact(ApplinkConst.WISHLIST) { ctx, _, _, _ -> DeeplinkMapperPurchasePlatform.getRegisteredNavigationWishlist(ctx) },
+            DLP.exact(ApplinkConst.NEW_WISHLIST) { ctx, _, _, _ -> DeeplinkMapperPurchasePlatform.getRegisteredNavigationWishlist(ctx) },
+
             DLP.exact(ApplinkConst.CREATE_SHOP, ApplinkConstInternalGlobal.LANDING_SHOP_CREATION),
             DLP.exact(ApplinkConst.CHAT_TEMPLATE, ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE),
             DLP.exact(ApplinkConst.NOTIFICATION) { _, _, _, _ ->
@@ -522,6 +525,7 @@ object DeeplinkMapper {
             deeplink.startsWith(ApplinkConstInternalOrder.HISTORY) -> getSomAllOrderAppLink(uri)
             deeplink.startsWith(ApplinkConstInternalMarketplace.SHOP_PAGE_BASE) -> getShopPageInternalAppLink(context,uri,deeplink, "", uri.pathSegments.getOrNull(1).orEmpty())
             (deeplink.startsWith(ApplinkConstInternalGlobal.ADVANCED_SETTING) || deeplink.startsWith(ApplinkConstInternalGlobal.GENERAL_SETTING)) -> ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT
+            deeplink.startsWith(ApplinkConsInternalHome.HOME_WISHLIST) -> DeeplinkMapperPurchasePlatform.getRegisteredNavigationWishlist(context)
             else -> return ""
         }
     }
