@@ -16,6 +16,8 @@ data class UserReportOptions(
     val detail: String = "",
     @SerializedName("additional_fields")
     val additionalField: List<OptionAdditionalField> = listOf(),
+    @SerializedName("child")
+    val child: List<UserReportOptions> = listOf()
 ){
     data class Response(
         @SerializedName("visionGetReportVideoReason")
