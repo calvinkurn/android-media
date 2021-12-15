@@ -477,7 +477,6 @@ class WishlistV2ViewModelTest {
 
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
         every { wishlistV2ViewModel.mapToProductCardList(wishlistThreeItemList, any()) } returns listWishlistV2TypeLayoutData
-        coEvery { wishlistV2ViewModel.getTopAdsData() } returns topAdsImageViewModel
 
         wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
 
@@ -493,7 +492,6 @@ class WishlistV2ViewModelTest {
 
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
         every { wishlistV2ViewModel.mapToProductCardList(wishlistEmptyItem, any()) } returns emptyListWishlistV2TypeLayoutData
-        coEvery { wishlistV2ViewModel.getTopAdsData() } returns topAdsImageViewModel
 
         wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
 
@@ -650,6 +648,18 @@ class WishlistV2ViewModelTest {
         Assert.assertTrue(listWishlistV2FiveItemsTypeLayoutData[5].typeLayout.equals(TYPE_LIST))
         Assert.assertTrue(listWishlistV2FiveItemsTypeLayoutData[6].typeLayout.equals(TYPE_RECOMMENDATION_TITLE))
         Assert.assertTrue(listWishlistV2FiveItemsTypeLayoutData[7].typeLayout.equals(TYPE_RECOMMENDATION_CAROUSEL))
+    }
+
+    @Test
+    fun mapToRecommandation_When_Index_IsMoreThanZero() {
+        val wishlistV2ResponseData = WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(page = 1, totalData = 5, hasNextPage = true))
+
+        coEvery { wishlistV2UseCase.executeSuspend(any()) } returns wishlistV2ResponseData
+
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+
+        Assert.assertTrue(listWishlistV2FiveItemsHasNextPageSecondPageTypeLayoutData[4].typeLayout.equals(TYPE_RECOMMENDATION_TITLE))
+        Assert.assertTrue(listWishlistV2FiveItemsHasNextPageSecondPageTypeLayoutData[5].typeLayout.equals(TYPE_RECOMMENDATION_CAROUSEL))
     }
 
     @Test
