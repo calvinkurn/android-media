@@ -486,7 +486,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         actionTypeTrackingJob?.cancel()
         actionTypeTrackingJob = lifecycleScope.launch {
             delay(INPUT_ACTION_TYPE_TRACKING_DELAY)
-            operatorName = selectedOperator.operator.attributes.name
             when (inputNumberActionType) {
                 InputNumberActionType.MANUAL -> {
                     topupAnalytics.eventInputNumberManual(categoryId, operatorName)
