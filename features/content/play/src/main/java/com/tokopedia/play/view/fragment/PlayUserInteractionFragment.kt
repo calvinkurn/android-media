@@ -958,7 +958,10 @@ class PlayUserInteractionFragment @Inject constructor(
                             message = errMessage
                         )
                     }
-                    is CopyToClipboardEvent -> copyToClipboard(event.content)
+                    is CopyToClipboardEvent -> {
+                        shareExperienceView?.dismiss()
+                        copyToClipboard(event.content)
+                    }
                     is ShowRealTimeNotificationEvent -> {
                         rtnView?.queueNotification(event.notification)
                     }
