@@ -731,10 +731,10 @@ class PlayViewModel @Inject constructor(
             ClickRetryInteractiveAction -> handleClickRetryInteractive()
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
             ClickLikeAction -> handleClickLike(isFromLogin = false)
-            ClickShareAction -> handleClickShare()
             RefreshLeaderboard -> handleRefreshLeaderboard()
+            ClickShareAction -> handleClickShare()
             CloseSharingOption -> handleCloseSharingOption()
-            ScreenshotTaken -> handleClickShare()
+            ScreenshotTaken -> handleTakeScreenshotForSharing()
             is ClickSharingOption -> handleSharingOption(action.shareModel)
         }
     }
@@ -1824,14 +1824,17 @@ class PlayViewModel @Inject constructor(
         )
     }
 
-    private fun handleCloseSharingOption() {
-        playAnalytic.closeShareBottomSheet(channelId, channelType.value, false)
+    private fun handleRefreshLeaderboard() {
+        if(_leaderboardUserBadgeState.value.shouldRefreshData) {
+            _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Loading
+            _leaderboardUserBadgeState.setValue { copy(shouldRefreshData = false) }
+        }
+
+        checkLeaderboard(channelId)
     }
 
-    private fun handleClickShare() {
+    private fun openSharingOption() {
         viewModelScope.launch {
-            playAnalytic.clickShareButton(channelId, channelType.value)
-
             if(playShareExperience.isCustomSharingAllow()) {
                 _uiEvent.emit(OpenSharingOptionEvent(
                     title = _channelDetail.value.channelInfo.title,
@@ -1844,13 +1847,18 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun handleRefreshLeaderboard() {
-        if(_leaderboardUserBadgeState.value.shouldRefreshData) {
-            _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Loading
-            _leaderboardUserBadgeState.setValue { copy(shouldRefreshData = false) }
-        }
+    private fun handleCloseSharingOption() {
+        playAnalytic.closeShareBottomSheet(channelId, channelType.value, false)
+    }
 
-        checkLeaderboard(channelId)
+    private fun handleClickShare() {
+        playAnalytic.clickShareButton(channelId, channelType.value)
+        openSharingOption()
+    }
+
+    private fun handleTakeScreenshotForSharing() {
+        playAnalytic.takeScreenshotForSharing(channelId, channelType.value)
+        openSharingOption()
     }
 
     private fun handleSharingOption(shareModel: ShareModel) {
