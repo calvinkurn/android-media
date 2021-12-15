@@ -52,6 +52,7 @@ class ShareExperienceViewComponent(
             }
         }, fragment, addFragmentLifecycleObserver = true, permissionListener = object: PermissionListener {
             override fun permissionAction(action: String, label: String) {
+                Log.d("<LOG>", "onPermissionAction : $label")
                 listener.onSharePermissionAction(this@ShareExperienceViewComponent, label)
             }
         }
@@ -80,6 +81,10 @@ class ShareExperienceViewComponent(
             universalShareBottomSheet.dismiss()
         }
         catch (e: Exception){ }
+    }
+
+    fun handleRequestPermissionResult(requestCode: Int, grantResults: IntArray) {
+        screenshotDetector?.onRequestPermissionsResult(requestCode, grantResults, fragment)
     }
 
     interface Listener {
