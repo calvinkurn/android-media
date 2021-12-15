@@ -167,6 +167,10 @@ data class SearchProductModel(
             @Expose
             val position: Int = 0,
 
+            @SerializedName("trackingOption")
+            @Expose
+            val trackingOption: Int = 0,
+
             @SerializedName("otherRelated")
             @Expose
             val otherRelatedList: List<OtherRelated> = listOf()
@@ -184,6 +188,10 @@ data class SearchProductModel(
             @SerializedName("applink")
             @Expose
             val applink: String = "",
+
+            @SerializedName("componentId")
+            @Expose
+            val componentId: String = "",
 
             @SerializedName("product")
             @Expose
@@ -246,7 +254,11 @@ data class SearchProductModel(
 
             @SerializedName("ads")
             @Expose
-            val ads: ProductAds = ProductAds()
+            val ads: ProductAds = ProductAds(),
+
+            @SerializedName("componentId")
+            @Expose
+            val componentId: String = "",
     ) {
             fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
     }
