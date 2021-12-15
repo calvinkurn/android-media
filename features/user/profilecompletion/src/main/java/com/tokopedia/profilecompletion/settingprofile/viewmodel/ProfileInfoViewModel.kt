@@ -3,6 +3,7 @@ package com.tokopedia.profilecompletion.settingprofile.viewmodel
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -69,13 +70,12 @@ class ProfileInfoViewModel @Inject constructor(
                     filePath = image, // required
                     sourceId = SOURCE_ID
                 )
-                val result = uploader(param)
-                when (result) {
-                    is UploadResult.Success -> saveProfilePicture(result.uploadId)
-                    is UploadResult.Error -> {
-                        withContext(dispatcher.main) {
-                            _saveImageProfileResponse.value = Fail(Throwable(result.message))
-                        }
+                val result = withContext(dispatcher.io) { uploader(param) }
+                withContext(dispatcher.main) {
+                    when (result) {
+                        is UploadResult.Success -> saveProfilePicture(result.uploadId)
+                        is UploadResult.Error -> _saveImageProfileResponse.value =
+                            Fail(Throwable(result.message))
                     }
                 }
             } catch (e: Exception) {
@@ -86,10 +86,10 @@ class ProfileInfoViewModel @Inject constructor(
 
     /* To send uploadID from media uploader to accounts BE */
     fun saveProfilePicture(uploadId: String) {
-        launch {
+        viewModelScope.launch {
             try {
                 val params = mapOf(PARAM_UPLOAD_ID to uploadId)
-                val res = saveProfilePictureUseCase(params)
+                val res = withContext(dispatcher.io) { saveProfilePictureUseCase(params) }
                 withContext(dispatcher.main) {
                     if (res.data.errorMessage.isEmpty() &&
                         res.data.innerData.isSuccess == 1 &&
@@ -97,7 +97,7 @@ class ProfileInfoViewModel @Inject constructor(
                     ) {
                         _saveImageProfileResponse.value = Success(res.data.innerData.imageUrl)
                     } else {
-                        _saveImageProfileResponse.value = Fail(Throwable(res.data.errorMessage[0]))
+                        _saveImageProfileResponse.value = Fail(Throwable(res.data.errorMessage.first()))
                     }
                 }
             } catch (e: Exception) {
