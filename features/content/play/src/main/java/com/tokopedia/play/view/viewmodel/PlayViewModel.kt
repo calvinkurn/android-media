@@ -1849,7 +1849,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleCloseSharingOption() {
-        playAnalytic.closeShareBottomSheet(channelId, channelType.value, false)
+        playAnalytic.closeShareBottomSheet(channelId, channelType.value, playShareExperience.isScreenshotBottomSheet())
     }
 
     private fun handleClickShare() {
@@ -1864,7 +1864,7 @@ class PlayViewModel @Inject constructor(
 
     private fun handleSharingOption(shareModel: ShareModel) {
         viewModelScope.launch {
-            playAnalytic.clickSharingOption(channelId, channelType.value, shareModel.socialMediaName, false)
+            playAnalytic.clickSharingOption(channelId, channelType.value, shareModel.socialMediaName, playShareExperience.isScreenshotBottomSheet())
 
             val playShareExperienceData = getPlayShareExperienceData()
 
