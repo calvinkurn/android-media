@@ -340,7 +340,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             }
         }
 
-        LogisticUserConsentHelper().displayUserConsent(activity as Context, binding.userConsent, getString(R.string.btn_simpan), if(isPositiveFlow) "add new address positive" else "add new address negative")
+        LogisticUserConsentHelper().displayUserConsent(activity as Context, binding.userConsent, getString(R.string.btn_simpan), if(isPositiveFlow) LogisticUserConsentHelper.ANA_REVAMP_POSITIVE else LogisticUserConsentHelper.ANA_REVAMP_NEGATIVE)
 
         binding.btnSaveAddressNew.setOnClickListener {
             if (validateForm()) {

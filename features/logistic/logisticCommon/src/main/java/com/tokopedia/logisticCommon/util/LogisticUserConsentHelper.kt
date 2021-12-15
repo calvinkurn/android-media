@@ -56,4 +56,12 @@ class LogisticUserConsentHelper {
             TncAnalytics.onViewTnC(screenName)
         }
     }
+
+    companion object {
+        const val ANA_REVAMP_POSITIVE = "add new address positive"
+        const val ANA_REVAMP_NEGATIVE = "add new address negative"
+        const val ANA_POSITIVE = "add new address positive old"
+        const val ANA_NEGATIVE = "add new address negative old"
+        const val EDIT_ADDRESS = "edit address"
+    }
 }

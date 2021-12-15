@@ -216,7 +216,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         et_label_address.clearFocus()
         et_receiver_name.clearFocus()
         et_phone.clearFocus()
-        LogisticUserConsentHelper().displayUserConsent(activity as Context, user_consent, getString(R.string.add_new_address_save), if(!isMismatch && !isMismatchSolved) "add new address positive old" else "add new address negative old")
+        LogisticUserConsentHelper().displayUserConsent(activity as Context, user_consent, getString(R.string.add_new_address_save), if(!isMismatch && !isMismatchSolved) LogisticUserConsentHelper.ANA_POSITIVE else LogisticUserConsentHelper.ANA_NEGATIVE)
     }
 
     private fun setViewListener() {
