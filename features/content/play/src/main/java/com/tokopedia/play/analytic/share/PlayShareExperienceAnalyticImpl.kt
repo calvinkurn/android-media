@@ -45,6 +45,20 @@ class PlayShareExperienceAnalyticImpl @Inject constructor(
         )
     }
 
+    private fun mapSharingOption(sharingOption: String?): String {
+        return sharingOption?.let {
+            return@let when(it) {
+                "FB Feed" -> "Facebook NewsFeed"
+                "FB Story" -> "Facebook Story"
+                "IG DM" -> "Instagram DirectMessage"
+                "IG Feed" -> "Instagram Feed"
+                "IG Story" -> "Instagram Story"
+                "E-mail" -> "Email"
+                else -> it
+            }
+        } ?: ""
+    }
+
     override fun clickShareButton(channelId: String, channelType: String) {
         sendGeneralClickEvent(
             "share button",
@@ -67,13 +81,13 @@ class PlayShareExperienceAnalyticImpl @Inject constructor(
     override fun clickSharingOption(
         channelId: String,
         channelType: String,
-        sharingOption: String,
+        sharingOption: String?,
         isScreenshot: Boolean
     ) {
         val action = if(isScreenshot) "channel share bottom sheet - screenshot" else "sharing channel"
         sendGeneralClickEvent(
             action,
-            "$channelId - $channelType - $sharingOption"
+            "$channelId - $channelType - ${mapSharingOption(sharingOption)}"
         )
     }
 

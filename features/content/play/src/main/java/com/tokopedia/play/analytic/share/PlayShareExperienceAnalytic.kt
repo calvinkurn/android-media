@@ -9,7 +9,7 @@ interface PlayShareExperienceAnalytic {
 
     fun closeShareBottomSheet(channelId: String, channelType: String, isScreenshot: Boolean)
 
-    fun clickSharingOption(channelId: String, channelType: String, sharingOption: String, isScreenshot: Boolean)
+    fun clickSharingOption(channelId: String, channelType: String, sharingOption: String?, isScreenshot: Boolean)
 
     fun impressShareBottomSheet(channelId: String, channelType: String)
 
