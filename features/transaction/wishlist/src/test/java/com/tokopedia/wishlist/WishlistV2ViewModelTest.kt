@@ -32,6 +32,7 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_CAROUSEL
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_TITLE
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_TITLE_WITH_MARGIN
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_TOPADS
 import com.tokopedia.wishlist.view.viewmodel.WishlistV2ViewModel
 import io.mockk.MockKAnnotations
@@ -470,32 +471,30 @@ class WishlistV2ViewModelTest {
     // mapToTopads
     @Test
     fun mapToTopads_onExpectedIndex() {
-        val listTopadsLayout = listWishlistV2TypeLayoutData
-        listTopadsLayout.add(WishlistV2TypeLayoutData(topAdsImageViewModel, typeLayout = TYPE_TOPADS))
-
-        val listItemWishlist = WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(items = wishlistThreeItemList))
+        val listItemWishlist = WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(totalData = 5, items = wishlistFiveItemList, page = 1, hasNextPage = false))
 
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
-        every { wishlistV2ViewModel.mapToProductCardList(wishlistThreeItemList, any()) } returns listWishlistV2TypeLayoutData
 
         wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
 
-        Assert.assertTrue(listTopadsLayout[listWishlistV2TypeLayoutData.size-1].typeLayout.equals(TYPE_TOPADS))
+        Assert.assertTrue(listWishlistV2FiveItemsOnly[4].typeLayout.equals(TYPE_TOPADS))
     }
 
     @Test
     fun mapToTopads_onIndexZero() {
-        val listTopadsLayout = arrayListOf<WishlistV2TypeLayoutData>()
-        listTopadsLayout.add(WishlistV2TypeLayoutData(topAdsImageViewModel, typeLayout = TYPE_TOPADS))
+        val listItemWishlist = WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(totalData = 4, items = wishlistFourItemList, page = 1, hasNextPage = false))
 
-        val listItemWishlist = WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(items = emptyList()))
-
+        coEvery { topAdsImageViewUseCase.getImageData(any()) }.answers{
+            arrayListOf(TopAdsImageViewModel(imageUrl = "url"))
+        }
+        coEvery {
+            getSingleRecommendationUseCase.getData(any()) }.answers { RecommendationWidget() }
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
-        every { wishlistV2ViewModel.mapToProductCardList(wishlistEmptyItem, any()) } returns emptyListWishlistV2TypeLayoutData
 
         wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
 
-        Assert.assertTrue(listTopadsLayout[0].typeLayout.equals(TYPE_TOPADS))
+        assert(wishlistV2ViewModel.wishlistV2Data.value is Success)
+        assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[4].typeLayout.equals(TYPE_TOPADS))
     }
 
     @Test
@@ -542,19 +541,23 @@ class WishlistV2ViewModelTest {
 
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns emptyList
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(query = "test"), "")
 
         Assert.assertTrue(emptyWishlistNotFoundV2TypeLayoutData[0].typeLayout.equals(TYPE_EMPTY_NOT_FOUND))
     }
 
     @Test
     fun mapToEmptyState_whenFilterIsActive() {
-        val sortFilterList = listOf(WishlistV2Response.Data.WishlistV2.SortFiltersItem(isActive = true))
-        val emptyList = WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(query = "", items = emptyWishlistItem, sortFilters = sortFilterList))
+        val arrayListSelected = arrayListOf<String>()
+        arrayListSelected.add("2")
+        arrayListSelected.add("3")
+        val paramListSortFilter = arrayListOf(WishlistV2Params.WishlistSortFilterParam(name = "test", selected = arrayListSelected))
+        val responseListSortFilter = listOf(WishlistV2Response.Data.WishlistV2.SortFiltersItem(isActive = true))
+        val emptyList = WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(query = "", items = emptyWishlistItem, sortFilters = responseListSortFilter))
 
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns emptyList
 
-        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(query = "", sortFilters = paramListSortFilter), "")
 
         Assert.assertTrue(emptyWishlistEmptyStateV2TypeLayoutData[0].typeLayout.equals(TYPE_EMPTY_STATE))
     }
@@ -658,7 +661,7 @@ class WishlistV2ViewModelTest {
 
         wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
 
-        Assert.assertTrue(listWishlistV2FiveItemsHasNextPageSecondPageTypeLayoutData[4].typeLayout.equals(TYPE_RECOMMENDATION_TITLE))
+        Assert.assertTrue(listWishlistV2FiveItemsHasNextPageSecondPageTypeLayoutData[4].typeLayout.equals(TYPE_RECOMMENDATION_TITLE_WITH_MARGIN))
         Assert.assertTrue(listWishlistV2FiveItemsHasNextPageSecondPageTypeLayoutData[5].typeLayout.equals(TYPE_RECOMMENDATION_CAROUSEL))
     }
 

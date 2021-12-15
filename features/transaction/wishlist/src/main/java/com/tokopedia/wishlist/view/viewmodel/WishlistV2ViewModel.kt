@@ -133,7 +133,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
             listData = mapToEmptyState(wishlistV2Response, listData, isFilterActive)
 
         } else {
-            // only for wishlist size < 4
+            // only for wishlist which has 1 page response
             if (wishlistV2Response.page == 1 && !wishlistV2Response.hasNextPage) {
                 listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
 
