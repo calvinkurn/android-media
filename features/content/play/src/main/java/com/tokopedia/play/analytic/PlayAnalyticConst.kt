@@ -22,6 +22,7 @@ const val KEY_TRACK_VIEW_UPCOMING_IRIS = "viewUpcomingIris"
 
 const val KEY_TRACK_CURRENT_SITE = "tokopediamarketplace"
 const val KEY_TRACK_BUSINESS_UNIT = "play"
+const val KEY_TRACK_BUSINESS_UNIT_SHARE_EXPERIENCE = "sharingexperience"
 
 const val KEY_SESSION_IRIS = "sessionIris"
 
