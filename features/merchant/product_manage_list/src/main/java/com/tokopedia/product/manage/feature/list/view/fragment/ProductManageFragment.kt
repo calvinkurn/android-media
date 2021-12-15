@@ -156,7 +156,8 @@ import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrati
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
-import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
+import com.tokopedia.shop.common.constant.ShowcasePickerType
+import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
@@ -447,7 +448,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, true)
                 putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, false)
             }
-            showcaseListIntent.putExtra(EXTRA_BUNDLE, showcaseListBundle)
+            showcaseListIntent.putExtra(ShopShowcaseParamConstant.EXTRA_BUNDLE, showcaseListBundle)
             startActivityForResult(showcaseListIntent, REQUEST_CODE_ETALASE)
             productManageMoreMenuBottomSheet?.dismiss()
             ProductManageTracking.eventClickMoreMenuShopShowcase()
@@ -1850,8 +1851,20 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     private fun goToEtalasePicker() {
-        val intent = Intent(activity, EtalasePickerActivity::class.java)
-        startActivityForResult(intent, REQUEST_CODE_PICK_ETALASE)
+        context?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
+                .apply {
+                    val bundle = Bundle().apply {
+                        putString(
+                            ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_OPEN_SHOWCASE_PICKER,
+                            ShowcasePickerType.RADIO
+                        )
+                    }
+                    putExtra(ShopShowcaseParamConstant.EXTRA_BUNDLE, bundle)
+                }
+
+            startActivityForResult(intent, REQUEST_CODE_PICK_ETALASE)
+        }
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
@@ -1913,10 +1926,15 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 REQUEST_CODE_PICK_ETALASE -> {
                     if (resultCode == Activity.RESULT_OK) {
                         val productIds = itemsChecked.map { product -> product.id }
-                        val etalaseId = intent.getStringExtra(EXTRA_ETALASE_ID).orEmpty()
-                        val etalaseName = intent.getStringExtra(EXTRA_ETALASE_NAME).orEmpty()
+                        val selectedShowcase: ShowcaseItemPicker = intent.getParcelableExtra(
+                            ShopShowcaseParamConstant.EXTRA_PICKER_SELECTED_SHOWCASE
+                        ) ?: ShowcaseItemPicker()
 
-                        viewModel.editProductsEtalase(productIds, etalaseId, etalaseName)
+                        viewModel.editProductsEtalase(
+                            productIds,
+                            selectedShowcase.showcaseId,
+                            selectedShowcase.showcaseName
+                        )
                     }
                 }
                 REQUEST_CODE_ETALASE -> {
