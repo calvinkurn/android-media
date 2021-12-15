@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/cp_share_post"
-            android:textColor="@color/WhiteText"
+            android:textColor="@color/Unify_N0"
             app:typographyType="heading_5"
             tools:text="Sip, Share Aja!" />
     </LinearLayout>
