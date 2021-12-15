@@ -141,7 +141,6 @@ class PlayBottomSheetViewModel @Inject constructor(
                reasonId: Int,
                timestamp: Long,
                reportDesc: String){
-        _observableUserReportSubmission.value = PlayResult.Loading(true)
         viewModelScope.launchCatchError(block = {
            val isSuccess = withContext(dispatchers.io) {
                 repo.submitReport(
@@ -153,8 +152,10 @@ class PlayBottomSheetViewModel @Inject constructor(
                     reportDesc = reportDesc
                 )
            }
-            if(isSuccess){
+            if(!isSuccess){
                 _observableUserReportSubmission.value = PlayResult.Success(Event(Unit))
+            }else{
+                throw Throwable(message = "Terjadi kesalahan")
             }
         }){
             _observableUserReportSubmission.value = PlayResult.Failure(it)
