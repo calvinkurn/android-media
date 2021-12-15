@@ -140,20 +140,13 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
         viewBinding?.txtDescription?.text = description
     }
 
-    private fun showCamera(isSavingBook: Boolean = false) {
+    private fun showCamera() {
         viewBinding?.imgPreview?.visibility = View.GONE
         viewBinding?.layoutButtonPreview?.visibility = View.GONE
         viewBinding?.cameraView?.visibility = View.VISIBLE
         viewBinding?.btnShutter?.visibility = View.VISIBLE
         viewBinding?.btnFlipCamera?.visibility = View.VISIBLE
-
-        if (isSavingBook) {
-            viewBinding?.txtDescription?.visibility = View.GONE
-            viewBinding?.txtDescriptionSavingBook?.visibility = View.VISIBLE
-        } else {
-            viewBinding?.txtDescription?.visibility = View.VISIBLE
-            viewBinding?.txtDescriptionSavingBook?.visibility = View.GONE
-        }
+        viewBinding?.txtDescription?.visibility = View.VISIBLE
 
         viewBinding?.cameraView?.apply {
             clearCameraListeners()
