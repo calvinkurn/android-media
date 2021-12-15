@@ -60,7 +60,7 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         }
 
         tvInfo.text = MethodChecker.fromHtml(data.bottomSheetDescription)
-        if (data.description.isEmpty()) tvInfo.visibility = View.GONE
+        if (data.bottomSheetDescription.isEmpty()) tvInfo.visibility = View.GONE
 
         imgLogo.contentDescription = itemView.context.getString(R.string.content_description_img_logo_rates_promo_prefix, data.title)
         ImageHandler.LoadImage(imgLogo, data.imageUrl)
