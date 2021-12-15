@@ -133,7 +133,6 @@
                                 app:layout_constraintRight_toRightOf="parent"
                                 app:layout_constraintTop_toTopOf="@id/saldo_affiliate"
                                 app:unifyButtonSize="small"
-                                android:visibility="gone"
                                 app:unifyButtonType="main"
                                 app:unifyButtonVariant="ghost" />
                         </androidx.constraintlayout.widget.ConstraintLayout>

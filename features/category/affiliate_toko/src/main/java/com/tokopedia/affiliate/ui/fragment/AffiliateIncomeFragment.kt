@@ -36,6 +36,8 @@ import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.unifycomponents.UnifyButton
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -198,6 +200,9 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     private fun afterViewCreated() {
         affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
         view?.findViewById<Typography>(R.id.withdrawal_user_name)?.text = userName
+        view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.setOnClickListener {
+            RouteManager.route(context, "tokopedia://webview?titlebar=false&url=https://1002-staging-feature.tokopedia.com/portal/withdrawal?module=affiliate")
+        }
         ImageHandler.loadImageCircle2(context, view?.findViewById<ImageUnify>(R.id.withdrawal_user_image), profilePicture)
         view?.findViewById<Typography>(R.id.date_range_text)?.text = affiliateIncomeViewModel.getSelectedDate()
         view?.findViewById<ConstraintLayout>(R.id.date_range)?.setOnClickListener {
