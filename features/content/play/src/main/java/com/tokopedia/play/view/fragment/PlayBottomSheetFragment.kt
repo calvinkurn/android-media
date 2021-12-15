@@ -274,11 +274,7 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.hideUserReportSubmissionSheet()
     }
 
-    override fun onSubmitUserReport(
-        view: PlayUserReportSubmissionViewComponent,
-        reasonId: Int,
-        description: String
-    ) {
+    private fun onSubmitUserReport(reasonId: Int, description: String) {
         val channelData = playViewModel.latestCompleteChannelData
 
         viewModel.submitUserReport(
@@ -313,8 +309,12 @@ class PlayBottomSheetFragment @Inject constructor(
         openApplink(applink = getString(R.string.play_user_report_footer_weblink))
     }
 
-    override fun onShowVerificationDialog(view: PlayUserReportSubmissionViewComponent) {
-        showDialog()
+    override fun onShowVerificationDialog(view: PlayUserReportSubmissionViewComponent, reasonId: Int, description: String) {
+        showDialog(title = getString(R.string.play_user_report_verification_dialog_title), description = getString(R.string.play_user_report_verification_dialog_desc),
+        primaryCTAText = getString(R.string.play_user_report_verification_dialog_btn_ok), secondaryCTAText = getString(R.string.play_pip_cancel),
+        primaryAction = {
+            onSubmitUserReport( reasonId, description)
+        })
     }
 
     /**
@@ -421,20 +421,24 @@ class PlayBottomSheetFragment @Inject constructor(
         }
     }
 
-    private fun showDialog(){
-        DialogUnify(context = requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            .apply {
-                setTitle(getString(R.string.play_user_report_verification_dialog_title))
-                setDescription(getString(R.string.play_user_report_verification_dialog_desc))
-                setPrimaryCTAText(getString(R.string.play_user_report_verification_dialog_btn_ok))
+    private fun showDialog(title: String, description: String, primaryCTAText: String, secondaryCTAText: String, primaryAction: () -> Unit, secondaryAction: () -> Unit = {}){
+        activity?.let {
+            val dialog = DialogUnify(context = requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.apply {
+                setTitle(title)
+                setDescription(description)
+                setPrimaryCTAText(primaryCTAText)
                 setPrimaryCTAClickListener {
+                    primaryAction()
                     dismiss()
                 }
-                setSecondaryCTAText(getString(R.string.play_pip_cancel))
+                setSecondaryCTAText(secondaryCTAText)
                 setSecondaryCTAClickListener {
+                    secondaryAction()
                     dismiss()
                 }
             }.show()
+        }
     }
 
     private fun pushParentPlayBySheetHeight(productSheetHeight: Int) {
@@ -559,8 +563,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun observeUserReportSubmission(){
         viewModel.observableUserReportSubmission.observe(viewLifecycleOwner, DistinctObserver {
             when (it) {
-                is PlayResult.Loading -> userReportSubmissionSheetView.setBtnLoader(it.showPlaceholder)
-                is PlayResult.Success -> playViewModel.hideInsets(true)
+                is PlayResult.Success -> playFragment.onBottomInsetsViewHidden()
                 is PlayResult.Failure -> doShowToaster(
                     bottomSheetType = BottomInsetsType.UserReportSubmissionSheet,
                     toasterType = Toaster.TYPE_ERROR,

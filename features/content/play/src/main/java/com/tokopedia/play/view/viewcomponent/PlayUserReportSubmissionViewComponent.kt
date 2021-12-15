@@ -1,5 +1,7 @@
 package com.tokopedia.play.view.viewcomponent
 
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -29,6 +31,22 @@ class PlayUserReportSubmissionViewComponent(
     private val etSubmission: TextAreaUnify2 = findViewById(R.id.et_detail_report)
     private val btnSubmit: UnifyButton = findViewById(R.id.btn_action)
     private val tvFooter: TextView = findViewById(R.id.tv_user_report_footer)
+
+    private val errorFieldPrefix: String = "Isi"
+
+    private var minChar : Int = 0
+
+    private val textWatcher = object : TextWatcher {
+        override fun afterTextChanged(s: Editable) {
+            etSubmission.isInputError = s.isEmpty() || s.length < minChar
+            btnSubmit.isEnabled = s.isNotEmpty() && s.length >= minChar
+            etSubmission.setMessage(getFieldMessage(etSubmission.isInputError))
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+    }
 
     init {
         btnBack.setImage(IconUnify.ARROW_BACK)
@@ -65,27 +83,32 @@ class PlayUserReportSubmissionViewComponent(
     }
 
     fun setView(item: PlayUserReportReasoningUiModel.Reasoning){
+        minChar = item.submissionData.min
+
+        etSubmission.editText.addTextChangedListener(textWatcher)
+
         tvTitle.text = item.title
         tvDesc.text = item.detail
         etSubmission.setCounter(item.submissionData.max)
         etSubmission.setLabel(item.submissionData.label)
-        val charMin = getString(R.string.play_user_report_text_area_min, item.submissionData.min)
-        etSubmission.setMessage(charMin)
 
         btnSubmit.setOnClickListener {
             val desc = etSubmission.editText.text.toString()
-            listener.onSubmitUserReport(this@PlayUserReportSubmissionViewComponent,
-            reasonId = item.reasoningId, description = desc)
+            listener.onShowVerificationDialog(this@PlayUserReportSubmissionViewComponent, reasonId = item.reasoningId, description = desc)
         }
     }
 
-    fun setBtnLoader(isLoading: Boolean){
-        btnSubmit.isLoading = isLoading
+    private fun getFieldMessage(isError: Boolean) : String{
+        return if(isError){
+            getString(R.string.play_user_report_text_area_min, errorFieldPrefix, minChar)
+        }else{
+            getString(R.string.play_user_report_text_area_min, "", minChar)
+        }
     }
 
     interface Listener {
         fun onCloseButtonClicked(view: PlayUserReportSubmissionViewComponent)
-        fun onSubmitUserReport(view: PlayUserReportSubmissionViewComponent, reasonId: Int, description: String)
         fun onFooterClicked(view: PlayUserReportSubmissionViewComponent)
+        fun onShowVerificationDialog(view: PlayUserReportSubmissionViewComponent, reasonId: Int, description: String)
     }
 }

@@ -37,7 +37,6 @@ class PlayUserReportSheetViewComponent(
     private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
     private val rvCategory: RecyclerView = findViewById(R.id.rv_category)
     private val tvFooter: TextView = findViewById(R.id.tv_user_report_footer)
-
     private val categoryAdapter = UserReportReasoningAdapter(object : UserReportReasoningViewHolder.Listener {
         override fun onItemCategoryClicked(item: PlayUserReportReasoningUiModel.Reasoning) {
             listener.onItemReportClick(this@PlayUserReportSheetViewComponent, item)
