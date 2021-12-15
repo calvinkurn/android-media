@@ -5,13 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.databinding.FragmentInactivePhoneOnboardingBinding
 import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
 import com.tokopedia.updateinactivephone.features.InactivePhoneTracker
 import com.tokopedia.updateinactivephone.features.InactivePhoneWithPinTracker
-import com.tokopedia.updateinactivephone.features.onboarding.regular.InactivePhoneCaptureSelfieFragment
-import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 abstract class BaseInactivePhoneOnboardingFragment : BaseDaggerFragment() {
@@ -54,7 +53,7 @@ abstract class BaseInactivePhoneOnboardingFragment : BaseDaggerFragment() {
 
     fun updateImageHeader(url: String) {
         viewBinding?.imgHeader?.apply {
-            ImageUtils.clearImage(this)
+            clearImage()
             setImageUrl(url)
         }
     }

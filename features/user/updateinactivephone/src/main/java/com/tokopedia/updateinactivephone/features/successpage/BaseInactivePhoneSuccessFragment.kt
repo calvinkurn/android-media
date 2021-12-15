@@ -8,10 +8,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.databinding.FragmentInactivePhoneSucccessPageBinding
 import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
-import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 abstract class BaseInactivePhoneSuccessFragment : BaseDaggerFragment() {
@@ -56,7 +56,7 @@ abstract class BaseInactivePhoneSuccessFragment : BaseDaggerFragment() {
 
     open fun setImageHeader(url: String) {
         viewBinding?.imgHeader?.apply {
-            ImageUtils.clearImage(this)
+            clearImage()
             setImageUrl(url)
         }
     }

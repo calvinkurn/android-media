@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.BulletSpan
-import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -21,10 +20,8 @@ import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.REQUEST_CA
 import com.tokopedia.updateinactivephone.common.cameraview.CameraViewMode
 import com.tokopedia.updateinactivephone.features.imagepicker.InactivePhoneImagePickerActivity
 import com.tokopedia.updateinactivephone.features.onboarding.BaseInactivePhoneOnboardingFragment
-import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.request
-import kotlin.math.roundToInt
 
 class InactivePhoneCaptureIdCardFragment : BaseInactivePhoneOnboardingFragment() {
 
