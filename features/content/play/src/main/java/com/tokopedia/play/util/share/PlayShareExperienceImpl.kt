@@ -78,9 +78,8 @@ class PlayShareExperienceImpl @Inject constructor(
 
                 ogTitle = generateOgTitle()
                 ogDescription = generateOgDescription()
-                if(shareModel.ogImgUrl?.isEmpty() == false) {
-                    ogImageUrl = shareModel.ogImgUrl
-                }
+                ogImageUrl = shareModel.ogImgUrl
+                Log.d("<LOG>", "shareModel.ogImgUrl : ${shareModel.ogImgUrl}")
             }
 
             val linkerShareData = LinkerShareData()
