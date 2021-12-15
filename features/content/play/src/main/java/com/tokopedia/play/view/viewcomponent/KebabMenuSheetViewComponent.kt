@@ -3,15 +3,19 @@ package com.tokopedia.play.view.viewcomponent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.play.R
+import com.tokopedia.play.view.adapter.PlayMoreActionAdapter
+import com.tokopedia.play.view.type.PlayMoreActionType
+import com.tokopedia.play.view.uimodel.PlayMoreActionUiModel
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
@@ -26,7 +30,16 @@ class KebabMenuSheetViewComponent(
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
     private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
     private val clContent: ConstraintLayout = findViewById(R.id.cl_user_kebab_menu_sheet_content)
-    private val tvReportVideo: TextView = findViewById(R.id.tv_report)
+    private val rvActionList: RecyclerView = findViewById(R.id.rv_action_list)
+    private val moreActionAdapter = PlayMoreActionAdapter()
+
+    private val reportAction = PlayMoreActionUiModel(
+        type = PlayMoreActionType.Report,
+        iconRes = 0,
+        isIconAvailable = false,
+        subtitleRes = R.string.play_kebab_report_title,
+        onClick = { listener.onReportClick(this@KebabMenuSheetViewComponent) }
+    )
 
     init {
         findViewById<ImageView>(com.tokopedia.play_common.R.id.iv_sheet_close)
@@ -34,11 +47,12 @@ class KebabMenuSheetViewComponent(
                 listener.onCloseButtonClicked(this@KebabMenuSheetViewComponent)
             }
 
-        tvReportVideo.setOnClickListener {
-            listener.onReportClick(this@KebabMenuSheetViewComponent)
-        }
-
         findViewById<ImageView>(com.tokopedia.play_common.R.id.tv_sheet_title).hide()
+
+        rvActionList.apply {
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            adapter = moreActionAdapter
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
 
@@ -68,6 +82,18 @@ class KebabMenuSheetViewComponent(
         }
 
         show()
+
+        /** Need to improve if there's watch mode - need to put it under observer*/
+        setActionList()
+    }
+
+    private fun setActionList(){
+        val actionList = mutableListOf<PlayMoreActionUiModel>().apply {
+            add(reportAction)
+        }
+        if (actionList.isNotEmpty()) {
+            moreActionAdapter.setItemsAndAnimateChanges(actionList)
+        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
