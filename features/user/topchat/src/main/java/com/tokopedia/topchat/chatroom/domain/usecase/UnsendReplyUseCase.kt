@@ -51,8 +51,8 @@ open class UnsendReplyUseCase @Inject constructor(
     ) {
         companion object {
             const val MSG_ID = "msgId"
-            const val REPLY_IDS = "ReplyIDs"
-            const val REPLY_TIMES = "ReplyTimeNanos"
+            const val REPLY_IDS = "replyIDs"
+            const val REPLY_TIMES = "replyTimeNanos"
         }
     }
 
