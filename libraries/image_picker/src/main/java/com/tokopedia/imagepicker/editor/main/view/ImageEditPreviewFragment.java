@@ -1,5 +1,9 @@
 package com.tokopedia.imagepicker.editor.main.view;
 
+import static com.tokopedia.imagepicker.editor.main.Constant.BRIGHTNESS_PRECISION;
+import static com.tokopedia.imagepicker.editor.main.Constant.CONTRAST_PRECISION;
+import static com.tokopedia.imagepicker.editor.main.Constant.INITIAL_CONTRAST_VALUE;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -13,20 +17,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageRatioType;
-import com.tokopedia.imagepicker.editor.analytics.ImageEditorTracking;
-import com.tokopedia.imagepicker.editor.analytics.ImageEditorTrackingConstant;
-import com.tokopedia.imagepicker.editor.converter.BitmapConverter;
 import com.tokopedia.imagepicker.editor.di.DaggerImageEditorComponent;
 import com.tokopedia.imagepicker.editor.di.module.ImageEditorModule;
 import com.tokopedia.imagepicker.editor.presenter.ImageEditPreviewPresenter;
@@ -40,19 +41,10 @@ import com.yalantis.ucrop.view.TransformImageView;
 import com.yalantis.ucrop.view.UCropView;
 
 import java.io.File;
-import java.lang.reflect.Array;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import kotlin.Pair;
-
-import static com.tokopedia.imagepicker.editor.main.Constant.BRIGHTNESS_PRECISION;
-import static com.tokopedia.imagepicker.editor.main.Constant.CONTRAST_PRECISION;
-import static com.tokopedia.imagepicker.editor.main.Constant.INITIAL_CONTRAST_VALUE;
 
 import javax.inject.Inject;
+
+import kotlin.Pair;
 
 /**
  * Created by hendry on 25/04/18.
@@ -324,6 +316,9 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     public void cancelRemoveBackground() {
         removeBackgroundColor = 0;
         hasRequestRemoveBackground = false;
+
+        if (lastStateImage == null) return;
+        gestureCropImageView.setImageBitmap(lastStateImage);
     }
 
     @Override

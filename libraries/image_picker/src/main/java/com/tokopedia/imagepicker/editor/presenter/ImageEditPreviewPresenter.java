@@ -5,8 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
@@ -17,10 +15,7 @@ import com.tokopedia.imagepicker.editor.domain.SetRemoveBackgroundUseCase;
 import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilder;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
