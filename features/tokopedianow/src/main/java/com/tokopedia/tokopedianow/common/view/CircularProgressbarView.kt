@@ -1,8 +1,10 @@
 package com.tokopedia.tokopedianow.common.view
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.graphics.Canvas
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.FloatRange
@@ -10,9 +12,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import android.graphics.BlurMaskFilter
+import android.graphics.Paint
+import android.graphics.RectF
 import com.tokopedia.kotlin.extensions.view.toBitmap
 
-class CircularProgressView : View {
+class CircularProgressbarView : View {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)

@@ -15,7 +15,7 @@
         android:id="@+id/quest_widget"
         android:layout_height="match_parent">
 
-        <com.tokopedia.tokopedianow.common.view.CircularProgressView
+        <com.tokopedia.tokopedianow.common.view.CircularProgressbarView
             android:id="@+id/circular_progress_bar"
             android:layout_width="60dp"
             android:layout_height="60dp"
