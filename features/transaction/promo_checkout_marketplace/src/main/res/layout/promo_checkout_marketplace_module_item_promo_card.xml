@@ -38,7 +38,7 @@
                 app:srcCompat="@drawable/promo_checkout_marketplace_module_ic_highlighted_identifier_enabled"
                 app:unify_image_corner_radius="0"
                 app:unify_image_type="rect"
-                tools:visibility="visible" />
+                tools:visibility="gone" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_promo_highlight_identifier"
@@ -97,7 +97,8 @@
                 android:textColor="@color/Unify_N700_96"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/container_promo_title"
-                app:typographyType="body_3" />
+                app:typographyType="body_3"
+                tools:visibility="visible" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_promo_code"
@@ -110,11 +111,13 @@
                 app:layout_constraintTop_toTopOf="@+id/text_promo_code_info"
                 app:typographyType="body_3"
                 app:typographyWeight="bold"
-                tools:text="HHBSFDUJKSBS" />
+                tools:text="HHBSFDUJKSBS"
+                tools:visibility="visible" />
 
             <LinearLayout
                 android:id="@+id/container_promo_info_list"
                 android:layout_width="0dp"
+                android:paddingBottom="6dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:orientation="vertical"
@@ -127,10 +130,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
+                android:paddingBottom="6dp"
                 app:flexWrap="wrap"
                 app:layout_constraintEnd_toStartOf="@+id/image_select_promo"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/container_promo_info_list">
+                app:layout_constraintTop_toBottomOf="@+id/container_promo_info_list"
+                tools:visibility="visible">
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/image_time_validity"
@@ -171,7 +176,8 @@
                 app:flexWrap="wrap"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/container_time_validity">
+                app:layout_constraintTop_toBottomOf="@+id/container_time_validity"
+                tools:visibility="visible">
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/image_user_validity"
@@ -205,7 +211,8 @@
                 app:flexWrap="wrap"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/container_user_validity">
+                app:layout_constraintTop_toBottomOf="@+id/container_user_validity"
+                tools:visibility="gone">
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/image_clash_info"

@@ -121,6 +121,7 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
                                 element: PromoListItemUiModel) {
         renderHighlightIdentifier(viewBinding, element)
         renderQuantityIdentifier(viewBinding, element)
+        renderTitle(viewBinding, element)
         renderBenefit(viewBinding, element)
         renderPromoCodeIdentifier(viewBinding, element)
         renderPromoInfo(viewBinding, element)
@@ -159,7 +160,8 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
                 promoQuantityIdentifierBottom.show()
 
                 val promoQuantityIdentifierLayoutParam = promoQuantityIdentifierTop.layoutParams as ViewGroup.MarginLayoutParams
-                if (element.uiState.isHighlighted) {
+                val topBanner = element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_TOP_BANNER }
+                if (element.uiState.isHighlighted && topBanner != null) {
                     promoQuantityIdentifierLayoutParam.topMargin = itemView.context.resources.getDimension(R.dimen.dp_32).toInt()
                 } else {
                     promoQuantityIdentifierLayoutParam.topMargin = itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_16).toInt()
@@ -172,15 +174,29 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
         }
     }
 
-    private fun renderBenefit(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
-                              element: PromoListItemUiModel) {
+    private fun renderTitle(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
+                            element: PromoListItemUiModel) {
         with(viewBinding) {
             textPromoItemTitle.text = element.uiData.title
             val textPromoItemTitleLayoutParam = textPromoItemTitle.layoutParams as ViewGroup.MarginLayoutParams
-            if (element.uiState.isHighlighted) {
+            val topBanner = element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_TOP_BANNER }
+            if (element.uiState.isHighlighted && topBanner != null) {
                 textPromoItemTitleLayoutParam.topMargin = 0
             } else {
                 textPromoItemTitleLayoutParam.topMargin = itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_8).toInt()
+            }
+        }
+    }
+
+    private fun renderBenefit(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
+                              element: PromoListItemUiModel) {
+        with(viewBinding) {
+            val textPromoItemTitleInfoLayoutParam = textPromoItemTitleInfo.layoutParams as ViewGroup.MarginLayoutParams
+            val topBanner = element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_TOP_BANNER }
+            if (element.uiState.isHighlighted && topBanner != null) {
+                textPromoItemTitleInfoLayoutParam.topMargin = 0
+            } else {
+                textPromoItemTitleInfoLayoutParam.topMargin = itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_8).toInt()
             }
 
             if (element.uiData.currencyDetailStr.isNotBlank()) {
@@ -226,7 +242,11 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
                     }
                     containerPromoInfoList.addView(promoInfoView)
                 }
-                containerPromoInfoList.show()
+                if (promoInfoList.isNotEmpty()) {
+                    containerPromoInfoList.show()
+                } else {
+                    containerPromoInfoList.gone()
+                }
             } else {
                 containerPromoInfoList.gone()
             }
