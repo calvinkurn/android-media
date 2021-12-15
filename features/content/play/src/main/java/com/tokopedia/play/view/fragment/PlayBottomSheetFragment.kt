@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.R
@@ -278,14 +280,23 @@ class PlayBottomSheetFragment @Inject constructor(
         description: String
     ) {
         val channelData = playViewModel.latestCompleteChannelData
+
         viewModel.submitUserReport(
             channelId = channelData.id.toLongOrZero(),
             ownerChannelUserId = channelData.partnerInfo.id,
-            mediaUrl = channelData.channelDetail.shareInfo.content,
+            mediaUrl = convertStringToUrl(channelData.channelDetail.shareInfo.content),
             timestamp = getTimestampVideo(channelData.channelDetail.channelInfo.startTime),
             reportDesc = description,
             reasonId = reasonId
         )
+    }
+
+    private fun convertStringToUrl(url: String) : String{
+        val webUrl = Patterns.WEB_URL.matcher(url)
+        while (webUrl.find()){
+            return webUrl.group()
+        }
+        return ""
     }
 
     private fun getTimestampVideo(startTime: String): Long{
@@ -300,6 +311,10 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onFooterClicked(view: PlayUserReportSubmissionViewComponent) {
         openApplink(applink = getString(R.string.play_user_report_footer_weblink))
+    }
+
+    override fun onShowVerificationDialog(view: PlayUserReportSubmissionViewComponent) {
+        showDialog()
     }
 
     /**
@@ -404,6 +419,22 @@ class PlayBottomSheetFragment @Inject constructor(
                 // nothing
             }
         }
+    }
+
+    private fun showDialog(){
+        DialogUnify(context = requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            .apply {
+                setTitle(getString(R.string.play_user_report_verification_dialog_title))
+                setDescription(getString(R.string.play_user_report_verification_dialog_desc))
+                setPrimaryCTAText(getString(R.string.play_user_report_verification_dialog_btn_ok))
+                setPrimaryCTAClickListener {
+                    dismiss()
+                }
+                setSecondaryCTAText(getString(R.string.play_pip_cancel))
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+            }.show()
     }
 
     private fun pushParentPlayBySheetHeight(productSheetHeight: Int) {
