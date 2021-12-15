@@ -1841,7 +1841,9 @@ class PlayViewModel @Inject constructor(
 
                 _uiEvent.emit(OpenSharingOptionEvent(
                     title = _channelDetail.value.channelInfo.title,
-                    coverUrl = _channelDetail.value.channelInfo.coverUrl
+                    coverUrl = _channelDetail.value.channelInfo.coverUrl,
+                    userId = userId,
+                    channelId = channelId
                 ))
             }
             else {

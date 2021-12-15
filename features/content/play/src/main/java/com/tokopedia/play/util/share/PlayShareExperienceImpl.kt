@@ -37,7 +37,7 @@ class PlayShareExperienceImpl @Inject constructor(
     }
 
     // TODO("This hardcoded text should be moved")
-    override fun generateShareString(): String {
+    fun generateShareString(): String {
         val description = "Coba nonton video ini ya di Tokopedia Play!"
         return "${data.title}.\n$description\n${data.redirectUrl}"
     }
@@ -55,6 +55,8 @@ class PlayShareExperienceImpl @Inject constructor(
         return "Aku punya obat anti-bosen buatmu. Ayo nonton ${data.partnerName} di Tokopedia Play!"
     }
 
+    private fun generateDeepLinkPath(): String = "play/${data.id}"
+
     override fun createUrl(listener: PlayShareExperience.Listener) {
         // TODO("should check branch url active/not first?")
         try {
@@ -64,24 +66,25 @@ class PlayShareExperienceImpl @Inject constructor(
                 description = generateShareString()
                 textContent = getShareTextContent()
                 imgUri = data.coverUrl
+                deepLink = generateDeepLinkPath()
                 ogUrl = data.redirectUrl
                 type = LinkerData.PLAY_VIEWER
                 uri = data.redirectUrl
                 isThrowOnError = true
+
                 feature = shareModel.feature
                 channel = shareModel.channel
                 campaign = shareModel.campaign
+
                 ogTitle = generateOgTitle()
                 ogDescription = generateOgDescription()
                 if(shareModel.ogImgUrl?.isEmpty() == false) {
                     ogImageUrl = shareModel.ogImgUrl
                 }
-                Log.d("<LOG>", "ogImageUrl : ${shareModel.ogImgUrl}")
             }
 
             val linkerShareData = LinkerShareData()
             linkerShareData.linkerData = linkerData
-
             LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0, linkerShareData, object:
                 ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {

@@ -68,12 +68,12 @@ class ShareExperienceViewComponent(
         if (isShow) ivShareLink.show() else ivShareLink.hide()
     }
 
-    fun showSharingOptions(title: String, coverUrl: String) {
-        universalShareBottomSheet.setMetaData(
-            tnTitle = title,
-            tnImage = coverUrl,
-        )
-        universalShareBottomSheet.show(fragmentManager, fragment, screenshotDetector)
+    fun showSharingOptions(title: String, coverUrl: String, userId: String, channelId: String) {
+        universalShareBottomSheet.apply {
+            setMetaData(tnTitle = title, tnImage = coverUrl)
+            setUtmCampaignData("Play", userId, channelId, "share")
+            show(this@ShareExperienceViewComponent.fragmentManager, fragment, screenshotDetector)
+        }
     }
 
     fun dismiss() {

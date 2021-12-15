@@ -15,8 +15,6 @@ interface PlayShareExperience {
 
     fun setShareModel(shareModel: ShareModel): PlayShareExperience
 
-    fun generateShareString(): String
-
     fun createUrl(listener: Listener)
 
     fun isScreenshotBottomSheet(): Boolean

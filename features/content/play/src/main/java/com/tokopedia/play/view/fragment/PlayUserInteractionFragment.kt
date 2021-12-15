@@ -979,7 +979,7 @@ class PlayUserInteractionFragment @Inject constructor(
                     RemindToLikeEvent -> likeView.playReminderAnimation()
                     is PreloadLikeBubbleIconEvent -> likeBubbleView.preloadIcons(event.urls)
                     is OpenSharingOptionEvent -> {
-                        shareExperienceView?.showSharingOptions(event.title, event.coverUrl)
+                        shareExperienceView?.showSharingOptions(event.title, event.coverUrl, event.userId, event.channelId)
                     }
                     is OpenSelectedSharingOptionEvent -> {
                         SharingUtil.executeShareIntent(event.shareModel, event.linkerShareResult, activity, view, event.shareString)
