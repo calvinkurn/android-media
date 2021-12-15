@@ -22,7 +22,6 @@ import com.tokopedia.updateinactivephone.common.view.ThumbnailFileView
 import com.tokopedia.updateinactivephone.domain.usecase.SubmitDataModel
 import com.tokopedia.updateinactivephone.features.imagepicker.InactivePhoneImagePickerActivity
 import com.tokopedia.updateinactivephone.features.onboarding.regular.InactivePhoneRegularActivity
-import com.tokopedia.updateinactivephone.features.onboarding.withpin.InactivePhoneWithPinActivity
 import com.tokopedia.updateinactivephone.features.submitnewphone.BaseInactivePhoneSubmitDataFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
