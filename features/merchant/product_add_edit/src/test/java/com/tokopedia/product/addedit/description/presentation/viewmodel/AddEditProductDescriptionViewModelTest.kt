@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.YOUTU_BE_URL
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.domain.model.ValidateProductDescriptionResponse
 import com.tokopedia.product.addedit.description.domain.usecase.ValidateProductDescriptionUseCase
@@ -155,6 +156,21 @@ class AddEditProductDescriptionViewModelTest {
 
         coVerify {
             validateProductDescriptionUseCase.executeOnBackground()
+        }
+    }
+
+    @Test
+    fun `When user insert product description and usecase is failed expect return throwable`() = coroutineTestRule.runBlockingTest {
+        mockkObject(AddEditProductErrorHandler)
+        every { AddEditProductErrorHandler.logExceptionToCrashlytics(any()) } returns mockk(relaxed = true)
+        coEvery {
+            validateProductDescriptionUseCase.executeOnBackground()
+        } throws Throwable()
+
+        viewModel.validateDescriptionChanged("test")
+
+        coVerify(timeout = 2000) {
+            AddEditProductErrorHandler.logExceptionToCrashlytics(any())
         }
     }
 
