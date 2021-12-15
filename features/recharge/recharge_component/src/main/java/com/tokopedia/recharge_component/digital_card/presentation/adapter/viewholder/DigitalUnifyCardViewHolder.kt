@@ -29,37 +29,16 @@ class DigitalUnifyCardViewHolder(
 ) : AbstractViewHolder<DigitalUnifyModel>(binding.root) {
 
     override fun bind(element: DigitalUnifyModel) {
-        // render media
         renderMedia(element)
-
-        // render campaign
         renderCampaign(element)
-
-        // render product info
         renderProductInfo(element)
-
-        // render title
         renderTitle(element)
-
-        // render rating
         renderRating(element)
-
-        // render special info
         renderSpecialInfo(element)
-
-        // render price and discount
         renderPriceAndDiscount(element)
-
-        // render cashback label
         renderCashbackLabel(element.cashback)
-
-        // render subtitle
         renderSubtitle(element)
-
-        // render sold percentage
         renderSoldPercentage(element)
-
-        // render action button
         renderActionButton(element)
 
         binding.root.addOnImpressionListener(element) {
@@ -68,24 +47,14 @@ class DigitalUnifyCardViewHolder(
     }
 
     private fun renderMedia(element: DigitalUnifyModel) {
-        // render media image
         renderMediaImage(element.mediaUrl, element.mediaType)
-
-        // render label on image
         renderLabelOnImage(element.mediaTitle)
-
-        // render icon image
         renderIcon(element.iconUrl)
-
-        // render icon background
         renderIconBackground(element.iconBackgroundColor)
     }
 
     private fun renderCampaign(element: DigitalUnifyModel) {
-        // render campaign background
         renderCampaignBackground(element.campaign.backgroundUrl)
-
-        // render campaign text
         renderCampaignText(element.campaign.text, element.campaign.textColor)
     }
 
@@ -184,17 +153,12 @@ class DigitalUnifyCardViewHolder(
     }
 
     private fun renderPriceAndDiscount(element: DigitalUnifyModel) {
-        // render price
         renderPrice(
             element.priceData.price,
             element.priceData.pricePrefix,
             element.priceData.priceSuffix
         )
-
-        // render discount label
         renderDiscountLabel(element.priceData.discountLabel, element.priceData.discountLabelType)
-
-        // render slashed price
         renderSlashedPrice(element.priceData.slashedPrice)
     }
 
@@ -210,10 +174,7 @@ class DigitalUnifyCardViewHolder(
     }
 
     private fun renderSoldPercentage(element: DigitalUnifyModel) {
-        // render progress bar
         renderSoldProgressBar(element.soldPercentage)
-
-        // render label
         renderSoldLabel(element.soldPercentage)
     }
 
