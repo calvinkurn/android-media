@@ -219,7 +219,7 @@ class TokoNowHomeViewModel @Inject constructor(
     fun onScrollTokoMartHome(
         lastVisibleItemIndex: Int,
         localCacheModel: LocalCacheModel,
-        hasSharingEducationBeenRemoved: Boolean
+        mapAllWidgetRemoved: Map<String, Boolean>
     ) {
         if(shouldLoadMore(lastVisibleItemIndex)) {
             launchCatchError(block = {
@@ -234,7 +234,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
                 homeLayoutItemList.addMoreHomeLayout(
                     homeLayoutResponse,
-                    hasSharingEducationBeenRemoved,
+                    mapAllWidgetRemoved,
                     miniCartSimplifiedData
                 )
 
@@ -401,7 +401,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
             _homeLayoutList.postValue(Success(data))
         }) {
-            homeLayoutItemList.removeItem(item.id)
+            removeWidget(item.id)
         }
     }
 
@@ -500,7 +500,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private suspend fun getQuestListData(item: HomeQuestSequenceWidgetUiModel) {
         val questListResponse = getQuestWidgetListUseCase.execute().questWidgetList
         val questData = QuestMapper.mapQuestData(questListResponse.questWidgetList)
-        if (questListResponse.questWidgetList.isNullOrEmpty() && questListResponse.resultStatus.code == SUCCESS_CODE) {
+        if (questListResponse.questWidgetList.isEmpty() && questListResponse.resultStatus.code == SUCCESS_CODE) {
             homeLayoutItemList.removeItem(item.id)
         } else if (questListResponse.resultStatus.code != SUCCESS_CODE){
             homeLayoutItemList.mapQuestData(

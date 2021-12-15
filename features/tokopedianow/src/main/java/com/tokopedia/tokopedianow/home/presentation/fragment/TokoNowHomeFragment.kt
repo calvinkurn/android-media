@@ -1117,7 +1117,11 @@ class TokoNowHomeFragment: Fragment(),
         localCacheModel?.let {
             val layoutManager = rvHome?.layoutManager as? LinearLayoutManager
             val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
-            viewModelTokoNow.onScrollTokoMartHome(lastVisibleItemIndex, it, false)
+            val mapAllWidgetRemoved = mutableMapOf(
+                Pair(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
+                Pair(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
+            )
+            viewModelTokoNow.onScrollTokoMartHome(lastVisibleItemIndex, it, mapAllWidgetRemoved)
         }
     }
 

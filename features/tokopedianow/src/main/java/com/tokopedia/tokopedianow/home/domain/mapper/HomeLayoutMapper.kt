@@ -111,12 +111,12 @@ object HomeLayoutMapper {
 
     fun MutableList<HomeLayoutItemUiModel>.addMoreHomeLayout(
         response: List<HomeLayoutResponse>,
-        hasSharingEducationBeenRemoved: Boolean,
+        mapAllWidgetRemoved: Map<String, Boolean>,
         miniCartData: MiniCartSimplifiedData?
     ) {
-        response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach {
-            if (!(hasSharingEducationBeenRemoved && it.layout == SHARING_EDUCATION)) {
-                mapToHomeUiModel(it, HomeLayoutItemState.LOADED, miniCartData)?.let { item ->
+        response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
+            if (mapAllWidgetRemoved.filter { layoutResponse.layout == it.key && it.value }.isEmpty()) {
+                mapToHomeUiModel(layoutResponse, HomeLayoutItemState.LOADED, miniCartData)?.let { item ->
                     add(item)
                 }
             }
