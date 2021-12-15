@@ -36,16 +36,16 @@ object BannerCarouselTracking : BaseTrackerConst() {
                             else DEFAULT_VALUE_HEADER_NAME
                     ),
                     promotions = listOf(channelGrid.convertToHomePromotionModel(channelModel, position)))
-                .appendAttribution(channelModel.trackingAttributionModel.galaxyAttribution)
+                .appendAttribution(channelGrid.attribution)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCampaignCode(
                         if (channelGrid.campaignCode.isNotEmpty()) channelGrid.campaignCode
                         else channelModel.trackingAttributionModel.campaignCode)
                 .appendChannelId(channelModel.id)
                 .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendAffinity(channelModel.trackingAttributionModel.persona)
-                .appendCategoryId(channelModel.trackingAttributionModel.categoryPersona)
-                .appendShopId(channelModel.trackingAttributionModel.brandId)
+                .appendAffinity(channelGrid.persona)
+                .appendCategoryId(channelGrid.categoryPersona)
+                .appendShopId(channelGrid.brandId)
                 .appendUserId(userId)
                 .build()
     }
@@ -93,12 +93,12 @@ object BannerCarouselTracking : BaseTrackerConst() {
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendChannelId(channelModel.id)
                 .appendCurrentSite(CurrentSite.DEFAULT)
-        if (userId.isNotEmpty()) trackerBuilder.appendUserId(userId)
+                .appendUserId(userId)
         getTracker().sendGeneralEvent(trackerBuilder.build())
     }
 
     fun ChannelGrid.convertToHomePromotionModel(channelModel: ChannelModel, position: Int) = Promotion(
-            id = channelModel.id + "_" + id + "_" + channelModel.trackingAttributionModel.persoType + "_" + channelModel.trackingAttributionModel.categoryId,
+            id = channelModel.id + "_" + id + "_" + channelModel.trackingAttributionModel.persoType + "_" + categoryId,
             name = channelModel.trackingAttributionModel.promoName,
             creative = attribution,
             position = (position + 1).toString()

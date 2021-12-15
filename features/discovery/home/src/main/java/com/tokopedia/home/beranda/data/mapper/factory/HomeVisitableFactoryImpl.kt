@@ -347,7 +347,12 @@ class HomeVisitableFactoryImpl(
                                     campaignCode = it.campaignCode,
                                     id = it.id.toString(),
                                     imageUrl = it.imageUrl,
-                                    name = it.title
+                                    name = it.title,
+                                    attribution = it.galaxyAttribution,
+                                    persona = it.persona,
+                                    categoryPersona = it.categoryPersona,
+                                    brandId = it.brandId,
+                                    categoryId = it.categoryId
                             )
                         }?: listOf(),
                         groupId = "",
