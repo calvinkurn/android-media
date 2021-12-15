@@ -78,7 +78,7 @@ class PlayShareExperienceImpl @Inject constructor(
 
                 ogTitle = generateOgTitle()
                 ogDescription = generateOgDescription()
-                ogImageUrl = data.coverUrl
+                ogImageUrl = shareModel.ogImgUrl
 
                 Log.d("<LOG>", "data.coverUrl : ${data.coverUrl}")
                 Log.d("<LOG>", "shareModel.ogImgUrl : ${shareModel.ogImgUrl}")
