@@ -65,7 +65,7 @@ class FeedShopPresenter @Inject constructor(
     ) {
         cursor = ""
         if (getUserId() != "0") {
-            getDynamicFeedFirstUseCase.getWhitelistUseCase.setCacheStrategy(authorListEmpty)
+            getDynamicFeedFirstUseCase.getWhitelistUseCase.setCacheStrategy(false)
             getDynamicFeedFirstUseCase.execute(
                 GetFeedShopFirstUseCase.createRequestParams(getUserId(), shopId, isPullToRefresh),
                 object : Subscriber<DynamicFeedShopDomain>() {
