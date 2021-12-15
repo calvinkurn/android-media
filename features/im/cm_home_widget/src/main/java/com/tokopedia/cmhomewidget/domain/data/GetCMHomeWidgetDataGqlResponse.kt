@@ -57,22 +57,22 @@ data class CMHomeWidgetProductCardData(
     val id: Long,
     @SerializedName("name")
     @Expose
-    val name: String?,
+    val productName: String?,
     @SerializedName("image_url")
     @Expose
-    val imageUrl: String?,
+    val productImageUrl: String?,
     @SerializedName("current_price")
     @Expose
-    val currentPrice: String?,
+    val productCurrentPrice: String?,
     @SerializedName("actual_price")
     @Expose
-    val actualPrice: String?,
+    val productActualPrice: String?,
     @SerializedName("dropped_percent")
     @Expose
-    val droppedPercent: String?,
+    val productDroppedPercent: String?,
     @SerializedName("badge_image_url")
     @Expose
-    val badgeImageUrl: String?,
+    val productBadgeImageUrl: String?,
     @SerializedName("app_link")
     @Expose
     val appLink: String?,
@@ -95,10 +95,10 @@ data class CMHomeWidgetShop(
     val id: Long,
     @SerializedName("name")
     @Expose
-    val name: String?,
+    val shopName: String?,
     @SerializedName("badge_image_url")
     @Expose
-    val badgeImageUrl: String?
+    val shopBadgeImageUrl: String?
 )
 
 @SuppressLint("Invalid Data Type")
@@ -108,7 +108,7 @@ data class CMHomeWidgetActionButton(
     val id: Long,
     @SerializedName("text")
     @Expose
-    val text: String?,
+    val actionButtonText: String?,
     @SerializedName("app_link")
     @Expose
     val appLink: String?

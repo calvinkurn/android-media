@@ -17,18 +17,16 @@ class CMHomeWidgetViewHolder(
 ) :
     AbstractViewHolder<CMHomeWidgetDataModel>(view), CMHomeWidgetCloseClickListener {
 
-    override fun bind(dataModel: CMHomeWidgetDataModel?) {
-        dataModel?.let {
-            it.cmHomeWidgetData?.let { cmHomeWidgetData ->
-                itemView.cm_home_widget.visibility = View.VISIBLE
-                itemView.cm_home_widget.setOnCMHomeWidgetCloseClickListener(this)
-                itemView.cm_home_widget.loadCMHomeWidgetData(cmHomeWidgetData)
-            }
-            setChannelDivider(it.channel)
+    override fun bind(dataModel: CMHomeWidgetDataModel) {
+        dataModel.cmHomeWidgetData?.let { cmHomeWidgetData ->
+            itemView.cm_home_widget.visibility = View.VISIBLE
+            itemView.cm_home_widget.setOnCMHomeWidgetCloseClickListener(this)
+            itemView.cm_home_widget.loadCMHomeWidgetData(cmHomeWidgetData)
         }
+        setChannelDivider(dataModel.channel)
     }
 
-    override fun bind(element: CMHomeWidgetDataModel?, payloads: MutableList<Any>) {
+    override fun bind(element: CMHomeWidgetDataModel, payloads: MutableList<Any>) {
         bind(element)
     }
 

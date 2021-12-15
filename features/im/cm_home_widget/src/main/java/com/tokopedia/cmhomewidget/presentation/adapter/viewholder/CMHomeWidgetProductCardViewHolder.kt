@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.cmhomewidget.R
 import com.tokopedia.cmhomewidget.databinding.LayoutCmHomeWidgetProductCardBinding
+import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetActionButton
 import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetProductCardData
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetProductCardListener
 
@@ -13,47 +14,83 @@ class CMHomeWidgetProductCardViewHolder(
     private val binding: LayoutCmHomeWidgetProductCardBinding,
     private val listener: CMHomeWidgetProductCardListener
 ) : AbstractViewHolder<CMHomeWidgetProductCardData>(binding.root) {
+
     override fun bind(dataItem: CMHomeWidgetProductCardData) {
-        with(binding)
-        {
-            dataItem.imageUrl?.let { productImageUrl ->
-                ivCmHomeWidgetProduct.setImageUrl(productImageUrl)
+        setProductImage(dataItem.productImageUrl)
+        setProductName(dataItem.productName)
+        setProductCurrentPrice(dataItem.productCurrentPrice)
+        handleProductDiscountPrice(dataItem.productDroppedPercent, dataItem.productActualPrice)
+        setShopBadgeImage(dataItem.cmHomeWidgetShop?.shopBadgeImageUrl)
+        setShopName(dataItem.cmHomeWidgetShop?.shopName)
+        setProductBadgeImage(dataItem.productBadgeImageUrl)
+        handleCTA(dataItem.cmHomeWidgetActionButtons)
+        setOnClickListeners(dataItem)
+        binding.root.post {
+            listener.setProductCardHeight(binding.root.measuredHeight)
+        }
+    }
+
+    private fun setProductImage(productImageUrl: String?) {
+        productImageUrl?.let {
+            binding.ivCmHomeWidgetProduct.setImageUrl(it)
+        }
+    }
+
+    private fun setProductName(productName: String?) {
+        binding.tvCmHomeWidgetProductName.text = productName
+    }
+
+    private fun setProductCurrentPrice(productCurrentPrice: String?) {
+        binding.tvCmHomeWidgetProductCurrentPrice.text = productCurrentPrice
+    }
+
+    private fun handleProductDiscountPrice(
+        productDroppedPercent: String?,
+        productActualPrice: String?
+    ) {
+        if (!productDroppedPercent.isNullOrBlank()) {
+            binding.cmHomeWidgetDiscountGroup.visibility = View.VISIBLE
+            binding.lbCmHomeWidgetProductDiscount.setLabel(productDroppedPercent)
+            binding.tvCmHomeWidgetProductActualPrice.apply {
+                paintFlags = this.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                text = productActualPrice
             }
-            tvCmHomeWidgetProductName.text = dataItem.name.toString()
-            tvCmHomeWidgetProductCurrentPrice.text = dataItem.currentPrice.toString()
-            if (!dataItem.droppedPercent.isNullOrBlank()) {
-                cmHomeWidgetDiscountGroup.visibility = View.VISIBLE
-                lbCmHomeWidgetProductDiscount.setLabel(dataItem.droppedPercent)
-                tvCmHomeWidgetProductActualPrice.apply {
-                    paintFlags = this.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                    text = dataItem.actualPrice.toString()
-                }
-            } else {
-                cmHomeWidgetDiscountGroup.visibility = View.GONE
-            }
-            dataItem.cmHomeWidgetShop?.badgeImageUrl?.let { badgeImageUrl ->
-                ivCmHomeWidgetProductShop.setImageUrl(badgeImageUrl)
-            }
-            tvCmHomeWidgetProductShopName.text = dataItem.cmHomeWidgetShop?.name
-            dataItem.badgeImageUrl?.let { badgeImageUrl ->
-                ivCmHomeWidgetProductBadge.setImageUrl(badgeImageUrl)
-            }
-            if (dataItem.cmHomeWidgetActionButtons.isNullOrEmpty()) {
-                btnCmHomeWidgetProduct.visibility = View.GONE
-                btnCmHomeWidgetProduct.setOnClickListener(null)
-            } else {
-                btnCmHomeWidgetProduct.visibility = View.VISIBLE
-                btnCmHomeWidgetProduct.text = dataItem.cmHomeWidgetActionButtons[0].text
-                btnCmHomeWidgetProduct.setOnClickListener {
-                    listener.onBuyDirectBtnClick(dataItem)
-                }
-            }
-            root.setOnClickListener {
-                listener.onProductCardClick(dataItem)
-            }
-            root.post {
-                listener.setProductCardHeight(root.measuredHeight)
-            }
+        } else {
+            binding.cmHomeWidgetDiscountGroup.visibility = View.GONE
+        }
+    }
+
+    private fun setShopBadgeImage(shopBadgeImageUrl: String?) {
+        shopBadgeImageUrl?.let {
+            binding.ivCmHomeWidgetProductShop.setImageUrl(it)
+        }
+    }
+
+    private fun setShopName(shopName: String?) {
+        binding.tvCmHomeWidgetProductShopName.text = shopName
+    }
+
+    private fun setProductBadgeImage(productBadgeImageUrl: String?) {
+        productBadgeImageUrl?.let { badgeImageUrl ->
+            binding.ivCmHomeWidgetProductBadge.setImageUrl(badgeImageUrl)
+        }
+    }
+
+    private fun handleCTA(cmHomeWidgetActionButtons: List<CMHomeWidgetActionButton>?) {
+        if (cmHomeWidgetActionButtons.isNullOrEmpty()) {
+            binding.btnCmHomeWidgetProduct.visibility = View.GONE
+        } else {
+            binding.btnCmHomeWidgetProduct.visibility = View.VISIBLE
+            binding.btnCmHomeWidgetProduct.text = cmHomeWidgetActionButtons[0].actionButtonText
+        }
+    }
+
+    private fun setOnClickListeners(dataItem: CMHomeWidgetProductCardData) {
+        binding.btnCmHomeWidgetProduct.setOnClickListener {
+            listener.onBuyDirectBtnClick(dataItem)
+        }
+        binding.root.setOnClickListener {
+            listener.onProductCardClick(dataItem)
         }
     }
 

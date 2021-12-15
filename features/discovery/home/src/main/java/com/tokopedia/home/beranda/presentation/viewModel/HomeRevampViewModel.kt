@@ -1685,13 +1685,11 @@ open class HomeRevampViewModel @Inject constructor(
                             cmHomeWidgetDataModel.copy(cmHomeWidgetData = it.cmHomeWidgetData)
                         updateWidget(newCMHomeWidgetDataModel, index)
                     }, {
-                        it.printStackTrace()
                         deleteWidget(cmHomeWidgetDataModel, index)
                     },
                     isForceRefresh
                 )
             }) {
-                it.printStackTrace()
                 deleteWidget(cmHomeWidgetDataModel, index)
             }
         }
@@ -1706,13 +1704,11 @@ open class HomeRevampViewModel @Inject constructor(
                         {
                             deleteWidget(cmHomeWidgetDataModel, index)
                         }, {
-                            it.printStackTrace()
                             updateWidget(cmHomeWidgetDataModel.copy(), index)
                         }, it.parentId, it.campaignId
                     )
                 }
             }) {
-                it.printStackTrace()
                 updateWidget(cmHomeWidgetDataModel.copy(), index)
             }
         }
