@@ -42,6 +42,11 @@ class PlayShareExperienceImpl @Inject constructor(
         return "${data.title}.\n$description\n${data.redirectUrl}"
     }
 
+    private fun getShareTextContent(): String {
+        val description = "Coba nonton video ini ya di Tokopedia Play!"
+        return "${data.title}.\n$description"
+    }
+
     private fun generateOgTitle(): String {
         return "Tonton ${data.partnerName} di Tokopedia Play"
     }
@@ -57,6 +62,7 @@ class PlayShareExperienceImpl @Inject constructor(
                 id = data.id
                 name = data.title
                 description = generateShareString()
+                textContent = getShareTextContent()
                 imgUri = data.coverUrl
                 ogUrl = data.redirectUrl
                 type = LinkerData.PLAY_VIEWER
@@ -80,8 +86,8 @@ class PlayShareExperienceImpl @Inject constructor(
             LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0, linkerShareData, object:
                 ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    Log.d("<LOG>", "LinkerShareData : $linkerShareData")
-                    listener.onUrlCreated(linkerShareData, shareModel, generateShareString())
+                    Log.d("<LOG>", "LinkerShareData shareContents : ${linkerShareData?.shareContents}")
+                    listener.onUrlCreated(linkerShareData, shareModel, linkerShareData?.shareContents ?: generateShareString())
                 }
 
                 override fun onError(linkerError: LinkerError?) {
