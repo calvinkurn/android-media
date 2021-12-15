@@ -181,7 +181,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         notifyItemChanged(position);
     }
 
-    private void getActionButtonClickListener(final String uri, Boolean isDownloadable, String downloadFileName) {
+    private void onClickActionButton(final String uri, Boolean isDownloadable, String downloadFileName) {
         if (BuyerUtils.isUridownloadable(uri, isDownloadable)) {
             setEventDetails.askPermission(uri, isDownloadable, downloadFileName);
         } else {
@@ -570,11 +570,11 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         RouteManager.route(context, actionButton.getBody().getAppURL());
                     } else if (isDownloadable(actionButton)) {
                         view.setOnClickListener(v -> {
-                            getActionButtonClickListener(actionButton.getBody().getAppURL(), true, "Tokopedia E-Ticket");
+                            onClickActionButton(actionButton.getBody().getAppURL(), true, context.getResources().getString(com.tokopedia.buyerorder.R.string.oms_order_detail_ticket_title));
                         });
                     } else {
                         view.setOnClickListener(v -> {
-                            getActionButtonClickListener(actionButton.getBody().getAppURL(), false, "");
+                            onClickActionButton(actionButton.getBody().getAppURL(), false, "");
                         });
                     }
                 }
@@ -852,7 +852,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         RouteManager.route(context, actionButton.getBody().getAppURL());
                     else
                         view.setOnClickListener(v -> {
-                            getActionButtonClickListener(actionButton.getBody().getAppURL(), false, "");
+                            onClickActionButton(actionButton.getBody().getAppURL(), false, "");
                         });
                 }
             }
