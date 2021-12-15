@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.media.loader.clearImage
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.databinding.FragmentInactivePhoneOnboardingBinding
 import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
@@ -52,10 +51,7 @@ abstract class BaseInactivePhoneOnboardingFragment : BaseDaggerFragment() {
     }
 
     fun updateImageHeader(url: String) {
-        viewBinding?.imgHeader?.apply {
-            clearImage()
-            setImageUrl(url)
-        }
+        viewBinding?.imgHeader?.setImageUrl(url, isSkipCache = true)
     }
 
     fun updateTitle(title: String) {

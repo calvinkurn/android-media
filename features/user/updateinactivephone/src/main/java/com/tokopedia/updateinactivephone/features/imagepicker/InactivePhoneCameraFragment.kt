@@ -12,7 +12,6 @@ import com.otaliastudios.cameraview.controls.Mode
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.unifycomponents.Toaster
@@ -72,10 +71,6 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
         }
 
         viewBinding?.btnReCapture?.setOnClickListener {
-            viewBinding?.imgPreview?.let {
-                it.clearImage()
-            }
-
             showCamera()
         }
 

@@ -17,12 +17,11 @@ class AccountListViewHolder(
     private var itemViewBinding: ItemInactivePhoneAccountListBinding? by viewBinding()
 
     fun onBind(userDetailDataModel: AccountListDataModel.UserDetailDataModel) {
-        itemViewBinding?.imgAvatar?.apply {
-            loadImageCircle(userDetailDataModel.image)
+        itemViewBinding?.apply {
+            imgAvatar.loadImageCircle(userDetailDataModel.image)
+            txtName.text = userDetailDataModel.fullname
+            txtEmail.text = userDetailDataModel.email
         }
-
-        itemViewBinding?.txtName?.text = userDetailDataModel.fullname
-        itemViewBinding?.txtEmail?.text = userDetailDataModel.email
 
         itemView.setOnClickListener {
             listener.onItemClick(userDetailDataModel)

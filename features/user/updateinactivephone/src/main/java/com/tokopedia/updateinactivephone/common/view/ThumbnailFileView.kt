@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
-import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.unifycomponents.ImageUnify
@@ -56,7 +55,6 @@ class ThumbnailFileView @JvmOverloads constructor(
     fun setImage(url: String) {
         imageThumbnail.apply {
             scaleType = ImageView.ScaleType.CENTER_CROP
-            clearImage()
             loadImage(url) {
                 useCache(false)
                 setCacheStrategy(MediaCacheStrategy.NONE)
@@ -65,9 +63,6 @@ class ThumbnailFileView @JvmOverloads constructor(
     }
 
     private fun setImage(@DrawableRes drawable: Int) {
-        imageThumbnail.apply {
-            clearImage()
-            loadImage(drawable)
-        }
+        imageThumbnail.loadImage(drawable)
     }
 }
