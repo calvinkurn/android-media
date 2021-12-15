@@ -1123,7 +1123,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             setGridASGCLayout(feedXCard)
         }
     }
-    private val TAG = "TESTTINNGGGG"
+
     private fun setVODLayout(feedXCard: FeedXCard){
             val media = feedXCard.media
             val postId = feedXCard.id.toIntOrZero()
