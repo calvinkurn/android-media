@@ -251,7 +251,6 @@
                 android:id="@+id/btn_add_holiday_schedule"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/shop_operational_hour_set_holiday_schedule_title"
                 app:unifyButtonVariant="ghost"
                 app:unifyButtonSize="small"
                 app:unifyButtonType="main"

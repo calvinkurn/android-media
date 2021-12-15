@@ -309,11 +309,16 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         }
 
         // set click listener for button add holiday schedule
-        buttonAddHoliday?.setOnClickListener {
-            isActionEdit = false
-            resetSelectedDates(isActionEdit)
-            setupHolidayCalendarPickerBottomSheet()
-            showHolidayBottomSheet()
+        buttonAddHoliday?.apply {
+            setOnClickListener {
+                isActionEdit = false
+                resetSelectedDates(isActionEdit)
+                setupHolidayCalendarPickerBottomSheet()
+                showHolidayBottomSheet()
+            }
+            text = getString(R.string.shop_operational_hour_set_holiday_schedule_title).split(" ").joinToString(" ") { word ->
+                word.replaceFirstChar { it.uppercase() }
+            }
         }
 
         // set click listener holiday edit action button
