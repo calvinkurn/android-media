@@ -57,6 +57,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation

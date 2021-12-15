@@ -14,12 +14,19 @@ import com.tokopedia.product_ar.di.SHOP_ID_PROVIDED
 import com.tokopedia.product_ar.model.ModifaceUiModel
 import com.tokopedia.product_ar.model.ProductAr
 import com.tokopedia.product_ar.model.ProductArUiModel
+import com.tokopedia.product_ar.model.state.AnimatedTextIconClickMode
+import com.tokopedia.product_ar.model.state.AnimatedTextIconState
+import com.tokopedia.product_ar.model.state.ModifaceViewMode
+import com.tokopedia.product_ar.model.state.ModifaceViewState
 import com.tokopedia.product_ar.usecase.GetProductArUseCase
 import com.tokopedia.product_ar.util.ProductArMapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -38,6 +45,16 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private var productArUiModel: ProductArUiModel = ProductArUiModel()
 
     fun getProductArUiModel(): ProductArUiModel = productArUiModel
+
+    private val _animatedTextIconState = MutableStateFlow(AnimatedTextIconState(
+            view2ClickMode = AnimatedTextIconClickMode.CHOOSE_FROM_GALLERY)
+    )
+    val animatedTextIconState: StateFlow<AnimatedTextIconState> = _animatedTextIconState
+
+    private val _modifaceViewState = MutableStateFlow(ModifaceViewState(
+            mode = ModifaceViewMode.LIVE)
+    )
+    val modifaceViewState: StateFlow<ModifaceViewState> = _modifaceViewState
 
     private val _selectedProductArData = MutableLiveData<Result<ProductAr>>()
     val selectedProductArData: LiveData<Result<ProductAr>>
@@ -93,5 +110,30 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         }
         _productArList.postValue(Success(updatedData))
         _selectedProductArData.postValue(Success(uiModel.options[productId] ?: ProductAr()))
+    }
+
+    fun changeMode(modifaceViewMode: ModifaceViewMode,
+                   pathImageDrawable: String = "") {
+        if (modifaceViewMode == ModifaceViewMode.LIVE) {
+            _modifaceViewState.update {
+                it.copy(mode = ModifaceViewMode.LIVE,
+                        imageDrawablePath = "")
+            }
+
+            _animatedTextIconState.update {
+                it.copy(view1ClickMode = null,
+                        view2ClickMode = AnimatedTextIconClickMode.CHOOSE_FROM_GALLERY)
+            }
+        } else {
+            _modifaceViewState.update {
+                it.copy(mode = ModifaceViewMode.IMAGE,
+                        imageDrawablePath = pathImageDrawable)
+            }
+
+            _animatedTextIconState.update {
+                it.copy(view1ClickMode = AnimatedTextIconClickMode.USE_CAMERA,
+                        view2ClickMode = AnimatedTextIconClickMode.CHANGE_PHOTO)
+            }
+        }
     }
 }

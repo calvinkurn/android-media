@@ -14,6 +14,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.modiface.mfemakeupkit.MFEMakeupEngine
 import com.modiface.mfemakeupkit.effects.MFEMakeupProduct
 import com.modiface.mfemakeupkit.widgets.MFEMakeupView
@@ -23,12 +24,15 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerPageSource
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.ImageRatioType
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepicker.common.putParamPageSource
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.product_ar.R
+import com.tokopedia.product_ar.model.state.AnimatedTextIconClickMode
+import com.tokopedia.product_ar.model.state.ModifaceViewMode
 import com.tokopedia.product_ar.util.AnimatedTextIcon
+import com.tokopedia.product_ar.util.ProductArConstant.REQUEST_CODE_IMAGE_PICKER
 import com.tokopedia.product_ar.view.bottomsheet.ProductArBottomSheetBuilder
 import com.tokopedia.product_ar.viewmodel.ProductArViewModel
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -37,6 +41,8 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -87,16 +93,11 @@ class ProductArFragment : Fragment(), ProductArListener {
         super.onViewCreated(view, savedInstanceState)
         mMakeupView = view.findViewById(R.id.main_img)
         getMakeUpEngine()?.attachMakeupView(mMakeupView)
+        setupLiveCamera()
         partialBottomArView = PartialBottomArView.build(view, this)
 
-        renderAnimatedTextIcon(view)
+        setupAnimatedTextIcon(view)
         setupNavToolbar(view)
-
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.CAMERA), 123)
-        } else {
-            getMakeUpEngine()?.startRunningWithCamera(context)
-        }
     }
 
     private fun setupNavToolbar(view: View) {
@@ -111,7 +112,7 @@ class ProductArFragment : Fragment(), ProductArListener {
                                 .addIcon(IconUnify.INFORMATION) {
                                     context?.let { ctx ->
                                         ProductArBottomSheetBuilder.getArInfoBottomSheet(ctx)
-                                                .show(activity.supportFragmentManager,"info ar")
+                                                .show(activity.supportFragmentManager, "info ar")
                                     }
                                 }
                                 .addIcon(IconList.ID_CART) {}
@@ -121,21 +122,9 @@ class ProductArFragment : Fragment(), ProductArListener {
         }
     }
 
-    private fun renderAnimatedTextIcon(view: View) {
+    private fun setupAnimatedTextIcon(view: View) {
         animatedTextIcon2 = view.findViewById(R.id.animated_txt_icon_2)
         animatedTextIcon1 = view.findViewById(R.id.animated_txt_icon_1)
-        renderInitialAnimatedTextIcon()
-    }
-
-    private fun renderInitialAnimatedTextIcon() {
-        animatedTextIcon2?.apply {
-            renderText("Ambil dari Galeri", IconUnify.IMAGE)
-            setOnClickListener {
-                onAddImageClick()
-            }
-            show()
-        }
-        animatedTextIcon1?.hide()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -143,7 +132,76 @@ class ProductArFragment : Fragment(), ProductArListener {
         observeData()
     }
 
+    private fun setupLiveCamera() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.CAMERA), 123)
+        } else {
+            getMakeUpEngine()?.startRunningWithCamera(context)
+        }
+    }
+
+    private fun setupUseImageCamera(drawablePath: String) {
+        val selectedImage = BitmapFactory.decodeFile(drawablePath)
+
+        getMakeUpEngine()?.clearMakeupLook()
+        getMakeUpEngine()?.startRunningWithPhoto(selectedImage, false)
+        getMakeUpEngine()?.setMakeupLook((viewModel?.mfeMakeUpLook?.value as? Success)?.data)
+    }
+
+    private fun setupTextClickMode(view: AnimatedTextIcon,
+                                   clickMode: AnimatedTextIconClickMode?) {
+        when (clickMode) {
+            AnimatedTextIconClickMode.CHANGE_PHOTO -> {
+                view.setOnClickListener {
+                    onAddImageClick()
+                }
+            }
+            AnimatedTextIconClickMode.CHOOSE_FROM_GALLERY -> {
+                view.setOnClickListener {
+                    onAddImageClick()
+                }
+            }
+            AnimatedTextIconClickMode.USE_CAMERA -> {
+                view.setOnClickListener {
+                    viewModel?.changeMode(ModifaceViewMode.LIVE)
+                }
+            }
+
+            else -> return
+        }
+    }
+
     private fun observeData() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel?.animatedTextIconState?.collectLatest {
+                animatedTextIcon1?.run {
+                    shouldShowWithAction(it.view1ClickMode != null) {
+                        animatedTextIcon1?.renderText(requireContext().getString(it.view1ClickMode!!.textId), it.view1ClickMode.iconUnify)
+                    }
+
+                    setupTextClickMode(this, it.view1ClickMode)
+                }
+
+                animatedTextIcon2?.run {
+                    shouldShowWithAction(it.view2ClickMode != null) {
+                        animatedTextIcon2?.renderText(requireContext().getString(it.view2ClickMode!!.textId), it.view2ClickMode.iconUnify)
+                    }
+
+                    setupTextClickMode(this, it.view2ClickMode)
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel?.modifaceViewState?.collectLatest {
+                if (it.mode == ModifaceViewMode.LIVE) {
+                    setupLiveCamera()
+                } else {
+                    setupUseImageCamera(it.imageDrawablePath)
+                }
+            }
+        }
+
         viewModel?.selectedProductArData?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
@@ -220,44 +278,29 @@ class ProductArFragment : Fragment(), ProductArListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            123 -> {
+            REQUEST_CODE_IMAGE_PICKER -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val result = ImagePickerResultExtractor.extract(data)
-                    val selectedImage = BitmapFactory.decodeFile(result.imageUrlOrPathList.first())
+                    val imagePath = result.imageUrlOrPathList.firstOrNull()
 
-                    updateAnimatedIconAfterChoosePhoto()
-                    getMakeUpEngine()?.clearMakeupLook()
-                    getMakeUpEngine()?.startRunningWithPhoto(selectedImage, false)
-                    getMakeUpEngine()?.setMakeupLook((viewModel?.mfeMakeUpLook?.value as? Success)?.data)
+                    imagePath?.let {
+                        viewModel?.changeMode(ModifaceViewMode.IMAGE, it)
+                    }
                 }
             }
         }
     }
 
-    private fun updateAnimatedIconAfterChoosePhoto() {
-        animatedTextIcon1?.renderText("Pakai Kamera", IconUnify.CAMERA)
-        animatedTextIcon1?.show()
-        animatedTextIcon1?.setOnClickListener {
-            getMakeUpEngine()?.startRunningWithCamera(context)
-            renderInitialAnimatedTextIcon()
-        }
-
-        animatedTextIcon2?.renderText("Ganti Foto", IconUnify.IMAGE)
-        animatedTextIcon2?.show()
-
-    }
-
     private fun onAddImageClick() {
         context?.let {
-            val builder = ImagePickerBuilder.getSquareImageBuilder(it)
-                    .withSimpleEditor()
+            val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
                     .apply {
-                        title = "Pilih Media"
+                        title = it.getString(R.string.txt_image_picker_title)
                     }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
             intent.putImagePickerBuilder(builder)
             intent.putParamPageSource(ImagePickerPageSource.PRODUCT_AR)
-            startActivityForResult(intent, 123)
+            startActivityForResult(intent, REQUEST_CODE_IMAGE_PICKER)
         }
     }
 
