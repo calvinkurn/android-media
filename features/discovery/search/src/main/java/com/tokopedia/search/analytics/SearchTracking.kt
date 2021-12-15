@@ -24,8 +24,8 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
-import java.util.ArrayList
-import java.util.Arrays
+import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * Created by henrypriyono on 1/5/18.
@@ -279,7 +279,7 @@ object SearchTracking {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 EVENT_CLICK_SEARCH_RESULT,
                 EVENT_CATEGORY_EMPTY_SEARCH,
-                EVENT_ACTION_CLICK_NEW_SEARCH, String.format("tab: %s", screenName))
+                EVENT_ACTION_CLICK_NEW_SEARCH, String.format(Locale.getDefault(),"tab: %s", screenName))
     }
 
     @JvmStatic
@@ -320,7 +320,7 @@ object SearchTracking {
     }
 
     private fun generateEventLabelGlobalNav(keyword: String, productName: String, applink: String): String {
-        return String.format("keyword: %s - product: %s - applink: %s", keyword, productName, applink)
+        return String.format(Locale.getDefault(),"keyword: %s - product: %s - applink: %s", keyword, productName, applink)
     }
 
     @JvmStatic
@@ -738,7 +738,7 @@ object SearchTracking {
             SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
             SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
             SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_BROAD_MATCH,
-            SearchTrackingConstant.EVENT_LABEL, String.format("%s - %s", keyword, alternativeKeyword),
+            SearchTrackingConstant.EVENT_LABEL, String.format(Locale.getDefault(), "%s - %s", keyword, alternativeKeyword),
             SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
             SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
             SearchTrackingConstant.USER_ID, userId,
@@ -771,7 +771,7 @@ object SearchTracking {
             searchComponentTracking,
             SEARCH_BROAD_MATCH_TRACKER_UNIFICATION,
         ) {
-            val eventLabel = String.format("%s - %s", keyword, alternativeKeyword)
+            val eventLabel = String.format(Locale.getDefault(), "%s - %s", keyword, alternativeKeyword)
 
             TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
@@ -798,7 +798,7 @@ object SearchTracking {
             DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
                 SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
                 SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_BROAD_MATCH,
-                SearchTrackingConstant.EVENT_LABEL, String.format("%s - %s", keyword, alternativeKeyword),
+                SearchTrackingConstant.EVENT_LABEL, String.format(Locale.getDefault(), "%s - %s", keyword, alternativeKeyword),
                 SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
                 SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
                 SearchTrackingConstant.USER_ID, userId,
@@ -845,7 +845,7 @@ object SearchTracking {
                 SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
                 SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
                 SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_DYNAMIC_PRODUCT_CAROUSEL,
-                SearchTrackingConstant.EVENT_LABEL, String.format("%s - %s", type, keyword),
+                SearchTrackingConstant.EVENT_LABEL, String.format(Locale.getDefault(), "%s - %s", type, keyword),
                 SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
                 SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
                 SearchTrackingConstant.USER_ID, userId,
@@ -870,7 +870,7 @@ object SearchTracking {
                         SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
                         SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
                         SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_DYNAMIC_PRODUCT_CAROUSEL,
-                        SearchTrackingConstant.EVENT_LABEL, String.format("%s - %s", type, keyword),
+                        SearchTrackingConstant.EVENT_LABEL, String.format(Locale.getDefault(),"%s - %s", type, keyword),
                         SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
                         SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
                         SearchTrackingConstant.USER_ID, userId,
@@ -891,7 +891,7 @@ object SearchTracking {
                         SearchTrackingConstant.EVENT, SearchEventTracking.Event.SEARCH_RESULT,
                         SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
                         SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_DYNAMIC_PRODUCT_CAROUSEL_SEE_MORE,
-                        SearchTrackingConstant.EVENT_LABEL, String.format("%s - %s - %s", type, keyword, alternativeKeyword),
+                        SearchTrackingConstant.EVENT_LABEL, String.format(Locale.getDefault(),"%s - %s - %s", type, keyword, alternativeKeyword),
                         SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
                         SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH
                 )
