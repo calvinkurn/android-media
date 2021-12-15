@@ -104,6 +104,7 @@ import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowHomeBinding
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_HOME_PAGE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.analytic.HomePageLoadTimeMonitoring
+import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
@@ -1117,21 +1118,21 @@ class TokoNowHomeFragment: Fragment(),
         localCacheModel?.let {
             val layoutManager = rvHome?.layoutManager as? LinearLayoutManager
             val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
-            val mapAllWidgetRemoved = mutableMapOf(
-                Pair(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
-                Pair(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
+            val removeAbleWidgets = listOf(
+                HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
+                HomeRemoveAbleWidget(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
             )
-            viewModelTokoNow.onScrollTokoMartHome(lastVisibleItemIndex, it, mapAllWidgetRemoved)
+            viewModelTokoNow.onScrollTokoMartHome(lastVisibleItemIndex, it, removeAbleWidgets)
         }
     }
 
     private fun getHomeLayout() {
         localCacheModel?.let {
-            val mapAllWidgetRemoved = mutableMapOf(
-                Pair(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
-                Pair(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
+            val removeAbleWidgets = listOf(
+                HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
+                HomeRemoveAbleWidget(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
             )
-            viewModelTokoNow.getHomeLayout(it, mapAllWidgetRemoved)
+            viewModelTokoNow.getHomeLayout(it, removeAbleWidgets)
         }
     }
 

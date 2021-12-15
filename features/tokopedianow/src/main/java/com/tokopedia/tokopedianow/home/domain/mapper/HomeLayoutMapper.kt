@@ -45,6 +45,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMappe
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper.mapQuestUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingEducationMapper.mapSharingEducationUiModel
+import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -89,7 +90,7 @@ object HomeLayoutMapper {
     fun MutableList<HomeLayoutItemUiModel>.mapHomeLayoutList(
         response: List<HomeLayoutResponse>,
         hasTickerBeenRemoved: Boolean,
-        mapAllWidgetRemoved: Map<String, Boolean>,
+        removeAbleWidgets: List<HomeRemoveAbleWidget>,
         miniCartData: MiniCartSimplifiedData?
     ) {
         val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
@@ -101,7 +102,7 @@ object HomeLayoutMapper {
         }
 
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
-            if (mapAllWidgetRemoved.filter { layoutResponse.layout == it.key && it.value }.isEmpty()) {
+            if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
                 mapToHomeUiModel(layoutResponse, miniCartData = miniCartData)?.let { item ->
                     add(item)
                 }
@@ -111,11 +112,11 @@ object HomeLayoutMapper {
 
     fun MutableList<HomeLayoutItemUiModel>.addMoreHomeLayout(
         response: List<HomeLayoutResponse>,
-        mapAllWidgetRemoved: Map<String, Boolean>,
+        removeAbleWidgets: List<HomeRemoveAbleWidget>,
         miniCartData: MiniCartSimplifiedData?
     ) {
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
-            if (mapAllWidgetRemoved.filter { layoutResponse.layout == it.key && it.value }.isEmpty()) {
+            if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
                 mapToHomeUiModel(layoutResponse, HomeLayoutItemState.LOADED, miniCartData)?.let { item ->
                     add(item)
                 }

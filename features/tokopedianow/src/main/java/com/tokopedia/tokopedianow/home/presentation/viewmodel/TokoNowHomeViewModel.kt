@@ -57,6 +57,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateRepu
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.setStateToLoading
 import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper
 import com.tokopedia.tokopedianow.home.domain.mapper.TickerMapper
+import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
 import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutDataUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
@@ -186,7 +187,7 @@ class TokoNowHomeViewModel @Inject constructor(
         }) { /* nothing to do */ }
     }
 
-    fun getHomeLayout(localCacheModel: LocalCacheModel, mapAllWidgetRemoved: Map<String, Boolean>) {
+    fun getHomeLayout(localCacheModel: LocalCacheModel, removeAbleWidgets: List<HomeRemoveAbleWidget>) {
         getHomeLayoutJob?.cancel()
         launchCatchError(block = {
             homeLayoutItemList.clear()
@@ -200,7 +201,7 @@ class TokoNowHomeViewModel @Inject constructor(
             homeLayoutItemList.mapHomeLayoutList(
                 homeLayoutResponse,
                 hasTickerBeenRemoved,
-                mapAllWidgetRemoved,
+                removeAbleWidgets,
                 miniCartSimplifiedData
             )
 
@@ -229,7 +230,7 @@ class TokoNowHomeViewModel @Inject constructor(
     fun onScrollTokoMartHome(
         lastVisibleItemIndex: Int,
         localCacheModel: LocalCacheModel,
-        mapAllWidgetRemoved: Map<String, Boolean>
+        removeAbleWidgets: List<HomeRemoveAbleWidget>
     ) {
         if(shouldLoadMore(lastVisibleItemIndex)) {
             launchCatchError(block = {
@@ -244,7 +245,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
                 homeLayoutItemList.addMoreHomeLayout(
                     homeLayoutResponse,
-                    mapAllWidgetRemoved,
+                    removeAbleWidgets,
                     miniCartSimplifiedData
                 )
 
