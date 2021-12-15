@@ -174,7 +174,7 @@ class MixTopComponentViewHolder(
             layoutParams.setMargins(0, 0, 0, 0)
             recyclerView.layoutParams = layoutParams
             recyclerView.translationY = itemView.context.resources.getDimensionPixelSize(R.dimen.home_padding_vertical_use_compat_padding_product_card).toFloat()
-            containerInside.setPadding(0, 0, 0, 6f.toDpInt())
+            containerInside.setPadding(0, 0, 0, 5f.toDpInt())
         } else {
             background.visible()
             background.setGradientBackground(bannerItem.gradientColor)
@@ -189,7 +189,7 @@ class MixTopComponentViewHolder(
             )
             recyclerView.layoutParams = layoutParams
             recyclerView.translationY = 0f
-            containerInside.setPadding(0, 0, 0, 12f.toDpInt())
+            containerInside.setPadding(0, 0, 0, 11f.toDpInt())
         }
         bannerTitle.setTextColor(textColor)
         bannerDescription.setTextColor(textColor)
