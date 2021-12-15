@@ -53,6 +53,7 @@
 
     <string name="detail_label_digital">Detail Pembelian</string>
     <string name="lihat_detail">Lihat Detail</string>
+    <string name="oms_order_detail_ticket_title">Tokopedia E-Ticket</string>
 
     <!-- OMS Insurance-->
 
