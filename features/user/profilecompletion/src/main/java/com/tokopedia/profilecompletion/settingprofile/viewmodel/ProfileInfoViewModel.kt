@@ -64,32 +64,29 @@ class ProfileInfoViewModel @Inject constructor(
 
     /* Use media uploader */
     fun uploadPicture(image: File) {
-        launch {
-            try {
-                val param = uploader.createParams(
-                    filePath = image, // required
-                    sourceId = SOURCE_ID
-                )
-                val result = withContext(dispatcher.io) { uploader(param) }
-                withContext(dispatcher.main) {
-                    when (result) {
-                        is UploadResult.Success -> saveProfilePicture(result.uploadId)
-                        is UploadResult.Error -> _saveImageProfileResponse.value =
-                            Fail(Throwable(result.message))
-                    }
+        viewModelScope.launch(dispatcher.io) {
+            val param = uploader.createParams(
+                filePath = image,
+                sourceId = SOURCE_ID
+            )
+            val result = uploader(param)
+            withContext(dispatcher.main) {
+                when (result) {
+                    is UploadResult.Success -> saveProfilePicture(result.uploadId)
+                    is UploadResult.Error -> _saveImageProfileResponse.value =
+                        Fail(Throwable(result.message))
                 }
-            } catch (e: Exception) {
-                _saveImageProfileResponse.value = Fail(e)
             }
         }
     }
 
     /* To send uploadID from media uploader to accounts BE */
     fun saveProfilePicture(uploadId: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcher.io) {
             try {
-                val params = mapOf(PARAM_UPLOAD_ID to uploadId)
-                val res = withContext(dispatcher.io) { saveProfilePictureUseCase(params) }
+                val res = saveProfilePictureUseCase(
+                    mapOf(PARAM_UPLOAD_ID to uploadId)
+                )
                 withContext(dispatcher.main) {
                     if (res.data.errorMessage.isEmpty() &&
                         res.data.innerData.isSuccess == 1 &&

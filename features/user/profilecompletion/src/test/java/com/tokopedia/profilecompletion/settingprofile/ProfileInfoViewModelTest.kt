@@ -149,17 +149,6 @@ class ProfileInfoViewModelTest {
     }
 
     @Test
-    fun `on upload throw error` () {
-        coEvery { uploader(any()) } throws mockException
-
-        viewModel.uploadPicture(mockFile)
-
-        verify {
-            saveImageProfileObserver.onChanged(Fail(mockException))
-        }
-    }
-
-    @Test
     fun `on save profile picture success`() {
         val innerData = SaveProfilePictureInnerData(imageUrl = profilePict, isSuccess = 1)
         val mockSaveSuccess = SaveProfilePictureResponse(
