@@ -192,7 +192,9 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
         context?.let {
             val path = filePath(it, type)
             if (path.isNotEmpty())
-                imageView.setImage(path)
+                imageView.apply {
+                    setImage(path)
+                }
         }
     }
 

@@ -174,19 +174,21 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
             btnShutter.hide()
             btnFlipCamera.hide()
 
-            imgPreview.let {
-                it.loadImage(file.absolutePath) {
+            imgPreview.apply {
+                loadImage(file.absolutePath) {
+                    useCache(false)
                     setCacheStrategy(MediaCacheStrategy.NONE)
                 }
-                it.show()
+                show()
             }
         }
     }
 
     private fun onSuccessTakePicture(pictureResult: PictureResult) {
-        pictureResult.toFile(
-            File(filePath().orEmpty())
-        ) {
+        val file = File(filePath().orEmpty())
+        if (file.exists()) file.delete()
+
+        pictureResult.toFile(file) {
             if (it?.exists() == true) {
                 showPreview(it)
             }
