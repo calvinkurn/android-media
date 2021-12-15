@@ -326,7 +326,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onShareOptionClosed(view: ShareExperienceViewComponent) {
-
+        playViewModel.submitAction(CloseSharingOption)
     }
 
     override fun onScreenshotTaken(view: ShareExperienceViewComponent) {

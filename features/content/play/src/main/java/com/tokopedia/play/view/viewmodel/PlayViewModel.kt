@@ -733,6 +733,7 @@ class PlayViewModel @Inject constructor(
             ClickLikeAction -> handleClickLike(isFromLogin = false)
             ClickShareAction -> handleClickShare()
             RefreshLeaderboard -> handleRefreshLeaderboard()
+            CloseSharingOption -> handleCloseSharingOption()
             ScreenshotTaken -> handleClickShare()
             is ClickSharingOption -> handleSharingOption(action.shareModel)
         }
@@ -1821,6 +1822,10 @@ class PlayViewModel @Inject constructor(
                 UiString.Resource(R.string.play_link_copied)
             )
         )
+    }
+
+    private fun handleCloseSharingOption() {
+        playAnalytic.closeShareBottomSheet(channelId, channelType.value, false)
     }
 
     private fun handleClickShare() {
