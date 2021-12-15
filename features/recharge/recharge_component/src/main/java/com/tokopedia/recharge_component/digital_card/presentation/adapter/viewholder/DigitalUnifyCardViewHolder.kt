@@ -47,7 +47,7 @@ class DigitalUnifyCardViewHolder(
     }
 
     private fun renderMedia(element: DigitalUnifyModel) {
-        renderMediaImage(element.mediaUrl, element.mediaType)
+        renderMediaImage(element.mediaUrl, element.getMediaTypeRatio())
         renderLabelOnImage(element.mediaTitle)
         renderIcon(element.iconUrl)
         renderIconBackground(element.iconBackgroundColor)
@@ -121,11 +121,11 @@ class DigitalUnifyCardViewHolder(
     private fun renderRating(element: DigitalUnifyModel) {
         if (element.rating.ratingType != null) {
             when (element.rating.ratingType) {
-                RatingType.SQUARE -> {
+                DigitalUnifyConst.RATING_TYPE_SQUARE -> {
                     renderSquareRating(element.rating)
                     hideStarRating()
                 }
-                RatingType.STAR -> {
+                DigitalUnifyConst.RATING_TYPE_STAR -> {
                     renderStarRating(element.rating)
                     hideSquareRating()
                 }
@@ -182,10 +182,7 @@ class DigitalUnifyCardViewHolder(
         with(binding.dguActionButton) {
             if (element.actionButton.text.isNotEmpty()) {
                 text = element.actionButton.text
-                buttonType = when (element.actionButton.buttonType) {
-                    CTAButtonType.ENABLE -> UnifyButton.Type.MAIN
-                    CTAButtonType.DISABLE -> UnifyButton.Type.ALTERNATE
-                }
+                buttonType = element.actionButton.getUnifyButtonType()
 
                 setOnClickListener {
                     listener?.onItemClicked(element, adapterPosition)
@@ -198,11 +195,11 @@ class DigitalUnifyCardViewHolder(
         }
     }
 
-    private fun renderMediaImage(mediaUrl: String, mediaType: MediaType) {
+    private fun renderMediaImage(mediaUrl: String, mediaRatio: String) {
         with(binding.dguMediaImage) {
             if (mediaUrl.isNotEmpty()) {
                 val mlayoutParams = layoutParams as ConstraintLayout.LayoutParams
-                mlayoutParams.dimensionRatio = mediaType.ratio
+                mlayoutParams.dimensionRatio = mediaRatio
                 layoutParams = mlayoutParams
                 loadImage(mediaUrl)
                 show()

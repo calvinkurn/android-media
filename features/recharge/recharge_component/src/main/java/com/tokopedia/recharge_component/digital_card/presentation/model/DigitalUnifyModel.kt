@@ -5,13 +5,14 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.recharge_component.digital_card.presentation.adapter.DigitalUnifyCardTypeFactory
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class DigitalUnifyModel(
     val id: String,
     val mediaUrl: String,
-    val mediaType: MediaType,
+    val mediaType: String,
     val mediaTitle: String,
     val iconUrl: String,
     val iconBackgroundColor: String,
@@ -31,14 +32,12 @@ data class DigitalUnifyModel(
     override fun type(typeFactory: DigitalUnifyCardTypeFactory?): Int =
         typeFactory?.type(this).orZero()
 
-    companion object {
-        fun getMediaType(mediaType: String): MediaType =
-            when (mediaType) {
-                MediaType.SQUARE.value -> MediaType.SQUARE
-                MediaType.RECTANGLE.value -> MediaType.RECTANGLE
-                else -> MediaType.SQUARE
-            }
-    }
+    fun getMediaTypeRatio(): String =
+        when (mediaType) {
+            DigitalUnifyConst.MEDIA_TYPE_RECTANGLE -> DigitalUnifyConst.MEDIA_TYPE_RECTANGLE_RATIO
+            DigitalUnifyConst.MEDIA_TYPE_SQUARE -> DigitalUnifyConst.MEDIA_TYPE_SQUARE_RATIO
+            else -> DigitalUnifyConst.MEDIA_TYPE_RECTANGLE_RATIO
+        }
 }
 
 @Parcelize
@@ -56,19 +55,10 @@ data class DigitalCardInfoModel(
 
 @Parcelize
 data class DigitalCardRatingModel(
-    val ratingType: RatingType?,
+    val ratingType: String?,
     val rating: Double,
     val review: String
-) : Parcelable {
-    companion object {
-        fun getRatingType(ratingType: String) : RatingType? =
-            when (ratingType) {
-                RatingType.STAR.value -> RatingType.STAR
-                RatingType.SQUARE.value -> RatingType.SQUARE
-                else -> null
-            }
-    }
-}
+) : Parcelable
 
 @Parcelize
 data class DigitalCardPriceModel(
@@ -91,15 +81,13 @@ data class DigitalCardSoldPercentageModel(
 @Parcelize
 data class DigitalCardActionModel(
     val text: String,
-    val buttonType: CTAButtonType,
+    val buttonType: String,
     val applink: String
 ) : Parcelable {
-    companion object {
-        fun getButtonType(buttonType: String): CTAButtonType =
-            when (buttonType) {
-                CTAButtonType.ENABLE.value -> CTAButtonType.ENABLE
-                CTAButtonType.DISABLE.value -> CTAButtonType.DISABLE
-                else -> CTAButtonType.ENABLE
-            }
-    }
+    fun getUnifyButtonType(): Int =
+        when (buttonType) {
+            DigitalUnifyConst.CTA_BUTTON_TYPE_ENABLE -> UnifyButton.Type.MAIN
+            DigitalUnifyConst.CTA_BUTTON_TYPE_DISABLE -> UnifyButton.Type.ALTERNATE
+            else -> UnifyButton.Type.MAIN
+        }
 }

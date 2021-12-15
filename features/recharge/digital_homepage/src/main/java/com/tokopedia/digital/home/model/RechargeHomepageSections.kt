@@ -443,7 +443,7 @@ data class RechargeProductCardUnifyModel(val section: RechargeHomepageSections.S
                 DigitalUnifyModel(
                     id = it.id,
                     mediaUrl = it.mediaUrl,
-                    mediaType = DigitalUnifyModel.getMediaType(it.attributes.mediaUrlType),
+                    mediaType = it.attributes.mediaUrlType,
                     mediaTitle = it.attributes.mediaUrlTitle,
                     iconUrl = it.attributes.iconUrl,
                     iconBackgroundColor = "",
@@ -462,7 +462,7 @@ data class RechargeProductCardUnifyModel(val section: RechargeHomepageSections.S
                     ),
                     title = it.content,
                     rating = DigitalCardRatingModel(
-                        ratingType = DigitalCardRatingModel.getRatingType(it.attributes.ratingType),
+                        ratingType = it.attributes.ratingType,
                         rating = it.attributes.rating,
                         review = it.attributes.review
                     ),
@@ -488,7 +488,7 @@ data class RechargeProductCardUnifyModel(val section: RechargeHomepageSections.S
                     ),
                     actionButton = DigitalCardActionModel(
                         text = it.textlink,
-                        buttonType = DigitalCardActionModel.getButtonType(it.buttonType),
+                        buttonType = it.buttonType,
                         applink = it.applink
                     )
                 )
