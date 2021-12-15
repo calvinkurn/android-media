@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.voucherlist.domain.model
 
+import androidx.annotation.IntDef
 import androidx.annotation.StringDef
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -26,7 +27,18 @@ data class VoucherListParam (
         val sortBy: String? = null,
         @SerializedName("is_inverted")
         @Expose
-        val isInverted: Boolean) {
+        val isInverted: Boolean,
+        @SerializedName("include_subsidy")
+        @Expose
+        val includeSubsidy: Int,
+        @SerializedName("is_vps")
+        @Expose
+        val isVps: String,
+        @SerializedName("voucher_name")
+        @Expose
+        val voucherName: String?
+)
+{
 
     companion object {
         @JvmStatic
@@ -35,14 +47,20 @@ data class VoucherListParam (
                         targetList: List<Int>? = null,
                         @VoucherSort sort: String? = null,
                         page: Int? = null,
-                        isInverted: Boolean = false) : VoucherListParam {
+                        isInverted: Boolean = false,
+                        @VoucherSubsidy includeSubsidy: Int = VoucherSubsidy.SELLER_AND_TOKOPEDIA,
+                        @VoucherVps isVps: String = VoucherVps.ALL,
+                        voucherName: String? = null) : VoucherListParam {
             return VoucherListParam(
                     voucherType = type,
                     voucherStatus = status,
                     isPublic = targetList?.joinToString(separator = ","),
                     page = page,
                     sortBy = sort,
-                    isInverted = isInverted
+                    isInverted = isInverted,
+                    includeSubsidy = includeSubsidy,
+                    isVps = isVps,
+                    voucherName = voucherName
             )
         }
     }
@@ -81,5 +99,27 @@ annotation class VoucherSort {
         const val CREATE_TIME = "create_time"
         const val START_TIME = "voucher_start_time"
         const val FINISH_TIME = "voucher_finish_time"
+    }
+}
+
+@MustBeDocumented
+@Retention(AnnotationRetention.SOURCE)
+@IntDef(VoucherSubsidy.SELLER, VoucherSubsidy.TOKOPEDIA, VoucherSubsidy.SELLER_AND_TOKOPEDIA)
+annotation class VoucherSubsidy {
+    companion object {
+        const val SELLER = 0
+        const val TOKOPEDIA = 1
+        const val SELLER_AND_TOKOPEDIA = 2
+    }
+}
+
+@MustBeDocumented
+@Retention(AnnotationRetention.SOURCE)
+@StringDef(VoucherVps.ALL, VoucherVps.NON_VPS, VoucherVps.VPS)
+annotation class VoucherVps {
+    companion object {
+        const val NON_VPS = "0"
+        const val VPS = "1"
+        const val ALL = "0,1"
     }
 }

@@ -120,7 +120,7 @@ class VoucherListViewModelTest {
                 getNotStartedVoucherListUseCase.executeOnBackground()
             } returns listOf(voucherUiModel)
 
-            getActiveVoucherList(true)
+            getActiveVoucherList(true, sourceRequestParams = sourceRequestParams)
 
             coVerify {
                 shopBasicDataUseCase.executeOnBackground()
@@ -148,7 +148,7 @@ class VoucherListViewModelTest {
                 getNotStartedVoucherListUseCase.executeOnBackground()
             } throws dummyThrowable
 
-            getActiveVoucherList(true)
+            getActiveVoucherList(true, sourceRequestParams = sourceRequestParams)
 
             coroutineContext[Job]?.children?.forEach { it.join() }
 
@@ -176,7 +176,7 @@ class VoucherListViewModelTest {
                 getNotStartedVoucherListUseCase.executeOnBackground()
             } returns  listOf(voucherUiModel)
 
-            getActiveVoucherList(true)
+            getActiveVoucherList(true, sourceRequestParams = sourceRequestParams)
 
             coVerify {
                 shopBasicDataUseCase.executeOnBackground()
@@ -196,7 +196,7 @@ class VoucherListViewModelTest {
                 getNotStartedVoucherListUseCase.executeOnBackground()
             } returns listOf(voucherUiModel)
 
-            getActiveVoucherList(false)
+            getActiveVoucherList(false, sourceRequestParams = sourceRequestParams)
 
             coVerify {
                 shopBasicDataUseCase wasNot Called
@@ -219,7 +219,7 @@ class VoucherListViewModelTest {
                 getNotStartedVoucherListUseCase.executeOnBackground()
             } throws dummyThrowable
 
-            getActiveVoucherList(false)
+            getActiveVoucherList(false, sourceRequestParams = sourceRequestParams)
 
             coVerify {
                 shopBasicDataUseCase wasNot Called

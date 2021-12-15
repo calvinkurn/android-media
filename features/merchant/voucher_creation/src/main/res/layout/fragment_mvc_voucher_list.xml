@@ -44,7 +44,6 @@
                 android:layout_marginLeft="@dimen/layout_lvl2"
                 android:layout_marginEnd="@dimen/layout_lvl2"
                 android:layout_marginRight="@dimen/layout_lvl2"
-                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/toolbarMvcList"
@@ -78,6 +77,20 @@
                 app:layout_constraintTop_toBottomOf="@+id/searchBarMvc"
                 tools:listitem="@layout/item_mvc_header_chip"
                 tools:visibility="visible" />
+
+            <com.tokopedia.sortfilter.SortFilter
+                android:id="@+id/sf_voucher_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginBottom="@dimen/mvc_dimen_24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/searchBarMvc"
+                app:sort_filter_type="advanced" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.appbar.AppBarLayout>

@@ -490,6 +490,9 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
 
             val voucherDetailInfoList: MutableList<VoucherDetailUiModel> = mutableListOf(
                     VoucherHeaderUiModel(
+                            isVps = isVps,
+                            isSubsidy = isSubsidy,
+                            packageName = packageName,
                             status = status,
                             voucherImageUrl = imageSquare,
                             startTime = startTime,

@@ -24,12 +24,15 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.datepicker.toZeroIfNull
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.DownloadHelper
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
@@ -54,7 +57,6 @@ import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.exception.VoucherCancellationException
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
 import com.tokopedia.vouchercreation.common.utils.*
-import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.detail.view.activity.VoucherDetailActivity
@@ -153,15 +155,6 @@ class VoucherListFragment :
     private var isToolbarAlreadyLoaded = false
 
     private var shopBasicData: ShopBasicDataResult? = null
-
-    @VoucherTypeConst
-    private var voucherType: Int? = null
-    private var voucherTarget: List<Int>? = null
-
-    @VoucherSort
-    private var voucherSort: String = VoucherSort.FINISH_TIME
-    private var isInverted: Boolean = false
-    private var isSortApplied: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -276,8 +269,8 @@ class VoucherListFragment :
         mViewModel.currentPage = page
         if (!isToolbarAlreadyLoaded) {
             view?.run {
-                searchBarMvc.isVisible = false
                 headerChipMvc.isVisible = false
+                sf_voucher_list.isVisible = false
             }
             renderList(listOf(LoadingStateUiModel(isActiveVoucher)))
         }
@@ -381,14 +374,6 @@ class VoucherListFragment :
         )
     }
 
-    override fun onBroadCastClickListener(voucherId: Int) {
-        VoucherCreationTracking.sendBroadCastChatClickTracking(
-            category = VoucherCreationAnalyticConstant.EventCategory.VoucherList.PAGE,
-            shopId = userSession.shopId
-        )
-        SharingUtil.shareToBroadCastChat(requireContext(), voucherId)
-    }
-
     override fun onShareClickListener(voucher: VoucherUiModel) {
         VoucherCreationTracking.sendVoucherListClickTracking(
             action = Click.VOUCHER_SHARE,
@@ -436,6 +421,9 @@ class VoucherListFragment :
                         Click.VOUCHER_DETAIL_BOTTOM_SHEET
                     }
                 viewVoucherDetail(voucher.id)
+            }
+            is BroadCast -> {
+                SharingUtil.shareToBroadCastChat(requireContext(), voucher.id)
             }
             is ShareVoucher -> {
                 moreMenuClickEventAction = Click.SHARE_ONGOING
@@ -764,10 +752,41 @@ class VoucherListFragment :
         setupBroadCastChatTicker()
         setupRecyclerViewVoucherList()
 
-        headerChipMvc.init {
-            setOnChipListener(it)
+        val filterData = ArrayList<SortFilterItem>()
+        val sortFilter = SortFilterItem("Urutkan")
+        sortFilter.listener = {
+
+            sortFilter.toggle()
+
+            sortFilter.updateSelectedRef = { chipType, _, _, _, _ ->
+                sortFilter.refChipUnify.chipType = chipType
+            }
+
+            showSortBottomSheet()
+
+
         }
+        filterData.add(sortFilter)
+
+        sf_voucher_list.addItem(filterData)
+
+        sf_voucher_list.sortFilterPrefix.setOnClickListener {
+            showFilterBottomSheet()
+        }
+
+
+//        headerChipMvc.init {
+//            setOnChipListener(it)
+//        }
         toolbarMvcList?.setBackgroundColor(Color.TRANSPARENT)
+    }
+
+    private fun SortFilterItem.toggle() {
+        type = if(type == ChipsUnify.TYPE_NORMAL) {
+            ChipsUnify.TYPE_SELECTED
+        } else {
+            ChipsUnify.TYPE_NORMAL
+        }
     }
 
     private fun setupRecyclerViewVoucherList() {
@@ -823,7 +842,21 @@ class VoucherListFragment :
                     clearAllData()
                     val keyword = searchBarTextField.text.toString()
                     if (keyword.isNotEmpty()) {
-                        mViewModel.setSearchKeyword(keyword)
+
+                        mViewModel.keyword = keyword
+
+                        val sourceRequestParams = mViewModel.getVoucherSourceRequestParams(
+                                isSellerCreated = mViewModel.isSellerCreated,
+                                isVps = mViewModel.isVps,
+                                isSubsidy = mViewModel.isSubsidy
+                        )
+
+                        mViewModel.searchVoucherByKeyword(
+                                isActiveVoucher = isActiveVoucher,
+                                keyword = mViewModel.keyword,
+                                sourceRequestParams = sourceRequestParams
+                        )
+
                     } else {
                         loadInitialData()
                     }
@@ -833,6 +866,8 @@ class VoucherListFragment :
                 false
             }
             clearListener = {
+                // reset search keyword
+                mViewModel.keyword = null
                 clearAllData()
                 loadInitialData()
             }
@@ -888,10 +923,10 @@ class VoucherListFragment :
     }
 
     private fun resetFetchValues() {
-        voucherTarget = null
-        voucherType = null
-        isInverted = false
-        isSortApplied = false
+        mViewModel.voucherTarget = null
+        mViewModel.voucherType = null
+        mViewModel.isInverted = false
+        mViewModel.isSortApplied = false
 
         clearAllData()
         loadInitialData()
@@ -969,9 +1004,9 @@ class VoucherListFragment :
     private fun applySort() {
         clearAllData()
 
-        isSortApplied = true
+        mViewModel.isSortApplied = true
 
-        voucherSort = VoucherSort.FINISH_TIME
+        mViewModel.voucherSort = VoucherSort.FINISH_TIME
 
         val activeSort = sortItems.firstOrNull { it.isSelected }
         activeSort?.let { sort ->
@@ -980,7 +1015,7 @@ class VoucherListFragment :
                 showResetButton()
             }
 
-            isInverted = sort.key == SortBy.OLDEST_DONE_DATE
+            mViewModel.isInverted = sort.key == SortBy.OLDEST_DONE_DATE
         }
 
         loadInitialData()
@@ -988,42 +1023,14 @@ class VoucherListFragment :
 
     private fun applyFilter() {
         clearAllData()
-
-        val activeFilterList =
-            filterItems.filterIsInstance<BaseFilterUiModel.FilterItem>().filter { it.isSelected }
-        val canResetFilter = activeFilterList.isNotEmpty()
-        if (canResetFilter) {
-            view?.headerChipMvc?.showResetButton()
-        } else if (!isSortApplied) {
-            view?.headerChipMvc?.resetFilter()
-        }
-        headerChipMvc?.setActiveFilter(activeFilterList)
-
-        voucherType = null
-        activeFilterList.firstOrNull { it.key == FilterBy.CASHBACK || it.key == FilterBy.FREE_SHIPPING }?.key?.let { type ->
-            voucherType =
-                when (type) {
-                    FilterBy.FREE_SHIPPING -> VoucherTypeConst.FREE_ONGKIR
-                    FilterBy.CASHBACK -> VoucherTypeConst.CASHBACK
-                    else -> VoucherTypeConst.DISCOUNT
-                }
-        }
-
-        val voucherTargetFilter =
-            activeFilterList.filter { it.key == FilterBy.PUBLIC || it.key == FilterBy.SPECIAL }
-        voucherTarget =
-            if (voucherTargetFilter.size in 1..2) {
-                voucherTargetFilter.map {
-                    when (it.key) {
-                        FilterBy.PUBLIC -> VoucherTargetType.PUBLIC
-                        FilterBy.SPECIAL -> VoucherTargetType.PRIVATE
-                        else -> VoucherTargetType.PUBLIC
-                    }
-                }
-            } else {
-                null
-            }
-
+        mViewModel.voucherType = filterBottomSheet?.getSelectedVoucherType()
+        mViewModel.voucherTarget = filterBottomSheet?.getSelectedVoucherTarget()
+        mViewModel.isSellerCreated = filterBottomSheet?.isSellerCreated() ?: false
+        mViewModel.isSubsidy = filterBottomSheet?.isSubsidy() ?: false
+        mViewModel.isVps = filterBottomSheet?.isVps() ?: false
+        val counter = filterBottomSheet?.getFilterCounter() ?: 0
+        if (counter.isMoreThanZero()) sf_voucher_list.indicatorCounter = counter
+        else sf_voucher_list.resetAllFilters()
         loadInitialData()
     }
 
@@ -1046,8 +1053,8 @@ class VoucherListFragment :
                 renderList(listOf(getEmptyStateUiModel()))
             } else {
                 view?.run {
-                    searchBarMvc.isVisible = !isActiveVoucher
-                    headerChipMvc.isVisible = !isActiveVoucher
+                    headerChipMvc.show()
+                    sf_voucher_list.show()
                     mvcTickerBc.isVisible =
                         isActiveVoucher && mViewModel.getShowBroadCastChatTicker()
                     isToolbarAlreadyLoaded = true
@@ -1101,9 +1108,9 @@ class VoucherListFragment :
                 is Fail -> setOnErrorGetVoucherList(it.throwable)
             }
         })
-        mViewModel.localVoucherListLiveData.observe(viewLifecycleOwner, Observer { result ->
-            setOnSuccessGetVoucherList(result)
-        })
+//        mViewModel.localVoucherListLiveData.observe(viewLifecycleOwner, Observer { result ->
+//            setOnSuccessGetVoucherList(result)
+//        })
         mViewModel.cancelVoucherResponseLiveData.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> {
@@ -1273,16 +1280,31 @@ class VoucherListFragment :
                     view?.showErrorToaster(errorMessage)
                 }
             }
+
+            val sourceRequestParams = mViewModel.getVoucherSourceRequestParams(
+                    isSellerCreated = mViewModel.isSellerCreated,
+                    isVps = mViewModel.isVps,
+                    isSubsidy = mViewModel.isSubsidy
+            )
+
             // get voucher list data
             if (isActiveVoucher) {
-                mViewModel.getActiveVoucherList(shopBasicData == null)
+                mViewModel.getActiveVoucherList(
+                        isFirstTime = shopBasicData == null,
+                        keyword = mViewModel.keyword,
+                        type = mViewModel.voucherType,
+                        target = mViewModel.voucherTarget,
+                        sourceRequestParams = sourceRequestParams
+                )
             } else {
                 mViewModel.getVoucherListHistory(
-                    voucherType,
-                    voucherTarget,
-                    voucherSort,
-                    mViewModel.currentPage,
-                    isInverted
+                        type = mViewModel.voucherType,
+                        keyword = mViewModel.keyword,
+                        targetList = mViewModel.voucherTarget,
+                        sort = mViewModel.voucherSort,
+                        page = mViewModel.currentPage,
+                        isInverted = mViewModel.isInverted,
+                        sourceRequestParams = sourceRequestParams
                 )
             }
         })
