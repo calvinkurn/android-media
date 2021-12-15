@@ -1335,6 +1335,7 @@ class ProductListPresenter @Inject constructor(
                         topAdsViewUrl = product.topAdsViewUrl,
                         topAdsClickUrl = product.topAdsClickUrl,
                         topAdsWishlistUrl = product.topAdsWishlistUrl,
+                        componentId = product.componentId,
                     )
                 }
             )
@@ -2037,7 +2038,7 @@ class ProductListPresenter @Inject constructor(
             sendTrackingImpressBroadMatchAds(broadMatchItemDataView)
 
         when(val carouselProductType = broadMatchItemDataView.carouselProductType) {
-            is BroadMatchProduct -> view.trackBroadMatchImpression(broadMatchItemDataView)
+            is BroadMatchProduct -> view.trackEventImpressionBroadMatchItem(broadMatchItemDataView)
             is DynamicCarouselProduct -> view.trackDynamicProductCarouselImpression(
                     broadMatchItemDataView,
                     carouselProductType.type,
@@ -2083,6 +2084,13 @@ class ProductListPresenter @Inject constructor(
                 broadMatchItemDataView.imageUrl,
                 SearchConstant.TopAdsComponent.BROAD_MATCH_ADS
         )
+    }
+
+    override fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView) {
+        if (isViewNotAttached) return
+
+        if (broadMatchDataView.carouselOptionType == BroadMatch)
+            view.trackEventImpressionBroadMatch(broadMatchDataView)
     }
 
     override fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView) {
