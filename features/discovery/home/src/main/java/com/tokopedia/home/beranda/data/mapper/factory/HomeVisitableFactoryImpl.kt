@@ -348,7 +348,7 @@ class HomeVisitableFactoryImpl(
                                     id = it.id.toString(),
                                     imageUrl = it.imageUrl,
                                     name = it.title,
-                                    attribution = it.galaxyAttribution,
+                                    attribution = it.creativeName,
                                     persona = it.persona,
                                     categoryPersona = it.categoryPersona,
                                     brandId = it.brandId,
