@@ -39,7 +39,7 @@ object Tracker {
     }
 
     object Label {
-        const val HOME_PAGE = "homepag1"
+        const val HOME_PAGE = "homepage"
         const val REWARDS_PAGE = "myreward"
         const val DISCO_PAGE = "disco"
     }

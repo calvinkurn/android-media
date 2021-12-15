@@ -31,6 +31,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -97,6 +98,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private var wishlistItemOnAtc = WishlistV2Response.Data.WishlistV2.Item()
     private var indexOnAtc = 0
     private val listTitleCheckboxIdSelected = arrayListOf<String>()
+    private var loaderDialog: LoaderDialog? = null
 
     private val wishlistViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[WishlistV2ViewModel::class.java]
@@ -529,6 +531,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         wishlistViewModel.atcResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
+                    hideLoadingDialog()
                     if (it.data.isStatusError()) {
                         val atcErrorMessage = it.data.getAtcErrorMessage()
                         if (atcErrorMessage != null) {
@@ -543,6 +546,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     }
                 }
                 is Fail -> {
+                    hideLoadingDialog()
                     context?.also { ctx ->
                         val throwable = it.throwable
                         var errorMessage = if (throwable is ResponseErrorException) {
@@ -1015,6 +1019,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     override fun onAtc(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, position: Int) {
+        showLoadingDialog()
         val atcParam = AddToCartRequestParams(
                 productId = wishlistItem.id.toLong(),
                 productName = wishlistItem.name,
@@ -1151,5 +1156,16 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         binding?.run {
             swipeRefreshLayout.isRefreshing = false
         }
+    }
+
+    private fun showLoadingDialog() {
+        context?.let {
+            loaderDialog = LoaderDialog(it)
+            loaderDialog?.show()
+        }
+    }
+
+    private fun hideLoadingDialog() {
+        loaderDialog?.dialog?.dismiss()
     }
 }

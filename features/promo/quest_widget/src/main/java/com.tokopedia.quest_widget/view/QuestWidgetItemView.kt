@@ -167,7 +167,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
             tvBannerDescSisa.text = item.label?.title
             val showRed = checkIfLessThan5Days(item.label?.title)
             if (showRed) {
-                tvBannerDescSisa.setTextColor(Color.RED)
+                tvBannerDescSisa.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
             }
         }
     }

@@ -31,6 +31,7 @@ import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.utils.RegisterUtil.removeErrorCode
 import com.tokopedia.loginregister.common.utils.SellerAppWidgetHelper
+import com.tokopedia.loginregister.databinding.FragmentSellerSeamlessLoginBinding
 import com.tokopedia.loginregister.login.di.DaggerLoginComponent
 import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.loginregister.login.view.constant.SeamlessSellerConstant
@@ -39,10 +40,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_seller_seamless_login.*
-import kotlinx.android.synthetic.main.fragment_seller_seamless_login.view.*
-import kotlinx.android.synthetic.main.item_account_with_shop.*
-import kotlinx.android.synthetic.main.item_account_with_shop.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 import javax.inject.Inject
 
@@ -68,6 +66,8 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
     private var getUserTaskId = ""
     private var getKeyTaskId = ""
+
+    private val binding: FragmentSellerSeamlessLoginBinding? by viewBinding()
 
     override fun getScreenName(): String = SeamlessLoginAnalytics.SCREEN_SEAMLESS_LOGIN
 
@@ -112,18 +112,18 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
                 if (taskId == getUserTaskId
                         && bundle.getString(SeamlessSellerConstant.KEY_SHOP_NAME)?.isNotEmpty() == true
                         && bundle.getString(SeamlessSellerConstant.KEY_EMAIL)?.isNotEmpty() == true) {
-                    seamless_fragment_shop_name?.run {
+                    binding?.include?.seamlessFragmentShopName?.run {
                         val drawableLeft = AppCompatResources.getDrawable(this.context, R.drawable.ic_shop_dark_grey)
                         text = bundle.getString(SeamlessSellerConstant.KEY_SHOP_NAME)
                         setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null)
                     }
                     context?.run {
-                        if(seamless_fragment_avatar != null) {
-                            ImageHandler.loadImageCircle2(context, seamless_fragment_avatar, bundle.getString(SeamlessSellerConstant.KEY_SHOP_AVATAR))
+                        if(binding?.include?.seamlessFragmentAvatar != null) {
+                            ImageHandler.loadImageCircle2(context, binding?.include?.seamlessFragmentAvatar, bundle.getString(SeamlessSellerConstant.KEY_SHOP_AVATAR))
                         }
                     }
-                    seamless_fragment_name?.text = bundle.getString(SeamlessSellerConstant.KEY_NAME)
-                    seamless_fragment_email?.text = maskEmail(bundle.getString(SeamlessSellerConstant.KEY_EMAIL, ""))
+                    binding?.include?.seamlessFragmentName?.text = bundle.getString(SeamlessSellerConstant.KEY_NAME)
+                    binding?.include?.seamlessFragmentEmail?.text = maskEmail(bundle.getString(SeamlessSellerConstant.KEY_EMAIL, ""))
                     hideProgressBar()
                     if (autoLogin) {
                         onPositiveBtnClick()
@@ -144,23 +144,24 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
             email.replace("(?<=.)[^@](?=[^@]*?@)|(?:(?<=@.)|(?!^)\\G(?=[^@]*$)).(?=.*\\.)".toRegex(), "*")
 
     private fun showFullProgressBar(){
-        seller_seamless_loader?.show()
-        seller_seamless_main_view?.hide()
+
+        binding?.sellerSeamlessLoader?.show()
+        binding?.sellerSeamlessLoader?.hide()
     }
 
     private fun showProgressBar(){
-        seller_seamless_main_view?.alpha = 0.4F
-        seller_seamless_loader?.show()
-        view?.seller_seamless_positive_btn?.isEnabled = false
-        view?.seller_seamless_negative_btn?.isEnabled = false
+        binding?.sellerSeamlessMainView?.alpha = 0.4F
+        binding?.sellerSeamlessLoader?.show()
+        binding?.sellerSeamlessPositiveBtn?.isEnabled = false
+        binding?.sellerSeamlessNegativeBtn?.isEnabled = false
     }
 
     private fun hideProgressBar(){
-        view?.seller_seamless_positive_btn?.isEnabled = true
-        view?.seller_seamless_negative_btn?.isEnabled = true
-        seller_seamless_main_view?.alpha = 1.0F
-        seller_seamless_loader?.hide()
-        seller_seamless_main_view?.show()
+        binding?.sellerSeamlessPositiveBtn?.isEnabled = true
+        binding?.sellerSeamlessNegativeBtn?.isEnabled = true
+        binding?.sellerSeamlessMainView?.alpha = 1.0F
+        binding?.sellerSeamlessLoader?.hide()
+        binding?.sellerSeamlessMainView?.show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -176,25 +177,24 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_seller_seamless_login, container, false)
-
-        context?.run {
-            view?.seamless_fragment_shop_name?.typeface = com.tokopedia.unifyprinciples.getTypeface(this, "NunitoSansExtraBold.ttf")
-            view?.seller_seamless_title?.typeface = com.tokopedia.unifyprinciples.getTypeface(this, "NunitoSansExtraBold.ttf")
-        }
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        context?.run {
+            binding?.include?.seamlessFragmentShopName?.typeface = com.tokopedia.unifyprinciples.getTypeface(this, "NunitoSansExtraBold.ttf")
+            binding?.sellerSeamlessTitle?.typeface = com.tokopedia.unifyprinciples.getTypeface(this, "NunitoSansExtraBold.ttf")
+        }
         if(GlobalConfig.isSellerApp()){
             connectService()
         }
 
         showFullProgressBar()
 
-        view?.seller_seamless_positive_btn.setOnClickListener { onPositiveBtnClick() }
+        binding?.sellerSeamlessPositiveBtn?.setOnClickListener { onPositiveBtnClick() }
 
-        view?.seller_seamless_negative_btn.setOnClickListener { onNegativeBtnClick() }
+        binding?.sellerSeamlessNegativeBtn?.setOnClickListener { onNegativeBtnClick() }
 
         initObserver()
     }
