@@ -413,14 +413,11 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 updateButtonState(isGoodRating, textArea?.isEmpty()?.not() ?: false)
                 createReviewViewModel.updateProgressBarFromRating(isGoodRating)
                 if (isGoodRating) {
-                    if (!hasIncentive()) {
-                        showTemplates()
-                    }
                     if (shouldShowBadRatingReasons()) badRatingCategoryRecyclerView?.hide()
                 } else {
-                    hideTemplates()
                     if (shouldShowBadRatingReasons()) badRatingCategoryRecyclerView?.show()
                 }
+                setTemplateVisibility()
                 clearFocusAndHideSoftInput(view)
             }
         })
@@ -526,8 +523,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             stopButtonLoading()
             when (result) {
                 is PostSubmitUiState.ShowThankYouBottomSheet -> showThankYouBottomSheet(
-                    result.data,
-                    result.hasPendingIncentive
+                    result.data
                 )
                 is PostSubmitUiState.ShowThankYouToaster -> showThankYouToaster(
                     result.data
@@ -565,7 +561,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun onSuccessGetOvoIncentive(ovoDomain: ProductRevIncentiveOvoDomain?) {
         ovoDomain?.productrevIncentiveOvo?.let {
-            hideTemplates()
             incentivesTicker?.apply {
                 setHtmlDescription(it.ticker.subtitle)
                 setDescriptionClickEvent(object : TickerCallback {
@@ -652,6 +647,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun onSuccessGetTemplate(templates: List<String>) {
+        setTemplateVisibility()
         templatesRecyclerView?.apply {
             adapter = templatesAdapter
             layoutManager = StaggeredGridLayoutManager(TEMPLATES_ROW_COUNT, RecyclerView.HORIZONTAL)
@@ -1239,15 +1235,15 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun showThankYouBottomSheet(
-        data: ProductrevGetPostSubmitBottomSheetResponse,
-        hasPendingIncentive: Boolean
+        data: ProductrevGetPostSubmitBottomSheetResponse
     ) {
         if (thankYouBottomSheet == null) {
             thankYouBottomSheet = context?.let {
                 IncentiveOvoThankYouBottomSheetBuilder.getThankYouBottomSheet(
                     context = it,
                     postSubmitBottomSheetData = data,
-                    hasPendingIncentive = hasPendingIncentive,
+                    hasIncentive = hasIncentive(),
+                    hasOngoingChallenge = hasOngoingChallenge(),
                     incentiveOvoListener = this,
                     trackerData = getThankYouBottomSheetTrackerData(),
                 )

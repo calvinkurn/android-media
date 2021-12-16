@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.createreputation.analytics
 
 import android.net.Uri
+import android.os.Bundle
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.review.common.analytics.ReviewTrackingConstant
@@ -556,6 +557,33 @@ object CreateReviewTracking {
         )
     }
 
+    fun eventViewPostSubmitReviewBottomSheetForOngoingChallenge(
+        title: String,
+        reputationId: String,
+        orderId: String,
+        feedbackId: String,
+        productId: String,
+        userId: String
+    ) {
+        Bundle().appendGeneralEventData(
+            eventName = ReviewTrackingConstant.VIEW_REVIEW,
+            eventCategory = CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+            eventAction = CreateReviewTrackingConstants.EVENT_ACTION_VIEW_POST_SUBMIT_REVIEW_BOTTOM_SHEET,
+            eventLabel = String.format(
+                CreateReviewTrackingConstants.EVENT_LABEL_VIEW_POST_SUBMIT_REVIEW_BOTTOM_SHEET,
+                title,
+                reputationId,
+                orderId,
+                productId,
+                feedbackId
+            ),
+        ).appendBusinessUnit(CreateReviewTrackingConstants.BUSINESS_UNIT)
+            .appendCurrentSite(CreateReviewTrackingConstants.CURRENT_SITE)
+            .appendPromotionsEE(title)
+            .appendUserId(userId)
+            .sendEnhancedEcommerce(ReviewTrackingConstant.VIEW_REVIEW)
+    }
+
     fun eventViewBadRatingReason(
         trackingQueue: TrackingQueue,
         orderId: String,
@@ -619,6 +647,34 @@ object CreateReviewTracking {
                 userId
             )
         )
+    }
+
+    fun eventClickPostSubmitBottomSheetButton(
+        bottomSheetTitle: String,
+        ctaText: String,
+        reputationId: String,
+        orderId: String,
+        productId: String,
+        feedbackId: String,
+        userId: String
+    ) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+            eventCategory = CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+            eventAction = CreateReviewTrackingConstants.EVENT_ACTION_CLICK_THANK_YOU_BOTTOM_SHEET_BUTTON,
+            eventLabel = String.format(
+                CreateReviewTrackingConstants.EVENT_LABEL_CLICK_POST_SUBMIT_REVIEW_BOTTOM_SHEET_CTA,
+                bottomSheetTitle,
+                ctaText,
+                reputationId,
+                orderId,
+                productId,
+                feedbackId
+            )
+        ).appendBusinessUnit(CreateReviewTrackingConstants.BUSINESS_UNIT)
+            .appendCurrentSite(CreateReviewTrackingConstants.CURRENT_SITE)
+            .appendUserId(userId)
+            .sendGeneralEvent()
     }
 
     private fun createEventMap(
@@ -734,8 +790,26 @@ object CreateReviewTracking {
         return this
     }
 
+    private fun Bundle.appendGeneralEventData(
+        eventName: String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String
+    ): Bundle {
+        putString(TrackAppUtils.EVENT, eventName)
+        putString(TrackAppUtils.EVENT_CATEGORY, eventCategory)
+        putString(TrackAppUtils.EVENT_ACTION, eventAction)
+        putString(TrackAppUtils.EVENT_LABEL, eventLabel)
+        return this
+    }
+
     private fun MutableMap<String, Any>.appendBusinessUnit(businessUnit: String): MutableMap<String, Any> {
         put(CreateReviewTrackingConstants.KEY_BUSINESS_UNIT, businessUnit)
+        return this
+    }
+
+    private fun Bundle.appendBusinessUnit(businessUnit: String): Bundle {
+        putString(CreateReviewTrackingConstants.KEY_BUSINESS_UNIT, businessUnit)
         return this
     }
 
@@ -744,8 +818,31 @@ object CreateReviewTracking {
         return this
     }
 
+    private fun Bundle.appendCurrentSite(currentSite: String): Bundle {
+        putString(CreateReviewTrackingConstants.KEY_CURRENT_SITE, currentSite)
+        return this
+    }
+
     private fun MutableMap<String, Any>.appendUserId(userId: String): MutableMap<String, Any> {
         put(ReviewTrackingConstant.KEY_USER_ID, userId)
+        return this
+    }
+
+    private fun Bundle.appendUserId(userId: String): Bundle {
+        putString(ReviewTrackingConstant.KEY_USER_ID, userId)
+        return this
+    }
+
+    private fun Bundle.appendPromotionsEE(title: String): Bundle {
+        val promotions = listOf(
+            Bundle().apply {
+                putString(CreateReviewTrackingConstants.EVENT_KEY_EE_CREATIVE_NAME, null)
+                putString(CreateReviewTrackingConstants.EVENT_KEY_EE_CREATIVE_SLOT, null)
+                putString(CreateReviewTrackingConstants.EVENT_KEY_EE_ITEM_ID, title)
+                putString(CreateReviewTrackingConstants.EVENT_KEY_EE_ITEM_NAME, null)
+            }
+        )
+        putParcelableArrayList(CreateReviewTrackingConstants.EVENT_KEY_EE_PROMOTIONS, ArrayList(promotions))
         return this
     }
 
@@ -753,25 +850,7 @@ object CreateReviewTracking {
         TrackApp.getInstance().gtm.sendGeneralEvent(this)
     }
 
-    fun eventClickPostSubmitBottomSheetButton(
-        title: String,
-        buttonText: String,
-        hasPendingIncentive: Boolean
-    ) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            createEventMap(
-                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
-                CreateReviewTrackingConstants.EVENT_CATEGORY,
-                String.format(
-                    CreateReviewTrackingConstants.EVENT_ACTION_CLICK_THANK_YOU_BOTTOM_SHEET_BUTTON,
-                    buttonText,
-                    title
-                ),
-                String.format(
-                    CreateReviewTrackingConstants.EVENT_LABEL_PENDING_INCENTIVE_QUEUE,
-                    hasPendingIncentive.toString()
-                )
-            )
-        )
+    private fun Bundle.sendEnhancedEcommerce(eventName: String) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventName, this)
     }
 }

@@ -769,7 +769,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 IncentiveOvoThankYouBottomSheetBuilder.getThankYouBottomSheet(
                     it,
                     data,
-                    hasPendingIncentive,
+                    hasIncentive(),
+                    hasOngoingChallenge(),
                     this@CreateReviewFragment,
                     getThankYouFormTrackerData()
                 )

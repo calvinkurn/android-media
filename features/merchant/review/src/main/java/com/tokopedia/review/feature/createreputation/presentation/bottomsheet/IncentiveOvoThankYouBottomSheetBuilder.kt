@@ -25,7 +25,8 @@ object IncentiveOvoThankYouBottomSheetBuilder {
     fun getThankYouBottomSheet(
         context: Context,
         postSubmitBottomSheetData: ProductrevGetPostSubmitBottomSheetResponse,
-        hasPendingIncentive: Boolean,
+        hasIncentive: Boolean,
+        hasOngoingChallenge: Boolean,
         incentiveOvoListener: IncentiveOvoListener,
         trackerData: ThankYouBottomSheetTrackerData,
     ): BottomSheetUnify {
@@ -39,7 +40,8 @@ object IncentiveOvoThankYouBottomSheetBuilder {
         setupThankYouView(
             child,
             postSubmitBottomSheetData,
-            hasPendingIncentive,
+            hasIncentive,
+            hasOngoingChallenge,
             bottomSheetUnify,
             incentiveOvoListener,
             trackerData,
@@ -50,7 +52,8 @@ object IncentiveOvoThankYouBottomSheetBuilder {
     private fun setupThankYouView(
         view: View,
         postSubmitBottomSheetData: ProductrevGetPostSubmitBottomSheetResponse,
-        hasPendingIncentive: Boolean,
+        hasIncentive: Boolean,
+        hasOngoingChallenge: Boolean,
         bottomSheet: BottomSheetUnify,
         incentiveOvoListener: IncentiveOvoListener,
         trackerData: ThankYouBottomSheetTrackerData,
@@ -58,7 +61,13 @@ object IncentiveOvoThankYouBottomSheetBuilder {
         bottomSheet.run {
             overlayClickDismiss = false
             showCloseIcon = false
-            setupShowListener(view, postSubmitBottomSheetData, hasPendingIncentive, trackerData)
+            setupShowListener(
+                view,
+                postSubmitBottomSheetData,
+                hasIncentive,
+                hasOngoingChallenge,
+                trackerData
+            )
             setupDismissListener(incentiveOvoListener)
         }
     }
@@ -66,14 +75,21 @@ object IncentiveOvoThankYouBottomSheetBuilder {
     private fun BottomSheetUnify.setupShowListener(
         childView: View,
         postSubmitBottomSheetData: ProductrevGetPostSubmitBottomSheetResponse,
-        hasPendingIncentive: Boolean,
+        hasIncentive: Boolean,
+        hasOngoingChallenge: Boolean,
         trackerData: ThankYouBottomSheetTrackerData
     ) {
         val bottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
                     BottomSheetBehavior.STATE_EXPANDED, BottomSheetBehavior.STATE_HALF_EXPANDED -> {
-                        onBottomSheetExpanded(childView, postSubmitBottomSheetData, hasPendingIncentive, trackerData)
+                        onBottomSheetExpanded(
+                            childView,
+                            postSubmitBottomSheetData,
+                            hasIncentive,
+                            hasOngoingChallenge,
+                            trackerData
+                        )
                     }
                 }
             }
@@ -90,7 +106,8 @@ object IncentiveOvoThankYouBottomSheetBuilder {
     private fun BottomSheetUnify.onBottomSheetExpanded(
         childView: View,
         postSubmitBottomSheetData: ProductrevGetPostSubmitBottomSheetResponse,
-        hasPendingIncentive: Boolean,
+        hasIncentive: Boolean,
+        hasOngoingChallenge: Boolean,
         trackerData: ThankYouBottomSheetTrackerData
     ) {
         with(childView) {
@@ -100,16 +117,18 @@ object IncentiveOvoThankYouBottomSheetBuilder {
             setupPrimaryButton(
                 postSubmitBottomSheetData = postSubmitBottomSheetData,
                 bottomSheetUnify = this@onBottomSheetExpanded,
-                hasPendingIncentive = hasPendingIncentive
+                trackerData = trackerData
             )
             setupSecondaryButton(
                 postSubmitBottomSheetData = postSubmitBottomSheetData,
                 bottomSheetUnify = this@onBottomSheetExpanded,
-                hasPendingIncentive = hasPendingIncentive
+                trackerData = trackerData
             )
             sendViewThankYouBottomSheetTracker(
                 postSubmitBottomSheetData,
                 trackerData,
+                hasIncentive,
+                hasOngoingChallenge,
                 context
             )
         }
@@ -153,7 +172,7 @@ object IncentiveOvoThankYouBottomSheetBuilder {
     private fun View.setupPrimaryButton(
         postSubmitBottomSheetData: ProductrevGetPostSubmitBottomSheetResponse,
         bottomSheetUnify: BottomSheetUnify,
-        hasPendingIncentive: Boolean,
+        trackerData: ThankYouBottomSheetTrackerData,
     ) {
         val button = postSubmitBottomSheetData.buttonList?.firstOrNull()
         val incentiveOvoSendAnother: UnifyButton? = findViewById(R.id.incentiveOvoSendAnother)
@@ -172,9 +191,9 @@ object IncentiveOvoThankYouBottomSheetBuilder {
                     actionType,
                     button?.appLink.orEmpty(),
                     bottomSheetUnify,
-                    hasPendingIncentive,
                     postSubmitBottomSheetData.getTitle(context),
-                    buttonText
+                    buttonText,
+                    trackerData
                 )
             )
         }
@@ -183,7 +202,7 @@ object IncentiveOvoThankYouBottomSheetBuilder {
     private fun View.setupSecondaryButton(
         postSubmitBottomSheetData: ProductrevGetPostSubmitBottomSheetResponse,
         bottomSheetUnify: BottomSheetUnify,
-        hasPendingIncentive: Boolean,
+        trackerData: ThankYouBottomSheetTrackerData,
     ) {
         val incentiveOvoLater: UnifyButton? = findViewById(R.id.incentiveOvoLater)
         val button = if (postSubmitBottomSheetData.buttonList?.size.orZero() > 1) {
@@ -203,9 +222,9 @@ object IncentiveOvoThankYouBottomSheetBuilder {
                         actionType,
                         button.appLink.orEmpty(),
                         bottomSheetUnify,
-                        hasPendingIncentive,
                         postSubmitBottomSheetData.getTitle(context),
-                        buttonText
+                        buttonText,
+                        trackerData
                     )
                 )
             }
@@ -216,6 +235,8 @@ object IncentiveOvoThankYouBottomSheetBuilder {
     private fun sendViewThankYouBottomSheetTracker(
         postSubmitBottomSheetData: ProductrevGetPostSubmitBottomSheetResponse,
         trackerData: ThankYouBottomSheetTrackerData,
+        hasIncentive: Boolean,
+        hasOngoingChallenge: Boolean,
         context: Context
     ) {
         CreateReviewTracking.eventViewThankYouBottomSheet(
@@ -226,6 +247,16 @@ object IncentiveOvoThankYouBottomSheetBuilder {
             trackerData.productId,
             trackerData.userId
         )
+        if (!hasIncentive && hasOngoingChallenge) {
+            CreateReviewTracking.eventViewPostSubmitReviewBottomSheetForOngoingChallenge(
+                postSubmitBottomSheetData.getTitle(context),
+                trackerData.reputationId,
+                trackerData.orderId,
+                trackerData.feedbackId,
+                trackerData.productId,
+                trackerData.userId
+            )
+        }
     }
 
     private fun ProductrevGetPostSubmitBottomSheetResponse.getTitle(context: Context): String {
@@ -236,20 +267,24 @@ object IncentiveOvoThankYouBottomSheetBuilder {
         actionType: String,
         appLink: String,
         bottomSheetUnify: BottomSheetUnify,
-        hasPendingIncentive: Boolean,
-        title: String,
-        buttonText: String,
+        bottomSheetTitle: String,
+        ctaText: String,
+        trackerData: ThankYouBottomSheetTrackerData
     ): View.OnClickListener {
         return View.OnClickListener { view ->
+            CreateReviewTracking.eventClickPostSubmitBottomSheetButton(
+                bottomSheetTitle = bottomSheetTitle,
+                ctaText = ctaText,
+                reputationId = trackerData.reputationId,
+                orderId = trackerData.orderId,
+                productId = trackerData.productId,
+                feedbackId = trackerData.feedbackId,
+                userId = trackerData.userId
+            )
             bottomSheetUnify.dismiss()
             when (actionType) {
                 ProductrevGetPostSubmitBottomSheetResponse.Button.TYPE_STANDARD,
                 ProductrevGetPostSubmitBottomSheetResponse.Button.TYPE_WEB_VIEW -> {
-                    CreateReviewTracking.eventClickPostSubmitBottomSheetButton(
-                        title,
-                        buttonText,
-                        hasPendingIncentive
-                    )
                     RouteManager.route(view.context, appLink)
                 }
             }

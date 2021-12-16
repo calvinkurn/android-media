@@ -23,7 +23,7 @@ object CreateReviewTrackingConstants {
     const val EVENT_ACTION_VIEW_UNSAVED_DIALOG = "view - ulasanmu nanti hilang pop up"
     const val EVENT_ACTION_CLICK_BAD_RATING_REASON = "click - bad review template checkbox"
     const val EVENT_ACTION_IMPRESS_BAD_RATING_REASON = "impression - bad review template checkbox"
-    const val EVENT_ACTION_CLICK_THANK_YOU_BOTTOM_SHEET_BUTTON = "click - %s on %s"
+    const val EVENT_ACTION_CLICK_THANK_YOU_BOTTOM_SHEET_BUTTON = "click - cta on bottomsheet postsubmit review"
 
     const val EVENT_CATEGORY = "product review detail page"
     const val EVENT_CATEGORY_REVIEW_BOTTOM_SHEET =
@@ -42,6 +42,8 @@ object CreateReviewTrackingConstants {
         "pop up title:%s;reputation_id:%s;order_id:%s;product_id:%s;feedback_id:%s;"
     const val EVENT_LABEL_VIEW_POST_SUBMIT_REVIEW_BOTTOM_SHEET =
         "pop_up_title:%s;reputation_id:%s;order_id:%s;product_id:%s;feedback_id:%s;"
+    const val EVENT_LABEL_CLICK_POST_SUBMIT_REVIEW_BOTTOM_SHEET_CTA =
+        "pop_up_title:%s;cta:%s;reputation_id:%s;order_id:%s;product_id:%s;feedback_id:%s;"
     const val EVENT_LABEL_VIEW_INCENTIVES_TICKER =
         "message:%s;reputation_id:%s;order_id:%s;product_id:%s;"
     const val EVENT_LABEL_VIEW_ONGOING_CHALLENGE_TICKER =
@@ -68,4 +70,11 @@ object CreateReviewTrackingConstants {
 
     const val EVENT_PROMO_VIEW = "promoView"
     const val BAD_RATING_REASON_IMPRESSION_ENHANCED_ECOMMERCE_ID = "reason:%s;"
+
+    const val EVENT_KEY_EE_CREATIVE_NAME = "creative_name"
+    const val EVENT_KEY_EE_CREATIVE_SLOT = "creative_slot"
+    const val EVENT_KEY_EE_ITEM_ID = "item_id"
+    const val EVENT_KEY_EE_ITEM_NAME = "item_name"
+
+    const val EVENT_KEY_EE_PROMOTIONS = "promotions"
 }
