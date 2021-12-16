@@ -1,7 +1,7 @@
 package com.tokopedia.home.beranda.di.module.query
 
-object QueryHome {
-    val homeQuery: String = "" +
+internal object QueryHome {
+    const val homeQuery: String = "" +
             "query homeData\n" +
             "        {\n" +
             "        status\n" +
@@ -60,21 +60,6 @@ object QueryHome {
             "                flags(name: \"has_recom_nav_button,dynamic_icon_wrap,has_tokopoints,is_autorefresh\"){\n" +
             "                    name\n" +
             "                    is_active\n" +
-            "                }\n" +
-            "            }\n" +
-            "        }"
-
-    val homeDataRevampQuery: String = "" +
-            "query homeData\n" +
-            "        {\n" +
-            "        status\n" +
-            "          homeFlag{\n" +
-            "                event_time\n" +
-            "                server_time\n" +
-            "                flags(name: \"has_recom_nav_button,dynamic_icon_wrap,has_tokopoints,is_autorefresh\"){\n" +
-            "                    name\n" +
-            "                    is_active\n" +
-            "                    integer_value\n" +
             "                }\n" +
             "            }\n" +
             "        }"
