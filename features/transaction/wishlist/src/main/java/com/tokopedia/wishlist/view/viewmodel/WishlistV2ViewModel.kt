@@ -29,6 +29,7 @@ import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_CAROUSEL
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_TITLE
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_TITLE_WITH_MARGIN
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_TOPADS
 import com.tokopedia.wishlist.util.WishlistV2Consts.WISHLIST_PAGE_NAME
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment.Companion.ATC_WISHLIST
@@ -132,7 +133,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
             listData = mapToEmptyState(wishlistV2Response, listData, isFilterActive)
 
         } else {
-            // only for wishlist size < 4
+            // only for wishlist which has 1 page response
             if (wishlistV2Response.page == 1 && !wishlistV2Response.hasNextPage) {
                 listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
 
@@ -200,10 +201,10 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         val recommItems = getRecommendationWishlistV2(1, listOf(), WISHLIST_PAGE_NAME)
 
         if (index > 0) {
-            listData.add(index, WishlistV2TypeLayoutData(WishlistV2Consts.RECOMMENDED_FOR_YOU, TYPE_RECOMMENDATION_TITLE))
+            listData.add(index, WishlistV2TypeLayoutData(WishlistV2Consts.RECOMMENDED_FOR_YOU, TYPE_RECOMMENDATION_TITLE_WITH_MARGIN))
             listData.add(index+1, WishlistV2TypeLayoutData(recommItems, TYPE_RECOMMENDATION_CAROUSEL))
         } else {
-            listData.add(WishlistV2TypeLayoutData(recommItems.title, TYPE_RECOMMENDATION_TITLE))
+            listData.add(WishlistV2TypeLayoutData(recommItems.title, TYPE_RECOMMENDATION_TITLE_WITH_MARGIN))
             listData.add(WishlistV2TypeLayoutData(recommItems, TYPE_RECOMMENDATION_CAROUSEL))
         }
 
