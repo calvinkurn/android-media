@@ -5,6 +5,6 @@ package com.tokopedia.play.data
  */
 data class CartFeedbackResponseModel(
     val isSuccess: Boolean,
-    val errorMessage: Throwable,
+    val errorMessage: String,
     val cartId: String
 )

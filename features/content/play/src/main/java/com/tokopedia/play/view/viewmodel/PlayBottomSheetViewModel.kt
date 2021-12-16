@@ -106,7 +106,7 @@ class PlayBottomSheetViewModel @Inject constructor(
             _observableAddToCart.value = PlayResult.Success(Event(
                     CartFeedbackUiModel(
                             isSuccess = false,
-                            errorMessage = it,
+                            errorMessage = it.localizedMessage.orEmpty(),
                             cartId = "",
                             product = product,
                             action = action,

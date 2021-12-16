@@ -10,7 +10,7 @@ import com.tokopedia.play.view.type.ProductAction
  */
 data class CartFeedbackUiModel(
         val isSuccess: Boolean = false,
-        val errorMessage: Throwable = Throwable(),
+        val errorMessage: String = "",
         val action: ProductAction,
 
         @TrackingField
