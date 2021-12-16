@@ -30,15 +30,16 @@ class ThankPageViewModelUnitTest {
     private val fetchFailedErrorMessage = "Fetch Failed"
     private val dispatcher = TestCoroutineDispatcher()
     private lateinit var viewModel: ThanksPageDataViewModel
-    val mockThrowable = Throwable(message = fetchFailedErrorMessage)
+    private val mockThrowable = Throwable(message = fetchFailedErrorMessage)
 
-    val thankPageUseCase = mockk<ThanksPageDataUseCase>(relaxed = true)
-    val thanksPageMapperUseCase = mockk<ThanksPageMapperUseCase>(relaxed = true)
-    val gyroEngineRequestUseCase = mockk<GyroEngineRequestUseCase>(relaxed = true)
-    val gyroEngineMapperUseCase = mockk<GyroEngineMapperUseCase>(relaxed = true)
-    val topTickerUseCase = mockk<TopTickerUseCase>(relaxed = true)
-    val defaultAddressUseCase = mockk<GetDefaultAddressUseCase>(relaxed = true)
-    val thankYouTopAdsViewModelUseCase = mockk<ThankYouTopAdsViewModelUseCase>(relaxed = true)
+    private val thankPageUseCase = mockk<ThanksPageDataUseCase>(relaxed = true)
+    private val thanksPageMapperUseCase = mockk<ThanksPageMapperUseCase>(relaxed = true)
+    private val gyroEngineRequestUseCase = mockk<GyroEngineRequestUseCase>(relaxed = true)
+    private val gyroEngineMapperUseCase = mockk<GyroEngineMapperUseCase>(relaxed = true)
+    private val topTickerUseCase = mockk<TopTickerUseCase>(relaxed = true)
+    private val defaultAddressUseCase = mockk<GetDefaultAddressUseCase>(relaxed = true)
+    private val thankYouTopAdsViewModelUseCase =
+        mockk<ThankYouTopAdsViewModelUseCase>(relaxed = true)
 
     @Before
     fun setUp() {
