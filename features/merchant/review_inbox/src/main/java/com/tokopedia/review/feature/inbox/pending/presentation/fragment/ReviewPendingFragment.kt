@@ -320,12 +320,17 @@ class ReviewPendingFragment :
         )
     }
 
-    override fun onReviewCredibilityWidgetClicked(appLink: String) {
+    override fun onReviewCredibilityWidgetClicked(appLink: String, title: String, position: Int) {
         if (appLink.isBlank()) {
             goToCredibility()
         } else {
             RouteManager.route(context, appLink)
         }
+        ReviewPendingTracking.trackCredibilityCarouselItemClick(position, title, viewModel.getUserId())
+    }
+
+    override fun onReviewCredibilityWidgetImpressed(title: String, position: Int) {
+        ReviewPendingTracking.trackCredibilityCarouselItemImpression(position, title, viewModel.getUserId())
     }
 
     override fun onSwipeRefresh() {
@@ -606,7 +611,6 @@ class ReviewPendingFragment :
             viewModel.getUserId(),
             INBOX_SOURCE
         )
-        ReviewPendingTracking.trackOnCredibilityClicked(viewModel.getUserId())
     }
 
     private fun addCredibilityCarouselWidget(banners: List<ProductrevWaitForFeedbackLabelAndImage>) {

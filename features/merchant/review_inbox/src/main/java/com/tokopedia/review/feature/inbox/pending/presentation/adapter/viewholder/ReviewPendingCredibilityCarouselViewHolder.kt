@@ -70,9 +70,9 @@ class ReviewPendingCredibilityCarouselViewHolder(
         items: List<ReviewPendingCredibilityUiModel>
     ) {
         val itemWidth = calculateItemViewWidth(items.size == 1)
-        items.forEach {
+        items.forEachIndexed { index, item ->
             createItemView(context, itemWidth).apply {
-                bindItem(this, it)
+                bindItem(this, item, index)
             }.run {
                 addItem(this)
             }
@@ -97,10 +97,10 @@ class ReviewPendingCredibilityCarouselViewHolder(
         }
     }
 
-    private fun bindItem(view: View, data: Any) {
+    private fun bindItem(view: View, data: Any, index: Int) {
         if (data is ReviewPendingCredibilityUiModel) {
             val viewHolder = ReviewPendingCredibilityViewHolder(view, reviewPendingItemListener)
-            viewHolder.bind(data)
+            viewHolder.bind(data, index)
         }
     }
 }

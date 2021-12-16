@@ -13,4 +13,20 @@ object ReviewPendingTrackingConstants {
     const val PDP_BUSINESS_UNIT = "product detail page"
     const val CURRENT_SITE = "currentSite"
     const val CREDIBILITY_CURRENT_SITE = "tokopediamarketplace"
+
+    const val EVENT_NAME_VALUE_SELECT_CONTENT = "select_content"
+    const val EVENT_NAME_VALUE_VIEW_ITEM = "view_item"
+
+    const val EVENT_ACTION_VALUE_CLICK_WIDGET_ON_REVIEW_INBOX = "click - ulasan widget on inbox ulasan"
+    const val EVENT_ACTION_VALUE_IMPRESSION_WIDGET_ON_REVIEW_INBOX = "Impression - ulasan widget on inbox ulasan"
+
+    const val EVENT_CATEGORY_VALUE_REVIEW_PAGE_PENDING_REVIEW = "ulasan page - menunggu diulas"
+
+    const val EVENT_LABEL_VALUE_CAROUSEL_ITEM = "title:%s"
+
+    const val EVENT_FIELD_EE_ITEMS = "items"
+    const val EVENT_FIELD_EE_CREATIVE_NAME = "creative_name"
+    const val EVENT_FIELD_EE_CREATIVE_SLOT = "creative_slot"
+    const val EVENT_FIELD_EE_ITEM_ID = "item_id"
+    const val EVENT_FIELD_EE_ITEM_NAME = "item_name"
 }
