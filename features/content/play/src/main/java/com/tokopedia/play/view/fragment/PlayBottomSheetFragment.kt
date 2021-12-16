@@ -17,6 +17,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.ProductAnalyticHelper
@@ -524,10 +525,11 @@ class PlayBottomSheetFragment @Inject constructor(
                         analytic.clickProductAction(data.product, data.cartId, data.action, data.bottomInsetsType, playViewModel.latestCompleteChannelData.partnerInfo)
                     }
                     else {
+                        val errMsg = ErrorHandler.getErrorMessage(requireContext(), data.errorMessage)
                         doShowToaster(
                                 bottomSheetType = data.bottomInsetsType,
                                 toasterType = Toaster.TYPE_ERROR,
-                                message = if (data.errorMessage.isNotEmpty() && data.errorMessage.isNotBlank()) data.errorMessage else generalErrorMessage
+                                message = errMsg
                         )
                     }
                 }
