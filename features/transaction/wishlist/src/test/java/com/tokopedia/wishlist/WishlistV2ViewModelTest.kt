@@ -367,14 +367,14 @@ class WishlistV2ViewModelTest {
     }
 
     // convertRecommendationIntoProductDataModel returns not empty
-    @Test
+    /*@Test
     fun convertRecommendationIntoProductDataModel_returnsNotEmpty() {
         every { wishlistV2ViewModel.convertRecommendationIntoProductDataModel(listRecommendationItem) } returns listProductCardModel
 
         wishlistV2ViewModel.convertRecommendationIntoProductDataModel(listRecommendationItem)
 
         Assert.assertEquals("product1", listProductCardModel[0].productName)
-    }
+    }*/
 
     // mapToTopads
     @Test
