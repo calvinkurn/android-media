@@ -89,6 +89,7 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             }
             flImageContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_enabled_item)
         } else {
+            tvTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
             flImageContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_disabled_item)
             itemView.setOnClickListener(null)
         }
