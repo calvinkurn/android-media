@@ -55,6 +55,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     private var bottomNavBarClickListener : AffiliateBottomNavBarInterface? = null
 
     companion object {
+        const val STAGING_WITHDRAWAL_APPLINK = "tokopedia://webview?titlebar=false&url=https://1002-staging-feature.tokopedia.com/portal/withdrawal"
         fun getFragmentInstance(userNameParam : String, profilePictureParam : String, affiliateBottomNavBarClickListener: AffiliateBottomNavBarInterface): Fragment {
             return AffiliateIncomeFragment().apply {
                 userName = userNameParam
@@ -219,7 +220,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
             })
         }
         view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.setOnClickListener {
-            RouteManager.route(context, "tokopedia://webview?titlebar=false&url=https://1002-staging-feature.tokopedia.com/portal/withdrawal")
+            RouteManager.route(context, STAGING_WITHDRAWAL_APPLINK)
         }
         ImageHandler.loadImageCircle2(context, view?.findViewById<ImageUnify>(R.id.withdrawal_user_image), profilePicture)
         view?.findViewById<Typography>(R.id.date_range_text)?.text = affiliateIncomeViewModel.getSelectedDate()
