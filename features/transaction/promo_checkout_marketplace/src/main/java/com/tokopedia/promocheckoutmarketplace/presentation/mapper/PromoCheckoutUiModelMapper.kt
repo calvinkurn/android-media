@@ -69,7 +69,9 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 uiData = PromoEligibilityHeaderUiModel.UiData().apply {
                     title = couponSectionItem.title
                     subTitle = couponSectionItem.subTitle
-                    tabId = couponSectionItem.id
+                    if (!couponSectionItem.isEnabled) {
+                        tabId = couponSectionItem.subSections.firstOrNull()?.id ?: ""
+                    }
                 },
                 uiState = PromoEligibilityHeaderUiModel.UiState().apply {
                     isEnabled = couponSectionItem.isEnabled
@@ -92,14 +94,14 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 },
                 uiState = PromoListHeaderUiModel.UiState().apply {
                     isEnabled = couponSubSection.isEnabled
-                    var tmpHasSellectedPromoItem = false
+                    var tmpHasSelectedPromoItem = false
                     couponSubSection.coupons.forEach {
                         if (it.isSelected) {
-                            tmpHasSellectedPromoItem = true
+                            tmpHasSelectedPromoItem = true
                             return@forEach
                         }
                     }
-                    hasSelectedPromoItem = tmpHasSellectedPromoItem
+                    hasSelectedPromoItem = tmpHasSelectedPromoItem
                 }
         )
     }
