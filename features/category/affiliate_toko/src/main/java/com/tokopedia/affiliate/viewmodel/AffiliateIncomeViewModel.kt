@@ -22,6 +22,7 @@ class AffiliateIncomeViewModel : BaseViewModel(){
 
     private var affiliateBalanceData = MutableLiveData<AffiliateBalance.AffiliateBalance.Data>()
     private var affiliateKycData = MutableLiveData<AffiliateKycDetailsData.KycProjectInfo>()
+    private var affiliateKycError = MutableLiveData<String>()
     private var affiliateKycLoader = MutableLiveData<Boolean>()
     private var shimmerVisibility = MutableLiveData<Boolean>()
     private var errorMessage = MutableLiveData<Throwable>()
@@ -52,6 +53,7 @@ class AffiliateIncomeViewModel : BaseViewModel(){
             }
             affiliateKycLoader.value = false
         }, onError = {
+            affiliateKycError.value = it.message
             affiliateKycLoader.value = false
             it.printStackTrace()
         })
@@ -104,5 +106,6 @@ class AffiliateIncomeViewModel : BaseViewModel(){
     fun getAffiliateKycLoader(): LiveData<Boolean> = affiliateKycLoader
     fun getAffiliateDataItems() : LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = affiliateDataList
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
+    fun getKycErrorMessage(): LiveData<String> = affiliateKycError
     fun getRangeChange() :LiveData<Boolean> = rangeChanged
 }

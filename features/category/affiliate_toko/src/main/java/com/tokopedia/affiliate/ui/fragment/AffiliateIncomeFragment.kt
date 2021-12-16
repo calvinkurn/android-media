@@ -34,14 +34,18 @@ import com.tokopedia.unifyprinciples.Typography
 import androidx.lifecycle.ViewModelProviders
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.affiliate.APP_LINK_KYC
+import com.tokopedia.affiliate.KYC_DONE
 import com.tokopedia.affiliate.PAGE_ZERO
+import com.tokopedia.affiliate.WITHDRAWAL_APPLINK
 import com.tokopedia.affiliate.model.response.AffiliateKycDetailsData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -58,7 +62,6 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     private var bottomNavBarClickListener : AffiliateBottomNavBarInterface? = null
 
     companion object {
-        const val STAGING_WITHDRAWAL_APPLINK = "tokopedia://webview?titlebar=false&url=https://1002-staging-feature.tokopedia.com/portal/withdrawal"
         fun getFragmentInstance(userNameParam : String, profilePictureParam : String, affiliateBottomNavBarClickListener: AffiliateBottomNavBarInterface): Fragment {
             return AffiliateIncomeFragment().apply {
                 userName = userNameParam
@@ -160,11 +163,16 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
                 view?.findViewById<LoaderUnify>(R.id.tarik_saldo_loader)?.hide()
             }
         })
-    }
+
+        affiliateIncomeViewModel.getKycErrorMessage().observe(this,{
+            view?.let {
+            Toaster.build(it, getString(R.string.affiliate_retry_message), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            }
+        })}
 
     private fun onGetAffiliateKycData(kycProjectInfo: AffiliateKycDetailsData.KycProjectInfo) {
         when(kycProjectInfo.status){
-            1 -> RouteManager.route(context, STAGING_WITHDRAWAL_APPLINK)
+            KYC_DONE -> RouteManager.route(context, WITHDRAWAL_APPLINK)
             else -> RouteManager.route(context, APP_LINK_KYC)
         }
     }

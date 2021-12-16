@@ -12,6 +12,7 @@ const val AFFILIATE_HELP_URL = "https://affiliate.tokopedia.com/help"
 const val AFFILIATE_LIHAT_KATEGORI = "tokopedia://affiliate/help"
 const val PAGE_ZERO = 0
 const val PAGE_SEGMENT_HELP = "help"
+const val KYC_DONE = 1
 
 const val ANNOUNCEMENT__TYPE_NO_ANNOUNCEMENT = "noAnnouncement"
 const val ANNOUNCEMENT__TYPE_CCA = "cca"
@@ -36,6 +37,8 @@ const val AFFILIATE_TRX_ENABLED = "aff_trx_history"
 const val DEFAULT_VALUE = false
 
 const val PROJECT_ID = 20
+
+const val WITHDRAWAL_APPLINK = "tokopedia://webview?titlebar=false&url=https://1002-staging-feature.tokopedia.com/portal/withdrawal"
 
 const val APP_LINK_DESTINATION = "https://1002-staging-feature.tokopedia.com/portal/withdrawal?module=affiliate"
 
