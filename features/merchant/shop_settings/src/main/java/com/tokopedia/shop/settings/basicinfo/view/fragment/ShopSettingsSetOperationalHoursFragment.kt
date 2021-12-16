@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.accordion.AccordionDataUnify
+import com.tokopedia.accordion.AccordionItemUnify
 import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
@@ -298,7 +299,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                                         opsHour.startTime,
                                         opsHour.endTime,
                                         opsHour.status
-                                ).substring(OperationalHoursUtil.OPERATIONAL_HOUR_START_INDEX),
+                                ),
                                 expandableView = generateAccordionChildView(opsHour),
                                 isExpanded = index == DEFAULT_FIRST_INDEX
                         )
@@ -490,12 +491,27 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                         )
                     }
                 }
+                updateAccordionDescriptionByPosition(
+                        newDescription = OperationalHoursUtil.generateDatetime(
+                                currentSetShopOperationalHourList[currentExpandedAccordionPosition].startTime,
+                                currentSetShopOperationalHourList[currentExpandedAccordionPosition].endTime,
+                                currentSetShopOperationalHourList[currentExpandedAccordionPosition].status,
+                        ),
+                        position = currentExpandedAccordionPosition
+                )
             }
         }
     }
 
     private fun getAccordionChildViewByPosition(position: Int): View? {
         return opsHourAccordion?.accordionData?.get(position)?.expandableView
+    }
+
+    private fun updateAccordionDescriptionByPosition(newDescription: String, position: Int) {
+        opsHourAccordion?.apply {
+            (getChildAt(position) as AccordionItemUnify).accordionSubtitle.text = newDescription
+            accordionData[position].subtitle = newDescription
+        }
     }
 
     private fun renderAccordionContent(
@@ -761,6 +777,14 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         isOperationalHourDataChanged = currentSelectedStartTime != currentSetShopOperationalHourList[position].startTime
         currentSetShopOperationalHourList[position].startTime = currentSelectedStartTime
         changeResetButtonState()
+        updateAccordionDescriptionByPosition(
+                newDescription = OperationalHoursUtil.generateDatetime(
+                        currentSetShopOperationalHourList[position].startTime,
+                        currentSetShopOperationalHourList[position].endTime,
+                        currentSetShopOperationalHourList[position].status
+                ),
+                position = position
+        )
     }
 
     private fun updateEndTimeByPosition(position: Int, selectedHour: String?, selectedMinutes: String?) {
@@ -769,6 +793,14 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         isOperationalHourDataChanged = currentSelectedEndTime != currentSetShopOperationalHourList[position].endTime
         currentSetShopOperationalHourList[position].endTime = currentSelectedEndTime
         changeResetButtonState()
+        updateAccordionDescriptionByPosition(
+                newDescription = OperationalHoursUtil.generateDatetime(
+                        currentSetShopOperationalHourList[position].startTime,
+                        currentSetShopOperationalHourList[position].endTime,
+                        currentSetShopOperationalHourList[position].status
+                ),
+                position = position
+        )
     }
 
     private fun changeResetButtonState() {

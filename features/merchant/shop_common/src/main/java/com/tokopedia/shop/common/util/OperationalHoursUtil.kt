@@ -25,7 +25,6 @@ object OperationalHoursUtil {
     // Time Constant
     const val MIN_START_TIME = "00:00:00"
     const val MAX_END_TIME = "23:59:59"
-    const val OPERATIONAL_HOUR_START_INDEX = 4
     private const val DEFAULT_FIRST_INDEX = 0
     private const val MONTH_INDEX = 1
     private const val YEAR_INDEX = 2
@@ -35,7 +34,6 @@ object OperationalHoursUtil {
     // DateTime format
     private const val ALL_DAY_HOURS = "24 Jam"
     private const val DEFAULT_TIMEZONE = "WIB"
-    private const val HOUR = "Jam"
     const val ALL_DAY = "Buka $ALL_DAY_HOURS"
     const val HOLIDAY = "Libur rutin"
     const val CAN_ATC_TEXT = "Produkmu bisa dibeli"
@@ -108,7 +106,7 @@ object OperationalHoursUtil {
             HOLIDAY_CAN_ATC
         } else {
             // Operational hours format
-            "$HOUR ${formatDateTime(startTime)} - ${formatDateTime(endTime)} $DEFAULT_TIMEZONE"
+            "${formatDateTime(startTime)} - ${formatDateTime(endTime)} $DEFAULT_TIMEZONE"
         }
     }
 

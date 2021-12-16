@@ -70,10 +70,8 @@ class ShopSettingsOperationalHoursListAdapter(
                 CANNOT_ATC_TEXT
             }
             val operationalHoursTextFormatted = when (operationalHours) {
-                ALL_DAY -> operationalHours
-                HOLIDAY_CAN_ATC,
-                HOLIDAY_CANNOT_ATC -> HOLIDAY
-                else -> operationalHours.substring(OperationalHoursUtil.OPERATIONAL_HOUR_START_INDEX)
+                HOLIDAY_CAN_ATC, HOLIDAY_CANNOT_ATC -> HOLIDAY
+                else -> operationalHours
             }
 
             opsHourListUiModel.add(ShopOperationalHourUiModel(

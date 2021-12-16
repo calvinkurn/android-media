@@ -320,13 +320,10 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                             opsHour.endTime,
                             opsHour.status
                     )
-                    tvShopStatus?.text = if (opsHourText == OperationalHoursUtil.HOLIDAY_CAN_ATC || opsHourText == OperationalHoursUtil.HOLIDAY_CANNOT_ATC) {
-                        opsHourText
-                    } else {
-                        getString(R.string.shop_settings_info_operational_hours,
-                                opsHourText.substring(OPERATIONAL_HOUR_START_INDEX, opsHourText.length).trim()
-                        )
-                    }
+                    tvShopStatus?.text = getString(
+                            R.string.shop_settings_info_operational_hours,
+                            opsHourText.trim()
+                    )
                 }
             }
         })
