@@ -4,11 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachproduct.data.model.mapper.mapToListProduct
 import com.tokopedia.attachproduct.domain.model.mapper.toDomainModelMapper
 import com.tokopedia.attachproduct.domain.usecase.AttachProductUseCase
-import com.tokopedia.attachproduct.view.presenter.AttachProductContract
 import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel
 import com.tokopedia.usecase.coroutines.*
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -41,12 +39,14 @@ class AttachProductViewModel @Inject constructor
             val result = useCase(hashMapOf<String, Any>(PARAM to "device=android&source=attach_product&rows=$ROW&q=$query&shop_id=" +
                     "$shopId&start=$start&user_warehouseId=$warehouseId"))
             val resultModel = result.mapToListProduct().toDomainModelMapper()
-            _products.value = Success(resultModel)
             if (query.isEmpty()) {
+                _products.value = Success(resultModel)
                 _products.value?.let { data ->
                     val dataSuccess = data as Success
                     cacheData(dataSuccess)
                 }
+            } else {
+                _products.value = Success(resultModel)
             }
         }, onError = {
             _products.value = Fail(it)
@@ -72,7 +72,6 @@ class AttachProductViewModel @Inject constructor
             _cacheHasNext = false
         }
         _cacheList.addAll(listData)
-
     }
 
     companion object {
