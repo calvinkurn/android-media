@@ -3,13 +3,11 @@ package com.tokopedia.home.beranda.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
 import com.tokopedia.common_wallet.pendingcashback.data.ResponsePendingCashback
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
@@ -28,7 +26,6 @@ import com.tokopedia.home.beranda.di.module.query.QueryHome.homeIconQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.homeQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.homeSlidesQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.recommendationQuery
-import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.pendingCashBackQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.tokopointsListQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.walletBalanceQuery
 import com.tokopedia.home.beranda.di.module.query.QueryPopularKeyword.popularKeywordQuery
@@ -135,7 +132,7 @@ class HomeUseCaseModule {
     @Provides
     fun getCoroutinePendingCashbackUseCase(graphqlRepository: GraphqlRepository): GetCoroutinePendingCashbackUseCase {
         val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ResponsePendingCashback>(graphqlRepository)
-        usecase.setGraphqlQuery(pendingCashBackQuery)
+        usecase.setGraphqlQuery(PendingCashbackQuery())
         return GetCoroutinePendingCashbackUseCase(usecase)
     }
 

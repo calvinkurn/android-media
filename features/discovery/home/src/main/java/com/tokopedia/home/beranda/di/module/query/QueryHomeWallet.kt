@@ -1,24 +1,6 @@
 package com.tokopedia.home.beranda.di.module.query
 
 object QueryHomeWallet {
-    val pendingCashBackQuery : String = "query pendingCashback {\n" +
-            "  goalPendingBalance {\n" +
-            "    balance\n" +
-            "    balance_text\n" +
-            "    cash_balance\n" +
-            "    cash_balance_text\n" +
-            "    point_balance\n" +
-            "    point_balance_text\n" +
-            "    wallet_type\n" +
-            "    phone_number\n" +
-            "    errors {\n" +
-            "      title\n" +
-            "      message\n" +
-            "    }\n" +
-            "  }\n" +
-            "}\n"
-
-
     val tokopointsQuery: String = "query(\$apiVersion:String){\n" +
             "    tokopointsDrawer(apiVersion: \$apiVersion){\n" +
             "        iconImageURL\n" +
