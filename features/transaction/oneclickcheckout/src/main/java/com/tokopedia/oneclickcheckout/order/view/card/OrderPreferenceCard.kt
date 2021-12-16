@@ -218,7 +218,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             btnChangeDuration.gone()
             tvShippingCourierNotes.gone()
             tvShippingPrice.gone()
-            if (logisticPromoViewModel.etaData.errorCode == 0) {
+            if (logisticPromoViewModel.etaData.errorCode == 0 && !logisticPromoViewModel.isBebasOngkirExtra) {
                 if (logisticPromoViewModel.etaData.textEta.isEmpty()) {
                     tvShippingCourierEta.setText(com.tokopedia.logisticcart.R.string.estimasi_tidak_tersedia)
                 } else {
