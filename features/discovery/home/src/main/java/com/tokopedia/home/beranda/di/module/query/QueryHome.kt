@@ -279,14 +279,4 @@ object QueryHome {
             "    message\n" +
             "  }\n" +
             "}"
-
-    val atfQuery = "query getAtf {\n" +
-            "  dynamicPosition{\n" +
-            "    id\n" +
-            "    name\n" +
-            "    component\n" +
-            "    param\n" +
-            "    isOptional\n" +
-            "    }\n" +
-            "}"
 }
