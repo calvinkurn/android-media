@@ -60,23 +60,12 @@ class QuestWidgetViewTest{
     }
 
     @Test
-    fun `location not allowed`(){
-          questViewModel.page = "Some random page"
-        val questWidgetListItemMockk = listOf<QuestWidgetListItem>()
-        val data = mockk<WidgetData> {
-            every { questWidgetList } returns mockk {
-                every { questWidgetList } returns questWidgetListItemMockk
-                every { resultStatus } returns mockk()
-                every { pageDetail } returns mockk()
-                every { isEligible } returns true
-            }
-        }
-        coEvery { questWidgetUseCase.getResponse(any()) } returns data
-        coVerify(exactly = 0) { questViewModel.getQuestWidgetData(channel, channelSlug, page) }
-        assertEquals(
-            questViewModel.questWidgetListLiveData.value?.status,
-            null
-        )
+    fun `empty page not allowed`(){
+          questViewModel.page = ""
+        coEvery { userSession.isLoggedIn } returns true
+
+        questViewModel.getWidgetList(channel, channelSlug, page, userSession)
+        assertEquals(questViewModel.questWidgetListLiveData.value?.status, LiveDataResult.STATUS.ERROR)
     }
 
 }
