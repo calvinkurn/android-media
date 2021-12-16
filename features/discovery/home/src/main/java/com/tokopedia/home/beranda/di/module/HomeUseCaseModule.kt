@@ -18,7 +18,6 @@ import com.tokopedia.home.beranda.data.repository.HomeRevampRepository
 import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.di.module.query.*
-import com.tokopedia.home.beranda.di.module.query.QueryHome.dynamicChannelQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.homeDataRevampQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.homeIconQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.homeQuery
@@ -166,9 +165,9 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideGetDynamicChannels(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper): GetDynamicChannelsUseCase{
+    fun provideGetDynamicChannels(graphqlRepository: GraphqlRepository, homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper): GetDynamicChannelsUseCase{
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeChannelData>(graphqlRepository)
-        useCase.setGraphqlQuery(dynamicChannelQuery)
+        useCase.setGraphqlQuery(DynamicChannelQuery())
         return GetDynamicChannelsUseCase(useCase, homeDynamicChannelDataMapper)
     }
 
