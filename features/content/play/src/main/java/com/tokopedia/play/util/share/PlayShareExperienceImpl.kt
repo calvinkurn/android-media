@@ -44,12 +44,12 @@ class PlayShareExperienceImpl @Inject constructor(
 
     fun generateShareString(url: String): String {
         val description = getString(R.string.play_sharing_text_description)
-        return "${data.title}.\n$description\n$url"
+        return "${data.title}\n$description\n$url"
     }
 
     private fun getShareTextContent(): String {
         val description = getString(R.string.play_sharing_text_description)
-        return "${data.title}.\n$description"
+        return "${data.title}\n$description"
     }
 
     private fun generateOgTitle(): String =
