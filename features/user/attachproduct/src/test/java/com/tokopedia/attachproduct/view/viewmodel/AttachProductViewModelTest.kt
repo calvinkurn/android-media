@@ -174,7 +174,6 @@ class AttachProductViewModelTest {
         //GIVEN
         val aceSearchProductResponse: AceSearchProductResponse =
                 FileUtil.parse("/success_ace_search_product.json", AceSearchProductResponse::class.java)
-        val expectedValue = aceSearchProductResponse.mapToListProduct().toDomainModelMapper()
 
         coEvery {
             useCase(any())
@@ -186,5 +185,26 @@ class AttachProductViewModelTest {
         //THEN
         coVerify(exactly = 1) { useCase(any()) }
         assertThat(vm.cacheHasNext, equalTo(true))
+    }
+
+    @Test
+    fun `success load data and hasn't next`() {
+        //GIVEN
+        val aceSearchProductResponse: AceSearchProductResponse =
+            FileUtil.parse("/success_ace_search_product.json", AceSearchProductResponse::class.java)
+
+        val responseWithThreeData = aceSearchProductResponse.apply {
+            this.aceSearchProductResponse.data.products = this.aceSearchProductResponse.data.products.subList(0, 3)
+        }
+        coEvery {
+            useCase(any())
+        } returns responseWithThreeData
+
+        //WHEN
+        vm.loadProductData("", mockShopId, mockPage, mockWarehouseId)
+
+        //THEN
+        coVerify(exactly = 1) { useCase(any()) }
+        assertThat(vm.cacheHasNext, equalTo(false))
     }
 }
