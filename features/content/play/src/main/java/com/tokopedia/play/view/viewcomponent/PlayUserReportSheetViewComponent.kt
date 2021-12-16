@@ -12,7 +12,6 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -20,7 +19,9 @@ import com.tokopedia.play.R
 import com.tokopedia.play.ui.userreport.adapter.UserReportReasoningAdapter
 import com.tokopedia.play.ui.userreport.itemdecoration.ReasoningListItemDecoration
 import com.tokopedia.play.ui.userreport.viewholder.UserReportReasoningViewHolder
+import com.tokopedia.play.view.type.PlayUserReportSectionType
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
+import com.tokopedia.play.view.uimodel.PlayUserReportSection
 import com.tokopedia.play.view.uimodel.PlayUserReportUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
@@ -36,7 +37,20 @@ class PlayUserReportSheetViewComponent(
     private val globalError: GlobalError = findViewById(R.id.global_error_user_report)
     private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
     private val rvCategory: RecyclerView = findViewById(R.id.rv_category)
-    private val tvFooter: TextView = findViewById(R.id.tv_user_report_footer)
+
+    private val tvHeader = PlayUserReportSection(
+        type = PlayUserReportSectionType.Header,
+        title = R.string.play_user_report_header,
+        isUrl = false
+    )
+
+    private val tvFooter = PlayUserReportSection(
+        type = PlayUserReportSectionType.Footer,
+        title = R.string.play_user_report_footer,
+        isUrl = true,
+        onClick = { listener.onFooterClicked(this@PlayUserReportSheetViewComponent) }
+    )
+
     private val categoryAdapter = UserReportReasoningAdapter(object : UserReportReasoningViewHolder.Listener {
         override fun onItemCategoryClicked(item: PlayUserReportReasoningUiModel.Reasoning) {
             listener.onItemReportClick(this@PlayUserReportSheetViewComponent, item)
@@ -78,11 +92,6 @@ class PlayUserReportSheetViewComponent(
 
             insets
         }
-
-        tvFooter.text = MethodChecker.fromHtml(getString(R.string.play_user_report_footer))
-        tvFooter.setOnClickListener {
-            listener.onFooterClicked(this@PlayUserReportSheetViewComponent)
-        }
     }
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
@@ -106,7 +115,12 @@ class PlayUserReportSheetViewComponent(
 
     fun setReportSheet(list: PlayUserReportUiModel.Loaded){
         if (list.reasoningList.isNotEmpty()){
-            categoryAdapter.setItemsAndAnimateChanges(list.reasoningList)
+            val actionList = mutableListOf<PlayUserReportReasoningUiModel>().apply {
+                add(tvHeader)
+                list.reasoningList.map { add(it) }
+                add(tvFooter)
+            }
+            categoryAdapter.setItemsAndAnimateChanges(actionList)
         }
     }
 
@@ -124,7 +138,7 @@ class PlayUserReportSheetViewComponent(
     }
 
     fun showPlaceholder(){
-        rvCategory.show()
+        clContent.show()
         setReportSheet(getPlaceholderModel())
     }
 
