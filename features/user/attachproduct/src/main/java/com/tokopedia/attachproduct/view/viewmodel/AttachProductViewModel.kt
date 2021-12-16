@@ -77,6 +77,7 @@ class AttachProductViewModel @Inject constructor
             }
             _cacheList.addAll(listData)
         }
+
     }
 
     companion object {
