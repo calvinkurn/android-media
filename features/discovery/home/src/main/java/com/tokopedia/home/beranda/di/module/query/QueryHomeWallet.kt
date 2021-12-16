@@ -21,36 +21,6 @@ object QueryHomeWallet {
             "    }\n" +
             "}"
 
-    val tokopointsListQuery: String = "query tokopointsDrawerList(\$apiVersion:String){\n" +
-            "    tokopointsDrawerList(apiVersion: \$apiVersion){\n" +
-            "        offFlag\n" +
-            "        drawerList{" +
-            "           type\n" +
-            "           iconImageURL\n" +
-            "           redirectURL\n" +
-            "           redirectAppLink\n" +
-            "           sectionContent{\n" +
-            "               type\n" +
-            "               textAttributes{\n" +
-            "                    text\n" +
-            "                 color\n" +
-            "                 isBold\n" +
-            "               }\n" +
-            "               tagAttributes{\n" +
-            "                   text\n" +
-            "                   backgroundColor\n" +
-            "               }\n" +
-            "           }\n" +
-            "        }\n" +
-            "       coachMarkList {\n" +
-            "          type\n" +
-            "          coachMarkContent {\n" +
-            "          title\n" +
-            "          content\n" +
-            "        }\n" +
-            "      }\n" +
-            "   }\n" +
-            "}"
     val walletBalanceQuery : String = "{\n" +
             "  wallet(isGetTopup:true) {\n" +
             "    linked\n" +

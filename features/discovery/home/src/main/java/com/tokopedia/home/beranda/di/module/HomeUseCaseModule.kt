@@ -24,7 +24,6 @@ import com.tokopedia.home.beranda.di.module.query.QueryHome.homeDataRevampQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.homeIconQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.homeQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.homeSlidesQuery
-import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.tokopointsListQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.walletBalanceQuery
 import com.tokopedia.home.beranda.di.module.query.QueryPopularKeyword.popularKeywordQuery
 import com.tokopedia.home.beranda.domain.gql.CloseChannelMutation
@@ -102,7 +101,7 @@ class HomeUseCaseModule {
     @HomeScope
     fun provideHomeTokopointsListDataUseCase(graphqlRepository: GraphqlRepository): GetHomeTokopointsListDataUseCase {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<TokopointsDrawerListHomeData>(graphqlRepository)
-        useCase.setGraphqlQuery(tokopointsListQuery)
+        useCase.setGraphqlQuery(TokopoinstListQuery())
         return GetHomeTokopointsListDataUseCase(useCase)
     }
 
