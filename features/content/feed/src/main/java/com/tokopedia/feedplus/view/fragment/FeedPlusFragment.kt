@@ -2383,17 +2383,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         )
     }
 
-    override fun onGridItemClick(
-        positionInFeed: Int,
-        activityId: Int,
-        productId: String,
-        redirectLink: String,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        product: FeedXProduct
-    ) {
-        onGoToLinkASGCProductDetail(redirectLink, shopId, activityId.toString())
+    override fun onGridItemClick(positionInFeed: Int, activityId: Int, productId: String, redirectLink: String, type: String, isFollowed: Boolean, shopId: String, products: List<FeedXProduct>, index: Int) {
+        onGoToLinkASGCProductDetail(redirectLink, shopId, activityId.toString(), isFollowed, type, products)
 
         if (redirectLink.contains(FEED_DETAIL)) {
             feedAnalytics.eventGridMoreProductCLicked(
@@ -2408,8 +2399,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     type,
                     isFollowed,
                     shopId,
-                    product,
-                    item.feedXCard.products.indexOf(product)
+                    products[index],
+                    index
                 )
             }
 
@@ -2863,13 +2854,16 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     }
 
-    private fun onGoToLinkASGCProductDetail(link: String, shopId: String, activityId: String) {
+    private fun onGoToLinkASGCProductDetail(link: String, shopId: String, activityId: String, isFollowed: Boolean,type: String, products: List<FeedXProduct>) {
         context?.let {
             if (!TextUtils.isEmpty(link)) {
                 if (RouteManager.isSupportApplink(it, link)) {
                     val intent = RouteManager.getIntent(context, link)
+                    intent.putParcelableArrayListExtra(PRODUCT_LIST, ArrayList(products))
+                    intent.putExtra(IS_FOLLOWED, isFollowed)
                     intent.putExtra(PARAM_SHOP_ID, shopId)
                     intent.putExtra(PARAM_ACTIVITY_ID, activityId)
+                    intent.putExtra(POST_TYPE, type)
                     if (activity != null)
                         requireActivity().startActivity(intent)
                 } else {

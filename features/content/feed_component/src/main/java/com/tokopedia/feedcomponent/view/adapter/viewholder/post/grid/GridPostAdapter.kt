@@ -134,7 +134,8 @@ class GridPostAdapter(private val contentPosition: Int,
                     type,
                     isFollowed,
                     shopId,
-                    gridPostViewModel.itemListFeedXProduct[item.index])
+                    gridPostViewModel.itemListFeedXProduct,
+                        item.index)
                 if (item.trackingList.isNotEmpty()) {
                     listener.onAffiliateTrackClicked(item.trackingList, true)
                 }
@@ -190,7 +191,8 @@ class GridPostAdapter(private val contentPosition: Int,
                         type,
                         isFollowed,
                         shopId,
-                        gridPostViewModel.itemListFeedXProduct[0]
+                        gridPostViewModel.itemListFeedXProduct,
+                        0
                 )
             }
             itemView.setOnClickListener(function)
@@ -214,7 +216,8 @@ class GridPostAdapter(private val contentPosition: Int,
             positionInFeed: Int, activityId: Int, productId: String,
             redirectLink: String, type: String, isFollowed: Boolean,
             shopId: String,
-            feedXProduct: FeedXProduct
+            feedXProducts: List<FeedXProduct>,
+            index : Int
         )
 
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)

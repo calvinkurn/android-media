@@ -72,6 +72,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
+private const val TYPE_USE_ASGC_NEW_DESIGN: String = "use_new_design"
 private const val TYPE_FEED_X_CARD_VOD: String = "FeedXCardPlay"
 private const val SPAN_SIZE_FULL = 6
 private const val SPAN_SIZE_HALF = 3
@@ -1122,7 +1123,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
         } else if (feedXCard.typename == TYPE_FEED_X_CARD_VOD) {
             setVODLayout(feedXCard)
         } else {
-            setNewASGCLayout(feedXCard)
+            if (feedXCard.mods.contains(TYPE_USE_ASGC_NEW_DESIGN))
+                setNewASGCLayout(feedXCard)
+            else
+                setGridASGCLayout(feedXCard)
         }
     }
 
