@@ -206,7 +206,6 @@ class PlayUpcomingViewModel @Inject constructor(
             UpcomingTimerFinish -> handleUpcomingTimerFinish()
             ClickFollowUpcomingAction -> handleClickFollow(isFromLogin = false)
             ClickPartnerNameUpcomingAction -> handleClickPartnerName()
-            ClickShareUpcomingAction -> handleClickShare()
             is OpenUpcomingPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
             ClickShareUpcomingAction -> handleClickShare()
             CloseSharingOptionUpcomingAction -> handleCloseSharingOption()
