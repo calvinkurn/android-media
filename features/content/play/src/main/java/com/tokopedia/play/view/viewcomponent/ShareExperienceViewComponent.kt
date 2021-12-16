@@ -77,10 +77,7 @@ class ShareExperienceViewComponent(
     }
 
     fun dismiss() {
-        try {
-            universalShareBottomSheet.dismiss()
-        }
-        catch (e: Exception){ }
+        universalShareBottomSheet.dismiss()
     }
 
     fun handleRequestPermissionResult(requestCode: Int, grantResults: IntArray) {
