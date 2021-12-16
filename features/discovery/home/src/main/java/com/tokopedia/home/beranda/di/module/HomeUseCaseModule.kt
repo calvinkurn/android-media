@@ -21,6 +21,7 @@ import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.di.module.query.BusinessUnitDataQuery
 import com.tokopedia.home.beranda.di.module.query.BusinessWidgetQuery
+import com.tokopedia.home.beranda.di.module.query.DismissSuggestedQuery
 import com.tokopedia.home.beranda.di.module.query.HomeFeedQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.atfQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.closeChannel
@@ -34,7 +35,6 @@ import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.pendingCashBac
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.tokopointsListQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.walletBalanceQuery
 import com.tokopedia.home.beranda.di.module.query.QueryPopularKeyword.popularKeywordQuery
-import com.tokopedia.home.beranda.di.module.query.QuerySuggestedReview.dismissSuggestedQuery
 import com.tokopedia.home.beranda.di.module.query.QuerySuggestedReview.suggestedReviewQuery
 import com.tokopedia.home.beranda.domain.gql.CloseChannelMutation
 import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
@@ -103,7 +103,7 @@ class HomeUseCaseModule {
     @HomeScope
     fun provideDismissHomeReviewUseCase(graphqlRepository: GraphqlRepository): DismissHomeReviewUseCase {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ProductrevDismissSuggestion>(graphqlRepository)
-        useCase.setGraphqlQuery(dismissSuggestedQuery)
+        useCase.setGraphqlQuery(DismissSuggestedQuery())
         return DismissHomeReviewUseCase(useCase)
     }
 
