@@ -905,29 +905,42 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         assertEquals(testResult.name, variantNameTest)
     }
 
-    /*@Test
+    @Test
     fun `validateVariantTitle should return validation status`() {
+        //variant name test
         val variantNameValid = "valid varian"
         val variantNameMinChar = "aa"
         val variantNameIllegalString = "<<>>>>"
         val variantNameUsed = "usedvar"
+        // variant detail list testing
         val variantDetailsUsed = listOf(VariantDetail(name = variantNameUsed))
         val variantDetailsEmpty = listOf<VariantDetail>()
 
-        viewModel.validateVariantTitle(variantNameValid, variantDetailsUsed, variantDetails)
+        viewModel.validateVariantTitle(variantNameValid, variantDetailsUsed, listOf(), listOf())
         coVerify { titleValidationUseCase.executeOnBackground() }
 
-        viewModel.validateVariantTitle(variantNameMinChar, variantDetailsEmpty, variantDetails)
+        viewModel.validateVariantTitle(variantNameMinChar, variantDetailsEmpty, listOf(), listOf())
         val testResultMinChar = viewModel.variantTitleValidationStatus.getOrAwaitValue()
 
-        viewModel.validateVariantTitle(variantNameIllegalString, variantDetailsEmpty, variantDetails)
+        viewModel.validateVariantTitle(variantNameIllegalString, variantDetailsEmpty, listOf(), listOf())
         val testResultIllegalString = viewModel.variantTitleValidationStatus.getOrAwaitValue()
 
-        viewModel.validateVariantTitle(variantNameUsed, variantDetailsUsed, variantDetails)
+        viewModel.validateVariantTitle(variantNameUsed, listOf(), variantDetailsUsed, listOf())
+        val testResultCustomVariantExist = viewModel.variantTitleValidationStatus.getOrAwaitValue()
+
+        viewModel.validateVariantTitle(variantNameUsed, listOf(VariantDetail(), VariantDetail()),
+            listOf(), variantDetailsUsed)
+        val testResultVariantDetailFull = viewModel.variantTitleValidationStatus.getOrAwaitValue()
+
+        viewModel.validateVariantTitle(variantNameUsed, variantDetailsUsed, listOf(), listOf())
         val testResultUsedName = viewModel.variantTitleValidationStatus.getOrAwaitValue()
+
+        coVerify { titleValidationUseCase.executeOnBackground() }
 
         assertEquals(testResultMinChar, VariantTitleValidationStatus.MINIMUM_CHAR)
         assertEquals(testResultIllegalString, VariantTitleValidationStatus.SYMBOL_ERROR)
         assertEquals(testResultUsedName, VariantTitleValidationStatus.USED_NAME)
-    }*/
+        assertEquals(testResultCustomVariantExist, VariantTitleValidationStatus.USED_NAME)
+        assertEquals(testResultVariantDetailFull, VariantTitleValidationStatus.USED_NAME)
+    }
 }
