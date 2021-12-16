@@ -34,9 +34,14 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
     private var colorBackgroundDisabled = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
 
     override fun bind(element: PromoListItemUiModel) {
-        renderPromoState(viewBinding, element)
-        renderPromoData(viewBinding, element)
-        setPromoItemClickListener(viewBinding, element)
+        if (element.uiState.isUpdateState) {
+            element.uiState.isUpdateState = false
+            renderPromoState(viewBinding, element)
+        } else {
+            renderPromoState(viewBinding, element)
+            renderPromoData(viewBinding, element)
+            setPromoItemClickListener(viewBinding, element)
+        }
     }
 
     private fun setPromoItemClickListener(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
@@ -227,7 +232,7 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
         with(viewBinding) {
             if (element.uiData.promoInfos.isNotEmpty()) {
                 containerPromoInfoList.removeAllViews()
-                val promoInfoList = element.uiData.promoInfos.filter { it.type == PromoInfo.TYPE_COUPON_INFO }
+                val promoInfoList = element.uiData.promoInfos.filter { it.type == PromoInfo.TYPE_PROMO_INFO }
                 promoInfoList.forEach {
                     val promoInfoView = View.inflate(itemView.context, R.layout.promo_checkout_marketplace_module_sub_layout_promo_info, null)
                             as ConstraintLayout
