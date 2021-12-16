@@ -27,6 +27,7 @@ class ReviewPendingCredibilityCarouselViewHolder(
         private const val SLIDE_TO_SHOW_MULTIPLE = 1.04f
         private const val ITEM_VIEW_WIDTH_SINGLE = 0.9375
         private const val ITEM_VIEW_WIDTH_MULTIPLE = 0.905
+        private const val AUTO_SLIDE_DURATION = 5000L
     }
 
     val binding by viewBinding<ItemReviewPendingCredibilityCarouselBinding>()
@@ -43,17 +44,18 @@ class ReviewPendingCredibilityCarouselViewHolder(
     }
 
     private fun CarouselUnify.setupConfig(itemCount: Int) {
-        freeMode = false
-        infinite = false
-        centerMode = false
-        autoplay = true
         slideToScroll = SLIDE_TO_SCROLL
         indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
+        autoplayDuration = AUTO_SLIDE_DURATION
         slideToShow = if (itemCount == 1) {
             SLIDE_TO_SHOW_SINGLE
         } else {
             SLIDE_TO_SHOW_MULTIPLE
         }
+        freeMode = false
+        infinite = false
+        centerMode = false
+        autoplay = true
     }
 
     private fun CarouselUnify.setupContents(items: List<ReviewPendingCredibilityUiModel>) {
