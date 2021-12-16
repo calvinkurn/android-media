@@ -40,12 +40,16 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         tvTitle.visibility = View.VISIBLE
         tvTitleExtra.visibility = View.GONE
 
-        if (data.etaData.errorCode == 0 && data.etaData.textEta.isNotEmpty()) {
-            tvEta.visibility = View.VISIBLE
-            tvEta.text = data.etaData.textEta
-        } else if (data.etaData.errorCode == 0 && data.etaData.textEta.isEmpty()) {
-            tvEta.visibility = View.VISIBLE
-            tvEta.text = ESTIMASI_TIDAK_TERSEDIA
+        if (!data.isBebasOngkirExtra) {
+            if (data.etaData.errorCode == 0 && data.etaData.textEta.isNotEmpty()) {
+                tvEta.visibility = View.VISIBLE
+                tvEta.text = data.etaData.textEta
+            } else if (data.etaData.errorCode == 0 && data.etaData.textEta.isEmpty()) {
+                tvEta.visibility = View.VISIBLE
+                tvEta.text = ESTIMASI_TIDAK_TERSEDIA
+            } else {
+                tvEta.visibility = View.GONE
+            }
         } else {
             tvEta.visibility = View.GONE
         }
