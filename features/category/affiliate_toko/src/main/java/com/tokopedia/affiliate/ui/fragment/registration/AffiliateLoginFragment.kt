@@ -119,7 +119,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
                 affiliateNavigationInterface.handleBackButton()
             }
             actionTextView?.setOnClickListener {
-                (activity as? AffiliateActivity)?.showAffiliatePortal()
+
             }
         }
     }

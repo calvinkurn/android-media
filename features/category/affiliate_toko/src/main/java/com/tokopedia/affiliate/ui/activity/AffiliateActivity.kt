@@ -113,9 +113,9 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         initRollence()
         initBottomNavigationView()
         setObservers()
-        showAffiliatePortal()
-//        if(userSessionInterface.isLoggedIn)
-//            affiliateVM.getAffiliateValidateUser()
+        showLoginPortal()
+        if(userSessionInterface.isLoggedIn)
+            affiliateVM.getAffiliateValidateUser()
     }
 
     private fun initRollence() {
