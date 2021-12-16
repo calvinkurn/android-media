@@ -1322,7 +1322,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun setTemplateVisibility() {
-        if (isGoodRating() && !hasIncentive()) {
+        if (isGoodRating()) {
             showTemplates()
         } else {
             hideTemplates()

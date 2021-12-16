@@ -352,7 +352,7 @@ class CreateReviewViewModel @Inject constructor(
 
     fun isTemplateAvailable(): Boolean {
         return reviewTemplates.value.takeIfInstanceOf<CoroutineSuccess<List<String>>>()?.let {
-            it.data.isNotEmpty() && !hasIncentive()
+            it.data.isNotEmpty()
         }.orFalse()
     }
 
