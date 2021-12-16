@@ -114,7 +114,7 @@ class AttachProductViewModelTest {
     }
 
     @Test
-    fun `update checked list and previous checked list is empty`() {
+    fun `update checked list`() {
         //GIVEN
         val aceSearchProductResponse: AceSearchProductResponse =
                 FileUtil.parse("/success_ace_search_product.json", AceSearchProductResponse::class.java)
@@ -126,24 +126,6 @@ class AttachProductViewModelTest {
         //THEN
         verify(exactly = 1) {
             checkedListObserver.onChanged(expectedValue)
-        }
-    }
-
-    @Test
-    fun `update checked list and previous checked list is not empty` () {
-        //GIVEN
-        val aceSearchProductResponseOne = AceSearchProductResponse()
-        val aceSearchProductResponseTwo = AceSearchProductResponse()
-        val expectedValueOne = aceSearchProductResponseOne.mapToListProduct().toDomainModelMapper()
-        val expectedValueTwo = aceSearchProductResponseTwo.mapToListProduct().toDomainModelMapper()
-
-        //WHEN
-        vm.updateCheckedList(expectedValueOne)
-        vm.updateCheckedList(expectedValueTwo)
-
-        //THEN
-        verify (exactly = 2) {
-            checkedListObserver.onChanged(expectedValueTwo)
         }
     }
 
