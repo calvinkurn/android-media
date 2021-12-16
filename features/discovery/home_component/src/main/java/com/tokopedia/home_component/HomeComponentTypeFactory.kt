@@ -19,5 +19,6 @@ interface HomeComponentTypeFactory {
     fun type(bannerDataModel: BannerDataModel): Int
     fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int
     fun type(featuredBrandDataModel: FeaturedBrandDataModel): Int
+    fun type(questWidgetModel: QuestWidgetModel): Int
     fun type(campaignWidgetDataModel: CampaignWidgetDataModel): Int = 0
 }

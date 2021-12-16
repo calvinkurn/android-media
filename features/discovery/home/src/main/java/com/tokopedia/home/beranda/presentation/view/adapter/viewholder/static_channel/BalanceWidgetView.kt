@@ -48,6 +48,7 @@ class BalanceWidgetView: FrameLayout {
     companion object {
         const val LAYOUT_SPAN_2 = 2
         const val LAYOUT_SPAN_3 = 3
+        var disableAnimation: Boolean = false
     }
 
     init {
@@ -122,10 +123,12 @@ class BalanceWidgetView: FrameLayout {
     }
 
     fun startRotationForPosition(position: Int) {
-        val viewholder = rvBalance?.findViewHolderForAdapterPosition(position)
-        viewholder?.let {
-            (it as? BalanceAdapter.Holder)?.let {
-                it.setDrawerItemWithAnimation()
+        if (!disableAnimation) {
+            val viewholder = rvBalance?.findViewHolderForAdapterPosition(position)
+            viewholder?.let {
+                (it as? BalanceAdapter.Holder)?.let {
+                    it.setDrawerItemWithAnimation()
+                }
             }
         }
     }
