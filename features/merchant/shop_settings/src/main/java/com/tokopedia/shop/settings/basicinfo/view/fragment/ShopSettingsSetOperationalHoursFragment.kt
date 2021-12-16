@@ -164,6 +164,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
             setNavigationOnClickListener {
                 handleBackPressed()
             }
+            isShowShadow = false
         }
 
         opsHourSaveButton?.setOnClickListener {

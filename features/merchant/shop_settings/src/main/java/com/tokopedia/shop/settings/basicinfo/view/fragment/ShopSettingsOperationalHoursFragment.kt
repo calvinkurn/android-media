@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.annotation.LayoutRes
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -108,6 +109,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private var shopIsOnHolidayContainer: CardUnify? = null
     private var shopIsOnHolidayEndDateText: Typography? = null
     private var openShopButton: UnifyButton? = null
+    private var containerScroller: NestedScrollView? = null
 
     private var shopAbTestPlatform: ShopAbTestPlatform? = null
     private var isNeedToShowToaster: Boolean = false
@@ -240,6 +242,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         shopIsOnHolidayContainer = view?.findViewById(R.id.holiday_toggle_container)
         shopIsOnHolidayEndDateText = view?.findViewById(R.id.tv_holiday_end)
         openShopButton = view?.findViewById(R.id.btn_open_shop)
+        containerScroller = view?.findViewById(R.id.ops_hour_scroller_container)
     }
 
     private fun getHolidayDatePickerBottomSheetView(): View {
@@ -342,6 +345,11 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
             override fun onDismiss() {}
         })
+
+        // setup nested scroll listener
+        containerScroller?.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
+            headerOpsHour?.isShowShadow = scrollY.isMoreThanZero()
+        })
     }
 
     private fun setupToolbar() {
@@ -354,6 +362,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 // go to seller education page
                 RouteManager.route(context, String.format(WEBVIEW_APPLINK_FORMAT, ApplinkConst.WEBVIEW, sellerEducationUrl))
             }
+            isShowShadow = false
         }
     }
 
