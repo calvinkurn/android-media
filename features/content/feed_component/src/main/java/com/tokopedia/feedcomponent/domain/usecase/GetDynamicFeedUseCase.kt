@@ -29,7 +29,7 @@ class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val 
 
     init {
         graphqlUseCase.setCacheStrategy(
-                GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
+                GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
                         .setExpiryTime(GraphqlConstant.ExpiryTimes.WEEK.`val`())
                         .setSessionIncluded(true)
                         .build()
