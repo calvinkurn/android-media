@@ -6,6 +6,7 @@ object CreateReviewTrackingConstants {
     const val EVENT_ACTION_CLICK_CONTINUE_IN_DIALOG = "click - lanjut tulis ulasan on %s"
     const val EVENT_ACTION_CLICK_EXPAND_TEXTBOX = "click - expand textbox"
     const val EVENT_ACTION_CLICK_INCENTIVES_TICKER = "click - pelajari on ovo incentives ticker"
+    const val EVENT_ACTION_CLICK_ONGOING_CHALLENGE_TICKER = "click - pelajari on tantangan ulasan ticker"
     const val EVENT_ACTION_CLICK_LEAVE_PAGE = "click - ya keluar on %s"
     const val EVENT_ACTION_CLICK_SEND_NOW = "click - kirim sekarang aja on %s"
     const val EVENT_ACTION_CLICK_SEND_RATING_OPTION = "click - kirim rating on pop up"
@@ -18,6 +19,7 @@ object CreateReviewTrackingConstants {
     const val EVENT_ACTION_VIEW_SMILEY = "view - smiley components"
     const val EVENT_ACTION_VIEW_TEMPLATE = "view - review template"
     const val EVENT_ACTION_VIEW_THANK_YOU_BOTTOM_SHEET = "view - terimakasih untuk ulasanmu pop up"
+    const val EVENT_ACTION_VIEW_POST_SUBMIT_REVIEW_BOTTOM_SHEET = "view - bottomsheet postsubmit review"
     const val EVENT_ACTION_VIEW_UNSAVED_DIALOG = "view - ulasanmu nanti hilang pop up"
     const val EVENT_ACTION_CLICK_BAD_RATING_REASON = "click - bad review template checkbox"
     const val EVENT_ACTION_IMPRESS_BAD_RATING_REASON = "impression - bad review template checkbox"
@@ -38,8 +40,12 @@ object CreateReviewTrackingConstants {
     const val EVENT_LABEL_VIEW_TEMPLATE = "template_impressed:%d"
     const val EVENT_LABEL_VIEW_THANK_YOU_BOTTOM_SHEET =
         "pop up title:%s;reputation_id:%s;order_id:%s;product_id:%s;feedback_id:%s;"
+    const val EVENT_LABEL_VIEW_POST_SUBMIT_REVIEW_BOTTOM_SHEET =
+        "pop_up_title:%s;reputation_id:%s;order_id:%s;product_id:%s;feedback_id:%s;"
     const val EVENT_LABEL_VIEW_INCENTIVES_TICKER =
         "message:%s;reputation_id:%s;order_id:%s;product_id:%s;"
+    const val EVENT_LABEL_VIEW_ONGOING_CHALLENGE_TICKER =
+        "reputation_id:%s;order_id:%s;product_id:%s;"
     const val EVENT_LABEL_CLICK_BAD_RATING_REASON = "order_id:%s;product_id:%s;reason:%s;is_active:%s;"
     const val EVENT_LABEL_IMPRESS_BAD_RATING_REASON = "order_id:%s;product_id:%s;"
 

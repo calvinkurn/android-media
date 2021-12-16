@@ -590,13 +590,22 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                                     bottomSheet.tag
                                 )
                             }
-                            CreateReviewTracking.eventClickIncentivesTicker(
-                                it.subtitle,
-                                getReputationId(),
-                                getOrderId(),
-                                productId,
-                                getUserId()
-                            )
+                            if (hasIncentive()) {
+                                CreateReviewTracking.eventClickIncentivesTicker(
+                                    it.subtitle,
+                                    getReputationId(),
+                                    getOrderId(),
+                                    productId,
+                                    getUserId()
+                                )
+                            } else if (hasOngoingChallenge()) {
+                                CreateReviewTracking.eventClickOngoingChallengeTicker(
+                                    getReputationId(),
+                                    getOrderId(),
+                                    productId,
+                                    getUserId()
+                                )
+                            }
                         }
                     }
 

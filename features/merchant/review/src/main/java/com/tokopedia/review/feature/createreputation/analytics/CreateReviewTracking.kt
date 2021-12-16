@@ -7,6 +7,7 @@ import com.tokopedia.review.common.analytics.ReviewTrackingConstant
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewDialogType
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 object CreateReviewTracking {
@@ -341,6 +342,28 @@ object CreateReviewTracking {
         )
     }
 
+    fun eventClickOngoingChallengeTicker(
+        reputationId: String,
+        orderId: String,
+        productId: String,
+        userId: String
+    ) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+            eventCategory = CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+            eventAction = CreateReviewTrackingConstants.EVENT_ACTION_CLICK_ONGOING_CHALLENGE_TICKER,
+            eventLabel = String.format(
+                CreateReviewTrackingConstants.EVENT_LABEL_VIEW_ONGOING_CHALLENGE_TICKER,
+                reputationId,
+                orderId,
+                productId
+            )
+        ).appendBusinessUnit(CreateReviewTrackingConstants.BUSINESS_UNIT)
+            .appendCurrentSite(CreateReviewTrackingConstants.CURRENT_SITE)
+            .appendUserId(userId)
+            .sendGeneralEvent()
+    }
+
     fun eventViewDialog(
         dialogType: CreateReviewDialogType,
         title: String,
@@ -620,6 +643,18 @@ object CreateReviewTracking {
         productId: String,
         userId: String
     ): HashMap<String, Any> {
+        val eventMap = createEventMap(event, category, action, label, userId)
+        eventMap[CreateReviewTrackingConstants.KEY_PRODUCT_ID] = productId
+        return eventMap
+    }
+
+    private fun createEventMap(
+        event: String,
+        category: String,
+        action: String,
+        label: String,
+        userId: String
+    ): HashMap<String, Any> {
         val eventMap = HashMap<String, Any>()
         eventMap[ReviewTrackingConstant.EVENT] = event
         eventMap[ReviewTrackingConstant.EVENT_CATEGORY] = category
@@ -630,7 +665,6 @@ object CreateReviewTracking {
             CreateReviewTrackingConstants.BUSINESS_UNIT
         eventMap[CreateReviewTrackingConstants.KEY_CURRENT_SITE] =
             CreateReviewTrackingConstants.CURRENT_SITE
-        eventMap[CreateReviewTrackingConstants.KEY_PRODUCT_ID] = productId
         return eventMap
     }
 
@@ -685,6 +719,38 @@ object CreateReviewTracking {
             .appendQueryParameter(ReviewConstants.PARAM_SOURCE, source)
             .build()
             .toString()
+    }
+
+    private fun MutableMap<String, Any>.appendGeneralEventData(
+        eventName: String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String
+    ): MutableMap<String, Any> {
+        put(TrackAppUtils.EVENT, eventName)
+        put(TrackAppUtils.EVENT_CATEGORY, eventCategory)
+        put(TrackAppUtils.EVENT_ACTION, eventAction)
+        put(TrackAppUtils.EVENT_LABEL, eventLabel)
+        return this
+    }
+
+    private fun MutableMap<String, Any>.appendBusinessUnit(businessUnit: String): MutableMap<String, Any> {
+        put(CreateReviewTrackingConstants.KEY_BUSINESS_UNIT, businessUnit)
+        return this
+    }
+
+    private fun MutableMap<String, Any>.appendCurrentSite(currentSite: String): MutableMap<String, Any> {
+        put(CreateReviewTrackingConstants.KEY_CURRENT_SITE, currentSite)
+        return this
+    }
+
+    private fun MutableMap<String, Any>.appendUserId(userId: String): MutableMap<String, Any> {
+        put(ReviewTrackingConstant.KEY_USER_ID, userId)
+        return this
+    }
+
+    private fun Map<String, Any>.sendGeneralEvent() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(this)
     }
 
     fun eventClickPostSubmitBottomSheetButton(
