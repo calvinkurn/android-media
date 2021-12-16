@@ -9,6 +9,7 @@ import com.tokopedia.play.util.isEqualTo
 import com.tokopedia.play.util.isEqualToIgnoringFields
 import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.view.uimodel.action.ClickShareAction
+import com.tokopedia.play.view.uimodel.action.CloseSharingOptionAction
 import com.tokopedia.play.view.uimodel.event.CopyToClipboardEvent
 import com.tokopedia.play.view.uimodel.event.OpenSharingOptionEvent
 import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
@@ -99,7 +100,7 @@ class PlayViewModelShareExperienceTest {
     }
 
     @Test
-    fun `when user click share action & custom sharing is not allowed, it should emit event to open universal bottom sheet`() {
+    fun `when user click share action & custom sharing is not allowed, it should emit event to copy the link`() {
         /** Prepare */
         every { mockPlayNewAnalytic.clickShareButton(any(), any()) } returns Unit
         coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns false
@@ -131,6 +132,32 @@ class PlayViewModelShareExperienceTest {
 
             event[0].isEqualTo(mockCopyEvent)
             event[1].isEqualToIgnoringFields(mockShowInfoEvent, ShowInfoEvent::message)
+        }
+    }
+
+    @Test
+    fun `when user close sharing bottom sheet, it should emit event to close bottom sheet`() {
+        /** Prepare */
+        every { mockPlayNewAnalytic.closeShareBottomSheet(any(), any(), any()) } returns Unit
+        every { mockPlayShareExperience.isScreenshotBottomSheet() } returns false
+
+        val robot = createPlayViewModelRobot(
+            dispatchers = testDispatcher,
+            playAnalytic = mockPlayNewAnalytic,
+            playShareExperience = mockPlayShareExperience,
+        ) {
+            createPage(channelData)
+            focusPage(channelData)
+        }
+
+        robot.use {
+            /** Test */
+            it.recordEvent {
+                submitAction(CloseSharingOptionAction)
+            }
+
+            /** Verify */
+            verify { mockPlayNewAnalytic.closeShareBottomSheet(channelId, channelType, false) }
         }
     }
 }
