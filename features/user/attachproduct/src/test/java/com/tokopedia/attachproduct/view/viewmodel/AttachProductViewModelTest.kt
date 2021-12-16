@@ -175,7 +175,6 @@ class AttachProductViewModelTest {
         val aceSearchProductResponse: AceSearchProductResponse =
                 FileUtil.parse("/success_ace_search_product.json", AceSearchProductResponse::class.java)
         val expectedValue = aceSearchProductResponse.mapToListProduct().toDomainModelMapper()
-        val expectedCacheValue = expectedValue.subList(0, expectedValue.size - 1)
 
         coEvery {
             useCase(any())

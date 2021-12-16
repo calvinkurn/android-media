@@ -42,7 +42,6 @@ class AttachProductViewModel @Inject constructor
                     "$shopId&start=$start&user_warehouseId=$warehouseId"))
             val resultModel = result.mapToListProduct().toDomainModelMapper()
             _products.value = Success(resultModel)
-
             if (query.isEmpty()) {
                 _products.value?.let { data ->
                     cacheData(data)
@@ -66,10 +65,11 @@ class AttachProductViewModel @Inject constructor
     private fun cacheData(result: Result<List<AttachProductItemUiModel>>){
         if (result is Success) {
             val listData = result.data.toMutableList()
-            _cacheHasNext = false
             if (result.data.size >= DEFAULT_ROWS) {
                 _cacheHasNext = true
                 listData.removeAt(result.data.size - 1)
+            } else {
+                _cacheHasNext = false
             }
             _cacheList.addAll(listData)
         }
