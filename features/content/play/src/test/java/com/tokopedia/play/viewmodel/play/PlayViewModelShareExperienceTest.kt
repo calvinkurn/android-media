@@ -3,20 +3,20 @@ package com.tokopedia.play.viewmodel.play
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayNewAnalytic
+import com.tokopedia.play.fake.FakePlayShareExperience
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.util.isEqualTo
 import com.tokopedia.play.util.isEqualToIgnoringFields
 import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.view.uimodel.action.ClickShareAction
+import com.tokopedia.play.view.uimodel.action.ClickSharingOptionAction
 import com.tokopedia.play.view.uimodel.action.CloseSharingOptionAction
 import com.tokopedia.play.view.uimodel.action.ScreenshotTakenAction
-import com.tokopedia.play.view.uimodel.event.CopyToClipboardEvent
-import com.tokopedia.play.view.uimodel.event.OpenSharingOptionEvent
-import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
-import com.tokopedia.play.view.uimodel.event.UiString
+import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -48,6 +48,8 @@ class PlayViewModelShareExperienceTest {
     private val mockRemoteConfig: RemoteConfig = mockk(relaxed = true)
     private val mockPlayNewAnalytic: PlayNewAnalytic = mockk(relaxed = true)
     private val mockPlayShareExperience: PlayShareExperience = mockk(relaxed = true)
+
+    private val fakePlayShareExperience = FakePlayShareExperience()
 
     private val testDispatcher = CoroutineTestDispatchers
 
@@ -196,6 +198,82 @@ class PlayViewModelShareExperienceTest {
             verify { mockPlayNewAnalytic.impressShareBottomSheet(channelId, channelType) }
 
             event.last().isEqualTo(mockEvent)
+        }
+    }
+
+    @Test
+    fun `when user click share option, it should emit event to redirect to selected media`() {
+        /** Prepare */
+        every { mockPlayNewAnalytic.clickSharingOption(any(), any(), any(),any()) } returns Unit
+        fakePlayShareExperience.setScreenshotBottomSheet(false)
+
+        val shareModel = ShareModel.Whatsapp()
+
+        val mockEvent = OpenSelectedSharingOptionEvent(
+            linkerShareResult = null,
+            shareModel = shareModel,
+            ""
+        )
+
+        val robot = createPlayViewModelRobot(
+            dispatchers = testDispatcher,
+            playAnalytic = mockPlayNewAnalytic,
+            playShareExperience = fakePlayShareExperience,
+        ) {
+            createPage(channelData)
+            focusPage(channelData)
+        }
+
+        robot.use {
+            /** Test */
+            val event = it.recordEvent {
+                submitAction(ClickSharingOptionAction(shareModel))
+            }
+
+            /** Verify */
+            verify { mockPlayNewAnalytic.clickSharingOption(channelId, channelType, shareModel.socialMediaName, false) }
+
+            event.last().isEqualTo(mockEvent)
+        }
+    }
+
+    @Test
+    fun `when user click share option and error occur, it should emit event to copy link`() {
+        /** Prepare */
+        every { mockPlayNewAnalytic.clickSharingOption(any(), any(), any(),any()) } returns Unit
+        fakePlayShareExperience.setScreenshotBottomSheet(false)
+        fakePlayShareExperience.setThrowException(true)
+
+        val shareModel = ShareModel.Whatsapp()
+
+        val mockCopyEvent = CopyToClipboardEvent(
+            shareInfo.content
+        )
+
+        val mockShowInfoEvent = ShowInfoEvent(
+            UiString.Resource(123)
+        )
+
+        val robot = createPlayViewModelRobot(
+            dispatchers = testDispatcher,
+            playAnalytic = mockPlayNewAnalytic,
+            playShareExperience = fakePlayShareExperience,
+        ) {
+            createPage(channelData)
+            focusPage(channelData)
+        }
+
+        robot.use {
+            /** Test */
+            val event = it.recordEvent {
+                submitAction(ClickSharingOptionAction(shareModel))
+            }
+
+            /** Verify */
+            verify { mockPlayNewAnalytic.clickSharingOption(channelId, channelType, shareModel.socialMediaName, false) }
+
+            event[0].isEqualTo(mockCopyEvent)
+            event[1].isEqualToIgnoringFields(mockShowInfoEvent, ShowInfoEvent::message)
         }
     }
 }
