@@ -399,11 +399,14 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                     isShopOnScheduledHoliday = false
                 }
                 renderHolidaySection(isHolidayBySchedule = isShopOnScheduledHoliday)
-                autoChatTicker?.showWithCondition(isShopClosed || isShopOnScheduledHoliday)
 
                 // update UI for operational hours list section
                 val opsHourList = opsHourListUiModel.operationalHourList
                 rvOpsHourListAdapter?.updateOpsHourList(opsHourList)
+                autoChatTicker?.showWithCondition(isShopClosed || isShouldShowHolidaySchedule || opsHourList.any {
+                    // show ticker when shop closed or contains holiday in a week
+                    it.startTime == it.endTime
+                })
 
                 // show toaster if refresh after set shop holiday schedule
                 if (isNeedToShowToaster || isNeedToShowOpenShopToaster) {
