@@ -627,6 +627,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     activity?.finish()
                 }
                 ClearPromoResponseAction.ACTION_STATE_ERROR -> it.exception?.let { throwable ->
+                    viewBinding?.buttonApplyNoPromo?.let { buttonApplyNoPromo ->
+                        setButtonLoading(buttonApplyNoPromo, false)
+                    }
                     showToastMessage(throwable)
                 }
             }
