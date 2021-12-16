@@ -261,10 +261,5 @@ object QueryHome {
             "          }\n" +
             "        }"
 
-    val closeChannel = "mutation closeChannel(\$channelID: Int!){\n" +
-            "  close_channel(channelID: \$channelID){\n" +
-            "    success\n" +
-            "    message\n" +
-            "  }\n" +
-            "}"
+
 }
