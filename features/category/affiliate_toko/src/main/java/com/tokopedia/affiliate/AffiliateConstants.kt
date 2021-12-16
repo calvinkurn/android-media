@@ -1,5 +1,7 @@
 package com.tokopedia.affiliate
 
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.unifyprinciples.Typography
 
 const val AFFILIATE_LOGIN_REQUEST_CODE = 1023
@@ -32,3 +34,15 @@ const val AFFILIATE_WALLET_TRANSACTION_ENABLE = "app_affiliate_wallet_transactio
 const val AFFILIATE_TRX_ENABLED = "aff_trx_history"
 
 const val DEFAULT_VALUE = false
+
+const val PROJECT_ID = 20
+
+const val APP_LINK_DESTINATION = "https://1002-staging-feature.tokopedia.com/portal/withdrawal?module=affiliate"
+
+const val QUERY_CONST = "titlebar=false"
+
+val uri = String.format("%s?%s?url=%s", ApplinkConst.WEBVIEW, QUERY_CONST, APP_LINK_DESTINATION)
+
+const val APP_LINK_PARAMS_KYC = "projectId=$PROJECT_ID"
+
+val APP_LINK_KYC = "${ApplinkConst.KYC_NO_PARAM}?$APP_LINK_PARAMS_KYC&${ApplinkConstInternalGlobal.PARAM_CALL_BACK}=$uri"

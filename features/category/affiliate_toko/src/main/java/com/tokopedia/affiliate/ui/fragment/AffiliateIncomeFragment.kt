@@ -35,10 +35,13 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
+import com.tokopedia.affiliate.APP_LINK_KYC
 import com.tokopedia.affiliate.PAGE_ZERO
+import com.tokopedia.affiliate.model.response.AffiliateKycDetailsData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.unifycomponents.UnifyButton
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -143,6 +146,27 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
                 view?.findViewById<Typography>(R.id.date_range_text)?.text = affiliateIncomeViewModel.getSelectedDate()
             }
         })
+        affiliateIncomeViewModel.getAffiliateKycData().observe(this,{
+            onGetAffiliateKycData(it)
+        })
+
+        affiliateIncomeViewModel.getAffiliateKycLoader().observe(this,{ show ->
+            if(show){
+                view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.invisible()
+                view?.findViewById<LoaderUnify>(R.id.tarik_saldo_loader)?.show()
+            }
+            else{
+                view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.show()
+                view?.findViewById<LoaderUnify>(R.id.tarik_saldo_loader)?.hide()
+            }
+        })
+    }
+
+    private fun onGetAffiliateKycData(kycProjectInfo: AffiliateKycDetailsData.KycProjectInfo) {
+        when(kycProjectInfo.status){
+            1 -> RouteManager.route(context, STAGING_WITHDRAWAL_APPLINK)
+            else -> RouteManager.route(context, APP_LINK_KYC)
+        }
     }
 
     private fun stopSwipeRefresh() {
@@ -220,7 +244,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
             })
         }
         view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.setOnClickListener {
-            RouteManager.route(context, STAGING_WITHDRAWAL_APPLINK)
+           openWithdrawalScreen()
         }
         ImageHandler.loadImageCircle2(context, view?.findViewById<ImageUnify>(R.id.withdrawal_user_image), profilePicture)
         view?.findViewById<Typography>(R.id.date_range_text)?.text = affiliateIncomeViewModel.getSelectedDate()
@@ -249,6 +273,10 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
         }
         initDateRangeClickListener()
         affiliateIncomeViewModel.getAffiliateBalance()
+    }
+
+    private fun openWithdrawalScreen() {
+        affiliateIncomeViewModel.getKycDetails()
     }
 
     private fun initDateRangeClickListener() {

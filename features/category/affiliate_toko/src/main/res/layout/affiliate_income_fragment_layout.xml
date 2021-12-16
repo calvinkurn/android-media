@@ -142,6 +142,15 @@
                                     app:unifyButtonSize="small"
                                     app:unifyButtonType="main"
                                     app:unifyButtonVariant="ghost" />
+                                <com.tokopedia.unifycomponents.LoaderUnify
+                                    android:visibility="gone"
+                                    app:layout_constraintLeft_toLeftOf="@+id/saldo_button_affiliate"
+                                    app:layout_constraintBottom_toBottomOf="@+id/saldo_button_affiliate"
+                                    app:layout_constraintRight_toRightOf="@+id/saldo_button_affiliate"
+                                    app:layout_constraintTop_toTopOf="@+id/saldo_button_affiliate"
+                                    android:id="@+id/tarik_saldo_loader"
+                                    android:layout_width="@dimen/dp_30"
+                                    android:layout_height="@dimen/dp_30"/>
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </com.tokopedia.unifycomponents.CardUnify>
 

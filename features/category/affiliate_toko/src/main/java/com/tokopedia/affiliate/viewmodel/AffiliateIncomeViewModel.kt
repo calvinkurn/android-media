@@ -3,22 +3,26 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.PROJECT_ID
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.model.response.AffiliateBalance
+import com.tokopedia.affiliate.model.response.AffiliateKycDetailsData
 import com.tokopedia.affiliate.model.response.AffiliateTransactionHistoryData
 import com.tokopedia.affiliate.repository.AffiliateRepository
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTransactionHistoryItemModel
 import com.tokopedia.affiliate.usecase.AffiliateBalanceDataUseCase
+import com.tokopedia.affiliate.usecase.AffiliateKycUseCase
 import com.tokopedia.affiliate.usecase.AffiliateTransactionHistoryUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.user.session.UserSessionInterface
 
 class AffiliateIncomeViewModel : BaseViewModel(){
 
     private var affiliateBalanceData = MutableLiveData<AffiliateBalance.AffiliateBalance.Data>()
+    private var affiliateKycData = MutableLiveData<AffiliateKycDetailsData.KycProjectInfo>()
+    private var affiliateKycLoader = MutableLiveData<Boolean>()
     private var shimmerVisibility = MutableLiveData<Boolean>()
     private var errorMessage = MutableLiveData<Throwable>()
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
@@ -27,6 +31,8 @@ class AffiliateIncomeViewModel : BaseViewModel(){
 
     private val affiliateBalanceDataUseCase = AffiliateBalanceDataUseCase(AffiliateRepository())
     private val affiliateTransactionHistoryUseCase = AffiliateTransactionHistoryUseCase(AffiliateRepository())
+    private val affiliatKycHistoryUseCase = AffiliateKycUseCase(AffiliateRepository())
+
 
     fun getAffiliateBalance() {
         launchCatchError(block = {
@@ -34,6 +40,19 @@ class AffiliateIncomeViewModel : BaseViewModel(){
                         affiliateBalanceData.value = it
                     }
         }, onError = {
+            it.printStackTrace()
+        })
+    }
+
+    fun getKycDetails() {
+        launchCatchError(block = {
+            affiliateKycLoader.value = true
+            affiliatKycHistoryUseCase.getKycInformation(PROJECT_ID).kycProjectInfo?.let {
+                affiliateKycData.value = it
+            }
+            affiliateKycLoader.value = false
+        }, onError = {
+            affiliateKycLoader.value = false
             it.printStackTrace()
         })
     }
@@ -81,6 +100,8 @@ class AffiliateIncomeViewModel : BaseViewModel(){
     }
     fun getAffiliateBalanceData(): LiveData<AffiliateBalance.AffiliateBalance.Data> = affiliateBalanceData
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
+    fun getAffiliateKycData(): LiveData<AffiliateKycDetailsData.KycProjectInfo> = affiliateKycData
+    fun getAffiliateKycLoader(): LiveData<Boolean> = affiliateKycLoader
     fun getAffiliateDataItems() : LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = affiliateDataList
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
     fun getRangeChange() :LiveData<Boolean> = rangeChanged
