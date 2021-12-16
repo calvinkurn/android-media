@@ -20,6 +20,8 @@ class ValidateUsePromoCheckoutMapper {
 
         private fun mapToPromoUiModel(promo: PromoValidateUseResponse): PromoUiModel {
             return PromoUiModel(
+                    globalSuccess = promo.globalSuccess,
+                    success = promo.success,
                     codes = mapCodes(promo.codes),
                     messageUiModel = mapMessageUiModel(promo.message),
                     additionalInfoUiModel = mapToAdditionalInfoUiModel(promo.additionalInfo),
