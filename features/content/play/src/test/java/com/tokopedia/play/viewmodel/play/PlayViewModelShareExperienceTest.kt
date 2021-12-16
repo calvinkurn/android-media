@@ -1,7 +1,6 @@
 package com.tokopedia.play.viewmodel.play
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.fake.FakePlayShareExperience
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
@@ -9,10 +8,7 @@ import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.util.isEqualTo
 import com.tokopedia.play.util.isEqualToIgnoringFields
 import com.tokopedia.play.util.share.PlayShareExperience
-import com.tokopedia.play.view.uimodel.action.ClickShareAction
-import com.tokopedia.play.view.uimodel.action.ClickSharingOptionAction
-import com.tokopedia.play.view.uimodel.action.CloseSharingOptionAction
-import com.tokopedia.play.view.uimodel.action.ScreenshotTakenAction
+import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -139,7 +135,7 @@ class PlayViewModelShareExperienceTest {
     }
 
     @Test
-    fun `when user close sharing bottom sheet, it should emit event to close bottom sheet`() {
+    fun `when user close sharing bottom sheet, it should send analytics close bottom sheet`() {
         /** Prepare */
         every { mockPlayNewAnalytic.closeShareBottomSheet(any(), any(), any()) } returns Unit
         every { mockPlayShareExperience.isScreenshotBottomSheet() } returns false
@@ -274,6 +270,32 @@ class PlayViewModelShareExperienceTest {
 
             event[0].isEqualTo(mockCopyEvent)
             event[1].isEqualToIgnoringFields(mockShowInfoEvent, ShowInfoEvent::message)
+        }
+    }
+
+    @Test
+    fun `when user choose permission regarding universal bottom sheet, it should send analytics choose permission`() {
+        /** Prepare */
+        every { mockPlayNewAnalytic.clickSharePermission(any(), any(), any()) } returns Unit
+
+        val label = "allow"
+
+        val robot = createPlayViewModelRobot(
+            dispatchers = testDispatcher,
+            playAnalytic = mockPlayNewAnalytic,
+        ) {
+            createPage(channelData)
+            focusPage(channelData)
+        }
+
+        robot.use {
+            /** Test */
+            it.recordEvent {
+                submitAction(SharePermissionAction(label))
+            }
+
+            /** Verify */
+            verify { mockPlayNewAnalytic.clickSharePermission(channelId, channelType, label) }
         }
     }
 }
