@@ -83,7 +83,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<FragmentShopSettingsInfoBinding>()
 
-    private var needReload: Boolean = false
     private var shopBasicDataModel: ShopBasicDataModel? = null
     private var bottomSheet: MenuBottomSheet? = null
     private var snackbar: Snackbar? = null
@@ -342,7 +341,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_EDIT_SCHEDULE -> if (resultCode == Activity.RESULT_OK) {
-                needReload = true
                 if (requestCode == REQUEST_EDIT_SCHEDULE && data != null) {
                     val message: String? = data.getStringExtra(EXTRA_MESSAGE)
                     if (!message.isNullOrBlank()) {
@@ -481,10 +479,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     override fun onResume() {
         super.onResume()
-        if (needReload) {
-            loadShopBasicData()
-            needReload = false
-        }
+        loadShopBasicData()
     }
 
     private fun loadShopBasicData() {
@@ -498,7 +493,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     private fun onFragmentResult() {
         getNavigationResult(REQUEST_EDIT_BASIC_INFO)?.observe(viewLifecycleOwner, Observer { bundle ->
             bundle?.let { data ->
-                needReload = true
                 data.getString(EXTRA_MESSAGE)?.apply {
                     if (this.isNotBlank()) {
                         view?.let {
