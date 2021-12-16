@@ -1922,11 +1922,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
         isFollowed: Boolean
     ) {
         feedAnalytics.eventImpressionProductBottomSheet(
-            activityId,
-            products,
-            shopId,
-            type,
-            isFollowed
+                activityId,
+                products,
+                shopId,
+                type,
+                isFollowed,
+                false
         )
     }
 
@@ -2065,7 +2066,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (type == TYPE_FEED_X_CARD_PLAY || type == TYPE_TOPADS_HEADLINE_NEW)
             feedAnalytics.eventAddToCartFeedVOD(if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else activityId, postTagItem.id, postTagItem.name, postTagItem.priceFmt, 1, shopId, postTagItem.authorName, type, isFollowed)
         else
-        feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
+            feedAnalytics.eventAddToCartFeedVOD(playChannelId, postTagItem.id, postTagItem.productName, postTagItem.price.toString(), 1,shopId,postTagItem.authorName, type, isFollowed)
         if (userSession.isLoggedIn) {
             if (::productTagBS.isInitialized) {
                 productTagBS.dismissedByClosing = true
@@ -3203,6 +3204,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             val intent = RouteManager.getIntent(context, feedXCard.appLink)
             intent.putParcelableArrayListExtra(PRODUCT_LIST, ArrayList(feedXCard.products))
             intent.putExtra(IS_FOLLOWED, isFollowed)
+            intent.putExtra(PARAM_SHOP_ID, shopId)
+            intent.putExtra(PARAM_ACTIVITY_ID, postId)
             intent.putExtra(POST_TYPE, type)
             requireActivity().startActivity(intent)
         }

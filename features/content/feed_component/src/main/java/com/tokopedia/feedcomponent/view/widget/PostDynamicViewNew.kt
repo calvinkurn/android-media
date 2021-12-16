@@ -1706,7 +1706,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             topAdsCard.show()
                             topAdsCard.setOnClickListener {
 
-                                listener?.onClickSekSekarang(feedXCard.id, feedXCard.shopId, feedXCard.typename, feedXCard.followers.isFollowed, positionInFeed, feedXCard)
+                                listener?.onClickSekSekarang(feedXCard.id, feedXCard.author.id, feedXCard.typename, feedXCard.followers.isFollowed, positionInFeed, feedXCard)
                             }
                                 textViewPrice.hide()
                                 textViewSlashedPrice.hide()

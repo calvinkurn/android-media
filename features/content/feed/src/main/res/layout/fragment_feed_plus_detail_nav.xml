@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/dp_32"
         android:clipToPadding="false"
-        android:paddingBottom="@dimen/dp_140"
+        android:paddingBottom="@dimen/dp_60"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

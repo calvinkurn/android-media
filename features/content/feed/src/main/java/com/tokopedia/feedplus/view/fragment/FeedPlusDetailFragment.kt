@@ -190,10 +190,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private fun onRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-//                if (!adapter.isLoading && pagingHandler.CheckNextPage()) {
-//                    pagingHandler.nextPage()
-//                    presenter.getFeedDetail(detailId, pagingHandler.page, shopId, activityId)
-//                }
+
             }
         }
     }
@@ -239,45 +236,6 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         trackImpression(productList)
     }
 
-//    private fun setUpObservers() {
-//        presenter.run {
-//            getFeedDetailLiveData().observe(viewLifecycleOwner, Observer {
-//                when (it) {
-//                    is FeedDetailViewState.LoadingState -> {
-//                        if (it.loadingMore) {
-//                            if (it.isLoading) {
-//                                showLoadingMore()
-//                            } else {
-//                                dismissLoadingMore()
-//                            }
-//                        } else {
-//                            if (it.isLoading) {
-//                                showLoading()
-//                            } else {
-//                                dismissLoading()
-//                            }
-//                        }
-//                    }
-//
-//                    is FeedDetailViewState.SuccessWithNoData -> {
-//                        onEmptyFeedDetail()
-//                    }
-//
-//                    is FeedDetailViewState.Success -> {
-//                        onSuccessGetFeedDetail(it.headerModel, it.feedDetailList as ArrayList<Visitable<*>>, it.hasNextPage)
-//                    }
-//
-//                    is FeedDetailViewState.Error -> {
-//                        onErrorGetFeedDetail(it.error)
-//                    }
-//                }
-//            })
-//
-//            getPagingLiveData().observe(viewLifecycleOwner, Observer {
-//                setHasNextPage(it)
-//            })
-//        }
-//    }
 
     override fun onStart() {
         super.onStart()
@@ -429,9 +387,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             playChannelId: String
     ) {
         if (type == TYPE_FEED_X_CARD_PLAY)
-            feedAnalytics.eventAddToCartFeedVOD(playChannelId, postTagItem.id, postTagItem.productName, postTagItem.price.toString(), 1,shopId,postTagItem.authorName, type, isFollowed)
+            feedAnalytics.eventAddToCartFeedVOD(playChannelId, postTagItem.id, postTagItem.productName, postTagItem.price.toString(), 1, shopId, postTagItem.authorName, type, isFollowed)
         else
-            feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
+            feedAnalytics.eventAddToCartFeedVOD(activityId, postTagItem.id, postTagItem.productName, postTagItem.price.toString(), 1, shopId, postTagItem.authorName, type, isFollowed)
         if (userSession.isLoggedIn) {
             feedViewModel.doAtc(postTagItem, shopId, type, isFollowed, activityId)
         } else {
@@ -553,18 +511,21 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
 
     override fun onGoToProductDetail(feedDetailViewModel: ProductFeedDetailViewModelNew, adapterPosition: Int) {
         if (activity != null && activity?.applicationContext != null && arguments != null) {
-            activity?.startActivityForResult(
-                    getProductIntent(feedDetailViewModel.id),
-                    REQUEST_OPEN_PDP
-            )
+
             analytics.eventDetailProductClick(
                     ProductEcommerce(feedDetailViewModel.id,
                             feedDetailViewModel.text,
                             feedDetailViewModel.price,
                             adapterPosition),
                     userSession.userId?.toIntOrNull() ?: 0,
-                feedDetailViewModel.shopId,
-                feedDetailViewModel.postId.toString()
+                    feedDetailViewModel.shopId,
+                    feedDetailViewModel.postId.toString(),
+                    feedDetailViewModel.postType,
+                    feedDetailViewModel.isFollowed
+            )
+            activity?.startActivityForResult(
+                    getProductIntent(feedDetailViewModel.id),
+                    REQUEST_OPEN_PDP
             )
         }
     }
@@ -602,7 +563,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 postTagItemList,
                 shopId,
                 postType,
-                isFollowed
+                isFollowed,
+                true
         )
     }
 
@@ -674,6 +636,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     postTagItem.star,
                     postTagItem.mods,
                     shopId,
+                    postType = postType,
+                    isFollowed = isFollowed,
+
                     description = postDescription,
                     isTopads = postTagItem.isTopads,
                     adClickUrl = adClickUrl

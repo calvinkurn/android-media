@@ -180,19 +180,20 @@ class GridPostAdapter(private val contentPosition: Int,
 
             itemView.priceText.hide()
 
-            itemView.setOnClickListener {
+            val function: (v: View) -> Unit = {
                 listener.onGridItemClick(
-                    positionInFeed,
-                    postId,
-                    "0",
-                    if (!TextUtils.isEmpty(actionLink)) actionLink
-                    else ApplinkConst.FEED_DETAILS.replace(EXTRA_DETAIL_ID, postId.toString()),
-                    type,
-                    isFollowed,
-                    shopId,
-                    gridPostViewModel.itemListFeedXProduct[0]
+                        positionInFeed,
+                        postId,
+                        "0",
+                        if (!TextUtils.isEmpty(actionLink)) actionLink
+                        else ApplinkConst.FEED_DETAILS.replace(EXTRA_DETAIL_ID, postId.toString()),
+                        type,
+                        isFollowed,
+                        shopId,
+                        gridPostViewModel.itemListFeedXProduct[0]
                 )
             }
+            itemView.setOnClickListener(function)
         }
 
         private fun setImageMargins(listSize: Int) {

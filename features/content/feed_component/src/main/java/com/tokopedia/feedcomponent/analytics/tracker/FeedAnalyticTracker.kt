@@ -1041,11 +1041,12 @@ class FeedAnalyticTracker
         products: List<FeedXProduct>,
         shopId: String,
         type: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        isProductDetailPage: Boolean
     ) {
         trackEnhancedEcommerceEventNew(
             PRODUCT_VIEW,
-            CATEGORY_FEED_TIMELINE_BOTTOMSHEET,
+            if (isProductDetailPage) CONTENT_FEED_TIMELINE else CATEGORY_FEED_TIMELINE_BOTTOMSHEET,
             String.format(
                 FORMAT_THREE_PARAM,
                 "impression",
