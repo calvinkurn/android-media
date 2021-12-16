@@ -36,6 +36,7 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -162,6 +163,13 @@ class PlayUpcomingFragment @Inject constructor(
                         ) { event.action() }
                     }
                     PlayUpcomingUiEvent.RefreshChannelEvent -> playParentViewModel.refreshChannel()
+                    is PlayUpcomingUiEvent.OpenSharingOptionEvent -> {
+                        shareExperienceView.showSharingOptions(event.title, event.coverUrl, event.userId, event.channelId)
+                    }
+                    is PlayUpcomingUiEvent.OpenSelectedSharingOptionEvent -> {
+                        SharingUtil.executeShareIntent(event.shareModel, event.linkerShareResult, activity, view, event.shareString)
+                        shareExperienceView.dismiss()
+                    }
                 }
             }
         }
