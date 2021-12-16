@@ -19,8 +19,8 @@ import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.home.beranda.data.repository.HomeRevampRepository
 import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.di.HomeScope
-import com.tokopedia.home.beranda.di.module.query.QueryBusinessWidget
-import com.tokopedia.home.beranda.di.module.query.QueryBusinessWidget.businessUnitDataQuery
+import com.tokopedia.home.beranda.di.module.query.BusinessUnitDataQuery
+import com.tokopedia.home.beranda.di.module.query.BusinessWidgetQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.atfQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.closeChannel
 import com.tokopedia.home.beranda.di.module.query.QueryHome.dynamicChannelQuery
@@ -148,7 +148,7 @@ class HomeUseCaseModule {
     @Provides
     fun getBusinessWidgetTab(graphqlRepository: GraphqlRepository): GetBusinessWidgetTab {
         val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeWidget.Data>(graphqlRepository)
-        usecase.setGraphqlQuery(QueryBusinessWidget.BUSINESS_WIDGET_QUERY)
+        usecase.setGraphqlQuery(BusinessWidgetQuery())
         return GetBusinessWidgetTab(usecase)
     }
 
@@ -156,7 +156,7 @@ class HomeUseCaseModule {
     @Provides
     fun getBusinessUnitDataTab(graphqlRepository: GraphqlRepository): GetBusinessUnitDataUseCase {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeWidget.Data>(graphqlRepository)
-        useCase.setGraphqlQuery(businessUnitDataQuery)
+        useCase.setGraphqlQuery(BusinessUnitDataQuery())
         return GetBusinessUnitDataUseCase(useCase)
     }
 
