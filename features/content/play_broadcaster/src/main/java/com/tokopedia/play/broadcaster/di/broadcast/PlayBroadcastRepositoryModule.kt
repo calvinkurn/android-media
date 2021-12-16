@@ -1,9 +1,11 @@
 package com.tokopedia.play.broadcaster.di.broadcast
 
 import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastChannelRepositoryImpl
+import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastInteractiveRepositoryImpl
 import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastPinnedMessageRepositoryImpl
 import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastRepositoryImpl
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
+import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastInteractiveRepository
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastPinnedMessageRepository
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import dagger.Binds
@@ -26,6 +28,13 @@ abstract class PlayBroadcastRepositoryModule {
     abstract fun bindPinnedMessageRepository(
         repo: PlayBroadcastPinnedMessageRepositoryImpl
     ): PlayBroadcastPinnedMessageRepository
+
+
+    @Binds
+    @PlayBroadcastScope
+    abstract fun bindInteractiveRepository(
+        repo: PlayBroadcastInteractiveRepositoryImpl
+    ): PlayBroadcastInteractiveRepository
 
     @Binds
     @PlayBroadcastScope

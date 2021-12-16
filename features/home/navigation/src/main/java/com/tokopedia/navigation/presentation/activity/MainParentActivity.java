@@ -862,8 +862,12 @@ public class MainParentActivity extends BaseActivity implements
             this.finish();
         } else {
             doubleTapExit = true;
-            Toast.makeText(this, R.string.exit_message, Toast.LENGTH_SHORT).show();
-            new Handler().postDelayed(() -> doubleTapExit = false, EXIT_DELAY_MILLIS);
+            try {
+                Toast.makeText(this, R.string.exit_message, Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(() -> doubleTapExit = false, EXIT_DELAY_MILLIS);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1041,8 +1045,11 @@ public class MainParentActivity extends BaseActivity implements
                 if (clipboard != null) {
                     clipboard.setPrimaryClip(clip);
                 }
-
-                Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
+                try {
+                    Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             RouteManager.route(this, applink);

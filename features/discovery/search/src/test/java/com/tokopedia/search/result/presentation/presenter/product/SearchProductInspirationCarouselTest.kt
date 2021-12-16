@@ -835,6 +835,8 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
             actual.imageUrl shouldBe expected.imageUrl
             actual.isShown shouldBe expected.isShown
         }
+
+        componentId shouldBe inspirationCarouselProduct.componentId
     }
 
     private fun Visitable<*>.assertNotBroadMatchDataView(visitableIndex: Int) {

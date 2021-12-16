@@ -3,6 +3,8 @@ package com.tokopedia.wishlist.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
@@ -55,6 +57,12 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onProductItemClicked(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, position: Int)
         fun onProductRecommItemClicked(productId: String)
         fun onViewProductCard(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, position: Int)
+        fun onBannerTopAdsImpression(topAdsImageViewModel: TopAdsImageViewModel, position: Int)
+        fun onBannerTopAdsClick(topAdsImageViewModel: TopAdsImageViewModel, position: Int)
+        fun onRecommendationItemImpression(recommendationItem: RecommendationItem, position: Int)
+        fun onRecommendationItemClick(recommendationItem: RecommendationItem, position: Int)
+        fun onRecommendationCarouselItemImpression(recommendationItem: RecommendationItem, position: Int)
+        fun onRecommendationCarouselItemClick(recommendationItem: RecommendationItem, position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -102,7 +110,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
             LAYOUT_TOPADS -> {
                 val binding = WishlistV2TdnItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
-                WishlistV2TdnViewHolder(binding)
+                WishlistV2TdnViewHolder(binding, actionListener)
             }
             LAYOUT_RECOMMENDATION_CAROUSEL -> {
                 val binding = WishlistV2RecommendationCarouselItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
@@ -141,13 +149,13 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 holder.bind(element)
             }
             is WishlistV2RecommendationItemViewHolder -> {
-                holder.bind(element)
+                holder.bind(element, holder.adapterPosition)
             }
             is WishlistV2TdnViewHolder -> {
-                holder.bind(element)
+                holder.bind(element, holder.adapterPosition)
             }
             is WishlistV2RecommendationCarouselViewHolder -> {
-                holder.bind(element)
+                holder.bind(element, holder.adapterPosition)
             }
         }
     }
