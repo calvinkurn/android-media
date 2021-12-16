@@ -595,33 +595,6 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `when getReviewTemplates is not empty but product is incentive eligible should execute expected usecase and indicate that template is not available`() {
-        val expectedResponse = ProductrevGetReviewTemplateResponseWrapper(
-            ProductrevGetReviewTemplate(
-                templates = listOf(
-                    "template1",
-                    "template2"
-                )
-            )
-        )
-        val expectedIncentivesResponse =
-            ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse(amount = 10))
-
-        onGetReviewTemplate_thenReturn(expectedResponse)
-        onGetOvoIncentive_thenReturn(expectedIncentivesResponse)
-
-        viewModel.getReviewTemplates(productId)
-        viewModel.getProductIncentiveOvo()
-
-        verifyGetReviewTemplateUseCaseCalled()
-        verifyReviewTemplatesSuccess(Success(expectedResponse.productrevGetPersonalizedReviewTemplate.templates))
-        verifyOvoIncentiveUseCaseCalled()
-        assertFalse(viewModel.isTemplateAvailable())
-        assertTrue(viewModel.hasIncentive())
-        assertTrue(viewModel.incentiveOvo.observeAwaitValue() is Success)
-    }
-
-    @Test
     fun `when getReviewTemplates is not empty and product is not incentive eligible should execute expected usecase and indicate that template is available`() {
         val expectedResponse = ProductrevGetReviewTemplateResponseWrapper(
             ProductrevGetReviewTemplate(
