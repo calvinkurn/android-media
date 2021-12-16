@@ -48,6 +48,6 @@ class PlayViewerUserReportRepositoryImpl @Inject constructor(
         )
         postUserReportUseCase.params = request
         val response = postUserReportUseCase.executeOnBackground()
-        return@withContext response.submissionReport.status
+        return@withContext playUiModelMapper.mapUserReportSubmission(response.submissionReport)
     }
 }

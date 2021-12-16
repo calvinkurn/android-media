@@ -69,4 +69,8 @@ class PlayUiModelMapper @Inject constructor(
     fun mapUserReport(input: List<UserReportOptions>): List<PlayUserReportReasoningUiModel> {
         return input.map(playUserReportMapper::mapUserReportReasoning)
     }
+
+    fun mapUserReportSubmission(input: UserReportSubmissionResponse.Result): Boolean{
+        return input.status == "success"
+    }
 }

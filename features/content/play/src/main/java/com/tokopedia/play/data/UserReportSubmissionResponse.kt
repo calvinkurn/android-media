@@ -11,6 +11,6 @@ data class UserReportSubmissionResponse(
 ) {
     data class Result(
         @SerializedName("status")
-        val status: Boolean = false
+        val status: String = ""
     )
 }
