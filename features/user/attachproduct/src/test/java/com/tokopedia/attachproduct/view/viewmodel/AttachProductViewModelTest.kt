@@ -68,7 +68,7 @@ class AttachProductViewModelTest {
         verifyOrder {
             productsObserver.onChanged(Success(expectedValue))
             assertThat(expectedCacheValue, equalTo(vm.cacheList))
-
+            assertThat(vm.cacheHasNext, equalTo(true))
         }
     }
 
@@ -90,6 +90,7 @@ class AttachProductViewModelTest {
         verifyOrder {
             productsObserver.onChanged(Success(expectedValue))
             assertThat(expectedValue.size, equalTo(0))
+            assertThat(vm.cacheHasNext, equalTo(false))
         }
     }
 
