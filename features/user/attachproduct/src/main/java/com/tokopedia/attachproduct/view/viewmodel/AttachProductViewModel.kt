@@ -41,15 +41,12 @@ class AttachProductViewModel @Inject constructor
             val result = useCase(hashMapOf<String, Any>(PARAM to "device=android&source=attach_product&rows=$ROW&q=$query&shop_id=" +
                     "$shopId&start=$start&user_warehouseId=$warehouseId"))
             val resultModel = result.mapToListProduct().toDomainModelMapper()
+            _products.value = Success(resultModel)
             if (query.isEmpty()) {
-                _products.value = Success(resultModel)
                 _products.value?.let { data ->
                     val dataSuccess = data as Success
                     cacheData(dataSuccess)
                 }
-            }
-            else {
-                _products.value = Success(resultModel)
             }
         }, onError = {
             _products.value = Fail(it)
