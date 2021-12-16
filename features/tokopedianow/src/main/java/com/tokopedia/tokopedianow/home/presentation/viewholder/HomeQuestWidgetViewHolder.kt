@@ -44,7 +44,6 @@ class HomeQuestWidgetViewHolder(
             setCircularProgressBar(element)
             setTitle(element.title)
             setDesc(element.desc)
-            setContainer(element.appLink)
         }
     }
 
@@ -52,7 +51,7 @@ class HomeQuestWidgetViewHolder(
         binding?.circularProgressBar?.apply {
             when(element.status) {
                 STATUS_IDLE -> {
-                    setImageUrl(element.iconUrl, true, AppCompatResources.getDrawable(context, R.drawable.tokopedianow_ic_quest_default))
+                    setImageResId(getIconUnifyDrawable(context, IconUnify.LOCK, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN300)), true)
                     binding?.let {
                         it.container.setCardBackgroundColor(ContextCompat.getColor(itemView.context, R.color.tokopedianow_cardview_inactive_background_dms_color))
                         it.title.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
@@ -60,7 +59,7 @@ class HomeQuestWidgetViewHolder(
                     }
                 }
                 STATUS_ON_PROGRESS -> {
-                    binding?.container?.setCardBackgroundColor(ContextCompat.getColor(itemView.context, R.color.tokopedianow_cardview_background_dms_color))
+                    setContainer(element.appLink)
                     val result = (element.currentProgress / element.totalProgress) * PERCENT_MULTIPLIER
                     if (!result.isNaN()) {
                         setImageUrl(element.iconUrl, false, AppCompatResources.getDrawable(context, R.drawable.tokopedianow_ic_quest_default))
@@ -95,8 +94,11 @@ class HomeQuestWidgetViewHolder(
     }
 
     private fun setContainer(appLink: String) {
-        binding?.container?.setOnClickListener {
-            RouteManager.route(itemView.context, appLink)
+        binding?.container?.apply {
+            setCardBackgroundColor(ContextCompat.getColor(itemView.context, R.color.tokopedianow_cardview_background_dms_color))
+            setOnClickListener {
+                RouteManager.route(itemView.context, appLink)
+            }
         }
     }
 
