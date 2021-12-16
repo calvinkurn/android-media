@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatlist.domain.websocket
+package com.tokopedia.topchat.common.websocket
 
 import okhttp3.WebSocketListener
 

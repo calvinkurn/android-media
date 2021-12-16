@@ -1,6 +1,6 @@
 package com.tokopedia.inbox.fake.domain.chat.websocket
 
-import com.tokopedia.topchat.chatlist.domain.websocket.TopchatWebSocket
+import com.tokopedia.topchat.common.websocket.TopchatWebSocket
 import okhttp3.WebSocketListener
 import javax.inject.Inject
 

@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatlist.domain.websocket
+package com.tokopedia.topchat.common.websocket
 
 import com.tokopedia.websocket.WebSocketResponse
 
