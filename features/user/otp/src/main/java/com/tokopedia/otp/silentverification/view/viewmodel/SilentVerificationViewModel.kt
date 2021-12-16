@@ -101,7 +101,7 @@ class SilentVerificationViewModel @Inject constructor(
             _bokuVerificationResponse.postValue(Success(result))
         }, onError = {
             it.printStackTrace()
-            _bokuVerificationResponse.postValue(Fail(Throwable("Network Unavailable")))
+            _bokuVerificationResponse.postValue(Fail(it))
         })
     }
 

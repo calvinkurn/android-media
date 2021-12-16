@@ -95,6 +95,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.carousel
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
 
     /* Navigation Component */
     implementation rootProject.ext.miscDependencies.navigationFragmentKtx

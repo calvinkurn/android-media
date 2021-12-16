@@ -1079,7 +1079,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     } else {
                         setVideoCarouselView(
                             feedMedia,
-                            feedXCard.id,
+                            feedXCard,
                             tagProducts,
                             feedXCard.author.id,
                             feedXCard.typename,
@@ -1186,13 +1186,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private fun setVideoCarouselView(
         feedMedia: FeedXMedia,
-        postId: String,
+        feedXCard: FeedXCard,
         products: List<FeedXProduct>,
         id: String,
         type: String,
         isFollowed: Boolean,
         shopName: String
     ): View? {
+        val postId = feedXCard.id
         val videoItem = getVideoItem()
         feedMedia.canPlay = false
         feedMedia.videoView = videoItem
@@ -1216,11 +1217,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
 
             volumeIcon.setOnClickListener {
-                isMute = !isMute
-                if (isMute)
-                    listener?.muteUnmuteVideo(postId, isMute, id, isFollowed,false)
-                volumeIcon?.setImageResource(if (!isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
-                toggleVolume(videoPlayer?.isMute() != true)
+                changeMuteStateVideo(volumeIcon)
+                setMuteUnmuteVOD(volumeIcon, feedXCard.playChannelID, isFollowed, id,false, true)
             }
         }
         return videoItem
@@ -1266,11 +1264,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     videoPlayer = FeedExoPlayer(context)
                 layout_video?.player = videoPlayer?.getExoPlayer()
                 layout_video?.videoSurfaceView?.setOnClickListener {
+                    changeMuteStateVideo(volumeIcon)
                     setMuteUnmuteVOD(volumeIcon, postId, feedXCard.followers.isFollowed, authorId, true, false)
+
                 }
 
-                videoPlayer?.start(feedMedia.mediaUrl, isMute)
-                volumeIcon?.setImageResource(if (!isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
+                videoPlayer?.start(feedMedia.mediaUrl, GridPostAdapter.isMute)
+                volumeIcon?.setImageResource(if (!GridPostAdapter.isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
                 videoPlayer?.setVideoStateListener(object : VideoStateListener {
                     override fun onInitialStateLoading() {
                         showVideoLoading()
@@ -1353,7 +1353,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
 
             vod_volumeIcon?.setOnClickListener {
+                changeMuteStateVideo(vod_volumeIcon)
                 setMuteUnmuteVOD(vod_volumeIcon, feedXCard.playChannelID, isFollowed, id,false, true)
+
             }
         }
         return vodItem
@@ -1369,12 +1371,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 volumeIcon?.gone()
             }
         }
-        isMute = !isMute
-        listener?.muteUnmuteVideo(postId, isMute, activityId, isFollowed, isVOD)
+        listener?.muteUnmuteVideo(postId, GridPostAdapter.isMute, activityId, isFollowed, isVOD)
         if (!volumeIcon?.isVisible!!)
             volumeIcon.visible()
-        volumeIcon?.setImageResource(if (!isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
-        toggleVolume(videoPlayer?.isMute() != true)
         if (isVideoTap){
             if (countDownTimer != null) {
                 countDownTimer.cancel()
@@ -1383,6 +1382,16 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 countDownTimer.start()
             }
 
+        }
+    }
+
+    private fun changeMuteStateVideo(volumeIcon: ImageView) {
+        GridPostAdapter.isMute = !GridPostAdapter.isMute
+        toggleVolume(GridPostAdapter.isMute)
+        if (GridPostAdapter.isMute) {
+            volumeIcon?.setImageResource(R.drawable.ic_feed_volume_mute)
+        } else {
+            volumeIcon?.setImageResource(R.drawable.ic_feed_volume_up)
         }
     }
 
@@ -1440,6 +1449,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 vod_layout_video?.player = videoPlayer?.getExoPlayer()
                 vod_layout_video?.videoSurfaceView?.setOnClickListener {
                     if (feedMedia.mediaUrl.isNotEmpty() && !isVODViewFrozen) {
+                        changeMuteStateVideo(vod_volumeIcon)
                         setMuteUnmuteVOD(vod_volumeIcon, feedXCard.playChannelID, feedXCard.followers.isFollowed, authorId, isVideoTap = true, isVOD = true)
                     }
                 }
@@ -1455,10 +1465,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     vod_frozen_view?.gone()
                     videoPlayer?.getExoPlayer()?.currentPosition?.let { it2 -> listener?.onFullScreenCLick(feedXCard, positionInFeed, feedXCard.appLink,it2,false, false)}
                 }
-
-                videoPlayer?.start(feedMedia.mediaUrl, isMute)
+                videoPlayer?.start(feedMedia.mediaUrl, GridPostAdapter.isMute)
                 vod_volumeIcon?.visible()
-                vod_volumeIcon?.setImageResource(if (!isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
+                if (GridPostAdapter.isMute) {
+                    vod_volumeIcon?.setImageResource(R.drawable.ic_feed_volume_mute)
+                } else {
+                    vod_volumeIcon?.setImageResource(R.drawable.ic_feed_volume_up)
+                }
                 videoPlayer?.setVideoStateListener(object : VideoStateListener {
                     override fun onInitialStateLoading() {
                         showVODLoading()
@@ -1489,25 +1502,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     override fun onFinish() {
                                         videoPlayer?.pause()
                                         isPaused = true
-                                        var time = (videoPlayer?.getExoPlayer()?.duration ?: 0L) / TIME_SECOND
-                                        if (time < HOUR_IN_HOUR) {
-                                            vod_timer_view.text =
-                                                    String.format(
-                                                            "%02d:%02d",
-                                                            (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
-                                                            time % MINUTE_IN_HOUR)
-                                        } else {
-                                            vod_timer_view.text =
-                                                    String.format(
-                                                            "%02d:%02d:%02d",
-                                                            (time / HOUR_IN_HOUR) % HOUR_IN_HOUR,
-                                                            (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
-                                                            time % MINUTE_IN_HOUR)
-                                        }
+
                                         vod_lanjut_menonton_btn?.visible()
                                         vod_frozen_view?.visible()
                                         vod_full_screen_icon?.gone()
                                         vod_lihat_product?.gone()
+                                        vod_timer_view?.gone()
                                         isVODViewFrozen = true
 
                                     }
@@ -1541,10 +1541,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                        if(!isPaused) {
                            vod_timer_view.visible()
-                           var time = (videoPlayer?.getExoPlayer()?.duration ?: 0L) / TIME_SECOND
+                           var time = (videoPlayer?.getExoPlayer()?.duration
+                                   ?: 0L) / TIME_SECOND + 1
                            object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
                                override fun onTick(millisUntilFinished: Long) {
-                                   time -= 1
                                    if (time < HOUR_IN_HOUR) {
                                        vod_timer_view.text =
                                                String.format(
@@ -1559,6 +1559,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                                        (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
                                                        time % MINUTE_IN_HOUR)
                                    }
+                                   time -= 1
                                }
 
                                override fun onFinish() {

@@ -1563,6 +1563,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onButtonAddToCartClicked(productModel: Any) {
+        if (dPresenter.dataHasChanged()) {
+            dPresenter.processUpdateCartData(true)
+        }
         dPresenter.processAddToCart(productModel)
     }
 
@@ -1989,7 +1992,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
         }
 
-        if (!snippetMode) {
+        if (!snippetMode && localizationChooseAddress.state == LocalizationChooseAddress.STATE_ADDRESS_ID_NOT_MATCH) {
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                     context = activity,
                     addressId = localizationChooseAddress.addressId,

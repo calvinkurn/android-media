@@ -394,9 +394,9 @@ object DynamicProductDetailMapper {
                 pageType= "pdp",
                 product = Product(
                         productID = productInfo.basic.productID,
-                        catLevel1 = productInfo.basic.category.detail.firstOrNull()?.id ?: "",
-                        catLevel2 = productInfo.basic.category.detail.getOrNull(1)?.id ?: "",
-                        catLevel3 = productInfo.basic.category.detail.getOrNull(2)?.id ?: "",
+                        catLevel1 = productInfo.basic.category.detail.firstOrNull()?.id ?: "0",
+                        catLevel2 = productInfo.basic.category.detail.getOrNull(1)?.id ?: "0",
+                        catLevel3 = productInfo.basic.category.detail.getOrNull(2)?.id ?: "0",
                         productPrice = productInfo.data.price.value.toString(),
                         maxProductPrice = getMaxPriceVariant(productInfo, variantData).toString(), //to do
                         productStatus = productInfo.basic.status

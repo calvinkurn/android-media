@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
     android:layout_marginStart="16dp"
     android:layout_marginLeft="16dp"
     android:layout_marginTop="4dp"
     android:layout_marginEnd="16dp"
     android:layout_marginRight="16dp"
     android:layout_marginBottom="4dp"
+    android:background="@color/Unify_Background"
     android:clickable="true"
     android:focusable="true"
     app:cardCornerRadius="8dp">
@@ -19,6 +19,9 @@
         android:id="@+id/mainParent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/Unify_Background"
+        android:foreground="?android:attr/selectableItemBackground"
+        tools:ignore="UnusedAttribute"
         android:padding="8dp">
 
         <com.tokopedia.feedplus.view.customview.RoundedCornerImageView
