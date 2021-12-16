@@ -91,4 +91,6 @@
 
     <!-- Sharing Experience -->
     <string name="play_sharing_text_description">Coba nonton video ini ya di Tokopedia Play!</string>
+    <string name="play_sharing_text_og_title">Tonton %s di Tokopedia Play</string>
+    <string name="play_sharing_text_og_description">Aku punya obat anti-bosen buatmu. Ayo nonton %s di Tokopedia Play!</string>
 </resources>

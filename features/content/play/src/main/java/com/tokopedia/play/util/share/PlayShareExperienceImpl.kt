@@ -9,6 +9,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.play.R
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import javax.inject.Inject
@@ -17,7 +18,7 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on December 10, 2021
  */
 class PlayShareExperienceImpl @Inject constructor(
-    private val context: Context
+    private val context: Context,
 ): PlayShareExperience {
 
     private lateinit var shareModel: ShareModel
@@ -36,30 +37,32 @@ class PlayShareExperienceImpl @Inject constructor(
         return this
     }
 
-    // TODO("This hardcoded text should be moved")
+    private fun getString(
+        resId: Int
+    ): String = context.resources.getString(resId)
+
+
     fun generateShareString(url: String): String {
-        val description = "Coba nonton video ini ya di Tokopedia Play!"
+        val description = getString(R.string.play_sharing_text_description)
         return "${data.title}.\n$description\n$url"
     }
 
     private fun getShareTextContent(): String {
-        val description = "Coba nonton video ini ya di Tokopedia Play!"
+        val description = getString(R.string.play_sharing_text_description)
         return "${data.title}.\n$description"
     }
 
-    private fun generateOgTitle(): String {
-        return "Tonton ${data.partnerName} di Tokopedia Play"
-    }
+    private fun generateOgTitle(): String =
+        getString(R.string.play_sharing_text_og_title).format(data.partnerName)
 
-    private fun generateOgDescription(): String {
-        return "Aku punya obat anti-bosen buatmu. Ayo nonton ${data.partnerName} di Tokopedia Play!"
-    }
+    private fun generateOgDescription(): String =
+        getString(R.string.play_sharing_text_og_description).format(data.partnerName)
 
     private fun generateDeepLinkPath(): String = "play/${data.id}"
 
     override fun createUrl(listener: PlayShareExperience.Listener) {
-        // TODO("should check branch url active/not first?")
         try {
+            //TODO("Need to validate branchlink is active/not?")
             val linkerData = LinkerData().apply {
                 id = data.id
                 name = data.title
