@@ -13,6 +13,7 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.model.*
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -421,6 +422,14 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         coVerify (exactly = 0) {
             getVariantCategoryCombinationUseCase.executeOnBackground()
         }
+    }
+
+    @Test
+    fun `getCategoryVariantCombination function failed should return Fail object`() = runBlocking {
+        viewModel.getVariantCategoryCombination(1, listOf())
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        assert(viewModel.getVariantCategoryCombinationResult.getOrAwaitValue() is Fail)
     }
 
     @Test
