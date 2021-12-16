@@ -136,7 +136,10 @@ class PlayUpcomingFragment @Inject constructor(
             playUpcomingViewModel.uiEvent.collect { event ->
                 when(event) {
                     is PlayUpcomingUiEvent.OpenPageEvent -> openApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode)
-                    is PlayUpcomingUiEvent.CopyToClipboardEvent -> copyToClipboard(event.content)
+                    is PlayUpcomingUiEvent.CopyToClipboardEvent -> {
+                        shareExperienceView.dismiss()
+                        copyToClipboard(event.content)
+                    }
                     is PlayUpcomingUiEvent.RemindMeEvent -> {
                         if(event.isSuccess) {
                             doShowToaster(message = getTextFromUiString(event.message))
