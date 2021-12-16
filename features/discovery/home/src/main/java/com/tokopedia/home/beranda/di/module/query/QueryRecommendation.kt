@@ -5,7 +5,7 @@ import com.tokopedia.home.beranda.di.module.query.QueryRecommendation.RECOMMENDA
 import com.tokopedia.home.beranda.di.module.query.QueryRecommendation.RECOMMENDATION_QUERY_NAME
 
 @GqlQuery(RECOMMENDATION_QUERY_NAME, RECOMMENDATION_QUERY)
-object QueryRecommendation {
+internal object QueryRecommendation {
     const val RECOMMENDATION_QUERY_NAME = "RecommendationQuery"
     const val RECOMMENDATION_QUERY: String =
         "query getRecommendation(\$location: String)\n" +

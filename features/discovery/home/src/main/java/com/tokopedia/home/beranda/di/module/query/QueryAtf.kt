@@ -5,7 +5,7 @@ import com.tokopedia.home.beranda.di.module.query.QueryAtf.ATF_QUERY
 import com.tokopedia.home.beranda.di.module.query.QueryAtf.ATF_QUERY_NAME
 
 @GqlQuery(ATF_QUERY_NAME, ATF_QUERY)
-object QueryAtf {
+internal object QueryAtf {
     const val ATF_QUERY_NAME = "AtfQuery"
     const val ATF_QUERY = "query getAtf {\n" +
             "  dynamicPosition{\n" +

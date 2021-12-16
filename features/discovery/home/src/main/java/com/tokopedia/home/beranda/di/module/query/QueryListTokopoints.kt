@@ -5,7 +5,7 @@ import com.tokopedia.home.beranda.di.module.query.QueryListTokopoints.TOKOPOINTS
 import com.tokopedia.home.beranda.di.module.query.QueryListTokopoints.TOKOPOINTS_LIST_QUERY_NAME
 
 @GqlQuery(TOKOPOINTS_LIST_QUERY_NAME, TOKOPOINTS_LIST_QUERY)
-object QueryListTokopoints {
+internal object QueryListTokopoints {
     const val TOKOPOINTS_LIST_QUERY_NAME = "TokopoinstListQuery"
     const val TOKOPOINTS_LIST_QUERY: String = "query tokopointsDrawerList(\$apiVersion:String){\n" +
             "    tokopointsDrawerList(apiVersion: \$apiVersion){\n" +

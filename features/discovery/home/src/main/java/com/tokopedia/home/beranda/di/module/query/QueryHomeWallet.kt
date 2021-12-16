@@ -1,6 +1,6 @@
 package com.tokopedia.home.beranda.di.module.query
 
-object QueryHomeWallet {
+internal object QueryHomeWallet {
     val tokopointsQuery: String = "query(\$apiVersion:String){\n" +
             "    tokopointsDrawer(apiVersion: \$apiVersion){\n" +
             "        iconImageURL\n" +
