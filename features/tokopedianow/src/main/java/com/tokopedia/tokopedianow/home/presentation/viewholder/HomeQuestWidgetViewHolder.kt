@@ -21,7 +21,7 @@ class HomeQuestWidgetViewHolder(
 ): AbstractViewHolder<HomeQuestWidgetUiModel>(itemView) {
 
     companion object {
-        private const val PROGRESS_WIDTH = 15F
+        private const val PROGRESS_WIDTH = 12F
         private const val PERCENT_MULTIPLIER = 100
 
         const val STATUS_IDLE = "Idle"
@@ -66,7 +66,7 @@ class HomeQuestWidgetViewHolder(
                         setProgress(result)
                         setProgressWidth(PROGRESS_WIDTH)
                         setRounded(true)
-                        setProgressColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                        setProgressColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                         setProgressBackgroundColor(ContextCompat.getColor(context, R.color.tokopedianow_circle_progressbar_background_dms_color))
                     }
                 }
@@ -77,7 +77,7 @@ class HomeQuestWidgetViewHolder(
     private fun setCircularRefreshButton() {
         binding?.container?.setCardBackgroundColor(ContextCompat.getColor(itemView.context, R.color.tokopedianow_cardview_background_dms_color))
         binding?.circularProgressBar?.apply {
-            setImageResId(getIconUnifyDrawable(context, IconUnify.RELOAD, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)), true)
+            setImageResId(getIconUnifyDrawable(context, IconUnify.RELOAD, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)), true)
             setOnClickListener {
                 listener?.onClickRefreshQuestWidget()
                 showShimmering()

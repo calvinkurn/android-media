@@ -69,9 +69,9 @@ class CircularProgressbarView : View {
             setLayerType(LAYER_TYPE_SOFTWARE, imagePaint)
             imageRect.set(25f, 25f, diameter - 25f, diameter - 25f)
             imageShadowRect.set(5f, 5f, diameter - 5f, diameter - 5f)
-            imageShadowPaint.color = Color.WHITE
-            imageShadowPaint.setShadowLayer(3f, 0f, 0f, Color.GRAY)
-            imageShadowPaint.maskFilter = BlurMaskFilter(1f, BlurMaskFilter.Blur.OUTER)
+            imageShadowPaint.color = Color.TRANSPARENT
+            imageShadowPaint.strokeWidth = 0f
+            imageShadowPaint.setShadowLayer(4f, 0f, 0f, Color.argb(128, 0, 0, 0))
             canvas.drawArc(imageShadowRect, startAngle, maxAngle, false, imageShadowPaint)
         } else {
             val strokeWidth = backgroundPaint.strokeWidth
