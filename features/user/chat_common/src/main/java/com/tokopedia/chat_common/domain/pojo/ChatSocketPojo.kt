@@ -66,7 +66,7 @@ data class ChatSocketPojo(
     val parentReply: ParentReply? = null,
     @SerializedName("fraud_status")
     val fraudStatus: Int = 0,
-    @SerializedName("reply_time")
+    @SerializedName("reply_time_nano")
     val replyTime: String = ""
 ) {
 
