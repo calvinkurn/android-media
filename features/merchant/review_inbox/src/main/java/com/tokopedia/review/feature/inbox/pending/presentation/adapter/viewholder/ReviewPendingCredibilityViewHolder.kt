@@ -19,7 +19,7 @@ class ReviewPendingCredibilityViewHolder(
     companion object {
         val LAYOUT = R.layout.item_review_pending_credibility
 
-        private const val MINIMUM_WIDTH_PERCENT_TO_HIT_IMPRESS_TRACKER = 80
+        private const val MINIMUM_WIDTH_PERCENT_TO_HIT_IMPRESS_TRACKER = 40
     }
 
     private var parentLayout: View? = null
