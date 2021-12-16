@@ -45,7 +45,11 @@ class AttachProductViewModel @Inject constructor
             if (query.isEmpty()) {
                 _products.value?.let { data ->
                     cacheData(data)
+                    _products.value = Success(resultModel)
                 }
+            }
+            else {
+                _products.value = Success(resultModel)
             }
         }, onError = {
             _products.value = Fail(it)
