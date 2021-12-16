@@ -13,8 +13,10 @@ import com.tokopedia.shop.score.uitest.stub.common.util.onClick
 import com.tokopedia.shop.score.uitest.stub.common.util.onIdView
 import com.tokopedia.shop.score.uitest.stub.common.util.scrollTo
 import com.tokopedia.shop.score.uitest.stub.common.util.withTextStr
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 
+@UiTest
 class ReactivatedAfterMondayPmActivityTest: ShopScoreTest() {
 
     override fun setup() {

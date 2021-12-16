@@ -1,6 +1,8 @@
 package tokopedia.applink.deeplinkdf
 
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.DeeplinkDFMapper
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.*
 import org.junit.Test
@@ -213,7 +215,22 @@ class DeepLinkDFMapperSellerAppTest: DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `check shop home appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
-        val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://shop/12345/home"
+        val mockShopId = "12345"
+        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_HOME, mockShopId)
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
+    }
+
+    @Test
+    fun `check shop product appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
+        val mockShopId = "12345"
+        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_PRODUCT, mockShopId)
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
+    }
+
+    @Test
+    fun `check shop feed appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
+        val mockShopId = "12345"
+        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_FEED, mockShopId)
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
     }
 
