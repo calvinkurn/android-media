@@ -18,7 +18,6 @@ class PickerNavigator constructor(
 ) {
 
     private var permissionFragment: Fragment? = null
-    private var pickerFragment: Fragment? = null
     private var cameraFragment: Fragment? = null
     private var galleryFragment: Fragment? = null
 
@@ -29,12 +28,10 @@ class PickerNavigator constructor(
 
     init {
         permissionFragment = factory.permissionBoardingFragment()
-        pickerFragment = factory.pickerFragment()
         cameraFragment = factory.cameraFragment()
         galleryFragment = factory.galleryFragment()
 
         addPage(permissionFragment, "Runtime Permission")
-        addPage(pickerFragment, "Picker")
         addPage(cameraFragment, "Camera")
         addPage(galleryFragment, "Gallery")
     }
@@ -152,7 +149,6 @@ class PickerNavigator constructor(
     private fun pageFragment(@PickerFragmentType page: Int): Fragment? {
         return when(page) {
             PickerFragmentType.PERMISSION -> permissionFragment
-            PickerFragmentType.PICKER -> pickerFragment
             PickerFragmentType.CAMERA -> cameraFragment
             PickerFragmentType.GALLERY -> galleryFragment
             else -> null
