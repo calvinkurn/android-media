@@ -24,7 +24,7 @@ object ReviewPendingTrackingConstants {
 
     const val EVENT_LABEL_VALUE_CAROUSEL_ITEM = "title:%s"
 
-    const val EVENT_FIELD_EE_ITEMS = "items"
+    const val EVENT_FIELD_EE_PROMOTIONS = "promotions"
     const val EVENT_FIELD_EE_CREATIVE_NAME = "creative_name"
     const val EVENT_FIELD_EE_CREATIVE_SLOT = "creative_slot"
     const val EVENT_FIELD_EE_ITEM_ID = "item_id"

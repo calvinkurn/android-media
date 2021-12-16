@@ -125,7 +125,7 @@ object ReviewPendingTracking {
                 putString(ReviewPendingTrackingConstants.EVENT_FIELD_EE_ITEM_NAME, null)
             }
         )
-        putParcelableArrayList(ReviewPendingTrackingConstants.EVENT_FIELD_EE_ITEMS, ArrayList(bannersPayload))
+        putParcelableArrayList(ReviewPendingTrackingConstants.EVENT_FIELD_EE_PROMOTIONS, ArrayList(bannersPayload))
         return this
     }
 
