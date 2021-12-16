@@ -44,10 +44,8 @@ class AttachProductViewModel @Inject constructor
             _products.value = Success(resultModel)
 
             if (query.isEmpty()) {
-                _products.value.let { data ->
-                    if (data != null) {
-                        cacheData(data)
-                    }
+                _products.value?.let { data ->
+                    cacheData(data)
                 }
             }
         }, onError = {
@@ -62,9 +60,7 @@ class AttachProductViewModel @Inject constructor
     }
 
     fun clearCache() {
-        if (_cacheList.isNotEmpty()) {
-            _cacheList.clear()
-        }
+        _cacheList.clear()
     }
 
     private fun cacheData(result: Result<List<AttachProductItemUiModel>>){
