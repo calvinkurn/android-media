@@ -2,6 +2,7 @@ package com.tokopedia.affiliate.ui.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -29,6 +30,7 @@ import com.tokopedia.affiliate.model.response.AffiliateAnnouncementData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateComponentActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker.Companion.IDENTIFIER_HOME
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet.Companion.STATE_PERFORMA_INFO
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
@@ -49,8 +51,11 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.webview.BaseSimpleWebViewActivity
+import com.tokopedia.webview.KEY_URL
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
@@ -179,7 +184,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
             errorAction.text = getString(R.string.affiliate_promote_affiliatw)
             errorSecondaryAction.gone()
             setActionClickListener {
-                bottomNavBarClickListener?.selectItem(AffiliateActivity.PROMO_MENU,R.id.menu_promo_affiliate)
+                bottomNavBarClickListener?.selectItem(AffiliateActivity.PROMO_MENU,R.id.menu_promo_affiliate,true)
             }
         }
     }
@@ -246,7 +251,18 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         affiliateHomeViewModel.getValidateUserdata().observe(this, { validateUserdata ->
             view?.findViewById<LoaderUnify>(R.id.affiliate_progress_bar)?.gone()
             view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.show()
-            affiliateHomeViewModel.getAffiliatePerformance(page = PAGE_ZERO)
+            if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true) {
+                affiliateHomeViewModel.getAffiliatePerformance(page = PAGE_ZERO)
+            }else {
+                validateUserdata.validateAffiliateUserStatus.data?.error?.ctaLink?.androidUrl?.let {
+                    try {
+                        activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                    }catch (e : Exception){
+                        activity?.startActivity(Intent(Intent(activity, BaseSimpleWebViewActivity::class.java)).putExtra(KEY_URL,it))
+                    }
+                }
+                activity?.finish()
+            }
         })
 
         affiliateHomeViewModel.getAffiliateDataItems().observe(this ,{ dataList ->
@@ -315,7 +331,8 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                     setupTickerView(
                         announcementData.getAffiliateAnnouncement.data.announcementTitle,
                         announcementData.getAffiliateAnnouncement.data.announcementDescription,
-                        Ticker.TYPE_INFORMATION
+                        Ticker.TYPE_INFORMATION,
+                            announcementData.getAffiliateAnnouncement.data.ctaLink?.androidURL ?: ""
                     )
                 }
                 ANNOUNCEMENT__TYPE_USER_BLACKLIST -> {
@@ -325,7 +342,8 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                     setupTickerView(
                         announcementData.getAffiliateAnnouncement.data.announcementTitle,
                         announcementData.getAffiliateAnnouncement.data.announcementDescription,
-                        Ticker.TYPE_ERROR
+                        Ticker.TYPE_ERROR,
+                            announcementData.getAffiliateAnnouncement.data.ctaLink?.androidURL ?: ""
                     )
                 }
                 ANNOUNCEMENT__TYPE_SERVICE_STATUS -> {
@@ -333,7 +351,8 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                     setupTickerView(
                         announcementData.getAffiliateAnnouncement.data.announcementTitle,
                         announcementData.getAffiliateAnnouncement.data.announcementDescription,
-                        Ticker.TYPE_ANNOUNCEMENT
+                        Ticker.TYPE_ANNOUNCEMENT,
+                            announcementData.getAffiliateAnnouncement.data.ctaLink?.androidURL ?: ""
                     )
                 }
                 ANNOUNCEMENT__TYPE_NO_ANNOUNCEMENT -> {
@@ -351,16 +370,23 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         }
 
     }
-    private fun setupTickerView(title: String?,desc :String? ,tickerTypeValue: Int)
+    private fun setupTickerView(title: String?,desc :String? ,tickerTypeValue: Int, ctaLinkUrl  : String = "")
     {
         view?.findViewById<CardView>(R.id.affiliate_announcement_ticker_cv)?.show()
         view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.run {
             tickerTitle = title
             desc?.let {
-                setTextDescription(
+                setHtmlDescription(
                     it
                 )
             }
+            setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    if(ctaLinkUrl.isNotBlank())
+                        RouteManager.routeNoFallbackCheck(context,ctaLinkUrl,ctaLinkUrl)
+                }
+                override fun onDismiss() {}
+            })
            tickerType = tickerTypeValue
         }
 
@@ -399,7 +425,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
             }
             LINK_HISTORY_BUTTON_CLICKED -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    bottomNavBarClickListener?.selectItem(AffiliateActivity.PROMO_MENU,R.id.menu_promo_affiliate)
+                    bottomNavBarClickListener?.selectItem(AffiliateActivity.PROMO_MENU,R.id.menu_promo_affiliate,true)
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
@@ -429,7 +455,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     }
 
     override fun onRangeSelectionButtonClicked() {
-        AffiliateBottomDatePicker.newInstance(affiliateHomeViewModel.getSelectedDate(),this).show(childFragmentManager, "")
+        AffiliateBottomDatePicker.newInstance(affiliateHomeViewModel.getSelectedDate(),this,IDENTIFIER_HOME).show(childFragmentManager, "")
     }
 
     override fun onInfoClick(title: String?, desc: String?) {

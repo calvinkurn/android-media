@@ -96,7 +96,6 @@ import com.tokopedia.shop.common.view.viewmodel.ShopPageFollowingStatusSharedVie
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
-import com.tokopedia.shop.home.view.fragment.OldShopPageHomeFragment
 import com.tokopedia.shop.note.view.bottomsheet.ShopNoteBottomSheet
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
@@ -1498,18 +1497,10 @@ class NewShopPageFragment :
         var selectedPosition = viewPager?.currentItem.orZero()
         if (tabLayout?.tabCount == 0) {
             if (shouldOverrideTabToHome) {
-                selectedPosition = if(!isUsingNewShopHomeTab()) {
-                    if (viewPagerAdapter?.isFragmentObjectExists(OldShopPageHomeFragment::class.java) == true) {
-                        viewPagerAdapter?.getFragmentPosition(OldShopPageHomeFragment::class.java).orZero()
-                    } else {
-                        selectedPosition
-                    }
+                selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(ShopPageHomeFragment::class.java) == true) {
+                    viewPagerAdapter?.getFragmentPosition(ShopPageHomeFragment::class.java).orZero()
                 } else {
-                    if (viewPagerAdapter?.isFragmentObjectExists(ShopPageHomeFragment::class.java) == true) {
-                        viewPagerAdapter?.getFragmentPosition(ShopPageHomeFragment::class.java).orZero()
-                    } else {
-                        selectedPosition
-                    }
+                    selectedPosition
                 }
             }
             if (shouldOverrideTabToProduct) {
@@ -1595,43 +1586,24 @@ class NewShopPageFragment :
 
     private fun getHomeFragment(): Fragment? {
         return if (isShowHomeTab()) {
-            if(!isUsingNewShopHomeTab()) {
-                OldShopPageHomeFragment.createInstance(
-                        shopId,
-                        shopPageHeaderDataModel?.isOfficial ?: false,
-                        shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                        shopPageHeaderDataModel?.shopName.orEmpty(),
-                        shopAttribution ?: "",
-                        shopRef
-                ).apply {
-                    shopViewModel?.productListData?.let {
-                        setInitialProductListData(it)
-                    }
+            ShopPageHomeFragment.createInstance(
+                shopId,
+                shopPageHeaderDataModel?.isOfficial ?: false,
+                shopPageHeaderDataModel?.isGoldMerchant ?: false,
+                shopPageHeaderDataModel?.shopName.orEmpty(),
+                shopAttribution ?: "",
+                shopRef
+            ).apply {
+                shopViewModel?.productListData?.let {
+                    setInitialProductListData(it)
                 }
-            } else{
-                ShopPageHomeFragment.createInstance(
-                        shopId,
-                        shopPageHeaderDataModel?.isOfficial ?: false,
-                        shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                        shopPageHeaderDataModel?.shopName.orEmpty(),
-                        shopAttribution ?: "",
-                        shopRef
-                ).apply {
-                    shopViewModel?.productListData?.let {
-                        setInitialProductListData(it)
-                    }
-                    shopViewModel?.homeWidgetLayoutData?.let{
-                        setListWidgetLayoutData(it)
-                    }
+                shopViewModel?.homeWidgetLayoutData?.let {
+                    setListWidgetLayoutData(it)
                 }
             }
         } else {
             null
         }
-    }
-
-    private fun isUsingNewShopHomeTab(): Boolean {
-        return ShopUtil.isUsingNewShopHomeTab(activity?.intent)
     }
 
     private fun onErrorGetShopPageTabData(e: Throwable?) {
@@ -1691,9 +1663,6 @@ class NewShopPageFragment :
 
         val shopPageHomeFragment: Fragment? = viewPagerAdapter?.getRegisteredFragment(TAB_POSITION_HOME)
         if (shopPageHomeFragment is ShopPageHomeFragment) {
-            shopPageHomeFragment.clearCache()
-        }
-        if (shopPageHomeFragment is OldShopPageHomeFragment) {
             shopPageHomeFragment.clearCache()
         }
         isRefresh = true
