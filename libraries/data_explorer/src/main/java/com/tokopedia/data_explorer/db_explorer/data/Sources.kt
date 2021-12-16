@@ -9,6 +9,8 @@ import java.io.File
 internal interface Sources {
     interface Raw {
         suspend fun getDatabases(operation: Operation): List<File>
+        suspend fun removeDatabase(operation: Operation): List<File>
+        suspend fun copyDatabase(operation: Operation): List<File>
 
     }
 

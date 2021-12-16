@@ -12,12 +12,17 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.data_explorer.R
 import com.tokopedia.data_explorer.db_explorer.di.DataExplorerComponent
 import com.tokopedia.data_explorer.db_explorer.domain.databases.models.DatabaseDescriptor
+import com.tokopedia.data_explorer.db_explorer.domain.databases.models.DatabaseInteractions
 import com.tokopedia.data_explorer.db_explorer.presentation.Constants
 import com.tokopedia.data_explorer.db_explorer.presentation.schema.SchemaActivity
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_database_list_layout.*
 import javax.inject.Inject
 
-class DatabaseListFragment: BaseDaggerFragment() {
+class DatabaseListFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -29,8 +34,32 @@ class DatabaseListFragment: BaseDaggerFragment() {
 
     private val databaseAdapter: DatabaseAdapter by lazy(LazyThreadSafetyMode.NONE) {
         DatabaseAdapter(
-            onClick = { navigateToTableActivity(it) }
+            onClick = { navigateToTableActivity(it) },
+            interaction = DatabaseInteractions(
+                onDelete = { showDeleteDialog(it) },
+                onCopy = { viewModel.copyDatabase(it) },
+                onShare = { }
+            )
         )
+    }
+
+    private fun showDeleteDialog(databaseDescriptor: DatabaseDescriptor) {
+        context?.let {
+            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle("Delete Database")
+                setDescription("Are you sure you want to delete ${databaseDescriptor.name}")
+                setPrimaryCTAText("Yes Delete")
+                setSecondaryCTAText("No")
+                setPrimaryCTAClickListener {
+                    viewModel.removeDatabase(databaseDescriptor)
+                    dismiss()
+                }
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+                show()
+            }
+        }
     }
 
     private fun navigateToTableActivity(databaseDescriptor: DatabaseDescriptor) {
@@ -55,7 +84,8 @@ class DatabaseListFragment: BaseDaggerFragment() {
         viewModel.browseDatabases()
         observeViewModels()
         rvDatabaseList.adapter = databaseAdapter
-        rvDatabaseList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        rvDatabaseList.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
     private fun observeViewModels() {
@@ -63,10 +93,24 @@ class DatabaseListFragment: BaseDaggerFragment() {
             databaseAdapter.submitList(list)
         })
         viewModel.errorLiveData.observe(viewLifecycleOwner, {
-            databaseAdapter.submitList(arrayListOf())
+            Toaster.build(
+                rvDatabaseList,
+                it.message ?: "",
+                Toaster.LENGTH_SHORT,
+                Toaster.TYPE_ERROR
+            ).show()
+        })
+        viewModel.actionPerformedLiveData.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> showToast(it.data, Toaster.TYPE_NORMAL)
+                is Fail -> showToast(it.throwable.localizedMessage, Toaster.TYPE_NORMAL)
+            }
         })
     }
 
+    private fun showToast(msg: String, type: Int) {
+        Toaster.build(rvDatabaseList, msg, Toaster.LENGTH_SHORT, type).show()
+    }
 
     override fun getScreenName() = ""
     override fun initInjector() = getComponent(DataExplorerComponent::class.java).inject(this)

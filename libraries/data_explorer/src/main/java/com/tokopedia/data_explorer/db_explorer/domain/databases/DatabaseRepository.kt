@@ -16,4 +16,14 @@ internal class DatabaseRepository @Inject constructor(
         return source.getDatabases(operation).map { control.mapper(it) }
     }
 
+    override suspend fun remove(input: DatabaseParameters.Command): List<DatabaseDescriptor> {
+        val operation = control.converter command input
+        return source.removeDatabase(operation).map { control.mapper(it) }
+    }
+
+    override suspend fun copy(input: DatabaseParameters.Command): List<DatabaseDescriptor> {
+        val operation = control.converter command input
+        return source.copyDatabase(operation).map { control.mapper(it) }
+    }
+
 }

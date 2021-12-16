@@ -12,6 +12,8 @@ import com.tokopedia.data_explorer.db_explorer.domain.shared.models.parameters.P
 internal interface Repositories {
 
     interface Database: BaseRepository<DatabaseParameters.Get, List<DatabaseDescriptor>> {
+        suspend fun remove(input: DatabaseParameters.Command): List<DatabaseDescriptor>
+        suspend fun copy(input: DatabaseParameters.Command): List<DatabaseDescriptor>
 
     }
 

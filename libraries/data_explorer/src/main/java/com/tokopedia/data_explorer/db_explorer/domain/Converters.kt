@@ -13,6 +13,7 @@ internal interface Converters {
     interface Database : BaseConverter<DatabaseParameters, Operation> {
 
         suspend infix fun get(parameters: DatabaseParameters.Get): Operation
+        suspend infix fun command(parameters: DatabaseParameters.Command): Operation
     }
 
     interface Connection : BaseConverter<ConnectionParameters, String>

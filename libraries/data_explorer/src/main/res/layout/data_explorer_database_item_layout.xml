@@ -11,6 +11,7 @@
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginBottom="@dimen/unify_space_12"
         android:layout_marginEnd="@dimen/unify_space_16">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -18,7 +19,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/unify_space_4"
-            app:layout_constraintEnd_toStartOf="@id/databaseAction"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_4"
@@ -67,20 +68,60 @@
             android:layout_marginBottom="@dimen/unify_space_12"
             android:paddingEnd="@dimen/unify_space_16"
             android:textColor="@color/Unify_N700_96"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/databaseAction"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/titleDatabasePath"
             app:layout_constraintTop_toBottomOf="@id/titleDatabaseVersion"
             app:typographyType="body_2"
             tools:text="/data/user/0/com.tokopedia/databases/cm_push_notifications" />
 
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/databaseAction"
-            android:layout_width="@dimen/unify_space_24"
-            android:layout_height="@dimen/unify_space_24"
-            app:icon_name="MENU_KEBAB_VERTICAL"
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/shareDatabase"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="SHARE"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/unify_space_4"
+            app:layout_constraintEnd_toStartOf="@+id/copyDatabase"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/databasePath"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/copyDatabase"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="COPY"
+            android:layout_marginStart="@dimen/unify_space_4"
+            android:layout_marginEnd="@dimen/unify_space_4"
+            app:layout_constraintEnd_toStartOf="@+id/deleteDatabase"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toEndOf="@+id/shareDatabase"
+            app:layout_constraintTop_toTopOf="@id/shareDatabase"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost"
+            />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/deleteDatabase"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="DELETE"
+            android:layout_marginStart="@dimen/unify_space_4"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toEndOf="@+id/copyDatabase"
+            app:layout_constraintTop_toTopOf="@id/shareDatabase"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
