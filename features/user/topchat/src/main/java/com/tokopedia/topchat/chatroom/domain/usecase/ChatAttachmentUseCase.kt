@@ -1,23 +1,18 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
-import com.tokopedia.topchat.chatroom.domain.pojo.param.ChatAttachmentParam
-import com.tokopedia.topchat.chatroom.domain.pojo.param.ChatAttachmentParam.Companion.PARAM_ADDRESS_ID
-import com.tokopedia.topchat.chatroom.domain.pojo.param.ChatAttachmentParam.Companion.PARAM_DISTRICT_ID
-import com.tokopedia.topchat.chatroom.domain.pojo.param.ChatAttachmentParam.Companion.PARAM_LAT_LON
-import com.tokopedia.topchat.chatroom.domain.pojo.param.ChatAttachmentParam.Companion.PARAM_MSG_ID
-import com.tokopedia.topchat.chatroom.domain.pojo.param.ChatAttachmentParam.Companion.PARAM_POSTAL_CODE
-import com.tokopedia.topchat.chatroom.domain.pojo.param.ChatAttachmentParam.Companion.PARAM_REPLY_IDS
 import javax.inject.Inject
 
 open class ChatAttachmentUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-): CoroutineUseCase<ChatAttachmentParam, ChatAttachmentResponse>(dispatcher.io) {
+): CoroutineUseCase<ChatAttachmentUseCase.Param, ChatAttachmentResponse>(dispatcher.io) {
 
     override fun graphqlQuery(): String = """
         query chatAttachments(
@@ -42,8 +37,36 @@ open class ChatAttachmentUseCase @Inject constructor(
         }
     """.trimIndent()
 
-    override suspend fun execute(params: ChatAttachmentParam): ChatAttachmentResponse {
+    override suspend fun execute(params: Param): ChatAttachmentResponse {
         return repository.request(graphqlQuery(), params)
     }
 
+    data class Param (
+        @SerializedName(PARAM_MSG_ID)
+        var msgId: Long = 0,
+
+        @SerializedName(PARAM_REPLY_IDS)
+        var replyIDs: String = "",
+
+        @SerializedName(PARAM_ADDRESS_ID)
+        var addressId: Long = 0,
+
+        @SerializedName(PARAM_DISTRICT_ID)
+        var districtId: Long = 0,
+
+        @SerializedName(PARAM_POSTAL_CODE)
+        var postalCode: String = "",
+
+        @SerializedName(PARAM_LAT_LON)
+        var latlon: String = ""
+    ): GqlParam
+
+    companion object {
+        const val PARAM_MSG_ID = "msgId"
+        const val PARAM_REPLY_IDS = "ReplyIDs"
+        const val PARAM_ADDRESS_ID = "addressID"
+        const val PARAM_DISTRICT_ID = "districtID"
+        const val PARAM_POSTAL_CODE = "postalCode"
+        const val PARAM_LAT_LON = "latlon"
+    }
 }

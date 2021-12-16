@@ -170,7 +170,7 @@ class TopChatViewModel @Inject constructor(
         source: String,
     ) {
         launchCatchError( block = {
-            val existingMessageIdParam = ExistingMessageIdParam(
+            val existingMessageIdParam = GetExistingMessageIdUseCase.Param(
                 toUserId = toUserId,
                 toShopId = toShopId,
                 source = source
@@ -370,24 +370,24 @@ class TopChatViewModel @Inject constructor(
     private fun generateToggleBlockChatParam(
         messageId: String,
         blockActionType: ActionType
-    ): ToggleBlockChatParam {
-        return ToggleBlockChatParam().apply {
+    ): ChatToggleBlockChatUseCase.Param {
+        return ChatToggleBlockChatUseCase.Param().apply {
             this.msgId = messageId
             when (blockActionType) {
                 BlockActionType.BlockChat -> {
-                    this.blockType = BlockType.Personal.value
+                    this.blockType = ChatToggleBlockChatUseCase.BlockType.Personal.value
                     this.isBlocked = true
                 }
                 BlockActionType.UnblockChat -> {
-                    this.blockType = BlockType.Personal.value
+                    this.blockType = ChatToggleBlockChatUseCase.BlockType.Personal.value
                     this.isBlocked = false
                 }
                 BlockActionType.BlockPromo -> {
-                    this.blockType = BlockType.Promo.value
+                    this.blockType = ChatToggleBlockChatUseCase.BlockType.Promo.value
                     this.isBlocked = true
                 }
                 BlockActionType.UnblockPromo -> {
-                    this.blockType = BlockType.Promo.value
+                    this.blockType = ChatToggleBlockChatUseCase.BlockType.Promo.value
                     this.isBlocked = false
                 }
             }
@@ -440,7 +440,7 @@ class TopChatViewModel @Inject constructor(
     private fun generateAttachmentParams(
         msgId: Long,
         replyIDs: String
-    ): ChatAttachmentParam {
+    ): ChatAttachmentUseCase.Param {
         val addressId = userLocationInfo.address_id.toLongOrZero()
         val districtId = userLocationInfo.district_id.toLongOrZero()
         val postalCode = userLocationInfo.postal_code
@@ -449,7 +449,7 @@ class TopChatViewModel @Inject constructor(
         } else {
             "${userLocationInfo.lat},${userLocationInfo.long}"
         }
-        return ChatAttachmentParam(
+        return ChatAttachmentUseCase.Param(
             msgId = msgId,
             replyIDs = replyIDs,
             addressId = addressId,
@@ -471,7 +471,7 @@ class TopChatViewModel @Inject constructor(
 
     fun getSmartReplyWidget(msgId: String, productIds: String) {
         launchCatchError(block = {
-            val param = SmartReplyQuestionParam(
+            val param = GetSmartReplyQuestionUseCase.Param(
                 msgId = msgId,
                 productIds = productIds,
                 addressId = userLocationInfo.address_id.toLongOrZero(),
