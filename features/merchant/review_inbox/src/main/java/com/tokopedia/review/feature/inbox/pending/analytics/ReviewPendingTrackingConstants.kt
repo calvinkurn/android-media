@@ -20,7 +20,7 @@ object ReviewPendingTrackingConstants {
 
     const val EVENT_CATEGORY_VALUE_REVIEW_PAGE_PENDING_REVIEW = "ulasan page - menunggu diulas"
 
-    const val EVENT_LABEL_VALUE_CAROUSEL_ITEM = "title:%s"
+    const val EVENT_LABEL_VALUE_CAROUSEL_ITEM = "title:%s;"
 
     const val EVENT_FIELD_EE_PROMOTIONS = "promotions"
     const val EVENT_FIELD_EE_CREATIVE_NAME = "creative_name"
