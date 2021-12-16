@@ -514,9 +514,15 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 if (!isActionEdit) {
                     init(minDate, maxDate, listOf()).inMode(CalendarPickerView.SelectionMode.RANGE)
                 } else {
-                    init(minDate, maxDate, listOf()).inMode(CalendarPickerView.SelectionMode.RANGE).withSelectedDates(
-                            listOf(minDate, selectedEndDate)
-                    )
+                    val actualMinimalDate = if (selectedStartDate.before(minDate)) {
+                        minDate
+                    } else {
+                        selectedStartDate
+                    }
+                    init(minDate, maxDate, listOf()).inMode(CalendarPickerView.SelectionMode.RANGE).withSelectedDates(listOf(
+                            actualMinimalDate,
+                            selectedEndDate
+                    ))
                 }
                 setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
                     override fun onDateSelected(date: Date) {
