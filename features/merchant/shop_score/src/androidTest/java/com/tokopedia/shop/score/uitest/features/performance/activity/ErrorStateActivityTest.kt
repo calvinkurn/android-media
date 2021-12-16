@@ -6,11 +6,12 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.uitest.features.performance.base.ShopScoreTest
 import com.tokopedia.shop.score.uitest.stub.common.util.isViewDisplayed
 import com.tokopedia.shop.score.uitest.stub.common.util.onIdView
+import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.CoreMatchers
 import org.junit.Test
 import java.io.IOException
-import java.net.UnknownHostException
 
+@UiTest
 class ErrorStateActivityTest : ShopScoreTest() {
 
     @Test

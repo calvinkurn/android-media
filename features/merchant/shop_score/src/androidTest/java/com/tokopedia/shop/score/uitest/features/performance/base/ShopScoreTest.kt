@@ -56,10 +56,7 @@ import org.hamcrest.CoreMatchers.`is`
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
-import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4ClassRunner::class)
-@LargeTest
 abstract class ShopScoreTest {
 
     @get:Rule
