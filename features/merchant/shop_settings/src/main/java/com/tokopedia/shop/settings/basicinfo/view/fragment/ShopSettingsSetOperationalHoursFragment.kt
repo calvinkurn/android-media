@@ -294,7 +294,11 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     run {
                         val accordionOpsHourItem = AccordionDataUnify(
                                 title = OperationalHoursUtil.getDayName(opsHour.day),
-                                subtitle = OperationalHoursUtil.generateDatetime(opsHour.startTime, opsHour.endTime, opsHour.status),
+                                subtitle = OperationalHoursUtil.generateDatetime(
+                                        opsHour.startTime,
+                                        opsHour.endTime,
+                                        opsHour.status
+                                ).substring(OperationalHoursUtil.OPERATIONAL_HOUR_START_INDEX),
                                 expandableView = generateAccordionChildView(opsHour),
                                 isExpanded = index == DEFAULT_FIRST_INDEX
                         )
@@ -305,7 +309,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                             currentSelectedStartTime = opsHour.startTime
                             currentSelectedEndTime = opsHour.endTime
                         }
-                        opsHourAccordion?.addGroup(accordionOpsHourItem)
+                        opsHourAccordion?.addGroup(accordionOpsHourItem)?.accordionSubtitle?.setTextColor(R.color.Unify_NN600)
                     }
                 }
                 setItemAccordionViewCustomHeight(ACCORDION_ITEM_VIEW_HEIGHT)

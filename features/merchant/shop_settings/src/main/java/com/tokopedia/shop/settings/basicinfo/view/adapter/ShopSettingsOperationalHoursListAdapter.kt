@@ -26,7 +26,6 @@ class ShopSettingsOperationalHoursListAdapter(
         @LayoutRes
         val VIEWHOLDER_LAYOUT = R.layout.item_shop_operational_hours_list
 
-        private const val OPERATIONAL_HOUR_START_INDEX = 4
         private const val INITIAL_SIZE = 0
         private const val DASH_DELIMITER = "-"
         private const val AFTER_DASH_DELIMITER = "- "
@@ -74,7 +73,7 @@ class ShopSettingsOperationalHoursListAdapter(
                 ALL_DAY -> operationalHours
                 HOLIDAY_CAN_ATC,
                 HOLIDAY_CANNOT_ATC -> HOLIDAY
-                else -> operationalHours.substring(OPERATIONAL_HOUR_START_INDEX)
+                else -> operationalHours.substring(OperationalHoursUtil.OPERATIONAL_HOUR_START_INDEX)
             }
 
             opsHourListUiModel.add(ShopOperationalHourUiModel(

@@ -25,6 +25,7 @@ object OperationalHoursUtil {
     // Time Constant
     const val MIN_START_TIME = "00:00:00"
     const val MAX_END_TIME = "23:59:59"
+    const val OPERATIONAL_HOUR_START_INDEX = 4
     private const val DEFAULT_FIRST_INDEX = 0
     private const val MONTH_INDEX = 1
     private const val YEAR_INDEX = 2
