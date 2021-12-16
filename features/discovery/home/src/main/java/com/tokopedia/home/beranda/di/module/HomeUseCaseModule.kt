@@ -24,7 +24,6 @@ import com.tokopedia.home.beranda.di.module.query.QueryHome.homeDataRevampQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.homeIconQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.homeQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.homeSlidesQuery
-import com.tokopedia.home.beranda.di.module.query.QueryHome.recommendationQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.tokopointsListQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.walletBalanceQuery
 import com.tokopedia.home.beranda.di.module.query.QueryPopularKeyword.popularKeywordQuery
@@ -155,7 +154,7 @@ class HomeUseCaseModule {
     @Provides
     fun getRecommendationTabUseCase(graphqlRepository: GraphqlRepository): GetRecommendationTabUseCase {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFeedTabGqlResponse>(graphqlRepository)
-        useCase.setGraphqlQuery(recommendationQuery)
+        useCase.setGraphqlQuery(RecommendationQuery())
         return GetRecommendationTabUseCase(useCase)
     }
 
