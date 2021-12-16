@@ -21,6 +21,7 @@ import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.di.module.query.BusinessUnitDataQuery
 import com.tokopedia.home.beranda.di.module.query.BusinessWidgetQuery
+import com.tokopedia.home.beranda.di.module.query.HomeFeedQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.atfQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.closeChannel
 import com.tokopedia.home.beranda.di.module.query.QueryHome.dynamicChannelQuery
@@ -82,13 +83,11 @@ class HomeUseCaseModule {
 
     @Provides
     fun provideGetHomeRecommendationUseCase(
-            @ApplicationContext context: Context,
             graphqlRepository: GraphqlRepository,
             homeRecommendationMapper: HomeRecommendationMapper
     ): GetHomeRecommendationUseCase {
-        val query = GraphqlHelper.loadRawString(context.resources, R.raw.gql_home_feed)
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFeedContentGqlResponse>(graphqlRepository)
-        useCase.setGraphqlQuery(query)
+        useCase.setGraphqlQuery(HomeFeedQuery())
         return GetHomeRecommendationUseCase(useCase, homeRecommendationMapper)
     }
 
