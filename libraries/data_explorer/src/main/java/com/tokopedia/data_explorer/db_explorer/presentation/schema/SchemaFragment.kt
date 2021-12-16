@@ -2,6 +2,8 @@ package com.tokopedia.data_explorer.db_explorer.presentation.schema
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,10 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.data_explorer.R
 import com.tokopedia.data_explorer.db_explorer.di.DataExplorerComponent
+import com.tokopedia.data_explorer.db_explorer.presentation.Searchable
 import kotlinx.android.synthetic.main.fragment_database_list_layout.*
 import javax.inject.Inject
 
-class SchemaFragment: BaseDaggerFragment() {
+class SchemaFragment: BaseDaggerFragment(), Searchable {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -61,8 +64,24 @@ class SchemaFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getTables(databasePath)
         observeViewModels()
+        setUpSchemaSearch()
         rvDatabaseList.adapter = schemaAdapter
         rvDatabaseList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+    }
+
+    private fun setUpSchemaSearch() {
+        searchInputView.searchBarPlaceholder = "Enter Schema Name"
+        searchInputView.searchBarTextField.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                s?.toString()?.apply { search(this) } ?: run { search(null)}
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+        searchInputView.clearListener = { search(null) }
+
     }
 
     private fun observeViewModels() {
@@ -77,6 +96,8 @@ class SchemaFragment: BaseDaggerFragment() {
 
     override fun getScreenName() = ""
     override fun initInjector() = getComponent(DataExplorerComponent::class.java).inject(this)
+    override fun search(query: String?)  = viewModel.getTables(databasePath, query)
+    override fun searchQuery() = searchInputView.searchBarTextField.text.toString()
 
     companion object {
         fun newInstance(databaseName: String, databasePath: String) : SchemaFragment {

@@ -12,10 +12,10 @@ internal class GetTableContentUseCase @Inject constructor(
     private val connectionRepository: Repositories.Connection,
 ): UseCase<Page>() {
 
-    private lateinit var contentParameters: ContentParameters
+    private lateinit var input: ContentParameters
 
     fun getTable(onSuccess: (Page) -> Unit, onError: (Throwable) -> Unit, contentParameters: ContentParameters) {
-       this.contentParameters = contentParameters
+       this.input = contentParameters
         this.execute({
             onSuccess(it)
         }, {
@@ -24,7 +24,6 @@ internal class GetTableContentUseCase @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): Page {
-        val input = this.contentParameters
         val connection = connectionRepository.open(ConnectionParameters(databasePath = input.databasePath))
 
         val results = schemaRepository.getByName(input.copy(connection = connection))

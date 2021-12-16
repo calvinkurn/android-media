@@ -21,8 +21,10 @@ internal object Statements {
     }
 
     object Schema {
-        fun tables(query: String?) =
-            "SELECT name FROM sqlite_master WHERE type = 'table'"
+        fun tables(query: String?): String {
+            val searchParam: String =  query?.let { "AND name like \"%$it%\""} ?: ""
+            return "SELECT name FROM sqlite_master WHERE type = 'table' $searchParam ORDER BY name"
+        }
 
         fun count(name: String?) =
             "SELECT COUNT(*) FROM $name"

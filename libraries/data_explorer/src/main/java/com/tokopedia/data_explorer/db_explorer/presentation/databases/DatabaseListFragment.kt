@@ -2,6 +2,8 @@ package com.tokopedia.data_explorer.db_explorer.presentation.databases
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +16,7 @@ import com.tokopedia.data_explorer.db_explorer.di.DataExplorerComponent
 import com.tokopedia.data_explorer.db_explorer.domain.databases.models.DatabaseDescriptor
 import com.tokopedia.data_explorer.db_explorer.domain.databases.models.DatabaseInteractions
 import com.tokopedia.data_explorer.db_explorer.presentation.Constants
+import com.tokopedia.data_explorer.db_explorer.presentation.Searchable
 import com.tokopedia.data_explorer.db_explorer.presentation.schema.SchemaActivity
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -22,7 +25,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_database_list_layout.*
 import javax.inject.Inject
 
-class DatabaseListFragment : BaseDaggerFragment() {
+class DatabaseListFragment : BaseDaggerFragment(), Searchable {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -83,9 +86,23 @@ class DatabaseListFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.browseDatabases()
         observeViewModels()
+        setUpSearch()
         rvDatabaseList.adapter = databaseAdapter
         rvDatabaseList.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+    }
+
+    private fun setUpSearch() {
+        searchInputView.searchBarTextField.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                s?.toString()?.apply { search(this) } ?: run { search(null)}
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+        searchInputView.clearListener = { search(null) }
     }
 
     private fun observeViewModels() {
@@ -118,4 +135,11 @@ class DatabaseListFragment : BaseDaggerFragment() {
     companion object {
         fun newInstance() = DatabaseListFragment()
     }
+
+    override fun search(query: String?) {
+        viewModel.browseDatabases(query)
+    }
+
+    override fun searchQuery() = searchInputView.searchBarTextField.text.toString()
+
 }
