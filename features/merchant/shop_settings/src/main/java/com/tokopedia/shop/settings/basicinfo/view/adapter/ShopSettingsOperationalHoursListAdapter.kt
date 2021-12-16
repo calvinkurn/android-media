@@ -90,10 +90,10 @@ class ShopSettingsOperationalHoursListAdapter(
         // grouping operational hours schedule
         opsHourListUiModel.forEachIndexed { idx, shopOperationalHourUiModel ->
             if (idx > INITIAL_SIZE) {
-                val opsTime = groupedOpsHourListUiModel[total-1].shopOperationalHours
-                val currentOpsTime = shopOperationalHourUiModel.shopOperationalHours
+                val groupedOpsTime = "${groupedOpsHourListUiModel[total-1].shopOperationalHours} - ${groupedOpsHourListUiModel[total-1].shopOperationalHoursDescription}"
+                val currentOpsTime = "${shopOperationalHourUiModel.shopOperationalHours} - ${shopOperationalHourUiModel.shopOperationalHoursDescription}"
 
-                if (opsTime == currentOpsTime) {
+                if (groupedOpsTime == currentOpsTime) {
                     val currentDayName = shopOperationalHourUiModel.dayName
                     var existingDayName = groupedOpsHourListUiModel[total-1].dayName
                     existingDayName = if (existingDayName.contains(DASH_DELIMITER)) {

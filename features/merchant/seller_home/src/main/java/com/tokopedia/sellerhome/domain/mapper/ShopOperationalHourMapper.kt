@@ -4,6 +4,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.domain.model.ShopClosedInfoDetailResponse
 import com.tokopedia.sellerhome.domain.model.ShopOperationalHourResponse
+import com.tokopedia.sellerhome.domain.model.ShopStatusInfoResponse
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.ShopOperationalUiModel
 import com.tokopedia.shop.common.util.OperationalHoursUtil
@@ -90,12 +91,14 @@ object ShopOperationalHourMapper {
     fun mapToShopOperationalData(
         operationalHourResponse: ShopOperationalHourResponse,
         closedInfoResponse: ShopClosedInfoDetailResponse,
+        shopStatusInfoResponse: ShopStatusInfoResponse,
         shopSettingsAccess: Boolean
     ): ShopOperationalData {
         val isShopOpen = closedInfoResponse.isOpen()
         val isShopClosed = closedInfoResponse.isClosed()
         val isWeeklyOperationalClosed = operationalHourResponse.isWeeklyOperationalClosed() && !isShopClosed
         val isShopActive = operationalHourResponse.statusActive
+        val isCanAtc = shopStatusInfoResponse.shopStatus != ShopClosedInfoDetailResponse.SHOP_STATUS_CLOSED
         val is24Hour = operationalHourResponse.is24Hour()
 
         val timeLabelRes: Int?
@@ -126,12 +129,12 @@ object ShopOperationalHourMapper {
                 timeLabel = "$startTime - $endTime $OPERATIONAL_HOUR_TIMEZONE"
                 timeLabelRes = null
             }
-            isWeeklyOperationalClosed && isShopActive -> {
+            isWeeklyOperationalClosed && isCanAtc -> {
                 // operational weekly closed, but buyer still can buy product
                 timeLabelRes = R.string.shop_operational_hour_weekly_close_can_atc
                 timeLabel = null
             }
-            isWeeklyOperationalClosed && !isShopActive -> {
+            isWeeklyOperationalClosed && !isCanAtc -> {
                 // operational weekly closed, buyer can't buy product
                 timeLabelRes = R.string.shop_operational_hour_weekly_close_cannot_atc
                 timeLabel = null

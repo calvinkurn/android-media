@@ -32,6 +32,9 @@ class GetShopInfoByIdUseCase @Inject constructor(
                       status
                     }
                   }
+                  statusInfo {
+                    shopStatus
+                  }
                   shopSnippetURL
                 }
                 error {
