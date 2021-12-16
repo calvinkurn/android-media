@@ -10,6 +10,7 @@ import com.tokopedia.play.util.isEqualToIgnoringFields
 import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.view.uimodel.action.ClickShareAction
 import com.tokopedia.play.view.uimodel.action.CloseSharingOptionAction
+import com.tokopedia.play.view.uimodel.action.ScreenshotTakenAction
 import com.tokopedia.play.view.uimodel.event.CopyToClipboardEvent
 import com.tokopedia.play.view.uimodel.event.OpenSharingOptionEvent
 import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
@@ -158,6 +159,43 @@ class PlayViewModelShareExperienceTest {
 
             /** Verify */
             verify { mockPlayNewAnalytic.closeShareBottomSheet(channelId, channelType, false) }
+        }
+    }
+
+    @Test
+    fun `when user take screenshot & custom share is allowed, it should emit event to open bottom sheet`() {
+        /** Prepare */
+        every { mockPlayNewAnalytic.takeScreenshotForSharing(any(), any()) } returns Unit
+        coEvery { mockPlayNewAnalytic.impressShareBottomSheet(any(), any()) } returns Unit
+        coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true
+
+        val mockEvent = OpenSharingOptionEvent(
+            title = channelInfo.title,
+            coverUrl = channelInfo.coverUrl,
+            userId = "",
+            channelId = channelId
+        )
+
+        val robot = createPlayViewModelRobot(
+            dispatchers = testDispatcher,
+            playAnalytic = mockPlayNewAnalytic,
+            playShareExperience = mockPlayShareExperience,
+        ) {
+            createPage(channelData)
+            focusPage(channelData)
+        }
+
+        robot.use {
+            /** Test */
+            val event = it.recordEvent {
+                submitAction(ScreenshotTakenAction)
+            }
+
+            /** Verify */
+            verify { mockPlayNewAnalytic.takeScreenshotForSharing(channelId, channelType) }
+            verify { mockPlayNewAnalytic.impressShareBottomSheet(channelId, channelType) }
+
+            event.last().isEqualTo(mockEvent)
         }
     }
 }
