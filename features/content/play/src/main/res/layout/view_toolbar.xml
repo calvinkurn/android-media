@@ -45,16 +45,6 @@
             app:layout_constraintTop_toTopOf="@id/iv_back"
             />
 
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/iv_copy_link"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
-            android:visibility="invisible"
-            app:icon_color_light_enable="@color/Unify_Static_White"
-            app:icon_color_night_enable="@color/Unify_Static_White"
-            app:icon_name="LINK"
-            tools:visibility="visible" />
-
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

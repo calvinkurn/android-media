@@ -24,6 +24,7 @@ import com.tokopedia.play.view.uimodel.state.PlayPartnerUiState
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingInfoUiState
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingPartnerUiState
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingState
+import com.tokopedia.play.view.viewcomponent.ShareExperienceViewComponent
 import com.tokopedia.play.view.viewcomponent.ToolbarViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingActionButtonViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingTimerViewComponent
@@ -35,6 +36,7 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -44,16 +46,17 @@ import javax.inject.Inject
  */
 class PlayUpcomingFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
-    private val analytic: PlayAnalytic
 ): TkpdBaseV4Fragment(),
     ToolbarViewComponent.Listener,
     UpcomingActionButtonViewComponent.Listener,
-    UpcomingTimerViewComponent.Listener
+    UpcomingTimerViewComponent.Listener,
+    ShareExperienceViewComponent.Listener
 {
 
     private val toolbarView by viewComponent { ToolbarViewComponent(it, R.id.view_toolbar, this) }
     private val upcomingTimer by viewComponent { UpcomingTimerViewComponent(it, R.id.view_upcoming_timer, this) }
     private val actionButton by viewComponent { UpcomingActionButtonViewComponent(it, R.id.btn_action, this) }
+    private val shareExperienceView by viewComponent { ShareExperienceViewComponent(it, R.id.view_upcoming_share_experience, childFragmentManager, this, this, requireContext()) }
 
     private lateinit var ivUpcomingCover: ImageUnify
     private lateinit var tvUpcomingTitle: Typography
@@ -202,7 +205,7 @@ class PlayUpcomingFragment @Inject constructor(
         toolbarView.setFollowStatus(partnerState.followStatus)
         toolbarView.setPartnerName(partnerState.name)
 
-        toolbarView.setIsShareable(isShareable)
+        shareExperienceView.setIsShareable(isShareable)
     }
 
     private fun renderUpcomingInfo(prevState: PlayUpcomingInfoUiState?, currState: PlayUpcomingInfoUiState) {
@@ -258,10 +261,24 @@ class PlayUpcomingFragment @Inject constructor(
         playUpcomingViewModel.submitAction(ClickPartnerNameUpcomingAction)
     }
 
-    override fun onCopyButtonClicked(view: ToolbarViewComponent) {
+    override fun onShareIconClick(view: ShareExperienceViewComponent) {
         playUpcomingViewModel.submitAction(ClickShareUpcomingAction)
+    }
 
-        analytic.clickCopyLink()
+    override fun onShareOptionClick(view: ShareExperienceViewComponent, shareModel: ShareModel) {
+        playUpcomingViewModel.submitAction(ClickSharingOptionUpcomingAction(shareModel))
+    }
+
+    override fun onShareOptionClosed(view: ShareExperienceViewComponent) {
+        playUpcomingViewModel.submitAction(CloseSharingOptionUpcomingAction)
+    }
+
+    override fun onScreenshotTaken(view: ShareExperienceViewComponent) {
+        playUpcomingViewModel.submitAction(ScreenshotTakenUpcomingAction)
+    }
+
+    override fun onSharePermissionAction(view: ShareExperienceViewComponent, label: String) {
+        playUpcomingViewModel.submitAction(SharePermissionUpcomingAction(label))
     }
 
     private fun copyToClipboard(content: String) {
