@@ -7,7 +7,7 @@ import com.tokopedia.home.beranda.di.module.query.QueryDismissSuggested.DISMISS_
 @GqlQuery(DISMISS_SUGGESTED_QUERY_NAME, DISMISS_SUGGESTED_QUERY)
 internal object QueryDismissSuggested {
     const val DISMISS_SUGGESTED_QUERY_NAME = "DismissSuggestedQuery"
-    const val DISMISS_SUGGESTED_QUERY : String = "query productrevDismissSuggestion{\n" +
+    const val DISMISS_SUGGESTED_QUERY : String = "query productrevDismissSuggestion(){\n" +
             "  productrevDismissSuggestion\n" +
             "}"
 
