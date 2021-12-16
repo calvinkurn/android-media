@@ -266,8 +266,12 @@ object SearchTracking {
         ))
     }
 
+    /**
+     * context => ignored
+     * need to replace unused param variable following detekt guidelines
+     */
     @JvmStatic
-    fun eventSearchResultTabClick(context: Context?, tabTitle: String?) {
+    fun eventSearchResultTabClick(ignored: Context?, tabTitle: String?) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 SearchEventTracking.Event.SEARCH_RESULT,
                 SearchEventTracking.Category.SEARCH_TAB,
@@ -276,7 +280,11 @@ object SearchTracking {
         ))
     }
 
-    fun eventUserClickNewSearchOnEmptySearch(context: Context?, screenName: String?) {
+    /**
+     * context => ignored
+     * need to replace unused param variable following detekt guidelines
+     */
+    fun eventUserClickNewSearchOnEmptySearch(ignored: Context?, screenName: String?) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 EVENT_CLICK_SEARCH_RESULT,
                 EVENT_CATEGORY_EMPTY_SEARCH,
