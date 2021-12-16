@@ -528,7 +528,7 @@ class WishlistV2ViewModelTest {
     }
 
     @Test
-    fun mapToRecommandation_When_Index_IsMoreThanZero() {
+    fun mapToRecommendation_When_Index_IsMoreThanZero() {
         val wishlistV2ResponseData = WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(page = 2, totalData = 5, hasNextPage = true, items = wishlistFiveItemList))
 
         val recomItem = RecommendationItem(productId = 1L)
