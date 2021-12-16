@@ -207,7 +207,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
     private fun onSuccessUploadProfilePicture(imgPath: String) {
         dismissLoading()
         view?.run {
-            Toaster.build(this, getString(R.string.success_change_profile_picture), Snackbar.LENGTH_LONG)
+            Toaster.build(this, getString(R.string.success_change_profile_picture), Snackbar.LENGTH_LONG).show()
         }
         userSession.profilePicture = imgPath
         ImageHandler.loadImageCircle2(context, profilePhoto, imgPath)
