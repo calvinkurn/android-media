@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -118,6 +119,7 @@ class PlayUpcomingFragment @Inject constructor(
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        Log.d("<LOG>", "onRequestPermissionsResult Upcoming")
         shareExperienceView.handleRequestPermissionResult(requestCode, grantResults)
     }
 
