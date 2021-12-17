@@ -163,10 +163,6 @@ class ProductItemDecoration(private val spacing: Int) : ItemDecoration() {
 
     private fun getRightOffsetNotLastInRow() = spacing / RIGHT_OFFSET_NOT_LAST_ITEM_DIVISOR - horizontalCardViewOffset
 
-    private fun getBottomOffset(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Int {
-        return if (isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount)) spacing else getBottomOffsetNotBottomItem()
-    }
-
     private fun getBottomOffsetNotBottomItem() = spacing / BOTTOM_OFFSET_NOT_BOTTOM_ITEM_DIVISOR - verticalCardViewOffset
 
     private fun isTopProductItem(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Boolean {
