@@ -71,6 +71,7 @@ data class RecommendedKeywordDetail(
 ) : Parcelable {
     var isChecked: Boolean = true
     var priceBid: Int = 0
+    var isError: Boolean = false
 
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",

@@ -183,7 +183,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     }
 
     private fun setEmptyView() {
-        loderRecom?.visibility = View.GONE
+        loderRecom.visibility = View.GONE
         rvTabInsight?.visibility = View.GONE
         emptyView.visibility = View.VISIBLE
         emptyView.image_empty?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_success))
@@ -192,7 +192,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
     private fun showViews() {
         rvTabInsight?.visibility = View.VISIBLE
-        empty_view?.visibility = View.GONE
+        emptyView.visibility = View.GONE
         view_pager?.visibility = View.VISIBLE
     }
 

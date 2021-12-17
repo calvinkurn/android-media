@@ -28,7 +28,6 @@ import javax.inject.Inject
 
 class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
 
-    private var expandedPosi = 0
     @Inject
     lateinit var viewModel: TopAdsInsightViewModel
 
@@ -62,7 +61,7 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
     }
 
     private fun accordionUnifyItemClick(position: Int, isExpanded: Boolean) {
-        expandedPosi = position
+        expandedPosi = if (isExpanded) position else NOT_EXPANDED
         (activity as? TopAdsDashboardActivity)?.toggleMultiActionButton(isExpanded)
         if (isExpanded) onKeywordSelected(
             getExpandedView(position).type,
@@ -167,7 +166,14 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
         getComponent(TopAdsDashboardComponent::class.java).inject(this)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        expandedPosi = NOT_EXPANDED
+    }
+
     companion object {
+        const val NOT_EXPANDED = -1
+        var expandedPosi = NOT_EXPANDED
         private val layout = R.layout.fragment_topads_insight_shop_keyword
         private const val BUNDLE_NEW_KEYWORD = "new_keyword"
 

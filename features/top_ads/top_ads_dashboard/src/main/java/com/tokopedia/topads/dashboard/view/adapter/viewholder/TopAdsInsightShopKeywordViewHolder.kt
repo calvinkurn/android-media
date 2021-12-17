@@ -38,26 +38,42 @@ class TopAdsInsightShopKeywordViewHolder(private val view: View) : RecyclerView.
         )
     }
 
-    fun addListeners(lstr: (CheckboxUnify,TextFieldUnify) -> Unit) = with(view) {
+    fun addListeners(lstr: (CheckboxUnify, TextFieldUnify) -> Unit) = with(view) {
         btnEditFee.setOnClickListener {
             openEditTextFee()
         }
         setOnClickListener {
             closeEditTextFee()
         }
-        lstr.invoke(checkBox,edtBid)
+        lstr.invoke(checkBox, edtBid)
     }
 
-    fun updateRecommBudget(inputBudget: Int) {
-        view.txtRecommendedBudget.text = if (inputBudget <= item.recommendedBid && inputBudget > item.minBid) {
-            String.format(view.resources.getString(R.string.keyword_recommended_budget), item.recommendedBid.toInt())
-        } else if(inputBudget > item.recommendedBid && inputBudget < item.maxBid) {
+    fun updateRecommBudget(inputBudget: Int) = with(view.txtRecommendedBudget) {
+        var isError = false
+        text = if (inputBudget % 50 != 0) {
+            isError = true
+            resources.getString(R.string.error_bid_not_multiple_50)
+        } else if (inputBudget <= item.recommendedBid && inputBudget > item.minBid) {
+            String.format(
+                view.resources.getString(R.string.keyword_recommended_budget),
+                item.recommendedBid.toInt()
+            )
+        } else if (inputBudget > item.recommendedBid && inputBudget < item.maxBid) {
             view.resources.getString(R.string.biaya_optimal)
-        } else if(inputBudget < item.minBid) {
+        } else if (inputBudget < item.minBid) {
+            isError = true
             String.format(view.resources.getString(R.string.min_bid_error_new), item.minBid.toInt())
-        } else if(inputBudget > item.maxBid) {
+        } else if (inputBudget > item.maxBid) {
+            isError = true
             String.format(view.resources.getString(R.string.max_bid_error_new), item.maxBid.toInt())
-        } else ""
+        } else {
+            ""
+        }
+        item.isError = isError
+        if (isError)
+            setTextColor(resources.getColor(R.color.Unify_R600, null))
+        else
+            setTextColor(resources.getColor(R.color.Unify_N700_68, null))
     }
 
     private fun View.closeEditTextFee() {
@@ -65,7 +81,7 @@ class TopAdsInsightShopKeywordViewHolder(private val view: View) : RecyclerView.
             txtSubTitle2Value.show()
             btnEditFee.show()
             edtBid.hide()
-            if (item.priceBid > item.recommendedBid)
+            if (!item.isError)
                 txtRecommendedBudget.hide()
             updateSubTitle2Value(item.priceBid)
         }
@@ -94,9 +110,9 @@ class TopAdsInsightShopKeywordViewHolder(private val view: View) : RecyclerView.
             }
             NEW_KEYWORD -> {
                 (txtSubTitle2.layoutParams as ConstraintLayout.LayoutParams)
-                        .startToEnd = R.id.guideline
+                    .startToEnd = R.id.guideline
                 (edtBid.layoutParams as ConstraintLayout.LayoutParams)
-                        .endToEnd = R.id.centerVerticalGuideline
+                    .endToEnd = R.id.centerVerticalGuideline
 
                 txtSubTitle2.text = resources.getString(R.string.new_keyword_subtitle2)
 
@@ -108,6 +124,8 @@ class TopAdsInsightShopKeywordViewHolder(private val view: View) : RecyclerView.
                 btnEditFee.hide()
             }
         }
+        updateRecommBudget(item.priceBid)
+        if(item.isError) txtRecommendedBudget.show() else txtRecommendedBudget.hide()
     }
 }
 

@@ -54,6 +54,7 @@ import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.fragment.BerandaTabFragment
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
+import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightShopKeywordRecommendationFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.NoProductBottomSheet
@@ -161,10 +162,15 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                             VIEW_IKLAN_PRODUK, "")
                     }
                     INSIGHT_PAGE -> {
-                        bottom?.gone()
-                        multiActionBtn.buttonSize = UnifyButton.Size.MEDIUM
-                        multiActionBtn?.text = getString(com.tokopedia.topads.common.R.string.topads_iklankan_button)
-                        checkVisibility()
+                        if (TopAdsInsightShopKeywordRecommendationFragment.expandedPosi != TopAdsInsightShopKeywordRecommendationFragment.NOT_EXPANDED) {
+                            bottom?.visible()
+                        } else {
+                            bottom?.gone()
+                            multiActionBtn.buttonSize = UnifyButton.Size.MEDIUM
+                            multiActionBtn?.text =
+                                getString(com.tokopedia.topads.common.R.string.topads_iklankan_button)
+                            checkVisibility()
+                        }
                     }
                     HEADLINE_ADS_TAB -> {
                         removeBtn()

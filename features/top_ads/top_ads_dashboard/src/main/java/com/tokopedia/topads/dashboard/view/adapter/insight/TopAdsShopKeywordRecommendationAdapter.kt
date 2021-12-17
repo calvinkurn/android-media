@@ -14,12 +14,16 @@ import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsInsightShopK
 class TopAdsShopKeywordRecommendationAdapter(
     private var list: MutableList<RecommendedKeywordDetail>,
     private val type: Int,
-    private val lstnr: (Int) -> Unit
+    private val lstnr: (Int) -> Unit,
+    private val error: (Int) -> Unit
 ) : RecyclerView.Adapter<TopAdsInsightShopKeywordViewHolder>() {
 
     var selectedItemsCount = list.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopAdsInsightShopKeywordViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): TopAdsInsightShopKeywordViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
         return TopAdsInsightShopKeywordViewHolder(view)
     }
@@ -33,7 +37,7 @@ class TopAdsShopKeywordRecommendationAdapter(
 
         holder.addListeners { checkBox, edtBid ->
             checkBox.setOnClickListener {
-                onCheckBoxClicked(item, holder.adapterPosition)
+                onCheckBoxClicked(item, holder.adapterPosition,false)
             }
             edtBid.textFieldInput.afterTextChanged {
                 val inputBudget = it.toIntOrZero()
@@ -43,11 +47,12 @@ class TopAdsShopKeywordRecommendationAdapter(
         }
     }
 
-    private fun onCheckBoxClicked(item: RecommendedKeywordDetail, index: Int) {
+    private fun onCheckBoxClicked(item: RecommendedKeywordDetail, index: Int,isError: Boolean) {
         item.isChecked = !item.isChecked
         if (item.isChecked) selectedItemsCount++ else selectedItemsCount--
         lstnr.invoke(selectedItemsCount)
         notifyItemChanged(index)
+        if(isError) error.invoke(index)
     }
 
     fun getSelectedKeywords(): MutableMap<Pair<Int, String>, MutableList<TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation>>? {
@@ -55,8 +60,8 @@ class TopAdsShopKeywordRecommendationAdapter(
             mutableMapOf<Pair<Int, String>, MutableList<TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation>>()
         list.forEachIndexed { index, it ->
             if (it.isChecked) {
-                if (it.priceBid < it.minBid || it.priceBid % 50 != 0) {
-                    onCheckBoxClicked(it, index)
+                if (it.isError) {
+                    onCheckBoxClicked(it, index,true)
                     return null
                 }
 
@@ -100,8 +105,9 @@ class TopAdsShopKeywordRecommendationAdapter(
         fun createInstance(
             list: MutableList<RecommendedKeywordDetail>,
             type: Int,
-            lstnr: (Int) -> Unit
-        ) = TopAdsShopKeywordRecommendationAdapter(list, type, lstnr)
+            lstnr: (Int) -> Unit,
+            error: (Int) -> Unit
+        ) = TopAdsShopKeywordRecommendationAdapter(list, type, lstnr,error)
     }
 
 }

@@ -19,7 +19,8 @@ class TopAdsInsightShopKeywordRecommendationView(
 
     private val mAdapter by lazy {
         TopAdsShopKeywordRecommendationAdapter.createInstance(
-            recommendedKeywordData.recommendedKeywordDetails!!, type, ::onKeywordSelected
+            recommendedKeywordData.recommendedKeywordDetails!!,
+            type, ::onKeywordSelected, ::keywordError
         )
     }
 
@@ -36,6 +37,10 @@ class TopAdsInsightShopKeywordRecommendationView(
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
+    }
+
+    private fun keywordError(posi: Int) {
+        recyclerViewKeyword.scrollToPosition(posi)
     }
 
     private fun onCheckBoxSelected(checked: Boolean) {
@@ -67,7 +72,6 @@ class TopAdsInsightShopKeywordRecommendationView(
 
     fun selectedItemsCount() = mAdapter.selectedItemsCount
     fun getKeywords() = mAdapter.getSelectedKeywords()
-
 
     private fun initView() {
         when (type) {
