@@ -51,4 +51,8 @@ class BigGridProductItemViewHolder(
             productListener.onThreeDotsClick(productItemData, adapterPosition)
         }
     }
+
+    override fun onViewRecycled() {
+        binding?.productCardView?.recycle()
+    }
 }

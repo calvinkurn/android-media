@@ -561,6 +561,8 @@ class SearchActivity: BaseActivity(),
 
         if (isABTestNavigationRevamp) setSearchNavigationCartButton()
         else showButtonCart()
+
+        searchSectionPagerAdapter?.getProductListFragment()?.rebindVisibleViewHolders()
     }
 
     private fun setSearchNavigationCartButton() {
@@ -673,5 +675,10 @@ class SearchActivity: BaseActivity(),
 
     private fun updateKeyword() {
         setToolbarTitle(searchParameter.getSearchQuery())
+    }
+
+    override fun onStop() {
+        super.onStop()
+        searchSectionPagerAdapter?.getProductListFragment()?.recycleVisibleViewHolders()
     }
 }

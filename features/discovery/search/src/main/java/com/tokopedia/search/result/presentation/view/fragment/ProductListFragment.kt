@@ -2073,6 +2073,14 @@ class ProductListFragment: BaseDaggerFragment(),
         presenter?.closeLastFilter(searchParameterMap)
     }
 
+    override fun recycleVisibleViewHolders() {
+        productListAdapter?.recycleVisibleViewHolders()
+    }
+
+    override fun rebindVisibleViewHolders() {
+        productListAdapter?.rebindVisibleViewHolders()
+    }
+
     private fun goToWishlistPage() {
         RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
     }
