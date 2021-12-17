@@ -90,6 +90,7 @@ class AttachVoucherViewModelTest {
         viewModel.isLoading = true
 
         // When
+        viewModel.loadVouchers(1)
         viewModel.cancelCurrentLoad()
 
         // Then
@@ -123,7 +124,7 @@ class AttachVoucherViewModelTest {
         viewModel.loadVouchers(Dummy.firstPage)
 
         // Then
-        assertTrue(viewModel.hasNoFilter())
+        assertNull(viewModel.filter.value)
     }
 
     @Test
@@ -213,5 +214,10 @@ class AttachVoucherViewModelTest {
         viewModel.toggleFilter(1)
         viewModel.toggleFilter(1)
         coVerify { filterObserver.onChanged(-1) }
+    }
+
+    @Test
+    fun `generate param has filter`() {
+        viewModel.loadVouchers(1)
     }
 }
