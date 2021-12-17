@@ -14,7 +14,7 @@ import com.tokopedia.utils.view.binding.internal.requireViewByIdCompat
 
 private class FragmentViewBindingProperty<in F : Fragment, T : ViewBinding?>(
         viewBinder: (F) -> T?,
-        onClear: () -> Unit? = {}
+        onClear: T?.() -> Unit? = {}
 ) : LifecycleViewBindingProperty<F, T>(viewBinder, onClear) {
 
     override fun getLifecycleOwner(thisRef: F): LifecycleOwner {
@@ -30,7 +30,7 @@ private class FragmentViewBindingProperty<in F : Fragment, T : ViewBinding?>(
 @JvmName("viewBindingFragment")
 fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
         viewBinder: (F) -> T,
-        onClear: () -> Unit? = {}
+        onClear: T?.() -> Unit? = {}
 ): ViewBindingProperty<F, T> {
     // TODO: for DialogFragment, use DialogFragmentViewBindingProperty instead
     return FragmentViewBindingProperty(viewBinder, onClear)
@@ -40,7 +40,7 @@ fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
 inline fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
         crossinline viewBindingFactory: (View) -> T,
         crossinline viewProvider: (F) -> View = Fragment::requireView,
-        noinline onClear: () -> Unit? = {}
+        noinline onClear: T?.() -> Unit? = {}
 ): ViewBindingProperty<F, T> {
     return viewBinding(
         { fragment: F -> viewBindingFactory(viewProvider(fragment)) },
@@ -53,7 +53,7 @@ inline fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
 inline fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
         crossinline viewBindingFactory: (View) -> T,
         @IdRes viewBindingRootId: Int,
-        noinline onClear: () -> Unit? = {}
+        noinline onClear: T?.() -> Unit? = {}
 ): ViewBindingProperty<F, T> {
     return when (this) {
         is DialogFragment -> {

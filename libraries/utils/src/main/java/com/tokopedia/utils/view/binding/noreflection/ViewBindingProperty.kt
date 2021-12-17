@@ -1,4 +1,4 @@
-@file:Suppress("RedundantVisibilityModifier")
+@file:Suppress("RedundantVisibilityModifier", "UNCHECKED_CAST")
 
 package com.tokopedia.utils.view.binding.noreflection
 
@@ -17,7 +17,7 @@ interface ViewBindingProperty<in R : Any, T : ViewBinding?> : ReadWriteProperty<
 
 open class LazyViewBindingProperty<in R : Any, T : ViewBinding>(
         protected val viewBinder: (R) -> T,
-        private val onClear: () -> Unit?
+        private val onClear: T?.() -> Unit?
 ) : ViewBindingProperty<R, T> {
 
     protected var viewBinding: Any? = null
@@ -34,14 +34,14 @@ open class LazyViewBindingProperty<in R : Any, T : ViewBinding>(
     }
 
     @MainThread override fun clear() {
-        onClear.invoke()
+        onClear.invoke(viewBinding as? T)
         viewBinding = null
     }
 }
 
 abstract class LifecycleViewBindingProperty<in R : Any, T : ViewBinding?>(
         private val viewBinder: (R) -> T?,
-        private val onClear: () -> Unit?
+        private val onClear: T?.() -> Unit?
 ) : ViewBindingProperty<R, T> {
 
     private var viewBinding: T? = null
@@ -72,10 +72,10 @@ abstract class LifecycleViewBindingProperty<in R : Any, T : ViewBinding?>(
     }
 
     private inner class ClearViewBindingLifecycle constructor(
-        val onClear: () -> Unit?
+        val onClear: T?.() -> Unit?
     ) : DefaultLifecycleObserver {
         @MainThread override fun onDestroy(owner: LifecycleOwner) {
-            onClear.invoke()
+            onClear.invoke(viewBinding)
             clear()
         }
     }

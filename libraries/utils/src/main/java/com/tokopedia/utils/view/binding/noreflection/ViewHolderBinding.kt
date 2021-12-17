@@ -11,7 +11,7 @@ import com.tokopedia.utils.view.binding.internal.requireViewByIdCompat
 
 fun <V : ViewHolder, T : ViewBinding> ViewHolder.viewBinding(
     viewBinder: (V) -> T,
-    onClear: () -> Unit? = {}
+    onClear: T?.() -> Unit? = {}
 ): ViewBindingProperty<V, T> {
     return LazyViewBindingProperty(viewBinder, onClear)
 }
@@ -19,7 +19,7 @@ fun <V : ViewHolder, T : ViewBinding> ViewHolder.viewBinding(
 inline fun <V : ViewHolder, T : ViewBinding> ViewHolder.viewBinding(
         crossinline viewBindingFactory: (View) -> T,
         crossinline viewProvider: (V) -> View = ViewHolder::itemView,
-        noinline onClear: () -> Unit? = {}
+        noinline onClear: T?.() -> Unit? = {}
 ): ViewBindingProperty<V, T> {
     return LazyViewBindingProperty(
         { viewHolder: V -> viewProvider(viewHolder).let(viewBindingFactory) },
@@ -30,7 +30,7 @@ inline fun <V : ViewHolder, T : ViewBinding> ViewHolder.viewBinding(
 inline fun <V : ViewHolder, T : ViewBinding> ViewHolder.viewBinding(
         crossinline viewBindingFactory: (View) -> T,
         @IdRes viewBindingRootId: Int,
-        noinline onClear: () -> Unit? = {}
+        noinline onClear: T?.() -> Unit? = {}
 ): ViewBindingProperty<V, T> {
     return LazyViewBindingProperty(
         { viewHolder: V ->

@@ -13,7 +13,7 @@ import com.tokopedia.utils.view.binding.internal.requireViewByIdCompat
 
 private class ActivityViewBindingProperty<in A : ComponentActivity, T : ViewBinding?>(
         viewBinder: (A) -> T?,
-        onClear: () -> Unit? = {}
+        onClear: T?.() -> Unit? = {}
 ) : LifecycleViewBindingProperty<A, T>(viewBinder, onClear) {
 
     override fun getLifecycleOwner(thisRef: A): LifecycleOwner {
@@ -25,7 +25,7 @@ private class ActivityViewBindingProperty<in A : ComponentActivity, T : ViewBind
 @JvmName("viewBindingActivity")
 fun <A : ComponentActivity, T : ViewBinding> viewBinding(
         viewBinder: (A) -> T,
-        onClear: () -> Unit? = {}
+        onClear: T?.() -> Unit? = {}
 ): ViewBindingProperty<A, T> {
     return ActivityViewBindingProperty(viewBinder, onClear)
 }
@@ -34,7 +34,7 @@ fun <A : ComponentActivity, T : ViewBinding> viewBinding(
 inline fun <A : ComponentActivity, T : ViewBinding> viewBinding(
         crossinline viewBindingFactory: (View) -> T,
         crossinline viewProvider: (A) -> View = ::findRootView,
-        noinline onClear: () -> Unit? = {}
+        noinline onClear: T?.() -> Unit? = {}
 ): ViewBindingProperty<A, T> {
     return viewBinding(
         { activity -> viewBindingFactory(viewProvider(activity)) },
@@ -47,7 +47,7 @@ inline fun <A : ComponentActivity, T : ViewBinding> viewBinding(
 inline fun <T : ViewBinding> ComponentActivity.viewBinding(
         crossinline viewBindingFactory: (View) -> T,
         @IdRes viewBindingRootId: Int,
-        noinline onClear: () -> Unit? = {}
+        noinline onClear: T?.() -> Unit? = {}
 ): ViewBindingProperty<ComponentActivity, T> {
     return viewBinding(
         { activity -> viewBindingFactory(activity.requireViewByIdCompat(viewBindingRootId)) },
