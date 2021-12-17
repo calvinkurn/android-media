@@ -48,13 +48,11 @@ class TkpdAuthenticatorGql(
     private fun getRefreshQueryPath(finalRequest: Request, response: Response): String {
         var result = ""
         try {
-            result = response.request().url().toString() + " "
+            result = response.request.url.toString() + " "
             val path: String
             val copy = finalRequest.newBuilder().build()
             val buffer = Buffer()
-            if (copy.body() != null) {
-                copy.body()!!.writeTo(buffer)
-            }
+            copy.body?.writeTo(buffer)
             path = buffer.readUtf8()
             val pattern = Pattern.compile(TkpdAuthInterceptor.PATH_REGEX)
             val matcher = pattern.matcher(path)
@@ -71,7 +69,7 @@ class TkpdAuthenticatorGql(
     }
 
     private fun getTokenOld(response: Response): String {
-        val path: String = getRefreshQueryPath(response.request(), response)
+        val path: String = getRefreshQueryPath(response.request, response)
         val accessTokenRefresh = AccessTokenRefresh()
         val newAccessToken = accessTokenRefresh.refreshToken(application.applicationContext, userSession, networkRouter, path)
         return newAccessToken ?: ""
@@ -79,10 +77,10 @@ class TkpdAuthenticatorGql(
 
     override fun authenticate(route: Route?, response: Response): Request? {
         if(isNeedRefresh()) {
-            val path: String = getRefreshQueryPath(response.request(), response)
+            val path: String = getRefreshQueryPath(response.request, response)
             return if(responseCount(response) == 0)
                 try {
-                    val originalRequest = response.request()
+                    val originalRequest = response.request
                     if(isEnableGqlRefreshToken()) {
                         val tokenResponse = refreshTokenUseCaseGql.refreshToken(application.applicationContext, userSession, networkRouter)
                         if(tokenResponse != null) {
@@ -115,7 +113,7 @@ class TkpdAuthenticatorGql(
                 return null
             }
         }
-        return response.request()
+        return response.request
     }
 
     private fun refreshWithOldMethod(response: Response): Request? {
@@ -127,7 +125,7 @@ class TkpdAuthenticatorGql(
                     logRefreshTokenEvent("", TYPE_SUCCESS_REFRESH_TOKEN_REST, "", accessToken = trimToken(newToken))
                 }
                 networkRouter.doRelogin(newToken)
-                updateRequestWithNewToken(response.request())
+                updateRequestWithNewToken(response.request)
             } else {
                 null
             }
@@ -166,9 +164,9 @@ class TkpdAuthenticatorGql(
     private fun responseCount(response: Response): Int {
         var result = 0
         var curResponse: Response? = response
-        while (curResponse?.priorResponse() != null) {
+        while (curResponse?.priorResponse != null) {
             result++
-            curResponse = curResponse.priorResponse()
+            curResponse = curResponse.priorResponse
         }
         return result
     }

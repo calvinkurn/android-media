@@ -116,13 +116,14 @@ object AffiliateAnalytics {
             const val HOME_PORTAL = "home portal"
             const val PROMOSIKAN_PAGE = "promosikan page"
             const val PROMOSIKAN_BOTTOM_SHEET = "promosikan page - bottom sheet"
+            const val PENDAPATAN_PAGE = "pendapatan page"
         }
     }
 
     interface ActionKeys {
         companion object {
             const val CLICK_SALIN_LINK = "click - salin link"
-            const val CLICK_SALIN_LINK_PERNAH_DIABEL = "click - salin link - pernah dibel"
+            const val CLICK_SALIN_LINK_PERNAH_DIABEL = "click - salin link - pernah dibeli"
             const val CLICK_SALIN_LINK_PERNAH_DILIHAT = "click - salin link - pernah dilihat"
             const val IMPRESSION_LINK_GEN_ERROR = "impression - link generation error"
             const val IMPRESSION_NOT_LINK_ERROR = "impression - not link error"
@@ -137,21 +138,30 @@ object AffiliateAnalytics {
             const val HOME_NAV_BAR_CLICK = "click - home - navbar"
             const val PROMOSIKAN_NAV_BAR_CLICK = "click - promosikan - navbar"
             const val BANUTAN_NAV_BAR_CLICK = "click - bantuan - navbar"
-            const val CLICK_PROMOSIKAN_PERNAH_DIABEL = "click - promosikan - pernah dibel"
+            const val CLICK_PROMOSIKAN_PERNAH_DIABEL = "click - promosikan - pernah dibeli"
             const val CLICK_PROMOSIKAN_PERNAH_DILIHAT = "click - promosikan - pernah dilihat"
+            const val CLICK_TRANSACTION_CARD = "click - transaction card"
         }
     }
 
     interface ScreenKeys{
         companion object{
-            const val AFFILIATE_HOME_SCREEN_NAME = "affiliate portal - home page"
+            const val AFFILIATE_HOME_SCREEN_NAME = "/affiliate portal - home page"
         }
     }
 
     interface ItemKeys{
         companion object{
-            const val AFFILIATE_PERNAH_DIBEL = "affiliate - promosikan pernah dibeli"
-            const val AFFILIATE_PERNAH_DILIHAT = "affiliate - promosikan pernah dilihat"
+            const val AFFILIATE_PERNAH_DIBEL = "/affiliate - promosikan pernah dibeli"
+            const val AFFILIATE_PERNAH_DILIHAT = "/affiliate - promosikan pernah dilihat"
         }
     }
+
+    interface LabelKeys {
+        companion object {
+            const val INCOMING = "incoming"
+            const val OUTGOING = "outgoing"
+        }
+    }
+
 }

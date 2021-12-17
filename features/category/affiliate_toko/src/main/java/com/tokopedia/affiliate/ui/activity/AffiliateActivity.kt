@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleO
 import com.tokopedia.affiliate.AFFILIATE_HELP_URL
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.AFFILIATE_SPLASH_TIME
+import com.tokopedia.affiliate.AFFILIATE_TRX_ENABLED
 import com.tokopedia.affiliate.PAGE_SEGMENT_HELP
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
@@ -27,6 +28,7 @@ import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavbar
 import com.tokopedia.affiliate.ui.custom.IBottomClickListener
 import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
+import com.tokopedia.affiliate.ui.fragment.AffiliateIncomeFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliateLoginFragment
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliatePortfolioFragment
@@ -37,6 +39,7 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -48,10 +51,10 @@ import javax.inject.Inject
 
 
 class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomClickListener,
-    AffiliateBottomNavBarInterface , AffiliateActivityInterface{
+    AffiliateBottomNavBarInterface, AffiliateActivityInterface {
 
     @Inject
-    lateinit var userSessionInterface : UserSessionInterface
+    lateinit var userSessionInterface: UserSessionInterface
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -62,6 +65,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     private var userActionRequiredForRegister = false
 
     private var isUserBlackListed = false
+    private var isAffiliateWalletEnabled = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,10 +96,10 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun getComponent(): AffiliateComponent =
-            DaggerAffiliateComponent
-                    .builder()
-                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                    .build()
+        DaggerAffiliateComponent
+            .builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
 
     override fun setViewModel(viewModel: BaseViewModel) {
         affiliateVM = viewModel as AffiliateViewModel
@@ -106,11 +110,23 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun afterViewCreated() {
+        initRollence()
         initBottomNavigationView()
         setObservers()
         showAffiliatePortal()
 //        if(userSessionInterface.isLoggedIn)
 //            affiliateVM.getAffiliateValidateUser()
+    }
+
+    private fun initRollence() {
+        isAffiliateWalletEnabled =
+            when (RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                AFFILIATE_TRX_ENABLED,
+                ""
+            )) {
+                AFFILIATE_TRX_ENABLED -> true
+                else -> false
+            }
     }
 
     private fun showLoginPortal() {
@@ -135,7 +151,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun clearBackStack() {
-        for(frag in supportFragmentManager.fragments){
+        for (frag in supportFragmentManager.fragments) {
             supportFragmentManager.popBackStack()
         }
         fragmentStack.clear()
@@ -144,14 +160,27 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     private fun initBottomNavigationView() {
         affiliateBottomNavigation = AffiliateBottomNavbar(
             findViewById(R.id.bottom_navbar),
-            this, this
+            this, this, isAffiliateWalletEnabled
         )
+        if (isAffiliateWalletEnabled) {
+            INCOME_MENU = 2
+            HELP_MENU = 3
+        } else {
+            INCOME_MENU = 3
+            HELP_MENU = 2
+        }
     }
 
     override fun menuClicked(position: Int, id: Int, isNotFromBottom: Boolean): Boolean {
         when (position) {
             HOME_MENU -> openFragment(AffiliateHomeFragment.getFragmentInstance(this))
             PROMO_MENU -> openFragment(AffiliatePromoFragment.getFragmentInstance())
+            INCOME_MENU -> openFragment(
+                AffiliateIncomeFragment.getFragmentInstance(
+                    userSessionInterface.name,
+                    userSessionInterface.profilePicture, this
+                )
+            )
             HELP_MENU -> openFragment(AffiliateHelpFragment.getFragmentInstance(AFFILIATE_HELP_URL))
         }
         if(!isNotFromBottom) sendBottomNavClickEvent(position)
@@ -166,20 +195,25 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         affiliateVM.getValidateUserdata().observe(this, { validateUserdata ->
             if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true) {
                 showAffiliatePortal()
-            }else if(validateUserdata.validateAffiliateUserStatus.data?.isEligible == false &&
-                    validateUserdata.validateAffiliateUserStatus.data?.isRegistered == false){
+            } else if (validateUserdata.validateAffiliateUserStatus.data?.isEligible == false &&
+                validateUserdata.validateAffiliateUserStatus.data?.isRegistered == false
+            ) {
                 showFraudTicker()
-            }else {
-                if(!userActionRequiredForRegister)
+            } else {
+                if (!userActionRequiredForRegister)
                     navigateToPortfolioFragment()
             }
         })
 
-        affiliateVM.getErrorMessage().observe(this , { error ->
-            when(error) {
+        affiliateVM.getErrorMessage().observe(this, { error ->
+            when (error) {
                 is UnknownHostException, is SocketTimeoutException -> {
-                    Toaster.build(findViewById<FrameLayout>(R.id.parent_view), getString(com.tokopedia.affiliate_toko.R.string.affiliate_internet_error),
-                            Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                    Toaster.build(
+                        findViewById<FrameLayout>(R.id.parent_view),
+                        getString(com.tokopedia.affiliate_toko.R.string.affiliate_internet_error),
+                        Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_ERROR
+                    ).show()
                 }
                 else -> {
                     showLoginPortal()
@@ -189,8 +223,9 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun showFraudTicker() {
-        val currentFragment = supportFragmentManager.findFragmentByTag(AffiliateLoginFragment::class.java.simpleName)
-        if(currentFragment != null){
+        val currentFragment =
+            supportFragmentManager.findFragmentByTag(AffiliateLoginFragment::class.java.simpleName)
+        if (currentFragment != null) {
             (currentFragment as? AffiliateLoginFragment)?.showFraudTicker()
         }
     }
@@ -252,9 +287,10 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     companion object MenuItems {
-        const val HOME_MENU = 0
-        const val PROMO_MENU = 1
-        const val HELP_MENU = 2
+        var HOME_MENU = 0
+        var PROMO_MENU = 1
+        var INCOME_MENU = 2
+        var HELP_MENU = 3
     }
 
     override fun selectItem(position: Int, id: Int, isNotFromBottom : Boolean) {
@@ -262,25 +298,24 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     override fun onBackPressed() {
-        val currentFragment = supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.simpleName)
-        if(currentFragment != null && currentFragment.isVisible){
+        val currentFragment =
+            supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.simpleName)
+        if (currentFragment != null && currentFragment.isVisible) {
             (currentFragment as? AffiliatePromoFragment)?.handleBack()
-        }
-        else {
-           handleBackButton()
+        } else {
+            handleBackButton()
         }
     }
 
-    override fun handleBackButton(){
-        if(!fragmentStack.empty()) {
+    override fun handleBackButton() {
+        if (!fragmentStack.empty()) {
             fragmentStack.pop()
             if (!fragmentStack.empty()) {
                 handleBackStack()
-            } else{
+            } else {
                 super.onBackPressed()
             }
-        }
-        else{
+        } else {
             super.onBackPressed()
         }
     }
@@ -304,26 +339,30 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
             AffiliatePromoFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
                 PROMO_MENU
             )
+            AffiliateIncomeFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
+                INCOME_MENU
+            )
             BaseSessionWebViewFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
                 HELP_MENU
             )
         }
     }
 
-    fun setBlackListedStatus(blackListed : Boolean) {
+    fun setBlackListedStatus(blackListed: Boolean) {
         isUserBlackListed = blackListed
     }
 
-    fun getBlackListedStatus() : Boolean{
-        return  isUserBlackListed
+    fun getBlackListedStatus(): Boolean {
+        return isUserBlackListed
     }
 
-    override fun navigateToTermsFragment(channels : ArrayList<OnBoardingRequest.Channel>) {
+    override fun navigateToTermsFragment(channels: ArrayList<OnBoardingRequest.Channel>) {
         openFragment(AffiliateTermsAndConditionFragment.getFragmentInstance(this).apply {
             setChannels(channels)
         })
-        val currentFragment = supportFragmentManager.findFragmentByTag(AffiliateTermsAndConditionFragment::class.java.simpleName)
-        if(currentFragment != null){
+        val currentFragment =
+            supportFragmentManager.findFragmentByTag(AffiliateTermsAndConditionFragment::class.java.simpleName)
+        if (currentFragment != null) {
             (currentFragment as? AffiliateTermsAndConditionFragment)?.setChannels(channels)
         }
     }
