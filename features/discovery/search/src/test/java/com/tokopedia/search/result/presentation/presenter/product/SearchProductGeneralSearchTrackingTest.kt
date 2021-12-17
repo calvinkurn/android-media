@@ -169,6 +169,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             relatedKeyword = "none - none",
             pageSource = pageSource,
             searchFilter = "",
+            componentId = searchProductModel.searchProduct.header.componentId,
         )
 
         `Test General Search Tracking`(
@@ -199,6 +200,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             relatedKeyword = "none - none",
             pageSource = pageSource,
             searchFilter = "",
+            componentId = searchProductModel.searchProduct.header.componentId,
         )
 
         `Test General Search Tracking`(
@@ -229,6 +231,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             relatedKeyword = "none - none",
             pageSource = pageSource,
             searchFilter = "",
+            componentId = searchProductModel.searchProduct.header.componentId,
         )
 
         `Test General Search Tracking`(
@@ -260,6 +263,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             relatedKeyword = "$previousKeyword - none",
             pageSource = pageSource,
             searchFilter = "",
+            componentId = searchProductModel.searchProduct.header.componentId,
         )
 
         `Test General Search Tracking`(
@@ -292,6 +296,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.related.relatedKeyword}",
             pageSource = pageSource,
             searchFilter = "",
+            componentId = searchProductModel.searchProduct.header.componentId,
         )
 
         `Test General Search Tracking`(
@@ -326,6 +331,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                     searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword },
             pageSource = pageSource,
             searchFilter = "",
+            componentId = searchProductModel.searchProduct.header.componentId,
         )
 
         `Test General Search Tracking`(
@@ -359,6 +365,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                     searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword },
             pageSource = pageSource,
             searchFilter = "",
+            componentId = searchProductModel.searchProduct.header.componentId,
         )
 
         `Test General Search Tracking`(
@@ -393,6 +400,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                     searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword },
             pageSource = pageSource,
             searchFilter = "",
+            componentId = searchProductModel.searchProduct.header.componentId,
         )
 
         `Test General Search Tracking`(
@@ -425,6 +433,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.related.relatedKeyword}",
             pageSource = pageSource,
             searchFilter = "",
+            componentId = searchProductModel.searchProduct.header.componentId,
         )
 
         `Test General Search Tracking`(
@@ -457,6 +466,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.suggestion.suggestion}",
             pageSource = pageSource,
             searchFilter = "",
+            componentId = searchProductModel.searchProduct.header.componentId,
         )
 
         `Test General Search Tracking`(
@@ -488,6 +498,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             relatedKeyword = "$NONE - $NONE",
             pageSource = pageSource,
             searchFilter = "",
+            componentId = searchProductModel.searchProduct.header.componentId,
         )
 
         `Test General Search Tracking`(
@@ -518,6 +529,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             relatedKeyword = "none - none",
             pageSource = pageSource,
             searchFilter = "",
+            componentId = searchProductModel.searchProduct.header.componentId,
         )
 
         `Test General Search Tracking`(
@@ -548,6 +560,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             relatedKeyword = "none - none",
             pageSource = pageSource,
             searchFilter = "",
+            componentId = searchProductModel.searchProduct.header.componentId,
         )
 
         `Test General Search Tracking`(
@@ -578,6 +591,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             relatedKeyword = "none - none",
             pageSource = pageSource,
             searchFilter = "",
+            componentId = searchProductModel.searchProduct.header.componentId,
         )
 
         `Test General Search Tracking`(
@@ -618,6 +632,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             relatedKeyword = "none - none",
             pageSource = pageSource,
             searchFilter = "",
+            componentId = searchProductModel.searchProduct.header.componentId,
         )
 
         `Test General Search Tracking`(
@@ -658,6 +673,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             relatedKeyword = "none - none",
             pageSource = pageSource,
             searchFilter = "",
+            componentId = searchProductModel.searchProduct.header.componentId,
         )
 
         `Test General Search Tracking`(
@@ -701,7 +717,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             relatedKeyword = "none - none",
             pageSource = "${searchParameter[SearchApiConst.SRP_PAGE_TITLE]}.${searchParameter[SearchApiConst.NAVSOURCE]}." +
                     "local_search.${searchParameter[SearchApiConst.SRP_PAGE_ID]}",
-            searchFilter = ""
+            searchFilter = "",
+            componentId = searchProductModel.searchProduct.header.componentId,
         )
 
         `Test General Search Tracking`(
@@ -741,7 +758,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = searchRef,
-            searchFilter = ""
+            searchFilter = "",
+            componentId = searchProductModel.searchProduct.header.componentId,
         )
 
         `Test General Search Tracking`(
@@ -773,6 +791,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             relatedKeyword = "none - none",
             pageSource = pageSource,
             searchFilter = filterParam,
+            componentId = searchProductModel.searchProduct.header.componentId,
         )
 
         `Test General Search Tracking`(
