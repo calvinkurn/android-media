@@ -166,11 +166,11 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
 
     private fun setupPickerByPage() {
         when (PickerUiConfig.paramPage) {
-            PickerPageType.CAMERA -> navigator?.onPageSelected(PickerFragmentType.CAMERA)
-            PickerPageType.GALLERY -> navigator?.onPageSelected(PickerFragmentType.GALLERY)
+            PickerPageType.CAMERA -> navigator?.start(PickerFragmentType.CAMERA)
+            PickerPageType.GALLERY -> navigator?.start(PickerFragmentType.GALLERY)
             else -> {
                 // show camera as first page
-                navigator?.onPageSelected(PickerFragmentType.CAMERA)
+                navigator?.start(PickerFragmentType.CAMERA)
 
                 // display the tab navigation
                 setupTabView()
