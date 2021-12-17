@@ -1887,13 +1887,6 @@ class PlayViewModel @Inject constructor(
                             )
                         }
                     }
-
-                    override fun onError(e: Exception) {
-                        viewModelScope.launch {
-                            _uiEvent.emit(CloseShareExperienceBottomSheet)
-                            handleCopyLink()
-                        }
-                    }
                 }
             )
         }

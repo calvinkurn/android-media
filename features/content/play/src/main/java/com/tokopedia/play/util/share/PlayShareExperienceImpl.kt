@@ -60,43 +60,38 @@ class PlayShareExperienceImpl @Inject constructor(
     private fun generateDeepLinkPath(): String = "play/${data.id}"
 
     override fun createUrl(listener: PlayShareExperience.Listener) {
-        try {
-            val linkerData = LinkerData().apply {
-                id = data.id
-                name = data.title
-                description = generateOgDescription()
-                textContent = getShareTextContent()
-                imgUri = data.coverUrl
-                deepLink = generateDeepLinkPath()
-                ogUrl = data.redirectUrl
-                type = LinkerData.PLAY_VIEWER
-                uri = data.redirectUrl
+        val linkerData = LinkerData().apply {
+            id = data.id
+            name = data.title
+            description = generateOgDescription()
+            textContent = getShareTextContent()
+            imgUri = data.coverUrl
+            deepLink = generateDeepLinkPath()
+            ogUrl = data.redirectUrl
+            type = LinkerData.PLAY_VIEWER
+            uri = data.redirectUrl
 
-                feature = shareModel.feature
-                channel = shareModel.channel
-                campaign = shareModel.campaign
+            feature = shareModel.feature
+            channel = shareModel.channel
+            campaign = shareModel.campaign
 
-                ogTitle = generateOgTitle()
-                ogDescription = generateOgDescription()
-                ogImageUrl = shareModel.ogImgUrl
+            ogTitle = generateOgTitle()
+            ogDescription = generateOgDescription()
+            ogImageUrl = shareModel.ogImgUrl
+        }
+
+        val linkerShareData = LinkerShareData()
+        linkerShareData.linkerData = linkerData
+        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0, linkerShareData, object:
+            ShareCallback {
+            override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                listener.onUrlCreated(linkerShareData, shareModel, generateShareString(linkerShareData?.url ?: data.redirectUrl))
             }
 
-            val linkerShareData = LinkerShareData()
-            linkerShareData.linkerData = linkerData
-            LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0, linkerShareData, object:
-                ShareCallback {
-                override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    listener.onUrlCreated(linkerShareData, shareModel, generateShareString(linkerShareData?.url ?: data.redirectUrl))
-                }
+            override fun onError(linkerError: LinkerError?) {
 
-                override fun onError(linkerError: LinkerError?) {
-                    listener.onError(Exception(linkerError?.errorMessage))
-                }
-            }))
-        }
-        catch (e: Exception) {
-            listener.onError(e)
-        }
+            }
+        }))
     }
 
     override fun isScreenshotBottomSheet(): Boolean =
