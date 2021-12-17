@@ -23,14 +23,6 @@ class PlayShareExperienceImpl @Inject constructor(
     private lateinit var shareModel: ShareModel
     private lateinit var data: PlayShareExperienceData
 
-    private var idx = 0
-    private val listImage = listOf<String>(
-        "https://www.selasar.com/wp-content/uploads/2020/04/Gambar-Pemandangan.jpg", // 164kb
-        "https://dagodreampark.co.id/images/Gambar-Pemandangan-Gunung-dan-Bunga-Sakura.jpg", // 204kb
-        "https://ecoteam.com.au/wp-content/uploads/2014/02/water-drop-300KB-2.jpg", // 288kb
-        "https://ecs7.tokopedia.net/blog-tokopedia-com/uploads/2021/07/pemandangan-alam.jpg" // 378kb
-    )
-
     override fun isCustomSharingAllow(): Boolean =
         UniversalShareBottomSheet.isCustomSharingEnabled(context)
 
@@ -73,7 +65,7 @@ class PlayShareExperienceImpl @Inject constructor(
             name = data.title
             description = generateOgDescription()
             textContent = getShareTextContent()
-            imgUri = listImage[idx]
+            imgUri = data.coverUrl
             deepLink = generateDeepLinkPath()
             ogUrl = data.redirectUrl
             type = LinkerData.PLAY_VIEWER
@@ -85,9 +77,7 @@ class PlayShareExperienceImpl @Inject constructor(
 
             ogTitle = generateOgTitle()
             ogDescription = generateOgDescription()
-            ogImageUrl = listImage[idx++]
-
-            idx %= 4
+            ogImageUrl = shareModel.ogImgUrl
         }
 
         val linkerShareData = LinkerShareData()
