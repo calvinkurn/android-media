@@ -290,6 +290,7 @@ open class HomeRevampViewModel @Inject constructor(
         getSearchHint(isFirstInstall)
     }
 
+    //TODO 1: Remove getRecommendationWidget -> Move to HomeDynamicChannelUseCase
     fun getRecommendationWidget(){
         findWidget<BestSellerDataModel> { bestSellerDataModel, index ->
             launchCatchError(coroutineContext, block = {
@@ -338,6 +339,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 2: Remove getRecommendationWidget -> Move to HomeRecommendationUseCase.onHomeBestSellerFilterClick()
     fun getRecommendationWidget(filterChip: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, selectedChipsPosition: Int){
         findWidget<BestSellerDataModel> { currentDataModel, index ->
             launchCatchError(coroutineContext, block = {
@@ -384,6 +386,8 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 3.1: Remove getHeaderData -> Move to HomeWalletUseCase.onGetWalletData()
+    //Create HomeWalletRepository
     fun getHeaderData() {
         if (!userSession.get().isLoggedIn) return
         balanceRemoteConfigCondition(
@@ -397,6 +401,7 @@ open class HomeRevampViewModel @Inject constructor(
         )
     }
 
+    //TODO 4.1: Remove updateBannerTotalView -> Move to HomePlayUseCase.onGetWalletData()
     fun updateBannerTotalView(channelId: String?, totalView: String?) {
         if (channelId == null || totalView == null) return
 
@@ -410,6 +415,8 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 4.2: Remove getPlayBanner -> Move to HomePlayLiveDynamicRepository
+    // integrate with HomeDynamicChannelUseCase to update data
     fun getPlayBanner(position: Int){
         val playBanner =
                 if (position < homeDataModel.list.size
@@ -421,6 +428,8 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 4.3: Remove getPlayBanner -> Move to HomePlayLiveDynamicRepository
+    // integrate with HomeDynamicChannelUseCase to update data
     // Logic detect play banner should load data from API
     private fun getPlayBanner(){
         // Check the current index is play card view model
@@ -429,12 +438,15 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 4.4: Remove setPlayBanner -> Move to HomePlayLiveDynamicRepository,
+    // integrate with HomeDynamicChannelUseCase to update data
     // If the image is valid it will be set play banner to UI
     fun setPlayBanner(playCardDataModel: PlayCardDataModel){
         updateWidget(playCardDataModel, -1)
     }
 
-    // play widget it will be removed when load image is failed (deal from PO)
+    //TODO 4.5: Remove setPlayBanner -> Move to HomePlayLiveDynamicRepository,
+    // integrate with HomeDynamicChannelUseCase to update data
     // because don't let the banner blank
     fun clearPlayBanner(){
         homeDataModel.list.withIndex().find { (_, visitable) -> visitable is PlayCardDataModel }?.let{
@@ -442,12 +454,14 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 5.1: Remove onRemoveSuggestedReview -> Move to HomeSuggestedReviewUseCase.onSuggestedReviewDismissed
     fun onRemoveSuggestedReview() {
         findWidget<ReviewDataModel> { reviewWidget, index ->
             deleteWidget(reviewWidget, -1)
         }
     }
 
+    //TODO 6: Remove onCloseBuyAgain -> Move to HomeListCarouselUseCase.onCloseListCarousel,
     fun onCloseBuyAgain(channelId: String, position: Int){
         val dynamicChannelDataModel = homeDataModel.list.find { visitable ->
             visitable is DynamicChannelDataModel && visitable.channel?.id == channelId }
@@ -486,6 +500,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 7: Remove removeViewHolderAtPosition -> Move to HomeDynamicChannelUseCase,
     fun removeViewHolderAtPosition(position: Int) {
         if(position != -1 && position < homeDataModel.list.size) {
             val detectViewHolder = homeDataModel.list[position]
@@ -495,6 +510,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 8: Remove onCloseTicker -> Move to HomeTickerUseCase.onCloseTicker
     fun onCloseTicker() {
         val detectTicker = homeDataModel.list.find { visitable -> visitable is TickerDataModel }
         (detectTicker as? TickerDataModel)?.let {
@@ -502,6 +518,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 3.2: Remove onRefreshTokoPoint -> Move to HomeWalletUseCase.onGetTokopointData()
     fun onRefreshTokoPoint() {
         if (!userSession.get().isLoggedIn) return
         balanceRemoteConfigCondition(
@@ -519,6 +536,7 @@ open class HomeRevampViewModel @Inject constructor(
         )
     }
 
+    //TODO 3.3: Remove onRefreshTokoCash -> Move to HomeWalletUseCase.onGetTokoCashData()
     fun onRefreshTokoCash() {
         if (!userSession.get().isLoggedIn) return
         updateHeaderViewModel(
@@ -535,6 +553,8 @@ open class HomeRevampViewModel @Inject constructor(
         )
     }
 
+    //TODO 9: Remove insertRechargeBUWidget -> Move to HomeDynamicChannelUseCase
+    // integrate with HomeDynamicChannelUseCase to update data
     fun insertRechargeBUWidget(data: RechargePerso) {
         if (data.items.isNotEmpty()) {
             homeDataModel.list.let {
@@ -550,6 +570,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 10: Use HomeDynamicChannelUse to get position of a widget
     fun getRecommendationFeedSectionPosition() = homeDataModel.list.size -1
 
     fun refreshHomeData() {
@@ -585,6 +606,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 5.2: Remove onRemoveSuggestedReview -> Move to HomeSuggestedReviewUseCase.onSuggestedReviewDismissed
     fun dismissReview() {
         onRemoveSuggestedReview()
         if(dismissReviewJob?.isActive == true) return
@@ -593,6 +615,8 @@ open class HomeRevampViewModel @Inject constructor(
         }){}
     }
 
+    //TODO 11.1: Remove getBusinessUnitTabData -> Move to HomeDynamicChannelUseCase
+    //Create BusinessUnitRepository
     fun getBusinessUnitTabData(position: Int){
         launchCatchError(coroutineContext, block = {
             val data = getBusinessWidgetTab.get().executeOnBackground()
@@ -610,6 +634,8 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 11.2: Remove getBusinessUnitTabData -> Move to HomeBusinessUnitUseCase.onClickBusinessUnitTab
+    //Create BusinessUnitRepository
     fun getBusinessUnitData(tabId: Int, position: Int, tabName: String){
         if(buWidgetJob?.isActive == true) return
         buWidgetJob = launchCatchError(coroutineContext, block = {
@@ -634,6 +660,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 12.1: Remove getDynamicChannelData -> Move to HomeDynamicChannelUseCase
     fun getDynamicChannelData(dynamicChannelDataModel: DynamicChannelDataModel, position: Int){
         launchCatchError(coroutineContext, block = {
             val visitableList = homeUseCase.get().onDynamicChannelExpired(
@@ -658,6 +685,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 12.2: Remove getDynamicChannelData -> Move to HomeDynamicChannelUseCase
     fun getDynamicChannelData(visitable: Visitable<*>, channelModel: ChannelModel, position: Int){
         launchCatchError(coroutineContext, block = {
             val visitableList = homeUseCase.get().onDynamicChannelExpired(channelModel.groupId)
@@ -681,6 +709,8 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 13.1: Remove getRechargeRecommendation -> Move to HomeDynamicChannelUseCase
+    // integrate with HomeDynamicChannelUseCase to update data
     fun getRechargeRecommendation() {
         if(getRechargeRecommendationJob?.isActive == true) return
         findWidget<ReminderWidgetModel>(
@@ -703,6 +733,8 @@ open class HomeRevampViewModel @Inject constructor(
         )
     }
 
+    //TODO 14.1: Remove getSalamWidget -> Move to HomeDynamicChannelUseCase
+    // integrate with HomeDynamicChannelUseCase to update data
     fun getSalamWidget(){
         if(getSalamWidgetJob?.isActive == true) return
         findWidget<ReminderWidgetModel>(
@@ -724,6 +756,7 @@ open class HomeRevampViewModel @Inject constructor(
         )
     }
 
+    //TODO 13.2: Remove declineRechargeRecommendationItem -> Move to HomeRechargeRecommendationUseCase.onCloseHomeRechargeRecommendation
     fun declineRechargeRecommendationItem(requestParams: Map<String, String>) {
         removeRechargeRecommendation()
         if(declineRechargeRecommendationJob?.isActive == true) return
@@ -733,6 +766,7 @@ open class HomeRevampViewModel @Inject constructor(
         }){}
     }
 
+    //TODO 14.2: Remove declineSalamItem -> Move to HomeSalamRecommendationUseCase.onCloseHomeSalamRecommendation
     fun declineSalamItem(requestParams: Map<String, Int>){
         removeSalamWidget()
         if (declineSalamWidgetJob?.isActive==true) return
@@ -742,6 +776,8 @@ open class HomeRevampViewModel @Inject constructor(
         }){}
     }
 
+    //TODO 15: Remove getRechargeBUWidget -> Move to HomeDynamicChannelUseCase
+    // integrate with HomeDynamicChannelUseCase to update data
     fun getRechargeBUWidget(source: WidgetSource) {
         if(getRechargeBUWidgetJob?.isActive == true) return
         getRechargeBUWidgetJob = launchCatchError(coroutineContext, block = {
@@ -753,6 +789,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 16: Remove getFeedTabData -> Move to HomeRecommendationUseCase.onGetHomeFeedTabRecommendationData
     fun getFeedTabData() {
         if (getTabRecommendationJob?.isActive == true) return
         if (!widgetIsAvailable<HomeRecommendationFeedDataModel>()) {
@@ -799,6 +836,8 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 4.6: Remove getLoadPlayBannerFromNetwork -> Move to HomePlayLiveDynamicRepository
+    // integrate with HomeDynamicChannelUseCase to update data
     @VisibleForTesting
     fun getLoadPlayBannerFromNetwork(playBanner: PlayCardDataModel){
         if(getPlayWidgetJob?.isActive == true) return
@@ -815,6 +854,8 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 17.1: Remove getPopularKeyword -> Move to HomeDynamicChannelUseCase
+    // integrate with HomeDynamicChannelUseCase to update data
     fun getPopularKeyword() {
         if(getPopularKeywordJob?.isActive == true) return
         findWidget<PopularKeywordListDataModel> { popularKeywordListDataModel, index ->
@@ -840,6 +881,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 18: Remove getSearchHint -> Move to HomeSearchUseCase.onGetSearchHint
     fun getSearchHint(isFirstInstall: Boolean) {
         if(getSearchHintJob?.isActive == true) return
         getSearchHintJob = launchCatchError(coroutineContext, block={
@@ -851,6 +893,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 19: Remove getOneClickCheckoutHomeComponent -> Move to HomeListCarouselUseCase.onClickOneClickCheckoutListCarousel
     fun getOneClickCheckoutHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int){
         launchCatchError(coroutineContext, block = {
             val quantity = if(grid.minOrder < 1) "1" else grid.minOrder.toString()
@@ -888,6 +931,8 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 3.4: Remove getTokocashPendingBalance -> Move to HomeWalletUseCase.onGetTokocashPendingBalance()
+    //Create HomeWalletRepository
     fun getTokocashPendingBalance(){
         if(getPendingCashBalanceJob?.isActive != true){
             getPendingCashBalanceJob = launchCatchError(coroutineContext, block={
@@ -904,6 +949,8 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 20: Remove injectCouponTimeBased -> Move to HomeCouponUseCase.onInjectCouponUseCase()
+    //Create HomeWalletRepository
     fun injectCouponTimeBased() {
         if(injectCouponTimeBasedJob?.isActive == true) return
         injectCouponTimeBasedJob = launchCatchError(coroutineContext, {
@@ -917,6 +964,8 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getUserName() = userSession.get().name ?: ""
 
+    //TODO 4.6: Remove getPlayWidget -> Move to HomePlayLiveDynamicRepository,
+    // integrate with HomeDynamicChannelUseCase to update data
     fun getPlayWidget() {
         findWidget<CarouselPlayWidgetDataModel> { playWidget, index ->
             launchCatchError(block = {
@@ -932,12 +981,14 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 4.7: Remove updatePlayWidgetTotalView -> Move to HomePlayUseCase.onTotalViewUpdate
     fun updatePlayWidgetTotalView(channelId: String, totalView: String) {
         updateCarouselPlayWidget {
             it.copy(widgetUiModel = playWidgetTools.get().updateTotalView(it.widgetUiModel, channelId, totalView))
         }
     }
 
+    //TODO 4.8: Remove updatePlayWidgetReminder -> Move to HomePlayUseCase.onWidgetReminder
     fun updatePlayWidgetReminder(channelId: String, isReminder: Boolean) {
         updateCarouselPlayWidget {
             val reminderType = if(isReminder) PlayWidgetReminderType.Reminded else PlayWidgetReminderType.NotReminded
@@ -945,11 +996,13 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 4.9: Remove shouldUpdatePlayWidgetToggleReminder -> Move to HomePlayUseCase.onShouldUpdatePlayWidgetToggleReminder
     fun shouldUpdatePlayWidgetToggleReminder(channelId: String, reminderType: PlayWidgetReminderType) {
         if (!userSession.get().isLoggedIn) _playWidgetReminderEvent.value = Pair(channelId, reminderType)
         else updatePlayWidgetToggleReminder(channelId, reminderType)
     }
 
+    //TODO 21: Remove, deleted because we already use centralized notification on nav toolbar
     fun setHomeNotif(notifCount: Int, messageCount: Int, cartCount: Int) {
         homeNotifModel = HomeNotifModel(
                 notifCount = notifCount,
@@ -959,28 +1012,34 @@ open class HomeRevampViewModel @Inject constructor(
         _homeNotifLiveData.value = homeNotifModel
     }
 
+    //TODO 22: Remove onDynamicChannelRetryClicked -> Move to HomeDynamicChannelUseCase
     fun onDynamicChannelRetryClicked() {
         launch(coroutineContext) {
             refreshHomeData()
         }
     }
 
+    //TODO 3.5: Remove setNewBalanceWidget -> Move to HomeWalletUseCase
     fun setNewBalanceWidget(useNewBalanceWidget: Boolean) {
         this.useNewBalanceWidget = useNewBalanceWidget
     }
 
+    //TODO 3.6: Remove setWalletAppRollence -> Move to HomeWalletUseCase
     fun setWalletAppRollence(useWalletApp: Boolean) {
         this.useWalletApp = useWalletApp
     }
 
+    //TODO 23: Remove updateChooseAddressData -> Move to HomeDynamicChannelUseCase
     fun updateChooseAddressData(homeChooseAddressData: HomeChooseAddressData) {
         this.homeDataModel.setAndEvaluateHomeChooseAddressData(homeChooseAddressData)
     }
 
+    //TODO 24: Remove getAddressData -> Move to HomeDynamicChannelUseCase
     fun getAddressData(): HomeChooseAddressData {
         return homeDataModel.homeChooseAddressData
     }
 
+    //TODO 25: Remove removeChooseAddressWidget -> Move to HomeDynamicChannelUseCase
     fun removeChooseAddressWidget() {
         val homeHeaderOvoDataModel = homeDataModel.list.withIndex().find {
             it.value is HomeHeaderOvoDataModel
@@ -991,6 +1050,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 26: Remove isAddressDataEmpty -> Move to HomeDynamicChannelUseCase
     fun isAddressDataEmpty(): Boolean {
         return getAddressData().localCacheModel.lat.isEmpty() &&
                 getAddressData().localCacheModel.long.isEmpty() &&
@@ -1001,6 +1061,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     }
 
+    //TODO 27: Remove findWidgetList -> Move to HomeDynamicChannelUseCase
     private inline fun <reified T> findWidgetList(predicate: (T?) -> Boolean = {true}, actionOnFound: (List<IndexedValue<T>>) -> Unit) {
         val listFound = mutableListOf<IndexedValue<T>>()
         homeDataModel.list.withIndex().filter { it.value is T && predicate.invoke(it.value as? T) }.let {
@@ -1015,12 +1076,14 @@ open class HomeRevampViewModel @Inject constructor(
         actionOnFound.invoke(listFound)
     }
 
+    //TODO 28: Remove widgetIsAvailable -> Move to HomeDynamicChannelUseCase
     private inline fun <reified T> widgetIsAvailable(predicate: (T) -> Boolean = {true}): Boolean {
         homeDataModel.list.filterIsInstance<T>().let {
             return it.find { predicate.invoke(it) } != null
         }
     }
 
+    //TODO 29: Remove findWidget -> Move to HomeDynamicChannelUseCase
     private inline fun <reified T> findWidget(predicate: (T?) -> Boolean = {true}, actionOnFound: (T, Int) -> Unit) {
         homeDataModel.list.withIndex().find { it.value is T && predicate.invoke(it.value as? T) }.let {
             it?.let {
@@ -1031,18 +1094,22 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 30: Remove addWidget -> Move to HomeDynamicChannelUseCase
     private fun addWidget(visitable: Visitable<*>, position: Int? = null) {
         homeDataModel.addWidgetModel(visitable, position) { _homeLiveDynamicChannel.postValue(homeDataModel) }
     }
 
+    //TODO 31: Remove updateWidget -> Move to HomeDynamicChannelUseCase
     private fun updateWidget(visitable: Visitable<*>, position: Int, visitableToChange: Visitable<*>? = null) {
         homeDataModel.updateWidgetModel(visitable, visitableToChange, position) { _homeLiveDynamicChannel.postValue(homeDataModel) }
     }
 
+    //TODO 32: Remove deleteWidget -> Move to HomeDynamicChannelUseCase
     private fun deleteWidget(visitable: Visitable<*>?, position: Int) {
         homeDataModel.deleteWidgetModel(visitable, position) { _homeLiveDynamicChannel.postValue(homeDataModel) }
     }
 
+    //TODO 33: Remove updateHomeData -> Move to HomeDynamicChannelUseCase
     private fun updateHomeData(homeNewDynamicChannelModel: HomeDynamicChannelModel) {
         logChannelUpdate("Update channel: (Update all home data) data: ${homeDataModel.list.map { it.javaClass.simpleName }}")
         homeNewDynamicChannelModel.copyStaticWidgetDataFrom(homeDataModel)
@@ -1061,10 +1128,12 @@ open class HomeRevampViewModel @Inject constructor(
         _resetNestedScrolling.postValue(Event(true))
     }
 
+    //TODO 34: Remove ajalah
     private fun logChannelUpdate(message: String){
         if(GlobalConfig.DEBUG) Timber.tag(this.javaClass.simpleName).e(message)
     }
 
+    //TODO 3.8: Remove balanceRemoteConfigCondition -> Move to HomeWalletUseCase
     private fun balanceRemoteConfigCondition(
             isNewBalanceWidget: () -> Unit,
             isOldBalanceWidget: () -> Unit
@@ -1076,6 +1145,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 3.9: Remove balanceRemoteConfigCondition -> Move to HomeWalletUseCase
     private suspend fun walletAppAbTestCondition(
         isUsingWalletApp: suspend () -> Unit,
         isUsingOldWallet: suspend () -> Unit
@@ -1087,12 +1157,14 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 37: Remove balanceRemoteConfigCondition -> Move to HomeDynamicChannelUseCase
     private fun getHomeLocationDataParam() : String {
         return if (!isAddressDataEmpty()) {
             getAddressData().localCacheModel.convertToLocationParams()
         } else ""
     }
 
+    //TODO 17.2: Remove convertPopularKeywordDataList -> Move to HomeDynamicChannelUseCase
     private fun convertPopularKeywordDataList(popularKeywordList: HomeWidget.PopularKeywordList): MutableList<PopularKeywordDataModel> {
         val keywordList = popularKeywordList.keywords
         val dataList: MutableList<PopularKeywordDataModel> = mutableListOf()
@@ -1109,6 +1181,7 @@ open class HomeRevampViewModel @Inject constructor(
         return dataList
     }
 
+    //TODO 3.10: Remove mapToHomeHeaderWalletAction -> Move to HomeWalletUseCase
     private fun mapToHomeHeaderWalletAction(walletBalanceModel: WalletBalanceModel): HomeHeaderWalletAction? {
         return HomeHeaderWalletAction(
                 isLinked = walletBalanceModel.link,
@@ -1131,6 +1204,7 @@ open class HomeRevampViewModel @Inject constructor(
         )
     }
 
+    //TODO 38: Remove removeDynamicChannelLoadingModel -> Move to HomeDynamicChannelUseCase
     private fun removeDynamicChannelLoadingModel() {
         findWidget<DynamicChannelLoadingModel> { _, index ->
             updateWidget(DynamicChannelRetryModel(false),index)
@@ -1141,6 +1215,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 4.10: Remove updatePlayWidgetToggleReminder -> Move to HomePlayUseCase
     private fun updatePlayWidgetToggleReminder(channelId: String, reminderType: PlayWidgetReminderType) {
         updateCarouselPlayWidget {
             it.copy(widgetUiModel = playWidgetTools.get().updateActionReminder(it.widgetUiModel, channelId, reminderType))
@@ -1172,6 +1247,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 4.11: Remove updateCarouselPlayWidget -> Move to HomePlayUseCase
     private fun updateCarouselPlayWidget(onUpdate: (oldVal: CarouselPlayWidgetDataModel) -> CarouselPlayWidgetDataModel) {
         val dataModel = homeDataModel.list.find { it is CarouselPlayWidgetDataModel } ?: return
         if (dataModel !is CarouselPlayWidgetDataModel) return
@@ -1180,10 +1256,12 @@ open class HomeRevampViewModel @Inject constructor(
         updateWidget(onUpdate(dataModel), index)
     }
 
+    //TODO 3.11: Remove getDrawerListByType -> Move to HomeWalletUseCase
     private fun List<TokopointsDrawer>.getDrawerListByType(type: String) : TokopointsDrawer? {
         return this.find { it.type == type }
     }
 
+    //TODO 3.12: Remove getTokopoint -> Move to HomeWalletUseCase
     private fun getTokopoint(){
         if(getTokopointJob?.isActive == true || !userSession.get().isLoggedIn) return
         getTokopointJob = launchCatchError(coroutineContext, block = {
@@ -1202,6 +1280,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 3.13: Remove getTokocashBalance -> Move to HomeWalletUseCase
     private fun getTokocashBalance() {
         if(getTokocashJob?.isActive == true || !userSession.get().isLoggedIn) return
         getTokocashJob = launchCatchError(coroutineContext, block = {
@@ -1221,6 +1300,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 3.14: Remove getBalanceWidgetData -> Move to HomeWalletUseCase
     private fun getBalanceWidgetData() {
         if (!userSession.get().isLoggedIn) return
 
@@ -1314,6 +1394,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 3.15: Remove getTokopointDrawerListData -> Move to HomeWalletUseCase
     private fun getTokopointDrawerListData() {
         //set loading to wallet item
         newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setTokopointBalanceState(state = STATE_LOADING))
@@ -1329,6 +1410,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 3.16: Remove getWalletBalanceData -> Move to HomeWalletUseCase
     private fun getWalletBalanceData() {
         if (getWalletBalanceJob?.isActive == true || !userSession.get().isLoggedIn) return
 
@@ -1360,6 +1442,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 3.17: Remove getTokopointBalanceContent -> Move to HomeWalletUseCase
     private suspend fun getTokopointBalanceContent(): TokopointsDrawerListHomeData? {
         val tokopointsDrawerListHome = getTokopointListBasedOnElibility()
         if (tokopointsDrawerListHome.tokopointsDrawerList.drawerList.isEmpty()) {
@@ -1368,19 +1451,23 @@ open class HomeRevampViewModel @Inject constructor(
         return tokopointsDrawerListHome
     }
 
+    //TODO 3.18: Remove getTokopointListBasedOnElibility -> Move to HomeWalletUseCase
     private suspend fun getTokopointListBasedOnElibility(): TokopointsDrawerListHomeData {
         getHomeTokopointsListDataUseCase.get().setParams(isGopayEligible)
         return getHomeTokopointsListDataUseCase.get().executeOnBackground()
     }
 
+    //TODO 3.19: Remove getWalletBalanceContent -> Move to HomeWalletUseCase
     private suspend fun getWalletBalanceContent(): HomeHeaderWalletAction? {
         return mapToHomeHeaderWalletAction(getWalletBalanceUseCase.get().executeOnBackground())
     }
 
+    //TODO 3.20: Remove getWalletAppData -> Move to HomeWalletUseCase
     private suspend fun getWalletAppData(): WalletAppData {
         return getWalletAppBalanceUseCase.get().executeOnBackground()
     }
 
+    //TODO 3.21: Remove getHomeBalanceWalletAppData -> Move to HomeWalletUseCase
     private suspend fun getHomeBalanceWalletAppData(updateView: Boolean = false): Balances? {
         try {
             val walletAppData = getWalletAppData()
@@ -1406,10 +1493,12 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 3.22: Remove getPendingTokoCashContent -> Move to HomeWalletUseCase
     private suspend fun getPendingTokoCashContent(): PendingCashback {
         return getPendingCashbackUseCase.get().executeOnBackground()
     }
 
+    //TODO 39: Remove getDisplayTopAdsHeader -> Move to HomeDynamicChannelUseCase
     private fun getDisplayTopAdsHeader(){
         findWidgetList<FeaturedShopDataModel> { indexedFeaturedShopModelList ->
             indexedFeaturedShopModelList.forEach { model ->
@@ -1436,6 +1525,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 3.23: Remove newUpdateHeaderViewModel -> Move to HomeWalletUseCase
     private fun newUpdateHeaderViewModel(homeBalanceModel: HomeBalanceModel) {
         val homeHeaderOvoDataModel = (homeDataModel.list.find { visitable-> visitable is HomeHeaderOvoDataModel } as HomeHeaderOvoDataModel?)
         homeHeaderOvoDataModel?.let {
@@ -1454,6 +1544,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 3.24: Remove updateHeaderViewModel -> Move to HomeWalletUseCase
     private fun updateHeaderViewModel(tokopointsDrawer: TokopointsDrawer? = null,
                                       tokopointsBBODrawer: TokopointsDrawer? = null,
                                       homeHeaderWalletAction: HomeHeaderWalletAction? = null,
@@ -1501,6 +1592,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 5.2: Remove getReviewData -> Move to HomeDynamicChannelUseCase
     private fun getReviewData() {
         if(getSuggestedReviewJob?.isActive == true) return
         if (userSession.get().isLoggedIn) {
@@ -1518,6 +1610,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 40: Remove removeRechargeRecommendation -> Move to HomeDynamicChannelUseCase
     private fun removeRechargeRecommendation() {
         val findRechargeRecommendationViewModel =
                 homeDataModel.list.find { visitable -> visitable is ReminderWidgetModel  && (visitable.source == ReminderEnum.RECHARGE)}
@@ -1527,6 +1620,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 41: Remove removeSalamWidget -> Move to HomeDynamicChannelUseCase
     private fun removeSalamWidget() {
         val findSalamWidgetModel =
                 homeDataModel.list.find { visitable -> visitable is ReminderWidgetModel  && (visitable.source == ReminderEnum.SALAM)}
@@ -1536,12 +1630,14 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 42: Remove removeRechargeBUWidget -> Move to HomeDynamicChannelUseCase
     private fun removeRechargeBUWidget() {
         findWidget<RechargeBUWidgetDataModel> { rechargeBuModel, index ->
             deleteWidget(rechargeBuModel, index)
         }
     }
 
+    //TODO 43: Delete
 //    private fun initCacheData() {
 //        _isRequestNetworkLiveData.value = Event(true)
 //
@@ -1631,6 +1727,7 @@ open class HomeRevampViewModel @Inject constructor(
         refreshHomeData()
     }
 
+    //TODO 44: Delete
     private fun getExternalApi() {
         getPlayWidget()
         getReviewData()
@@ -1643,6 +1740,7 @@ open class HomeRevampViewModel @Inject constructor(
         getSalamWidget()
     }
 
+    //TODO 45: Remove getTopAdsBannerData -> Move to HomeDynamicChannelUseCase
     private fun getTopAdsBannerData() {
         if(getTopAdsBannerDataJob?.isActive == true) return
         findWidget<HomeTopAdsBannerDataModel> { topAdsModel, index ->
@@ -1669,6 +1767,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    //TODO 46: Remove getBeautyFest -> Move to HomeBeautyFestUseCase
     fun getBeautyFest(data: List<Visitable<*>>) {
         //beauty fest event will qualify if contains "isChannelBeautyFest":true
         launchCatchError(coroutineContext, {
@@ -1682,6 +1781,7 @@ open class HomeRevampViewModel @Inject constructor(
         })
     }
 
+    //TODO 47: Remove deleteQuestWidget -> Move to HomeDynamicChannelUseCase
     fun deleteQuestWidget() {
         findWidget<QuestWidgetModel> { questWidgetModel, index ->
             deleteWidget(questWidgetModel, index)
