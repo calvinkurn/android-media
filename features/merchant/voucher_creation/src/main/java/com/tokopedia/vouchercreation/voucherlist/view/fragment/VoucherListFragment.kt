@@ -269,7 +269,7 @@ class VoucherListFragment :
         mViewModel.currentPage = page
         if (!isToolbarAlreadyLoaded) {
             view?.run {
-                headerChipMvc.isVisible = false
+                searchBarMvc.hide()
                 sf_voucher_list.isVisible = false
             }
             renderList(listOf(LoadingStateUiModel(isActiveVoucher)))
@@ -773,11 +773,6 @@ class VoucherListFragment :
         sf_voucher_list.sortFilterPrefix.setOnClickListener {
             showFilterBottomSheet()
         }
-
-
-//        headerChipMvc.init {
-//            setOnChipListener(it)
-//        }
         toolbarMvcList?.setBackgroundColor(Color.TRANSPARENT)
     }
 
@@ -916,9 +911,6 @@ class VoucherListFragment :
         sortItems.addAll(SortBottomSheet.getMvcSortItems(requireContext()))
         filterItems.clear()
         filterItems.addAll(FilterBottomSheet.getMvcFilterItems(requireContext()))
-
-        view?.headerChipMvc?.resetFilter()
-
         resetFetchValues()
     }
 
@@ -1010,11 +1002,6 @@ class VoucherListFragment :
 
         val activeSort = sortItems.firstOrNull { it.isSelected }
         activeSort?.let { sort ->
-            view?.headerChipMvc?.run {
-                setActiveSort(sort)
-                showResetButton()
-            }
-
             mViewModel.isInverted = sort.key == SortBy.OLDEST_DONE_DATE
         }
 
@@ -1053,10 +1040,9 @@ class VoucherListFragment :
                 renderList(listOf(getEmptyStateUiModel()))
             } else {
                 view?.run {
-                    headerChipMvc.show()
+                    searchBarMvc.show()
                     sf_voucher_list.show()
-                    mvcTickerBc.isVisible =
-                        isActiveVoucher && mViewModel.getShowBroadCastChatTicker()
+                    mvcTickerBc.isVisible = isActiveVoucher && mViewModel.getShowBroadCastChatTicker()
                     isToolbarAlreadyLoaded = true
                     setupSearchBar()
                 }
@@ -1108,9 +1094,6 @@ class VoucherListFragment :
                 is Fail -> setOnErrorGetVoucherList(it.throwable)
             }
         })
-//        mViewModel.localVoucherListLiveData.observe(viewLifecycleOwner, Observer { result ->
-//            setOnSuccessGetVoucherList(result)
-//        })
         mViewModel.cancelVoucherResponseLiveData.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> {
