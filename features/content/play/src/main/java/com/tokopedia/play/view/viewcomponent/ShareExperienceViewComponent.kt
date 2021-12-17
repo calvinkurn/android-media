@@ -47,7 +47,7 @@ class ShareExperienceViewComponent(
     private val screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
         context, object: ScreenShotListener {
             override fun screenShotTaken() {
-                Log.d("<LOG>", "screenshottaken")
+                Log.d("<LOG>", "screenshottaken $fragment")
                 listener.onScreenshotTaken(this@ShareExperienceViewComponent)
             }
         }, fragment, addFragmentLifecycleObserver = true, permissionListener = object: PermissionListener {
