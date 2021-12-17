@@ -18,7 +18,6 @@ import com.tokopedia.home.beranda.data.repository.HomeRevampRepository
 import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.di.module.query.*
-import com.tokopedia.home.beranda.di.module.query.QueryHome.homeSlidesQuery
 import com.tokopedia.home.beranda.domain.gql.CloseChannelMutation
 import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
@@ -201,7 +200,7 @@ class HomeUseCaseModule {
     @HomeScope
     fun provideGetHomePageBannerUseCase(graphqlRepository: GraphqlRepository): GetHomePageBannerUseCase {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeBannerData>(graphqlRepository)
-        useCase.setGraphqlQuery(homeSlidesQuery)
+        useCase.setGraphqlQuery(HomeSlidesQuery())
         return GetHomePageBannerUseCase(useCase)
     }
 
