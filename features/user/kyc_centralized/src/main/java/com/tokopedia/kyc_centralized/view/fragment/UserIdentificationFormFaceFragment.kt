@@ -22,6 +22,7 @@ import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActiv
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
+import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user_identification_common.KYCConstant
@@ -64,7 +65,7 @@ class UserIdentificationFormFaceFragment : BaseUserIdentificationStepperFragment
         context?.let {
             if(ImageEncryptionUtil.isUsingEncrypt(it)) {
                 button?.isEnabled = false
-                kycUploadViewModel.encryptImageKtp(stepperModel?.ktpFile.toEmptyStringIfNull())
+                kycUploadViewModel.encryptImage(stepperModel?.ktpFile.toEmptyStringIfNull(), KYC_IV_KTP_CACHE)
             }
         }
     }
