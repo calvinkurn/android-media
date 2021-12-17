@@ -146,6 +146,7 @@ import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeletePr
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragment.ProductManageQuickEditPriceFragment
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
+import com.tokopedia.product.manage.feature.violation.view.bottomsheet.ViolationReasonBottomSheet
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
@@ -187,7 +188,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         ProductManageQuickEditStockFragment.OnFinishedListener,
         ProductManageMoreMenuViewHolder.ProductManageMoreMenuListener,
         ProductManageListListener, ProductManageAddEditMenuBottomSheet.AddEditMenuClickListener,
-        ProductCampaignInfoListener, SellerHomeFragmentListener {
+        ProductCampaignInfoListener, SellerHomeFragmentListener,
+        ViolationReasonBottomSheet.Listener {
 
     private val defaultItemAnimator by lazy { DefaultItemAnimator() }
 
@@ -578,6 +580,18 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PRODUCT_ADD)
         startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
         productManageAddEditMenuBottomSheet.dismiss()
+    }
+
+    override fun onViolationError(throwable: Throwable) {
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        binding?.root?.let {
+            Toaster.build(
+                    it,
+                    type = Toaster.TYPE_ERROR,
+                    text = errorMessage,
+                    duration = Toaster.LENGTH_LONG,
+            ).show()
+        }
     }
 
     private fun observeProductVariantBroadcast() {
@@ -1574,7 +1588,14 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     override fun onClickContactCsButton(product: ProductUiModel) {
-        goToProductViolationHelpPage()
+        when {
+            product.isViolation() -> {
+                goToProductViolationHelpPage()
+            }
+            product.isPending() -> {
+                showViolationReasonBottomSheet(product.id)
+            }
+        }
         ProductManageTracking.eventContactCs(product.id)
     }
 
@@ -2588,6 +2609,10 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         context?.let {
             OngoingPromotionBottomSheet.createInstance(it, ArrayList(campaignTypeList)).show(childFragmentManager)
         }
+    }
+
+    private fun showViolationReasonBottomSheet(productId: String) {
+        ViolationReasonBottomSheet.createInstance(productId, this).show(childFragmentManager)
     }
 
     private fun showToaster(message: String) {
