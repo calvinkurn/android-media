@@ -26,7 +26,7 @@ class QuestWidgetViewModel @Inject constructor(@Named(IO) workerDispatcher: Coro
 
         if(userSession.isLoggedIn) {
             this.page = page
-            if(page != "" && (page == QuestWidgetLocations.HOME_PAGE || page == QuestWidgetLocations.MY_REWARD ||page == QuestWidgetLocations.DISCO)) {
+            if(page != "") {
                 getQuestWidgetData(channel, channelSlug, page)
             }
             else {

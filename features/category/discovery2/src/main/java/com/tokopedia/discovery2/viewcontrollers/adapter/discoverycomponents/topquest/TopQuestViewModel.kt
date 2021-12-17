@@ -1,7 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topquest
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -14,6 +13,7 @@ class TopQuestViewModel(
     val position: Int
 ) : DiscoveryBaseViewModel() {
     var shouldUpdate:Boolean = false
+    var loggedInUpdate:Boolean = false
     private val _updateQuestData:SingleLiveEvent<Boolean> = SingleLiveEvent()
     val updateQuestData:LiveData<Boolean> = _updateQuestData
 
@@ -22,16 +22,19 @@ class TopQuestViewModel(
 
     override fun onResume() {
         super.onResume()
-        Log.e("TEST_TAG","onResume - TopQuestVM")
-        if(shouldUpdate){
+        if (shouldUpdate) {
             shouldUpdate = false
-           _updateQuestData.value = true
+            _updateQuestData.value = true
+        }
+        if (loggedInUpdate) {
+            loggedInUpdate = false
+            shouldUpdate = true
         }
     }
 
     override fun loggedInCallback() {
         super.loggedInCallback()
         _navigateData.value = QuestUrls.QUEST_URL
-        shouldUpdate = true
+        loggedInUpdate = true
     }
 }

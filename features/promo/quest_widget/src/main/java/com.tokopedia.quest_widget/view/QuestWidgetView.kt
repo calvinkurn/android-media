@@ -20,6 +20,7 @@ import com.tokopedia.quest_widget.di.DaggerQuestComponent
 import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.quest_widget.tracker.QuestSource
 import com.tokopedia.quest_widget.tracker.QuestTracker
+import com.tokopedia.quest_widget.tracker.QuestTrackerImpl
 import com.tokopedia.quest_widget.util.ConnectionLiveData
 import com.tokopedia.quest_widget.util.LiveDataResult
 import com.tokopedia.unifycomponents.ImageUnify
@@ -260,5 +261,9 @@ class QuestWidgetView @JvmOverloads constructor(
         constraintLayoutQuestWidget.hide()
         shimmerQuestWidget.show()
         getQuestList(0, "", this.page, this.source)
+    }
+
+    fun setTrackerImpl(questTrackerImpl: QuestTrackerImpl){
+        questTracker.trackerImpl = questTrackerImpl
     }
 }
