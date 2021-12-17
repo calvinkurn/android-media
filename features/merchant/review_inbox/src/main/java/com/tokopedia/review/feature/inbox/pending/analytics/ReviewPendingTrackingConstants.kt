@@ -16,7 +16,7 @@ object ReviewPendingTrackingConstants {
     const val EVENT_NAME_VALUE_VIEW_ITEM = "view_item"
 
     const val EVENT_ACTION_VALUE_CLICK_WIDGET_ON_REVIEW_INBOX = "click - ulasan widget on inbox ulasan"
-    const val EVENT_ACTION_VALUE_IMPRESSION_WIDGET_ON_REVIEW_INBOX = "Impression - ulasan widget on inbox ulasan"
+    const val EVENT_ACTION_VALUE_IMPRESSION_WIDGET_ON_REVIEW_INBOX = "impression - ulasan widget on inbox ulasan"
 
     const val EVENT_CATEGORY_VALUE_REVIEW_PAGE_PENDING_REVIEW = "ulasan page - menunggu diulas"
 

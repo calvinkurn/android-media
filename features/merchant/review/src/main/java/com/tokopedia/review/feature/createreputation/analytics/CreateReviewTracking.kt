@@ -566,7 +566,7 @@ object CreateReviewTracking {
         userId: String
     ) {
         Bundle().appendGeneralEventData(
-            eventName = ReviewTrackingConstant.VIEW_REVIEW,
+            eventName = ReviewTrackingConstant.KEY_VIEW_ITEM,
             eventCategory = CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
             eventAction = CreateReviewTrackingConstants.EVENT_ACTION_VIEW_POST_SUBMIT_REVIEW_BOTTOM_SHEET,
             eventLabel = String.format(
