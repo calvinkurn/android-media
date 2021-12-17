@@ -69,24 +69,4 @@ internal object QueryHome {
             "                }\n" +
             "            }\n" +
             "        }"
-
-    val homeTickerQuery: String = "" +
-            "query homeTicker(\$location: String)\n" +
-            "        {\n" +
-            "          ticker {\n" +
-            "            meta {\n" +
-            "              total_data\n" +
-            "            }\n" +
-            "            tickers(location: \$location)\n" +
-            "            {\n" +
-            "              id\n" +
-            "              title\n" +
-            "              message\n" +
-            "              color\n" +
-            "              layout\n" +
-            "              ticker_type\n" +
-            "              title\n" +
-            "            }\n" +
-            "          }\n" +
-            "        }"
 }
