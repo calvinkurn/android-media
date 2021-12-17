@@ -5,6 +5,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
+import timber.log.Timber
 
 fun Map<String, Any>?.convertValuesToString(): Map<String, String> {
     if (this == null) return mapOf()
@@ -41,6 +42,7 @@ internal fun safeCastRupiahToInt(price: String?): Int {
         CurrencyFormatHelper.convertRupiahToInt(price ?: "")
     }
     catch(throwable: Throwable) {
+        Timber.w(throwable)
         0
     }
 }
