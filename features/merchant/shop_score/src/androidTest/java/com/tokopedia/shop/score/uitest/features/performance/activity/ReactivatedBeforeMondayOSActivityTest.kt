@@ -9,10 +9,12 @@ import com.tokopedia.shop.score.uitest.stub.common.util.isViewDisplayed
 import com.tokopedia.shop.score.uitest.stub.common.util.onClick
 import com.tokopedia.shop.score.uitest.stub.common.util.onIdView
 import com.tokopedia.shop.score.uitest.stub.common.util.scrollTo
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.unifycomponents.ticker.Ticker
 import org.hamcrest.CoreMatchers
 import org.junit.Test
 
+@UiTest
 class ReactivatedBeforeMondayOSActivityTest: ShopScoreTest() {
 
     override fun setup() {
