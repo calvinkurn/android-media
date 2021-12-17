@@ -3,12 +3,12 @@ package com.tokopedia.home.viewModel.homepageRevamp
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
-import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
+import com.tokopedia.home.beranda.data.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.gql.CloseChannel
 import com.tokopedia.home.beranda.domain.interactor.CloseChannelUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetDynamicChannelsUseCase
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.ext.observeOnce
@@ -26,7 +26,7 @@ class HomeViewModelListCarouselUnitTest{
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val getDynamicChannelsUseCase = mockk<GetDynamicChannelsUseCase>(relaxed = true)
-    private val getHomeUseCase = mockk<HomeRevampUseCase>(relaxed = true)
+    private val getHomeUseCase = mockk<HomeDynamicChannelUseCase>(relaxed = true)
     private val getAtcUseCase = mockk<AddToCartOccMultiUseCase>(relaxed = true)
     private val closeChannelUseCase = mockk<CloseChannelUseCase>(relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
@@ -35,10 +35,10 @@ class HomeViewModelListCarouselUnitTest{
     fun `Get dynamic channel data success with single data and try close widget`() {
         val dataModel = DynamicChannelDataModel()
         dataModel.channel = DynamicHomeChannel.Channels(id = "1")
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+        val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
 
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(dataModel)
                 )
         )
@@ -49,7 +49,7 @@ class HomeViewModelListCarouselUnitTest{
         coEvery{ getAtcUseCase.executeOnBackground().mapToAddToCartDataModel() } returns mockk()
 
         homeViewModel = createHomeViewModel(closeChannelUseCase = closeChannelUseCase, getHomeUseCase = getHomeUseCase, getAtcUseCase = getAtcUseCase)
-        homeViewModel.homeLiveData.observeForever(observerHome)
+        homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
 
         // Express checkout clicked
         homeViewModel.onCloseBuyAgain(dataModel.channel!!.id, 0)
@@ -61,10 +61,10 @@ class HomeViewModelListCarouselUnitTest{
     @Test
     fun `Get RecommendationListCarouselDataModel channel data success with single data and try close widget`() {
         val dataModel = RecommendationListCarouselDataModel(ChannelModel(id = "1", groupId = "1"))
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+        val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
 
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(dataModel)
                 )
         )
@@ -75,7 +75,7 @@ class HomeViewModelListCarouselUnitTest{
         coEvery{ getAtcUseCase.executeOnBackground().mapToAddToCartDataModel() } returns mockk()
 
         homeViewModel = createHomeViewModel(closeChannelUseCase = closeChannelUseCase, getHomeUseCase = getHomeUseCase, getAtcUseCase = getAtcUseCase)
-        homeViewModel.homeLiveData.observeForever(observerHome)
+        homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
 
         // Express checkout clicked
         homeViewModel.onCloseBuyAgain(dataModel.channelModel.id, 0)
@@ -88,10 +88,10 @@ class HomeViewModelListCarouselUnitTest{
     fun `Get dynamic channel data success with single data and try close widget fail`() {
         val dataModel = DynamicChannelDataModel()
         dataModel.channel = DynamicHomeChannel.Channels(id = "1")
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+        val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
 
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(dataModel)
                 )
         )
@@ -102,7 +102,7 @@ class HomeViewModelListCarouselUnitTest{
         coEvery{ getAtcUseCase.executeOnBackground().mapToAddToCartDataModel() } returns mockk()
 
         homeViewModel = createHomeViewModel(closeChannelUseCase = closeChannelUseCase, getHomeUseCase = getHomeUseCase, getAtcUseCase = getAtcUseCase)
-        homeViewModel.homeLiveData.observeForever(observerHome)
+        homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
 
         // Express checkout clicked
         homeViewModel.onCloseBuyAgain(dataModel.channel!!.id, 0)

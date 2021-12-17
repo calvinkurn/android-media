@@ -10,15 +10,15 @@ import com.tokopedia.common_wallet.pendingcashback.data.ResponsePendingCashback
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
 import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.data.model.HomeWidget
-import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.home.beranda.data.repository.HomeRevampRepository
-import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
+import com.tokopedia.home.beranda.data.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.di.module.query.QueryBusinessWidget.businessUnitDataQuery
 import com.tokopedia.home.beranda.di.module.query.QueryBusinessWidget.businessWidgetQuery
@@ -32,7 +32,6 @@ import com.tokopedia.home.beranda.di.module.query.QueryHome.homeSlidesQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.recommendationQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.pendingCashBackQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.tokopointsListQuery
-import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.tokopointsQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.walletBalanceQuery
 import com.tokopedia.home.beranda.di.module.query.QueryPopularKeyword.popularKeywordQuery
 import com.tokopedia.home.beranda.di.module.query.QuerySuggestedReview.dismissSuggestedQuery
@@ -42,6 +41,7 @@ import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse
 import com.tokopedia.home.beranda.domain.interactor.*
+import com.tokopedia.home.beranda.domain.interactor.repository.*
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.banner.HomeBannerData
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
@@ -79,7 +79,55 @@ class HomeUseCaseModule {
 
     @HomeScope
     @Provides
-    fun homeRevampUseCase(homeRepository: HomeRevampRepository, homeDataMapper: HomeDataMapper) = HomeRevampUseCase(homeRepository, homeDataMapper)
+    fun homeRevampUseCase(
+            homeDataMapper: HomeDataMapper,
+            homeDynamicChannelsRepository: HomeDynamicChannelsRepository,
+            homeDataRepository: HomeDataRepository,
+            homeAtfRepository: HomeAtfRepository,
+            homeFlagRepository: HomeFlagRepository,
+            homePageBannerRepository: HomePageBannerRepository,
+            homeIconRepository: HomeIconRepository,
+            homeTickerRepository: HomeTickerRepository,
+            homeRoomDataSource: HomeRoomDataSource,
+            homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper,
+            @ApplicationContext context: Context,
+            remoteConfig: RemoteConfig,
+            homePlayRepository: HomePlayRepository,
+            homeReviewSuggestedRepository: HomeReviewSuggestedRepository,
+            homePlayLiveDynamicRepository: HomePlayLiveDynamicRepository,
+            homePopularKeywordRepository: HomePopularKeywordRepository,
+            homeHeadlineAdsRepository: HomeHeadlineAdsRepository,
+            homeRecommendationRepository: HomeRecommendationRepository,
+            homeRecommendationChipRepository: HomeRecommendationChipRepository,
+            bestSellerMapper: BestSellerMapper,
+            homeTopadsImageRepository: HomeTopadsImageRepository,
+            homeRechargeRecommendationRepository: HomeRechargeRecommendationRepository,
+            homeSalamWidgetRepository: HomeSalamWidgetRepository
+    ) = HomeDynamicChannelUseCase(
+            homeDataMapper = homeDataMapper,
+            homeDynamicChannelsRepository = homeDynamicChannelsRepository,
+            homeDataRepository = homeDataRepository,
+            atfDataRepository = homeAtfRepository,
+            homeFlagRepository = homeFlagRepository,
+            homePageBannerRepository = homePageBannerRepository,
+            homeIconRepository = homeIconRepository,
+            homeTickerRepository = homeTickerRepository,
+            getHomeRoomDataSource = homeRoomDataSource,
+            homeDynamicChannelDataMapper = homeDynamicChannelDataMapper,
+            applicationContext = context,
+            remoteConfig = remoteConfig,
+            homePlayRepository = homePlayRepository,
+            homeReviewSuggestedRepository = homeReviewSuggestedRepository,
+            homePlayLiveDynamicRepository = homePlayLiveDynamicRepository,
+            homePopularKeywordRepository = homePopularKeywordRepository,
+            homeHeadlineAdsRepository = homeHeadlineAdsRepository,
+            homeRecommendationRepository = homeRecommendationRepository,
+            homeRecommendationChipRepository = homeRecommendationChipRepository,
+            bestSellerMapper = bestSellerMapper,
+            homeTopadsImageRepository = homeTopadsImageRepository,
+            homeRechargeRecommendationRepository = homeRechargeRecommendationRepository,
+            homeSalamWidgetRepository = homeSalamWidgetRepository
+    )
 
 
     @Provides
@@ -96,10 +144,10 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideHomeReviewSuggestedUseCase(graphqlRepository: GraphqlRepository): GetHomeReviewSuggestedUseCase {
+    fun provideHomeReviewSuggestedUseCase(graphqlRepository: GraphqlRepository): HomeReviewSuggestedRepository {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<SuggestedProductReview>(graphqlRepository)
         useCase.setGraphqlQuery(suggestedReviewQuery)
-        return GetHomeReviewSuggestedUseCase(useCase)
+        return HomeReviewSuggestedRepository(useCase)
     }
 
     @Provides
@@ -120,8 +168,8 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideGetPlayLiveDynamicDataUseCase(graphqlRepository: GraphqlRepository): GetPlayLiveDynamicUseCase {
-        return GetPlayLiveDynamicUseCase(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository))
+    fun provideGetPlayLiveDynamicDataUseCase(graphqlRepository: GraphqlRepository): HomePlayLiveDynamicRepository {
+        return HomePlayLiveDynamicRepository(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository))
     }
 
     @HomeScope
@@ -172,10 +220,10 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun providePopularKeywordUseCase(graphqlRepository: GraphqlRepository): GetPopularKeywordUseCase {
+    fun providePopularKeywordUseCase(graphqlRepository: GraphqlRepository): HomePopularKeywordRepository {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeWidget.PopularKeywordQuery>(graphqlRepository)
         useCase.setGraphqlQuery(popularKeywordQuery)
-        return GetPopularKeywordUseCase(useCase)
+        return HomePopularKeywordRepository(useCase)
     }
 
     @Provides
@@ -195,18 +243,18 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideGetHomeData(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper): GetHomeDataUseCase{
+    fun provideGetHomeData(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper): HomeDataRepository {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeData>(graphqlRepository)
         useCase.setGraphqlQuery(homeQuery)
-        return GetHomeDataUseCase(useCase)
+        return HomeDataRepository(useCase)
     }
 
     @Provides
     @HomeScope
-    fun provideGetHomeFlagUseCase(graphqlRepository: GraphqlRepository): GetHomeFlagUseCase {
+    fun provideGetHomeFlagUseCase(graphqlRepository: GraphqlRepository): HomeFlagRepository {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFlagData>(graphqlRepository)
         useCase.setGraphqlQuery(homeDataRevampQuery)
-        return GetHomeFlagUseCase(useCase)
+        return HomeFlagRepository(useCase)
     }
 
     @Provides
@@ -219,36 +267,36 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideGetHomePageBannerUseCase(graphqlRepository: GraphqlRepository): GetHomePageBannerUseCase {
+    fun provideGetHomePageBannerUseCase(graphqlRepository: GraphqlRepository, homeRoomDataSource: HomeRoomDataSource): HomePageBannerRepository {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeBannerData>(graphqlRepository)
         useCase.setGraphqlQuery(homeSlidesQuery)
-        return GetHomePageBannerUseCase(useCase)
+        return HomePageBannerRepository(useCase, homeRoomDataSource)
     }
 
     @Provides
     @HomeScope
-    fun provideHomeTickerRepository(graphqlRepository: GraphqlRepository): GetHomeTickerRepository {
-        return GetHomeTickerRepository(graphqlRepository)
+    fun provideHomeTickerRepository(graphqlRepository: GraphqlRepository): HomeTickerRepository {
+        return HomeTickerRepository(graphqlRepository)
     }
 
     @Provides
     @HomeScope
-    fun provideHomeIconRepository(graphqlRepository: GraphqlRepository): GetHomeIconRepository {
-        return GetHomeIconRepository(graphqlRepository)
+    fun provideHomeIconRepository(graphqlRepository: GraphqlRepository): HomeIconRepository {
+        return HomeIconRepository(graphqlRepository)
     }
 
     @Provides
     @HomeScope
-    fun provideHomeDynamicChannelRepository(graphqlRepository: GraphqlRepository): GetHomeDynamicChannelsRepository {
-        return GetHomeDynamicChannelsRepository(graphqlRepository)
+    fun provideHomeDynamicChannelRepository(graphqlRepository: GraphqlRepository): HomeDynamicChannelsRepository {
+        return HomeDynamicChannelsRepository(graphqlRepository)
     }
 
     @HomeScope
     @Provides
-    fun provideGetHomeAtfUseCase(graphqlRepository: GraphqlRepository): GetHomeAtfUseCase {
+    fun provideGetHomeAtfUseCase(graphqlRepository: GraphqlRepository, homeRoomDataSource: HomeRoomDataSource): HomeAtfRepository {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeAtfData>(graphqlRepository)
         useCase.setGraphqlQuery(atfQuery)
-        return GetHomeAtfUseCase(useCase)
+        return HomeAtfRepository(useCase, homeRoomDataSource)
     }
 
     @Provides

@@ -2,9 +2,9 @@ package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
+import com.tokopedia.home.beranda.data.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -20,20 +20,20 @@ class HomeViewModelBannerHomepageTest{
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val getHomeUseCase = mockk<HomeRevampUseCase> (relaxed = true)
+    private val getHomeUseCase = mockk<HomeDynamicChannelUseCase> (relaxed = true)
 
     private lateinit var homeViewModel: HomeRevampViewModel
 
     @Test
     fun `User doesn't have cache, and must get data from network, and should available on view`(){
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+        val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
         // Banner data
         val bannerDataModel = HomepageBannerDataModel()
         bannerDataModel.slides = listOf(
                 BannerSlidesModel()
         )
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(bannerDataModel)
                 )
         )
@@ -41,7 +41,7 @@ class HomeViewModelBannerHomepageTest{
         homeViewModel = createHomeViewModel(
                 getHomeUseCase = getHomeUseCase
         )
-        homeViewModel.homeLiveData.observeForever(observerHome)
+        homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
 
         // Expect channel updated
         verifyOrder {
@@ -55,7 +55,7 @@ class HomeViewModelBannerHomepageTest{
 
     @Test
     fun `Get Initial Data and try click topads, user doesn't have cache, and must get data from network, and should available on view`(){
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+        val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
         val bannerDataModel = HomepageBannerDataModel()
         val slidesModel = BannerSlidesModel()
         bannerDataModel.slides = listOf(
@@ -64,7 +64,7 @@ class HomeViewModelBannerHomepageTest{
 
         // Banner data
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(bannerDataModel)
                 )
         )
@@ -74,7 +74,7 @@ class HomeViewModelBannerHomepageTest{
                 getHomeUseCase = getHomeUseCase
         )
 
-        homeViewModel.homeLiveData.observeForever(observerHome)
+        homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
 
         // Expect channel updated
         verifyOrder {
@@ -89,7 +89,7 @@ class HomeViewModelBannerHomepageTest{
 
     @Test
     fun `Get update data and User doesn't have cache, and must get data from network, and should available on view`(){
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+        val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
         // Banner data
         val bannerDataModel = HomepageBannerDataModel()
         bannerDataModel.slides = listOf(
@@ -101,10 +101,10 @@ class HomeViewModelBannerHomepageTest{
                 BannerSlidesModel()
         )
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(bannerDataModel)
                 ),
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(newBannerDataModel)
                 )
         )
@@ -112,7 +112,7 @@ class HomeViewModelBannerHomepageTest{
         homeViewModel = createHomeViewModel(
                 getHomeUseCase = getHomeUseCase
         )
-        homeViewModel.homeLiveData.observeForever(observerHome)
+        homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
 
         // Expect channel updated
         verifyOrder {
@@ -136,7 +136,7 @@ class HomeViewModelBannerHomepageTest{
         val slotImageUrl = slot<String>()
 
         val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+        val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
         // Banner data
         val bannerDataModel = HomepageBannerDataModel()
         bannerDataModel.slides = listOf(
@@ -145,7 +145,7 @@ class HomeViewModelBannerHomepageTest{
                 )
         )
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(bannerDataModel)
                 )
         )
@@ -164,7 +164,7 @@ class HomeViewModelBannerHomepageTest{
         homeViewModel = createHomeViewModel(
                 getHomeUseCase = getHomeUseCase
         )
-        homeViewModel.homeLiveData.observeForever(observerHome)
+        homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
 
         // Expect channel updated"
         verifyOrder {

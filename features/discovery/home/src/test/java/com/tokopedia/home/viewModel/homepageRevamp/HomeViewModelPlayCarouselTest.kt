@@ -1,9 +1,9 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
+import com.tokopedia.home.beranda.data.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -26,7 +26,7 @@ class HomeViewModelPlayCarouselTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val getHomeUseCase = mockk<HomeRevampUseCase>(relaxed = true)
+    private val getHomeUseCase = mockk<HomeDynamicChannelUseCase>(relaxed = true)
     private val playWidgetTools = mockk<PlayWidgetTools>(relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
     private val dispatchers = CoroutineTestDispatchersProvider
@@ -34,7 +34,7 @@ class HomeViewModelPlayCarouselTest {
     @Test
     fun `Get play data from home skeleton`() {
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(CarouselPlayWidgetDataModel(
                                 homeChannel = DynamicHomeChannel.Channels(),
                                 widgetUiModel = PlayWidgetUiModel.Placeholder
@@ -54,7 +54,7 @@ class HomeViewModelPlayCarouselTest {
     @Test
     fun `Get play data from home skeleton not available`() {
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(),
                         isCache = false
                 )

@@ -4,7 +4,7 @@ import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
-import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
+import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
 import com.tokopedia.home.beranda.data.datasource.local.entity.AtfCacheEntity
 import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
@@ -14,6 +14,7 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.helper.Result
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.constant.AtfKey.TYPE_BANNER
 import com.tokopedia.home.constant.AtfKey.TYPE_CHANNEL
@@ -25,7 +26,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import dagger.Lazy
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -33,8 +33,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import retrofit2.Response
-import rx.Observable
 import javax.inject.Inject
 
 /**
@@ -48,13 +46,13 @@ import javax.inject.Inject
  *
  */
 class HomeRevampRepositoryImpl @Inject constructor(
-        private val homeCachedDataSource: HomeCachedDataSource,
+        private val homeRoomDataSource: HomeRoomDataSource,
         private val homeRemoteDataSource: HomeRemoteDataSource,
         private val homeDefaultDataSource: HomeDefaultDataSource,
         private val homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper,
         private val applicationContext: Context?,
         private val remoteConfig: RemoteConfig
-): HomeRevampRepository {
+) {
 
     private var CHANNEL_LIMIT_FOR_PAGINATION = 1
     companion object{
@@ -66,28 +64,28 @@ class HomeRevampRepositoryImpl @Inject constructor(
 
     private val jobList = mutableListOf<Deferred<AtfData>>()
 
-    override fun getHomeCachedAtfData(): HomeAtfData? {
-        return HomeAtfData(
-                dataList = homeCachedDataSource.getCachedAtfData().map {
-                    AtfData(
-                            id = it.id,
-                            name = it.name,
-                            component = it.component,
-                            param = it.param,
-                            isOptional = false,
-                            content = it.content,
-                            status = AtfKey.STATUS_SUCCESS
-                    )
-                },
-                isProcessingAtf = false
-        )
-    }
+//    override fun getHomeCachedAtfData(): HomeAtfData? {
+//        return HomeAtfData(
+//                dataList = homeRoomDataSource.getCachedAtfData().map {
+//                    AtfData(
+//                            id = it.id,
+//                            name = it.name,
+//                            component = it.component,
+//                            param = it.param,
+//                            isOptional = false,
+//                            content = it.content,
+//                            status = AtfKey.STATUS_SUCCESS
+//                    )
+//                },
+//                isProcessingAtf = false
+//        )
+//    }
 
-    override fun getHomeData(): Flow<HomeData?> = homeCachedDataSource.getCachedHomeData().map {
-        isCacheExist = it != null
-        this.cachedHomeData = it
-        it
-    }
+//    override fun getHomeDataFlow(): Flow<HomeDynamicChannelModel?> = homeRoomDataSource.getCachedHomeData().map {
+//        isCacheExist = it != null
+//        this.cachedHomeData = it
+//        it
+//    }
 
     /**
      * Home repository flow:
@@ -109,7 +107,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
      *    7.1 Emit error pagination only when atf is empty
      *      Because there is no content that we can show, we showing error page
      */
-    override fun updateHomeData(): Flow<Result<Any>> = flow{
+    fun updateHomeData(): Flow<Result<Any>> = flow{
         coroutineScope {
             /**
              * Remote config to disable pagination by request with param 0
@@ -377,10 +375,10 @@ class HomeRevampRepositoryImpl @Inject constructor(
     }
 
     private suspend fun saveToDatabase(homeData: HomeData?, saveAtf: Boolean = false) {
-        homeCachedDataSource.saveToDatabase(homeData)
+        homeRoomDataSource.saveToDatabase(homeData)
         if (saveAtf) {
             homeData?.atfData?.let {
-                homeCachedDataSource.saveCachedAtf(
+                homeRoomDataSource.saveCachedAtf(
                         it.dataList.map {atfData ->
                             AtfCacheEntity(
                                     id = atfData.id,
@@ -397,7 +395,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun onDynamicChannelExpired(groupId: String): List<Visitable<*>> {
+    suspend fun onDynamicChannelExpired(groupId: String): List<Visitable<*>> {
         val dynamicChannelResponse = homeRemoteDataSource.getDynamicChannelData(
                 groupIds = groupId,
                 locationParams = applicationContext?.let {
@@ -428,8 +426,8 @@ class HomeRevampRepositoryImpl @Inject constructor(
         return homeDataResponse
     }
 
-    override fun deleteHomeData() {
-        homeCachedDataSource.deleteHomeData()
+    fun deleteHomeData() {
+        homeRoomDataSource.deleteHomeData()
     }
 
     private fun extractToken(homeChannelData: HomeChannelData): Pair<String, HomeChannelData> {

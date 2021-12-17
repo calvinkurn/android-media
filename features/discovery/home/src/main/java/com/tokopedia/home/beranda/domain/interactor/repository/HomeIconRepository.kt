@@ -1,17 +1,19 @@
-package com.tokopedia.home.beranda.domain.interactor
+package com.tokopedia.home.beranda.domain.interactor.repository
 
+import android.os.Bundle
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.home.beranda.di.module.query.QueryHome
+import com.tokopedia.home.beranda.domain.interactor.HomeRepository
 import com.tokopedia.home.beranda.domain.model.HomeIconData
 import com.tokopedia.network.exception.MessageErrorException
 import javax.inject.Inject
 
-class GetHomeIconRepository @Inject constructor(
+class HomeIconRepository @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-){
+): HomeRepository<HomeIconData> {
     suspend fun getIconData(param: String = "", locationParams: String = ""): HomeIconData {
         val gqlResponse  = graphqlRepository.response(
                 listOf(buildRequest(param, locationParams)), GraphqlCacheStrategy
@@ -29,5 +31,16 @@ class GetHomeIconRepository @Inject constructor(
     companion object{
         private const val PARAM = "param"
         private const val PARAM_LOCATION = "location"
+    }
+
+    override suspend fun getRemoteData(bundle: Bundle): HomeIconData {
+        val paramValue = bundle.getString(PARAM, "")
+        val paramLocationValue = bundle.getString(PARAM_LOCATION, "")
+
+        return getIconData(paramValue, paramLocationValue)
+    }
+
+    override suspend fun getCachedData(bundle: Bundle): HomeIconData {
+        return HomeIconData()
     }
 }

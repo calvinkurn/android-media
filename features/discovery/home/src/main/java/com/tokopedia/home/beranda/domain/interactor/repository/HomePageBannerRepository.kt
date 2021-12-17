@@ -1,17 +1,20 @@
-package com.tokopedia.home.beranda.domain.interactor
+package com.tokopedia.home.beranda.domain.interactor.repository
 
+import android.os.Bundle
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel
+import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
+import com.tokopedia.home.beranda.domain.interactor.HomeRepository
 import com.tokopedia.home.beranda.domain.model.banner.HomeBannerData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetHomePageBannerUseCase @Inject constructor(
-        private val graphqlUseCase: GraphqlUseCase<HomeBannerData>
-) : UseCase<HomeBannerData>(){
+class HomePageBannerRepository @Inject constructor(
+        private val graphqlUseCase: GraphqlUseCase<HomeBannerData>,
+        private val homeRoomDataSource: HomeRoomDataSource
+) : UseCase<HomeBannerData>(), HomeRepository<HomeBannerData> {
     private val params = RequestParams.create()
 
     init {
@@ -23,5 +26,13 @@ class GetHomePageBannerUseCase @Inject constructor(
         graphqlUseCase.clearCache()
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground()
+    }
+
+    override suspend fun getRemoteData(bundle: Bundle): HomeBannerData {
+        return executeOnBackground()
+    }
+
+    override suspend fun getCachedData(bundle: Bundle): HomeBannerData {
+        return HomeBannerData()
     }
 }

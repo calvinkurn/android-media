@@ -6,7 +6,7 @@ import com.tokopedia.common_wallet.pendingcashback.view.PendingCashback
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerList
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
-import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
+import com.tokopedia.home.beranda.data.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetCoroutinePendingCashbackUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetCoroutineWalletBalanceUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsListDataUseCase
@@ -16,7 +16,7 @@ import com.tokopedia.navigation_common.usecase.pojo.walletapp.Balance
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.Balances
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletappGetBalance
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_ERROR
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_SUCCESS
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_COUPON
@@ -49,7 +49,7 @@ class HomeViewModelBalanceWidgetUnitTest{
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val userSessionInterface = mockk<UserSessionInterface>(relaxed = true)
-    private val getHomeUseCase = mockk<HomeRevampUseCase>(relaxed = true)
+    private val getHomeUseCase = mockk<HomeDynamicChannelUseCase>(relaxed = true)
     private val getHomeTokopointsListDataUseCase = mockk<GetHomeTokopointsListDataUseCase>(relaxed = true)
     private val getWalletEligibilityUseCase = mockk<GetWalletEligibilityUseCase>(relaxed = true)
 
@@ -739,7 +739,7 @@ class HomeViewModelBalanceWidgetUnitTest{
 
     private fun assertBalanceTypeExist(balanceItemType: Int) {
         assert(
-                homeViewModel.homeLiveData.value!!.checkHomeBalanceModelTypeExist(
+                homeViewModel.homeLiveDynamicChannel.value!!.checkHomeBalanceModelTypeExist(
                         balanceItemType
                 )
         )
@@ -747,7 +747,7 @@ class HomeViewModelBalanceWidgetUnitTest{
 
     private fun assertWalletBalanceModelState(state: Int) {
         assert(
-                homeViewModel.homeLiveData.value!!.checkHomeBalanceModelState(
+                homeViewModel.homeLiveDynamicChannel.value!!.checkHomeBalanceModelState(
                         isWalletBalanceModelCheck = true,
                         state = state
                 )
@@ -756,7 +756,7 @@ class HomeViewModelBalanceWidgetUnitTest{
 
     private fun assertTokopointBalanceModelState(state: Int) {
         assert(
-                homeViewModel.homeLiveData.value!!.checkHomeBalanceModelState(
+                homeViewModel.homeLiveDynamicChannel.value!!.checkHomeBalanceModelState(
                         isTokopointBalanceModelCheck = true,
                         state = state
                 )
@@ -765,7 +765,7 @@ class HomeViewModelBalanceWidgetUnitTest{
 
     private fun assert1x2WalletBalanceModelState(state: Int) {
         assert(
-            homeViewModel.homeLiveData.value!!.check1x2HomeBalanceModelState(
+            homeViewModel.homeLiveDynamicChannel.value!!.check1x2HomeBalanceModelState(
                 isWalletBalanceModelCheck = true,
                 state = state
             )
@@ -774,37 +774,37 @@ class HomeViewModelBalanceWidgetUnitTest{
 
     private fun assert1x2TokopointBalanceModelState(state: Int) {
         assert(
-            homeViewModel.homeLiveData.value!!.check1x2HomeBalanceModelState(
+            homeViewModel.homeLiveDynamicChannel.value!!.check1x2HomeBalanceModelState(
                 isTokopointBalanceModelCheck = true,
                 state = state
             )
         )
     }
 
-    private fun HomeRevampUseCase.buildBalanceHomeData(balanceType: Int) {
+    private fun HomeDynamicChannelUseCase.buildBalanceHomeData(balanceType: Int) {
         val walletTypeFlag = HomeFlag()
         walletTypeFlag.addFlag(
                 name = HomeFlag.HAS_TOKOPOINTS_STRING,
                 isActive = true,
                 integerValue = balanceType
         )
-        getHomeUseCase.givenGetHomeDataReturn(HomeDataModel(
+        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(
                 list = listOf(headerDataModel),
                 homeFlag = walletTypeFlag)
         )
     }
 
-    private fun HomeDataModel.checkHomeHeaderOvoDataModelExist(): Boolean {
+    private fun HomeDynamicChannelModel.checkHomeHeaderOvoDataModelExist(): Boolean {
         return this.list.isNotEmpty() && this.list.filterIsInstance<HomeHeaderOvoDataModel>().isNotEmpty()
     }
 
-    private fun HomeDataModel.getHomeBalanceModel(): HomeBalanceModel {
+    private fun HomeDynamicChannelModel.getHomeBalanceModel(): HomeBalanceModel {
         val homeHeaderDataModel = this.list.filterIsInstance<HomeHeaderOvoDataModel>()[0]
         val homeBalanceModel = homeHeaderDataModel.headerDataModel!!.homeBalanceModel
         return homeBalanceModel
     }
 
-    private fun HomeDataModel.checkHomeBalanceModelState(
+    private fun HomeDynamicChannelModel.checkHomeBalanceModelState(
             isWalletBalanceModelCheck: Boolean = false,
             isTokopointBalanceModelCheck: Boolean = false,
             state: Int
@@ -843,7 +843,7 @@ class HomeViewModelBalanceWidgetUnitTest{
         return walletAssert && tokopointAssert
     }
 
-    private fun HomeDataModel.checkHomeBalanceModelTypeExist(type: Int): Boolean {
+    private fun HomeDynamicChannelModel.checkHomeBalanceModelTypeExist(type: Int): Boolean {
         val homeHeaderDataModel = this.list.filterIsInstance<HomeHeaderOvoDataModel>()[0]
         val homeBalanceModel = homeHeaderDataModel.headerDataModel!!.homeBalanceModel
 
@@ -855,7 +855,7 @@ class HomeViewModelBalanceWidgetUnitTest{
         return false
     }
 
-    private fun HomeDataModel.check1x2HomeBalanceModelState(
+    private fun HomeDynamicChannelModel.check1x2HomeBalanceModelState(
         isWalletBalanceModelCheck: Boolean = false,
         isTokopointBalanceModelCheck: Boolean = false,
         state: Int,

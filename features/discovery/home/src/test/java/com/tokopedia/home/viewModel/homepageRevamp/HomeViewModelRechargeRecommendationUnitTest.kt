@@ -1,13 +1,13 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
+import com.tokopedia.home.beranda.data.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.interactor.DeclineRechargeRecommendationUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetRechargeRecommendationUseCase
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeRechargeRecommendationRepository
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.DeclineRechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendationData
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.ext.observeOnce
 import com.tokopedia.home_component.model.ReminderData
@@ -25,9 +25,9 @@ import org.junit.Test
 class HomeViewModelRechargeRecommendationUnitTest{
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
-    private val getRechargeRecommendationUseCase = mockk<GetRechargeRecommendationUseCase>(relaxed = true)
+    private val getRechargeRecommendationUseCase = mockk<HomeRechargeRecommendationRepository>(relaxed = true)
     private val declineRechargeRecommendationUseCase = mockk<DeclineRechargeRecommendationUseCase>(relaxed = true)
-    private val getHomeUseCase = mockk<HomeRevampUseCase>(relaxed = true)
+    private val getHomeUseCase = mockk<HomeDynamicChannelUseCase>(relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
 
     @Test
@@ -45,7 +45,7 @@ class HomeViewModelRechargeRecommendationUnitTest{
 
         // Add Recharge Recommendation to HomeDataModel
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(rechargeDataModel)
                 )
         )
@@ -56,7 +56,7 @@ class HomeViewModelRechargeRecommendationUnitTest{
         )
 
         homeViewModel = createHomeViewModel(
-                getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
+                homeRechargeRecommendationRepository = getRechargeRecommendationUseCase,
                 getHomeUseCase = getHomeUseCase,
                 declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
         )
@@ -65,7 +65,7 @@ class HomeViewModelRechargeRecommendationUnitTest{
         homeViewModel.declineRechargeRecommendationItem(requestParams)
 
         // Expect the reminder recharge not available in home live data
-        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+        homeViewModel.homeLiveDynamicChannel.observeOnce { homeDataModel ->
             assert(homeDataModel.list.find{ it::class.java == rechargeDataModel::class.java } == null)
         }
     }
@@ -80,19 +80,19 @@ class HomeViewModelRechargeRecommendationUnitTest{
 
         // Add Recharge Recommendation to HomeDataModel
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf()
                 )
         )
 
         homeViewModel = createHomeViewModel(
-                getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
+                homeRechargeRecommendationRepository = getRechargeRecommendationUseCase,
                 getHomeUseCase = getHomeUseCase,
                 declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
         )
 
         // Expect the reminder recharge not available in home live data
-        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+        homeViewModel.homeLiveDynamicChannel.observeOnce { homeDataModel ->
             assert(homeDataModel.list.find{ it::class.java == rechargeDataModel::class.java } == null)
         }
 
@@ -123,19 +123,19 @@ class HomeViewModelRechargeRecommendationUnitTest{
 
         // Add Recharge Recommendation to HomeDataModel
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(rechargeDataModel)
                 )
         )
 
         homeViewModel = createHomeViewModel(
-                getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
+                homeRechargeRecommendationRepository = getRechargeRecommendationUseCase,
                 getHomeUseCase = getHomeUseCase,
                 declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
         )
 
         // recharge data available in home data
-        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+        homeViewModel.homeLiveDynamicChannel.observeOnce { homeDataModel ->
             assert((homeDataModel.list.find { it::class.java == rechargeDataModel::class.java } as? ReminderWidgetModel)?.source == ReminderEnum.RECHARGE &&
                     (homeDataModel.list.find { it::class.java == rechargeDataModel::class.java } as? ReminderWidgetModel)?.data?.reminders?.size == reminderWidget.reminders.size
             )
@@ -148,13 +148,13 @@ class HomeViewModelRechargeRecommendationUnitTest{
 
         // Not Add Recharge Recommendation to HomeDataModel
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf()
                 )
         )
 
         homeViewModel = createHomeViewModel(
-                getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
+                homeRechargeRecommendationRepository = getRechargeRecommendationUseCase,
                 getHomeUseCase = getHomeUseCase,
                 declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
         )
@@ -163,7 +163,7 @@ class HomeViewModelRechargeRecommendationUnitTest{
         homeViewModel.getRechargeRecommendation()
 
         // Expect the reminder recharge not available in home live data
-        homeViewModel.homeLiveData.observeOnce {
+        homeViewModel.homeLiveDynamicChannel.observeOnce {
             assert(!it.list.contains(rechargeDataModel))
         }
     }
@@ -174,7 +174,7 @@ class HomeViewModelRechargeRecommendationUnitTest{
 
         // Add Recharge Recommendation to HomeDataModel
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(rechargeDataModel)
                 )
         )
@@ -183,7 +183,7 @@ class HomeViewModelRechargeRecommendationUnitTest{
         getRechargeRecommendationUseCase.givenGetRechargeRecommendationThrowReturn()
 
         homeViewModel = createHomeViewModel(
-                getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
+                homeRechargeRecommendationRepository = getRechargeRecommendationUseCase,
                 getHomeUseCase = getHomeUseCase,
                 declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
         )
@@ -191,7 +191,7 @@ class HomeViewModelRechargeRecommendationUnitTest{
         homeViewModel.getRechargeRecommendation()
 
         // Expect the reminder recharge not available in home live data
-        homeViewModel.homeLiveData.observeOnce {
+        homeViewModel.homeLiveDynamicChannel.observeOnce {
             assert(!it.list.contains(rechargeDataModel))
         }
     }
@@ -218,7 +218,7 @@ class HomeViewModelRechargeRecommendationUnitTest{
 
         // Add Recharge Recommendation to HomeDataModel
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(rechargeDataModel)
                 )
         )
@@ -230,7 +230,7 @@ class HomeViewModelRechargeRecommendationUnitTest{
         )
 
         homeViewModel = createHomeViewModel(
-                getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
+                homeRechargeRecommendationRepository = getRechargeRecommendationUseCase,
                 getHomeUseCase = getHomeUseCase,
                 declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
         )
@@ -239,7 +239,7 @@ class HomeViewModelRechargeRecommendationUnitTest{
         homeViewModel.getRechargeRecommendation()
 
         // Expect the reminder recharge available in home live data
-        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+        homeViewModel.homeLiveDynamicChannel.observeOnce { homeDataModel ->
             assert((homeDataModel.list.find { it::class.java == rechargeDataModel::class.java } as? ReminderWidgetModel)?.source == ReminderEnum.RECHARGE)
         }
     }

@@ -3,9 +3,9 @@ package com.tokopedia.home.viewModel.homepageRevamp
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
-import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
+import com.tokopedia.home.beranda.data.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetCoroutineWalletBalanceUseCase
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderOvoDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -22,7 +22,7 @@ class HomeViewModelOvoUnitTest{
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val userSessionInterface = mockk<UserSessionInterface>(relaxed = true)
-    private val getHomeUseCase = mockk<HomeRevampUseCase>(relaxed = true)
+    private val getHomeUseCase = mockk<HomeDynamicChannelUseCase>(relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
 
     private val getCoroutineWalletBalanceUseCase = mockk<GetCoroutineWalletBalanceUseCase>(relaxed = true)
@@ -30,12 +30,12 @@ class HomeViewModelOvoUnitTest{
 
     @Test
     fun `Test Tokocash Only Get success data Tokocash`(){
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+        val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
         every { userSessionInterface.isLoggedIn } returns true
         coEvery{ getCoroutineWalletBalanceUseCase.executeOnBackground() } returns WalletBalanceModel()
 
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(headerDataModel)
                 )
         )
@@ -45,7 +45,7 @@ class HomeViewModelOvoUnitTest{
                 getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase
         )
         homeViewModel.setNewBalanceWidget(false)
-        homeViewModel.homeLiveData.observeForever(observerHome)
+        homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
         homeViewModel.refresh(true)
 
         assert(

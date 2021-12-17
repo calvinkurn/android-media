@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
-import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
+import com.tokopedia.home.beranda.data.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.model.ChannelGrid
 import io.mockk.coEvery
@@ -19,7 +19,7 @@ class HomeViewModelOneClickCheckoutTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val getHomeUseCase = mockk<HomeRevampUseCase> (relaxed = true)
+    private val getHomeUseCase = mockk<HomeDynamicChannelUseCase> (relaxed = true)
     private val addToCartOccUseCase = mockk<AddToCartOccMultiUseCase> (relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
 

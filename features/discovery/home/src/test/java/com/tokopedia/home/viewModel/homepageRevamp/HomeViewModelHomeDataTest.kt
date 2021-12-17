@@ -1,9 +1,9 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
+import com.tokopedia.home.beranda.data.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.helper.Result
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelLoadingModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelRetryModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
@@ -21,13 +21,13 @@ class HomeViewModelHomeDataTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val getHomeUseCase = mockk<HomeRevampUseCase> (relaxed = true)
+    private val getHomeUseCase = mockk<HomeDynamicChannelUseCase> (relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
 
     @Test
     fun `error pagination home data`() {
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(DynamicChannelRetryModel(true), DynamicChannelLoadingModel())
                 )
         )
@@ -36,14 +36,14 @@ class HomeViewModelHomeDataTest {
         }
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
 
-        assert( homeViewModel.homeLiveData.value?.list?.find { it is DynamicChannelLoadingModel } != null )
-        assert( homeViewModel.homeLiveData.value?.list?.find { it is DynamicChannelRetryModel } != null )
+        assert( homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is DynamicChannelLoadingModel } != null )
+        assert( homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is DynamicChannelRetryModel } != null )
     }
 
     @Test
     fun `error pagination but no retry model`() {
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(DynamicChannelLoadingModel())
                 )
         )
@@ -54,8 +54,8 @@ class HomeViewModelHomeDataTest {
         homeViewModel.refreshHomeData()
 
         verify { getHomeUseCase.updateHomeData() }
-        assert( homeViewModel.homeLiveData.value?.list?.find { it is DynamicChannelLoadingModel } != null )
-        assert( homeViewModel.homeLiveData.value?.list?.find { it is DynamicChannelRetryModel }== null )
+        assert( homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is DynamicChannelLoadingModel } != null )
+        assert( homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is DynamicChannelRetryModel }== null )
     }
 
 

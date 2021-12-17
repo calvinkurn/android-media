@@ -21,8 +21,9 @@ import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
-import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
+import com.tokopedia.home.beranda.data.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
+import com.tokopedia.home.beranda.domain.interactor.repository.*
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.Balances
@@ -34,7 +35,7 @@ import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeCoachmarkModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeNotifModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_ERROR
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_LOADING
@@ -94,36 +95,36 @@ import javax.inject.Inject
 @SuppressLint("SyntheticAccessor")
 @ExperimentalCoroutinesApi
 open class HomeRevampViewModel @Inject constructor(
-    private val homeUseCase: Lazy<HomeRevampUseCase>,
-    private val userSession: Lazy<UserSessionInterface>,
-    private val closeChannelUseCase: Lazy<CloseChannelUseCase>,
-    private val dismissHomeReviewUseCase: Lazy<DismissHomeReviewUseCase>,
-    private val getAtcUseCase: Lazy<AddToCartOccMultiUseCase>,
-    private val getBusinessUnitDataUseCase: Lazy<GetBusinessUnitDataUseCase>,
-    private val getBusinessWidgetTab: Lazy<GetBusinessWidgetTab>,
-    private val getDisplayHeadlineAds: Lazy<GetDisplayHeadlineAds>,
-    private val getHomeReviewSuggestedUseCase: Lazy<GetHomeReviewSuggestedUseCase>,
-    private val getHomeTokopointsListDataUseCase: Lazy<GetHomeTokopointsListDataUseCase>,
-    private val getKeywordSearchUseCase: Lazy<GetKeywordSearchUseCase>,
-    private val getPendingCashbackUseCase: Lazy<GetCoroutinePendingCashbackUseCase>,
-    private val getPlayCardHomeUseCase: Lazy<GetPlayLiveDynamicUseCase>,
-    private val getRecommendationTabUseCase: Lazy<GetRecommendationTabUseCase>,
-    private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
-    private val getRecommendationFilterChips: Lazy<GetRecommendationFilterChips>,
-    private val getWalletBalanceUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
-    private val popularKeywordUseCase: Lazy<GetPopularKeywordUseCase>,
-    private val injectCouponTimeBasedUseCase: Lazy<InjectCouponTimeBasedUseCase>,
-    private val getRechargeRecommendationUseCase: Lazy<GetRechargeRecommendationUseCase>,
-    private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
-    private val getSalamWidgetUseCase: Lazy<GetSalamWidgetUseCase>,
-    private val declineSalamWidgetUseCase: Lazy<DeclineSalamWIdgetUseCase>,
-    private val getRechargeBUWidgetUseCase: Lazy<GetRechargeBUWidgetUseCase>,
-    private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
-    private val bestSellerMapper: Lazy<BestSellerMapper>,
-    private val homeDispatcher: Lazy<CoroutineDispatchers>,
-    private val playWidgetTools: Lazy<PlayWidgetTools>,
-    private val getWalletAppBalanceUseCase: Lazy<GetWalletAppBalanceUseCase>,
-    private val getWalletEligibilityUseCase: Lazy<GetWalletEligibilityUseCase>) : BaseCoRoutineScope(homeDispatcher.get().io) {
+        private val homeUseCase: Lazy<HomeDynamicChannelUseCase>,
+        private val userSession: Lazy<UserSessionInterface>,
+        private val closeChannelUseCase: Lazy<CloseChannelUseCase>,
+        private val dismissHomeReviewUseCase: Lazy<DismissHomeReviewUseCase>,
+        private val getAtcUseCase: Lazy<AddToCartOccMultiUseCase>,
+        private val getBusinessUnitDataUseCase: Lazy<GetBusinessUnitDataUseCase>,
+        private val getBusinessWidgetTab: Lazy<GetBusinessWidgetTab>,
+        private val getDisplayHeadlineAds: Lazy<GetDisplayHeadlineAds>,
+        private val homeReviewSuggestedRepository: Lazy<HomeReviewSuggestedRepository>,
+        private val getHomeTokopointsListDataUseCase: Lazy<GetHomeTokopointsListDataUseCase>,
+        private val getKeywordSearchUseCase: Lazy<GetKeywordSearchUseCase>,
+        private val getPendingCashbackUseCase: Lazy<GetCoroutinePendingCashbackUseCase>,
+        private val homePlayCardHomeRepository: Lazy<HomePlayLiveDynamicRepository>,
+        private val getRecommendationTabUseCase: Lazy<GetRecommendationTabUseCase>,
+        private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
+        private val getRecommendationFilterChips: Lazy<GetRecommendationFilterChips>,
+        private val getWalletBalanceUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
+        private val popularKeywordRepository: Lazy<HomePopularKeywordRepository>,
+        private val injectCouponTimeBasedUseCase: Lazy<InjectCouponTimeBasedUseCase>,
+        private val homeRechargeRecommendationRepository: Lazy<HomeRechargeRecommendationRepository>,
+        private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
+        private val homeSalamWidgetRepository: Lazy<HomeSalamWidgetRepository>,
+        private val declineSalamWidgetUseCase: Lazy<DeclineSalamWIdgetUseCase>,
+        private val getRechargeBUWidgetUseCase: Lazy<GetRechargeBUWidgetUseCase>,
+        private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
+        private val bestSellerMapper: Lazy<BestSellerMapper>,
+        private val homeDispatcher: Lazy<CoroutineDispatchers>,
+        private val playWidgetTools: Lazy<PlayWidgetTools>,
+        private val getWalletAppBalanceUseCase: Lazy<GetWalletAppBalanceUseCase>,
+        private val getWalletEligibilityUseCase: Lazy<GetWalletEligibilityUseCase>) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
         private const val HOME_LIMITER_KEY = "HOME_LIMITER_KEY"
@@ -147,9 +148,9 @@ open class HomeRevampViewModel @Inject constructor(
         get() = _beautyFestLiveData
     private val _beautyFestLiveData : MutableLiveData<Int> = MutableLiveData()
 
-    val homeLiveData: LiveData<HomeDataModel>
-        get() = _homeLiveData
-    private val _homeLiveData: MutableLiveData<HomeDataModel> = MutableLiveData()
+    val homeLiveDynamicChannel: LiveData<HomeDynamicChannelModel>
+        get() = _homeLiveDynamicChannel
+    private val _homeLiveDynamicChannel: MutableLiveData<HomeDynamicChannelModel> = MutableLiveData()
 
     val searchHint: LiveData<SearchPlaceholder>
         get() = _searchHint
@@ -231,13 +232,13 @@ open class HomeRevampViewModel @Inject constructor(
     private var onRefreshState = true
     private var takeTicker = true
     private var homeNotifModel = HomeNotifModel()
-    private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().main)
+    private val homeFlowDynamicChannel: Flow<HomeDynamicChannelModel?> = homeUseCase.get().getHomeDataFlow().flowOn(homeDispatcher.get().io)
     private var useNewBalanceWidget: Boolean = true
     private var useWalletApp: Boolean = false
     private var popularKeywordRefreshCount = 1
 
     var currentTopAdsBannerToken: String = ""
-    var homeDataModel = HomeDataModel()
+    var homeDataModel = HomeDynamicChannelModel()
 
     /**
      * Job list
@@ -266,7 +267,7 @@ open class HomeRevampViewModel @Inject constructor(
     init {
         _isViewModelInitialized.value = Event(true)
         _isRequestNetworkLiveData.value = Event(true)
-        initCacheData()
+        initFlow()
     }
 
     override fun onCleared() {
@@ -685,8 +686,8 @@ open class HomeRevampViewModel @Inject constructor(
         findWidget<ReminderWidgetModel>(
                 actionOnFound = { reminderWidgetModel, i ->
                     getRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
-                        getRechargeRecommendationUseCase.get().setParams()
-                        val data = getRechargeRecommendationUseCase.get().executeOnBackground()
+                        homeRechargeRecommendationRepository.get().setParams()
+                        val data = homeRechargeRecommendationRepository.get().executeOnBackground()
                         val newFindRechargeRecommendationViewModel = reminderWidgetModel.copy(
                                 data = mapperRechargetoReminder(data),
                                 source = ReminderEnum.RECHARGE
@@ -707,7 +708,7 @@ open class HomeRevampViewModel @Inject constructor(
         findWidget<ReminderWidgetModel>(
                 actionOnFound = { reminderWidgetModel, i ->
                     getSalamWidgetJob = launchCatchError(coroutineContext,  block = {
-                        val data = getSalamWidgetUseCase.get().executeOnBackground()
+                        val data = homeSalamWidgetRepository.get().executeOnBackground()
                         val newFindRechargeRecommendationViewModel = reminderWidgetModel.copy(
                                 data = mapperSalamtoReminder(data),
                                 source = ReminderEnum.SALAM
@@ -802,8 +803,8 @@ open class HomeRevampViewModel @Inject constructor(
     fun getLoadPlayBannerFromNetwork(playBanner: PlayCardDataModel){
         if(getPlayWidgetJob?.isActive == true) return
         getPlayWidgetJob = launchCatchError(coroutineContext, block = {
-            getPlayCardHomeUseCase.get().setParams()
-            val data = getPlayCardHomeUseCase.get().executeOnBackground()
+            homePlayCardHomeRepository.get().setParams()
+            val data = homePlayCardHomeRepository.get().executeOnBackground()
             if (data.playChannels.isEmpty() || data.playChannels.first().coverUrl.isEmpty()) {
                 clearPlayBanner()
             } else{
@@ -818,8 +819,8 @@ open class HomeRevampViewModel @Inject constructor(
         if(getPopularKeywordJob?.isActive == true) return
         findWidget<PopularKeywordListDataModel> { popularKeywordListDataModel, index ->
             getPopularKeywordJob = launchCatchError(coroutineContext, {
-                popularKeywordUseCase.get().setParams(page = popularKeywordRefreshCount)
-                val results = popularKeywordUseCase.get().executeOnBackground()
+                popularKeywordRepository.get().setParams(page = popularKeywordRefreshCount)
+                val results = popularKeywordRepository.get().executeOnBackground()
                 if (results.data.keywords.isNotEmpty()) {
                     val resultList = convertPopularKeywordDataList(results.data)
                     updateWidget(popularKeywordListDataModel.copy(
@@ -1031,32 +1032,32 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun addWidget(visitable: Visitable<*>, position: Int? = null) {
-        homeDataModel.addWidgetModel(visitable, position) { _homeLiveData.postValue(homeDataModel) }
+        homeDataModel.addWidgetModel(visitable, position) { _homeLiveDynamicChannel.postValue(homeDataModel) }
     }
 
     private fun updateWidget(visitable: Visitable<*>, position: Int, visitableToChange: Visitable<*>? = null) {
-        homeDataModel.updateWidgetModel(visitable, visitableToChange, position) { _homeLiveData.postValue(homeDataModel) }
+        homeDataModel.updateWidgetModel(visitable, visitableToChange, position) { _homeLiveDynamicChannel.postValue(homeDataModel) }
     }
 
     private fun deleteWidget(visitable: Visitable<*>?, position: Int) {
-        homeDataModel.deleteWidgetModel(visitable, position) { _homeLiveData.postValue(homeDataModel) }
+        homeDataModel.deleteWidgetModel(visitable, position) { _homeLiveDynamicChannel.postValue(homeDataModel) }
     }
 
-    private fun updateHomeData(homeNewDataModel: HomeDataModel) {
+    private fun updateHomeData(homeNewDynamicChannelModel: HomeDynamicChannelModel) {
         logChannelUpdate("Update channel: (Update all home data) data: ${homeDataModel.list.map { it.javaClass.simpleName }}")
-        homeNewDataModel.copyStaticWidgetDataFrom(homeDataModel)
-        this.homeDataModel = homeNewDataModel
+        homeNewDynamicChannelModel.copyStaticWidgetDataFrom(homeDataModel)
+        this.homeDataModel = homeNewDynamicChannelModel
 
-        if (!homeNewDataModel.isProcessingDynamicChannle) {
-            homeNewDataModel.evaluateHomeFlagData(
+        if (!homeNewDynamicChannelModel.isProcessingDynamicChannle) {
+            homeNewDynamicChannelModel.evaluateHomeFlagData(
                     onNewBalanceWidgetSelected = { setNewBalanceWidget(it) },
                     onNeedToGetBalanceData = { getBalanceWidgetData() }
             )
-            homeNewDataModel.evaluateRecommendationSection(
+            homeNewDynamicChannelModel.evaluateRecommendationSection(
                     onNeedTabLoad = { getFeedTabData() }
             )
         }
-        _homeLiveData.postValue(homeDataModel)
+        _homeLiveDynamicChannel.postValue(homeDataModel)
         _resetNestedScrolling.postValue(Event(true))
     }
 
@@ -1505,7 +1506,7 @@ open class HomeRevampViewModel @Inject constructor(
         if (userSession.get().isLoggedIn) {
             getSuggestedReviewJob = launchCatchError(coroutineContext, block = {
                 findWidget<ReviewDataModel> { reviewWidget, index ->
-                    val data = getHomeReviewSuggestedUseCase.get().executeOnBackground()
+                    val data = homeReviewSuggestedRepository.get().executeOnBackground()
                     val newFindReviewViewModel = reviewWidget.copy(suggestedProductReview = data)
                     updateWidget(newFindReviewViewModel, index)
                 }
@@ -1541,34 +1542,34 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    private fun initCacheData() {
-        _isRequestNetworkLiveData.value = Event(true)
-
-        launch {
-            val homeCacheData = homeUseCase.get().getHomeCachedData()
-            homeCacheData?.let { homeDataModel ->
-                homeDataModel.evaluateChooseAddressData()
-                _homeLiveData.postValue(homeDataModel)
-
-                if (homeDataModel.list.size > 1) {
-                    _isRequestNetworkLiveData.postValue(Event(false))
-                    takeTicker = false
-                }
-                if (homeDataModel.list.size == 1) {
-                    val initialHomeDataModel = HomeDataModel(list = listOf(
-                            HomeHeaderOvoDataModel(),
-                            HomeInitialShimmerDataModel()
-                    ))
-                    updateHomeData(initialHomeDataModel)
-                }
-            }
-            initFlow()
-        }
-    }
+//    private fun initCacheData() {
+//        _isRequestNetworkLiveData.value = Event(true)
+//
+//        launch {
+//            val homeCacheData = homeUseCase.get().getHomeCachedData()
+//            homeCacheData?.let { homeDataModel ->
+//                homeDataModel.evaluateChooseAddressData()
+//                _homeLiveDynamicChannel.postValue(homeDataModel)
+//
+//                if (homeDataModel.list.size > 1) {
+//                    _isRequestNetworkLiveData.postValue(Event(false))
+//                    takeTicker = false
+//                }
+//                if (homeDataModel.list.size == 1) {
+//                    val initialHomeDataModel = HomeDynamicChannelModel(list = listOf(
+//                            HomeHeaderOvoDataModel(),
+//                            HomeInitialShimmerDataModel()
+//                    ))
+//                    updateHomeData(initialHomeDataModel)
+//                }
+//            }
+//            initFlow()
+//        }
+//    }
 
     private fun initFlow() {
         launchCatchError(coroutineContext, block = {
-            homeFlowData.collect { homeNewDataModel ->
+            homeFlowDynamicChannel.collect { homeNewDataModel ->
                 if (homeNewDataModel?.isCache == false) {
                     _isRequestNetworkLiveData.postValue(Event(false))
                     onRefreshState = false
@@ -1604,7 +1605,6 @@ open class HomeRevampViewModel @Inject constructor(
                     if (homeNewDataModel?.list?.size?:0 > 0) {
                         homeNewDataModel?.let { updateHomeData(it) }
                     }
-                    refreshHomeData()
                 }
             }
         }) {
@@ -1627,6 +1627,8 @@ open class HomeRevampViewModel @Inject constructor(
             )
             homeFlowDataCancelled = true
         }
+
+        refreshHomeData()
     }
 
     private fun getExternalApi() {

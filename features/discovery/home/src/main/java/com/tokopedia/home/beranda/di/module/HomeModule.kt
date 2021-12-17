@@ -8,7 +8,7 @@ import com.tokopedia.common_wallet.balance.data.CacheUtil
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
-import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
+import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
 import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitableFactory
@@ -25,7 +25,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 
@@ -45,22 +44,22 @@ class HomeModule {
     @Provides
     fun provideTrackingQueue(@ApplicationContext context: Context) = TrackingQueue(context)
 
-    @HomeScope
-    @Provides
-    fun homeRevampRepository(
-                       homeRemoteDataSource: HomeRemoteDataSource,
-                       homeCachedDataSource: HomeCachedDataSource,
-                       homeDefaultDataSource: HomeDefaultDataSource,
-                       dynamicChannelDataMapper: HomeDynamicChannelDataMapper,
-                       @ApplicationContext context: Context,
-                       remoteConfig: RemoteConfig
-    ): HomeRevampRepository = HomeRevampRepositoryImpl(
-            homeCachedDataSource,
-            homeRemoteDataSource,
-            homeDefaultDataSource,
-            dynamicChannelDataMapper,
-            context,
-            remoteConfig)
+//    @HomeScope
+//    @Provides
+//    fun homeRevampRepository(
+//            homeRemoteDataSource: HomeRemoteDataSource,
+//            homeRoomDataSource: HomeRoomDataSource,
+//            homeDefaultDataSource: HomeDefaultDataSource,
+//            dynamicChannelDataMapper: HomeDynamicChannelDataMapper,
+//            @ApplicationContext context: Context,
+//            remoteConfig: RemoteConfig
+//    ): HomeRevampRepository = HomeRevampRepositoryImpl(
+//            homeRoomDataSource,
+//            homeRemoteDataSource,
+//            homeDefaultDataSource,
+//            dynamicChannelDataMapper,
+//            context,
+//            remoteConfig)
 
 
     @HomeScope

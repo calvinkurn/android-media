@@ -1,9 +1,9 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
+import com.tokopedia.home.beranda.data.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetRecommendationTabUseCase
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeRetryModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
@@ -21,12 +21,12 @@ class HomeViewModelFeedTabTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val getRecommendationTabUseCase: GetRecommendationTabUseCase = mockk(relaxed = true)
-    private val getHomeUseCase = mockk<HomeRevampUseCase> (relaxed = true)
+    private val getHomeUseCase = mockk<HomeDynamicChannelUseCase> (relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
     @Test
     fun `Test get feed tab success`(){
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf()
                 )
         )
@@ -36,7 +36,7 @@ class HomeViewModelFeedTabTest {
 
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getRecommendationTabUseCase = getRecommendationTabUseCase)
         homeViewModel.getFeedTabData()
-        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+        homeViewModel.homeLiveDynamicChannel.observeOnce { homeDataModel ->
             assert(homeDataModel.list.find{ it::class.java == HomeRecommendationFeedDataModel::class.java } != null)
         }
     }
@@ -44,14 +44,14 @@ class HomeViewModelFeedTabTest {
     @Test
     fun `Test get recommendation feed section`(){
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf()
                 )
         )
 
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
 
-        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+        homeViewModel.homeLiveDynamicChannel.observeOnce { homeDataModel ->
             assert(homeDataModel.list.size -1 == homeViewModel.getRecommendationFeedSectionPosition())
         }
     }
@@ -59,7 +59,7 @@ class HomeViewModelFeedTabTest {
     @Test
     fun `Test tab is available and send retry model`(){
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         isCache = true,
                         list = listOf(HomeRecommendationFeedDataModel())
                 )
@@ -68,7 +68,7 @@ class HomeViewModelFeedTabTest {
 
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getRecommendationTabUseCase = getRecommendationTabUseCase)
         homeViewModel.getFeedTabData()
-        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+        homeViewModel.homeLiveDynamicChannel.observeOnce { homeDataModel ->
             assert(homeDataModel.list.find{ it::class.java == HomeRetryModel::class.java } != null)
         }
     }

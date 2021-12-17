@@ -13,7 +13,7 @@ import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationVisitable
 import timber.log.Timber
 
-data class HomeDataModel(
+data class HomeDynamicChannelModel(
         val homeFlag: HomeFlag = HomeFlag(),
         var list: List<Visitable<*>> = listOf(),
         val isCache: Boolean = false,
@@ -175,15 +175,15 @@ data class HomeDataModel(
         }
     }
 
-    fun copyStaticWidgetDataFrom(homeDataModel: HomeDataModel) {
-        copyWidget(homeDataModel = homeDataModel, validation = { it is PlayCardDataModel })
-        copyWidget(homeDataModel = homeDataModel, validation = { it is NewBusinessUnitWidgetDataModel })
-        copyWidget(homeDataModel = homeDataModel, validation = { it is HomeRecommendationFeedDataModel })
-        copyWidget(homeDataModel = homeDataModel, validation = { it is HomeLoadingMoreModel })
-        copyWidget(homeDataModel = homeDataModel, validation = { it is HomeHeaderOvoDataModel })
+    fun copyStaticWidgetDataFrom(homeDynamicChannelModel: HomeDynamicChannelModel) {
+        copyWidget(homeDynamicChannelModel = homeDynamicChannelModel, validation = { it is PlayCardDataModel })
+        copyWidget(homeDynamicChannelModel = homeDynamicChannelModel, validation = { it is NewBusinessUnitWidgetDataModel })
+        copyWidget(homeDynamicChannelModel = homeDynamicChannelModel, validation = { it is HomeRecommendationFeedDataModel })
+        copyWidget(homeDynamicChannelModel = homeDynamicChannelModel, validation = { it is HomeLoadingMoreModel })
+        copyWidget(homeDynamicChannelModel = homeDynamicChannelModel, validation = { it is HomeHeaderOvoDataModel })
 
-        setAndEvaluateHomeBalanceWidget(homeDataModel.homeBalanceModel)
-        setAndEvaluateHomeChooseAddressData(homeDataModel.homeChooseAddressData)
+        setAndEvaluateHomeBalanceWidget(homeDynamicChannelModel.homeBalanceModel)
+        setAndEvaluateHomeChooseAddressData(homeDynamicChannelModel.homeChooseAddressData)
         this.list = _list.toList()
     }
 
@@ -209,11 +209,11 @@ data class HomeDataModel(
     }
 
     private fun copyWidget(
-        homeDataModel: HomeDataModel,
-        validation: (Visitable<*>) -> Boolean,
-        modification: (Visitable<*>?) -> Visitable<*>? = { null }
+            homeDynamicChannelModel: HomeDynamicChannelModel,
+            validation: (Visitable<*>) -> Boolean,
+            modification: (Visitable<*>?) -> Visitable<*>? = { null }
     ) {
-        val listToCopy = homeDataModel.list
+        val listToCopy = homeDynamicChannelModel.list
         val widget = listToCopy.find { visitable -> validation.invoke(visitable) }
         val processedWidget =
             if (modification.invoke(widget) == null) widget else modification.invoke(widget)

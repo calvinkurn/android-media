@@ -3,10 +3,10 @@ package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.home.beranda.data.model.PlayChannel
-import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetPlayLiveDynamicUseCase
+import com.tokopedia.home.beranda.data.usecase.HomeDynamicChannelUseCase
+import com.tokopedia.home.beranda.domain.interactor.repository.HomePlayLiveDynamicRepository
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
@@ -14,7 +14,6 @@ import com.tokopedia.home.ext.observeOnce
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import org.junit.Rule
 import org.junit.Test
@@ -27,8 +26,8 @@ class HomeViewModelPlayTest{
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val getPlayLiveDynamicUseCase = mockk<GetPlayLiveDynamicUseCase>(relaxed = true)
-    private val getHomeUseCase = mockk<HomeRevampUseCase>(relaxed = true)
+    private val getPlayLiveDynamicUseCase = mockk<HomePlayLiveDynamicRepository>(relaxed = true)
+    private val getHomeUseCase = mockk<HomeDynamicChannelUseCase>(relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
 
     @Test
@@ -38,7 +37,7 @@ class HomeViewModelPlayTest{
 
         // dynamic banner
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(playDataModel),
                         isProcessingAtf = false
                 )
@@ -50,7 +49,7 @@ class HomeViewModelPlayTest{
         )
 
         // viewModel load play data
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, homePlayLiveDynamicRepository = getPlayLiveDynamicUseCase)
         homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
 
         // Expect the event on live data available and check image
@@ -61,7 +60,7 @@ class HomeViewModelPlayTest{
         }
 
         // Expect the event on live data available
-        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+        homeViewModel.homeLiveDynamicChannel.observeOnce { homeDataModel ->
             assert((homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome != null
                     && (homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome!!.coverUrl == playCardHome.coverUrl
             )
@@ -71,7 +70,7 @@ class HomeViewModelPlayTest{
         homeViewModel.updateBannerTotalView("0", "20 Juta")
 
         // Expect the view updated
-        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+        homeViewModel.homeLiveDynamicChannel.observeOnce { homeDataModel ->
             assert((homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome != null
                     && (homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome!!.totalView == "20 Juta"
             )
@@ -85,11 +84,11 @@ class HomeViewModelPlayTest{
 
         // dynamic banner
         coEvery { getHomeUseCase.getHomeData() } returns flow{
-            emit(HomeDataModel(
+            emit(HomeDynamicChannelModel(
                     list = listOf(playDataModel),
                     isProcessingAtf = false
             ))
-            emit(HomeDataModel(
+            emit(HomeDynamicChannelModel(
                     list = listOf(playDataModel),
                     isProcessingAtf = false
             ))
@@ -101,7 +100,7 @@ class HomeViewModelPlayTest{
         )
 
         // viewModel load play data
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, homePlayLiveDynamicRepository = getPlayLiveDynamicUseCase)
         homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
 
         // Expect the event on live data available and check image
@@ -111,7 +110,7 @@ class HomeViewModelPlayTest{
             homeViewModel.setPlayBanner(it.peekContent())
         }
         // Expect the event on live data available
-        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+        homeViewModel.homeLiveDynamicChannel.observeOnce { homeDataModel ->
             assert((homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome != null
                     && (homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome!!.coverUrl == playCardHome.coverUrl
             )
@@ -121,7 +120,7 @@ class HomeViewModelPlayTest{
         homeViewModel.updateBannerTotalView("0", "20")
 
         // Expect the view updated
-        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+        homeViewModel.homeLiveDynamicChannel.observeOnce { homeDataModel ->
             assert((homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome != null
                     && (homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome!!.totalView == "20"
             )
@@ -135,7 +134,7 @@ class HomeViewModelPlayTest{
 
         // dynamic banner
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(playDataModel),
                         isProcessingAtf = false
                 )
@@ -147,7 +146,7 @@ class HomeViewModelPlayTest{
         )
 
         // viewModel load play data
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, homePlayLiveDynamicRepository = getPlayLiveDynamicUseCase)
         homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
 
         // Expect the event on live data not available
@@ -156,7 +155,7 @@ class HomeViewModelPlayTest{
         }
         Thread.sleep(1000)
         // Expect the event on live data empty
-        homeViewModel.homeLiveData.observeOnce {
+        homeViewModel.homeLiveDynamicChannel.observeOnce {
             assert(it.list.filterIsInstance<PlayCardDataModel>().isEmpty())
         }
     }
@@ -167,7 +166,7 @@ class HomeViewModelPlayTest{
         val playCardHome = PlayChannel(coverUrl = "cobacoba.com")
 
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(playDataModel),
                         isProcessingAtf = false
                 )
@@ -177,7 +176,7 @@ class HomeViewModelPlayTest{
         getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
                 channel = playCardHome
         )
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, homePlayLiveDynamicRepository = getPlayLiveDynamicUseCase)
         homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
 
         // Expect the event on live data available and check image
@@ -190,7 +189,7 @@ class HomeViewModelPlayTest{
         Thread.sleep(1000)
 
         // Expect the event on live data not available
-        homeViewModel.homeLiveData.observeOnce {
+        homeViewModel.homeLiveDynamicChannel.observeOnce {
             assert(it.list.filterIsInstance<PlayCardDataModel>().isEmpty())
         }
     }
@@ -199,13 +198,13 @@ class HomeViewModelPlayTest{
     fun `No play data available`() {
         // dynamic banner
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf()
                 )
         )
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, homePlayLiveDynamicRepository = getPlayLiveDynamicUseCase)
         // Expect the event on live data not available
-        homeViewModel.homeLiveData.observeOnce {
+        homeViewModel.homeLiveDynamicChannel.observeOnce {
             assert(it.list.filterIsInstance<PlayCardDataModel>().isEmpty())
         }
     }
@@ -216,7 +215,7 @@ class HomeViewModelPlayTest{
 
         // dynamic banner with another list
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(
                                 HomepageBannerDataModel(),
                                 playDataModel
@@ -229,7 +228,7 @@ class HomeViewModelPlayTest{
         getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
                 channel = PlayChannel(coverUrl = "tidak kosong")
         )
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, homePlayLiveDynamicRepository = getPlayLiveDynamicUseCase)
         // simulate view want load play data with position
         homeViewModel.getPlayBanner(1)
 
@@ -242,7 +241,7 @@ class HomeViewModelPlayTest{
         homeViewModel.clearPlayBanner()
 
         // Expect the event on live data not available
-        homeViewModel.homeLiveData.observeOnce {
+        homeViewModel.homeLiveDynamicChannel.observeOnce {
             assert(it.list.filterIsInstance<PlayCardDataModel>().isEmpty())
         }
     }
@@ -252,7 +251,7 @@ class HomeViewModelPlayTest{
         val playDataModel = PlayCardDataModel(DynamicHomeChannel.Channels())
         val playCardHome = PlayChannel(coverUrl = "cobacoba.com")
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(playDataModel),
                         isProcessingAtf = false
                 )
@@ -261,7 +260,7 @@ class HomeViewModelPlayTest{
         getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
                 channel = playCardHome
         )
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, homePlayLiveDynamicRepository = getPlayLiveDynamicUseCase)
         homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
 
 
@@ -273,7 +272,7 @@ class HomeViewModelPlayTest{
         }
 
         // Expect the event on live data available
-        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+        homeViewModel.homeLiveDynamicChannel.observeOnce { homeDataModel ->
             assert((homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome != null
                     && (homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome!!.coverUrl == playCardHome.coverUrl
             )
@@ -287,7 +286,7 @@ class HomeViewModelPlayTest{
 
         // dynamic banner with another list
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(
                                 HomepageBannerDataModel(),
                                 playDataModel
@@ -300,7 +299,7 @@ class HomeViewModelPlayTest{
         getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
                 channel = PlayChannel()
         )
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPlayLiveDynamicUseCase = getPlayLiveDynamicUseCase)
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, homePlayLiveDynamicRepository = getPlayLiveDynamicUseCase)
         // simulate view want load play data wrong position
         homeViewModel.getPlayBanner(0)
 
@@ -317,7 +316,7 @@ class HomeViewModelPlayTest{
         homeViewModel.clearPlayBanner()
 
         // Expect the event on live data not available
-        homeViewModel.homeLiveData.observeOnce {
+        homeViewModel.homeLiveDynamicChannel.observeOnce {
             assert(it.list.filterIsInstance<PlayCardDataModel>().isEmpty())
         }
     }

@@ -1,10 +1,10 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
+import com.tokopedia.home.beranda.data.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
@@ -22,7 +22,7 @@ class HomeViewModelTopAdsHeaderWidgetTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val getHomeUseCase = mockk<HomeRevampUseCase> (relaxed = true)
+    private val getHomeUseCase = mockk<HomeDynamicChannelUseCase> (relaxed = true)
     private val getDisplayHeadlineAds = mockk<GetDisplayHeadlineAds> (relaxed = true)
 
 
@@ -59,7 +59,7 @@ class HomeViewModelTopAdsHeaderWidgetTest {
         coEvery { getDisplayHeadlineAds.executeOnBackground() } returns listOf(headlineAds)
 
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(featuredShopDataModel),
                         isProcessingAtf = false
                 )
@@ -67,9 +67,9 @@ class HomeViewModelTopAdsHeaderWidgetTest {
 
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getDisplayHeadlineAds = getDisplayHeadlineAds)
 
-        assert( homeViewModel.homeLiveData.value?.list?.find { it is FeaturedShopDataModel } != null )
-        val grid = (homeViewModel.homeLiveData.value?.list?.find { it is FeaturedShopDataModel } as? FeaturedShopDataModel)?.channelModel?.channelGrids?.firstOrNull()
-        assert( (homeViewModel.homeLiveData.value?.list?.find { it is FeaturedShopDataModel } as? FeaturedShopDataModel)?.channelModel?.channelGrids?.isNotEmpty() == true)
+        assert( homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is FeaturedShopDataModel } != null )
+        val grid = (homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is FeaturedShopDataModel } as? FeaturedShopDataModel)?.channelModel?.channelGrids?.firstOrNull()
+        assert( (homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is FeaturedShopDataModel } as? FeaturedShopDataModel)?.channelModel?.channelGrids?.isNotEmpty() == true)
         assert(grid?.applink == headlineAds.applink)
         assert(grid?.shop?.shopBadgeUrl == badge.imageUrl)
         assert(grid?.countReviewFormat == product.review)
@@ -98,7 +98,7 @@ class HomeViewModelTopAdsHeaderWidgetTest {
         coEvery { getDisplayHeadlineAds.executeOnBackground() } returns listOf(headlineAds)
 
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(featuredShopDataModel),
                         isProcessingAtf = false
                 )
@@ -106,9 +106,9 @@ class HomeViewModelTopAdsHeaderWidgetTest {
 
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getDisplayHeadlineAds = getDisplayHeadlineAds)
 
-        assert( homeViewModel.homeLiveData.value?.list?.find { it is FeaturedShopDataModel } != null )
-        val grid = (homeViewModel.homeLiveData.value?.list?.find { it is FeaturedShopDataModel } as? FeaturedShopDataModel)?.channelModel?.channelGrids?.firstOrNull()
-        assert( (homeViewModel.homeLiveData.value?.list?.find { it is FeaturedShopDataModel } as? FeaturedShopDataModel)?.channelModel?.channelGrids?.isNotEmpty() == true)
+        assert( homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is FeaturedShopDataModel } != null )
+        val grid = (homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is FeaturedShopDataModel } as? FeaturedShopDataModel)?.channelModel?.channelGrids?.firstOrNull()
+        assert( (homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is FeaturedShopDataModel } as? FeaturedShopDataModel)?.channelModel?.channelGrids?.isNotEmpty() == true)
         assert(grid?.applink == headlineAds.applink)
         assert(grid?.shop?.shopBadgeUrl == "")
         assert(grid?.countReviewFormat == "")
@@ -123,7 +123,7 @@ class HomeViewModelTopAdsHeaderWidgetTest {
         coEvery { getDisplayHeadlineAds.executeOnBackground() } returns listOf()
 
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(featuredShopDataModel),
                         isProcessingAtf = false
                 )
@@ -131,7 +131,7 @@ class HomeViewModelTopAdsHeaderWidgetTest {
 
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getDisplayHeadlineAds = getDisplayHeadlineAds)
 
-        assert( homeViewModel.homeLiveData.value?.list?.find { it is FeaturedShopDataModel } == null )
+        assert( homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is FeaturedShopDataModel } == null )
     }
 
 
@@ -142,7 +142,7 @@ class HomeViewModelTopAdsHeaderWidgetTest {
         coEvery { getDisplayHeadlineAds.executeOnBackground() } throws TimeoutException()
 
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(featuredShopDataModel),
                         isProcessingAtf = false
                 )
@@ -150,7 +150,7 @@ class HomeViewModelTopAdsHeaderWidgetTest {
 
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getDisplayHeadlineAds = getDisplayHeadlineAds)
 
-        assert( homeViewModel.homeLiveData.value?.list?.find { it is FeaturedShopDataModel } == null )
+        assert( homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is FeaturedShopDataModel } == null )
     }
 
     @Test
@@ -158,7 +158,7 @@ class HomeViewModelTopAdsHeaderWidgetTest {
         coEvery { getDisplayHeadlineAds.executeOnBackground() } throws TimeoutException()
 
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(),
                         isProcessingAtf = false
                 )
@@ -166,7 +166,7 @@ class HomeViewModelTopAdsHeaderWidgetTest {
 
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getDisplayHeadlineAds = getDisplayHeadlineAds)
 
-        assert( homeViewModel.homeLiveData.value?.list?.find { it is FeaturedShopDataModel } == null )
+        assert( homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is FeaturedShopDataModel } == null )
     }
 
 }

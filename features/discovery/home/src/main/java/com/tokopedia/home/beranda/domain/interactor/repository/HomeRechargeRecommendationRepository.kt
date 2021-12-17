@@ -1,8 +1,10 @@
-package com.tokopedia.home.beranda.domain.interactor
+package com.tokopedia.home.beranda.domain.interactor.repository
 
+import android.os.Bundle
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.home.beranda.domain.interactor.HomeRepository
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
@@ -13,9 +15,9 @@ import javax.inject.Inject
  * @author by resakemal on 2020-03-09
  */
 
-class GetRechargeRecommendationUseCase @Inject constructor(
+class HomeRechargeRecommendationRepository @Inject constructor(
         private val graphqlUseCase: GraphqlUseCase<RechargeRecommendation.Response>)
-    : UseCase<RechargeRecommendation>() {
+    : UseCase<RechargeRecommendation>(), HomeRepository<RechargeRecommendation> {
     init {
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         graphqlUseCase.setTypeClass(RechargeRecommendation.Response::class.java)
@@ -68,5 +70,15 @@ class GetRechargeRecommendationUseCase @Inject constructor(
     fun setParams(type: Int = DEFAULT_TYPE) {
         params.parameters.clear()
         params.putInt(PARAM_TYPE, type)
+    }
+
+    override suspend fun getRemoteData(bundle: Bundle): RechargeRecommendation {
+        setParams()
+        return executeOnBackground()
+    }
+
+    override suspend fun getCachedData(bundle: Bundle): RechargeRecommendation {
+        setParams()
+        return RechargeRecommendation()
     }
 }

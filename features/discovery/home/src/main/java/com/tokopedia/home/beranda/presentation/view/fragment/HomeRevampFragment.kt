@@ -79,7 +79,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceCoachmark
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderOvoDataModel
@@ -1346,12 +1346,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun observeHomeData() {
-        getHomeViewModel().homeLiveData.observe(viewLifecycleOwner, Observer { data: HomeDataModel? ->
-            data?.let {
-                if (data.list.isNotEmpty()) {
-                    configureHomeFlag(data.homeFlag)
-                    setData(data.list, data.isCache, data.isProcessingAtf)
-                    setBeautyFest(data)
+        getHomeViewModel().homeLiveDynamicChannel.observe(viewLifecycleOwner, Observer { dynamicChannel: HomeDynamicChannelModel? ->
+            dynamicChannel?.let {
+                if (dynamicChannel.list.isNotEmpty()) {
+                    configureHomeFlag(dynamicChannel.homeFlag)
+                    setData(dynamicChannel.list, dynamicChannel.isCache, dynamicChannel.isProcessingAtf)
+                    setBeautyFest(dynamicChannel)
                 }
             }
         })
@@ -1686,10 +1686,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun setBeautyFest(data: HomeDataModel) {
+    private fun setBeautyFest(dynamicChannel: HomeDynamicChannelModel) {
         val isEligibleForBeautyFest = isEligibleForBeautyFest()
-        if (isEligibleForBeautyFest && !data.isCache && counterBypassFirstNetworkHomeData > 0) {
-            getHomeViewModel().getBeautyFest(data.list)
+        if (isEligibleForBeautyFest && !dynamicChannel.isCache && counterBypassFirstNetworkHomeData > 0) {
+            getHomeViewModel().getBeautyFest(dynamicChannel.list)
         } else if (isEligibleForBeautyFest) {
             beautyFestEvent = BEAUTY_FEST_NOT_SET
             renderBeautyFestHeader()
@@ -2116,7 +2116,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
         stickyLoginView?.loadContent()
-        loadEggData(isPageRefresh)
     }
 
     override fun onChooseAddressUpdated() {
@@ -2208,6 +2207,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             showCoachmarkWithDataValidation(it)
         }
         pageLoadTimeCallback?.invalidate()
+        loadEggData(isPageRefresh)
     }
 
     private fun remoteConfigIsNewBalanceWidget(): Boolean {

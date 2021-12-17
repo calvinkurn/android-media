@@ -11,7 +11,7 @@ import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.concurrent.TimeUnit
-class HomeCachedDataSource(
+class HomeRoomDataSource(
         private val homeDao: HomeDao) {
     companion object {
         private const val ONE_MONTH_DAYS = 30L
@@ -23,7 +23,7 @@ class HomeCachedDataSource(
         homeDao.save(items)
     }
 
-    fun getCachedAtfData(): List<AtfCacheEntity> {
+    fun getCachedAtfData(): Flow<List<AtfCacheEntity>> {
         return homeDao.getHomeDataObject()
     }
 

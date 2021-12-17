@@ -1,8 +1,8 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.data.usecase.HomeDynamicChannelUseCase
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
@@ -26,7 +26,7 @@ class HomeViewModelBestSellingWidgetTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val getHomeUseCase = mockk<HomeRevampUseCase> (relaxed = true)
+    private val getHomeUseCase = mockk<HomeDynamicChannelUseCase> (relaxed = true)
     private val getRecommendationUsecase = mockk<GetRecommendationUseCase> (relaxed = true)
     private val getRecommendationFilterChips = mockk<GetRecommendationFilterChips> (relaxed = true)
     private val bestSellerMapper = mockk<BestSellerMapper> (relaxed = true)
@@ -44,15 +44,15 @@ class HomeViewModelBestSellingWidgetTest {
         coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listOf()
 
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(bestSellerDataModel)
                 )
         )
 
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getRecommendationUseCase = getRecommendationUsecase, getRecommendationFilterChips = getRecommendationFilterChips, bestSellerMapper = bestSellerMapper)
 
-        assert( homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } != null )
-        assert( (homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } as? BestSellerDataModel)?.recommendationItemList?.isNotEmpty() == true)
+        assert( homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is BestSellerDataModel } != null )
+        assert( (homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is BestSellerDataModel } as? BestSellerDataModel)?.recommendationItemList?.isNotEmpty() == true)
     }
 
     @Test
@@ -66,7 +66,7 @@ class HomeViewModelBestSellingWidgetTest {
         coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listOf()
 
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(bestSellerDataModel),
                         isProcessingAtf = false
                 )
@@ -74,7 +74,7 @@ class HomeViewModelBestSellingWidgetTest {
 
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getRecommendationUseCase = getRecommendationUsecase, getRecommendationFilterChips = getRecommendationFilterChips, bestSellerMapper = bestSellerMapper)
 
-        assert( homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } == null )
+        assert( homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is BestSellerDataModel } == null )
     }
 
     @Test
@@ -88,7 +88,7 @@ class HomeViewModelBestSellingWidgetTest {
         coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listOf()
 
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(bestSellerDataModel),
                         isProcessingAtf = false
                 )
@@ -96,7 +96,7 @@ class HomeViewModelBestSellingWidgetTest {
 
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getRecommendationUseCase = getRecommendationUsecase, getRecommendationFilterChips = getRecommendationFilterChips, bestSellerMapper = bestSellerMapper)
 
-        assert( homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } == null )
+        assert( homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is BestSellerDataModel } == null )
     }
 
     @Test
@@ -111,20 +111,20 @@ class HomeViewModelBestSellingWidgetTest {
         coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listOf()
 
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(bestSellerDataModel)
                 )
         )
 
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getRecommendationUseCase = getRecommendationUsecase, getRecommendationFilterChips = getRecommendationFilterChips, bestSellerMapper = bestSellerMapper)
 
-        assert( homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } != null )
-        assert( (homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } as? BestSellerDataModel)?.recommendationItemList?.isNotEmpty() == true)
+        assert( homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is BestSellerDataModel } != null )
+        assert( (homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is BestSellerDataModel } as? BestSellerDataModel)?.recommendationItemList?.isNotEmpty() == true)
 
         homeViewModel.getRecommendationWidget(recomFilterChip, bestSellerDataModel, 1)
 
-        assert( homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } != null )
-        assert( (homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } as? BestSellerDataModel)?.recommendationItemList?.isNotEmpty() == true)
+        assert( homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is BestSellerDataModel } != null )
+        assert( (homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is BestSellerDataModel } as? BestSellerDataModel)?.recommendationItemList?.isNotEmpty() == true)
     }
 
     @Test
@@ -138,14 +138,14 @@ class HomeViewModelBestSellingWidgetTest {
         coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listOf()
 
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf()
                 )
         )
 
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getRecommendationUseCase = getRecommendationUsecase, getRecommendationFilterChips = getRecommendationFilterChips, bestSellerMapper = bestSellerMapper)
 
-        assert( homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } == null )
+        assert( homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is BestSellerDataModel } == null )
     }
 
     @Test
@@ -164,6 +164,6 @@ class HomeViewModelBestSellingWidgetTest {
 
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getRecommendationUseCase = getRecommendationUsecase, getRecommendationFilterChips = getRecommendationFilterChips, bestSellerMapper = bestSellerMapper)
 
-        assert( homeViewModel.homeLiveData.value?.list?.find { it is BestSellerDataModel } == null )
+        assert( homeViewModel.homeLiveDynamicChannel.value?.list?.find { it is BestSellerDataModel } == null )
     }
 }

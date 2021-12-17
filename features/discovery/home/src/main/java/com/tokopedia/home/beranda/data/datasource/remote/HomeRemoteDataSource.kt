@@ -2,39 +2,39 @@ package com.tokopedia.home.beranda.data.datasource.remote
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.data.model.HomeAtfData
-import com.tokopedia.home.beranda.domain.interactor.*
+import com.tokopedia.home.beranda.domain.interactor.repository.*
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.banner.HomeBannerData
 import kotlinx.coroutines.withContext
 
 class HomeRemoteDataSource(
         private val dispatchers: CoroutineDispatchers,
-        private val getHomeDynamicChannelsRepository: GetHomeDynamicChannelsRepository,
-        private val getHomeDataUseCase: GetHomeDataUseCase,
-        private val getAtfDataUseCase: GetHomeAtfUseCase,
-        private val getHomeFlagUseCase: GetHomeFlagUseCase,
-        private val getHomePageBannerUseCase: GetHomePageBannerUseCase,
-        private val getHomeIconRepository: GetHomeIconRepository,
-        private val getHomeTickerRepository: GetHomeTickerRepository
+        private val homeDynamicChannelsRepository: HomeDynamicChannelsRepository,
+        private val homeDataRepository: HomeDataRepository,
+        private val atfDataRepository: HomeAtfRepository,
+        private val homeFlagRepository: HomeFlagRepository,
+        private val homePageBannerRepository: HomePageBannerRepository,
+        private val homeIconRepository: HomeIconRepository,
+        private val homeTickerRepository: HomeTickerRepository
 ) {
     suspend fun getHomeData(): HomeData? = withContext(dispatchers.io) {
-        getHomeDataUseCase.executeOnBackground()
+        homeDataRepository.executeOnBackground()
     }
 
     suspend fun getHomeFlagUseCase(): HomeFlagData? = withContext(dispatchers.io) {
-        getHomeFlagUseCase.executeOnBackground()
+        homeFlagRepository.executeOnBackground()
     }
 
     suspend fun getHomeIconUseCase(param: String, locationParams: String): HomeIconData = withContext(dispatchers.io) {
-        getHomeIconRepository.getIconData(param, locationParams)
+        homeIconRepository.getIconData(param, locationParams)
     }
 
     suspend fun getHomeTickerUseCase(locationParams: String): HomeTickerData? = withContext(dispatchers.io) {
-        getHomeTickerRepository.getTickerData(locationParams)
+        homeTickerRepository.getTickerData(locationParams)
     }
 
     suspend fun getAtfDataUseCase(): HomeAtfData? = withContext(dispatchers.io) {
-        getAtfDataUseCase.executeOnBackground()
+        atfDataRepository.executeOnBackground()
     }
     suspend fun getDynamicChannelData(groupIds: String = "",
                                       token: String = "",
@@ -42,8 +42,8 @@ class HomeRemoteDataSource(
                                       params: String = "",
                                       locationParams: String = "",
                                       doQueryHash: Boolean = false
-    ): HomeChannelData = getHomeDynamicChannelsRepository.getDynamicChannelData(
-            GetHomeDynamicChannelsRepository.buildParams(
+    ): HomeChannelData = homeDynamicChannelsRepository.getDynamicChannelData(
+            HomeDynamicChannelsRepository.buildParams(
                     groupIds = groupIds,
                     token = token,
                     numOfChannel = numOfChannel,
@@ -53,6 +53,6 @@ class HomeRemoteDataSource(
             )
     )
     suspend fun getHomePageBannerData(): HomeBannerData? = withContext(dispatchers.io) {
-        getHomePageBannerUseCase.executeOnBackground()
+        homePageBannerRepository.executeOnBackground()
     }
 }

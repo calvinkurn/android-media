@@ -1,19 +1,20 @@
-package com.tokopedia.home.beranda.domain.interactor
+package com.tokopedia.home.beranda.domain.interactor.repository
 
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import android.os.Bundle
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.home.beranda.di.module.query.QueryHome
+import com.tokopedia.home.beranda.domain.interactor.HomeRepository
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class GetHomeDynamicChannelsRepository @Inject constructor(
+class HomeDynamicChannelsRepository @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-){
+): HomeRepository<HomeChannelData> {
     suspend fun getDynamicChannelData(params: RequestParams): HomeChannelData {
         try {
             val gqlResponse = graphqlRepository.response(
@@ -35,11 +36,11 @@ class GetHomeDynamicChannelsRepository @Inject constructor(
     }
 
     companion object{
-        private const val GROUP_IDS = "groupIDs"
-        private const val TOKEN = "token"
-        private const val NUM_OF_CHANNEL = "numOfChannel"
-        private const val PARAMS = "param"
-        private const val LOCATION = "location"
+        const val GROUP_IDS = "groupIDs"
+        const val TOKEN = "token"
+        const val NUM_OF_CHANNEL = "numOfChannel"
+        const val PARAMS = "param"
+        const val LOCATION = "location"
 
         fun buildParams(groupIds: String = "", token: String = "", numOfChannel: Int = 0, queryParams: String = "", locationParams: String = "", doQueryHash: Boolean = false)
         :RequestParams{
@@ -54,4 +55,25 @@ class GetHomeDynamicChannelsRepository @Inject constructor(
         }
     }
 
+    override suspend fun getRemoteData(bundle: Bundle): HomeChannelData {
+        val groupId = bundle.getString(GROUP_IDS, "")
+        val token = bundle.getString(TOKEN, "")
+        val numOfChannel = bundle.getInt(NUM_OF_CHANNEL, 0)
+        val params = bundle.getString(PARAMS, "")
+        val location = bundle.getString(LOCATION, "")
+
+        return getDynamicChannelData(
+                buildParams(
+                        groupIds = groupId,
+                        token = token,
+                        numOfChannel = numOfChannel,
+                        queryParams = params,
+                        locationParams = location
+                )
+        )
+    }
+
+    override suspend fun getCachedData(bundle: Bundle): HomeChannelData {
+        return HomeChannelData()
+    }
 }

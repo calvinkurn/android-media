@@ -1,18 +1,20 @@
-package com.tokopedia.home.beranda.domain.interactor
+package com.tokopedia.home.beranda.domain.interactor.repository
 
+import android.os.Bundle
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.home.beranda.data.model.PlayData
 import com.tokopedia.home.beranda.data.model.PlayLiveDynamicChannelEntity
 import com.tokopedia.home.beranda.data.query.PlayLiveDynamicChannelQuery
+import com.tokopedia.home.beranda.domain.interactor.HomeRepository
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetPlayLiveDynamicUseCase @Inject constructor(
+class HomePlayLiveDynamicRepository @Inject constructor(
         private val graphqlUseCase: GraphqlUseCase<PlayLiveDynamicChannelEntity>
-): UseCase<PlayData>() {
+): UseCase<PlayData>(), HomeRepository<PlayData> {
     companion object{
         private const val PARAM_PAGE = "page"
         private const val PARAM_SOURCE = "source"
@@ -44,5 +46,13 @@ class GetPlayLiveDynamicUseCase @Inject constructor(
         params.putInt(PARAM_PAGE, page)
         params.putInt(PARAM_LIMIT, limit)
         params.putString(PARAM_DEVICE, DEFAULT_DEVICE)
+    }
+
+    override suspend fun getRemoteData(bundle: Bundle): PlayData {
+        return executeOnBackground()
+    }
+
+    override suspend fun getCachedData(bundle: Bundle): PlayData {
+        return PlayData()
     }
 }

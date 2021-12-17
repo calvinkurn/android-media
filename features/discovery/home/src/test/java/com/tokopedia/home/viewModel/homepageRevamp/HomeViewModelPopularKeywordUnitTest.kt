@@ -3,11 +3,9 @@ package com.tokopedia.home.viewModel.homepageRevamp
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.home.beranda.data.model.HomeWidget
-import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetPopularKeywordUseCase
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeLoadingMoreModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeRetryModel
+import com.tokopedia.home.beranda.data.usecase.HomeDynamicChannelUseCase
+import com.tokopedia.home.beranda.domain.interactor.repository.HomePopularKeywordRepository
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import io.mockk.coEvery
@@ -19,7 +17,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
@@ -35,8 +32,8 @@ class HomeViewModelPopularKeywordUnitTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val getHomeUseCase = mockk<HomeRevampUseCase>(relaxed = true)
-    private val getPopularKeywordUseCase = mockk<GetPopularKeywordUseCase>(relaxed = true)
+    private val getHomeUseCase = mockk<HomeDynamicChannelUseCase>(relaxed = true)
+    private val getPopularKeywordUseCase = mockk<HomePopularKeywordRepository>(relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
     private val testDispatcher = TestCoroutineDispatcher()
     @Before
@@ -53,11 +50,11 @@ class HomeViewModelPopularKeywordUnitTest {
     @Test
     fun `Test Popular with data keyword`(){
         val popular = PopularKeywordListDataModel()
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+        val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
 
         // Data with popular keyword
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(popular)
                 )
         )
@@ -75,8 +72,8 @@ class HomeViewModelPopularKeywordUnitTest {
         )
 
         // home viewModel
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPopularKeywordUseCase = getPopularKeywordUseCase)
-        homeViewModel.homeLiveData.observeForever(observerHome)
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, homePopularKeywordRepository = getPopularKeywordUseCase)
+        homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
 
         // Load popular keyword
         homeViewModel.getPopularKeyword()
@@ -99,8 +96,8 @@ class HomeViewModelPopularKeywordUnitTest {
     @Test
     fun `Test Popular evaluate data with refresh`() = runBlockingTest {
         val popular = PopularKeywordListDataModel()
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
-        val channel = Channel<HomeDataModel>()
+        val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
+        val channel = Channel<HomeDynamicChannelModel>()
         // Data with popular keyword
         coEvery { getHomeUseCase.getHomeData() } returns flow{
             channel.consumeAsFlow().collect {
@@ -120,12 +117,12 @@ class HomeViewModelPopularKeywordUnitTest {
                 )
         )
 
-        getHomeUseCase.givenGetHomeDataReturn(HomeDataModel(
+        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(
                 list = listOf(PopularKeywordListDataModel())
         ))
 
         // home viewModel
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getPopularKeywordUseCase = getPopularKeywordUseCase)
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, homePopularKeywordRepository = getPopularKeywordUseCase)
         homeViewModel.getPopularKeyword()
 
         // Refreshed popular keyword data
@@ -151,18 +148,18 @@ class HomeViewModelPopularKeywordUnitTest {
 
     @Test
     fun `Test Popular is not visible` (){
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+        val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
 
         // Populate empty data
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf()
                 )
         )
 
         // home viewModel
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.homeLiveData.observeForever(observerHome)
+        homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
 
         // Expect popular widget not show on user screen
         verifyOrder {

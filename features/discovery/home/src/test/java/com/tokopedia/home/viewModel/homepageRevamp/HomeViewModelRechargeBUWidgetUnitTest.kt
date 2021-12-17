@@ -1,9 +1,9 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
+import com.tokopedia.home.beranda.data.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetRechargeBUWidgetUseCase
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.ext.observeOnce
 import com.tokopedia.home_component.model.ChannelModel
@@ -23,7 +23,7 @@ class HomeViewModelRechargeBUWidgetUnitTest{
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
     private val getRechargeBUWidgetUseCase = mockk<GetRechargeBUWidgetUseCase>(relaxed = true)
-    private val getHomeUseCase = mockk<HomeRevampUseCase>(relaxed = true)
+    private val getHomeUseCase = mockk<HomeDynamicChannelUseCase>(relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
 
     @Test
@@ -33,7 +33,7 @@ class HomeViewModelRechargeBUWidgetUnitTest{
 
         // Add Recharge BU Widget to HomeDataModel
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(rechargeDataModel)
                 )
         )
@@ -55,7 +55,7 @@ class HomeViewModelRechargeBUWidgetUnitTest{
         val rechargePerso = RechargePerso()
 
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf()
                 )
         )
@@ -69,7 +69,7 @@ class HomeViewModelRechargeBUWidgetUnitTest{
         homeViewModel.insertRechargeBUWidget(rechargePerso)
 
         // Expect recharge bu widget not available in home live data
-        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+        homeViewModel.homeLiveDynamicChannel.observeOnce { homeDataModel ->
             assert(homeDataModel.list.find{ it::class.java == rechargeDataModel::class.java } == null)
         }
 
@@ -102,7 +102,7 @@ class HomeViewModelRechargeBUWidgetUnitTest{
 
         // Add Recharge BU Widget to HomeDataModel
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(rechargeDataModel)
                 )
         )
@@ -116,7 +116,7 @@ class HomeViewModelRechargeBUWidgetUnitTest{
         homeViewModel.insertRechargeBUWidget(rechargePerso)
 
         // recharge data available in home data
-        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+        homeViewModel.homeLiveDynamicChannel.observeOnce { homeDataModel ->
             assert((homeDataModel.list.find { it::class.java == rechargeDataModel::class.java } as? RechargeBUWidgetDataModel)?.data?.title == "Title" &&
                     (homeDataModel.list.find { it::class.java == rechargeDataModel::class.java } as? RechargeBUWidgetDataModel)?.data?.items?.size == rechargePerso.items.size
             )
@@ -129,7 +129,7 @@ class HomeViewModelRechargeBUWidgetUnitTest{
 
         // Not Add Recharge BU Widget to HomeDataModel
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf()
                 )
         )
@@ -143,7 +143,7 @@ class HomeViewModelRechargeBUWidgetUnitTest{
         homeViewModel.getRechargeBUWidget(WidgetSource.TOPUP_BILLS)
 
         // Expect recharge bu widget not available in home live data
-        homeViewModel.homeLiveData.observeOnce {
+        homeViewModel.homeLiveDynamicChannel.observeOnce {
             assert(!it.list.contains(rechargeDataModel))
         }
     }
@@ -154,7 +154,7 @@ class HomeViewModelRechargeBUWidgetUnitTest{
 
         // Add Recharge BU Widget to HomeDataModel
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(rechargeDataModel)
                 )
         )
@@ -200,7 +200,7 @@ class HomeViewModelRechargeBUWidgetUnitTest{
 
         // Add Recharge BU Widget to HomeDataModel
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
+                HomeDynamicChannelModel(
                         list = listOf(rechargeDataModel)
                 )
         )
@@ -228,7 +228,7 @@ class HomeViewModelRechargeBUWidgetUnitTest{
         homeViewModel.insertRechargeBUWidget(rechargePerso)
 
         // Expect recharge bu widget available in home live data
-        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
+        homeViewModel.homeLiveDynamicChannel.observeOnce { homeDataModel ->
             assert((homeDataModel.list.find { it::class.java == rechargeDataModel::class.java } as? RechargeBUWidgetDataModel)?.data?.title == "Title" &&
                     (homeDataModel.list.find { it::class.java == rechargeDataModel::class.java } as? RechargeBUWidgetDataModel)?.data?.items?.size == rechargePerso.items.size
             )
