@@ -16,34 +16,41 @@ import com.tokopedia.utils.view.binding.noreflection.viewBinding
 
 @JvmName("viewBindingFragment")
 inline fun <reified T : ViewBinding> Fragment.viewBinding(
-        @IdRes viewBindingRootId: Int
+        @IdRes viewBindingRootId: Int,
+        noinline onClear: () -> Unit? = {}
 ): ViewBindingProperty<Fragment, T> {
-    return viewBinding(T::class.java, viewBindingRootId)
+    return viewBinding(T::class.java, viewBindingRootId, onClear)
 }
 
 @JvmName("viewBindingFragment")
 fun <T : ViewBinding> Fragment.viewBinding(
         viewBindingClass: Class<T>,
-        @IdRes viewBindingRootId: Int
+        @IdRes viewBindingRootId: Int,
+        onClear: () -> Unit? = {}
 ): ViewBindingProperty<Fragment, T> {
     return when (this) {
         is DialogFragment -> {
-            viewBinding { dialogFragment ->
-                require(dialogFragment is DialogFragment)
-                ViewBindingCache.getBind(viewBindingClass).bind(dialogFragment.getRootView(viewBindingRootId))
-            }
+            viewBinding(
+                { dialogFragment ->
+                    require(dialogFragment is DialogFragment)
+                    ViewBindingCache.getBind(viewBindingClass).bind(dialogFragment.getRootView(viewBindingRootId))
+                },
+                onClear
+            )
         }
         else -> {
-            viewBinding {
-                ViewBindingCache.getBind(viewBindingClass).bind(requireView().requireViewByIdCompat(viewBindingRootId))
-            }
+            viewBinding(
+                { ViewBindingCache.getBind(viewBindingClass).bind(requireView().requireViewByIdCompat(viewBindingRootId)) },
+                onClear
+            )
         }
     }
 }
 
 @JvmName("viewBindingFragment")
 inline fun <reified T : ViewBinding> Fragment.viewBinding(
-        methodType: MethodType = MethodType.Bind
+        methodType: MethodType = MethodType.Bind,
+        onClear: () -> Unit? = {}
 ): ViewBindingProperty<Fragment, T> {
     return viewBinding(T::class.java, methodType)
 }
@@ -51,14 +58,17 @@ inline fun <reified T : ViewBinding> Fragment.viewBinding(
 @JvmName("viewBindingFragment")
 fun <T : ViewBinding> Fragment.viewBinding(
         viewBindingClass: Class<T>,
-        methodType: MethodType = MethodType.Bind
+        methodType: MethodType = MethodType.Bind,
+        onClear: () -> Unit? = {}
 ): ViewBindingProperty<Fragment, T> {
     return when (methodType) {
-        MethodType.Bind -> viewBinding {
-            ViewBindingCache.getBind(viewBindingClass).bind(requireView())
-        }
-        MethodType.Inflate -> viewBinding {
-            ViewBindingCache.getInflateWithLayoutInflater(viewBindingClass).inflate(layoutInflater, null, false)
-        }
+        MethodType.Bind -> viewBinding(
+            { ViewBindingCache.getBind(viewBindingClass).bind(requireView()) },
+            onClear
+        )
+        MethodType.Inflate -> viewBinding(
+            { ViewBindingCache.getInflateWithLayoutInflater(viewBindingClass).inflate(layoutInflater, null, false) },
+            onClear
+        )
     }
 }
