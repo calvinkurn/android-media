@@ -8,7 +8,7 @@ import android.text.SpannableString
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
 import com.tokopedia.home_account.R
-import com.tokopedia.home_account.account_settings.presentation.viewmodel.SettingItemViewModel
+import com.tokopedia.home_account.account_settings.presentation.viewmodel.SettingItemUIModel
 import com.tokopedia.home_account.account_settings.presentation.widget.TagRoundedSpan
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -19,9 +19,9 @@ object GeneralSettingMenuLabel {
     const val LABEL_BETA = " BETA"
 
     fun generateSpannableTitle(
-            context: Context,
-            item: SettingItemViewModel,
-            labelType: String
+        context: Context,
+        item: SettingItemUIModel,
+        labelType: String
     ): SpannableString {
         val title = item.title
         val boxColor = getBoxColor(context, title)

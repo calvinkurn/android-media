@@ -2,6 +2,7 @@ package com.tokopedia.search.mock
 
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView
+import com.tokopedia.search.result.presentation.model.BroadMatch
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchProduct
@@ -117,7 +118,8 @@ object MockSearchProductModel {
                         getBroadMatchItemViewModel(1), getBroadMatchItemViewModel(2),
                         getBroadMatchItemViewModel(3), getBroadMatchItemViewModel(4),
                         getBroadMatchItemViewModel(5), getBroadMatchItemViewModel(6)
-                )
+                ),
+                carouselOptionType = BroadMatch,
         )
     }
 

@@ -21,6 +21,7 @@ import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_NOTES
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_SIMILARPRODUCT
 import com.tokopedia.minicart.databinding.ItemMiniCartProductBinding
+import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.showSoftKeyboard
 import com.tokopedia.unifyprinciples.Typography
@@ -265,9 +266,9 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
             textFieldNotes.show()
             textNotesChange.gone()
             textNotesFilled.gone()
-            textNotesFilled.text = element.productNotes
+            textNotesFilled.text = Utils.getHtmlFormat(element.productNotes)
             textFieldNotes.setCounter(element.maxNotesLength)
-            textFieldNotes.editText.setText(element.productNotes)
+            textFieldNotes.editText.setText(Utils.getHtmlFormat(element.productNotes))
             textFieldNotes.editText.setSelection(textFieldNotes.editText.length())
             textFieldNotes.editText.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -312,7 +313,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
     private fun renderProductNotesFilled(element: MiniCartProductUiModel) {
         with(viewBinding) {
             textFieldNotes.gone()
-            textNotesFilled.text = element.productNotes
+            textNotesFilled.text = Utils.getHtmlFormat(element.productNotes)
             setProductNotesWidth()
             textNotesFilled.show()
             textNotesChange.show()

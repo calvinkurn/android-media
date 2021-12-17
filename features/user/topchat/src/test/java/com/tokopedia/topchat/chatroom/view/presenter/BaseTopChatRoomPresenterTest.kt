@@ -23,15 +23,12 @@ import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
-import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.RxWebSocketUtil
 import com.tokopedia.websocket.WebSocketInfo
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -61,9 +58,6 @@ abstract class BaseTopChatRoomPresenterTest {
     protected lateinit var webSocketUtil: RxWebSocketUtil
 
     @RelaxedMockK
-    protected lateinit var getChatUseCase: GetChatUseCase
-
-    @RelaxedMockK
     protected lateinit var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase
 
     @RelaxedMockK
@@ -73,25 +67,7 @@ abstract class BaseTopChatRoomPresenterTest {
     protected lateinit var compressImageUseCase: CompressImageUseCase
 
     @RelaxedMockK
-    protected lateinit var addWishListUseCase: AddWishListUseCase
-
-    @RelaxedMockK
-    protected lateinit var removeWishListUseCase: RemoveWishListUseCase
-
-    @RelaxedMockK
     protected lateinit var uploadImageUseCase: TopchatUploadImageUseCase
-
-    @RelaxedMockK
-    protected lateinit var groupStickerUseCase: ChatListGroupStickerUseCase
-
-    @RelaxedMockK
-    protected lateinit var chatAttachmentUseCase: ChatAttachmentUseCase
-
-    @RelaxedMockK
-    protected lateinit var chatToggleBlockChat: ChatToggleBlockChatUseCase
-
-    @RelaxedMockK
-    protected lateinit var chatBackgroundUseCase: ChatBackgroundUseCase
 
     @RelaxedMockK
     protected lateinit var replyChatGQLUseCase: ReplyChatGQLUseCase
@@ -112,15 +88,6 @@ abstract class BaseTopChatRoomPresenterTest {
 
     @RelaxedMockK
     protected lateinit var sendAbleProductPreview: SendablePreview
-
-    @RelaxedMockK
-    protected lateinit var chatSrwUseCase: SmartReplyQuestionUseCase
-
-    @RelaxedMockK
-    protected lateinit var tokoNowWHUsecase: ChatTokoNowWarehouseUseCase
-
-    @RelaxedMockK
-    protected lateinit var moveChatToTrashUseCase: MutationMoveChatToTrashUseCase
 
     @RelaxedMockK
     protected lateinit var remoteConfig: RemoteConfig
@@ -243,22 +210,11 @@ abstract class BaseTopChatRoomPresenterTest {
                 fingerprintInterceptor,
                 userSession,
                 webSocketUtil,
-                getChatUseCase,
                 topChatRoomWebSocketMessageMapper,
                 getTemplateChatRoomUseCase,
                 replyChatUseCase,
                 compressImageUseCase,
-                addWishListUseCase,
-                removeWishListUseCase,
                 uploadImageUseCase,
-                groupStickerUseCase,
-                chatAttachmentUseCase,
-                chatToggleBlockChat,
-                chatBackgroundUseCase,
-                chatSrwUseCase,
-                tokoNowWHUsecase,
-                moveChatToTrashUseCase,
-                sharedPref,
                 dispatchers,
                 remoteConfig
             )

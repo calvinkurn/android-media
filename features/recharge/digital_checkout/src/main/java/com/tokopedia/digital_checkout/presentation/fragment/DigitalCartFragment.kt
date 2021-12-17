@@ -29,7 +29,7 @@ import com.tokopedia.common_digital.common.constant.DigitalCache
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.digital_checkout.R
-import com.tokopedia.digital_checkout.data.DigitalCartCrossSellingType
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
 import com.tokopedia.digital_checkout.data.DigitalPromoCheckoutPageConst.EXTRA_COUPON_ACTIVE
 import com.tokopedia.digital_checkout.data.DigitalPromoCheckoutPageConst.EXTRA_PROMO_DIGITAL_MODEL
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
@@ -266,7 +266,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     private fun renderCartDigitalInfoData(cartInfo: CartDigitalInfoData) {
-        digitalSubscriptionParams.isSubscribed = cartInfo.crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id
+        digitalSubscriptionParams.isSubscribed = cartInfo.isSubscribed
         sendGetCartAndCheckoutAnalytics()
 
         if (cartInfo.attributes.isOpenAmount) {
@@ -455,20 +455,30 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     private fun renderMyBillsLayout(cartInfo: CartDigitalInfoData) {
-        myBillsAdapter = DigitalMyBillsAdapter(cartInfo.crossSellingType, this)
+        myBillsAdapter = DigitalMyBillsAdapter(this)
 
         rvMyBills.layoutManager = LinearLayoutManager(context)
         rvMyBills.isNestedScrollingEnabled = false
         rvMyBills.adapter = myBillsAdapter
 
-        myBillsAdapter.setItems(if (cartInfo.showSubscriptionsView) listOf(cartInfo.crossSellingConfig) else listOf(),
-                cartInfo.attributes.fintechProduct)
+        val (subscriptions, fintechProducts) = cartInfo.attributes.fintechProduct.partition {
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT
+        }
+        myBillsAdapter.setItems(subscriptions, fintechProducts)
     }
 
-    override fun onSubscriptionChecked(subscription: CartDigitalInfoData.CrossSellingConfig, isChecked: Boolean) {
+    override fun onSubscriptionChecked(fintechProduct: FintechProduct, isChecked: Boolean) {
         digitalAnalytics.eventClickSubscription(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
-
         viewModel.onSubscriptionChecked(isChecked)
+    }
+
+    override fun onSubscriptionImpression(fintechProduct: FintechProduct) {
+        digitalAnalytics.eventImpressionSubscription(
+            userSession.userId,
+            fintechProduct.checkBoxDisabled,
+            getCategoryName(),
+            getOperatorName()
+        )
     }
 
     override fun onTebusMurahImpression(fintechProduct: FintechProduct, position: Int) {

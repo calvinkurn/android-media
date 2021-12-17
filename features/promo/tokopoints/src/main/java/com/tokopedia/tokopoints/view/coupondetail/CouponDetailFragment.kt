@@ -437,8 +437,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         this.mRealCode = data.realCode
         btnAction2?.setOnClickListener { v ->
 
-            val variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_PHONE_VERIFICATION_KEY, AB_TESTING_CTA_VARIANT_A)
-            if (phoneVerificationState == false && variant == AB_TESTING_CTA_VARIANT_A) {
+            if (phoneVerificationState != null && phoneVerificationState == false) {
                 openPhoneVerificationBottomSheet()
             } else {
                 val code = mRealCode as String
@@ -729,8 +728,6 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     }
 
     companion object {
-        val AB_TESTING_CTA_VARIANT_A = "CTA Phone Verify 2"
-        val AB_TEST_PHONE_VERIFICATION_KEY = "CTA Phone Verify 2"
         private val REQUEST_CODE_VERIFICATION_PHONE = 301
         private val CONTAINER_LOADER = 0
         private val CONTAINER_DATA = 1

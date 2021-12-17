@@ -10,7 +10,6 @@ object ConstantKey {
         const val MAINAPP_NATIVE_PROMO_LIST = "mainapp_native_promo_list"
         const val REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH = "android_user_first_install_search"
         const val AB_TEST_REVIEW_KEY = "InboxUlasanRevamp2"
-        const val HOME_SHOW_ONBOARDING_NAVIGATION = "android_customer_home_show_nav_onboarding"
         const val HOME_SHOW_NEW_BALANCE_WIDGET = "android_customer_home_show_balance_widget"
     }
 
