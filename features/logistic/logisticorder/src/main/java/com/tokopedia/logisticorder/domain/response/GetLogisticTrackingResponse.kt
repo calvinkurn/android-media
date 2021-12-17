@@ -84,6 +84,8 @@ data class TrackHistory(
         val city: String = "",
         @SerializedName("time")
         val time: String = "",
+        @SerializedName("partner_name")
+        val partnerName: String = "",
         @SerializedName("proof")
         val proof: Proof = Proof()
 )
