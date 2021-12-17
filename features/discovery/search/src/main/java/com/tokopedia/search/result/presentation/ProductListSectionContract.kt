@@ -122,8 +122,6 @@ interface ProductListSectionContract {
             inspirationCarouselOption: InspirationCarouselDataView.Option,
         )
         fun modifyApplinkToSearchResult(applink: String): String
-        fun recycleVisibleViewHolders()
-        fun rebindVisibleViewHolders()
     }
 
     interface Presenter : CustomerPresenter<View> {
