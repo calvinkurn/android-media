@@ -41,10 +41,8 @@ class AttachProductViewModel @Inject constructor
             val resultModel = result.mapToListProduct().toDomainModelMapper()
             if (query.isEmpty()) {
                 _products.value = Success(resultModel)
-                _products.value?.let { data ->
-                    val dataSuccess = data as Success
-                    cacheData(dataSuccess)
-                }
+                val dataSuccess = _products.value as Success
+                cacheData(dataSuccess)
             } else {
                 _products.value = Success(resultModel)
             }
