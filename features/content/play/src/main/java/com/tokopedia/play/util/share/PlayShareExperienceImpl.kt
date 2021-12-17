@@ -85,8 +85,7 @@ class PlayShareExperienceImpl @Inject constructor(
         LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0, linkerShareData, object:
             ShareCallback {
             override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                listener.onError(Exception("Something went wrong"))
-//                listener.onUrlCreated(linkerShareData, shareModel, generateShareString(linkerShareData?.url ?: data.redirectUrl))
+                listener.onUrlCreated(linkerShareData, shareModel, generateShareString(linkerShareData?.url ?: data.redirectUrl))
             }
 
             override fun onError(linkerError: LinkerError?) {
