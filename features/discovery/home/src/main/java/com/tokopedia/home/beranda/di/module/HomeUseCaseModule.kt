@@ -20,7 +20,6 @@ import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.di.module.query.*
 import com.tokopedia.home.beranda.di.module.query.QueryHome.homeIconQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.homeSlidesQuery
-import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.walletBalanceQuery
 import com.tokopedia.home.beranda.domain.gql.CloseChannelMutation
 import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
@@ -116,7 +115,7 @@ class HomeUseCaseModule {
     @Provides
     fun getCoroutineWalletBalanceUseCase(graphqlRepository: GraphqlRepository, userSession: UserSessionInterface, remoteConfig: RemoteConfig, localCacheHandler: LocalCacheHandler): GetCoroutineWalletBalanceUseCase {
         val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<WalletBalanceResponse>(graphqlRepository)
-        usecase.setGraphqlQuery(walletBalanceQuery)
+        usecase.setGraphqlQuery(WalletBalanceQuery())
         return GetCoroutineWalletBalanceUseCase(usecase, remoteConfig, userSession, localCacheHandler)
     }
 

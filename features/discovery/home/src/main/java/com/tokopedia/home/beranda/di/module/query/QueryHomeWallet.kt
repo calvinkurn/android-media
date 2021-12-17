@@ -20,39 +20,4 @@ internal object QueryHomeWallet {
             "        }\n" +
             "    }\n" +
             "}"
-
-    val walletBalanceQuery : String = "{\n" +
-            "  wallet(isGetTopup:true) {\n" +
-            "    linked\n" +
-            "    balance\n" +
-            "    rawBalance\n" +
-            "    text\n" +
-            "    total_balance\n" +
-            "    raw_total_balance\n" +
-            "    hold_balance\n" +
-            "    raw_hold_balance\n" +
-            "    redirect_url\n" +
-            "    applinks\n" +
-            "    ab_tags {\n" +
-            "      tag\n" +
-            "    }\n" +
-            "    action {\n" +
-            "      text\n" +
-            "      redirect_url\n" +
-            "      applinks\n" +
-            "      visibility\n" +
-            "    }\n" +
-            "    point_balance\n" +
-            "    raw_point_balance\n" +
-            "    cash_balance\n" +
-            "    raw_cash_balance\n" +
-            "    wallet_type\n" +
-            "    help_applink\n" +
-            "    tnc_applink\n" +
-            "    show_announcement\n" +
-            "    is_show_topup\n" +
-            "    topup_applink\n" +
-            "    topup_limit\n" +
-            "  }\n" +
-            "}"
 }
