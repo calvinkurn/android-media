@@ -28,6 +28,7 @@ import com.tokopedia.affiliate.interfaces.ProductClickInterface
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
+import com.tokopedia.affiliate.ui.activity.AffiliateSaldoWithdrawalDetailActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateComponentActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker.Companion.IDENTIFIER_HOME
