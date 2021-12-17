@@ -246,6 +246,7 @@ open class GetChatUseCase @Inject constructor(
                     subText
                     imageURL
                     isExpired
+                    replyID
                   }
                   attachment {
                     id

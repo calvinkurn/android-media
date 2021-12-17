@@ -168,6 +168,7 @@ public class TopChatAnalytics {
         String TAP_AND_HOLD_BUBBLE = "tap and hold bubble chat";
         String CLICK_MSG_MENU = "click menu on atur pesan bottomsheet";
         String CLICK_CONFIRM_DELETE_MSG = "click confirm delete message";
+        String CLICK_CLOSE_REPLY_BUUBLE_PREVIEW = "click close preview replied bubble chat above keyboard";
     }
 
     public interface Label {
@@ -758,6 +759,20 @@ public class TopChatAnalytics {
                         Name.CHAT_DETAIL,
                         Category.CHAT_DETAIL,
                         Action.CLICK_CONFIRM_DELETE_MSG,
+                        replyId,
+                        BusinessUnit.CommunicationMedia,
+                        CurrentSite.TokopediaMarketplace,
+                        null
+                )
+        );
+    }
+
+    public void eventClickCloseReplyBubblePreview(String replyId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                createGeneralEvent(
+                        Name.CHAT_DETAIL,
+                        Category.CHAT_DETAIL,
+                        Action.CLICK_CLOSE_REPLY_BUUBLE_PREVIEW,
                         replyId,
                         BusinessUnit.CommunicationMedia,
                         CurrentSite.TokopediaMarketplace,

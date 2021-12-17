@@ -16,6 +16,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.Repl
 import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout.Companion.DEFAULT_MSG_ORIENTATION
 import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout.Companion.LEFT_MSG_ORIENTATION
 import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout.Companion.RIGHT_MSG_ORIENTATION
+import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.unifycomponents.Toaster
 
 class ReplyBubbleAreaMessage : ConstraintLayout {
@@ -56,6 +57,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     interface Listener {
         fun getUserName(senderId: String): String
         fun goToBubble(parentReply: ParentReply)
+        fun getAnalytic(): TopChatAnalytics
     }
 
     private fun initLayout() {
@@ -123,7 +125,8 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
             subText = "",
             imageUrl = referredMsg.getReferredImageUrl(),
             localId = referredMsg.localId,
-            source = "chat"
+            source = "chat",
+            replyId = referredMsg.replyId
         )
         bindParentReply(parentReply)
         updateCloseButtonState(enableCloseButton)
@@ -147,6 +150,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         if (enableCloseButton) {
             closeBtn?.show()
             closeBtn?.setOnClickListener {
+                listener?.getAnalytic()?.eventClickCloseReplyBubblePreview(referredMsg?.replyId)
                 clearReferTo()
                 hide()
             }
