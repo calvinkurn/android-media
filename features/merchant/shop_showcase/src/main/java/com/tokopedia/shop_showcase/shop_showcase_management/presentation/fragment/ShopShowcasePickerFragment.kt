@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -28,6 +27,7 @@ import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShowcasePickerType
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
@@ -574,7 +574,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
 
     private fun showSearchEmptyStateRadioPicker(state: Boolean) {
         if(state) {
-            ImageHandler.loadImage(context, emptyStateImage, ImageAssets.SEARCH_SHOWCASE_NOT_FOUND, null)
+            emptyStateImage?.loadImage(ImageAssets.SEARCH_SHOWCASE_NOT_FOUND)
             emptyStateShowcasePicker?.visible()
             rvPicker?.gone()
         } else {

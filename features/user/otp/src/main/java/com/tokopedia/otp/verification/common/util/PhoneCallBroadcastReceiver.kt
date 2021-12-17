@@ -102,7 +102,6 @@ class PhoneCallBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
 
     inner class MiscallStateListener: PhoneStateListener() {
         override fun onCallStateChanged(state: Int, phoneNumber: String?) {
-            super.onCallStateChanged(state, phoneNumber)
             onStateChanged(state, phoneNumber.orEmpty())
         }
     }

@@ -21,4 +21,5 @@ object WishlistV2Consts {
     const val PRODUCT_ID = "productID"
     const val PRODUCT_IDs = "productIDs"
     const val USER_ID = "userID"
+    const val RECOMMENDED_FOR_YOU = "Rekomendasi untukmu"
 }

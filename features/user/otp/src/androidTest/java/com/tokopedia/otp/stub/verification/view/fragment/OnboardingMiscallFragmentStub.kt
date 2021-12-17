@@ -1,8 +1,7 @@
 package com.tokopedia.otp.stub.verification.view.fragment
 
 import android.os.Bundle
-import androidx.test.espresso.idling.CountingIdlingResource
-import com.tokopedia.otp.verification.view.fragment.OnboardingMiscallFragment
+import com.tokopedia.otp.verification.view.fragment.miscalll.OnboardingMiscallFragment
 
 class OnboardingMiscallFragmentStub : OnboardingMiscallFragment() {
 
