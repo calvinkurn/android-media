@@ -34,7 +34,6 @@ object QuestMapper {
                 currentProgress = it.task.firstOrNull()?.progress?.current.orZero(),
                 totalProgress = it.task.firstOrNull()?.progress?.target.orZero(),
                 status = it.questUser.status,
-                appLink = it.actionButton.cta.appLink,
                 iconUrl = getValueFromConfig(mapConfig, ICON_URL)
             ))
         }

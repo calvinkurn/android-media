@@ -9,7 +9,6 @@ data class HomeQuestWidgetUiModel (
     val status: String = "",
     val currentProgress: Float = 0f,
     val totalProgress: Float = 0f,
-    val appLink: String = "",
     val iconUrl: String = "",
     val isErrorState: Boolean = false
 ) : HomeLayoutUiModel(id)  {

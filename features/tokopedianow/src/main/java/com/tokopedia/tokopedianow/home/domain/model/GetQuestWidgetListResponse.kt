@@ -37,9 +37,6 @@ data class QuestList(
     @SerializedName("task")
     @Expose
     val task: List<Task>,
-    @SerializedName("actionButton")
-    @Expose
-    val actionButton: ActionButton,
 )
 
 data class QuestUser(
@@ -70,21 +67,6 @@ data class Progress(
     @SerializedName("target")
     @Expose
     val target: Float,
-)
-
-data class ActionButton(
-    @SerializedName("shortText")
-    @Expose
-    val shortText: String,
-    @SerializedName("cta")
-    @Expose
-    val cta: CtaActionButton
-)
-
-data class CtaActionButton(
-    @SerializedName("applink")
-    @Expose
-    val appLink: String,
 )
 
 data class ResultStatus(

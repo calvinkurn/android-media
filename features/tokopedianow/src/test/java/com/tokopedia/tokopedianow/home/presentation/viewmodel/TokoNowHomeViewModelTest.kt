@@ -442,11 +442,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             questList = listOf(
                 HomeQuestWidgetUiModel(
                     id = "1233",
-                    desc = "Lihat Detail",
                     status = "Idle",
                     currentProgress = 0f,
-                    totalProgress = 0f,
-                    appLink = "tokopedia://now"
+                    totalProgress = 0f
                 )
             )
         )
@@ -502,11 +500,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             questList = listOf(
                 HomeQuestWidgetUiModel(
                     id = "1233",
-                    desc = "Lihat Detail",
                     status = "Idle",
                     currentProgress = 0f,
-                    totalProgress = 0f,
-                    appLink = "tokopedia://now"
+                    totalProgress = 0f
                 )
             )
         )

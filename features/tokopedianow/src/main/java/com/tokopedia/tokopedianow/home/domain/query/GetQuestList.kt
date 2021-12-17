@@ -23,12 +23,6 @@ internal object GetQuestList {
                   target
                 }
               }
-              actionButton {
-                shortText
-                cta {
-                  applink
-                }
-              }
             }
             resultStatus {
               code

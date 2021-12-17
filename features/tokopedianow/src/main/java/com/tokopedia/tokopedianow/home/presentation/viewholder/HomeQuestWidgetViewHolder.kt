@@ -13,6 +13,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestWidgetBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeQuestWidgetViewHolder(
@@ -21,6 +23,8 @@ class HomeQuestWidgetViewHolder(
 ): AbstractViewHolder<HomeQuestWidgetUiModel>(itemView) {
 
     companion object {
+        private const val QUEST_DETAIL_STAGING_APPLINK = "tokopedia://webview?need_login=true&url=https://staging.tokopedia.com/seru/topquest/detail/"
+        private const val QUEST_DETAIL_PRODUCTION_APPLINK = "tokopedia://webview?need_login=true&url=https://www.tokopedia.com/seru/topquest/detail/"
         private const val PROGRESS_WIDTH = 12F
         private const val PERCENT_MULTIPLIER = 100
 
@@ -59,7 +63,7 @@ class HomeQuestWidgetViewHolder(
                     }
                 }
                 STATUS_ON_PROGRESS -> {
-                    setContainer(element.appLink)
+                    setContainer(element.id)
                     val result = (element.currentProgress / element.totalProgress) * PERCENT_MULTIPLIER
                     if (!result.isNaN()) {
                         setImageUrl(element.iconUrl, false, AppCompatResources.getDrawable(context, R.drawable.tokopedianow_ic_quest_default))
@@ -93,11 +97,11 @@ class HomeQuestWidgetViewHolder(
         binding?.desc?.text = desc
     }
 
-    private fun setContainer(appLink: String) {
+    private fun setContainer(id: String) {
         binding?.container?.apply {
             setCardBackgroundColor(ContextCompat.getColor(itemView.context, R.color.tokopedianow_cardview_background_dms_color))
             setOnClickListener {
-                RouteManager.route(itemView.context, appLink)
+                RouteManager.route(itemView.context, if (TokopediaUrl.getInstance().TYPE == Env.STAGING) QUEST_DETAIL_STAGING_APPLINK + id else  QUEST_DETAIL_PRODUCTION_APPLINK + id)
             }
         }
     }

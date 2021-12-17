@@ -107,13 +107,7 @@ fun createQuestWidgetList(code: String, reason: String = ""): GetQuestListRespon
                         id = "1111",
                         status = "Idle"
                     ),
-                    task = listOf(),
-                    actionButton = ActionButton(
-                        shortText = "Lihat Detail",
-                        cta = CtaActionButton(
-                            appLink = "tokopedia://now"
-                        )
-                    )
+                    task = listOf()
                 )
             ),
             resultStatus = ResultStatus(
