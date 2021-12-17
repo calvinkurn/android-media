@@ -7,17 +7,18 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.data_explorer.R
 import com.tokopedia.data_explorer.db_explorer.di.DaggerDataExplorerComponent
 import com.tokopedia.data_explorer.db_explorer.di.DataExplorerComponent
+import com.tokopedia.data_explorer.db_explorer.presentation.Constants
 import kotlinx.android.synthetic.main.activity_database_list.*
 
 class SchemaActivity : BaseSimpleActivity(), HasComponent<DataExplorerComponent> {
 
     private val dataExplorerComponent: DataExplorerComponent by lazy(LazyThreadSafetyMode.NONE) { initInjector() }
     private val databaseName: String by lazy(LazyThreadSafetyMode.NONE) {
-        intent.getStringExtra(com.tokopedia.data_explorer.db_explorer.presentation.Constants.Keys.DATABASE_NAME).orEmpty()
+        intent.getStringExtra(Constants.Keys.DATABASE_NAME).orEmpty()
     }
 
     private val databasePath: String by lazy(LazyThreadSafetyMode.NONE) {
-        intent.getStringExtra(com.tokopedia.data_explorer.db_explorer.presentation.Constants.Keys.DATABASE_PATH).orEmpty()
+        intent.getStringExtra(Constants.Keys.DATABASE_PATH).orEmpty()
     }
 
     private fun initInjector() =

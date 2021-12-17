@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.data_explorer.R
 import com.tokopedia.data_explorer.db_explorer.di.DataExplorerComponent
+import com.tokopedia.data_explorer.db_explorer.presentation.Constants
 import com.tokopedia.data_explorer.db_explorer.presentation.Searchable
 import kotlinx.android.synthetic.main.fragment_database_list_layout.*
 import javax.inject.Inject
@@ -37,19 +38,19 @@ class SchemaFragment: BaseDaggerFragment(), Searchable {
     private fun navigateToContents(schema: String) {
         context?.startActivity(
             Intent(requireContext(), com.tokopedia.data_explorer.db_explorer.presentation.content.ContentActivity::class.java).apply {
-                putExtra(com.tokopedia.data_explorer.db_explorer.presentation.Constants.Keys.DATABASE_NAME, databaseName)
-                putExtra(com.tokopedia.data_explorer.db_explorer.presentation.Constants.Keys.DATABASE_PATH, databasePath)
-                putExtra(com.tokopedia.data_explorer.db_explorer.presentation.Constants.Keys.SCHEMA_NAME, schema)
+                putExtra(Constants.Keys.DATABASE_NAME, databaseName)
+                putExtra(Constants.Keys.DATABASE_PATH, databasePath)
+                putExtra(Constants.Keys.SCHEMA_NAME, schema)
             }
         )
     }
 
     private val databaseName: String by lazy(LazyThreadSafetyMode.NONE) {
-        arguments?.getString(com.tokopedia.data_explorer.db_explorer.presentation.Constants.Keys.DATABASE_NAME).orEmpty()
+        arguments?.getString(Constants.Keys.DATABASE_NAME).orEmpty()
     }
 
     private val databasePath: String by lazy(LazyThreadSafetyMode.NONE) {
-        arguments?.getString(com.tokopedia.data_explorer.db_explorer.presentation.Constants.Keys.DATABASE_PATH).orEmpty()
+        arguments?.getString(Constants.Keys.DATABASE_PATH).orEmpty()
     }
 
     override fun onCreateView(
@@ -103,8 +104,8 @@ class SchemaFragment: BaseDaggerFragment(), Searchable {
         fun newInstance(databaseName: String, databasePath: String) : SchemaFragment {
             val fragment = SchemaFragment()
             val bundle = Bundle().apply {
-                putString(com.tokopedia.data_explorer.db_explorer.presentation.Constants.Keys.DATABASE_NAME, databaseName)
-                putString(com.tokopedia.data_explorer.db_explorer.presentation.Constants.Keys.DATABASE_PATH, databasePath)
+                putString(Constants.Keys.DATABASE_NAME, databaseName)
+                putString(Constants.Keys.DATABASE_PATH, databasePath)
             }
             fragment.arguments = bundle
             return fragment

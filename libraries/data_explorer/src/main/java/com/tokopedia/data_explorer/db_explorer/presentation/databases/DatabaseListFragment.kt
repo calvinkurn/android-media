@@ -41,7 +41,7 @@ class DatabaseListFragment : BaseDaggerFragment(), Searchable {
             interaction = DatabaseInteractions(
                 onDelete = { showDeleteDialog(it) },
                 onCopy = { viewModel.copyDatabase(it) },
-                onShare = { }
+                onShare = { showToast("Oops! Feature still in progress", Toaster.TYPE_NORMAL)}
             )
         )
     }
@@ -51,8 +51,8 @@ class DatabaseListFragment : BaseDaggerFragment(), Searchable {
             DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle("Delete Database")
                 setDescription("Are you sure you want to delete ${databaseDescriptor.name}")
-                setPrimaryCTAText("Yes Delete")
-                setSecondaryCTAText("No")
+                setPrimaryCTAText("Yes Delete !")
+                setSecondaryCTAText("No!")
                 setPrimaryCTAClickListener {
                     viewModel.removeDatabase(databaseDescriptor)
                     dismiss()
