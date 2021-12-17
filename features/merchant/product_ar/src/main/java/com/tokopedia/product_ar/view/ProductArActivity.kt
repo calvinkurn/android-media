@@ -12,6 +12,9 @@ import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.di.DaggerProductArComponent
 import com.tokopedia.product_ar.di.ProductArComponent
 import com.tokopedia.product_ar.di.ProductArModule
+import com.tokopedia.product_ar.view.fragment.ProductArComparisonFragment
+import com.tokopedia.product_ar.view.fragment.ProductArComparisonFragment.Companion.PRODUCT_AR_COMPARISON_FRAGMENT
+import com.tokopedia.product_ar.view.fragment.ProductArFragment
 import java.util.ArrayList
 
 class ProductArActivity : BaseSimpleActivity(), HasComponent<ProductArComponent>, MFEMakeupEngine.MFEMakeupEngineErrorCallback {
@@ -27,11 +30,27 @@ class ProductArActivity : BaseSimpleActivity(), HasComponent<ProductArComponent>
 
     fun getMakeUpEngine(): MFEMakeupEngine? = mMakeupEngine
 
+    fun goToArComparisonFragment() {
+        supportFragmentManager.beginTransaction().replace(parentViewResourceID,
+                ProductArComparisonFragment.newInstance(),
+                PRODUCT_AR_COMPARISON_FRAGMENT)
+                .addToBackStack(PRODUCT_AR_COMPARISON_FRAGMENT)
+                .commit()
+    }
+
     override fun getLayoutRes(): Int = R.layout.activity_product_ar
 
     override fun getParentViewResourceID(): Int = R.id.product_ar_parent_view
 
     override fun getNewFragment(): Fragment = ProductArFragment.newInstance()
+
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount == 0) {
+            super.onBackPressed()
+        } else {
+            supportFragmentManager.popBackStackImmediate()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,21 +1,23 @@
-package com.tokopedia.product_ar.view
+package com.tokopedia.product_ar.view.fragment
 
 import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.modiface.mfemakeupkit.MFEMakeupEngine
+import com.modiface.mfemakeupkit.data.MFETrackingData
 import com.modiface.mfemakeupkit.effects.MFEMakeupProduct
 import com.modiface.mfemakeupkit.widgets.MFEMakeupView
 import com.tokopedia.applink.RouteManager
@@ -27,26 +29,36 @@ import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.ImageRatioType
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepicker.common.putParamPageSource
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.model.state.AnimatedTextIconClickMode
 import com.tokopedia.product_ar.model.state.ModifaceViewMode
 import com.tokopedia.product_ar.util.AnimatedTextIcon
+import com.tokopedia.product_ar.util.ProductArConstant.REQUEST_CODE_CAMERA_PERMISSION
 import com.tokopedia.product_ar.util.ProductArConstant.REQUEST_CODE_IMAGE_PICKER
+import com.tokopedia.product_ar.view.ProductArActivity
+import com.tokopedia.product_ar.view.ProductArListener
 import com.tokopedia.product_ar.view.bottomsheet.ProductArBottomSheetBuilder
+import com.tokopedia.product_ar.view.partialview.PartialBottomArView
 import com.tokopedia.product_ar.viewmodel.ProductArViewModel
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 
-class ProductArFragment : Fragment(), ProductArListener {
+class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMakeupEngineDetectionCallback {
 
     companion object {
         @JvmStatic
@@ -67,6 +79,8 @@ class ProductArFragment : Fragment(), ProductArListener {
     private var animatedTextIcon1: AnimatedTextIcon? = null
     private var animatedTextIcon2: AnimatedTextIcon? = null
     private var productArToolbar: NavToolbar? = null
+    private var arViewLoader: LoaderUnify? = null
+    private var icComparison: ImageUnify? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -91,17 +105,30 @@ class ProductArFragment : Fragment(), ProductArListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mMakeupView = view.findViewById(R.id.main_img)
+        initView(view)
+
+        arViewLoader?.show()
+        icComparison?.setOnClickListener {
+            getArActivity()?.goToArComparisonFragment()
+        }
+
+        getMakeUpEngine()?.setDetectionCallbackForCameraFeed(this)
         getMakeUpEngine()?.attachMakeupView(mMakeupView)
         setupLiveCamera()
-        partialBottomArView = PartialBottomArView.build(view, this)
-
-        setupAnimatedTextIcon(view)
-        setupNavToolbar(view)
+        setupNavToolbar()
     }
 
-    private fun setupNavToolbar(view: View) {
+    private fun initView(view: View) {
+        icComparison = view.findViewById(R.id.ic_compare_ar)
+        mMakeupView = view.findViewById(R.id.main_img)
+        arViewLoader = view.findViewById(R.id.ar_loader)
+        animatedTextIcon2 = view.findViewById(R.id.animated_txt_icon_2)
+        animatedTextIcon1 = view.findViewById(R.id.animated_txt_icon_1)
         productArToolbar = view.findViewById(R.id.product_ar_toolbar)
+        partialBottomArView = PartialBottomArView.build(view, this)
+    }
+
+    private fun setupNavToolbar() {
         activity?.let { activity ->
             productArToolbar?.let {
                 productArToolbar?.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
@@ -122,11 +149,6 @@ class ProductArFragment : Fragment(), ProductArListener {
         }
     }
 
-    private fun setupAnimatedTextIcon(view: View) {
-        animatedTextIcon2 = view.findViewById(R.id.animated_txt_icon_2)
-        animatedTextIcon1 = view.findViewById(R.id.animated_txt_icon_1)
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         observeData()
@@ -134,18 +156,53 @@ class ProductArFragment : Fragment(), ProductArListener {
 
     private fun setupLiveCamera() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.CAMERA), 123)
+            requestPermissions(arrayOf(Manifest.permission.CAMERA), REQUEST_CODE_CAMERA_PERMISSION)
         } else {
             getMakeUpEngine()?.startRunningWithCamera(context)
         }
     }
 
-    private fun setupUseImageCamera(drawablePath: String) {
-        val selectedImage = BitmapFactory.decodeFile(drawablePath)
+    private fun getBitmapFromPath(path: String): Bitmap? {
+        return try {
+            val file = File(path)
+            if (file.exists()) {
+                return BitmapFactory.decodeFile(path)
+            } else {
+                view?.showToasterError("file not exist")
+            }
+            null
+        } catch (e: Throwable) {
+            view?.showToasterError("error try catch ${e.localizedMessage}")
+            null
+        }
+    }
 
-        getMakeUpEngine()?.clearMakeupLook()
-        getMakeUpEngine()?.startRunningWithPhoto(selectedImage, false)
-        getMakeUpEngine()?.setMakeupLook((viewModel?.mfeMakeUpLook?.value as? Success)?.data)
+    private fun setupUseImageCamera(drawablePath: String) {
+        val selectedImageBitmap = getBitmapFromPath(drawablePath)
+
+        selectedImageBitmap?.let {
+            getMakeUpEngine()?.clearMakeupLook()
+            getMakeUpEngine()?.startRunningWithPhoto(it, false,
+                    object : MFEMakeupEngine.MFEMakeupEngineDetectionCallback {
+                        override fun onMFEMakeupFinishedDetection(p0: MFETrackingData?) {
+                            if (p0?.hasFacePoints() == false) {
+                                // Looks like the image did not contain a face
+                                // Ask your user to upload another
+                                Log.e("asd", "no face bro")
+                            }
+                        }
+
+                    },
+                    object : MFEMakeupEngine.MFEMakeupEngineImageProcessedCallback {
+                        override fun onMFEMakeupFinishedProcessingImage(p0: MFETrackingData?) {
+                            // Rendering on the image is complete, you can use this
+                            // to do things like clear your loader
+                            Log.e("asd", "beres bro")
+                        }
+
+                    })
+            getMakeUpEngine()?.setMakeupLook((viewModel?.mfeMakeUpLook?.value as? Success)?.data)
+        }
     }
 
     private fun setupTextClickMode(view: AnimatedTextIcon,
@@ -163,6 +220,7 @@ class ProductArFragment : Fragment(), ProductArListener {
             }
             AnimatedTextIconClickMode.USE_CAMERA -> {
                 view.setOnClickListener {
+                    arViewLoader?.show()
                     viewModel?.changeMode(ModifaceViewMode.LIVE)
                 }
             }
@@ -177,17 +235,15 @@ class ProductArFragment : Fragment(), ProductArListener {
                 animatedTextIcon1?.run {
                     shouldShowWithAction(it.view1ClickMode != null) {
                         animatedTextIcon1?.renderText(requireContext().getString(it.view1ClickMode!!.textId), it.view1ClickMode.iconUnify)
+                        setupTextClickMode(this, it.view1ClickMode)
                     }
-
-                    setupTextClickMode(this, it.view1ClickMode)
                 }
 
                 animatedTextIcon2?.run {
                     shouldShowWithAction(it.view2ClickMode != null) {
                         animatedTextIcon2?.renderText(requireContext().getString(it.view2ClickMode!!.textId), it.view2ClickMode.iconUnify)
+                        setupTextClickMode(this, it.view2ClickMode)
                     }
-
-                    setupTextClickMode(this, it.view2ClickMode)
                 }
             }
         }
@@ -205,7 +261,7 @@ class ProductArFragment : Fragment(), ProductArListener {
         viewModel?.selectedProductArData?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    partialBottomArView?.renderBottomInfo(it.data)
+                    partialBottomArView?.renderBottomInfoText(it.data)
                 }
                 is Fail -> {
                 }
@@ -236,14 +292,11 @@ class ProductArFragment : Fragment(), ProductArListener {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (requestCode == 123) {
+        if (requestCode == REQUEST_CODE_CAMERA_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getMakeUpEngine()?.startRunningWithCamera(context)
             } else {
-                AlertDialog.Builder(requireContext())
-                        .setTitle("Permission Error")
-                        .setMessage("The camera permission is needed for live mode. You must click allow to start the live try-on")
-                        .show()
+                activity?.finish()
             }
         }
     }
@@ -251,15 +304,18 @@ class ProductArFragment : Fragment(), ProductArListener {
     override fun onResume() {
         super.onResume()
         getMakeUpEngine()?.onResume(context)
+        getMakeUpEngine()?.setDetectionCallbackForCameraFeed(this)
     }
 
     override fun onPause() {
         getMakeUpEngine()?.onPause()
+        getMakeUpEngine()?.setDetectionCallbackForCameraFeed(null)
         super.onPause()
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        getMakeUpEngine()?.clearMakeupLook()
         getMakeUpEngine()?.close()
     }
 
@@ -274,6 +330,10 @@ class ProductArFragment : Fragment(), ProductArListener {
                     selectedMfeProduct
             )
         }
+    }
+
+    override fun onButtonClicked(productId: String) {
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -293,9 +353,11 @@ class ProductArFragment : Fragment(), ProductArListener {
 
     private fun onAddImageClick() {
         context?.let {
-            val builder = ImagePickerBuilder.getOriginalImageBuilder(it)
+            val builder = ImagePickerBuilder.getSquareImageBuilder(it)
+                    .withSimpleEditor()
                     .apply {
                         title = it.getString(R.string.txt_image_picker_title)
+                        imageRatioType = ImageRatioType.RATIO_9_16
                     }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
             intent.putImagePickerBuilder(builder)
@@ -304,6 +366,17 @@ class ProductArFragment : Fragment(), ProductArListener {
         }
     }
 
-    private fun getMakeUpEngine(): MFEMakeupEngine? = (activity as? ProductArActivity)?.getMakeUpEngine()
+    private fun getMakeUpEngine(): MFEMakeupEngine? = getArActivity()?.getMakeUpEngine()
 
+    private fun getArActivity(): ProductArActivity? = (activity as? ProductArActivity)
+
+    override fun onMFEMakeupFinishedDetection(p0: MFETrackingData?) {
+        if (p0?.hasFacePoints() == false) {
+            Log.e("asd", "no live face bro")
+        }
+
+        activity?.runOnUiThread {
+            if (arViewLoader?.isShown == true) arViewLoader?.hide()
+        }
+    }
 }

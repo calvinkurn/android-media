@@ -1,4 +1,4 @@
-package com.tokopedia.product_ar.view
+package com.tokopedia.product_ar.view.partialview
 
 import android.graphics.Paint
 import android.view.View
@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.model.ModifaceUiModel
 import com.tokopedia.product_ar.model.ProductAr
+import com.tokopedia.product_ar.view.ProductArListener
 import com.tokopedia.product_ar.view.adapter.VariantArAdapter
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
@@ -37,7 +38,7 @@ class PartialBottomArView private constructor(val view: View, val listener: Prod
         adapter.updateList(data)
     }
 
-    fun renderBottomInfo(data: ProductAr) {
+    fun renderBottomInfoText(data: ProductAr) {
         atcButton.text = data.button.text
         txtStock.text = data.stockCopy
         renderCampaign(data)

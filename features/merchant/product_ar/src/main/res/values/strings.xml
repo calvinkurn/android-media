@@ -8,4 +8,6 @@
     <string name="txt_animated_text_icon_take_from_gallery">Ambil dari Galeri</string>
     <string name="txt_animated_text_icon_change_photo">Ganti Foto</string>
     <string name="txt_animated_text_icon_use_camera">Pakai Kamera</string>
+
+    <string name="txt_comparison_desc">Kamu bisa pilih hingga 4 varian untuk dibandingkan.</string>
 </resources>

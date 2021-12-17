@@ -1,7 +1,8 @@
 package com.tokopedia.product_ar.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.product_ar.view.ProductArFragment
+import com.tokopedia.product_ar.view.fragment.ProductArComparisonFragment
+import com.tokopedia.product_ar.view.fragment.ProductArFragment
 import dagger.Component
 
 @ProductArScope
@@ -11,4 +12,5 @@ import dagger.Component
         dependencies = [BaseAppComponent::class])
 interface ProductArComponent {
     fun inject(fragment: ProductArFragment)
+    fun inject(fragment: ProductArComparisonFragment)
 }
