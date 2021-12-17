@@ -2595,8 +2595,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         replyBubbleOnBoarding.dismiss()
         val bs = TopchatBottomSheetBuilder.getLongClickBubbleMenuBs(
             context, msg, menus
-        ) { id, msg ->
-            when (id) {
+        ) { itemMenu, msg ->
+            analytics.eventClickMsgMenu(itemMenu.title)
+            when (itemMenu.id) {
                 MENU_ID_REPLY -> replyCompose?.composeReplyData(msg, text, true)
                 MENU_ID_COPY_TO_CLIPBOARD -> copyToClipboard(text)
                 MENU_ID_DELETE_BUBBLE -> confirmDeleteBubble(msg)
