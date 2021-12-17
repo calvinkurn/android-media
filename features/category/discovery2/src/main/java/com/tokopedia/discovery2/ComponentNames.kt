@@ -97,5 +97,6 @@ enum class ComponentNames(val componentName: String) {
     CalendarWidgetCarousel("calendar"),
     CalendarWidgetGrid("calendar_grid"),
     CalendarWidgetItem("calendar_item"),
+    ShimmerCalendarWidget("shimmer_calendar_widget"),
 
 }
