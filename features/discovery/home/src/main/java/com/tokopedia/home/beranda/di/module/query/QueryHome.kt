@@ -113,27 +113,4 @@ internal object QueryHome {
             "            }\n" +
             "          }\n" +
             "        }"
-
-    val homeIconQuery: String = "" +
-            "query homeIcon(\$param: String, \$location: String)\n" +
-            "        {\n" +
-            "          dynamicHomeIcon {\n" +
-            "            dynamicIcon(param: \$param, location: \$location) {\n" +
-            "              id\n" +
-            "              galaxy_attribution\n" +
-            "              persona\n" +
-            "              brand_id\n" +
-            "              category_persona\n" +
-            "              name\n" +
-            "              url\n" +
-            "              imageUrl\n" +
-            "              applinks\n" +
-            "              bu_identifier\n" +
-            "              campaignCode\n" +
-            "              withBackground\n" +
-            "            }\n" +
-            "          }\n" +
-            "        }"
-
-
 }
