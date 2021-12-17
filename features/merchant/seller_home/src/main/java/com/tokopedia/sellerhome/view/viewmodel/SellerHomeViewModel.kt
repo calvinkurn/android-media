@@ -175,7 +175,8 @@ class SellerHomeViewModel @Inject constructor(
     fun getWidgetLayout(heightDp: Float? = null) {
         launchCatchError(block = {
             val params = GetLayoutUseCase.getRequestParams(shopId, SELLER_HOME_PAGE_NAME)
-            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
+            val isNewDashboardEnabled = remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            if (isNewDashboardEnabled) {
                 getLayoutUseCase.get().run {
                     if (heightDp == null) {
                         startCollectingResult(_widgetLayout)

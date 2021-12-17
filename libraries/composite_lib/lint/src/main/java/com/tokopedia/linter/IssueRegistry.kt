@@ -2,14 +2,7 @@ package com.tokopedia.linter
 
 import com.android.tools.lint.client.api.IssueRegistry
 import com.android.tools.lint.detector.api.CURRENT_API
-import com.tokopedia.linter.detectors.AnimatedVectorDetector
-import com.tokopedia.linter.detectors.DimenResourceValueDetector
-import com.tokopedia.linter.detectors.ResourcePackageDetector
-import com.tokopedia.linter.detectors.UnsupportedColorDetector
-import com.tokopedia.linter.detectors.VectorDrawableDetector
-import com.tokopedia.linter.detectors.DeprecatedResourceDetector
-import com.tokopedia.linter.detectors.ResponseFieldAnnotationDetector
-import com.tokopedia.linter.detectors.UnifyBackgroundDetector
+import com.tokopedia.linter.detectors.*
 import com.tokopedia.linter.detectors.gradle.BannedDependencyDetector.DEPENDENCY_BANNED
 import com.tokopedia.linter.detectors.gradle.DeprecatedDependencyDetector.DEPENDENCY_DEPRECATED
 import com.tokopedia.linter.detectors.gradle.HANSEL_REQUIRED
@@ -37,7 +30,8 @@ class IssueRegistry : IssueRegistry() {
                 DeprecatedResourceDetector.ISSUE,
                 ResponseFieldAnnotationDetector.ISSUE,
                 UnifyBackgroundDetector.ISSUE,
-                HANSEL_REQUIRED
+                HANSEL_REQUIRED,
+                DimenUsageDetector.XML_ISSUE
         )
 
     override val minApi: Int
