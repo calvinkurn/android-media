@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -458,11 +459,15 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun observeShopProductFilterParameterSharedViewModel() {
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.observe(viewLifecycleOwner, Observer {
-            if (!shopHomeAdapter.isLoading) {
+            if (!shopHomeAdapter.isLoading && getSelectedFragment() != this) {
                 shopProductFilterParameter = it
                 changeSortData(sortId)
             }
         })
+    }
+
+    private fun getSelectedFragment(): Fragment? {
+        return (parentFragment as? NewShopPageFragment)?.getSelectedFragmentInstance()
     }
 
     override fun onResume() {
