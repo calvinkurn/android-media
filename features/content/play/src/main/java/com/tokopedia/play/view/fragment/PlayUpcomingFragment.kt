@@ -112,6 +112,15 @@ class PlayUpcomingFragment @Inject constructor(
         )
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        shareExperienceView.handleRequestPermissionResult(requestCode, grantResults)
+    }
+
     private fun sendImpression() {
         playUpcomingViewModel.submitAction(ImpressUpcomingChannel)
     }
