@@ -14,6 +14,7 @@ import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 
 import com.tokopedia.search.R
+import timber.log.Timber
 
 class CountDrawable(context: Context) : Drawable() {
 
@@ -49,6 +50,7 @@ class CountDrawable(context: Context) : Drawable() {
             ContextCompat.getColor(context, colorId)
         }
         catch (throwable: Throwable) {
+            Timber.w(throwable)
             0
         }
     }
