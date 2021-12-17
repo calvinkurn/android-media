@@ -20,11 +20,7 @@ data class LocalCacheModel (
         @SerializedName("shop_id")
         val shop_id: String = "",
         @SerializedName("warehouse_id")
-        val warehouse_id: String = "",
-        @SerializedName("service_type")
-        val service_type: String = "",
-        @SerializedName("warehouses")
-        val warehouses: String = ""
+        val warehouse_id: String = ""
 ) {
 
     /**
