@@ -46,10 +46,6 @@ class AttachVoucherViewModel @Inject constructor(
     }
 
     fun loadVouchers(page: Int) {
-        if (isLoading) {
-            cancelCurrentLoad()
-        }
-
         startLoading()
         currentPage = page
         launchCatchError(block = {
@@ -68,7 +64,12 @@ class AttachVoucherViewModel @Inject constructor(
     }
 
     private fun startLoading() {
-        isLoading = true
+        if (isLoading) {
+            cancelCurrentLoad()
+            isLoading = true
+        } else {
+            isLoading = true
+        }
     }
 
     fun cancelCurrentLoad() {
@@ -79,10 +80,12 @@ class AttachVoucherViewModel @Inject constructor(
     private fun generateParams(page: Int, filter: Int): FilterParam {
         val paramMVFilter = GetVoucherParam(GetVoucherUseCase.MVFilter.VoucherStatus.paramOnGoing, GetVoucherUseCase.MVFilter.PerPage.default, page)
 
-        if (filter != GetVoucherUseCase.MVFilter.VoucherType.noFilter) {
+        return if (filter != GetVoucherUseCase.MVFilter.VoucherType.noFilter) {
             paramMVFilter.voucher_type = filter
+            FilterParam(paramMVFilter)
+        } else {
+            FilterParam(paramMVFilter)
         }
-        return FilterParam(paramMVFilter)
     }
 
     fun hasNoFilter(): Boolean {

@@ -16,8 +16,7 @@ import com.tokopedia.attachvoucher.view.viewmodel.AttachVoucherViewModel.Compani
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert.assertFalse
-import junit.framework.Assert.assertTrue
+import junit.framework.Assert.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -114,6 +113,20 @@ class AttachVoucherViewModelTest {
     }
 
     @Test
+    fun `Filter cashback not clicked`() {
+        // Given
+        coEvery {
+            getVoucherUseCase(any())
+        } returns Dummy.exVouchers
+
+        // When
+        viewModel.loadVouchers(Dummy.firstPage)
+
+        // Then
+        assertTrue(viewModel.hasNoFilter())
+    }
+
+    @Test
     fun `Filter cashback clicked twice`() {
         // When
         viewModel.toggleFilter(VoucherType.paramCashback)
@@ -162,6 +175,19 @@ class AttachVoucherViewModelTest {
     }
 
     @Test
+    fun `hasn't next get from use case`() {
+        coEvery {
+            getVoucherUseCase.hasNext
+        } returns false
+
+        // When
+        viewModel.loadVouchers(Dummy.firstPage)
+
+        // Then
+        assertFalse(viewModel.hasNext)
+    }
+
+    @Test
     fun `currentPage is updated when load voucher`() {
         // Given
         coEvery {
@@ -172,20 +198,18 @@ class AttachVoucherViewModelTest {
         viewModel.loadVouchers(Dummy.firstPage)
 
         // Then
-        assertTrue(viewModel.currentPage == Dummy.firstPage)
+        assertEquals(viewModel.currentPage, Dummy.firstPage)
     }
 
     @Test
     fun `filter toogle is clicked`() {
         //Given
-        val dummyParam = AttachVoucherViewModel.PARAM_FILTER
         viewModel.toggleFilter(1)
         coVerify { filterObserver.onChanged(1) }
     }
 
     @Test
     fun `filter toogle is clicked twice`() {
-        val dummyParam = AttachVoucherViewModel.PARAM_FILTER
         viewModel.toggleFilter(1)
         viewModel.toggleFilter(1)
         coVerify { filterObserver.onChanged(-1) }
