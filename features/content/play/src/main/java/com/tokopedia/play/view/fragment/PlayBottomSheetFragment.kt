@@ -244,6 +244,7 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     override fun onReportClick(view: KebabMenuSheetViewComponent) {
+        analytic.clickUserReport()
         playViewModel.onShowUserReportSheet(userReportSheetHeight)
         viewModel.getUserReportList()
     }
@@ -275,6 +276,7 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     private fun onSubmitUserReport(reasonId: Int, description: String) {
+        analytic.clickUserReportSubmissionDialogSubmit()
         val channelData = playViewModel.latestCompleteChannelData
 
         viewModel.submitUserReport(
@@ -310,6 +312,9 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     override fun onShowVerificationDialog(view: PlayUserReportSubmissionViewComponent, reasonId: Int, description: String) {
+        val isUse = description.isNotEmpty()
+        analytic.clickUserReportSubmissionBtnSubmit(isUse)
+
         showDialog(title = getString(R.string.play_user_report_verification_dialog_title), description = getString(R.string.play_user_report_verification_dialog_desc),
         primaryCTAText = getString(R.string.play_user_report_verification_dialog_btn_ok), secondaryCTAText = getString(R.string.play_pip_cancel),
         primaryAction = {

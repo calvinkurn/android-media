@@ -1642,6 +1642,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onKebabMenuClick(view: KebabMenuViewComponent) {
+        analytic.clickKebabMenu()
         playViewModel.onShowKebabMenuSheet(bottomSheetMenuMaxHeight)
     }
 
