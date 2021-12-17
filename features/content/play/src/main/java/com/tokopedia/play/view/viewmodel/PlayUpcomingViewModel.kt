@@ -207,9 +207,9 @@ class PlayUpcomingViewModel @Inject constructor(
             ClickFollowUpcomingAction -> handleClickFollow(isFromLogin = false)
             ClickPartnerNameUpcomingAction -> handleClickPartnerName()
             is OpenUpcomingPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
-            ClickShareUpcomingAction -> handleClickShare()
+            ClickShareUpcomingAction -> handleOpenSharingOption(false)
+            ScreenshotTakenUpcomingAction -> handleOpenSharingOption(true)
             CloseSharingOptionUpcomingAction -> handleCloseSharingOption()
-            ScreenshotTakenUpcomingAction -> handleTakeScreenshotForSharing()
             is ClickSharingOptionUpcomingAction -> handleSharingOption(action.shareModel)
             is SharePermissionUpcomingAction -> handleSharePermission(action.label)
         }
@@ -362,8 +362,13 @@ class PlayUpcomingViewModel @Inject constructor(
         }
     }
 
-    private fun openSharingOption() {
+    private fun handleOpenSharingOption(isScreenshot: Boolean) {
         viewModelScope.launch {
+            if(isScreenshot)
+                playAnalytic.takeScreenshotForSharing(mChannelId, channelType.value)
+            else
+                playAnalytic.clickShareButton(mChannelId, channelType.value)
+
             if(playShareExperience.isCustomSharingAllow()) {
                 playAnalytic.impressShareBottomSheet(mChannelId, channelType.value)
 
@@ -374,7 +379,7 @@ class PlayUpcomingViewModel @Inject constructor(
                     channelId = mChannelId
                 ))
             }
-            else {
+            else if(!isScreenshot) {
                 handleCopyLink()
             }
         }
@@ -382,16 +387,6 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private fun handleCloseSharingOption() {
         playAnalytic.closeShareBottomSheet(mChannelId, channelType.value, playShareExperience.isScreenshotBottomSheet())
-    }
-
-    private fun handleClickShare() {
-        playAnalytic.clickShareButton(mChannelId, channelType.value)
-        openSharingOption()
-    }
-
-    private fun handleTakeScreenshotForSharing() {
-        playAnalytic.takeScreenshotForSharing(mChannelId, channelType.value)
-        openSharingOption()
     }
 
     private fun handleSharingOption(shareModel: ShareModel) {

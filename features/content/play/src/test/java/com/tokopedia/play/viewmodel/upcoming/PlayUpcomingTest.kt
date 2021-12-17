@@ -798,6 +798,8 @@ class PlayUpcomingTest {
 
         val shareModel = ShareModel.Whatsapp()
 
+        val mockCloseBottomSheet = PlayUpcomingUiEvent.CloseShareExperienceBottomSheet
+
         val mockEvent = PlayUpcomingUiEvent.OpenSelectedSharingOptionEvent(
             linkerShareResult = null,
             shareModel = shareModel,
@@ -821,7 +823,8 @@ class PlayUpcomingTest {
             /** Verify */
             verify { mockPlayNewAnalytic.clickSharingOption(channelId, channelType, shareModel.socialMediaName, false) }
 
-            event.last().isEqualTo(mockEvent)
+            event[0].isEqualTo(mockCloseBottomSheet)
+            event[1].isEqualTo(mockEvent)
         }
     }
 
@@ -833,6 +836,8 @@ class PlayUpcomingTest {
         fakePlayShareExperience.setThrowException(true)
 
         val shareModel = ShareModel.Whatsapp()
+
+        val mockCloseBottomSheet = PlayUpcomingUiEvent.CloseShareExperienceBottomSheet
 
         val mockCopyEvent = PlayUpcomingUiEvent.CopyToClipboardEvent(
             shareInfo.content
@@ -859,8 +864,9 @@ class PlayUpcomingTest {
             /** Verify */
             verify { mockPlayNewAnalytic.clickSharingOption(channelId, channelType, shareModel.socialMediaName, false) }
 
-            event[0].isEqualTo(mockCopyEvent)
-            event[1].isEqualToIgnoringFields(mockShowInfoEvent, ShowInfoEvent::message)
+            event[0].isEqualTo(mockCloseBottomSheet)
+            event[1].isEqualTo(mockCopyEvent)
+            event[2].isEqualToIgnoringFields(mockShowInfoEvent, ShowInfoEvent::message)
         }
     }
 

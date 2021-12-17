@@ -732,9 +732,9 @@ class PlayViewModel @Inject constructor(
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
             ClickLikeAction -> handleClickLike(isFromLogin = false)
             RefreshLeaderboard -> handleRefreshLeaderboard()
-            ClickShareAction -> handleClickShare()
+            ClickShareAction -> handleOpenSharingOption(false)
+            ScreenshotTakenAction -> handleOpenSharingOption(true)
             CloseSharingOptionAction -> handleCloseSharingOption()
-            ScreenshotTakenAction -> handleTakeScreenshotForSharing()
             is ClickSharingOptionAction -> handleSharingOption(action.shareModel)
             is SharePermissionAction -> handleSharePermission(action.label)
         }
@@ -1834,8 +1834,13 @@ class PlayViewModel @Inject constructor(
         checkLeaderboard(channelId)
     }
 
-    private fun openSharingOption() {
+    private fun handleOpenSharingOption(isScreenshot: Boolean) {
         viewModelScope.launch {
+            if(isScreenshot)
+                playAnalytic.takeScreenshotForSharing(channelId, channelType.value)
+            else
+                playAnalytic.clickShareButton(channelId, channelType.value)
+
             if(playShareExperience.isCustomSharingAllow()) {
                 playAnalytic.impressShareBottomSheet(channelId, channelType.value)
 
@@ -1846,7 +1851,7 @@ class PlayViewModel @Inject constructor(
                     channelId = channelId
                 ))
             }
-            else {
+            else if(!isScreenshot) {
                 handleCopyLink()
             }
         }
@@ -1854,16 +1859,6 @@ class PlayViewModel @Inject constructor(
 
     private fun handleCloseSharingOption() {
         playAnalytic.closeShareBottomSheet(channelId, channelType.value, playShareExperience.isScreenshotBottomSheet())
-    }
-
-    private fun handleClickShare() {
-        playAnalytic.clickShareButton(channelId, channelType.value)
-        openSharingOption()
-    }
-
-    private fun handleTakeScreenshotForSharing() {
-        playAnalytic.takeScreenshotForSharing(channelId, channelType.value)
-        openSharingOption()
     }
 
     private fun handleSharingOption(shareModel: ShareModel) {
