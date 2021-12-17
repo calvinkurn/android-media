@@ -1,4 +1,4 @@
-package com.tokopedia.picker.ui.activity
+package com.tokopedia.picker.ui.activity.main
 
 import android.content.Context
 import android.content.Intent

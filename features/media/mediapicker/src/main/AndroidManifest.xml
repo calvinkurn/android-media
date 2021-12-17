@@ -11,7 +11,7 @@
         android:allowBackup="true"
         android:label="Media Picker">
         <activity
-            android:name=".ui.activity.PickerActivity"
+            android:name=".ui.activity.main.PickerActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
