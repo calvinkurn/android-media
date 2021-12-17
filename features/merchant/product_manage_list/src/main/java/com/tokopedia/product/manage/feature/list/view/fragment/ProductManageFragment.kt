@@ -93,10 +93,6 @@ import com.tokopedia.product.manage.feature.cashback.presentation.fragment.Produ
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_CACHE_MANAGER_KEY
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_PRODUCT_NAME
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_RESULT
-import com.tokopedia.product.manage.feature.etalase.view.activity.EtalasePickerActivity
-import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerFragment.Companion.EXTRA_ETALASE_ID
-import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerFragment.Companion.EXTRA_ETALASE_NAME
-import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerFragment.Companion.REQUEST_CODE_PICK_ETALASE
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
@@ -111,6 +107,7 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_DRAFT_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_EDIT_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_ETALASE
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_PICK_ETALASE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_STOCK_REMINDER
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.SET_CASHBACK_REQUEST_CODE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.URL_TIPS_TRICK
@@ -156,7 +153,8 @@ import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrati
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
-import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
+import com.tokopedia.shop.common.constant.ShowcasePickerType
+import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
@@ -447,7 +445,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, true)
                 putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, false)
             }
-            showcaseListIntent.putExtra(EXTRA_BUNDLE, showcaseListBundle)
+            showcaseListIntent.putExtra(ShopShowcaseParamConstant.EXTRA_BUNDLE, showcaseListBundle)
             startActivityForResult(showcaseListIntent, REQUEST_CODE_ETALASE)
             productManageMoreMenuBottomSheet?.dismiss()
             ProductManageTracking.eventClickMoreMenuShopShowcase()
@@ -1850,8 +1848,20 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     private fun goToEtalasePicker() {
-        val intent = Intent(activity, EtalasePickerActivity::class.java)
-        startActivityForResult(intent, REQUEST_CODE_PICK_ETALASE)
+        context?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
+                .apply {
+                    val bundle = Bundle().apply {
+                        putString(
+                            ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_OPEN_SHOWCASE_PICKER,
+                            ShowcasePickerType.RADIO
+                        )
+                    }
+                    putExtra(ShopShowcaseParamConstant.EXTRA_BUNDLE, bundle)
+                }
+
+            startActivityForResult(intent, REQUEST_CODE_PICK_ETALASE)
+        }
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
@@ -1913,10 +1923,15 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 REQUEST_CODE_PICK_ETALASE -> {
                     if (resultCode == Activity.RESULT_OK) {
                         val productIds = itemsChecked.map { product -> product.id }
-                        val etalaseId = intent.getStringExtra(EXTRA_ETALASE_ID).orEmpty()
-                        val etalaseName = intent.getStringExtra(EXTRA_ETALASE_NAME).orEmpty()
+                        val selectedShowcase: ShowcaseItemPicker = intent.getParcelableExtra(
+                            ShopShowcaseParamConstant.EXTRA_PICKER_SELECTED_SHOWCASE
+                        ) ?: ShowcaseItemPicker()
 
-                        viewModel.editProductsEtalase(productIds, etalaseId, etalaseName)
+                        viewModel.editProductsEtalase(
+                            productIds,
+                            selectedShowcase.showcaseId,
+                            selectedShowcase.showcaseName
+                        )
                     }
                 }
                 REQUEST_CODE_ETALASE -> {
