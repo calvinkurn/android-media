@@ -1,7 +1,6 @@
 package com.tokopedia.play.util.share
 
 import android.content.Context
-import android.util.Log
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -72,7 +71,6 @@ class PlayShareExperienceImpl @Inject constructor(
                 ogUrl = data.redirectUrl
                 type = LinkerData.PLAY_VIEWER
                 uri = data.redirectUrl
-                isThrowOnError = true
 
                 feature = shareModel.feature
                 channel = shareModel.channel
@@ -81,9 +79,6 @@ class PlayShareExperienceImpl @Inject constructor(
                 ogTitle = generateOgTitle()
                 ogDescription = generateOgDescription()
                 ogImageUrl = shareModel.ogImgUrl
-
-                Log.d("<LOG>", "data.coverUrl : ${data.coverUrl}")
-                Log.d("<LOG>", "shareModel.ogImgUrl : ${shareModel.ogImgUrl}")
             }
 
             val linkerShareData = LinkerShareData()
@@ -91,19 +86,15 @@ class PlayShareExperienceImpl @Inject constructor(
             LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0, linkerShareData, object:
                 ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    Log.d("<LOG>", "LinkerShareData shareContents : ${linkerShareData?.shareContents}")
                     listener.onUrlCreated(linkerShareData, shareModel, generateShareString(linkerShareData?.url ?: data.redirectUrl))
                 }
 
                 override fun onError(linkerError: LinkerError?) {
-                    Log.d("<LOG>", "LinkerShareData Error : $linkerError")
                     listener.onError(Exception(linkerError?.errorMessage))
                 }
             }))
         }
         catch (e: Exception) {
-            Log.d("<LOG>", "Catch Error : ${e.message}")
-            Log.d("<LOG>", "Catch Error : ${e.localizedMessage}")
             listener.onError(e)
         }
     }
