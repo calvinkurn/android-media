@@ -2617,6 +2617,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     dismiss()
                 }
                 setPrimaryCTAClickListener {
+                    analytics.eventConfirmDeleteMsg(msg.replyId)
                     deleteBubble(msg)
                     dismiss()
                 }

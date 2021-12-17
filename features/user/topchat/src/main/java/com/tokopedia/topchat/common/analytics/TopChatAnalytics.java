@@ -167,6 +167,7 @@ public class TopChatAnalytics {
         String CLICK_CTA_TICKER = "click cta on smart reply ticker";
         String TAP_AND_HOLD_BUBBLE = "tap and hold bubble chat";
         String CLICK_MSG_MENU = "click menu on atur pesan bottomsheet";
+        String CLICK_CONFIRM_DELETE_MSG = "click confirm delete message";
     }
 
     public interface Label {
@@ -744,6 +745,20 @@ public class TopChatAnalytics {
                         Category.CHAT_DETAIL,
                         Action.CLICK_MSG_MENU,
                         title,
+                        BusinessUnit.CommunicationMedia,
+                        CurrentSite.TokopediaMarketplace,
+                        null
+                )
+        );
+    }
+
+    public void eventConfirmDeleteMsg(String replyId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                createGeneralEvent(
+                        Name.CHAT_DETAIL,
+                        Category.CHAT_DETAIL,
+                        Action.CLICK_CONFIRM_DELETE_MSG,
+                        replyId,
                         BusinessUnit.CommunicationMedia,
                         CurrentSite.TokopediaMarketplace,
                         null
