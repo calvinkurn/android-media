@@ -9,7 +9,6 @@ import com.tokopedia.play.R
 import com.tokopedia.play.ui.product.ProductBasicViewHolder
 import com.tokopedia.play.ui.productfeatured.adapter.ProductFeaturedAdapter
 import com.tokopedia.play.ui.productfeatured.itemdecoration.ProductFeaturedItemDecoration
-import com.tokopedia.play.ui.productfeatured.viewholder.ProductFeaturedSeeMoreViewHolder
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
@@ -22,18 +21,14 @@ class ProductFeaturedViewComponent(
 ) : ViewComponent(container, R.id.view_product_featured) {
 
     private val rvProductFeatured: RecyclerView = findViewById(R.id.rv_product_featured)
+    private val featuredProduct = mutableListOf<PlayProductUiModel>()
 
     private val adapter = ProductFeaturedAdapter(
-            productFeaturedListener = object : ProductBasicViewHolder.Listener {
-                override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
-                    listener.onProductFeaturedClicked(this@ProductFeaturedViewComponent, product, position)
-                }
-            },
-            productSeeMoreListener = object : ProductFeaturedSeeMoreViewHolder.Listener {
-                override fun onSeeMoreClicked() {
-                    listener.onSeeMoreClicked(this@ProductFeaturedViewComponent)
-                }
+        productFeaturedListener = object : ProductBasicViewHolder.Listener {
+            override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
+                listener.onProductFeaturedClicked(this@ProductFeaturedViewComponent, product, position)
             }
+        }
     )
 
     private val scrollListener = object: RecyclerView.OnScrollListener(){
@@ -52,6 +47,7 @@ class ProductFeaturedViewComponent(
     private var isProductsInitialized = false
 
     init {
+        rvProductFeatured.itemAnimator = null
         rvProductFeatured.layoutManager = layoutManager
         rvProductFeatured.adapter = adapter
         rvProductFeatured.addItemDecoration(ProductFeaturedItemDecoration(rvProductFeatured.context))
@@ -64,6 +60,9 @@ class ProductFeaturedViewComponent(
 
         if (featuredItems.isEmpty()) hide()
         else show()
+
+        featuredProduct.clear()
+        featuredProduct.addAll(featuredItems)
 
         sendImpression()
     }
@@ -79,12 +78,7 @@ class ProductFeaturedViewComponent(
     }
 
     private fun getFinalFeaturedItems(products: List<PlayProductUiModel>, maxProducts: Int): List<PlayProductUiModel> {
-        val featuredProducts = products.take(maxProducts)
-        return if (featuredProducts.isNotEmpty()) {
-            if (featuredProducts.first() is PlayProductUiModel.Product && featuredProducts.last() != PlayProductUiModel.SeeMore) featuredProducts + PlayProductUiModel.SeeMore
-            else featuredProducts
-        }
-        else featuredProducts
+        return products.take(maxProducts)
     }
 
     private fun getPlaceholder() = List(TOTAL_PLACEHOLDER) { PlayProductUiModel.Placeholder }
@@ -121,7 +115,6 @@ class ProductFeaturedViewComponent(
     }
 
     companion object {
-
         private const val TOTAL_PLACEHOLDER = 3
     }
 
@@ -129,6 +122,5 @@ class ProductFeaturedViewComponent(
 
         fun onProductFeaturedImpressed(view: ProductFeaturedViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>)
         fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int)
-        fun onSeeMoreClicked(view: ProductFeaturedViewComponent)
     }
 }

@@ -84,6 +84,8 @@
             android:layout_width="@dimen/gmc_dimen_112dp"
             android:layout_height="@dimen/gmc_dimen_112dp"
             android:layout_marginTop="@dimen/gmc_dimen_10dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvPmShopGradeStatus"
@@ -136,9 +138,10 @@
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/guidelinePmShopGradeRight"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guidelinePmShopGradeLeft"
         app:layout_constraintTop_toBottomOf="@+id/wrapperPmShopScore"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="0.16"
         app:typographyType="body_2"
         tools:text="@string/pm_shop_grade_shop_score_threshold_description_pm_active" />
 
@@ -146,15 +149,14 @@
         android:id="@+id/pmProStatusInfoView"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginBottom="@dimen/layout_lvl2"
         android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/guidelinePmShopGradeRight"
         app:layout_constraintStart_toStartOf="@+id/guidelinePmShopGradeLeft"
-        app:layout_constraintTop_toBottomOf="@+id/wrapperPmShopScore"
-        app:layout_constraintVertical_bias="0.0"
-        tools:layout_height="48dp" />
+        app:layout_constraintTop_toBottomOf="@+id/tvPmShopGradeThreshold" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icPmShopScoreTips"
@@ -168,7 +170,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guidelinePmShopGradeLeft"
         app:layout_constraintTop_toBottomOf="@+id/tvPmShopGradeThreshold"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmShopScoreTips"
@@ -183,5 +185,5 @@
         app:layout_constraintStart_toEndOf="@+id/icPmShopScoreTips"
         app:layout_constraintTop_toTopOf="@+id/icPmShopScoreTips"
         app:typographyType="heading_5"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 </androidx.constraintlayout.widget.ConstraintLayout>

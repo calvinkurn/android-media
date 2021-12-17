@@ -2,6 +2,7 @@ package com.tokopedia.logisticaddaddress.domain.usecase
 
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
 import com.tokopedia.logisticaddaddress.domain.executor.SchedulerProvider
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictRecommendationResponse
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictZipcodes
@@ -17,7 +18,7 @@ class GetZipCodeUseCase
                 "query" to districtId,
                 "page" to "1"
         )
-        val gqlRequest = GraphqlRequest(query_kero_get_district_details,
+        val gqlRequest = GraphqlRequest(KeroLogisticQuery.getDistrictDetails,
                 DistrictZipcodes::class.java, param)
         gql.clearRequest()
         gql.addRequest(gqlRequest)
@@ -38,21 +39,4 @@ class GetZipCodeUseCase
     }
 
 }
-
-val query_kero_get_district_details = """
-query KeroDistrictQuery(${'$'}query: String, ${'$'}page: String){
-  keroGetDistrictDetails(query: ${'$'}query, page: ${'$'}page) {
-    district {
-      district_id
-      district_name
-      city_id
-      city_name
-      province_id
-      province_name
-      zip_code
-    }
-    next_available
-  }
-}
-""".trimIndent()
 

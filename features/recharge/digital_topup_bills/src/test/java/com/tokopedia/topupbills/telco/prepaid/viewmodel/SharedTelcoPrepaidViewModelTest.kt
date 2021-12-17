@@ -2,13 +2,14 @@ package com.tokopedia.topupbills.telco.prepaid.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
+import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.topupbills.telco.JsonToString
 import com.tokopedia.topupbills.telco.data.TelcoCatalogProductInputMultiTab
 import com.tokopedia.topupbills.telco.data.TelcoProduct
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -26,6 +27,9 @@ class SharedTelcoPrepaidViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+
     lateinit var sharedTelcoPrepaidViewModel: SharedTelcoPrepaidViewModel
 
     @MockK
@@ -36,7 +40,7 @@ class SharedTelcoPrepaidViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         gson = Gson()
-        sharedTelcoPrepaidViewModel = SharedTelcoPrepaidViewModel(graphqlRepository, Dispatchers.Unconfined)
+        sharedTelcoPrepaidViewModel = SharedTelcoPrepaidViewModel(graphqlRepository, coroutineTestRule.dispatchers)
     }
 
     @Test
@@ -49,20 +53,6 @@ class SharedTelcoPrepaidViewModelTest {
         val actualData = sharedTelcoPrepaidViewModel.productCatalogItem.value
         assertEquals(productCatalogItem.id, actualData?.id)
     }
-
-//    @Test
-//    fun setExpandInputNumberView_validData() = runBlockingTest {
-//        pauseDispatcher {
-//            sharedTelcoPrepaidViewModel.setExpandInputNumberView(true)
-//
-//            runCurrent()
-//            advanceTimeBy(200)
-//
-//            //then
-//            val actualData = sharedTelcoPrepaidViewModel.expandView.value
-//            assertEquals(true, actualData)
-//        }
-//    }
 
     @Test
     fun setProductAutoCheckout_validData() {
@@ -84,17 +74,6 @@ class SharedTelcoPrepaidViewModelTest {
         //then
         val actualData = sharedTelcoPrepaidViewModel.positionScrollItem.value
         assertEquals(position, actualData)
-    }
-
-    @Test
-    fun setFavNumberSelected_validData() {
-        //given
-        val favNumber = "08123232323"
-        //when
-        sharedTelcoPrepaidViewModel.setFavNumberSelected(favNumber)
-        //then
-        val actualData = sharedTelcoPrepaidViewModel.favNumberSelected.value
-        assertEquals(favNumber, actualData)
     }
 
     @Test
@@ -138,6 +117,29 @@ class SharedTelcoPrepaidViewModelTest {
     }
 
     @Test
+    fun clearCatalogProductList() {
+        //given
+        val clientNumber = "08152832"
+        val multiTab = gson.fromJson(gson.JsonToString("multitab.json"), TelcoCatalogProductInputMultiTab::class.java)
+        val autoSelectProductId = 9
+
+        val result = HashMap<Type, Any>()
+        result[TelcoCatalogProductInputMultiTab::class.java] = multiTab
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
+        sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1", ArrayList(), autoSelectProductId, clientNumber)
+
+        // when
+        sharedTelcoPrepaidViewModel.clearCatalogProductList()
+
+        // then
+        val actualData = sharedTelcoPrepaidViewModel.productList.value
+        assert(actualData is Success)
+        assert((actualData as Success).data.isEmpty())
+
+    }
+
+    @Test
     fun getCatalogProductList_DataValid_SuccessGetData() {
         //given
         val clientNumber = "08152832"
@@ -147,7 +149,7 @@ class SharedTelcoPrepaidViewModelTest {
         val result = HashMap<Type, Any>()
         result[TelcoCatalogProductInputMultiTab::class.java] = multiTab
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1", ArrayList(), autoSelectProductId, clientNumber)
@@ -159,7 +161,7 @@ class SharedTelcoPrepaidViewModelTest {
         val labelPulsa = (actualData as Success).data[0].label
         assertEquals(false, sharedTelcoPrepaidViewModel.loadingProductList.value)
         assertEquals(multiTab.rechargeCatalogProductDataData.productInputList[0].label, labelPulsa)
-        assertEquals(autoSelectProductId.toString(), sharedTelcoPrepaidViewModel.favNumberSelected.value)
+        assertEquals(autoSelectProductId.toString(), sharedTelcoPrepaidViewModel.selectedProductById.value)
     }
 
     @Test
@@ -172,7 +174,7 @@ class SharedTelcoPrepaidViewModelTest {
         val errors = HashMap<Type, List<GraphqlError>>()
         errors[TelcoCatalogProductInputMultiTab::class.java] = listOf(errorGql)
         val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1", ArrayList(),clientNumber = clientNumber)
@@ -183,17 +185,53 @@ class SharedTelcoPrepaidViewModelTest {
         assert(actualData is Fail)
         val error = (actualData as Fail).throwable
         assertEquals(false, sharedTelcoPrepaidViewModel.loadingProductList.value)
-        assertEquals(null, sharedTelcoPrepaidViewModel.favNumberSelected.value)
+        assertEquals(null, sharedTelcoPrepaidViewModel.selectedProductById.value)
         assertEquals(errorGql.message, error.message)
     }
 
     @Test
-    fun setExpandInputNumberView_shouldShowCorrectData() {
+    fun setExpandInputNumberView_shouldShowCorrectData() = coroutineTestRule.runBlockingTest {
         //given
         sharedTelcoPrepaidViewModel.setExpandInputNumberView(true)
-        Thread.sleep(500)
+        advanceTimeBy(500L)
 
         //then
         assert(sharedTelcoPrepaidViewModel.expandView.value ?: false)
+    }
+
+    @Test
+    fun setInputWidgetFocus_shouldShowCorrectData() {
+        //given
+        sharedTelcoPrepaidViewModel.setInputWidgetFocus(true)
+
+        //then
+        assert(sharedTelcoPrepaidViewModel.inputWidgetFocus.value ?: false)
+    }
+
+    @Test
+    fun setProductListShimmer_shouldShowCorrectData() {
+        //given
+        sharedTelcoPrepaidViewModel.setProductListShimmer(true)
+
+        //then
+        assert(sharedTelcoPrepaidViewModel.loadingProductList.value ?: false)
+    }
+
+    @Test
+    fun setSelectedProductById_shouldShowCorrectData() {
+        //given
+        sharedTelcoPrepaidViewModel.setSelectedProductById("123")
+
+        //then
+        assert(sharedTelcoPrepaidViewModel.selectedProductById.value == "123")
+    }
+
+    @Test
+    fun setResetSelectedProduct_shouldShowCorrectData() {
+        //given
+        sharedTelcoPrepaidViewModel.resetSelectedProduct()
+
+        //then
+        assert(sharedTelcoPrepaidViewModel.resetSelectedProduct.value ?: false)
     }
 }

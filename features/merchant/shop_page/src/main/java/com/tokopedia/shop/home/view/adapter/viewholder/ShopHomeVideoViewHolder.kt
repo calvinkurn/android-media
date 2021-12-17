@@ -13,14 +13,16 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.WidgetShopPageVideoYoutubeBinding
 import com.tokopedia.shop.home.HomeConstant
 import com.tokopedia.shop.home.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.home.view.activity.ShopHomePageYoutubePlayerActivity
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
-import kotlinx.android.synthetic.main.widget_shop_page_video_youtube.view.*
 
 /**
  * Created by rizqiaryansa on 2020-02-26.
@@ -37,7 +39,7 @@ class ShopHomeVideoViewHolder(
         val LAYOUT_RES = R.layout.widget_shop_page_video_youtube
         const val KEY_YOUTUBE_VIDEO_ID = "v"
     }
-
+    private val viewBinding: WidgetShopPageVideoYoutubeBinding? by viewBinding()
     private var youTubeThumbnailShopPageImageUnify: ShopCarouselBannerImageUnify? = null
     private var loaderImageView: LoaderImageView? = null
     private var youTubeVideoModel: ShopHomeDisplayWidgetUiModel? = null
@@ -45,14 +47,15 @@ class ShopHomeVideoViewHolder(
     private var btnYoutubePlayer: AppCompatImageView? = null
     private var ivVideoNotFound: AppCompatImageView? = null
     private var groupVideoError: Group? = null
+    private var textViewTitle: Typography? = viewBinding?.textViewTitle
 
     init {
-        youTubeThumbnailShopPageImageUnify = view.findViewById(R.id.youtube_home_shop_page)
-        btnYoutubePlayer = view.findViewById(R.id.btn_youtube_player)
+        youTubeThumbnailShopPageImageUnify = viewBinding?.youtubeHomeShopPage
+        btnYoutubePlayer = viewBinding?.btnYoutubePlayer
         btnYoutubePlayer?.hide()
-        loaderImageView = view.findViewById(R.id.loaderVideoYoutube)
-        ivVideoNotFound = view.findViewById(R.id.ivVideoNotFound)
-        groupVideoError = view.findViewById(R.id.groupVideoError)
+        loaderImageView = viewBinding?.loaderVideoYoutube
+        ivVideoNotFound = viewBinding?.ivVideoNotFound
+        groupVideoError = viewBinding?.groupVideoError
     }
 
     override fun bind(model: ShopHomeDisplayWidgetUiModel) {
@@ -99,7 +102,7 @@ class ShopHomeVideoViewHolder(
             }
         }
 
-        itemView.textViewTitle?.apply {
+        textViewTitle?.apply {
             if (model.header.title.isEmpty()) {
                 hide()
                 if (previousViewHolder is ShopHomeSliderSquareViewHolder || previousViewHolder is ShopHomeCarousellProductViewHolder) {

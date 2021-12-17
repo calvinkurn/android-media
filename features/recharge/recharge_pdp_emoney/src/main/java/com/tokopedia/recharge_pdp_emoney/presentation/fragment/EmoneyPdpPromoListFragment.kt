@@ -15,12 +15,12 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
 import com.tokopedia.common.topupbills.widget.TopupBillsPromoListWidget
-import com.tokopedia.recharge_pdp_emoney.R
+import com.tokopedia.recharge_pdp_emoney.databinding.FragmentEmoneyPromoListBinding
 import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.presentation.activity.EmoneyPdpActivity
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpPromoListSpaceID
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_emoney_promo_list.*
+import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
 /**
@@ -31,6 +31,8 @@ class EmoneyPdpPromoListFragment : BaseDaggerFragment(), TopupBillsPromoListWidg
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private var binding by autoCleared<FragmentEmoneyPromoListBinding>()
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -38,7 +40,8 @@ class EmoneyPdpPromoListFragment : BaseDaggerFragment(), TopupBillsPromoListWidg
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_emoney_promo_list, container, false)
+        binding = FragmentEmoneyPromoListBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,17 +52,17 @@ class EmoneyPdpPromoListFragment : BaseDaggerFragment(), TopupBillsPromoListWidg
     private fun renderView() {
         val promoData = arguments?.getParcelableArrayList<TopupBillsPromo>(EXTRA_PROMOS)
                 ?: arrayListOf()
-        emoneyPdpPromoListWidget.setPromoList(promoData)
+        binding.emoneyPdpPromoListWidget.setPromoList(promoData)
 
         val showTitle = arguments?.getBoolean(EXTRA_SHOW_TITLE) ?: false
-        emoneyPdpPromoListWidget.toggleTitle(showTitle)
+        binding.emoneyPdpPromoListWidget.toggleTitle(showTitle)
 
-        emoneyPdpPromoListWidget.getRecyclerView().addItemDecoration(EmoneyPdpPromoListSpaceID())
-        emoneyPdpPromoListWidget.setListener(this)
+        binding.emoneyPdpPromoListWidget.getRecyclerView().addItemDecoration(EmoneyPdpPromoListSpaceID())
+        binding.emoneyPdpPromoListWidget.setListener(this)
     }
 
-    override fun onCopiedPromoCode(promoId: Int, voucherCode: String) {
-        emoneyPdpPromoListWidget.notifyPromoItemChanges(promoId)
+    override fun onCopiedPromoCode(promoId: String, voucherCode: String) {
+        binding.emoneyPdpPromoListWidget.notifyPromoItemChanges(promoId)
 
         activity?.let {
             val clipboard = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager

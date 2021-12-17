@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.tokopoints.view.model.CatalogGqlError
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.util.Resources
 import com.tokopedia.tokopoints.view.util.Success
@@ -40,38 +41,19 @@ open class CatalogPurchaseRedeemptionViewModel(private val repository: CatalogPu
                 ))
             }
         }) {
-            if (it is MessageErrorException) {
-                val errorsMessage = it.message?.split(",")?.get(0)?.split("|")?.toTypedArray()
-                if (errorsMessage != null && errorsMessage.size > 0) {
-                    var desc: String? = null
-                    var title: String = errorsMessage[0]
-                    var validateResponseCode = 0
-                    if (errorsMessage.size == 1) {
-                        val rawString = errorsMessage[0].split(".").toTypedArray()
-                        if (rawString.size >= 2) {
-                            val rawTitle = rawString[0]
-                            val rawDesc = rawString[1]
-
-                            if (rawTitle.isNotEmpty()) {
-                                title = rawTitle
-                            }
-                            if (rawDesc.isNotEmpty()) {
-                                desc = rawDesc
-                            }
-                        }
-                    }
-                    if (errorsMessage.size >= 2) {
-                        desc = errorsMessage[1]
-                    }
-                    if (errorsMessage.size >= 3) validateResponseCode = errorsMessage[2].toInt()
-                    startSaveCouponLiveData.value = ValidationError(ValidateMessageDialog(item, title, desc
-                            ?: "", validateResponseCode))
+            if (it is CatalogGqlError) {
+                var responseCode = 0
+                val errorsMessage = it.developerMessage?.split(",")?.get(0)?.split("|")?.toTypedArray()
+                val onlyDigits: Boolean = errorsMessage.last().matches(Regex("[0-9]+"))
+                if (onlyDigits) {
+                    responseCode = errorsMessage.last().toInt()
+                }
+                val detailedErrorMessage = it.messageErrorException.message ?: ""
+                    startSaveCouponLiveData.value = ValidationError(ValidateMessageDialog(detailedErrorMessage ,responseCode))
                 }
             }
         }
     }
 
-}
-
-data class ValidateMessageDialog(val item: CatalogsValueEntity, val title: String?, val desc: String, val messageCode: Int)
+data class ValidateMessageDialog( val desc: String, val messageCode: Int)
 data class ConfirmRedeemDialog(val cta: String?, val code: String?, val title: String?, val description: String ?, val redeemMessage:String?)

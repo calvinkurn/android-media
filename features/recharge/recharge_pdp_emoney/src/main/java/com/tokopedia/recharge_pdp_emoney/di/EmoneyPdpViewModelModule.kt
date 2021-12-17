@@ -10,6 +10,7 @@ import com.tokopedia.recharge_pdp_emoney.presentation.viewmodel.EmoneyPdpViewMod
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
+import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpScope
 
 /**
  * @author by jessica on 29/03/21

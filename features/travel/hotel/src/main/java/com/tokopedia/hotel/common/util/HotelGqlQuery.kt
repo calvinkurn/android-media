@@ -449,6 +449,8 @@ object HotelGqlQuery {
             hotelTransportDetails{
               paymentType
               isShowEVoucher
+              contactButtonWording
+              tickerContactHotel
               guestDetail{
                 title
                 content
@@ -668,6 +670,28 @@ object HotelGqlQuery {
             sumCoupon
             sumCouponStr
             sumCouponUnitOpt
+          }
+        }
+    """.trimIndent()
+
+    val HOTEL_NEARBY_LANDMARKS = """
+        query propertySearchPlace(${'$'}data :PropertySearchPlaceRequest!){
+          propertySearchPlace(input:${'$'}data){
+            result{
+              type
+              header
+              icon
+              places{
+                name
+                icon
+                geoLocation{
+                  latitude
+                  longitude
+                }
+                distance
+              }
+            }
+            information
           }
         }
     """.trimIndent()

@@ -1,5 +1,7 @@
 package com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation;
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -17,12 +19,15 @@ public class PromoStacking {
     @SerializedName("title")
     @Expose
     private String title;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("service_id")
     @Expose
     private Integer serviceId;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("shipper_id")
     @Expose
     private Integer shipperId;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("shipper_product_id")
     @Expose
     private Integer shipperProductId;
@@ -74,6 +79,9 @@ public class PromoStacking {
     @SerializedName("is_bebas_ongkir_extra")
     @Expose
     private boolean isBebasOngkirExtra;
+    @SerializedName("texts")
+    @Expose
+    private Texts texts = new Texts();
 
     public Integer getIsPromo() {
         return isPromo;
@@ -245,5 +253,9 @@ public class PromoStacking {
 
     public boolean isBebasOngkirExtra() {
         return isBebasOngkirExtra;
+    }
+
+    public Texts getTexts() {
+        return texts;
     }
 }

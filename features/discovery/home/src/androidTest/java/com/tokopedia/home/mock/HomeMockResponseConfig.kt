@@ -37,6 +37,8 @@ internal open class HomeMockResponseConfig : MockModelConfig() {
         const val KEY_CONTAINS_NOTIFICATION = "Notification"
         const val KEY_CONTAINS_CHIPS = "RecommendationFilterChipsQuery"
         const val KEY_CONTAINS_WALLETAPP_GETBALANCES = "walletAppGetBalance"
+        const val KEY_CONTAINS_PLAY_GET_WIDGET_V2 = "playGetWidgetV2"
+        const val KEY_CONTAINS_OCC = "mutation add_to_cart_occ_multi"
     }
 
     override fun createMockModel(context: Context): MockModelConfig {
@@ -211,6 +213,16 @@ internal open class HomeMockResponseConfig : MockModelConfig() {
         addMockResponse(
             KEY_CONTAINS_WALLETAPP_GETBALANCES,
             getRawString(context, R.raw.response_mock_data_walletapp),
+            FIND_BY_CONTAINS
+        )
+        addMockResponse(
+            KEY_CONTAINS_PLAY_GET_WIDGET_V2,
+            getRawString(context, R.raw.response_mock_data_play_widget_v2),
+            FIND_BY_CONTAINS
+        )
+        addMockResponse(
+            KEY_CONTAINS_OCC,
+            getRawString(context, R.raw.response_mock_data_occ_list_carousel),
             FIND_BY_CONTAINS
         )
         updateMock(context)

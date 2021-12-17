@@ -14,11 +14,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
@@ -30,6 +30,7 @@ import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
 import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -79,16 +80,16 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
         super.onCreate(savedInstanceState)
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             voucherGameViewModel = viewModelProvider.get(VoucherGameListViewModel::class.java)
         }
 
         arguments?.let {
             voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_VOUCHER_GAME)
                     ?: VoucherGameExtraParam()
-            rechargeProductFromSlice = it.getString(RECHARGE_PRODUCT_EXTRA,"")
+            rechargeProductFromSlice = it.getString(RECHARGE_PRODUCT_EXTRA, "")
         }
-     }
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -146,7 +147,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
             return
         }
 
-        if(rechargeProductFromSlice.isNotEmpty()) {
+        if (rechargeProductFromSlice.isNotEmpty()) {
             rechargeAnalytics.onClickSliceRecharge(userSession.userId, rechargeProductFromSlice)
             rechargeAnalytics.onOpenPageFromSlice(TITLE_PAGE)
         }
@@ -174,9 +175,39 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
     }
 
     private fun checkAutoSelectOperator(operators: List<VoucherGameOperator>) {
-        voucherGameExtraParam.operatorId.toIntOrNull()?.let {
+        voucherGameExtraParam.operatorId.let {
             operators.firstOrNull { opr -> opr.id == it }?.let {
                 navigateToProductList(it.attributes)
+            }
+        }
+    }
+
+    override fun showGetListError(throwable: Throwable) {
+        hideLoading()
+
+        updateStateScrollListener()
+
+        if (adapter.itemCount > 0) {
+            onGetListErrorWithExistingData(throwable)
+        } else {
+            val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
+                    context, throwable, ErrorHandler.Builder().build())
+            val errorNetworkModel = ErrorNetworkModel()
+
+            errorNetworkModel.run {
+                errorMessage = errMsg
+                subErrorMessage = "${
+                    getString(
+                            com.tokopedia.kotlin.extensions.R.string.title_try_again)
+                }. Kode Error: ($errCode)"
+                onRetryListener = ErrorNetworkModel.OnRetryListener {
+                    showLoading()
+                    loadInitialData()
+                }
+            }
+            adapter.run {
+                setErrorNetworkModel(errorNetworkModel)
+                showErrorNetwork()
             }
         }
     }
@@ -188,18 +219,19 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
             voucherGameAnalytics.eventClearSearchBox()
         }
 
-        search_input_view.searchBarTextField.setOnEditorActionListener(object: TextView.OnEditorActionListener{
+        search_input_view.searchBarTextField.setOnEditorActionListener(object : TextView.OnEditorActionListener {
             override fun onEditorAction(text: TextView?, actionId: Int, p2: KeyEvent?): Boolean {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     text?.let {
-                        if (text.text.isNotEmpty()) voucherGameAnalytics.eventClickSearchResult(it.text.toString()) }
+                        if (text.text.isNotEmpty()) voucherGameAnalytics.eventClickSearchResult(it.text.toString())
+                    }
                     KeyboardHandler.hideSoftKeyboard(activity)
                     return true
                 }
                 return false
             }
 
-        } )
+        })
 
         search_input_view.searchBarTextField.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -265,7 +297,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
                                 data.operators.subList(visibleIndexes.first, visibleIndexes.second + 1))
                     }
                 }
-            } catch (t: Throwable){
+            } catch (t: Throwable) {
                 t.printStackTrace()
             }
         }

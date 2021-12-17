@@ -67,7 +67,7 @@ class HotelDestinationViewModel @Inject constructor(
             searchDestination.postValue(Shimmering)
             val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_SEARCH_RESPONSE, dataParams)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<HotelSuggestion.Response>()
             searchDestination.postValue(Loaded(Success(data.propertySearchSuggestion.searchDestinationList.toMutableList())))
         }) {
@@ -80,7 +80,7 @@ class HotelDestinationViewModel @Inject constructor(
         launchCatchError(block = {
             val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(query, RecentSearch.DeleteResponse::class.java, params)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<RecentSearch.DeleteResponse>()
             deleteSuccess.postValue(data.travelRecentSearchDelete.result)
         }) {

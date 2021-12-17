@@ -2,26 +2,24 @@ package com.tokopedia.play.viewmodel.interactive
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
-import com.tokopedia.play.data.websocket.revamp.WebSocketAction
-import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
+import com.tokopedia.play_common.websocket.WebSocketAction
+import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
-import com.tokopedia.play.robot.play.thenVerify
+import com.tokopedia.play.robot.play.withState
+import com.tokopedia.play.robot.thenVerify
+import com.tokopedia.play.util.assertFalse
+import com.tokopedia.play.util.isEqualTo
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -37,14 +35,18 @@ class PlayLiveInitialInteractiveTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val testDispatcher = CoroutineTestDispatchers
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+    private val testDispatcher = coroutineTestRule.dispatchers
 
     private val socketResponseBuilder = PlaySocketResponseBuilder()
     private val channelDataBuilder = PlayChannelDataModelBuilder()
     private val channelInfoBuilder = PlayChannelInfoModelBuilder()
     private val videoInfoBuilder = PlayVideoModelBuilder()
     private val mockChannelData = channelDataBuilder.buildChannelData(
-            channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.Live),
+            channelDetail = channelInfoBuilder.buildChannelDetail(
+                    channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.Live),
+            ),
             videoMetaInfo = videoInfoBuilder.buildVideoMeta(
                     videoPlayer = videoInfoBuilder.buildCompleteGeneralVideoPlayer()
             )
@@ -57,16 +59,6 @@ class PlayLiveInitialInteractiveTest {
 
     init {
         every { mockRemoteConfig.getBoolean(any(), any()) } returns true
-    }
-
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(testDispatcher.coroutineDispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
     }
 
     @Test
@@ -86,7 +78,7 @@ class PlayLiveInitialInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.isEqualTo(
+                interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.NoInteractive
                 )
             }
@@ -102,18 +94,18 @@ class PlayLiveInitialInteractiveTest {
         )
         every { socket.listenAsFlow() } returns socketFlow
 
-        val interactiveRepo: PlayViewerInteractiveRepository = mockk(relaxed = true)
+        val repo: PlayViewerRepository = mockk(relaxed = true)
         val timeBeforeStartTap = 15000L
         val durationTap = 5000L
         val title = "Giveaway"
-        coEvery { interactiveRepo.getCurrentInteractive(any()) } returns PlayCurrentInteractiveModel(
+        coEvery { repo.getCurrentInteractive(any()) } returns PlayCurrentInteractiveModel(
                 timeStatus = PlayInteractiveTimeStatus.Scheduled(timeBeforeStartTap, durationTap),
                 title = title
         )
 
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
-                interactiveRepo = interactiveRepo,
+                repo = repo,
                 dispatchers = testDispatcher,
                 remoteConfig = mockRemoteConfig,
         ) {
@@ -121,7 +113,7 @@ class PlayLiveInitialInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.isEqualTo(
+                interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.PreStart(timeBeforeStartTap, title)
                 )
             }
@@ -137,17 +129,17 @@ class PlayLiveInitialInteractiveTest {
         )
         every { socket.listenAsFlow() } returns socketFlow
 
-        val interactiveRepo: PlayViewerInteractiveRepository = mockk(relaxed = true)
+        val repo: PlayViewerRepository = mockk(relaxed = true)
         val durationTap = 5000L
         val title = "Giveaway"
-        coEvery { interactiveRepo.getCurrentInteractive(any()) } returns PlayCurrentInteractiveModel(
+        coEvery { repo.getCurrentInteractive(any()) } returns PlayCurrentInteractiveModel(
                 timeStatus = PlayInteractiveTimeStatus.Live(durationTap),
                 title = title
         )
 
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
-                interactiveRepo = interactiveRepo,
+                repo = repo,
                 dispatchers = testDispatcher,
                 remoteConfig = mockRemoteConfig,
         ) {
@@ -155,7 +147,7 @@ class PlayLiveInitialInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.isEqualTo(
+                interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.Ongoing(durationTap)
                 )
             }
@@ -171,29 +163,29 @@ class PlayLiveInitialInteractiveTest {
         )
         every { socket.listenAsFlow() } returns socketFlow
 
-        val interactiveRepo: PlayViewerInteractiveRepository = mockk(relaxed = true)
+        val repo: PlayViewerRepository = mockk(relaxed = true)
         val title = "Giveaway"
-        coEvery { interactiveRepo.getCurrentInteractive(any()) } returns PlayCurrentInteractiveModel(
+        coEvery { repo.getCurrentInteractive(any()) } returns PlayCurrentInteractiveModel(
                 timeStatus = PlayInteractiveTimeStatus.Finished,
                 title = title
         )
-        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns interactiveModelBuilder.buildLeaderboardInfo(
+        coEvery { repo.getInteractiveLeaderboard(any()) } returns interactiveModelBuilder.buildLeaderboardInfo(
                 leaderboardWinners = emptyList()
         )
 
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
-                interactiveRepo = interactiveRepo,
+                repo = repo,
                 dispatchers = testDispatcher
         ) {
             createPage(mockChannelData)
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.isEqualTo(
+                interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.NoInteractive
                 )
-                showWinnerBadge.isFalse()
+                winnerBadge.shouldShow.assertFalse()
             }
         }
     }

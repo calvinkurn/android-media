@@ -2,11 +2,9 @@ package com.tokopedia.logisticCommon.domain.usecase
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface
-import com.tokopedia.logisticCommon.R
+import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
 import com.tokopedia.logisticCommon.domain.mapper.AddressCornerMapper
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.request.AddressRequest
@@ -25,27 +23,26 @@ const val PARAM_ADDRESS_USECASE: String = "input"
 class GetAddressCornerUseCase
 @Inject constructor(@ApplicationContext val context: Context, val usecase: GraphqlUseCaseInterface, val mapper: AddressCornerMapper) {
 
-    fun execute(query: String, prevState: Int?, localChosenAddrId: Int?, isWhitelistChosenAddress: Boolean): Observable<AddressListModel> =
+    fun execute(query: String, prevState: Int?, localChosenAddrId: Long?, isWhitelistChosenAddress: Boolean): Observable<AddressListModel> =
             this.getObservable(query = query, page = 1, isAddress = true, isCorner = false, limit = 10,
                     prevState = prevState, localChosenAddrId = localChosenAddrId, isWhitelistChosenAddress)
 
-    fun getAll(query: String, prevState: Int, localChosenAddrId: Int, isWhitelistChosenAddress: Boolean): Observable<AddressListModel> =
+    fun getAll(query: String, prevState: Int, localChosenAddrId: Long, isWhitelistChosenAddress: Boolean): Observable<AddressListModel> =
             this.getObservable(query = query, page = 1, isAddress = true, isCorner = false, limit = 0,
                     prevState = prevState, localChosenAddrId = localChosenAddrId, isWhitelistChosenAddress = isWhitelistChosenAddress)
 
-    fun loadMore(query: String, page: Int, prevState: Int?, localChosenAddrId: Int?, isWhitelistChosenAddress: Boolean): Observable<AddressListModel> =
+    fun loadMore(query: String, page: Int, prevState: Int?, localChosenAddrId: Long?, isWhitelistChosenAddress: Boolean): Observable<AddressListModel> =
             this.getObservable(query = query, page = page, isAddress = true, isCorner = false, limit = 10,
                     prevState = prevState, localChosenAddrId = localChosenAddrId, isWhitelistChosenAddress = isWhitelistChosenAddress)
 
     private fun getObservable(query: String, page: Int, isAddress: Boolean, isCorner: Boolean, limit: Int,
-                              prevState: Int?, localChosenAddrId: Int?, isWhitelistChosenAddress: Boolean):
+                              prevState: Int?, localChosenAddrId: Long?, isWhitelistChosenAddress: Boolean):
             Observable<AddressListModel> {
         val request = AddressRequest(searchKey = query, page = page, showAddress = isAddress,
                 showCorner = isCorner, limit = limit, whitelistChosenAddress = isWhitelistChosenAddress, previousState = prevState,
                 localStateChosenAddressId = localChosenAddrId)
         val param = mapOf<String, Any>(PARAM_ADDRESS_USECASE to request)
-        val gqlQuery = GraphqlHelper.loadRawString(context.resources, R.raw.address_corner)
-        val gqlRequest = GraphqlRequest(gqlQuery, GetPeopleAddressResponse::class.java, param)
+        val gqlRequest = GraphqlRequest(KeroLogisticQuery.addressCorner, GetPeopleAddressResponse::class.java, param)
 
         usecase.clearRequest()
         usecase.addRequest(gqlRequest)

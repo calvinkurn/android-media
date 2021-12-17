@@ -62,7 +62,7 @@ object ComparisonWidgetMapper {
 
     private fun buildSpecsConfig(recommendationItem: List<RecommendationItem>, context: Context): SpecsConfig {
         val specsConfig = SpecsConfig()
-        val maxSpecsSize = recommendationItem.maxBy { it.specs.size }?.specs?.size?:0
+        val maxSpecsSize = recommendationItem.maxByOrNull{ it.specs.size }?.specs?.size?:0
         var comparisonWidth = context.resources.getDimensionPixelSize(R.dimen.comparison_widget_product_card_width_measure)
         //substract with margin start and end
         comparisonWidth -= context.resources.getDimensionPixelSize(R.dimen.comparison_specs_margin_start)

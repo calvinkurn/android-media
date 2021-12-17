@@ -12,8 +12,7 @@ import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageActivity
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.EXTRA_REF
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_REF
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.allOf
 
@@ -67,7 +66,8 @@ class AddressRevampRobot {
     }
 
     fun searchKotaKecamatan(keyword: String) {
-        onView(withId(R.id.et_search_district_recommendation))
+        onView(withId(R.id.search_page_input)).perform(click())
+        onView(withId(R.id.searchbar_textfield))
                 .perform(click(), typeText(keyword), closeSoftKeyboard())
         waitForData()
     }
@@ -79,7 +79,7 @@ class AddressRevampRobot {
 
     fun clickPostalCode() {
         onView(withId(R.id.et_kodepos))
-                .perform(click())
+                .perform(click(), closeSoftKeyboard())
     }
 
     fun clickPostalCodeItem() {
@@ -102,7 +102,7 @@ class AddressRevampRobot {
     }
 
     infix fun submit(func: ResultRobot.() -> Unit): ResultRobot {
-        onView(withId(R.id.btn_save_address_new)).perform(click())
+        onView(withId(R.id.btn_save_address_new)).perform(scrollTo(), click())
         return ResultRobot().apply(func)
     }
 

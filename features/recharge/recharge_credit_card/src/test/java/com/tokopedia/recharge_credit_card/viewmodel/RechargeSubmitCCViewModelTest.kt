@@ -62,7 +62,7 @@ class RechargeSubmitCCViewModelTest {
         val response = RestResponse(ccRedirectUrl, 200, false)
         val submitCcResponse = mapOf<Type, RestResponse>(token to response)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
         coEvery { rechargeSubmitCcUseCase.setMapParam(mapParam) } returns mockk()
         coEvery { rechargeSubmitCcUseCase.executeOnBackground() } returns submitCcResponse
 
@@ -91,7 +91,7 @@ class RechargeSubmitCCViewModelTest {
         val response = RestResponse(ccRedirectUrl, 200, false)
         val submitCcResponse = mapOf<Type, RestResponse>(token to response)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
         coEvery { rechargeSubmitCcUseCase.setMapParam(mapParam) } returns mockk()
         coEvery { rechargeSubmitCcUseCase.executeOnBackground() } returns submitCcResponse
 
@@ -115,7 +115,7 @@ class RechargeSubmitCCViewModelTest {
         result[RechargeCCSignatureReponse::class.java] = RechargeCCSignatureReponse(rechargeCCSignature)
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
         coEvery { rechargeSubmitCcUseCase.setMapParam(mapParam)} returns mockk()
         coEvery { RechargeSubmitCCViewModel.convertCCResponse(rechargeSubmitCcUseCase.executeOnBackground())} throws IOException("error")
 
@@ -139,7 +139,7 @@ class RechargeSubmitCCViewModelTest {
         result[RechargeCCSignatureReponse::class.java] = RechargeCCSignatureReponse(rechargeCCSignature)
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
         coEvery { rechargeSubmitCcUseCase.setMapParam(mapParam)} returns mockk()
         coEvery { RechargeSubmitCCViewModel.convertCCResponse(rechargeSubmitCcUseCase.executeOnBackground())} throws SocketException("error server")
 
@@ -165,7 +165,7 @@ class RechargeSubmitCCViewModelTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { rechargeSubmitCcUseCase.setMapParam(mapParam)} returns mockk()
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         rechargeSubmitViewModel.postCreditCard("", "26", mapParam)
@@ -186,7 +186,7 @@ class RechargeSubmitCCViewModelTest {
         errors[RechargeCCSignatureReponse::class.java] = listOf(errorGql)
         val gqlResponse = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         rechargeSubmitViewModel.postCreditCard("", "26", hashMapOf())

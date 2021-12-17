@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
@@ -12,6 +11,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.editshipping.R;
 import com.tokopedia.editshipping.domain.model.editshipping.Courier;
 import com.tokopedia.editshipping.ui.EditShippingViewListener;
+import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * Created by Kris on 6/6/2016.
@@ -21,12 +21,12 @@ public class CourierView extends EditShippingCourierView<Courier,
         EditShippingViewListener>{
 
     LinearLayout courierNamePlaceHolder;
-    TextView courierNameText;
+    Typography courierNameText;
     ImageView courierImageHolder;
     LinearLayout shipmentSettings;
     PackageView packageView;
     LinearLayout packageViewHolder;
-    TextView courierUnavailableWarning;
+    Typography courierUnavailableWarning;
     private EditShippingViewListener mainView;
 
     public CourierView(Context context) {
@@ -41,13 +41,13 @@ public class CourierView extends EditShippingCourierView<Courier,
     @Override
     protected void bindView(View view) {
         courierNamePlaceHolder = (LinearLayout) view.findViewById(R.id.courier_name_placeholder);
-        courierNameText = (TextView) view.findViewById(R.id.name);
+        courierNameText = (Typography) view.findViewById(R.id.name);
         courierImageHolder = (ImageView) view.findViewById(R.id.img_courier);
         shipmentSettings = (LinearLayout) view.findViewById(R.id.shipping_settings);
 
         packageView = (PackageView) view.findViewById(R.id.children_layout);
         packageViewHolder = (LinearLayout) view.findViewById(R.id.package_view_holder);
-        courierUnavailableWarning = (TextView) view.findViewById(R.id.courier_unavailable_warning);
+        courierUnavailableWarning = (Typography) view.findViewById(R.id.courier_unavailable_warning);
 
     }
 

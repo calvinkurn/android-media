@@ -1,23 +1,21 @@
 package com.tokopedia.shop_showcase.shop_showcase_management.presentation.adapter
 
+import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.MotionEventCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.touchhelper.ItemTouchHelperAdapter
 import com.tokopedia.design.touchhelper.OnStartDragListener
-import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
+import com.tokopedia.shop.common.databinding.ItemShopShowcaseListImageBinding
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageBaseViewHolder
 import com.tokopedia.shop_showcase.common.ShopShowcaseReorderListener
 
 class ShopShowcaseListReorderAdapter(
         val listener: ShopShowcaseReorderListener,
-        val onStartDragListener: OnStartDragListener?,
-        private val isMyShop: Boolean
+        val onStartDragListener: OnStartDragListener?
 ) : RecyclerView.Adapter<ShopShowcaseListReorderAdapter.ViewHolder>(), ItemTouchHelperAdapter {
 
     private var generatedSowcaseList: Int = 0
@@ -38,9 +36,12 @@ class ShopShowcaseListReorderAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(parent.inflateLayout(
-                ShopShowcaseListImageBaseViewHolder.LAYOUT
-        ))
+        val binding = ItemShopShowcaseListImageBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+        )
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -69,10 +70,12 @@ class ShopShowcaseListReorderAdapter(
         }
     }
 
-    inner class ViewHolder(itemView: View) : ShopShowcaseListImageBaseViewHolder(itemView) {
+    inner class ViewHolder(itemViewBinding: ItemShopShowcaseListImageBinding) : ShopShowcaseListImageBaseViewHolder(itemViewBinding) {
 
         init {
-            showcaseActionButton = itemView.findViewById(R.id.img_move_showcase)
+            itemViewBinding.apply {
+                itemShowcaseActionButton = imgMoveShowcase
+            }
         }
 
         override fun bind(element: Any) {
@@ -83,7 +86,7 @@ class ShopShowcaseListReorderAdapter(
             renderShowcaseMainInfo(elementUiModel, isMyShop = true)
 
             // set listener for showcase action button
-            showcaseActionButton?.apply {
+            itemShowcaseActionButton?.apply {
                 // handle showcase action drag listener
                 setOnTouchListener { _, event ->
                     @Suppress("DEPRECATION")

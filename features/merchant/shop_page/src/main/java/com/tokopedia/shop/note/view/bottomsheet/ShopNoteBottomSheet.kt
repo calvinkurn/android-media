@@ -18,6 +18,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
+import com.tokopedia.shop.databinding.FragmentShopNoteBottomSheetBinding
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
 import com.tokopedia.shop.note.view.viewmodel.ShopNoteBottomSheetViewModel
@@ -28,6 +29,7 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -57,6 +59,7 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
     private var loader: LoaderUnify? = null
     private var globalError: GlobalError? = null
     private var accordion: AccordionUnify? = null
+    private var viewBinding by autoClearedNullable<FragmentShopNoteBottomSheetBinding>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,12 +80,13 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupUi() {
-        LayoutInflater.from(context).inflate(LAYOUT, null)?.apply {
-            loader = findViewById(R.id.loader)
-            globalError = findViewById(R.id.global_error)
-            accordion = findViewById(R.id.accordion)
+        viewBinding = FragmentShopNoteBottomSheetBinding.inflate(LayoutInflater.from(context))
+        viewBinding?.let {
+            setChild(it.root)
+            loader = it.loader
+            globalError = it.globalError
+            accordion = it.accordion
             setTitle(getString(R.string.shop_note_title))
-            setChild(this)
             setCloseClickListener {
                 dismiss()
             }

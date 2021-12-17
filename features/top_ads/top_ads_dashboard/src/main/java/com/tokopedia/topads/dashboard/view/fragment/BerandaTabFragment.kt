@@ -45,6 +45,8 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     private var dataStatistic: DataStatistic? = null
     private var insightCallBack: GoToInsight? = null
 
+    private var currentDateText: String = ""
+
     @TopAdsStatisticsType
     internal var selectedStatisticType: Int = TopAdsStatisticsType.PRODUCT_ADS
 
@@ -84,6 +86,10 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         currentStatisticsFragment?.showLineGraph(dataStatistic)
     }
 
+    override fun getCustomDateText(customDateText: String) {
+        currentDateText = customDateText
+    }
+
     override fun initInjector() {
         getComponent(TopAdsDashboardComponent::class.java).inject(this)
     }
@@ -111,6 +117,7 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
         }
         addCredit.setOnClickListener {
             val intent = Intent(activity, TopAdsAddCreditActivity::class.java)
+            intent.putExtra(TopAdsAddCreditActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET,true)
             startActivityForResult(intent, REQUEST_CODE_ADD_CREDIT)
         }
         goToInsights.setOnClickListener {

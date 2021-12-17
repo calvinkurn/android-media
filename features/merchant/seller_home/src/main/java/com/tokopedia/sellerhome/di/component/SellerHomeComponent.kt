@@ -35,7 +35,7 @@ interface SellerHomeComponent {
 
     fun inject(sellerHomeFragment: MenuSettingFragment)
 
-    fun inject(sellerHomeFragment: OtherMenuFragment)
+    fun inject(otherMenuFragment: OtherMenuFragment)
     fun inject(sellerHomeFragment: CentralizedPromoFragment)
 
     fun inject(freeShippingBottomSheet: SettingsFreeShippingBottomSheet)

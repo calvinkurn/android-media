@@ -4,14 +4,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselEmptyCardDataModel
-import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselFeaturedShopCardDataModel
-import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselProductCardDataModel
-import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
-import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselEmptyCardViewHolder
-import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselFeaturedShopViewHolder
-import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselProductCardViewHolder
-import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselSeeMorePdpViewHolder
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.*
+import com.tokopedia.home_component.productcardgridcarousel.viewHolder.*
+
 
 /**
  * @author by yoasfs on 09/06/20
@@ -36,6 +31,14 @@ class CommonCarouselProductCardTypeFactoryImpl(private val channels: ChannelMode
         return CarouselFeaturedShopViewHolder.LAYOUT
     }
 
+    override fun type(dataModel: CarouselViewAllCardDataModel): Int {
+        return CarouselViewAllCardViewHolder.LAYOUT
+    }
+
+    override fun type(dataModel: CarouselCampaignCardDataModel): Int {
+        return CarouselCampaignCardViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             CarouselProductCardViewHolder.LAYOUT -> {
@@ -49,6 +52,12 @@ class CommonCarouselProductCardTypeFactoryImpl(private val channels: ChannelMode
             }
             CarouselFeaturedShopViewHolder.LAYOUT -> {
                 CarouselFeaturedShopViewHolder(parent, channels)
+            }
+            CarouselViewAllCardViewHolder.LAYOUT -> {
+                CarouselViewAllCardViewHolder(parent, channels)
+            }
+            CarouselCampaignCardViewHolder.LAYOUT -> {
+                CarouselCampaignCardViewHolder(parent, channels)
             }
             else -> {
                 super.createViewHolder(parent, type)

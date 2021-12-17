@@ -8,6 +8,8 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHold
 import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.Product
 import kotlinx.android.synthetic.main.item_post_image.view.*
 
 /**
@@ -43,13 +45,15 @@ class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostVie
         fun userImagePostImpression(positionInFeed: Int, contentPosition: Int)
 
         fun userCarouselImpression(
-            activityId: String,
-            media: FeedXMedia,
-            positionInFeed: Int,
-            postType: String,
-            isFollowed: Boolean,
-            shopId: String,
-            postPosition: Int
+                activityId: String,
+                media: FeedXMedia,
+                positionInFeed: Int,
+                postType: String,
+                isFollowed: Boolean,
+                shopId: String,
+                postPosition: Int,
+                cpmData: CpmData,
+                products: List<Product>
         )
         fun userGridPostImpression(
             positionInFeed: Int,

@@ -40,9 +40,7 @@ import com.tokopedia.contactus.inboxticket2.view.fragment.HelpFullBottomSheet.Cl
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.listeners.InboxDetailListener
-import com.tokopedia.imagepicker.common.ImagePickerBuilder
-import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.imagepicker.common.*
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -277,6 +275,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         val builder = ImagePickerBuilder.getOriginalImageBuilder(this);
         val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.IMAGE_PICKER)
         intent.putImagePickerBuilder(builder)
+        intent.putParamPageSource(ImagePickerPageSource.INBOX_DETAIL_PAGE)
         startActivityForResult(intent, InboxBaseView.REQUEST_IMAGE_PICKER)
     }
 
@@ -488,6 +487,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     override val userMessage: String
         get() = edMessage.text.toString()
 
+
     override val ticketID: String
         get() = intent.getStringExtra(PARAM_TICKET_ID)?:""
 
@@ -637,6 +637,20 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
 
     override fun onClickClose() {
         servicePrioritiesBottomSheet?.dismiss()
+    }
+
+    override fun setMessageMaxLengthReached() {
+
+        with(Toaster) {
+            make(
+                getRootView(),
+                getString(R.string.contact_us_maximum_length_error_text),
+                Snackbar.LENGTH_LONG,
+                TYPE_ERROR,
+                SNACKBAR_OK,
+                View.OnClickListener { })
+        }
+
     }
 
     private fun sendMessage(isSendButtonEnabled: Boolean) {

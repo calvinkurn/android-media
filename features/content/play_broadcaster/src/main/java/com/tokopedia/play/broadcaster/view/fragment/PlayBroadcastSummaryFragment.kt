@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
@@ -18,7 +19,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.util.extension.getDialog
-import com.tokopedia.play.broadcaster.util.extension.showToaster
+import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
@@ -31,7 +32,6 @@ import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -65,8 +65,8 @@ class PlayBroadcastSummaryFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastSummaryViewModel::class.java)
-        parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastSummaryViewModel::class.java)
+        parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -171,15 +171,16 @@ class PlayBroadcastSummaryFragment @Inject constructor(
      * Observe
      */
     private fun observeChannelInfo() {
-        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer{
+        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner) {
             when (it) {
                 is NetworkResult.Success -> setChannelInfo(it.data)
+                else -> {}
             }
-        })
+        }
     }
 
     private fun observeLiveTrafficMetrics() {
-        viewModel.observableLiveSummary.observe(viewLifecycleOwner, Observer{
+        viewModel.observableLiveSummary.observe(viewLifecycleOwner) {
             when(it) {
                 is NetworkResult.Loading -> {
                     loaderView.visible()
@@ -195,12 +196,12 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                     summaryInfoView.showError { it.onRetry() }
                     analytic.viewErrorOnReportPage(
                             channelId = parentViewModel.channelId,
-                            titleChannel = parentViewModel.title,
+                            titleChannel = parentViewModel.channelTitle,
                             errorMessage = it.error.localizedMessage?:getString(R.string.play_broadcaster_default_error)
                     )
                 }
             }
-        })
+        }
     }
 
     private fun observeLiveDuration() {
@@ -208,7 +209,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     }
 
     private fun observeSaveVideo() {
-        viewModel.observableSaveVideo.observe(viewLifecycleOwner, Observer{
+        viewModel.observableSaveVideo.observe(viewLifecycleOwner) {
             when (it) {
                 is NetworkResult.Loading -> btnSaveVideo.isLoading = true
                 is NetworkResult.Success -> {
@@ -216,19 +217,20 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                 }
                 is NetworkResult.Fail -> {
                     btnSaveVideo.isLoading = false
-                    view?.showToaster(
-                            message = it.error.localizedMessage?:getString(R.string.play_broadcaster_default_error),
-                            type = Toaster.TYPE_ERROR,
-                            actionLabel = getString(R.string.play_broadcast_try_again),
-                            actionListener = View.OnClickListener { view -> it.onRetry() }
+                    view?.showErrorToaster(
+                        err = it.error,
+                        customErrMessage = it.error.localizedMessage
+                            ?: getString(R.string.play_broadcaster_default_error),
+                        actionLabel = getString(R.string.play_broadcast_try_again),
+                        actionListener = { _ -> it.onRetry() }
                     )
                 }
             }
-        })
+        }
     }
 
     private fun observeDeleteVideo() {
-        viewModel.observableDeleteVideo.observe(viewLifecycleOwner, Observer{
+        viewModel.observableDeleteVideo.observe(viewLifecycleOwner) {
             when (it) {
                 is NetworkResult.Loading -> btnDeleteVideo.isLoading = true
                 is NetworkResult.Success -> {
@@ -236,19 +238,20 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                 }
                 is NetworkResult.Fail -> {
                     btnDeleteVideo.isLoading = false
-                    view?.showToaster(
-                            message = it.error.localizedMessage?:getString(R.string.play_broadcaster_default_error),
-                            type = Toaster.TYPE_ERROR,
-                            actionLabel = getString(R.string.play_broadcast_try_again),
-                            actionListener = View.OnClickListener { view -> it.onRetry() }
+                    view?.showErrorToaster(
+                        err = it.error,
+                        customErrMessage = it.error.localizedMessage
+                            ?: getString(R.string.play_broadcaster_default_error),
+                        actionLabel = getString(R.string.play_broadcast_try_again),
+                        actionListener = { _ -> it.onRetry() }
                     )
                 }
             }
-        })
+        }
     }
 
     private fun observeInteractiveLeaderboardInfo() {
-        parentViewModel.observableLeaderboardInfo.observe(viewLifecycleOwner, Observer {
+        parentViewModel.observableLeaderboardInfo.observe(viewLifecycleOwner) {
             summaryInfoView.addTrafficMetric(
                 TrafficMetricUiModel(
                     type = TrafficMetricType.GameParticipants,
@@ -256,7 +259,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                 ),
                 FIRST_PLACE
             )
-        })
+        }
     }
 
     private fun openShopPageWithBroadcastStatus(isSaved: Boolean) {

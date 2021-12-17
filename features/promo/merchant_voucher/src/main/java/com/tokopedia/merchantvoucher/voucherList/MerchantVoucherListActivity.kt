@@ -42,9 +42,8 @@ class MerchantVoucherListActivity : BaseSimpleActivity(),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        shopId = intent.getStringExtra(SHOP_ID)
+        shopId = intent.getStringExtra(SHOP_ID) ?: ""
         shopName = intent.getStringExtra(SHOP_NAME)
-        GraphqlClient.init(this)
         super.onCreate(savedInstanceState)
         merchantVoucherTracking = MerchantVoucherTracking()
         if (!shopName.isNullOrEmpty()) {

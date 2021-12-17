@@ -198,48 +198,53 @@ object DeviceConnectionInfo {
     }
 
     @JvmStatic
-    fun getConnectionType(context: Context): String? {
-        return when (getConnectionTransportType(context)) {
-            WIFI -> CONN_WIFI
-            MOBILE -> {
-                val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-                return when (cm.activeNetworkInfo.subtype) {
-                    // 2G:
-                    TelephonyManager.NETWORK_TYPE_GPRS -> CONN_GPRS // ~ 100 kbps
-                    TelephonyManager.NETWORK_TYPE_1xRTT -> CONN_RTT // ~ 50-100 kbps
-                    TelephonyManager.NETWORK_TYPE_CDMA -> CONN_CDMA // ~ 14-64 kbps
-                    TelephonyManager.NETWORK_TYPE_EDGE -> CONN_EDGE // ~ 50-100 kbps
-                    TelephonyManager.NETWORK_TYPE_IDEN -> CONN_IDEN // ~25 kbps
-                    TelephonyManager.NETWORK_TYPE_GSM -> CONN_GSM
+    fun getConnectionType(context: Context): String {
+        return try {
+            when (getConnectionTransportType(context)) {
+                WIFI -> CONN_WIFI
+                MOBILE -> {
+                    val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                    if (cm.activeNetworkInfo?.subtype == null) return CONN_UNKNOWN
+                    return when (cm.activeNetworkInfo?.subtype) {
+                        // 2G:
+                        TelephonyManager.NETWORK_TYPE_GPRS -> CONN_GPRS // ~ 100 kbps
+                        TelephonyManager.NETWORK_TYPE_1xRTT -> CONN_RTT // ~ 50-100 kbps
+                        TelephonyManager.NETWORK_TYPE_CDMA -> CONN_CDMA // ~ 14-64 kbps
+                        TelephonyManager.NETWORK_TYPE_EDGE -> CONN_EDGE // ~ 50-100 kbps
+                        TelephonyManager.NETWORK_TYPE_IDEN -> CONN_IDEN // ~25 kbps
+                        TelephonyManager.NETWORK_TYPE_GSM -> CONN_GSM
 
-                    // 3G
-                    TelephonyManager.NETWORK_TYPE_UMTS -> CONN_UMTS // ~ 400-7000 kbps
-                    TelephonyManager.NETWORK_TYPE_EVDO_0 -> CONN_EVDO_0 // ~ 400-1000 kbps
-                    TelephonyManager.NETWORK_TYPE_EVDO_A -> CONN_EVDO_A // ~ 600-1400 kbps
-                    TelephonyManager.NETWORK_TYPE_HSDPA -> CONN_HSDPA // ~ 2-14 Mbps
-                    TelephonyManager.NETWORK_TYPE_HSPA -> CONN_HSPA // ~ 700-1700 kbps
-                    TelephonyManager.NETWORK_TYPE_HSUPA -> CONN_HSUPA // ~ 1-23 Mbps
-                    TelephonyManager.NETWORK_TYPE_EHRPD -> CONN_EHRPD // ~ 1-2 Mbps
-                    TelephonyManager.NETWORK_TYPE_EVDO_B -> CONN_EVDO_B // ~ 5 Mbps
-                    TelephonyManager.NETWORK_TYPE_HSPAP -> CONN_HSPAP // ~ 10-20 Mbps
-                    TelephonyManager.NETWORK_TYPE_TD_SCDMA -> CONN_TD_SCDMA
+                        // 3G
+                        TelephonyManager.NETWORK_TYPE_UMTS -> CONN_UMTS // ~ 400-7000 kbps
+                        TelephonyManager.NETWORK_TYPE_EVDO_0 -> CONN_EVDO_0 // ~ 400-1000 kbps
+                        TelephonyManager.NETWORK_TYPE_EVDO_A -> CONN_EVDO_A // ~ 600-1400 kbps
+                        TelephonyManager.NETWORK_TYPE_HSDPA -> CONN_HSDPA // ~ 2-14 Mbps
+                        TelephonyManager.NETWORK_TYPE_HSPA -> CONN_HSPA // ~ 700-1700 kbps
+                        TelephonyManager.NETWORK_TYPE_HSUPA -> CONN_HSUPA // ~ 1-23 Mbps
+                        TelephonyManager.NETWORK_TYPE_EHRPD -> CONN_EHRPD // ~ 1-2 Mbps
+                        TelephonyManager.NETWORK_TYPE_EVDO_B -> CONN_EVDO_B // ~ 5 Mbps
+                        TelephonyManager.NETWORK_TYPE_HSPAP -> CONN_HSPAP // ~ 10-20 Mbps
+                        TelephonyManager.NETWORK_TYPE_TD_SCDMA -> CONN_TD_SCDMA
 
-                    //4G
-                    TelephonyManager.NETWORK_TYPE_LTE -> CONN_LTE // ~ 10+ Mbps
-                    TelephonyManager.NETWORK_TYPE_IWLAN-> CONN_IWLAN
-                    // LTE CA
-                    19 -> CONN_LTE_CA
+                        //4G
+                        TelephonyManager.NETWORK_TYPE_LTE -> CONN_LTE // ~ 10+ Mbps
+                        TelephonyManager.NETWORK_TYPE_IWLAN-> CONN_IWLAN
+                        // LTE CA
+                        19 -> CONN_LTE_CA
 
-                    //5G
-                    20 -> CONN_NR
+                        //5G
+                        20 -> CONN_NR
 
-                    TelephonyManager.NETWORK_TYPE_UNKNOWN -> CONN_UNKNOWN
-                    else -> CONN_UNKNOWN
+                        TelephonyManager.NETWORK_TYPE_UNKNOWN -> CONN_UNKNOWN
+                        else -> CONN_UNKNOWN
+                    }
+                }
+                else -> {
+                    CONN_UNKNOWN
                 }
             }
-            else -> {
-                CONN_UNKNOWN
-            }
+        } catch (e:Exception) {
+            return CONN_UNKNOWN
         }
     }
 }

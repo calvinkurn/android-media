@@ -85,15 +85,22 @@ public interface SearchConstant {
         String GET_PRODUCT_COUNT_USE_CASE = "get_product_count_use_case";
         String GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE = "get_local_search_recommendation_use_case";
         String SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE = "search_product_inspiration_carousel_chips_use_case";
-        String HEADLINE = "headline";
-        String HEADLINE_TEMPLATE_VALUE = "3,4";
-        String HEADLINE_ITEM_VALUE = "1";
         String SEARCH_PRODUCT_PARAMS = "params";
         String SEARCH_PRODUCT_SKIP_PRODUCT_ADS = "skip_product_ads";
         String SEARCH_PRODUCT_SKIP_HEADLINE_ADS = "skip_headline_ads";
         String SEARCH_PRODUCT_SKIP_GLOBAL_NAV = "skip_global_nav";
         String SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL = "skip_inspiration_carousel";
         String SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET = "skip_inspiration_widget";
+        String SEARCH_PRODUCT_SKIP_GET_LAST_FILTER_WIDGET = "skip_last_filter";
+    }
+
+    interface HeadlineAds {
+        String HEADLINE = "headline";
+        String HEADLINE_TEMPLATE_VALUE = "3,4";
+        int HEADLINE_ITEM_VALUE_FIRST_PAGE = 2;
+        int HEADLINE_ITEM_VALUE_LOAD_MORE = 1;
+        int HEADLINE_PRODUCT_COUNT = 3;
+        String INFINITESEARCH = "infinitesearch";
     }
 
     interface SearchShop {
@@ -192,11 +199,19 @@ public interface SearchConstant {
         String TYPE_RELATED = "related";
     }
 
-    interface ImageUrl {
-        String POWER_MERCHANT_PRO_ILLUSTRATION_URL = "https://images.tokopedia.net/img/android/search/PM_Pro_Illustration.png";
-    }
-
     interface CustomDimension {
         String DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL = "none.none.global_search.none";
+    }
+
+    interface SaveLastFilter {
+        String LAST_FILTER = "last_filter";
+        String ACTION = "action";
+        String PARAM = "param";
+        String CATEGORY_ID_L2 = "category_id_l2";
+        String ACTION_CREATE = "create";
+        String ACTION_UPDATE = "update";
+        String ACTION_DELETE = "delete";
+        String INPUT_PARAMS = "input_params";
+        String SAVE_LAST_FILTER_USE_CASE = "save_last_filter_use_case";
     }
 }

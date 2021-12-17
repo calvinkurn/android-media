@@ -20,6 +20,7 @@ import com.tokopedia.hotel.search_map.data.model.params.ParamSort
 import com.tokopedia.hotel.search_map.data.model.params.SearchParam
 import com.tokopedia.hotel.search_map.presentation.adapter.viewholder.FilterSelectionViewHolder
 import com.tokopedia.hotel.search_map.presentation.usecase.SearchPropertyUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -27,24 +28,30 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
  * @author by furqan on 01/03/2021
  */
 class HotelSearchMapViewModel @Inject constructor(
-        private val dispatcher: CoroutineDispatchers,
-        private val searchPropertyUseCase: SearchPropertyUseCase,
-        private val travelTickerUseCase: TravelTickerCoroutineUseCase)
+    private val dispatcher: CoroutineDispatchers,
+    private val searchPropertyUseCase: SearchPropertyUseCase,
+    private val travelTickerUseCase: TravelTickerCoroutineUseCase)
     : BaseViewModel(dispatcher.io) {
 
     lateinit var hotelSearchModel: HotelSearchModel
     val searchParam: SearchParam = SearchParam()
     var selectedSort: Sort = Sort()
     var defaultSort = ""
+    var sortBy = ""
     var filter: Filter = Filter()
 
-    val liveSearchResult = MutableLiveData<Result<PropertySearch>>()
+
+    private val mutableliveSearchResult = MutableLiveData<Result<PropertySearch>>()
+    val liveSearchResult: LiveData<Result<PropertySearch>>
+        get() = mutableliveSearchResult
+
     val liveSelectedFilter = MutableLiveData<Pair<List<ParamFilterV2>, Boolean>>()
 
     private val mutableLatLong = MutableLiveData<Result<Pair<Double, Double>>>()
@@ -70,25 +77,17 @@ class HotelSearchMapViewModel @Inject constructor(
         with(searchParam) {
             location = ParamLocation()
 
-            when (hotelSearchModel.type) {
-                // temp: to support the popular search and recent search in suggestion page
-                HotelTypeEnum.CITY.value -> {
-                    location.cityID = hotelSearchModel.id
-                }
-                HotelTypeEnum.DISTRICT.value -> {
-                    location.districtID = hotelSearchModel.id
-                }
-                HotelTypeEnum.REGION.value -> {
-                    location.regionID = hotelSearchModel.id
-                }
-            }
-
             // when user search by coordinate
             if (hotelSearchModel.searchType == HotelTypeEnum.COORDINATE.value) {
                 location.latitude = hotelSearchModel.lat
                 location.longitude = hotelSearchModel.long
                 location.radius = hotelSearchModel.radius
+                sort.distance = true
+                sortBy = HotelSortEnum.DISTANCE.value
             }else {
+                //Default param
+                sort.popularity = true
+                sortBy = HotelSortEnum.POPULARITY.value
                 location.radius = DEFAULT_RADIUS
             }
 
@@ -99,22 +98,25 @@ class HotelSearchMapViewModel @Inject constructor(
             location.searchType = hotelSearchModel.searchType
             location.searchId = hotelSearchModel.searchId
 
-            //Default param
-            sort.popularity = true
-            addSort(Sort(DEFAULT_SORT))
+            addSort(Sort(sortBy))
         }
     }
 
     fun getSelectedFilter(): List<ParamFilterV2> = liveSelectedFilter.value?.first?.toMutableList()
-            ?: mutableListOf()
+        ?: mutableListOf()
 
     fun searchProperty(page: Int, searchQuery: String) {
         searchParam.page = page
         searchParam.filters = getSelectedFilter().toMutableList()
         isFilter = searchParam.filters.isNotEmpty()
 
-        launch {
-            liveSearchResult.postValue(searchPropertyUseCase.execute(searchQuery, searchParam))
+        launchCatchError(block =  {
+            val data = withContext(dispatcher.io) {
+                searchPropertyUseCase.execute(searchQuery, searchParam)
+            }
+            mutableliveSearchResult.postValue(data)
+        }){
+            mutableliveSearchResult.postValue(Fail(it))
         }
     }
 
@@ -127,6 +129,7 @@ class HotelSearchMapViewModel @Inject constructor(
             HotelSortEnum.RANKING.value -> ParamSort(ranking = true, sortDir = HotelSortEnum.RANKING.order)
             HotelSortEnum.STAR.value -> ParamSort(star = true, sortDir = HotelSortEnum.STAR.order)
             HotelSortEnum.REVIEWSCORE.value -> ParamSort(reviewScore = true, sortDir = HotelSortEnum.REVIEWSCORE.order)
+            HotelSortEnum.DISTANCE.value -> ParamSort(distance = true, sortDir = HotelSortEnum.DISTANCE.order)
             else -> ParamSort()
         }
     }
@@ -144,8 +147,8 @@ class HotelSearchMapViewModel @Inject constructor(
                     val selectedFilter = selectedFilters[quickFilter.name] ?: ParamFilterV2()
                     val filterValue = selectedFilter.values.toHashSet()
                     if (quickFilter.type == FilterV2.FILTER_TYPE_OPEN_RANGE
-                            || quickFilter.type == FilterV2.FILTER_TYPE_SELECTION_RANGE ||
-                            quickFilter.name == FilterSelectionViewHolder.SELECTION_STAR_TYPE) filterValue.clear()
+                        || quickFilter.type == FilterV2.FILTER_TYPE_SELECTION_RANGE ||
+                        quickFilter.name == FilterSelectionViewHolder.SELECTION_STAR_TYPE) filterValue.clear()
                     filterValue.addAll(quickFilter.values)
                     selectedFilters[quickFilter.name] = ParamFilterV2(quickFilter.name, filterValue.toMutableList())
                 } else {
@@ -209,11 +212,11 @@ class HotelSearchMapViewModel @Inject constructor(
                 val nearRight = visibleRegion.nearRight
 
                 Location.distanceBetween(
-                        farLeft.latitude,
-                        farLeft.longitude,
-                        nearRight.latitude,
-                        nearRight.longitude,
-                        diagonalDistance
+                    farLeft.latitude,
+                    farLeft.longitude,
+                    nearRight.latitude,
+                    nearRight.longitude,
+                    diagonalDistance
                 )
                 mutableRadius.postValue(Success((diagonalDistance[0] / 2).toDouble()))
             } catch (error: Throwable) {
@@ -224,7 +227,6 @@ class HotelSearchMapViewModel @Inject constructor(
 
     companion object {
         const val PARAM_SEARCH_PROPERTY = "data"
-        private const val DEFAULT_SORT = "popularity"
         private const val DEFAULT_RADIUS = 10000.0
     }
 }

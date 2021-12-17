@@ -25,7 +25,7 @@ class SomListBulkRequestPickupUseCase @Inject constructor(
     override suspend fun executeOnBackground(useCache: Boolean): SomListBulkRequestPickupUiModel {
         val cacheStrategy = getCacheStrategy(useCache)
         val gqlRequest = GraphqlRequest(REQUEST_PICK_UP_BULK_QUERY, SomListBulkRequestPickupResponse.Data::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val errors = gqlResponse.getError(SomListBulkRequestPickupResponse.Data::class.java)
         if (errors.isNullOrEmpty()) {

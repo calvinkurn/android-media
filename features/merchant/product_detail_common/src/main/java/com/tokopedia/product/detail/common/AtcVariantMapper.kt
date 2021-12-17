@@ -15,16 +15,6 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 
 object AtcVariantMapper {
 
-    fun getSelectedVariantName(listOfVariantCategory: List<VariantCategory>?, selectedChild: VariantChild?): String {
-        val selected = listOfVariantCategory?.mapNotNull { it.getSelectedOption()?.variantName }?.joinToString()
-                ?: ""
-        return if (selected.isEmpty()) {
-            selectedChild?.name?.split("- ")?.lastOrNull() ?: ""
-        } else {
-            selected
-        }
-    }
-
     /**
      * Determine wether variant is select fully or not
      * fully means select 2 of 2 variant / 1 of 1 variant
@@ -66,49 +56,32 @@ object AtcVariantMapper {
 
         val isPartialySelected = isPartiallySelectedOptionId(mapOfSelectedVariant)
         val listOfVariant: MutableList<VariantCategory> = mutableListOf()
-        var updatedSelectedOptionsId: List<String>
         val isSelectedLevelOne = level < 1
 
-        //Parse selectedOptionsId Map to List<Int>
+        // Parse selectedOptionsId Map to List<String>
+        // If user selected only 1 level, we have to filter and generate only 1 list
+        // If not we will get [0,SizeId] or [WarnaId,0]
         val selectedOptionIds: List<String> = mapOfSelectedVariant?.map {
             //[Merah,S]
             it.value
+        }?.filterNot {
+            it.toLong() == 0L
         } ?: listOf()
 
-        // If user selected only 1 level, we have to filter and generate only 1 list
-        // If not we will get [0,SizeId] or [WarnaId,0]
-        updatedSelectedOptionsId = selectedOptionIds.filterNot {
-            it.toLong() == 0L
-        }
 
         //Check wether selected product is buyable , if not get another  siblings that buyable
-        val selectedProductData = getSelectedProductData(updatedSelectedOptionsId, variantData)
-
-        //If selectedProductIds is not buyable choose another buyable child
-        if (selectedProductData != null && !selectedProductData.isBuyable) {
-            updatedSelectedOptionsId = getOtherSiblingProduct(variantData, selectedOptionIds)?.optionIds
-                    ?: listOf()
-            updateSelectedOptionsIds(variantData, updatedSelectedOptionsId, mapOfSelectedVariant)
-        }
-        val isSelectedProductBuyable = selectedProductData?.isBuyable ?: false
-        val isSelectedProductFlashSale = selectedProductData?.isFlashSale ?: false
+        val selectedChild = getSelectedProductData(selectedOptionIds, variantData)
+        val isFlashSale = selectedChild?.isFlashSale ?: false
 
         for ((level, variant: Variant) in variantData.variants.withIndex()) {
-            listOfVariant.add(convertVariantViewModel(variant, variantData, level, updatedSelectedOptionsId, (level + 1) == variantData.variants.size,
-                    isSelectedProductBuyable, isPartialySelected, isSelectedLevelOne, isSelectedProductFlashSale))
+            listOfVariant.add(convertVariantViewModel(variant, variantData, level, selectedOptionIds, (level + 1) == variantData.variants.size,
+                    isPartialySelected, isSelectedLevelOne, isFlashSale))
         }
 
         return listOfVariant
     }
 
-    private fun updateSelectedOptionsIds(variantData: ProductVariant, updatedSelectedOptionsId: List<String>, mapOfSelectedVariant: MutableMap<String, String>?) {
-        variantData.variants.forEachIndexed { index, variant ->
-            mapOfSelectedVariant?.set(variant.pv.toString(), updatedSelectedOptionsId.getOrNull(index) ?: "0")
-        }
-    }
-
     private fun convertVariantViewModel(variant: Variant, variantData: ProductVariant, level: Int, selectedOptionIds: List<String>, isLeaf: Boolean,
-                                        isSelectedProductBuyable: Boolean,
                                         partialySelected: Boolean,
                                         selectedLevelOne: Boolean,
                                         isSelectedProductFlashSale: Boolean): VariantCategory {
@@ -118,7 +91,7 @@ object AtcVariantMapper {
             it.picture?.url100?.isNotEmpty() == true
         }
 
-        val partialSelectedListByLevel = if (selectedOptionIds.isNotEmpty()) {
+        val shouldDetermineLevel2 = if (selectedOptionIds.isNotEmpty()) {
             selectedOptionIds.subList(0, level)
         } else {
             selectedOptionIds
@@ -129,24 +102,23 @@ object AtcVariantMapper {
             var stock = 0
             var isFlashSale = false
             if (selectedOptionIds.isNotEmpty() && option.id in selectedOptionIds) {
-                if (isSelectedProductBuyable) {
+                if (!partialySelected) {
                     // This Function is Fired When User Already Select All Of The Variant
-                    currentState = VariantConstant.STATE_SELECTED
-                    isFlashSale = if (level == 0) {
-                        variantData.isSelectedChildHasFlashSale(selectedOptionIds[level])
+                    var isOneOfChildBuyable = false
+                    if (level == 0) { //itteration at variants level 0
+                        isOneOfChildBuyable = variantData.isOneOfTheChildBuyablePartial(selectedOptionIds.first())
+                        isFlashSale = variantData.isSelectedChildHasFlashSale(selectedOptionIds[level])
                     } else {
-                        isSelectedProductFlashSale
+                        isOneOfChildBuyable = variantData.isOneOfTheChildBuyable(selectedOptionIds)
+                        isFlashSale = isSelectedProductFlashSale
                     }
+                    currentState = if (isOneOfChildBuyable) VariantConstant.STATE_SELECTED else VariantConstant.STATE_SELECTED_EMPTY
                 } else {
                     // This Function is Fired When User Selected Partial Variant
-                    for (child: VariantChild in variantData.children) {
-                        if (child.isBuyable && selectedOptionIds.first() in child.optionIds) {
-                            currentState = VariantConstant.STATE_SELECTED
-                            if (selectedLevelOne && child.isFlashSale) {
-                                isFlashSale = true
-                                break
-                            }
-                        }
+                    val isOneOfChildBuyable = variantData.isOneOfTheChildBuyablePartial(selectedOptionIds.first())
+                    currentState = if (isOneOfChildBuyable) VariantConstant.STATE_SELECTED else VariantConstant.STATE_SELECTED_EMPTY
+                    if (selectedLevelOne && variantData.isSelectedChildHasFlashSale(selectedOptionIds.first())) {
+                        isFlashSale = true
                     }
                 }
             } else {
@@ -156,7 +128,7 @@ object AtcVariantMapper {
                     //child.optionIds[0] means variant lvl1
                     //Check one by one wether childId is match with another Id
                     if (child.isBuyable && child.optionIds[level] == option.id) {
-                        if (partialSelectedListByLevel.isEmpty()) {
+                        if (shouldDetermineLevel2.isEmpty()) {
                             //It means level 1
                             currentState = VariantConstant.STATE_UNSELECTED
                             if (level == 0 && child.isFlashSale) {
@@ -165,7 +137,7 @@ object AtcVariantMapper {
                         } else {
                             val childOptionId = child.optionIds.getOrNull(level)
                             childOptionId?.let {
-                                if (child.optionIds.subList(0, level) == partialSelectedListByLevel) {
+                                if (child.optionIds.subList(0, level) == shouldDetermineLevel2) {
                                     //Check if the combination is match with child
                                     currentState = VariantConstant.STATE_UNSELECTED
                                     isFlashSale = child.isFlashSale
@@ -211,35 +183,6 @@ object AtcVariantMapper {
                 hasCustomImage = hasCustomImage,
                 variantOptions = optionList
         )
-    }
-
-    private fun getOtherSiblingProduct(productInfoAndVariant: ProductVariant?, optionId: List<String>): VariantChild? {
-        var selectedChild: VariantChild? = null
-        // we need to reselect other variant
-        productInfoAndVariant?.run {
-            var optionPartialSize = optionId.size - 1
-            while (optionPartialSize > -1) {
-                val partialOptionIdList = optionId.subList(0, optionPartialSize)
-                for (childLoop: VariantChild in children) {
-                    if (!childLoop.isBuyable) {
-                        continue
-                    }
-                    if (optionPartialSize == 0) {
-                        selectedChild = childLoop
-                        break
-                    }
-                    if (childLoop.optionIds.subList(0, optionPartialSize) == partialOptionIdList) {
-                        selectedChild = childLoop
-                        break
-                    }
-                }
-                if (selectedChild != null) {
-                    break
-                }
-                optionPartialSize--
-            }
-        }
-        return selectedChild
     }
 
     private fun getSelectedProductData(selectedOptionIds: List<String>, variantData: ProductVariant): VariantChild? {

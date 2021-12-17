@@ -71,7 +71,7 @@ class TravelDestinationViewModelTest {
         result[TravelDestinationCityModel.Response::class.java] = TravelDestinationCityModel.Response(cityModel)
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // when
         viewModel.getDestinationCityData("", "")
@@ -88,7 +88,7 @@ class TravelDestinationViewModelTest {
         errors[GraphqlError::class.java] = listOf(GraphqlError())
         val gqlResponse = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // when
         viewModel.getDestinationCityData("", "")
@@ -109,7 +109,7 @@ class TravelDestinationViewModelTest {
         result[TravelArticleModel.Response::class.java] = TravelArticleModel.Response(TravelArticleModel())
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getAllContent("", "", "", "", "10")
@@ -134,7 +134,7 @@ class TravelDestinationViewModelTest {
         errors[TravelArticleModel.Response::class.java] = listOf(GraphqlError())
         val gqlResponse = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getAllContent("", "", "", "", "10")
@@ -158,7 +158,7 @@ class TravelDestinationViewModelTest {
         result[TravelArticleModel.Response::class.java] = TravelArticleModel.Response()
         val gqlResponse = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getAllContent("", "", "", "", "10")
@@ -181,7 +181,7 @@ class TravelDestinationViewModelTest {
         errors[TravelArticleModel.Response::class.java] = listOf(GraphqlError())
         val gqlResponse = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getAllContent("", "", "", "", "10")

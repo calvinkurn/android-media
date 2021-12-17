@@ -20,6 +20,9 @@ class BannerCarouselViewModelTest {
     val rule = InstantTaskExecutorRule()
     private val componentsItem: ComponentsItem = mockk(relaxed = true)
     private val application: Application = mockk()
+    private val dataList = ArrayList<DataItem>().apply {
+        add(DataItem())
+    }
 
     private val viewModel: BannerCarouselViewModel by lazy {
         spyk(BannerCarouselViewModel(application, componentsItem, 0))
@@ -37,9 +40,16 @@ class BannerCarouselViewModelTest {
 
     @Test
     fun `title value`() {
-        var viewModelTest = viewModel
-        assert(viewModelTest.getTitleLiveData().value == "")
+        mockkObject(DiscoveryDataMapper)
+        every { DiscoveryDataMapper.mapListToComponentList(any(), any(), any(), any(), any()) } returns ArrayList()
+        every { componentsItem.data } returns null
+        var viewModelTest = spyk(BannerCarouselViewModel(application, componentsItem, 0))
+        assert(viewModelTest.getTitleLiveData().value == null)
+        every { componentsItem.data } returns ArrayList()
         every { componentsItem.properties?.bannerTitle } returns null
+        viewModelTest = spyk(BannerCarouselViewModel(application, componentsItem, 0))
+        assert(viewModelTest.getTitleLiveData().value == null)
+        every { componentsItem.data } returns dataList
         viewModelTest = spyk(BannerCarouselViewModel(application, componentsItem, 0))
         assert(viewModelTest.getTitleLiveData().value == "")
         every { componentsItem.properties?.bannerTitle } returns "testTitle"
@@ -66,9 +76,6 @@ class BannerCarouselViewModelTest {
         every { componentsItem.data } returns null
         viewModelTest.getComponentData()
         verify(inverse = true) { DiscoveryDataMapper.mapListToComponentList(any(), any(), any(), any(), any()) }
-        val dataList = ArrayList<DataItem>()
-        val dataItem = DataItem()
-        dataList.add(dataItem)
         every { componentsItem.data } returns dataList
         viewModelTest = spyk(BannerCarouselViewModel(application, componentsItem, 0))
         verify { DiscoveryDataMapper.mapListToComponentList(any(), any(), any(), any(), any()) }

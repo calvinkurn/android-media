@@ -2,6 +2,7 @@ package com.tokopedia.productcard.test.utils
 
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Space
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.matcher.BoundedMatcher
 import com.tokopedia.productcard.R
@@ -72,8 +73,9 @@ private class ProductCardInPositionMatcher(
                         || productCardComponent.id == R.id.cardViewProductCard
                         || productCardComponent.id == R.id.constraintLayoutProductCard
                         || productCardComponent.id == R.id.productCardContentLayout
+                        || productCardComponent.id == R.id.productCardFooterLayout
                         // Ignore spaces, barriers, and not visible view helpers
-                        || productCardComponent.id == R.id.spaceCampaignBestSeller
+                        || (productCardComponent is Space)
             }
         }
     }

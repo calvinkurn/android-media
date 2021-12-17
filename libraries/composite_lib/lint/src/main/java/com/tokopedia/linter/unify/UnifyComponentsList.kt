@@ -33,7 +33,6 @@ object UnifyComponentsList {
     fun getUnifyMapping(): Map<String, UnifyMapping> {
         return mapOf(
                 SdkConstants.FLOATING_ACTION_BUTTON.defaultName() to UnifyMapping(LinterConstants.UnifyClasses.FLOATING_BUTTON),
-                LinterConstants.Classes.FLOATING_BUTTON to UnifyMapping(LinterConstants.UnifyClasses.FLOATING_BUTTON),
                 FLOATING_ACTION_BUTTON to UnifyMapping(LinterConstants.UnifyClasses.FLOATING_BUTTON),
                 SdkConstants.TAB_LAYOUT.defaultName() to UnifyMapping(TAB),
                 SEARCH_BAR_VIEW to UnifyMapping(SEARCH_BAR),

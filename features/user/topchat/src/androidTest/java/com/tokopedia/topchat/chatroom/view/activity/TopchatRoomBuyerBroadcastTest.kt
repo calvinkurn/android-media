@@ -9,6 +9,7 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.atPositionIsInstanceOf
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
@@ -20,6 +21,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
+@UiTest
 class TopchatRoomBuyerBroadcastTest : TopchatRoomTest() {
 
     @Test
@@ -117,7 +119,7 @@ class TopchatRoomBuyerBroadcastTest : TopchatRoomTest() {
     }
 
     private fun assertBroadcastSpamHandlerIsVisible() {
-        onView(withId(R.id.recycler_view)).check(
+        onView(withId(R.id.recycler_view_chatroom)).check(
             atPositionIsInstanceOf(0, BroadcastSpamHandlerUiModel::class.java)
         )
         onView(withId(R.id.title_bc_handle)).check(matches(isDisplayed()))
@@ -126,7 +128,7 @@ class TopchatRoomBuyerBroadcastTest : TopchatRoomTest() {
     }
 
     private fun assertBroadcastSpamHandlerIsHidden() {
-        onView(withId(R.id.recycler_view)).check(
+        onView(withId(R.id.recycler_view_chatroom)).check(
             atPositionIsInstanceOf(0, BroadCastUiModel::class.java)
         )
         onView(withId(R.id.title_bc_handle)).check(doesNotExist())

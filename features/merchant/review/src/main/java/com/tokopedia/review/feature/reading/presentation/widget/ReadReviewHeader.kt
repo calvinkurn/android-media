@@ -8,12 +8,15 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
+import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryHeaderListener
 import com.tokopedia.review.feature.reading.data.AvailableFilters
 import com.tokopedia.review.feature.reading.data.ProductRating
 import com.tokopedia.review.feature.reading.data.ProductTopic
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewFilterChipsListener
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHeaderListener
+import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHighlightedTopicListener
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterBottomSheetType
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortTypeConstants
 import com.tokopedia.sortfilter.SortFilter
@@ -29,6 +32,7 @@ class ReadReviewHeader : BaseCustomView {
     companion object {
         const val RATING_STAR_WIDTH = 24
         const val RATING_STAR_HEIGHT = 24
+        const val SHOULD_SHOW_TOPIC_COUNT = 2
     }
 
     constructor(context: Context) : super(context) {
@@ -48,10 +52,20 @@ class ReadReviewHeader : BaseCustomView {
     private var ratingAndReviewCount: Typography? = null
     private var chevron: IconUnify? = null
     private var sortFilter: SortFilter? = null
+    private var seeAll: Typography? = null
+    private var topicLeft: ReadReviewHighlightedTopic? = null
+    private var topicRight: ReadReviewHighlightedTopic? = null
+
+    private var isProductReview: Boolean = true
+    private var topicFilterChipIndex: Int = 0
 
     private fun init() {
         View.inflate(context, R.layout.widget_read_review_header, this)
         bindViews()
+    }
+
+    fun setIsProductReview(isProductReview: Boolean){
+        this.isProductReview = isProductReview
     }
 
     private fun bindViews() {
@@ -60,6 +74,29 @@ class ReadReviewHeader : BaseCustomView {
         ratingAndReviewCount = findViewById(R.id.read_review_rating_and_review_count)
         chevron = findViewById(R.id.read_review_header_chevron_right)
         sortFilter = findViewById(R.id.read_review_sort_filter)
+        sortFilter?.sortFilterPrefix?.viewTreeObserver?.addOnGlobalLayoutListener {
+            val sortFilterPrefixVisibility = sortFilter?.sortFilterPrefix?.visibility
+            if(sortFilterPrefixVisibility == View.GONE){
+                configPaddingForGoneSortFilterPrefix()
+            }else{
+                configPaddingForVisibleSortFilterPrefix()
+            }
+        }
+        seeAll = findViewById(R.id.read_review_see_all)
+        topicLeft = findViewById(R.id.read_review_highlighted_topic_left)
+        topicRight = findViewById(R.id.read_review_highlighted_topic_right)
+    }
+
+    private fun configPaddingForVisibleSortFilterPrefix() {
+        val paddingTop = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
+        sortFilter?.setPadding(paddingTop, 0, 0, 0)
+        sortFilter?.sortFilterItems?.setPadding(0, 0, 0, 0)
+    }
+
+    private fun configPaddingForGoneSortFilterPrefix() {
+        val paddingTop = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
+        sortFilter?.setPadding(0, 0, 0, 0)
+        sortFilter?.sortFilterItems?.setPadding(paddingTop, 0, 0, 0)
     }
 
     private fun mapAvailableFiltersToSortFilter(topics: List<ProductTopic>, availableFilters: AvailableFilters, listener: ReadReviewFilterChipsListener): ArrayList<SortFilterItem> {
@@ -82,6 +119,7 @@ class ReadReviewHeader : BaseCustomView {
             val topicFilter = getSortFilterItem(context.getString(R.string.review_reading_filter_all_topics))
             setListenerAndChevronListener(topicFilter) { listener.onFilterWithTopicClicked(topics, getIndexOfSortFilter(topicFilter), isChipsActive(topicFilter.type)) }
             filter.add(topicFilter)
+            topicFilterChipIndex = filter.indexOf(topicFilter)
         }
         val sortOption = getSortFilterItem(context.getString(R.string.review_reading_sort_default))
         setListenerAndChevronListener(sortOption) { listener.onSortClicked(mapSortTitleToBottomSheetInput(sortOption)) }
@@ -151,7 +189,10 @@ class ReadReviewHeader : BaseCustomView {
 
     private fun mapSortTitleToBottomSheetInput(sortOption: SortFilterItem): String {
         return if (sortOption.title == context.getString(R.string.review_reading_sort_default)) {
-            SortTypeConstants.MOST_HELPFUL_COPY
+            if(!isProductReview)
+                SortTypeConstants.LATEST_COPY
+            else
+                SortTypeConstants.MOST_HELPFUL_COPY
         } else {
             sortOption.title.toString()
         }
@@ -199,14 +240,45 @@ class ReadReviewHeader : BaseCustomView {
     }
 
     fun updateSelectedSort(selectedSort: String) {
+        val defaultSelectedSort = if (isProductReview)
+            SortTypeConstants.MOST_HELPFUL_COPY
+        else
+            SortTypeConstants.LATEST_COPY
         sortFilter?.chipItems?.lastOrNull()?.apply {
-            if (selectedSort == SortTypeConstants.MOST_HELPFUL_COPY) {
+            if (selectedSort == defaultSelectedSort) {
                 title = context.getString(R.string.review_reading_sort_default)
                 type = ChipsUnify.TYPE_NORMAL
             } else {
                 title = selectedSort
                 type = ChipsUnify.TYPE_SELECTED
             }
+        }
+    }
+
+    fun setSeeAll(listener: ReviewGalleryHeaderListener) {
+        seeAll?.apply {
+            show()
+            setOnClickListener {
+                listener.onSeeAllClicked()
+            }
+        }
+    }
+
+    fun setHighlightedTopics(topics: List<ProductTopic>, listener: ReadReviewHighlightedTopicListener) {
+        val highlightedTopic = listOf(topicLeft, topicRight)
+        topics.filter { it.shouldShow }.take(SHOULD_SHOW_TOPIC_COUNT).mapIndexed { index, productTopic ->
+            highlightedTopic.getOrNull(index)?.apply {
+                setHighlightedTopic(productTopic)
+                this.setListener(listener, index)
+                show()
+            }
+        }
+    }
+
+    fun updateFilterFromHighlightedTopic(title: String) {
+        sortFilter?.chipItems?.getOrNull(topicFilterChipIndex)?.apply {
+            this.title = title
+            type = ChipsUnify.TYPE_SELECTED
         }
     }
 }

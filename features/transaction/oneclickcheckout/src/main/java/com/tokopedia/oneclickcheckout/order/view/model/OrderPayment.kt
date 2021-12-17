@@ -1,7 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 data class OrderPayment(
     val isEnable: Boolean = false,
@@ -16,7 +16,6 @@ data class OrderPayment(
     val errorMessage: OrderPaymentErrorMessage = OrderPaymentErrorMessage(),
     val revampErrorMessage: OrderPaymentRevampErrorMessage = OrderPaymentRevampErrorMessage(),
     val errorTickerMessage: String = "",
-    val isEnableNextButton: Boolean = false,
     val isDisablePayButton: Boolean = false,
         // flag to determine continue using ovo flow
     val isOvoOnlyCampaign: Boolean = false,
@@ -36,11 +35,6 @@ data class OrderPayment(
 
     fun getRealFee(): Double {
         return creditCard.selectedTerm?.fee ?: fee
-    }
-
-    fun hasCreditCardOption(): Boolean {
-        if (creditCard.numberOfCards.totalCards > 0 && creditCard.numberOfCards.availableCards > 0) return true
-        return false
     }
 }
 
@@ -84,7 +78,11 @@ data class OrderPaymentCreditCard(
         val tncInfo: String = "",
         val selectedTerm: OrderPaymentInstallmentTerm? = null,
         val additionalData: OrderPaymentCreditCardAdditionalData = OrderPaymentCreditCardAdditionalData(),
-        val isDebit: Boolean = false
+        val isDebit: Boolean = false,
+        val isAfpb: Boolean = false,
+        val unixTimestamp: String = "",
+        val tokenId: String = "",
+        val tenorSignature: String = ""
 ) {
     companion object {
         internal const val DEBIT_GATEWAY_CODE = "DEBITONLINE"
@@ -107,7 +105,8 @@ data class OrderPaymentCreditCardAdditionalData(
         val profileCode: String = "",
         val signature: String = "",
         val changeCcLink: String = "",
-        val callbackUrl: String = ""
+        val callbackUrl: String = "",
+        val totalProductPrice: String = ""
 ) : Parcelable
 
 data class OrderPaymentInstallmentTerm(
@@ -119,7 +118,8 @@ data class OrderPaymentInstallmentTerm(
         var isEnable: Boolean = false,
         var isError: Boolean = false,
         var fee: Double = 0.0,
-        var monthlyAmount: Double = 0.0
+        var monthlyAmount: Double = 0.0,
+        var description: String = "",
 )
 
 data class OrderPaymentOvoAdditionalData(
@@ -146,9 +146,6 @@ data class OrderPaymentWalletAdditionalData(
 ) {
     val isActivationRequired: Boolean
         get() = activation.isRequired
-
-    val isTopUpRequired: Boolean
-        get() = topUp.isRequired
 
     val isPhoneNumberMissing: Boolean
         get() = phoneNumber.isRequired

@@ -17,28 +17,12 @@ public class Status {
     @SerializedName("statusLabel")
     @Expose
     private String statusLabel;
-    @SerializedName("iconUrl")
-    @Expose
-    private String iconUrl;
     @SerializedName("textColor")
     @Expose
     private String textColor;
     @SerializedName("backgroundColor")
     @Expose
     private String backgroundColor;
-    @SerializedName("fontSize")
-    @Expose
-    private String fontSize;
-
-    public Status(String statusText, String status, String statusLabel, String iconUrl, String textColor, String backgroundColor, String fontSize) {
-        this.statusText = statusText;
-        this.status = status;
-        this.statusLabel = statusLabel;
-        this.iconUrl = iconUrl;
-        this.textColor = textColor;
-        this.backgroundColor = backgroundColor;
-        this.fontSize = fontSize;
-    }
 
     public String statusText() {
         return statusText;
@@ -52,10 +36,6 @@ public class Status {
         return statusLabel;
     }
 
-    public String iconUrl() {
-        return iconUrl;
-    }
-
     public String textColor() {
         return textColor;
     }
@@ -64,20 +44,14 @@ public class Status {
         return backgroundColor;
     }
 
-    public String fontSize() {
-        return fontSize;
-    }
-
     @Override
     public String toString() {
         return "[Status:{" +" "+
                 "statusText=" + statusText +" "+
                 "status=" + status + " "+
                 "statusLabel=" + statusLabel + " "+
-                "iconUrl=" + iconUrl + " "+
                 "textColor=" + textColor + " "+
-                "backgroundColor=" + backgroundColor + " "+
-                "fontSize=" + fontSize
+                "backgroundColor=" + backgroundColor
                 + "}]";
     }
 }

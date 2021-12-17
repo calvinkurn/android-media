@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.constant.TkpdCache;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.network.R;
 import com.tokopedia.core.network.apiservices.search.HotListService;
@@ -150,7 +151,9 @@ public class MaintenancePage extends Activity {
     }
 
     private void goToIndexHome() {
-        startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
+        Intent intent = new Intent();
+        intent.setClassName(this.getPackageName(), GlobalConfig.HOME_ACTIVITY_CLASS_NAME);
+        startActivity(intent);
         finish();
     }
 

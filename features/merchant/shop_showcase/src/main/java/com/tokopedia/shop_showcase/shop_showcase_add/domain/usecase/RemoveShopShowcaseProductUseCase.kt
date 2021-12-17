@@ -19,7 +19,7 @@ class RemoveShopShowcaseProductUseCase(
 
     override suspend fun executeOnBackground(): RemoveShowcaseProductResponse {
         val request = GraphqlRequest(MUTATION, RemoveShowcaseProductBaseResponse::class.java, params.parameters)
-        val response = gqlRepository.getReseponse(listOf(request))
+        val response = gqlRepository.response(listOf(request))
         val responseData = response.getData<RemoveShowcaseProductBaseResponse>(RemoveShowcaseProductBaseResponse::class.java)
         return responseData.removeProductMenuResponse
     }

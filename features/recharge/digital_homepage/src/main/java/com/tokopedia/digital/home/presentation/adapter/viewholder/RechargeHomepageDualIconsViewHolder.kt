@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.digital.home.R
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeDualIconsBinding
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeHomepageTrustMarkModel
 import com.tokopedia.digital.home.presentation.adapter.RechargeItemDualIconsAdapter
@@ -12,7 +13,6 @@ import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemList
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.view_recharge_home_dual_icons.view.*
 
 /**
  * @author by resakemal on 09/06/20.
@@ -22,16 +22,17 @@ class RechargeHomepageDualIconsViewHolder(itemView: View?, val listener: Recharg
         AbstractViewHolder<RechargeHomepageTrustMarkModel>(itemView) {
 
     override fun bind(element: RechargeHomepageTrustMarkModel) {
+        val bind = ViewRechargeHomeDualIconsBinding.bind(itemView)
         val section = element.section
-        with(itemView) {
+        with(bind) {
             if (section.items.isNotEmpty()) {
-                view_recharge_home_dual_icons_container.show()
-                view_recharge_home_dual_icons_shimmering.hide()
+                viewRechargeHomeDualIconsContainer.show()
+                viewRechargeHomeDualIconsShimmering.root.hide()
 
-                while (rv_recharge_home_dual_icons.itemDecorationCount > 0) {
-                    rv_recharge_home_dual_icons.removeItemDecorationAt(0)
+                while (rvRechargeHomeDualIcons.itemDecorationCount > 0) {
+                    rvRechargeHomeDualIcons.removeItemDecorationAt(0)
                 }
-                rv_recharge_home_dual_icons.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL))
+                rvRechargeHomeDualIcons.addItemDecoration(DividerItemDecoration(root.context, DividerItemDecoration.HORIZONTAL))
 
                 // Only use first 3 items or less
                 val trustMarkItems: List<RechargeHomepageSections.Item> = when (section.items.size) {
@@ -39,18 +40,18 @@ class RechargeHomepageDualIconsViewHolder(itemView: View?, val listener: Recharg
                     else -> section.items.subList(0, 3)
                 }
 
-                val layoutManager = GridLayoutManager(context, trustMarkItems.size)
-                rv_recharge_home_dual_icons.layoutManager = layoutManager
+                val layoutManager = GridLayoutManager(root.context, trustMarkItems.size)
+                rvRechargeHomeDualIcons.layoutManager = layoutManager
 
-                rv_recharge_home_dual_icons.adapter =
+                rvRechargeHomeDualIcons.adapter =
                         RechargeItemDualIconsAdapter(trustMarkItems, listener)
 
-                addOnImpressionListener(section) {
+                root.addOnImpressionListener(section) {
                     listener.onRechargeSectionItemImpression(section)
                 }
             } else {
-                view_recharge_home_dual_icons_container.hide()
-                view_recharge_home_dual_icons_shimmering.show()
+                viewRechargeHomeDualIconsContainer.hide()
+                viewRechargeHomeDualIconsShimmering.root.show()
 
                 listener.loadRechargeSectionData(element.visitableId())
             }

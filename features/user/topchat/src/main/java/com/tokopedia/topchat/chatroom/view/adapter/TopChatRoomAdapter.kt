@@ -17,8 +17,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.data.*
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel.Companion.statusActive
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel.Companion.statusWarehouse
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel.Companion.statusActive
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel.Companion.statusWarehouse
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
@@ -30,6 +30,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.BroadcastSpamHandl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReviewViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
@@ -60,8 +61,30 @@ class TopChatRoomAdapter constructor(
     private var _srwUiModel: MutableLiveData<SrwBubbleUiModel?> = MutableLiveData()
     val srwUiModel: LiveData<SrwBubbleUiModel?> get() = _srwUiModel
 
+    /**
+     * String - the replyId or localId
+     * BaseChatViewModel - the bubble/reply
+     */
+    private var replyMap: ArrayMap<String, BaseChatUiModel> = ArrayMap()
+
     override fun enableShowDate(): Boolean = false
     override fun enableShowTime(): Boolean = false
+
+    fun hasPreviewOnList(localId: String?): Boolean {
+        return localId != null && replyMap.contains(localId)
+    }
+
+    fun updatePreviewFromWs(
+        visitable: Visitable<*>,
+        localId: String
+    ) {
+        val chatBubblePosition = visitables.indexOfFirst {
+            it is BaseChatUiModel && it.localId == localId
+        }
+        if (chatBubblePosition == RecyclerView.NO_POSITION) return
+        visitables[chatBubblePosition] = visitable
+        notifyItemChanged(chatBubblePosition, Payload.REBIND)
+    }
 
     override fun getItemViewType(position: Int): Int {
         val default = super.getItemViewType(position)
@@ -89,10 +112,31 @@ class TopChatRoomAdapter constructor(
         addTopData(visitables)
     }
 
+    fun addNewMessage(item: SendableUiModel) {
+        if (item is Visitable<*> && item.localId.isNotEmpty()) {
+            val indexToAdd = getOffsetSafely()
+            replyMap[item.localId] = item
+            visitables.add(indexToAdd, item)
+            notifyItemInserted(indexToAdd)
+        }
+    }
+
+    fun getBubblePosition(localId: String, replyTime: String): Int {
+        return if (replyMap.contains(localId)) {
+            visitables.indexOfFirst {
+                it is BaseChatUiModel && it.localId == localId
+            }
+        } else {
+            visitables.indexOfFirst {
+                it is BaseChatUiModel && it.replyTime == replyTime
+            }
+        }
+    }
+
     override fun isOpposite(adapterPosition: Int, isSender: Boolean): Boolean {
         val nextItem = visitables.getOrNull(adapterPosition + 1)
         val nextItemIsSender: Boolean = when (nextItem) {
-            is SendableViewModel -> nextItem.isSender
+            is SendableUiModel -> nextItem.isSender
             is ProductCarouselUiModel -> nextItem.isSender
             is ReviewUiModel -> nextItem.isSender
             else -> true
@@ -110,21 +154,41 @@ class TopChatRoomAdapter constructor(
         }
     }
 
+    override fun removeErrorNetwork() {
+        handler.post {
+            super.removeErrorNetwork()
+        }
+    }
+
+    override fun showLoading() {
+        handler.post {
+            super.showLoading()
+        }
+    }
+
+    override fun addElement(position: Int, element: Visitable<*>?) {
+        visitables.add(position, element)
+        notifyItemInserted(position)
+    }
+
     private fun postChangeToFallbackUiModel(lastKnownPosition: Int, element: ReviewUiModel) {
         val itemPair = getUpToDateUiModelPosition(lastKnownPosition, element)
         val position = itemPair.first
         if (position == RecyclerView.NO_POSITION) return
         itemPair.second ?: return
-        val message = FallbackAttachmentViewModel(element.reply)
+        val message = FallbackAttachmentUiModel.Builder()
+            .withResponseFromGQL(element.reply)
+            .withMsg(element.reply.attachment.fallback.html)
+            .build()
         visitables[position] = message
         notifyItemChanged(position)
     }
 
-    fun showRetryFor(model: ImageUploadViewModel, b: Boolean) {
+    fun showRetryFor(model: ImageUploadUiModel, b: Boolean) {
         val position = visitables.indexOf(model)
         if (position < 0) return
-        if (visitables[position] is ImageUploadViewModel) {
-            (visitables[position] as ImageUploadViewModel).isRetry = true
+        if (visitables[position] is ImageUploadUiModel) {
+            (visitables[position] as ImageUploadUiModel).isRetry = true
             notifyItemChanged(position)
         }
     }
@@ -161,8 +225,14 @@ class TopChatRoomAdapter constructor(
         this.bottomMostHeaderDate = HeaderDateUiModel(latestHeaderDate)
     }
 
+    fun addHeaderDateIfDifferent(preview: SendableUiModel) {
+        if (preview is Visitable<*>) {
+            addHeaderDateIfDifferent(preview as Visitable<*>)
+        }
+    }
+
     fun addHeaderDateIfDifferent(visitable: Visitable<*>) {
-        if (visitable is BaseChatViewModel) {
+        if (visitable is BaseChatUiModel) {
             val chatTime = visitable.replyTime?.toLong()?.div(SECONDS) ?: return
             val previousChatTime = bottomMostHeaderDate?.dateTimestamp ?: return
             if (!sameDay(chatTime, previousChatTime)) {
@@ -234,6 +304,7 @@ class TopChatRoomAdapter constructor(
     }
 
     fun addBottomData(listChat: List<Visitable<*>>) {
+        mapListChat(listChat)
         val oldList = ArrayList(this.visitables)
         val newList = this.visitables.apply {
             addAll(0, listChat)
@@ -243,8 +314,9 @@ class TopChatRoomAdapter constructor(
         diffResult.dispatchUpdatesTo(this)
     }
 
-    private fun addTopData(listChat: MutableList<out Visitable<Any>>?) {
+    private fun addTopData(listChat: List<Visitable<Any>>?) {
         if (listChat == null || listChat.isEmpty()) return
+        mapListChat(listChat)
         val oldList = ArrayList(this.visitables)
         val newList = this.visitables.apply {
             addAll(listChat)
@@ -254,8 +326,18 @@ class TopChatRoomAdapter constructor(
         diffResult.dispatchUpdatesTo(this)
     }
 
+    private fun mapListChat(listChat: List<Visitable<*>>) {
+        listChat.filterIsInstance(BaseChatUiModel::class.java)
+            .forEach {
+                val id = it.localId
+                if (id.isEmpty()) return@forEach
+                replyMap[id] = it
+            }
+    }
+
     fun reset() {
         visitables.clear()
+        offsetUiModelMap.clear()
         bottomMostHeaderDate = null
         topMostHeaderDate = null
         topMostHeaderDateIndex = null
@@ -265,7 +347,7 @@ class TopChatRoomAdapter constructor(
     fun isLastMessageBroadcast(): Boolean {
         if (visitables.isEmpty()) return false
         val latestMessage = visitables.first()
-        return (latestMessage is MessageViewModel && latestMessage.isFromBroadCast()) ||
+        return (latestMessage is MessageUiModel && latestMessage.isFromBroadCast()) ||
                 latestMessage is BroadcastSpamHandlerUiModel ||
                 latestMessage is BroadCastUiModel
     }
@@ -288,7 +370,7 @@ class TopChatRoomAdapter constructor(
     }
 
     private fun isFromBroadcast(latestMessage: Visitable<*>?): Boolean {
-        return latestMessage is MessageViewModel &&
+        return latestMessage is MessageUiModel &&
                 latestMessage.isFromBroadCast() &&
                 !latestMessage.isSender
     }
@@ -321,6 +403,16 @@ class TopChatRoomAdapter constructor(
         return null
     }
 
+    fun removeViewHolder(element: Visitable<*>, position: Int) {
+        val itemPair = getUpToDateUiModelPosition(
+            position, element
+        )
+        val latestPosition = itemPair.first
+        if (latestPosition != RecyclerView.NO_POSITION) {
+            visitables.removeAt(latestPosition)
+            notifyItemRemoved(latestPosition)
+        }
+    }
 
     fun updateReviewState(
         review: ReviewUiModel,
@@ -464,6 +556,27 @@ class TopChatRoomAdapter constructor(
         val srwModelPosition = getUpToDateSrwUiModelPosition(srwModel) ?: return
         srwModel.isExpanded = true
         notifyItemChanged(srwModelPosition, SrwBubbleViewHolder.Signal.EXPANDED)
+    }
+
+    fun findSrwTickerPosition(regexMessage: String): Int {
+        for (idx in visitables.indices) {
+            if (isNextMsgProduct(idx) && isRegexMatch(idx, regexMessage)) {
+                return idx
+            }
+        }
+        return RecyclerView.NO_POSITION
+    }
+
+    private fun isRegexMatch(idx: Int, regexMessage: String): Boolean {
+        val currentItem = visitables.getOrNull(idx)
+        if (currentItem == null || currentItem !is MessageUiModel) return false
+        val rgx = regexMessage.toRegex(setOf(RegexOption.IGNORE_CASE))
+        return rgx.containsMatchIn(currentItem.message)
+    }
+
+    private fun isNextMsgProduct(idx: Int): Boolean {
+        return visitables.getOrNull(idx + 1) is ProductAttachmentUiModel ||
+                visitables.getOrNull(idx + 1) is ProductCarouselUiModel
     }
 
     private fun getUpToDateSrwUiModelPosition(

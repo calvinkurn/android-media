@@ -1,5 +1,6 @@
 package com.tokopedia.officialstore.official.data.model.dynamic_channel
 
+import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
@@ -7,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Banner(
         @Expose @SerializedName("cta") val cta: Cta?,
-        @Expose @SerializedName("id") val id: Long,
+        @SuppressLint("Invalid Data Type") @Expose @SerializedName("id") val id: Long,
         @Expose @SerializedName("title") val title: String,
         @Expose @SerializedName("description") val description: String,
         @Expose @SerializedName("url") val url: String,

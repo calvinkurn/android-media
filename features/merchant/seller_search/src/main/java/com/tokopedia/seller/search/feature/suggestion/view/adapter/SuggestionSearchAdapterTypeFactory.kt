@@ -12,6 +12,7 @@ import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hi
 import com.tokopedia.seller.search.feature.suggestion.view.viewholder.DividerSellerSearchViewHolder
 import com.tokopedia.seller.search.feature.suggestion.view.viewholder.TitleHasMoreSellerSearchViewHolder
 import com.tokopedia.seller.search.feature.suggestion.view.viewholder.TitleHeaderSellerSearchViewHolder
+import com.tokopedia.seller.search.feature.suggestion.view.viewholder.articles.ItemArticleSearchViewHolder
 import com.tokopedia.seller.search.feature.suggestion.view.viewholder.faq.ItemFaqSearchViewHolder
 import com.tokopedia.seller.search.feature.suggestion.view.viewholder.hightlights.HighlightSuggestionSearchViewHolder
 import com.tokopedia.seller.search.feature.suggestion.view.viewholder.hightlights.TitleHighlightSuggestionSearchViewHolder
@@ -20,11 +21,12 @@ import com.tokopedia.seller.search.feature.suggestion.view.viewholder.order.Item
 import com.tokopedia.seller.search.feature.suggestion.view.viewholder.product.ItemProductSearchViewHolder
 
 class SuggestionSearchAdapterTypeFactory(
-        private val orderSearchListener: OrderSearchListener,
-        private val productSearchListener: ProductSearchListener,
-        private val navigationSearchListener: NavigationSearchListener,
-        private val faqSearchListener: FaqSearchListener,
-        private val highlightSuggestionSearchListener: HighlightSuggestionSearchListener
+    private val orderSearchListener: OrderSearchListener,
+    private val productSearchListener: ProductSearchListener,
+    private val navigationSearchListener: NavigationSearchListener,
+    private val faqSearchListener: FaqSearchListener,
+    private val highlightSuggestionSearchListener: HighlightSuggestionSearchListener,
+    private val articleSearchListener: ArticleSearchListener
 ) : BaseAdapterTypeFactory(), TypeFactorySuggestionSearchAdapter {
 
     override fun type(loadingModel: LoadingSearchModel): Int {
@@ -37,6 +39,10 @@ class SuggestionSearchAdapterTypeFactory(
 
     override fun type(highlightSuggestionSearchUiModel: HighlightSuggestionSearchUiModel): Int {
         return HighlightSuggestionSearchViewHolder.LAYOUT
+    }
+
+    override fun type(articleSellerSearchUiModel: ArticleSellerSearchUiModel): Int {
+        return ItemArticleSearchViewHolder.LAYOUT
     }
 
     override fun type(sellerSearchNoResultUiModel: SellerSearchNoResultUiModel): Int {
@@ -75,16 +81,40 @@ class SuggestionSearchAdapterTypeFactory(
         return when (type) {
             TitleHeaderSellerSearchViewHolder.LAYOUT -> TitleHeaderSellerSearchViewHolder(parent)
             TitleHasMoreSellerSearchViewHolder.LAYOUT ->
-                TitleHasMoreSellerSearchViewHolder(parent, orderSearchListener, productSearchListener, faqSearchListener)
+                TitleHasMoreSellerSearchViewHolder(
+                    parent,
+                    orderSearchListener,
+                    productSearchListener,
+                    faqSearchListener,
+                    articleSearchListener
+                )
             DividerSellerSearchViewHolder.LAYOUT -> DividerSellerSearchViewHolder(parent)
-            ItemOrderSearchViewHolder.LAYOUT -> ItemOrderSearchViewHolder(parent, orderSearchListener)
-            ItemProductSearchViewHolder.LAYOUT -> ItemProductSearchViewHolder(parent, productSearchListener)
-            ItemNavigationSearchViewHolder.LAYOUT -> ItemNavigationSearchViewHolder(parent, navigationSearchListener)
+            ItemOrderSearchViewHolder.LAYOUT -> ItemOrderSearchViewHolder(
+                parent,
+                orderSearchListener
+            )
+            ItemProductSearchViewHolder.LAYOUT -> ItemProductSearchViewHolder(
+                parent,
+                productSearchListener
+            )
+            ItemNavigationSearchViewHolder.LAYOUT -> ItemNavigationSearchViewHolder(
+                parent,
+                navigationSearchListener
+            )
             ItemFaqSearchViewHolder.LAYOUT -> ItemFaqSearchViewHolder(parent, faqSearchListener)
             ShimmerLoadingViewHolder.LAYOUT -> ShimmerLoadingViewHolder(parent)
             SellerSearchNoResultViewHolder.LAYOUT -> SellerSearchNoResultViewHolder(parent)
-            TitleHighlightSuggestionSearchViewHolder.LAYOUT -> TitleHighlightSuggestionSearchViewHolder(parent)
-            HighlightSuggestionSearchViewHolder.LAYOUT -> HighlightSuggestionSearchViewHolder(parent, highlightSuggestionSearchListener)
+            TitleHighlightSuggestionSearchViewHolder.LAYOUT -> TitleHighlightSuggestionSearchViewHolder(
+                parent
+            )
+            HighlightSuggestionSearchViewHolder.LAYOUT -> HighlightSuggestionSearchViewHolder(
+                parent,
+                highlightSuggestionSearchListener
+            )
+            ItemArticleSearchViewHolder.LAYOUT -> ItemArticleSearchViewHolder(
+                parent,
+                articleSearchListener
+            )
             else -> super.createViewHolder(parent, type)
         }
     }

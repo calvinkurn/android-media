@@ -12,4 +12,7 @@
     <dimen name="dp_140">140dp</dimen>
     <dimen name="dp_210">210dp</dimen>
     <dimen name="max_cashback_desc_width">115dp</dimen>
+    <dimen name="cart_collapsed_inner_recycler_view_height_with_variant">134dp</dimen>
+    <dimen name="cart_collapsed_inner_recycler_view_height_without_variant">114dp</dimen>
+    <dimen name="select_all_view_holder_height">47dp</dimen>
 </resources>

@@ -20,8 +20,8 @@ import java.util.*
  */
 class FlightBookingAmenityActivity : BaseSimpleActivity() {
 
-    override fun getNewFragment(): Fragment? {
-        val metaViewModel: FlightBookingAmenityMetaModel = intent.getParcelableExtra(FlightBookingAmenityFragment.EXTRA_SELECTED_AMENITIES)
+    override fun getNewFragment(): Fragment {
+        val metaViewModel: FlightBookingAmenityMetaModel = intent.getParcelableExtra(FlightBookingAmenityFragment.EXTRA_SELECTED_AMENITIES) ?: FlightBookingAmenityMetaModel()
         return FlightBookingAmenityFragment.createInstance(
                 intent.getParcelableArrayListExtra(FlightBookingAmenityFragment.EXTRA_LIST_AMENITIES),
                 metaViewModel)

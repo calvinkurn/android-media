@@ -19,10 +19,6 @@ public class RedirectCreateShopActivity extends TActivity {
     private static final String APPLINK_PLAYSTORE = "market://details?id=";
     private static final String URL_PLAYSTORE = "https://play.google.com/store/apps/details?id=";
 
-    public static Intent getCallingIntent(Context context) {
-        return new Intent(context, RedirectCreateShopActivity.class);
-    }
-
     @Override
     public String getScreenName() {
         return AppScreen.CREATE_SHOP_REDIRECT;

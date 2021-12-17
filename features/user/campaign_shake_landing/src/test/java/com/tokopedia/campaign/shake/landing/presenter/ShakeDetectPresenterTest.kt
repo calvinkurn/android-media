@@ -6,13 +6,17 @@ import android.content.SharedPreferences
 import android.os.Vibrator
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.campaign.shake.landing.domain.GetCampaignUseCase
+import com.tokopedia.campaign.shake.landing.view.activity.ShakeDetectCampaignActivity
 import com.tokopedia.campaign.shake.landing.view.presenter.ShakeDetectContract
 import com.tokopedia.campaign.shake.landing.view.presenter.ShakeDetectPresenter
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shakedetect.ShakeDetectManager
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import org.junit.After
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -227,10 +231,109 @@ class ShakeDetectPresenterTest {
     }
 
     @Test
+    fun `finish shake and unsubscribe` () {
+        presenter.subscription = mockk(relaxed = true)
+        presenter.finishShake()
+        verify {
+            presenter.subscription.unsubscribe()
+        }
+    }
+
+    @Test
     fun `onDestroyView` () {
         presenter.onDestroyView()
         verify {
             getCampaignUseCase.unsubscribe()
         }
+    }
+
+    @Test
+    fun `is user loggedin` () {
+        val userSessionTest = mockk<UserSession>(relaxed = true)
+        presenter.changeUserSession(userSessionTest)
+        every { userSessionTest.isLoggedIn } returns true
+        val isLogin = presenter.isLogin
+        verify { presenter.isLogin }
+        assertEquals(true, isLogin)
+    }
+
+    @Test
+    fun `is shake detected as normal shake is not first shake` () {
+        val remoteConfigTest = mockk<RemoteConfig>(relaxed =  true)
+        val isFirstShakeTest = true
+        val permissionCheckerHelperTest = mockk<PermissionCheckerHelper>(relaxed = true)
+
+        presenter.changeFirstShake(isFirstShakeTest)
+        presenter.changeRemoteConfig(remoteConfigTest)
+        presenter.setPermissionChecker(permissionCheckerHelperTest)
+
+        givenLocationParameterBeforeRequest(remoteConfigTest, permissionCheckerHelperTest)
+
+        presenter.onShakeDetect()
+
+        verify {
+            presenter.addLocationParameterBeforeRequest(any())
+        }
+
+        assertFalse(presenter.firstShake)
+    }
+
+    @Test
+    fun `is shake detected as normal shake is first shake` () {
+        val remoteConfigTest = mockk<RemoteConfig>(relaxed =  true)
+        val isFirstShakeTest = true
+        val permissionCheckerHelperTest = mockk<PermissionCheckerHelper>(relaxed = true)
+
+        presenter.changeFirstShake(isFirstShakeTest)
+        presenter.changeRemoteConfig(remoteConfigTest)
+        presenter.setPermissionChecker(permissionCheckerHelperTest)
+
+        givenLocationParameterBeforeRequest(remoteConfigTest, permissionCheckerHelperTest)
+
+        presenter.onShakeDetect()
+
+        verify {
+            presenter.addLocationParameterBeforeRequest(any())
+        }
+
+        assertFalse(presenter.firstShake)
+
+    }
+
+    @After
+    fun after() {
+        presenter.changeRemoteConfig(null)
+        presenter.changeFirstShake(false)
+        presenter.setPermissionChecker(null)
+        presenter.changeUserSession(null)
+    }
+
+    private fun givenLocationParameterBeforeRequest
+                (remoteConfigTest: RemoteConfig,
+                 permissionCheckerHelperTest: PermissionCheckerHelper) {
+        val stringTest = "Dummy test string"
+        val activity = spyk(ShakeDetectCampaignActivity())
+        every {
+            remoteConfigTest.getBoolean(any())
+        } returns false
+        every {
+            view.isLongShakeTriggered
+        } returns false
+
+        every {
+            view.currentActivity
+        } returns activity
+
+        every {
+            activity.applicationContext
+        } returns context
+
+        every {
+            permissionCheckerHelperTest.hasPermission(any(), any())
+        } returns true
+
+        every {
+            activity.getString(any())
+        } returns stringTest
     }
 }

@@ -30,15 +30,13 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
-import com.tokopedia.officialstore.OfficialStoreInstance
-import com.tokopedia.officialstore.R
+import com.tokopedia.officialstore.*
+import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_PREPARING_OS_HOME
 import com.tokopedia.officialstore.analytics.OSMixLeftTracking
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
@@ -46,6 +44,7 @@ import com.tokopedia.officialstore.category.presentation.data.OSChooseAddressDat
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
+import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Cta
@@ -86,11 +85,15 @@ class OfficialHomeFragment :
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val SLUG_CONST = "{slug}"
         private const val PERFORMANCE_OS_PAGE_NAME = "OS"
+        private const val POS_1 = 1
+        private const val POS_10 = 10
+        private const val DELAY_200L = 200L
 
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
     }
 
+    private var currentBannerData: OfficialStoreBanners? = null
     private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
     private val sentDynamicChannelTrackers = mutableSetOf<String>()
 
@@ -115,6 +118,7 @@ class OfficialHomeFragment :
     private var isScrolling = false
     private var remoteConfig: RemoteConfig? = null
     private var localChooseAddress: OSChooseAddressData? = null
+    private var recommendationWishlistItem: RecommendationItem? = null
 
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
     private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
@@ -146,12 +150,16 @@ class OfficialHomeFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        officialStorePerformanceMonitoringListener = context?.let { castContextToOfficialStorePerformanceMonitoring(it) }
+        if (savedInstanceState == null) {
+            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(
+                KEY_PERFORMANCE_PREPARING_OS_HOME)
+        }
         super.onCreate(savedInstanceState)
         arguments?.let {
             category = it.getParcelable(BUNDLE_CATEGORY)
         }
         context?.let { tracking = OfficialStoreTracking(it) }
-        officialStorePerformanceMonitoringListener = context?.let { castContextToOfficialStorePerformanceMonitoring(it) }
         remoteConfig = FirebaseRemoteConfigImpl(activity)
     }
 
@@ -169,18 +177,20 @@ class OfficialHomeFragment :
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_official_home_child, container, false)
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
-        recyclerView = view.findViewById(R.id.recycler_view)
+        recyclerView = view.findViewById(R.id.os_child_recycler_view)
         layoutManager = StaggeredGridLayoutManager(PRODUCT_RECOMM_GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         recyclerView?.layoutManager = layoutManager
 
         val adapterTypeFactory = OfficialHomeAdapterTypeFactory(
                 this,
                 this,
+                RecommendationWidgetCallback(this, this.context, userSession.userId),
                 OfficialStoreHomeComponentCallback(),
                 OfficialStoreLegoBannerComponentCallback(this),
                 OSMixLeftComponentCallback(this),
                 OSMixTopComponentCallback(this),
                 OSFeaturedBrandCallback(this, tracking),
+                OSFeaturedShopDCCallback(this),
                 recyclerView?.recycledViewPool)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
@@ -195,11 +205,33 @@ class OfficialHomeFragment :
         observeFeaturedShop()
         observeDynamicChannel()
         observeProductRecommendation()
+        observeFeaturedShopSuccessDC()
+        observeFeaturedShopRemoveDC()
+        observeRecomwidget()
         initLocalChooseAddressData()
         resetData()
         loadData()
         setListener()
         getOfficialStorePageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
+        if (savedInstanceState == null) officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(
+            KEY_PERFORMANCE_PREPARING_OS_HOME)
+
+    }
+
+    private fun observeRecomwidget() {
+        viewModel.recomWidget.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    officialHomeMapper.mappingRecomWidget(it.data, adapter)
+                }
+                is Fail -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    showErrorNetwork(it.throwable)
+                }
+
+            }
+        })
     }
 
     override fun onPause() {
@@ -230,6 +262,8 @@ class OfficialHomeFragment :
         viewModel.officialStoreBenefitsResult.removeObservers(this)
         viewModel.officialStoreDynamicChannelResult.removeObservers(this)
         viewModel.productRecommendation.removeObservers(this)
+        viewModel.featuredShopRemove.removeObservers(this)
+        viewModel.featuredShopResult.removeObservers(this)
         viewModel.flush()
         super.onDestroy()
     }
@@ -345,7 +379,7 @@ class OfficialHomeFragment :
             tracking?.dynamicChannelHomeComponentClick(
                     viewModel.currentSlug,
                     channelModel.channelHeader.name,
-                    (position + 1).toString(10),
+                    (position + POS_1).toString(POS_10),
                     it,
                     channelModel
             )
@@ -375,7 +409,7 @@ class OfficialHomeFragment :
                 tracking?.dynamicChannelImageClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
-                        (position + 1).toString(10),
+                        (position + POS_1).toString(POS_10),
                         gridData,
                         channelData
                 )
@@ -408,7 +442,7 @@ class OfficialHomeFragment :
                 tracking?.flashSalePDPClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
-                        (position + 1).toString(10),
+                        (position + POS_1).toString(POS_10),
                         gridData,
                         campaignId,
                         campaignCode
@@ -440,7 +474,7 @@ class OfficialHomeFragment :
                 tracking?.dynamicChannelMixCardClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
-                        (position + 1).toString(10),
+                        (position + POS_1).toString(POS_10),
                         gridData,
                         channelData.campaignCode,
                         channelData.campaignID.toString()
@@ -590,6 +624,14 @@ class OfficialHomeFragment :
         return userSession.isLoggedIn
     }
 
+    override fun getUserId(): String {
+        return userSession.userId
+    }
+
+    override fun getTrackingObject(): OfficialStoreTracking? {
+        return tracking
+    }
+
     override fun onSeeAllBannerClickedComponent(channel: ChannelModel, applink: String) {
         tracking?.seeAllBannerFlashSaleClickedComponent(
                 viewModel.currentSlugDC,
@@ -613,7 +655,7 @@ class OfficialHomeFragment :
     }
 
     override fun onShopImpression(categoryName: String, position: Int, shopData: Shop) {
-        tracking?.eventImpressionFeatureBrand(
+        tracking?.eventImpressionShop(
                 categoryName = categoryName,
                 shopPosition = position,
                 shopName = shopData.name.orEmpty(),
@@ -626,7 +668,7 @@ class OfficialHomeFragment :
     }
 
     override fun onShopClick(categoryName: String, position: Int, shopData: Shop) {
-        tracking?.eventClickFeaturedBrand(
+        tracking?.eventClickShop(
                 categoryName = categoryName,
                 shopPosition = position,
                 shopName = shopData.name.orEmpty(),
@@ -638,6 +680,39 @@ class OfficialHomeFragment :
                 campaignCode = shopData.campaignCode.orEmpty()
         )
         RouteManager.route(context, shopData.url)
+    }
+
+    override fun onFeaturedShopDCClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
+        tracking?.trackingQueueObj?.putEETracking(
+                OSFeaturedShopTracking.getEventClickShopWidget(
+                        channel = channelModel,
+                        grid = channelGrid,
+                        categoryName = category?.title?:"",
+                        bannerPosition = position,
+                        userId = userSession.userId
+                ) as HashMap<String, Any>
+        )
+        goToApplink(channelGrid.applink)
+    }
+
+    override fun onFeaturedShopDCImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
+        tracking?.trackerObj?.sendEnhanceEcommerceEvent(
+                OSFeaturedShopTracking.getEventImpressionShopWidget(
+                        channel = channelModel,
+                        grid = channelGrid,
+                        categoryName = category?.title?:"",
+                        bannerPosition = position,
+                        userId = userSession.userId
+                ) as HashMap<String, Any>
+        )
+    }
+
+    override fun onSeeAllFeaturedShopDCClicked(channel: ChannelModel, position: Int, applink: String) {
+        goToApplink(applink)
+    }
+
+    override fun goToApplink(applink: String) {
+        RouteManager.route(requireContext(), applink)
     }
 
     private fun initFirebasePerformanceMonitoring() {
@@ -653,13 +728,13 @@ class OfficialHomeFragment :
         dynamicChannelPerformanceMonitoring = PerformanceMonitoring.start(dynamicChannelConstant)
     }
 
-    private fun removeLoading() {
+    private fun removeLoading(isCache: Boolean) {
         val osPltCallback = getOfficialStorePageLoadTimeCallback()
         if (osPltCallback != null) {
             osPltCallback.stopNetworkRequestPerformanceMonitoring()
             osPltCallback.startRenderPerformanceMonitoring()
         }
-        setPerformanceListenerForRecyclerView()
+        setPerformanceListenerForRecyclerView(isCache)
     }
 
     private fun castContextToOfficialStorePerformanceMonitoring(context: Context): OfficialStorePerformanceMonitoringListener? {
@@ -672,10 +747,10 @@ class OfficialHomeFragment :
         return officialStorePerformanceMonitoringListener?.officialStorePageLoadTimePerformanceInterface
     }
 
-    private fun setPerformanceListenerForRecyclerView() {
+    private fun setPerformanceListenerForRecyclerView(isCache: Boolean) {
         recyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                officialStorePerformanceMonitoringListener?.stopOfficialStorePerformanceMonitoring()
+                officialStorePerformanceMonitoringListener?.stopOfficialStorePerformanceMonitoring(isCache)
                 recyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
         })
@@ -690,7 +765,19 @@ class OfficialHomeFragment :
 
         if (userVisibleHint && isAdded && ::viewModel.isInitialized) {
             if (!isLoadedOnce || isRefresh) {
-                viewModel.loadFirstData(category, getLocation())
+                viewModel.loadFirstData(category, getLocation(),
+                        onBannerCacheStartLoad = {
+                            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CACHE)
+                        },
+                        onBannerCacheStopLoad = {
+                            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CACHE)
+                        },
+                        onBannerCloudStartLoad = {
+                            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CLOUD)
+                        },
+                        onBannerCloudStopLoad = {
+                            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CLOUD)
+                        })
                 isLoadedOnce = true
 
                 getOfficialStorePageLoadTimeCallback()?.startNetworkRequestPerformanceMonitoring()
@@ -710,15 +797,23 @@ class OfficialHomeFragment :
 
     private fun observeBannerData() {
         viewModel.officialStoreBannersResult.observe(viewLifecycleOwner, {
-            when (it) {
+            val resultValue = it.second
+
+            val shouldShowErrorMessage = it.first
+            when (resultValue) {
                 is Success -> {
-                    removeLoading()
-                    swipeRefreshLayout?.isRefreshing = false
-                    officialHomeMapper.mappingBanners(it.data, adapter, category?.title)
+                    if (resultValue.data.banners.isNotEmpty() && (this.currentBannerData == null || this.currentBannerData != resultValue.data)) {
+                        this.currentBannerData = resultValue.data
+                        removeLoading(resultValue.data.isCache)
+                        swipeRefreshLayout?.isRefreshing = false
+                        officialHomeMapper.mappingBanners(resultValue.data, adapter, category?.title)
+                    }
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    showErrorNetwork(it.throwable)
+                    if (shouldShowErrorMessage) {
+                        showErrorNetwork(resultValue.throwable)
+                    }
                 }
             }
             bannerPerformanceMonitoring.stopTrace()
@@ -799,6 +894,27 @@ class OfficialHomeFragment :
         })
     }
 
+    private fun observeFeaturedShopSuccessDC() {
+        viewModel.featuredShopResult.observe(viewLifecycleOwner, {
+            when(it) {
+                is Success -> {
+                   //update UI
+                    officialHomeMapper.updateFeaturedShopDC(it.data) { newDataList ->
+                        adapter?.submitList(newDataList)
+                    }
+                }
+            }
+        })
+    }
+
+    private fun observeFeaturedShopRemoveDC() {
+        viewModel.featuredShopRemove.observe(viewLifecycleOwner, {
+            officialHomeMapper.removeFeaturedShopDC(it) { newDataList ->
+                adapter?.submitList(newDataList)
+            }
+        })
+    }
+
     private fun showErrorNetwork(t: Throwable) {
         view?.let {
             Toaster.build(it,
@@ -812,6 +928,7 @@ class OfficialHomeFragment :
         swipeRefreshLayout?.setOnRefreshListener {
             counterTitleShouldBeRendered = 0
             officialHomeMapper.removeRecommendation(adapter)
+            officialHomeMapper.removeRecomWidget(adapter)
             loadData(true)
         }
 
@@ -825,10 +942,9 @@ class OfficialHomeFragment :
                         if (!isScrolling) {
                             isScrolling = true
                             scrollListener.onContentScrolled(dy)
-
                             Handler().postDelayed({
                                 isScrolling = false
-                            }, 200)
+                            }, DELAY_200L)
                         }
 
                     }
@@ -855,7 +971,7 @@ class OfficialHomeFragment :
                 category?.title.toEmptyStringIfNull(),
                 !productCardOptionsModel.isWishlisted,
                 viewModel.isLoggedIn(),
-                productCardOptionsModel.productId.toIntOrZero(),
+                productCardOptionsModel.productId.toLongOrZero(),
                 productCardOptionsModel.isTopAds
         )
     }
@@ -934,6 +1050,26 @@ class OfficialHomeFragment :
         }
     }
 
+    override fun onBestSellerClick(appLink: String) {
+        RouteManager.route(context, appLink)
+    }
+
+    override fun onBestSellerThreeDotsClick(recommendationItem: RecommendationItem,
+        widgetPosition: Int) {
+        recommendationWishlistItem = recommendationItem
+        showProductCardOptions(
+            this,
+            recommendationItem.createProductCardOptionsModel(widgetPosition))
+    }
+
+    override fun onBestSellerSeeMoreTextClick(appLink: String) {
+        RouteManager.route(context, appLink)
+    }
+
+    override fun onBestSellerSeeAllCardClick(appLink: String) {
+        RouteManager.route(context, appLink)
+    }
+
     @Suppress("TooGenericExceptionCaught")
     private fun isChooseAddressUpdated(): Boolean {
         try {
@@ -946,5 +1082,17 @@ class OfficialHomeFragment :
         }
         return false
 
+    }
+
+    private fun RecommendationItem.createProductCardOptionsModel(position: Int): ProductCardOptionsModel {
+        val productCardOptionsModel = ProductCardOptionsModel()
+        productCardOptionsModel.hasWishlist = true
+        productCardOptionsModel.isWishlisted = isWishlist
+        productCardOptionsModel.productId = productId.toString()
+        productCardOptionsModel.isTopAds = isTopAds
+        productCardOptionsModel.topAdsWishlistUrl = wishlistUrl
+        productCardOptionsModel.productPosition = position
+        productCardOptionsModel.screenName = header
+        return productCardOptionsModel
     }
 }

@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/dp_32" android:paddingStart="@dimen/dp_32"
     android:paddingEnd="@dimen/dp_32" android:paddingRight="@dimen/dp_32"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:visibility="gone"
     android:id="@+id/partial_empty_wishlist"
     android:layout_marginBottom="@dimen/spacing_lvl3">
@@ -37,21 +37,22 @@
         android:text="@string/wishlist_empty_message"
         android:fontFamily="sans-serif"
         android:textColor="@color/Unify_N150"
-        android:textSize="@dimen/sp_14"
+        android:textSize="14sp"
         android:gravity="center"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/spacing_lvl2"/>
 
-    <com.tokopedia.design.component.ButtonCompat
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_login"
         android:layout_width="@dimen/favorite_button_width"
         android:layout_height="wrap_content"
-        app:buttonCompatType="primary"
-        app:buttonCompatSize="medium"
-        android:textAllCaps="false"
-        android:text="@string/favorite_empty_button"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl5"/>
+        android:layout_marginBottom="@dimen/spacing_lvl5"
+        android:text="@string/favorite_empty_button"
+        android:textAllCaps="false"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
 
 </LinearLayout>

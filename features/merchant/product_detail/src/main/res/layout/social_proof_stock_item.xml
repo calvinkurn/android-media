@@ -9,10 +9,10 @@
         android:id="@+id/social_proof_first_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawablePadding="@dimen/dp_4"
-        android:paddingStart="@dimen/dp_8"
+        android:drawablePadding="4dp"
+        android:paddingStart="8dp"
         android:paddingTop="@dimen/dp_7"
-        android:paddingEnd="@dimen/dp_8"
+        android:paddingEnd="8dp"
         android:paddingBottom="@dimen/dp_7"
         app:typographyType="body_3"
         tools:ignore="RtlSymmetry"
@@ -20,7 +20,7 @@
 
     <View
         android:layout_width="1dp"
-        android:layout_height="@dimen/dp_16"
+        android:layout_height="16dp"
         android:layout_gravity="center"
         android:background="@color/Unify_NN300" />
 

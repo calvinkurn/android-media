@@ -14,17 +14,18 @@ import com.tokopedia.deals.R
 import com.tokopedia.deals.category.ui.activity.DealsCategoryActivity
 import com.tokopedia.deals.common.ui.adapter.DealsFragmentPagerAdapter
 import com.tokopedia.deals.common.ui.viewmodel.DealsBrandCategoryActivityViewModel
+import com.tokopedia.deals.databinding.ActivityBaseBrandCategoryDealsBinding
+import com.tokopedia.deals.databinding.ActivityBaseDealsBinding
 import com.tokopedia.deals.search.model.response.Category
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.getCustomText
-import kotlinx.android.synthetic.main.activity_base_brand_category_deals.*
-import kotlinx.android.synthetic.main.content_base_deals_search_bar.*
-import kotlinx.android.synthetic.main.content_base_toolbar.*
 import java.lang.Math.abs
 
 open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
+
+    lateinit var binding: ActivityBaseBrandCategoryDealsBinding
 
     lateinit var dealBrandCategoryActivityViewModel: DealsBrandCategoryActivityViewModel
     lateinit var adapter: DealsFragmentPagerAdapter
@@ -38,6 +39,8 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        binding = ActivityBaseBrandCategoryDealsBinding.bind(viewGroup)
+
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
         dealBrandCategoryActivityViewModel = viewModelProvider.get(DealsBrandCategoryActivityViewModel::class.java)
         dealBrandCategoryActivityViewModel.getCategoryCombindedData()
@@ -47,10 +50,11 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
     }
 
     private fun observerLayout() {
-        tab_deals_brand_category.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+
+        binding.tabDealsBrandCategory.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 tab.select()
-                vp_deals_brand_category.currentItem = tab.position
+                binding.vpDealsBrandCategory.currentItem = tab.position
 
                 if (isEnableTabClickAnalytics) tabAnalytics(tab.getCustomText(), tab.position)
             }
@@ -64,20 +68,20 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
             }
         })
 
-        vp_deals_brand_category?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding.vpDealsBrandCategory?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                val tab = tab_deals_brand_category?.getUnifyTabLayout()?.getTabAt(position)
+                val tab = binding.tabDealsBrandCategory?.getUnifyTabLayout()?.getTabAt(position)
                 tab?.select()
             }
         })
 
         dealBrandCategoryActivityViewModel.curatedData.observe(this, Observer {
-            tabs_shimmering?.hide()
+            binding.tabsShimmering.root.hide()
             val tabNameList: ArrayList<String> = arrayListOf()
 
             if (showAllItemPage()) {
                 childCategoryList.add(null)
-                tab_deals_brand_category.addNewTab(ALL_ITEM_PAGE)
+                binding.tabDealsBrandCategory.addNewTab(ALL_ITEM_PAGE)
                 tabNameList.add(ALL_ITEM_PAGE)
             }
 
@@ -91,37 +95,37 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
             if (position != null) {
                 it.eventChildCategory.categories.forEach { category ->
                     if (category.isCard == 0 && category.isHidden == 0) {
-                        tab_deals_brand_category.addNewTab(category.title)
+                        binding.tabDealsBrandCategory.addNewTab(category.title)
                         tabNameList.add(category.title)
                     }
                 }
 
                 adapter = DealsFragmentPagerAdapter(this, childCategoryList.toList(), getPageTAG(), tabNameList.toList())
-                vp_deals_brand_category.offscreenPageLimit = 1
-                vp_deals_brand_category.adapter = adapter
+                binding.vpDealsBrandCategory.offscreenPageLimit = 1
+                binding.vpDealsBrandCategory.adapter = adapter
 
                 redirectsToSpecificCategory(position)
             } else {
-                tab_deals_brand_category.hide()
+                binding.tabDealsBrandCategory.hide()
                 adapter = DealsFragmentPagerAdapter(this, listOf(categoryId), getPageTAG(), listOf(categoryId))
-                vp_deals_brand_category.offscreenPageLimit = 1
-                vp_deals_brand_category.adapter = adapter
+                binding.vpDealsBrandCategory.offscreenPageLimit = 1
+                binding.vpDealsBrandCategory.adapter = adapter
             }
         })
 
         dealBrandCategoryActivityViewModel.errorMessage.observe(this, Observer {
-            Toaster.build(container, it.localizedMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            Toaster.build(binding.container, it.localizedMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         })
     }
 
     private fun redirectsToSpecificCategory(position: Int?) {
-        val tabLayout = tab_deals_brand_category.getUnifyTabLayout()
-        val observer = tab_deals_brand_category.getUnifyTabLayout().viewTreeObserver
+        val tabLayout = binding.tabDealsBrandCategory.getUnifyTabLayout()
+        val observer = binding.tabDealsBrandCategory.getUnifyTabLayout().viewTreeObserver
         if (observer.isAlive) {
             observer.dispatchOnGlobalLayout()
             observer.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    tab_deals_brand_category.getUnifyTabLayout().viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    binding.tabDealsBrandCategory.getUnifyTabLayout().viewTreeObserver.removeOnGlobalLayoutListener(this)
                     isEnableTabClickAnalytics = true
                     position?.let { tabLayout.getTabAt(it)?.select() }
                 }
@@ -150,17 +154,17 @@ open class DealsBaseBrandCategoryActivity : DealsBaseActivity() {
     }
 
     private fun setUpScrollView() {
-        appBarLayoutSearchContent?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-            if (abs(verticalOffset) - appBarLayout.totalScrollRange >= - searchBarDealsBaseSearch.height ) {
+        binding.appBarLayoutSearchContent?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+            if (abs(verticalOffset) - appBarLayout.totalScrollRange >= - binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.height ) {
                 //collapse
                 ViewCompat.setElevation(appBarLayout,0f)
-                imgDealsSearchIcon.show()
+                binding.contentBaseToolbar.imgDealsSearchIcon.show()
             } else {
-                imgDealsSearchIcon.hide()
+                binding.contentBaseToolbar.imgDealsSearchIcon.hide()
             }
         })
 
-        imgDealsSearchIcon.setOnClickListener {
+        binding.contentBaseToolbar.imgDealsSearchIcon.setOnClickListener {
             searchBarActionListener?.onClickSearchBar()
         }
     }

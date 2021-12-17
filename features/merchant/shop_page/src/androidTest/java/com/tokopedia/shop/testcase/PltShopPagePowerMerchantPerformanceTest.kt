@@ -2,7 +2,6 @@ package com.tokopedia.shop.testcase
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.shop.environment.InstrumentationShopPageTestActivity
@@ -13,13 +12,14 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.NetworkData
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.analytics.performance.util.PltPerformanceData
-import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig
-import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companion.KEY_QUERY_GET_IS_SHOP_OFFICIAL
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.shop.mock.ShopPageMockResponseConfig
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.FORCE_NOT_SHOWING_HOME_TAB
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
-import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheckAndTotalSizeInterceptor
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
 
 class PltShopPagePowerMerchantPerformanceTest {
 
@@ -40,10 +40,7 @@ class PltShopPagePowerMerchantPerformanceTest {
     fun init() {
         context = InstrumentationRegistry.getInstrumentation().targetContext
         context?.let {
-            setupGraphqlMockResponseWithCheckAndTotalSizeInterceptor(
-                    ShopPageWithoutHomeTabMockResponseConfig(),
-                    listOf(KEY_QUERY_GET_IS_SHOP_OFFICIAL)
-            )
+            setupGraphqlMockResponse(ShopPageMockResponseConfig())
             val intent = Intent()
             intent.putExtra(ShopPageActivity.SHOP_ID, SAMPLE_SHOP_ID)
             intent.putExtra(FORCE_NOT_SHOWING_HOME_TAB, true)

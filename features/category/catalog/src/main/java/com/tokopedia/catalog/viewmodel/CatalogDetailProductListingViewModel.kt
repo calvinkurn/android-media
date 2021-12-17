@@ -9,9 +9,10 @@ import com.tokopedia.catalog.model.raw.ProductListResponse
 import com.tokopedia.catalog.usecase.listing.CatalogDynamicFilterUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogGetProductListUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogQuickFilterUseCase
+import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -29,12 +30,16 @@ class CatalogDetailProductListingViewModel
     val mQuickFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
     val mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
 
-    val sortFilterItems = MutableLiveData<List<SortFilterItem>>()
     val selectedSortIndicatorCount = MutableLiveData<Int>()
     val searchParametersMap = MutableLiveData<HashMap<String, String>>()
 
-    var quickFilterOptionList: List<Option> = ArrayList()
+    var quickFilterOptionList: MutableList<Option> = ArrayList()
+    val quickFilterModel = MutableLiveData<DynamicFilterModel>()
+    val quickFilterClicked = MutableLiveData<Boolean>()
     val dynamicFilterModel = MutableLiveData<DynamicFilterModel>()
+
+    var filterController: FilterController? = FilterController()
+    var searchParameter: SearchParameter = SearchParameter()
 
     var pageCount = 0
     var isPagingAllowed: Boolean = true

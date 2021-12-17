@@ -2,16 +2,19 @@ package com.tokopedia.tokopoints.view.tokopointhome
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.mvcwidget.LiveDataResult
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopoints.view.model.LuckyEggEntity
 import com.tokopedia.tokopoints.view.model.TokenDetailOuter
+import com.tokopedia.tokopoints.view.model.homeresponse.RecommendationWrapper
+import com.tokopedia.tokopoints.view.model.homeresponse.TokopointSuccess
 import com.tokopedia.tokopoints.view.model.rewardintro.IntroResponse
 import com.tokopedia.tokopoints.view.model.rewardintro.TokopediaRewardIntroPage
 import com.tokopedia.tokopoints.view.model.rewardtopsection.RewardResponse
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
+import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.RewardTickerListResponse
+import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.RewardsTickerList
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter
 import com.tokopedia.tokopoints.view.model.usersaving.TokopointsUserSaving
@@ -20,7 +23,6 @@ import com.tokopedia.tokopoints.view.recommwidget.RewardsRecommUsecase
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.usecase.RequestParams
 import io.mockk.*
-import junit.framework.Assert
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -36,13 +38,15 @@ class TokoPointsHomeViewModelTest {
 
 
     lateinit var viewModel: TokoPointsHomeViewModel
-    val repository = mockk<TokopointsHomeUsecase>()
-    val recomUsecase = mockk<RewardsRecommUsecase>(relaxed = true)
-    val requestParams: RequestParams = mockk()
-    val productCardModel = mockk<ProductCardModel>()
-    val productItem = mockk<RecommendationItem>()
-    val recommendationWidgetList: List<RecommendationWidget> = arrayListOf(RecommendationWidget())
-    val recommendationList: List<RecommendationWrapper> = arrayListOf(RecommendationWrapper(productItem,productCardModel))
+    lateinit var repository: TokopointsHomeUsecase
+    lateinit var recomUsecase: RewardsRecommUsecase
+    private val requestParams: RequestParams = mockk()
+    private val productCardModel = mockk<ProductCardModel>()
+    private val productItem = mockk<RecommendationItem>()
+    private val recommendationWidgetList: List<RecommendationWidget> =
+        arrayListOf(RecommendationWidget())
+    private val recommendationList: List<RecommendationWrapper> =
+        arrayListOf(RecommendationWrapper(productItem, productCardModel))
 
     @get:Rule
     var rule = InstantTaskExecutorRule()
@@ -51,7 +55,9 @@ class TokoPointsHomeViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        viewModel = TokoPointsHomeViewModel(repository,recomUsecase)
+        repository = mockk(relaxed = true)
+        recomUsecase = mockk(relaxed = true)
+        viewModel = TokoPointsHomeViewModel(repository, recomUsecase)
     }
 
     @ExperimentalCoroutinesApi
@@ -115,5 +121,4 @@ class TokoPointsHomeViewModelTest {
         viewModel.getRewardIntroData()
         verify(exactly = 1) { tokopointIntroObserver.onChanged(any()) }
     }
-
 }

@@ -24,10 +24,10 @@ class CatalogGalleryActivity : BaseSimpleActivity() {
         }
     }
 
-    override fun getNewFragment(): Fragment? {
-        val catalogId: String = intent.getStringExtra(ARG_CATALOG_ID)
+    override fun getNewFragment(): Fragment {
+        val catalogId: String = intent.getStringExtra(ARG_CATALOG_ID) ?: ""
         val currentItem: Int = intent.getIntExtra(ARG_EXTRA_CURRENT_IMAGE, 0)
-        val catalogImage: ArrayList<CatalogImage> = intent.getParcelableArrayListExtra<CatalogImage>(ARG_EXTRA_IMAGES)
+        val catalogImage: ArrayList<CatalogImage> = intent.getParcelableArrayListExtra(ARG_EXTRA_IMAGES) ?: ArrayList()
         return CatalogGalleryFragment.newInstance(catalogId,currentItem, catalogImage)
     }
 

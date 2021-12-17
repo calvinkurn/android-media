@@ -4,11 +4,15 @@ import com.tokopedia.buyerorderdetail.BuyerOrderDetailMock
 import com.tokopedia.buyerorderdetail.setupMock
 import org.junit.Test
 
-class BuyerOrderDetailTrackerValidationTest220: BuyerOrderDetailTrackerValidationTestFixture() {
+class BuyerOrderDetailTrackerValidationTest220 : BuyerOrderDetailTrackerValidationTestFixture() {
     @Test
     fun validateTrackersOnOrder220() {
         setupMock {
-            mockOrderDetail(BuyerOrderDetailMock.BuyerOrderDetailMockResponse.MOCK_RESPONSE_220)
+            mockOrderDetail(
+                BuyerOrderDetailMock.BuyerOrderDetailMockResponse.MOCK_RESPONSE_220,
+                graphqlRepositoryStub,
+                context
+            )
         } actionTest {
             launchBuyerOrderDetailActivity(activityRule)
             blockAllIntent()
@@ -23,14 +27,15 @@ class BuyerOrderDetailTrackerValidationTest220: BuyerOrderDetailTrackerValidatio
         } validate {
             clearQueries()
             addQueriesToValidate(
-                    BuyerOrderDetailTrackerValidationConstant.clickSeeDetailQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickSeeInvoiceQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickCopyInvoiceQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickShopNameQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickProductQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickPrimaryActionButtonChatSellerQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickSecondaryActionButtonHelpQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickSecondaryActionButtonRequestCancelQueryPath)
+                BuyerOrderDetailTrackerValidationConstant.clickSeeDetailQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickSeeInvoiceQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickCopyInvoiceQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickShopNameQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickProductQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickPrimaryActionButtonChatSellerQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickSecondaryActionButtonHelpQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickSecondaryActionButtonRequestCancelQueryPath
+            )
             hasPassedAnalytics(cassavaTestRule)
         }
     }

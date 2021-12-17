@@ -4,20 +4,27 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.R
-import kotlinx.android.synthetic.main.item_shop_note_empty.view.*
+import com.tokopedia.shop.databinding.ItemShopNoteEmptyBinding
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopNoteEmptyViewHolder(val view: View): AbstractViewHolder<EmptyModel>(view) {
     companion object {
         @JvmStatic val LAYOUT = R.layout.item_shop_note_empty
     }
 
+    private val viewBinding: ItemShopNoteEmptyBinding? by viewBinding()
+    private var title: Typography? = viewBinding?.title
+    private var buttonAddNote: UnifyButton? = viewBinding?.buttonAddNote
+
     override fun bind(element: EmptyModel) {
-        itemView.title.text = element.title
+        title?.text = element.title
         if (element.callback != null){
-            itemView.buttonAddNote.visibility = View.VISIBLE
-            itemView.buttonAddNote.setOnClickListener { element.callback.onEmptyButtonClicked() }
+            buttonAddNote?.visibility = View.VISIBLE
+            buttonAddNote?.setOnClickListener { element.callback.onEmptyButtonClicked() }
         } else {
-            itemView.buttonAddNote.visibility = View.GONE
+            buttonAddNote?.visibility = View.GONE
         }
     }
 }

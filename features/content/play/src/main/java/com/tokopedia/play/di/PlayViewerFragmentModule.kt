@@ -49,6 +49,11 @@ abstract class PlayViewerFragmentModule {
     @FragmentKey(PlayFragment::class)
     abstract fun getPlayFragment(fragment: PlayFragment): Fragment
 
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayUpcomingFragment::class)
+    abstract fun getPlayUpcomingFragment(fragment: PlayUpcomingFragment): Fragment
+
     /**
      * Dialog Fragment
      */

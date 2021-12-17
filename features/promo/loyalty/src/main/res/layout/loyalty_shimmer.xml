@@ -8,7 +8,7 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/shimmer_back"
-        android:padding="@dimen/dp_16"
+        android:padding="16dp"
         android:layout_width="@dimen/dp_56"
         android:layout_height="@dimen/dp_56"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,8 +17,8 @@
         app:tint="@color/clr_6c727c" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:layout_marginLeft="@dimen/dp_4"
-        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
         android:id="@+id/shimmer_toolbar"
         android:layout_width="0dp"
         android:layout_height="?actionBarSize"
@@ -37,7 +37,7 @@
         android:id="@+id/linearLayout4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="10dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintEnd_toStartOf="@+id/linearLayout"
@@ -52,7 +52,7 @@
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="@dimen/dp_56"
-            android:layout_height="@dimen/dp_10"
+            android:layout_height="10dp"
             android:layout_marginTop="@dimen/dp_7"
             app:loader_type="line" />
 
@@ -76,7 +76,7 @@
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="@dimen/dp_56"
-            android:layout_height="@dimen/dp_10"
+            android:layout_height="10dp"
             android:layout_marginTop="@dimen/dp_7"
             app:loader_type="line" />
 
@@ -100,7 +100,7 @@
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="@dimen/dp_56"
-            android:layout_height="@dimen/dp_10"
+            android:layout_height="10dp"
             android:layout_marginTop="@dimen/dp_7"
             app:loader_type="line" />
 
@@ -124,7 +124,7 @@
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="@dimen/dp_56"
-            android:layout_height="@dimen/dp_10"
+            android:layout_height="10dp"
             android:layout_marginTop="@dimen/dp_7"
             app:loader_type="line" />
 
@@ -134,7 +134,7 @@
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="12dp"
         android:background="@color/unify_N75"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
         tools:layout_editor_absoluteX="0dp" />

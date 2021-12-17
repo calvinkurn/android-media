@@ -1,5 +1,7 @@
 package com.tokopedia.sellerapp;
 
+import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LANDING_SHOP_CREATION;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -15,23 +17,18 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
 import com.tokopedia.applink.sellermigration.SellerMigrationRedirectionUtil;
 import com.tokopedia.core.SplashScreen;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
-import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
-
-import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LANDING_SHOP_CREATION;
 
 /**
  * Created by normansyahputa on 11/29/16.
@@ -42,14 +39,13 @@ public class SplashScreenActivity extends SplashScreen {
     private boolean isApkTempered;
     private static String KEY_AUTO_LOGIN = "is_auto_login";
 
+    private UserSessionInterface userSession;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        boolean defaultInteraction = false;
-        NewRelic
-                .withApplicationToken(Keys.NEW_RELIC)
-                .withDefaultInteractions(defaultInteraction)
+        NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_SA)
                 .start(this.getApplication());
-
+        setUserIdNewRelic();
         isApkTempered = false;
         try {
             getResources().getDrawable(R.drawable.launch_screen);
@@ -66,6 +62,13 @@ public class SplashScreenActivity extends SplashScreen {
                 .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this.getApplicationContext()), false);
 
         syncFcmToken();
+    }
+
+    private void setUserIdNewRelic() {
+        userSession = new UserSession(this);
+        if (userSession.isLoggedIn()) {
+            NewRelic.setUserId(userSession.getUserId());
+        }
     }
 
     /**
@@ -109,30 +112,17 @@ public class SplashScreenActivity extends SplashScreen {
             return;
         }
 
-        UserSessionInterface userSession = new UserSession(this);
+        if (userSession == null) {
+            userSession = new UserSession(this);
+        }
+
         if (handleAppLink(userSession)) {
             finish();
             return;
         }
 
         if (userSession.hasShop()) {
-            if (getIntent().hasExtra(Constants.EXTRA_APPLINK)) {
-                String applinkUrl = getIntent().getStringExtra(Constants.EXTRA_APPLINK);
-                DeepLinkDelegate delegate = DeepLinkHandlerActivity.getDelegateInstance();
-                if (delegate.supportsUri(applinkUrl)) {
-                    Intent intent = getIntent();
-                    intent.setData(Uri.parse(applinkUrl));
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, true);
-                    intent.putExtras(bundle);
-                    delegate.dispatchFrom(this, intent);
-                } else {
-                    startActivity(SellerHomeActivity.createIntent(this));
-                }
-            } else {
-                // Means it is a Seller
-                startActivity(SellerHomeActivity.createIntent(this));
-            }
+            startActivity(SellerHomeActivity.createIntent(this));
         } else if (!TextUtils.isEmpty(userSession.getUserId())) {
             Intent intent = moveToCreateShop(this);
             startActivity(intent);

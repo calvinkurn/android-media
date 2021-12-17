@@ -3,10 +3,11 @@ package com.tokopedia.home_recom.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.home_recom.databinding.ItemRecommendationErrorBinding
 import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationErrorListener
 import com.tokopedia.kotlin.extensions.view.hide
-import kotlinx.android.synthetic.main.item_recommendation_error.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 import java.util.concurrent.TimeoutException
 
 /**
@@ -16,11 +17,16 @@ import java.util.concurrent.TimeoutException
  */
 class RecommendationErrorViewHolder(view: View, val listener: RecommendationErrorListener) : AbstractViewHolder<RecommendationErrorDataModel>(view){
 
+    private var binding: ItemRecommendationErrorBinding? by viewBinding()
     override fun bind(element: RecommendationErrorDataModel) {
-        itemView.global_error?.run {
-            setType(if(element.throwable is TimeoutException) GlobalError.NO_CONNECTION else GlobalError.PAGE_NOT_FOUND)
+        binding?.globalError?.run {
+            if (element.type == -1) {
+                setType(if (element.throwable is TimeoutException) GlobalError.NO_CONNECTION else GlobalError.PAGE_NOT_FOUND)
+            } else {
+                setType(element.type)
+            }
             setActionClickListener {
-                if(element.throwable is TimeoutException) listener.onRefreshRecommendation()
+                if (element.throwable is TimeoutException) listener.onRefreshRecommendation()
                 else listener.onCloseRecommendation()
             }
             errorSecondaryAction.hide()

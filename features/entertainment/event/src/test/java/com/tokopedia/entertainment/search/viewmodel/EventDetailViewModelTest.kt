@@ -86,7 +86,7 @@ class EventDetailViewModelTest {
         errors[EventDetailResponse.Data::class.java] = listOf(errorGql)
 
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } coAnswers {
             GraphqlResponse(HashMap<Type, Any?>(), errors, false)
         }
@@ -114,7 +114,7 @@ class EventDetailViewModelTest {
         val eventGrid = SearchMapper.mapSearchtoGrid(dataMock.data.eventSearch)
         categoryModel.listCategory = SearchMapper.mappingForbiddenID(dataMock.data.eventChildCategory.categories)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
+        coEvery { graphqlRepository.response(any(), any()) } returns GraphqlResponse(mapOf(
                 EventDetailResponse.Data::class.java to dataMock.data
         )as MutableMap<Type, Any>,  HashMap<Type, List<GraphqlError>>(), false)
 
@@ -130,6 +130,80 @@ class EventDetailViewModelTest {
     }
 
     @Test
+    fun fetchDataCategory_successFetchDataCategory_page1emptygrid(){
+        eventDetailViewModel.page = "1"
+
+        val dataMock = Gson().fromJson(getJson("category_mock_empty_product.json"), EventDetailResponse::class.java)
+        val categoryModel = CategoryModel()
+
+        val eventGrid = SearchMapper.mapSearchtoGrid(dataMock.data.eventSearch)
+        categoryModel.listCategory = SearchMapper.mappingForbiddenID(dataMock.data.eventChildCategory.categories)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns GraphqlResponse(mapOf(
+            EventDetailResponse.Data::class.java to dataMock.data
+        )as MutableMap<Type, Any>,  HashMap<Type, List<GraphqlError>>(), false)
+
+
+        eventDetailViewModel.getData(query = "")
+
+        assertEquals(categoryModel, eventDetailViewModel.catLiveData.value)
+        assertEquals(eventGrid, eventDetailViewModel.eventLiveData.value)
+        assert(!(eventDetailViewModel.isItRefreshing.value?: false))
+        assert(!(eventDetailViewModel.isItShimmering.value?: false))
+        assert(eventDetailViewModel.showResetFilter.value?: false)
+    }
+
+    @Test
+    fun fetchDataCategory_successFetchDataCategory_page2emptygrid(){
+        eventDetailViewModel.page = "2"
+
+        val dataMock = Gson().fromJson(getJson("category_mock_empty_product.json"), EventDetailResponse::class.java)
+        val categoryModel = CategoryModel()
+
+        val eventGrid = SearchMapper.mapSearchtoGrid(dataMock.data.eventSearch)
+        categoryModel.listCategory = SearchMapper.mappingForbiddenID(dataMock.data.eventChildCategory.categories)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns GraphqlResponse(mapOf(
+            EventDetailResponse.Data::class.java to dataMock.data
+        )as MutableMap<Type, Any>,  HashMap<Type, List<GraphqlError>>(), false)
+
+
+        eventDetailViewModel.getData(query = "")
+
+        assertEquals(categoryModel, eventDetailViewModel.catLiveData.value)
+        assertEquals(eventGrid, eventDetailViewModel.eventLiveData.value)
+        assert(!(eventDetailViewModel.isItRefreshing.value?: false))
+        assert(!(eventDetailViewModel.isItShimmering.value?: false))
+        assert(!(eventDetailViewModel.showProgressBar.value?: false))
+        assert(!(eventDetailViewModel.showResetFilter.value?: false))
+    }
+
+    @Test
+    fun fetchDataCategory_successFetchDataCategory_page2(){
+        eventDetailViewModel.page = "2"
+
+        val dataMock = Gson().fromJson(getJson("category_mock.json"), EventDetailResponse::class.java)
+        val categoryModel = CategoryModel()
+
+        val eventGrid = SearchMapper.mapSearchtoGrid(dataMock.data.eventSearch)
+        categoryModel.listCategory = SearchMapper.mappingForbiddenID(dataMock.data.eventChildCategory.categories)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns GraphqlResponse(mapOf(
+            EventDetailResponse.Data::class.java to dataMock.data
+        )as MutableMap<Type, Any>,  HashMap<Type, List<GraphqlError>>(), false)
+
+
+        eventDetailViewModel.getData(query = "")
+
+        assertEquals(categoryModel, eventDetailViewModel.catLiveData.value)
+        assertEquals(eventGrid, eventDetailViewModel.eventLiveData.value)
+        assert(!(eventDetailViewModel.isItRefreshing.value ?: false))
+        assert(!(eventDetailViewModel.isItShimmering.value ?: false))
+        assert(!(eventDetailViewModel.showProgressBar.value ?: false))
+        assert(!(eventDetailViewModel.showResetFilter.value ?: false))
+    }
+
+    @Test
     fun fetchDataCategory_successFetchDataCategory_putCategoryToQuery(){
         eventDetailViewModel.initCategory = true
         hashSet.add("12")
@@ -141,7 +215,7 @@ class EventDetailViewModelTest {
         categoryModel.hashSet = hashSet
         categoryModel.position = 2
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
+        coEvery { graphqlRepository.response(any(), any()) } returns GraphqlResponse(mapOf(
                 EventDetailResponse.Data::class.java to dataMock.data
         )as MutableMap<Type, Any>,  HashMap<Type, List<GraphqlError>>(), false)
 
@@ -169,7 +243,7 @@ class EventDetailViewModelTest {
         categoryModel.hashSet = hashSet
         categoryModel.position = 2
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
+        coEvery { graphqlRepository.response(any(), any()) } returns GraphqlResponse(mapOf(
                 EventDetailResponse.Data::class.java to dataMock.data
         )as MutableMap<Type, Any>,  HashMap<Type, List<GraphqlError>>(), false)
 
@@ -195,7 +269,7 @@ class EventDetailViewModelTest {
         val eventGrid = SearchMapper.mapSearchtoGrid(dataMock.data.eventSearch)
         categoryModel.listCategory = SearchMapper.mappingForbiddenID(dataMock.data.eventChildCategory.categories)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
+        coEvery { graphqlRepository.response(any(), any()) } returns GraphqlResponse(mapOf(
                 EventDetailResponse.Data::class.java to dataMock.data
         )as MutableMap<Type, Any>,  HashMap<Type, List<GraphqlError>>(), false)
 

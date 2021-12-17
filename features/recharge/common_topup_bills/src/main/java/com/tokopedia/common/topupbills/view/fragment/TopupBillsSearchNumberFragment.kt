@@ -136,9 +136,9 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(), NumberListAdap
 
     private fun setClientNumberInputType() {
         searchInputNumber.searchBarTextField.inputType = when (clientNumberType.toLowerCase()) {
-            ClientNumberType.TYPE_INPUT_TEL -> InputType.TYPE_CLASS_PHONE
-            ClientNumberType.TYPE_INPUT_NUMERIC -> InputType.TYPE_CLASS_NUMBER
-            ClientNumberType.TYPE_INPUT_ALPHANUMERIC -> InputType.TYPE_CLASS_TEXT
+            ClientNumberType.TYPE_INPUT_TEL.value -> InputType.TYPE_CLASS_PHONE
+            ClientNumberType.TYPE_INPUT_NUMERIC.value -> InputType.TYPE_CLASS_NUMBER
+            ClientNumberType.TYPE_INPUT_ALPHANUMERIC.value -> InputType.TYPE_CLASS_TEXT
             else -> InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
         }
     }
@@ -219,7 +219,7 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(), NumberListAdap
     }
 
     enum class InputNumberActionType {
-        MANUAL, CONTACT, FAVORITE, LATEST_TRANSACTION, CONTACT_HOMEPAGE
+        MANUAL, CONTACT, FAVORITE, LATEST_TRANSACTION, CONTACT_HOMEPAGE, CHIP, AUTOCOMPLETE
     }
 
     companion object {

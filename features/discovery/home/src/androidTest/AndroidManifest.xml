@@ -8,7 +8,7 @@
         tools:ignore="HardcodedDebugMode"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:replace="android:debuggable,android:label"
-        android:debuggable="false">
+        android:debuggable="true">
 
         <activity
             android:name=".test.activity.HomeActivityTest"
@@ -20,6 +20,9 @@
 
         <activity
             android:name=".environment.InstrumentationHomeRevampTestActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
+            android:name=".environment.InstrumentationHomeEmptyActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
     </application>

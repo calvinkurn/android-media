@@ -29,6 +29,10 @@ open class RegisterInitialActivity : BaseSimpleActivity(), HasComponent<Register
         return createInstance(bundle)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(null)
+    }
+
     override fun getComponent(): RegisterInitialComponent {
         return registerInitialComponent ?: initializeRegisterInitialComponent()
     }

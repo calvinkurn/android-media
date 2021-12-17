@@ -9,7 +9,7 @@ import com.tokopedia.core.gcm.data.entity.FCMTokenUpdateEntity;
 import com.tokopedia.core.gcm.database.PushNotificationDao;
 import com.tokopedia.core.gcm.model.DeviceRegistrationDataResponse;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
-import com.tokopedia.core.util.PasswordGenerator;
+import com.tokopedia.device.info.DeviceInfo;
 
 import rx.Observable;
 
@@ -38,7 +38,7 @@ public class DiskPushNotificationDataStore implements PushNotificationDataStore 
         return Observable.just(true).map(aBoolean -> {
             DeviceRegistrationDataResponse response = new DeviceRegistrationDataResponse();
             response.setStatusCode(REGISTRATION_STATUS_ERROR);
-            response.setDeviceRegistration(PasswordGenerator.getAppId(mContext));
+            response.setDeviceRegistration(DeviceInfo.getUUID(mContext));
             response.setStatusMessage(REGISTRATION_MESSAGE_ERROR);
             return response;
         });

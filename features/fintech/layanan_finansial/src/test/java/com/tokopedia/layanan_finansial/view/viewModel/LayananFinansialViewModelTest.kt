@@ -47,9 +47,6 @@ class LayananFinansialViewModelTest {
 
     @Test
     fun `getDetail success`() {
-        val data1 = mockk<LayananFinansialOuter>()
-        every { data1.data?.sectionList?.get(any())?.title } returns "title"
-
         val data = LayananFinansialOuter(LayananFinansialModel(
                 listOf(LayananSectionModel(
                         "title", "subtitle", "bg", "type", listOf()))
@@ -76,7 +73,6 @@ class LayananFinansialViewModelTest {
         val observer = mockk<Observer<Result<LayananFinansialModel>>>()
 
         coEvery { usecase.execute() } throws mockk<MessageErrorException> {
-            every { message } returns "title|message"
         }
         viewModel.liveData.observeForever(observer)
         viewModel.getDetail()

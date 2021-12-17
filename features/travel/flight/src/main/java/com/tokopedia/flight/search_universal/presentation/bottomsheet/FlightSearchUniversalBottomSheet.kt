@@ -86,6 +86,10 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
         }
     }
 
+    override fun onReverseAirportClicked(departureAirport: FlightAirportModel, arrivalAirport: FlightAirportModel) {
+        // Do Nothing
+    }
+
     override fun onDepartureDateClicked(departureAirport: String, arrivalAirport: String, flightClassId: Int,
                                         departureDate: Date, returnDate: Date, isRoundTrip: Boolean) {
         val minMaxDate = flightSearchUniversalViewModel.generatePairOfMinAndMaxDateForDeparture()
@@ -235,6 +239,7 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
 
     private fun initSearchForm() {
         mChildView.flightSearchFormView.listener = this
+        mChildView.flightSearchFormView.setDate(true)
     }
 
     private fun showMessageErrorInSnackbar(resourceId: Int) {

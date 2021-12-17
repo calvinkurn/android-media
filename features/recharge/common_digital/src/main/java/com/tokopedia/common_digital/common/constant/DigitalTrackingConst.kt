@@ -49,6 +49,9 @@ object DigitalTrackingConst {
         const val NONE = "none"
         const val RECHARGE_SITE = "tokopediadigitalRecharge"
         const val RECHARGE_BU = "recharge"
+
+        const val REGULAR_PRODUCT = "regular product"
+        const val SPECIAL_PROMO = "special product promo"
     }
 
     object CurrencyCode {

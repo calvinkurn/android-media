@@ -8,13 +8,13 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.databinding.PdpVideoDetailViewHolderBinding
 import com.tokopedia.product.detail.view.fragment.ProductVideoDetailInterface
 import com.tokopedia.product.detail.view.widget.ProductExoPlayer
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.product.detail.view.widget.ProductVideoDataModel
 import com.tokopedia.product.detail.view.widget.VideoStateListener
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
-import kotlinx.android.synthetic.main.pdp_video_view_holder.view.*
 
 /**
  * Created by Yehezkiel on 01/12/20
@@ -28,18 +28,20 @@ class ProductVideoDetailViewHolder(val view: View, private val productVideoCoord
         const val PORTRAIT_VALUE = 1.7
     }
 
+    private val binding = PdpVideoDetailViewHolderBinding.bind(view)
+
     private var mPlayer: ProductExoPlayer? = null
     private var mVideoId: String = ""
-    private var video_volume: IconUnify? = null
-    private var video_minimize: IconUnify? = null
-    private var video_close_btn: IconUnify? = null
+    private var videoVolume: IconUnify? = null
+    private var videoMinimize: IconUnify? = null
+    private var videoCloseBtn: IconUnify? = null
     private val videoListener: VideoListener = object : VideoListener {
         override fun onVideoSizeChanged(width: Int, height: Int, unappliedRotationDegrees: Int, pixelWidthHeightRatio: Float) {
             val data = height.toFloat() / width.toFloat()
             if (data > PORTRAIT_VALUE.toFloat()) {
-                view.pdp_main_video?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+                binding.pdpMainVideo.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
             } else {
-                view.pdp_main_video?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+                binding.pdpMainVideo.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
             }
 
             mPlayer?.getExoPlayer()?.removeVideoListener(this)
@@ -47,47 +49,47 @@ class ProductVideoDetailViewHolder(val view: View, private val productVideoCoord
     }
 
     init {
-        video_volume = view.pdp_main_video.findViewById(R.id.pdp_volume_control)
-        video_minimize = view.pdp_main_video.findViewById(R.id.pdp_mainimize_control)
-        video_close_btn = view.pdp_main_video.findViewById(R.id.pdp_video_detail_close)
+        videoVolume = binding.pdpMainVideo.findViewById(R.id.pdp_volume_control)
+        videoMinimize = binding.pdpMainVideo.findViewById(R.id.pdp_mainimize_control)
+        videoCloseBtn = binding.pdpMainVideo.findViewById(R.id.pdp_video_detail_close)
     }
 
     override fun bind(data: ProductVideoDataModel) {
         mVideoId = data.videoId
         productVideoCoordinator?.configureVideoCoordinator(view.context, data)
 
-        video_volume?.setOnClickListener {
+        videoVolume?.setOnClickListener {
             viewListener.onVolumeVideoClicked(mPlayer?.isMute() != true)
             productVideoCoordinator?.configureVolume(mPlayer?.isMute() != true, data.videoId)
         }
 
-        video_minimize?.setOnClickListener {
+        videoMinimize?.setOnClickListener {
             viewListener.onMinimizeVideoClicked()
         }
 
-        video_close_btn?.setOnClickListener {
+        videoCloseBtn?.setOnClickListener {
             viewListener.onMinimizeVideoClicked()
         }
     }
 
-    private fun showBufferLoading() = with(view) {
-        pdp_video_loading?.animate()
-        pdp_video_loading?.show()
+    private fun showBufferLoading() = with(binding) {
+        pdpVideoLoading.animate()
+        pdpVideoLoading.show()
     }
 
-    private fun hideBufferLoading() = with(view) {
-        pdp_video_loading?.hide()
+    private fun hideBufferLoading() = with(binding) {
+        pdpVideoLoading.hide()
     }
 
     private fun setupVolume(isMute: Boolean) {
-        video_volume?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
+        videoVolume?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
     }
 
-    override fun setPlayer(player: ProductExoPlayer?) = with(view) {
+    override fun setPlayer(player: ProductExoPlayer?) = with(binding) {
         mPlayer = player
         if (player == null) {
-            pdp_main_video.player = null
-            pdp_main_video.gone()
+            pdpMainVideo.player = null
+            pdpMainVideo.gone()
         } else {
             player.setVideoResizeListener(videoListener)
             player.setVideoStateListener(object : VideoStateListener {
@@ -111,8 +113,8 @@ class ProductVideoDetailViewHolder(val view: View, private val productVideoCoord
 
                 }
             })
-            pdp_main_video.show()
-            pdp_main_video.player = player.getExoPlayer()
+            pdpMainVideo.show()
+            pdpMainVideo.player = player.getExoPlayer()
         }
     }
 

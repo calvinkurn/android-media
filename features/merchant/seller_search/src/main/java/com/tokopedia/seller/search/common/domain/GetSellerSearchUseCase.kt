@@ -38,6 +38,10 @@ class GetSellerSearchUseCase @Inject constructor(
                       url
                       app_url
                       image_url
+                      sub_item {
+                        title
+                        app_url
+                      }
                     }
                   }
                   count
@@ -56,7 +60,7 @@ class GetSellerSearchUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): SellerSearchResponse.SellerSearch {
         val gqlRequest = GraphqlRequest(gqlQuery, SellerSearchResponse::class.java, params)
-        val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = graphQlRepository.response(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error.isNullOrEmpty()) {
             return gqlResponse.getData<SellerSearchResponse>(SellerSearchResponse::class.java).sellerSearch

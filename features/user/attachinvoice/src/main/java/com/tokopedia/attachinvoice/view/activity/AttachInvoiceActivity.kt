@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -19,7 +18,7 @@ import com.tokopedia.attachinvoice.view.fragment.AttachInvoiceFragment
 class AttachInvoiceActivity : BaseSimpleActivity(), HasComponent<AttachInvoiceComponent>,
         AttachInvoiceFragment.Listener {
 
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         val messageId = intent.getStringExtra(ApplinkConst.AttachInvoice.PARAM_MESSAGE_ID) ?: ""
         val opponentName = intent.getStringExtra(ApplinkConst.AttachInvoice.PARAM_OPPONENT_NAME) ?: ""
         return AttachInvoiceFragment.createInstance(messageId, opponentName)
@@ -43,7 +42,7 @@ class AttachInvoiceActivity : BaseSimpleActivity(), HasComponent<AttachInvoiceCo
         }
         supportActionBar?.setTitle(R.string.title_attachinvoice)
         toolbar.setBackgroundColor(MethodChecker.getColor(
-                this, com.tokopedia.unifyprinciples.R.color.Unify_N0
+                this, com.tokopedia.unifyprinciples.R.color.Unify_Background
         ))
     }
 

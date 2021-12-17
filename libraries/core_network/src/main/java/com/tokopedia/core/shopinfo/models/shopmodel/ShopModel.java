@@ -17,8 +17,4 @@ public class ShopModel {
     @Expose
     public Stats stats;
 
-    public Info getInfo() {
-        return info;
-    }
-
 }

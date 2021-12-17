@@ -1,5 +1,6 @@
 package com.tokopedia.tokopoints.view.couponlisting
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -7,9 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -128,13 +127,13 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
             return
         }
 
-        view!!.findViewById<View>(R.id.text_failed_action).setOnClickListener(this)
-        view!!.findViewById<View>(R.id.button_continue).setOnClickListener { view12 ->
+        requireView().findViewById<View>(R.id.text_failed_action).setOnClickListener(this)
+        requireView().findViewById<View>(R.id.button_continue).setOnClickListener { view12 ->
             val bundle = Bundle()
             bundle.putInt(CommonConstant.EXTRA_COUPON_COUNT, 0)
             startActivity(CatalogListingActivity.getCallingIntent(activityContext, bundle))
         }
-        view!!.findViewById<View>(R.id.text_empty_action).setOnClickListener { v -> RouteManager.route(activityContext, ApplinkConstInternalGlobal.WEBVIEW, CommonConstant.WebLink.INFO) }
+        requireView().findViewById<View>(R.id.text_empty_action).setOnClickListener { v -> RouteManager.route(activityContext, ApplinkConstInternalGlobal.WEBVIEW, CommonConstant.WebLink.INFO) }
 
         stopPreparePagePerformanceMonitoring()
         startNetworkRequestPerformanceMonitoring()
@@ -153,7 +152,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
         }
     })
 
-    private fun addListObserver() = presenter.startAdapter.observe(this, Observer {
+    private fun addListObserver() = presenter.startAdapter.observe(this.viewLifecycleOwner, Observer {
         it?.let {
             when (it) {
                 is Loading -> {
@@ -182,7 +181,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
         if (view == null || errors == null) {
             return
         }
-        view!!.findViewById<View>(R.id.button_continue).visibility = View.VISIBLE
+        requireView().findViewById<View>(R.id.button_continue).visibility = View.VISIBLE
 
         container.displayedChild = CONTAINER_EMPTY
     }
@@ -199,7 +198,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     }
 
     override fun onFinishFirstPageLoad(count: Int, rawObject: Any?) {
-        view!!.postDelayed({ hideLoader() }, CommonConstant.UI_SETTLING_DELAY_MS.toLong())
+        requireView().postDelayed({ hideLoader() }, CommonConstant.UI_SETTLING_DELAY_MS.toLong())
     }
 
     override fun onStartPageLoad(pageNumber: Int) {}
@@ -286,11 +285,13 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        val code = data!!.getStringExtra(CommonConstant.EXTRA_COUPON_CODE)
-        if (requestCode == REQUEST_CODE_STACKED_ADAPTER) {
-            mAdapter.couponCodeVisible(code, false)
-        } else if (requestCode == REQUEST_CODE_STACKED_IN_ADAPTER) {
-            mAdapter.couponStackedVisible()
+        if (data != null ) {
+            val code = data.getStringExtra(CommonConstant.EXTRA_COUPON_CODE) ?: ""
+            if (requestCode == REQUEST_CODE_STACKED_ADAPTER && resultCode == Activity.RESULT_OK) {
+                mAdapter.couponCodeVisible(code, false)
+            } else if (requestCode == REQUEST_CODE_STACKED_IN_ADAPTER && resultCode == Activity.RESULT_OK) {
+                mAdapter.couponStackedVisible()
+            }
         }
     }
 

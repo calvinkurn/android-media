@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.domain.model.Place
 import com.tokopedia.logisticaddaddress.domain.mapper.AutoCompleteMapper
+import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -23,13 +24,16 @@ class AutoCompleteBottomSheetViewModel @Inject constructor(private val repo: Ker
 
 
     fun getAutoCompleteList(keyword: String) {
+        SimpleIdlingResource.increment()
         viewModelScope.launch(onErrorAutoComplete) {
-            val autoComplete = repo.getAutoComplete(keyword)
+            SimpleIdlingResource.decrement()
+            val autoComplete = repo.getAutoComplete(keyword, "")
             _autoCompleteList.value = Success(mapper.mapAutoComplete(autoComplete))
         }
     }
 
     private val onErrorAutoComplete = CoroutineExceptionHandler { _, e ->
+        SimpleIdlingResource.decrement()
         _autoCompleteList.value = Fail(e)
     }
 

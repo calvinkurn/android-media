@@ -33,7 +33,7 @@ class RoundedImageView : AppCompatImageView {
         if (attrs != null) {
             val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.RoundedImageView)
 
-            cornerRadius = attributeArray.getDimension(R.styleable.RoundedImageView_cornerRadius, 0f)
+            cornerRadius = attributeArray.getDimension(R.styleable.RoundedImageView_rImg_cornerRadius, 0f)
             attributeArray.recycle()
         }
     }

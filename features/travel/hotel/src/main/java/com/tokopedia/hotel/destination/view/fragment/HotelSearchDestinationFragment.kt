@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelGqlQuery
+import com.tokopedia.hotel.databinding.FragmentHotelSearchDestinationBinding
 import com.tokopedia.hotel.destination.data.model.SearchDestination
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
@@ -27,6 +28,7 @@ import com.tokopedia.hotel.destination.view.viewmodel.Loaded
 import com.tokopedia.hotel.destination.view.viewmodel.Shimmering
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.android.synthetic.main.activity_hotel_destination.*
 import javax.inject.Inject
 
@@ -40,6 +42,7 @@ class HotelSearchDestinationFragment : BaseListFragment<SearchDestination, Searc
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var destinationViewModel: HotelDestinationViewModel
+    private var binding by autoClearedNullable<FragmentHotelSearchDestinationBinding>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +77,8 @@ class HotelSearchDestinationFragment : BaseListFragment<SearchDestination, Searc
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_hotel_search_destination, container, false)
+        binding = FragmentHotelSearchDestinationBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun getSwipeRefreshLayoutResourceId(): Int = 0

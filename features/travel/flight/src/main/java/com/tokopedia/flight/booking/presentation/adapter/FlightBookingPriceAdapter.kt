@@ -1,12 +1,11 @@
 package com.tokopedia.flight.booking.presentation.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.flight.booking.data.FlightCart
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
-import kotlinx.android.synthetic.main.item_flight_booking_v3_price.view.*
+import com.tokopedia.flight.databinding.ItemFlightBookingV3PriceBinding
 
 /**
  * @author by jessica on 2019-11-04
@@ -21,7 +20,7 @@ class FlightBookingPriceAdapter: RecyclerView.Adapter<FlightBookingPriceAdapter.
     var routePriceCount: Int = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-            ViewHolder(LayoutInflater.from(parent.context).inflate(ViewHolder.LAYOUT, parent, false))
+            ViewHolder(ItemFlightBookingV3PriceBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun getItemCount(): Int = routePriceList.size + othersPriceList.size + amenityPriceList.size
 
@@ -64,12 +63,12 @@ class FlightBookingPriceAdapter: RecyclerView.Adapter<FlightBookingPriceAdapter.
         return totalPrice
     }
 
-    class ViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+    class ViewHolder(val binding: ItemFlightBookingV3PriceBinding): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(price: FlightCart.PriceDetail) {
-            with(view) {
-                tv_price_description.text = price.label
-                tv_price_amount.text = price.price
+            with(binding) {
+                tvPriceDescription.text = price.label
+                tvPriceAmount.text = price.price
             }
         }
 

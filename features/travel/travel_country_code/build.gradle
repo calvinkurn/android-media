@@ -17,10 +17,6 @@ buildscript {
     }
 }
 
-androidExtensions {
-    experimental = true
-}
-
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     api project(rootProject.ext.libraries.baseList)
@@ -48,4 +44,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
-//apply from: '../../../jacoco_task.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

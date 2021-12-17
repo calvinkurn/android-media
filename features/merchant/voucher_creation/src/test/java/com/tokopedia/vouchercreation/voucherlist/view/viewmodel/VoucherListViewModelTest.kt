@@ -9,6 +9,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.detail.domain.usecase.VoucherDetailUseCase
+import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetBroadCastMetaDataUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetVoucherListUseCase
@@ -49,6 +50,9 @@ class VoucherListViewModelTest {
     lateinit var getBroadCastMetaDataUseCase: GetBroadCastMetaDataUseCase
 
     @RelaxedMockK
+    lateinit var initiateVoucherUseCase: InitiateVoucherUseCase
+
+    @RelaxedMockK
     lateinit var voucherUiModel: VoucherUiModel
 
     @RelaxedMockK
@@ -79,6 +83,7 @@ class VoucherListViewModelTest {
                 shopBasicDataUseCase,
                 voucherDetailUseCase,
                 getBroadCastMetaDataUseCase,
+                initiateVoucherUseCase,
                 CoroutineTestDispatchersProvider
         )
 

@@ -15,11 +15,6 @@ public class ContactUs {
     @Expose
     private String helpUrl;
 
-    public ContactUs(String helpText, String helpUrl) {
-        this.helpText = helpText;
-        this.helpUrl = helpUrl;
-    }
-
     public String helpText(){
         return helpText;
     }

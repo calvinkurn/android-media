@@ -7,15 +7,11 @@ import com.tokopedia.play.view.uimodel.recom.PlayCartInfoUiModel
  */
 class PlayCartInfoModelBuilder {
 
-    fun buildIncompleteData(
-            shouldShow: Boolean = false
-    ) = PlayCartInfoUiModel.Incomplete(shouldShow = shouldShow)
-
-    fun buildCompleteData(
+    fun build(
             shouldShow: Boolean = false,
-            count: Int = 7
-    ) = PlayCartInfoUiModel.Complete(
+            itemCount: Int = 7
+    ) = PlayCartInfoUiModel(
             shouldShow = shouldShow,
-            count = count
+            itemCount = itemCount
     )
 }

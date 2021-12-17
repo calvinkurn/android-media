@@ -32,10 +32,13 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
                                     private val shopProductsEmptyViewHolderListener: ShopProductsEmptyViewHolder.ShopProductsEmptyViewHolderListener?,
                                     private val shopProductEmptySearchListener: ShopProductEmptySearchListener?,
                                     private val shopProductChangeGridSectionListener: ShopProductChangeGridSectionListener,
+                                    private val shopShowcaseEmptySearchListener: ShopShowcaseEmptySearchListener?,
+                                    private val shopProductSearchSuggestionListener: ShopProductSearchSuggestionListener?,
                                     private val isGridSquareLayout: Boolean,
                                     private val deviceWidth: Int,
                                     @param:ShopTrackProductTypeDef @field:ShopTrackProductTypeDef
-                                    private val shopTrackType: Int) : BaseAdapterTypeFactory() {
+                                    private val shopTrackType: Int,
+                                    private val isShowTripleDot: Boolean) : BaseAdapterTypeFactory() {
     private var shopProductAdapter: ShopProductAdapter? = null
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
 
@@ -109,6 +112,10 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
         return ShopProductChangeGridSectionViewHolder.LAYOUT
     }
 
+    fun type(shopProductSearchResultSuggestionUiModel: ShopProductSearchResultSuggestionUiModel): Int {
+        return ShopProductSearchResultSuggestionViewHolder.LAYOUT
+    }
+
     fun type(shopProductAddUiModel: ShopProductAddUiModel): Int {
         return ShopProductAddViewHolder.LAYOUT
     }
@@ -125,6 +132,10 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
         return ShopProductEmptySearchViewHolder.LAYOUT
     }
 
+    fun type(shopProductEmptyShowcaseUiModel: ShopProductEmptyShowcaseUiModel): Int {
+        return ShopProductEmptyShowcaseViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         when (type) {
             LoadingShimmeringGridViewHolder.LAYOUT -> return LoadingShimmeringGridViewHolder(parent)
@@ -132,6 +143,7 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
             ShopProductsEmptyViewHolder.LAYOUT -> return ShopProductsEmptyViewHolder(parent, shopProductsEmptyViewHolderListener)
             ShopProductTitleEmptyViewHolder.LAYOUT -> return ShopProductTitleEmptyViewHolder(parent)
             ShopProductEmptySearchViewHolder.LAYOUT -> return ShopProductEmptySearchViewHolder(parent, shopProductEmptySearchListener)
+            ShopProductEmptyShowcaseViewHolder.LAYOUT -> return ShopProductEmptyShowcaseViewHolder(parent, shopShowcaseEmptySearchListener)
             ErrorNetworkWrapViewHolder.LAYOUT -> return ErrorNetworkWrapViewHolder(parent)
             ShopProductEtalaseTitleViewHolder.LAYOUT -> return ShopProductEtalaseTitleViewHolder(parent)
             ShopProductSortFilterViewHolder.LAYOUT -> return ShopProductSortFilterViewHolder(parent, shopProductEtalaseListViewHolderListener)
@@ -141,11 +153,12 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
             ShopProductCarouselViewHolder.LAYOUT -> return ShopProductCarouselViewHolder(parent, deviceWidth, shopProductClickedListener, shopProductImpressionListener,
                     parent.context.getString(R.string.shop_page_label_featured_product), ShopTrackProductTypeDef.FEATURED, null)
             ShopProductEtalaseHighlightViewHolder.LAYOUT -> return ShopProductEtalaseHighlightViewHolder(parent, deviceWidth, shopProductClickedListener, shopProductImpressionListener, shopCarouselSeeAllClickedListener)
-            ShopProductViewHolder.GRID_LAYOUT -> return ShopProductViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, !isGridSquareLayout, deviceWidth, shopTrackType, type)
-            ShopProductItemListViewHolder.LAYOUT -> return ShopProductItemListViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, ShopTrackProductTypeDef.PRODUCT)
-            ShopProductItemBigGridViewHolder.LAYOUT -> return ShopProductItemBigGridViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, ShopTrackProductTypeDef.PRODUCT)
+            ShopProductViewHolder.GRID_LAYOUT -> return ShopProductViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, !isGridSquareLayout, deviceWidth, shopTrackType, type, isShowTripleDot)
+            ShopProductItemListViewHolder.LAYOUT -> return ShopProductItemListViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, ShopTrackProductTypeDef.PRODUCT, isShowTripleDot)
+            ShopProductItemBigGridViewHolder.LAYOUT -> return ShopProductItemBigGridViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, ShopTrackProductTypeDef.PRODUCT, isShowTripleDot)
             MembershipStampProgressViewHolder.LAYOUT -> return MembershipStampProgressViewHolder(parent, membershipStampAdapterListener)
             ShopProductChangeGridSectionViewHolder.LAYOUT -> return ShopProductChangeGridSectionViewHolder(parent, shopProductChangeGridSectionListener)
+            ShopProductSearchResultSuggestionViewHolder.LAYOUT -> return ShopProductSearchResultSuggestionViewHolder(parent, shopProductSearchSuggestionListener)
             else -> return if (type == HideViewHolder.LAYOUT) {
                 HideViewHolder(parent)
             } else {

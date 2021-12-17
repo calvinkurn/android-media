@@ -74,6 +74,22 @@ class BaseTrackerBuilder : BaseTrackerConst(), BaseTrackerBuilderInterface{
         return this
     }
 
+    override fun constructBasicProductAtcClick(event: String,
+                                            eventCategory: String,
+                                            eventAction: String,
+                                            eventLabel: String,
+                                            list: String,
+                                            products: List<Product>,
+                                            buildCustomList: ((Product) -> String)?): BaseTrackerBuilderInterface {
+        dataLayer = DataLayer.mapOf(
+            Event.KEY, event,
+            Category.KEY, eventCategory,
+            Action.KEY, eventAction,
+            Label.KEY, eventLabel,
+            Ecommerce.KEY, Ecommerce.getEcommerceProductAddToCart(products, list, buildCustomList))
+        return this
+    }
+
     override fun constructBasicProductClickBundle(
         event: String,
         eventCategory: String,

@@ -48,3 +48,5 @@ fun Int.toAmountString(
 ): String = toLong().toAmountString(ascendingSuffix, decimalPlaces, separator, withSpacing)
 
 fun Int?.orZero(): Int = this ?: 0
+
+val Int.Companion.ZERO get() = 0

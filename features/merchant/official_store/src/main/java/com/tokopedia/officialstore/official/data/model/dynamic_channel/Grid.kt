@@ -1,5 +1,6 @@
 package com.tokopedia.officialstore.official.data.model.dynamic_channel
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -8,10 +9,10 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Grid(
         @Expose @SerializedName("freeOngkir") val freeOngkir: FreeOngkir?,
-        @Expose @SerializedName("id") val id: Long,
+        @SuppressLint("Invalid Data Type") @Expose @SerializedName("id") val id: Long,
         @Expose @SerializedName("name") val name: String,
         @Expose @SerializedName("applink") val applink: String,
-        @Expose @SerializedName("price") val price: String,
+        @SuppressLint("Invalid Data Type") @Expose @SerializedName("price") val price: String,
         @Expose @SerializedName("slashedPrice") val slashedPrice: String,
         @Expose @SerializedName("discount") val discount: String,
         @Expose @SerializedName("imageUrl") val imageUrl: String,

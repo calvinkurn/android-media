@@ -28,7 +28,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
 
-class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>,
+open class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>,
         EmoneyMenuBottomSheets.MenuListener {
 
     @Inject
@@ -37,7 +37,7 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
     var promoCode = ""
     private var rechargeParamFromSlice = ""
 
-    private var passData: DigitalCategoryDetailPassData? = null
+    protected var passData: DigitalCategoryDetailPassData? = null
 
     lateinit var menuEmoney: Menu
 
@@ -98,7 +98,7 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
         menuBottomSheet.show(supportFragmentManager, TAG_EMONEY_MENU)
     }
 
-    override fun onMenuOpened(featureId: Int, menu: Menu?): Boolean {
+    override fun onMenuOpened(featureId: Int, menu: Menu): Boolean {
         showBottomMenus()
         return false
     }
@@ -112,8 +112,8 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
         return false
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId ?: "" == R.id.emoney_action_overflow_menu) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId ?: "" == R.id.emoney_action_overflow_menu) {
             showBottomMenus()
             return true
         }

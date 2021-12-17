@@ -14,7 +14,8 @@ data class ShopHomeDisplayWidgetUiModel(
         override val type: String = "",
         override val header: BaseShopHomeWidgetUiModel.Header = BaseShopHomeWidgetUiModel.Header(),
         val data: List<DisplayWidgetItem>? = null
-) : BaseShopHomeWidgetUiModel {
+) : BaseShopHomeWidgetUiModel() {
+    val impressHolder = ImpressHolder()
 
     data class DisplayWidgetItem(
             val imageUrl: String = "",

@@ -48,6 +48,7 @@ query productRecommendation($userID: Int!, $pageName: String!, $pageNumber: Int!
         slashedPriceInt
         isWishlist
         minOrder
+        maxOrder
         shop {
           id
           name

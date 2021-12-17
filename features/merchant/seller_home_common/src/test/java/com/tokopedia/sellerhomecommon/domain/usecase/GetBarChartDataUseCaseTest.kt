@@ -60,13 +60,13 @@ class GetBarChartDataUseCaseTest {
         val successResponse = TestHelper.createSuccessResponse<GetBarChartDataResponse>(SUCCESS_RESPONSE)
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         val result = getBarChartDataUseCase.executeOnBackground()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         Assert.assertTrue(!result.isNullOrEmpty())
@@ -78,14 +78,14 @@ class GetBarChartDataUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<GetBarChartDataResponse>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
         val result = getBarChartDataUseCase.executeOnBackground()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         Assert.assertTrue(result.isNullOrEmpty())

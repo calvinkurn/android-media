@@ -5,10 +5,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.deals.R
 import com.tokopedia.deals.category.listener.DealsCategoryEmptyListener
 import com.tokopedia.deals.category.ui.dataview.CategoryEmptyDataView
+import com.tokopedia.deals.databinding.ItemDealsCategoryEmptyBinding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.visible
-import kotlinx.android.synthetic.main.item_deals_category_empty.view.*
 
 class CategoryEmptyViewHolder(
     itemView: View,
@@ -16,14 +16,15 @@ class CategoryEmptyViewHolder(
 ) : RecyclerView.ViewHolder(itemView) {
 
     fun bindData(categoryEmpty: CategoryEmptyDataView) {
-        itemView.run {
+        val binding = ItemDealsCategoryEmptyBinding.bind(itemView)
+        binding.run {
             if (categoryEmpty.hasResetFilterButton) {
-                btn_category_empty_reset_filter.visible()
-                btn_category_empty_reset_filter.setOnClickListener { categoryEmptyListener.onFilterReset() }
+                btnCategoryEmptyResetFilter.visible()
+                btnCategoryEmptyResetFilter.setOnClickListener { categoryEmptyListener.onFilterReset() }
             } else {
-                btn_category_empty_reset_filter.gone()
+                btnCategoryEmptyResetFilter.gone()
             }
-            img_category_empty.loadImageDrawable(R.drawable.img_category_empty)
+            imgCategoryEmpty.loadImageDrawable(R.drawable.img_category_empty)
         }
     }
 

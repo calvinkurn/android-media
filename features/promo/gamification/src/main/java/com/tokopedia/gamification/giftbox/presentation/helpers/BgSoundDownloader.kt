@@ -24,7 +24,9 @@ class BgSoundDownloader {
                         if (!filePath.isNullOrEmpty()) {
                             try {
                                 fileNameFilePathMap[fileName] = filePath
-                                handler.removeCallbacks(runnablesMap[fileName])
+                                runnablesMap[fileName]?.let { it ->
+                                    handler.removeCallbacks(it)
+                                }
                                 handler.post { callback.invoke(filePath) }
                             } catch (ex: Exception) {
                             }

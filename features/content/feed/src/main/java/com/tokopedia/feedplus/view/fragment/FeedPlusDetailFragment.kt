@@ -150,7 +150,6 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         recyclerviewScrollListener = onRecyclerViewListener()
         val typeFactory: FeedPlusDetailTypeFactory = FeedPlusDetailTypeFactoryImpl(this)
         adapter = DetailFeedAdapter(typeFactory)
-        GraphqlClient.init(requireContext())
         pagingHandler = PagingHandler()
     }
 
@@ -387,11 +386,11 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     override fun onGoToProductDetail(feedDetailViewModel: FeedDetailItemModel, adapterPosition: Int) {
         if (activity != null && activity?.applicationContext != null && arguments != null) {
             activity?.startActivityForResult(
-                    getProductIntent(feedDetailViewModel.productId.toString()),
+                    getProductIntent(feedDetailViewModel.productId),
                     REQUEST_OPEN_PDP
             )
             analytics.eventDetailProductClick(
-                    ProductEcommerce(feedDetailViewModel.productId.toString(),
+                    ProductEcommerce(feedDetailViewModel.productId,
                             feedDetailViewModel.name,
                             feedDetailViewModel.price,
                             adapterPosition),
@@ -424,7 +423,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         for (position in listDetail.indices) {
             if (listDetail[position] is FeedDetailItemModel) {
                 val model = listDetail[position] as FeedDetailItemModel
-                productList.add(ProductEcommerce(model.productId.toString(),
+                productList.add(ProductEcommerce(model.productId,
                         model.name,
                         model.price,
                         position

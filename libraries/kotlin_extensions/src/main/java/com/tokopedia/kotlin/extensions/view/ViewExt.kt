@@ -7,13 +7,19 @@ import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Paint
 import android.graphics.Rect
-import android.os.Build
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.RoundRectShape
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.R
 import com.tokopedia.kotlin.model.ImpressHolder
 import timber.log.Timber
@@ -22,6 +28,11 @@ import timber.log.Timber
 /**
  * @author by milhamj on 30/11/18.
  */
+
+private const val DY_CENTER = 1f
+private const val DY_TOP = -1
+private const val DY_ELEVATION_DIVIDER = 3f
+private const val SHADOW_LAYER_DX = 0f
 
 fun View.show() {
     this.visibility = View.VISIBLE
@@ -306,4 +317,79 @@ fun Context.isAppInstalled(packageName: String): Boolean {
     } catch (e: PackageManager.NameNotFoundException) {
         false
     }
+}
+
+/**
+ * must fill shadow radius at least 1
+ */
+fun View?.generateBackgroundWithShadow(@ColorRes backgroundColor: Int,
+                                       @ColorRes shadowColor: Int,
+                                       @DimenRes topLeftRadius: Int,
+                                       @DimenRes topRightRadius: Int,
+                                       @DimenRes bottomLeftRadius: Int,
+                                       @DimenRes bottomRightRadius: Int,
+                                       @DimenRes elevation: Int,
+                                       @DimenRes shadowRadius: Int,
+                                       shadowGravity: Int): Drawable? {
+    if (this == null) return null
+    val topLeftRadiusValue = context.resources.getDimension(topLeftRadius)
+    val topRightRadiusValue = context.resources.getDimension(topRightRadius)
+    val bottomLeftRadiusValue = context.resources.getDimension(bottomLeftRadius)
+    val bottomRightRadiusValue = context.resources.getDimension(bottomRightRadius)
+
+    val elevationValue = context.resources.getDimension(elevation).toInt()
+    val shadowRadiusValue = context.resources.getDimension(shadowRadius)
+    val shadowColorValue = ContextCompat.getColor(context, shadowColor)
+    val backgroundColorValue = ContextCompat.getColor(context, backgroundColor)
+
+    val outerRadius = floatArrayOf(
+            topLeftRadiusValue, topLeftRadiusValue, topRightRadiusValue, topRightRadiusValue,
+            bottomLeftRadiusValue, bottomLeftRadiusValue, bottomRightRadiusValue, bottomRightRadiusValue
+    )
+
+    val backgroundPaint = Paint()
+    backgroundPaint.style = Paint.Style.FILL
+    backgroundPaint.setShadowLayer(shadowRadiusValue, 0f, 0f, 0)
+
+    val shapeDrawablePadding = Rect()
+    shapeDrawablePadding.left = elevationValue
+    shapeDrawablePadding.right = elevationValue
+
+    val DY: Float
+    when (shadowGravity) {
+        Gravity.CENTER -> {
+            shapeDrawablePadding.top = elevationValue
+            shapeDrawablePadding.bottom = elevationValue
+            DY = DY_CENTER
+        }
+        Gravity.TOP -> {
+            shapeDrawablePadding.top = elevationValue * 2
+            shapeDrawablePadding.bottom = elevationValue
+            DY = DY_TOP * elevationValue / DY_ELEVATION_DIVIDER
+        }
+        Gravity.BOTTOM -> {
+            shapeDrawablePadding.top = elevationValue
+            shapeDrawablePadding.bottom = elevationValue * 2
+            DY = elevationValue / DY_ELEVATION_DIVIDER
+        }
+        else -> {
+            shapeDrawablePadding.top = elevationValue
+            shapeDrawablePadding.bottom = elevationValue * 2
+            DY = elevationValue / DY_ELEVATION_DIVIDER
+        }
+    }
+
+    val shapeDrawable = ShapeDrawable()
+    shapeDrawable.setPadding(shapeDrawablePadding)
+    shapeDrawable.paint.color = backgroundColorValue
+    shapeDrawable.paint.setShadowLayer(shadowRadiusValue, SHADOW_LAYER_DX, DY, shadowColorValue)
+
+    setLayerType(View.LAYER_TYPE_SOFTWARE, shapeDrawable.paint)
+
+    shapeDrawable.shape = RoundRectShape(outerRadius, null, null)
+
+    val drawable = LayerDrawable(arrayOf<Drawable>(shapeDrawable))
+    drawable.setLayerInset(0, 0, elevationValue * 2, 0, 0)
+
+    return drawable
 }

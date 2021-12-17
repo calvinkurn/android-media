@@ -37,11 +37,11 @@ abstract class SellerHomeViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(OtherMenuViewModel::class)
-    abstract fun otherSettingViewModel(otherMenuViewModel: OtherMenuViewModel): ViewModel
+    @ViewModelKey(MenuSettingViewModel::class)
+    abstract fun provideMenuSettingViewModel(menuSettingViewModel: MenuSettingViewModel): ViewModel
 
     @Binds
     @IntoMap
-    @ViewModelKey(MenuSettingViewModel::class)
-    abstract fun provideMenuSettingViewModel(menuSettingViewModel: MenuSettingViewModel): ViewModel
+    @ViewModelKey(OtherMenuViewModel::class)
+    abstract fun provideNewOtherMenuViewModel(otherMenuViewModel: OtherMenuViewModel): ViewModel
 }

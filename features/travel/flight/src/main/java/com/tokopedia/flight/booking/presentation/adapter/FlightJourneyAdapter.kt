@@ -1,13 +1,12 @@
 package com.tokopedia.flight.booking.presentation.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.data.FlightCartViewEntity
+import com.tokopedia.flight.databinding.ItemFlightBookingRouteSummaryBinding
 import com.tokopedia.kotlin.extensions.view.loadImage
-import kotlinx.android.synthetic.main.item_flight_booking_route_summary.view.*
 
 /**
  * @author by jessica on 2019-10-28
@@ -20,7 +19,8 @@ class FlightJourneyAdapter: RecyclerView.Adapter<FlightJourneyAdapter.ViewHolder
     lateinit var listener: ViewHolder.ActionListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
-            LayoutInflater.from(parent.context).inflate(ViewHolder.LAYOUT, parent, false))
+        ItemFlightBookingRouteSummaryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    )
 
     override fun getItemCount(): Int = journeys.size
 
@@ -33,30 +33,30 @@ class FlightJourneyAdapter: RecyclerView.Adapter<FlightJourneyAdapter.ViewHolder
         notifyDataSetChanged()
     }
 
-    class ViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+    class ViewHolder(val binding: ItemFlightBookingRouteSummaryBinding): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(journey: FlightCartViewEntity.JourneySummary, position: Int, listener: ActionListener?) {
 
-            with(view) {
-                tv_flight_airline_name.text = journey.airline
-                tv_flight_route_name.text = journey.routeName
-                if (journey.isMultipleAirline) iv_flight_airlines_logo.setImageResource(R.drawable.ic_flight_multi_airlines) else iv_flight_airlines_logo.loadImage(journey.airlineLogo)
-                tv_flight_route_date_detail.text = journey.date
+            with(binding) {
+                tvFlightAirlineName.text = journey.airline
+                tvFlightRouteName.text = journey.routeName
+                if (journey.isMultipleAirline) ivFlightAirlinesLogo.setImageResource(R.drawable.ic_flight_multi_airlines) else ivFlightAirlinesLogo.loadImage(journey.airlineLogo)
+                tvFlightRouteDateDetail.text = journey.date
 
                 if (journey.isRefundable) {
-                    iv_refundable.setImageResource(R.drawable.ic_flight_booking_refundable)
-                    tv_refundable_info.text = context.getString(R.string.flight_label_refundable_info)
+                    ivRefundable.setImageResource(R.drawable.ic_flight_booking_refundable)
+                    tvRefundableInfo.text = itemView.context.getString(R.string.flight_label_refundable_info)
                 } else {
-                    iv_refundable.setImageResource(R.drawable.ic_flight_booking_non_refundable)
-                    tv_refundable_info.text = context.getString(R.string.flight_label_non_refundable_info)
+                    ivRefundable.setImageResource(R.drawable.ic_flight_booking_non_refundable)
+                    tvRefundableInfo.text = itemView.context.getString(R.string.flight_label_non_refundable_info)
                 }
 
-                this.setOnClickListener {
+                this.root.setOnClickListener {
                     listener?.onClickRouteDetail(journey.journeyId, position)
                 }
 
-                tv_transit_info.text = if (journey.transit == 0) context.getString(R.string.flight_booking_directly_trip_card)
-                else String.format(context.getString(R.string.flight_booking_transit_with_value_trip_cart), journey.transit)
+                tvTransitInfo.text = if (journey.transit == 0) itemView.context.getString(R.string.flight_booking_directly_trip_card)
+                else String.format(itemView.context.getString(R.string.flight_booking_transit_with_value_trip_cart), journey.transit)
             }
         }
 

@@ -13,6 +13,7 @@ import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilder;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -54,7 +55,7 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
 
         void onErrorSaveContrastImage(Throwable e);
 
-        void onSuccessGetWatermarkImage(Bitmap bitmap);
+        void onSuccessGetWatermarkImage(Bitmap[] bitmap);
 
         void onSuccessSaveWatermarkImage(String filePath);
 
@@ -305,18 +306,17 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                         getView().getContext().getResources(),
                         R.drawable.watermark_logo_tokopedia
                 )
-        ).flatMap((Func1<Bitmap, Observable<Bitmap>>) tokopediaLogoBitmap -> {
+        ).flatMap((Func1<Bitmap, Observable<Bitmap[]>>) tokopediaLogoBitmap -> {
             // create watermark with transparent container (empty) bitmap
-            Bitmap watermark = WatermarkBuilder
+            Bitmap[] watermark = WatermarkBuilder
                     .create(getView().getContext(), mainBitmap)
                     .loadOnlyWatermarkTextImage(userInfoName, tokopediaLogoBitmap)
-                    .getWatermark()
-                    .getOutputImage();
+                    .getOutputImages();
 
             return Observable.just(watermark);
         }).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(bitmap -> getView().onSuccessGetWatermarkImage(bitmap));
+                .subscribe(bitmaps -> getView().onSuccessGetWatermarkImage(bitmaps));
 
         addToComposite(subscription);
     }

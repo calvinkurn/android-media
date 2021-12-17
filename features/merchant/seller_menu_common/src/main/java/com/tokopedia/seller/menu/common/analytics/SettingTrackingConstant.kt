@@ -13,10 +13,12 @@ object SettingTrackingConstant {
     const val CLICK_SHOP_SETTING = "clickShopSetting"
     const val VIEW_NAVIGATION_IRIS = "viewNavigationIris"
     const val VIEW_SHOP_SETTING_IRIS = "viewShopSettingIris"
+    const val VIEW_SHOP_PAGE_IRIS = "viewShopPageIris"
     const val OTHERS_TAB = "others tab"
     const val VIEW_STATISTIC_IRIS = "viewStatistikIris"
     const val CLICK_STATISTIC = "clickStatistik"
     const val CLICK_PRINTING = "clickPrinting"
+    const val CLICK_SHOP_PAGE = "clickShopPage"
 
     const val GOLD_MERCHANT = "gold_merchant"
     const val OFFICIAL_STORE = "official_store"
@@ -26,6 +28,7 @@ object SettingTrackingConstant {
     const val ACTIVE = "active"
     const val INACTIVE = "inactive"
     const val ON_VERIFICATION = "on_verification"
+    const val LAINNYA = "lainnya"
 
     const val SHOP_PICTURE = "shop picture"
     const val SHOP_NAME = "shop name"
@@ -52,9 +55,14 @@ object SettingTrackingConstant {
     const val APP_SETTING = "app settings"
     const val APPLICATION_SETTING = "application settings"
     const val OTHER_SETTING = "other settings"
+    const val SELLER_SHOP_PAGE = "seller shop page"
     const val SELLER_APP_LAINNYA = "seller app - lainnya"
     const val IMPRESSION_MENU_STATISTIC = "impression - menu statistik"
     const val CLICK_MENU_STATISTIC = "click - menu statistik"
+    const val CLICK_SHARE_BUTTON = "click - share button"
+    const val CLICK_CLOSE_SHARE_BOTTOM_SHEET = "click - close share bottom sheet"
+    const val CLICK_SHARING_CHANNEL = "click - sharing channel"
+    const val VIEW_ON_SHARING_CHANNEL = "view on sharing channel"
 
     const val SHOP_REGULAR_MERCHANT = "RM"
     const val SHOP_POWER_MERCHANT = "PM"
@@ -68,6 +76,8 @@ object SettingTrackingConstant {
 
     const val PHYSICAL_GOODS = "physicalgoods"
     const val TOKOPEDIASELLER = "tokopediaseller"
+    const val SHARING_EXPERIENCE = "sharingexperience"
+    const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
 
     const val ACTION_CLICK_PRINTING = "click printing"
     const val LABEL_CLICK_PRINTING = "local services - printing"

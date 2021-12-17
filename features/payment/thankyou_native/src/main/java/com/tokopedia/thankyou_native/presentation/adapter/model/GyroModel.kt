@@ -4,13 +4,11 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.thankyou_native.presentation.adapter.factory.GyroRecommendationFactory
 
-
 data class GyroRecommendation(
         var title : String,
         var description: String,
         var gyroVisitable : ArrayList<Visitable<*>>
 )
-
 
 open class GyroModel {
     var isVisited : Boolean = false
@@ -27,7 +25,11 @@ data class GyroRecommendationListItem(
         @SerializedName("title")
         val title : String?,
         @SerializedName("desc")
-        val description : String?
+        val description : String?,
+        @SerializedName("section_title")
+        val sectionTitle : String?,
+        @SerializedName("section_desc")
+        val sectionDescription : String?,
 ) : Visitable<GyroRecommendationFactory>, GyroModel() {
 
     override fun type(typeFactory: GyroRecommendationFactory): Int {

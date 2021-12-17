@@ -7,5 +7,5 @@ data class SerializableCoverData(
         val coverImageUriString: String,
         val coverTitle: String,
         val coverSource: String,
-        val productId: Long?
+        val productId: String?
 )

@@ -2,7 +2,7 @@
 <LinearLayout
     android:layout_marginTop="@dimen/unify_space_4"
     android:padding="@dimen/unify_space_16"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -15,7 +15,7 @@
 
     <include
         android:layout_marginTop="18dp"
-        layout="@layout/home_account_financial_shimmer"
+        layout="@layout/home_account_balance_and_point_shimmer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

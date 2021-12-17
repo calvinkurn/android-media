@@ -16,7 +16,7 @@ class CampaignStockAllocationUseCase @Inject constructor(
 
     companion object {
         private const val QUERY = "query getStockAllocation (\$productIds: String!, \$shopId: String!, \$warehouseID: String) {\n" +
-                "  GetStockAllocation(productIDs: \$productIds, shopID: \$shopId, sellerWh: true, warehouseID: \$warehouseID) {\n" +
+                "  GetStockAllocation(productIDs: \$productIds, shopID: \$shopId, sellerWh: true, warehouseID: \$warehouseID %1s) {\n" +
                 "    header {\n" +
                 "      process_time\n" +
                 "      messages\n" +
@@ -37,6 +37,10 @@ class CampaignStockAllocationUseCase @Inject constructor(
                 "          warehouse_id\n" +
                 "          product_name\n" +
                 "          stock\n" +
+                "          campaign_types {\n" +
+                "            name\n" +
+                "            icon_url\n" +
+                "          }\n" +
                 "        }\n" +
                 "        reserve {\n" +
                 "          event_info {\n" +
@@ -60,6 +64,8 @@ class CampaignStockAllocationUseCase @Inject constructor(
                 "  }\n" +
                 "}"
 
+        private const val BUNDLE_EXTRA_INFO_QUERY = ",extraInfo:{bundle:true}"
+
         private const val PRODUCT_IDS_KEY = "productIds"
         private const val SHOP_ID_KEY = "shopId"
         private const val WAREHOUSE_ID_KEY = "warehouseID"
@@ -77,10 +83,17 @@ class CampaignStockAllocationUseCase @Inject constructor(
     }
 
     var params: RequestParams = RequestParams.EMPTY
+    var isBundling = false
 
     override suspend fun executeOnBackground(): GetStockAllocationData {
-        val gqlRequest = GraphqlRequest(QUERY, GetStockAllocationResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val query =
+            if (isBundling) {
+                String.format(QUERY, BUNDLE_EXTRA_INFO_QUERY)
+            } else {
+                String.format(QUERY, "")
+            }
+        val gqlRequest = GraphqlRequest(query, GetStockAllocationResponse::class.java, params.parameters)
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest))
 
         val errors = gqlResponse.getError(GetStockAllocationResponse::class.java)
         if (errors.isNullOrEmpty()) {

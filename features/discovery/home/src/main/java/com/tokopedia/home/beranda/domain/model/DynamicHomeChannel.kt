@@ -6,7 +6,6 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
-import java.util.*
 import kotlin.collections.ArrayList
 
 data class DynamicHomeChannel(
@@ -63,6 +62,9 @@ data class DynamicHomeChannel(
             @Expose
             @SerializedName("campaignCode")
             val campaignCode: String = "",
+            @Expose
+            @SerializedName("viewAllCard")
+            val viewAllCard: ViewAllCard = ViewAllCard(),
             @Expose
             @SerializedName("header")
             val header: Header = Header(),
@@ -145,47 +147,6 @@ data class DynamicHomeChannel(
             ),
                     "attribution", getHomeAttribution(position + 1, grids[position].id)
             )
-        }
-
-        fun getEnhanceClickSprintSaleCarouselHomePage(position: Int, countDown: String?, label: String?): Map<String, Any> {
-            return DataLayer.mapOf(
-                    "event", "promoClick",
-                    "eventCategory", "homepage",
-                    "eventAction", "sprint sale banner click",
-                    "eventLabel", String.format("%s - %s", countDown, label),
-                    channelId, id,
-                    "ecommerce", DataLayer.mapOf(
-                    "promoClick", DataLayer.mapOf(
-                    "promotions", DataLayer.listOf(
-                    DataLayer.mapOf(
-                            "id", grids[position].id,
-                            "name", "/ - p2 - sprint sale banner",
-                            "position", (position + 1).toString(),
-                            "creative", grids[position].name,
-                            "creative_url", grids[position].imageUrl
-                    )
-            )
-            )
-            ),
-                    "attribution", getHomeAttribution(position + 1, grids[position].id)
-            )
-        }
-
-        fun convertProductEnhanceSprintSaleCarouselDataLayerForCombination(): List<Any> {
-            val list: MutableList<Any> = ArrayList()
-
-            for (i in grids.indices) {
-                val grid: Grid = grids[i]
-                list.add(
-                        DataLayer.mapOf(
-                                "id", grid.id,
-                                "name", "/ - p2 - sprint sale banner",
-                                "creative", grid.name,
-                                "position", (i + 1).toString())
-                )
-            }
-
-            return list
         }
 
         fun convertPromoEnhanceLegoBannerDataLayerForCombination(): List<Any> {
@@ -318,7 +279,6 @@ data class DynamicHomeChannel(
             const val LAYOUT_LEGO_4_IMAGE: String = "lego_4_image"
             const val LAYOUT_LEGO_2_IMAGE: String = "1x2_banner"
             const val LAYOUT_LEGO_4_AUTO: String = "4_banners_auto"
-            const val LAYOUT_SPRINT_CAROUSEL: String = "sprint_carousel"
             const val LAYOUT_TOPADS: String = "topads"
             const val LAYOUT_SPOTLIGHT: String = "spotlight"
             const val LAYOUT_HOME_WIDGET: String = "home_widget"
@@ -337,18 +297,18 @@ data class DynamicHomeChannel(
             const val LAYOUT_SALAM_WIDGET: String = "salam_todo"
             const val LAYOUT_RECHARGE_BU_WIDGET: String = "home_widget_2"
             const val LAYOUT_CATEGORY_WIDGET: String = "category_widget"
+            const val LAYOUT_CATEGORY_WIDGET_V2: String = "category_widget_v2"
             const val LAYOUT_FEATURED_SHOP: String = "shop_widget"
             const val LAYOUT_BANNER_ADS: String = "banner_ads"
             const val LAYOUT_BEST_SELLING: String = "best_selling"
             const val LAYOUT_CATEGORY_ICON: String = "category_icon"
             const val LAYOUT_BANNER_CAROUSEL_V2 = "banner_carousel_v2"
             const val LAYOUT_LEGO_6_AUTO: String = "6_image_auto"
+            const val LAYOUT_QUESTWIDGET = "quest_widget"
+            const val LAYOUT_CAMPAIGN_WIDGET: String = "campaign_widget"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
             const val DIVIDER_NO_DIVIDER = 0
-            const val DIVIDER_TOP = 1
-            const val DIVIDER_BOTTOM = 2
-            const val DIVIDER_TOP_AND_BOTTOM = 3
         }
     }
 
@@ -522,6 +482,27 @@ data class DynamicHomeChannel(
             @Expose
             @SerializedName("textColor")
             val textColor: String = ""
+    )
+
+    data class ViewAllCard(
+        @Expose
+        @SerializedName("id")
+        val id: String = "",
+        @Expose
+        @SerializedName("contentType")
+        val contentType: String = "",
+        @Expose
+        @SerializedName("title")
+        val title: String = "",
+        @Expose
+        @SerializedName("description")
+        val description: String = "",
+        @Expose
+        @SerializedName("imageUrl")
+        val imageUrl: String = "",
+        @Expose
+        @SerializedName("gradientColor")
+        val gradientColor: ArrayList<String> = arrayListOf()
     )
 
     data class Banner(

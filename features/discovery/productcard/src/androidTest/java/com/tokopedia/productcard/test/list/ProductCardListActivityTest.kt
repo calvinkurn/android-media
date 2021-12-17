@@ -75,6 +75,12 @@ internal class ProductCardListActivityTest: AppCompatActivity() {
                 }
             })
             productCardView?.setAddVariantClickListener { toast("Add Variant") }
+            productCardView?.setDeleteProductOnClickListener { toast("Delete product") }
+            productCardView?.setRemoveWishlistOnClickListener { toast("Delete product from wishlist") }
+            productCardView?.setNotifyMeOnClickListener { toast("Notify me") }
+            productCardView?.setThreeDotsWishlistOnClickListener { toast("Three Dots Wishlist") }
+            productCardView?.setAddToCartWishlistOnClickListener { toast("Add To Cart Wishlist") }
+            productCardView?.setSeeSimilarProductWishlistOnClickListener { toast("See Similar Product Wishlist") }
         }
 
         private fun toast(message: String) {

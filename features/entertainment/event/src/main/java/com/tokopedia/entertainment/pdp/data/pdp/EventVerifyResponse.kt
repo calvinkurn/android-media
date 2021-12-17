@@ -1,5 +1,6 @@
 package com.tokopedia.entertainment.pdp.data.pdp
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -14,7 +15,7 @@ data class EventVerifyResponseV2(
 data class EventVerifyResponse(
         @SerializedName("error")
         @Expose
-        val error: String = "",
+        var error: String? = "",
         @SerializedName("error_description")
         @Expose
         val errorDescription: String = "",
@@ -138,6 +139,7 @@ data class ItemMapResponse(
         @SerializedName("payment_type")
         @Expose
         val paymentType:String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
         val price: Int = 0,

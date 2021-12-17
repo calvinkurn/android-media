@@ -6,13 +6,17 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.broadcaster.domain.model.Config
 import com.tokopedia.play.broadcaster.domain.model.GetBroadcasterShopConfigResponse
-import com.tokopedia.play.broadcaster.util.extension.sendCrashlyticsLog
 import com.tokopedia.play.broadcaster.util.handler.DefaultUseCaseHandler
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 /**
  * Created by mzennis on 14/06/20.
+ */
+/*
+tnc {
+  description
+}
  */
 class GetConfigurationUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
@@ -23,6 +27,9 @@ class GetConfigurationUseCase @Inject constructor(
               broadcasterGetShopConfig(shopID: ${'$'}shopId) {
                 streamAllowed
                 config
+                tnc {
+                  description
+                }
               }
             }
         """
@@ -41,14 +48,16 @@ class GetConfigurationUseCase @Inject constructor(
         ).executeWithRetry()
         val response = gqlResponse.getData<GetBroadcasterShopConfigResponse>(GetBroadcasterShopConfigResponse::class.java)
         return mapConfiguration(response.shopConfig.config)
-                .copy(streamAllowed = response.shopConfig.streamAllowed)
+                .copy(
+                    streamAllowed = response.shopConfig.streamAllowed,
+                    tnc = response.shopConfig.tnc,
+                )
     }
 
     private fun mapConfiguration(config: String): Config {
         return try {
             gson.fromJson(config, Config::class.java)
         } catch (e: Exception) {
-            sendCrashlyticsLog(e)
             Config()
         }
     }

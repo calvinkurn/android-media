@@ -5,6 +5,9 @@ import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
+import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
+import com.google.android.gms.cast.framework.CastStateListener
+import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -13,38 +16,38 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
+import com.tokopedia.play.data.multiplelikes.UpdateMultipleLikeConfig
+import com.tokopedia.play.data.realtimenotif.RealTimeNotification
+import com.tokopedia.play_common.sse.PlayChannelSSE
+import com.tokopedia.play_common.sse.PlayChannelSSEPageSource
+import com.tokopedia.play.data.ssemapper.PlaySSEMapper
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
-import com.tokopedia.play.data.websocket.PlaySocketInfo
-import com.tokopedia.play.data.websocket.revamp.WebSocketAction
-import com.tokopedia.play.data.websocket.revamp.WebSocketClosedReason
+import com.tokopedia.play.data.UpcomingChannelUpdateActive
 import com.tokopedia.play.domain.*
-import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
-import com.tokopedia.play.domain.repository.PlayViewerLikeRepository
-import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
+import com.tokopedia.play.domain.repository.*
+import com.tokopedia.play.extensions.combine
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.setValue
+import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.*
 import com.tokopedia.play.view.monitoring.PlayVideoLatencyPerformanceMonitoring
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
-import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
+import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
-import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
-import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
-import com.tokopedia.play.view.uimodel.state.ViewVisibility
+import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -53,16 +56,26 @@ import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.model.dto.interactive.isScheduled
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
+import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
+import com.tokopedia.play_common.sse.*
+import com.tokopedia.play_common.sse.model.SSEAction
+import com.tokopedia.play_common.sse.model.SSECloseReason
+import com.tokopedia.play_common.sse.model.SSEResponse
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.Event
+import com.tokopedia.play_common.websocket.WebSocketAction
+import com.tokopedia.play_common.websocket.WebSocketClosedReason
+import com.tokopedia.play_common.websocket.WebSocketResponse
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.websocket.WebSocketResponse
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
+import kotlin.math.max
 
 /**
  * Created by jegul on 29/11/19
@@ -75,7 +88,6 @@ class PlayViewModel @Inject constructor(
         private val getChannelStatusUseCase: GetChannelStatusUseCase,
         private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val getReportSummariesUseCase: GetReportSummariesUseCase,
-        private val getCartCountUseCase: GetCartCountUseCase,
         private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
         private val trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
         private val trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
@@ -87,24 +99,20 @@ class PlayViewModel @Inject constructor(
         private val playPreference: PlayPreference,
         private val videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
         private val playChannelWebSocket: PlayChannelWebSocket,
-        private val interactiveRepo: PlayViewerInteractiveRepository,
-        private val partnerRepo: PlayViewerPartnerRepository,
-        private val likeRepo: PlayViewerLikeRepository,
+        private val repo: PlayViewerRepository,
         private val playAnalytic: PlayNewAnalytic,
+        private val timerFactory: TimerFactory,
+        private val castPlayerHelper: CastPlayerHelper
 ) : ViewModel() {
 
     val observableChannelInfo: LiveData<PlayChannelInfoUiModel> /**Added**/
         get() = _observableChannelInfo
     val observableVideoMeta: LiveData<PlayVideoMetaInfoUiModel> /**Changed**/
         get() = _observableVideoMeta
-    val observableSocketInfo: LiveData<PlaySocketInfo>
-        get() = _observableSocketInfo
     val observableNewChat: LiveData<Event<PlayChatUiModel>>
         get() = _observableNewChat
     val observableChatList: LiveData<out List<PlayChatUiModel>>
         get() = _observableChatList
-    val observableTotalViews: LiveData<PlayTotalViewUiModel> /**Changed**/
-        get() = _observableTotalViews
     val observableQuickReply: LiveData<PlayQuickReplyInfoUiModel> /**Changed**/
         get() = _observableQuickReply
     val observableStatusInfo: LiveData<PlayStatusInfoUiModel> /**Changed**/
@@ -119,16 +127,18 @@ class PlayViewModel @Inject constructor(
         get() = _observableVideoProperty
     val observableProductSheetContent: LiveData<PlayResult<PlayProductTagsUiModel.Complete>>
         get() = _observableProductSheetContent
-    val observableCartInfo: LiveData<PlayCartInfoUiModel> /**Changed**/
-        get() = _observableCartInfo
-    val observableShareInfo: LiveData<PlayShareInfoUiModel> /**Added**/
-        get() = _observableShareInfo
-    val observableLikeStatusInfo: LiveData<PlayLikeStatusInfoUiModel> /**Added**/
-        get() = _observableLikeStatusInfo
     val observableEventPiPState: LiveData<Event<PiPState>>
         get() = _observableEventPiPState
     val observableOnboarding: LiveData<Event<Unit>>
         get() = _observableOnboarding
+    val observableCastState: LiveData<PlayCastUiModel>
+        get() = _observableCastState
+
+    /**
+     * Remote Config for bubble like
+     */
+    private val isLikeBubbleEnabled: Boolean
+        get() = remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_LIKE_BUBBLE, true)
 
     /**
      * Interactive Remote Config defaults to true, because it should be enabled by default,
@@ -138,15 +148,106 @@ class PlayViewModel @Inject constructor(
         get() = remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_INTERACTIVE, true)
 
     private val isInteractiveAllowed: Boolean
-        get() = channelType.isLive && videoOrientation.isVertical && videoPlayer.isGeneral && isInteractiveRemoteConfigEnabled
+        get() = channelType.isLive && videoOrientation.isVertical && videoPlayer.isGeneral() && isInteractiveRemoteConfigEnabled
 
-    private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 5)
+    private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 50)
 
+    private val _channelDetail = MutableStateFlow(PlayChannelDetailUiModel())
     private val _partnerInfo = MutableStateFlow(PlayPartnerInfo())
     private val _bottomInsets = MutableStateFlow(emptyMap<BottomInsetsType, BottomInsetsState>())
     private val _status = MutableStateFlow(PlayStatusType.Active)
     private val _interactive = MutableStateFlow<PlayInteractiveUiState>(PlayInteractiveUiState.NoInteractive)
-    private val _leaderboardInfo = MutableStateFlow<PlayLeaderboardInfoUiModel>(PlayLeaderboardInfoUiModel())
+    private val _leaderboardInfo = MutableStateFlow<PlayLeaderboardWrapperUiModel>(PlayLeaderboardWrapperUiModel.Unknown)
+    private val _leaderboardUserBadgeState = MutableStateFlow(PlayLeaderboardBadgeUiState())
+    private val _likeInfo = MutableStateFlow(PlayLikeInfoUiModel())
+    private val _channelReport = MutableStateFlow(PlayChannelReportUiModel())
+
+    private val _interactiveUiState = combine(
+        _interactive, _bottomInsets, _status
+    ) { interactive, bottomInsets, status ->
+        PlayInteractiveViewUiState(
+            interactive = interactive,
+            visibility = when {
+                /**
+                 * Invisible because when unify timer is set during gone, it's not gonna get rounded when it's shown :x
+                 */
+                bottomInsets.isAnyShown -> ViewVisibility.Invisible
+                status.isFreeze || status.isBanned -> ViewVisibility.Gone
+                interactive is PlayInteractiveUiState.NoInteractive -> ViewVisibility.Gone
+                else -> ViewVisibility.Visible
+            },
+        )
+    }.flowOn(dispatchers.computation)
+
+    private val _partnerUiState = _partnerInfo.map {
+        PlayPartnerUiState(it.name, it.status, it.iconUrl, it.badgeUrl, it.isLoadingFollow)
+    }.flowOn(dispatchers.computation)
+
+    private val _winnerBadgeUiState = combine(
+        _leaderboardInfo, _bottomInsets, _status, _channelDetail, _leaderboardUserBadgeState
+    ) { leaderboardInfo, bottomInsets, status, channelDetail, leaderboardUserBadgeState ->
+        PlayWinnerBadgeUiState(
+            leaderboards = leaderboardInfo,
+            shouldShow = !bottomInsets.isAnyShown &&
+                    status.isActive &&
+                    leaderboardUserBadgeState.showLeaderboard &&
+                    channelDetail.channelInfo.channelType.isLive,
+        )
+    }.flowOn(dispatchers.computation)
+
+    private val _likeUiState = combine(
+        _likeInfo, _channelDetail, _bottomInsets, _status, _channelReport
+    ) { likeInfo, channelDetail, bottomInsets, status, channelReport ->
+        PlayLikeUiState(
+            shouldShow = !bottomInsets.isAnyShown && status.isActive,
+            canLike = likeInfo.status != PlayLikeStatus.Unknown,
+            totalLike = channelReport.totalLikeFmt,
+            likeMode = if (channelDetail.channelInfo.channelType.isLive) PlayLikeMode.Multiple
+            else PlayLikeMode.Single,
+            isLiked = likeInfo.status == PlayLikeStatus.Liked,
+            canShowBubble = !bottomInsets.isAnyShown &&
+                    channelDetail.channelInfo.channelType.isLive &&
+                    status.isActive,
+        )
+    }.flowOn(dispatchers.computation)
+
+    private val _totalViewUiState = _channelReport.map {
+        PlayTotalViewUiState(it.totalViewFmt)
+    }.flowOn(dispatchers.computation)
+
+    private val _shareUiState = combine(
+        _channelDetail, _bottomInsets, _status
+    ) { channelDetail, bottomInsets, status ->
+        PlayShareUiState(shouldShow = channelDetail.shareInfo.shouldShow &&
+                !bottomInsets.isAnyShown &&
+                status.isActive
+        )
+    }.flowOn(dispatchers.computation)
+
+    private val _rtnUiState = combine(
+        _channelDetail, _bottomInsets, _status
+    ) { channelDetail, bottomInsets, status ->
+        PlayRtnUiState(
+            shouldShow = channelType.isLive &&
+                    !bottomInsets.isAnyShown &&
+                    status.isActive &&
+                    !channelDetail.videoInfo.orientation.isHorizontal &&
+                    !videoPlayer.isYouTube,
+            lifespanInMs = channelDetail.rtnConfigInfo.lifespan,
+        )
+    }.flowOn(dispatchers.computation)
+
+    private val _titleUiState = _channelDetail.map {
+        PlayTitleUiState(
+            title = it.channelInfo.title
+        )
+    }.flowOn(dispatchers.computation)
+
+    private val _viewAllProductUiState = _bottomInsets.map {
+        PlayViewAllProductUiState(
+            shouldShow = !it.isAnyShown
+        )
+    }.flowOn(dispatchers.computation)
 
     /**
      * Until repeatOnLifecycle is available (by updating library version),
@@ -155,33 +256,36 @@ class PlayViewModel @Inject constructor(
     private val isActive: AtomicBoolean = AtomicBoolean(false)
 
     val uiState: Flow<PlayViewerNewUiState> = combine(
-            _partnerInfo,
-            _bottomInsets,
-            _interactive,
-            _leaderboardInfo,
-            _status
-    ) { partnerInfo, bottomInsets, interactive, leaderboardInfo, status ->
+        _interactiveUiState.distinctUntilChanged(),
+        _partnerUiState.distinctUntilChanged(),
+        _winnerBadgeUiState.distinctUntilChanged(),
+        _bottomInsets,
+        _likeUiState.distinctUntilChanged(),
+        _totalViewUiState.distinctUntilChanged(),
+        _shareUiState.distinctUntilChanged(),
+        _rtnUiState.distinctUntilChanged(),
+        _titleUiState.distinctUntilChanged(),
+        _viewAllProductUiState.distinctUntilChanged()
+    ) { interactive, partner, winnerBadge, bottomInsets, like, totalView, share, rtn, title, viewAllProduct ->
         PlayViewerNewUiState(
-                partnerName = partnerInfo.name,
-                followStatus = partnerInfo.status,
-                bottomInsets = bottomInsets,
-                interactive = interactive,
-                showInteractive = when {
-                    /**
-                     * Invisible because when unify timer is set during gone, it's not gonna get rounded when it's shown :x
-                     */
-                    bottomInsets.isAnyShown -> ViewVisibility.Invisible
-                    status.isFreeze || status.isBanned -> ViewVisibility.Gone
-                    interactive is PlayInteractiveUiState.NoInteractive -> ViewVisibility.Gone
-                    else -> ViewVisibility.Visible
-                },
-                leaderboards = leaderboardInfo.leaderboardWinners,
-                showWinnerBadge = !bottomInsets.isAnyShown && status.isActive && leaderboardInfo.leaderboardWinners.isNotEmpty() && channelType.isLive,
-                status = status
+            interactiveView = interactive,
+            partner = partner,
+            winnerBadge = winnerBadge,
+            bottomInsets = bottomInsets,
+            like = like,
+            totalView = totalView,
+            share = share,
+            rtn = rtn,
+            title = title,
+            viewAllProduct = viewAllProduct,
         )
-    }
+    }.flowOn(dispatchers.computation)
+
     val uiEvent: Flow<PlayViewerNewUiEvent>
-        get() = _uiEvent.takeWhile { isActive.get() }
+        get() = _uiEvent.filter {
+            isActive.get() || it is AllowedWhenInactiveEvent
+        }.map { if (it is AllowedWhenInactiveEvent) it.event else it }
+            .flowOn(dispatchers.computation)
 
     val videoOrientation: VideoOrientation
         get() {
@@ -194,10 +298,7 @@ class PlayViewModel @Inject constructor(
             return channelStatus?.statusType ?: error("Not Possible")
         }
     val channelType: PlayChannelType
-        get() {
-            val channelInfo = _observableChannelInfo.value
-            return channelInfo?.channelType ?: PlayChannelType.Unknown
-        }
+        get() = _channelDetail.value.channelInfo.channelType
     val videoPlayer: PlayVideoPlayerUiModel
         get() {
             val videoPlayer = _observableVideoMeta.value?.videoPlayer
@@ -207,11 +308,6 @@ class PlayViewModel @Inject constructor(
         get() {
             val videoState = _observableVideoProperty.value?.state
             return videoState ?: PlayViewerVideoState.Unknown
-        }
-    val likeParamInfo: PlayLikeParamInfoUiModel
-        get() {
-            val likeParamInfo = _observableLikeInfo.value?.param
-            return likeParamInfo ?: error("Not Possible")
         }
     val bottomInsets: Map<BottomInsetsType, BottomInsetsState>
         get() {
@@ -226,13 +322,16 @@ class PlayViewModel @Inject constructor(
     val partnerId: Long?
         get() = mChannelData?.partnerInfo?.id
 
-    val totalView: String?
-        get() = _observableTotalViews.value?.totalViewFmt
+    val totalView: String
+        get() = _channelReport.value.totalViewFmt
 
     val videoLatency: Long
         get() = videoLatencyPerformanceMonitoring.totalDuration
 
     private var mChannelData: PlayChannelData? = null
+
+    private val channelId: String
+        get() = _channelDetail.value.channelInfo.id
 
     val latestCompleteChannelData: PlayChannelData
         get() {
@@ -253,11 +352,9 @@ class PlayViewModel @Inject constructor(
             val pinnedProduct = _observablePinnedProduct.value ?: channelData.pinnedInfo.pinnedProduct
 
             return channelData.copy(
-                    channelInfo = _observableChannelInfo.value ?: channelData.channelInfo,
                     partnerInfo = channelData.partnerInfo,
-                    likeInfo = _observableLikeInfo.value ?: channelData.likeInfo,
-                    totalViewInfo = _observableTotalViews.value ?: channelData.totalViewInfo,
-                    cartInfo = _observableCartInfo.value ?: channelData.cartInfo,
+                    likeInfo = _likeInfo.value,
+                    channelReportInfo = _channelReport.value,
                     pinnedInfo = PlayPinnedInfoUiModel(
                             pinnedMessage = pinnedMessage,
                             pinnedProduct = pinnedProduct,
@@ -265,7 +362,8 @@ class PlayViewModel @Inject constructor(
                     quickReplyInfo = _observableQuickReply.value ?: channelData.quickReplyInfo,
                     videoMetaInfo = newVideoMeta,
                     statusInfo = _observableStatusInfo.value ?: channelData.statusInfo,
-                    leaderboardInfo = _leaderboardInfo.value
+                    leaderboardInfo = _leaderboardInfo.value,
+                    upcomingInfo = channelData.upcomingInfo
             )
         }
 
@@ -275,11 +373,18 @@ class PlayViewModel @Inject constructor(
     val isPiPAllowed: Boolean
         get() {
             return remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_PIP, true)
-                    && !videoPlayer.isYouTube
+                    && !videoPlayer.isYouTube && !videoPlayer.isCasting()
         }
 
     val userId: String
         get() = userSession.userId
+
+    val isCastAllowed: Boolean
+        get() {
+            val castState = observableCastState.value ?: return false
+            return (castState.currentState != PlayCastState.NO_DEVICE_AVAILABLE && !videoPlayer.isYouTube
+                    && remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_CAST, true)) || castState.currentState == PlayCastState.CONNECTED
+        }
 
     private val isProductSheetInitialized: Boolean
         get() = _observableProductSheetContent.value != null
@@ -287,9 +392,7 @@ class PlayViewModel @Inject constructor(
     private var socketJob: Job? = null
 
     private val _observableChannelInfo = MutableLiveData<PlayChannelInfoUiModel>()
-    private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
-    private val _observableTotalViews = MutableLiveData<PlayTotalViewUiModel>() /**Changed**/
     private val _observableQuickReply = MutableLiveData<PlayQuickReplyInfoUiModel>() /**Changed**/
     private val _observableStatusInfo = MutableLiveData<PlayStatusInfoUiModel>() /**Changed**/
     private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
@@ -298,21 +401,15 @@ class PlayViewModel @Inject constructor(
     private val _observableVideoMeta = MutableLiveData<PlayVideoMetaInfoUiModel>() /**Changed**/
     private val _observableProductSheetContent = MutableLiveData<PlayResult<PlayProductTagsUiModel.Complete>>() /**Changed**/
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
-    private val _observableLikeInfo = MutableLiveData<PlayLikeInfoUiModel>() /**Added**/
-    private val _observableLikeStatusInfo = MediatorLiveData<PlayLikeStatusInfoUiModel>().apply {
-        addSource(_observableLikeInfo) { likeInfo ->
-            if (likeInfo is PlayLikeInfoUiModel.Complete) value = likeInfo.status
-        }
-    }
     private val _observableNewChat = MediatorLiveData<Event<PlayChatUiModel>>().apply {
         addSource(_observableChatList) { chatList ->
             chatList.lastOrNull()?.let { value = Event(it) }
         }
     }
-    private val _observableCartInfo = MutableLiveData<PlayCartInfoUiModel>() /**Changed**/
-    private val _observableShareInfo = MutableLiveData<PlayShareInfoUiModel>() /**Added**/
     private val _observableEventPiPState = MutableLiveData<Event<PiPState>>()
     private val _observableOnboarding = MutableLiveData<Event<Unit>>() /**Added**/
+    private val _observableCastState = MutableLiveData<PlayCastUiModel>()
+    private val _observableUserWinnerStatus = MutableLiveData<PlayUserWinnerStatusUiModel>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableProductSheetContent) {
             if (it is PlayResult.Success) {
@@ -347,8 +444,6 @@ class PlayViewModel @Inject constructor(
     private val amountStringStepArray = arrayOf("k", "m")
     private fun String.trimMultipleNewlines() = trim().replace(Regex("(\\n+)"), "\n")
     //endregion
-
-    private var channelInfoJob: Job? = null
 
     private val videoStateListener = object : PlayViewerVideoStateListener {
         override fun onStateChanged(state: PlayViewerVideoState) {
@@ -411,6 +506,10 @@ class PlayViewModel @Inject constructor(
     private val channelStateProcessor = channelStateProcessorFactory.create(playVideoPlayer, viewModelScope, { channelType }, { videoPlayer })
     private val videoBufferGovernor = videoBufferGovernorFactory.create(playVideoPlayer, viewModelScope)
 
+    private var likeReminderTimer: Job? = null
+
+    private val gson by lazy { Gson() }
+
     init {
         videoStateProcessor.addStateListener(videoStateListener)
         videoStateProcessor.addStateListener(videoPerformanceListener)
@@ -431,11 +530,14 @@ class PlayViewModel @Inject constructor(
         super.onCleared()
         stateHandler.removeObserver(stateHandlerObserver)
         stopWebSocket()
+
         if (!pipState.isInPiP) stopPlayer()
         playVideoPlayer.removeListener(videoManagerListener)
         videoStateProcessor.removeStateListener(videoStateListener)
         videoStateProcessor.removeStateListener(videoPerformanceListener)
         channelStateProcessor.removeStateListener(channelStateListener)
+        removeCastSessionListener()
+        removeCastStateListener()
     }
     //endregion
 
@@ -605,6 +707,7 @@ class PlayViewModel @Inject constructor(
 
     fun submitAction(action: PlayViewerNewAction) {
         when (action) {
+            SetChannelActiveAction -> handleSetChannelActive()
             InteractivePreStartFinishedAction -> handleInteractivePreStartFinished()
             InteractiveOngoingFinishedAction -> handleInteractiveOngoingFinished()
             is InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked(action.height)
@@ -615,6 +718,9 @@ class PlayViewModel @Inject constructor(
             ClickPartnerNameAction -> handleClickPartnerName()
             ClickRetryInteractiveAction -> handleClickRetryInteractive()
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
+            ClickLikeAction -> handleClickLike(isFromLogin = false)
+            ClickShareAction -> handleClickShare()
+            RefreshLeaderboard -> handleRefreshLeaderboard()
         }
     }
 
@@ -646,15 +752,14 @@ class PlayViewModel @Inject constructor(
 
     fun createPage(channelData: PlayChannelData) {
         mChannelData = channelData
+        handleChannelDetail(channelData.channelDetail)
         handleStatusInfo(channelData.statusInfo)
-        handleChannelInfo(channelData.channelInfo)
+        handleChannelInfo(channelData.channelDetail.channelInfo)
         handleOnboarding(channelData.videoMetaInfo)
         handleVideoMetaInfo(channelData.videoMetaInfo)
         handlePartnerInfo(channelData.partnerInfo)
-        handleShareInfo(channelData.shareInfo)
-        handleTotalViewInfo(channelData.totalViewInfo)
+        handleChannelReportInfo(channelData.channelReportInfo)
         handleLikeInfo(channelData.likeInfo)
-        handleCartInfo(channelData.cartInfo)
         handlePinnedInfo(channelData.pinnedInfo)
         handleQuickReplyInfo(channelData.quickReplyInfo)
         handleLeaderboardInfo(channelData.leaderboardInfo)
@@ -664,28 +769,88 @@ class PlayViewModel @Inject constructor(
         isActive.compareAndSet(false, true)
 
         focusVideoPlayer(channelData)
-        updateChannelInfo(channelData)
         startWebSocket(channelData.id)
-        trackVisitChannel(channelData.id)
-
         checkLeaderboard(channelData.id)
+
+        prepareSelfLikeBubbleIcon()
+        checkLikeReminderTimer()
+
+        addCastStateListener()
+
+        setCastState(castPlayerHelper.mapCastState(castPlayerHelper.castContext?.castState))
+
+        trackVisitChannel(channelData.id, channelData.channelReportInfo.shouldTrack, channelData.channelReportInfo.sourceType)
+        updateChannelInfo(channelData)
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
         isActive.compareAndSet(true, false)
 
-        stopJob()
         defocusVideoPlayer(shouldPauseVideo)
+        returnToNonCastPlayer()
         stopWebSocket()
+        cancelReminderLikeTimer()
 
         stopInteractive()
+
+        removeCastSessionListener()
+        removeCastStateListener()
     }
 
     private fun focusVideoPlayer(channelData: PlayChannelData) {
-        if (channelData.statusInfo.statusType.isFreeze) return
+        fun loadCast() {
+            if (channelData.statusInfo.statusType.isFreeze) return
 
-        playVideoPlayer.addListener(videoManagerListener)
-        playVideoPlayer.resume()
+            playVideoPlayer.stop(resetState = false)
+            playVideoPlayer.removeListener(videoManagerListener)
+
+            val videoStream = channelData.videoMetaInfo.videoStream
+            if(mChannelData?.id.toString() != castPlayerHelper.getCurrentMediaChannelId()) {
+                castPlayerHelper.castPlay(
+                    channelId = channelData.id,
+                    title = videoStream.title,
+                    partnerName = channelData.partnerInfo.name,
+                    coverUrl = channelData.channelDetail.channelInfo.coverUrl,
+                    videoUrl = if(channelData.videoMetaInfo.videoPlayer.isGeneral())
+                                    channelData.videoMetaInfo.videoPlayer.params.videoUrl
+                                else "",
+                    currentPosition = max(playVideoPlayer.getCurrentPosition(), 0)
+                )
+            }
+
+            if(channelData.videoMetaInfo.videoPlayer.isGeneral())
+                castPlayerHelper.player?.let {
+                    _observableVideoMeta.value = channelData.videoMetaInfo.copy(
+                        videoPlayer = channelData.videoMetaInfo.videoPlayer.setPlayer(it, channelData.channelDetail.channelInfo.coverUrl)
+                    )
+                }
+        }
+
+        fun loadPlayer() {
+            if (channelData.statusInfo.statusType.isFreeze) return
+            if (!channelData.videoMetaInfo.videoPlayer.isGeneral()) return
+
+            playVideoPlayer.addListener(videoManagerListener)
+            playVideoPlayer.resume()
+            updateVideoMetaInfo(channelData.videoMetaInfo)
+
+            _observableVideoMeta.value = channelData.videoMetaInfo.copy(
+                videoPlayer = channelData.videoMetaInfo.videoPlayer.setPlayer(playVideoPlayer.videoPlayer)
+            )
+        }
+
+        castPlayerHelper.setSessionAvailabilityListener(object : SessionAvailabilityListener {
+            override fun onCastSessionAvailable() {
+                loadCast()
+            }
+
+            override fun onCastSessionUnavailable() {
+                loadPlayer()
+            }
+        })
+
+        if (castPlayerHelper.hasAvailableSession) loadCast()
+        else loadPlayer()
     }
 
     private fun defocusVideoPlayer(shouldPauseVideo: Boolean) {
@@ -696,13 +861,24 @@ class PlayViewModel @Inject constructor(
         playVideoPlayer.removeListener(videoManagerListener)
     }
 
+    fun removeCastSessionListener() {
+        castPlayerHelper.setSessionAvailabilityListener(null)
+    }
+
+    private fun returnToNonCastPlayer() {
+        val vidPlayer = videoPlayer
+        if (vidPlayer.isGeneral()) {
+            _observableVideoMeta.value = _observableVideoMeta.value?.copy(
+                    videoPlayer = vidPlayer.setPlayer(playVideoPlayer.videoPlayer)
+            )
+        }
+    }
+
     private fun updateChannelInfo(channelData: PlayChannelData) {
         updateStatusInfo(channelData.id)
         updatePartnerInfo(channelData.partnerInfo)
-        updateCartInfo(channelData.cartInfo)
         if (!channelData.statusInfo.statusType.isFreeze) {
-            updateVideoMetaInfo(channelData.videoMetaInfo)
-            updateLikeAndTotalViewInfo(channelData.likeInfo.param, channelData.id)
+            updateLikeAndTotalViewInfo(channelData.likeInfo, channelData.id)
             updateProductTagsInfo(channelData.pinnedInfo.pinnedProduct.productTags, channelData.pinnedInfo, channelData.id)
         }
     }
@@ -729,34 +905,6 @@ class PlayViewModel @Inject constructor(
         )
     }
 
-    fun changeLikeCount(shouldLike: Boolean) {
-        val likeInfo = _observableLikeInfo.value
-        if (likeInfo !is PlayLikeInfoUiModel.Complete) return
-
-        val currentTotalLike = likeInfo.status.totalLike
-        val currentTotalLikeFmt = likeInfo.status.totalLikeFormatted
-        if (!hasWordsOrDotsRegex.containsMatchIn(currentTotalLikeFmt)) {
-            val finalTotalLike = (currentTotalLike + (if (shouldLike) 1 else -1)).coerceAtLeast(0)
-            _observableLikeInfo.value = likeInfo.copy(
-                    status = PlayLikeStatusInfoUiModel(
-                            totalLike = finalTotalLike,
-                            totalLikeFormatted = finalTotalLike.toAmountString(amountStringStepArray, separator = "."),
-                            isLiked = shouldLike,
-                            source = LikeSource.UserAction
-                    )
-            )
-        } else {
-            _observableLikeInfo.value = likeInfo.copy(
-                    status = PlayLikeStatusInfoUiModel(
-                            totalLike = likeInfo.status.totalLike,
-                            totalLikeFormatted = likeInfo.status.totalLikeFormatted,
-                            isLiked = shouldLike,
-                            source = LikeSource.UserAction
-                    )
-            )
-        }
-    }
-
     /**
      * @return true means that back has been consumed/handled
      * false means that back is allowed
@@ -766,7 +914,7 @@ class PlayViewModel @Inject constructor(
                 ?.filter { it.value.isShown }
                 ?.mapValues { it.value as BottomInsetsState.Shown }
                 .orEmpty()
-        val entry = shownBottomSheets.minBy { it.value.deepLevel }
+        val entry = shownBottomSheets.minByOrNull { it.value.deepLevel }
         when (entry?.key) {
             BottomInsetsType.Keyboard -> onKeyboardHidden()
             BottomInsetsType.ProductSheet -> onHideProductSheet()
@@ -776,34 +924,23 @@ class PlayViewModel @Inject constructor(
         return shownBottomSheets.isNotEmpty()
     }
 
-    fun updateBadgeCart() {
-        val cartInfo = _observableCartInfo.value
-        if (cartInfo != null) updateCartInfo(cartInfo)
-    }
-
     fun getVideoPlayer() = playVideoPlayer
 
     private fun startWebSocket(channelId: String) {
-        viewModelScope.launch {
-            val socketCredential = try {
-                withContext(dispatchers.io) {
-                    return@withContext getSocketCredentialUseCase.executeOnBackground()
-                }
-            } catch (e: Throwable) {
-                SocketCredential()
-            }
+        socketJob?.cancel()
+        socketJob = viewModelScope.launch {
+            val socketCredential = getSocketCredential()
 
-            socketJob = launch {
-                playChannelWebSocket.listenAsFlow()
-                        .collect {
-                            handleWebSocketResponse(it, channelId, socketCredential)
-                        }
-            }
-
+            if (!isActive) return@launch
             connectWebSocket(
                     channelId = channelId,
                     socketCredential = socketCredential
             )
+
+            playChannelWebSocket.listenAsFlow()
+                    .collect {
+                        handleWebSocketResponse(it, channelId, socketCredential)
+                    }
         }
     }
 
@@ -812,6 +949,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun stopWebSocket() {
+        socketJob?.cancel()
         playChannelWebSocket.close()
     }
 
@@ -819,14 +957,22 @@ class PlayViewModel @Inject constructor(
         _interactive.value = PlayInteractiveUiState.NoInteractive
     }
 
-    private fun stopJob() {
-        channelInfoJob?.cancel()
-        socketJob?.cancel()
+    private suspend fun getSocketCredential(): SocketCredential = try {
+        withContext(dispatchers.io) {
+            require(userSession.isLoggedIn)
+            return@withContext getSocketCredentialUseCase.executeOnBackground()
+        }
+    } catch (e: Throwable) {
+        SocketCredential()
     }
 
     /**
      * Handle existing channel data
      */
+    private fun handleChannelDetail(channelDetail: PlayChannelDetailUiModel) {
+        _channelDetail.value = channelDetail
+    }
+
     private fun handleStatusInfo(statusInfo: PlayStatusInfoUiModel) {
         _observableStatusInfo.value = statusInfo
     }
@@ -857,27 +1003,12 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun handleShareInfo(shareInfo: PlayShareInfoUiModel) {
-        _observableShareInfo.value = shareInfo
-    }
-
-    private fun handleTotalViewInfo(totalViewInfo: PlayTotalViewUiModel) {
-        _observableTotalViews.value = totalViewInfo
+    private fun handleChannelReportInfo(channelReport: PlayChannelReportUiModel) {
+        _channelReport.value = channelReport
     }
 
     private fun handleLikeInfo(likeInfo: PlayLikeInfoUiModel) {
-        _observableLikeInfo.value = when (likeInfo) {
-            is PlayLikeInfoUiModel.Incomplete -> likeInfo
-            is PlayLikeInfoUiModel.Complete -> likeInfo.copy(
-                    status = likeInfo.status.copy(
-                            source = LikeSource.Storage
-                    )
-            )
-        }
-    }
-
-    private fun handleCartInfo(cartInfo: PlayCartInfoUiModel) {
-        _observableCartInfo.value = cartInfo
+        _likeInfo.value = likeInfo
     }
 
     private fun handlePinnedInfo(pinnedInfo: PlayPinnedInfoUiModel) {
@@ -896,8 +1027,10 @@ class PlayViewModel @Inject constructor(
         _observableQuickReply.value = quickReplyInfo
     }
 
-    private fun handleLeaderboardInfo(leaderboardInfo: PlayLeaderboardInfoUiModel) {
+    private fun handleLeaderboardInfo(leaderboardInfo: PlayLeaderboardWrapperUiModel) {
         _leaderboardInfo.value = leaderboardInfo
+        if(leaderboardInfo is PlayLeaderboardWrapperUiModel.Success)
+            setLeaderboardBadgeState(leaderboardInfo.data)
     }
 
     /**
@@ -911,7 +1044,9 @@ class PlayViewModel @Inject constructor(
     private fun updatePartnerInfo(partnerInfo: PlayPartnerInfo) {
         if (partnerInfo.type == PartnerType.Shop && partnerInfo.id.toString() != userSession.shopId) {
             viewModelScope.launchCatchError(block = {
-                val isFollowing = partnerRepo.getIsFollowingPartner(partnerId = partnerInfo.id)
+                val isFollowing = if (userSession.isLoggedIn) {
+                    repo.getIsFollowingPartner(partnerId = partnerInfo.id)
+                } else false
                 _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(isFollowing)) }
             }, onError = {
 
@@ -922,59 +1057,53 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun updateVideoMetaInfo(videoMetaInfo: PlayVideoMetaInfoUiModel) {
-        if (videoMetaInfo.videoPlayer is PlayVideoPlayerUiModel.General) playGeneralVideo(videoMetaInfo.videoPlayer)
-        else playVideoPlayer.release()
+        when (videoMetaInfo.videoPlayer) {
+            is PlayVideoPlayerUiModel.General.Incomplete -> {
+                if (!castPlayerHelper.hasAvailableSession) playGeneralVideo(videoMetaInfo.videoPlayer)
+                else playVideoPlayer.release()
+            }
+            is PlayVideoPlayerUiModel.General.Complete -> {
+                if (videoMetaInfo.videoPlayer.playerType == PlayerType.Client) playGeneralVideo(videoMetaInfo.videoPlayer)
+                else playVideoPlayer.release()
+            }
+            else -> playVideoPlayer.release()
+        }
     }
 
-    private fun updateLikeAndTotalViewInfo(likeParamInfo: PlayLikeParamInfoUiModel, channelId: String) {
+    private fun updateLikeAndTotalViewInfo(likeInfo: PlayLikeInfoUiModel, channelId: String) {
         viewModelScope.launchCatchError(block = {
             supervisorScope {
                 val deferredReportSummaries = async { getReportSummaries(channelId) }
                 val deferredIsLiked = async {
-                    likeRepo.getIsLiked(contentId = likeParamInfo.contentId.toLong(), contentType = likeParamInfo.contentType)
+                    if (userSession.isLoggedIn) {
+                        repo.getIsLiked(contentId = likeInfo.contentId.toLong(), contentType = likeInfo.contentType)
+                    } else false
                 }
 
-                val (totalView, totalLike, totalLikeFormatted) = try {
+                try {
                     val report = deferredReportSummaries.await().data.first().channel.metrics
-                    Triple(report.totalViewFmt, report.totalLike.toLongOrZero(), report.totalLikeFmt)
+                    _channelReport.setValue {
+                        copy(
+                            totalViewFmt = report.totalViewFmt,
+                            totalLike = report.totalLike.toLongOrZero(),
+                            totalLikeFmt = report.totalLikeFmt
+                        )
+                    }
                 } catch (e: Throwable) {
-                    Triple("0", 0 , "0")
+
                 }
 
                 val isLiked = try { deferredIsLiked.await() } catch (e: Throwable) { false }
 
-                val newLikeStatus = PlayLikeStatusInfoUiModel(
-                        totalLike = totalLike.toLong(),
-                        totalLikeFormatted = totalLikeFormatted,
-                        isLiked = isLiked,
-                        source = LikeSource.Network
-                )
-                _observableLikeInfo.value = likeParamInfo + newLikeStatus
-
-                _observableTotalViews.value = PlayTotalViewUiModel.Complete(totalView)
+                _likeInfo.setValue {
+                    copy(status = if (isLiked) PlayLikeStatus.Liked else PlayLikeStatus.NotLiked, source = LikeSource.Network)
+                }
             }
         }, onError = {
-            _observableLikeInfo.value = likeParamInfo + PlayLikeStatusInfoUiModel(
-                    totalLike = 0,
-                    totalLikeFormatted = "0",
-                    isLiked = false,
-                    source = LikeSource.Network
-            )
+            _likeInfo.setValue {
+                copy(status = PlayLikeStatus.NotLiked, source = LikeSource.Network)
+            }
         })
-    }
-
-    private fun updateCartInfo(cartInfo: PlayCartInfoUiModel) {
-        if (cartInfo.shouldShow) {
-            viewModelScope.launchCatchError(block = {
-                val cartCount = getCartCount()
-                _observableCartInfo.value = PlayCartInfoUiModel.Complete(
-                        shouldShow = cartInfo.shouldShow,
-                        count = cartCount
-                )
-            }, onError = {
-
-            })
-        }
     }
 
     private fun updateProductTagsInfo(productTags: PlayProductTagsUiModel, pinnedInfo: PlayPinnedInfoUiModel, channelId: String) {
@@ -1017,14 +1146,6 @@ class PlayViewModel @Inject constructor(
         getReportSummariesUseCase.executeOnBackground()
     }
 
-    private suspend fun getCartCount(): Int = withContext(dispatchers.io) {
-        try {
-            getCartCountUseCase.executeOnBackground()
-        } catch (e: Exception) {
-            0
-        }
-    }
-
     private suspend fun getProductTagItems(productTagsBasicInfo: PlayProductTagsBasicInfoUiModel, channelId: String) {
         if (!isProductSheetInitialized) _observableProductSheetContent.value = PlayResult.Loading(
                 showPlaceholder = true
@@ -1063,20 +1184,32 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun trackVisitChannel(channelId: String) {
-        viewModelScope.launchCatchError(dispatchers.io, block = {
-            trackVisitChannelBroadcasterUseCase.setRequestParams(TrackVisitChannelBroadcasterUseCase.createParams(channelId))
-            trackVisitChannelBroadcasterUseCase.executeOnBackground()
-        }) {
+    private fun trackVisitChannel(channelId: String, shouldTrack: Boolean, sourceType: String) {
+        if(shouldTrack) {
+            viewModelScope.launchCatchError(dispatchers.io, block = {
+                trackVisitChannelBroadcasterUseCase.setRequestParams(TrackVisitChannelBroadcasterUseCase.createParams(channelId, sourceType))
+                trackVisitChannelBroadcasterUseCase.executeOnBackground()
+            }) { }
         }
+        _channelReport.setValue { copy(shouldTrack = true) }
     }
 
     private fun checkLeaderboard(channelId: String) {
         if (!isInteractiveAllowed) return
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            val interactiveLeaderboard = interactiveRepo.getInteractiveLeaderboard(channelId)
-            _leaderboardInfo.value = interactiveLeaderboard
-        }) {}
+            val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
+            _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
+
+            setLeaderboardBadgeState(interactiveLeaderboard)
+        }) {
+            _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Error
+        }
+    }
+
+    private fun setLeaderboardBadgeState(leaderboardInfo: PlayLeaderboardInfoUiModel) {
+        if(leaderboardInfo.leaderboardWinners.isNotEmpty()) {
+            _leaderboardUserBadgeState.setValue { copy(showLeaderboard = true) }
+        }
     }
 
     private fun checkInteractive(channelId: String) {
@@ -1084,7 +1217,7 @@ class PlayViewModel @Inject constructor(
         viewModelScope.launchCatchError(dispatchers.io, block = {
             _interactive.value = PlayInteractiveUiState.Loading
 
-            val interactive = interactiveRepo.getCurrentInteractive(channelId)
+            val interactive = repo.getCurrentInteractive(channelId)
             handleInteractiveFromNetwork(interactive)
         }) {
             _interactive.value = PlayInteractiveUiState.Error
@@ -1102,25 +1235,55 @@ class PlayViewModel @Inject constructor(
     private suspend fun handleInteractiveFromNetwork(interactive: PlayCurrentInteractiveModel) {
         if (!isInteractiveAllowed) return
         val interactiveUiState = mapInteractiveToState(interactive)
-        interactiveRepo.setDetail(interactive.id.toString(), interactive)
+        repo.setDetail(interactive.id.toString(), interactive)
         if (interactive.timeStatus is PlayInteractiveTimeStatus.Scheduled || interactive.timeStatus is PlayInteractiveTimeStatus.Live) {
-            interactiveRepo.setActive(interactive.id.toString())
+            repo.setActive(interactive.id.toString())
         } else {
-            interactiveRepo.setFinished(interactive.id.toString())
+            repo.setFinished(interactive.id.toString())
         }
 
-        _interactive.value = if (interactiveRepo.getActiveInteractiveId() != null) interactiveUiState else PlayInteractiveUiState.NoInteractive
+        _interactive.value = if (repo.getActiveInteractiveId() != null) interactiveUiState else PlayInteractiveUiState.NoInteractive
 
         if (interactive.timeStatus is PlayInteractiveTimeStatus.Finished) {
             val channelId = mChannelData?.id ?: return
 
             try {
-                val interactiveLeaderboard = interactiveRepo.getInteractiveLeaderboard(channelId)
-                _leaderboardInfo.value = interactiveLeaderboard
+                val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
+                _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
+                setLeaderboardBadgeState(interactiveLeaderboard)
+
                 _interactive.value = PlayInteractiveUiState.NoInteractive
             } catch (e: Throwable) {}
         }
     }
+
+    private fun prepareSelfLikeBubbleIcon() {
+        viewModelScope.launch {
+            _uiEvent.emit(
+                PreloadLikeBubbleIconEvent(
+                    _likeInfo.value.likeBubbleConfig.bubbleMap.keys
+                )
+            )
+        }
+    }
+
+    private fun checkLikeReminderTimer() {
+        fun shouldRemindLike() = _likeInfo.value.status != PlayLikeStatus.Liked && channelType.isLive
+        suspend fun sendLikeReminder() = _uiEvent.emit(RemindToLikeEvent)
+
+        if (!shouldRemindLike()) return
+        cancelReminderLikeTimer()
+        likeReminderTimer = viewModelScope.launch(dispatchers.computation) {
+            delay(TimeUnit.MINUTES.toMillis(1))
+            timerFactory.createLoopingAlarm(
+                millisInFuture = TimeUnit.MINUTES.toMillis(5),
+                stopCondition = { !shouldRemindLike() },
+                onStart = { sendLikeReminder() }
+            )
+        }
+    }
+
+    private fun cancelReminderLikeTimer() = likeReminderTimer?.cancel()
 
     private suspend fun getChannelStatus(channelId: String) = withContext(dispatchers.io) {
         getChannelStatusUseCase.apply {
@@ -1141,30 +1304,63 @@ class PlayViewModel @Inject constructor(
     private suspend fun handleWebSocketResponse(response: WebSocketAction, channelId: String, socketCredential: SocketCredential) {
         when (response) {
             is WebSocketAction.NewMessage -> handleWebSocketMessage(response.message, channelId)
-            is WebSocketAction.Closed -> if (response.reason == WebSocketClosedReason.Error) connectWebSocket(channelId, socketCredential)
+            is WebSocketAction.Closed -> {
+                val reason = response.reason
+                if (reason is WebSocketClosedReason.Error) {
+                    playAnalytic.socketError(channelId, channelType, reason.error.localizedMessage.orEmpty())
+
+                    connectWebSocket(channelId, socketCredential)
+                }
+            }
         }
     }
 
-    private suspend fun handleWebSocketMessage(message: WebSocketResponse, channelId: String) = withContext(dispatchers.main) {
+    private suspend fun handleWebSocketMessage(
+        message: WebSocketResponse,
+        channelId: String
+    ) = withContext(dispatchers.main) {
         val result = withContext(dispatchers.computation) {
-            val socketMapper = PlaySocketMapper(message)
+            val socketMapper = PlaySocketMapper(message, gson)
             socketMapper.mapping()
         }
-        when (result) {
-            is TotalLike -> {
-                val currentLikeInfo = _observableLikeInfo.value ?: return@withContext
-                val mappedResult = playSocketToModelMapper.mapTotalLike(result)
 
-                _observableLikeInfo.value = if (currentLikeInfo is PlayLikeInfoUiModel.Complete) currentLikeInfo.copy(
-                        status = currentLikeInfo.status.copy(
-                                totalLike = mappedResult.totalLike,
-                                totalLikeFormatted = mappedResult.totalLikeFormatted,
-                                source = mappedResult.source
+        when (result) {
+            is TotalLike -> withContext(dispatchers.computation) likeContext@ {
+                val (totalLike, totalLikeFmt) = playSocketToModelMapper.mapTotalLike(result)
+                val prevLike = _channelReport.value.totalLike
+
+                if (channelType.isLive && totalLike < prevLike) return@likeContext
+
+                _channelReport.setValue {
+                    copy(totalLike = totalLike, totalLikeFmt = totalLikeFmt)
+                }
+
+                if (!channelType.isLive || !isLikeBubbleEnabled) return@likeContext
+
+                val diffLike = totalLike - prevLike
+
+                if (diffLike >= LIKE_BURST_THRESHOLD) {
+                    _uiEvent.emit(
+                        ShowLikeBubbleEvent.Burst(
+                            LIKE_BURST_THRESHOLD,
+                            reduceOpacity = true,
+                            config = _likeInfo.value.likeBubbleConfig,
                         )
-                ) else currentLikeInfo.param + mappedResult
+                    )
+                } else if (diffLike > 0) {
+                    _uiEvent.emit(
+                        ShowLikeBubbleEvent.Single(
+                            diffLike.toInt(),
+                            reduceOpacity = true,
+                            config = _likeInfo.value.likeBubbleConfig,
+                        )
+                    )
+                }
             }
-            is TotalView -> {
-                _observableTotalViews.value = PlayTotalViewUiModel.Complete(playSocketToModelMapper.mapTotalView(result))
+            is TotalView -> withContext(dispatchers.computation) {
+                _channelReport.setValue {
+                    copy(totalViewFmt = playSocketToModelMapper.mapTotalView(result))
+                }
             }
             is PlayChat -> {
                 setNewChat(playUiModelMapper.mapChat(result))
@@ -1174,7 +1370,7 @@ class PlayViewModel @Inject constructor(
                 val mappedResult = playSocketToModelMapper.mapPinnedMessage(result)
                 _observablePinnedMessage.value = currentPinnedMessage.copy(
                         id = mappedResult.id,
-                        applink = mappedResult.applink,
+                        appLink = mappedResult.appLink,
                         title = mappedResult.title,
                 )
             }
@@ -1243,6 +1439,32 @@ class PlayViewModel @Inject constructor(
                 val interactive = playSocketToModelMapper.mapInteractive(result)
                 handleInteractiveFromNetwork(interactive)
             }
+            is RealTimeNotification -> withContext(dispatchers.computation) {
+                val notif = playSocketToModelMapper.mapRealTimeNotification(result)
+                _uiEvent.emit(ShowRealTimeNotificationEvent(notif))
+            }
+            is UpdateMultipleLikeConfig -> {
+                if (result.channelId.toString() != channelId) return@withContext
+                val config = playSocketToModelMapper.mapMultipleLikeConfig(
+                    result.configuration
+                )
+                _likeInfo.setValue {
+                    copy(likeBubbleConfig = config)
+                }
+                viewModelScope.launch {
+                    _uiEvent.emit(PreloadLikeBubbleIconEvent(config.bubbleMap.keys))
+                }
+            }
+            is UserWinnerStatus -> {
+                val interactiveState = _interactiveUiState.firstOrNull() ?: return@withContext
+
+                val winnerStatus = playSocketToModelMapper.mapUserWinnerStatus(result)
+                _observableUserWinnerStatus.value = winnerStatus
+
+                if(interactiveState.interactive is PlayInteractiveUiState.Finished) {
+                    handleUserWinnerStatus(winnerStatus)
+                }
+            }
         }
     }
 
@@ -1251,12 +1473,12 @@ class PlayViewModel @Inject constructor(
      */
     private suspend fun onReceivedInteractiveAction(action: Unit) = withContext(dispatchers.io) {
         try {
-            val activeInteractiveId = interactiveRepo.getActiveInteractiveId() ?: return@withContext
-            if (interactiveRepo.hasJoined(activeInteractiveId)) return@withContext
+            val activeInteractiveId = repo.getActiveInteractiveId() ?: return@withContext
+            if (repo.hasJoined(activeInteractiveId)) return@withContext
 
             val channelId = mChannelData?.id ?: return@withContext
-            val isSuccess = interactiveRepo.postInteractiveTap(channelId, activeInteractiveId)
-            if (isSuccess) interactiveRepo.setJoined(activeInteractiveId)
+            val isSuccess = repo.postInteractiveTap(channelId, activeInteractiveId)
+            if (isSuccess) repo.setJoined(activeInteractiveId)
         } catch (ignored: MessageErrorException) {}
     }
 
@@ -1268,16 +1490,30 @@ class PlayViewModel @Inject constructor(
         val shouldFollow = if (shouldForceFollow) true else !followStatus.isFollowing
         val followAction = if (shouldFollow) PartnerFollowAction.Follow else PartnerFollowAction.UnFollow
 
-        _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(shouldFollow)) }
+        _partnerInfo.setValue { (copy(isLoadingFollow = true)) }
 
         viewModelScope.launchCatchError(block = {
-            partnerRepo.postFollowStatus(
+            val isFollowing = repo.postFollowStatus(
                     shopId = shopId.toString(),
                     followAction = followAction,
             )
-        }) {}
+            _partnerInfo.setValue {
+                copy(isLoadingFollow = false, status = PlayPartnerFollowStatus.Followable(isFollowing))
+            }
+        }) {
+            _partnerInfo.setValue { (copy(isLoadingFollow = false)) }
+            _uiEvent.emit(ShowErrorEvent(it))
+        }
 
         return followAction
+    }
+
+    private fun handleSetChannelActive() {
+        if (!userSession.isLoggedIn) return
+        viewModelScope.launch {
+            val welcomeFormat = _channelDetail.value.rtnConfigInfo.welcomeNotification
+            _uiEvent.emit(ShowRealTimeNotificationEvent(welcomeFormat))
+        }
     }
 
     /**
@@ -1285,8 +1521,8 @@ class PlayViewModel @Inject constructor(
      */
     private fun handleInteractivePreStartFinished() {
         viewModelScope.launch {
-            val activeInteractiveId = interactiveRepo.getActiveInteractiveId() ?: return@launch
-            val interactiveDetail = interactiveRepo.getDetail(activeInteractiveId) ?: return@launch
+            val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launch
+            val interactiveDetail = repo.getDetail(activeInteractiveId) ?: return@launch
             if (!interactiveDetail.timeStatus.isScheduled()) return@launch
 
             _interactive.value = PlayInteractiveUiState.Ongoing(
@@ -1296,74 +1532,78 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleInteractiveOngoingFinished() {
-        fun setInteractiveToFinished(interactiveId: String) {
-            interactiveRepo.setFinished(interactiveId)
-
-            _interactive.value = PlayInteractiveUiState.Finished(
-                    info = R.string.play_interactive_finish_initial_text,
-            )
-        }
-
-        suspend fun showCoachMark(leaderboard: PlayLeaderboardInfoUiModel) {
-            _uiEvent.emit(
-                    ShowCoachMarkWinnerEvent(
-                            leaderboard.config.loserMessage,
-                            leaderboard.config.loserDetail
-                    )
-            )
-        }
-
-        suspend fun fetchLeaderboard(channelId: String, isUserJoined: Boolean) = coroutineScope {
-            _interactive.value = PlayInteractiveUiState.Finished(
-                    info = R.string.play_interactive_finish_loading_winner_text,
-            )
-
-            val deferredDelay = async { delay(INTERACTIVE_FINISH_MESSAGE_DELAY) }
-            val deferredInteractiveLeaderboard = async { interactiveRepo.getInteractiveLeaderboard(channelId) }
-
-            deferredDelay.await()
-            val interactiveLeaderboard = deferredInteractiveLeaderboard.await()
-
-            val currentLeaderboard = interactiveLeaderboard.leaderboardWinners.first()
-            val userInLeaderboard = currentLeaderboard.winners.firstOrNull()
-
-            _interactive.value = PlayInteractiveUiState.NoInteractive
-            _leaderboardInfo.value = interactiveLeaderboard
-
-            if (userInLeaderboard != null && isUserJoined) {
-                if (userInLeaderboard.id == userId) {
-                    _uiEvent.emit(
-                            ShowWinningDialogEvent(
-                                    userInLeaderboard.imageUrl,
-                                    interactiveLeaderboard.config.winnerMessage,
-                                    interactiveLeaderboard.config.winnerDetail
-                            )
-                    )
-                } else showCoachMark(interactiveLeaderboard)
-            }
+        suspend fun waitingForSocketOrDuration(activeInteractive: PlayCurrentInteractiveModel, activeInteractiveId: String) {
+            delay(activeInteractive.endGameDelayInMs)
+            repo.setFinished(activeInteractiveId)
+            handleUserWinnerStatus(null)
         }
 
         viewModelScope.launchCatchError(block = {
-            val channelId = mChannelData?.id ?: return@launchCatchError
-            val activeInteractiveId = interactiveRepo.getActiveInteractiveId() ?: return@launchCatchError
-            val isUserJoined = interactiveRepo.hasJoined(activeInteractiveId)
+            val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launchCatchError
+            val activeInteractive = repo.getDetail(activeInteractiveId) ?: return@launchCatchError
 
-            setInteractiveToFinished(activeInteractiveId)
+            _interactive.value = PlayInteractiveUiState.Finished(
+                info = R.string.play_interactive_finish_initial_text,
+            )
             delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
 
-            try {
-                fetchLeaderboard(channelId, isUserJoined)
-            } catch (e: Throwable) {
-                _interactive.value = PlayInteractiveUiState.NoInteractive
+            _interactive.value = PlayInteractiveUiState.Finished(
+                info = R.string.play_interactive_finish_loading_winner_text,
+            )
+            delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
+
+            val winnerStatus = _observableUserWinnerStatus.value
+            if(winnerStatus != null && winnerStatus.interactiveId.toString() == activeInteractiveId){
+                handleUserWinnerStatus(winnerStatus)
+            }
+            else {
+                waitingForSocketOrDuration(activeInteractive, activeInteractiveId)
             }
         }) {}
+    }
+
+    private suspend fun handleUserWinnerStatus(winnerStatus: PlayUserWinnerStatusUiModel?) {
+        fun setNoInteractive() {
+            if(_interactive.value is PlayInteractiveUiState.Finished)
+                _interactive.value = PlayInteractiveUiState.NoInteractive
+        }
+
+        _leaderboardUserBadgeState.setValue {
+            copy(showLeaderboard = true, shouldRefreshData = true)
+        }
+
+        winnerStatus?.let {
+            val activeInteractiveId = repo.getActiveInteractiveId() ?: return
+            val isUserJoined = repo.hasJoined(activeInteractiveId)
+
+            if(winnerStatus.interactiveId.toString() == activeInteractiveId && isUserJoined) {
+                setNoInteractive()
+                repo.setFinished(activeInteractiveId)
+
+                _uiEvent.emit(
+                    if(winnerStatus.userId.toString() == userId){
+                        ShowWinningDialogEvent(winnerStatus.imageUrl, winnerStatus.winnerTitle, winnerStatus.winnerText)
+                    }
+                    else {
+                        ShowCoachMarkWinnerEvent(winnerStatus.loserTitle, winnerStatus.loserText)
+                    }
+                )
+            }
+            else {
+                setNoInteractive()
+            }
+        } ?: run {
+            setNoInteractive()
+        }
     }
 
     private fun handleWinnerBadgeClicked(height: Int) {
         showLeaderboardSheet(height)
 
-        val channelData = mChannelData ?: return
-        playAnalytic.clickWinnerBadge(channelId = channelData.id, channelType = channelData.channelInfo.channelType)
+        playAnalytic.clickWinnerBadge(
+                channelId = channelId,
+                channelType = channelType,
+        )
     }
 
     private fun handleTapTapAction() {
@@ -1371,8 +1611,12 @@ class PlayViewModel @Inject constructor(
             interactiveFlow.emit(Unit)
         }
 
-        val channelData = mChannelData ?: return
-        playAnalytic.clickTapTap(channelId = channelData.id, channelType = channelData.channelInfo.channelType)
+        val interactiveId = repo.getActiveInteractiveId() ?: return
+        playAnalytic.clickTapTap(
+                channelId = channelId,
+                channelType = channelType,
+                interactiveId = interactiveId,
+        )
     }
 
     private fun handleCloseLeaderboardSheet() {
@@ -1385,9 +1629,8 @@ class PlayViewModel @Inject constructor(
      */
     private fun handleClickFollow(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_FOLLOW) {
         val action = doFollowUnfollow(shouldForceFollow = isFromLogin) ?: return@needLogin
-        val channelData = mChannelData ?: return@needLogin
-        val shopId = channelData.partnerInfo.id
-        playAnalytic.clickFollowShop(channelData.id, channelData.channelInfo.channelType, shopId.toString(), action.value)
+        val shopId = _partnerInfo.value.id
+        playAnalytic.clickFollowShop(channelId, channelType, shopId.toString(), action.value)
     }
 
     /**
@@ -1398,22 +1641,25 @@ class PlayViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiEvent.emit(
-                    ShowToasterEvent.Info(message = UiString.Resource(R.string.play_interactive_follow_success))
+                ShowInfoEvent(message = UiString.Resource(R.string.play_interactive_follow_success))
             )
         }
 
-        val channelData = mChannelData ?: return@needLogin
-        playAnalytic.clickFollowShopInteractive(channelData.id, channelData.channelInfo.channelType)
+        val interactiveId = repo.getActiveInteractiveId() ?: return@needLogin
+        playAnalytic.clickFollowShopInteractive(
+                channelId,
+                channelType,
+                interactiveId,
+        )
     }
 
     private fun handleClickPartnerName() {
         viewModelScope.launch {
-            val channelData = mChannelData ?: return@launch
-            val partnerInfo = channelData.partnerInfo
+            val partnerInfo = _partnerInfo.value
 
             when (partnerInfo.type) {
                 PartnerType.Shop -> {
-                    playAnalytic.clickShop(channelData.id, channelData.channelInfo.channelType, channelData.partnerInfo.id.toString())
+                    playAnalytic.clickShop(channelId, channelType, partnerInfo.id.toString())
                     _uiEvent.emit(OpenPageEvent(ApplinkConst.SHOP, listOf(partnerInfo.id.toString()), pipMode = true))
                 }
                 PartnerType.Buyer -> _uiEvent.emit(OpenPageEvent(ApplinkConst.PROFILE, listOf(partnerInfo.id.toString()), pipMode = true))
@@ -1432,8 +1678,146 @@ class PlayViewModel @Inject constructor(
         when (requestCode) {
             REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow(isFromLogin = true)
             REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE -> handleClickFollowInteractive()
+            REQUEST_CODE_LOGIN_LIKE -> handleClickLike(isFromLogin = true)
             else -> {}
         }
+    }
+
+    private fun handleClickLike(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_LIKE) {
+
+        fun getNewTotalLikes(status: PlayLikeStatus): Pair<Long, String> {
+            val currentTotalLike = _channelReport.value.totalLike
+            val currentTotalLikeFmt = _channelReport.value.totalLikeFmt
+            return if (!hasWordsOrDotsRegex.containsMatchIn(currentTotalLikeFmt)) {
+                val totalLike =
+                    (_channelReport.value.totalLike + (if (status == PlayLikeStatus.Liked) 1 else -1))
+                        .coerceAtLeast(0)
+                val fmt = totalLike.toAmountString(amountStringStepArray, separator = ".")
+                totalLike to fmt
+            } else {
+                currentTotalLike to currentTotalLikeFmt
+            }
+        }
+
+        /**
+         * Like for Live Channel
+         * - New status will always be LIKE
+         * - Send Data to BE via Socket
+         */
+        fun handleClickLikeLive(onNewStatusFn: (status: PlayLikeStatus) -> Unit) {
+            val newStatus = PlayLikeStatus.Liked
+            _likeInfo.setValue {
+                copy(status = newStatus, source = LikeSource.UserAction)
+            }
+
+            viewModelScope.launch {
+                _uiEvent.emit(AnimateLikeEvent(fromIsLiked = true))
+                if (isLikeBubbleEnabled) {
+                    _uiEvent.emit(ShowLikeBubbleEvent.Single(
+                        count = 1,
+                        reduceOpacity = false,
+                        config = _likeInfo.value.likeBubbleConfig,
+                    ))
+                }
+            }
+
+            val (newTotalLike, newTotalLikeFmt) = getNewTotalLikes(newStatus)
+            _channelReport.setValue {
+                copy(totalLike = newTotalLike, totalLikeFmt = newTotalLikeFmt)
+            }
+
+            playChannelWebSocket.send(
+                playSocketToModelMapper.mapSendLike(channelId)
+            )
+
+            onNewStatusFn(newStatus)
+        }
+
+        /**
+         * Like for Non-Live Channel
+         * - New status can be UNLIKE or LIKE
+         * - Send Data to BE via GQL
+         */
+        fun handleClickLikeNonLive(isFromLogin: Boolean, onNewStatusFn: (status: PlayLikeStatus) -> Unit) {
+
+            val likeInfo = _likeInfo.value
+            if (likeInfo.status == PlayLikeStatus.Unknown) return
+
+            val newStatus = when {
+                isFromLogin -> PlayLikeStatus.Liked
+                likeInfo.status == PlayLikeStatus.Liked -> PlayLikeStatus.NotLiked
+                else -> PlayLikeStatus.Liked
+            }
+            _likeInfo.setValue { copy(status = newStatus, source = LikeSource.UserAction) }
+
+            if (newStatus == PlayLikeStatus.Liked) {
+                viewModelScope.launch {
+                    _uiEvent.emit(
+                        AnimateLikeEvent(
+                            fromIsLiked = likeInfo.status == PlayLikeStatus.Liked
+                        )
+                    )
+                }
+            }
+
+            val (newTotalLike, newTotalLikeFmt) = getNewTotalLikes(newStatus)
+            _channelReport.setValue {
+                copy(totalLike = newTotalLike, totalLikeFmt = newTotalLikeFmt)
+            }
+
+            viewModelScope.launchCatchError(block = {
+                repo.postLike(
+                    contentId = likeInfo.contentId.toLongOrZero(),
+                    contentType = likeInfo.contentType,
+                    likeType = likeInfo.likeType,
+                    shouldLike = newStatus == PlayLikeStatus.Liked
+                )
+            }) { }
+
+            onNewStatusFn(newStatus)
+        }
+
+        /**
+         * Main Like Condition Logic
+         */
+        val newStatusHandler: (PlayLikeStatus) -> Unit = { status ->
+            if (status == PlayLikeStatus.Liked) cancelReminderLikeTimer()
+
+            playAnalytic.clickLike(
+                channelId = channelId,
+                channelType = channelType,
+                channelName = _channelDetail.value.channelInfo.title,
+                likeStatus = status,
+            )
+        }
+
+        if (channelType.isLive) handleClickLikeLive(newStatusHandler)
+        else handleClickLikeNonLive(isFromLogin, newStatusHandler)
+    }
+
+    private fun handleClickShare() {
+        val shareInfo = _channelDetail.value.shareInfo
+
+        viewModelScope.launch {
+            _uiEvent.emit(
+                CopyToClipboardEvent(shareInfo.content)
+            )
+
+            _uiEvent.emit(
+                ShowInfoEvent(
+                    UiString.Resource(R.string.play_link_copied)
+                )
+            )
+        }
+    }
+
+    private fun handleRefreshLeaderboard() {
+        if(_leaderboardUserBadgeState.value.shouldRefreshData) {
+            _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Loading
+            _leaderboardUserBadgeState.setValue { copy(shouldRefreshData = false) }
+        }
+
+        checkLeaderboard(channelId)
     }
 
     /**
@@ -1444,25 +1828,54 @@ class PlayViewModel @Inject constructor(
         else {
             viewModelScope.launch {
                 _uiEvent.emit(
-                        OpenPageEvent(
-                                applink = ApplinkConst.LOGIN,
-                                requestCode = requestCode
-                        )
+                    OpenPageEvent(
+                        applink = ApplinkConst.LOGIN,
+                        requestCode = requestCode
+                    )
                 )
             }
         }
     }
 
+    private val castStateListener = CastStateListener {
+        setCastState(castPlayerHelper.mapCastState(it))
+    }
+
+    private fun addCastStateListener() {
+        castPlayerHelper.addCastStateListener(castStateListener)
+    }
+
+    private fun removeCastStateListener() {
+        castPlayerHelper.removeCastStateListener(castStateListener)
+    }
+
+    private fun setCastState(castState: PlayCastState) {
+        var model = _observableCastState.value
+        if(model == null) {
+            model = PlayCastUiModel(currentState = castState)
+        }
+        else {
+            model.previousState = model.currentState
+            model.currentState = castState
+        }
+        _observableCastState.value = model
+    }
+
     companion object {
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
         private const val FIREBASE_REMOTE_CONFIG_KEY_INTERACTIVE = "android_main_app_enable_play_interactive"
+        private const val FIREBASE_REMOTE_CONFIG_KEY_CAST = "android_main_app_enable_play_cast"
+        private const val FIREBASE_REMOTE_CONFIG_KEY_LIKE_BUBBLE = "android_main_app_enable_play_bubbles"
         private const val ONBOARDING_DELAY = 5000L
         private const val INTERACTIVE_FINISH_MESSAGE_DELAY = 2000L
+
+        private const val LIKE_BURST_THRESHOLD = 30
 
         /**
          * Request Code When need login
          */
         private const val REQUEST_CODE_LOGIN_FOLLOW = 571
         private const val REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE = 572
+        private const val REQUEST_CODE_LOGIN_LIKE = 573
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.devicefingerprint.datavisor.instance
 
+import android.annotation.SuppressLint
 import android.content.Context
 import com.datavisor.vangogh.face.DVTokenClient
 import com.tokopedia.devicefingerprint.datavisor.`object`.VisorObject
@@ -9,9 +10,9 @@ import com.tokopedia.encryption.utils.Utils.decodeDecimalToText
 class VisorFingerprintInstance {
 
     companion object {
+        @SuppressLint("StaticFieldLeak")
         var visorInstance: DVTokenClient? = null
         private var visorToken = ""
-        private var isTokenInit = false
         const val KEY_USER_ID = "HASHED_USER_ID"
 
         const val DV_SHARED_PREF_NAME = "pref_dv"
@@ -27,21 +28,16 @@ class VisorFingerprintInstance {
         }
 
         fun initToken(context: Context, userId: String, listener: onVisorInitListener? = null) {
-            if (!isTokenInit) {
-                val ctx = context.applicationContext
-                val customUserDimension = mapOf(KEY_USER_ID to userId.sha256())
-                getVisorInstance(ctx).initToken(VisorObject.Key.APP_KEY, VisorObject.Key.APP_SECRET, customUserDimension) { strToken, nResultCode ->
-                    if (nResultCode == 0) {
-                        isTokenInit = true
-                        visorToken = strToken
-                        setDVToken(ctx, visorToken)
-                        listener?.onSuccessInitToken(token = strToken)
-                    } else {
-                        listener?.onFailedInitToken(error = "failed to init visor token code : $nResultCode")
-                    }
+            val ctx = context.applicationContext
+            val customUserDimension = mapOf(KEY_USER_ID to userId.sha256())
+            getVisorInstance(ctx).initToken(VisorObject.Key.APP_KEY, VisorObject.Key.APP_SECRET, customUserDimension) { strToken, nResultCode ->
+                if (nResultCode == 0) {
+                    visorToken = strToken
+                    setDVToken(ctx, visorToken)
+                    listener?.onSuccessInitToken(token = strToken)
+                } else {
+                    listener?.onFailedInitToken(error = "failed to init visor token code : $nResultCode")
                 }
-            } else {
-                listener?.onSuccessInitToken(visorToken)
             }
         }
 

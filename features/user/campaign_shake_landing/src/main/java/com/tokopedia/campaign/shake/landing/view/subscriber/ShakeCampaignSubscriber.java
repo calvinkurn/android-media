@@ -41,13 +41,18 @@ public class ShakeCampaignSubscriber extends Subscriber<GraphqlResponse> {
 
     @Override
     public void onCompleted() {
+        if(view == null) {
+            return;
+        }
         view.finish();
     }
 
     @Override
     public void onError(Throwable e) {
         CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
-
+        if(view == null) {
+            return;
+        }
         if (e instanceof UnknownHostException || e instanceof ConnectException) {
             view.showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
         } else if (e instanceof SocketTimeoutException) {
@@ -76,7 +81,9 @@ public class ShakeCampaignSubscriber extends Subscriber<GraphqlResponse> {
 
     @Override
     public void onNext(GraphqlResponse graphqlResponse) {
-
+        if (view == null) {
+            return;
+        }
         if (graphqlResponse.getError(CampaignGqlResponse.class) != null
                 && graphqlResponse.getError(CampaignGqlResponse.class).size() > 0) {
             CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");

@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital.home.R
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductBannerBinding
 import com.tokopedia.digital.home.model.RechargeHomepageProductBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
@@ -13,8 +14,6 @@ import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMappe
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.*
-import kotlinx.android.synthetic.main.view_recharge_home_card_image.view.*
-import kotlinx.android.synthetic.main.view_recharge_home_product_banner.view.*
 
 /**
  * @author by resakemal on 15/06/20.
@@ -31,26 +30,31 @@ class RechargeHomepageProductBannerViewHolder(
     }
 
     override fun bind(element: RechargeHomepageProductBannerModel) {
+        val bind = ViewRechargeHomeProductBannerBinding.bind(itemView)
         val section = element.section
         if (section.items.isNotEmpty()) {
-            setBackground(section)
-            setHeader(element.channelModel, element.visitableId())
-            setProduct(section)
+            setBackground(bind,section)
+            setHeader(bind,element.channelModel, element.visitableId())
+            setProduct(bind,section)
 
-            itemView.view_recharge_home_product_banner_shimmering.hide()
-            itemView.view_recharge_home_product_banner_layout.show()
+            
+            bind.viewRechargeHomeProductBannerShimmering.root.hide()
+            bind.viewRechargeHomeProductBannerLayout.show()
         } else {
-            itemView.view_recharge_home_product_banner_shimmering.show()
-            itemView.view_recharge_home_product_banner_layout.hide()
+            bind.viewRechargeHomeProductBannerShimmering.root.show()
+            bind.viewRechargeHomeProductBannerLayout.hide()
 
             listener.loadRechargeSectionData(element.visitableId())
         }
     }
 
-    private fun setHeader(channel: ChannelModel?,
-                          sectionId: String) {
+    private fun setHeader(
+        bind: ViewRechargeHomeProductBannerBinding,
+        channel: ChannelModel?,
+        sectionId: String
+    ) {
         RechargeHomepageSectionMapper.setDynamicHeaderViewChannel(
-                itemView.view_recharge_home_product_banner_header, channel,
+                bind.viewRechargeHomeProductBannerHeader, channel,
                 object : HeaderListener {
                     override fun onSeeAllClick(link: String) {
 
@@ -63,73 +67,89 @@ class RechargeHomepageProductBannerViewHolder(
         )
     }
 
-    private fun setBackground(section: RechargeHomepageSections.Section) {
+    private fun setBackground(
+        bind: ViewRechargeHomeProductBannerBinding,
+        section: RechargeHomepageSections.Section
+    ) {
         try {
-            itemView.view_recharge_home_product_banner_background.setBackgroundColor(Color.parseColor(section.label1))
+            bind.viewRechargeHomeProductBannerBackground.setBackgroundColor(Color.parseColor(section.label1))
         } catch (e: Throwable) {
             /* do nothing */
         }
     }
 
-    private fun setProduct(section: RechargeHomepageSections.Section) {
+    private fun setProduct(
+        bind: ViewRechargeHomeProductBannerBinding,
+        section: RechargeHomepageSections.Section
+    ) {
         section.items.firstOrNull()?.run {
-            setProductListener(section, this)
-            setProductName(title)
-            setProductDescription(subtitle)
-            setProductPrice(label3)
-            setProductSlashedPrice(label2)
-            setProductImage(mediaUrl)
-            setProductDiscountLabel(label1)
+            setProductListener(bind, section, this)
+            setProductName(bind, title)
+            setProductDescription(bind, subtitle)
+            setProductPrice(bind, label3)
+            setProductSlashedPrice(bind, label2)
+            setProductImage(bind, mediaUrl)
+            setProductDiscountLabel(bind, label1)
         }
     }
 
-    private fun setProductListener(section: RechargeHomepageSections.Section, item: RechargeHomepageSections.Item) {
-        with(itemView) {
-            btn_recharge_home_product_banner_buy.setOnClickListener {
+    private fun setProductListener(
+        bind: ViewRechargeHomeProductBannerBinding,
+        section: RechargeHomepageSections.Section,
+        item: RechargeHomepageSections.Item
+    ) {
+        with(bind) {
+            btnRechargeHomeProductBannerBuy.setOnClickListener {
                 listener.onRechargeSectionItemClicked(item)
             }
-            addOnImpressionListener(section) {
+           root.addOnImpressionListener(section) {
                 listener.onRechargeSectionItemImpression(section)
             }
-            iv_recharge_home_product_banner_close_button.setOnClickListener {
+            ivRechargeHomeProductBannerCloseButton.setOnClickListener {
                 listener.onRechargeProductBannerClosed(section)
             }
         }
     }
 
-    private fun setProductName(productName: String) {
-        itemView.tv_recharge_home_product_banner_name.displayTextOrHide(productName)
+    private fun setProductName(bind: ViewRechargeHomeProductBannerBinding, productName: String) {
+        bind.tvRechargeHomeProductBannerName.displayTextOrHide(productName)
     }
 
-    private fun setProductDescription(productDesc: String) {
-        itemView.tv_recharge_home_product_banner_desc.displayTextOrHide(productDesc)
+    private fun setProductDescription(
+        bind: ViewRechargeHomeProductBannerBinding,
+        productDesc: String
+    ) {
+        bind.tvRechargeHomeProductBannerDesc.displayTextOrHide(productDesc)
     }
 
-    private fun setProductPrice(price: String) {
-        itemView.tv_recharge_home_product_banner_price.displayTextOrHide(price)
+    private fun setProductPrice(bind: ViewRechargeHomeProductBannerBinding, price: String) {
+        bind.tvRechargeHomeProductBannerPrice.displayTextOrHide(price)
     }
 
-    private fun setProductSlashedPrice(slashedPrice: String) {
-        with(itemView) {
+    private fun setProductSlashedPrice(
+        bind: ViewRechargeHomeProductBannerBinding,
+        slashedPrice: String
+    ) {
+        with(bind) {
             if (slashedPrice.isEmpty()) {
-                tv_recharge_home_product_banner_slashed_price.hide()
+                tvRechargeHomeProductBannerSlashedPrice.hide()
             } else {
-                tv_recharge_home_product_banner_slashed_price.text = MethodChecker.fromHtml(slashedPrice)
-                tv_recharge_home_product_banner_slashed_price.show()
+                tvRechargeHomeProductBannerSlashedPrice.text = MethodChecker.fromHtml(slashedPrice)
+                tvRechargeHomeProductBannerSlashedPrice.show()
             }
         }
     }
 
-    private fun setProductImage(imageUrl: String) {
-        itemView.view_recharge_home_product_banner_image.card_image.loadImage(imageUrl)
+    private fun setProductImage(bind: ViewRechargeHomeProductBannerBinding, imageUrl: String) {
+        bind.viewRechargeHomeProductBannerImage.cardImage.loadImage(imageUrl)
     }
 
-    private fun setProductDiscountLabel(label: String) {
+    private fun setProductDiscountLabel(bind: ViewRechargeHomeProductBannerBinding, label: String) {
         if (label.isNotEmpty()) {
-            itemView.tv_recharge_home_product_banner_discount_label.show()
-            itemView.tv_recharge_home_product_banner_discount_label.setLabel(label)
+            bind.tvRechargeHomeProductBannerDiscountLabel.show()
+            bind.tvRechargeHomeProductBannerDiscountLabel.setLabel(label)
         } else {
-            itemView.tv_recharge_home_product_banner_discount_label.hide()
+            bind.tvRechargeHomeProductBannerDiscountLabel.hide()
         }
     }
 }

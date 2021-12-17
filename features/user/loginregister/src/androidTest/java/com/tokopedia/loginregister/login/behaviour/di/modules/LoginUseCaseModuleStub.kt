@@ -10,10 +10,8 @@ import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBann
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.login.behaviour.data.*
-import com.tokopedia.loginregister.login.data.CloudDiscoverDataSource
 import com.tokopedia.loginregister.login.di.LoginScope
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
-import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -21,6 +19,7 @@ import com.tokopedia.sessioncommon.domain.usecase.*
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Named
 
 /**
@@ -68,18 +67,6 @@ class LoginUseCaseModuleStub {
     @Provides
     @LoginScope
     fun provideUserSessionInterface(): UserSessionInterface = UserSessionStub()
-
-    @Provides
-    @LoginScope
-    fun provideGetFacebookCredentialUseCase(
-            stub: GetFacebookCredentialUseCaseStub
-    ): GetFacebookCredentialUseCase = stub
-
-    @LoginScope
-    @Provides
-    fun provideGetFacebookCredentialUseCaseStub(): GetFacebookCredentialUseCaseStub {
-        return GetFacebookCredentialUseCaseStub()
-    }
 
     @Provides
     @LoginScope
@@ -166,9 +153,11 @@ class LoginUseCaseModuleStub {
 
     @LoginScope
     @Provides
-    fun provideDiscoverUseCasStub(cloudDiscoverDataSource: CloudDiscoverDataSource
+    fun provideDiscoverUseCasStub(
+        graphqlRepository: GraphqlRepository,
+        coroutineDispatcher: CoroutineDispatcher
     ): DiscoverUseCaseStub {
-        return DiscoverUseCaseStub(cloudDiscoverDataSource)
+        return DiscoverUseCaseStub(graphqlRepository, coroutineDispatcher)
     }
 
     @Provides

@@ -1,5 +1,6 @@
 package com.tokopedia.logisticCommon.data.response
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class GetDistrictResponse(
@@ -19,10 +20,12 @@ data class KeroPlacesGetDistrict(
 )
 
 data class Data(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("city_id")
-        var cityId: Int = 0,
+        var cityId: Long = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("district_id")
-        var districtId: Int = 0,
+        var districtId: Long = 0,
         @SerializedName("district_name")
         var districtName: String = "",
         @SerializedName("formatted_address")
@@ -35,8 +38,9 @@ data class Data(
         var longitude: String = "",
         @SerializedName("postal_code")
         var postalCode: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("province_id")
-        var provinceId: Int = 0,
+        var provinceId: Long = 0,
         @SerializedName("title")
         var title: String = ""
 )

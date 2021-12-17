@@ -8,7 +8,7 @@ import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.view.adapter.factory.DateFilterAdapterFactory
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -17,11 +17,11 @@ import java.util.concurrent.TimeUnit
  */
 
 sealed class DateFilterItem(
-        open val label: String = "",
-        open val startDate: Date? = null,
-        open val endDate: Date? = null,
-        open var isSelected: Boolean = false,
-        open val type: Int
+    open val label: String = "",
+    open val startDate: Date? = null,
+    open val endDate: Date? = null,
+    open var isSelected: Boolean = false,
+    open val type: Int
 ) : Visitable<DateFilterAdapterFactory>, Parcelable {
 
     companion object {
@@ -33,6 +33,8 @@ sealed class DateFilterItem(
         const val TYPE_PER_MONTH = 5
         const val TYPE_BUTTON = 6
         const val TYPE_DIVIDER = 7
+        const val TYPE_CUSTOM = 8
+        const val TYPE_CUSTOM_SAME_MONTH = 9
     }
 
     fun getHeaderSubTitle(context: Context): String {
@@ -40,7 +42,9 @@ sealed class DateFilterItem(
             TYPE_TODAY -> {
                 val startDateMillis = startDate?.time ?: return ""
                 val dateStr = DateTimeUtil.format(startDateMillis, "dd MMMM")
-                val hourStr = DateTimeUtil.format(System.currentTimeMillis().minus(TimeUnit.HOURS.toMillis(1)), "HH:00")
+                val hourStr = DateTimeUtil.format(
+                    System.currentTimeMillis().minus(TimeUnit.HOURS.toMillis(1)), "HH:00"
+                )
                 return context.getString(R.string.stc_today_fmt, dateStr, hourStr)
             }
             TYPE_LAST_7_DAYS -> {
@@ -73,6 +77,12 @@ sealed class DateFilterItem(
                 }
                 return context.getString(R.string.stc_per_month)
             }
+            TYPE_CUSTOM -> {
+                val mStartDate = startDate ?: return ""
+                val mEndDate = endDate ?: return ""
+                val dateRangeStr = DateFilterFormatUtil.getDateRangeStr(mStartDate, mEndDate)
+                return context.getString(R.string.stc_custom, dateRangeStr)
+            }
         }
         return ""
     }
@@ -88,12 +98,12 @@ sealed class DateFilterItem(
 
     @Parcelize
     data class Click(
-            override val label: String,
-            override val startDate: Date,
-            override val endDate: Date,
-            override var isSelected: Boolean = false,
-            override val type: Int,
-            val showBottomBorder: Boolean = true
+        override val label: String,
+        override val startDate: Date,
+        override val endDate: Date,
+        override var isSelected: Boolean = false,
+        override val type: Int,
+        val showBottomBorder: Boolean = true
     ) : DateFilterItem(label, startDate, endDate, isSelected, type) {
 
         override fun type(typeFactory: DateFilterAdapterFactory): Int {
@@ -103,13 +113,13 @@ sealed class DateFilterItem(
 
     @Parcelize
     data class Pick(
-            override val label: String,
-            override var startDate: Date? = null,
-            override var endDate: Date? = null,
-            override var isSelected: Boolean = false,
-            override val type: Int,
-            val calendarPickerMinDate: Date? = null,
-            val calendarPickerMaxDate: Date? = null
+        override val label: String,
+        override var startDate: Date? = null,
+        override var endDate: Date? = null,
+        override var isSelected: Boolean = false,
+        override val type: Int,
+        val calendarPickerMinDate: Date? = null,
+        val calendarPickerMaxDate: Date? = null
     ) : DateFilterItem(label, startDate, endDate, isSelected, type) {
 
         override fun type(typeFactory: DateFilterAdapterFactory): Int {
@@ -135,12 +145,12 @@ sealed class DateFilterItem(
 
     @Parcelize
     data class MonthPickerItem(
-            override val label: String,
-            override var startDate: Date? = null,
-            override var endDate: Date? = null,
-            override var isSelected: Boolean = false,
-            val monthPickerMinDate: Date? = null,
-            val monthPickerMaxDate: Date? = null
+        override val label: String,
+        override var startDate: Date? = null,
+        override var endDate: Date? = null,
+        override var isSelected: Boolean = false,
+        val monthPickerMinDate: Date? = null,
+        val monthPickerMaxDate: Date? = null
     ) : DateFilterItem(type = TYPE_PER_MONTH) {
 
         override fun type(typeFactory: DateFilterAdapterFactory): Int {

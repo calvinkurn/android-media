@@ -1,12 +1,17 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
+import com.tokopedia.broadcaster.mediator.LivePusherConfig
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
+import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
+import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
+import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -20,7 +25,7 @@ interface PlayBroadcastMapper {
 
     fun mapProductList(
             productsResponse: GetProductsByEtalaseResponse.GetProductListData,
-            isSelectedHandler: (Long) -> Boolean,
+            isSelectedHandler: (String) -> Boolean,
             isSelectableHandler: (Boolean) -> SelectableState
     ): List<ProductContentUiModel>
 
@@ -33,7 +38,10 @@ interface PlayBroadcastMapper {
             response: GetLiveFollowersResponse
     ): FollowerDataUiModel
 
-    fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia): LiveStreamInfoUiModel
+    fun mapLiveStream(
+        channelId: String,
+        media: CreateLiveStreamChannelResponse.GetMedia
+    ): LiveStreamInfoUiModel
 
     fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel>
 
@@ -70,4 +78,17 @@ interface PlayBroadcastMapper {
     fun mapInteractiveSession(response: PostInteractiveCreateSessionResponse,
                               title: String,
                               durationInMs: Long): InteractiveSessionUiModel
+
+    fun mapLiveInfo(
+        activeIngestUrl: String,
+        config: LivePusherConfig
+    ): PlayLiveLogState
+
+    fun mapPinnedMessage(
+        response: GetPinnedMessageResponse.Data
+    ): List<PinnedMessageUiModel>
+
+    fun mapPinnedMessageSocket(
+        response: PinnedMessageSocketResponse
+    ): PinnedMessageUiModel
 }

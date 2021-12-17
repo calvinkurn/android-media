@@ -10,13 +10,17 @@ import javax.inject.Inject
 
 class ProductMapper @Inject constructor() {
 
+    companion object {
+        private const val RATING_DIVISION = 20
+    }
+
     fun mapToUIModel(productList: List<Product>): List<ShowcaseProduct> {
         return productList.map {
             ShowcaseProduct(
                     productId = it.productId,
                     productName = it.productName,
                     productPrice = it.productPrice.value,
-                    ratingStarAvg = (it.productStatistic.rating/20).toFloat(),
+                    ratingStarAvg = (it.productStatistic.rating / RATING_DIVISION).toFloat(),
                     totalReview = it.productStatistic.totalReview,
                     productImageUrl = it.productImage.thumbnail,
                     isPo = it.productFlags.isPreorder,

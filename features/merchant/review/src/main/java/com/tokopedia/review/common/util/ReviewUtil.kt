@@ -19,10 +19,13 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 import kotlin.math.round
 
 object ReviewUtil {
+
+    const val ROUND_DECIMAL = 10
 
     fun setFilterJoinValueFormat(old: String, newValue: String = ""): String {
         return if (newValue.isNotEmpty()) {
@@ -35,16 +38,12 @@ object ReviewUtil {
         return data.indexOf(dateKeyword)
     }
 
-    fun convertMapObjectToString(map: HashMap<String, Any>): HashMap<String, String>? {
-        val newMap = HashMap<String, String>()
-        for ((key, value) in map) {
-            newMap[key] = value.toString()
-        }
-        return newMap
-    }
-
     fun DptoPx(context: Context, dp: Int): Float {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), context.resources.displayMetrics)
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp.toFloat(),
+            context.resources.displayMetrics
+        )
     }
 
     fun routeToWebview(context: Context, bottomSheet: BottomSheetUnify?, url: String): Boolean {
@@ -53,51 +52,45 @@ object ReviewUtil {
         return RouteManager.route(context, webviewUrl)
     }
 
-    fun formatReviewExpand(context: Context, review: String, maxChar: Int, allowClick: Boolean): Pair<CharSequence?, Boolean> {
+    fun formatReviewExpand(
+        context: Context,
+        review: String,
+        maxChar: Int,
+        allowClick: Boolean
+    ): Pair<CharSequence?, Boolean> {
         val formattedText = HtmlLinkHelper(context, review).spannedString ?: ""
         return if (formattedText.length > maxChar) {
             val subDescription = formattedText.substring(0, maxChar)
-            Pair(HtmlLinkHelper(context, subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... " + context
-                    .getString(R.string.review_expand)).spannedString, allowClick)
+            Pair(
+                HtmlLinkHelper(
+                    context,
+                    subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... " + context
+                        .getString(R.string.review_expand)
+                ).spannedString, allowClick
+            )
         } else {
             Pair(formattedText, !allowClick)
         }
     }
 
     fun formatReviewCollapse(context: Context, review: String): CharSequence? {
-        val formattedText = HtmlLinkHelper(context, review).spannedString ?: ""
-        return HtmlLinkHelper(context, formattedText.replace("(\r\n|\n)".toRegex(), "<br />") + "<br />" + context.getString(R.string.review_reading_collapse)).spannedString
-    }
-}
-
-fun getReviewStar(ratingCount: Int): Int {
-    return when (ratingCount) {
-        ReviewConstants.RATING_ONE -> {
-            R.drawable.review_ic_rating_star_one
-        }
-        ReviewConstants.RATING_TWO -> {
-            R.drawable.review_ic_rating_star_two
-        }
-        ReviewConstants.RATING_THREE -> {
-            R.drawable.review_ic_rating_star_three
-        }
-        ReviewConstants.RATING_FOUR -> {
-            R.drawable.review_ic_rating_star_four
-        }
-        ReviewConstants.RATING_FIVE -> {
-            R.drawable.review_ic_rating_star_five
-        }
-        else -> {
-            R.drawable.review_ic_rating_star_zero
-        }
+        return HtmlLinkHelper(
+            context,
+            review.replace(
+                "(\r\n|\n)".toRegex(),
+                "<br />"
+            ) + "<br />" + context.getString(R.string.review_reading_collapse)
+        ).spannedString
     }
 }
 
 fun String.toReviewDescriptionFormatted(maxChar: Int, context: Context): CharSequence? {
     return if (MethodChecker.fromHtml(this).toString().length > maxChar) {
         val subDescription = MethodChecker.fromHtml(this).toString().substring(0, maxChar)
-        HtmlLinkHelper(context, subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
-                + context.getString(R.string.review_expand)).spannedString
+        HtmlLinkHelper(
+            context, subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
+                    + context.getString(R.string.review_expand)
+        ).spannedString
     } else {
         MethodChecker.fromHtml(this)
     }
@@ -165,7 +158,9 @@ val String.isUnAnswered: Boolean
     }
 
 fun Float?.roundDecimal(): String {
-    val rounded = this?.times(10)?.let { round(it) }?.div(10).toString()
+    val rounded =
+        this?.times(ReviewUtil.ROUND_DECIMAL)?.let { round(it) }?.div(ReviewUtil.ROUND_DECIMAL)
+            .toString()
     return rounded.isDecimalLengthOne()
 }
 

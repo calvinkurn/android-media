@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class ProductVariant(
         @SerializedName("variantID")
         @Expose
-        val variantId: Int = 0,
+        val variantId: String = "0",
         @SerializedName("variantName")
         @Expose
         val variantName: String = ""

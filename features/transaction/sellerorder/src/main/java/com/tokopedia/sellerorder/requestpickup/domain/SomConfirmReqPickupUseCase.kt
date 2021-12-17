@@ -4,9 +4,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.requestpickup.data.model.SomConfirmReqPickup
 import com.tokopedia.sellerorder.requestpickup.data.model.SomConfirmReqPickupParam
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -14,17 +11,14 @@ import javax.inject.Inject
  */
 class SomConfirmReqPickupUseCase @Inject constructor(private val useCase: GraphqlUseCase<SomConfirmReqPickup.Data>) {
 
-    suspend fun execute(query: String, param: SomConfirmReqPickupParam): Result<SomConfirmReqPickup.Data> {
-        useCase.setGraphqlQuery(query)
+    init {
         useCase.setTypeClass(SomConfirmReqPickup.Data::class.java)
-        useCase.setRequestParams(generateParam(param))
+    }
 
-        return try {
-            val confirmReqPickup = useCase.executeOnBackground()
-            Success(confirmReqPickup)
-        } catch (throwable: Throwable) {
-            Fail(throwable)
-        }
+    suspend fun execute(query: String, param: SomConfirmReqPickupParam): SomConfirmReqPickup.Data {
+        useCase.setGraphqlQuery(query)
+        useCase.setRequestParams(generateParam(param))
+        return useCase.executeOnBackground()
     }
 
     private fun generateParam(param: SomConfirmReqPickupParam): Map<String, Any?> {

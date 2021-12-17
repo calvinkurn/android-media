@@ -41,7 +41,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         , BaseChatActivityListener
         , AttachmentMenu.AttachmentMenuListener {
 
-    open lateinit var viewState: BaseChatViewState
+    open var viewState: BaseChatViewState? = null
 
     protected var messageId: String = ""
     protected var opponentId = ""
@@ -112,9 +112,9 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         }
     }
 
-    override fun onImageAnnouncementClicked(viewModel: ImageAnnouncementViewModel) {
-        if (!TextUtils.isEmpty(viewModel.redirectUrl)) {
-            onGoToWebView(viewModel.redirectUrl, viewModel.attachmentId)
+    override fun onImageAnnouncementClicked(uiModel: ImageAnnouncementUiModel) {
+        if (!TextUtils.isEmpty(uiModel.redirectUrl)) {
+            onGoToWebView(uiModel.redirectUrl, uiModel.attachmentId)
         }
     }
 
@@ -161,7 +161,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun handleBranchIOLinkClick(url: String) {
         if (!GlobalConfig.isSellerApp()) {
-            val intent = RouteManager.getIntent(activity, ApplinkConst.CONSUMER_SPLASH_SCREEN)
+            val intent = RouteManager.getSplashScreenIntent(activity)
             intent.putExtra("branch", url)
             intent.putExtra("branch_force_new_session", true)
             startActivity(intent)
@@ -180,7 +180,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         return uri.host != null && uri.host == BRANCH_IO_HOST
     }
 
-    override fun onProductClicked(element: ProductAttachmentViewModel) {
+    override fun onProductClicked(element: ProductAttachmentUiModel) {
         val ROLE_SHOP = "shop"
 
         if (!GlobalConfig.isSellerApp() || opponentRole != ROLE_SHOP) {
@@ -197,32 +197,32 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         }
     }
 
-    override fun onRetrySendImage(element: ImageUploadViewModel) {
+    override fun onRetrySendImage(element: ImageUploadUiModel) {
 
     }
 
     override fun onReceiveStartTypingEvent() {
-        viewState.onShowStartTyping()
+        viewState?.onShowStartTyping()
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
-        viewState.removeDummyIfExist(visitable)
-        viewState.onReceiveMessageEvent(visitable)
+        viewState?.removeDummyIfExist(visitable)
+        viewState?.onReceiveMessageEvent(visitable)
     }
 
     override fun onReceiveStopTypingEvent() {
-        viewState.onShowStopTyping()
+        viewState?.onShowStopTyping()
     }
 
     override fun onReceiveReadEvent() {
-        viewState.onReceiveRead()
+        viewState?.onReceiveRead()
     }
 
-    override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
+    override fun onClickBuyFromProductAttachment(element: ProductAttachmentUiModel) {
         //Please override if you use
     }
 
-    override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
+    override fun onClickATCFromProductAttachment(element: ProductAttachmentUiModel) {
         //Please override if you use
     }
 
@@ -236,12 +236,12 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun onDestroy() {
         super.onDestroy()
-        viewState.clear()
+        viewState?.clear()
     }
 
     override fun onBackPressed(): Boolean {
-        if (viewState.isAttachmentMenuVisible()) {
-            viewState.hideAttachmentMenu()
+        if (viewState?.isAttachmentMenuVisible() == true) {
+            viewState?.hideAttachmentMenu()
             return true
         }
         return false
@@ -259,17 +259,17 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun onClickAttachVoucher(voucherMenu: VoucherMenu) {}
 
-    override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {}
+    override fun onClickBannedProduct(uiModel: BannedProductAttachmentUiModel) {}
 
-    override fun trackSeenProduct(element: ProductAttachmentViewModel) {}
+    override fun trackSeenProduct(element: ProductAttachmentUiModel) {}
 
-    override fun trackSeenBannedProduct(viewModel: BannedProductAttachmentViewModel) {}
+    override fun trackSeenBannedProduct(uiModel: BannedProductAttachmentUiModel) {}
 
-    override fun onClickAddToWishList(product: ProductAttachmentViewModel, success: () -> Unit) {}
+    override fun onClickAddToWishList(product: ProductAttachmentUiModel, success: () -> Unit) {}
 
     override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) {}
 
-    override fun trackClickProductThumbnail(product: ProductAttachmentViewModel) {}
+    override fun trackClickProductThumbnail(product: ProductAttachmentUiModel) {}
 
     override fun onItemClicked(t: Visitable<*>?) {}
 }

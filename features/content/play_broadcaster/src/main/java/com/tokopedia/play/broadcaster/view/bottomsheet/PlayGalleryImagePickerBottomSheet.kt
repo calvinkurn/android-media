@@ -258,9 +258,8 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
     }
 
     private fun onAlbumLoaded(loadedAlbumItem: AlbumItem?) {
-        val albumItem = loadedAlbumItem?.let {
-            it
-        } ?: AlbumItem(AlbumItem.ALBUM_ID_ALL, null, null, 0)
+        val albumItem = loadedAlbumItem ?:
+                AlbumItem(AlbumItem.ALBUM_ID_ALL, null, null, 0)
         if (albumItem.isAll) {
             albumItem.addCaptureCount()
         }

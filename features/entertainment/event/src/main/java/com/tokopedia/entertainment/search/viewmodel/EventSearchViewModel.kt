@@ -29,7 +29,6 @@ class EventSearchViewModel @Inject constructor(private val dispatcher: Coroutine
         private val SEARCHQUERY = "search_query"
     }
 
-    lateinit var resources: Resources
     lateinit var job: Job
 
     val searchList: MutableLiveData<List<SearchEventItem<*>>> by lazy { MutableLiveData<List<SearchEventItem<*>>>() }
@@ -66,13 +65,15 @@ class EventSearchViewModel @Inject constructor(private val dispatcher: Coroutine
                 block = {
                     val dataLocation = getLocationSuggestionData(text, cacheType,query)
                     dataLocation.let {
-                        searchList.value = SearchMapper.mappingLocationandKegiatantoSearchList(it,text,resources)
+                        searchList.value = SearchMapper.mappingLocationandKegiatantoSearchList(it,text)
                         isItRefreshing.value = false
                     }
                 },
                 onError = {
-                        errorReport.value = it
-                        isItRefreshing.value = false
+                        if (it !is CancellationException){
+                            errorReport.value = it
+                            isItRefreshing.value = false
+                        }
                 }
         )
     }
@@ -88,7 +89,7 @@ class EventSearchViewModel @Inject constructor(private val dispatcher: Coroutine
                     EventSearchLocationResponse.Data::class.java, mapOf(SEARCHQUERY to text)
             )
             val cacheStrategy = GraphqlCacheStrategy.Builder(cacheType).build()
-            gqlRepository.getReseponse(listOf(req), cacheStrategy).getSuccessData<EventSearchLocationResponse.Data>()
+            gqlRepository.response(listOf(req), cacheStrategy).getSuccessData<EventSearchLocationResponse.Data>()
         }
     }
 
@@ -98,7 +99,7 @@ class EventSearchViewModel @Inject constructor(private val dispatcher: Coroutine
                     query,
                     EventSearchHistoryResponse.Data::class.java)
             val cacheStrategy = GraphqlCacheStrategy.Builder(cacheType).build()
-            gqlRepository.getReseponse(listOf(req), cacheStrategy).getSuccessData<EventSearchHistoryResponse.Data>()
+            gqlRepository.response(listOf(req), cacheStrategy).getSuccessData<EventSearchHistoryResponse.Data>()
         }
     }
 

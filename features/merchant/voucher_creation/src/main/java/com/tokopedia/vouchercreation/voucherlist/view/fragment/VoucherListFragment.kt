@@ -70,10 +70,7 @@ import com.tokopedia.vouchercreation.voucherlist.view.adapter.VoucherListAdapter
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
-import com.tokopedia.vouchercreation.voucherlist.view.widget.CancelVoucherDialog
-import com.tokopedia.vouchercreation.voucherlist.view.widget.EditQuotaBottomSheet
-import com.tokopedia.vouchercreation.voucherlist.view.widget.MoreMenuBottomSheet
-import com.tokopedia.vouchercreation.voucherlist.view.widget.SuccessCreateBottomSheet
+import com.tokopedia.vouchercreation.voucherlist.view.widget.*
 import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBy
 import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
@@ -89,14 +86,16 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 17/04/20
  */
 
-class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherListAdapterFactoryImpl>(),
-        VoucherViewHolder.Listener, DownloadHelper.DownloadHelperListener {
+class VoucherListFragment :
+    BaseListFragment<BaseVoucherListUiModel, VoucherListAdapterFactoryImpl>(),
+    VoucherViewHolder.Listener, DownloadHelper.DownloadHelperListener {
 
     companion object {
         const val KEY_IS_ACTIVE_VOUCHER = "is_active_voucher"
         private val MENU_VOUCHER_ACTIVE_ID = R.id.menuMvcShowVoucherActive
         private val MENU_VOUCHER_HISTORY_ID = R.id.menuMvcShowVoucherHistory
 
+        const val INVALID_VOUCHER_ID = 0
         const val IS_SUCCESS_VOUCHER = "is_success"
         const val IS_UPDATE_VOUCHER = "is_update"
         const val VOUCHER_ID_KEY = "voucher_id"
@@ -164,7 +163,11 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     private var isInverted: Boolean = false
     private var isSortApplied: Boolean = false
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_mvc_voucher_list, container, false)
     }
 
@@ -174,13 +177,15 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         setHasOptionsMenu(true)
 
         // will return current time by default
-        val voucherListFirstTimeVisit = SharedPreferencesUtil.getVoucherListFirstTimeVisit(requireActivity())
+        val voucherListFirstTimeVisit =
+            SharedPreferencesUtil.getVoucherListFirstTimeVisit(requireActivity())
 
         // to determine if the ticker was ever closed by the user
         val isBcTickerClosed = SharedPreferencesUtil.isBcTickerClosed(requireActivity())
         if (!isBcTickerClosed) {
             // will return true by default
-            val isVoucherListFirstTimeVisit = SharedPreferencesUtil.isVoucherListFirstTimeVisit(requireActivity())
+            val isVoucherListFirstTimeVisit =
+                SharedPreferencesUtil.isVoucherListFirstTimeVisit(requireActivity())
             if (isVoucherListFirstTimeVisit) {
                 // update the first time visit state
                 SharedPreferencesUtil.setIsVoucherListFirstTimeVisit(requireActivity(), false)
@@ -188,35 +193,30 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                 SharedPreferencesUtil.setVoucherListFirstTimeVisit(requireActivity(), Date())
             } else {
                 // check if the broadcast chat ticker duration is not over
-                val isBroadCastChatTickerExpired = mViewModel.isBroadCastChatTickerExpired(voucherListFirstTimeVisit)
+                val isBroadCastChatTickerExpired =
+                    mViewModel.isBroadCastChatTickerExpired(voucherListFirstTimeVisit)
                 // show the broadcast chat ticker if the period is not expired
                 mViewModel.setShowBroadCastChatTicker(!isBroadCastChatTickerExpired)
             }
         } else mViewModel.setShowBroadCastChatTicker(false)
-
-        if (successVoucherId != 0 && isNeedToShowSuccessDialog) {
-            showSuccessCreateBottomSheet(successVoucherId)
-        } else if (isNeedToShowSuccessUpdateDialog) {
-            showSuccessUpdateToaster()
-        }
-
         VoucherCreationTracking.sendOpenScreenTracking(
-                if (isActiveVoucher) {
-                    VoucherCreationAnalyticConstant.ScreenName.VoucherList.ACTIVE
-                } else {
-                    VoucherCreationAnalyticConstant.ScreenName.VoucherList.HISTORY
-                },
-                userSession.isLoggedIn,
-                userSession.userId)
+            if (isActiveVoucher) {
+                VoucherCreationAnalyticConstant.ScreenName.VoucherList.ACTIVE
+            } else {
+                VoucherCreationAnalyticConstant.ScreenName.VoucherList.HISTORY
+            },
+            userSession.isLoggedIn,
+            userSession.userId
+        )
 
         setupView()
         observeLiveData()
     }
 
-    private fun setupShareBottomSheet(status: Int = 0, quota: Int = 0): ShareVoucherBottomSheet {
+    private fun setupShareBottomSheet(status: Int = 0, promo: Int = 0): ShareVoucherBottomSheet {
         val shareVoucherBottomSheet = ShareVoucherBottomSheet.createInstance()
         shareVoucherBottomSheet.setBroadCastChatStatus(status)
-        shareVoucherBottomSheet.setBroadCastChatQuota(quota)
+        shareVoucherBottomSheet.setBroadCastChatPromo(promo)
         return shareVoucherBottomSheet
     }
 
@@ -232,13 +232,17 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         } else {
             menu.removeItem(MENU_VOUCHER_HISTORY_ID)
         }
+
+        // limit create voucher access
+        menu.findItem(R.id.menuMvcAddVoucher)?.isVisible = mViewModel.isEligibleToCreateVoucher
+
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<BaseVoucherListUiModel, VoucherListAdapterFactoryImpl> =
-            VoucherListAdapter(adapterTypeFactory).apply {
-                setOnAdapterInteractionListener(this@VoucherListFragment)
-            }
+        VoucherListAdapter(adapterTypeFactory).apply {
+            setOnAdapterInteractionListener(this@VoucherListFragment)
+        }
 
     override fun getRecyclerViewResourceId(): Int = R.id.rvVoucherList
 
@@ -257,9 +261,9 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
 
     override fun initInjector() {
         DaggerVoucherCreationComponent.builder()
-                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
     }
 
     override fun hasInitialSwipeRefresh(): Boolean = true
@@ -269,6 +273,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     }
 
     override fun loadData(page: Int) {
+        mViewModel.currentPage = page
         if (!isToolbarAlreadyLoaded) {
             view?.run {
                 searchBarMvc.isVisible = false
@@ -276,49 +281,47 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
             }
             renderList(listOf(LoadingStateUiModel(isActiveVoucher)))
         }
-        if (isActiveVoucher) {
-            mViewModel.getActiveVoucherList(shopBasicData == null)
-        } else {
-            mViewModel.getVoucherListHistory(voucherType, voucherTarget, voucherSort, page, isInverted)
-        }
         mViewModel.getBroadCastMetaData()
+        mViewModel.getCreateVoucherEligibility()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
                 VoucherCreationTracking.sendVoucherListClickTracking(
-                        action = Click.BACK_BUTTON,
-                        isActive = isActiveVoucher,
-                        userId = userSession.userId
+                    action = Click.BACK_BUTTON,
+                    isActive = isActiveVoucher,
+                    userId = userSession.userId
                 )
                 activity?.onBackPressed()
             }
             R.id.menuMvcShowVoucherActive -> {
                 VoucherCreationTracking.sendVoucherListClickTracking(
-                        action = Click.HISTORY_BUTTON,
-                        isActive = isActiveVoucher,
-                        userId = userSession.userId
+                    action = Click.HISTORY_BUTTON,
+                    isActive = isActiveVoucher,
+                    userId = userSession.userId
                 )
                 fragmentListener?.switchFragment(true)
             }
             R.id.menuMvcShowVoucherHistory -> {
                 VoucherCreationTracking.sendVoucherListClickTracking(
-                        action = Click.HISTORY_BUTTON,
-                        isActive = isActiveVoucher,
-                        userId = userSession.userId
+                    action = Click.HISTORY_BUTTON,
+                    isActive = isActiveVoucher,
+                    userId = userSession.userId
                 )
                 fragmentListener?.switchFragment(false)
             }
             R.id.menuMvcAddVoucher -> {
                 VoucherCreationTracking.sendVoucherListClickTracking(
-                        action = Click.ADD_BUTTON,
-                        isActive = isActiveVoucher,
-                        userId = userSession.userId
+                    action = Click.ADD_BUTTON,
+                    isActive = isActiveVoucher,
+                    userId = userSession.userId
                 )
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER).apply {
-                    putExtra(CreateMerchantVoucherStepsActivity.FROM_VOUCHER_LIST, true)
-                }
+                val intent =
+                    RouteManager.getIntent(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
+                        .apply {
+                            putExtra(CreateMerchantVoucherStepsActivity.FROM_VOUCHER_LIST, true)
+                        }
                 startActivityForResult(intent, CreateMerchantVoucherStepsActivity.REQUEST_CODE)
             }
         }
@@ -327,22 +330,22 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
 
     override fun onMoreMenuClickListener(voucher: VoucherUiModel) {
         VoucherCreationTracking.sendVoucherListClickTracking(
-                action =
-                when (voucher.status) {
-                    VoucherStatusConst.ONGOING -> Click.BURGER_BUTTON_ONGOING
-                    VoucherStatusConst.NOT_STARTED -> Click.BURGER_BUTTON_UPCOMING
-                    VoucherStatusConst.ENDED -> Click.BURGER_BUTTON
-                    VoucherStatusConst.STOPPED -> Click.BURGER_BUTTON
-                    else -> ""
-                },
-                label =
-                when (voucher.status) {
-                    VoucherStatusConst.ENDED -> EventLabel.ENDED
-                    VoucherStatusConst.STOPPED -> EventLabel.CANCELLED
-                    else -> ""
-                },
-                isActive = isActiveVoucher,
-                userId = userSession.userId
+            action =
+            when (voucher.status) {
+                VoucherStatusConst.ONGOING -> Click.BURGER_BUTTON_ONGOING
+                VoucherStatusConst.NOT_STARTED -> Click.BURGER_BUTTON_UPCOMING
+                VoucherStatusConst.ENDED -> Click.BURGER_BUTTON
+                VoucherStatusConst.STOPPED -> Click.BURGER_BUTTON
+                else -> ""
+            },
+            label =
+            when (voucher.status) {
+                VoucherStatusConst.ENDED -> EventLabel.ENDED
+                VoucherStatusConst.STOPPED -> EventLabel.CANCELLED
+                else -> ""
+            },
+            isActive = isActiveVoucher,
+            userId = userSession.userId
         )
         activity?.run {
             KeyboardHandler.hideSoftKeyboard(this)
@@ -358,39 +361,48 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     override fun onVoucherClickListener(voucherId: Int) {
         context?.run {
             startActivity(
-                    VoucherDetailActivity.createDetailIntent(this)
-                            .putExtra(VoucherDetailActivity.VOUCHER_ID, voucherId))
+                VoucherDetailActivity.createDetailIntent(this)
+                    .putExtra(VoucherDetailActivity.VOUCHER_ID, voucherId)
+            )
         }
     }
 
     override fun onVoucherIconClickListener(status: Int) {
         VoucherCreationTracking.sendVoucherListClickTracking(
-                action = Click.VOUCHER_ICON,
-                label =
-                when (status) {
-                    VoucherStatusConst.ONGOING -> EventLabel.ONGOING
-                    VoucherStatusConst.NOT_STARTED -> EventLabel.UPCOMING
-                    else -> ""
-                },
-                isActive = isActiveVoucher,
-                userId = userSession.userId
+            action = Click.VOUCHER_ICON,
+            label =
+            when (status) {
+                VoucherStatusConst.ONGOING -> EventLabel.ONGOING
+                VoucherStatusConst.NOT_STARTED -> EventLabel.UPCOMING
+                else -> ""
+            },
+            isActive = isActiveVoucher,
+            userId = userSession.userId
         )
+    }
+
+    override fun onBroadCastClickListener(voucherId: Int) {
+        VoucherCreationTracking.sendBroadCastChatClickTracking(
+            category = VoucherCreationAnalyticConstant.EventCategory.VoucherList.PAGE,
+            shopId = userSession.shopId
+        )
+        SharingUtil.shareToBroadCastChat(requireContext(), voucherId)
     }
 
     override fun onShareClickListener(voucher: VoucherUiModel) {
         VoucherCreationTracking.sendVoucherListClickTracking(
-                action = Click.VOUCHER_SHARE,
-                isActive = isActiveVoucher,
-                userId = userSession.userId
+            action = Click.VOUCHER_SHARE,
+            isActive = isActiveVoucher,
+            userId = userSession.userId
         )
         showShareBottomSheet(voucher)
     }
 
     override fun onEditQuotaClickListener(voucher: VoucherUiModel) {
         VoucherCreationTracking.sendVoucherListClickTracking(
-                action = Click.CHANGE_QUOTA,
-                isActive = isActiveVoucher,
-                userId = userSession.userId
+            action = Click.CHANGE_QUOTA,
+            isActive = isActiveVoucher,
+            userId = userSession.userId
         )
         showEditQuotaBottomSheet(voucher)
     }
@@ -401,28 +413,28 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         when (menu) {
             is EditQuota -> {
                 moreMenuClickEventAction =
-                        if (isActiveVoucher) {
-                            when (voucher.status) {
-                                VoucherStatusConst.ONGOING -> Click.EDIT_QUOTA_ONGOING
-                                VoucherStatusConst.NOT_STARTED -> Click.EDIT_QUOTA_UPCOMING
-                                else -> null
-                            }
-                        } else {
-                            null
+                    if (isActiveVoucher) {
+                        when (voucher.status) {
+                            VoucherStatusConst.ONGOING -> Click.EDIT_QUOTA_ONGOING
+                            VoucherStatusConst.NOT_STARTED -> Click.EDIT_QUOTA_UPCOMING
+                            else -> null
                         }
+                    } else {
+                        null
+                    }
                 showEditQuotaBottomSheet(voucher)
             }
             is ViewDetail -> {
                 moreMenuClickEventAction =
-                        if (isActiveVoucher) {
-                            when (voucher.status) {
-                                VoucherStatusConst.ONGOING -> Click.DETAIL_AND_EDIT_ONGOING
-                                VoucherStatusConst.NOT_STARTED -> Click.DETAIL_AND_EDIT_UPCOMING
-                                else -> null
-                            }
-                        } else {
-                            Click.VOUCHER_DETAIL_BOTTOM_SHEET
+                    if (isActiveVoucher) {
+                        when (voucher.status) {
+                            VoucherStatusConst.ONGOING -> Click.DETAIL_AND_EDIT_ONGOING
+                            VoucherStatusConst.NOT_STARTED -> Click.DETAIL_AND_EDIT_UPCOMING
+                            else -> null
                         }
+                    } else {
+                        Click.VOUCHER_DETAIL_BOTTOM_SHEET
+                    }
                 viewVoucherDetail(voucher.id)
             }
             is ShareVoucher -> {
@@ -468,33 +480,33 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         }
         moreMenuClickEventAction?.let { eventAction ->
             VoucherCreationTracking.sendVoucherListClickTracking(
-                    action = eventAction,
-                    isActive = isActiveVoucher,
-                    userId = userSession.userId
+                action = eventAction,
+                isActive = isActiveVoucher,
+                userId = userSession.userId
             )
         }
     }
 
     override fun onDuplicateClickListener(voucher: VoucherUiModel) {
         VoucherCreationTracking.sendVoucherListClickTracking(
-                action = Click.DUPLICATE_VOUCHER,
-                label =
-                when (voucher.status) {
-                    VoucherStatusConst.ENDED -> EventLabel.ENDED
-                    VoucherStatusConst.STOPPED -> EventLabel.CANCELLED
-                    else -> ""
-                },
-                isActive = isActiveVoucher,
-                userId = userSession.userId
+            action = Click.DUPLICATE_VOUCHER,
+            label =
+            when (voucher.status) {
+                VoucherStatusConst.ENDED -> EventLabel.ENDED
+                VoucherStatusConst.STOPPED -> EventLabel.CANCELLED
+                else -> ""
+            },
+            isActive = isActiveVoucher,
+            userId = userSession.userId
         )
         duplicateVoucher(voucher)
     }
 
     override fun onErrorTryAgain() {
         VoucherCreationTracking.sendVoucherListClickTracking(
-                action = Click.TRY_AGAIN_ERROR_STATE,
-                isActive = isActiveVoucher,
-                userId = userSession.userId
+            action = Click.TRY_AGAIN_ERROR_STATE,
+            isActive = isActiveVoucher,
+            userId = userSession.userId
         )
         clearAllData()
         loadInitialData()
@@ -504,10 +516,19 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         view?.showDownloadActionTicker(true)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            permissionCheckerHelper.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
+            permissionCheckerHelper.onRequestPermissionsResult(
+                context,
+                requestCode,
+                permissions,
+                grantResults
+            )
         }
     }
 
@@ -516,27 +537,29 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
             when (resultCode) {
                 Activity.RESULT_CANCELED -> {
                     view?.run {
-                        val errorString = data?.getStringExtra(CreateMerchantVoucherStepsActivity.ERROR_INITIATE)
+                        val errorString =
+                            data?.getStringExtra(CreateMerchantVoucherStepsActivity.ERROR_INITIATE)
                         errorString?.let { message ->
                             val errorMessage =
-                                    if (message.isNotBlank()) {
-                                        message
-                                    } else {
-                                        context?.getString(R.string.mvc_general_error).toBlankOrString()
-                                    }
+                                if (message.isNotBlank()) {
+                                    message
+                                } else {
+                                    context?.getString(R.string.mvc_general_error).toBlankOrString()
+                                }
                             showErrorToaster(errorMessage)
                         }
                     }
                 }
                 Activity.RESULT_OK -> {
                     data?.getIntExtra(SUCCESS_VOUCHER_ID_KEY, 0)?.let { voucherId ->
-                        data.getBooleanExtra(UPDATE_VOUCHER_KEY, false).let { isNeedToShowUpdateDialog ->
-                            if (voucherId != 0) {
-                                showSuccessCreateBottomSheet(voucherId)
-                            } else if (isNeedToShowUpdateDialog) {
-                                showSuccessUpdateToaster()
+                        data.getBooleanExtra(UPDATE_VOUCHER_KEY, false)
+                            .let { isNeedToShowUpdateDialog ->
+                                if (voucherId != INVALID_VOUCHER_ID) {
+                                    showSuccessCreateBottomSheet(voucherId)
+                                } else if (isNeedToShowUpdateDialog) {
+                                    showSuccessUpdateToaster()
+                                }
                             }
-                        }
                     }
                 }
             }
@@ -548,23 +571,23 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         when (dataKey) {
             ErrorStateUiModel.DATA_KEY -> {
                 VoucherCreationTracking.sendVoucherListImpressionTracking(
-                        action = Impression.ERROR_STATE,
-                        isActive = isActiveVoucher,
-                        userId = userSession.userId
+                    action = Impression.ERROR_STATE,
+                    isActive = isActiveVoucher,
+                    userId = userSession.userId
                 )
             }
             NoResultStateUiModel.DATA_KEY -> {
                 VoucherCreationTracking.sendVoucherListImpressionTracking(
-                        action = Impression.NO_RESULT,
-                        isActive = isActiveVoucher,
-                        userId = userSession.userId
+                    action = Impression.NO_RESULT,
+                    isActive = isActiveVoucher,
+                    userId = userSession.userId
                 )
             }
             EmptyStateUiModel.DATA_KEY -> {
                 VoucherCreationTracking.sendVoucherListImpressionTracking(
-                        action = Impression.NO_RESULT,
-                        isActive = isActiveVoucher,
-                        userId = userSession.userId
+                    action = Impression.NO_RESULT,
+                    isActive = isActiveVoucher,
+                    userId = userSession.userId
                 )
             }
             else -> {
@@ -575,23 +598,25 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     override fun onPause() {
         super.onPause()
         childFragmentManager.dismissBottomSheetWithTags(
-                DownloadVoucherBottomSheet.TAG,
-                VoucherPeriodBottomSheet.TAG,
-                EditQuotaBottomSheet.TAG,
-                MoreMenuBottomSheet.TAG,
-                SuccessCreateBottomSheet.TAG,
-                FilterBottomSheet.TAG,
-                ShareVoucherBottomSheet.TAG,
-                SortBottomSheet.TAG
+            DownloadVoucherBottomSheet.TAG,
+            VoucherPeriodBottomSheet.TAG,
+            EditQuotaBottomSheet.TAG,
+            MoreMenuBottomSheet.TAG,
+            SuccessCreateBottomSheet.TAG,
+            FilterBottomSheet.TAG,
+            ShareVoucherBottomSheet.TAG,
+            SortBottomSheet.TAG
         )
     }
 
     private fun duplicateVoucher(voucher: VoucherUiModel) {
         activity?.let {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER).apply {
-                putExtra(CreateMerchantVoucherStepsActivity.DUPLICATE_VOUCHER, voucher)
-                putExtra(CreateMerchantVoucherStepsActivity.IS_DUPLICATE, true)
-            }
+            val intent =
+                RouteManager.getIntent(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
+                    .apply {
+                        putExtra(CreateMerchantVoucherStepsActivity.DUPLICATE_VOUCHER, voucher)
+                        putExtra(CreateMerchantVoucherStepsActivity.IS_DUPLICATE, true)
+                    }
             startActivityForResult(intent, CreateMerchantVoucherStepsActivity.REQUEST_CODE)
         }
     }
@@ -599,8 +624,9 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     private fun viewVoucherDetail(voucherId: Int) {
         activity?.let {
             startActivity(
-                    VoucherDetailActivity.createDetailIntent(it)
-                            .putExtra(VoucherDetailActivity.VOUCHER_ID, voucherId))
+                VoucherDetailActivity.createDetailIntent(it)
+                    .putExtra(VoucherDetailActivity.VOUCHER_ID, voucherId)
+            )
         }
     }
 
@@ -611,19 +637,19 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     private fun showEditPeriodBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
         VoucherPeriodBottomSheet.createInstance(voucher)
-                .setOnSuccessClickListener {
-                    onSuccessUpdateVoucherPeriod()
-                }
-                .setOnFailClickListener { message ->
-                    val errorMessage =
-                            if (message.isNotBlank()) {
-                                message
-                            } else {
-                                context?.getString(R.string.mvc_general_error).toBlankOrString()
-                            }
-                    view?.showErrorToaster(errorMessage)
-                }
-                .show(childFragmentManager)
+            .setOnSuccessClickListener {
+                onSuccessUpdateVoucherPeriod()
+            }
+            .setOnFailClickListener { message ->
+                val errorMessage =
+                    if (message.isNotBlank()) {
+                        message
+                    } else {
+                        context?.getString(R.string.mvc_general_error).toBlankOrString()
+                    }
+                view?.showErrorToaster(errorMessage)
+            }
+            .show(childFragmentManager)
     }
 
     private fun showShareBottomSheet(voucher: VoucherUiModel) {
@@ -631,11 +657,12 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         shareVoucherBottomSheet?.setOnItemClickListener { socmedType ->
             context?.run {
                 shopBasicData?.shareVoucher(
-                        context = this,
-                        socmedType = socmedType,
-                        voucher = voucher,
-                        userId = userSession.userId,
-                        shopId = userSession.shopId)
+                    context = this,
+                    socmedType = socmedType,
+                    voucher = voucher,
+                    userId = userSession.userId,
+                    shopId = userSession.shopId
+                )
             }
         }
         shareVoucherBottomSheet?.show(childFragmentManager)
@@ -643,77 +670,93 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
 
     private fun showDownloadBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
-        DownloadVoucherBottomSheet.createInstance(voucher.image, voucher.imageSquare, userSession.userId)
-                .setOnDownloadClickListener { voucherList ->
-                    context?.run {
-                        permissionCheckerHelper.checkPermission(this@VoucherListFragment,
-                                PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
-                                object : PermissionCheckerHelper.PermissionCheckListener {
-                                    override fun onPermissionDenied(permissionText: String) {
-                                        permissionCheckerHelper.onPermissionDenied(this@run, permissionText)
-                                        view?.let { Toaster.make(it, getString(R.string.mvc_storage_permission_enabled_needed), Toast.LENGTH_LONG) }
-                                    }
+        DownloadVoucherBottomSheet.createInstance(
+            voucher.image,
+            voucher.imageSquare,
+            userSession.userId
+        )
+            .setOnDownloadClickListener { voucherList ->
+                context?.run {
+                    permissionCheckerHelper.checkPermission(this@VoucherListFragment,
+                        PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
+                        object : PermissionCheckerHelper.PermissionCheckListener {
+                            override fun onPermissionDenied(permissionText: String) {
+                                permissionCheckerHelper.onPermissionDenied(this@run, permissionText)
+                                view?.let {
+                                    Toaster.make(
+                                        it,
+                                        getString(R.string.mvc_storage_permission_enabled_needed),
+                                        Toast.LENGTH_LONG
+                                    )
+                                }
+                            }
 
-                                    override fun onNeverAskAgain(permissionText: String) {
-                                        permissionCheckerHelper.onNeverAskAgain(this@run, permissionText)
-                                    }
+                            override fun onNeverAskAgain(permissionText: String) {
+                                permissionCheckerHelper.onNeverAskAgain(this@run, permissionText)
+                            }
 
-                                    override fun onPermissionGranted() {
-                                        if (ActivityCompat.checkSelfPermission(this@run, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                                            voucherList.forEach {
-                                                downloadFiles(it.downloadVoucherType.imageUrl)
-                                            }
-                                        }
+                            override fun onPermissionGranted() {
+                                if (ActivityCompat.checkSelfPermission(
+                                        this@run,
+                                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                                    ) == PackageManager.PERMISSION_GRANTED
+                                ) {
+                                    voucherList.forEach {
+                                        downloadFiles(it.downloadVoucherType.imageUrl)
                                     }
-                                })
-                    }
-                    VoucherCreationTracking.sendVoucherListClickTracking(
-                            action = Click.DOWNLOAD_VOUCHER,
-                            isActive = isActiveVoucher,
-                            userId = userSession.userId
-                    )
+                                }
+                            }
+                        })
                 }
-                .show(childFragmentManager)
+                VoucherCreationTracking.sendVoucherListClickTracking(
+                    action = Click.DOWNLOAD_VOUCHER,
+                    isActive = isActiveVoucher,
+                    userId = userSession.userId
+                )
+            }
+            .show(childFragmentManager)
     }
 
     private fun showStopVoucherDialog(voucher: VoucherUiModel) {
         StopVoucherDialog(context ?: return)
-                .setOnPrimaryClickListener {
-                    mViewModel.cancelVoucher(voucher.id, false)
-                }
-                .show(voucher)
+            .setOnPrimaryClickListener {
+                mViewModel.cancelVoucher(voucher.id, false)
+            }
+            .show(voucher)
     }
 
     private fun showCancelVoucherDialog(voucher: VoucherUiModel) {
         CancelVoucherDialog(context ?: return)
-                .setOnPrimaryClickListener {
-                    mViewModel.cancelVoucher(voucher.id, true)
-                }
-                .show(voucher)
+            .setOnPrimaryClickListener {
+                mViewModel.cancelVoucher(voucher.id, true)
+            }
+            .show(voucher)
     }
 
     private fun showEditQuotaBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
         EditQuotaBottomSheet.createInstance(voucher)
-                .setOnSuccessUpdateVoucher {
-                    loadInitialData()
-                    view?.run {
-                        Toaster.make(this,
-                                context?.getString(R.string.mvc_quota_success).toBlankOrString(),
-                                Toaster.LENGTH_LONG,
-                                Toaster.TYPE_NORMAL,
-                                context?.getString(R.string.mvc_oke).toBlankOrString())
-                    }
+            .setOnSuccessUpdateVoucher {
+                loadInitialData()
+                view?.run {
+                    Toaster.make(
+                        this,
+                        context?.getString(R.string.mvc_quota_success).toBlankOrString(),
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        context?.getString(R.string.mvc_oke).toBlankOrString()
+                    )
                 }
-                .setOnFailUpdateVoucher { message ->
-                    val errorMessage =
-                            if (message.isNotBlank()) {
-                                message
-                            } else {
-                                context?.getString(R.string.mvc_general_error).toBlankOrString()
-                            }
-                    view?.showErrorToaster(errorMessage)
-                }.show(childFragmentManager)
+            }
+            .setOnFailUpdateVoucher { message ->
+                val errorMessage =
+                    if (message.isNotBlank()) {
+                        message
+                    } else {
+                        context?.getString(R.string.mvc_general_error).toBlankOrString()
+                    }
+                view?.showErrorToaster(errorMessage)
+            }.show(childFragmentManager)
     }
 
     private fun setupView() = view?.run {
@@ -743,11 +786,11 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
 
     private fun showAppBarElevation(isShown: Boolean) = view?.run {
         dividerMvcList?.visibility =
-                if (isShown) {
-                    View.VISIBLE
-                } else {
-                    View.INVISIBLE
-                }
+            if (isShown) {
+                View.VISIBLE
+            } else {
+                View.INVISIBLE
+            }
     }
 
     private fun setupActionBar() = view?.run {
@@ -755,7 +798,10 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
             activity.setSupportActionBar(toolbarMvcList)
             activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-            val title = if (isActiveVoucher) context.getString(R.string.mvc_voucher_active) else context.getString(R.string.mvc_voucher_history)
+            val title =
+                if (isActiveVoucher) context.getString(R.string.mvc_voucher_active) else context.getString(
+                    R.string.mvc_voucher_history
+                )
             activity.supportActionBar?.title = title
         }
         showAppBarElevation(false)
@@ -766,9 +812,9 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
             searchBarTextField.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     VoucherCreationTracking.sendVoucherListClickTracking(
-                            action = Click.SEARCH_BAR,
-                            isActive = isActiveVoucher,
-                            userId = userSession.userId
+                        action = Click.SEARCH_BAR,
+                        isActive = isActiveVoucher,
+                        userId = userSession.userId
                     )
                 }
             }
@@ -804,7 +850,12 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
 
     private fun getMvcItemDecoration() = object : RecyclerView.ItemDecoration() {
 
-        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+        override fun getItemOffsets(
+            outRect: Rect,
+            view: View,
+            parent: RecyclerView,
+            state: RecyclerView.State
+        ) {
             super.getItemOffsets(outRect, view, parent, state)
             val position = parent.getChildAdapterPosition(view)
             if (position == 0) {
@@ -851,33 +902,33 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
             KeyboardHandler.hideSoftKeyboard(this)
         }
         VoucherCreationTracking.sendVoucherListClickTracking(
-                action = Click.SORT_BUTTON,
-                isActive = isActiveVoucher,
-                userId = userSession.userId
+            action = Click.SORT_BUTTON,
+            isActive = isActiveVoucher,
+            userId = userSession.userId
         )
         if (!isAdded) return
         sortBottomSheet
-                ?.setOnSortClickedListener {
-                    VoucherCreationTracking.sendVoucherListClickTracking(
-                            action = Click.APPLY,
-                            label =
-                            when (it?.key) {
-                                SortBy.NEWEST_DONE_DATE -> EventLabel.NEWEST
-                                SortBy.OLDEST_DONE_DATE -> EventLabel.OLDEST
-                                else -> ""
-                            },
-                            isActive = isActiveVoucher,
-                            userId = userSession.userId
-                    )
-                }
-                ?.setOnApplySortListener {
-                    applySort()
-                }
-                ?.setOnCancelApply { previousSortItems ->
-                    sortItems.clear()
-                    sortItems.addAll(previousSortItems)
-                }
-                ?.show(childFragmentManager, sortItems)
+            ?.setOnSortClickedListener {
+                VoucherCreationTracking.sendVoucherListClickTracking(
+                    action = Click.APPLY,
+                    label =
+                    when (it?.key) {
+                        SortBy.NEWEST_DONE_DATE -> EventLabel.NEWEST
+                        SortBy.OLDEST_DONE_DATE -> EventLabel.OLDEST
+                        else -> ""
+                    },
+                    isActive = isActiveVoucher,
+                    userId = userSession.userId
+                )
+            }
+            ?.setOnApplySortListener {
+                applySort()
+            }
+            ?.setOnCancelApply { previousSortItems ->
+                sortItems.clear()
+                sortItems.addAll(previousSortItems)
+            }
+            ?.show(childFragmentManager, sortItems)
     }
 
     private fun showFilterBottomSheet() {
@@ -885,34 +936,34 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
             KeyboardHandler.hideSoftKeyboard(this)
         }
         VoucherCreationTracking.sendVoucherListClickTracking(
-                action = Click.FILTER_BY_TYPE,
-                isActive = isActiveVoucher,
-                userId = userSession.userId
+            action = Click.FILTER_BY_TYPE,
+            isActive = isActiveVoucher,
+            userId = userSession.userId
         )
         if (!isAdded) return
         filterBottomSheet
-                ?.setOnItemClickListener { key ->
-                    VoucherCreationTracking.sendVoucherListClickTracking(
-                            action =
-                            when (key) {
-                                FilterBy.SPECIAL -> Click.FILTER_TYPE_PRIVATE
-                                FilterBy.PUBLIC -> Click.FILTER_TYPE_PUBLIC
-                                FilterBy.FREE_SHIPPING -> Click.FILTER_TYPE_SHIPPING
-                                FilterBy.CASHBACK -> Click.FILTER_TYPE_CASHBACK
-                                else -> ""
-                            },
-                            isActive = isActiveVoucher,
-                            userId = userSession.userId
-                    )
-                }
-                ?.setOnApplyClickListener {
-                    applyFilter()
-                }
-                ?.setCancelApplyFilter { previousFilterItems ->
-                    filterItems.clear()
-                    filterItems.addAll(previousFilterItems)
-                }
-                ?.show(childFragmentManager, filterItems)
+            ?.setOnItemClickListener { key ->
+                VoucherCreationTracking.sendVoucherListClickTracking(
+                    action =
+                    when (key) {
+                        FilterBy.SPECIAL -> Click.FILTER_TYPE_PRIVATE
+                        FilterBy.PUBLIC -> Click.FILTER_TYPE_PUBLIC
+                        FilterBy.FREE_SHIPPING -> Click.FILTER_TYPE_SHIPPING
+                        FilterBy.CASHBACK -> Click.FILTER_TYPE_CASHBACK
+                        else -> ""
+                    },
+                    isActive = isActiveVoucher,
+                    userId = userSession.userId
+                )
+            }
+            ?.setOnApplyClickListener {
+                applyFilter()
+            }
+            ?.setCancelApplyFilter { previousFilterItems ->
+                filterItems.clear()
+                filterItems.addAll(previousFilterItems)
+            }
+            ?.show(childFragmentManager, filterItems)
     }
 
     private fun applySort() {
@@ -938,7 +989,8 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     private fun applyFilter() {
         clearAllData()
 
-        val activeFilterList = filterItems.filterIsInstance<BaseFilterUiModel.FilterItem>().filter { it.isSelected }
+        val activeFilterList =
+            filterItems.filterIsInstance<BaseFilterUiModel.FilterItem>().filter { it.isSelected }
         val canResetFilter = activeFilterList.isNotEmpty()
         if (canResetFilter) {
             view?.headerChipMvc?.showResetButton()
@@ -950,26 +1002,27 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         voucherType = null
         activeFilterList.firstOrNull { it.key == FilterBy.CASHBACK || it.key == FilterBy.FREE_SHIPPING }?.key?.let { type ->
             voucherType =
-                    when (type) {
-                        FilterBy.FREE_SHIPPING -> VoucherTypeConst.FREE_ONGKIR
-                        FilterBy.CASHBACK -> VoucherTypeConst.CASHBACK
-                        else -> VoucherTypeConst.DISCOUNT
-                    }
+                when (type) {
+                    FilterBy.FREE_SHIPPING -> VoucherTypeConst.FREE_ONGKIR
+                    FilterBy.CASHBACK -> VoucherTypeConst.CASHBACK
+                    else -> VoucherTypeConst.DISCOUNT
+                }
         }
 
-        val voucherTargetFilter = activeFilterList.filter { it.key == FilterBy.PUBLIC || it.key == FilterBy.SPECIAL }
+        val voucherTargetFilter =
+            activeFilterList.filter { it.key == FilterBy.PUBLIC || it.key == FilterBy.SPECIAL }
         voucherTarget =
-                if (voucherTargetFilter.size in 1..2) {
-                    voucherTargetFilter.map {
-                        when (it.key) {
-                            FilterBy.PUBLIC -> VoucherTargetType.PUBLIC
-                            FilterBy.SPECIAL -> VoucherTargetType.PRIVATE
-                            else -> VoucherTargetType.PUBLIC
-                        }
+            if (voucherTargetFilter.size in 1..2) {
+                voucherTargetFilter.map {
+                    when (it.key) {
+                        FilterBy.PUBLIC -> VoucherTargetType.PUBLIC
+                        FilterBy.SPECIAL -> VoucherTargetType.PRIVATE
+                        else -> VoucherTargetType.PUBLIC
                     }
-                } else {
-                    null
                 }
+            } else {
+                null
+            }
 
         loadInitialData()
     }
@@ -995,7 +1048,8 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                 view?.run {
                     searchBarMvc.isVisible = !isActiveVoucher
                     headerChipMvc.isVisible = !isActiveVoucher
-                    mvcTickerBc.isVisible = isActiveVoucher && mViewModel.getShowBroadCastChatTicker()
+                    mvcTickerBc.isVisible =
+                        isActiveVoucher && mViewModel.getShowBroadCastChatTicker()
                     isToolbarAlreadyLoaded = true
                     setupSearchBar()
                 }
@@ -1011,17 +1065,23 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         MvcErrorHandler.logToCrashlytics(throwable, GET_VOUCHER_LIST_ERROR)
         // log error type to scalyr
         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        ServerLogger.log(Priority.P2, "MVC_VALIDATE_VOUCHER_TARGET_ERROR", mapOf("type" to errorMessage))
+        ServerLogger.log(
+            Priority.P2,
+            "MVC_VALIDATE_VOUCHER_TARGET_ERROR",
+            mapOf("type" to errorMessage)
+        )
     }
 
     private fun onSuccessUpdateVoucherPeriod() {
         loadInitialData()
         view?.run {
-            Toaster.make(this,
-                    context?.getString(R.string.mvc_success_update_period).toBlankOrString(),
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    context?.getString(R.string.mvc_oke).toBlankOrString())
+            Toaster.make(
+                this,
+                context?.getString(R.string.mvc_success_update_period).toBlankOrString(),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                context?.getString(R.string.mvc_oke).toBlankOrString()
+            )
         }
     }
 
@@ -1030,7 +1090,12 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
             (activity as? MvcPerformanceMonitoringListener)?.startRenderPerformanceMonitoring()
             when (it) {
                 is Success -> {
-                    setOnSuccessGetVoucherList(it.data)
+                    val showNewBroadCastExperience = RollenceUtil.getBroadCastVoucherRollenceValue()
+                    val voucherList = it.data
+                    voucherList.forEach { voucherUiModel ->
+                        voucherUiModel.showNewBc = showNewBroadCastExperience
+                    }
+                    setOnSuccessGetVoucherList(voucherList)
                     rvVoucherList?.setOnLayoutListenerReady()
                 }
                 is Fail -> setOnErrorGetVoucherList(it.throwable)
@@ -1048,13 +1113,20 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                 }
                 is Fail -> {
                     if (result.throwable is VoucherCancellationException) {
-                        showCancellationFailToaster(true, (result.throwable as? VoucherCancellationException)?.voucherId.toZeroIfNull())
+                        showCancellationFailToaster(
+                            true,
+                            (result.throwable as? VoucherCancellationException)?.voucherId.toZeroIfNull()
+                        )
                     }
                     // send crash report to firebase crashlytics
                     MvcErrorHandler.logToCrashlytics(result.throwable, CANCEL_VOUCHER_ERROR)
                     // log error type to scalyr
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                    ServerLogger.log(Priority.P2, "MVC_CANCEL_VOUCHER_ERROR", mapOf("type" to errorMessage))
+                    ServerLogger.log(
+                        Priority.P2,
+                        "MVC_CANCEL_VOUCHER_ERROR",
+                        mapOf("type" to errorMessage)
+                    )
                 }
             }
         })
@@ -1067,13 +1139,20 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                 }
                 is Fail -> {
                     if (result.throwable is VoucherCancellationException) {
-                        showCancellationFailToaster(false, (result.throwable as? VoucherCancellationException)?.voucherId.toZeroIfNull())
+                        showCancellationFailToaster(
+                            false,
+                            (result.throwable as? VoucherCancellationException)?.voucherId.toZeroIfNull()
+                        )
                     }
                     // send crash report to firebase crashlytics
                     MvcErrorHandler.logToCrashlytics(result.throwable, STOP_VOUCHER_ERROR)
                     // log error type to scalyr
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                    ServerLogger.log(Priority.P2, "MVC_STOP_VOUCHER_ERROR", mapOf("type" to errorMessage))
+                    ServerLogger.log(
+                        Priority.P2,
+                        "MVC_STOP_VOUCHER_ERROR",
+                        mapOf("type" to errorMessage)
+                    )
                 }
             }
         })
@@ -1085,7 +1164,11 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                     MvcErrorHandler.logToCrashlytics(result.throwable, GET_SHOP_BASIC_DATA_ERROR)
                     // log error type to scalyr
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                    ServerLogger.log(Priority.P2, "MVC_GET_SHOP_BASIC_DATA_ERROR", mapOf("type" to errorMessage))
+                    ServerLogger.log(
+                        Priority.P2,
+                        "MVC_GET_SHOP_BASIC_DATA_ERROR",
+                        mapOf("type" to errorMessage)
+                    )
                 }
             }
         })
@@ -1093,45 +1176,54 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
             when (result) {
                 is Success -> {
                     result.data.let { uiModel ->
-                        if (uiModel.isPublic) {
-                            view?.run {
-                                Toaster.make(this,
-                                        context?.getString(R.string.mvc_success_toaster).toBlankOrString(),
+                        val showNewBroadCastExperience =
+                            RollenceUtil.getBroadCastVoucherRollenceValue()
+                        if (showNewBroadCastExperience) {
+                            uiModel.isFreeIconVisible = mViewModel.isFreeBroadCastIconVisible()
+                            showBroadCastVoucherBottomSheet(uiModel)
+                        } else {
+                            if (uiModel.isPublic) {
+                                view?.run {
+                                    Toaster.make(this,
+                                        context?.getString(R.string.mvc_success_toaster)
+                                            .toBlankOrString(),
                                         Toaster.LENGTH_LONG,
                                         Toaster.TYPE_NORMAL,
                                         context?.getString(R.string.mvc_oke).toBlankOrString(),
                                         View.OnClickListener {})
-                            }
-                        } else {
-                            SuccessCreateBottomSheet.createInstance(uiModel)
+                                }
+                            } else {
+                                SuccessCreateBottomSheet.createInstance(uiModel)
                                     .setOnShareClickListener {
                                         VoucherCreationTracking.sendCreateVoucherClickTracking(
-                                                step = VoucherCreationStep.REVIEW,
-                                                action = Click.VOUCHER_SUCCESS_SHARE_NOW,
-                                                userId = userSession.userId
+                                            step = VoucherCreationStep.REVIEW,
+                                            action = Click.VOUCHER_SUCCESS_SHARE_NOW,
+                                            userId = userSession.userId
                                         )
                                         showShareBottomSheet(uiModel)
                                     }
                                     .setOnDownloadClickListener {
                                         VoucherCreationTracking.sendCreateVoucherClickTracking(
-                                                step = VoucherCreationStep.REVIEW,
-                                                action = Click.VOUCHER_SUCCESS_DOWNLOAD,
-                                                userId = userSession.userId
+                                            step = VoucherCreationStep.REVIEW,
+                                            action = Click.VOUCHER_SUCCESS_DOWNLOAD,
+                                            userId = userSession.userId
                                         )
                                         showDownloadBottomSheet(uiModel)
                                     }
                                     .apply {
                                         setCloseClickListener {
                                             VoucherCreationTracking.sendCreateVoucherClickTracking(
-                                                    step = VoucherCreationStep.REVIEW,
-                                                    action = Click.VOUCHER_SUCCESS_CLICK_BACK_BUTTON,
-                                                    userId = userSession.userId
+                                                step = VoucherCreationStep.REVIEW,
+                                                action = Click.VOUCHER_SUCCESS_CLICK_BACK_BUTTON,
+                                                userId = userSession.userId
                                             )
                                             dismiss()
                                         }
                                     }
                                     .show(childFragmentManager)
+                            }
                         }
+                        mViewModel.setIsSuccessDialogDisplayed(true)
                     }
                 }
                 is Fail -> {
@@ -1139,7 +1231,11 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                     MvcErrorHandler.logToCrashlytics(result.throwable, GET_VOUCHER_DETAIL_ERROR)
                     // log error type to scalyr
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                    ServerLogger.log(Priority.P2, "MVC_GET_VOUCHER_DETAIL_ERROR", mapOf("type" to errorMessage))
+                    ServerLogger.log(
+                        Priority.P2,
+                        "MVC_GET_VOUCHER_DETAIL_ERROR",
+                        mapOf("type" to errorMessage)
+                    )
                 }
             }
         })
@@ -1147,97 +1243,166 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
             shareVoucherBottomSheet = when (result) {
                 is Success -> {
                     val broadCastMetaData = result.data
+                    // determine the free broadcast icon on success bottom sheet
+                    mViewModel.setIsFreeBroadCastIconVisible(broadCastMetaData.promo)
                     setupShareBottomSheet(
-                            status = broadCastMetaData.status,
-                            quota = broadCastMetaData.quota
+                        status = broadCastMetaData.status,
+                        promo = broadCastMetaData.promo
                     )
                 }
                 is Fail -> {
                     setupShareBottomSheet()
                 }
             }
+
+            // execute get voucher detail use case to show the bottomsheets
+            if (successVoucherId != INVALID_VOUCHER_ID && isNeedToShowSuccessDialog && !mViewModel.isSuccessDialogDisplayed()) {
+                showSuccessCreateBottomSheet(successVoucherId)
+            } else if (isNeedToShowSuccessUpdateDialog) {
+                showSuccessUpdateToaster()
+            }
         })
+        mViewModel.createVoucherEligibility.observe(viewLifecycleOwner, { result ->
+            when(result) {
+                is Success -> {
+                    mViewModel.isEligibleToCreateVoucher = result.data.isCreateVoucherEligible
+                    this.activity?.invalidateOptionsMenu()
+                }
+                is Fail -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    view?.showErrorToaster(errorMessage)
+                }
+            }
+            // get voucher list data
+            if (isActiveVoucher) {
+                mViewModel.getActiveVoucherList(shopBasicData == null)
+            } else {
+                mViewModel.getVoucherListHistory(
+                    voucherType,
+                    voucherTarget,
+                    voucherSort,
+                    mViewModel.currentPage,
+                    isInverted
+                )
+            }
+        })
+    }
+
+    private fun showBroadCastVoucherBottomSheet(uiModel: VoucherUiModel) {
+        BroadCastVoucherBottomSheet.createInstance(uiModel)
+            .setOnShareClickListener {
+                VoucherCreationTracking.sendCreateVoucherClickTracking(
+                    step = VoucherCreationStep.REVIEW,
+                    action = Click.VOUCHER_SUCCESS_SHARE_NOW,
+                    userId = userSession.userId
+                )
+                showShareBottomSheet(uiModel)
+            }
+            .setOnBroadCastClickListener {
+                VoucherCreationTracking.sendBroadCastChatClickTracking(
+                    category = VoucherCreationAnalyticConstant.EventCategory.VoucherCreation.PAGE,
+                    shopId = userSession.shopId
+                )
+                SharingUtil.shareToBroadCastChat(requireContext(), uiModel.id)
+            }
+            .apply {
+                clearContentPadding = true
+                setCloseClickListener {
+                    VoucherCreationTracking.sendCreateVoucherClickTracking(
+                        step = VoucherCreationStep.REVIEW,
+                        action = Click.VOUCHER_SUCCESS_CLICK_BACK_BUTTON,
+                        userId = userSession.userId
+                    )
+                    dismiss()
+                }
+            }
+            .show(childFragmentManager)
     }
 
     private fun onCreateVoucherClicked() {
         VoucherCreationTracking.sendVoucherListClickTracking(
-                action =
-                if (isActiveVoucher) {
-                    Click.EMPTY_VOUCHER_CREATE_VOUCHER
-                } else {
-                    Click.CREATE_VOUCHER
-                },
-                isActive = isActiveVoucher,
-                userId = userSession.userId
+            action =
+            if (isActiveVoucher) {
+                Click.EMPTY_VOUCHER_CREATE_VOUCHER
+            } else {
+                Click.CREATE_VOUCHER
+            },
+            isActive = isActiveVoucher,
+            userId = userSession.userId
         )
         RouteManager.route(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
     }
 
     private fun onSeeHistoryClicked() {
         VoucherCreationTracking.sendVoucherListClickTracking(
-                action = Click.EMPTY_VOUCHER_HISTORY,
-                isActive = isActiveVoucher,
-                userId = userSession.userId
+            action = Click.EMPTY_VOUCHER_HISTORY,
+            isActive = isActiveVoucher,
+            userId = userSession.userId
         )
         fragmentListener?.switchFragment(false)
     }
 
-    private fun getEmptyStateUiModel() = EmptyStateUiModel(isActiveVoucher, ::onSeeHistoryClicked, ::onCreateVoucherClicked)
+    private fun getEmptyStateUiModel() =
+        EmptyStateUiModel(mViewModel.isEligibleToCreateVoucher, isActiveVoucher, ::onSeeHistoryClicked, ::onCreateVoucherClicked)
 
-    private fun showCancellationSuccessToaster(isCancel: Boolean,
-                                               voucherId: Int) {
+    private fun showCancellationSuccessToaster(
+        isCancel: Boolean,
+        voucherId: Int
+    ) {
         val successMessageRes =
-                if (isCancel) {
-                    R.string.mvc_cancel_success
-                } else {
-                    R.string.mvc_stop_success
-                }
+            if (isCancel) {
+                R.string.mvc_cancel_success
+            } else {
+                R.string.mvc_stop_success
+            }
         val successMessage = context?.getString(successMessageRes).toBlankOrString()
         val actionText = context?.getString(R.string.mvc_lihat).toBlankOrString()
 
         view?.run {
             Toaster.make(this,
-                    successMessage,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    actionText,
-                    View.OnClickListener {
-                        viewVoucherDetail(voucherId)
-                    })
+                successMessage,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                actionText,
+                View.OnClickListener {
+                    viewVoucherDetail(voucherId)
+                })
         }
     }
 
-    private fun showCancellationFailToaster(isCancel: Boolean,
-                                            voucherId: Int) {
+    private fun showCancellationFailToaster(
+        isCancel: Boolean,
+        voucherId: Int
+    ) {
         val errorMessageRes =
-                if (isCancel) {
-                    R.string.mvc_cancel_fail
-                } else {
-                    R.string.mvc_stop_fail
-                }
+            if (isCancel) {
+                R.string.mvc_cancel_fail
+            } else {
+                R.string.mvc_stop_fail
+            }
         val errorMessage = context?.getString(errorMessageRes).toBlankOrString()
         val actionText = context?.getString(R.string.mvc_retry).toBlankOrString()
 
         view?.run {
             Toaster.make(this,
-                    errorMessage,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_ERROR,
-                    actionText,
-                    View.OnClickListener {
-                        mViewModel.cancelVoucher(voucherId, isCancel)
-                    })
+                errorMessage,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                actionText,
+                View.OnClickListener {
+                    mViewModel.cancelVoucher(voucherId, isCancel)
+                })
         }
     }
 
     private fun showSuccessUpdateToaster() {
         view?.run {
             Toaster.make(this,
-                    context?.getString(R.string.mvc_success_update_toaster).toBlankOrString(),
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    context?.getString(R.string.mvc_oke).toBlankOrString(),
-                    View.OnClickListener {})
+                context?.getString(R.string.mvc_success_update_toaster).toBlankOrString(),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                context?.getString(R.string.mvc_oke).toBlankOrString(),
+                View.OnClickListener {})
         }
     }
 
@@ -1245,19 +1410,24 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     private fun downloadFiles(uri: String) {
         activity?.let {
             try {
-                val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString() + JPEG_EXT, this@VoucherListFragment)
+                val helper = DownloadHelper(
+                    it,
+                    uri,
+                    System.currentTimeMillis().toString() + JPEG_EXT,
+                    this@VoucherListFragment
+                )
                 helper.downloadFile { true }
             } catch (se: SecurityException) {
                 MvcErrorHandler.logToCrashlytics(se, MvcError.ERROR_SECURITY)
                 view?.showDownloadActionTicker(
-                        isSuccess = false,
-                        isInternetProblem = false
+                    isSuccess = false,
+                    isInternetProblem = false
                 )
             } catch (iae: IllegalArgumentException) {
                 MvcErrorHandler.logToCrashlytics(iae, MvcError.ERROR_URI)
                 view?.showDownloadActionTicker(
-                        isSuccess = false,
-                        isInternetProblem = false
+                    isSuccess = false,
+                    isInternetProblem = false
                 )
             } catch (ex: Exception) {
                 MvcErrorHandler.logToCrashlytics(ex, MvcError.ERROR_DOWNLOAD)

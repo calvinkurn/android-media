@@ -1,9 +1,12 @@
 package com.tokopedia.home.beranda.domain.model;
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class SpotlightItem {
+    @SuppressLint("Invalid Data Type")
     @SerializedName("id")
     @Expose
     private int id;

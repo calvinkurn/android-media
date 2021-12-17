@@ -4,18 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_16">
+    android:background="@color/Unify_Background"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    tools:viewBindingIgnore="true">
 
     <RelativeLayout
         android:id="@+id/rl_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:background="@drawable/bg_outline_item_grey"
-        android:padding="@dimen/dp_16">
+        android:padding="16dp">
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"

@@ -18,7 +18,10 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselEmptyCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
-import com.tokopedia.home_component.util.*
+import com.tokopedia.home_component.util.ChannelWidgetUtil
+import com.tokopedia.home_component.util.GravitySnapHelper
+import com.tokopedia.home_component.util.loadImageFitCenter
+import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.adapter.MixLeftAdapter
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -33,8 +36,6 @@ import com.tokopedia.recharge_component.model.RechargePerso
 import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recharge_component.presentation.adapter.RechargeBUWidgetProductCardTypeFactoryImpl
 import kotlinx.android.synthetic.main.home_recharge_bu_widget_mix_left.view.*
-import kotlinx.android.synthetic.main.home_recharge_bu_widget_mix_left.view.home_component_divider_footer
-import kotlinx.android.synthetic.main.home_recharge_bu_widget_mix_left.view.home_component_divider_header
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -68,6 +69,7 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
         @LayoutRes
         val LAYOUT = R.layout.home_recharge_bu_widget_mix_left
         const val BU_WIDGET_TYPE_LEFT = "mix-left"
+        const val RESET_IMAGE_LAYOUT_VALUE: Int = 0
     }
 
     override fun bind(element: RechargeBUWidgetDataModel) {
@@ -99,7 +101,10 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
     }
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-
+        if(!isCacheData){
+            // Decrement position to account for empty product card
+            listener.onRechargeBUWidgetProductCardImpression(dataModel, position - 1)
+        }
     }
 
     override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
@@ -138,7 +143,8 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
                 if (!isCacheData)
                     listener.onRechargeBUWidgetBannerImpression(dataModel)
             }
-            ImageHandler.LoadImage(image, imageUrl)
+            image.layout(RESET_IMAGE_LAYOUT_VALUE,RESET_IMAGE_LAYOUT_VALUE,RESET_IMAGE_LAYOUT_VALUE,RESET_IMAGE_LAYOUT_VALUE)
+            image.loadImageFitCenter(imageUrl)
             if (gradientColor.isNotEmpty()) {
                 parallaxBackground.setGradientBackground(arrayListOf(gradientColor))
             }
@@ -155,7 +161,7 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
 
         val typeFactoryImpl = RechargeBUWidgetProductCardTypeFactoryImpl(channel)
         val listData = mutableListOf<Visitable<*>>()
-        listData.add(CarouselEmptyCardDataModel(channel, adapterPosition, this, rechargePerso.bannerApplink))
+        listData.add(CarouselEmptyCardDataModel(channel, adapterPosition, this, rechargePerso.applink))
         val productDataList = convertDataToProductData(rechargePerso)
         listData.addAll(productDataList)
         if (rechargePerso.textlink.isNotEmpty()) {

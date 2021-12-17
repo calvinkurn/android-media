@@ -6,14 +6,18 @@ import android.net.Uri
 import android.os.Handler
 import android.provider.MediaStore
 
-class ScreenshotObserver(handler: Handler?, private val mContentResolver: ContentResolver, listener: Listener) : ContentObserver(handler) {
+class ScreenshotObserver(
+    handler: Handler?,
+    private val mContentResolver: ContentResolver,
+    listener: Listener
+) : ContentObserver(handler) {
 
     private val MEDIA_EXTERNAL_URI_STRING = MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString()
     private val mListener = listener
 
-    override fun onChange(selfChange: Boolean, uri: Uri) {
+    override fun onChange(selfChange: Boolean, uri: Uri?) {
         super.onChange(selfChange, uri)
-        if (isSingleImageFile(uri)) {
+        if (uri != null && isSingleImageFile(uri)) {
             mListener.onScreenShotTaken(uri)
         }
     }

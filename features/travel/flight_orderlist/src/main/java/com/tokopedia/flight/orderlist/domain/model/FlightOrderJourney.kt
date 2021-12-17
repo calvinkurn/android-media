@@ -6,7 +6,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 open class FlightOrderJourney(
-        val journeyId: Long,
+        val journeyId: String,
         val departureCity: String,
         val departureCityCode: String,
         val departureAiportId: String,

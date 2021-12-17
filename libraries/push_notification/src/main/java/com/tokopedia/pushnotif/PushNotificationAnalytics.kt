@@ -48,7 +48,7 @@ object PushNotificationAnalytics {
     private fun generateLogMessage(context: Context, data: Bundle, message: String): String {
         val logMessage = StringBuilder("$message \n")
         val fcmToken = getFcmTokenFromPref(context)
-        addLogLine(logMessage, "fcmToken", fcmToken)
+        addLogLine(logMessage, "fcmToken", fcmToken?.prefixToken())
         addLogLine(logMessage, "isSellerApp", GlobalConfig.isSellerApp())
         for (key in data.keySet()) {
             addLogLine(logMessage, key, data[key])
@@ -65,5 +65,13 @@ object PushNotificationAnalytics {
         stringBuilder.append(": ")
         stringBuilder.append(value)
         stringBuilder.append(", \n")
+    }
+
+    fun String.prefixToken(): String {
+        return try {
+            this.substring(this.length - 8)
+        } catch (e: Exception) {
+            ""
+        }
     }
 }

@@ -13,15 +13,18 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoWidgetView
+import com.tokopedia.home.databinding.HomeHeaderOvoBinding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt.getFullToolbarHeight
-import kotlinx.android.synthetic.main.home_header_ovo.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeHeaderOvoViewHolder(itemView: View,
                               private val listener: HomeCategoryListener
 )
 : AbstractViewHolder<HomeHeaderOvoDataModel>(itemView) {
+
+    private var binding: HomeHeaderOvoBinding? by viewBinding()
 
     companion object {
         @LayoutRes
@@ -37,7 +40,13 @@ class HomeHeaderOvoViewHolder(itemView: View,
                 HomeBalanceModel.TYPE_STATE_1 -> {
                     renderOvoLayout(element.headerDataModel, element.needToShowUserWallet)
                 }
-                HomeBalanceModel.TYPE_STATE_2, HomeBalanceModel.TYPE_STATE_3 -> {
+                HomeBalanceModel.TYPE_STATE_2 -> {
+                    renderBalanceLayout(
+                        it.homeBalanceModel,
+                        element.headerDataModel?.isUserLogin?: false,
+                        element.needToShowUserWallet)
+                }
+                HomeBalanceModel.TYPE_STATE_3 -> {
                     renderBalanceLayout(
                             it.homeBalanceModel,
                             element.headerDataModel?.isUserLogin?: false,
@@ -61,11 +70,13 @@ class HomeHeaderOvoViewHolder(itemView: View,
     }
 
     private fun renderChooseAddress(needToShowChooseAddress: Boolean) {
-        val chooseAddressView = itemView.widget_choose_address
-        if (needToShowChooseAddress) {
-            listener.initializeChooseAddressWidget(chooseAddressView, needToShowChooseAddress)
-        } else {
-            chooseAddressView.gone()
+        val chooseAddressView = binding?.widgetChooseAddress
+        chooseAddressView?.let {
+            if (needToShowChooseAddress) {
+                listener.initializeChooseAddressWidget(it, needToShowChooseAddress)
+            } else {
+                it.gone()
+            }
         }
     }
 

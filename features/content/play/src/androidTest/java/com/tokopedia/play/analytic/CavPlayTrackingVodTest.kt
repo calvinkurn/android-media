@@ -36,11 +36,10 @@ class CavPlayTrackingVodTest {
             setup(intentsTestRule)
             setMockModel(PlayVodMockModelConfig())
             launch("1")
-            setJsonAbsolutePath("tracker/content/play/play_vod_analytic.json")
+            setJsonAbsolutePath("play_vod_analytic.json")
         } test {
             fakeLogin()
             fakeLaunch()
-            performCart()
             performLike()
             performPinnedProduct()
             performRotateByClick()
@@ -50,21 +49,14 @@ class CavPlayTrackingVodTest {
         }
     }
 
-    private fun performCart() {
-        register(idlResCart)
-        Espresso.onView(ViewMatchers.withId(R.id.rl_cart)).perform(ViewActions.click()) // cart
-        unregister(idlResCart)
-    }
-
     private fun performLike() {
         register(idlResLike)
-        Espresso.onView(ViewMatchers.withId(R.id.v_like_click_area)).perform(ViewActions.click()) // like
-        Espresso.onView(ViewMatchers.withId(R.id.v_like_click_area)).perform(ViewActions.click()) // unlike
+        Espresso.onView(ViewMatchers.withId(R.id.animation_like)).perform(ViewActions.click()) // like
+        Espresso.onView(ViewMatchers.withId(R.id.animation_like)).perform(ViewActions.click()) // unlike
         unregister(idlResLike)
     }
 
     private fun performPinnedProduct() {
-        Espresso.onView(ViewMatchers.withId(R.id.tv_pinned_action)).perform(ViewActions.click())
         register(idlResVouchers)
         Espresso.onView(ViewMatchers.withId(R.id.rv_voucher_list)).perform(ViewActions.swipeLeft())
         unregister(idlResVouchers)
@@ -122,24 +114,13 @@ class CavPlayTrackingVodTest {
         Espresso.onView(ViewMatchers.withId(R.id.iv_back)).perform(ViewActions.click())
     }
 
-    private val idlResCart by lazy { ComponentIdlingResource(
-            object : PlayIdlingResource{
-                override fun getName(): String = "clickCart"
-
-                override fun idleState(): Boolean {
-                    val view = intentsTestRule.activity.findViewById<RelativeLayout>(R.id.rl_cart)
-                    return view.visibility == View.VISIBLE
-                }
-            }
-    ) }
-
     private val idlResLike by lazy {
         ComponentIdlingResource(
                 object : PlayIdlingResource {
                     override fun getName(): String = "clickLike"
 
                     override fun idleState(): Boolean {
-                        val view = intentsTestRule.activity.findViewById<View>(R.id.v_like_click_area)
+                        val view = intentsTestRule.activity.findViewById<View>(R.id.animation_like)
                         return view.isClickable
                     }
                 }

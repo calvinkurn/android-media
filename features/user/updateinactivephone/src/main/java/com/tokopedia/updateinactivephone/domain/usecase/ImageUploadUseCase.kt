@@ -10,12 +10,14 @@ import com.tokopedia.updateinactivephone.domain.api.InactivePhoneApiClient
 import com.tokopedia.updateinactivephone.domain.data.ImageUploadDataModel
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.utils.image.ImageProcessingUtil
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import javax.inject.Inject
 
-class ImageUploadUseCase @Inject constructor(
+open class ImageUploadUseCase @Inject constructor(
         private val inactivePhoneApi: InactivePhoneApiClient<InactivePhoneApi>
 ) : UseCase<ImageUploadDataModel>() {
 
@@ -36,24 +38,36 @@ class ImageUploadUseCase @Inject constructor(
     }
 
     private fun generateParamString(key: String): RequestBody {
-        return RequestBody.create(
-                MediaType.parse("text/plain"),
-                useCaseRequestParams.getString(key, "") ?: ""
-        )
+        return (useCaseRequestParams.getString(key, "") ?: ""
+                ).toRequestBody("text/plain".toMediaTypeOrNull())
     }
 
     private fun generateParamFile(): RequestBody {
-        val file: File
-        try {
-            file = ImageProcessingUtil.compressImageFile(useCaseRequestParams.getString(PARAM_FILE_TO_UPLOAD, ""), 100)
-        } catch (e: Exception) {
-            throw RuntimeException(ERROR_FAILED_UPLOAD_IMAGE)
+        val filePath = useCaseRequestParams.getString(PARAM_FILE_TO_UPLOAD, "")
+        var file = File(filePath)
+
+        if (checkFileIsMoreThan10Mb(file)) {
+            try {
+                file = ImageProcessingUtil.compressImageFile(filePath, IMAGE_QUALITY)
+            } catch (e: Exception) {
+                throw RuntimeException(ERROR_FAILED_UPLOAD_IMAGE)
+            }
         }
 
-        return RequestBody.create(MediaType.parse("image/*"), file)
+        return file.asRequestBody("image/*".toMediaTypeOrNull())
+    }
+
+    private fun checkFileIsMoreThan10Mb(file: File): Boolean {
+        val maxFileSize = MAX_FILE_SIZE_IN_MB * BYTE * BYTE
+        val fileSize = file.length()
+        return fileSize > maxFileSize
     }
 
     companion object {
+        private const val MAX_FILE_SIZE_IN_MB = 10
+        private const val IMAGE_QUALITY = 100
+        private const val BYTE = 1024
+
         const val STATUS_OK = "OK"
     }
 }

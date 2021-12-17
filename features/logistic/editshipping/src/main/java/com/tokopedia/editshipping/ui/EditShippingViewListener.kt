@@ -77,10 +77,8 @@ interface EditShippingViewListener {
     fun refreshLocationViewListener(address: DistrictRecommendationAddress?)
 
     companion object {
-        const val LOCATION_FRAGMENT_REQUEST_CODE = 1
         const val ADDITIONAL_OPTION_REQUEST_CODE = 2
         const val OPEN_SHOP_EDIT_SHIPPING_REQUEST_CODE = 3
-        const val SELECTED_LOCATION_ID_KEY = "location_id"
         const val MAP_MODE = "map_mode"
         const val EDIT_SHIPPING_RESULT_KEY = "edit_shipping_result"
         const val MODIFIED_COURIER_INDEX_KEY = "modified_courier_index"

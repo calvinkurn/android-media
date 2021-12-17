@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:id="@+id/swipe_refresh"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:enabled="false">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -39,7 +39,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:closeButtonVisibility="gone"
-                        android:layout_marginTop="@dimen/dp_4"
+                        android:layout_marginTop="4dp"
                         android:layout_marginStart="@dimen/unify_space_16"
                         android:layout_marginEnd="@dimen/unify_space_16"
                         app:layout_constraintTop_toTopOf="parent"
@@ -204,13 +204,13 @@
                 android:id="@+id/btn_save_shipper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="8dp"
                 android:text="@string/simpan"
                 android:visibility="gone"
-                android:textSize="@dimen/sp_14"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
         </FrameLayout>

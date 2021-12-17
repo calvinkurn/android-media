@@ -8,16 +8,18 @@ import com.tokopedia.shop.score.penalty.di.component.DaggerPenaltyComponent
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
 import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyDetailFragment
 
-class ShopPenaltyDetailPageActivity: BaseSimpleActivity(), HasComponent<PenaltyComponent> {
+class ShopPenaltyDetailPageActivity : BaseSimpleActivity(), HasComponent<PenaltyComponent> {
 
     override fun getNewFragment(): Fragment {
-        return ShopPenaltyDetailFragment.newInstance()
+        val keyCacheManagerId =
+            intent?.extras?.getString(ShopPenaltyDetailFragment.KEY_CACHE_MANAGE_ID).orEmpty()
+        return ShopPenaltyDetailFragment.newInstance(keyCacheManagerId)
     }
 
     override fun getComponent(): PenaltyComponent {
         return DaggerPenaltyComponent
-                .builder()
-                .baseAppComponent((application as? BaseMainApplication)?.baseAppComponent)
-                .build()
+            .builder()
+            .baseAppComponent((application as? BaseMainApplication)?.baseAppComponent)
+            .build()
     }
 }

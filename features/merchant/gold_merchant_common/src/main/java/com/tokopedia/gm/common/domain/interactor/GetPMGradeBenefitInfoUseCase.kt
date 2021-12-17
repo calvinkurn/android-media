@@ -22,7 +22,7 @@ class GetPMGradeBenefitInfoUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): PMGradeBenefitInfoUiModel {
         val gqlRequest = GraphqlRequest(QUERY, PMGradeBenefitInfoResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val errors: List<GraphqlError>? = gqlResponse.getError(PMGradeBenefitInfoResponse::class.java)
         if (errors.isNullOrEmpty()) {
@@ -57,6 +57,7 @@ class GetPMGradeBenefitInfoUseCase @Inject constructor(
                 next_monthly_refresh_date
                 next_quarterly_calibration_refresh_date
                 current_pm_grade {
+                  shop_level
                   grade_name
                   image_badge_url
                   image_badge_background_mobile_url

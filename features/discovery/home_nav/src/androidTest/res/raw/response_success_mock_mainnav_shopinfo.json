@@ -1,0 +1,19 @@
+[
+  {
+    "data": {
+      "notifications": {
+        "sellerOrderStatus": {
+          "inResolution": 0,
+          "newOrder": 1100,
+          "readyToShip": 400
+        }
+      },
+      "userShopInfo": {
+        "info": {
+          "shop_id": "6551547",
+          "shop_name": "Toko Deva Ntap"
+        }
+      }
+    }
+  }
+]

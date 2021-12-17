@@ -5,7 +5,9 @@ package com.tokopedia.gm.common.data.source.local.model
  */
 
 data class PMShopInfoUiModel(
+        val shopCreatedDate: String = "",
         val isNewSeller: Boolean = true,
+        val is30DaysFirstMonday: Boolean = false,
         val isKyc: Boolean = false,
         val kycStatusId: Int = 0, //pls refer https://tokopedia.atlassian.net/wiki/spaces/AUT/pages/452132984/KYC+-+Know+Your+Customer
         val shopScore: Int = 0,

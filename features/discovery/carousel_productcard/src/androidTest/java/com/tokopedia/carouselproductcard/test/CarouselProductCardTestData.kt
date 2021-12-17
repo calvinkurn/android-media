@@ -21,6 +21,9 @@ internal val carouselProductCardTestData = mutableListOf<List<ProductCardModel>>
     it.add(createCarouselProductCardGridLabelCategoryAndCostPerUnit())
     it.add(createCarouselProductCardGridATCNonVariant())
     it.add(createCarouselProductCardGridAddVariant())
+    it.add(createCarouselProductCardStockBarAndAddToCartNonVariant())
+    it.add(createCarouselProductCardStockBarAndAddToCartVariant())
+    it.add(createCarouselShortProductCardWithStockBar())
 }
 
 private fun createSmallProductCard(): ProductCardModel {
@@ -513,5 +516,124 @@ private fun createCarouselProductCardGridAddVariant(): List<ProductCardModel> {
             createSmallProductCard(),
             createSmallProductCard(),
             createSmallProductCard(),
+    )
+}
+
+private fun createCarouselProductCardStockBarAndAddToCartNonVariant(): List<ProductCardModel> {
+    return listOf(
+        ProductCardModel(
+            productName = "Product Card with Stock bar and non variant ATC",
+            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            formattedPrice = "Rp7.999.000",
+            labelGroupList = listOf(
+                LabelGroup(position = "category", title = "Halal", type = "textGreen"),
+                LabelGroup(position = "costperunit", title = "Rp6.500/100 g", type = "textDarkGrey"),
+                LabelGroup(position = "integrity", title = "Terjual 511", type = "textDarkGrey"),
+            ),
+            countSoldRating = "4.5",
+            freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"),
+            nonVariant = ProductCardModel.NonVariant(quantity = 0, minQuantity = 1, maxQuantity = 3),
+            stockBarLabel = "Segera Habis",
+            stockBarPercentage = 80,
+            stockBarLabelColor = "#ef144a",
+        ),
+        ProductCardModel(
+            productName = "Product Card with Stock bar and non variant ATC",
+            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            formattedPrice = "Rp7.999.000",
+            nonVariant = ProductCardModel.NonVariant(quantity = 2, minQuantity = 1, maxQuantity = 3),
+            stockBarLabel = "Tersedia",
+            stockBarPercentage = 80,
+            stockBarLabelColor = "#ef144a",
+        ),
+        ProductCardModel(
+            productName = "Product Card with Stock bar and non variant ATC",
+            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            formattedPrice = "Rp7.999.000",
+            nonVariant = ProductCardModel.NonVariant(quantity = 2, minQuantity = 1, maxQuantity = 3),
+            stockBarLabel = "Tersedia",
+            stockBarPercentage = 25,
+        ),
+        createSmallProductCard(),
+        createSmallProductCard(),
+        createSmallProductCard(),
+        createSmallProductCard(),
+    )
+}
+
+private fun createCarouselProductCardStockBarAndAddToCartVariant(): List<ProductCardModel> {
+    return listOf(
+        ProductCardModel(
+            productName = "Product Card with Stock bar and variant ATC",
+            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            formattedPrice = "Rp7.999.000",
+            labelGroupList = listOf(
+                LabelGroup(position = "category", title = "Halal", type = "textGreen"),
+                LabelGroup(position = "costperunit", title = "Rp6.500/100 g", type = "textDarkGrey"),
+                LabelGroup(position = "integrity", title = "Terjual 511", type = "textDarkGrey"),
+            ),
+            countSoldRating = "4.5",
+            freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"),
+            variant = ProductCardModel.Variant(quantity = 0),
+            stockBarLabel = "Segera Habis",
+            stockBarPercentage = 80,
+            stockBarLabelColor = "#ef144a",
+        ),
+        ProductCardModel(
+            productName = "Product Card with Stock bar and variant ATC",
+            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            formattedPrice = "Rp7.999.000",
+            variant = ProductCardModel.Variant(quantity = 2),
+            stockBarLabel = "Tersedia",
+            stockBarPercentage = 80,
+            stockBarLabelColor = "#ef144a",
+        ),
+        ProductCardModel(
+            productName = "Product Card with Stock bar and variant ATC",
+            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            formattedPrice = "Rp7.999.000",
+            variant = ProductCardModel.Variant(quantity = 100),
+            stockBarLabel = "Tersedia",
+            stockBarPercentage = 25,
+        ),
+        createSmallProductCard(),
+        createSmallProductCard(),
+        createSmallProductCard(),
+        createSmallProductCard(),
+    )
+}
+
+private fun createCarouselShortProductCardWithStockBar(): List<ProductCardModel> {
+    return listOf(
+        ProductCardModel(
+            productName = "Short name 1",
+            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            formattedPrice = "Rp7.999.000",
+            variant = ProductCardModel.Variant(quantity = 0),
+            stockBarLabel = "Segera Habis",
+            stockBarPercentage = 80,
+            stockBarLabelColor = "#ef144a",
+        ),
+        ProductCardModel(
+            productName = "Short name 2",
+            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            formattedPrice = "Rp7.999.000",
+            variant = ProductCardModel.Variant(quantity = 2),
+            stockBarLabel = "Tersedia",
+            stockBarPercentage = 80,
+            stockBarLabelColor = "#ef144a",
+        ),
+        ProductCardModel(
+            productName = "Short name 3",
+            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            formattedPrice = "Rp7.999.000",
+            variant = ProductCardModel.Variant(quantity = 100),
+            stockBarLabel = "Tersedia",
+            stockBarPercentage = 25,
+        ),
+        createSmallProductCard(),
+        createSmallProductCard(),
+        createSmallProductCard(),
+        createSmallProductCard(),
     )
 }

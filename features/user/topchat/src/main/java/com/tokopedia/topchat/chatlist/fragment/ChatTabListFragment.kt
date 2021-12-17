@@ -28,6 +28,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity.Companion.BUYER_ANALYTICS_LABEL
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity.Companion.SELLER_ANALYTICS_LABEL
@@ -37,6 +38,7 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatlist.di.ChatListContextModule
 import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
 import com.tokopedia.topchat.chatlist.listener.ChatListContract
+import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel.Companion.ROLE_BUYER
 import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel.Companion.ROLE_SELLER
 import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
@@ -49,7 +51,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import javax.inject.Inject
 
-open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract.TabFragment {
+open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract.TabFragment,
+    SellerHomeFragmentListener {
 
     override fun getScreenName(): String = "/new-inbox/chat"
 
@@ -105,7 +108,7 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
     private fun initBackground() {
         if (GlobalConfig.isSellerApp()) {
             context?.let {
-                viewPager?.setBackgroundColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                viewPager?.setBackgroundColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
             }
         }
     }
@@ -218,7 +221,7 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
         for (i in 0 until tabList.size) {
             tabLayout?.newTab()?.let { tabLayout?.addTab(it) }
             tabLayout?.setBackgroundColor(MethodChecker.getColor(
-                    context, com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    context, com.tokopedia.unifyprinciples.R.color.Unify_Background
             ))
         }
 
@@ -482,6 +485,10 @@ open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListCon
 
     override fun closeSearchTooltip() {
         searchToolTip?.dismissOnBoarding()
+    }
+
+    override fun onScrollToTop() {
+        (getSellerFragment() as? ChatListItemListener)?.onScrollToTop()
     }
 
     private fun decreaseNotificationCounter(iconId: Int) {

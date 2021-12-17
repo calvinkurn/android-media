@@ -30,7 +30,6 @@ import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.viewcomponent.ViewComponent
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**
@@ -180,6 +179,7 @@ class ProductSheetViewComponent(
 
     fun showError(isConnectionError: Boolean, onError: () -> Unit) {
         showContent(false)
+        clProductEmpty.hide()
 
         globalError.setActionClickListener {
             onError()
@@ -193,7 +193,6 @@ class ProductSheetViewComponent(
     fun showEmpty(partnerId: Long) {
         showContent(false)
         globalError.hide()
-        clProductEmpty.show()
 
         btnProductEmpty.setOnClickListener {
             listener.onEmptyButtonClicked(this@ProductSheetViewComponent, partnerId)
@@ -212,6 +211,7 @@ class ProductSheetViewComponent(
             rvVoucherList.hide()
 
             globalError.show()
+            clProductEmpty.show()
         }
     }
 

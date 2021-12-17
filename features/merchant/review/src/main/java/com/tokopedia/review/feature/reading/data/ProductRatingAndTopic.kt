@@ -71,7 +71,10 @@ data class ProductTopic(
         val reviewCount: Long = 0,
         @SerializedName("key")
         @Expose
-        val key: String = ""
+        val key: String = "",
+        @SerializedName("show")
+        @Expose
+        val shouldShow: Boolean = false
 )
 
 data class AvailableFilters(

@@ -14,6 +14,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -38,6 +40,7 @@ import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_B
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_PRODUCT_SEARCH_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.databinding.FragmentShopSearchProductBinding
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListViewModel
 import com.tokopedia.shop.search.data.model.UniverseSearchResponse
@@ -54,10 +57,11 @@ import com.tokopedia.shop.search.view.adapter.model.ShopSearchProductFixedResult
 import com.tokopedia.shop.search.view.viewmodel.ShopSearchProductViewModel
 import com.tokopedia.shop.search.widget.ShopSearchProductDividerItemDecoration
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_shop_search_product.*
+import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -133,6 +137,7 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
     }
 
     private lateinit var viewModel: ShopSearchProductViewModel
+    private val viewBinding : FragmentShopSearchProductBinding? by viewBinding()
 
     private val isMyShop: Boolean
         get() = if (::viewModel.isInitialized) {
@@ -154,6 +159,9 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
     private var viewFragment: View? = null
 
     private var productListData: MutableList<ShopSearchProductDataModel> = arrayListOf()
+    private var textCancel: Typography? = null
+    private var editTextSearchProduct: EditText? = null
+    private var imageViewClearButton: ImageView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -198,10 +206,6 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
 
     override fun onItemClicked(dataModel: ShopSearchProductDataModel) {
         when (dataModel.type) {
-            ShopSearchProductDataModel.Type.TYPE_SEARCH_SRP -> {
-                shopPageTrackingShopSearchProduct.clickAutocompleteExternalShopPage(isMyShop, searchQuery, customDimensionShopPage)
-                redirectToSearchResultPage()
-            }
             ShopSearchProductDataModel.Type.TYPE_PDP -> {
                 val model = dataModel as ShopSearchProductDynamicResultDataModel
                 shopPageTrackingShopSearchProduct.clickAutocompleteProducts(
@@ -284,13 +288,6 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
         RouteManager.route(context, appLink)
     }
 
-    private fun redirectToSearchResultPage() {
-        RouteManager.route(
-                context,
-                "$DISCOVERY_SEARCH?q=$searchQuery"
-        )
-    }
-
     private fun observeShopSearchProductResult() {
         viewModel.shopSearchProductResult.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -330,11 +327,6 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
                     getString(R.string.shop_search_product_in_shop_name, shopName),
                     ShopSearchProductDataModel.Type.TYPE_SEARCH_STORE
             ))
-            add(ShopSearchProductFixedResultDataModel(
-                    searchQuery,
-                    getString(R.string.shop_search_product_in_tokopedia),
-                    ShopSearchProductDataModel.Type.TYPE_SEARCH_SRP
-            ))
         }
         renderList(listData, false)
     }
@@ -356,6 +348,9 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
     }
 
     private fun initViewNew(view: View) {
+        textCancel = viewBinding?.textCancel
+        editTextSearchProduct = viewBinding?.editTextSearchProduct
+        imageViewClearButton = viewBinding?.imageViewClearButton
         hideClearButton()
         (getRecyclerView(view) as? VerticalRecyclerView)?.run {
             clearItemDecoration()
@@ -363,10 +358,10 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
                     view.context.resources.getDrawable(R.drawable.shop_page_bg_line_separator_thin)
             ))
         }
-        textCancel.setOnClickListener {
+        textCancel?.setOnClickListener {
             onClickCancel()
         }
-        with(editTextSearchProduct) {
+        editTextSearchProduct?.apply {
             hint = getString(
                     R.string.shop_product_search_hint_2,
                     MethodChecker.fromHtml(shopName).toString()
@@ -378,8 +373,8 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
             setText(searchQuery)
             setSelection(searchQuery.length)
         }
-        image_view_clear_button.setOnClickListener {
-            editTextSearchProduct.text.clear()
+        imageViewClearButton?.setOnClickListener {
+            editTextSearchProduct?.text?.clear()
         }
     }
 
@@ -421,11 +416,11 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
     }
 
     private fun showClearButton() {
-        image_view_clear_button.show()
+        imageViewClearButton?.show()
     }
 
     private fun hideClearButton() {
-        image_view_clear_button.hide()
+        imageViewClearButton?.hide()
     }
 
     private fun getSearchEditorActionListener(): TextView.OnEditorActionListener {

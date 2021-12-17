@@ -17,26 +17,28 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.FragmentConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalContent
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.feedcomponent.util.util.ClipboardHandler
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerManager
@@ -49,7 +51,7 @@ import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.mvcwidget.MvcSource
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException
@@ -58,6 +60,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
@@ -70,7 +73,6 @@ import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.analytic.model.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopModerateRequestStatusCode
 import com.tokopedia.shop.common.constant.ShopPageConstant
@@ -85,9 +87,6 @@ import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
 import com.tokopedia.shop.common.util.ShopUtil.isExceptionIgnored
-import com.tokopedia.shop.common.util.ShopUtil.isShouldCheckShopType
-import com.tokopedia.shop.common.util.ShopUtil.isNotRegularMerchant
-import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
 import com.tokopedia.shop.common.view.ShopPageCountDrawable
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
@@ -98,7 +97,6 @@ import com.tokopedia.shop.common.view.viewmodel.ShopPageFollowingStatusSharedVie
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
-import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.note.view.bottomsheet.ShopNoteBottomSheet
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
@@ -107,11 +105,16 @@ import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME
-import com.tokopedia.shop.common.constant.ShopPageConstant.ENABLE_SHOP_PAGE_UNIVERSAL_BOTTOM_SHEET
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewShareBottomSheet
 import com.tokopedia.shop.common.util.ShopUtil.joinStringWithDelimiter
+import com.tokopedia.shop.common.view.listener.InterfaceShopPageFab
+import com.tokopedia.shop.common.view.model.ShopPageFabConfig
+import com.tokopedia.shop.databinding.NewShopPageFragmentContentLayoutBinding
+import com.tokopedia.shop.databinding.NewShopPageMainBinding
+import com.tokopedia.shop.databinding.WidgetSellerMigrationBottomSheetHasPostBinding
+import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.pageheader.presentation.NewShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
@@ -119,7 +122,6 @@ import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerA
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.*
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderPlayWidgetViewHolder
-import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopOperationalHoursListBottomSheet
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
 import com.tokopedia.shop.pageheader.presentation.holder.NewShopPageFragmentHeaderViewHolder
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentViewHolderListener
@@ -128,10 +130,7 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.NewShopPageP1HeaderDat
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.*
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
-import com.tokopedia.shop.review.shop.view.ReviewShopFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
-import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
-import com.tokopedia.shop.showcase.presentation.fragment.ShopPageShowcaseFragment
 import com.tokopedia.stickylogin.common.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginAction
 import com.tokopedia.stickylogin.view.StickyLoginView
@@ -142,18 +141,21 @@ import com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
-import kotlinx.android.synthetic.main.new_shop_page_fragment_content_layout.*
-import kotlinx.android.synthetic.main.new_shop_page_main.*
+import com.tokopedia.utils.view.binding.viewBinding
 import java.io.File
+import java.net.URLEncoder
 import javax.inject.Inject
 
 
@@ -173,7 +175,8 @@ class NewShopPageFragment :
         ShopHeaderPlayWidgetViewHolder.Listener,
         ShopPerformanceWidgetImageTextComponentViewHolder.Listener,
         ShareBottomsheetListener,
-        ScreenShotListener
+        ScreenShotListener,
+        PermissionListener
 {
 
     companion object {
@@ -181,6 +184,12 @@ class NewShopPageFragment :
         const val SHOP_REF = "EXTRA_SHOP_REF"
         const val SHOP_DOMAIN = "domain"
         const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
+        private const val FRAGMENT_SHOWCASE_KEY_SHOP_ID = "SHOP_ID"
+        private const val FRAGMENT_SHOWCASE_KEY_SHOP_REF = "SHOP_REF"
+        private const val FRAGMENT_SHOWCASE_KEY_SHOP_ATTRIBUTION = "SHOP_ATTRIBUTION"
+        private const val FRAGMENT_SHOWCASE_KEY_IS_OS = "IS_OS"
+        private const val FRAGMENT_SHOWCASE_KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
+
         const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
         const val EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION"
         const val TAB_POSITION_HOME = 0
@@ -201,7 +210,6 @@ class NewShopPageFragment :
         private const val CART_LOCAL_CACHE_NAME = "CART"
         private const val TOTAL_CART_CACHE_KEY = "CACHE_TOTAL_CART"
         private const val PATH_HOME = "home"
-        private const val PATH_REVIEW = "review"
         private const val PATH_PRODUCT = "product"
         private const val PATH_FEED = "feed"
         private const val PATH_NOTE = "note"
@@ -209,12 +217,13 @@ class NewShopPageFragment :
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
         private const val START_PAGE = 1
         private const val IS_FIRST_TIME_VISIT = "isFirstTimeVisit"
-        private const val IS_FIRST_TIME_SHOW_TAB_LABEL = "isFirstTimeShowTabLabel"
         private const val SOURCE = "shop page"
 
         private const val REQUEST_CODE_START_LIVE_STREAMING = 7621
 
         private const val MARGIN_BOTTOM_STICKY_LOGIN = 16
+        private const val DEFAULT_SHOWCASE_ID = "0"
+        private const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
 
         @JvmStatic
         fun createInstance() = NewShopPageFragment()
@@ -246,57 +255,35 @@ class NewShopPageFragment :
     private var viewPagerAdapter: ShopPageFragmentPagerAdapter? = null
     private var errorTextView: TextView? = null
     private var errorButton: View? = null
+    private var shopPageFab: FloatingButtonUnify? = null
     private var isForceNotShowingTab: Boolean = false
     private val iconTabHomeInactive: Int
-        get() = R.drawable.ic_shop_tab_home_inactive.takeIf {
-            isUsingNewNavigation()
-        } ?: R.drawable.ic_shop_tab_home_old_inactive
+        get() = R.drawable.ic_shop_tab_home_inactive
+
     private val iconTabHomeActive: Int
-        get() = R.drawable.ic_shop_tab_home_active.takeIf {
-            isUsingNewNavigation()
-        } ?: -1
+        get() = R.drawable.ic_shop_tab_home_active
+
     private val iconTabProductInactive: Int
-        get() = R.drawable.ic_shop_tab_product_inactive.takeIf {
-            isUsingNewNavigation()
-        } ?: R.drawable.ic_shop_tab_products_old_inactive
+        get() = R.drawable.ic_shop_tab_product_inactive
+
     private val iconTabProductActive: Int
-        get() = R.drawable.ic_shop_tab_product_active.takeIf {
-            isUsingNewNavigation()
-        } ?: -1
+        get() = R.drawable.ic_shop_tab_product_active
+
     private val iconTabShowcaseInactive: Int
-        get() = R.drawable.ic_shop_tab_showcase_inactive.takeIf {
-            isUsingNewNavigation()
-        } ?: R.drawable.ic_shop_tab_showcase_inactive_old
-    private val iconTabShowcaseWithLabelInactive: Int
-        get() = R.drawable.ic_shop_tab_showcase_with_label_inactive
+        get() = R.drawable.ic_shop_tab_showcase_inactive
+
     private val iconTabShowcaseActive: Int
         get() = R.drawable.ic_shop_tab_showcase_active
     private val iconTabFeedInactive: Int
-        get() = R.drawable.ic_shop_tab_feed_inactive.takeIf {
-            isUsingNewNavigation()
-        } ?: R.drawable.ic_shop_tab_feed_old_inactive
+        get() = R.drawable.ic_shop_tab_feed_inactive
+
     private val iconTabFeedActive: Int
-        get() = R.drawable.ic_shop_tab_feed_active.takeIf {
-            isUsingNewNavigation()
-        } ?: -1
-    private val iconTabReviewInactive: Int
-        get() = R.drawable.ic_shop_tab_review_inactive.takeIf {
-            isUsingNewNavigation()
-        } ?: R.drawable.ic_shop_tab_review_old_inactive
-    private val iconTabReviewActive: Int
-        get() = R.drawable.ic_shop_tab_review_active.takeIf {
-            isUsingNewNavigation()
-        } ?: -1
-    private val iconChatFloatingButton: Int
-        get() = R.drawable.ic_chat_floating_button.takeIf {
-            isUsingNewNavigation()
-        } ?: R.drawable.ic_chat_floating_button_old
-    private val scrollToTopButton: FloatingButtonUnify?
-        get() = button_scroll_to_top
+        get() = R.drawable.ic_shop_tab_feed_active
+
+    private var scrollToTopButton: FloatingButtonUnify? = null
     private val intentData: Intent = Intent()
     private var shouldOverrideTabToHome: Boolean = false
     private var isRefresh: Boolean = false
-    private var shouldOverrideTabToReview: Boolean = false
     private var shouldOverrideTabToProduct: Boolean = false
     private var shouldOverrideTabToFeed: Boolean = false
     private var shouldOpenShopNoteBottomSheet: Boolean = false
@@ -313,8 +300,8 @@ class NewShopPageFragment :
     private var initialProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
     private var shopShareBottomSheet: ShopShareBottomSheet? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private var screenShotDetector: ScreenshotDetector? = null
     private var shopUnmoderateBottomSheet: ShopRequestUnmoderateBottomSheet? = null
-    private var shopOperationalHoursListBottomSheet: ShopOperationalHoursListBottomSheet? = null
     private var shopImageFilePath: String = ""
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
     private var shopPageFollowingStatusSharedViewModel: ShopPageFollowingStatusSharedViewModel? = null
@@ -326,6 +313,25 @@ class NewShopPageFragment :
     var localCacheModel: LocalCacheModel? = null
     val userId: String
         get() = shopViewModel?.userId.orEmpty()
+    private var appBarLayout: AppBarLayout? = null
+    private var swipeToRefresh: SwipeToRefresh? = null
+    private var mainLayout: View? = null
+    private var toolbar: Toolbar? = null
+    private var newNavigationToolbar: NavToolbar? = null
+    private var textYourShop: Typography? = null
+    private var searchBarLayout: View? = null
+    private var searchBarText: TextView? = null
+    private var newShopPageLoadingState: View? = null
+    private var shopPageErrorState: View? = null
+    private var viewPager: ViewPager2? = null
+    private var tabLayout: TabLayout? = null
+    private var viewOneTabSeparator: View? = null
+//    private val viewBinding:  NewShopPageMainBinding? by viewBinding()
+    private var viewBinding by autoClearedNullable<NewShopPageMainBinding>()
+    private var viewBindingSellerMigrationBottomSheet by autoClearedNullable<WidgetSellerMigrationBottomSheetHasPostBinding>()
+    private var viewBindingShopContentLayout: NewShopPageFragmentContentLayoutBinding? by viewBinding()
+    private val isLogin: Boolean
+        get() = shopViewModel?.isUserSessionActive ?: false
 
     override fun getComponent() = activity?.run {
         DaggerShopPageComponent.builder().shopPageModule(ShopPageModule())
@@ -342,11 +348,17 @@ class NewShopPageFragment :
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.new_shop_page_main, container, false)
+    ): View? {
+        viewBinding = NewShopPageMainBinding.inflate(LayoutInflater.from(context))
+        viewBinding?.viewStubContentLayout?.setOnInflateListener { _, inflatedView ->
+            viewBindingShopContentLayout = NewShopPageFragmentContentLayoutBinding.bind(inflatedView)
+        }
+        return viewBinding?.root
+    }
 
 
     override fun onStop() {
-        UniversalShareBottomSheet.clearState()
+        UniversalShareBottomSheet.clearState(screenShotDetector)
         super.onStop()
     }
 
@@ -361,10 +373,11 @@ class NewShopPageFragment :
         shopViewModel?.shopSellerPLayWidgetData?.removeObservers(this)
         shopViewModel?.shopPageTickerData?.removeObservers(this)
         shopViewModel?.shopPageShopShareData?.removeObservers(this)
-        shopViewModel?.shopOperationalHoursListData?.removeObservers(this)
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopViewModel?.flush()
+        removeTemporaryShopImage(shopImageFilePath)
+        UniversalShareBottomSheet.clearState(screenShotDetector)
         super.onDestroy()
     }
 
@@ -374,11 +387,27 @@ class NewShopPageFragment :
     }
 
     private fun initViews(view: View) {
-        errorTextView = view.findViewById(com.tokopedia.abstraction.R.id.message_retry)
-        errorButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry)
+        mainLayout = viewBinding?.root
+        toolbar = viewBinding?.toolbar
+        newNavigationToolbar = viewBinding?.newNavigationToolbar
+        textYourShop = viewBinding?.textYourShop
+        searchBarLayout = viewBinding?.searchBarLayout
+        searchBarText = viewBinding?.searchBarText
+        appBarLayout = viewBindingShopContentLayout?.appBarLayout
+        swipeToRefresh = viewBindingShopContentLayout?.swipeToRefresh
+        newShopPageLoadingState = viewBindingShopContentLayout?.newShopPageLoadingState?.root
+        shopPageErrorState = viewBindingShopContentLayout?.shopPageErrorState
+        viewPager = viewBindingShopContentLayout?.viewPager
+        tabLayout = viewBindingShopContentLayout?.tabLayout
+        viewOneTabSeparator = viewBindingShopContentLayout?.viewOneTabSeparator
+        shopPageFab = viewBindingShopContentLayout?.fabShopPage
+        scrollToTopButton = viewBindingShopContentLayout?.buttonScrollToTop
+        //    we can't use viewbinding for the code below, since the layout from abstraction hasn't implement viewbinding
+        errorTextView = shopPageErrorState?.findViewById(com.tokopedia.abstraction.R.id.message_retry)
+        errorButton = shopPageErrorState?.findViewById(com.tokopedia.abstraction.R.id.button_retry)
         setupBottomSheetSellerMigration(view)
         shopPageFragmentHeaderViewHolder = NewShopPageFragmentHeaderViewHolder(
-                view,
+                viewBindingShopContentLayout,
                 this,
                 shopPageTracking,
                 shopPageTrackingSGCPlay,
@@ -395,33 +424,38 @@ class NewShopPageFragment :
         )
         initToolbar()
         initAdapter()
-        appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+        appBarLayout?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             swipeToRefresh?.isEnabled = (verticalOffset == 0)
         })
         initViewPager()
         swipeToRefresh?.setOnRefreshListener {
             refreshData()
         }
-        mainLayout.requestFocus()
+        mainLayout?.requestFocus()
         getScrollToTopButtonInitialMargin()
-        if (shopViewModel?.isUserSessionActive == false) initStickyLogin(view)
+        if (shopViewModel?.isUserSessionActive == false) initStickyLogin()
         scrollToTopButton?.apply {
             circleMainMenu.setOnClickListener {
-                val selectedFragment = viewPagerAdapter?.getRegisteredFragment(viewPager.currentItem)
+                if(!isMyShop) {
+                    shopPageTracking?.clickScrollToTop(shopId, userId)
+                }
+                val selectedFragment = viewPagerAdapter?.getRegisteredFragment(viewPager?.currentItem.orZero())
                 (selectedFragment as? InterfaceShopPageClickScrollToTop)?.let {
                     it.scrollToTop()
                 }
             }
         }
+        hideShopPageFab()
     }
 
     private fun initViewPager() {
-        viewPager.isUserInputEnabled = false
-        viewPager.offscreenPageLimit = VIEWPAGER_PAGE_LIMIT
-        viewPager.adapter = viewPagerAdapter
+        viewPager?.isUserInputEnabled = false
+        viewPager?.offscreenPageLimit = VIEWPAGER_PAGE_LIMIT
+        viewPager?.adapter = viewPagerAdapter
     }
 
     private fun setupBottomSheetSellerMigration(view: View) {
+        //    we can't use viewbinding for the code below, since the layout from BottomSheetUnify hasn't implement viewbinding
         val viewTarget: LinearLayout = view.findViewById(bottom_sheet_wrapper)
         (activity as? ShopPageActivity)?.bottomSheetSellerMigration = BottomSheetBehavior.from(viewTarget)
         hideBottomSheetSellerMigration()
@@ -429,19 +463,18 @@ class NewShopPageFragment :
         if (isSellerMigrationEnabled(context)) {
             BottomSheetUnify.bottomSheetBehaviorKnob(viewTarget, false)
             BottomSheetUnify.bottomSheetBehaviorHeader(viewTarget, false)
+            viewBindingSellerMigrationBottomSheet = WidgetSellerMigrationBottomSheetHasPostBinding.inflate(LayoutInflater.from(context))
+            viewTarget.addView(viewBindingSellerMigrationBottomSheet?.root)
 
-            val sellerMigrationLayout = View.inflate(context, R.layout.widget_seller_migration_bottom_sheet_has_post, null)
-            viewTarget.addView(sellerMigrationLayout)
-
-            val ivTabFeedHasPost: ImageUnify = sellerMigrationLayout.findViewById(R.id.ivTabFeedHasPost)
-            val tvTitleTabFeedHasPost: Typography = sellerMigrationLayout.findViewById(R.id.tvTitleTabFeedHasPost)
-            tvTitleTabFeedHasPost.movementMethod = LinkMovementMethod.getInstance()
+            val ivTabFeedHasPost: ImageUnify? = viewBindingSellerMigrationBottomSheet?.ivTabFeedHasPost
+            val tvTitleTabFeedHasPost: Typography? = viewBindingSellerMigrationBottomSheet?.tvTitleTabFeedHasPost
+            tvTitleTabFeedHasPost?.movementMethod = LinkMovementMethod.getInstance()
             try {
-                if (ivTabFeedHasPost.context.isValidGlideContext())
-                    ivTabFeedHasPost.setImageUrl(SellerMigrationConstants.SELLER_MIGRATION_SHOP_PAGE_TAB_FEED_LINK)
+                if (ivTabFeedHasPost?.context.isValidGlideContext())
+                    ivTabFeedHasPost?.setImageUrl(SellerMigrationConstants.SELLER_MIGRATION_SHOP_PAGE_TAB_FEED_LINK)
             } catch (e: Throwable) {
             }
-            tvTitleTabFeedHasPost.setOnClickLinkSpannable(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_tab_feed_bottom_sheet_content), ::trackContentFeedBottomSheet) {
+            tvTitleTabFeedHasPost?.setOnClickLinkSpannable(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_tab_feed_bottom_sheet_content), ::trackContentFeedBottomSheet) {
                 val shopAppLink = UriUtil.buildUri(ApplinkConst.SHOP, shopId).orEmpty()
                 val appLinkShopPageFeed = UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_FEED, shopId).orEmpty()
                 val intent = SellerMigrationActivity.createIntent(
@@ -647,18 +680,6 @@ class NewShopPageFragment :
             }
         })
 
-        shopViewModel?.shopOperationalHoursListData?.observe(owner, Observer { result ->
-            if (result is Success) {
-                val opsHoursList = result.data.getShopOperationalHoursList?.data
-                opsHoursList?.let { hourList ->
-                    if (hourList.isNotEmpty()) {
-                        shopOperationalHoursListBottomSheet = ShopOperationalHoursListBottomSheet.createInstance()
-                        shopOperationalHoursListBottomSheet?.updateShopHoursDataSet(hourList)
-                    }
-                }
-            }
-        })
-
     }
 
     private fun onSuccessUpdateFollowStatus(followShop: FollowShop) {
@@ -777,7 +798,6 @@ class NewShopPageFragment :
         getShopInfoData()
         getFollowStatus()
         getSellerPlayWidget()
-        getShopOperationalHoursData()
     }
 
     private fun getShopInfoData() {
@@ -790,14 +810,11 @@ class NewShopPageFragment :
     }
 
     private fun getFollowStatus() {
+        val shopFollowButtonVariantType = ShopUtil.getShopFollowButtonAbTestVariant().orEmpty()
         if (shopPageFragmentHeaderViewHolder?.isFollowButtonPlaceHolderAvailable() == true) {
             shopPageFragmentHeaderViewHolder?.setLoadingFollowButton(true)
-            shopViewModel?.getFollowStatusData(shopId)
+            shopViewModel?.getFollowStatusData(shopId, shopFollowButtonVariantType)
         }
-    }
-
-    private fun getShopOperationalHoursData() {
-        shopViewModel?.getShopOperationalHoursList(shopId)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -835,9 +852,6 @@ class NewShopPageFragment :
                     if (lastPathSegment.orEmpty() == PATH_HOME) {
                         shouldOverrideTabToHome = true
                     }
-                    if (lastPathSegment.orEmpty() == PATH_REVIEW) {
-                        shouldOverrideTabToReview = true
-                    }
                     if (lastPathSegment.orEmpty() == PATH_PRODUCT) {
                         shouldOverrideTabToProduct = true
 
@@ -869,12 +883,24 @@ class NewShopPageFragment :
             observeShopProductFilterParameterSharedViewModel()
             observeShopPageFollowingStatusSharedViewModel()
             getInitialData()
-            view.findViewById<ViewStub>(R.id.view_stub_content_layout).inflate()
+            inflateViewStub()
+            initViews(view)
             if (swipeToRefresh?.isRefreshing == false) {
                 setViewState(VIEW_LOADING)
             }
-            initViews(view)
         }
+        context?.let {
+           screenShotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+                   it,
+                   this,
+                   this,
+                   permissionListener = this
+           )
+        }
+    }
+
+    private fun inflateViewStub() {
+        viewBinding?.viewStubContentLayout?.inflate()
     }
 
     private fun observeShopProductFilterParameterSharedViewModel() {
@@ -932,8 +958,8 @@ class NewShopPageFragment :
         (activity as? ShopPageActivity)?.stopShopHeaderPerformanceMonitoring()
     }
 
-    private fun initStickyLogin(view: View) {
-        stickyLoginView = view.findViewById(R.id.sticky_login_text)
+    private fun initStickyLogin() {
+        stickyLoginView = viewBindingShopContentLayout?.stickyLoginText
         stickyLoginView?.page = StickyLoginConstant.Page.SHOP
         stickyLoginView?.lifecycleOwner = viewLifecycleOwner
         stickyLoginView?.setStickyAction(object : StickyLoginAction {
@@ -968,10 +994,10 @@ class NewShopPageFragment :
     private fun getShopPageP1Data() {
         if (shopId.toIntOrZero() == 0 && shopDomain.orEmpty().isEmpty()) return
         shopViewModel?.getShopPageTabData(
-                shopId.toIntOrZero(),
+                shopId,
                 shopDomain.orEmpty(),
                 START_PAGE,
-                ShopPageConstant.DEFAULT_PER_PAGE,
+                ShopUtil.getProductPerPage(context),
                 initialProductFilterParameter ?: ShopProductFilterParameter(),
                 "",
                 "",
@@ -982,34 +1008,29 @@ class NewShopPageFragment :
 
     private fun initToolbar() {
         if (isMyShop) {
-            initOldToolbar()
-            updateBackButtonColorOldToolbar()
+            showSellerViewToolbar()
+            updateBackButtonColorForSellerViewToolbar()
         } else {
-            if (isUsingNewNavigation()) {
-                initNewToolbar()
-            } else {
-                initOldToolbar()
-                updateBackButtonColorOldToolbar()
-            }
+            initNewToolbar()
         }
     }
 
-    private fun updateBackButtonColorOldToolbar() {
+    private fun updateBackButtonColorForSellerViewToolbar() {
         context?.let { context ->
             var color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N500)
             if (context.isDarkMode()) {
                 color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N200)
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                toolbar.navigationIcon?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
+                toolbar?.navigationIcon?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
             }else{
-                toolbar.navigationIcon?.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+                toolbar?.navigationIcon?.setColorFilter(color, PorterDuff.Mode.SRC_IN)
             }
         }
     }
 
     private fun initNewToolbar() {
-        new_navigation_toolbar?.apply {
+        newNavigationToolbar?.apply {
             viewLifecycleOwner.lifecycle.addObserver(this)
             show()
             val iconBuilder = IconBuilder()
@@ -1032,7 +1053,7 @@ class NewShopPageFragment :
         return !GlobalConfig.isSellerApp() && (remoteConfig?.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SHOP, true) == true)
     }
 
-    private fun initOldToolbar() {
+    private fun showSellerViewToolbar() {
         toolbar?.show()
         activity?.run {
             (this as? AppCompatActivity)?.run {
@@ -1042,31 +1063,41 @@ class NewShopPageFragment :
                 setHasOptionsMenu(true)
             }
         }
-        if (isMyShop) {
-            displayToolbarSeller()
-        } else {
-            displayToolbarBuyer()
-        }
-    }
-
-    private fun displayToolbarSeller() {
-        text_your_shop.show()
-        searchBarLayout.hide()
+        textYourShop?.show()
+        searchBarLayout?.hide()
     }
 
     private fun displayToolbarBuyer() {
-        text_your_shop.hide()
-        searchBarLayout.show()
+        textYourShop?.hide()
+        searchBarLayout?.show()
         initSearchInputView()
     }
 
     private fun initSearchInputView() {
-        searchBarText.setOnClickListener {
+        searchBarText?.setOnClickListener {
             clickSearch()
         }
     }
 
-    private fun redirectToShopSearchProduct() {
+    private fun redirectToSearchAutoCompletePage() {
+        val shopSrpAppLink = URLEncoder.encode(UriUtil.buildUri(
+                ApplinkConst.SHOP_ETALASE,
+                shopId,
+                DEFAULT_SHOWCASE_ID
+        ), "utf-8")
+        val searchPageUri = Uri.parse(ApplinkConstInternalDiscovery.AUTOCOMPLETE)
+                .buildUpon()
+                .appendQueryParameter(SearchApiConst.Q, "")
+                .appendQueryParameter(SearchApiConst.SRP_PAGE_ID, shopId)
+                .appendQueryParameter(SearchApiConst.SRP_PAGE_TITLE, shopName)
+                .appendQueryParameter(SearchApiConst.NAVSOURCE, SHOP_SEARCH_PAGE_NAV_SOURCE)
+                .appendQueryParameter(SearchApiConst.BASE_SRP_APPLINK, shopSrpAppLink)
+                .build()
+                .toString()
+        RouteManager.route(context, searchPageUri)
+    }
+
+    private fun redirectToShopSearchProductPage() {
         context?.let { context ->
             shopPageHeaderDataModel?.let { shopPageHeaderDataModel ->
                 startActivity(ShopSearchProductActivity.createIntent(
@@ -1085,10 +1116,9 @@ class NewShopPageFragment :
 
     override fun onResume() {
         super.onResume()
-        removeTemporaryShopImage(shopImageFilePath)
         setShopName()
         checkIfChooseAddressWidgetDataUpdated()
-        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
+        screenShotDetector?.start()
     }
 
     private fun checkIfChooseAddressWidgetDataUpdated() {
@@ -1107,23 +1137,24 @@ class NewShopPageFragment :
     private fun setViewState(viewState: Int) {
         when (viewState) {
             VIEW_LOADING -> {
-                newShopPageLoadingState.visibility = View.VISIBLE
-                shopPageErrorState.visibility = View.GONE
-                appBarLayout.visibility = View.INVISIBLE
-                viewPager.visibility = View.INVISIBLE
+                newShopPageLoadingState?.visibility = View.VISIBLE
+                shopPageErrorState?.visibility = View.GONE
+                appBarLayout?.visibility = View.INVISIBLE
+                viewPager?.visibility = View.INVISIBLE
                 scrollToTopButton?.gone()
+                hideShopPageFab()
             }
             VIEW_ERROR -> {
-                newShopPageLoadingState.visibility = View.GONE
-                shopPageErrorState.visibility = View.VISIBLE
-                appBarLayout.visibility = View.INVISIBLE
-                viewPager.visibility = View.INVISIBLE
+                newShopPageLoadingState?.visibility = View.GONE
+                shopPageErrorState?.visibility = View.VISIBLE
+                appBarLayout?.visibility = View.INVISIBLE
+                viewPager?.visibility = View.INVISIBLE
             }
             else -> {
-                newShopPageLoadingState.visibility = View.GONE
-                shopPageErrorState.visibility = View.GONE
-                appBarLayout.visibility = View.VISIBLE
-                viewPager.visibility = View.VISIBLE
+                newShopPageLoadingState?.visibility = View.GONE
+                shopPageErrorState?.visibility = View.GONE
+                appBarLayout?.visibility = View.VISIBLE
+                viewPager?.visibility = View.VISIBLE
             }
         }
     }
@@ -1191,6 +1222,9 @@ class NewShopPageFragment :
     private fun clickShopShare() {
         if(isUsingNewShareBottomSheet(requireContext())){
             shopPageTracking?.clickShareButtonNewBottomSheet(customDimensionShopPage, userId)
+            if(!isMyShop) {
+                shopPageTracking?.clickGlobalHeaderShareButton(customDimensionShopPage, userId)
+            }
         } else {
             if (isMyShop) {
                 shopPageTracking?.clickShareButtonSellerView(customDimensionShopPage)
@@ -1204,7 +1238,10 @@ class NewShopPageFragment :
 
     private fun clickSearch() {
         shopPageTracking?.clickSearch(isMyShop, customDimensionShopPage)
-        redirectToShopSearchProduct()
+        if (GlobalConfig.isSellerApp())
+            redirectToShopSearchProductPage()
+        else
+            redirectToSearchAutoCompletePage()
     }
 
     private fun clickSettingButton() {
@@ -1224,7 +1261,7 @@ class NewShopPageFragment :
             if (GlobalConfig.isSellerApp()) {
                 RouteManager.route(context, ApplinkConstInternalSellerapp.MENU_SETTING)
             } else {
-                startActivity(ShopPageSettingActivity.createIntent(context, shopId))
+                RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID, shopId)
             }
         }
     }
@@ -1275,11 +1312,11 @@ class NewShopPageFragment :
             isGoldMerchant = shopPageP1Data.isGoldMerchant
             shopHomeType = shopPageP1Data.shopHomeType.takeIf { !isForceNotShowingTab }
                     ?: ShopHomeType.NONE
-            shopName = shopPageP1Data.shopName
+            shopName = MethodChecker.fromHtml(shopPageP1Data.shopName).toString()
             shopDomain = shopPageP1Data.shopDomain
             avatar = shopPageP1Data.shopAvatar
         }
-        new_navigation_toolbar?.run {
+        newNavigationToolbar?.run {
             val searchBarHintText = MethodChecker.fromHtml(getString(
                     R.string.shop_product_search_hint_2,
                     shopPageHeaderDataModel?.shopName.orEmpty())
@@ -1287,7 +1324,10 @@ class NewShopPageFragment :
             setupSearchbar(
                     hints = listOf(HintData(placeholder = searchBarHintText)),
                     searchbarClickCallback = {
-                        redirectToShopSearchProduct()
+                        if (GlobalConfig.isSellerApp())
+                            redirectToShopSearchProductPage()
+                        else
+                            redirectToSearchAutoCompletePage()
                     }
             )
         }
@@ -1296,12 +1336,6 @@ class NewShopPageFragment :
                 shopPageHeaderDataModel?.isOfficial ?: false,
                 shopPageHeaderDataModel?.isGoldMerchant ?: false
         )
-        val shopType = when {
-            shopPageHeaderDataModel?.isOfficial ?: false -> TrackShopTypeDef.OFFICIAL_STORE
-            shopPageHeaderDataModel?.isGoldMerchant ?: false -> TrackShopTypeDef.GOLD_MERCHANT
-            else -> TrackShopTypeDef.REGULAR_MERCHANT
-        }
-        shopPageTracking?.sendScreenShopPage(shopId, shopType)
         setViewState(VIEW_CONTENT)
         swipeToRefresh?.isRefreshing = false
         shopPageFragmentHeaderViewHolder?.setShopHeaderWidgetData(shopPageP1Data.listShopHeaderWidget)
@@ -1310,11 +1344,34 @@ class NewShopPageFragment :
         }
         getShopPageP2Data()
         setupTabs()
+        sendShopPageOpenScreenTracker()
+        sendShopPageTabImpressionTracker()
         if (shouldOpenShopNoteBottomSheet) {
             showShopNoteBottomSheet()
         }
         view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
         stickyLoginView?.loadContent()
+    }
+
+    private fun sendShopPageTabImpressionTracker() {
+        listShopPageTabModel.onEach {
+            if(!isMyShop) {
+                shopPageTracking?.sendImpressionShopTab(shopId, it.tabTitle)
+            }
+        }
+    }
+
+    private fun sendShopPageOpenScreenTracker() {
+        val selectedTabName = getSelectedTabName()
+        if (selectedTabName.isNotEmpty()) {
+            if (!isMyShop) {
+                shopPageTracking?.sendScreenShopPage(shopId, isLogin, selectedTabName)
+            }
+        }
+    }
+
+    fun getSelectedTabName(): String {
+        return listShopPageTabModel.getOrNull(getSelectedTabPosition())?.tabTitle.orEmpty()
     }
 
     override fun onBackPressed() {
@@ -1328,29 +1385,21 @@ class NewShopPageFragment :
         shopShareBottomSheet?.dismiss()
     }
 
-    private fun saveFirstShowTabLabel() {
-        sharedPreferences?.edit()?.run {
-            putBoolean(IS_FIRST_TIME_SHOW_TAB_LABEL, true)
-        }?.apply()
-    }
-
-    private fun isFirstTimeShowTabLabel(): Boolean? {
-        return sharedPreferences?.getBoolean(IS_FIRST_TIME_SHOW_TAB_LABEL, false)
-    }
-
     private fun setupTabs() {
         listShopPageTabModel = (createListShopPageTabModel() as? List<ShopPageTabModel>) ?: listOf()
+        configureTab(listShopPageTabModel.size)
         viewPagerAdapter?.setTabData(listShopPageTabModel)
         val selectedPosition = getSelectedTabPosition()
-        tabLayout.removeAllTabs()
+        tabLayout?.removeAllTabs()
         listShopPageTabModel.forEach {
-            val tab = tabLayout.newTab().apply {
+            tabLayout?.newTab()?.apply {
                 view.setOnClickListener {
                     isTabClickByUser = true
                 }
                 setIcon(it.tabIconInactive)
+            }?.let {
+                tabLayout?.addTab(it, false)
             }
-            tabLayout.addTab(tab, false)
         }
         viewPagerAdapter?.notifyDataSetChanged()
         tabLayout?.apply {
@@ -1358,9 +1407,9 @@ class NewShopPageFragment :
                 getTabAt(i)?.customView = viewPagerAdapter?.getTabView(i, selectedPosition)
             }
         }
-        viewPager.setCurrentItem(selectedPosition, false)
+        viewPager?.setCurrentItem(selectedPosition, false)
         tabLayout?.getTabAt(selectedPosition)?.select()
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab) {
                 viewPagerAdapter?.handleSelectedTab(tab, true)
             }
@@ -1371,26 +1420,13 @@ class NewShopPageFragment :
 
             override fun onTabSelected(tab: TabLayout.Tab) {
                 val position = tab.position
-                viewPager.setCurrentItem(position, false)
-                tabLayout.getTabAt(position)?.let{
+                viewPager?.setCurrentItem(position, true)
+                tabLayout?.getTabAt(position)?.let{
                     viewPagerAdapter?.handleSelectedTab(it, true)
-                    listShopPageTabModel[tab.position].apply {
-                        if (tabFragment is ShopPageShowcaseFragment && isUsingNewNavigation()) {
-                            tabIconInactive = iconTabShowcaseInactive
-                            saveFirstShowTabLabel()
-                        }
-                    }
                 }
                 if(isTabClickByUser) {
-                    shopPageTracking?.clickTab(
-                            shopViewModel?.isMyShop(shopId) == true,
-                            listShopPageTabModel[position].tabTitle,
-                            CustomDimensionShopPage.create(
-                                    shopId,
-                                    shopPageHeaderDataModel?.isOfficial ?: false,
-                                    shopPageHeaderDataModel?.isGoldMerchant ?: false
-                            )
-                    )
+                    sendShopPageClickTabTracker(position)
+                    sendShopPageTabImpressionTracker()
                 }
                 if (isSellerMigrationEnabled(context)) {
                     if(isMyShop && viewPagerAdapter?.isFragmentObjectExists(FeedShopFragment::class.java) == true){
@@ -1404,12 +1440,35 @@ class NewShopPageFragment :
                         hideBottomSheetSellerMigration()
                     }
                 }
-                viewPager?.post {
-                    checkIfShouldShowOrHideScrollToTopButton(position)
-                }
+                hideScrollToTopButton()
+                hideShopPageFab()
                 isTabClickByUser = false
             }
         })
+    }
+
+    private fun sendShopPageClickTabTracker(position: Int) {
+        if(!isMyShop) {
+            shopPageTracking?.clickTab(listShopPageTabModel[position].tabTitle, shopId, userId)
+        }
+    }
+
+    private fun configureTab(totalTab: Int) {
+        if(totalTab == 1){
+            hideTabbing()
+        } else{
+            showTabbing()
+        }
+    }
+
+    private fun showTabbing(){
+        tabLayout?.show()
+        viewOneTabSeparator?.hide()
+    }
+
+    private fun hideTabbing(){
+        tabLayout?.hide()
+        viewOneTabSeparator?.show()
     }
 
     private fun checkIfShouldShowOrHideScrollToTopButton(position: Int) {
@@ -1425,19 +1484,27 @@ class NewShopPageFragment :
         }
     }
 
+    private fun checkIfShouldShowOrHideShopPageFab(position: Int) {
+        val selectedFragment = viewPagerAdapter?.getRegisteredFragment(position)
+        if (selectedFragment is InterfaceShopPageFab) {
+            val config = selectedFragment.getShopPageFabConfig()
+            if (selectedFragment.shouldShowShopPageFab() && config != null) {
+                setupShopPageFab(config)
+                showShopPageFab()
+            } else {
+                hideShopPageFab()
+            }
+        } else {
+            hideShopPageFab()
+        }
+    }
+
     private fun getSelectedTabPosition(): Int {
-        var selectedPosition = viewPager.currentItem
-        if (tabLayout.tabCount == 0) {
+        var selectedPosition = viewPager?.currentItem.orZero()
+        if (tabLayout?.tabCount == 0) {
             if (shouldOverrideTabToHome) {
                 selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(ShopPageHomeFragment::class.java) == true) {
                     viewPagerAdapter?.getFragmentPosition(ShopPageHomeFragment::class.java).orZero()
-                } else {
-                    selectedPosition
-                }
-            }
-            if (shouldOverrideTabToReview) {
-                selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(ReviewShopFragment::class.java) == true) {
-                    viewPagerAdapter?.getFragmentPosition(ReviewShopFragment::class.java).orZero()
                 } else {
                     selectedPosition
                 }
@@ -1473,13 +1540,13 @@ class NewShopPageFragment :
             }
         }
         val shopPageProductFragment = ShopPageProductListFragment.createInstance(
-                shopId,
-                shopPageHeaderDataModel?.shopName.orEmpty(),
-                shopPageHeaderDataModel?.isOfficial ?: false,
-                shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                shopPageHeaderDataModel?.shopHomeType.orEmpty(),
-                shopAttribution,
-                shopRef
+                shopId = shopId,
+                shopName = shopPageHeaderDataModel?.shopName.orEmpty(),
+                isOfficial = shopPageHeaderDataModel?.isOfficial ?: false,
+                isGoldMerchant = shopPageHeaderDataModel?.isGoldMerchant ?: false,
+                shopHomeType = shopPageHeaderDataModel?.shopHomeType.orEmpty(),
+                shopAttribution = shopAttribution,
+                shopRef = shopRef
         )
         shopViewModel?.productListData?.let {
             shopPageProductFragment.setInitialProductListData(it)
@@ -1491,43 +1558,23 @@ class NewShopPageFragment :
                 shopPageProductFragment
         ))
 
-        if (isShouldCheckShopType()) {
-            if (isNotRegularMerchant(shopPageHeaderDataModel)) {
-                listShopPageTabModel.add(ShopPageTabModel(
-                        getString(R.string.shop_info_title_tab_showcase),
-                        if (isFirstTimeShowTabLabel() == false && isUsingNewNavigation()) {
-                            iconTabShowcaseWithLabelInactive
-                        } else {
-                            iconTabShowcaseInactive
-                        },
-                        iconTabShowcaseActive,
-                        ShopPageShowcaseFragment.createInstance(
-                                shopId,
-                                shopRef,
-                                shopAttribution,
-                                shopPageHeaderDataModel?.isOfficial ?: false,
-                                shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                        )
-                ))
+        val shopShowcaseTabFragment = RouteManager.instantiateFragmentDF(
+            activity as AppCompatActivity,
+            FragmentConst.SHOP_SHOWCASE_TAB_FRAGMENT_CLASS_PATH,
+            Bundle().apply {
+                putString(FRAGMENT_SHOWCASE_KEY_SHOP_ID, shopId)
+                putString(FRAGMENT_SHOWCASE_KEY_SHOP_REF, shopRef)
+                putString(FRAGMENT_SHOWCASE_KEY_SHOP_ATTRIBUTION, shopAttribution)
+                putBoolean(FRAGMENT_SHOWCASE_KEY_IS_OS, shopPageHeaderDataModel?.isOfficial ?: false)
+                putBoolean(FRAGMENT_SHOWCASE_KEY_IS_GOLD_MERCHANT, shopPageHeaderDataModel?.isGoldMerchant ?: false)
             }
-        } else {
-            listShopPageTabModel.add(ShopPageTabModel(
-                    getString(R.string.shop_info_title_tab_showcase),
-                    if (isFirstTimeShowTabLabel() == false && isUsingNewNavigation()) {
-                        iconTabShowcaseWithLabelInactive
-                    } else {
-                        iconTabShowcaseInactive
-                    },
-                    iconTabShowcaseActive,
-                    ShopPageShowcaseFragment.createInstance(
-                            shopId,
-                            shopRef,
-                            shopAttribution,
-                            shopPageHeaderDataModel?.isOfficial ?: false,
-                            shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                    )
-            ))
-        }
+        )
+        listShopPageTabModel.add(ShopPageTabModel(
+                getString(R.string.shop_info_title_tab_showcase),
+                iconTabShowcaseInactive,
+                iconTabShowcaseActive,
+                shopShowcaseTabFragment
+        ))
 
         if (isShowFeed) {
             val feedFragment = FeedShopFragment.createInstance(
@@ -1541,16 +1588,6 @@ class NewShopPageFragment :
                     feedFragment
             ))
         }
-        val shopReviewFragment = ReviewShopFragment.createInstance(
-                shopId,
-                shopDomain
-        )
-        listShopPageTabModel.add(ShopPageTabModel(
-                getString(R.string.shop_info_title_tab_review),
-                iconTabReviewInactive,
-                iconTabReviewActive,
-                shopReviewFragment
-        ))
         return listShopPageTabModel
     }
 
@@ -1561,15 +1598,18 @@ class NewShopPageFragment :
     private fun getHomeFragment(): Fragment? {
         return if (isShowHomeTab()) {
             ShopPageHomeFragment.createInstance(
-                    shopId,
-                    shopPageHeaderDataModel?.isOfficial ?: false,
-                    shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                    shopPageHeaderDataModel?.shopName.orEmpty(),
-                    shopAttribution ?: "",
-                    shopRef
+                shopId,
+                shopPageHeaderDataModel?.isOfficial ?: false,
+                shopPageHeaderDataModel?.isGoldMerchant ?: false,
+                shopPageHeaderDataModel?.shopName.orEmpty(),
+                shopAttribution ?: "",
+                shopRef
             ).apply {
                 shopViewModel?.productListData?.let {
                     setInitialProductListData(it)
+                }
+                shopViewModel?.homeWidgetLayoutData?.let {
+                    setListWidgetLayoutData(it)
                 }
             }
         } else {
@@ -1622,6 +1662,7 @@ class NewShopPageFragment :
     }
 
     override fun refreshData() {
+        hideShopPageFab()
         val shopProductListFragment: Fragment? = viewPagerAdapter?.getRegisteredFragment(if (shopPageHeaderDataModel?.isOfficial == true) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
         if (shopProductListFragment is ShopPageProductListFragment) {
             shopProductListFragment.clearCache()
@@ -1645,8 +1686,8 @@ class NewShopPageFragment :
     }
 
     override fun collapseAppBar() {
-        appBarLayout.post {
-            appBarLayout.setExpanded(false)
+        appBarLayout?.post {
+            appBarLayout?.setExpanded(false)
         }
     }
 
@@ -1844,7 +1885,7 @@ class NewShopPageFragment :
         linkerShareData?.apply {
             shareContents = replaceLastUrlSegment(shareContents.orEmpty(), shopBranchLinkDomain)
             url = replaceLastUrlSegment(url.orEmpty(), shopBranchLinkDomain)
-            shareUri = replaceLastUrlSegment(shareUri, shopBranchLinkDomain)
+            shareUri = replaceLastUrlSegment(shareUri.orEmpty(), shopBranchLinkDomain)
         }
     }
 
@@ -1884,9 +1925,9 @@ class NewShopPageFragment :
 
     private fun updateViewPagerPadding() {
         if (stickyLoginView?.isShowing() == true) {
-            viewPager.setPadding(0, 0, 0, stickyLoginView?.height.orZero())
+            viewPager?.setPadding(0, 0, 0, stickyLoginView?.height.orZero())
         } else {
-            viewPager.setPadding(0, 0, 0, 0)
+            viewPager?.setPadding(0, 0, 0, 0)
         }
     }
 
@@ -1993,11 +2034,6 @@ class NewShopPageFragment :
         return appLinkUri.lastPathSegment.orEmpty() == ShopPageActivity.PATH_INFO
     }
 
-    private fun isShopReviewAppLink(appLink: String): Boolean {
-        val appLinkUri = Uri.parse(appLink)
-        return appLinkUri.lastPathSegment.orEmpty() == PATH_REVIEW
-    }
-
     override fun isTabSelected(tabFragmentClass: Class<out Any>): Boolean {
         return if (viewPagerAdapter?.isFragmentObjectExists(tabFragmentClass) == true) {
             viewPagerAdapter?.getFragmentPosition(tabFragmentClass) == selectedPosition
@@ -2051,15 +2087,9 @@ class NewShopPageFragment :
         // check type for non applink component
         if (componentName == BaseShopHeaderComponentUiModel.ComponentName.SHOP_OPERATIONAL_HOUR) {
             // show shop operational hour bottomsheet
-            shopOperationalHoursListBottomSheet?.show(fragmentManager)
+            RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET, shopId)
         }
-
-        if (isShopReviewAppLink(appLink)) {
-            val reviewTabPosition = viewPagerAdapter?.getFragmentPosition(ReviewShopFragment::class.java).orZero()
-            viewPager.setCurrentItem(reviewTabPosition, false)
-            tabLayout?.getTabAt(reviewTabPosition)?.select()
-        } else
-            RouteManager.route(context, appLink)
+        RouteManager.route(context, appLink)
     }
 
     override fun onImpressionShopPerformanceWidgetBadgeTextValueItem(
@@ -2287,8 +2317,8 @@ class NewShopPageFragment :
     }
 
     fun expandHeader() {
-        appBarLayout.post {
-            appBarLayout.setExpanded(true)
+        appBarLayout?.post {
+            appBarLayout?.setExpanded(true)
         }
     }
 
@@ -2324,47 +2354,56 @@ class NewShopPageFragment :
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    checkUsingCustomBranchLinkDomain(linkerShareData)
-                    var shareString = getString(
-                        R.string.shop_page_share_text_with_link,
-                        shopPageHeaderDataModel?.shopName,
-                        linkerShareData?.shareContents
-                    )
-                    shareModel.subjectName = shopPageHeaderDataModel?.shopName.toString()
-                    SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
-                    // send gql tracker
-                    shareModel.socialMediaName?.let { name ->
-                        shopViewModel?.sendShopShareTracker(
-                            shopId,
-                            channel = when (shareModel) {
-                                is ShareModel.CopyLink -> {
-                                    ShopPageConstant.SHOP_SHARE_DEFAULT_CHANNEL
-                                }
-                                is ShareModel.Others -> {
-                                    ShopPageConstant.SHOP_SHARE_OTHERS_CHANNEL
-                                }
-                                else -> name
+                    context?.let{
+                        checkUsingCustomBranchLinkDomain(linkerShareData)
+                        var shareString = getString(
+                                R.string.shop_page_share_text_with_link,
+                                shopPageHeaderDataModel?.shopName,
+                                linkerShareData?.shareContents
+                        )
+                        shareModel.subjectName = shopPageHeaderDataModel?.shopName.toString()
+                        SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
+                        // send gql tracker
+                        shareModel.socialMediaName?.let { name ->
+                            shopViewModel?.sendShopShareTracker(
+                                    shopId,
+                                    channel = when (shareModel) {
+                                        is ShareModel.CopyLink -> {
+                                            ShopPageConstant.SHOP_SHARE_DEFAULT_CHANNEL
+                                        }
+                                        is ShareModel.Others -> {
+                                            ShopPageConstant.SHOP_SHARE_OTHERS_CHANNEL
+                                        }
+                                        else -> name
+                                    }
+                            )
+                        }
+
+                        // send gtm tracker
+                        if(isGeneralShareBottomSheet) {
+                            shopPageTracking?.clickShareBottomSheetOption(
+                                    shareModel.channel.orEmpty(),
+                                    customDimensionShopPage,
+                                    userId
+                            )
+                            if(!isMyShop) {
+                                shopPageTracking?.clickGlobalHeaderShareBottomSheetOption(
+                                        shareModel.channel.orEmpty(),
+                                        customDimensionShopPage,
+                                        userId
+                                )
                             }
-                        )
-                    }
+                        } else{
+                            shopPageTracking?.clickScreenshotShareBottomSheetOption(
+                                    shareModel.channel.orEmpty(),
+                                    customDimensionShopPage,
+                                    userId
+                            )
+                        }
 
-                    // send gtm tracker
-                    if(isGeneralShareBottomSheet) {
-                        shopPageTracking?.clickShareBottomSheetOption(
-                                shareModel.channel.orEmpty(),
-                                customDimensionShopPage,
-                                userId
-                        )
-                    } else{
-                        shopPageTracking?.clickScreenshotShareBottomSheetOption(
-                                shareModel.channel.orEmpty(),
-                                customDimensionShopPage,
-                                userId
-                        )
+                        //we have to check if we can move it inside the common function
+                        universalShareBottomSheet?.dismiss()
                     }
-
-                    //we have to check if we can move it inside the common function
-                    universalShareBottomSheet?.dismiss()
                 }
 
                 override fun onError(linkerError: LinkerError?) {}
@@ -2421,7 +2460,7 @@ class NewShopPageFragment :
             setOgImageUrl(shopPageHeaderDataModel?.shopSnippetUrl ?: "")
             imageSaved(shopImageFilePath)
         }
-        universalShareBottomSheet?.show(fragmentManager)
+        universalShareBottomSheet?.show(fragmentManager, this, screenShotDetector)
     }
 
     override fun onRequestPermissionsResult(
@@ -2430,6 +2469,29 @@ class NewShopPageFragment :
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        UniversalShareBottomSheet.getScreenShotDetector()?.onRequestPermissionsResult(requestCode, grantResults)
+        screenShotDetector?.onRequestPermissionsResult(requestCode, grantResults, this)
+    }
+
+    fun setupShopPageFab(config: ShopPageFabConfig) {
+        shopPageFab?.let { fab ->
+            fab.color = config.color
+            fab.type = config.type
+            fab.addItem(config.items)
+            config.onMainCircleButtonClicked?.let {
+                fab.circleMainMenu.setOnClickListener(it)
+            }
+        }
+    }
+
+    fun showShopPageFab() {
+        shopPageFab?.show()
+    }
+
+    fun hideShopPageFab() {
+        shopPageFab?.hide()
+    }
+
+    override fun permissionAction(action: String, label: String) {
+        shopPageTracking?.clickUniversalSharingPermission(action, label, shopId, userId)
     }
 }

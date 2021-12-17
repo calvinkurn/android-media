@@ -3,7 +3,10 @@ package com.tokopedia.profilecompletion.addname.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.*
+import android.text.Editable
+import android.text.SpannableString
+import android.text.TextPaint
+import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
@@ -187,15 +190,32 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
 
     private fun initTermPrivacyView() {
         context?.let {
-            val termPrivacy = SpannableString(getString(R.string.detail_term_and_privacy))
-            termPrivacy.setSpan(clickableSpan(PAGE_TERM_AND_CONDITION), 34, 54, 0)
-            termPrivacy.setSpan(clickableSpan(PAGE_PRIVACY_POLICY), 61, 78, 0)
-            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 34, 54, 0)
-            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 61, 78, 0)
+            val msg = getString(R.string.profile_completion_detail_term_and_privacy)
+            if(msg.isNotEmpty()) {
+                val termPrivacy = SpannableString(getString(R.string.profile_completion_detail_term_and_privacy))
+                termPrivacy.setSpan(clickableSpan(PAGE_TERM_AND_CONDITION), 34, 54, 0)
+                termPrivacy.setSpan(clickableSpan(PAGE_PRIVACY_POLICY), 61, 78, 0)
+                termPrivacy.setSpan(
+                    ForegroundColorSpan(
+                        ContextCompat.getColor(
+                            it,
+                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        )
+                    ), 34, 54, 0
+                )
+                termPrivacy.setSpan(
+                    ForegroundColorSpan(
+                        ContextCompat.getColor(
+                            it,
+                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        )
+                    ), 61, 78, 0
+                )
 
-            bottomInfo?.setText(termPrivacy, TextView.BufferType.SPANNABLE)
-            bottomInfo?.movementMethod = LinkMovementMethod.getInstance()
-            bottomInfo?.isSelected = false
+                bottomInfo?.setText(termPrivacy, TextView.BufferType.SPANNABLE)
+                bottomInfo?.movementMethod = LinkMovementMethod.getInstance()
+                bottomInfo?.isSelected = false
+            }
         }
     }
 
@@ -203,7 +223,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
         return object : ClickableSpan() {
             override fun onClick(widget: View) {
                 context?.let {
-                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, ))
+                    startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.TERM_PRIVACY, page))
                 }
             }
 

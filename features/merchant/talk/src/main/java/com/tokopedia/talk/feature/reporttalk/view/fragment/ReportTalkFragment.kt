@@ -15,10 +15,13 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.talk.BuildConfig
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.di.TalkComponent
+import com.tokopedia.talk.databinding.FragmentReportTalkBinding
 import com.tokopedia.talk.feature.reporttalk.analytics.TalkAnalytics
 import com.tokopedia.talk.feature.reporttalk.di.DaggerReportTalkComponent
 import com.tokopedia.talk.feature.reporttalk.view.activity.ReportTalkActivity
@@ -27,7 +30,7 @@ import com.tokopedia.talk.feature.reporttalk.view.uimodel.TalkReportOptionUiMode
 import com.tokopedia.talk.feature.reporttalk.view.viewmodel.ReportTalkViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_report_talk.*
+import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
 /**
@@ -50,6 +53,8 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
     lateinit var analytics: TalkAnalytics
 
     lateinit var reportTalkAdapter: ReportTalkAdapter
+
+    private var binding by autoCleared<FragmentReportTalkBinding>()
 
     var talkId: String = ""
     var commentId: String = ""
@@ -74,8 +79,9 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_report_talk, container, false)
+                              savedInstanceState: Bundle?): View {
+        binding = FragmentReportTalkBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -118,14 +124,14 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
         reportTalkAdapter = ReportTalkAdapter(this, listOption)
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
-        optionRv.layoutManager = linearLayoutManager
-        optionRv.adapter = reportTalkAdapter
+        binding.optionRv.layoutManager = linearLayoutManager
+        binding.optionRv.adapter = reportTalkAdapter
 
-        sendButton.setOnClickListener {
-            reportTalk(talkId, commentId, reason.text.toString(), reportTalkAdapter.getSelectedOption())
+        binding.sendButton.setOnClickListener {
+            reportTalk(talkId, commentId, binding.reason.text.toString(), reportTalkAdapter.getSelectedOption())
         }
 
-        reason.addTextChangedListener(object : TextWatcher {
+        binding.reason.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 
             }
@@ -140,11 +146,11 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
             }
         })
 
-        reason.setOnClickListener {
+        binding.reason.setOnClickListener {
             reportTalkAdapter.setChecked(reportTalkAdapter.getItem(2))
         }
 
-        reason.setOnEditorActionListener { v, actionId, event ->
+        binding.reason.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 KeyboardHandler.hideSoftKeyboard(activity)
                 true
@@ -157,7 +163,7 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
     }
 
     private fun checkEnableSendButton() {
-        reason.text?.let {
+        binding.reason.text?.let {
             if (reportTalkAdapter.getItem(2).isChecked && it.isBlank()) {
                 disableSendButton()
             } else {
@@ -167,31 +173,31 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
     }
 
     private fun disableSendButton() {
-        sendButton.isEnabled = false
+        binding.sendButton.isEnabled = false
     }
 
     private fun enableSendButton() {
-        sendButton.isEnabled = true
+        binding.sendButton.isEnabled = true
     }
 
 
     private fun showLoadingFull() {
-        progressBar.visibility = View.VISIBLE
-        mainView.visibility = View.GONE
-        sendButton.visibility = View.GONE
+        binding.progressBar.show()
+        binding.mainView.hide()
+        binding.sendButton.hide()
     }
 
     private fun hideLoadingFull() {
-        progressBar.visibility = View.GONE
-        mainView.visibility = View.VISIBLE
-        sendButton.visibility = View.VISIBLE
+        binding.progressBar.hide()
+        binding.mainView.show()
+        binding.sendButton.show()
     }
 
     private fun onErrorReportTalk(throwable: Throwable) {
         logToCrashlytics(throwable)
         val message = ErrorHandler.getErrorMessage(context, throwable)
         NetworkErrorHelper.createSnackbarWithAction(activity, message) {
-            reportTalk(talkId, commentId, reason.text.toString(),
+            reportTalk(talkId, commentId, binding.reason.text.toString(),
                     reportTalkAdapter.getSelectedOption())
         }.showRetrySnackbar()
     }
@@ -222,13 +228,6 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
         super.onSaveInstanceState(outState)
         outState.putString(ReportTalkActivity.EXTRA_TALK_ID, talkId)
         outState.putString(ReportTalkActivity.EXTRA_COMMENT_ID, commentId)
-    }
-
-    override fun onDestroyView() {
-        context?.run {
-            KeyboardHandler.DropKeyboard(this, reason)
-        }
-        super.onDestroyView()
     }
 
     private fun observeLiveDatas() {

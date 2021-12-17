@@ -40,6 +40,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                 invoice_url
                 payment_date
                 cashback_info
+                ads_page_name
                 order_status {
                   id
                   status_name
@@ -101,12 +102,90 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     }
                   }
                 }
+                have_product_bundle
+                bundle_detail {
+                  total_product
+                  product_bundling_icon
+                  bundle {
+                    bundle_id
+                    bundle_name
+                    bundle_price
+                    bundle_quantity
+                    bundle_subtotal_price
+                    order_detail {
+                      product_id
+                      order_detail_id
+                      product_name
+                      thumbnail
+                      price
+                      price_text
+                      quantity
+                      total_price
+                      total_price_text
+                      notes
+                      category
+                      category_id
+                      button {
+                        key
+                        display_name
+                        type
+                        variant
+                        url
+                        popup {
+                          title
+                          body
+                          action_button {
+                            key
+                            display_name
+                            color
+                            type
+                            uri
+                          }
+                        }
+                      }
+                    }
+                  }
+                  non_bundle {
+                    product_id
+                    order_detail_id
+                    product_name
+                    thumbnail
+                    price
+                    price_text
+                    quantity
+                    total_price
+                    total_price_text
+                    notes
+                    category
+                    category_id
+                    button {
+                      key
+                      display_name
+                      type
+                      variant
+                      url
+                      popup {
+                        title
+                        body
+                        action_button {
+                          key
+                          display_name
+                          color
+                          type
+                          uri
+                        }
+                      }
+                    }
+                  }
+                }
                 shipment {
                   shipping_name
                   shipping_product_name
                   shipping_display_name
                   shipping_ref_num
                   eta
+                  eta_is_updated
+                  user_updated_info
                   receiver {
                     name
                     phone
@@ -187,6 +266,17 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                 dropship {
                   name
                   phone_number
+                }
+                logistic_section_info {
+                  index
+                  id
+                  image_link
+                  title
+                  subtitle
+                  action {
+                    name
+                    link
+                  }
                 }
               }
             }

@@ -2,7 +2,7 @@ package com.tokopedia.oneclickcheckout.order.data.get
 
 import com.google.gson.annotations.SerializedName
 
-data class WholesalePrice(
+class WholesalePrice(
         @SerializedName("qty_min_fmt")
         val qtyMinFmt: String = "",
         @SerializedName("qty_max_fmt")

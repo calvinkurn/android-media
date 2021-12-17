@@ -1,5 +1,6 @@
 package com.tokopedia.entertainment.search.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import javax.annotation.Generated
 
@@ -56,7 +57,8 @@ data class EventSearchLocationResponse(
 					@field:SerializedName("sale_start_time")
 					val saleStartTime: String = "",
 
-					@field:SerializedName("price")
+					@SuppressLint("Invalid Data Type")
+					@SerializedName("price")
 					val price: String = "",
 
 					@field:SerializedName("remaining_sale_time")

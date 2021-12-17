@@ -16,11 +16,11 @@ data class VariantCategory(
 ) {
     fun getPositionOfSelected(): Int {
         return variantOptions.indexOfFirst {
-            it.currentState == VariantConstant.STATE_SELECTED
+            it.currentState == VariantConstant.STATE_SELECTED || it.currentState == VariantConstant.STATE_SELECTED_EMPTY
         }
     }
 
     fun getSelectedOption(): VariantOptionWithAttribute? {
-        return variantOptions.find { it.currentState == VariantConstant.STATE_SELECTED }
+        return variantOptions.find { it.currentState == VariantConstant.STATE_SELECTED || it.currentState == VariantConstant.STATE_SELECTED_EMPTY }
     }
 }

@@ -11,8 +11,11 @@ data class ProductMostHelpfulReviewDataModel(
         val name: String = "",
         var listOfReviews: List<Review>? = null,
         var imageReviews: List<ImageReviewItem>? = null,
-        var ratingScore:Float = 0F,
-        var totalRating:Int = 0
+        var ratingScore: Float = 0F,
+        var totalRating: Int = 0,
+        var formattedRating: String = "",
+        var totalRatingCount: String = "",
+        var totalReviewCount: String = ""
 ) : DynamicPdpDataModel {
     override val impressHolder: ImpressHolder = ImpressHolder()
 

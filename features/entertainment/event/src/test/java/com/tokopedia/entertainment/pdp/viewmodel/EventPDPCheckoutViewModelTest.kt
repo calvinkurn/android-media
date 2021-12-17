@@ -107,7 +107,7 @@ class EventPDPCheckoutViewModelTest {
         result[EventCheckoutResponse::class.java] = checkoutMock
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(),any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(),any()) } returns gqlResponse
 
         eventCheckoutViewModel.checkoutEvent("", CheckoutGeneralV2Params())
 
@@ -120,7 +120,7 @@ class EventPDPCheckoutViewModelTest {
     fun `CheckoutEvent_FailCheckout_ShouldFailCheckout`(){
         //given
         val error = Throwable("Error Checkout")
-        coEvery { graphqlRepository.getReseponse(any(),any()) } coAnswers {throw error}
+        coEvery { graphqlRepository.response(any(),any()) } coAnswers {throw error}
 
         //when
         eventCheckoutViewModel.checkoutEvent("",CheckoutGeneralV2Params())
@@ -140,7 +140,7 @@ class EventPDPCheckoutViewModelTest {
         result[EventCheckoutInstantResponse::class.java] = checkoutMock
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(),any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(),any()) } returns gqlResponse
 
         eventCheckoutViewModel.checkoutEventInstant(CheckoutGeneralV2InstantParams())
 
@@ -152,7 +152,7 @@ class EventPDPCheckoutViewModelTest {
     fun `CheckoutInstantEvent_FailCheckout_ShouldFailCheckout`(){
         //given
         val error = Throwable("Error Checkout")
-        coEvery { graphqlRepository.getReseponse(any(),any()) } coAnswers {throw error}
+        coEvery { graphqlRepository.response(any(),any()) } coAnswers {throw error}
 
         //when
         eventCheckoutViewModel.checkoutEventInstant(CheckoutGeneralV2InstantParams())

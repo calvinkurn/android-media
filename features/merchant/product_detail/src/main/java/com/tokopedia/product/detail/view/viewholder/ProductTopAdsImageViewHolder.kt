@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -40,6 +41,7 @@ class ProductTopAdsImageViewHolder(private val view: View, val listener: Dynamic
                     view.addOnImpressionListener(element.impressHolder) {
                         ImpresionTask(this@ProductTopAdsImageViewHolder.javaClass.canonicalName).execute(viewUrl)
                         listener.onTopAdsImageViewImpression(element, bannerId, bannerName)
+                        listener.onImpressComponent(getComponentTrackData(element))
                     }
                 }
             })
@@ -47,5 +49,8 @@ class ProductTopAdsImageViewHolder(private val view: View, val listener: Dynamic
 
     }
 
+    private fun getComponentTrackData(
+        element: TopAdsImageDataModel
+    ) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
 
 }

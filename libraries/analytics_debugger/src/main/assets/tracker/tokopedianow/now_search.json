@@ -1,0 +1,71 @@
+{
+  "readme": "Tokopedia NOW Search P0 Tracking",
+  "mode": "exact",
+  "query" : [
+    {
+      "event": "clickTokoNow",
+      "eventAction": "general search",
+      "eventCategory": "top nav",
+      "eventLabel": ".+|.+|\\d|.+|.+|.+|.+",
+      "businessUnit": "Physical Goods",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".+",
+      "relatedKeyword": ".+ - .+",
+      "pageSource": ".+"
+    },
+    {
+      "event": "view_item_list",
+      "eventAction": "impression - product",
+      "eventCategory": "tokonow - search result",
+      "eventLabel": ".+",
+      "businessUnit": "Physical Goods",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/tokonow - searchproduct - organic",
+      "userId": ".+",
+      "sessionIris": ".+",
+      "items": [
+        {
+          "item_id": ".+",
+          "item_name": ".+",
+          "item_brand": "none / other",
+          "item_variant": "none / other",
+          "item_category": "none / other",
+          "index": "\\d*.\\d*",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "dimension61": ".+",
+          "dimension96": ".+",
+          "dimension40": ".*",
+          "dimension81": "toko now",
+          "dimension100": ".+"
+        }
+      ]
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click - product",
+      "eventLabel": ".+",
+      "eventCategory": "tokonow - search result",
+      "businessUnit": "Physical Goods",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/tokonow - searchproduct - organic",
+      "userId": ".+",
+      "sessionIris": ".+",
+      "items": [
+        {
+          "item_id": ".+",
+          "item_name": ".+",
+          "item_brand": "none / other",
+          "item_variant": "none / other",
+          "item_category": "none / other",
+          "index": "\\d*.\\d*",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "dimension61": ".+",
+          "dimension96": ".+",
+          "dimension40": ".*",
+          "dimension81": "toko now",
+          "dimension100": ".+"
+        }
+      ]
+    }
+  ]
+}

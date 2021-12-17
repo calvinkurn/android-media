@@ -7,6 +7,7 @@ object GlobalSearchSellerConstant {
     const val NAVIGATION = "navigation"
     const val HIGHLIGHTS = "highlights"
     const val HISTORY = "history"
+    const val ARTICLES = "articles"
 
     const val INV = "invoice"
     const val CUSTOMER = "customer"

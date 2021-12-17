@@ -13,13 +13,11 @@ import java.util.*
  */
 class BroadcastScheduleViewModelRobot(
         hydraConfigStore: HydraConfigStore,
-        dispatcher: CoroutineTestDispatchers,
         setupDataStore: PlayBroadcastSetupDataStore,
 ) : Robot {
 
     private val viewModel: BroadcastScheduleViewModel = BroadcastScheduleViewModel(
             hydraConfigStore = hydraConfigStore,
-            dispatcher = dispatcher,
             setupDataStore = setupDataStore
     )
 
@@ -52,7 +50,6 @@ fun givenBroadcastScheduleViewModel(
 ) : BroadcastScheduleViewModelRobot {
     return BroadcastScheduleViewModelRobot(
             hydraConfigStore = hydraConfigStore,
-            dispatcher = dispatcher,
             setupDataStore = setupDataStore
     ).apply(fn)
 }

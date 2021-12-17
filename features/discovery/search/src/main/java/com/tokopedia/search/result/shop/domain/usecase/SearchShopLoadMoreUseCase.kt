@@ -23,7 +23,7 @@ internal class SearchShopLoadMoreUseCase(
                 createParametersForQuery()
         )
 
-        val graphqlResponse = graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+        val graphqlResponse = graphqlRepository.response(listOf(graphqlRequest), graphqlCacheStrategy)
 
         val error = graphqlResponse.getError(SearchShopModel::class.java)
 
@@ -49,6 +49,10 @@ query SearchShop(${'$'}params : String!) {
         source
         total_shop
         search_url
+        header {
+            response_code
+            keyword_process
+        }
         paging {
             uri_next
             uri_previous

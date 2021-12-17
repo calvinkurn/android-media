@@ -4,15 +4,13 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.managepassword.haspassword.domain.data.ProfileDataModel
 import com.tokopedia.managepassword.haspassword.domain.usecase.GetProfileCompletionUseCase
-import com.tokopedia.managepassword.haspassword.view.viewmode.HasPasswordViewModel
+import com.tokopedia.managepassword.haspassword.view.viewmodel.HasPasswordViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -27,9 +25,9 @@ class HasPasswordViewModelTestJunit {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    val usecase = mockk<GetProfileCompletionUseCase>(relaxed = true)
+    val getProfileCompletionUseCase = mockk<GetProfileCompletionUseCase>(relaxed = true)
 
-    val dispatcher = TestCoroutineDispatcher()
+    private val dispatcherProviderTest = CoroutineTestDispatchersProvider
     private var observer = mockk<Observer<Result<ProfileDataModel>>>(relaxed = true)
 
     lateinit var viewModel: HasPasswordViewModel
@@ -37,37 +35,31 @@ class HasPasswordViewModelTestJunit {
     @Before
     fun setUp() {
         viewModel = HasPasswordViewModel(
-                usecase,
-                dispatcher
+                getProfileCompletionUseCase,
+                dispatcherProviderTest
         )
         viewModel.profileDataModel.observeForever(observer)
     }
 
     @Test
-    fun `checkPassword Success`() {
+    fun checkPassword() {
         val profile = ProfileDataModel.Profile()
         val mockResponse = ProfileDataModel(profile)
 
-        every { usecase.getData(any(), any()) } answers {
-            firstArg<(ProfileDataModel) -> Unit>().invoke(mockResponse)
-        }
+        coEvery { getProfileCompletionUseCase(Unit) } returns mockResponse
         viewModel.checkPassword()
 
         /* Then */
-        verify { observer.onChanged(Success(mockResponse)) }
+        coVerify { observer.onChanged(Success(mockResponse)) }
     }
 
     @Test
-    fun `checkPassword Error`() {
-        val throwable = Throwable(message = "Error")
+    fun `checkPassword - fail`() {
+        val mockThrowable = Throwable("Opps!")
 
-        every { usecase.getData(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(throwable)
-        }
+        coEvery { getProfileCompletionUseCase(Unit) }.throws(mockThrowable)
         viewModel.checkPassword()
 
-        /* Then */
-        verify { observer.onChanged(Fail(throwable)) }
+        coVerify { observer.onChanged(Fail(mockThrowable)) }
     }
-
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.recommendation_widget_common.widget.carousel
 
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
 /**
@@ -8,7 +9,9 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
  */
 data class RecommendationCarouselData(
         val recommendationData: RecommendationWidget = RecommendationWidget(),
-        val state: Int = 0
+        val state: Int = 0,
+        val isUsingWidgetViewModel: Boolean = false,
+        val filterData: List<AnnotationChip> = listOf()
 ): ImpressHolder() {
     companion object {
         const val STATE_LOADING: Int = 0

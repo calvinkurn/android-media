@@ -18,9 +18,9 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imageToolbarIcon"
-            android:layout_width="@dimen/dp_48"
-            android:layout_height="@dimen/dp_48"
-            android:padding="@dimen/dp_12"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="12dp"
             app:srcCompat="@drawable/gami_gift_back_icon" />
 
         <com.tokopedia.unifyprinciples.Typography

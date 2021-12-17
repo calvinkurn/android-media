@@ -44,8 +44,6 @@ class OrderSummaryPageActivityTrackingTest {
     private var idlingResource: IdlingResource? = null
 
     private val cartInterceptor = OneClickCheckoutInterceptor.cartInterceptor
-    private val preferenceInterceptor = OneClickCheckoutInterceptor.preferenceInterceptor
-    private val logisticInterceptor = OneClickCheckoutInterceptor.logisticInterceptor
     private val promoInterceptor = OneClickCheckoutInterceptor.promoInterceptor
     private val checkoutInterceptor = OneClickCheckoutInterceptor.checkoutInterceptor
 
@@ -63,7 +61,6 @@ class OrderSummaryPageActivityTrackingTest {
     @After
     fun cleanup() {
         IdlingRegistry.getInstance().unregister(idlingResource)
-        activityRule.finishActivity()
     }
 
     @Test
@@ -90,6 +87,8 @@ class OrderSummaryPageActivityTrackingTest {
                 chooseCourierWithText("AnterAja")
             }
 
+            // wait for bottom sheet to fully close
+            Thread.sleep(2000)
             clickButtonPromo()
 
             promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
@@ -97,9 +96,9 @@ class OrderSummaryPageActivityTrackingTest {
 
             clickButtonPromo()
 
-            checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_EMPTY_STOCK_RESPONSE_PATH
+            checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_PRICE_CHANGE_RESPONSE_PATH
             pay()
-            closeBottomSheet()
+            clickDialogPrimaryButton()
 
             checkoutInterceptor.customCheckoutResponsePath = null
             pay()
@@ -121,7 +120,6 @@ class OrderSummaryPageActivityTrackingTest {
             checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_EMPTY_STOCK_RESPONSE_PATH
             pay()
             clickButtonContinueWithRedPromo()
-            closeBottomSheet()
             closeBottomSheet()
 
             checkoutInterceptor.customCheckoutResponsePath = null

@@ -5,7 +5,6 @@ import android.content.res.Configuration
 import android.text.method.LinkMovementMethod
 import android.text.method.MovementMethod
 import android.util.DisplayMetrics
-import com.tokopedia.tokopoints.view.model.merchantcoupon.AdInfo
 import java.util.*
 
 const val DEFAULT_TIME_STRING = "00 : 00 : 00"
@@ -47,13 +46,6 @@ fun isDarkMode(context: Context): Boolean {
     } catch (ignored: Exception) {
         false
     }
-}
-
-fun isEventTriggered(context: Context, adInfo: AdInfo): Boolean {
-    var check: Boolean? = false
-    val setData = PersistentAdsData(context).getAdsSet()
-    check = setData?.contains(adInfo?.AdID)
-    return check!!
 }
 
 fun getMovementMethod(): MovementMethod = LinkMovementMethod.getInstance()

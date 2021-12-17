@@ -7,6 +7,8 @@ import javax.inject.Inject
 object TrackingPageUtil {
 
     val PATH_IMAGE_LOGISTIC = "logistic/tracking/get-delivery-image"
+    val HEADER_KEY_AUTH = "Accounts-Authorization"
+    val HEADER_VALUE_BEARER = "Bearer"
 
     fun getDeliveryImage(imageId: String, orderId: Long, size: String, userId: String, osType: Int, deviceId: String): String? {
         val baseUrl = TokopediaUrl.getInstance().API + PATH_IMAGE_LOGISTIC

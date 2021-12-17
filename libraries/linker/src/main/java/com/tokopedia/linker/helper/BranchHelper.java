@@ -48,15 +48,14 @@ public class BranchHelper {
 
     public static void setCommonLinkProperties(LinkProperties linkProperties, LinkerData data) {
         linkProperties.setCampaign(data.getCampaignName());
-        if(!TextUtils.isEmpty(data.getChannel())){
+        if (!TextUtils.isEmpty(data.getChannel())) {
             linkProperties.setChannel(data.getChannel());
-        }
-        else {
+        } else {
             linkProperties.setChannel(LinkerData.ARG_UTM_SOURCE);
         }
-        if(!TextUtils.isEmpty(data.getFeature())){
+        if (!TextUtils.isEmpty(data.getFeature())) {
             linkProperties.setFeature(data.getFeature());
-        }else{
+        } else {
             linkProperties.setFeature(LinkerData.ARG_UTM_MEDIUM);
         }
         linkProperties.addControlParameter(LinkerConstants.KEY_OG_URL, data.getOgUrl());
@@ -95,7 +94,12 @@ public class BranchHelper {
             }
             double shippingPrice = LinkerUtils.convertToDouble(branchIOPayment.getShipping(), "Shipping-PURCHASE");
 
-            BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)
+            BranchEvent branchEvent;
+            if (branchIOPayment.paymentEventName.isEmpty())
+                branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE);
+            else branchEvent = new BranchEvent(branchIOPayment.paymentEventName);
+
+            branchEvent
                     .setTransactionID(branchIOPayment.getOrderId())
                     .setCurrency(CurrencyType.IDR)
                     .setShipping(shippingPrice)
@@ -105,10 +109,11 @@ public class BranchHelper {
                     .addCustomDataProperty(LinkerConstants.KEY_USERID, userData.getUserId())
                     .addContentItems(branchUniversalObjects)
                     .addCustomDataProperty(LinkerConstants.KEY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()))
-                    .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isMonthlyNewBuyer()));
+                    .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isMonthlyNewBuyer()))
+                    .addCustomDataProperty(LinkerConstants.KEY_GOOGLE_BUSINESS_VERTICAL, LinkerConstants.LABEL_RETAIL);
             branchEvent.logEvent(context);
             saveBranchEvent(branchEvent);
-
+            sendFireBaseNewBuyerEvent(branchIOPayment);
             if (branchIOPayment.isNewBuyer()) {
                 sendMarketPlaceFirstTxnEvent(context, branchIOPayment, userData.getUserId(), revenuePrice, shippingPrice);
                 //Firebase first transaction event
@@ -166,6 +171,7 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.LEVEL3_NAME, linkerData.getLevel3Name())
                 .addCustomDataProperty(LinkerConstants.LEVEL3_ID, linkerData.getLevel3Id())
                 .addCustomDataProperty(LinkerConstants.CONTENT_ID, linkerData.getContentId())
+                .addCustomDataProperty(LinkerConstants.KEY_GOOGLE_BUSINESS_VERTICAL, LinkerConstants.LABEL_RETAIL)
                 .setRevenue(0)
                 .setCurrency(CurrencyType.IDR)
                 .addContentItems(buo);
@@ -201,6 +207,7 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.CONTENT_ID, linkerData.getContentId())
                 .setRevenue(Double.parseDouble(linkerData.getQuantity()) * Double.parseDouble(linkerData.getPrice()))
                 .setCurrency(CurrencyType.IDR)
+                .addCustomDataProperty(LinkerConstants.KEY_GOOGLE_BUSINESS_VERTICAL, LinkerConstants.LABEL_RETAIL)
                 .addContentItems(buo);
         branchEvent.logEvent(context);
         saveBranchEvent(branchEvent);
@@ -227,6 +234,7 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.USER_ID, linkerData.getUserId())
                 .addCustomDataProperty(LinkerConstants.INVOICE_ID, linkerData.getInvoiceId())
                 .addCustomDataProperty(LinkerConstants.KEY_PAYMENT, linkerData.getPaymentId())
+                .addCustomDataProperty(LinkerConstants.KEY_GOOGLE_BUSINESS_VERTICAL, LinkerConstants.LABEL_FLIGHT)
                 .addCustomDataProperty(LinkerConstants.PRICE, linkerData.getPrice());
         branchEvent.logEvent(context);
         saveBranchEvent(branchEvent);
@@ -247,7 +255,15 @@ public class BranchHelper {
         saveBranchEvent(branchEvent);
     }
 
-    public static void sendFirebaseFirstTransactionEvent(Context context, PaymentData branchIOPayment, String userId, double revenuePrice, double shippingPrice){
+    public static void sendSearchEvent(Context context, ArrayList<String> searchItems) {
+        BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.SEARCH)
+                .addCustomDataProperty(LinkerConstants.KEY_GOOGLE_BUSINESS_VERTICAL, LinkerConstants.LABEL_RETAIL)
+                .addCustomDataProperty(LinkerConstants.KEY_ITEM_ID, String.valueOf(searchItems));
+        branchEvent.logEvent(context);
+        saveBranchEvent(branchEvent);
+    }
+
+    public static void sendFirebaseFirstTransactionEvent(Context context, PaymentData branchIOPayment, String userId, double revenuePrice, double shippingPrice) {
         Map<String, Object> eventDataMap = new HashMap<>();
         eventDataMap.put(LinkerConstants.KEY_ORDERID, branchIOPayment.getOrderId());
         eventDataMap.put(LinkerConstants.KEY_CURRENCY, CurrencyType.IDR);
@@ -258,7 +274,14 @@ public class BranchHelper {
         eventDataMap.put(LinkerConstants.KEY_USERID, userId);
         eventDataMap.put(LinkerConstants.KEY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()));
         eventDataMap.put(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()));
-        eventDataMap.put(LinkerConstants.KEY_EVENT, LinkerConstants.EVENT_FB_FIRST_TXN);
+        eventDataMap.put(LinkerConstants.KEY_EVENT, LinkerConstants.EVENT_FIREBASE_FIRST_TXN);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventDataMap);
+    }
+
+    public static void sendFireBaseNewBuyerEvent(PaymentData branchIOPayment) {
+        Map<String, Object> eventDataMap = new HashMap<>();
+        eventDataMap.put(LinkerConstants.KEY_NEW_CUSTOMER, String.valueOf(branchIOPayment.isNewBuyer()));
+        eventDataMap.put(LinkerConstants.KEY_EVENT, LinkerConstants.EVENT_FIREBASE_NEW_CUSTOMER);
         TrackApp.getInstance().getGTM().sendGeneralEvent(eventDataMap);
     }
 

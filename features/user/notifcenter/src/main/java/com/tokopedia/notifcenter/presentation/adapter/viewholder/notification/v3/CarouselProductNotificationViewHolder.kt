@@ -11,6 +11,7 @@ import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadBumpReminderState
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadWishlistState
 import com.tokopedia.notifcenter.widget.CarouselProductRecyclerView
 import com.tokopedia.notifcenter.widget.ProductNotificationCardUnify
 
@@ -44,12 +45,13 @@ class CarouselProductNotificationViewHolder constructor(
         }
     }
 
-    override fun isLongerContent(element: NotificationUiModel): Boolean = true
+    override fun isLongerContent(element: NotificationUiModel): Boolean = false
 
     override fun bind(element: NotificationUiModel, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
         when (val payload = payloads.first()) {
             is PayloadBumpReminderState -> bindPayloadReminder(element, payload)
+            is PayloadWishlistState -> bindPayloadWishlist(element, payload)
         }
     }
 
@@ -67,6 +69,20 @@ class CarouselProductNotificationViewHolder constructor(
         }
     }
 
+    private fun bindPayloadWishlist(
+        element: NotificationUiModel,
+        payload: PayloadWishlistState
+    ) {
+        val indexToUpdate = element.productData.indexOfFirst {
+            it.productId == payload.productData.productId
+        }
+        if (indexToUpdate != RecyclerView.NO_POSITION) {
+            val product = rvAdapter.notification?.productData?.get(indexToUpdate)
+            product?.isWishlist = payload.productData.isWishlist
+            rvAdapter.notifyItemChanged(indexToUpdate, payload)
+        }
+    }
+
     override fun bind(element: NotificationUiModel) {
         super.bind(element)
         bindCarouselProduct(element)
@@ -79,10 +95,6 @@ class CarouselProductNotificationViewHolder constructor(
 
     private fun bindScrollState(element: NotificationUiModel) {
         rv?.restoreSavedCarouselState(adapterPosition, carouselListener)
-    }
-
-    override fun showLongerContent(element: NotificationUiModel) {
-        notificationItemListener?.showProductBottomSheet(element)
     }
 
     companion object {
@@ -155,6 +167,7 @@ class CarouselProductNotificationViewHolder constructor(
             if (payloads.isEmpty()) return
             when (payloads.first()) {
                 is PayloadBumpReminderState -> bindPayloadReminder(product)
+                is PayloadWishlistState -> bindPayloadWishlist(product)
             }
         }
 
@@ -164,6 +177,10 @@ class CarouselProductNotificationViewHolder constructor(
 
         private fun bindPayloadReminder(product: ProductData) {
             productContainer?.bumpReminderState(product)
+        }
+
+        private fun bindPayloadWishlist(product: ProductData) {
+            productContainer?.updateWishlistState(product)
         }
 
         private fun bindProductData(product: ProductData, notification: NotificationUiModel?) {

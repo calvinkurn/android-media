@@ -24,7 +24,15 @@ class ProductManageListAdapter(
     }
 
     fun updateEmptyState(emptyModel: EmptyModel) {
-        submitList(arrayListOf(emptyModel))
+        if (visitables.getOrNull(lastIndex) !is EmptyModel) {
+            val dataCount = visitables.filter { it !is EmptyModel }.count().orZero()
+            if (dataCount > 0) {
+                visitables.removeAll { it !is EmptyModel }
+                notifyItemRangeRemoved(visitables.size, dataCount)
+            }
+            visitables.add(emptyModel)
+            notifyItemInserted(lastIndex)
+        }
     }
 
     fun updatePrice(productId: String, price: String) {
@@ -67,12 +75,28 @@ class ProductManageListAdapter(
         }
     }
 
+    fun deleteProducts(productIds: List<String>) {
+        val items = data.filterIsInstance<ProductUiModel>().toMutableList()
+        productIds.forEach { id ->
+            items.findIndex(id)?.let { index ->
+                items.removeAt(index)
+            }
+        }
+        submitList(items)
+    }
+
     fun updateFeaturedProduct(productId: String, isFeaturedProduct: Boolean) {
         submitList(productId) { it.copy(isFeatured = isFeaturedProduct) }
     }
 
-    fun setProductStatus(productId: String, productStatus: ProductStatus) {
-        submitList(productId) { it.copy(status = productStatus) }
+    fun setProductsStatuses(productIds: List<String>, productStatus: ProductStatus) {
+        val items = data.filterIsInstance<ProductUiModel>().toMutableList()
+        productIds.forEach { id ->
+            items.findIndex(id)?.let { index ->
+                items[index] = items[index].copy(status = productStatus)
+            }
+        }
+        submitList(items)
     }
 
     fun setMultiSelectEnabled(multiSelectEnabled: Boolean) {

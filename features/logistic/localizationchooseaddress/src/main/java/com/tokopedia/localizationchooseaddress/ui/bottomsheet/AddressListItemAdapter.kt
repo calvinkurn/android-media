@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.R
@@ -14,6 +13,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.OtherAddressModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
@@ -82,7 +82,10 @@ class AddressListItemAdapter(private val listener: AddressListItemAdapterListene
         val addressDistrict = itemView.findViewById<Typography>(R.id.address_district)
         val cardAddress = itemView.findViewById<CardUnify>(R.id.address_item_card)
         var labelUtama = itemView.findViewById<Label>(R.id.lbl_main_address)
+        val tokonowImg = itemView.findViewById<ImageUnify>(R.id.img_icon_tokonow)
+        val tokonowLabel = itemView.findViewById<Typography>(R.id.tokonow_label)
         val chooseAddressPref = ChooseAddressSharePref(itemView.context)
+
 
         override fun bind(item: ChosenAddressListVisitable, position: Int) {
             if (item is ChosenAddressList) {
@@ -90,9 +93,17 @@ class AddressListItemAdapter(private val listener: AddressListItemAdapterListene
                 receiverName.text = item.receiverName
                 addressPhone.text = item.phone
                 addressDetail.text = item.address1
-                addressDistrict.text = item.districtName
+                addressDistrict.text = itemView.context.getString(R.string.txt_district_choose_address_list, item.districtName, item.cityName)
 
                 if (item.status == 2) labelUtama.visible() else labelUtama.gone()
+                if (item.tokonow.coverageLabel.isEmpty()) {
+                    tokonowImg.visibility = View.GONE
+                    tokonowLabel.visibility = View.GONE
+                } else {
+                    tokonowImg.visibility = View.VISIBLE
+                    tokonowLabel.visibility = View.VISIBLE
+                    tokonowLabel.text = item.tokonow.coverageLabel
+                }
 
                 setSelectedData(item)
             }

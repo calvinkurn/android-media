@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:orientation="vertical"
-        android:paddingTop="@dimen/dp_8"
+        android:paddingTop="8dp"
         android:paddingBottom="@dimen/spacing_lvl3"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:reverseLayout="false" />
@@ -27,15 +27,4 @@
             android:layout_height="@dimen/dp_50"
             android:layout_gravity="center" />
     </FrameLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_feed"
-        android:layout_width="@dimen/dp_60"
-        android:layout_height="@dimen/dp_60"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
-        app:backgroundTint="@color/Unify_G400"
-        app:srcCompat="@drawable/ic_feed_post_plus" />
 </RelativeLayout>

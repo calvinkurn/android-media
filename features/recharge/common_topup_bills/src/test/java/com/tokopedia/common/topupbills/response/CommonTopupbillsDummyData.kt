@@ -1,20 +1,6 @@
 package com.tokopedia.common.topupbills.response
 
-import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
-import com.tokopedia.common.topupbills.data.TopupBillsCatalog
-import com.tokopedia.common.topupbills.data.TopupBillsEnquiry
-import com.tokopedia.common.topupbills.data.TopupBillsEnquiryAttribute
-import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
-import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberData
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
-import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberData
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberModData
-import com.tokopedia.common.topupbills.data.UpdateFavoriteDetail
+import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
 import com.tokopedia.common_digital.atc.data.response.ResponseCartData
@@ -53,7 +39,7 @@ object CommonTopupbillsDummyData {
         return TelcoCatalogMenuDetailData(
                 catalogMenuDetailData = TopupBillsMenuDetail(
                         catalog = TopupBillsCatalog(
-                                id = 1,
+                                id = "1",
                                 name = "telco",
                                 label = "Telco",
                                 icon = ""

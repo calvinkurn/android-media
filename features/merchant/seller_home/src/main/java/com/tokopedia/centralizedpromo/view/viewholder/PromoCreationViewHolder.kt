@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.R.layout.centralized_promo_item_promo_creation
-import kotlinx.android.synthetic.main.centralized_promo_item_promo_creation.view.*
+import com.tokopedia.sellerhome.databinding.CentralizedPromoItemPromoCreationBinding
 
 class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiModel>(view) {
 
@@ -21,8 +21,12 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
         val RES_LAYOUT = centralized_promo_item_promo_creation
     }
 
+    private val binding by lazy {
+        CentralizedPromoItemPromoCreationBinding.bind(itemView)
+    }
+
     override fun bind(element: PromoCreationUiModel) {
-        with(itemView) {
+        binding.run {
             ImageHandler.loadImageWithId(ivRecommendedPromo, element.imageDrawable)
             tvRecommendedPromoTitle.text = element.title
             tvRecommendedPromoDescription.text = element.description
@@ -31,28 +35,30 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
                 tvRecommendedPromoExtra.text = element.extra
                 tvRecommendedPromoExtra.show()
                 tvRecommendedPromoDescription.setPadding(
-                        context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                        context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                        context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                        context.resources.getDimension(R.dimen.layout_lvl4).toInt())
+                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
+                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
+                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
+                    root.context.resources.getDimension(R.dimen.layout_lvl4).toInt()
+                )
             } else {
                 tvRecommendedPromoExtra.text = ""
                 tvRecommendedPromoDescription.setPadding(
-                        context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                        context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                        context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                        context.resources.getDimension(R.dimen.layout_lvl2).toInt())
+                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
+                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
+                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
+                    root.context.resources.getDimension(R.dimen.layout_lvl2).toInt()
+                )
             }
 
-            addOnImpressionListener(element.impressHolder) {
-                if(isFreeShippingPromo(element.title)) {
+            root.addOnImpressionListener(element.impressHolder) {
+                if (isFreeShippingPromo(element.title)) {
                     onFreeShippingImpression?.invoke()
                 } else {
                     CentralizedPromoTracking.sendImpressionPromoCreation(element.title)
                 }
             }
 
-            setOnClickListener {
+            root.setOnClickListener {
                 openApplink(element.applink, element.title)
             }
         }

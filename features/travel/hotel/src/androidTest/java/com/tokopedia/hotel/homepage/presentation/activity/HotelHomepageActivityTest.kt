@@ -44,6 +44,7 @@ import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.hamcrest.core.AllOf
 import org.junit.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -171,17 +172,23 @@ class HotelHomepageActivityTest {
 
     private fun changeDate() {
         Thread.sleep(3000)
-        onView(withTagStringValue(R.id.tv_hotel_homepage_checkout_date.toString())).perform(click())
+        onView(withTagStringValue(R.id.tv_hotel_homepage_checkin_date.toString())).perform(click())
 
         Thread.sleep(3000)
-        val cal = Calendar.getInstance()
-        cal.time = DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DATE, 2)
-        val tomorrowDate = cal[Calendar.DATE]
-        try {
-            onView(CommonMatcher.getElementFromMatchAtPosition(withText(tomorrowDate.toString()), 0)).perform(click())
-        } catch (e: Exception) {
-            onView(CommonMatcher.getElementFromMatchAtPosition(withText(tomorrowDate.toString()), 1)).perform(click())
-        }
+
+        // select static date - 8
+        onView(CommonMatcher.getElementFromMatchAtPosition(withText("8"), 1)).check(matches(isDisplayed()))
+        Thread.sleep(3000)
+        onView(CommonMatcher.getElementFromMatchAtPosition(withText("8"), 1)).perform(click())
+        Thread.sleep(3000)
+
+        // select static date - 9
+        onView(CommonMatcher.getElementFromMatchAtPosition(withText("9"), 1)).check(matches(isDisplayed()))
+        Thread.sleep(3000)
+        onView(CommonMatcher.getElementFromMatchAtPosition(withText("9"), 1)).perform(click())
+        Thread.sleep(3000)
+
+        Thread.sleep(1000)
     }
 
     @After

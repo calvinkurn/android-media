@@ -8,18 +8,17 @@ import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationRefundModel
+import com.tokopedia.flight.databinding.ItemFlightCancellationRefundBinding
 
 class FlightCancellationRefundAdapter : RecyclerView.Adapter<FlightCancellationRefundAdapter.ViewHolder>() {
     private var descriptions: List<FlightCancellationRefundModel> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_flight_cancellation_refund, parent, false)
-        return ViewHolder(view)
+        val binding = ItemFlightCancellationRefundBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -32,9 +31,7 @@ class FlightCancellationRefundAdapter : RecyclerView.Adapter<FlightCancellationR
         this.descriptions = descriptions
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        private val descriptionTextView: AppCompatTextView = itemView.findViewById(R.id.tv_description)
+    inner class ViewHolder(val binding: ItemFlightCancellationRefundBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(description: FlightCancellationRefundModel) {
             val color = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
@@ -52,7 +49,7 @@ class FlightCancellationRefundAdapter : RecyclerView.Adapter<FlightCancellationR
                 }
             }
             descriptionStr.setSpan(clickableSpan, startIndex, stopIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            descriptionTextView.text = descriptionStr
+            binding.tvDescription.text = descriptionStr
         }
 
     }

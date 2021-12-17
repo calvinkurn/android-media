@@ -1,9 +1,11 @@
 package com.tokopedia.core.analytics.container;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -21,7 +23,11 @@ import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
+import com.tokopedia.core.analytics.nishikino.model.Campaign;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.util.PriceUtil;
 import com.tokopedia.device.info.DeviceConnectionInfo;
 import com.tokopedia.iris.Iris;
@@ -949,7 +955,9 @@ public class GTMAnalytics extends ContextAnalytics {
 
     private void logEventForVerification(String eventName, Map<String, Object> values){
         if(remoteConfig.getBoolean(ANDROID_GA_EVENT_LOGGING)) {
-            if(!TextUtils.isEmpty(values.get(AppEventTracking.GTM.UTM_SOURCE).toString())) {
+            if(values.containsKey(AppEventTracking.GTM.UTM_SOURCE) &&
+                    values.get(AppEventTracking.GTM.UTM_SOURCE) != null &&
+                    !TextUtils.isEmpty(values.get(AppEventTracking.GTM.UTM_SOURCE).toString())) {
                 Map<String, String> messageMap = new HashMap<>();
                 messageMap.put("type", "event_verification");
                 messageMap.put("name", eventName);
@@ -1049,6 +1057,31 @@ public class GTMAnalytics extends ContextAnalytics {
         //
         bundle.putString(KEY_EVENT, keyEvent);
         pushEventV5(keyEvent, wrapWithSessionIris(bundle), context);
+    }
+
+    @Override
+    public void sendCampaign(Activity activity,
+                             String campaignUrl,
+                             String screenName,
+                             boolean isOriginalUrlAmp){
+        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(activity, Uri.parse(campaignUrl), isOriginalUrlAmp);
+        if (!TrackingUtils.isValidCampaign(campaign.getCampaign())) return;
+
+        campaign.setScreenName(screenName);
+
+        // V5
+        sendCampaign(campaign.getCampaign());
+
+        // v4
+        pushEvent("campaignTrack", campaign.getCampaign());
+        sendGeneralEvent(campaign.getNullCampaignMap());
+
+        sendGeneralEvent(new EventTracking(
+                AppEventTracking.Event.CAMPAIGN,
+                AppEventTracking.Category.CAMPAIGN,
+                AppEventTracking.Action.DEEPLINK,
+                campaignUrl
+        ).getEvent());
     }
 
     public void sendCampaign(Map<String, Object> param) {

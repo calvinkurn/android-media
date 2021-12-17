@@ -36,6 +36,7 @@ import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
@@ -73,7 +74,7 @@ class FragmentFavorite() : BaseDaggerFragment(), FavoriteClickListener, OnRefres
     lateinit var progressBar: ProgressBar
     lateinit var mainContent: RelativeLayout
     private var wishlistNotLoggedIn: View? = null
-    private var btnLogin: Button? = null
+    private var btnLogin: UnifyButton? = null
 
     @JvmField
     @Inject

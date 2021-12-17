@@ -5,7 +5,7 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     tools:ignore="Overdraw"
     >
 
@@ -119,9 +119,9 @@
             android:id="@+id/no_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_40"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="40dp"
             android:background="@color/Unify_N0"
             android:gravity="center_horizontal"
             android:orientation="vertical">
@@ -137,12 +137,12 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="8dp"
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
                 android:text="@string/empty_deals_text"
                 android:textColor="@color/Unify_N700_32"
-                android:textSize="@dimen/sp_14"
+                android:textSize="14sp"
                 android:textStyle="normal" />
 
         </LinearLayout>

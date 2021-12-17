@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
+import com.tokopedia.imagepicker.editor.main.Constant
 import com.tokopedia.imagepicker.editor.watermark.builder.Image
 import com.tokopedia.imagepicker.editor.watermark.builder.Text
 import com.tokopedia.imagepicker.editor.watermark.builder.TextAndImage
@@ -14,8 +15,6 @@ import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.resizeScale
 import com.tokopedia.imagepicker.editor.watermark.utils.MAX_IMAGE_SIZE
 import com.tokopedia.imagepicker.editor.watermark.utils.takeAndEllipsizeOf
 import com.yalantis.ucrop.util.FastBitmapDrawable
-import android.graphics.Bitmap.Config.ARGB_8888 as ARGB_8888
-import android.graphics.Bitmap.createBitmap as createBitmap
 
 open class WatermarkBuilder {
 
@@ -28,6 +27,7 @@ open class WatermarkBuilder {
     private var watermarkImage: Image? = null
     private var watermarkText: TextUIModel? = null
     private var watermarkTextAndImage: TextAndImageUIModel? = null
+    private var watermarkTypes: List<Int> = defaultWatermarkType
 
     private constructor(
         context: Context,
@@ -90,7 +90,15 @@ open class WatermarkBuilder {
         }
     }
 
-    fun loadWatermarkTextImage(text: String, bitmap: Bitmap) = apply {
+    fun setWatermarkType(types: List<Int>) = apply {
+        this.watermarkTypes = types
+    }
+
+    fun setWatermarkType(types: List<Int>, color: String) = apply {
+        this.watermarkTypes = types
+    }
+
+    fun loadWatermarkTextImage(text: String, bitmap: Bitmap, types: List<Int>) = apply {
         this.isCombine = true
 
         this.watermarkTextAndImage = TextAndImage().apply {
@@ -101,8 +109,7 @@ open class WatermarkBuilder {
 
     fun loadOnlyWatermarkTextImage(text: String, bitmap: Bitmap) = apply {
         this.onlyWatermark = true
-
-        loadWatermarkTextImage(text, bitmap)
+        loadWatermarkTextImage(text, bitmap, watermarkTypes)
     }
 
     fun setTileMode(tileMode: Boolean) = apply {
@@ -121,7 +128,7 @@ open class WatermarkBuilder {
         }
     }
 
-    fun getWatermark(): Watermark {
+    fun getWatermark(type: Int): Watermark {
         return Watermark(
             watermarkTextAndImage = watermarkTextAndImage,
             watermarkImg = watermarkImage,
@@ -131,10 +138,36 @@ open class WatermarkBuilder {
             isTitleMode = isTitleMode,
             isCombine = isCombine,
             context = context,
+            type = type
         )
     }
 
+    fun getWatermarks(): List<Watermark> {
+        return this.watermarkTypes.map { watermarkType ->
+            Watermark(
+                watermarkTextAndImage = watermarkTextAndImage,
+                watermarkImg = watermarkImage,
+                watermarkText = watermarkText,
+                backgroundImg = backgroundImg,
+                onlyWatermark = onlyWatermark,
+                isTitleMode = isTitleMode,
+                isCombine = isCombine,
+                context = context,
+                type = watermarkType,
+            )
+        }
+    }
+
+    fun getOutputImages(): Array<Bitmap> {
+        return getWatermarks().map {
+            it.outputImage!!
+        }.toTypedArray()
+    }
+
     companion object {
+
+        @JvmStatic
+        val defaultWatermarkType = listOf(Constant.TYPE_WATERMARK_TOPED, Constant.TYPE_WATERMARK_CENTER_TOPED)
 
         @JvmStatic
         fun create(context: Context, backgroundImg: Bitmap): WatermarkBuilder {

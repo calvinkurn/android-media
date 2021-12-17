@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.GetPostDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.PostItemDataModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostCtaDataUiModel
@@ -13,61 +14,104 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 21/05/20
  */
 
-class PostMapper @Inject constructor() : BaseResponseMapper<GetPostDataResponse, List<PostListDataUiModel>> {
+class PostMapper @Inject constructor() :
+    BaseResponseMapper<GetPostDataResponse, List<PostListDataUiModel>> {
 
     companion object {
         private const val MAX_ITEM_PER_PAGE = 3
     }
 
-    override fun mapRemoteDataToUiData(response: GetPostDataResponse, isFromCache: Boolean): List<PostListDataUiModel> {
+    override fun mapRemoteDataToUiData(
+        response: GetPostDataResponse,
+        isFromCache: Boolean
+    ): List<PostListDataUiModel> {
         return response.getPostWidgetData?.data.orEmpty().map {
             PostListDataUiModel(
-                    dataKey = it.dataKey.orEmpty(),
-                    postPagers = getPostPagers(it.list.orEmpty(), it.emphasizeType),
-                    cta = PostCtaDataUiModel(
-                            text = it.cta?.text.orEmpty(),
-                            appLink = it.cta?.appLink.orEmpty()
-                    ),
-                    error = it.error.orEmpty(),
-                    isFromCache = isFromCache,
-                    showWidget = it.showWidget.orFalse(),
-                    emphasizeType = it.emphasizeType ?: PostListDataUiModel.IMAGE_EMPHASIZED
+                dataKey = it.dataKey.orEmpty(),
+                postPagers = getPostPagers(it.list.orEmpty(), it.emphasizeType, MAX_ITEM_PER_PAGE),
+                cta = PostCtaDataUiModel(
+                    text = it.cta?.text.orEmpty(),
+                    appLink = it.cta?.appLink.orEmpty()
+                ),
+                error = it.error.orEmpty(),
+                isFromCache = isFromCache,
+                showWidget = it.showWidget.orFalse(),
+                emphasizeType = it.emphasizeType ?: PostListDataUiModel.IMAGE_EMPHASIZED
             )
         }
     }
 
-    private fun getPostPagers(postItems: List<PostItemDataModel>, emphasizeType: Int?): List<PostListPagerUiModel> {
-        return postItems.chunked(MAX_ITEM_PER_PAGE).map {
+    fun mapRemoteDataToUiData(
+        response: GetPostDataResponse,
+        isFromCache: Boolean,
+        dataKeys: List<DataKeyModel>
+    ): List<PostListDataUiModel> {
+        return response.getPostWidgetData?.data.orEmpty().mapIndexed { i, post ->
+            val maxDisplay = dataKeys.getOrNull(i)?.maxDisplay ?: MAX_ITEM_PER_PAGE
+            PostListDataUiModel(
+                dataKey = post.dataKey.orEmpty(),
+                postPagers = getPostPagers(post.list.orEmpty(), post.emphasizeType, maxDisplay),
+                cta = PostCtaDataUiModel(
+                    text = post.cta?.text.orEmpty(),
+                    appLink = post.cta?.appLink.orEmpty()
+                ),
+                error = post.error.orEmpty(),
+                isFromCache = isFromCache,
+                showWidget = post.showWidget.orFalse(),
+                emphasizeType = post.emphasizeType ?: PostListDataUiModel.IMAGE_EMPHASIZED
+            )
+        }
+    }
+
+    private fun getPostPagers(
+        postItems: List<PostItemDataModel>,
+        emphasizeType: Int?,
+        maxDisplay: Int
+    ): List<PostListPagerUiModel> {
+        val maxItemPerPage = if (maxDisplay == 0) {
+            MAX_ITEM_PER_PAGE
+        } else {
+            maxDisplay
+        }
+        return postItems.chunked(maxItemPerPage).map {
             val postListItem = getPostItems(it, emphasizeType)
             PostListPagerUiModel(postListItem)
         }
     }
 
-    private fun getPostItems(postList: List<PostItemDataModel>, emphasizeType: Int?): List<PostItemUiModel> {
-        return postList.mapIndexed { index, postItem ->
-            when (emphasizeType) {
-                PostListDataUiModel.TEXT_EMPHASIZED -> {
-                    PostItemUiModel.PostTextEmphasizedUiModel(
+    private fun getPostItems(
+        postList: List<PostItemDataModel>,
+        emphasizeType: Int?
+    ): List<PostItemUiModel> {
+        return postList.sortedByDescending { it.isPinned }
+            .mapIndexed { index, postItem ->
+                when (emphasizeType) {
+                    PostListDataUiModel.TEXT_EMPHASIZED -> {
+                        PostItemUiModel.PostTextEmphasizedUiModel(
                             title = postItem.title.orEmpty(),
                             appLink = postItem.appLink.orEmpty(),
                             url = postItem.url.orEmpty(),
                             featuredMediaUrl = postItem.featuredMediaURL.orEmpty(),
                             subtitle = postItem.subtitle.orEmpty(),
+                            textEmphasizeType = PostListDataUiModel.TEXT_EMPHASIZED,
                             stateText = postItem.stateText.orEmpty(),
                             stateMediaUrl = postItem.stateMediaUrl.orEmpty(),
-                            shouldShowUnderLine = index != postList.size.minus(1)
-                    )
-                }
-                else -> {
-                    PostItemUiModel.PostImageEmphasizedUiModel(
+                            shouldShowUnderLine = index != postList.size.minus(1),
+                            isPinned = postItem.isPinned
+                        )
+                    }
+                    else -> {
+                        PostItemUiModel.PostImageEmphasizedUiModel(
                             title = postItem.title.orEmpty(),
                             appLink = postItem.appLink.orEmpty(),
                             url = postItem.url.orEmpty(),
                             featuredMediaUrl = postItem.featuredMediaURL.orEmpty(),
-                            subtitle = postItem.subtitle.orEmpty()
-                    )
+                            subtitle = postItem.subtitle.orEmpty(),
+                            textEmphasizeType = PostListDataUiModel.IMAGE_EMPHASIZED,
+                            isPinned = postItem.isPinned
+                        )
+                    }
                 }
             }
-        }
     }
 }

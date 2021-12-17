@@ -19,8 +19,6 @@ class BankTransferViewHolder(
     val actionItemListener: (Int, BasePaymentModel) -> Unit
 ) : RecyclerView.ViewHolder(view) {
 
-    private val defaultCardTitle =
-        view.context.getString(com.tokopedia.pms.R.string.pms_deferred_payment_card_title)
 
     fun bind(item: BankTransferPaymentModel) {
         bindTransactionTimeData(item.expiryDate, item.expiryTime)
@@ -60,10 +58,9 @@ class BankTransferViewHolder(
         }
     }
 
-    private fun bindPaymentGatewayData(item: BasePaymentModel) {
+    private fun bindPaymentGatewayData(item: BankTransferPaymentModel) {
         view.apply {
-            cardTitle.text =
-                context.getString(com.tokopedia.pms.R.string.pms_deferred_payment_card_title)
+            cardTitle.text = item.productName
             ivGatewayImage.urlSrc = item.gatewayImage
             tvPaymentGatewayName.text = item.gatewayName
             if (item.paymentCode.isNotEmpty())
@@ -73,7 +70,6 @@ class BankTransferViewHolder(
 
     private fun bindTransactionTimeData(expiryDate: String, expiryTime: Long) {
         view.apply {
-            cardTitle.text = defaultCardTitle
             cardIcon.urlSrc = CARD_ICON_URL
             tvPaymentTransactionDate.text = expiryDate
             tvTransactionExpireTime.text =

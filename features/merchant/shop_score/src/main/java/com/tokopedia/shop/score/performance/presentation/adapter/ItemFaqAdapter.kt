@@ -7,22 +7,28 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.TooltipLevelItemDecoration
+import com.tokopedia.shop.score.databinding.ItemFaqShopScoreBinding
 import com.tokopedia.shop.score.performance.presentation.model.ItemFaqUiModel
-import kotlinx.android.synthetic.main.item_faq_shop_score.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
-class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) : RecyclerView.Adapter<ItemFaqAdapter.ItemFaqViewHolder>() {
+class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) :
+    RecyclerView.Adapter<ItemFaqAdapter.ItemFaqViewHolder>() {
 
     private val itemFaqList = mutableListOf<ItemFaqUiModel>()
 
     fun updateArrowItemFaq(position: Int) {
         itemFaqList.mapIndexed { index, itemFaqUiModel ->
-            if (index == position) {
-                itemFaqUiModel.isShow = !itemFaqUiModel.isShow
-                notifyItemChanged(position, PAYLOAD_TOGGLE_FAQ)
+            if (itemFaqUiModel.isShow) {
+                itemFaqUiModel.isShow = false
+                notifyItemChanged(index, PAYLOAD_TOGGLE_FAQ)
+            } else if (index == position) {
+                itemFaqUiModel.isShow = true
+                notifyItemChanged(index, PAYLOAD_TOGGLE_FAQ)
             }
         }
     }
@@ -35,11 +41,16 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) : RecyclerVie
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemFaqViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_faq_shop_score, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_faq_shop_score, parent, false)
         return ItemFaqViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ItemFaqViewHolder, position: Int, payloads: MutableList<Any>) {
+    override fun onBindViewHolder(
+        holder: ItemFaqViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
         if (payloads.isNullOrEmpty()) {
             super.onBindViewHolder(holder, position, payloads)
         } else {
@@ -59,61 +70,78 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) : RecyclerVie
 
     inner class ItemFaqViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
+        private val binding: ItemFaqShopScoreBinding? by viewBinding()
         private var cardTooltipLevelAdapter: CardTooltipLevelAdapter? = null
         private var itemParameterFaqAdapter: ItemParameterFaqAdapter? = null
 
         fun bind(data: ItemFaqUiModel) {
-            with(itemView) {
-                tv_title_faq_shop_score?.text = data.title
-                tv_desc_faq_shop_score?.showWithCondition(data.isShow)
-                tv_desc_faq_shop_score?.text = MethodChecker.fromHtml(data.desc_first)
-                tv_desc_parameter_performance_faq?.text = data.desc_second
+            binding?.run {
+                tvTitleFaqShopScore.text =
+                    data.title?.let { root.context.getString(it) }.orEmpty()
+                tvDescFaqShopScore.showWithCondition(data.isShow)
+                tvDescFaqShopScore.text = MethodChecker.fromHtml(
+                    data.desc_first?.let { root.context.getString(it) }.orEmpty()
+                )
+                tvDescParameterPerformanceFaq.text = data.desc_second?.let {
+                    root.context.getString(it)
+                }.orEmpty()
 
                 initAdapterCardLevel(data)
                 initAdapterParameterFaq(data)
 
-                card_shop_score_parameter_faq?.showWithCondition(data.isShow && data.isCalculationScore)
-                tv_desc_parameter_performance_faq?.showWithCondition(data.isShow && data.isCalculationScore)
-                rv_card_level_faq?.showWithCondition(data.isShow && data.isCalculationScore)
-                rv_shop_score_parameter_faq?.showWithCondition(data.isShow && data.isCalculationScore)
+                cardShopScoreParameterFaq.showWithCondition(
+                    data.isShow && data.isCalculationScore
+                )
+                tvDescParameterPerformanceFaq.showWithCondition(
+                    data.isShow && data.isCalculationScore
+                )
+                rvCardLevelFaq.showWithCondition(
+                    data.isShow && data.isCalculationScore
+                )
+                rvShopScoreParameterFaq.showWithCondition(
+                    data.isShow && data.isCalculationScore
+                )
 
                 if (data.isShow) {
-                    ic_info_toggle_faq?.rotation = REVERSE_ROTATION
+                    icInfoToggleFaq.rotation = REVERSE_ROTATION
                 } else {
-                    ic_info_toggle_faq?.rotation = NO_ROTATION
+                    icInfoToggleFaq.rotation = NO_ROTATION
                 }
 
-                ic_info_toggle_faq?.setOnClickListener {
+                icInfoToggleFaq.setOnClickListener {
                     itemFaqListener.onArrowClicked(adapterPosition)
                 }
             }
         }
 
         fun bindPayload(data: ItemFaqUiModel) {
-            with(itemView) {
-                tv_desc_faq_shop_score?.showWithCondition(data.isShow)
+            binding?.run {
+                tvDescFaqShopScore.showWithCondition(data.isShow)
 
-                card_shop_score_parameter_faq?.showWithCondition(data.isShow && data.isCalculationScore)
-                tv_desc_parameter_performance_faq?.showWithCondition(data.isShow && data.isCalculationScore)
-                rv_card_level_faq?.showWithCondition(data.isShow && data.isCalculationScore)
-                rv_shop_score_parameter_faq?.showWithCondition(data.isShow && data.isCalculationScore)
+                cardShopScoreParameterFaq.showWithCondition(data.isShow && data.isCalculationScore)
+                tvDescParameterPerformanceFaq.showWithCondition(data.isShow && data.isCalculationScore)
+                rvCardLevelFaq.showWithCondition(data.isShow && data.isCalculationScore)
+                rvShopScoreParameterFaq.showWithCondition(data.isShow && data.isCalculationScore)
 
                 if (data.isShow) {
-                    ic_info_toggle_faq?.rotation = REVERSE_ROTATION
+                    icInfoToggleFaq.rotation = REVERSE_ROTATION
                 } else {
-                    ic_info_toggle_faq?.rotation = NO_ROTATION
+                    icInfoToggleFaq.rotation = NO_ROTATION
                 }
             }
         }
 
         private fun initAdapterCardLevel(data: ItemFaqUiModel) {
-            with(itemView) {
+            binding?.run {
                 cardTooltipLevelAdapter = CardTooltipLevelAdapter()
-                rv_card_level_faq?.apply {
+                rvCardLevelFaq.run {
                     if (itemDecorationCount.isZero()) {
                         addItemDecoration(TooltipLevelItemDecoration())
                     }
-                    layoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
+                    layoutManager = GridLayoutManager(
+                        context, 2,
+                        GridLayoutManager.VERTICAL, false
+                    )
                     adapter = cardTooltipLevelAdapter
                     isNestedScrollingEnabled = false
                 }
@@ -122,14 +150,21 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) : RecyclerVie
         }
 
         private fun initAdapterParameterFaq(data: ItemFaqUiModel) {
-            with(itemView) {
-                itemParameterFaqAdapter = ItemParameterFaqAdapter()
-                rv_shop_score_parameter_faq?.apply {
-                    layoutManager = LinearLayoutManager(context)
-                    adapter = itemParameterFaqAdapter
-                    isNestedScrollingEnabled = false
+            if (data.parameterFaqList.isNotEmpty()) {
+                binding?.run {
+                    itemParameterFaqAdapter = ItemParameterFaqAdapter()
+                    rvShopScoreParameterFaq.run {
+                        layoutManager =
+                            if (DeviceScreenInfo.isTablet(context)) {
+                                GridLayoutManager(context, data.parameterFaqList.size)
+                            } else {
+                                LinearLayoutManager(context)
+                            }
+                        adapter = itemParameterFaqAdapter
+                        isNestedScrollingEnabled = false
+                    }
+                    itemParameterFaqAdapter?.setParameterFaqList(data.parameterFaqList)
                 }
-                itemParameterFaqAdapter?.setParameterFaqList(data.parameterFaqList)
             }
         }
     }

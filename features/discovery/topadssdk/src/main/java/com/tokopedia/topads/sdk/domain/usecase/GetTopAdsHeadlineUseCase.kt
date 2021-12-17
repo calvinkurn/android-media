@@ -71,6 +71,10 @@ const val GET_TOPADS_HEADLINE_QUERY: String = """query TopadsCPMHeadlineQuery(${
               is_active
               img_url
             }
+            campaign {
+               original_price
+               discount_percentage
+            }
           }
           image_shop {
             xs_url

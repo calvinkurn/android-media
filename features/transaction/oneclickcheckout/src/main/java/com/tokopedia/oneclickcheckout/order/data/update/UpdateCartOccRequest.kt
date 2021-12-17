@@ -12,18 +12,38 @@ data class UpdateCartOccRequest(
         @SerializedName("chosen_address")
         var chosenAddress: ChosenAddress? = null,
         @SerializedName("skip_shipping_validation")
-        val skipShippingValidation: Boolean = false
-)
+        val skipShippingValidation: Boolean = false,
+        @SerializedName("source")
+        var source: String = ""
+) {
+        companion object {
+                const val SOURCE_UPDATE_QTY_NOTES = "update_qty_notes"
+                const val SOURCE_UPDATE_OCC_ADDRESS = "update_occ_address"
+                const val SOURCE_UPDATE_OCC_PAYMENT = "update_occ_payment"
+        }
+}
 
 data class UpdateCartOccCartRequest(
         @SerializedName("cart_id")
-        val cartId: String = "",
+        val cartId: String? = null,
         @SerializedName("quantity")
         val quantity: Int = 1,
         @SerializedName("notes")
         val notes: String = "",
         @SerializedName("product_id")
-        val productId: String = "",
+        val productId: String = ""
+)
+
+data class UpdateCartOccProfileRequest(
+        @SerializedName("gateway_code")
+        val gatewayCode: String = "",
+        @SerializedName("metadata")
+        val metadata: String = "",
+        @SerializedName("address_id")
+        val addressId: String = "",
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("service_id")
+        val serviceId: Int = 0,
         @SuppressLint("Invalid Data Type")
         @SerializedName("shipping_id")
         val shippingId: Int = 0,
@@ -32,20 +52,6 @@ data class UpdateCartOccCartRequest(
         val spId: Int = 0,
         @SerializedName("is_free_shipping_selected")
         val isFreeShippingSelected: Boolean = false
-)
-
-data class UpdateCartOccProfileRequest(
-        @SerializedName("profile_id")
-        val profileId: String = "",
-        @SerializedName("gateway_code")
-        val gatewayCode: String = "",
-        @SerializedName("metadata")
-        val metadata: String = "",
-        @SuppressLint("Invalid Data Type")
-        @SerializedName("service_id")
-        val serviceId: Int = 0,
-        @SerializedName("address_id")
-        val addressId: String = ""
 ) {
     companion object {
         const val EXPRESS_CHECKOUT_PARAM = "express_checkout_param"

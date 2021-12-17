@@ -48,7 +48,7 @@ class UmrahPdpActivity : UmrahBaseActivity(), HasComponent<UmrahPdpComponent> {
         val uri = intent.data
         @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
         slugName = if (uri != null) uri.lastPathSegment ?: ""
-        else intent.getStringExtra(EXTRA_SLUG_NAME)
+        else intent.getStringExtra(EXTRA_SLUG_NAME) ?: ""
     }
 
     override fun onBackPressed() {

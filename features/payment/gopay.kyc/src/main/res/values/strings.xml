@@ -1,0 +1,71 @@
+<resources>
+    <string name="app_name">GoPay Kyc</string>
+    <string name="gopay_kyc_upgrade_now">Upgrade Sekarang</string>
+    <string name="gopay_kyc_benefit_header_description_text">Cukup upload selfie dan e-KTP, bisa langsung nikmatin semua keuntungan khusus buat kamu.</string>
+    <string name="gopay_kyc_benefit_header_title_text">Upgrade ke GoPay Plus, gratis!</string>
+
+    <string name="gopay_kyc_wallet_benefit_title_text">Isi saldo sampai Rp10 juta</string>
+    <string name="gopay_kyc_wallet_benefit_description_text">Per bulannya, kamu bisa punya saldo sampai Rp10 juta, lho.</string>
+    <string name="gopay_kyc_atm_benefit_title_text">Tarik tunai GoPay di ATM BCA</string>
+    <string name="gopay_kyc_atm_benefit_description_text">Nggak perlu kartu kredit atau debit. Cukup cari ATM terdekat lalu tarik GoPay-mu.</string>
+    <string name="gopay_kyc_instant_debit_benefit_title_text">Transfer ke bank dengan instan</string>
+    <string name="gopay_kyc_instant_debit_benefit_description_text">Transfer GoPay kamu ke rekening bank apa pun, kapan aja.</string>
+    <string name="gopay_kyc_friends_benefit_title_text">Bayar ke teman &amp; keluarga</string>
+    <string name="gopay_kyc_friends_benefit_description_text">Bisa juga minta GoPay dan patungan buat jajan rame-rame.</string>
+    <string name="gopay_kyc_payback_benefit_title_text">Jaminan saldo GoPay kembali</string>
+    <string name="gopay_kyc_payback_benefit_description_text">Perlingungan ekstra buat saldomu</string>
+    <string name="gopay_kyc_take_ktp_text">Ambil Foto e-KTP</string>
+    <string name="gopay_kyc_check_ktp_title">Cek Foto e-KTP Kamu</string>
+    <string name="gopay_kyc_ktp_text">e-KTP</string>
+    <string name="gopay_kyc_ktp_description_text">Khusus warga negara Indonesia</string>
+    <string name="gopay_kyc_ktp_change_text">Ubah</string>
+    <string name="gopay_kyc_ktp_upload_header_text">Upload foto identitas</string>
+    <string name="gopay_kyc_ktp_photo_front_text">Foto bagian depan e-KTP</string>
+    <string name="gopay_kyc_ktp_right_text">Benar</string>
+    <string name="gopay_kyc_ktp_wrong">Salah</string>
+
+
+    <string name="gopay_ktp_instruction_1">Gunakan e-KTP asli bukan hasil fotokopi.</string>
+    <string name="gopay_ktp_instruction_2">Pastikan foto e-KTP berada dalam bingkai.</string>
+    <string name="gopay_ktp_instruction_3">Pastikan foto e-KTP terlihat terang dan jelas.</string>
+    <string name="gopay_selfie_ktp_instruction_1">Cari pencahayaan yang cukup.</string>
+    <string name="gopay_selfie_ktp_instruction_2">Ambil selfie dengan posisikan e-KTP di bawah dagu. </string>
+    <string name="gopay_selfie_ktp_instruction_3">Pastikan seluruh bagian wajah &amp; e-KTP kamu terlihat jelas dan tidak terpotong.</string>
+    <string name="gopay_kyc_step_1">1.</string>
+
+    <string name="gopay_kyc_step_2">2.</string>
+    <string name="gopay_kyc_selfie_plus_ktp_text">Selfie + e-KTP</string>
+    <string name="gopay_kyc_selfie_ktp_upload_header_text">Upload selfie dengan e-KTP</string>
+    <string name="gopay_kyc_selfie_take_ktp_text">Ambil Selfie dengan e-KTP</string>
+    <string name="gopay_kyc_selfie_ktp_check_title">Cek Selfie dengan e-KTP</string>
+    <string name="gopay_kyc_selfie_ktp_text">Foto selfie dengan e-KTP, ya</string>
+    <string name="gopay_kyc_selfie_ktp_description_text">Digunakan untuk verifikasi identitas diri</string>
+    <string name="gopay_kyc_selfie_ktp_photo_front_text">Foto selfie sambil pegang e-KTP</string>
+    <string name="gopay_kyc_reset_image_text">Foto Ulang</string>
+    <string name="gopay_kyc_use_photo_button_text">Pakai Foto Ini</string>
+
+    <string name="gopay_kyc_ktp_capture_instruction_text">Posisikan e-KTP di dalam bingkai. Tap layarnya agar informasi di foto bisa terbaca jelas.</string>
+    <string name="gopay_kyc_ktp_capture_verification_text">Pastikan e-KTP kamu di dalam bingkai dan informasi di foto bisa terbaca jelas</string>
+    <string name="gopay_kyc_selfie_ktp_capture_instruction_text">Posisikan wajah dan e-KTP di dalam bingkai</string>
+    <string name="gopay_kyc_selfie_ktp_capture_verification_text">Pastikan muka dan e-KTP kamu berada dalam bingkai dan terlihat jelas</string>
+    <string name="gopay_kyc_review_title_text">Periksa lagi datamu dan pastikan semua informasi sudah benar.</string>
+    <string name="gopay_kyc_privacy_bank_text">GoPay diawasi oleh Bank Indonesia</string>
+    <string name="gopay_kyc_privacy_policy_gojek_text">Data hanya digunakan pihak GoPay untuk verifikasi.</string>
+    <string name="gopay_kyc_accept_tnc_text">Dengan klik “Kirim”, kamu menyetujui <![CDATA[<"font color='#03AC0E'><b>syarat &amp; ketentuan</b></font>]]></string>
+    <string name="gopay_kyc_submit_button_text">Kirim</string>
+
+    <string name="gopay_kyc_upload_success_title_text">Upgrade lagi diproses</string>
+    <string name="gopay_kyc_upload_success_description_text">Datamu sudah kami teruskan ke Gojek. Biasanya butuh waktu 1x24 jam. Kamu akan dapat notifikasi kalau prosesnya sudah selesai.</string>
+    <string name="gopay_kyc_upload_failed_title_text">Datamu gagal dikirim ke Gojek</string>
+    <string name="gopay_kyc_upload_failed_description_text">Tenang, kamu nggak perlu isi data dari awal lagi. Coba kirim ulang, ya.</string>
+
+    <string name="review_cancel_dialog_title">Keluar dari halaman ini?</string>
+    <string name="review_cancel_dailog_description">Datamu tidak akan tersimpan jika kamu keluar dari halaman ini.</string>
+    <string name="continue_gopay_kyc_dialog">Lanjut Upgrade</string>
+    <string name="exit_gopay_kyc">Keluar Halaman</string>
+    <string name="gopay_kyc_retry_uplaod_again_text">Kirim Ulang</string>
+    <string name="gopay_kyc_captured_image_description">Captured Image</string>
+    <string name="gopay_kyc_image_capture_loading_text">Loading</string>
+    <string name="gopay_kyc_finish_kyc_button_text">Oke</string>
+
+</resources>

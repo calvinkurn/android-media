@@ -9,6 +9,7 @@ apply plugin: 'newrelic'
 
 apply from: "$rootDir/buildconfig/aar/local-aar.gradle"
 apply from: '../tools/dynamic_feature_inclusion.gradle'
+apply plugin: 'kotlin-parcelize'
 
 def allowDistribution() {
     if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
@@ -122,12 +123,6 @@ android {
         ndk {
             abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
-            }
-        }
     }
 
 
@@ -144,7 +139,7 @@ android {
     configurations.all {
         resolutionStrategy.force 'androidx.multidex:multidex:2.0.0'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
-        resolutionStrategy.force 'com.squareup.okio:okio:2.2.2'
+        resolutionStrategy.force 'com.squareup.okio:okio:2.6.0'
     }
 
     // Specifies 4 flavor dimensions.
@@ -180,6 +175,9 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation platform(rootProject.ext.firebase.bom)
+    implementation platform(rootProject.ext.networkDependencies.okhttpBom)
+
+    implementation projectOrAar(rootProject.ext.features.liveBroadcaster)
 
     implementation projectOrAar(rootProject.ext.features.pushNotificationCommon)
     implementation projectOrAar(rootProject.ext.libraries.pushNotification)
@@ -245,6 +243,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
     implementation projectOrAar(rootProject.ext.libraries.linker)
     implementation projectOrAar(rootProject.ext.libraries.weaver)
+    implementation projectOrAar(rootProject.ext.libraries.interceptors)
     implementation projectOrAar(rootProject.ext.features.logisticaddaddress)
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
     implementation projectOrAar(rootProject.ext.features.logisticorder)
@@ -268,6 +267,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.shopOpen)
     implementation projectOrAar(rootProject.ext.features.withdraw)
     implementation projectOrAar(rootProject.ext.features.mediaCommon)
+    implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
 
     implementation projectOrAar(rootProject.ext.features.changePhoneNumber)
     implementation projectOrAar(rootProject.ext.features.loginregister)
@@ -331,7 +331,6 @@ dependencies {
     } else {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
     }
-    implementation projectOrAar(rootProject.ext.features.moengageWrapper)
 
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.core
@@ -368,6 +367,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.fingerprint)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.tokopatch)
+    implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
 
     implementation rootProject.ext.supportLibDependencies.exifinterface
     implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
@@ -392,9 +392,6 @@ dependencies {
 
     debugImplementation project.ext.debugToolsDependencies.leakCanary
 
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -402,6 +399,9 @@ dependencies {
 
     implementation rootProject.ext.playServicesDependencies.tagManager
     implementation rootProject.ext.playServicesDependencies.tagManagerImpl
+
+    //Adding this to df_base_sellerapp/build.gradle was giving error - https://github.com/Meituan-Dianping/Robust/issues/444
+    implementation projectOrAar(rootProject.ext.libraries.imagePickerInsta)
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -101,6 +101,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String CLEAR_CACHE_PREFIX = "/clear-cache";
     private static final String KEY_CLEAR_CACHE = "android_webview_clear_cache";
     private static final String LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment";
+    private static final String GOJEK_APP_LINK = "https://gojek.link/goclub/membership?source=toko_status_match";
 
     String mJsHciCallbackFuncName;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
@@ -114,6 +115,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String PRINT_AWB_URL = "tokopedia.com/shipping-label";
     private static final String PLAY_GOOGLE_URL = "play.google.com";
     private static final String BRANCH_IO_HOST = "tokopedia.link";
+    private static final String FDL_HOST = "tkpd.page.link";
+    private static String ENABLE_FDL_HOST_WEBVIEW = "android_enable_fdl_host_webview";
     private static final String SCHEME_INTENT = "intent";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
     public static final String CUST_OVERLAY_URL = "imgurl";
@@ -221,16 +224,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         webView.clearCache(true);
         webView.addJavascriptInterface(new WebToastInterface(getActivity()), "Android");
-        webView.setInitialScale(1);
         WebSettings webSettings = webView.getSettings();
-        webSettings.setUserAgentString(webSettings.getUserAgentString() + " webview ");
+        webSettings.setUserAgentString(webSettings.getUserAgentString() + " Mobile webview ");
         webSettings.setJavaScriptEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webSettings.setDomStorageEnabled(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setDisplayZoomControls(false);
-        webSettings.setLoadWithOverviewMode(true);
-        webSettings.setUseWideViewPort(true);
         webView.setWebChromeClient(new MyWebChromeClient());
         webView.setWebViewClient(new MyWebViewClient());
         webSettings.setMediaPlaybackRequiresUserGesture(false);
@@ -350,7 +350,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
 
         if (requestCode == REQUEST_CODE_LOGIN) {
-            webView.loadAuthUrl(getUrl(), userSession);
+            if(resultCode == RESULT_OK){
+                webView.loadAuthUrl(getUrl(), userSession);
+            }else {
+                if(getActivity() != null && getActivity() instanceof BaseSimpleWebViewActivity)
+                    ((BaseSimpleWebViewActivity) getActivity()).goPreviousActivity();
+            }
         } else if (requestCode == LOGIN_GPLUS) {
             String historyUrl = "";
             WebBackForwardList mWebBackForwardList = webView.copyBackForwardList();
@@ -703,19 +708,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         if (url.contains(HCI_CAMERA_KTP)) {
             mJsHciCallbackFuncName = uri.getLastPathSegment();
-            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE);
-            if (queryParam != null)
-                intent.putExtra(CUST_OVERLAY_URL, queryParam);
-            startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE);
+            routeToHomeCredit(ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE, queryParam, headerText);
             return true;
         } else if (url.contains(HCI_CAMERA_SELFIE)) {
             mJsHciCallbackFuncName = uri.getLastPathSegment();
-            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE);
-            if (queryParam != null)
-                intent.putExtra(CUST_OVERLAY_URL, queryParam);
-            if (headerText != null)
-                intent.putExtra(CUST_HEADER, headerText);
-            startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE);
+            routeToHomeCredit(ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE, queryParam, headerText);
             return true;
         } else if (PARAM_WEBVIEW_BACK.equalsIgnoreCase(url)
                 && getActivity() != null) {
@@ -729,7 +726,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
             return true;
-        } else if (BRANCH_IO_HOST.equalsIgnoreCase(uri.getHost()) && !GlobalConfig.isSellerApp()) {
+        } else if ((BRANCH_IO_HOST.equalsIgnoreCase(uri.getHost()) || isFDLHostEnabled(uri))
+                && !GlobalConfig.isSellerApp()) {
             //Avoid crash in app that doesn't support branch IO
             try {
                 Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
@@ -770,7 +768,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return true;
         }
 
-        if (isLinkAjaAppLink(url)) {
+        if (isExternalAppLink(url)) {
             return redirectToExternalAppAndFinish(activity, uri);
         }
         if (url.startsWith(ApplinkConst.KYC_FORM_ONLY_NO_PARAM)) {
@@ -802,6 +800,24 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
+    }
+
+    private boolean isFDLHostEnabled(Uri uri){
+        if(remoteConfig != null){
+            return remoteConfig.getBoolean(ENABLE_FDL_HOST_WEBVIEW, true)
+                    && FDL_HOST.equalsIgnoreCase(uri.getHost());
+        }else{
+            return FDL_HOST.equalsIgnoreCase(uri.getHost());
+        }
+    }
+
+    private void routeToHomeCredit(String appLink, String overlayUrl, String headerText) {
+        Intent intent = RouteManager.getIntent(getActivity(), appLink);
+        if (overlayUrl != null)
+            intent.putExtra(CUST_OVERLAY_URL, overlayUrl);
+        if (headerText != null)
+            intent.putExtra(CUST_HEADER, headerText);
+        startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE);
     }
 
     private boolean redirectToExternalAppAndFinish(Activity activity, Uri uri) {
@@ -880,8 +896,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         return webHistoryItem.getUrl();
     }
 
-    private boolean isLinkAjaAppLink(String url) {
-        return url.contains(LINK_AJA_APP_LINK);
+    private boolean isExternalAppLink(String url) {
+        return url.contains(LINK_AJA_APP_LINK) || url.contains(GOJEK_APP_LINK);
     }
 
     // If back pressed is disabled and the webview has moved to a native page,

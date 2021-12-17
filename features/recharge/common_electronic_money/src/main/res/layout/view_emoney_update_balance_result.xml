@@ -5,7 +5,7 @@
     android:id="@+id/view_card_info"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     tools:ignore="Overdraw"
@@ -16,6 +16,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lvl4" />
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_tap_cash"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tickerType="warning"
+        app:tickerShapeType="loose"
+        app:closeButtonVisibility="gone"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/button_topup"

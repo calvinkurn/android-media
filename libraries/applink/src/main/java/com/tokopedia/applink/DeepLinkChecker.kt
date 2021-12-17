@@ -18,6 +18,7 @@ object DeepLinkChecker {
     private const val DEFAULT_EXCLUDED_AMP_VALUE = "stories"
 
     const val WEB_HOST = "www.tokopedia.com"
+    const val WEB_HOST_STAGING = "staging.tokopedia.com"
     const val MOBILE_HOST = "m.tokopedia.com"
 
     const val OTHER = -1
@@ -59,6 +60,7 @@ object DeepLinkChecker {
     const val NATIVE_THANK_YOU = 38
     const val LOGIN_BY_QR = 39
     const val POWER_MERCHANT = 40
+    const val SALDO_DEPOSIT = 41
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 
@@ -180,17 +182,13 @@ object DeepLinkChecker {
 
     private fun isHome(uriData: Uri): Boolean {
         return uriData.pathSegments.isEmpty() &&
-            (uriData.host?.contains(WEB_HOST) ?: false || uriData.host?.contains(MOBILE_HOST) ?: false)
+            (uriData.host?.contains(WEB_HOST) ?: false || uriData.host?.contains(MOBILE_HOST) ?: false
+                    || UriUtil.isHostStaging(uriData.host ?: ""))
     }
 
     @JvmStatic
     fun openHot(url: String, context: Context): Boolean {
         return openIfExist(context, getHotIntent(context, url))
-    }
-
-    @JvmStatic
-    fun openFind(url: String, context: Context): Boolean {
-        return openIfExist(context, getFindIntent(context, url))
     }
 
     @JvmStatic
@@ -234,12 +232,6 @@ object DeepLinkChecker {
         val query = if (uri.pathSegments.size > 1) uri.pathSegments[1] else ""
         query.replace("-","+")
         return RouteManager.getIntent(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.DISCOVERY_SEARCH + "?q=" + query))
-    }
-
-    private fun getFindIntent(context: Context, url: String): Intent {
-        val uri = Uri.parse(url)
-        val segments = uri.pathSegments
-        return RouteManager.getIntent(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.FIND + "/" + if (segments.size > 1) segments[segments.lastIndex] else ""))
     }
 
     private fun getCatalogIntent(context: Context, url: String): Intent {

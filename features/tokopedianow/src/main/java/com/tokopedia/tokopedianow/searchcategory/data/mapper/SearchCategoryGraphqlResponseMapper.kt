@@ -3,6 +3,8 @@ package com.tokopedia.tokopedianow.searchcategory.data.mapper
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
+import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse
+import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.CategoryFilterModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.DynamicChannelModel
@@ -32,4 +34,12 @@ internal fun getBanner(graphqlResponse: GraphqlResponse): Channels {
             ?.channels
             ?.getOrElse(0) { Channels() }
             ?: Channels()
+}
+
+internal fun getRepurchaseWidget(graphqlResponse: GraphqlResponse): RepurchaseData {
+    return graphqlResponse
+            .getData<GetRepurchaseResponse?>(GetRepurchaseResponse::class.java)
+            ?.response
+            ?.data
+            ?: RepurchaseData()
 }

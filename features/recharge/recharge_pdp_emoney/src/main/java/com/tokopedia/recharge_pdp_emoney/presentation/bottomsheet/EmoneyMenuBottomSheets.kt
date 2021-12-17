@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.recharge_pdp_emoney.R
+import androidx.annotation.NonNull
+import com.tokopedia.recharge_pdp_emoney.databinding.BottomSheetsEmoneyMenuBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottom_sheets_emoney_menu.view.*
 
 /**
  * @author by resakemal on 26/08/19
@@ -21,20 +21,20 @@ class EmoneyMenuBottomSheets : BottomSheetUnify() {
     }
 
     private fun initChildLayout() {
-        val view = View.inflate(context, R.layout.bottom_sheets_emoney_menu, null)
-        setChild(view)
+        val view = BottomSheetsEmoneyMenuBinding.inflate(LayoutInflater.from(context))
+        setChild(view.root)
         initView(view)
     }
 
-    private fun initView(view: View) {
+    private fun initView(view:  BottomSheetsEmoneyMenuBinding) {
         with(view) {
             setTitle("")
-            menu_help.setOnClickListener {
+            menuHelp.setOnClickListener {
                 if (::listener.isInitialized) listener.onHelpClicked()
                 dismiss()
             }
 
-            menu_order_list.setOnClickListener {
+            menuOrderList.setOnClickListener {
                 if (::listener.isInitialized) listener.onOrderListClicked()
                 dismiss()
             }

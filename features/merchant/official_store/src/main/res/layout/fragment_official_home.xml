@@ -6,7 +6,7 @@
     android:id="@+id/official_home_motion"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     app:currentState="@+id/start"
     app:layoutDescription="@xml/fragment_official_home_scene">
     <View
@@ -37,22 +37,14 @@
             app:toolbarBackButton="none"
             app:toolbarInitialTheme="light"
             app:toolbarAlwaysShowShadow="false" />
-        <com.tokopedia.searchbar.MainToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:minHeight="?actionBarSize"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"/>
     </FrameLayout>
 
     <com.tokopedia.officialstore.category.presentation.viewutil.OSChooseAddressWidgetView
         android:id="@+id/view_widget_choose_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_container"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
@@ -60,7 +52,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/osDivider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="1dp"
         app:layout_constraintTop_toBottomOf="@+id/view_widget_choose_address"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
@@ -70,8 +62,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl7"
         android:background="@color/Unify_N0"
-        android:minHeight="@dimen/dp_32"
-        android:maxHeight="@dimen/dp_64"
+        android:minHeight="32dp"
+        android:maxHeight="64dp"
         app:tabMode="scrollable"
         app:tabIndicatorColor="@color/Unify_P600"
         app:layout_constraintStart_toStartOf="parent"
@@ -102,7 +94,7 @@
         android:id="@+id/view_content_loading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         tools:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/tablayout"
         app:layout_constraintStart_toStartOf="parent"

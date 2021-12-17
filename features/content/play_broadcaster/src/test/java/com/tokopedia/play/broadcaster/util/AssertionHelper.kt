@@ -11,10 +11,15 @@ import kotlin.reflect.KProperty
 /**
  * Created by jegul on 11/05/21
  */
+@Deprecated("Use assertEqualTo", replaceWith = ReplaceWith("assertEqualTo(expected)"))
 fun <T : Any> T.isEqualTo(expected: T) {
+    assertEqualTo(expected)
+}
+
+fun <T : Any> T.assertEqualTo(expected: T) {
     Assertions
-            .assertThat(this)
-            .isEqualTo(expected)
+        .assertThat(this)
+        .isEqualTo(expected)
 }
 
 fun <T : Any> T.isEqualToComparingFieldByField(expected: T) {
@@ -45,6 +50,24 @@ fun <T: Any> List<T>.assertEmpty() {
     Assertions
             .assertThat(this)
             .isEmpty()
+}
+
+fun String.assertEmpty() {
+    Assertions
+        .assertThat(this)
+        .isEmpty()
+}
+
+fun Boolean.assertTrue() {
+    Assertions
+        .assertThat(this)
+        .isTrue
+}
+
+fun Boolean.assertFalse() {
+    Assertions
+        .assertThat(this)
+        .isFalse
 }
 
 fun <T: Any> List<T>.assertCount(count: Int) {

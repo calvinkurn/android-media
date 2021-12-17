@@ -31,12 +31,12 @@ import com.tokopedia.seller.search.feature.suggestion.view.fragment.SuggestionSe
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.widget_global_search_view.view.*
 import javax.inject.Inject
 
 class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchComponent>,
-        GlobalSearchView.GlobalSearchViewListener, GlobalSearchView.SearchTextBoxListener,
-        HistoryViewUpdateListener, SuggestionViewUpdateListener, GlobalSearchSellerPerformanceMonitoringListener {
+    GlobalSearchView.GlobalSearchViewListener, GlobalSearchView.SearchTextBoxListener,
+    HistoryViewUpdateListener, SuggestionViewUpdateListener,
+    GlobalSearchSellerPerformanceMonitoringListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -70,15 +70,18 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
 
     override fun getComponent(): InitialSearchComponent {
         return DaggerInitialSearchComponent
-                .builder()
-                .globalSearchSellerComponent(GlobalSearchSellerComponentBuilder.getComponent(application))
-                .initialSearchModule(InitialSearchModule())
-                .build()
+            .builder()
+            .globalSearchSellerComponent(GlobalSearchSellerComponentBuilder.getComponent(application))
+            .initialSearchModule(InitialSearchModule())
+            .build()
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
-        SellerSearchTracking.clickBackButtonSearchEvent(userId, globalSearchView?.searchBarView?.searchBarTextField?.text?.trim().toString())
+        SellerSearchTracking.clickBackButtonSearchEvent(
+            userId,
+            globalSearchView?.binding?.searchBarView?.searchBarTextField?.text?.trim().toString().orEmpty()
+        )
     }
 
     private fun proceed() {
@@ -105,8 +108,10 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
         globalSearchView = findViewById(R.id.globalSearchSeller)
         mSuggestionView = findViewById(R.id.search_suggestion_container)
         mInitialStateView = findViewById(R.id.search_initial_state_container)
-        suggestionFragment = supportFragmentManager.findFragmentById(R.id.search_suggestion) as? SuggestionSearchFragment
-        initialStateFragment = supportFragmentManager.findFragmentById(R.id.search_initial_state) as? InitialSearchFragment
+        suggestionFragment =
+            supportFragmentManager.findFragmentById(R.id.search_suggestion) as? SuggestionSearchFragment
+        initialStateFragment =
+            supportFragmentManager.findFragmentById(R.id.search_initial_state) as? InitialSearchFragment
     }
 
     private fun setInitialKeyword() {
@@ -117,7 +122,7 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
     }
 
     private fun getKeywordFromIntent(): String =
-            intent?.data?.getQueryParameter(GlobalSearchSellerConstant.KEYWORD).orEmpty()
+        intent?.data?.getQueryParameter(GlobalSearchSellerConstant.KEYWORD).orEmpty()
 
     override fun onQueryTextChangeListener(keyword: String) {
         viewModel.getTypingSearch(keyword)
@@ -160,9 +165,19 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
     }
 
     private fun setWhiteStatusBar() {
-        window?.decorView?.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+        window?.decorView?.setBackgroundColor(
+            ContextCompat.getColor(
+                this,
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
+            )
+        )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            setStatusBarColor(
+                ContextCompat.getColor(
+                    this,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                )
+            )
             setLightStatusBar(true)
         }
     }
@@ -203,5 +218,4 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
     override fun finishMonitoring() {
         performanceMonitoring.stopPerformanceMonitoring()
     }
-
 }

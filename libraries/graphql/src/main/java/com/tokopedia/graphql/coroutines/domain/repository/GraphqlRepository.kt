@@ -7,7 +7,9 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 
 interface GraphqlRepository{
 
-    suspend fun getReseponse(requests: List<GraphqlRequest>,
-                             cacheStrategy: GraphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.NONE).build())
-            : GraphqlResponse
+    suspend fun response(
+        requests: List<GraphqlRequest>,
+        cacheStrategy: GraphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.NONE).build()
+    ) : GraphqlResponse
+
 }

@@ -82,6 +82,11 @@ class FeedExoPlayer(val context: Context) {
         reset()
         exoPlayer.playWhenReady = true
     }
+    fun replay() {
+        if (exoPlayer.playbackState == ExoPlayer.STATE_ENDED) reset()
+        exoPlayer.playWhenReady = true
+    }
+
 
     fun stop() {
         exoPlayer.playWhenReady = false

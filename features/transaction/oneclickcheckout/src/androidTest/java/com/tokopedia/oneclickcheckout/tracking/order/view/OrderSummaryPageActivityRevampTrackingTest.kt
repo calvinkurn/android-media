@@ -8,7 +8,6 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
@@ -42,31 +41,22 @@ class OrderSummaryPageActivityRevampTrackingTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private var idlingResource: IdlingResource? = null
 
-    private val gtmLogDBSource = GtmLogDBSource(context)
-
     private val cartInterceptor = OneClickCheckoutInterceptor.cartInterceptor
-    private val preferenceInterceptor = OneClickCheckoutInterceptor.preferenceInterceptor
-    private val logisticInterceptor = OneClickCheckoutInterceptor.logisticInterceptor
-    private val promoInterceptor = OneClickCheckoutInterceptor.promoInterceptor
-    private val checkoutInterceptor = OneClickCheckoutInterceptor.checkoutInterceptor
 
     @Before
     fun setup() {
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
-        gtmLogDBSource.deleteAll().subscribe()
         OneClickCheckoutInterceptor.resetAllCustomResponse()
-
         OneClickCheckoutInterceptor.setupGraphqlMockResponse(context)
+
         idlingResource = OccIdlingResource.getIdlingResource()
         IdlingRegistry.getInstance().register(idlingResource)
     }
 
     @After
     fun cleanup() {
-        gtmLogDBSource.deleteAll().subscribe()
         IdlingRegistry.getInstance().unregister(idlingResource)
-        activityRule.finishActivity()
     }
 
     @Test
@@ -77,7 +67,6 @@ class OrderSummaryPageActivityRevampTrackingTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-
             clickChangeAddressRevamp()
             closeBottomSheet()
 

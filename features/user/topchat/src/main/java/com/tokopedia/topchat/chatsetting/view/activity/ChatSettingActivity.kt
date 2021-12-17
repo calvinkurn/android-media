@@ -20,14 +20,13 @@ class ChatSettingActivity : BaseSimpleActivity(), HasComponent<ChatSettingCompon
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initToolbar()
+        initWindowBackground()
     }
 
-    private fun initToolbar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.elevation = 0f
-        }
-        useLightNotificationBar()
+    private fun initWindowBackground() {
+        window.decorView.setBackgroundColor(
+            MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+        )
     }
 
     override fun getNewFragment(): Fragment? {
@@ -41,14 +40,6 @@ class ChatSettingActivity : BaseSimpleActivity(), HasComponent<ChatSettingCompon
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .chatSettingModule(ChatSettingModule(this))
                 .build()
-    }
-
-    private fun useLightNotificationBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            window.statusBarColor = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-        }
-        toolbar.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
     }
 
     companion object {

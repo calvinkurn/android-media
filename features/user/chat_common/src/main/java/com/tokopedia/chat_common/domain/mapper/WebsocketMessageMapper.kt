@@ -20,6 +20,7 @@ import javax.inject.Inject
 open class WebsocketMessageMapper @Inject constructor() {
 
     open fun map(pojo: ChatSocketPojo): Visitable<*> {
+        pojo.generateLocalIdIfNotExist()
         return if (hasAttachment(pojo)) {
             val jsonAttributes = pojo.attachment!!.attributes
             mapAttachmentMessage(pojo, jsonAttributes!!)
@@ -29,21 +30,9 @@ open class WebsocketMessageMapper @Inject constructor() {
     }
 
     open fun convertToMessageViewModel(pojo: ChatSocketPojo): Visitable<*> {
-        return MessageViewModel(
-                messageId = pojo.msgId.toString(),
-                fromUid = pojo.fromUid,
-                from = pojo.from,
-                fromRole = pojo.fromRole,
-                attachmentId = "",
-                attachmentType = "",
-                replyTime = pojo.message.timeStampUnixNano,
-                startTime = pojo.startTime,
-                message = pojo.message.censoredReply,
-                isRead = false,
-                isDummy = false,
-                isSender = !pojo.isOpposite,
-                source = pojo.source
-        )
+        return MessageUiModel.Builder()
+            .withResponseFromWs(pojo)
+            .build()
     }
 
     open fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
@@ -56,98 +45,40 @@ open class WebsocketMessageMapper @Inject constructor() {
     }
 
     private fun convertToImageUpload(@NonNull pojo: ChatSocketPojo, jsonAttribute: JsonObject):
-            ImageUploadViewModel {
-        val pojoAttribute = GsonBuilder().create().fromJson<ImageUploadAttributes>(jsonAttribute,
-                ImageUploadAttributes::class.java)
-
-        return ImageUploadViewModel(
-                messageId = pojo.msgId.toString(),
-                fromUid = pojo.fromUid,
-                from = pojo.from,
-                fromRole = pojo.fromRole,
-                attachmentId = pojo.attachment!!.id,
-                attachmentType = pojo.attachment!!.type,
-                replyTime = pojo.message.timeStampUnixNano,
-                isSender = !pojo.isOpposite,
-                imageUrl = pojoAttribute.imageUrl,
-                imageUrlThumbnail = pojoAttribute.thumbnail,
-                startTime = pojo.startTime,
-                message = pojo.message.censoredReply,
-                source = pojo.source
+            ImageUploadUiModel {
+        val pojoAttribute = GsonBuilder().create().fromJson(
+            jsonAttribute, ImageUploadAttributes::class.java
         )
+        return ImageUploadUiModel.Builder()
+            .withResponseFromWs(pojo)
+            .withImageUrl(pojoAttribute.imageUrl)
+            .withImageUrlThumbnail(pojoAttribute.thumbnail)
+            .build()
     }
 
     private fun convertToProductAttachment(@NonNull pojo: ChatSocketPojo, jsonAttribute:
-    JsonObject): ProductAttachmentViewModel {
-        val pojoAttribute = GsonBuilder().create().fromJson<ProductAttachmentAttributes>(jsonAttribute,
-                ProductAttachmentAttributes::class.java)
-
-        val variant: List<AttachmentVariant> = pojoAttribute.productProfile.variant ?: emptyList()
-
-        return ProductAttachmentViewModel(
-                messageId = pojo.msgId.toString(),
-                fromUid = pojo.fromUid,
-                from = pojo.from,
-                fromRole = pojo.fromRole,
-                attachmentId = pojo.attachment!!.id,
-                attachmentType = pojo.attachment!!.type,
-                replyTime = pojo.message.timeStampUnixNano,
-                productId = pojoAttribute.productId,
-                productName = pojoAttribute.productProfile.name,
-                productPrice = pojoAttribute.productProfile.price,
-                productUrl = pojoAttribute.productProfile.url,
-                productImage = pojoAttribute.productProfile.imageUrl,
-                isSender = !pojo.isOpposite,
-                message = pojo.message.censoredReply,
-                startTime = pojo.startTime,
-                canShowFooter = canShowFooterProductAttachment(pojo.isOpposite,
-                        pojo.fromRole),
-                blastId = pojo.blastId,
-                productPriceInt = pojoAttribute.productProfile.priceInt,
-                category = pojoAttribute.productProfile.category,
-                variants = variant,
-                dropPercentage = pojoAttribute.productProfile.dropPercentage,
-                priceBefore = pojoAttribute.productProfile.priceBefore,
-                shopId = pojoAttribute.productProfile.shopId,
-                freeShipping = pojoAttribute.productProfile.freeShipping,
-                categoryId = pojoAttribute.productProfile.categoryId,
-                playStoreData = pojoAttribute.productProfile.playStoreData,
-                remainingStock = pojoAttribute.productProfile.remainingStock,
-                status = pojoAttribute.productProfile.status,
-                source = pojo.source,
-                rating = pojoAttribute.productProfile.rating
-        ).apply {
-            finishLoading()
-        }
+    JsonObject): ProductAttachmentUiModel {
+        val canShowFooter = canShowFooterProductAttachment(pojo.isOpposite, pojo.fromRole)
+        val pojoAttribute = GsonBuilder().create().fromJson(
+            jsonAttribute, ProductAttachmentAttributes::class.java
+        )
+        return ProductAttachmentUiModel.Builder()
+            .withResponseFromWs(pojo)
+            .withProductAttributesResponse(pojoAttribute)
+            .withCanShowFooter(canShowFooter)
+            .withNeedSync(false)
+            .build()
     }
 
     private fun convertToInvoiceSent(pojo: ChatSocketPojo, jsonAttribute: JsonObject):
-            AttachInvoiceSentViewModel {
+            AttachInvoiceSentUiModel {
         val invoiceSentPojo = GsonBuilder().create().fromJson(jsonAttribute,
                 InvoiceSentPojo::class.java)
-        return AttachInvoiceSentViewModel(
-                msgId = pojo.msgId.toString(),
-                fromUid = pojo.fromUid,
-                from = pojo.from,
-                fromRole = pojo.fromRole,
-                attachmentId = pojo.attachment!!.id,
-                attachmentType = pojo.attachment!!.type,
-                replyTime = pojo.message.timeStampUnixNano,
-                startTime = pojo.startTime,
-                message = invoiceSentPojo.invoiceLink.attributes.title,
-                description = invoiceSentPojo.invoiceLink.attributes.description,
-                imageUrl = invoiceSentPojo.invoiceLink.attributes.imageUrl,
-                totalAmount = invoiceSentPojo.invoiceLink.attributes.totalAmount,
-                isSender = !pojo.isOpposite,
-                statusId = invoiceSentPojo.invoiceLink.attributes.statusId,
-                status = invoiceSentPojo.invoiceLink.attributes.status,
-                invoiceId = invoiceSentPojo.invoiceLink.attributes.code,
-                invoiceUrl = invoiceSentPojo.invoiceLink.attributes.hrefUrl,
-                createTime = invoiceSentPojo.invoiceLink.attributes.createTime,
-                source = pojo.source
-        ).apply {
-            finishLoading()
-        }
+        return AttachInvoiceSentUiModel.Builder()
+            .withResponseFromWs(pojo)
+            .withInvoiceAttributesResponse(invoiceSentPojo.invoiceLink)
+            .withNeedSync(false)
+            .build()
     }
 
     private fun canShowFooterProductAttachment(isOpposite: Boolean, role: String): Boolean {
@@ -162,18 +93,10 @@ open class WebsocketMessageMapper @Inject constructor() {
         pojo.attachment?.fallbackAttachment?.let {
             fallbackMessage = it.message
         }
-        return FallbackAttachmentViewModel(
-                msgId = pojo.msgId.toString(),
-                fromUid = pojo.fromUid,
-                from = pojo.from,
-                fromRole = pojo.fromRole,
-                attachmentId = pojo.attachment!!.id,
-                attachmentType = pojo.attachment!!.type,
-                replyTime = pojo.message.timeStampUnixNano,
-                message = fallbackMessage,
-                isOpposite = pojo.isOpposite,
-                source = pojo.source
-        )
+        return FallbackAttachmentUiModel.Builder()
+            .withResponseFromWs(pojo)
+            .withMsg(fallbackMessage)
+            .build()
     }
 
     open fun hasAttachment(pojo: ChatSocketPojo): Boolean {

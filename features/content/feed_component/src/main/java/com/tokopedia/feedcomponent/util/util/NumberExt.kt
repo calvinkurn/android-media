@@ -24,16 +24,17 @@ fun Number.productThousandFormatted(
     digitAfterComa: Int = 1,
     roundingMode: RoundingMode = RoundingMode.FLOOR
 ): String {
-    if (toDouble() < 10000) return decimalThousandFormatted()
+    val formatLimit = 10000
+    if (toDouble() < formatLimit) return decimalThousandFormatted()
 
     val exp = (Math.log(this.toDouble()) / Math.log(1000.00)).toInt()
     val number = this.toDouble() / Math.pow(1000.00, exp.toDouble())
-    return "${number.numberFormatted(digitAfterComa, roundingMode)} ${
+    return "${number.numberFormatted(digitAfterComa, roundingMode)}${
         listOf(
-            " rb",
-            " jt",
-            " M",
-            " T"
+            "rb",
+            "jt",
+            "M",
+            "T"
         )[exp - 1]
     }"
 }

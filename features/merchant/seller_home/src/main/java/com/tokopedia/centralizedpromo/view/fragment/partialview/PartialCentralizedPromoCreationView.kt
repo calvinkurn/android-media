@@ -1,6 +1,5 @@
 package com.tokopedia.centralizedpromo.view.fragment.partialview
 
-import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFactory
@@ -11,51 +10,64 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhome.R
-import kotlinx.android.synthetic.main.centralized_promo_partial_creation_shimmering.view.*
-import kotlinx.android.synthetic.main.centralized_promo_partial_promo_creation.view.*
+import com.tokopedia.sellerhome.databinding.CentralizedPromoPartialPromoCreationBinding
+import com.tokopedia.sellerhome.databinding.FragmentCentralizedPromoBinding
 
 class PartialCentralizedPromoCreationView(
-        view: View,
-        adapterTypeFactory: CentralizedPromoAdapterTypeFactory,
-        coachMarkListener: CoachMarkListener,
-        showCoachMark: Boolean
-) : BasePartialListView<PromoCreationListUiModel, CentralizedPromoAdapterTypeFactory, PromoCreationUiModel>(view, adapterTypeFactory, coachMarkListener, showCoachMark) {
+    binding: FragmentCentralizedPromoBinding,
+    adapterTypeFactory: CentralizedPromoAdapterTypeFactory,
+    coachMarkListener: CoachMarkListener,
+    showCoachMark: Boolean
+) : BasePartialListView<PromoCreationListUiModel, CentralizedPromoAdapterTypeFactory, PromoCreationUiModel>(
+    binding,
+    adapterTypeFactory,
+    coachMarkListener,
+    showCoachMark
+) {
 
     companion object {
         const val SPAN_COUNT: Int = 2
     }
 
+    private val promoCreationBinding = CentralizedPromoPartialPromoCreationBinding.bind(binding.root)
+
     init {
         setupPromoRecommendation()
     }
 
-    private fun setupPromoRecommendation() = with(view) {
+    private fun setupPromoRecommendation() = with(promoCreationBinding) {
         rvCentralizedPromoCreation.apply {
             layoutManager = GridLayoutManager(context, SPAN_COUNT)
-            adapter = this@PartialCentralizedPromoCreationView.adapter.apply { setHasStableIds(true) }
+            adapter =
+                this@PartialCentralizedPromoCreationView.adapter.apply { setHasStableIds(true) }
             isNestedScrollingEnabled = false
         }
     }
 
-    override fun renderLoading() = with(view) {
-        partialSuccess.hide()
+    override fun renderLoading() = with(promoCreationBinding) {
+        partialSuccess.layoutCentralizedPromoCreationSuccess.hide()
         rvCentralizedPromoCreation.hide()
-        layoutCentralizedPromoCreationShimmering.show()
+        centralizedPromoCreationShimmering.layoutCentralizedPromoCreationShimmering.show()
     }
 
-    override fun onRecyclerViewResultDispatched() = with(view) {
-        partialSuccess.show()
+    override fun onRecyclerViewResultDispatched() = with(promoCreationBinding) {
+        partialSuccess.layoutCentralizedPromoCreationSuccess.show()
         rvCentralizedPromoCreation.show()
-        layoutCentralizedPromoCreationShimmering.hide()
+        centralizedPromoCreationShimmering.layoutCentralizedPromoCreationShimmering.hide()
     }
 
-    override fun shouldShowCoachMark(): Boolean = showCoachMark && view.partialSuccess.isShown
+    override fun shouldShowCoachMark(): Boolean =
+        showCoachMark && promoCreationBinding.partialSuccess.layoutCentralizedPromoCreationSuccess.isShown
 
-    override fun getCoachMarkItem() = with(view) {
-        partialSuccess.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        CoachMarkItem(partialSuccess,
-                context.getString(R.string.sh_coachmark_title_promo_creation),
-                context.getString(R.string.sh_coachmark_desc_promo_creation))
+    override fun getCoachMarkItem() = with(promoCreationBinding) {
+        promoCreationBinding.partialSuccess.layoutCentralizedPromoCreationSuccess.setBackgroundColor(
+            ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        )
+        CoachMarkItem(
+            promoCreationBinding.partialSuccess.layoutCentralizedPromoCreationSuccess,
+            root.context.getString(R.string.sh_coachmark_title_promo_creation),
+            root.context.getString(R.string.sh_coachmark_desc_promo_creation)
+        )
     }
 
     override fun onRecyclerViewItemEmpty() {}

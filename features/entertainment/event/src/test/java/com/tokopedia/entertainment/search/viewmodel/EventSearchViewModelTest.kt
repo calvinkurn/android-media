@@ -22,6 +22,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -55,7 +56,6 @@ class EventSearchViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
         eventSearchViewModel = EventSearchViewModel(dispatcher, graphqlRepository)
-        eventSearchViewModel.resources = context.resources
     }
 
     @Test
@@ -63,7 +63,7 @@ class EventSearchViewModelTest {
         assertNotNull(graphqlRepository)
 
         val dataMock = Gson().fromJson(getJson("history_mock.json"), EventSearchHistoryResponse::class.java)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
+        coEvery { graphqlRepository.response(any(), any()) } returns GraphqlResponse(mapOf(
                 EventSearchHistoryResponse.Data::class.java to dataMock.data
         ) as MutableMap<Type, Any>, HashMap<Type, List<GraphqlError>>(), false)
         assertNotNull(dataMock)
@@ -102,7 +102,7 @@ class EventSearchViewModelTest {
         errors[ EventSearchHistoryResponse.Data::class.java] = listOf(errorGql)
 
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } coAnswers {
             GraphqlResponse(HashMap<Type, Any?>(), errors, false)
         }
@@ -118,12 +118,12 @@ class EventSearchViewModelTest {
         assertNotNull(graphqlRepository)
 
         val dataMock = Gson().fromJson(getJson("search_mock.json"), EventSearchLocationResponse::class.java)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
+        coEvery { graphqlRepository.response(any(), any()) } returns GraphqlResponse(mapOf(
                 EventSearchLocationResponse.Data::class.java to dataMock.data
         ) as MutableMap<Type, Any>, HashMap<Type, List<GraphqlError>>(), false)
         assertNotNull(dataMock)
 
-        val dataMockMapped = SearchMapper.mappingLocationandKegiatantoSearchList(dataMock.data,"", eventSearchViewModel.resources)
+        val dataMockMapped = SearchMapper.mappingLocationandKegiatantoSearchList(dataMock.data,"")
 
         eventSearchViewModel.getSearchData("",CacheType.CACHE_FIRST,"")
 
@@ -142,7 +142,7 @@ class EventSearchViewModelTest {
         errors[EventSearchLocationResponse.Data::class.java] = listOf(errorGql)
 
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } coAnswers {
             GraphqlResponse(HashMap<Type, Any?>(), errors, false)
         }
@@ -151,6 +151,22 @@ class EventSearchViewModelTest {
 
         assertNotNull(eventSearchViewModel.errorReport.value)
         assertEquals((eventSearchViewModel.errorReport.value as Throwable).message, errorGql.message)
+    }
+
+    @Test
+    fun fetchsearchdata_failedsearchdata_failedcancellation() {
+        assertNotNull(graphqlRepository)
+
+        val cancelException = CancellationException()
+        coEvery {
+            graphqlRepository.response(any(), any())
+        } coAnswers {
+            throw cancelException
+        }
+
+        eventSearchViewModel.getSearchData("",CacheType.CACHE_FIRST,"")
+
+        assertNull(eventSearchViewModel.errorReport.value)
     }
 
     private fun getJson(path: String): String {

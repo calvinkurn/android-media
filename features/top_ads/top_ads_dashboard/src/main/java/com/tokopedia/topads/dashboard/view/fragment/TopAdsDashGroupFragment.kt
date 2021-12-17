@@ -18,6 +18,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.internal.ParamObject.ISWHITELISTEDUSER
 import com.tokopedia.topads.common.data.response.groupitem.GetTopadsDashboardGroupStatistics
 import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 import com.tokopedia.topads.dashboard.R
@@ -42,6 +43,7 @@ import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupIte
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_dash_fragment_group_list.*
 import kotlinx.android.synthetic.main.topads_dash_layout_common_action_bar.*
@@ -57,7 +59,8 @@ import javax.inject.Inject
  */
 
 private const val CLICK_GROUP_TITLE = "click - group title"
-
+private const val CLICK_FILTER = "click - filter iklan group"
+private const val CLICK_SEARCH_FIELD = "click - cari group in tab group"
 class TopAdsDashGroupFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: GroupItemsListAdapter
@@ -76,6 +79,14 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     val groupIds: MutableList<String> = mutableListOf()
     private lateinit var loader: LoaderUnify
 
+
+    companion object {
+        fun createInstance(bundle: Bundle): TopAdsDashGroupFragment {
+            val fragment = TopAdsDashGroupFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
 
     override fun getScreenName(): String {
         return TopAdsDashGroupFragment::class.java.name
@@ -103,12 +114,13 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
                 ::singleItemDelete, ::statusChange, ::editGroup, ::onGroupClicked))
     }
 
-    private fun editGroup(groupId: Int, strategy: String) {
+    private fun editGroup(groupId: String, strategy: String) {
         if (AppUtil.isSellerInstalled(context)) {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
                 putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
-                putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
+                putExtra(TopAdsDashboardConstant.GROUPID, groupId)
                 putExtra(TopAdsDashboardConstant.GROUP_STRATEGY, strategy)
+                putExtra(ISWHITELISTEDUSER, arguments?.getBoolean(ISWHITELISTEDUSER)?:false)
             }
             startActivityForResult(intent, EDIT_GROUP_REQUEST_CODE)
 
@@ -117,11 +129,12 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onGroupClicked(id: Int, priceSpent: String, groupName: String) {
+    private fun onGroupClicked(id: String, priceSpent: String, groupName: String) {
         if (AppUtil.isSellerInstalled(context)) {
             val intent = Intent(context, TopAdsGroupDetailViewActivity::class.java)
             intent.putExtra(TopAdsDashboardConstant.GROUP_ID, id)
             intent.putExtra(TopAdsDashboardConstant.PRICE_SPEND, priceSpent)
+            intent.putExtra(ISWHITELISTEDUSER, arguments?.getBoolean(ISWHITELISTEDUSER)?:false)
             intent.component = ComponentName(SELLER_PACKAGENAME, TopAdsGroupDetailViewActivity::class.java.name)
             startActivityForResult(intent, GROUP_UPDATED)
         } else {
@@ -197,7 +210,9 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         fetchData()
         btnFilter.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_FILTER, "")
             groupFilterSheet.show(childFragmentManager, "")
+            groupFilterSheet.showAdplacementFilter(false)
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
         close_butt.setOnClickListener {
@@ -216,7 +231,18 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         btnAddItem.setOnClickListener {
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
         }
-        Utils.setSearchListener(context, view, ::fetchData)
+        setSearchAction()
+    }
+
+
+    private fun setSearchAction() {
+        view?.let {
+            val searchBar = it.findViewById<SearchBarUnify>(R.id.searchBar)
+            searchBar?.searchBarTextField?.setOnClickListener {
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_SEARCH_FIELD, "")
+            }
+            com.tokopedia.topads.common.data.util.Utils.setSearchListener(searchBar, context, it, ::fetchData)
+        }
     }
 
     private fun showConfirmationDialog() {
@@ -239,6 +265,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     }
 
     private fun onEmptyResult() {
+
         adapter.items.add(GroupItemsEmptyModel())
         if (searchBar?.searchBarTextField?.text.toString().isEmpty()) {
             adapter.setEmptyView(!EMPTY_SEARCH_VIEW)

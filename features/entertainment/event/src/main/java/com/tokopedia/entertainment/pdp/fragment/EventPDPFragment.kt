@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -13,13 +14,13 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.isNotEmpty
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -70,6 +71,7 @@ import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_open_hour.view.*
 import kotlinx.android.synthetic.main.fragment_event_pdp.*
 import kotlinx.android.synthetic.main.partial_event_pdp_price.*
 import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.*
+import java.lang.ref.WeakReference
 import java.util.*
 import javax.inject.Inject
 
@@ -83,6 +85,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     var listHoliday: List<Legend> = arrayListOf()
     var productDetailData: ProductDetailData = ProductDetailData()
     var selectedDate = ""
+    private lateinit var eventShare: EventShare
 
     @Inject
     lateinit var eventPDPViewModel: EventPDPViewModel
@@ -230,7 +233,15 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     }
 
     private fun loadPrice(productDetailData: ProductDetailData) {
-        tg_event_pdp_price.text = CurrencyFormatter.getRupiahFormat(productDetailData.salesPrice.toInt())
+        val price = productDetailData.salesPrice.toInt()
+        tg_event_pdp_price.apply {
+            text = if(price != ZERO_PRICE) {
+                 CurrencyFormatter.getRupiahFormat(productDetailData.salesPrice.toInt())
+            } else {
+                 resources.getString(R.string.ent_free_price)
+            }
+        }
+
     }
 
     private fun renderScanner(isValidated: Boolean){
@@ -315,32 +326,24 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
         event_pdp_collapsing_toolbar.title = ""
         event_pdp_app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
-            var isShow = false
-            var scrollRange = -1
-
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.totalScrollRange
-                }
-
-                if (scrollRange + verticalOffset == 0) {
-                    event_pdp_collapsing_toolbar.title = productDetailData.title
-                    context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96) }?.let {
-                        navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
+                context?.let { context ->
+                    var color = 0
+                    if (Math.abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
+                        event_pdp_collapsing_toolbar.title = productDetailData.title
+                        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                        widget_event_pdp_tab_section.setScrolledMode()
+                        widget_event_pdp_tab_section.show()
+                    } else if (verticalOffset == 0) {
+                        event_pdp_collapsing_toolbar.title = ""
+                        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                        widget_event_pdp_tab_section.setNullMode()
+                        widget_event_pdp_tab_section.hide()
                     }
-                    event_pdp_toolbar.menu.getItem(0).setIcon(com.tokopedia.entertainment.R.drawable.ic_event_pdp_share_black)
-                    widget_event_pdp_tab_section.setScrolledMode()
-                    widget_event_pdp_tab_section.show()
-                    isShow = true
-                } else if (isShow) {
-                    event_pdp_collapsing_toolbar.title = ""
-                    context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0) }?.let {
-                        navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
+                    setDrawableColorFilter(navIcon, color)
+                    if (event_pdp_toolbar.menu.isNotEmpty()) {
+                        setDrawableColorFilter(event_pdp_toolbar.menu.getItem(0).icon, color)
                     }
-                    event_pdp_toolbar.menu.getItem(0).setIcon(com.tokopedia.entertainment.R.drawable.ic_event_pdp_share_white)
-                    widget_event_pdp_tab_section.setNullMode()
-                    widget_event_pdp_tab_section.hide()
-                    isShow = false
                 }
             }
         })
@@ -493,10 +496,10 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     fun share(productDetailData: ProductDetailData) {
         activity?.let { activity ->
-            context?.let { context ->
-                val titleShare = getString(R.string.ent_pdp_share_title, productDetailData.title)
-                EventShare(activity).shareEvent(productDetailData, titleShare, { showShareLoading() }, { hideShareLoading() })
-            }
+            val context = WeakReference<Activity>(activity)
+            if(!::eventShare.isInitialized) eventShare = EventShare(context)
+            val titleShare = getString(R.string.ent_pdp_share_title, productDetailData.title)
+            eventShare.shareEvent(productDetailData, titleShare, requireContext(), { showShareLoading() }, { hideShareLoading() })
         }
     }
 
@@ -549,6 +552,10 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                 as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
     }
 
+    private fun setDrawableColorFilter(drawable: Drawable?, color: Int) {
+        drawable?.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
+    }
+
     companion object {
 
         const val DEFAULT_PIN = "DEFAULT_PIN"
@@ -560,6 +567,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         const val REQUEST_CODE_LOGIN_WITHOUT_DATE = 101
 
         const val DATE_LONG_VALUE = 1000
+        const val ZERO_PRICE = 0
 
         fun newInstance(urlPDP: String) = EventPDPFragment().also {
             it.arguments = Bundle().apply {

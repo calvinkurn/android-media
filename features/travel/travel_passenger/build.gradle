@@ -17,10 +17,6 @@ buildscript {
     }
 }
 
-androidExtensions {
-    experimental = true
-}
-
 dependencies {
     implementation projectOrAar(rootProject.ext.features.travelCountryCode)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
@@ -54,4 +50,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
-//apply from: '../../../jacoco_task.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

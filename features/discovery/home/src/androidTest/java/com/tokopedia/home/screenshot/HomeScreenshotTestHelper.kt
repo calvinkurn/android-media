@@ -25,6 +25,7 @@ object HomeScreenshotTestHelper {
                 ScreenshotModel(name = "ATF3-Icon"),
                 ScreenshotModel(name = "ATF4-Lego4Image"),
                 ScreenshotModel(name = "Lego6Image"),
+                ScreenshotModel(name = "CampaignWidget"),
                 ScreenshotModel(name = "Lego4Image"),
                 ScreenshotModel(name = "Lego3Image"),
                 ScreenshotModel(name = "1x2Banner"),
@@ -33,6 +34,7 @@ object HomeScreenshotTestHelper {
                 ScreenshotModel(name = "RecommendationListCarousel"),
                 ScreenshotModel(name = "ProductHighlight"),
                 ScreenshotModel(name = "CategoryWidget"),
+                ScreenshotModel(name = "CategoryWidgetV2"),
                 ScreenshotModel(name = "LeftCarousel"),
                 ScreenshotModel(name = "TopCarousel"),
                 ScreenshotModel(name = "PopularKeyword"),
@@ -42,7 +44,8 @@ object HomeScreenshotTestHelper {
                 ScreenshotModel(name = "RechargeReminder"),
                 ScreenshotModel(name = "SalamReminder"),
                 ScreenshotModel(name = "HomeWidget2"),
-                ScreenshotModel(name = "HomeFeaturedShop")
+                ScreenshotModel(name = "HomeFeaturedShop"),
+                ScreenshotModel(name = "PlayWidget")
         )
     }
 

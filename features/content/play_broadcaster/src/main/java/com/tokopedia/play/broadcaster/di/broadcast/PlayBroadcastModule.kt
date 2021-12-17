@@ -4,24 +4,33 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.broadcaster.LiveBroadcaster
+import com.tokopedia.broadcaster.LiveBroadcasterManager
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
-import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper
-import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
-import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket.Companion.KEY_GROUP_CHAT_PREFERENCES
-import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocketImpl
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusher
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherImpl
+import com.tokopedia.play.broadcaster.pusher.mediator.LiveBroadcasterMediator
+import com.tokopedia.play.broadcaster.pusher.mediator.PlayLivePusherMediator
+import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
+import com.tokopedia.play.broadcaster.pusher.mediator.rollence.AbTestBroadcaster
+import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherTimer
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
+import com.tokopedia.play_common.websocket.KEY_GROUP_CHAT_PREFERENCES
+import com.tokopedia.play_common.websocket.PlayWebSocket
+import com.tokopedia.play_common.websocket.PlayWebSocketImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
+import okhttp3.OkHttpClient
 
 /**
  * Created by jegul on 20/05/20
@@ -44,16 +53,23 @@ class PlayBroadcastModule(private val mContext: Context) {
         return LocalCacheHandler(mContext, KEY_GROUP_CHAT_PREFERENCES)
     }
 
-    @PlayBroadcastScope
     @Provides
-    fun provideApsaraLivePusherWrapperBuilder(@ApplicationContext context: Context, dispatcher: CoroutineDispatchers) : ApsaraLivePusherWrapper.Builder {
-        return ApsaraLivePusherWrapper.Builder(context, dispatcher)
+    fun providePlayLivePusherMediator(localCacheHandler: LocalCacheHandler, playLivePusherTimer: PlayLivePusherTimer): PusherMediator {
+        return if (AbTestBroadcaster.isUseBroadcasterSdk()) {
+            LiveBroadcasterMediator(LiveBroadcasterManager(), localCacheHandler, playLivePusherTimer)
+        } else {
+            PlayLivePusherMediator(PlayLivePusherImpl(), localCacheHandler, playLivePusherTimer)
+        }
     }
 
     @PlayBroadcastScope
     @Provides
-    fun providePlaySocket(userSession: UserSessionInterface, cacheHandler: LocalCacheHandler): PlayBroadcastSocket {
-        return PlayBroadcastSocketImpl(userSession, cacheHandler)
+    fun provideWebSocket(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers): PlayWebSocket {
+        return PlayWebSocketImpl(
+            OkHttpClient.Builder(),
+            userSession,
+            dispatchers
+        )
     }
 
     @Provides
@@ -86,11 +102,6 @@ class PlayBroadcastModule(private val mContext: Context) {
     @Provides
     fun providePlayBroadcastMapper(htmlTextTransformer: HtmlTextTransformer): PlayBroadcastMapper {
         return PlayBroadcastUiMapper(htmlTextTransformer)
-
-        /**
-         * If you want configurable
-         */
-//        return PlayBroadcastConfigurableMapper(PlayBroadcastUiMapper(), PlayBroadcastMockMapper())
 
         /**
          * If you want mock

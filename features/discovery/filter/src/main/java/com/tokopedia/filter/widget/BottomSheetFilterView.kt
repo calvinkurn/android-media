@@ -17,7 +17,7 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.design.keyboard.KeyboardHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.R
-
+import com.tokopedia.resources.common.R as RCommon
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.AbstractDynamicFilterDetailActivity
 import com.tokopedia.filter.newdynamicfilter.DynamicFilterCategoryActivity
@@ -210,7 +210,7 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
         filterMainAdapter = DynamicFilterAdapter(dynamicFilterTypeFactory)
         filterMainRecyclerView?.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         val dividerItemDecoration = DividerItemDecoration(filterMainRecyclerView?.context, DividerItemDecoration.VERTICAL)
-        dividerItemDecoration.setDrawable(resources.getDrawable(R.drawable.bg_line_separator))
+        dividerItemDecoration.setDrawable(resources.getDrawable(RCommon.drawable.bg_line_separator))
         filterMainRecyclerView?.addItemDecoration(dividerItemDecoration)
         filterMainRecyclerView?.adapter = filterMainAdapter
         filterMainRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -339,7 +339,7 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
     }
 
     private fun handleResultFromDetailPage(data: Intent) {
-        val optionList: List<Option> = data.getParcelableArrayListExtra(AbstractDynamicFilterDetailActivity.EXTRA_RESULT)
+        val optionList: List<Option> = data.getParcelableArrayListExtra<Option>(AbstractDynamicFilterDetailActivity.EXTRA_RESULT)?.toList() ?: emptyList()
 
         filterController.setFilter(optionList)
         applyFilterFromDetailPage()
@@ -361,7 +361,7 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
     }
 
     private fun handleResultFromCategoryPage(data: Intent) {
-        val selectedCategoryId = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ID)
+        val selectedCategoryId = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ID) ?: ""
 
         val category = filterMainAdapter?.filterList?.let { FilterHelper.getSelectedCategoryDetailsFromFilterList(it, selectedCategoryId) }
 

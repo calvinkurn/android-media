@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -21,6 +22,7 @@ import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.ThanksPageHelper.copyTOClipBoard
 import com.tokopedia.thankyou_native.presentation.views.GyroView
 import com.tokopedia.thankyou_native.presentation.views.ThankYouPageTimerView
+import com.tokopedia.thankyou_native.presentation.views.TopAdsView
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -44,6 +46,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(),
 
     override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
     override fun getFeatureListingContainer(): GyroView? = featureListingContainer
+    override fun getTopAdsView(): TopAdsView? = topAdsView
 
     override fun getTopTickerView(): Ticker? = topTicker
 
@@ -200,7 +203,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(),
             refreshThanksPageData()
             thankYouPageAnalytics.get().onCheckPaymentStatusClick(
                 thanksPageData.profileCode,
-                thanksPageData.paymentID.toString()
+                thanksPageData.paymentID
             )
         }
         setUpHomeButton(btnShopAgain)
@@ -231,7 +234,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(),
         thankYouPageAnalytics.get()
             .sendSalinButtonClickEvent(
                 thanksPageData.profileCode, thanksPageData.gatewayName,
-                thanksPageData.paymentID.toString()
+                thanksPageData.paymentID
             )
     }
 

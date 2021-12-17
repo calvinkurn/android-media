@@ -1,7 +1,9 @@
 package com.tokopedia.tokopedianow.searchcategory.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst
 
 data class AceSearchProductModel(
         @SerializedName("ace_search_product_v4")
@@ -16,7 +18,53 @@ data class AceSearchProductModel(
             @SerializedName("data")
             @Expose
             val data: SearchProductData = SearchProductData()
-    )
+    ) {
+
+        fun getResponseCode() = header.responseCode
+
+        fun getAlternativeKeyword(): String {
+            val alternativeKeywordList = generateAlternativeKeywordList()
+
+            return if (alternativeKeywordList.isEmpty()) SearchCategoryTrackingConst.Misc.NONE
+            else alternativeKeywordList.joinToString()
+        }
+
+        private fun generateAlternativeKeywordList(): List<String> {
+            val alternativeKeywordList = mutableListOf<String>()
+
+            if (isUseSuggestionKeyword())
+                addAllSuggestionKeyword(alternativeKeywordList)
+            else if (isUseRelatedKeyword())
+                addAllRelatedKeyword(alternativeKeywordList)
+
+            return alternativeKeywordList
+        }
+
+        private fun isUseSuggestionKeyword() = getResponseCode() == "7"
+
+        private fun addAllSuggestionKeyword(alternativeKeywordList: MutableList<String>) {
+            val suggestion = data.suggestion.suggestion
+
+            if (suggestion.isNotBlank())
+                alternativeKeywordList.add(suggestion)
+        }
+
+        private fun isUseRelatedKeyword() =
+            listOf("3", "4", "5", "6").contains(getResponseCode())
+
+        private fun addAllRelatedKeyword(alternativeKeywordList: MutableList<String>) {
+            val related = data.related
+
+            val relatedKeyword = related.relatedKeyword
+            if (relatedKeyword.isNotBlank())
+                alternativeKeywordList.add(relatedKeyword)
+
+            val otherRelatedKeyword = related.otherRelatedList
+                .map { it.keyword }
+                .filter { it.isNotBlank() }
+            alternativeKeywordList.addAll(otherRelatedKeyword)
+        }
+    }
 
     data class SearchProductHeader(
             @SerializedName("totalData")
@@ -65,6 +113,10 @@ data class AceSearchProductModel(
             @Expose
             val ticker: Ticker = Ticker(),
 
+            @SerializedName("related")
+            @Expose
+            val related: Related = Related(),
+
             @SerializedName("suggestion")
             @Expose
             val suggestion: Suggestion = Suggestion(),
@@ -97,6 +149,99 @@ data class AceSearchProductModel(
             @Expose
             val typeId: Int = 0
     )
+
+        data class Related(
+            @SerializedName("relatedKeyword")
+            @Expose
+            val relatedKeyword: String = "",
+
+            @SerializedName("position")
+            @Expose
+            val position: Int = 0,
+
+            @SerializedName("otherRelated")
+            @Expose
+            val otherRelatedList: List<OtherRelated> = listOf()
+        )
+
+        data class OtherRelated(
+            @SerializedName("keyword")
+            @Expose
+            val keyword: String = "",
+
+            @SerializedName("url")
+            @Expose
+            val url: String = "",
+
+            @SerializedName("applink")
+            @Expose
+            val applink: String = "",
+
+            @SerializedName("product")
+            @Expose
+            val productList: List<OtherRelatedProduct> = listOf()
+        )
+
+        data class OtherRelatedProduct(
+            @SerializedName("id")
+            @Expose
+            val id: String = "",
+
+            @SerializedName("name")
+            @Expose
+            val name: String = "",
+
+            @SuppressLint("Invalid Data Type")
+            @SerializedName("price")
+            @Expose
+            val price: Int = 0,
+
+            @SerializedName("imageUrl")
+            @Expose
+            val imageUrl: String = "",
+
+            @SerializedName("url")
+            @Expose
+            val url: String = "",
+
+            @SerializedName("applink")
+            @Expose
+            val applink: String = "",
+
+            @SerializedName("priceStr")
+            @Expose
+            val priceString: String = "",
+
+            @SerializedName("wishlist")
+            @Expose
+            val isWishlisted: Boolean = false,
+
+            @SerializedName("shop")
+            @Expose
+            val shop: OtherRelatedProductShop = OtherRelatedProductShop(),
+
+            @SerializedName("ratingAverage")
+            @Expose
+            val ratingAverage: String = "",
+
+            @SerializedName("labelGroups")
+            @Expose
+            val labelGroupList: List<ProductLabelGroup> = listOf(),
+
+            @SerializedName("minOrder")
+            @Expose
+            val minOrder: Int = 1,
+
+            @SerializedName("stock")
+            @Expose
+            val stock: Int = 0,
+        )
+
+        data class OtherRelatedProductShop(
+            @SerializedName("id")
+            @Expose
+            val id: String = "",
+        )
 
     data class Suggestion(
             @SerializedName("suggestion")
@@ -139,10 +284,6 @@ data class AceSearchProductModel(
             @Expose
             val name: String = "",
 
-            @SerializedName("ads")
-            @Expose
-            val ads: ProductAds = ProductAds(),
-
             @SerializedName("shop")
             @Expose
             val shop: ProductShop = ProductShop(),
@@ -163,6 +304,7 @@ data class AceSearchProductModel(
             @Expose
             val imageUrl700: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: String = "",
@@ -243,30 +385,9 @@ data class AceSearchProductModel(
             @Expose
             val parentId: String = "",
 
-            @SerializedName("stock")
+            @SerializedName("maxOrder")
             @Expose
-            val stock: Int = 0,
-    ) {
-
-        fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
-    }
-
-    data class ProductAds(
-            @SerializedName("id")
-            @Expose
-            val id: String = "",
-
-            @SerializedName("productClickUrl")
-            @Expose
-            val productClickUrl: String = "",
-
-            @SerializedName("productWishlistUrl")
-            @Expose
-            val productWishlistUrl: String = "",
-
-            @SerializedName("productViewUrl")
-            @Expose
-            val productViewUrl: String = ""
+            val maxOrder: Int = 0,
     )
 
     data class ProductShop(

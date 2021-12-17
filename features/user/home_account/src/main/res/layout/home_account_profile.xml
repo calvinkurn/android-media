@@ -10,8 +10,7 @@
         android:layout_width="@dimen/home_account_dp_64"
         android:layout_height="@dimen/home_account_dp_64"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:unify_image_corner_radius="4" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:textColor="@color/Unify_N700_96"
@@ -26,7 +25,8 @@
         android:lineHeight="22dp"
         tools:text="Babang Nico"
         tools:targetApi="p" />
-  
+
+
       <com.tokopedia.iconunify.IconUnify
         android:id="@+id/account_user_item_profile_icon_warning_name"
         android:layout_width="@dimen/layout_lvl2"
@@ -37,6 +37,19 @@
         app:layout_constraintLeft_toRightOf="@id/account_user_item_profile_name"
         app:layout_constraintTop_toTopOf="@id/account_user_item_profile_name"
         app:layout_constraintBottom_toBottomOf="@id/account_user_item_profile_name" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/account_user_item_profile_link_status"
+        app:labelType="general_light_grey"
+        android:visibility="visible"
+        app:drawableStartCompat="@drawable/ic_linked_account"
+        android:layout_marginLeft="@dimen/unify_space_4"
+        app:layout_constraintLeft_toRightOf="@id/account_user_item_profile_icon_warning_name"
+        app:layout_constraintTop_toTopOf="@id/account_user_item_profile_icon_warning_name"
+        app:layout_constraintBottom_toBottomOf="@id/account_user_item_profile_icon_warning_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:textColor="@color/Unify_N700_96"
@@ -71,6 +84,24 @@
         android:lines="1"
         tools:text="yoris.prayogo@tokopedia.com"
         tools:targetApi="p" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:visibility="visible"
+        app:drawableLeftCompat="@drawable/ic_gojek_outline"
+        android:id="@+id/link_account_profile_btn"
+        android:background="@drawable/link_account_label_rounded"
+        android:textColor="@color/Unify_Static_White"
+        app:typographyType="heading_6"
+        android:drawablePadding="5dp"
+        android:text="@string/link_account_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:labelType="general_dark_green"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        app:layout_constraintStart_toStartOf="@+id/account_user_item_profile_email"
+        app:layout_constraintTop_toBottomOf="@+id/account_user_item_profile_email" />
 
     <com.tokopedia.iconunify.IconUnify
         app:icon_color_night_enable="@color/home_account_dms_icon_dark"

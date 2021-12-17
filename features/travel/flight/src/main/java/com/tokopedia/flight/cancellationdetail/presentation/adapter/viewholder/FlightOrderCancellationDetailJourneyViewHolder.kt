@@ -8,23 +8,23 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellationdetail.presentation.adapter.FlightOrderCancellationDetailRouteAdapterTypeFactory
 import com.tokopedia.flight.cancellationdetail.presentation.adapter.FlightOrderCancellationDetailRouteTypeFactory
+import com.tokopedia.flight.databinding.ItemFlightDetailOrderBinding
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailJourneyModel
-import kotlinx.android.synthetic.main.item_flight_detail_order.view.*
 
 /**
  * @author by furqan on 07/01/2021
  */
 class FlightOrderCancellationDetailJourneyViewHolder(private val listener: Listener,
                                                      private val titleFontSize: Float,
-                                                     view: View)
-    : AbstractViewHolder<FlightOrderDetailJourneyModel>(view) {
+                                                     val binding: ItemFlightDetailOrderBinding)
+    : AbstractViewHolder<FlightOrderDetailJourneyModel>(binding.root) {
 
     private var isFlightInfoShowed: Boolean = true
 
     override fun bind(element: FlightOrderDetailJourneyModel) {
-        with(itemView) {
-            container_flight_detail_order.setBackgroundColor(
-                    MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        with(binding) {
+            containerFlightDetailOrder.setBackgroundColor(
+                    MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
 
             // journey routes
             val detailRouteTypeFactory: FlightOrderCancellationDetailRouteTypeFactory =
@@ -37,39 +37,39 @@ class FlightOrderCancellationDetailJourneyViewHolder(private val listener: Liste
             val detailRouteAdapter = BaseAdapter<FlightOrderCancellationDetailRouteTypeFactory>(
                     detailRouteTypeFactory,
                     element.routes)
-            recycler_view_flight_detail_journey.adapter = detailRouteAdapter
+            recyclerViewFlightDetailJourney.adapter = detailRouteAdapter
 
             // expandable action
-            layout_expendable_flight.setOnClickListener {
-                image_expendable_journey.startAnimation(AnimationUtils
-                        .loadAnimation(context, R.anim.flight_rotate_reverse))
+            layoutExpendableFlight.setOnClickListener {
+                imageExpendableJourney.startAnimation(AnimationUtils
+                        .loadAnimation(itemView.context, R.anim.flight_rotate_reverse))
                 toggleFlightInfo()
             }
 
             // flight counter
-            counter_flight.textSize = titleFontSize
-            counter_flight.text = context.getString(R.string.flight_label_detail_counter, adapterPosition + 1)
+            counterFlight.textSize = titleFontSize
+            counterFlight.text = itemView.context.getString(R.string.flight_label_detail_counter, adapterPosition + 1)
 
             // journey title
-            title_expendable_passenger.text = context.getString(R.string.flight_label_detail_format,
+            titleExpendablePassenger.text = itemView.context.getString(R.string.flight_label_detail_format,
                     element.departureCityName, element.departureId, element.arrivalCityName, element.arrivalId)
         }
     }
 
     private fun toggleFlightInfo() {
-        with(itemView) {
+        with(binding) {
             if (isFlightInfoShowed) {
                 isFlightInfoShowed = false
-                recycler_view_flight_detail_journey.visibility = View.GONE
-                text_view_flight_cek_syarat.visibility = View.GONE
-                flight_detail_order_separator_line.visibility = View.GONE
-                image_expendable_journey.rotation = 180f
+                recyclerViewFlightDetailJourney.visibility = View.GONE
+                textViewFlightCekSyarat.visibility = View.GONE
+                flightDetailOrderSeparatorLine.visibility = View.GONE
+                imageExpendableJourney.rotation = 180f
             } else {
                 isFlightInfoShowed = true
-                recycler_view_flight_detail_journey.visibility = View.VISIBLE
-                text_view_flight_cek_syarat.visibility = View.VISIBLE
-                flight_detail_order_separator_line.visibility = View.VISIBLE
-                image_expendable_journey.rotation = 0f
+                recyclerViewFlightDetailJourney.visibility = View.VISIBLE
+                textViewFlightCekSyarat.visibility = View.VISIBLE
+                flightDetailOrderSeparatorLine.visibility = View.VISIBLE
+                imageExpendableJourney.rotation = 0f
                 listener.onCloseExpand(adapterPosition)
             }
         }

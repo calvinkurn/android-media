@@ -407,15 +407,19 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     fun validateProductNameInput(productName: String) {
         mIsLoading.value = true
+        // ignore validation if the state is drafting and editing using same product name (BE compatibility issue)
         productInputModel.value?.let {
             it.detailInputModel.apply {
-                if (isEditing.value == true && productName == currentProductName) {
+                val isIgnoringValidation = draftId.isNotEmpty() ||
+                        (isEditing.value == true && productName == currentProductName)
+                if (isIgnoringValidation) {
                     mValidationResult.value = ValidationResultModel(VALIDATION_SUCCESS)
                     mIsLoading.value = false
                     return
                 }
             }
         }
+        // do validation if the state is adding or editing using different product name
         launchCatchError(block = {
             val response = withContext(dispatcher.io) {
                 if (isEditing.value == true) {

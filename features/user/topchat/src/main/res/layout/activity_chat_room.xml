@@ -1,0 +1,70 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_chatlist"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/toolbar"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintHorizontal_weight="5"
+        android:visibility="gone"/>
+
+    <include
+        android:id="@+id/toolbar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/toolbar_chatlist"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintHorizontal_weight="5"
+        layout="@layout/partial_base_toolbar" />
+
+    <FrameLayout
+        android:id="@+id/chatlist_fragment"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:visibility="gone">
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/chatroom_fragment"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:visibility="gone">
+    </FrameLayout>
+
+    <View
+        android:id="@+id/device_feature"
+        android:layout_width="@dimen/spacing_lvl1"
+        android:layout_height="@dimen/spacing_lvl1"
+        tools:ignore="MissingConstraints"
+        android:visibility="gone" />
+
+    <com.tokopedia.topchat.chattemplate.view.customview.TopChatTemplateSeparatedView
+        android:id="@+id/separated_chat_template"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
+        android:paddingBottom="@dimen/dp_topchat_5"
+        android:paddingTop="@dimen/dp_topchat_5"
+        android:background="@color/Unify_N50" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

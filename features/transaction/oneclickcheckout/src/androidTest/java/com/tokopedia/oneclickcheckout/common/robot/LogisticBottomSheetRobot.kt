@@ -24,6 +24,8 @@ class AddressBottomSheetRobot {
                 view.performClick()
             }
         }))
+        // Wait for bottom sheet to close
+        Thread.sleep(1000)
     }
 }
 
@@ -31,6 +33,8 @@ class CourierBottomSheetRobot {
 
     fun chooseCourierWithText(text: String) {
         onView(withText(text)).perform(click())
+        // Wait for bottom sheet to close
+        Thread.sleep(1000)
     }
 }
 
@@ -38,5 +42,7 @@ class DurationBottomSheetRobot {
 
     fun chooseDurationWithText(text: String) {
         onView(withText(text)).perform(click())
+        // Wait for bottom sheet to close
+        Thread.sleep(1000)
     }
 }

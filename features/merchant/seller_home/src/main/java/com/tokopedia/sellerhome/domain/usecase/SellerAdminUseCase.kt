@@ -45,7 +45,7 @@ class SellerAdminUseCase @Inject constructor(private val gqlRepository: GraphqlR
 
     override suspend fun executeOnBackground(): AdminDataResponse {
         GraphqlRequest(QUERY, AdminTypeResponse::class.java, requestParams.parameters).let { request ->
-            gqlRepository.getReseponse(listOf(request)).let { response ->
+            gqlRepository.response(listOf(request)).let { response ->
                 response.getError(AdminTypeResponse::class.java).let { errors ->
                     if (errors.isNullOrEmpty()) {
                         response.getData<AdminTypeResponse>(AdminTypeResponse::class.java).let { data ->

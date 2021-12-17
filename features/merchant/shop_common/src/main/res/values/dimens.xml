@@ -16,7 +16,4 @@
     <dimen name="sp_17">17sp</dimen>
     <dimen name="sp_14">14sp</dimen>
 
-    <dimen name="admin_no_permission_image_margin">40dp</dimen>
-    <dimen name="admin_no_permission_title_margin">40dp</dimen>
-    <dimen name="admin_no_permission_desc_margin">20dp</dimen>
 </resources>

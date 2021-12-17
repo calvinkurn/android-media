@@ -7,9 +7,13 @@ import com.tokopedia.play.view.type.PlayChannelType
  */
 interface PlayInteractiveAnalytic {
 
-    fun clickFollowShopInteractive(channelId: String, channelType: PlayChannelType)
+    fun clickFollowShopInteractive(
+        channelId: String,
+        channelType: PlayChannelType,
+        interactiveId: String
+    )
 
     fun clickWinnerBadge(channelId: String, channelType: PlayChannelType)
 
-    fun clickTapTap(channelId: String, channelType: PlayChannelType)
+    fun clickTapTap(channelId: String, channelType: PlayChannelType, interactiveId: String)
 }

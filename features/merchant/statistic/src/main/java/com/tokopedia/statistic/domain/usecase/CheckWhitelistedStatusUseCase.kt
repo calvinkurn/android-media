@@ -18,22 +18,28 @@ import javax.inject.Inject
 
 //docs : https://tokopedia.atlassian.net/wiki/spaces/~354932339/pages/896109749/Centralized+Whitelist+System
 class CheckWhitelistedStatusUseCase @Inject constructor(
-        private val gqlRepository: GraphqlRepository
-): BaseStatisticUseCase<Boolean>() {
+    private val gqlRepository: GraphqlRepository
+) : BaseStatisticUseCase<Boolean>() {
 
     override suspend fun execute(params: RequestParams): Boolean {
-        val tenMinutes = TimeUnit.MINUTES.toMillis(10)
+        val expiryTime = TimeUnit.MINUTES.toMillis(EXPIRY_TIME)
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                .setExpiryTime(tenMinutes)
-                .build()
-        val gqlRequest = GraphqlRequest(QUERY, CheckWhitelistedStatusResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
-        val errors: List<GraphqlError>? = gqlResponse.getError(CheckWhitelistedStatusResponse::class.java)
+            .setExpiryTime(expiryTime)
+            .build()
+        val gqlRequest = GraphqlRequest(
+            QUERY, CheckWhitelistedStatusResponse::class.java, params.parameters
+        )
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
+        val errors: List<GraphqlError>? = gqlResponse.getError(
+            CheckWhitelistedStatusResponse::class.java
+        )
         if (errors.isNullOrEmpty()) {
-            val response = gqlResponse.getData<CheckWhitelistedStatusResponse>(CheckWhitelistedStatusResponse::class.java)
+            val response = gqlResponse.getData<CheckWhitelistedStatusResponse>(
+                CheckWhitelistedStatusResponse::class.java
+            )
             return response.whitelistedStatus.isWhitelisted
         } else {
-            throw MessageErrorException(errors.joinToString(", ") { it.message })
+            throw MessageErrorException(errors.firstOrNull()?.message.orEmpty())
         }
     }
 
@@ -45,6 +51,7 @@ class CheckWhitelistedStatusUseCase @Inject constructor(
 
     companion object {
         private const val KEY_WHITE_LIST_NAME = "whitelistName"
+        private const val EXPIRY_TIME = 10L
 
         private val QUERY = """
             query checkWhitelistedStatus(${'$'}whitelistName: String!) {

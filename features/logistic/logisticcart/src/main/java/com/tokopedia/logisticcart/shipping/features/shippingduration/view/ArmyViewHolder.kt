@@ -10,10 +10,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
-import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 
 class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -33,13 +32,14 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         const val ESTIMASI_TIDAK_TERSEDIA = "Estimasi tidak tersedia"
     }
 
-    fun bindData(data: LogisticPromoUiModel, listener: ShippingDurationAdapterListener) {
+    fun bindData(data: LogisticPromoUiModel, listener: ShippingDurationAdapterListener?) {
+        val formattedTitle = HtmlLinkHelper(itemView.context, data.freeShippingItemTitle).spannedString
         if (data.isBebasOngkirExtra) {
-            tvTitleExtra.text = itemView.context.getString(R.string.bracket_container, CurrencyFormatUtil.convertPriceValueToIdrFormat(data.discountedRate, false).removeDecimalSuffix())
+            tvTitleExtra.text = formattedTitle
             tvTitleExtra.visibility = View.VISIBLE
             tvTitle.visibility = View.GONE
         } else {
-            tvTitle.text = data.title
+            tvTitle.text = formattedTitle
             tvTitle.visibility = View.VISIBLE
             tvTitleExtra.visibility = View.GONE
         }
@@ -80,14 +80,12 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
         }
 
-        tvTitle.setTextColor(boldFontColor)
-        tvTitleExtra.setTextColor(boldFontColor)
         tvInfo.setTextColor(fontColor)
         tvEta.setTextColor(fontColor)
 
         if (!data.disabled) {
             itemView.setOnClickListener {
-                listener.onLogisticPromoClicked(data)
+                listener?.onLogisticPromoClicked(data)
             }
             flImageContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_enabled_item)
         } else {

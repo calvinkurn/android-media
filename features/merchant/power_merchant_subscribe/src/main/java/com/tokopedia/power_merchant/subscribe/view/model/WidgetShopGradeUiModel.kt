@@ -8,6 +8,7 @@ import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactory
 
 class WidgetShopGradeUiModel(
         val isNewSeller: Boolean = true,
+        val is30FirstMonday: Boolean = false,
         val pmTierType: Int = 0,
         val shopScore: Int = 0,
         val shopScoreThreshold: Int = 0,

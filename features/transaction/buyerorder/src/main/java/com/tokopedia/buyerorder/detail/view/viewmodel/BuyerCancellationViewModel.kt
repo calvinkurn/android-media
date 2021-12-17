@@ -1,8 +1,6 @@
 package com.tokopedia.buyerorder.detail.view.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asFlow
+import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.buyerorder.common.ResourceProvider
@@ -15,10 +13,11 @@ import com.tokopedia.buyerorder.detail.data.requestcancel.BuyerRequestCancelPara
 import com.tokopedia.buyerorder.detail.domain.BuyerGetCancellationReasonUseCase
 import com.tokopedia.buyerorder.detail.domain.BuyerInstantCancelUseCase
 import com.tokopedia.buyerorder.detail.domain.BuyerRequestCancelUseCase
+import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerNormalProductUiModel
 import com.tokopedia.buyerorder.detail.view.model.BuyerCancelRequestReasonValidationResult
 import com.tokopedia.usecase.coroutines.Result
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flowOn
+import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -55,6 +54,11 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
     private val buyerRequestCancelReasonValidation: MutableLiveData<String> = MutableLiveData()
     private val buyerRequestCancelReasonValidationRegex = Regex(ALLOWED_BUYER_REQUEST_CANCEL_REASON_INPUT)
 
+    val buyerNormalProductUiModelListLiveData: LiveData<List<BuyerNormalProductUiModel>?> =
+            Transformations.switchMap(_cancelReasonResult) { result ->
+                getBundleUiModelFlow(result).asLiveData()
+            }
+
     init {
         initBuyerRequestCancelReasonValidation()
     }
@@ -85,6 +89,34 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
         }
     }
 
+    private fun getBundleUiModelFlow(result: Result<BuyerGetCancellationReasonData.Data>): Flow<List<BuyerNormalProductUiModel>?> {
+        return flow {
+            val normalProductList =
+                    if ((result as? Success)?.data?.getCancellationReason?.haveProductBundle == true) {
+                        val bundlingProductList = result.data.getCancellationReason.bundleDetail?.bundleList?.flatMap {
+                            it.orderDetailList.mapToNormalProductList()
+                        }
+                        bundlingProductList.orEmpty() + result.data.getCancellationReason.bundleDetail?.nonBundleList?.mapToNormalProductList().orEmpty()
+                    } else {
+                        null
+                    }
+            emit(normalProductList)
+        }.catch {
+            emit(null)
+        }.flowOn(dispatcher.default)
+    }
+
+    private fun List<BuyerGetCancellationReasonData.Data.GetCancellationReason.OrderDetailsCancellation>.mapToNormalProductList(): List<BuyerNormalProductUiModel> {
+        return map { bundleProduct ->
+            BuyerNormalProductUiModel(
+                    productId = bundleProduct.productId,
+                    productThumbnailUrl = bundleProduct.picture,
+                    productName = bundleProduct.productName,
+                    productPrice = bundleProduct.productPrice
+            )
+        }
+    }
+
     fun getCancelReasons(cancelReasonQuery: String, userId: String, orderId: String) {
         launch {
             _cancelReasonResult.postValue(getCancellationReasonUseCase.execute(cancelReasonQuery, BuyerGetCancellationReasonParam(userId = userId, orderId = orderId)))
@@ -106,4 +138,5 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
     fun validateBuyerRequestCancelReason(reason: String) {
         buyerRequestCancelReasonValidation.value = reason
     }
+
 }

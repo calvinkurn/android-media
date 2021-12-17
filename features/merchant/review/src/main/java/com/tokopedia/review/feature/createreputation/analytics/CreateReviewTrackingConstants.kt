@@ -22,21 +22,31 @@ object CreateReviewTrackingConstants {
     const val EVENT_ACTION_VIEW_TEMPLATE = "view - review template"
     const val EVENT_ACTION_VIEW_THANK_YOU_BOTTOM_SHEET = "view - terimakasih untuk ulasanmu pop up"
     const val EVENT_ACTION_VIEW_UNSAVED_DIALOG = "view - ulasanmu nanti hilang pop up"
+    const val EVENT_ACTION_CLICK_BAD_RATING_REASON = "click - bad review template checkbox"
+    const val EVENT_ACTION_IMPRESS_BAD_RATING_REASON = "impression - bad review template checkbox"
 
     const val EVENT_CATEGORY = "product review detail page"
-    const val EVENT_CATEGORY_REVIEW_BOTTOM_SHEET = "product review detail page - create review form bottomsheet"
+    const val EVENT_CATEGORY_REVIEW_BOTTOM_SHEET =
+        "product review detail page - create review form bottomsheet"
 
     const val EVENT_LABEL_ORDER_ID_PRODUCT_ID = "order id:%s; product id:%s;"
     const val EMPTY_LABEL = ""
-    const val EVENT_LABEL_VIEW_DIALOG = "pop up title:%s;reputation_id:%s;order_id:%s;product_id:%s;"
+    const val EVENT_LABEL_VIEW_DIALOG =
+        "pop up title:%s;reputation_id:%s;order_id:%s;product_id:%s;"
     const val EVENT_LABEL_PENDING_INCENTIVE_QUEUE = "has pending incentive review queue:%s;"
     const val EVENT_LABEL_CLICK_TEMPLATE = "template:%s;reputation_id:%s;order_id:%s;product_id:%s;"
-    const val EVENT_LABEL_CLICK_SUBMIT = "order_id : %s - product_id : %s - star : %d - ulasan : %s - review_char : %d - gambar : %d - anonim : %s - feedback_is_incentive_eligible : %s - is_template_available : %s - count_template_used : %d"
+    const val EVENT_LABEL_CLICK_SUBMIT =
+        "order_id : %s - product_id : %s - star : %d - ulasan : %s - review_char : %d - gambar : %d - anonim : %s - feedback_is_incentive_eligible : %s - is_template_available : %s - count_template_used : %d"
     const val EVENT_LABEL_VIEW_TEMPLATE = "template_impressed:%d"
-    const val EVENT_LABEL_VIEW_THANK_YOU_BOTTOM_SHEET = "pop up title:%s;reputation_id:%s;order_id:%s;product_id:%s;feedback_id:%s;"
+    const val EVENT_LABEL_VIEW_THANK_YOU_BOTTOM_SHEET =
+        "pop up title:%s;reputation_id:%s;order_id:%s;product_id:%s;feedback_id:%s;"
     const val EVENT_LABEL_DISMISS_TNC = "message:%s;reputation_id:%s;order_id:%s;product_id:%s;"
-    const val EVENT_LABEL_CLICK_CONTINUE_TNC = "title:%s;reputation_id:%s;order_id:%s;product_id:%s;"
-    const val EVENT_LABEL_VIEW_INCENTIVES_TICKER = "message:%s;reputation_id:%s;order_id:%s;product_id:%s;"
+    const val EVENT_LABEL_CLICK_CONTINUE_TNC =
+        "title:%s;reputation_id:%s;order_id:%s;product_id:%s;"
+    const val EVENT_LABEL_VIEW_INCENTIVES_TICKER =
+        "message:%s;reputation_id:%s;order_id:%s;product_id:%s;"
+    const val EVENT_LABEL_CLICK_BAD_RATING_REASON = "order_id:%s;product_id:%s;reason:%s;is_active:%s;"
+    const val EVENT_LABEL_IMPRESS_BAD_RATING_REASON = "order_id:%s;product_id:%s;"
 
     const val SCREEN_NAME = "/create-review-form"
     const val SCREEN_NAME_BOTTOM_SHEET = "create-review-form"
@@ -44,7 +54,17 @@ object CreateReviewTrackingConstants {
     const val KEY_BUSINESS_UNIT = "businessUnit"
     const val KEY_CURRENT_SITE = "currentSite"
     const val KEY_PRODUCT_ID = "productId"
+    const val KEY_DEEPLINK = "deeplink"
+    const val KEY_ECOMMERCE = "ecommerce"
+    const val KEY_PROMOTIONS = "promotions"
+    const val KEY_ID = "id"
+    const val KEY_CREATIVE = "creative"
+    const val KEY_NAME = "name"
+    const val KEY_POSITION = "position"
 
     const val BUSINESS_UNIT = "product detail page"
     const val CURRENT_SITE = "tokopediamarketplace"
+
+    const val EVENT_PROMO_VIEW = "promoView"
+    const val BAD_RATING_REASON_IMPRESSION_ENHANCED_ECOMMERCE_ID = "reason:%s;"
 }

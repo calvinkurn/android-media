@@ -11,37 +11,39 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 21/05/20
  */
 
-class ProgressMapper @Inject constructor(): BaseResponseMapper<GetProgressDataResponse, List<ProgressDataUiModel>> {
+class ProgressMapper @Inject constructor() :
+    BaseResponseMapper<GetProgressDataResponse, List<ProgressDataUiModel>> {
 
     companion object {
         private const val GOOD = "GOOD"
         private const val WARNING = "WARNING"
-        private const val DANGER = "DANGER"
     }
 
-    override fun mapRemoteDataToUiData(response: GetProgressDataResponse, isFromCache: Boolean): List<ProgressDataUiModel> {
-        return response.getProgressBarData?.progressData.orEmpty().map{
+    override fun mapRemoteDataToUiData(
+        response: GetProgressDataResponse,
+        isFromCache: Boolean
+    ): List<ProgressDataUiModel> {
+        return response.getProgressBarData?.progressData.orEmpty().map {
             ProgressDataUiModel(
-                    valueTxt = it.valueText.orEmpty(),
-                    maxValueTxt = it.maxValueText.orEmpty(),
-                    value = it.value.toZeroIfNull(),
-                    maxValue = it.maxValue.toZeroIfNull(),
-                    colorState = mapState(it.state),
-                    error = it.errorMessage.orEmpty(),
-                    subtitle = it.subtitle.orEmpty(),
-                    dataKey = it.dataKey.orEmpty(),
-                    isFromCache = isFromCache,
-                    showWidget = it.showWidget.orFalse()
+                valueTxt = it.valueText.orEmpty(),
+                maxValueTxt = it.maxValueText.orEmpty(),
+                value = it.value.toZeroIfNull(),
+                maxValue = it.maxValue.toZeroIfNull(),
+                colorState = mapState(it.state),
+                error = it.errorMessage.orEmpty(),
+                subtitle = it.subtitle.orEmpty(),
+                dataKey = it.dataKey.orEmpty(),
+                isFromCache = isFromCache,
+                showWidget = it.showWidget.orFalse()
             )
         }
     }
 
-    private fun mapState(state: String?) : ShopScorePMWidget.State {
-        return when(state) {
+    private fun mapState(state: String?): ShopScorePMWidget.State {
+        return when (state) {
             GOOD -> ShopScorePMWidget.State.Good
             WARNING -> ShopScorePMWidget.State.Warning
-            DANGER -> ShopScorePMWidget.State.Danger
-            else -> ShopScorePMWidget.State.Good
+            else -> ShopScorePMWidget.State.Danger
         }
     }
 }

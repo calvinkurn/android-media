@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
+import com.tokopedia.shop.settings.databinding.ActivityShopSettingsAddNewBinding
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseUiModel
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseAddEditFragment
 
@@ -21,6 +22,7 @@ class ShopSettingsEtalaseAddEditActivity: BaseSimpleActivity(), HasComponent<Sho
         private const val PARAM_SHOP_ETALASE = "SHOP_ETALASE"
     }
 
+    private var binding : ActivityShopSettingsAddNewBinding? = null
     private var isEdit: Boolean = false
     private var etalase: ShopEtalaseUiModel = ShopEtalaseUiModel()
     private var header: HeaderUnify? = null
@@ -34,7 +36,7 @@ class ShopSettingsEtalaseAddEditActivity: BaseSimpleActivity(), HasComponent<Sho
         setupToolbar()
 
         supportActionBar?.setTitle(if (!isEdit) R.string.shop_settings_add_etalase else R.string.shop_settings_edit_etalase)
-        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 
     override fun inflateFragment() {
@@ -48,11 +50,16 @@ class ShopSettingsEtalaseAddEditActivity: BaseSimpleActivity(), HasComponent<Sho
 
     override fun getLayoutRes() = R.layout.activity_shop_settings_add_new
 
-    override fun getComponent() = DaggerShopSettingsComponent.builder().baseAppComponent(
-            (application as BaseMainApplication).getBaseAppComponent()).build()
+    override fun getComponent(): ShopSettingsComponent = DaggerShopSettingsComponent.builder().baseAppComponent(
+            (application as BaseMainApplication).baseAppComponent).build()
+
+    override fun setupLayout(savedInstanceState: Bundle?) {
+        binding = ActivityShopSettingsAddNewBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
+    }
 
     private fun setupToolbar() {
-        header = findViewById<HeaderUnify>(R.id.header)?.apply {
+        header = binding?.header?.apply {
             isShowShadow = true
             setSupportActionBar(this)
             actionTextView?.apply {

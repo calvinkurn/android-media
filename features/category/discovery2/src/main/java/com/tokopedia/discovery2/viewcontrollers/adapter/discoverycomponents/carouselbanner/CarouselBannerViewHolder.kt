@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -52,8 +53,10 @@ class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) :
 
             if(!item.isNullOrEmpty()){
                 (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
-                        item[0].data ?: ArrayList(),
-                        carouselBannerViewModel.getComponentPosition())
+                    item[0].data ?: ArrayList(),
+                    carouselBannerViewModel.getComponentPosition(),
+                    Utils.getUserId(fragment.context)
+                )
             }
         })
 

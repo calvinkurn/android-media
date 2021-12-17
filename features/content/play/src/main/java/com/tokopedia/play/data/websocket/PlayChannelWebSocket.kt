@@ -1,7 +1,7 @@
 package com.tokopedia.play.data.websocket
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.play.data.websocket.revamp.PlayWebSocket
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.url.TokopediaUrl
 import javax.inject.Inject
 
@@ -9,8 +9,8 @@ import javax.inject.Inject
  * Created by jegul on 09/03/21
  */
 class PlayChannelWebSocket @Inject constructor(
-        private val playWebSocket: PlayWebSocket,
-        private val localCacheHandler: LocalCacheHandler
+    private val playWebSocket: PlayWebSocket,
+    private val localCacheHandler: LocalCacheHandler
 ) : PlayWebSocket by playWebSocket {
 
     fun connectSocket(channelId: String, gcToken: String) {

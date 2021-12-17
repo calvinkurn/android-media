@@ -1,20 +1,17 @@
 package com.tokopedia.oneclickcheckout.address
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
-import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.oneclickcheckout.databinding.ItemLoadingAddressListBinding
 
-class AddressLoadingViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+class AddressLoadingViewHolder(private val binding: ItemLoadingAddressListBinding): RecyclerView.ViewHolder(binding.root) {
 
     companion object {
         val LOADING_LAYOUT = R.layout.item_loading_address_list
     }
 
-    private val loader = itemView.findViewById<LoaderUnify>(R.id.progress_bar_address)
-
     fun bind() {
-        loader.visible()
+        binding.progressBarAddress.visible()
     }
 }

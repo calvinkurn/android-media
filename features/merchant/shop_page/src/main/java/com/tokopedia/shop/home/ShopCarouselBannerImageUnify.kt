@@ -2,6 +2,7 @@ package com.tokopedia.shop.home
 
 import android.content.Context
 import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
@@ -10,7 +11,6 @@ import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
 import android.view.ViewGroup
-
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
@@ -23,22 +23,24 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.*
 import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import java.io.File
-import java.lang.Exception
 import java.net.URI
 import java.util.*
 
 class ShopCarouselBannerImageUnify : AppCompatImageView {
 
     var type: Int = TYPE_RECT
-    var cornerRadius: Int = 8
+    var cornerRadius: Int = DEFAULT_CORNER_RADIUS
     var heightRatio: Float? = null
     var urlSrc: String = ""
         set(value) {
@@ -144,7 +146,7 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
     private fun initWithAttr(context: Context, attributeSet: AttributeSet) {
         val attributeArray = context.obtainStyledAttributes(attributeSet, com.tokopedia.unifycomponents.R.styleable.UnifyImage)
         type = attributeArray.getInt(com.tokopedia.unifycomponents.R.styleable.UnifyImage_unify_image_type, TYPE_RECT)
-        cornerRadius = attributeArray.getInt(com.tokopedia.unifycomponents.R.styleable.UnifyImage_unify_image_corner_radius, 8)
+        cornerRadius = attributeArray.getInt(com.tokopedia.unifycomponents.R.styleable.UnifyImage_unify_image_corner_radius, DEFAULT_CORNER_RADIUS  )
         placeholder =
                 attributeArray.getResourceId(com.tokopedia.unifycomponents.R.styleable.UnifyImage_unify_image_placeholder, 0)
         var attrCustomLoadingAvd =
@@ -182,7 +184,7 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
         var reloadPaddingV = measuredHeight / 2 - 16.toPx()
         var reloadIconPaddingV = measuredHeight / 2 - 12.toPx()
 
-        if (measuredWidth.toDp() > 256 && measuredHeight.toDp() > 256) {
+        if (measuredWidth.toDp() > MINIMUM_MEASURED_WIDTH && measuredHeight.toDp() > MINIMUM_MEASURED_HEIGHT) {
             // reload dimension is 48dp for large image (< 256dp)
             reloadPaddingH = measuredWidth / 2 - 24.toPx()
             reloadIconPaddingH = measuredWidth / 2 - 16.toPx()
@@ -213,7 +215,7 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
             /**
              * saveLayer without flag was added in API 21
              */
-            Build.VERSION.SDK_INT >= 21 -> canvas.saveLayer(
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> canvas.saveLayer(
                     RectF(0f, 0f, width.toFloat(), height.toFloat()),
                     null
             )
@@ -226,9 +228,9 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
                     Canvas.ALL_SAVE_FLAG
             )
         }
-        if (Build.VERSION.SDK_INT > 27) canvas.clipPath(path)
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) canvas.clipPath(path)
         super.draw(canvas)
-        if (Build.VERSION.SDK_INT < 28) canvas.drawPath(path, paint)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) canvas.drawPath(path, paint)
         canvas.restoreToCount(save)
     }
 
@@ -302,6 +304,10 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
         }
     }
 
+    fun setImageUrlTileMode(url: String) {
+        loadImageTileMode(url)
+    }
+
     private fun applyLoopingAnimatedVectorDrawable() {
         shimmeringPlaceholder?.registerAnimationCallback(object :
                 Animatable2Compat.AnimationCallback() {
@@ -333,8 +339,8 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
         super.onDraw(canvas)
 
         if (isLoadError || (!hasImageUrl && placeholder == 0)) {
-            if (measuredWidth.toDp() <= 256 || measuredHeight.toDp() <= 256) {
-                if (!isRetryable) {
+            if (measuredWidth.toDp() <= MINIMUM_MEASURED_WIDTH || measuredHeight.toDp() <= MINIMUM_MEASURED_HEIGHT) {
+                if (!isRetryable && !DeviceScreenInfo.isTablet(context)) {
                     prevScaleType = scaleType
                     scaleType = ScaleType.FIT_CENTER
                 }
@@ -401,6 +407,25 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
                     }
                 })
                 .into(this)
+    }
+
+    private fun loadImageTileMode(url: String) {
+        if(!context.isValidGlideContext()) return
+
+        Glide.with(this)
+            .asBitmap()
+            .load(url)
+            .into(object : CustomTarget<Bitmap?>() {
+                override fun onLoadCleared(placeholder: Drawable?) {}
+                override fun onResourceReady(
+                    resource: Bitmap,
+                    transition: Transition<in Bitmap?>?
+                ) {
+                    val bitmapDrawable = BitmapDrawable(context.resources, resource)
+                    bitmapDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+                    this@ShopCarouselBannerImageUnify.setImageDrawable(bitmapDrawable)
+                }
+            })
     }
 
     private fun loadImage(url: String, placeholderHeight: Int?, isSkipCache: Boolean) {
@@ -498,5 +523,9 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
     companion object {
         const val TYPE_RECT = 0
         const val TYPE_CIRCLE = 1
+        private const val DEFAULT_CORNER_RADIUS = 8
+        private const val MINIMUM_MEASURED_WIDTH = 256
+        private const val MINIMUM_MEASURED_HEIGHT = 256
+
     }
 }

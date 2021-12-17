@@ -3,9 +3,10 @@ package com.tokopedia.tokopedianow.searchcategory
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
 import com.tokopedia.tokopedianow.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.EmptyProductDataView
+import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SortFilterItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
@@ -26,7 +27,6 @@ class EmptyProductTestHelper(
         `When view created`()
 
         `Then assert empty result visitable list`()
-        `Then assert mini cart is not visible`()
         `Then assert header background is hidden`()
     }
 
@@ -38,15 +38,14 @@ class EmptyProductTestHelper(
         val visitableList = baseViewModel.visitableListLiveData.value!!
 
         visitableList.first().assertChooseAddressDataView()
-        visitableList.last().assertEmptyProductDataView()
+        visitableList[1].assertEmptyProductDataView()
+        visitableList.last().assertRecommendationCarouselDataViewLoadingState(TOKONOW_NO_RESULT)
+
+        callback.`Then assert empty result visitable list`(visitableList)
     }
 
     private fun Visitable<*>.assertEmptyProductDataView() {
-        assertThat(this, instanceOf(EmptyProductDataView::class.java))
-    }
-
-    private fun `Then assert mini cart is not visible`() {
-        assertThat(baseViewModel.isShowMiniCartLiveData.value, shouldBe(false))
+        assertThat(this, instanceOf(TokoNowEmptyStateNoResultUiModel::class.java))
     }
 
     private fun `Then assert header background is hidden`() {
@@ -66,10 +65,10 @@ class EmptyProductTestHelper(
         `When view apply quick filter`(chosenQuickFilter)
 
         val newVisitableList = baseViewModel.visitableListLiveData.value!!
-        val emptyStateDataView = newVisitableList.filterIsInstance<EmptyProductDataView>().first()
 
+        `Then assert empty result visitable list`()
         `Then assert chosen quick filter is in empty state data view`(
-                emptyStateDataView,
+                newVisitableList,
                 listOf(chosenQuickFilter.firstOption),
         )
     }
@@ -83,9 +82,11 @@ class EmptyProductTestHelper(
     }
 
     private fun `Then assert chosen quick filter is in empty state data view`(
-            emptyStateDataView: EmptyProductDataView,
+            visitableList: List<Visitable<*>>,
             expectedOptionList: List<Option?>,
     ) {
+        val emptyStateDataView = visitableList.filterIsInstance<TokoNowEmptyStateNoResultUiModel>().first()
+
         assertThat(emptyStateDataView.activeFilterList, shouldBe(expectedOptionList))
     }
 
@@ -171,5 +172,6 @@ class EmptyProductTestHelper(
                 count: Int,
                 requestParamsSlot: MutableList<RequestParams>,
         )
+        fun `Then assert empty result visitable list`(visitableList: List<Visitable<*>>)
     }
 }

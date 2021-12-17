@@ -20,9 +20,9 @@ class ImagePreviewSliderActivity: BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment = ImagePreviewSliderFragment.createInstance(
-            intent.getStringExtra(ImagePreviewSliderFragment.ARG_TITLE),
-            intent.getStringArrayListExtra(ImagePreviewSliderFragment.ARG_IMAGE_URLS),
-            intent.getStringArrayListExtra(ImagePreviewSliderFragment.ARG_IMAGE_THUMBNAIL_URLS),
+            intent.getStringExtra(ImagePreviewSliderFragment.ARG_TITLE) ?: "",
+            intent.getStringArrayListExtra(ImagePreviewSliderFragment.ARG_IMAGE_URLS) as ArrayList<String>,
+            intent.getStringArrayListExtra(ImagePreviewSliderFragment.ARG_IMAGE_THUMBNAIL_URLS) as ArrayList<String>,
             intent.getIntExtra(ImagePreviewSliderFragment.ARG_IMAGE_POSITION, 0))
 
     companion object {

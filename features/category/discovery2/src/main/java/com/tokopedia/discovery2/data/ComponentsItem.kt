@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.data
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery2.datamapper.discoveryPageData
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -58,6 +59,7 @@ data class ComponentsItem(
         var pageEndPoint: String = "",
         var pagePath: String = "",
         var parentComponentId: String = "",
+        var parentComponentName: String? = null,
         var parentComponentPosition: Int = 0,
         var parentFilterComponentId: String? = null,
         var cpmData: CpmModel? = null,
@@ -68,7 +70,7 @@ data class ComponentsItem(
         var position: Int = 0,
         var couponViewImpression: Boolean = false,
         var design: String = "v1",
-        val filterController: FilterController = FilterController(),
+        var filterController: FilterController = FilterController(),
         var searchParameter: SearchParameter = SearchParameter(),
         var filters: ArrayList<Filter> = ArrayList(),
         var selectedFilters: HashMap<String, String>? = null,
@@ -85,8 +87,10 @@ data class ComponentsItem(
         var description : String? = "",
         var showFilterCount: Boolean = true,
         var shouldRefreshComponent : Boolean? = null ,
+        var autoPlayController: AutoPlayController? = null,
         var verticalProductFailState: Boolean = false,
         var userAddressData: LocalCacheModel? = null,
+        var nextPageKey:String? = "",
         var horizontalProductFailState: Boolean = false,) {
 
     private var componentsItem: List<ComponentsItem>? = null
@@ -97,6 +101,7 @@ data class ComponentsItem(
             it.pageEndPoint = this.pageEndPoint
             it.tabName = tabName
             it.data?.firstOrNull()?.tabName = tabName
+            it.parentComponentPosition = position
             discoveryPageData[this.pageEndPoint]?.componentMap?.set(it.id, it)
         }
         componentsItem = listComponents

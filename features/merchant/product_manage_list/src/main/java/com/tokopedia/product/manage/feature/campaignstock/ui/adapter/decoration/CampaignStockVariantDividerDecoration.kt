@@ -9,7 +9,7 @@ import com.tokopedia.product.manage.R
 
 class CampaignStockVariantDividerDecoration(context: Context): RecyclerView.ItemDecoration() {
 
-    private val divider = ContextCompat.getDrawable(context, R.drawable.divider_campaign_stock)
+    private val divider = ContextCompat.getDrawable(context, R.drawable.divider_product_manage_thin_no_margin)
 
     private val dividerMarginLeft = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
 

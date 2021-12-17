@@ -6,6 +6,6 @@
     android:id="@+id/iv_thumbnail"
     android:layout_width="@dimen/play_cover_from_selection_size"
     android:layout_height="@dimen/play_cover_from_selection_size"
-    app:cornerRadius="@dimen/spacing_lvl3"
+    app:rImg_cornerRadius="@dimen/spacing_lvl3"
     tools:src="@drawable/bg_play_title"
     />

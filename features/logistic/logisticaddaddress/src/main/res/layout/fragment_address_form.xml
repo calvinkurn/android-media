@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <ScrollView
         android:id="@+id/sv_add_address"
@@ -11,7 +12,6 @@
         android:isScrollContainer="false"
         android:background="@color/Unify_N0"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/bottom_layout_address"
         app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
@@ -20,7 +20,7 @@
             android:layout_marginStart="@dimen/unify_space_16"
             android:layout_marginEnd="@dimen/unify_space_16"
             android:layout_marginTop="@dimen/unify_space_16"
-            android:paddingBottom="@dimen/dp_16"
+            android:paddingBottom="16dp"
             android:orientation="vertical">
 
             <include
@@ -74,7 +74,7 @@
                     android:id="@+id/address_district"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_12"
+                    android:layout_marginStart="12dp"
                     android:layout_marginTop="@dimen/unify_space_12"
                     android:layout_marginBottom="@dimen/unify_space_12"
                     android:layout_marginEnd="@dimen/unify_space_12"
@@ -88,36 +88,29 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/user_consent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:typographyType="body_3"
+                android:textColor="@color/Unify_N700_68"
+                android:textAlignment="center"
+                tools:text="Dengan klik Simpan, kamu menyetujui kebijakan privasi dan syarat dan ketentuan." />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_save_address_new"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:unifyButtonVariant="filled"
+                app:unifyButtonType="main"
+                android:textStyle="bold"
+                android:text="@string/btn_simpan"
+                android:textAlignment="center"/>
+
         </LinearLayout>
 
     </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/bottom_layout_address"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:orientation="vertical"
-        android:background="@color/Unify_N0">
-
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_save_address_new"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_8"
-            app:unifyButtonVariant="filled"
-            app:unifyButtonType="main"
-            android:textStyle="bold"
-            android:text="@string/btn_simpan"
-            android:textAlignment="center"/>
-
-    </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

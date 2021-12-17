@@ -18,7 +18,7 @@ class PowerMerchantActivateUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): PMActivationStatusUiModel {
         val gqlRequest = GraphqlRequest(QUERY, GoldActivationSubscription::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val gqlErrors = gqlResponse.getError(GoldActivationSubscription::class.java)
         if (gqlErrors.isNullOrEmpty()) {

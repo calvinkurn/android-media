@@ -56,9 +56,10 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageProcessingUtil
 import kotlinx.android.synthetic.main.fragment_feedback_page.*
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import rx.subscriptions.CompositeSubscription
 import java.io.File
 import java.util.*
@@ -147,7 +148,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             }
             REQUEST_CODE_EDIT_IMAGE -> if (resultCode == RESULT_OK) {
                 data?.let {
-                    val oldPath = it.getStringExtra(EXTRA_DRAW_IMAGE_URI_OLD)
+                    val oldPath = it.getStringExtra(EXTRA_DRAW_IMAGE_URI_OLD)?: ""
                     val newUri = it.getParcelableExtra<Uri>(EXTRA_DRAW_IMAGE_URI)
                     imageAdapter.setImageFeedbackData(feedbackPagePresenter.drawOnPictureResult(newUri, oldPath))
                     selectedImage = arrayListOf(newUri.toString())
@@ -224,6 +225,7 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
                             initialSelectedImagePathList = feedbackPagePresenter.getSelectedImageUrl()))
             val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER)
             intent.putImagePickerBuilder(builder)
+            intent.putParamPageSource(ImagePickerPageSource.FEEDBACK_PAGE)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
     }
@@ -486,13 +488,13 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
     }
 
     private fun sendAttachmentImage(feedbackId: Int, file: File, totalImage: Int, countImage: Int) {
-        val requestFile: RequestBody = RequestBody.create(MediaType.parse("image/*"), file)
+        val requestFile: RequestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
         val fileData = MultipartBody.Part.createFormData("file", file.name, requestFile)
         feedbackPagePresenter.sendAttachment(feedbackId, fileData, totalImage, countImage)
     }
 
     private fun sendAttachmentVideo(feedbackId: Int, file: File, totalImage: Int, countImage: Int) {
-        val requestFile: RequestBody = RequestBody.create(MediaType.parse("video/*"), file)
+        val requestFile: RequestBody = file.asRequestBody("video/*".toMediaTypeOrNull())
         val fileData = MultipartBody.Part.createFormData("file", file.name, requestFile)
         feedbackPagePresenter.sendAttachment(feedbackId, fileData, totalImage, countImage)
     }

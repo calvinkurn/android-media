@@ -27,13 +27,15 @@ open class OtpValidateUseCase2FA @Inject constructor(
             validateToken: String,
             userIdEnc: String,
             mode: String,
-            code: String
+            code: String,
+            msisdn: String = ""
     ): Map<String, Any> = mapOf(
             PARAM_OTP_TYPE to otpType,
             PARAM_VALIDATE_TOKEN_2FA to validateToken,
             PARAM_USERID_ENC to userIdEnc,
             PARAM_MODE to mode,
-            PARAM_CODE to code
+            PARAM_CODE to code,
+            PARAM_MSISDN to msisdn
     )
 
     override suspend fun getData(parameter: Map<String, Any>): OtpValidatePojo = withContext(coroutineContext) {
@@ -44,7 +46,7 @@ open class OtpValidateUseCase2FA @Inject constructor(
                 OtpValidatePojo::class.java,
                 parameter
         )
-        return@withContext graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+        return@withContext graphqlRepository.response(listOf(request), cacheStrategy)
     }.getSuccessData()
 
     companion object {
@@ -53,5 +55,6 @@ open class OtpValidateUseCase2FA @Inject constructor(
         private const val PARAM_USERID_ENC = "UserIDEnc"
         private const val PARAM_VALIDATE_TOKEN_2FA = "ValidateToken"
         private const val PARAM_MODE = "mode"
+        private const val PARAM_MSISDN = "msisdn"
     }
 }

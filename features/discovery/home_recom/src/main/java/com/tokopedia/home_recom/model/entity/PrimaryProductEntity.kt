@@ -1,6 +1,7 @@
 package com.tokopedia.home_recom.model.entity
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -47,8 +48,9 @@ data class ProductDetailData(
         val countReviewFloat: Int = -1,
         @SerializedName("departmentId")
         val departmentId: Int = -1,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("id")
-        val id: Int = -1,
+        val id: Long = 0L,
         @SerializedName("status")
         val status: Int = 1,
         @SerializedName("imageUrl")
@@ -61,6 +63,7 @@ data class ProductDetailData(
         val labels: List<Any> = listOf(),
         @SerializedName("name")
         val name: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         val price: String = "",
         @SerializedName("priceInt")
@@ -98,6 +101,7 @@ data class ProductDetailData(
         )
 
 data class Shop(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("id")
         val id: Int = -1,
         @SerializedName("name")

@@ -13,4 +13,5 @@
     <dimen name="sd_dp_22">22dp</dimen>
     <dimen name="sd_dp_26">26dp</dimen>
     <dimen name="sd_dp_44">44dp</dimen>
+    <dimen name="saldo_empty_image_210">210dp</dimen>
 </resources>

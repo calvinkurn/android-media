@@ -10,11 +10,11 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
-        app:cardCornerRadius="@dimen/dp_4"
-        app:cardElevation="@dimen/dp_2">
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="2dp">
 
         <RelativeLayout
             android:id="@+id/rl_shipment_recipient_address_layout"
@@ -36,10 +36,10 @@
                     android:contentDescription="@string/content_desc_rb_check_address"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_16"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginEnd="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
                     android:layout_weight="1"
                     android:clickable="false"
                     android:focusable="false"
@@ -54,15 +54,17 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 android:layout_toStartOf="@+id/ll_radio_button_container"
                 android:layout_toLeftOf="@+id/ll_radio_button_container"
                 android:background="@color/Unify_N0">
 
-                <include layout="@layout/layout_address_normal" />
+                <include
+                    android:id="@+id/layout_address_normal"
+                    layout="@layout/layout_address_normal" />
 
             </RelativeLayout>
 
@@ -73,7 +75,7 @@
                 android:layout_below="@+id/rl_address_container"
                 android:background="@color/Unify_N100" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/button_change_address"
                 android:contentDescription="@string/content_desc_button_change_address"
                 android:layout_width="match_parent"
@@ -81,29 +83,31 @@
                 android:layout_below="@+id/v_separator"
                 android:background="?selectableItemBackground"
                 android:gravity="center"
-                android:padding="@dimen/dp_8"
+                android:padding="8dp"
                 android:text="@string/change_address"
                 android:textColor="@color/Unify_N700_32"
-                android:textSize="@dimen/sp_12" />
+                android:textSize="@dimen/sp_12"
+                app:typographyType="body_3" />
 
 
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
 
-    <Button
+    <com.tokopedia.unifycomponents.UnifyButton
+        app:unifyButtonVariant="ghost"
         android:id="@+id/button_add_new_address"
         android:contentDescription="@string/content_desc_tv_button_add_new_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/button_border_green"
         android:text="@string/add_address"
         android:textAllCaps="false"
         android:visibility="gone"
         tools:visibility="visible"
-        android:textColor="@color/Unify_G400" />
+        android:textColor="@color/Unify_G400" />a
 
 </LinearLayout>

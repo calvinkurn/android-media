@@ -1,11 +1,13 @@
 package com.tokopedia.minicart.common.domain.mapper
 
+import com.tokopedia.minicart.common.data.response.minicartlist.BeliButtonConfig
 import com.tokopedia.minicart.common.data.response.minicartlist.Data
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import javax.inject.Inject
+import kotlin.math.min
 
 class MiniCartSimplifiedMapper @Inject constructor() {
 
@@ -30,6 +32,8 @@ class MiniCartSimplifiedMapper @Inject constructor() {
             totalProductError = miniCartData.data.totalProductError
             containsOnlyUnavailableItems = miniCartData.data.availableSection.availableGroup.isEmpty() && miniCartData.data.unavailableSection.isNotEmpty()
             unavailableItemsCount = miniCartData.data.totalProductError
+            isOCCFlow = miniCartData.data.beliButtonConfig.buttonType == BeliButtonConfig.BUTTON_TYPE_OCC
+            buttonBuyWording = miniCartData.data.beliButtonConfig.buttonWording
         }
     }
 
@@ -51,7 +55,11 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                             cartId = cartDetail.cartId
                             productId = cartDetail.product.productId
                             productParentId = cartDetail.product.parentId
-                            quantity = cartDetail.product.productQuantity
+                            quantity = if (cartDetail.product.productSwitchInvenage == 0) {
+                                cartDetail.product.productQuantity
+                            } else {
+                                min(cartDetail.product.productQuantity, cartDetail.product.productInvenageValue)
+                            }
                             notes = cartDetail.product.productNotes
                             campaignId = cartDetail.product.campaignId
                             attribution = cartDetail.product.productTrackerData.attribution

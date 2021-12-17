@@ -13,6 +13,7 @@ import com.tokopedia.flight.search.presentation.model.FlightFareModel
 import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
+import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 
@@ -41,6 +42,7 @@ val DUMMY_BOOKING_PASSENGER = arrayListOf<FlightBookingPassengerModel>(
             flightBookingMealMetaViewModels = arrayListOf()
             headerTitle = ""
             passengerBirthdate = "1995-11-11"
+            identificationNumber = "1111111111111111"
             passengerFirstName = "My Name"
             passengerLastName = "Hi"
         }
@@ -65,6 +67,7 @@ val DUMMY_BOOKING_MODEL = FlightBookingModel("dummyDeparture",
         "dummyDepartureTerm",
         "dummyReturnTerm",
         "",
+        true,
         true,
         true,
         FlightPriceModel(
@@ -135,6 +138,7 @@ val DUMMY_BOOKING_INTERNATIONAL_MODEL = FlightBookingModel("dummyDeparture",
         "",
         false,
         true,
+        false,
         FlightPriceModel(
                 FlightFareModel(
                         "Rp100.000",
@@ -363,4 +367,12 @@ val DUMMY_INSURANCE = FlightCart.Insurance(
         "insurance url",
         arrayListOf()
 
+)
+
+val DUMMY_CANCEL_VOUCHER_SUCCESS = FlightCancelVoucher.Response(
+    FlightCancelVoucher(attributes = FlightCancelVoucher.Attributes(success = true))
+)
+
+val DUMMY_CANCEL_VOUCHER_FAILED = FlightCancelVoucher.Response(
+    FlightCancelVoucher(attributes = FlightCancelVoucher.Attributes(success = false))
 )

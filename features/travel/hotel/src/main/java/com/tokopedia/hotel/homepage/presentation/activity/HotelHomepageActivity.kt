@@ -6,8 +6,8 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.hotel.HotelComponentInstance
-import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
+import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.homepage.di.DaggerHotelHomepageComponent
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
 import com.tokopedia.hotel.homepage.presentation.fragment.HotelHomepageFragment
@@ -17,14 +17,10 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
     private var name: String = ""
     private var checkIn: String = ""
     private var checkOut: String = ""
-    private var room: Int = 0
-    private var adult: Int = 0
+    private var room: Int = 1
+    private var adult: Int = 1
     private var searchId: String = ""
     private var searchType: String = ""
-
-    //for older applink
-    private var id: Long = 0
-    private var type: String = ""
 
     override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
 
@@ -32,45 +28,26 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
-        if (uri != null) {
-            // for applink
-            if (!uri.getQueryParameter(PARAM_ID).isNullOrEmpty()) {
-                searchId = uri.getQueryParameter(PARAM_ID) ?: ""
-                searchType = uri.getQueryParameter(PARAM_TYPE) ?: ""
-                name = uri.getQueryParameter(PARAM_NAME) ?: ""
-            } else {
-                // for older applink
-                when {
-                    !uri.getQueryParameter(PARAM_HOTEL_ID).isNullOrEmpty() -> {
-                        id = (uri.getQueryParameter(PARAM_HOTEL_ID) ?: "0").toLong()
-                        name = uri.getQueryParameter(PARAM_HOTEL_NAME) ?: ""
-                        type = HotelTypeEnum.PROPERTY.value
-                    }
-                    !uri.getQueryParameter(PARAM_CITY_ID).isNullOrEmpty() -> {
-                        id = (uri.getQueryParameter(PARAM_CITY_ID) ?: "0").toLong()
-                        name = uri.getQueryParameter(PARAM_CITY_NAME) ?: ""
-                        type = HotelTypeEnum.CITY.value
-                    }
-                    !uri.getQueryParameter(PARAM_DISTRICT_ID).isNullOrEmpty() -> {
-                        id = (uri.getQueryParameter(PARAM_DISTRICT_ID) ?: "0").toLong()
-                        name = uri.getQueryParameter(PARAM_DISTRICT_NAME) ?: ""
-                        type = HotelTypeEnum.DISTRICT.value
-                    }
-                    !uri.getQueryParameter(PARAM_REGION_ID).isNullOrEmpty() -> {
-                        id = (uri.getQueryParameter(PARAM_REGION_ID) ?: "0").toLong()
-                        name = uri.getQueryParameter(PARAM_REGION_NAME) ?: ""
-                        type = HotelTypeEnum.REGION.value
-                    }
+        try{
+            if (uri != null) {
+                // for applink
+                if (!uri.getQueryParameter(PARAM_ID).isNullOrEmpty()) {
+                    searchId = uri.getQueryParameter(PARAM_ID) ?: ""
+                    searchType = uri.getQueryParameter(PARAM_TYPE) ?: ""
+                    name = uri.getQueryParameter(PARAM_NAME) ?: ""
                 }
+
+                checkIn = uri.getQueryParameter(PARAM_CHECK_IN) ?: ""
+                checkOut = uri.getQueryParameter(PARAM_CHECK_OUT) ?: ""
+                room = uri.getQueryParameter(PARAM_ROOM)?.toInt() ?: 0
+                adult = uri.getQueryParameter(PARAM_ADULT)?.toInt() ?: 0
+
+                name = name.replace(SPACE_ENCODED, " ")
             }
-
-            checkIn = uri.getQueryParameter(PARAM_CHECK_IN) ?: ""
-            checkOut = uri.getQueryParameter(PARAM_CHECK_OUT) ?: ""
-            room = uri.getQueryParameter(PARAM_ROOM)?.toInt() ?: 0
-            adult = uri.getQueryParameter(PARAM_ADULT)?.toInt() ?: 0
-
-            name = name.replace(SPACE_ENCODED, " ")
+        }catch (t: Throwable){
+            //to prevent unsuccessful parsing, use default value
         }
+        checkParameter()
 
         super.onCreate(savedInstanceState)
         toolbar.contentInsetStartWithNavigation = 0
@@ -87,8 +64,6 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
         return when {
             //case 1: when homepage accessed using searchId && searchType
             searchId.isNotEmpty() -> HotelHomepageFragment.getInstance(searchId, name, searchType, checkIn, checkOut, adult, room)
-            //case  2: when user accessed homepage using older version applink
-            id != 0L -> HotelHomepageFragment.getInstance(id, name, type, checkIn, checkOut, adult, room)
             //other: when homepage accessed without param (default)
             else -> HotelHomepageFragment.getInstance()
         }
@@ -96,6 +71,12 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
     }
 
     override fun shouldShowOptionMenu(): Boolean = true
+
+    private fun checkParameter() {
+        val updatedCheckInCheckOutDate = HotelUtils.validateCheckInAndCheckOutDate(checkIn, checkOut)
+        checkIn = updatedCheckInCheckOutDate.first
+        checkOut = updatedCheckInCheckOutDate.second
+    }
 
     companion object {
         fun getCallingIntent(context: Context): Intent =
@@ -110,16 +91,6 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
         //for searchId and searchType
         const val PARAM_ID = "id"
         const val PARAM_TYPE = "type"
-
-        //for other/older applink
-        const val PARAM_HOTEL_ID = "hotel_id"
-        const val PARAM_HOTEL_NAME = "hotel_name"
-        const val PARAM_DISTRICT_ID = "district_id"
-        const val PARAM_DISTRICT_NAME = "district_name"
-        const val PARAM_CITY_ID = "city_id"
-        const val PARAM_CITY_NAME = "city_name"
-        const val PARAM_REGION_ID = "region_id"
-        const val PARAM_REGION_NAME = "region_name"
 
         const val HOMEPAGE_SCREEN_NAME = "/hotel/homepage"
 

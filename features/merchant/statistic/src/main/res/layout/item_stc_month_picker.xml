@@ -5,15 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingStart="@dimen/layout_lvl2"
-    android:paddingLeft="@dimen/layout_lvl2"
-    android:paddingEnd="@dimen/layout_lvl0"
-    android:paddingRight="@dimen/layout_lvl0">
+    android:paddingEnd="@dimen/layout_lvl0">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvStcPerMonthLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="@+id/radStcPerMonth"
         app:layout_constraintEnd_toStartOf="@+id/radStcPerMonth"
         app:layout_constraintHorizontal_bias="0.0"
@@ -29,7 +27,6 @@
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -42,7 +39,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl1"
-        android:layout_marginRight="@dimen/spacing_lvl1"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/radStcPerMonth"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,7 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/shc_dimen_1dp"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:background="@color/light_N75"
+        android:background="@color/Unify_N75"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtStcPerMonth" />

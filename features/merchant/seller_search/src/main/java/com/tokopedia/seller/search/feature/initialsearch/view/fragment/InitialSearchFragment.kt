@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoringListener
+import com.tokopedia.seller.search.databinding.InitialSearchFragmentBinding
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTracking
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.view.activity.InitialSellerSearchActivity
@@ -25,7 +26,7 @@ import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialS
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.initial_search_fragment.*
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 
@@ -36,6 +37,8 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val binding: InitialSearchFragmentBinding? by viewBinding()
 
     private val initialSearchAdapterTypeFactory by lazy {
         InitialSearchAdapterTypeFactory(this)
@@ -69,8 +72,10 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
         SellerSearchTracking.sendScreenSearchEvent(userSession.userId.orEmpty())
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.initial_search_fragment, container, false)
     }
 
@@ -97,7 +102,7 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
     }
 
     private fun initRecyclerView() {
-        rvSearchHistorySeller?.apply {
+        binding?.rvSearchHistorySeller?.run {
             layoutManager = LinearLayoutManager(context)
             adapter = initialSearchAdapter
         }
@@ -122,7 +127,12 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
     }
 
     override fun onHighlightItemClicked(data: ItemHighlightInitialSearchUiModel, position: Int) {
-        viewModel.insertSearchSeller(data.title.orEmpty(), data.id.orEmpty(), data.title.orEmpty(), position)
+        viewModel.insertSearchSeller(
+            data.title.orEmpty(),
+            data.id.orEmpty(),
+            data.title.orEmpty(),
+            position
+        )
         startActivityFromAutoComplete(data.appUrl.orEmpty())
         SellerSearchTracking.clickOnItemSearchHighlights(userId)
     }
@@ -190,9 +200,14 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
         initialSearchAdapter.clearAllElements()
         val itemInitialSearchUiModelList = data.filterIsInstance<ItemInitialSearchUiModel>()
         if (itemInitialSearchUiModelList.isEmpty()) {
-            val itemTitleHighlightSearchUiModel = data.filterIsInstance<ItemTitleHighlightInitialSearchUiModel>().firstOrNull() ?: ItemTitleHighlightInitialSearchUiModel()
-            val itemHighlightSearchUiModel = data.filterIsInstance<HighlightInitialSearchUiModel>().firstOrNull() ?: HighlightInitialSearchUiModel()
-            val highlightSearchVisitable = mutableListOf(itemTitleHighlightSearchUiModel, itemHighlightSearchUiModel)
+            val itemTitleHighlightSearchUiModel =
+                data.filterIsInstance<ItemTitleHighlightInitialSearchUiModel>().firstOrNull()
+                    ?: ItemTitleHighlightInitialSearchUiModel()
+            val itemHighlightSearchUiModel =
+                data.filterIsInstance<HighlightInitialSearchUiModel>().firstOrNull()
+                    ?: HighlightInitialSearchUiModel()
+            val highlightSearchVisitable =
+                mutableListOf(itemTitleHighlightSearchUiModel, itemHighlightSearchUiModel)
             initialSearchAdapter.addNoHistoryState()
             initialSearchAdapter.addAll(highlightSearchVisitable)
         } else {
@@ -203,13 +218,15 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
     }
 
     private fun stopSearchResultPagePerformanceMonitoring() {
-        rvSearchHistorySeller?.viewTreeObserver
+        binding?.run {
+            rvSearchHistorySeller.viewTreeObserver
                 ?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.finishMonitoring()
                         rvSearchHistorySeller.viewTreeObserver.removeOnGlobalLayoutListener(this)
                     }
                 })
+        }
     }
 
     fun setHistoryViewUpdateListener(historyViewUpdateListener: HistoryViewUpdateListener) {

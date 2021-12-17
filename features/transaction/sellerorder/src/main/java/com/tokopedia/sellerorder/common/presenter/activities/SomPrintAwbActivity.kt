@@ -1,7 +1,6 @@
 package com.tokopedia.sellerorder.common.presenter.activities
 
-import android.os.Build
-import android.os.Bundle
+import android.content.ActivityNotFoundException
 import android.print.PrintAttributes
 import android.print.PrintJob
 import android.print.PrintManager
@@ -38,17 +37,6 @@ class SomPrintAwbActivity : BaseSimpleWebViewActivity() {
     private var printJob: PrintJob? = null
     private var webView: TkpdWebView? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        with(window) {
-            statusBarColor = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                ContextCompat.getColor(this@SomPrintAwbActivity, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black)
-            } else {
-                ContextCompat.getColor(this@SomPrintAwbActivity, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-            }
-        }
-    }
-
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         configureWebView()
         val result = super.onPrepareOptionsMenu(menu)
@@ -67,27 +55,29 @@ class SomPrintAwbActivity : BaseSimpleWebViewActivity() {
 
     private fun doPrint(mediaSizeId: String = "") {
         runOnUiThread {
-            if (printJob == null || printJob?.isCompleted == true || printJob?.isFailed == true || printJob?.isCancelled == true) {
-                webView?.run {
-                    val printManager = ContextCompat.getSystemService(context, PrintManager::class.java)
-                    val printAdapter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        createPrintDocumentAdapter(PRINT_JOB_NAME)
-                    } else {
-                        createPrintDocumentAdapter()
-                    }
-                    val builder = PrintAttributes.Builder()
-                    if (mediaSizeId.isNotEmpty()) {
-                        builder.setMediaSize(mediaSizeId.toPrintAttributeMediaSize())
-                    } else {
-                        builder.setMediaSize(PrintAttributes.MediaSize.ISO_A4)
-                    }
-                    if (!isFinishing) {
-                        try {
-                            printJob = printManager?.print(PRINT_JOB_NAME, printAdapter, builder.build())
-                        } catch (e: Throwable) {
-                            showToaster(getString(R.string.som_print_awb_error_message))
+            try {
+                if (printJob == null || printJob?.isCompleted == true || printJob?.isFailed == true || printJob?.isCancelled == true) {
+                    webView?.run {
+                        val printManager = ContextCompat.getSystemService(
+                            context, PrintManager::class.java)
+                        val printAdapter = createPrintDocumentAdapter(PRINT_JOB_NAME)
+                        val builder = PrintAttributes.Builder()
+                        if (mediaSizeId.isNotEmpty()) {
+                            builder.setMediaSize(mediaSizeId.toPrintAttributeMediaSize())
+                        } else {
+                            builder.setMediaSize(PrintAttributes.MediaSize.ISO_A4)
+                        }
+                        if (!isFinishing) {
+                            printJob = printManager?.print(
+                                PRINT_JOB_NAME, printAdapter, builder.build())
                         }
                     }
+                }
+            } catch (t: Throwable) {
+                if (t is ActivityNotFoundException) {
+                    showToaster(getString(R.string.som_print_awb_error_message_unsupported_operation))
+                } else {
+                    showToaster(getString(R.string.som_print_awb_error_message))
                 }
             }
         }

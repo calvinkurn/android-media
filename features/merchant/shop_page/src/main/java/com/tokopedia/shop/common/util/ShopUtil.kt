@@ -1,19 +1,26 @@
 package com.tokopedia.shop.common.util
 
 import android.content.Context
+import android.content.Intent
 import android.text.TextUtils
-import com.tokopedia.config.GlobalConfig
+import androidx.core.content.ContextCompat
+import com.tokopedia.device.info.DeviceScreenInfo
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_ROLLOUT_NEW_SHOP_ETALASE
+import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_KEY
+import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_KONDISI
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENAWARAN
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENGIRIMAN
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_PER_PAGE_NON_TABLET
+import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_PER_PAGE_TABLET
+import com.tokopedia.shop.common.constant.ShopPageConstant.VALUE_INT_ONE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.DATA_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.FUNCTION_NAME_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.LIVE_DATA_NAME_KEY
@@ -22,12 +29,22 @@ import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.SHOP_NAME_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.TYPE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.USER_ID_KEY
-import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 object ShopUtil {
+    fun getProductPerPage(context: Context?): Int{
+        return context?.let{
+            if(DeviceScreenInfo.isTablet(context)){
+                DEFAULT_PER_PAGE_TABLET
+            } else {
+                DEFAULT_PER_PAGE_NON_TABLET
+            }
+        }?: DEFAULT_PER_PAGE_NON_TABLET
+    }
+
     fun isHasNextPage(page: Int, perPage: Int, totalData: Int): Boolean = page * perPage < totalData
 
     fun isMyShop(shopId: String, userSessionShopId: String)  = shopId == userSessionShopId
@@ -71,32 +88,17 @@ object ShopUtil {
         }
     }
 
-    fun isUsingNewNavigation(): Boolean {
-        val navType = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
-                RollenceKey.NAVIGATION_EXP_TOP_NAV,
-                RollenceKey.NAVIGATION_VARIANT_OLD
-        )
-        return (navType == RollenceKey.NAVIGATION_VARIANT_REVAMP && !GlobalConfig.isSellerApp())
-    }
-
     fun getShopPageWidgetUserAddressLocalData(context: Context?): LocalCacheModel? {
         return context?.let{
             ChooseAddressUtils.getLocalizingAddressData(it)
         }
     }
 
-    fun isShouldCheckShopType(): Boolean {
-        val shopEtalaseRevampKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
-                AB_TEST_ROLLOUT_NEW_SHOP_ETALASE,
-                ""
+    fun getShopFollowButtonAbTestVariant(): String? {
+        return RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+                AB_TEST_SHOP_FOLLOW_BUTTON_KEY,
+                AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD
         )
-        return shopEtalaseRevampKey.equals(AB_TEST_ROLLOUT_NEW_SHOP_ETALASE, true)
-    }
-
-    fun isNotRegularMerchant(shopPageHeaderDataModel: ShopPageHeaderDataModel?): Boolean {
-        return shopPageHeaderDataModel?.let { shop ->
-            shop.isGoldMerchant || shop.isOfficial
-        } ?: false
     }
 
     fun isUsingNewShareBottomSheet(context: Context): Boolean {
@@ -111,5 +113,35 @@ object ShopUtil {
             it.isNotEmpty()
         }
         return TextUtils.join(delimiter, filteredListString)
+    }
+
+    fun <E> MutableList<E>.setElement(index: Int, element: E){
+        if(index in 0 until size){
+            set(index, element)
+        }
+    }
+
+    fun getColorHexString(context: Context, idColor: Int): String {
+        return try {
+            val colorHexInt = ContextCompat.getColor(context, idColor)
+            val startIndex = 2
+            val colorToHexString = Integer.toHexString(colorHexInt).uppercase().substring(startIndex)
+            return "#$colorToHexString"
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ""
+        }
+    }
+
+    fun getShopGridViewTypeString(gridType: ShopProductViewGridType) : String {
+        return when (gridType) {
+            ShopProductViewGridType.LIST -> ShopPageTrackingConstant.LIST_VIEW_TYPE
+            ShopProductViewGridType.SMALL_GRID -> ShopPageTrackingConstant.GRID_VIEW_TYPE
+            ShopProductViewGridType.BIG_GRID -> ShopPageTrackingConstant.BIG_GRID_VIEW_TYPE
+        }
+    }
+
+    fun getActualPositionFromIndex(indexPosition: Int): Int{
+        return indexPosition + VALUE_INT_ONE
     }
 }

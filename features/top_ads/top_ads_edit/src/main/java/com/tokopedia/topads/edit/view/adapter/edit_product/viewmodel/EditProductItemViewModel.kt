@@ -1,6 +1,6 @@
 package com.tokopedia.topads.edit.view.adapter.edit_product.viewmodel
 
-import com.tokopedia.topads.edit.data.response.GetAdProductResponse
+import com.tokopedia.topads.common.data.response.GetAdProductResponse
 import com.tokopedia.topads.edit.view.adapter.edit_product.EditProductListAdapterTypeFactory
 
 /**

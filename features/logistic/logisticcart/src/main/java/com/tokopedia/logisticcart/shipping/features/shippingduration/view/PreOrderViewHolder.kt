@@ -6,7 +6,6 @@ import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.item_po_duration.view.*
 
 class PreOrderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 

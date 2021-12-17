@@ -18,8 +18,18 @@ class PenaltyDotBadge(private val context: Context) : Drawable() {
     private val mBadgePaint: Paint = Paint()
     private var willDraw = false
 
+    companion object {
+        private const val DIVIDE_TWO = 2
+        private const val PLUS_CENTER_Y = 10
+        private const val MINUS_CENTER_X = 20F
+        private const val DENSITY_PIXEL_16 = 16
+    }
+
     init {
-        mBadgePaint.color = ContextCompat.getColor(context.applicationContext, com.tokopedia.unifyprinciples.R.color.Unify_R600)
+        mBadgePaint.color = ContextCompat.getColor(
+            context.applicationContext,
+            com.tokopedia.unifyprinciples.R.color.Unify_R600
+        )
         mBadgePaint.isAntiAlias = true
         mBadgePaint.style = Paint.Style.FILL
     }
@@ -27,13 +37,13 @@ class PenaltyDotBadge(private val context: Context) : Drawable() {
     override fun draw(canvas: Canvas) {
         if (!willDraw) return
 
-        val dp16 = context.dpToPx(16)
+        val dp16 = context.dpToPx(DENSITY_PIXEL_16)
         val width: Float = dp16
         val height: Float = dp16
 
-        val radius = max(width, height) / 2 / 2
-        val centerX = (bounds.right - bounds.left).minus(20f)
-        val centerY = radius.plus(10)
+        val radius = max(width, height) / DIVIDE_TWO / DIVIDE_TWO
+        val centerX = (bounds.right - bounds.left).minus(MINUS_CENTER_X)
+        val centerY = radius.plus(PLUS_CENTER_Y)
         canvas.drawCircle(centerX, centerY, radius, mBadgePaint)
     }
 

@@ -7,6 +7,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.UpdateCampaignVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseSellerTopchatRoomTest
 import com.tokopedia.topchat.matchers.withLinearLayoutGravity
@@ -14,6 +15,7 @@ import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
+@UiTest
 class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
 
     @Test
@@ -25,23 +27,23 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
 
         // Then
         onView(
-                withRecyclerView(R.id.recycler_view).atPositionOnView(
+                withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                         1, R.id.containerProductAttachment
                 )
         ).check(matches(withLinearLayoutGravity(Gravity.END)))
         onView(
-                withRecyclerView(R.id.recycler_view).atPositionOnView(
+                withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                         1, R.id.ll_footer
                 )
         ).check(matches(not(isDisplayed())))
 
         onView(
-                withRecyclerView(R.id.recycler_view).atPositionOnView(
+                withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                         3, R.id.containerProductAttachment
                 )
         ).check(matches(withLinearLayoutGravity(Gravity.START)))
         onView(
-                withRecyclerView(R.id.recycler_view).atPositionOnView(
+                withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                         3, R.id.ll_footer
                 )
         ).check(matches(not(isDisplayed())))
@@ -55,10 +57,10 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        assertProductStockType(R.id.recycler_view, 1, isDisplayed())
-        assertProductStockTypeText(R.id.recycler_view, 1, "Stok:")
-        assertStockCountVisibilityAt(R.id.recycler_view, 1, isDisplayed())
-        assertStockCountValueAt(R.id.recycler_view, 1, 5)
+        assertProductStockType(R.id.recycler_view_chatroom, 1, isDisplayed())
+        assertProductStockTypeText(R.id.recycler_view_chatroom, 1, "Stok:")
+        assertStockCountVisibilityAt(R.id.recycler_view_chatroom, 1, isDisplayed())
+        assertStockCountValueAt(R.id.recycler_view_chatroom, 1, 5)
     }
 
     @Test
@@ -71,10 +73,10 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         launchChatRoomActivity()
 
         // Then
-        assertProductStockType(R.id.recycler_view, 1, isDisplayed())
-        assertProductStockTypeText(R.id.recycler_view, 1, "Stok campaign:")
-        assertStockCountVisibilityAt(R.id.recycler_view, 1, isDisplayed())
-        assertStockCountValueAt(R.id.recycler_view, 1, 5)
+        assertProductStockType(R.id.recycler_view_chatroom, 1, isDisplayed())
+        assertProductStockTypeText(R.id.recycler_view_chatroom, 1, "Stok campaign:")
+        assertStockCountVisibilityAt(R.id.recycler_view_chatroom, 1, isDisplayed())
+        assertStockCountValueAt(R.id.recycler_view_chatroom, 1, 5)
     }
 
     @Test
@@ -88,11 +90,11 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         )
 
         // When
-        clickChangeStockBtn(R.id.recycler_view, 1)
+        clickChangeStockBtn(R.id.recycler_view_chatroom, 1)
 
         // Then
-        assertStockCountVisibilityAt(R.id.recycler_view, 1, isDisplayed())
-        assertStockCountValueAt(R.id.recycler_view, 1, 55)
+        assertStockCountVisibilityAt(R.id.recycler_view_chatroom, 1, isDisplayed())
+        assertStockCountValueAt(R.id.recycler_view_chatroom, 1, 55)
     }
 
     @Test
@@ -107,7 +109,7 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         )
 
         // When
-        clickChangeStockBtn(R.id.recycler_view, 1)
+        clickChangeStockBtn(R.id.recycler_view_chatroom, 1)
 
         // Then
         assertSnackbarText("Stok produk \"$productName\" berhasil diubah.")
@@ -126,7 +128,7 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         )
 
         // When
-        clickChangeStockBtn(R.id.recycler_view, 1)
+        clickChangeStockBtn(R.id.recycler_view_chatroom, 1)
 
         // Then
         assertSnackbarText("Stok produk \"$subProductName...\" berhasil diubah.")
@@ -143,13 +145,13 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         )
 
         // When
-        clickChangeStockBtn(R.id.recycler_view, 1)
+        clickChangeStockBtn(R.id.recycler_view_chatroom, 1)
 
         // Then
-        assertLabelOnProductCard(R.id.recycler_view, 1, isDisplayed())
-        assertEmptyStockLabelOnProductCard(R.id.recycler_view, 1)
-        assertStockCountVisibilityAt(R.id.recycler_view, 1, isDisplayed())
-        assertStockCountValueAt(R.id.recycler_view, 1, 0)
+        assertLabelOnProductCard(R.id.recycler_view_chatroom, 1, isDisplayed())
+        assertEmptyStockLabelOnProductCard(R.id.recycler_view_chatroom, 1)
+        assertStockCountVisibilityAt(R.id.recycler_view_chatroom, 1, isDisplayed())
+        assertStockCountValueAt(R.id.recycler_view_chatroom, 1, 0)
     }
 
     @Test
@@ -257,7 +259,7 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
 
         // Then
         assertStockCountBtnVisibilityAt(
-                R.id.recycler_view, 1, not(isDisplayed())
+                R.id.recycler_view_chatroom, 1, not(isDisplayed())
         )
     }
 
@@ -271,7 +273,7 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         createErrorUpdateStockIntentResult(errorMsg)
 
         // When
-        clickChangeStockBtn(R.id.recycler_view, 1)
+        clickChangeStockBtn(R.id.recycler_view_chatroom, 1)
 
         // Then
         assertSnackbarText(errorMsg)
@@ -339,10 +341,10 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
 
         // Then
         assertTokoCabangVisibility(
-                R.id.recycler_view, 1, isDisplayed()
+                R.id.recycler_view_chatroom, 1, isDisplayed()
         )
         onView(
-                withRecyclerView(R.id.recycler_view).atPositionOnView(
+                withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                         1, R.id.tp_seller_fullfilment
                 )
         ).check(matches(withText("Dilayani TokoCabang")))
@@ -359,7 +361,7 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
 
         // Then
         assertTokoCabangVisibility(
-                R.id.recycler_view, 1, not(isDisplayed())
+                R.id.recycler_view_chatroom, 1, not(isDisplayed())
         )
     }
 
@@ -384,17 +386,17 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         )
 
         // When
-        clickChangeStockBtn(R.id.recycler_view, 1)
+        clickChangeStockBtn(R.id.recycler_view_chatroom, 1)
 
         // Then
         assertStockCountBtnVisibilityAt(
-                R.id.recycler_view, 1, isDisplayed()
+                R.id.recycler_view_chatroom, 1, isDisplayed()
         )
         assertStockCountVisibilityAt(
-                R.id.recycler_view, 1, isDisplayed()
+                R.id.recycler_view_chatroom, 1, isDisplayed()
         )
         assertStockCountValueAt(
-                R.id.recycler_view, 1, variantStockResult
+                R.id.recycler_view_chatroom, 1, variantStockResult
         )
         assertSnackbarText(
                 "Stok produk \"$productName - $variantName\" berhasil diubah."
@@ -422,19 +424,19 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         )
 
         // When
-        clickChangeStockBtn(R.id.recycler_view, 1)
+        clickChangeStockBtn(R.id.recycler_view_chatroom, 1)
 
         // Then
         assertStockCountBtnVisibilityAt(
-                R.id.recycler_view, 1, isDisplayed()
+                R.id.recycler_view_chatroom, 1, isDisplayed()
         )
         assertStockCountVisibilityAt(
-                R.id.recycler_view, 1, isDisplayed()
+                R.id.recycler_view_chatroom, 1, isDisplayed()
         )
         assertStockCountValueAt(
-                R.id.recycler_view, 1, 0
+                R.id.recycler_view_chatroom, 1, 0
         )
-        assertEmptyStockLabelOnProductCard(R.id.recycler_view, 1)
+        assertEmptyStockLabelOnProductCard(R.id.recycler_view_chatroom, 1)
     }
 
     @Test
@@ -451,7 +453,7 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         )
 
         // When
-        clickChangeStockBtn(R.id.recycler_view, 1)
+        clickChangeStockBtn(R.id.recycler_view_chatroom, 1)
 
         // Then
         assertSnackbarText(
@@ -473,7 +475,7 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         )
 
         // When
-        clickChangeStockBtn(R.id.recycler_view, 1)
+        clickChangeStockBtn(R.id.recycler_view_chatroom, 1)
 
         // Then
         assertSnackbarText(
@@ -503,17 +505,17 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         )
 
         // When
-        clickChangeStockBtn(R.id.recycler_view, 1)
+        clickChangeStockBtn(R.id.recycler_view_chatroom, 1)
 
         // Then
         assertStockCountBtnVisibilityAt(
-                R.id.recycler_view, 1, isDisplayed()
+                R.id.recycler_view_chatroom, 1, isDisplayed()
         )
         assertStockCountVisibilityAt(
-                R.id.recycler_view, 1, isDisplayed()
+                R.id.recycler_view_chatroom, 1, isDisplayed()
         )
         assertStockCountValueAt(
-                R.id.recycler_view, 1, 0
+                R.id.recycler_view_chatroom, 1, 0
         )
     }
 
@@ -539,19 +541,19 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         )
 
         // When
-        clickChangeStockBtn(R.id.recycler_view, 1)
+        clickChangeStockBtn(R.id.recycler_view_chatroom, 1)
 
         // Then
         assertStockCountBtnVisibilityAt(
-                R.id.recycler_view, 1, isDisplayed()
+                R.id.recycler_view_chatroom, 1, isDisplayed()
         )
         assertStockCountVisibilityAt(
-                R.id.recycler_view, 1, isDisplayed()
+                R.id.recycler_view_chatroom, 1, isDisplayed()
         )
         assertStockCountValueAt(
-                R.id.recycler_view, 1, 0
+                R.id.recycler_view_chatroom, 1, 0
         )
-        assertEmptyStockLabelOnProductCard(R.id.recycler_view, 1)
+        assertEmptyStockLabelOnProductCard(R.id.recycler_view_chatroom, 1)
     }
 
 }

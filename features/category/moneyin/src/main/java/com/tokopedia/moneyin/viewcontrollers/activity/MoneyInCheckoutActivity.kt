@@ -29,6 +29,7 @@ import com.tokopedia.common_tradein.model.MoneyInKeroGetAddressResponse.Response
 import com.tokopedia.moneyin.model.MoneyInScheduleOptionResponse.ResponseData.GetPickupScheduleOption.ScheduleDate
 import com.tokopedia.moneyin.viewmodel.*
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.logisticCommon.data.entity.address.AddressModel
 import com.tokopedia.moneyin.viewcontrollers.bottomsheet.MoneyInCourierBottomSheet
 import com.tokopedia.moneyin.viewcontrollers.bottomsheet.MoneyInScheduledTimeBottomSheet
 import com.tokopedia.moneyin.viewmodel.MoneyInCheckoutViewModel
@@ -75,21 +76,23 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
                 MoneyInGTMConstants.ACTION_VIEW_CHECKOUT_PAGE,
                 "")
         if (intent.hasExtra(MONEY_IN_ORDER_VALUE)) {
-            orderValue = intent.getStringExtra(MONEY_IN_ORDER_VALUE)
+            orderValue = intent.getStringExtra(MONEY_IN_ORDER_VALUE) ?: ""
         }
         if (intent.hasExtra(MONEY_IN_HARDWARE_ID)) {
-            hardwareId = intent.getStringExtra(MONEY_IN_HARDWARE_ID)
+            hardwareId = intent.getStringExtra(MONEY_IN_HARDWARE_ID) ?: ""
         }
         if (intent.hasExtra(MONEY_IN_DEFAULT_ADDRESS)) {
-            setAddressView(intent.getParcelableExtra<KeroGetAddress.Data>(MONEY_IN_DEFAULT_ADDRESS))
+            intent.getParcelableExtra<KeroGetAddress.Data>(MONEY_IN_DEFAULT_ADDRESS)?.let { it ->
+                setAddressView(it)
+            }
         }
         if (intent.hasExtra(MONEY_IN_NEW_ADDRESS)) {
-            val saveAddressViewModel: SaveAddressDataModel = intent.getParcelableExtra(MONEY_IN_NEW_ADDRESS)
+            val saveAddressViewModel: SaveAddressDataModel = intent.getParcelableExtra(MONEY_IN_NEW_ADDRESS) ?: SaveAddressDataModel()
             saveAddressViewModel.apply {
-                val keroGetAddress = KeroGetAddress.Data(id, title, address1, address2, cityId,
-                        "", "", districtId, selectedDistrict, true,
+                val keroGetAddress = KeroGetAddress.Data(id.toInt(), title, address1, address2, cityId.toInt(),
+                        "", "", districtId.toInt(), selectedDistrict, true,
                         true, true, latitude, longitude, phone, postalCode,
-                        provinceId, "", receiverName, 1)
+                        provinceId.toInt(), "", receiverName, 1)
                 setAddressView(keroGetAddress)
             }
 
@@ -344,7 +347,7 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
                     if (data != null) {
                         val addressModel = data.getParcelableExtra<RecipientAddressModel>(
                                 CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA
-                        )
+                        ) ?: RecipientAddressModel()
                         val recipientAddress = KeroGetAddress.Data(
                                 addressModel.id.toInt(),
                                 addressModel.addressName,

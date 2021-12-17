@@ -13,23 +13,10 @@ import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
  * Created by zulfikarrahman on 7/6/18.
  */
 class UploadProofPaymentActivity : BaseSimpleActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setSecureWindowFlag()
-    }
-
-    private fun setSecureWindowFlag() {
-        if (GlobalConfig.APPLICATION_TYPE == GlobalConfig.CONSUMER_APPLICATION || GlobalConfig.APPLICATION_TYPE == GlobalConfig.SELLER_APPLICATION) {
-            runOnUiThread {
-                val window = window
-                window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-            }
-        }
-    }
 
     override fun getNewFragment(): Fragment {
         val paymentListModel: BasePaymentModel =
-            intent.getParcelableExtra(PAYMENT_LIST_MODEL_EXTRA)
+            intent.getParcelableExtra(PAYMENT_LIST_MODEL_EXTRA) ?: BasePaymentModel()
         return UploadProofPaymentFragment.createInstance(paymentListModel)
     }
 

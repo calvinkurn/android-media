@@ -2,7 +2,7 @@ package com.tokopedia.oneclickcheckout.order.data.get
 
 import com.google.gson.annotations.SerializedName
 
-data class OnboardingComponentResponse(
+class OnboardingComponentResponse(
         @SerializedName("header_title")
         val headerTitle: String = "",
         @SerializedName("body_image")
@@ -13,7 +13,7 @@ data class OnboardingComponentResponse(
         val infoComponent: InfoComponentResponse = InfoComponentResponse()
 )
 
-data class InfoComponentResponse(
+class InfoComponentResponse(
         @SerializedName("text")
         val text: String = "",
         @SerializedName("link")

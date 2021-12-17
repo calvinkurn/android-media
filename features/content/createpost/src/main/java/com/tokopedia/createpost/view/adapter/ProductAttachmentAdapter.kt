@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.createpost.TYPE_AFFILIATE
+import com.tokopedia.createpost.common.TYPE_AFFILIATE
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.view.viewmodel.RelatedProductItem
+import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder

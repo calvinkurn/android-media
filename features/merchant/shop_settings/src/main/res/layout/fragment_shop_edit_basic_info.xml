@@ -29,7 +29,7 @@
                     android:layout_marginStart="@dimen/spacing_lvl4"
                     android:layout_marginTop="@dimen/spacing_lvl4"
                     app:cardCornerRadius="@dimen/dp_60"
-                    app:cardElevation="@dimen/dp_4">
+                    app:cardElevation="4dp">
 
                     <com.tokopedia.unifycomponents.ImageUnify
                         android:id="@+id/imageAvatar"
@@ -126,7 +126,7 @@
             <View
                 android:id="@+id/divider"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_8"
+                android:layout_height="8dp"
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:background="@color/Unify_N50"
                 app:layout_constraintEnd_toEndOf="parent"

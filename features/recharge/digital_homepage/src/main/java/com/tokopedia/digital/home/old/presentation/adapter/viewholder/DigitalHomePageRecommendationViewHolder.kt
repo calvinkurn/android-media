@@ -7,28 +7,29 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common_digital.common.util.AnalyticUtils
 import com.tokopedia.digital.home.R
+import com.tokopedia.digital.home.databinding.LayoutDigitalHomeRecommendationBinding
 import com.tokopedia.digital.home.old.model.DigitalHomePageRecommendationModel
 import com.tokopedia.digital.home.old.presentation.adapter.adapter.DigitalItemRecommendationAdapter
 import com.tokopedia.digital.home.old.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.layout_digital_home_recommendation.view.*
 
 class DigitalHomePageRecommendationViewHolder(itemView: View?, val onItemBindListener: OnItemBindListener) :
         AbstractViewHolder<DigitalHomePageRecommendationModel>(itemView) {
 
     override fun bind(element: DigitalHomePageRecommendationModel) {
+        val bind = LayoutDigitalHomeRecommendationBinding.bind(itemView)
         val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
-        itemView.rv_digital_homepage_recommendation.layoutManager = layoutManager
+        bind.rvDigitalHomepageRecommendation.layoutManager = layoutManager
         if (element.isLoaded) {
             if (element.isSuccess && element.data.recommendationItemEntityList.isNotEmpty()) {
                 element.data.run {
                     val items = recommendationItemEntityList
-                    itemView.digital_homepage_recommendation_shimmering.hide()
-                    itemView.digital_homepage_recommendation_container.show()
-                    itemView.digital_homepage_recommendation_title.text = title
+                    bind.digitalHomepageRecommendationShimmering.root.hide()
+                    bind.digitalHomepageRecommendationContainer.show()
+                    bind.digitalHomepageRecommendationTitle.text = title
 
-                    itemView.rv_digital_homepage_recommendation.apply {
+                    bind.rvDigitalHomepageRecommendation.apply {
                         adapter = DigitalItemRecommendationAdapter(items, onItemBindListener)
 
                         while (itemDecorationCount > 0) removeItemDecorationAt(0)
@@ -58,12 +59,12 @@ class DigitalHomePageRecommendationViewHolder(itemView: View?, val onItemBindLis
                     onItemBindListener.onRecommendationImpression(items)
                 }
             } else {
-                itemView.digital_homepage_recommendation_shimmering.hide()
-                itemView.digital_homepage_recommendation_container.hide()
+                bind.digitalHomepageRecommendationShimmering.root.hide()
+                bind.digitalHomepageRecommendationContainer.hide()
             }
         } else {
-            itemView.digital_homepage_recommendation_shimmering.show()
-            itemView.digital_homepage_recommendation_container.hide()
+            bind.digitalHomepageRecommendationShimmering.root.show()
+            bind.digitalHomepageRecommendationContainer.hide()
         }
     }
 

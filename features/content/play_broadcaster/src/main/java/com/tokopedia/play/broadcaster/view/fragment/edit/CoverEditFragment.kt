@@ -86,7 +86,6 @@ class CoverEditFragment : TkpdBaseV4Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (!getImagePickerHelper().onActivityResult(requestCode, resultCode, data)) {
-            (activity as? PlayBroadcastActivity)?.startPreview()
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
@@ -130,7 +129,7 @@ class CoverEditFragment : TkpdBaseV4Fragment() {
                     context = requireContext(),
                     fragmentManager = childFragmentManager,
                     listener = object : CoverImagePickerHelper.OnChosenListener {
-                        override fun onGetFromProduct(productId: Long, imageUrl: String) {
+                        override fun onGetFromProduct(productId: String, imageUrl: String) {
                             viewModel.setCroppingProductCover(productId, imageUrl)
                             openCoverCropEditFragment()
                         }

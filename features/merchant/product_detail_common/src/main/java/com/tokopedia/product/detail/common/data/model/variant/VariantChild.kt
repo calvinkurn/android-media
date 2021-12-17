@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.common.data.model.variant
 import androidx.collection.ArrayMap
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.product.detail.common.VariantConstant.DEFAULT_MAX_ORDER
 import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 
@@ -33,6 +34,10 @@ data class VariantChild(
         @SerializedName("optionID")
         @Expose
         val optionIds: List<String> = listOf(),
+
+        @SerializedName("optionName")
+        @Expose
+        val optionName: List<String> = listOf(),
 
         @SerializedName("productName")
         @Expose
@@ -101,6 +106,15 @@ data class VariantChild(
             }
         }
 
+    val roundedDiscountPercentage: String
+        get() {
+            return if (campaign?.isActive == true) {
+                campaign.discountedPercentage.toIntSafely().toString()
+            } else {
+                ""
+            }
+        }
+
     fun getFinalMinOrder(): Int = if (campaign?.isActive == true) campaign.minOrder
             ?: 0 else stock?.minimumOrder?.toIntOrNull() ?: 0
 
@@ -128,7 +142,7 @@ data class VariantChild(
         if (variantReference != null && variantReference.isNotEmpty()) {
             val optionStringList = mutableListOf<String>()
             optionIds.forEachIndexed { index, option ->
-                val value: String? = variantReference.get(index).options.find { it.id == option }?.value
+                val value: String? = variantReference.getOrNull(index)?.options?.find { it.id == option }?.value
                 value?.let {
                     optionStringList.add(it)
                 }
@@ -190,7 +204,16 @@ data class VariantStock(
 
         @SerializedName("maximumOrder")
         @Expose
-        val maximumOrder: String? = ""
+        val maximumOrder: String? = "",
+
+        @SerializedName("stockFmt")
+        @Expose
+        val stockFmt: String? = "", // Stock: 11 or >50
+
+        @SerializedName("stockCopy")
+        @Expose
+        val stockCopy: String? = ""
+
 )
 
 data class VariantCampaign(

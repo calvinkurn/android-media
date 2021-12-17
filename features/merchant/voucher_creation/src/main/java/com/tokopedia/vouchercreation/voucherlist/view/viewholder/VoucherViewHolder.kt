@@ -1,9 +1,11 @@
 package com.tokopedia.vouchercreation.voucherlist.view.viewholder
 
 import android.view.View
+import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
@@ -19,13 +21,27 @@ import kotlin.reflect.KFunction1
  */
 
 class VoucherViewHolder(
-        itemView: View?,
-        private val listener: Listener
+    itemView: View?,
+    private val listener: Listener
 ) : AbstractViewHolder<VoucherUiModel>(itemView) {
+
+    private var shareButton: ImageUnify? = null
+    private var broadcastButton: ImageUnify? = null
+    private var moreButton: ImageUnify? = null
+    private var btnMvcMore: ImageView? = null
+    private var ctaButton: UnifyButton? = null
 
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.item_mvc_voucher_list
+    }
+
+    init {
+        shareButton = itemView?.findViewById(R.id.iu_share_button)
+        broadcastButton = itemView?.findViewById(R.id.iu_bc_button)
+        moreButton = itemView?.findViewById(R.id.iu_more_button)
+        btnMvcMore = itemView?.findViewById(R.id.btnMvcMore)
+        ctaButton = itemView?.findViewById(R.id.btnMvcVoucherCta)
     }
 
     override fun bind(element: VoucherUiModel) {
@@ -49,6 +65,15 @@ class VoucherViewHolder(
                 listener.onVoucherIconClickListener(element.status)
                 listener.onVoucherClickListener(element.id)
             }
+            broadcastButton?.setOnClickListener {
+                listener.onBroadCastClickListener(element.id)
+            }
+            shareButton?.setOnClickListener {
+                listener.onShareClickListener(element)
+            }
+            moreButton?.setOnClickListener {
+                listener.onMoreMenuClickListener(element)
+            }
             btnMvcMore.setOnClickListener {
                 listener.onMoreMenuClickListener(element)
             }
@@ -59,10 +84,10 @@ class VoucherViewHolder(
     }
 
     private fun setVoucherDate(element: VoucherUiModel) {
-        val isActiveVoucher = element.status == VoucherStatusConst.ONGOING || element.status == VoucherStatusConst.NOT_STARTED
+        val isActiveVoucher =
+            element.status == VoucherStatusConst.ONGOING || element.status == VoucherStatusConst.NOT_STARTED
         val oldFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
         val newFormat = "dd MMM yyyy"
-
 
         if (isActiveVoucher) {
             val startTime = DateTimeUtils.reformatUnsafeDateTime(element.startTime, newFormat)
@@ -91,14 +116,14 @@ class VoucherViewHolder(
                     buttonVariant = UnifyButton.Variant.FILLED
                     stringRes = R.string.mvc_share
                     clickAction = listener::onShareClickListener
-                    btnMvcVoucherCta?.visible()
+                    showNewBroadCastVoucherExperience(element.showNewBc, VoucherStatusConst.ONGOING)
                 }
                 VoucherStatusConst.NOT_STARTED -> {
                     buttonType = UnifyButton.Type.ALTERNATE
                     buttonVariant = UnifyButton.Variant.GHOST
                     stringRes = R.string.mvc_edit_quota
                     clickAction = listener::onEditQuotaClickListener
-                    btnMvcVoucherCta?.visible()
+                    showNewBroadCastVoucherExperience(element.showNewBc, VoucherStatusConst.NOT_STARTED)
                 }
                 else -> {
                     if (element.type != VoucherTypeConst.FREE_ONGKIR) {
@@ -110,6 +135,9 @@ class VoucherViewHolder(
                     buttonVariant = UnifyButton.Variant.GHOST
                     stringRes = R.string.mvc_duplicate
                     clickAction = listener::onDuplicateClickListener
+                    shareButton?.gone()
+                    broadcastButton?.gone()
+                    moreButton?.gone()
                 }
             }
             btnMvcVoucherCta?.run {
@@ -189,11 +217,40 @@ class VoucherViewHolder(
         }
     }
 
+    private fun showNewBroadCastVoucherExperience(
+        showNewBc: Boolean,
+        @VoucherStatusConst voucherType: Int
+    ) {
+        if (showNewBc) {
+            when (voucherType) {
+                VoucherStatusConst.ONGOING -> {
+                    shareButton?.visible()
+                    broadcastButton?.visible()
+                }
+                VoucherStatusConst.NOT_STARTED -> {
+                    shareButton?.gone()
+                    broadcastButton?.visible()
+                }
+            }
+            ctaButton?.gone()
+            btnMvcMore?.gone()
+            moreButton?.visible()
+        } else {
+            ctaButton?.visible()
+            btnMvcMore?.visible()
+            shareButton?.gone()
+            broadcastButton?.gone()
+            moreButton?.gone()
+        }
+    }
+
     interface Listener {
 
         fun onVoucherClickListener(voucherId: Int)
 
         fun onMoreMenuClickListener(voucher: VoucherUiModel)
+
+        fun onBroadCastClickListener(voucherId: Int)
 
         fun onShareClickListener(voucher: VoucherUiModel)
 

@@ -3,12 +3,18 @@ package com.tokopedia.tokopedianow.searchcategory.data
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.utils.UrlParamUtils.generateUrlParamString
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse
+import com.tokopedia.tokopedianow.home.domain.query.GetRepurchaseWidget
+import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase.Companion.PARAM_CAT_ID
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.CategoryFilterModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.DynamicChannelModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.QuickFilterModel
+import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.tokopedianow.searchcategory.utils.TYPE
+import com.tokopedia.tokopedianow.searchcategory.utils.WAREHOUSE_ID
 import com.tokopedia.usecase.RequestParams
 
 internal fun getTokonowQueryParam(requestParams: RequestParams): Map<String?, Any> {
@@ -39,6 +45,32 @@ internal fun createDynamicChannelRequest(type: String) = GraphqlRequest(
         mapOf(TYPE to type)
 )
 
+internal fun createRepurchaseWidgetRequest(params: Map<String, Any>): GraphqlRequest {
+    val warehouseID = params[WAREHOUSE_ID]?.toString() ?: ""
+    val queryParam = createRepurchaseQueryParam(params)
+
+    return GraphqlRequest(
+        GetRepurchaseWidget.QUERY,
+        GetRepurchaseResponse::class.java,
+        mapOf(
+            GetRepurchaseWidgetUseCase.PARAM_WAREHOUSE_ID to warehouseID,
+            GetRepurchaseWidgetUseCase.PARAM_QUERY_PARAM to queryParam,
+        )
+    )
+}
+
+private fun createRepurchaseQueryParam(params: Map<String, Any>): String {
+    val categoryID = params[CATEGORY_ID]?.toString() ?: ""
+
+    val queryParamList = listOf(
+        if (categoryID.isNotEmpty()) "$PARAM_CAT_ID=$categoryID" else ""
+    )
+
+    return queryParamList
+        .filter(String::isNotEmpty)
+        .joinToString(separator = "&")
+}
+
 private const val ACE_SEARCH_PRODUCT_QUERY = """
     query aceSearchProductV4(${'$'}params: String!) {
       ace_search_product_v4(params: ${'$'}params){
@@ -54,6 +86,37 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
             query
             text
           }
+          related {
+            relatedKeyword
+            position
+            otherRelated {
+                keyword
+                url
+                applink
+                product {
+                    id
+                    name
+                    price
+                    imageUrl
+                    url
+                    applink
+                    priceStr
+                    wishlist
+                    ratingAverage
+                    stock
+                    minOrder
+                    labelGroups {
+                        title
+                        position
+                        type
+                        url
+                    }
+                    shop {
+                        id
+                    }
+                }
+            }
+          }
           products {
             id
             imageUrl300
@@ -64,7 +127,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
             originalPrice
             childs
             parentId
-            stock
+            maxOrder
             ratingAverage
             minOrder
             source_engine

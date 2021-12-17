@@ -9,6 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.tokopoints.R
@@ -77,7 +78,7 @@ class SectionVerticalBanner21VH(val view: View) : RecyclerView.ViewHolder(view) 
                 return
             }
             if (TextUtils.isEmpty(appLink)) {
-                RouteManager.getIntent(view.context, ApplinkConstInternalGlobal.WEBVIEW, webLink)
+                RouteManager.route(view.context, ApplinkConstInternalGlobal.WEBVIEW, webLink)
             } else {
                 RouteManager.route(view.context, appLink)
             }

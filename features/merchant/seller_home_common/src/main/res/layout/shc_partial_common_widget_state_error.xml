@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/commonWidgetErrorState"
@@ -8,27 +8,31 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgWidgetOnError"
         android:layout_width="@dimen/shc_dimen_110dp"
         android:layout_height="@dimen/shc_dimen_80dp"
-        tools:src="@drawable/unify_globalerrors_connection"
-        android:contentDescription="@string/shc_content_desc_image_error" />
+        android:contentDescription="@string/shc_content_desc_image_error"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/unify_globalerrors_connection" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShcErrorMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
         android:gravity="center"
         android:maxLines="1"
         android:text="@string/shc_failed_to_load_information"
         android:textAlignment="center"
         android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/fontSize_lvl3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgWidgetOnError"
         app:typographyWeight="bold" />
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

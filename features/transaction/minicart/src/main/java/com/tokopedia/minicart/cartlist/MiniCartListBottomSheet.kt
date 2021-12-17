@@ -10,7 +10,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cartcommon.domain.data.RemoveFromCartDomainModel
@@ -18,12 +17,14 @@ import com.tokopedia.cartcommon.domain.data.UndoDeleteCartDomainModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapter
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.SummaryTransactionBottomSheet
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
+import com.tokopedia.minicart.chatlist.MiniCartChatListBottomSheet
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.GlobalEvent
@@ -31,6 +32,7 @@ import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.databinding.LayoutBottomsheetMiniCartListBinding
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -41,6 +43,11 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                                                   var summaryTransactionBottomSheet: SummaryTransactionBottomSheet,
                                                   var analytics: MiniCartAnalytics)
     : MiniCartListActionListener {
+
+    companion object {
+        private const val LONG_DELAY = 500L
+        private const val SHORT_DELAY = 200L
+    }
 
     private var viewBinding: LayoutBottomsheetMiniCartListBinding? = null
     private var viewModel: MiniCartViewModel? = null
@@ -57,6 +64,9 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     private var bottomSheetUiModelObserver: Observer<MiniCartListUiModel>? = null
 
     private var isShow: Boolean = false
+
+    @Inject
+    lateinit var miniCartChatListBottomSheet: MiniCartChatListBottomSheet
 
     fun show(context: Context?,
              fragmentManager: FragmentManager,
@@ -95,7 +105,6 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             showCloseIcon = false
             showHeader = true
             isDragable = true
-            showKnob = true
             isHideable = true
             clearContentPadding = true
             customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
@@ -135,7 +144,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         this.viewModel = viewModel
         viewModel.initializeGlobalState()
         initializeGlobalEventObserver(viewBinding, viewModel, fragmentManager)
-        initializeBottomSheetUiModelObserver(viewBinding)
+        initializeBottomSheetUiModelObserver(viewBinding, fragmentManager, viewModel, lifecycleOwner)
         observeGlobalEvent(viewModel, lifecycleOwner)
         observeMiniCartListUiModel(viewModel, lifecycleOwner)
     }
@@ -160,7 +169,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             it.amountCtaView.setOnClickListener {
                 sendEventClickBuy()
                 showProgressLoading()
-                viewModel?.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET)
+                viewModel?.goToCheckout(GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET)
             }
             it.context?.let { context ->
                 validateTotalAmountView(context, viewBinding)
@@ -173,7 +182,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
         val products = viewModel?.miniCartListBottomSheetUiModel?.value?.getMiniCartProductUiModelList()
                 ?: emptyList()
-        analytics.eventClickBuy(pageName, products)
+        val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
+        analytics.eventClickBuy(pageName, products, isOCCFlow)
     }
 
     private fun initializeGlobalEventObserver(viewBinding: LayoutBottomsheetMiniCartListBinding, viewModel: MiniCartViewModel, fragmentManager: FragmentManager) {
@@ -191,11 +201,11 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 GlobalEvent.STATE_FAILED_UNDO_DELETE_CART_ITEM -> {
                     onFailedUndoDeleteCartItem(viewBinding, it)
                 }
-                GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT -> {
-                    onSuccessUpdateCartForCheckout(it)
+                GlobalEvent.STATE_SUCCESS_TO_CHECKOUT -> {
+                    onSuccessGoToCheckout(it)
                 }
-                GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT -> {
-                    onFailedUpdateCartForCheckout(viewBinding, it, viewModel, fragmentManager)
+                GlobalEvent.STATE_FAILED_TO_CHECKOUT -> {
+                    onFailedGoToCheckout(viewBinding, it, fragmentManager)
                 }
             }
         }
@@ -230,7 +240,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         }
     }
 
-    private fun initializeBottomSheetUiModelObserver(viewBinding: LayoutBottomsheetMiniCartListBinding) {
+    private fun initializeBottomSheetUiModelObserver(viewBinding: LayoutBottomsheetMiniCartListBinding, fragmentManager: FragmentManager, viewModel: MiniCartViewModel, lifecycleOwner: LifecycleOwner) {
         bottomSheetUiModelObserver = Observer<MiniCartListUiModel> {
             if (it.miniCartWidgetUiModel.totalProductCount == 0 && it.miniCartWidgetUiModel.totalProductError == 0) {
                 dismiss()
@@ -241,6 +251,12 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             } else {
                 hideLoading()
                 hideProgressLoading()
+                // Need to try-catch since can't check is lateinit `bottomSheetClose` has already initialized or not using `isInitialized`
+                try {
+                    bottomSheet?.bottomSheetClose?.show()
+                } catch (e: UninitializedPropertyAccessException) {
+                    // No-op
+                }
                 bottomSheet?.setTitle(it.title)
                 if (viewBinding.rvMiniCartList.isComputingLayout) {
                     viewBinding.rvMiniCartList.post {
@@ -255,7 +271,15 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 if (it.isFirstLoad) {
                     sendFirstLoadAnalytics(it)
                     it.isFirstLoad = false
+                    // Collapse unavailable items on first load
+                    viewModel?.toggleUnavailableItemsAccordion()
                 }
+            }
+
+            viewBinding.totalAmount.totalAmountAdditionalButton.setOnClickListener {
+                analytics.eventClickChatOnMiniCart()
+                miniCartChatListBottomSheet.show(context = viewBinding.totalAmount.context, fragmentManager = fragmentManager, lifecycleOwner = lifecycleOwner, viewModel = viewModel)
+                dismiss()
             }
         }
     }
@@ -266,11 +290,12 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         if (overweightData != null) {
             analytics.eventViewErrorTickerOverweightInMiniCart(overweightData.warningMessage)
         }
-        val tickerErrorUiModel = miniCartListUiModel.getMiniCartTickerErrorUiModel()
-        if (tickerErrorUiModel != null) {
-            val message = bottomSheet?.context?.getString(R.string.mini_cart_message_ticker_error, tickerErrorUiModel.unavailableItemCount)
-                    ?: ""
-            analytics.eventViewTickerErrorUnavailableProduct(message)
+        val shopId = viewModel?.currentShopIds?.value?.firstOrNull() ?: ""
+        loop@ for (visitable in miniCartListUiModel.visitables) {
+            if (visitable is MiniCartProductUiModel && visitable.isProductDisabled) {
+                analytics.eventViewTickerErrorUnavailableProduct(shopId, visitable.errorType)
+                break@loop
+            }
         }
     }
 
@@ -280,20 +305,20 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         }
     }
 
-    private fun onFailedUpdateCartForCheckout(viewBinding: LayoutBottomsheetMiniCartListBinding, globalEvent: GlobalEvent, viewModel: MiniCartViewModel, fragmentManager: FragmentManager) {
+    private fun onFailedGoToCheckout(viewBinding: LayoutBottomsheetMiniCartListBinding, globalEvent: GlobalEvent, fragmentManager: FragmentManager) {
         if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
             hideProgressLoading()
             viewBinding.bottomsheetContainer.let { view ->
-                bottomSheetListener?.onBottomSheetFailedUpdateCartForCheckout(view, fragmentManager, globalEvent)
+                bottomSheetListener?.onBottomSheetFailedGoToCheckout(view, fragmentManager, globalEvent)
             }
         }
     }
 
-    private fun onSuccessUpdateCartForCheckout(globalEvent: GlobalEvent) {
+    private fun onSuccessGoToCheckout(globalEvent: GlobalEvent) {
         if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
             bottomSheet?.context.let {
                 hideProgressLoading()
-                bottomSheetListener?.onBottomSheetSuccessUpdateCartForCheckout()
+                bottomSheetListener?.onBottomSheetSuccessGoToCheckout()
                 dismiss()
             }
         }
@@ -350,16 +375,31 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     private fun adjustRecyclerViewPaddingBottom(viewBinding: LayoutBottomsheetMiniCartListBinding) {
         measureRecyclerViewPaddingDebounceJob?.cancel()
         measureRecyclerViewPaddingDebounceJob = GlobalScope.launch(Dispatchers.Main) {
-            delay(500)
-            with(viewBinding) {
-                if (rvMiniCartList.canScrollVertically(-1) || rvMiniCartList.canScrollVertically(1)) {
-                    rvMiniCartList.setPadding(0, 0, 0, rvMiniCartList.resources?.getDimensionPixelOffset(R.dimen.dp_64)
-                            ?: 0)
-                } else {
-                    rvMiniCartList.setPadding(0, 0, 0, 0)
-                }
+            delay(LONG_DELAY)
+            adjustRecyclerViewPadding(viewBinding)
+        }
+    }
+
+    private fun adjustRecyclerViewPadding(viewBinding: LayoutBottomsheetMiniCartListBinding) {
+        with(viewBinding) {
+            if (rvMiniCartList.canScrollVertically(-1) || rvMiniCartList.canScrollVertically(1) || isBottomSheetFullPage(viewBinding)) {
+                rvMiniCartList.setPadding(0, 0, 0, rvMiniCartList.resources?.getDimensionPixelSize(R.dimen.dp_64)
+                        ?: 0)
+            } else {
+                rvMiniCartList.setPadding(0, 0, 0, 0)
             }
         }
+    }
+
+    private fun isBottomSheetFullPage(viewBinding: LayoutBottomsheetMiniCartListBinding): Boolean {
+        val displayMetrics = Resources.getSystem().displayMetrics
+        bottomSheet?.activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+
+        val bottomSheetHeight = (bottomSheet?.bottomSheetWrapper?.parent as? View)?.height ?: 0
+        val recyclerViewPaddingBottom = viewBinding.rvMiniCartList.resources?.getDimensionPixelSize(R.dimen.dp_64)
+                ?: 0
+        val displayHeight = displayMetrics?.heightPixels ?: 0
+        return bottomSheetHeight != 0 && displayHeight != 0 && (bottomSheetHeight + (recyclerViewPaddingBottom / 2)) >= displayHeight
     }
 
     private fun cancelAllDebounceJob() {
@@ -389,14 +429,6 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         with(viewBinding) {
             val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             totalAmount.setAdditionalButton(chatIcon)
-            totalAmount.totalAmountAdditionalButton.setOnClickListener {
-                analytics.eventClickChatOnMiniCart()
-                val shopId = viewModel?.currentShopIds?.value?.firstOrNull() ?: "0"
-                val intent = RouteManager.getIntent(
-                        context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId
-                )
-                context.startActivity(intent)
-            }
             this.chatIcon.setImageDrawable(chatIcon)
             totalAmount.amountChevronView.setOnClickListener(miniCartChevronClickListener)
         }
@@ -407,19 +439,41 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             setLabelTitle(context.getString(R.string.mini_cart_widget_label_total_price))
             if (miniCartWidgetData.totalProductCount == 0) {
                 setAmount("-")
-                setCtaText(context.getString(R.string.mini_cart_widget_label_buy_empty))
+                val ctaText = viewModel?.miniCartABTestData?.value?.buttonBuyWording
+                        ?: context.getString(R.string.mini_cart_widget_cta_text_default)
+                setCtaText(ctaText)
                 amountCtaView.isEnabled = false
                 enableAmountChevron(false)
             } else {
-                setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartWidgetData.totalProductPrice, false))
-                setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartWidgetData.totalProductCount))
+                setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartWidgetData.totalProductPrice, false).removeDecimalSuffix())
+                val ctaText = viewModel?.miniCartABTestData?.value?.buttonBuyWording
+                        ?: context.getString(R.string.mini_cart_widget_cta_text_default)
+                setCtaText("$ctaText (${miniCartWidgetData.totalProductCount})")
                 amountCtaView.isEnabled = true
                 enableAmountChevron(true)
             }
             amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
             amountCtaView.requestLayout()
+            validateAmountCtaLabel(viewBinding, miniCartWidgetData)
         }
         setTotalAmountLoading(viewBinding, false)
+    }
+
+    private fun validateAmountCtaLabel(viewBinding: LayoutBottomsheetMiniCartListBinding, miniCartWidgetData: MiniCartWidgetData) {
+        if (viewModel?.miniCartABTestData?.value?.isOCCFlow == true) {
+            viewBinding.totalAmount.post {
+                val ellipsis = viewBinding.totalAmount.amountCtaView.layout?.getEllipsisCount(0)
+                        ?: 0
+                if (ellipsis > 0) {
+                    val ctaText = viewBinding.totalAmount.context.getString(R.string.mini_cart_widget_cta_text_default)
+                    if (miniCartWidgetData.totalProductCount == 0) {
+                        viewBinding.totalAmount.setCtaText(ctaText)
+                    } else {
+                        viewBinding.totalAmount.setCtaText("$ctaText (${miniCartWidgetData.totalProductCount})")
+                    }
+                }
+            }
+        }
     }
 
     private fun showLoading() {
@@ -445,15 +499,15 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     private fun updateCart() {
         updateCartDebounceJob?.cancel()
         updateCartDebounceJob = GlobalScope.launch(Dispatchers.Main) {
-            delay(500)
-            viewModel?.updateCart(isForCheckout = false, observer = GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET)
+            delay(LONG_DELAY)
+            viewModel?.updateCart()
         }
     }
 
     private fun calculateProduct() {
         calculationDebounceJob?.cancel()
         calculationDebounceJob = GlobalScope.launch(Dispatchers.Main) {
-            delay(200)
+            delay(SHORT_DELAY)
             viewModel?.calculateProduct()
         }
     }
@@ -506,6 +560,10 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     }
 
     override fun onShowUnavailableItemsCLicked() {
+        scrollToUnavailableSection()
+    }
+
+    fun scrollToUnavailableSection() {
         val data = adapter?.data ?: emptyList()
         loop@ for ((index, visitable) in data.withIndex()) {
             if (visitable is MiniCartProductUiModel && visitable.isProductDisabled) {

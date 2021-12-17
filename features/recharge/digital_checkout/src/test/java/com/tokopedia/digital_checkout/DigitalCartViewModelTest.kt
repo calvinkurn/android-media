@@ -19,6 +19,7 @@ import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData
 import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData.getAttributesCheckout
 import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData.getDummyGetCartResponse
+import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData.getDummyGetCartResponseDisableVoucher
 import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData.getDummyGetCartResponseWithDefaultCrossSellType
 import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewModel
 import com.tokopedia.digital_checkout.usecase.DigitalCancelVoucherUseCase
@@ -39,6 +40,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
+import junit.framework.Assert.assertNotNull
 import junit.framework.Assert.assertNull
 import kotlinx.coroutines.Dispatchers
 import org.junit.Before
@@ -102,7 +104,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = false)
 
         // then
         // must show content and show loading
@@ -132,11 +134,19 @@ class DigitalCartViewModelTest {
         assert(mappedCartInfoData.attributes.isCouponActive == 1)
         assert(mappedCartInfoData.attributes.voucherAutoCode == dummyResponse.voucher)
         assert(!mappedCartInfoData.isNeedOtp)
-        assert(mappedCartInfoData.crossSellingType == dummyResponse.crossSellingType)
-        assert(mappedCartInfoData.crossSellingConfig.headerTitle == dummyResponse.crossSellingConfig.wording.headerTitle)
-        assert(mappedCartInfoData.attributes.fintechProduct.getOrNull(0)?.transactionType == dummyResponse.fintechProduct.getOrNull(0)?.transactionType)
-        assert(mappedCartInfoData.attributes.fintechProduct.getOrNull(0)?.fintechAmount ==
-                dummyResponse.fintechProduct.getOrNull(0)?.fintechAmount)
+
+        val (subscriptions, fintechProduct) = dummyResponse.fintechProduct.partition {
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT }
+        val (mappedSubscriptions, mappedFintechProduct) = mappedCartInfoData.attributes.fintechProduct.partition {
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT }
+
+        assert(mappedCartInfoData.isSubscribed == (subscriptions.isNotEmpty() && subscriptions[0].checkBoxDisabled))
+        assert(mappedSubscriptions.size == subscriptions.size)
+        assert(mappedSubscriptions.getOrNull(0)?.transactionType == subscriptions.getOrNull(0)?.transactionType)
+        assert(mappedSubscriptions.getOrNull(0)?.fintechAmount == subscriptions.getOrNull(0)?.fintechAmount)
+        assert(mappedFintechProduct.size == fintechProduct.size)
+        assert(mappedFintechProduct.getOrNull(0)?.transactionType == fintechProduct.getOrNull(0)?.transactionType)
+        assert(mappedFintechProduct.getOrNull(0)?.fintechAmount == fintechProduct.getOrNull(0)?.fintechAmount)
         assert(mappedCartInfoData.id == dummyResponse.id)
         assert(mappedCartInfoData.isInstantCheckout == dummyResponse.isInstantCheckout)
 
@@ -157,7 +167,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = true)
 
         //then
         assert(digitalCartViewModel.isNeedOtp.value == userSession.phoneNumber)
@@ -171,7 +181,7 @@ class DigitalCartViewModelTest {
         //when
         val categoryId = "1"
         val userNotLoginMessage = "user not login"
-        digitalCartViewModel.getCart(categoryId, userNotLoginMessage)
+        digitalCartViewModel.getCart(categoryId, userNotLoginMessage, isSpecialProduct = true)
 
         //then
         assert(digitalCartViewModel.errorThrowable.value!!.throwable.message == userNotLoginMessage)
@@ -188,7 +198,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = false)
 
         // then
         // must show content and show loading
@@ -218,11 +228,19 @@ class DigitalCartViewModelTest {
         assert(mappedCartInfoData.attributes.isCouponActive == 1)
         assert(mappedCartInfoData.attributes.voucherAutoCode == dummyResponse.voucher)
         assert(!mappedCartInfoData.isNeedOtp)
-        assert(mappedCartInfoData.crossSellingType == dummyResponse.crossSellingType)
-        assert(mappedCartInfoData.crossSellingConfig?.headerTitle == dummyResponse.crossSellingConfig.wordingIsSubscribe.headerTitle)
-        assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.transactionType == dummyResponse.fintechProduct.getOrNull(0)?.transactionType)
-        assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount ==
-                dummyResponse.fintechProduct.getOrNull(0)?.fintechAmount)
+
+        val (subscriptions, fintechProduct) = dummyResponse.fintechProduct.partition {
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT }
+        val (mappedSubscriptions, mappedFintechProduct) = mappedCartInfoData.attributes.fintechProduct.partition {
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT }
+
+        assert(mappedCartInfoData.isSubscribed == (subscriptions.isNotEmpty() && subscriptions[0].checkBoxDisabled))
+        assert(mappedSubscriptions.size == subscriptions.size)
+        assert(mappedSubscriptions.getOrNull(0)?.transactionType == subscriptions.getOrNull(0)?.transactionType)
+        assert(mappedSubscriptions.getOrNull(0)?.fintechAmount == subscriptions.getOrNull(0)?.fintechAmount)
+        assert(mappedFintechProduct.size == fintechProduct.size)
+        assert(mappedFintechProduct.getOrNull(0)?.transactionType == fintechProduct.getOrNull(0)?.transactionType)
+        assert(mappedFintechProduct.getOrNull(0)?.fintechAmount == fintechProduct.getOrNull(0)?.fintechAmount)
         assert(mappedCartInfoData.id == dummyResponse.id)
         assert(mappedCartInfoData.isInstantCheckout == dummyResponse.isInstantCheckout)
 
@@ -242,7 +260,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = true)
 
         // then
         // must show content and show loading
@@ -272,11 +290,19 @@ class DigitalCartViewModelTest {
         assert(mappedCartInfoData.attributes.isCouponActive == 1)
         assert(mappedCartInfoData.attributes.voucherAutoCode == dummyResponse.voucher)
         assert(!mappedCartInfoData.isNeedOtp)
-        assert(mappedCartInfoData.crossSellingType == dummyResponse.crossSellingType)
-        assert(mappedCartInfoData.crossSellingConfig?.headerTitle == dummyResponse.crossSellingConfig.wordingIsSubscribe.headerTitle)
-        assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.transactionType == dummyResponse.fintechProduct.getOrNull(0)?.transactionType)
-        assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount ==
-                dummyResponse.fintechProduct.getOrNull(0)?.fintechAmount)
+
+        val (subscriptions, fintechProduct) = dummyResponse.fintechProduct.partition {
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT }
+        val (mappedSubscriptions, mappedFintechProduct) = mappedCartInfoData.attributes.fintechProduct.partition {
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT }
+
+        assert(mappedCartInfoData.isSubscribed == (subscriptions.isNotEmpty() && subscriptions[0].checkBoxDisabled))
+        assert(mappedSubscriptions.size == subscriptions.size)
+        assert(mappedSubscriptions.getOrNull(0)?.transactionType == subscriptions.getOrNull(0)?.transactionType)
+        assert(mappedSubscriptions.getOrNull(0)?.fintechAmount == subscriptions.getOrNull(0)?.fintechAmount)
+        assert(mappedFintechProduct.size == fintechProduct.size)
+        assert(mappedFintechProduct.getOrNull(0)?.transactionType == fintechProduct.getOrNull(0)?.transactionType)
+        assert(mappedFintechProduct.getOrNull(0)?.fintechAmount == fintechProduct.getOrNull(0)?.fintechAmount)
         assert(mappedCartInfoData.id == dummyResponse.id)
         assert(!mappedCartInfoData.attributes.isOpenAmount)
         assert(mappedCartInfoData.isInstantCheckout == dummyResponse.isInstantCheckout)
@@ -297,7 +323,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = false)
 
         // then
         // must show content and show loading
@@ -327,13 +353,19 @@ class DigitalCartViewModelTest {
         assert(mappedCartInfoData.attributes.isCouponActive == 1)
         assert(mappedCartInfoData.attributes.voucherAutoCode == dummyResponse.voucher)
         assert(!mappedCartInfoData.isNeedOtp)
-        assert(mappedCartInfoData.crossSellingType == dummyResponse.crossSellingType)
-        assert(mappedCartInfoData.crossSellingConfig?.headerTitle == dummyResponse.crossSellingConfig.wordingIsSubscribe.headerTitle)
-        assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.transactionType == dummyResponse.fintechProduct.getOrNull(0)?.transactionType)
-        assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount ==
-                dummyResponse.fintechProduct.getOrNull(0)?.fintechAmount)
-        assert(mappedCartInfoData.id == dummyResponse.id)
-        assert(mappedCartInfoData.isInstantCheckout == dummyResponse.isInstantCheckout)
+
+        val (subscriptions, fintechProduct) = dummyResponse.fintechProduct.partition {
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT }
+        val (mappedSubscriptions, mappedFintechProduct) = mappedCartInfoData.attributes.fintechProduct.partition {
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT }
+
+        assert(mappedCartInfoData.isSubscribed == (subscriptions.isNotEmpty() && subscriptions[0].checkBoxDisabled))
+        assert(mappedSubscriptions.size == subscriptions.size)
+        assert(mappedSubscriptions.getOrNull(0)?.transactionType == subscriptions.getOrNull(0)?.transactionType)
+        assert(mappedSubscriptions.getOrNull(0)?.fintechAmount == subscriptions.getOrNull(0)?.fintechAmount)
+        assert(mappedFintechProduct.size == fintechProduct.size)
+        assert(mappedFintechProduct.getOrNull(0)?.transactionType == fintechProduct.getOrNull(0)?.transactionType)
+        assert(mappedFintechProduct.getOrNull(0)?.fintechAmount == fintechProduct.getOrNull(0)?.fintechAmount)
 
         // show correct total price
         assert(digitalCartViewModel.totalPrice.value != null)
@@ -354,7 +386,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = true)
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
@@ -371,7 +403,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = false)
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
@@ -388,7 +420,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = true)
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
@@ -406,7 +438,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = false)
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
@@ -424,7 +456,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = true)
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
@@ -442,7 +474,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = false)
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
@@ -461,7 +493,7 @@ class DigitalCartViewModelTest {
 
         //when
         val categoryId = "1"
-        digitalCartViewModel.getCart(categoryId)
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = true)
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
@@ -534,7 +566,7 @@ class DigitalCartViewModelTest {
         coEvery { userSession.userId } returns "123"
 
         // when
-        digitalCartViewModel.processPatchOtpCart(RequestBodyIdentifier(), DigitalCheckoutPassData(), "")
+        digitalCartViewModel.processPatchOtpCart(RequestBodyIdentifier(), DigitalCheckoutPassData(), "", isSpecialProduct = true)
 
         // then get cart
         // show loading and hide content
@@ -551,7 +583,7 @@ class DigitalCartViewModelTest {
         coEvery { userSession.userId } returns "123"
 
         // when
-        digitalCartViewModel.processPatchOtpCart(RequestBodyIdentifier(), DigitalCheckoutPassData())
+        digitalCartViewModel.processPatchOtpCart(RequestBodyIdentifier(), DigitalCheckoutPassData(), isSpecialProduct = false)
 
         // then
         assert(!digitalCartViewModel.showLoading.value!!)
@@ -716,6 +748,37 @@ class DigitalCartViewModelTest {
     }
 
     @Test
+    fun onApplyDiscountPromoCodeWhenDisabledVoucher_updateCheckoutSummary() {
+        //given
+        val dummyResponse = getDummyGetCartResponseDisableVoucher()
+        coEvery { digitalGetCartUseCase.execute(any(), any(), any()) } coAnswers {
+            secondArg<(RechargeGetCart.Response) -> Unit>().invoke(RechargeGetCart.Response(dummyResponse))
+        }
+        coEvery { userSession.isLoggedIn } returns true
+
+        //when
+        val categoryId = "1"
+        digitalCartViewModel.getCart(categoryId, isSpecialProduct = true)
+
+        //then
+        assertNotNull(digitalCartViewModel.promoData.value)
+        val promoData = digitalCartViewModel.promoData.value ?: PromoData()
+        assert(!promoData.isActive())
+        assert(promoData.state == TickerCheckoutView.State.INACTIVE)
+        assert(promoData.description == "PROMOO")
+        assert(promoData.amount == 5000)
+
+        //when
+        digitalCartViewModel.applyPromoData(promoData)
+
+        //then
+        val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull {
+            it.title == "PROMOO"
+        }
+        assert(summary?.priceAmount == String.format("-%s", getStringIdrFormat(5000.0)))
+    }
+
+    @Test
     fun onApplyDiscountPromoCode_withEmptyState_updateCheckoutSummary() {
         // given
         val promoData = PromoData()
@@ -796,8 +859,9 @@ class DigitalCartViewModelTest {
         digitalCartViewModel.setPromoData(promoData)
         digitalCartViewModel.applyPromoData(promoData)
 
-            val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull() {
-            it.title == STRING_KODE_PROMO}
+        val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull() {
+            it.title == STRING_KODE_PROMO
+        }
         assertNull(summary)
     }
 
@@ -816,7 +880,8 @@ class DigitalCartViewModelTest {
         digitalCartViewModel.resetCheckoutSummaryPromoAndTotalPrice()
 
         val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull() {
-            it.title == STRING_KODE_PROMO}
+            it.title == STRING_KODE_PROMO
+        }
         assertNull(summary)
     }
 
@@ -983,7 +1048,8 @@ class DigitalCartViewModelTest {
 
         // then
         val summary = digitalCartViewModel.payment.value!!.summaries.first {
-            it.title == DigitalCheckoutConst.SummaryInfo.STRING_SUBTOTAL_TAGIHAN }
+            it.title == DigitalCheckoutConst.SummaryInfo.STRING_SUBTOTAL_TAGIHAN
+        }
         assert(summary.priceAmount == getStringIdrFormat(userInput))
     }
 

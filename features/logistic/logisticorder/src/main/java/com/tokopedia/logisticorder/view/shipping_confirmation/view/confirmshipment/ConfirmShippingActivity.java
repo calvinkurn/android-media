@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -36,6 +35,7 @@ import com.tokopedia.logisticorder.view.shipping_confirmation.di.DaggerOrderCour
 import com.tokopedia.logisticorder.view.shipping_confirmation.di.OrderCourierComponent;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.barcodescanner.ReceiptShipmentBarcodeScannerActivity;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.CourierSelectionModel;
+import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierUiModel;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderDetailData;
@@ -69,7 +69,7 @@ public class ConfirmShippingActivity extends BaseSimpleActivity
     private OrderDetailShipmentModel editableModel;
     private String mMode;
 
-    private TextView courierName;
+    private Typography courierName;
     private EditText barcodeEditText;
     private ProgressDialog progressDialog;
     private PermissionCheckerHelper permissionCheckerHelper = new PermissionCheckerHelper();
@@ -384,7 +384,7 @@ public class ConfirmShippingActivity extends BaseSimpleActivity
         barcodeEditText = findViewById(R.id.barcode_edit_text);
         ImageView barcodeScanner = findViewById(R.id.icon_scan);
         LinearLayout courierLayout = findViewById(R.id.courier_layout);
-        TextView confirmButton = findViewById(R.id.confirm_button);
+        Typography confirmButton = findViewById(R.id.confirm_button);
         if (isChangeCourierMode(Integer.parseInt(orderDetailData.getOrderCode())))
             toolbar.setTitle(getString(R.string.button_order_detail_change_courier_logistic_module));
         courierLayout.setOnClickListener(onGetCourierButtonClickedListener(orderDetailData));

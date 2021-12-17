@@ -1,7 +1,6 @@
 package com.tokopedia.play.analytic.interactive
 
-import com.tokopedia.play.analytic.PlayAnalytic
-import com.tokopedia.play.analytic.partner.PlayPartnerAnalyticImpl
+import com.tokopedia.play.analytic.*
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
@@ -17,12 +16,16 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
     private val userId: String
         get() = userSession.userId
 
-    override fun clickFollowShopInteractive(channelId: String, channelType: PlayChannelType) {
+    override fun clickFollowShopInteractive(
+        channelId: String,
+        channelType: PlayChannelType,
+        interactiveId: String
+    ) {
         sendCompleteGeneralEvent(
                 event = KEY_TRACK_CLICK_GROUP_CHAT,
                 eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
                 eventAction = "click follow from engagement tools widget",
-                eventLabel = "$channelId - ${channelType.value}"
+                eventLabel = "$channelId - ${channelType.value} - $interactiveId"
         )
     }
 
@@ -35,12 +38,16 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickTapTap(channelId: String, channelType: PlayChannelType) {
+    override fun clickTapTap(
+        channelId: String,
+        channelType: PlayChannelType,
+        interactiveId: String
+    ) {
         sendCompleteGeneralEvent(
                 event = KEY_TRACK_CLICK_GROUP_CHAT,
                 eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
                 eventAction = "click tap terus icon",
-                eventLabel = "$channelId - ${channelType.value}"
+                eventLabel = "$channelId - ${channelType.value} - $interactiveId"
         )
     }
 
@@ -61,21 +68,5 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
                         KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
                 )
         )
-    }
-
-    companion object {
-        private const val KEY_EVENT = "event"
-        private const val KEY_EVENT_CATEGORY = "eventCategory"
-        private const val KEY_EVENT_ACTION = "eventAction"
-        private const val KEY_EVENT_LABEL = "eventLabel"
-        private const val KEY_CURRENT_SITE = "currentSite"
-        private const val KEY_USER_ID = "userId"
-        private const val KEY_BUSINESS_UNIT = "businessUnit"
-
-        private const val KEY_TRACK_CLICK_GROUP_CHAT = "clickGroupChat"
-        private const val KEY_TRACK_GROUP_CHAT_ROOM = "groupchat room"
-        private const val KEY_TRACK_CURRENT_SITE = "tokopediamarketplace"
-        private const val KEY_TRACK_BUSINESS_UNIT = "play"
-
     }
 }

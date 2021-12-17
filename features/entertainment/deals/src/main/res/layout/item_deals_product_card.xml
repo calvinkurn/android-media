@@ -86,6 +86,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:labelType="general_light_red"
+                    android:visibility="gone"
                     tools:labelTitle="20%" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -95,6 +96,7 @@
                     android:paddingHorizontal="@dimen/spacing_lvl2"
                     android:paddingVertical="@dimen/spacing_lvl1"
                     android:textColor="@color/Unify_N700_44"
+                    android:visibility="gone"
                     app:typographyType="small"
                     app:typographyWeight="bold"
                     tools:text="Rp50.000" />

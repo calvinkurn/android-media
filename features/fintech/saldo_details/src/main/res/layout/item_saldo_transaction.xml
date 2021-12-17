@@ -1,70 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingTop="@dimen/unify_space_8">
+    android:paddingTop="@dimen/unify_space_12">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/transaction_image_view"
-        android:layout_width="@dimen/sd_dp_26"
-        android:layout_height="@dimen/sd_dp_26"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="@dimen/sd_dp_14"
-        android:layout_marginTop="@dimen/sd_dp_10"
-        app:unify_image_corner_radius="0" />
 
-    <RelativeLayout
-        android:id="@+id/header"
-        android:layout_width="match_parent"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTransactionHeading"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/transaction_image_view"
-        android:padding="@dimen/sd_dp_10">
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Transaction Heading" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/transaction_heading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_68"
-            app:typographyType="body_2"
-            tools:text="Transaction Heading" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/saldo_transaction_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/transaction_heading"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="@dimen/sd_dp_10"
-            android:textColor="@color/Unify_N700_32"
-            app:typographyType="body_3"
-            tools:text="13 Apr 2021"/>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSaldoAmount"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_marginEnd="@dimen/unify_space_8"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_2"
+        android:textColor="@color/Unify_G500"
+        app:layout_constraintEnd_toStartOf="@+id/iconNextButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTransactionHeading"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="- Rp5.000" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/nominal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/saldo_transaction_date"
-            android:layout_marginTop="@dimen/sd_dp_10"
-            app:typographyType="body_2"
-            tools:text="- Rp5.000"/>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/note"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/nominal"
-            android:layout_marginTop="@dimen/unify_space_8"
-            android:background="@android:drawable/list_selector_background"
-            android:textColor="@color/Unify_N700_32"
-            app:typographyType="body_2" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSaldoNote"
+        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_marginEnd="@dimen/unify_space_8"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_2"
+        app:layout_constraintEnd_toStartOf="@+id/iconNextButton"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSaldoAmount"
+        app:typographyType="body_3"
+        tools:text="Note" />
 
-    </RelativeLayout>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSaldoTransactionDate"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_marginEnd="@dimen/unify_space_8"
+        app:layout_constraintEnd_toStartOf="@id/iconNextButton"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSaldoNote"
+        app:typographyType="body_3"
+        tools:text="13 Apr 2021" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelSaldoTransactionStatus"
+        app:layout_constraintTop_toTopOf="@id/tvTransactionHeading"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:labelType="general_light_green"
+        app:labelTitle="Sample Label"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iconNextButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:layout_constraintTop_toTopOf="@id/tvTransactionHeading"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/tvSaldoTransactionDate"
+        android:background="?selectableItemBackgroundBorderless"
+        android:contentDescription="Navigate Next"
+        app:icon_name="CHEVRON_RIGHT"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/unify_space_2"
-        android:layout_below="@+id/header" />
-</RelativeLayout>
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSaldoTransactionDate" />
+</androidx.constraintlayout.widget.ConstraintLayout>

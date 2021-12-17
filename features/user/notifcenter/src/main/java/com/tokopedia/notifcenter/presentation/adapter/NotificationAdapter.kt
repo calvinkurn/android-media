@@ -17,26 +17,35 @@ import com.tokopedia.notifcenter.data.uimodel.*
 import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.ViewHolderState
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.CarouselProductNotificationViewHolder
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.RecommendationViewHolder
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.SectionTitleViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.*
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadBumpReminderState
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadOrderList
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadWishlistState
 
 class NotificationAdapter constructor(
         private val typeFactory: NotificationTypeFactory,
         private val listener: Listener
 ) : BaseListAdapter<Visitable<*>, NotificationTypeFactory>(
         typeFactory
-), NotificationAdapterListener, CarouselProductNotificationViewHolder.Listener {
+), NotificationAdapterListener, CarouselProductNotificationViewHolder.Listener,
+    NotificationOrderListViewHolder.Listener {
 
     private val productCarouselState: ArrayMap<Int, Parcelable> = ArrayMap()
+    private val orderWidgetCarouselState: ArrayMap<String, Parcelable> = ArrayMap()
     private val carouselViewPool = RecyclerView.RecycledViewPool()
     private val widgetTimeline = RecyclerView.RecycledViewPool()
+    private val orderWidgetPool = RecyclerView.RecycledViewPool()
 
     interface Listener {
         fun hasFilter(): Boolean
+    }
+
+    override fun saveOrderWidgetState(key: String, currentState: Parcelable?) {
+        orderWidgetCarouselState[key] = currentState
+    }
+
+    override fun getSavedOrderCarouselState(key: String): Parcelable? {
+       return orderWidgetCarouselState[key]
     }
 
     override fun getProductCarouselViewPool(): RecyclerView.RecycledViewPool {
@@ -45,6 +54,10 @@ class NotificationAdapter constructor(
 
     override fun getWidgetTimelineViewPool(): RecyclerView.RecycledViewPool {
         return widgetTimeline
+    }
+
+    override fun getNotificationOrderViewPool(): RecyclerView.RecycledViewPool? {
+        return orderWidgetPool
     }
 
     override fun isPreviousItemNotification(adapterPosition: Int): Boolean {
@@ -265,6 +278,20 @@ class NotificationAdapter constructor(
     private fun isNextItemDivider(position: Int): Boolean {
         val item = visitables.getOrNull(position + 1) ?: return false
         return item is BigDividerUiModel
+    }
+
+    fun updateFailedAddToWishlist(
+        notification: NotificationUiModel,
+        productData: ProductData,
+        position: Int
+    ) {
+        val itemMetaData = getUpToDateUiModelPosition(position, notification)
+        val itemPosition = itemMetaData.first
+        if (itemPosition != RecyclerView.NO_POSITION) {
+            productData.isWishlist = false
+            val payload = PayloadWishlistState(productData, notification)
+            notifyItemChanged(itemPosition, payload)
+        }
     }
 
 }

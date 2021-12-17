@@ -7,24 +7,26 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.databinding.ShcDescriptionWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
-import kotlinx.android.synthetic.main.shc_description_widget.view.*
 
 /**
  * Created By @ilhamsuaib on 20/05/20
  */
 
 class DescriptionViewHolder(
-        view: View?,
-        private val listener: Listener
+    view: View?,
+    private val listener: Listener
 ) : AbstractViewHolder<DescriptionWidgetUiModel>(view) {
 
     companion object {
         val RES_LAYOUT = R.layout.shc_description_widget
     }
 
+    private val binding by lazy { ShcDescriptionWidgetBinding.bind(itemView) }
+
     override fun bind(element: DescriptionWidgetUiModel) {
-        with(itemView) {
+        with(binding) {
             tvDescriptionTitle.text = element.title
             tvDescriptionDesc.text = element.subtitle
             setupDetails(element)
@@ -32,37 +34,37 @@ class DescriptionViewHolder(
     }
 
     private fun setupDetails(element: DescriptionWidgetUiModel) {
-        with(itemView) {
+        with(binding) {
             if (element.ctaText.isNotBlank() && element.appLink.isNotBlank()) {
                 tvDescriptionCta.text = element.ctaText
                 tvDescriptionCta.visible()
                 icDescriptionCtaArrow.visible()
                 tvDescriptionCta.setOnClickListener {
-                    goToDetails(element.appLink, element.title)
+                    goToDetails(element)
                 }
                 icDescriptionCtaArrow.setOnClickListener {
-                    goToDetails(element.appLink, element.title)
+                    goToDetails(element)
                 }
             } else {
                 tvDescriptionCta.gone()
                 icDescriptionCtaArrow.gone()
             }
 
-            addOnImpressionListener(element.impressHolder) {
-                listener.sendDescriptionImpressionEvent(element.title)
+            root.addOnImpressionListener(element.impressHolder) {
+                listener.sendDescriptionImpressionEvent(element)
             }
         }
     }
 
-    private fun goToDetails(appLink: String, descriptionTitle: String) {
-        if (RouteManager.route(itemView.context, appLink)) {
-            listener.sendDescriptionCtaClickEvent(descriptionTitle)
+    private fun goToDetails(model: DescriptionWidgetUiModel) {
+        if (RouteManager.route(itemView.context, model.appLink)) {
+            listener.sendDescriptionCtaClickEvent(model)
         }
     }
 
     interface Listener : BaseViewHolderListener {
-        fun sendDescriptionImpressionEvent(descriptionTitle: String) {}
+        fun sendDescriptionImpressionEvent(model: DescriptionWidgetUiModel) {}
 
-        fun sendDescriptionCtaClickEvent(descriptionTitle: String) {}
+        fun sendDescriptionCtaClickEvent(model: DescriptionWidgetUiModel) {}
     }
 }

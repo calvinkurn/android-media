@@ -14,8 +14,8 @@ import com.tokopedia.statistic.view.model.DateFilterItem
  */
 
 class DateFilterAdapterFactoryImpl(
-        private val listener: DateFilterListener,
-        private val fm: FragmentManager
+    private val listener: DateFilterListener,
+    private val fm: FragmentManager
 ) : BaseAdapterTypeFactory(), DateFilterAdapterFactory {
 
     override fun type(item: DateFilterItem.Click): Int = DateFilterClickViewHolder.RES_LAYOUT
@@ -28,11 +28,21 @@ class DateFilterAdapterFactoryImpl(
 
     override fun type(item: DateFilterItem.MonthPickerItem): Int = MonthPickerViewHolder.RES_LAYOUT
 
-    override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            DateFilterClickViewHolder.RES_LAYOUT -> DateFilterClickViewHolder(parent, listener::onItemDateRangeClick)
-            DateFilterApplyViewHolder.RES_LAYOUT -> DateFilterApplyViewHolder(parent, listener::onApplyDateFilter)
-            DateFilterPickViewHolder.RES_LAYOUT -> DateFilterPickViewHolder(parent, fm, listener::onItemDateRangeClick)
+            DateFilterClickViewHolder.RES_LAYOUT -> DateFilterClickViewHolder(
+                parent,
+                listener::onItemDateRangeClick
+            )
+            DateFilterApplyViewHolder.RES_LAYOUT -> DateFilterApplyViewHolder(
+                parent,
+                listener::onApplyDateFilter
+            )
+            DateFilterPickViewHolder.RES_LAYOUT -> DateFilterPickViewHolder(
+                parent,
+                fm,
+                listener::onItemDateRangeClick
+            )
             MonthPickerViewHolder.RES_LAYOUT -> MonthPickerViewHolder(parent, listener)
             DateFilterDividerViewHolder.RES_LAYOUT -> DateFilterDividerViewHolder(parent)
             else -> super.createViewHolder(parent, type)

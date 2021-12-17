@@ -2,6 +2,7 @@ package com.tokopedia.applink
 
 import android.net.Uri
 import android.os.Bundle
+import com.tokopedia.config.GlobalConfig
 import java.net.URLDecoder
 import java.util.*
 import java.util.regex.Pattern
@@ -276,8 +277,13 @@ object UriUtil {
         val stringBuilder = StringBuilder(uri)
         if (queryParameters != null && queryParameters.isNotEmpty()) {
             stringBuilder.append("?")
+            var queryCounter = 0
             for ((key, value) in queryParameters) {
+                if (queryCounter > 0) {
+                    stringBuilder.append("&")
+                }
                 stringBuilder.append(key).append("=").append(value)
+                queryCounter++
             }
         }
         return stringBuilder.toString()
@@ -348,11 +354,14 @@ object UriUtil {
      * @return b=234
      */
     fun getDiffQuery(query: String, uri: Uri): String {
+        if (uri.query.isNullOrEmpty()) {
+            return query
+        }
         return try {
             val queryList = query.split("&")
             val strResultList: MutableList<String> = mutableListOf()
             for (q in queryList) {
-                val keyValueSplit = q.split("=")
+                val keyValueSplit = q.split("=".toRegex(), 2)
                 val key = keyValueSplit[0]
                 val value = keyValueSplit[1]
                 val valueOriginalUri = uri.getQueryParameter(key)
@@ -393,4 +402,6 @@ object UriUtil {
             "&$query"
         }
     }
+
+    fun isHostStaging(host: String) = host.contains(DeepLinkChecker.WEB_HOST_STAGING)
 }

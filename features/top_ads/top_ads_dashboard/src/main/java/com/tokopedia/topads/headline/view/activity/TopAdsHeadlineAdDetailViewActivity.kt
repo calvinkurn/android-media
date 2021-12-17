@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
+import com.tokopedia.topads.common.data.response.HeadlineInfoResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_ACTIVATE
@@ -57,6 +58,7 @@ import kotlin.math.abs
 private const val click_edit_icon = "click - edit on detail iklan toko"
 private const val click_toggle_icon = "click - toggle on detail iklan toko"
 private const val view_detail_iklan = "view - detail iklan toko"
+private const val HEADLINE_DETAIL_PAGE = "topads.headlineDetail"
 class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<TopAdsDashboardComponent>, CompoundButton.OnCheckedChangeListener {
 
     private var dataStatistic: DataStatistic? = null
@@ -118,8 +120,12 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
         loadStatisticsData()
     }
 
-    override fun renderGraph() {
+    override fun renderGraph(position: Int) {
         currentStatisticsFragment?.showLineGraph(dataStatistic)
+    }
+
+    override fun handleDateClick(customDateText: String) {
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -184,10 +190,10 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
     }
 
     private fun loadData() {
-        viewModel.getGroupInfo(resources, groupId.toString(), ::onSuccessGroupInfo)
+        viewModel.getHeadlineInfo(resources, groupId.toString(), ::onSuccessGroupInfo)
     }
 
-    private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
+    private fun onSuccessGroupInfo(data: HeadlineInfoResponse.TopAdsGetPromoHeadline.Data) {
         groupStatus = data.status
         groupName = data.groupName
         groupTotal = data.groupTotal.toInt()
@@ -232,13 +238,13 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
         }
 
         private fun getBundleArguments() {
-            groupId = intent?.extras?.getInt(GROUP_ID)
+            groupId = intent?.extras?.getString(GROUP_ID)?.toInt()
             priceSpent = intent?.extras?.getString(TopAdsDashboardConstant.PRICE_SPEND)
         }
 
         private fun loadStatisticsData() {
             if (startDate == null || endDate == null) return
-            viewModel.getTopAdsStatistic(startDate!!, endDate!!, TopAdsStatisticsType.HEADLINE_ADS, ::onSuccesGetStatisticsInfo, groupId.toString())
+            viewModel.getTopAdsStatistic(startDate!!, endDate!!, TopAdsStatisticsType.HEADLINE_ADS, ::onSuccesGetStatisticsInfo, groupId.toString(), 0)
         }
 
         private fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {

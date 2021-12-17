@@ -3,6 +3,7 @@
     <string name="shc_load_failed">Gagal memuat</string>
     <string name="shc_failed_to_load">Gagal dimuat</string>
     <string name="shc_failed_to_load_information">Oops, informasi gagal ditampilkan</string>
+    <string name="shc_failed_to_retry">Muat Ulang</string>
     <string name="shc_empty_state_title">Belum ada informasi untukmu</string>
     <string name="shc_more">Selengkapnya</string>
     <string name="shc_score">Skor</string>
@@ -26,4 +27,6 @@
     <string name="shc_content_desc_image_table_empty">image table empty</string>
     <string name="shc_content_desc_image_pie_chart_empty">pie chart empty</string>
     <string name="shc_content_desc_image_carousel_empty">carousel empty</string>
+    <string name="mission_selling_tokopedia">Misi berjualan Tokopedia</string>
+    <string name="shc_title_progress_milestone_widget">Kemajuan</string>
 </resources>

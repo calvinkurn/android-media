@@ -4,15 +4,15 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_gravity="center_horizontal"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16">
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp">
 
         <FrameLayout
             android:layout_width="0dp"
@@ -22,9 +22,9 @@
                 android:layout_width="@dimen/dp_96"
                 android:layout_height="@dimen/dp_96"
                 android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginBottom="8dp"
                 app:corners="@integer/corner_radius_shimmering"
-                android:layout_margin="@dimen/dp_2"/>
+                android:layout_margin="2dp"/>
         </FrameLayout>
 
         <FrameLayout
@@ -35,9 +35,9 @@
                 android:layout_width="@dimen/dp_96"
                 android:layout_height="@dimen/dp_96"
                 android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginBottom="8dp"
                 app:corners="@integer/corner_radius_shimmering"
-                android:layout_margin="@dimen/dp_2"/>
+                android:layout_margin="2dp"/>
         </FrameLayout>
 
         <FrameLayout
@@ -48,9 +48,9 @@
                 android:layout_width="@dimen/dp_96"
                 android:layout_height="@dimen/dp_96"
                 android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginBottom="8dp"
                 app:corners="@integer/corner_radius_shimmering"
-                android:layout_margin="@dimen/dp_2"/>
+                android:layout_margin="2dp"/>
         </FrameLayout>
     </LinearLayout>
 
@@ -58,7 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="@dimen/dp_16">
+        android:layout_marginBottom="16dp">
 
         <FrameLayout
             android:layout_width="0dp"
@@ -68,9 +68,9 @@
                 android:layout_width="@dimen/dp_96"
                 android:layout_height="@dimen/dp_96"
                 android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginBottom="8dp"
                 app:corners="@integer/corner_radius_shimmering"
-                android:layout_margin="@dimen/dp_2"/>
+                android:layout_margin="2dp"/>
         </FrameLayout>
 
         <FrameLayout
@@ -81,9 +81,9 @@
                 android:layout_width="@dimen/dp_96"
                 android:layout_height="@dimen/dp_96"
                 android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginBottom="8dp"
                 app:corners="@integer/corner_radius_shimmering"
-                android:layout_margin="@dimen/dp_2"/>
+                android:layout_margin="2dp"/>
         </FrameLayout>
 
         <FrameLayout
@@ -94,9 +94,9 @@
                 android:layout_width="@dimen/dp_96"
                 android:layout_height="@dimen/dp_96"
                 android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginBottom="8dp"
                 app:corners="@integer/corner_radius_shimmering"
-                android:layout_margin="@dimen/dp_2"/>
+                android:layout_margin="2dp"/>
         </FrameLayout>
     </LinearLayout>
 
@@ -113,9 +113,9 @@
                 android:layout_width="@dimen/dp_96"
                 android:layout_height="@dimen/dp_96"
                 android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginBottom="8dp"
                 app:corners="@integer/corner_radius_shimmering"
-                android:layout_margin="@dimen/dp_2"/>
+                android:layout_margin="2dp"/>
         </FrameLayout>
 
         <FrameLayout
@@ -126,9 +126,9 @@
                 android:layout_width="@dimen/dp_96"
                 android:layout_height="@dimen/dp_96"
                 android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginBottom="8dp"
                 app:corners="@integer/corner_radius_shimmering"
-                android:layout_margin="@dimen/dp_2"/>
+                android:layout_margin="2dp"/>
         </FrameLayout>
 
         <FrameLayout
@@ -139,9 +139,9 @@
                 android:layout_width="@dimen/dp_96"
                 android:layout_height="@dimen/dp_96"
                 android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginBottom="8dp"
                 app:corners="@integer/corner_radius_shimmering"
-                android:layout_margin="@dimen/dp_2"/>
+                android:layout_margin="2dp"/>
         </FrameLayout>
     </LinearLayout>
 

@@ -11,6 +11,7 @@ import com.tokopedia.sellerhomecommon.domain.mapper.PostMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.GetPostDataResponse
+import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -19,24 +20,30 @@ import com.tokopedia.usecase.RequestParams
  */
 
 class GetPostDataUseCase(
-        gqlRepository: GraphqlRepository,
-        postMapper: PostMapper,
-        dispatchers: CoroutineDispatchers
+    gqlRepository: GraphqlRepository,
+    private val postMapper: PostMapper,
+    dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetPostDataResponse, List<PostListDataUiModel>>(
-        gqlRepository, postMapper, dispatchers, GetPostDataResponse::class.java, QUERY, false) {
+    gqlRepository, postMapper, dispatchers, GetPostDataResponse::class.java, QUERY, false
+) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
     }
 
     override suspend fun executeOnBackground(): List<PostListDataUiModel> {
+        val dataKays: List<DataKeyModel> = (params.getObject(DATA_KEYS) as? List<DataKeyModel>)
+            .orEmpty()
         val gqlRequest = GraphqlRequest(QUERY, GetPostDataResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse: GraphqlResponse = graphqlRepository.response(
+            listOf(gqlRequest), cacheStrategy
+        )
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetPostDataResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetPostDataResponse>()
-            return mapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
+            val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
+            return postMapper.mapRemoteDataToUiData(data, isFromCache, dataKays)
         } else {
             throw MessageErrorException(errors.firstOrNull()?.message.orEmpty())
         }
@@ -44,17 +51,20 @@ class GetPostDataUseCase(
 
     companion object {
         private const val DATA_KEYS = "dataKeys"
-        private const val DEFAULT_POST_LIMIT = 3
 
         fun getRequestParams(
-                dataKey: List<Pair<String, String>>,
-                dynamicParameter: DynamicParameterModel,
-                limit: Int = DEFAULT_POST_LIMIT
+            dataKey: List<TableAndPostDataKey>,
+            dynamicParameter: DynamicParameterModel
         ): RequestParams = RequestParams.create().apply {
+
             val dataKeys = dataKey.map {
                 DataKeyModel(
-                        key = it.first,
-                        jsonParams = dynamicParameter.copy(limit = limit, postFilter = it.second).toJsonString()
+                    key = it.dataKey,
+                    jsonParams = dynamicParameter.copy(
+                        limit = it.maxData,
+                        postFilter = it.filter
+                    ).toJsonString(),
+                    maxDisplay = it.maxDisplayPerPage
                 )
             }
             putObject(DATA_KEYS, dataKeys)
@@ -73,6 +83,7 @@ class GetPostDataUseCase(
                     featuredMediaURL
                     stateMediaURL
                     stateText
+                    pinned
                   }
                   cta{
                     text

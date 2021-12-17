@@ -47,18 +47,16 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
             "SettingProfileActivity"
     )
 
-    override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
-        if (activity != null) {
-            if(!exceptionPage.contains(activity.javaClass.simpleName)) {
-                DaggerAdditionalCheckComponents
-                        .builder()
-                        .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                        .additionalCheckModules(AdditionalCheckModules())
-                        .additionalCheckUseCaseModules(AdditionalCheckUseCaseModules())
-                        .build()
-                        .inject(this)
-                doChecking(activity)
-            }
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+        if(!exceptionPage.contains(activity.javaClass.simpleName)) {
+            DaggerAdditionalCheckComponents
+                    .builder()
+                    .baseAppComponent((activity.application as BaseMainApplication).baseAppComponent)
+                    .additionalCheckModules(AdditionalCheckModules())
+                    .additionalCheckUseCaseModules(AdditionalCheckUseCaseModules())
+                    .build()
+                    .inject(this)
+            doChecking(activity)
         }
     }
 
@@ -69,7 +67,10 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
         return remoteConfig?.getBoolean(REMOTE_CONFIG_2FA, false)
     }
 
-    private fun getTwoFactorRemoteConfigSellerApp(): Boolean? {
+    private fun getTwoFactorRemoteConfigSellerApp(activity: Activity): Boolean? {
+        if(remoteConfig == null) {
+            remoteConfig = FirebaseRemoteConfigImpl(activity)
+        }
         return remoteConfig?.getBoolean(REMOTE_CONFIG_2FA_SELLER_APP, false)
     }
 
@@ -88,7 +89,7 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     }
 
     private fun checkSellerApp(activity: Activity) {
-        if(!exceptionPageSeller.contains(activity.javaClass.simpleName) && getTwoFactorRemoteConfigSellerApp() == true) {
+        if(!exceptionPageSeller.contains(activity.javaClass.simpleName) && getTwoFactorRemoteConfigSellerApp(activity) == true) {
             checking(activity)
         }
     }
@@ -101,9 +102,9 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
         })
     }
 
-    override fun onActivityDestroyed(activity: Activity?) {}
+    override fun onActivityDestroyed(activity: Activity) {}
 
-    override fun onActivityPaused(activity: Activity?) {}
+    override fun onActivityPaused(activity: Activity) {}
 
     private fun handleResponse(activity: Activity?, twoFactorResult: TwoFactorResult){
         if(twoFactorResult.popupType == AdditionalCheckConstants.POPUP_TYPE_PHONE || twoFactorResult.popupType == AdditionalCheckConstants.POPUP_TYPE_PIN || twoFactorResult.popupType == AdditionalCheckConstants.POPUP_TYPE_BOTH){
@@ -116,11 +117,11 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
         }
     }
 
-    override fun onActivityResumed(activity: Activity?) {}
+    override fun onActivityResumed(activity: Activity) {}
 
-    override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {}
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
 
-    override fun onActivityStarted(activity: Activity?) {}
+    override fun onActivityStarted(activity: Activity) {}
 
-    override fun onActivityStopped(activity: Activity?) {}
+    override fun onActivityStopped(activity: Activity) {}
 }

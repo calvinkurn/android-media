@@ -7,6 +7,7 @@ import com.tokopedia.flight.cancellation.presentation.adapter.viewholder.FlightC
 import com.tokopedia.flight.cancellation.presentation.adapter.viewholder.FlightCancellationViewHolder
 import com.tokopedia.flight.cancellation.presentation.adapter.viewholder.FlightCancellationViewHolderListener
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationPassengerModel
+import com.tokopedia.flight.databinding.ItemFlightCancellationPassengerBinding
 
 /**
  * @author by furqan on 14/07/2020
@@ -20,9 +21,8 @@ class FlightCancellationPassengerAdapter(private val cancellationListener: Fligh
     private var passengerViewHolderList: MutableList<FlightCancellationPassengerViewHolder> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FlightCancellationPassengerViewHolder {
-        val view = LayoutInflater.from(parent.context)
-                .inflate(FlightCancellationPassengerViewHolder.LAYOUT, parent, false)
-        return FlightCancellationPassengerViewHolder(view, cancellationListener, this)
+        val binding = ItemFlightCancellationPassengerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return FlightCancellationPassengerViewHolder(binding, cancellationListener, this)
     }
 
     override fun getItemCount(): Int = passengerModelList.size

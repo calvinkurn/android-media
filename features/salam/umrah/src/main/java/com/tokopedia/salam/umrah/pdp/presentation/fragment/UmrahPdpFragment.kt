@@ -145,7 +145,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
                         }
                     } else {
                         paramPurchase.apply {
-                            variant = data.getStringExtra(EXTRA_VARIANT_ROOM)
+                            variant = data.getStringExtra(EXTRA_VARIANT_ROOM) ?: ""
                             totalPassenger = data.getIntExtra(EXTRA_TOTAL_PASSENGER, 1)
                             val maxPassenger = data.getIntExtra(EXTRA_MAX_PASSENGER, 1)
                             totalPrice = data.getIntExtra(EXTRA_TOTAL_PRICE, 1)

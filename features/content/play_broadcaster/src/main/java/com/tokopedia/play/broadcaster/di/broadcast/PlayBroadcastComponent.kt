@@ -25,7 +25,9 @@ import dagger.Component
         modules = [PlayBroadcastViewModelModule::class,
             PlayBroadcastModule::class,
             PlayBroadcastFragmentModule::class,
-            PlayBroadcastBindModule::class]
+            PlayBroadcastBindModule::class,
+            PlayBroadcastRepositoryModule::class
+        ]
 )
 @PlayBroadcastScope
 interface PlayBroadcastComponent {

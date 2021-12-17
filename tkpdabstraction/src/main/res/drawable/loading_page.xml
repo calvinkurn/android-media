@@ -4,10 +4,10 @@
     <item>
         <inset
             android:drawable="@drawable/ic_loading_toped"
-            android:insetBottom="@dimen/dp_20"
-            android:insetLeft="@dimen/dp_10"
-            android:insetRight="@dimen/dp_10"
-            android:insetTop="@dimen/dp_10" />
+            android:insetBottom="20dp"
+            android:insetLeft="10dp"
+            android:insetRight="10dp"
+            android:insetTop="10dp" />
     </item>
    
 

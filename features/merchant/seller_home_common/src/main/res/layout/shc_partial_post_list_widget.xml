@@ -26,6 +26,15 @@
         app:typographyWeight="bold"
         tools:text="Info Seller" />
 
+    <com.tokopedia.unifycomponents.NotificationUnify
+        android:id="@+id/notifTagPostList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        app:layout_constraintTop_toTopOf="@id/tvPostListTitle"
+        app:layout_constraintBottom_toBottomOf="@id/tvPostListTitle"
+        app:layout_constraintStart_toEndOf="@id/tvPostListTitle"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/filterShcPostList"
         android:layout_width="wrap_content"

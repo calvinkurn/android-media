@@ -14,7 +14,7 @@ class ProductListDiffer: ProductManageDiffer() {
         val oldItem = oldProductList[oldItemPosition]
         val newItem = newProductList[newItemPosition]
 
-        return isTheSameProduct(oldItem, newItem) || isTheSameEmptyState(oldItem, newItem)
+        return isTheSameProduct(oldItem, newItem) || isTheSameItem(oldItem, newItem)
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
@@ -39,7 +39,7 @@ class ProductListDiffer: ProductManageDiffer() {
                 oldItem.id == newItem.id
     }
 
-    private fun isTheSameEmptyState(oldItem: Visitable<*>?, newItem: Visitable<*>?): Boolean {
-        return oldItem is EmptyModel && newItem is EmptyModel
+    private fun isTheSameItem(oldItem: Visitable<*>?, newItem: Visitable<*>?): Boolean {
+        return oldItem == newItem
     }
 }

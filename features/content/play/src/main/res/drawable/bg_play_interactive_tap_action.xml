@@ -28,7 +28,7 @@
                 android:height="@dimen/play_interactive_tap_action"
                 />
             <solid
-                android:color="#00FFFFFF"
+                android:color="@color/play_dms_transparent"
                 />
             <stroke
                 android:width="@dimen/play_interactive_tap_inside_stroke_width"
@@ -74,7 +74,7 @@
                 android:height="@dimen/play_interactive_tap_action"
                 />
             <solid
-                android:color="#00FFFFFF"
+                android:color="@color/play_dms_transparent"
                 />
             <stroke
                 android:width="@dimen/play_interactive_tap_inside_stroke_width"

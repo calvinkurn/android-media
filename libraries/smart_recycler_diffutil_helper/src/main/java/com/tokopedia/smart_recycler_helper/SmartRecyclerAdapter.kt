@@ -24,9 +24,9 @@ abstract class SmartRecyclerAdapter<T, V : SmartTypeFactory>(
 
     override fun onBindViewHolder(holder: SmartAbstractViewHolder<*>, position: Int, payloads: MutableList<Any>) {
         if(payloads.isNotEmpty()){
-            bind(holder as SmartAbstractViewHolder<SmartVisitable<*>>, getItem(position), payloads)
+            bind(holder as SmartAbstractViewHolder<SmartVisitable<*>>, getItem(holder.adapterPosition), payloads)
         } else {
-            super.onBindViewHolder(holder, position, payloads)
+            super.onBindViewHolder(holder, holder.adapterPosition, payloads)
         }
     }
 
@@ -35,7 +35,7 @@ abstract class SmartRecyclerAdapter<T, V : SmartTypeFactory>(
     }
 
     override fun onBindViewHolder(holder: SmartAbstractViewHolder<*>, position: Int) {
-        bind(holder as SmartAbstractViewHolder<SmartVisitable<*>>, getItem(position))
+        bind(holder as SmartAbstractViewHolder<SmartVisitable<*>>, getItem(holder.adapterPosition))
     }
 
     protected abstract fun bind(visitable: SmartAbstractViewHolder<SmartVisitable<*>>, item: T)

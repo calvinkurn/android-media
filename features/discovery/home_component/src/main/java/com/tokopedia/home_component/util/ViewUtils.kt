@@ -1,6 +1,7 @@
 package com.tokopedia.home_component.util
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.*
 import android.util.TypedValue
@@ -10,6 +11,7 @@ import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.DividerUnify
 
@@ -25,11 +27,11 @@ object ChannelWidgetUtil {
         when(channelModel?.channelConfig?.dividerType) {
             ChannelConfig.DIVIDER_NO_DIVIDER -> {
                 dividerTop?.invisible()
-                dividerBottom?.invisible()
+                dividerBottom?.gone()
             }
             ChannelConfig.DIVIDER_TOP -> {
                 dividerTop?.visible()
-                dividerBottom?.invisible()
+                dividerBottom?.gone()
             }
             ChannelConfig.DIVIDER_BOTTOM -> {
                 dividerTop?.invisible()
@@ -61,10 +63,32 @@ fun View.setGradientBackground(colorArray: ArrayList<String>) {
     }
 }
 
+//function check is gradient all white, if empty default color is white
+fun getGradientBackgroundViewAllWhite(colorArray: ArrayList<String>, context: Context) : Boolean {
+    val colorWhite = getHexColorFromIdColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+    if (colorArray.isNotEmpty()) {
+        if (colorArray.size > 1) {
+            val colorArrayNotWhite = colorArray.filter { it != colorWhite }
+            if (colorArrayNotWhite.isNotEmpty())
+                return false
+            return true
+        } else {
+            return colorArray[0].equals(colorWhite, true)
+        }
+    } else
+        return true
+}
+
 fun convertDpToPixel(dp: Float, context: Context): Int {
     val r = context.resources
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.displayMetrics).toInt()
 }
+
+fun Float.toSp(): Float = Resources.getSystem().displayMetrics.scaledDensity * this
+
+fun Float.toDpInt(): Int = this.toPx().toInt()
+
+fun Float.toDpFloat(): Float = this.toPx()
 
 fun RecyclerView.removeAllItemDecoration() {
     if (this.itemDecorationCount > 0)

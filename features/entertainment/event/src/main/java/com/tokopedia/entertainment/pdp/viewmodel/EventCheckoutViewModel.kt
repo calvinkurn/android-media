@@ -50,7 +50,7 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         get() = eventCheckoutInstantResponseMutable
 
     fun getDataProductDetail(rawQueryPDP: String, rawQueryContent: String, urlPdp: String) {
-        launchCatchError(block =  {
+        launch {
             val result = usecase.executeUseCase(rawQueryPDP, rawQueryContent, true, urlPdp)
             when (result) {
                 is Success -> {
@@ -60,8 +60,6 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
                     isErrorMutable.value = EventPDPErrorEntity(true, result.throwable)
                 }
             }
-        }){
-            isErrorMutable.value = EventPDPErrorEntity(true, it)
         }
     }
 
@@ -71,7 +69,7 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
             val params = mapOf(PARAM to checkoutGeneralV2Params)
             val graphqlRequest = GraphqlRequest(rawQuery,EventCheckoutResponse::class.java, params)
 
-            val response = withContext(dispatcher) { graphqlRepository.getReseponse(listOf(graphqlRequest)) }
+            val response = withContext(dispatcher) { graphqlRepository.response(listOf(graphqlRequest)) }
             eventCheckoutResponseMutable.value = response.getSuccessData<EventCheckoutResponse>()
         }) {
             errorGeneralValueMutable.postValue(it)
@@ -84,7 +82,7 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
             val params = mapOf(PARAM to checkoutGeneralV2InstantParams)
             val graphqlRequest = GraphqlRequest(EventQuery.mutationEventCheckoutInstant(),EventCheckoutInstantResponse::class.java, params)
 
-            val response = withContext(dispatcher) { graphqlRepository.getReseponse(listOf(graphqlRequest)) }
+            val response = withContext(dispatcher) { graphqlRepository.response(listOf(graphqlRequest)) }
             eventCheckoutInstantResponseMutable.value = response.getSuccessData<EventCheckoutInstantResponse>()
         }) {
             errorGeneralValueMutable.postValue(it)

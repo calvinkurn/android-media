@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:paddingTop="@dimen/dp_80"
     android:paddingLeft="@dimen/dp_45"
     android:paddingRight="@dimen/dp_45"
@@ -20,14 +20,14 @@
     <TextView
         android:id="@+id/empty_search_result_title"
         style="@style/TextView.Title.BlackSecondary.Bold"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         android:gravity="center"
         tools:text="@string/empty_search_result_title_template"/>
 
     <TextView
         android:id="@+id/empty_search_result_content"
         style="@style/TextView.Small.BlackDisabled"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         android:gravity="center"
         android:maxLines="4"
         tools:text="@string/empty_search_result_content_template"/>

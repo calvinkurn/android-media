@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:text="@string/common_topup_fav_number_error_state_desc"
-        tools:text="Coba refresh atau lanjut transaksi dulu, ya."
+        tools:text="Coba refresh atau masukkan nomor manual dulu, ya."
         app:typographyType="body_3"
         app:layout_constraintTop_toBottomOf="@id/common_topup_bills_error_state_title"
         app:layout_constraintStart_toStartOf="parent"

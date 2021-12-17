@@ -1,6 +1,5 @@
 package com.tokopedia.home.ui
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
@@ -23,8 +22,8 @@ import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_RECOMMENDATION_TAB_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.setupAbTestRemoteConfig
 import com.tokopedia.home.util.HomeInstrumentationTestHelper.deleteHomeDatabase
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.espresso_component.CommonAssertion
 import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -37,6 +36,7 @@ import org.junit.Test
 /**
  * Created by devarafikry on 02/07/21.
  */
+@UiTest
 class HomeFragmentUiTest {
     private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -49,6 +49,7 @@ class HomeFragmentUiTest {
         InstrumentationHomeRevampTestActivity::class.java
     ) {
         override fun beforeActivityLaunched() {
+            InstrumentationRegistry.getInstrumentation().context.deleteHomeDatabase()
             InstrumentationAuthHelper.clearUserSession()
             gtmLogDBSource.deleteAll().subscribe()
             InstrumentationAuthHelper.loginInstrumentationTestUser1()
@@ -68,7 +69,6 @@ class HomeFragmentUiTest {
             limitCountToIdle = totalData
         )
         IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
-        activityRule.deleteHomeDatabase()
     }
 
     @After
@@ -78,10 +78,6 @@ class HomeFragmentUiTest {
 
     @Test
     fun testFirstTimeLoggedInUser() {
-        /**
-         * Onboarding and coachmark for new user
-         */
-        assertNavigationBottomSheetDisplayed()
         assertHomeCoachmarkDisplayed()
 
         /**
@@ -175,34 +171,12 @@ class HomeFragmentUiTest {
 
         onView(
             withTagStringValue(
-                HomeTagHelper.getBBOBalanceWidgetTag(context)
+                HomeTagHelper.getTokopointsBalanceWidgetTag(context)
             )
         ).check(matches(isDisplayed()))
         onView(
             withTagStringValue(
-                HomeTagHelper.getBBOBalanceWidgetTag(context)
-            )
-        ).check(matches(isClickable()))
-
-        onView(
-            withTagStringValue(
-                HomeTagHelper.getCouponBalanceWidgetTag(context)
-            )
-        ).check(matches(isDisplayed()))
-        onView(
-            withTagStringValue(
-                HomeTagHelper.getCouponBalanceWidgetTag(context)
-            )
-        ).check(matches(isClickable()))
-
-        onView(
-            withTagStringValue(
-                HomeTagHelper.getTokopointBalanceWidgetTag(context)
-            )
-        ).check(matches(isDisplayed()))
-        onView(
-            withTagStringValue(
-                HomeTagHelper.getTokopointBalanceWidgetTag(context)
+                HomeTagHelper.getTokopointsBalanceWidgetTag(context)
             )
         ).check(matches(isClickable()))
     }
@@ -237,10 +211,6 @@ class HomeFragmentUiTest {
         while (homeRecyclerView?.canScrollVertically(1) == true) {
             onView(withId(R.id.home_fragment_recycler_view)).perform(swipeUp())
         }
-
-        onView(withId(R.id.recom_divider_1)).check(matches(isDisplayed()))
-        onView(withId(R.id.recom_divider_2)).check(matches(isDisplayed()))
-        onView(withId(R.id.recom_divider_3)).check(matches(isDisplayed()))
         onView(withId(R.id.view_feed_shadow)).check(matches(isDisplayed()))
 
         onView(withId(R.id.tab_layout_home_feeds)).check(matches(isDisplayed()))
@@ -248,37 +218,25 @@ class HomeFragmentUiTest {
     }
 
     /**
-     * Assert bottomsheet text and proceed
-     */
-    private fun assertNavigationBottomSheetDisplayed() {
-        onView(withText(R.string.onboarding_navigation_title)).check(matches(isDisplayed()))
-        onView(withText(R.string.onboarding_navigation_description)).check(matches(isDisplayed()))
-        onView(withText(R.string.onboarding_navigation_button)).check(matches(isDisplayed()))
-            .perform(click())
-    }
-
-    /**
      * Assert coachmark text and proceed
      */
     private fun assertHomeCoachmarkDisplayed() {
         assertCoachmarkAndNext(
-            titleRes = R.string.onboarding_coachmark_inbox_title,
-            descRes = R.string.onboarding_coachmark_inbox_description
+            titleRes = R.string.home_gopay_new_coachmark_title,
+            descRes = R.string.home_gopay_new_coachmark_description,
+            isSingleCoachmark = true
         )
 
         assertCoachmarkAndNext(
-            titleRes = R.string.home_gopay_coachmark_title,
-            descRes = R.string.home_gopay_coachmark_description
+            titleRes = null,
+            descRes = null,
+            isSingleCoachmark = true
         )
 
         assertCoachmarkAndNext(
-            titleRes = R.string.home_gopay2_coachmark_title,
-            descRes = R.string.home_gopay2_coachmark_description
-        )
-
-        assertCoachmarkAndNext(
-            titleRes = R.string.onboarding_coachmark_title,
-            descRes = R.string.onboarding_coachmark_description
+            titleRes = R.string.home_tokonow_coachmark_title,
+            descRes = R.string.home_tokonow_coachmark_description,
+            isSingleCoachmark = true
         )
     }
 
@@ -286,7 +244,8 @@ class HomeFragmentUiTest {
         titleRes: Int? = null,
         descRes: Int? = null,
         title: String? = null,
-        desc: String? = null
+        desc: String? = null,
+        isSingleCoachmark: Boolean = false
     ) {
         Thread.sleep(1000)
         titleRes?.let {
@@ -313,8 +272,14 @@ class HomeFragmentUiTest {
                 .check(matches(isDisplayed()))
         }
 
-        onView(withId(R.id.step_next))
-            .inRoot(RootMatchers.isPlatformPopup())
-            .perform(click())
+        if (isSingleCoachmark) {
+            onView(withId(R.id.simple_ic_close))
+                    .inRoot(RootMatchers.isPlatformPopup())
+                    .perform(click())
+        } else {
+            onView(withId(R.id.step_next))
+                    .inRoot(RootMatchers.isPlatformPopup())
+                    .perform(click())
+        }
     }
 }

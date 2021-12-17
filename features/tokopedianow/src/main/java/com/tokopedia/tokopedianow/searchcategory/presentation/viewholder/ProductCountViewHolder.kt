@@ -4,8 +4,9 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategoryProductCountBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductCountViewHolder(itemView: View): AbstractViewHolder<ProductCountDataView>(itemView) {
 
@@ -14,15 +15,11 @@ class ProductCountViewHolder(itemView: View): AbstractViewHolder<ProductCountDat
         val LAYOUT = R.layout.item_tokopedianow_search_category_product_count
     }
 
-    private var totalDataText: Typography? = null
-
-    init {
-        totalDataText = itemView.findViewById<Typography?>(R.id.tokoNowSearchCategoryProductCount)
-    }
+    private var binding: ItemTokopedianowSearchCategoryProductCountBinding? by viewBinding()
 
     override fun bind(element: ProductCountDataView?) {
         element ?: return
 
-        totalDataText?.text = getString(R.string.tokopedianow_search_category_product_count_template, element.totalDataText)
+        binding?.tokoNowSearchCategoryProductCount?.text = getString(R.string.tokopedianow_search_category_product_count_template, element.totalDataText)
     }
 }

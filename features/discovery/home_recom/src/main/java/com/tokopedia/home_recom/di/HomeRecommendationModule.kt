@@ -13,6 +13,7 @@ import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcherImpl
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
+import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -63,7 +64,13 @@ class HomeRecommendationModule {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.gql_primary_product)
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<PrimaryProductEntity>(graphqlRepository)
         useCase.setGraphqlQuery(query)
-        return GetPrimaryProductUseCase(useCase)
+        return GetPrimaryProductUseCase(context, useCase)
+    }
+
+    @Provides
+    @HomeRecommendationScope
+    fun provideGetTopAdsHeadlineUseCase(graphqlRepository: GraphqlRepository): GetTopAdsHeadlineUseCase {
+        return GetTopAdsHeadlineUseCase(graphqlRepository)
     }
 
 }

@@ -36,7 +36,6 @@
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/fontSize_lvl4"
-        android:text="@string/default_member_title"
         app:layout_constraintBottom_toBottomOf="@+id/home_account_member_layout_member_icon"
         app:layout_constraintStart_toEndOf="@+id/home_account_member_layout_member_icon"
         app:layout_constraintTop_toTopOf="@+id/home_account_member_layout_member_icon"
@@ -63,7 +62,7 @@
     </com.tokopedia.unifycomponents.CardUnify>
 
     <com.tokopedia.unifycomponents.LocalLoad
-        android:id="@+id/home_account_local_load"
+        android:id="@+id/home_account_member_local_load"
         android:layout_width="match_parent"
         android:layout_height="@dimen/home_account_dp_90"
         android:layout_marginStart="@dimen/card_view_padding_normalizer"

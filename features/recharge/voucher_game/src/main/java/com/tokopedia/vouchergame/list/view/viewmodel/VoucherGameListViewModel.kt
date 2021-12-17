@@ -39,7 +39,7 @@ class VoucherGameListViewModel @Inject constructor(private val voucherGameUseCas
         launchCatchError(block = {
             val data = withContext(dispatcher.io) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogMenuDetailData::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<TelcoCatalogMenuDetailData>()
 
             voucherGameMenuDetail.value = Success(data.catalogMenuDetailData)

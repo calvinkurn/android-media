@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <ScrollView
         android:id="@+id/scrallview_main"
@@ -17,21 +17,21 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/dp_16"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_10">
+            android:paddingBottom="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="10dp">
 
             <ImageView
                 android:id="@+id/img_app_share"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_10" />
+                android:layout_marginTop="10dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="8dp"
                 android:text="Selamat!"
                 android:textColor="@color/Unify_N700"
                 android:textSize="@dimen/sp_24"
@@ -41,15 +41,15 @@
                 android:id="@+id/tv_referral_subheader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="8dp"
                 android:gravity="center_horizontal"
                 android:text="@string/referral_welcome_desc"
-                android:textSize="@dimen/dp_14" />
+                android:textSize="14dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_39"
+                android:layout_marginTop="39dp"
                 android:orientation="horizontal">
 
 
@@ -68,7 +68,7 @@
                     android:layout_toRightOf="@+id/img_profile"
                     android:text="1. Daftar"
                     android:textColor="@color/Unify_N700_68"
-                    android:textSize="@dimen/dp_14" />
+                    android:textSize="14dp" />
 
                 <ImageView
                     android:id="@+id/img_cart"
@@ -86,19 +86,19 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:text="2. Transaksi Pertama"
-                    android:paddingRight="@dimen/dp_40"
+                    android:paddingRight="40dp"
                     android:textColor="@color/Unify_N700_68"
-                    android:textSize="@dimen/dp_14" />
+                    android:textSize="14dp" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/referral_code_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_20"
+                android:layout_marginBottom="20dp"
                 android:background="@drawable/shape_referral_code_copy"
                 android:padding="@dimen/dp_1"
-                android:layout_marginTop="@dimen/dp_24">
+                android:layout_marginTop="24dp">
 
                 <TextView
                     android:id="@+id/txtv_referral_code"
@@ -113,7 +113,7 @@
                     android:paddingRight="@dimen/padding_small"
                     android:paddingTop="@dimen/padding_small"
                     android:textColor="@color/Unify_Y500"
-                    android:textSize="@dimen/sp_14"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
 
@@ -130,14 +130,14 @@
                     android:paddingRight="@dimen/margin_large"
                     android:text="@string/menu_copy"
                     android:textColor="@color/Unify_N700_68"
-                    android:textSize="@dimen/sp_14"
+                    android:textSize="14sp"
                     android:textStyle="bold"/>
 
 
                 <ImageView
                     android:id="@+id/img_check"
-                    android:layout_width="@dimen/dp_20"
-                    android:layout_height="@dimen/dp_20"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_alignBottom="@+id/btn_copy"
                     android:layout_marginBottom="@dimen/padding_small"
                     android:layout_marginLeft="@dimen/margin_sm"
@@ -180,10 +180,10 @@
             android:layout_height="wrap_content"
             android:background="@color/Unify_N50"
             android:gravity="center_horizontal"
-            android:paddingBottom="@dimen/dp_12"
+            android:paddingBottom="12dp"
             android:paddingLeft="@dimen/dp_32"
             android:paddingRight="@dimen/dp_32"
-            android:paddingTop="@dimen/dp_12"
+            android:paddingTop="12dp"
             android:text="@string/cashback_enter_tokocash"
             android:textSize="@dimen/sp_12" />
     </LinearLayout>

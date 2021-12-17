@@ -5,7 +5,9 @@
     android:clipToPadding="false"
     android:orientation="vertical">
 
-    <include layout="@layout/partial_toolbar_save_button"/>
+    <include
+        android:id="@+id/app_bar_layout"
+        layout="@layout/partial_toolbar_save_button"/>
 
     <FrameLayout
         android:id="@+id/parent_view"

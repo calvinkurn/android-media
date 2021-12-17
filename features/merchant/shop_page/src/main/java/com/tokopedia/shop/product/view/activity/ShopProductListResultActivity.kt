@@ -13,18 +13,22 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SCREEN_SHOP_PAGE
+import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.databinding.ActivityNewShopProductListResultBinding
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListResultFragment
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListResultFragment.Companion.createInstance
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListResultFragment.ShopPageProductListResultFragmentListener
 import com.tokopedia.shop.product.view.listener.OnShopProductListFragmentListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by nathan on 2/15/18.
@@ -45,6 +49,8 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
     private var shopPageTracking: OldShopPageTrackingBuyer? = null
     private var editTextSearch: EditText? = null
     private var actionUpBtn: AppCompatImageView? = null
+    private val viewBinding: ActivityNewShopProductListResultBinding? by viewBinding()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         window?.decorView?.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         shopId = intent.getStringExtra(ShopParamConstant.EXTRA_SHOP_ID)
@@ -52,16 +58,9 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         etalaseId = intent.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID)
         sort = if (intent.getStringExtra(ShopParamConstant.EXTRA_SORT_ID) == null) "" else intent.getStringExtra(ShopParamConstant.EXTRA_SORT_ID)
         attribution = intent.getStringExtra(ShopParamConstant.EXTRA_ATTRIBUTION)
-        isNeedToReloadData = intent.getBooleanExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
+        isNeedToReloadData = intent.getBooleanExtra(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
         sourceRedirection = intent.getStringExtra(ShopParamConstant.EXTRA_SOURCE_REDIRECTION).orEmpty()
-        if (savedInstanceState == null) {
-            keyword = intent.getStringExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD)
-            if (null == keyword) {
-                keyword = ""
-            }
-        } else {
-            keyword = savedInstanceState.getString(SAVED_KEYWORD, "")
-        }
+        keyword = getSearchKeywordData(savedInstanceState)
         var data = intent.data
         if (null != data) {
             data = RouteManager.getIntent(this, intent.data.toString()).data
@@ -71,7 +70,6 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
             shopRef = if (data?.getQueryParameter(QUERY_SHOP_REF) == null) "" else data.getQueryParameter(QUERY_SHOP_REF)
             sort = if (data?.getQueryParameter(QUERY_SORT) == null) "" else data.getQueryParameter(QUERY_SORT)
             attribution = if (data?.getQueryParameter(QUERY_ATTRIBUTION) == null) "" else data.getQueryParameter(QUERY_ATTRIBUTION)
-            keyword = if (data?.getQueryParameter(QUERY_SEARCH) == null) "" else data.getQueryParameter(QUERY_SEARCH)
         }
         if (shopRef == null) {
             shopRef = ""
@@ -79,7 +77,31 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         shopPageTracking = OldShopPageTrackingBuyer(TrackingQueue(this))
         super.onCreate(savedInstanceState)
         initSearchInputView()
-        findViewById<View>(R.id.mainLayout).requestFocus()
+        viewBinding?.mainLayout?.requestFocus()
+    }
+
+    private fun getSearchKeywordData(savedInstanceState: Bundle?): String {
+        return if (savedInstanceState == null) {
+            when{
+                intent.hasExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD) -> intent.getStringExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD).orEmpty()
+                intent.hasExtra(KEY_QUERY_PARAM_EXTRA) -> getSearchKeywordDataFromQueryParam(intent.getBundleExtra(KEY_QUERY_PARAM_EXTRA))
+                intent.data?.getQueryParameter(QUERY_SEARCH) != null -> intent.data?.getQueryParameter(QUERY_SEARCH).orEmpty()
+                intent.data?.getQueryParameter(SearchApiConst.Q) != null -> intent.data?.getQueryParameter(SearchApiConst.Q).orEmpty()
+                else -> ""
+            }
+        } else {
+            savedInstanceState.getString(SAVED_KEYWORD, "")
+        }
+    }
+
+    private fun getSearchKeywordDataFromQueryParam(bundleExtra: Bundle?): String {
+        return bundleExtra?.let {
+            when {
+                it.containsKey(QUERY_SEARCH) -> it.getString(QUERY_SEARCH, "")
+                it.containsKey(SearchApiConst.Q) -> it.getString(SearchApiConst.Q, "")
+                else -> ""
+            }
+        }.orEmpty()
     }
 
     private fun getShopIdFromUri(data: Uri?, pathSegments: List<String>) {
@@ -91,8 +113,8 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
     }
 
     private fun getEtalaseIdFromUri(data: Uri?, pathSegments: List<String>) {
-        etalaseId = if (pathSegments.size >= 4) {
-            data?.pathSegments?.getOrNull(3).orEmpty()
+        etalaseId = if (pathSegments.size >= SHOWCASE_APP_LINK_MINIMUM_PATH_SEGMENTS) {
+            data?.pathSegments?.getOrNull(SHOWCASE_ID_POSITION_ON_APP_LINK).orEmpty()
         } else {
             "0"
         }
@@ -104,8 +126,8 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
     }
 
     private fun initSearchInputView() {
-        editTextSearch = findViewById(R.id.editTextSearchProduct)
-        actionUpBtn = findViewById(R.id.actionUpBtn)
+        editTextSearch = viewBinding?.editTextSearchProduct
+        actionUpBtn = viewBinding?.actionUpBtn
         editTextSearch?.setText(keyword)
         editTextSearch?.setKeyListener(null)
         editTextSearch?.setMovementMethod(null)
@@ -182,6 +204,9 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         private const val QUERY_SORT = "sort"
         private const val QUERY_ATTRIBUTION = "tracker_attribution"
         private const val QUERY_SEARCH = "search"
+        private const val SHOWCASE_APP_LINK_MINIMUM_PATH_SEGMENTS = 4
+        private const val SHOWCASE_ID_POSITION_ON_APP_LINK = 3
+        private const val KEY_QUERY_PARAM_EXTRA = "QUERY_PARAM"
         fun createIntent(context: Context?, shopId: String?, keyword: String?,
                          etalaseId: String?, attribution: String?, sortId: String?, shopRef: String?): Intent {
             val intent = createIntent(context, shopId, keyword, etalaseId, attribution, shopRef)

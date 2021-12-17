@@ -1,5 +1,6 @@
 package com.tokopedia.catalog.viewmodel
 
+import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.google.gson.JsonObject
@@ -9,6 +10,7 @@ import com.tokopedia.catalog.usecase.listing.CatalogDynamicFilterUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogGetProductListUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogQuickFilterUseCase
 import com.tokopedia.common_category.model.filter.FilterResponse
+import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
@@ -23,9 +25,14 @@ import io.mockk.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import rx.Subscriber
 import java.lang.reflect.Type
 
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [Build.VERSION_CODES.P])
 class CatalogProductListingViewModelTest {
 
     @get:Rule
@@ -39,7 +46,6 @@ class CatalogProductListingViewModelTest {
     private var productListObserver = mockk<Observer<Result<List<CatalogProductItem>>>>(relaxed = true)
     private var quickFilterObserver = mockk<Observer<Result<DynamicFilterModel>>>(relaxed = true)
     private var dynamicFilterObserver = mockk<Observer<Result<DynamicFilterModel>>>(relaxed = true)
-    private var sortFilterItemsObserver = mockk<Observer<List<SortFilterItem>>>(relaxed = true)
 
     @Before
     fun setUp() {
@@ -47,7 +53,6 @@ class CatalogProductListingViewModelTest {
         viewModel.mProductList.observeForever(productListObserver)
         viewModel.mQuickFilterModel.observeForever(quickFilterObserver)
         viewModel.mDynamicFilterModel.observeForever(dynamicFilterObserver)
-        viewModel.sortFilterItems.observeForever(sortFilterItemsObserver)
     }
 
     @Test

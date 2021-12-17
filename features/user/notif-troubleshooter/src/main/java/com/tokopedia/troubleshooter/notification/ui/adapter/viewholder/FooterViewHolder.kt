@@ -74,7 +74,7 @@ class FooterViewHolder(
     companion object {
         @LayoutRes val LAYOUT = R.layout.item_footer_message
 
-        private const val URL_TOKOPEDIA_CARE = "https://www.tokopedia.com/help/article/apa-itu-push-notification"
+        private const val URL_TOKOPEDIA_CARE = "tokopedia://webview?url=https://www.tokopedia.com/help/article/apa-itu-push-notification"
         private const val EMPTY_DRAWABLE = 0
     }
 

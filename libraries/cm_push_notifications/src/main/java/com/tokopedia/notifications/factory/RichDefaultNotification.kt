@@ -11,8 +11,8 @@ import com.tokopedia.notifications.model.ActionButton
 import com.tokopedia.notifications.model.BaseNotificationModel
 
 class RichDefaultNotification internal constructor(
-    context: Context,
-    baseNotificationModel: BaseNotificationModel
+        context: Context,
+        baseNotificationModel: BaseNotificationModel
 ) : BaseNotification(context, baseNotificationModel) {
 
 
@@ -24,10 +24,10 @@ class RichDefaultNotification internal constructor(
         builder.setContentIntent(createMainPendingIntent(baseNotificationModel, requestCode))
         builder.setAutoCancel(true)
         builder.setDeleteIntent(
-            createDismissPendingIntent(
-                baseNotificationModel.notificationId,
-                requestCode
-            )
+                createDismissPendingIntent(
+                        baseNotificationModel.notificationId,
+                        requestCode
+                )
         )
         if (baseNotificationModel.media != null)
             setBigPictureNotification(builder, baseNotificationModel)
@@ -41,16 +41,16 @@ class RichDefaultNotification internal constructor(
     private fun setBigTextStyle(builder: NotificationCompat.Builder) {
         if (!TextUtils.isEmpty(baseNotificationModel.detailMessage))
             builder.setStyle(NotificationCompat.BigTextStyle()
-                .bigText(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.detailMessage)))
+                    .bigText(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.detailMessage)))
         else if (!TextUtils.isEmpty(baseNotificationModel.message))
             builder.setStyle(NotificationCompat.BigTextStyle()
-                .bigText(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.message)))
+                    .bigText(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.message)))
     }
 
     private fun setActionButton(builder: NotificationCompat.Builder) {
         baseNotificationModel.actionButton.forEach {
             val action = NotificationCompat.Action.Builder(
-                0, it.text, getButtonPendingIntent(it)
+                    0, it.text, getButtonPendingIntent(it)
             ).build()
             builder.addAction(action)
         }
@@ -68,24 +68,31 @@ class RichDefaultNotification internal constructor(
     }
 
     private fun setBigPictureNotification(
-        builder: NotificationCompat.Builder,
-        baseNotificationModel: BaseNotificationModel
+            builder: NotificationCompat.Builder,
+            baseNotificationModel: BaseNotificationModel
     ) {
         val bitmap = loadBitmap(baseNotificationModel.media?.mediumQuality)
         bitmap?.let {
             builder.setLargeIcon(bitmap)
             val bigPictureStyle = NotificationCompat.BigPictureStyle()
-                .setSummaryText(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.detailMessage))
-                .bigLargeIcon(bitmap)
-                .bigPicture(bitmap)
+                    .setSummaryText(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.detailMessage))
+                    .bigPicture(bitmap)
             if (!TextUtils.isEmpty(baseNotificationModel.message)) {
                 bigPictureStyle.setSummaryText(
-                    CMNotificationUtils
-                        .getSpannedTextFromStr(baseNotificationModel.message)
+                        CMNotificationUtils
+                                .getSpannedTextFromStr(baseNotificationModel.message)
                 )
             }
             builder.setStyle(bigPictureStyle)
         }
+
+        val iconBitmap = if (!baseNotificationModel.icon.isNullOrBlank())
+            getBitmap(baseNotificationModel.icon)
+        else null
+
+        if (iconBitmap != null)
+            builder.setLargeIcon(iconBitmap)
+
     }
 
 }

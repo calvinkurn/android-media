@@ -21,7 +21,7 @@
         android:paddingTop="@dimen/layout_lvl1"
         android:paddingBottom="@dimen/layout_lvl1"
         android:textColor="@color/Unify_N700_96"
-        app:typographyType="body_3"
+        app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="Pengaturan Produk" />
 </LinearLayout>

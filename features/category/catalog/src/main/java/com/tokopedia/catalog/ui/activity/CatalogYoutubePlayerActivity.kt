@@ -35,7 +35,7 @@ class CatalogYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnIniti
         setContentView(R.layout.activity_catalog_youtube_player)
 
         selectedIndex = intent.getIntExtra(EXTRA_YOUTUBE_VIDEO_INDEX, 0)
-        videoUrls = intent.getStringArrayExtra(EXTRA_YOUTUBE_VIDEO_DATA).asList()
+        videoUrls = intent.getStringArrayExtra(EXTRA_YOUTUBE_VIDEO_DATA)?.asList() ?: emptyList()
         youtube_player_main.initialize(Keys.AUTH_GOOGLE_YOUTUBE_API_KEY, this)
     }
 

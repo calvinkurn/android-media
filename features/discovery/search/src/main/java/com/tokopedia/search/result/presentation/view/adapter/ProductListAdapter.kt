@@ -219,16 +219,25 @@ class ProductListAdapter(
 
     fun removePriceFilterTicker() {
         val tickerIndex = list.indexOfFirst { it is TickerDataView }
-        if (tickerIndex !in list.indices) return
-
-        list.removeAt(tickerIndex)
-        notifyItemRangeRemoved(tickerIndex, 1)
+        removeItem(tickerIndex)
     }
 
     fun refreshItemAtIndex(index: Int) {
         if (index !in list.indices) return
 
         notifyItemChanged(index)
+    }
+
+    fun removeLastFilterWidget() {
+        val lastFilterWidgetIndex = list.indexOfFirst { it is LastFilterDataView }
+        removeItem(lastFilterWidgetIndex)
+    }
+
+    private fun removeItem(index: Int) {
+        if (index !in list.indices) return
+
+        list.removeAt(index)
+        notifyItemRangeRemoved(index, 1)
     }
 
     interface OnItemChangeView {

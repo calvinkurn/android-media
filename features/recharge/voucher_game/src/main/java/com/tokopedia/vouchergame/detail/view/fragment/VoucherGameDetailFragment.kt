@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -114,7 +113,7 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(it, viewModelFactory)
             voucherGameViewModel = viewModelProvider.get(VoucherGameDetailViewModel::class.java)
 
             //Setup adapter
@@ -316,6 +315,13 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
         view?.let { v ->
             Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+        }
+    }
+
+    override fun showErrorMessage(error: Throwable) {
+        view?.let { v ->
+            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error)
+                ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 
@@ -607,12 +613,13 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
         activity?.let {
             val productDetailBottomSheet = BottomSheetUnify()
             with(product.attributes) {
-                productDetailBottomSheet.setTitle(desc)
+                productDetailBottomSheet.setTitle(getString(R.string.vg_product_detail_title))
                 productDetailBottomSheet.setCloseClickListener {
                     productDetailBottomSheet.dismiss()
                 }
 
                 val productDetailWidget = ProductDetailWidget(it)
+                productDetailWidget.title = desc
                 productDetailWidget.description = detail
                 productDetailWidget.url = detailUrl
                 productDetailWidget.urlLabel = detailUrlText
@@ -674,7 +681,10 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
         processCheckoutData()
     }
 
-    override fun processSeamlessFavoriteNumbers(data: TopupBillsSeamlessFavNumber) {
+    override fun processSeamlessFavoriteNumbers(
+        data: TopupBillsSeamlessFavNumber,
+        shouldRefreshInputNumber: Boolean
+    ) {
         // do nothing
     }
     

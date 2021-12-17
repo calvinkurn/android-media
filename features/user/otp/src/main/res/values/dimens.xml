@@ -12,7 +12,11 @@
     <dimen name="otp_dp_14">14dp</dimen>
     <dimen name="otp_dp_17">17dp</dimen>
     <dimen name="otp_dp_18">18dp</dimen>
+    <dimen name="otp_dp_68">68dp</dimen>
+    <dimen name="otp_dp_87">87dp</dimen>
     <dimen name="otp_dp_210">210dp</dimen>
 
     <dimen name="otp_sp_6">6sp</dimen>
+    <dimen name="silent_verif_lottie_success_width">260dp</dimen>
+    <dimen name="silent_verif_lottie_success_height">160dp</dimen>
 </resources>

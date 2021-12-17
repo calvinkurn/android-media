@@ -39,6 +39,7 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
     private val tvTitle: TextView
     private val tvUpcoming: TextView
     private val tvContextualInfo: TextView
+    private val ivGiveaway: ImageView
 
     private var mListener: Listener? = null
 
@@ -57,6 +58,7 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
         tvTitle = view.findViewById(R.id.tv_title)
         tvUpcoming = view.findViewById(R.id.tv_upcoming)
         tvContextualInfo = view.findViewById(R.id.tv_contextual_info)
+        ivGiveaway = view.findViewById(R.id.iv_giveaway)
     }
 
     private val playerListener = object : PlayVideoPlayer.VideoPlayerListener {
@@ -74,6 +76,7 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
         } else {
             if (::mModel.isInitialized) {
                 player.videoUrl = mModel.video.videoUrl
+                player.shouldCache = !mModel.video.isLive
                 player.start()
             }
             player.listener = playerListener
@@ -101,6 +104,7 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
 
         handleType(model.channelType)
         handleTotalView(model.channelType, model.totalViewVisible, model.totalView)
+        handleGiveaway(model.hasGiveaway)
 
         tvTitle.text = model.title
         tvUpcoming.text = model.startTime
@@ -163,6 +167,11 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
             tvTotalView.text = totalViewString
         }
         else llTotalView.gone()
+    }
+
+    private fun handleGiveaway(hasGiveaway: Boolean) {
+        if(hasGiveaway) ivGiveaway.visible()
+        else ivGiveaway.gone()
     }
 
     interface Listener {

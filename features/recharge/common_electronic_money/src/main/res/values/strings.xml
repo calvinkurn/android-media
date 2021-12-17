@@ -19,8 +19,8 @@
     <string name="emoney_nfc_activate_nfc">Aktifkan NFC</string>
     <string name="emoney_nfc_tap_card_button_label_error">Coba Lagi</string>
     <string name="emoney_nfc_tap_card_button_socket_label">Kembali ke Home</string>
+    <string name="emoney_nfc_tapcash_complaint">Hubungi Tokopedia Care</string>
 
-    <string name="emoney_nfc_grpc_timeout">grpc timeout</string>
     <string name="emoney_nfc_grpc_label_error">Oops, ada kendala koneksi.</string>
     <string name="emoney_nfc_device_not_support">Yaah, HP-mu nggak dukung fitur NFC</string>
     <string name="emoney_nfc_check_balance_problem_title">Maaf, cek saldo belum berhasil</string>
@@ -28,6 +28,11 @@
     <string name="emoney_nfc_error_title">Mungkin server kami sibuk atau internet kamu ada masalah. Coba lagi, yuk.</string>
     <string name="emoney_nfc_timeout_socket_error">Maaf, e-money kamu lagi ada perbaikan</string>
     <string name="emoney_nfc_timeout_socket_error_title">Tampaknya pihak penyedia e-money sedang ada kendala sistem. Coba lagi nanti, ya.</string>
+    <string name="emoney_nfc_timeout_socket_error_title_tapcash">Tampaknya pihak penyedia tapcash sedang ada kendala sistem. Coba lagi nanti, ya.</string>
+    <string name="emoney_nfc_ticker_desc"><![CDATA[Butuh bantuan update saldo TapCash BNI? <a href="https://www.tokopedia.com/help">Hubungi Tokopedia Care</a>]]></string>
+    <string name="emoney_nfc_tapcash_write_error_desc">Untuk pastikan saldo kamu sudah ke-update, hubungi Tokopedia Care.</string>
+    <string name="emoney_nfc_tapcash_error_title">Maaf, TapCash BNI sedang ada gangguan</string>
+
 
     <string name="emoney_nfc_inactive_link">https://images.tokopedia.net/img/emoney_revamp_nfc_inactive_fourx.png</string>
     <string name="emoney_nfc_not_found">https://images.tokopedia.net/img/emoney_revamp_device_not_nfc.png</string>

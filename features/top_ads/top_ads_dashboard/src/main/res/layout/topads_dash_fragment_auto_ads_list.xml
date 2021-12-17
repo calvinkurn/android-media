@@ -9,9 +9,9 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:translationY="@dimen/dp_20"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:translationY="20dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

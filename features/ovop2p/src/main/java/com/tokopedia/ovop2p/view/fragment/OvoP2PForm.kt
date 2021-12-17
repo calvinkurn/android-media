@@ -232,7 +232,7 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
 
     private fun setUserData() {
         if (arguments?.containsKey(Constants.Keys.USER_NUMBER)!!) {
-            var phoneNo = arguments!!.getString(Constants.Keys.USER_NUMBER)
+            var phoneNo = requireArguments().getString(Constants.Keys.USER_NUMBER)
             if (!TextUtils.isEmpty(phoneNo)) {
                 searchView.setQuery(phoneNo, false)
             }
@@ -497,8 +497,8 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Constants.Keys.RESULT_CODE_CONTACTS_SELECTION) {
-            this.rcvrName = data!!.getStringExtra(Constants.Keys.USER_NAME)
-            var phoneNo = OvoP2pUtil.extractNumbersFromString(data.getStringExtra(Constants.Keys.USER_NUMBER))
+            this.rcvrName = data!!.getStringExtra(Constants.Keys.USER_NAME) ?: ""
+            var phoneNo = OvoP2pUtil.extractNumbersFromString(data.getStringExtra(Constants.Keys.USER_NUMBER)?: "")
             if(phoneNo.length <= Constants.Thresholds.PHONE_NO_LENGTH) {
                 this.rcvrPhnNo = phoneNo
             }

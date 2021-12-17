@@ -33,4 +33,5 @@ interface TypeFactorySuggestionSearchAdapter {
     fun type(loadingModel: LoadingSearchModel): Int
     fun type(itemTitleHighlightSuggestionSearchUiModel: ItemTitleHighlightSuggestionSearchUiModel): Int
     fun type(highlightSuggestionSearchUiModel: HighlightSuggestionSearchUiModel): Int
+    fun type(articleSellerSearchUiModel: ArticleSellerSearchUiModel): Int
 }

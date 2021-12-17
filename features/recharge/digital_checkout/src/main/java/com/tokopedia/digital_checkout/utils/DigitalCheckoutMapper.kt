@@ -3,7 +3,6 @@ package com.tokopedia.digital_checkout.utils
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
-import com.tokopedia.digital_checkout.data.DigitalCartCrossSellingType
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData.PostPaidPopupAttribute
@@ -27,10 +26,19 @@ import com.tokopedia.track.TrackApp
 
 object DigitalCheckoutMapper {
 
+    const val COUPON_NOT_ACTIVE = 0
+    const val VOUCHER_IS_COUPON = 1
+
     fun mapToPromoData(cartInfo: CartDigitalInfoData): PromoData? {
         var promoData: PromoData? = null
+        val isEnableVoucher = cartInfo.attributes.isEnableVoucher
+
         cartInfo.attributes.autoApplyVoucher.let {
-            if (it.isSuccess && !(cartInfo.attributes.isCouponActive == 0 && it.isCoupon == 1)) {
+            if (!isEnableVoucher) {
+                promoData = PromoData(description = it.discountAmountLabel,
+                        amount = it.discountAmount.toInt(),
+                        state = TickerCheckoutView.State.INACTIVE)
+            } else if (it.isSuccess && !(cartInfo.attributes.isCouponActive == COUPON_NOT_ACTIVE && it.isCoupon == VOUCHER_IS_COUPON)) {
                 promoData = PromoData(title = it.title,
                         description = it.messageSuccess,
                         promoCode = it.code,
@@ -42,9 +50,12 @@ object DigitalCheckoutMapper {
         return promoData
     }
 
-    fun mapGetCartToCartDigitalInfoData(responseRechargeGetCart: RechargeGetCart.Response): CartDigitalInfoData {
+    fun mapGetCartToCartDigitalInfoData(responseRechargeGetCart: RechargeGetCart.Response, isSpecialProduct: Boolean)
+            : CartDigitalInfoData {
         try {
             val cartDigitalInfoData = CartDigitalInfoData()
+
+            cartDigitalInfoData.isSpecialProduct = isSpecialProduct
 
             responseRechargeGetCart.response.mainnInfo.let { mainInfos ->
                 cartDigitalInfoData.mainInfo = mainInfos.map {
@@ -93,6 +104,7 @@ object DigitalCheckoutMapper {
                 applyVoucher.code = entity.code
                 applyVoucher.isSuccess = entity.success
                 applyVoucher.discountAmount = entity.discountAmount
+                applyVoucher.discountAmountLabel = entity.discountAmountLabel
                 applyVoucher.isCoupon = entity.isCoupon
                 applyVoucher.promoId = entity.promoId.toLongOrZero()
                 applyVoucher.title = entity.titleDescription
@@ -115,29 +127,10 @@ object DigitalCheckoutMapper {
             }
 
             responseRechargeGetCart.response.run {
-                cartDigitalInfoData.crossSellingType = crossSellingType
-                cartDigitalInfoData.showSubscriptionsView = crossSellingType == DigitalCartCrossSellingType.MYBILLS.id ||
-                        crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id
-                crossSellingConfig.run {
-                    val crossSellingConfig = CartDigitalInfoData.CrossSellingConfig()
-                    crossSellingConfig.isSkipAble = canBeSkipped
-                    crossSellingConfig.isChecked = isChecked
-
-                    val crossSellingWording = if (cartDigitalInfoData.crossSellingType
-                            == DigitalCartCrossSellingType.SUBSCRIBED.id) {
-                        wordingIsSubscribe
-                    } else {
-                        wording
-                    }
-                    crossSellingWording.run {
-                        crossSellingConfig.headerTitle = headerTitle
-                        crossSellingConfig.bodyTitle = bodyTitle
-                        crossSellingConfig.bodyContentBefore = bodyContentBefore
-                        crossSellingConfig.bodyContentAfter = bodyContentAfter
-                        crossSellingConfig.checkoutButtonText = checkoutButtonText
-                        cartDigitalInfoData.crossSellingConfig = crossSellingConfig
-                    }
+                val subscriptions = fintechProduct.filter {
+                    it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT
                 }
+                cartDigitalInfoData.isSubscribed = subscriptions.isNotEmpty() && subscriptions[0].checkBoxDisabled
                 attributesDigital.fintechProduct = fintechProduct
             }
 

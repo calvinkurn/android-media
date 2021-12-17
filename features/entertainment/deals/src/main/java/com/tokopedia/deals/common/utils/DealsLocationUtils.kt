@@ -80,7 +80,7 @@ class DealsLocationUtils(val context: Context) {
 
     companion object {
         const val DEFAULT_LOCATION_NAME = "Jakarta"
-        const val DEFAULT_LOCATION_ID = 318
+        const val DEFAULT_LOCATION_ID = "318"
         const val DEFAULT_LOCATION_COORDINATES = "-6.2087634,106.845599"
         const val DEFAULT_LOCATION_CITY = "city"
     }

@@ -24,11 +24,13 @@ interface WidgetAdapterFactory {
 
     fun type(model: WidgetSingleCtaUiModel): Int
 
-    fun type(model: WidgetNextShopGradeUiModel): Int
-
     fun type(model: WidgetPMDeactivateUiModel): Int
 
     fun type(model: WidgetTickerUiModel): Int
 
     fun type(model: WidgetUpgradePmProUiModel): Int
+
+    fun type(model: WidgetPMProNewSellerHeaderUiModel): Int
+
+    fun type(model: WidgetPmProNewSellerBenefitUiModel): Int
 }

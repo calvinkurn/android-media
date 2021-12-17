@@ -28,7 +28,7 @@ class GetAnnouncementDataUseCase(
 
     override suspend fun executeOnBackground(): List<AnnouncementDataUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetAnnouncementDataResponse::class.java, params.parameters)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val errors = gqlResponse.getError(GetAnnouncementDataResponse::class.java)
         if (errors.isNullOrEmpty()) {
@@ -46,10 +46,7 @@ class GetAnnouncementDataUseCase(
                 dataKey: List<String>
         ): RequestParams = RequestParams.create().apply {
             val dataKeys = dataKey.map {
-                DataKeyModel(
-                        key = it,
-                        jsonParams = "{}"
-                )
+                DataKeyModel(key = it)
             }
             putObject(DATA_KEYS, dataKeys)
         }

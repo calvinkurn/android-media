@@ -7,15 +7,18 @@ import android.content.Context.CLIPBOARD_SERVICE
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import com.tokopedia.buyerorder.R
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.regex.Pattern
 
-
 object BuyerUtils {
     val VIBRATE_DURATION = 150
+
+    private const val CURRENCY_RUPIAH = "Rp"
 
     @JvmStatic
     fun copyTextToClipBoard(label: String, textVoucherCode: String, context: Context) {
@@ -31,23 +34,6 @@ object BuyerUtils {
         } else {
             v.vibrate(VIBRATE_DURATION.toLong())
         }
-    }
-
-    @JvmStatic
-    fun convertMonth(num: Int, context: Context): String {
-        val entries = context.resources.getStringArray(R.array.month_title)
-        return entries[num]
-    }
-
-    @JvmStatic
-    fun setFormat(target: SimpleDateFormat, current: SimpleDateFormat, value: String): String? {
-        var result: String? = null
-        try {
-            result = target.format(current.parse(value))
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        }
-        return result
     }
 
     @JvmStatic
@@ -69,11 +55,6 @@ object BuyerUtils {
     }
 
     @JvmStatic
-    fun formatTitleHtml(desc: String, urlText: String, url: String): String? {
-        return String.format("%s <a href=\"%s\">%s</a>", desc, urlText, url)
-    }
-
-    @JvmStatic
     fun isUridownloadable(uri: String, isDownloadable: Boolean): Boolean {
         val pattern = Pattern.compile("^.+\\.([pP][dD][fF])$")
         val matcher = pattern.matcher(uri)
@@ -85,5 +66,13 @@ object BuyerUtils {
         val pattern = Pattern.compile("^(https|HTTPS):\\/\\/")
         val matcher = pattern.matcher(invoiceUrl)
         return matcher.find()
+    }
+
+    fun Double.toCurrencyFormatted(): String {
+        val value =  BigDecimal(this).apply {
+            setScale(0, RoundingMode.HALF_UP)
+        }
+        val values = CurrencyFormatHelper.convertToRupiah(value.toString())
+        return "$CURRENCY_RUPIAH$values"
     }
 }

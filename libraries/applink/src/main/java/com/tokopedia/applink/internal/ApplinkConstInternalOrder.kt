@@ -73,6 +73,8 @@ object ApplinkConstInternalOrder {
 
     const val PATH_BUYER_ORDER_DETAIL = "buyer-order-detail"
 
+    const val PATH_BUYER_ORDER_EXTENSION = "buyer-order-extension"
+
     const val INTERNAL_SELLER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_SELLER"
 
     const val INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_ORDER"
@@ -175,9 +177,9 @@ object ApplinkConstInternalOrder {
 
     const val BELANJA_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_BELANJA/$HOST_ORDER"
 
-    const val MARKETPLACE_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$HOST_ORDER"
-
     const val MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$PATH_BUYER_ORDER_DETAIL"
+
+    const val MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$PATH_BUYER_ORDER_EXTENSION"
 
     const val ORDER_LIST_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_ORDER_LIST"
 
@@ -189,7 +191,6 @@ object ApplinkConstInternalOrder {
 
     const val MP_INTERNAL_DELIVERED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=14"
 
-
     // order snapshot
     const val PATH_SNAPSHOT = "snapshot"
 
@@ -197,4 +198,11 @@ object ApplinkConstInternalOrder {
 
     // buyer request cancel
     const val INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PATH_CANCELLATION_REQUEST"
+
+    object OrderExtensionKey {
+        const val IS_FROM_UOH = "is_from_uoh"
+        const val TOASTER_MESSAGE = "toaster_message"
+        const val TOASTER_TYPE = "toaster_type"
+        const val IS_ORDER_EXTENDED = "is_order_extended"
+    }
 }

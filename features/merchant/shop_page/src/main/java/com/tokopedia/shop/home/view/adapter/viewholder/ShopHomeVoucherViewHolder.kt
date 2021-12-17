@@ -12,14 +12,17 @@ import androidx.cardview.widget.CardView
 import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mvcwidget.MvcData
-import com.tokopedia.mvcwidget.MvcSource
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ItemShopHomeMerchantVoucherBinding
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -31,7 +34,8 @@ class ShopHomeVoucherViewHolder(
 ) : AbstractViewHolder<ShopHomeVoucherUiModel>(itemView) {
 
     interface ShopHomeVoucherViewHolderListener {
-        fun onVoucherImpression()
+        fun onVoucherImpression(model: ShopHomeVoucherUiModel, position: Int)
+        fun onVoucherTokoMemberInformationImpression(model: ShopHomeVoucherUiModel, position: Int)
         fun onVoucherReloaded()
     }
 
@@ -39,11 +43,7 @@ class ShopHomeVoucherViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_merchant_voucher
     }
-
-    init {
-        findView(itemView)
-    }
-
+    private val viewBinding: ItemShopHomeMerchantVoucherBinding? by viewBinding()
     private var merchantVoucherWidget: MvcView? = null
     private var merchantVoucherReload: CardView? = null
     private var merchantVoucherUiModel: ShopHomeVoucherUiModel? = null
@@ -52,13 +52,17 @@ class ShopHomeVoucherViewHolder(
     private var imageReload: ImageView? = null
     private var textReloadDesc: Typography? = null
 
-    private fun findView(itemView: View) {
-        merchantVoucherWidget = itemView.findViewById(R.id.merchantVoucherWidget)
-        merchantVoucherReload = itemView.findViewById(R.id.merchantVoucherReload)
-        merchantVoucherShimmering = itemView.findViewById(R.id.merchantVoucherShimmering)
-        textReload = itemView.findViewById(R.id.textReload)
-        imageReload = itemView.findViewById(R.id.imageReload)
-        textReloadDesc = itemView.findViewById(R.id.textReloadDesc)
+    init {
+        findView()
+    }
+
+    private fun findView() {
+        merchantVoucherWidget = viewBinding?.merchantVoucherWidget
+        merchantVoucherReload = viewBinding?.merchantVoucherReload?.root
+        merchantVoucherShimmering = viewBinding?.merchantVoucherShimmering?.root
+        textReload = viewBinding?.merchantVoucherReload?.textReload
+        imageReload = viewBinding?.merchantVoucherReload?.imageReload
+        textReloadDesc = viewBinding?.merchantVoucherReload?.textReloadDesc
     }
 
     override fun bind(model: ShopHomeVoucherUiModel) {
@@ -81,7 +85,10 @@ class ShopHomeVoucherViewHolder(
             }
         } else {
             if (model.data != null && model.data.isShown == true) {
-                shopHomeVoucherViewHolderListener.onVoucherImpression()
+                if(model.data.animatedInfoList?.size.orZero() > 1)
+                    shopHomeVoucherViewHolderListener.onVoucherTokoMemberInformationImpression(model, adapterPosition)
+                else
+                    shopHomeVoucherViewHolderListener.onVoucherImpression(model, adapterPosition)
                 merchantVoucherShimmering?.hide()
                 merchantVoucherWidget?.show()
                 merchantVoucherReload?.hide()
@@ -89,12 +96,9 @@ class ShopHomeVoucherViewHolder(
 
                 model.data.apply {
                     merchantVoucherWidget?.setData(MvcData(
-                            title = titles?.firstOrNull()?.text ?: "",
-                            subTitle = model.data.subTitle ?: "",
-                            imageUrl = model.data.imageURL ?: ""
+                            model.data.animatedInfoList
                     ),
                             shopId = model.data.shopId ?: "0",
-                            isMainContainerSetFitsSystemWindows = false,
                             source = MvcSource.SHOP
                     )
                 }

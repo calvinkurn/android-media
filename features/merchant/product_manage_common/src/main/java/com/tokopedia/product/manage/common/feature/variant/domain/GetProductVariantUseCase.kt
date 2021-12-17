@@ -22,8 +22,12 @@ class GetProductVariantUseCase @Inject constructor(
         private const val PARAM_VARIANT = "variant"
         private const val PARAM_EDIT = "edit"
         private const val PARAM_WAREHOUSE_ID = "warehouseID"
+        private const val PARAM_BUNDLE = "bundle"
 
-        fun createRequestParams(productId: String, paramEdit: Boolean = true, warehouseId: String? = null): RequestParams {
+        fun createRequestParams(productId: String,
+                                paramEdit: Boolean = true,
+                                warehouseId: String? = null,
+                                isBundling: Boolean = false): RequestParams {
             val optionsParam = RequestParams().apply {
                 putBoolean(PARAM_VARIANT, true)
                 putBoolean(PARAM_EDIT, paramEdit)
@@ -32,6 +36,7 @@ class GetProductVariantUseCase @Inject constructor(
 
             val extraInfoParam = RequestParams().apply {
                 putBoolean(PARAM_EVENT, true)
+                putBoolean(PARAM_BUNDLE, isBundling)
             }.parameters
 
             return RequestParams().apply {

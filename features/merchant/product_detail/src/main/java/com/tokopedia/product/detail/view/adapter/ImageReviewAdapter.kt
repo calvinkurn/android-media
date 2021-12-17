@@ -12,7 +12,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.util.OnImageReviewClick
 import com.tokopedia.product.detail.data.util.OnSeeAllReviewClick
-import kotlinx.android.synthetic.main.item_image_review.view.*
+import com.tokopedia.product.detail.databinding.ItemImageReviewBinding
 
 class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> = mutableListOf(),
                          private val showSeeAll: Boolean = true,
@@ -40,20 +40,22 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
 
     inner class ImageReviewViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
+        private val binding = ItemImageReviewBinding.bind(view)
+
         fun bind(item: ImageReviewItem, type: Int, listItem: List<ImageReviewItem>) {
-            with(view) {
-                image_review.loadImageRounded(item.imageUrlThumbnail, ROUNDED_IMAGE_EDGES)
+            with(binding) {
+                imageReview.loadImageRounded(item.imageUrlThumbnail, ROUNDED_IMAGE_EDGES)
                 if (type == VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER) {
-                    overlay_see_all.visible()
-                    txt_see_all.text = item.imageCount
-                    txt_see_all.visible()
-                    setOnClickListener {
+                    overlaySeeAll.visible()
+                    txtSeeAll.text = item.imageCount
+                    txtSeeAll.visible()
+                    view.setOnClickListener {
                         onOnSeeAllReviewClick?.invoke(componentTrackDataModel)
                     }
                 } else {
-                    overlay_see_all.gone()
-                    txt_see_all.gone()
-                    setOnClickListener {
+                    overlaySeeAll.gone()
+                    txtSeeAll.gone()
+                    view.setOnClickListener {
                         onOnImageReviewClick?.invoke(listItem, adapterPosition, componentTrackDataModel, item.rawImageCount ?: "")
                     }
                 }

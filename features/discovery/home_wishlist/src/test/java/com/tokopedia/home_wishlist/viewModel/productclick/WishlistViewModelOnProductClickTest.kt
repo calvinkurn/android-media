@@ -27,7 +27,7 @@ class WishlistViewModelOnProductClickTest {
     private val topAdsImageViewUseCase = mockk<TopAdsImageViewUseCase>(relaxed = true)
     private val parentPosition = 4
     private val position = 2
-    private val productId = 99
+    private val productId = 99L
 
     @Test
     fun `On product click will trigger onProductClick liveData action with selected position`(){

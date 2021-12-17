@@ -28,6 +28,6 @@ class DeviceStatusPushNotifUseCase @Inject constructor(
                 DeviceStatusPushNotifQuery.query,
                 DeviceStatusPushNotifPojo::class.java
         )
-        return@withContext graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+        return@withContext graphqlRepository.response(listOf(request), cacheStrategy)
     }.getSuccessData()
 }

@@ -1,9 +1,11 @@
 package com.tokopedia.topads.view.activity
 
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.topads.UrlConstant
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.di.DaggerCreateAdsComponent
@@ -20,6 +22,11 @@ private const val CLICK_BACK_BUTTON = "click-back button"
 class StepperActivity : BaseStepperActivity(), HasComponent<CreateAdsComponent> {
 
     private var fragmentList: MutableList<Fragment>? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        getToFragment(UrlConstant.FRAGMENT_NUMBER_1, stepperModel)
+    }
 
     override fun getListFragment(): MutableList<Fragment> {
         fragmentList = fragmentList ?: mutableListOf(

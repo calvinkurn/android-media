@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.topads.common.R
+import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoItemViewModel
 import com.tokopedia.unifyprinciples.Typography
 
@@ -14,7 +15,7 @@ const val HIGH = "high"
 const val MEDIUM = "mid"
 const val KALI = " kali"
 
-class BidInfoItemViewHolder(val view: View, private var actionDelete: (pos: Int) -> Unit, var editBudget: ((pos: Int) -> Unit)?, var editType: ((pos: Int) -> Unit)?) : BidInfoViewHolder<BidInfoItemViewModel>(view) {
+class BidInfoItemViewHolder(val view: View, private var actionDelete: (pos: Int) -> Unit, var editBudget: ((pos: Int, budget: String) -> Unit)?, var editType: ((pos: Int) -> Unit)?) : BidInfoViewHolder<BidInfoItemViewModel>(view) {
 
     var btnDelete = view.findViewById<IconUnify>(R.id.btnDelete)
     var btnEditBudget = view.findViewById<IconUnify>(R.id.editBudget)
@@ -50,7 +51,7 @@ class BidInfoItemViewHolder(val view: View, private var actionDelete: (pos: Int)
                 }
             }
             btnEditBudget.setOnClickListener {
-                editBudget?.invoke(adapterPosition)
+                editBudget?.invoke(adapterPosition, keywordBudget.text.toString().removeCommaRawString())
             }
             editTypeBtn.setOnClickListener {
                 editType?.invoke(adapterPosition)

@@ -4,10 +4,11 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
+import com.tokopedia.product.detail.databinding.BsProductSpecificationBinding
 import com.tokopedia.product.info.model.productdetail.uidata.AnnotationValueDataModel
 import com.tokopedia.product.info.view.adapter.ProductAnnotationAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bs_product_specification.view.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * Created by Yehezkiel on 21/10/20
@@ -16,6 +17,8 @@ class ProductAnnotationBottomSheet : BottomSheetUnify() {
 
     private val adapter: ProductAnnotationAdapter = ProductAnnotationAdapter()
     private var annotation: List<ProductDetailInfoContent> = listOf()
+
+    private var binding by autoClearedNullable<BsProductSpecificationBinding>()
 
     fun getData(listOfData: List<ProductDetailInfoContent>) {
         this.annotation = listOfData
@@ -42,11 +45,12 @@ class ProductAnnotationBottomSheet : BottomSheetUnify() {
     private fun initView() {
         setTitle(getString(R.string.merchant_product_detail_label_specification_product))
         val childView = View.inflate(requireContext(), R.layout.bs_product_specification, null)
-        setupRecyclerView(childView)
+        binding = BsProductSpecificationBinding.bind(childView)
+        setupRecyclerView()
         setChild(childView)
     }
 
-    private fun setupRecyclerView(childView: View) {
-        childView.rv_product_specification_bs.adapter = adapter
+    private fun setupRecyclerView() {
+        binding?.rvProductSpecificationBs?.adapter = adapter
     }
 }

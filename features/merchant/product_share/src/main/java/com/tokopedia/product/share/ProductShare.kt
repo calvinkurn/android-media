@@ -5,6 +5,9 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -20,15 +23,46 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.product.share.ekstensions.getShareContent
+import com.tokopedia.product.share.ekstensions.getTextDescription
+import com.tokopedia.product.share.tracker.ProductShareTracking.onClickAccessPhotoMediaAndFiles
+import com.tokopedia.product.share.tracker.ProductShareTracking.onClickChannelWidgetClicked
+import com.tokopedia.product.share.tracker.ProductShareTracking.onCloseShareWidgetClicked
+import com.tokopedia.product.share.tracker.ProductShareTracking.onImpressShareWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 
 class ProductShare(private val activity: Activity, private val mode: Int = MODE_TEXT) {
 
+    companion object {
+        private const val DEFAULT_IMAGE_WIDTH = 2048
+        private const val DEFAULT_IMAGE_HEIGHT = 2048
+
+        private const val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
+
+        const val MODE_TEXT = 0
+        const val MODE_IMAGE = 1
+
+        const val log_tag = "BRANCH_GENERATE"
+        const val TIMEOUT_LOG = 5_000L // seconds
+    }
+
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(activity) }
     private var cancelShare: Boolean = false
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private lateinit var productData: ProductData
+    private lateinit var preBuildImage: () -> Unit
+    private lateinit var postBuildImage: () -> Unit
+    //View is the Fragment View
+    private lateinit var parentView: View
 
     fun cancelShare(cancelShare: Boolean) {
         this.cancelShare = cancelShare
@@ -213,18 +247,170 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         return linkerShareData
     }
 
+    //region universal sharing
+    private fun openIntentShareDefaultUniversalSharing(file: File?, shareProductName: String = "",
+                                                       shareDescription: String = "", shareUrl: String = "") {
+        openIntentShare(file, shareProductName, shareDescription, shareUrl)
+    }
 
-    companion object {
-        private const val DEFAULT_IMAGE_WIDTH = 2048
-        private const val DEFAULT_IMAGE_HEIGHT = 2048
+    private fun shareChannelClicked(shareModel: ShareModel) {
+        if (isBranchUrlActive()) {
+            val branchStart = System.currentTimeMillis()
 
-        private const val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
+            onClickChannelWidgetClicked(UniversalShareBottomSheet.getShareBottomSheetType(), shareModel.channel
+                    ?: "", productData.userId, productData.productId)
 
-        const val MODE_TEXT = 0
-        const val MODE_IMAGE = 1
+            val linkerShareData = productDataToLinkerDataMapper(productData)
+            linkerShareData.linkerData?.apply {
+                feature = shareModel.feature
+                channel = shareModel.channel
+                campaign = shareModel.campaign
+                uri = productData.productUrl
+                ogTitle = generateOgTitle(productData)
+                ogDescription = generateOgDescription(productData)
+                if (shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
+                    ogImageUrl = shareModel.ogImgUrl
+                }
+                isAffiliate = shareModel.isAffiliate
+            }
 
-        const val log_tag = "BRANCH_GENERATE"
-        const val TIMEOUT_LOG = 5_000L // seconds
+            LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
+                    linkerShareData, object : ShareCallback {
+                override fun urlCreated(linkerShareResult: LinkerShareResult) {
+                    val branchEnd = System.currentTimeMillis()
+                    branchTime = (branchEnd - branchStart)
+                    postBuildImage.invoke()
+                    try {
+                        val shareString = productData.getTextDescription(activity.applicationContext, linkerShareResult.url)
+                        shareModel.subjectName = productData.productName ?: ""
+                        SharingUtil.executeShareIntent(shareModel, linkerShareResult, activity, parentView, shareString)
+                    } catch (e: Exception) {
+                        err.add(e)
+                        logExceptionToFirebase(e)
+                        openIntentShareDefaultUniversalSharing(null, productData.productName ?: "",
+                                productData.getTextDescription(activity.applicationContext, linkerShareData.linkerData.renderShareUri()),
+                                linkerShareData.linkerData.renderShareUri())
+                    }
+
+                    if (isLog) {
+                        log(mode, resourceReady, imageProcess, branchTime, err, null)
+                    }
+                    universalShareBottomSheet?.dismiss()
+                }
+
+                override fun onError(linkerError: LinkerError) {
+                    postBuildImage.invoke()
+                    openIntentShareDefaultUniversalSharing(null, productData.productName ?: "",
+                            productData.getTextDescription(activity.applicationContext, linkerShareData.linkerData.renderShareUri()),
+                            linkerShareData.linkerData.renderShareUri())
+                    if (isLog) {
+                        log(mode, resourceReady, imageProcess, branchTime, err, linkerError)
+                    }
+                    universalShareBottomSheet?.dismiss()
+                }
+            }))
+        } else {
+            postBuildImage.invoke()
+            openIntentShareDefaultUniversalSharing(null, productData.productName ?: "",
+                    productData.getTextDescription(activity.applicationContext, productData.renderShareUri),
+                    productData.renderShareUri)
+            if (isLog) {
+                log(mode, resourceReady, imageProcess, branchTime, err, null)
+            }
+        }
+    }
+
+    private fun generateOgTitle(productData: ProductData): String {
+        return "${productData.productName} - ${productData.priceText}"
+    }
+
+    private fun generateOgDescription(productData: ProductData): String {
+        return "${productData.shopName} - ${productData.productShareDescription}"
+    }
+
+    private fun onCloseShareClicked() {
+        onCloseShareWidgetClicked(UniversalShareBottomSheet.getShareBottomSheetType(), productData.userId, productData.productId)
+        universalShareBottomSheet?.dismiss()
+    }
+
+    fun showUniversalShareBottomSheet(fragmentManager: FragmentManager?,
+                                      fragment: Fragment,
+                                      data: ProductData,
+                                      affiliateInput: AffiliatePDPInput,
+                                      isLog: Boolean = false,
+                                      view: View? = null,
+                                      productImgList: ArrayList<String>? = null,
+                                      preBuildImg: () -> Unit,
+                                      postBuildImg: () -> Unit,
+                                      screenshotDetector: ScreenshotDetector? = null) {
+        cancelShare = false
+        resetLog()
+        this.isLog = isLog
+        timeStartShare = System.currentTimeMillis()
+        productData = data
+        postBuildImage = postBuildImg
+        preBuildImage = preBuildImg
+        if (view != null) {
+            parentView = view
+        }
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            setupAffiliate(affiliateInput, this)
+            init(object : ShareBottomsheetListener {
+                override fun onShareOptionClicked(shareModel: ShareModel) {
+                    shareChannelClicked(shareModel)
+                }
+
+                override fun onCloseOptionClicked() {
+                    onCloseShareClicked()
+                }
+
+            })
+            setUtmCampaignData("PDP", productData.userId, productData.productId, "share")
+            setMetaData(productData.productName ?: "",
+                    productData.productImageUrl ?: "",
+                    "", productImgList)
+        }
+        onImpressShareWidget(UniversalShareBottomSheet.getShareBottomSheetType(), productData.userId, productData.productId)
+//        call this method here if the complete data needed for Affiliate request has not been received yet
+//        universalShareBottomSheet?.affiliateRequestDataAwaited()
+        universalShareBottomSheet?.show(fragmentManager, fragment, screenshotDetector)
+
+//        get affiliate PDPInput and set the data into the affiliate PDP input once the data is received
+//        universalShareBottomSheet?.getAffiliateRequestHolder()
+//        once the data is received and set call the below method
+//        universalShareBottomSheet?.affiliateRequestDataReceived()
+    }
+
+    fun updateAffiliate(shopStatus: Int) {
+        val existingAffiliateInput = universalShareBottomSheet?.getAffiliateRequestHolder()
+        if (existingAffiliateInput == null ||
+                existingAffiliateInput.shop?.shopStatus != null) return // means the data already there, no need to update
+
+        universalShareBottomSheet?.run {
+            val affiliateData = existingAffiliateInput.copy(
+                    shop = existingAffiliateInput.shop?.copy(
+                            shopStatus = shopStatus
+                    )
+            )
+            setupAffiliate(affiliateData, this)
+        }
+    }
+
+    private fun setupAffiliate(affiliateInput: AffiliatePDPInput,
+                               universalShareBottomSheet: UniversalShareBottomSheet) {
+        universalShareBottomSheet.setAffiliateRequestHolder(affiliateInput)
+        if (affiliateInput.shop?.shopStatus == null) {
+            universalShareBottomSheet.affiliateRequestDataAwaited()
+        } else {
+            universalShareBottomSheet.affiliateRequestDataReceived(true)
+        }
+    }
+    //endregion
+
+    val universalSharePermissionListener = object : PermissionListener {
+        override fun permissionAction(action: String, label: String) {
+            onClickAccessPhotoMediaAndFiles(productData.userId, productData.productId, label)
+        }
     }
 }
 

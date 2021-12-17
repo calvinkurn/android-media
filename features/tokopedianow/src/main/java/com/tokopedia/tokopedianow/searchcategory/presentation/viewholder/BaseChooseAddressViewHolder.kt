@@ -7,8 +7,10 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategoryChooseAddressBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ChooseAddressDataView
+import com.tokopedia.utils.view.binding.viewBinding
 
 abstract class BaseChooseAddressViewHolder(
         itemView: View,
@@ -20,12 +22,14 @@ abstract class BaseChooseAddressViewHolder(
         val LAYOUT = R.layout.item_tokopedianow_search_category_choose_address
     }
 
+    private var binding: ItemTokopedianowSearchCategoryChooseAddressBinding? by viewBinding()
+
     private var chooseAddressWidget: ChooseAddressWidget? = null
 
     protected abstract val trackingSource: String
 
     init {
-        chooseAddressWidget = itemView.findViewById(R.id.tokoNowSearchCategoryChooseAddress)
+        chooseAddressWidget = binding?.tokoNowSearchCategoryChooseAddress
         chooseAddressWidget?.bindChooseAddress(object: ChooseAddressWidget.ChooseAddressWidgetListener {
             override fun onLocalizingAddressUpdatedFromWidget() {
                 chooseAddressListener.onLocalizingAddressSelected()

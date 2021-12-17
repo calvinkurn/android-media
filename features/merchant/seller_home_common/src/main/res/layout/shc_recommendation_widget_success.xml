@@ -38,6 +38,15 @@
         app:typographyWeight="bold"
         tools:text="Performa toko" />
 
+    <com.tokopedia.unifycomponents.NotificationUnify
+        android:id="@+id/notifTagRecommendation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        app:layout_constraintTop_toTopOf="@id/tvShcRecommendationTitle"
+        app:layout_constraintBottom_toBottomOf="@id/tvShcRecommendationTitle"
+        app:layout_constraintStart_toEndOf="@id/tvShcRecommendationTitle"/>
+
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/tickerShcRecommendation"
         android:layout_width="@dimen/layout_lvl0"

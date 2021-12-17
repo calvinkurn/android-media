@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
@@ -33,7 +32,7 @@ class DigitalTelcoRecommendationFragment : BaseDaggerFragment(), TopupBillsRecen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(it, viewModelFactory)
             viewModel = viewModelProvider.get(SharedTelcoViewModel::class.java)
         }
     }
@@ -55,15 +54,15 @@ class DigitalTelcoRecommendationFragment : BaseDaggerFragment(), TopupBillsRecen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.recommendations.observe(this, Observer {
+        viewModel.recommendations.observe(viewLifecycleOwner, Observer {
             recentNumbersWidget.setRecentNumbers(it)
         })
 
-        viewModel.titleMenu.observe(this, Observer {
+        viewModel.titleMenu.observe(viewLifecycleOwner, Observer {
             recentNumbersWidget.toggleTitle(it)
         })
 
-        viewModel.recentsImpression.observe(this, Observer {
+        viewModel.recentsImpression.observe(viewLifecycleOwner, Observer {
             viewModel.recommendations.value?.let {
                 recentNumbersWidget.getVisibleRecentItemsToUsersTracking(it)
             }

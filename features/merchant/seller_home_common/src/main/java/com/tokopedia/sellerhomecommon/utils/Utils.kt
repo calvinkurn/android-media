@@ -11,4 +11,8 @@ object Utils {
     inline fun <reified T : BaseWidgetUiModel<*>> getWidgetDataKeys(widgets: List<BaseWidgetUiModel<*>>?): List<String> {
         return widgets.orEmpty().filterIsInstance<T>().map { it.dataKey }
     }
+
+    fun fromHtmlWithoutExtraSpace(text: String): String {
+        return text.replace(Regex("<p.*?>|</p.*?>|\\n*\$"), "")
+    }
 }

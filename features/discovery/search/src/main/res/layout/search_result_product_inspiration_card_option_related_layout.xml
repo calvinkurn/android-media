@@ -9,7 +9,7 @@
 
     <View
         android:id="@+id/inspirationCardSeparator"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="@dimen/dp_1"
         android:background="@color/Unify_N75"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,21 +18,21 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/inspirationCardRelatedImage"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/inspirationCardRelatedTitle"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:maxLines="2"
         android:ellipsize="end"
-        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginStart="8dp"
         app:layout_constraintStart_toEndOf="@id/inspirationCardRelatedImage"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
