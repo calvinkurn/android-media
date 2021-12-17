@@ -8,7 +8,7 @@ import com.tokopedia.home.beranda.di.module.query.QueryHomeDataRevamp.HOME_DATA_
 object QueryHomeDataRevamp {
     const val HOME_DATA_REVAMP_QUERY_NAME = "HomeDataRevampQuery"
     const val HOME_DATA_REVAMP_QUERY: String = "" +
-            "query homeData\n" +
+            "query homeData()\n" +
             "        {\n" +
             "        status\n" +
             "          homeFlag{\n" +

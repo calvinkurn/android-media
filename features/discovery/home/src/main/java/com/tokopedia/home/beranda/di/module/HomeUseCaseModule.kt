@@ -19,7 +19,6 @@ import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.di.module.query.*
 import com.tokopedia.home.beranda.di.module.query.QueryHome.homeIconQuery
-import com.tokopedia.home.beranda.di.module.query.QueryHome.homeQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.homeSlidesQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeWallet.walletBalanceQuery
 import com.tokopedia.home.beranda.domain.gql.CloseChannelMutation
@@ -178,9 +177,9 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideGetHomeData(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper): GetHomeDataUseCase{
+    fun provideGetHomeData(graphqlRepository: GraphqlRepository): GetHomeDataUseCase{
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeData>(graphqlRepository)
-        useCase.setGraphqlQuery(homeQuery)
+        useCase.setGraphqlQuery(HomeQuery())
         return GetHomeDataUseCase(useCase)
     }
 

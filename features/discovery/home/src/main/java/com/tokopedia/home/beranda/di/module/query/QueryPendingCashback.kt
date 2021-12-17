@@ -7,7 +7,7 @@ import com.tokopedia.home.beranda.di.module.query.QueryPendingCashback.PENDING_C
 @GqlQuery(PENDING_CASHBACK_QUERY_NAME, PENDING_CASHBACK_QUERY)
 internal object QueryPendingCashback {
     const val PENDING_CASHBACK_QUERY_NAME = "PendingCashbackQuery"
-    const val PENDING_CASHBACK_QUERY : String = "query pendingCashback {\n" +
+    const val PENDING_CASHBACK_QUERY : String = "query pendingCashback() {\n" +
             "  goalPendingBalance {\n" +
             "    balance\n" +
             "    balance_text\n" +

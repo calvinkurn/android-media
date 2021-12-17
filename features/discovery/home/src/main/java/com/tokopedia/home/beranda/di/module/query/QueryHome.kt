@@ -1,8 +1,14 @@
 package com.tokopedia.home.beranda.di.module.query
 
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.home.beranda.di.module.query.QueryHome.HOME_QUERY
+import com.tokopedia.home.beranda.di.module.query.QueryHome.HOME_QUERY_NAME
+
+@GqlQuery(HOME_QUERY_NAME, HOME_QUERY)
 internal object QueryHome {
-    const val homeQuery: String = "" +
-            "query homeData\n" +
+    const val HOME_QUERY_NAME = "HomeQuery"
+    const val HOME_QUERY: String = "" +
+            "query homeData()\n" +
             "        {\n" +
             "        status\n" +
             "          ticker {\n" +
