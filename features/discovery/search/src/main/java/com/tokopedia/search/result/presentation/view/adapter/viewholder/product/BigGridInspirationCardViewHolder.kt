@@ -50,9 +50,7 @@ class BigGridInspirationCardViewHolder(
     }
 
     override fun onViewRecycled() {
-        inspirationCardCuratedBinding?.inspirationCardCuratedIcon?.let {
-            it.clearImage()
-        }
+        inspirationCardCuratedBinding?.inspirationCardCuratedIcon?.clearImage()
     }
 
     private fun setBaseLayout(isCurated: Boolean) {

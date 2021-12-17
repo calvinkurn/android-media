@@ -249,6 +249,7 @@ class ProductListAdapter(
 
     fun rebindVisibleViewHolders() {
         viewHoldersList.forEach {
+            @Suppress("UNCHECKED_CAST")
             (it as AbstractViewHolder<Visitable<*>>).bind(list[it.adapterPosition])
         }
     }
