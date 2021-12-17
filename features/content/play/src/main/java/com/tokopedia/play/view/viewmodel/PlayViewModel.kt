@@ -1882,6 +1882,7 @@ class PlayViewModel @Inject constructor(
                         shareString: String
                     ) {
                         viewModelScope.launch {
+                            _uiEvent.emit(CloseShareExperienceBottomSheet)
                             _uiEvent.emit(
                                 OpenSelectedSharingOptionEvent(
                                     linkerShareData,
@@ -1894,6 +1895,7 @@ class PlayViewModel @Inject constructor(
 
                     override fun onError(e: Exception) {
                         viewModelScope.launch {
+                            _uiEvent.emit(CloseShareExperienceBottomSheet)
                             handleCopyLink()
                         }
                     }

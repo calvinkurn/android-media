@@ -25,6 +25,7 @@ sealed class PlayUpcomingUiEvent {
      */
     data class OpenSharingOptionEvent(val title: String, val coverUrl: String, val userId: String, val channelId: String) : PlayUpcomingUiEvent()
     data class OpenSelectedSharingOptionEvent(val linkerShareResult: LinkerShareResult?, val shareModel: ShareModel, val shareString: String): PlayUpcomingUiEvent()
+    object CloseShareExperienceBottomSheet: PlayUpcomingUiEvent()
 
     /**
      * Other

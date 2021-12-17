@@ -136,10 +136,7 @@ class PlayUpcomingFragment @Inject constructor(
             playUpcomingViewModel.uiEvent.collect { event ->
                 when(event) {
                     is PlayUpcomingUiEvent.OpenPageEvent -> openApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode)
-                    is PlayUpcomingUiEvent.CopyToClipboardEvent -> {
-                        shareExperienceView.dismiss()
-                        copyToClipboard(event.content)
-                    }
+                    is PlayUpcomingUiEvent.CopyToClipboardEvent -> copyToClipboard(event.content)
                     is PlayUpcomingUiEvent.RemindMeEvent -> {
                         if(event.isSuccess) {
                             doShowToaster(message = getTextFromUiString(event.message))
@@ -171,8 +168,8 @@ class PlayUpcomingFragment @Inject constructor(
                     }
                     is PlayUpcomingUiEvent.OpenSelectedSharingOptionEvent -> {
                         SharingUtil.executeShareIntent(event.shareModel, event.linkerShareResult, activity, view, event.shareString)
-                        shareExperienceView.dismiss()
                     }
+                    PlayUpcomingUiEvent.CloseShareExperienceBottomSheet -> shareExperienceView.dismiss()
                 }
             }
         }

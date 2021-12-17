@@ -59,6 +59,7 @@ data class PreloadLikeBubbleIconEvent(val urls: Set<String>) : PlayViewerNewUiEv
  */
 data class OpenSharingOptionEvent(val title: String, val coverUrl: String, val userId: String, val channelId: String) : PlayViewerNewUiEvent()
 data class OpenSelectedSharingOptionEvent(val linkerShareResult: LinkerShareResult?, val shareModel: ShareModel, val shareString: String): PlayViewerNewUiEvent()
+object CloseShareExperienceBottomSheet: PlayViewerNewUiEvent()
 
 //---------------------
 
