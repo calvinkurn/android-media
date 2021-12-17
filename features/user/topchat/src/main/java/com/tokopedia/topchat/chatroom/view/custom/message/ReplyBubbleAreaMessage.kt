@@ -89,7 +89,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
 
     private fun bindParentReply(
         parentReply: ParentReply,
-        childReplyId: String
+        childReplyId: String?
     ) {
         referTo(parentReply)
         setTitle(parentReply.senderId)
@@ -97,10 +97,12 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         bindClick(parentReply, childReplyId)
     }
 
-    private fun bindClick(parentReply: ParentReply, childReplyId: String) {
+    private fun bindClick(parentReply: ParentReply, childReplyId: String?) {
         setOnClickListener {
             if (!parentReply.isExpired) {
-                listener?.getAnalytic()?.eventCLickReplyBubble(childReplyId, parentReply.replyId)
+                childReplyId?.let {
+                    listener?.getAnalytic()?.eventCLickReplyBubble(it, parentReply.replyId)
+                }
                 listener?.goToBubble(parentReply)
             } else {
                 val msg = context.getString(R.string.title_topchat_reply_bubble_expired)
@@ -132,7 +134,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
             source = "chat",
             replyId = referredMsg.replyId
         )
-        bindParentReply(parentReply)
+        bindParentReply(parentReply, null)
         updateCloseButtonState(enableCloseButton)
         show()
     }
