@@ -62,7 +62,6 @@ class PlayShareExperienceImpl @Inject constructor(
 
     override fun createUrl(listener: PlayShareExperience.Listener) {
         try {
-            //TODO("Need to validate branchlink is active/not?")
             val linkerData = LinkerData().apply {
                 id = data.id
                 name = data.title
