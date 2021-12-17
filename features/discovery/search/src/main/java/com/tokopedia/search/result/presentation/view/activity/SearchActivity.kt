@@ -458,9 +458,6 @@ class SearchActivity : BaseActivity(),
     override fun onResume() {
         super.onResume()
 
-        if (isABTestNavigationRevamp) setSearchNavigationCartButton()
-        else showButtonCart()
-
         setSearchNavigationCartButton()
         searchSectionPagerAdapter?.getProductListFragment()?.rebindVisibleViewHolders()
     }
