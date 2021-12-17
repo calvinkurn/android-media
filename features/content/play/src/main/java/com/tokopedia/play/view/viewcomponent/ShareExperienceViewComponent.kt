@@ -1,22 +1,23 @@
 package com.tokopedia.play.view.viewcomponent
 
 import android.content.Context
-import android.util.Log
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play_common.viewcomponent.ViewComponent
+import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
-import java.lang.Exception
 
 /**
  * Created By : Jonathan Darwin on November 01, 2021
@@ -44,19 +45,7 @@ class ShareExperienceViewComponent(
         })
     }
 
-    private val screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
-        context, object: ScreenShotListener {
-            override fun screenShotTaken() {
-                Log.d("<LOG>", "screenshottaken $fragment")
-                listener.onScreenshotTaken(this@ShareExperienceViewComponent)
-            }
-        }, fragment, addFragmentLifecycleObserver = true, permissionListener = object: PermissionListener {
-            override fun permissionAction(action: String, label: String) {
-                Log.d("<LOG>", "onPermissionAction : $label")
-                listener.onSharePermissionAction(this@ShareExperienceViewComponent, label)
-            }
-        }
-    )
+    private var screenshotDetector: ScreenshotDetector? = null
 
     init {
         ivShareLink.setOnClickListener {
@@ -82,6 +71,30 @@ class ShareExperienceViewComponent(
 
     fun handleRequestPermissionResult(requestCode: Int, grantResults: IntArray) {
         screenshotDetector?.onRequestPermissionsResult(requestCode, grantResults, fragment)
+    }
+
+    /**
+     * Lifecycle
+     */
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+            context, object: ScreenShotListener {
+                override fun screenShotTaken() {
+                    listener.onScreenshotTaken(this@ShareExperienceViewComponent)
+                }
+            }, fragment, addFragmentLifecycleObserver = false, permissionListener = object: PermissionListener {
+                override fun permissionAction(action: String, label: String) {
+                    listener.onSharePermissionAction(this@ShareExperienceViewComponent, label)
+                }
+            }
+        )
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun onPause() {
+        UniversalShareBottomSheet.clearState(screenshotDetector)
+        screenshotDetector = null
     }
 
     interface Listener {
