@@ -1,5 +1,8 @@
 package com.tokopedia.data_explorer.db_explorer.domain.databases.usecases
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.data_explorer.R
 import com.tokopedia.data_explorer.db_explorer.domain.databases.Repositories
 import com.tokopedia.data_explorer.db_explorer.domain.databases.models.DatabaseDescriptor
 import com.tokopedia.data_explorer.db_explorer.domain.shared.models.Statements
@@ -10,6 +13,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 internal class GetDatabasesUseCase @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val databaseRepository: Repositories.Database,
     private val connectionRepository: Repositories.Connection,
     private val pragmaRepository: Repositories.Pragma
@@ -27,6 +31,9 @@ internal class GetDatabasesUseCase @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): List<DatabaseDescriptor> {
+        val allowedDbList: ArrayList<String> = arrayListOf()
+        val array = context.resources.getStringArray(R.array.data_explorer_white_listed_database)
+        allowedDbList.addAll(array)
         return databaseRepository.getPage(input)
             .filter { databaseDescriptor -> input.argument?.let { databaseDescriptor.name.contains(it) } ?: true }
             .map {
@@ -38,9 +45,9 @@ internal class GetDatabasesUseCase @Inject constructor(
                         statement = Statements.Pragma.userVersion()
                     )
                 ).cells.firstOrNull()?.text.orEmpty()
+                val isDeletable = allowedDbList.contains(it.name)
                 connectionRepository.close(ConnectionParameters(databasePath = it.absolutePath))
-
-                it.copy(version = version)
+                it.copy(version = version, isDeletable = isDeletable)
             }
 
     }

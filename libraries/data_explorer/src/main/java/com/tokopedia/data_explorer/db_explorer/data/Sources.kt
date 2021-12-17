@@ -23,6 +23,7 @@ internal interface Sources {
         interface Schema {
             suspend fun getTables(query: Query): QueryResult
             suspend fun getTableByName(query: Query): QueryResult
+            suspend fun dropTableContentByName(query: Query): QueryResult
         }
     }
 

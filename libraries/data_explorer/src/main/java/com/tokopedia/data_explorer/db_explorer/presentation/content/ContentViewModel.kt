@@ -1,11 +1,11 @@
 package com.tokopedia.data_explorer.db_explorer.presentation.content
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.data_explorer.db_explorer.data.Data
 import com.tokopedia.data_explorer.db_explorer.data.models.cursor.input.Order
 import com.tokopedia.data_explorer.db_explorer.domain.pragma.usecases.GetTableInfoUseCase
+import com.tokopedia.data_explorer.db_explorer.domain.schema.usecases.DropTableContentUseCase
 import com.tokopedia.data_explorer.db_explorer.domain.schema.usecases.GetTableContentUseCase
 import com.tokopedia.data_explorer.db_explorer.domain.shared.models.Cell
 import com.tokopedia.data_explorer.db_explorer.domain.shared.models.Page
@@ -19,6 +19,7 @@ import javax.inject.Inject
 internal class ContentViewModel @Inject constructor(
     private val getTableInfoUseCase: GetTableInfoUseCase,
     private val getTableContentUseCase: GetTableContentUseCase,
+    private val dropTableContentUseCase: DropTableContentUseCase
 ) : BaseViewModel(Dispatchers.Main) {
 
     val columnHeaderLiveData = MutableLiveData<List<Cell>>()
@@ -57,7 +58,6 @@ internal class ContentViewModel @Inject constructor(
     }
 
     fun getTableContent(schemaName: String, orderBy: String?, sort: Order) {
-        Log.d("DB_EXPLORER", "getTableContent")
         if (totalResults != 0 && validatePageRequest(currentPage)) {
             getTableContentUseCase.getTable(
                 ::onTableContentFetched,
@@ -68,13 +68,28 @@ internal class ContentViewModel @Inject constructor(
                 )
             )
         } else {
-            onTablesError(InvalidPageRequestException("Invalid Page Request"))
+            if (totalResults != 0) {
+                --currentPage
+                onTablesError(InvalidPageRequestException("Invalid Page Request"))
+            } else onTablesError(NullPointerException("No Content Found"))
         }
     }
 
     private fun validatePageRequest(page: Int?): Boolean {
         val requestedResults = (page ?: 1) * Data.Constants.Limits.PAGE_SIZE
-        return requestedResults - totalResults <= Data.Constants.Limits.PAGE_SIZE
+        return totalResults - requestedResults > -Data.Constants.Limits.PAGE_SIZE
+    }
+
+    fun dropTable(schemaName: String) {
+        dropTableContentUseCase.dropTable({
+            onTablesError(NullPointerException("Table Deleted"))
+        }, {
+            onTablesError(it)
+        },
+        ContentParameters(
+            databasePath = databasePath,
+            statement = Statements.Schema.dropContent(schemaName)
+        ))
     }
 
     private fun onTableContentFetched(page: Page) {

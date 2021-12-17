@@ -31,11 +31,15 @@ internal class SchemaViewModel @Inject constructor(
     }
 
     private fun onTablesFetched(page: Page) {
-        tableListLiveData.postValue(page.cells)
+        val filteredTables = page.cells.filterNot { IGNORED_TABLES.contains(it.text) }
+        tableListLiveData.postValue(filteredTables)
     }
 
     private fun onTablesError(throwable: Throwable) {
         errorLiveData.postValue(throwable)
     }
 
+    companion object {
+        val IGNORED_TABLES = listOf("android_metadata", "sqlite_sequence")
+    }
 }

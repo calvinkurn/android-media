@@ -23,19 +23,21 @@
 
     </HorizontalScrollView>
 
-    <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/dataExplorerGlobalError"
-        android:layout_width="wrap_content"
+    <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/dataExplorerEmptyState"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:gravity="center"
         android:paddingTop="@dimen/unify_space_16"
         android:visibility="gone"
+        app:unifyEmptyStateTitle="Data Request Error"
+        app:unifyEmptyStateDescription="Page request Cannot be Handled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.QuantityEditorUnify
         android:id="@+id/pageNumberEditor"
@@ -46,4 +48,9 @@
         app:layout_constraintTop_toBottomOf="@+id/tableView"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/tableGroup"
+        app:constraint_referenced_ids="pageNumberEditor, tableView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,7 +18,6 @@ import com.tokopedia.data_explorer.db_explorer.domain.shared.models.DataBaseCont
 import com.tokopedia.data_explorer.db_explorer.extensions.InvalidPageRequestException
 import com.tokopedia.data_explorer.db_explorer.extensions.setupGrid
 import com.tokopedia.data_explorer.db_explorer.presentation.Constants
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Toaster
@@ -62,7 +61,7 @@ class ContentFragment : BaseDaggerFragment() {
             viewModel.databasePath = databasePath
             viewModel.getTableInfo(schemaName)
 
-        } else showDatabaseError(GlobalError.PAGE_NOT_FOUND)
+        } else showDatabaseError("No Schema Available")
         observeViewModels()
         initListeners()
     }
@@ -101,9 +100,11 @@ class ContentFragment : BaseDaggerFragment() {
         viewModel.getTableContent(schemaName, orderBy, sort)
     }
 
-    private fun showDatabaseError(errorType: Int) {
-        dataExplorerGlobalError.visible()
-        dataExplorerGlobalError.setType(errorType)
+    private fun showDatabaseError(errorType: String) {
+        tableGroup.gone()
+        dataExplorerEmptyState.visible()
+        dataExplorerEmptyState.setDescription(errorType)
+        dataExplorerEmptyState.setImageUrl("https://ecs7.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png")
     }
 
     private fun observeViewModels() {
@@ -119,22 +120,22 @@ class ContentFragment : BaseDaggerFragment() {
             viewModel.getTableRowsCount(schemaName)
         })
         viewModel.resultRowLiveData.observe(viewLifecycleOwner, {
-            if (it) queryContent() else showDatabaseError(GlobalError.MAINTENANCE)
+            if (it) queryContent() else showDatabaseError("Table has no content to show")
         })
         viewModel.contentLiveData.observe(viewLifecycleOwner, { cells ->
-            dataExplorerGlobalError.gone()
+            dataExplorerEmptyState.gone()
             rvContent.adapter = contentAdapter
             contentAdapter.submitList(cells)
         })
         viewModel.errorLiveData.observe(viewLifecycleOwner, {
             when (it) {
-                is IllegalStateException, is InvalidPageRequestException -> Toaster.build(
-                    rvContent,
-                    it.message ?: "Incorrect Request",
-                    Toaster.LENGTH_SHORT,
-                    Toaster.TYPE_ERROR
-                ).show()
-                else -> showDatabaseError(GlobalError.MAINTENANCE)
+                is InvalidPageRequestException -> {
+                    pageNumberEditor.setValue(viewModel.currentPage)
+                    showToast(it.message, Toaster.TYPE_NORMAL)
+
+                }
+                is IllegalStateException-> showToast(it.message, Toaster.TYPE_ERROR)
+                else -> showDatabaseError(it.message?:"Invalid Request")
 
             }
         })
@@ -147,6 +148,19 @@ class ContentFragment : BaseDaggerFragment() {
                 childFragmentManager
             )
         }
+    }
+
+    fun clearContents() {
+        viewModel.dropTable(schemaName)
+    }
+
+    private fun showToast(message: String?, type: Int) {
+        Toaster.build(
+            rvContent,
+            message ?: "Incorrect Request",
+            Toaster.LENGTH_SHORT,
+            type
+        ).show()
     }
 
     override fun getScreenName() = ""

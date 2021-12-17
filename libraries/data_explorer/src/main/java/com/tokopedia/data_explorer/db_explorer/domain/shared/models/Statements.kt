@@ -41,5 +41,7 @@ internal object Statements {
 
             return "SELECT * FROM $name $orderBySql $limit"
         }
+
+        fun dropContent(name: String?) = "DELETE from $name"
     }
 }

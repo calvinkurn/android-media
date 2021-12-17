@@ -22,6 +22,7 @@ internal class DatabaseViewHolder(
             copyDatabase.setOnClickListener { interactions.onCopy(databaseDescriptor) }
             shareDatabase.setOnClickListener { interactions.onShare(databaseDescriptor) }
             deleteDatabase.setOnClickListener { interactions.onDelete(databaseDescriptor) }
+            deleteDatabase.isEnabled = databaseDescriptor.isDeletable
         }
         itemView.setOnClickListener { onClick(databaseDescriptor) }
 

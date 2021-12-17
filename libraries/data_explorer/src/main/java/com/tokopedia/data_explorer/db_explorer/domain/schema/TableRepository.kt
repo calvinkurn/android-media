@@ -22,4 +22,9 @@ internal class TableRepository @Inject constructor(
         return control.mapper(schemaSource.getTableByName(query = query))
     }
 
+    override suspend fun dropByName(input: ContentParameters): Page {
+        val query = control.converter(input)
+        return control.mapper(schemaSource.dropTableContentByName(query = query))
+    }
+
 }
