@@ -9,7 +9,7 @@ import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTrack
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.data.ThankYouBottomSheetTrackerData
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
-import com.tokopedia.review.inbox.R
+import com.tokopedia.review.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -24,7 +24,7 @@ object IncentiveOvoThankYouBottomSheetBuilder {
         thankYouImageUrl: String
     ): BottomSheetUnify {
         val bottomSheetUnify = BottomSheetUnify()
-        val child = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_submitted, null)
+        val child = View.inflate(context,  com.tokopedia.review.R.layout.incentive_ovo_bottom_sheet_submitted, null)
         bottomSheetUnify.setChild(child)
         setupThankYouView(
             child,

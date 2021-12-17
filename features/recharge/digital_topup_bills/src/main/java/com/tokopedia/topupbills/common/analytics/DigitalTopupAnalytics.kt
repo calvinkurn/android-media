@@ -591,6 +591,34 @@ class DigitalTopupAnalytics {
         )
     }
 
+    fun clickFavoriteNumberAutoComplete(categoryId: Int, operatorName: String, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                TrackAppUtils.EVENT, DigitalTopupEventTracking.Event.DIGITAL_GENERAL_EVENT,
+                TrackAppUtils.EVENT_CATEGORY, DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                TrackAppUtils.EVENT_ACTION, DigitalTopupEventTracking.Action.CLICK_AUTOCOMPLETE_FAVORITE_NUMBER,
+                TrackAppUtils.EVENT_LABEL, "${getTrackingCategoryName(categoryId)} - $operatorName",
+                DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
+                DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
+                DigitalTopupEventTracking.Additional.USER_ID, userId,
+            )
+        )
+    }
+
+    fun clickFavoriteContactAutoComplete(categoryId: Int, operatorName: String, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                TrackAppUtils.EVENT, DigitalTopupEventTracking.Event.DIGITAL_GENERAL_EVENT,
+                TrackAppUtils.EVENT_CATEGORY, DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                TrackAppUtils.EVENT_ACTION, DigitalTopupEventTracking.Action.CLICK_AUTOCOMPLETE_FAVORITE_CONTACT,
+                TrackAppUtils.EVENT_LABEL, "${getTrackingCategoryName(categoryId)} - $operatorName",
+                DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
+                DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
+                DigitalTopupEventTracking.Additional.USER_ID, userId,
+            )
+        )
+    }
+
     private fun getTrackingCategoryName(categoryId: Int): String {
         return getCategoryName(categoryId).toLowerCase()
     }
