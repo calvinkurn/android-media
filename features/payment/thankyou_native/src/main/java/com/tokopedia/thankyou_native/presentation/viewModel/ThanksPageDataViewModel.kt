@@ -1,5 +1,6 @@
 package com.tokopedia.thankyou_native.presentation.viewModel
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -79,6 +80,7 @@ class ThanksPageDataViewModel @Inject constructor(
         }
     }
 
+    @VisibleForTesting
      fun loadTopAdsViewModelData(
         topAdsRequestParams: TopAdsRequestParams,
         thanksPageData: ThanksPageData
@@ -96,7 +98,8 @@ class ThanksPageDataViewModel @Inject constructor(
         return FeatureRecommendationMapper.getTopAdsParams(engineData)
     }
 
-     fun postGyroRecommendation(engineData: FeatureEngineData?) {
+    @VisibleForTesting
+    fun postGyroRecommendation(engineData: FeatureEngineData?) {
         gyroEngineMapperUseCase.cancelJobs()
         gyroEngineMapperUseCase.getFeatureListData(engineData, {
             _gyroRecommendationLiveData.postValue(it)
