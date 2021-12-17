@@ -132,6 +132,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import org.json.JSONArray
+import timber.log.Timber
 import java.util.ArrayList
 import java.util.HashMap
 import javax.inject.Inject
@@ -1967,6 +1968,7 @@ class ProductListFragment: BaseDaggerFragment(),
             try {
                 ChooseAddressUtils.getLocalizingAddressData(it)
             } catch (e: Throwable) {
+                Timber.w(e)
                 emptyAddress
             }
         } ?: emptyAddress
@@ -1976,6 +1978,7 @@ class ProductListFragment: BaseDaggerFragment(),
             try {
                 ChooseAddressUtils.isLocalizingAddressHasUpdated(it, currentChooseAddressData)
             } catch (e: Throwable) {
+                Timber.w(e)
                 false
             }
         } ?: false
