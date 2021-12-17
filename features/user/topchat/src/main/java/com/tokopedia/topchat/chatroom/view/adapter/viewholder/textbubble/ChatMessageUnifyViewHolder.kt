@@ -114,6 +114,7 @@ class ChatMessageUnifyViewHolder(
         if (!msg.isBanned() && !msg.isDeleted()) {
             fxChat?.setOnLongClickListener {
                 val menus = createLongClickMenuMsgBubble()
+                commonListener.getAnalytic().eventTapAndHoldBubbleChat(msg.replyId)
                 commonListener.showMsgMenu(
                     msg, fxChat.message?.text ?: "", menus
                 )
