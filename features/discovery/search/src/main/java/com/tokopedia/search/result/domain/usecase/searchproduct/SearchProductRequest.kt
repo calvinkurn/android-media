@@ -109,10 +109,12 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                 related {
                     relatedKeyword
                     position
+                    trackingOption
                     otherRelated {
                         keyword
                         url
                         applink
+                        componentId
                         product {
                             id
                             name
@@ -123,6 +125,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                             priceStr
                             wishlist
                             ratingAverage
+                            componentId
                             labelGroups {
                                 title
                                 position
