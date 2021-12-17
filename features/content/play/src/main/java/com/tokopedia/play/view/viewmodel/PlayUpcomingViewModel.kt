@@ -415,6 +415,13 @@ class PlayUpcomingViewModel @Inject constructor(
                             )
                         }
                     }
+
+                    override fun onError(e: Exception) {
+                        viewModelScope.launch {
+                            _uiEvent.emit(PlayUpcomingUiEvent.CloseShareExperienceBottomSheet)
+                            _uiEvent.emit(PlayUpcomingUiEvent.ErrorGenerateShareLink)
+                        }
+                    }
                 }
             )
         }

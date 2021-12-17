@@ -89,7 +89,7 @@ class PlayShareExperienceImpl @Inject constructor(
             }
 
             override fun onError(linkerError: LinkerError?) {
-
+                listener.onError(Exception(linkerError?.errorMessage))
             }
         }))
     }

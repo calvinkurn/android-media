@@ -983,6 +983,13 @@ class PlayUserInteractionFragment @Inject constructor(
                         SharingUtil.executeShareIntent(event.shareModel, event.linkerShareResult, activity, view, event.shareString)
                     }
                     CloseShareExperienceBottomSheet -> shareExperienceView?.dismiss()
+                    ErrorGenerateShareLink -> {
+                        doShowToaster(
+                            toasterType = Toaster.TYPE_NORMAL,
+                            message = getString(R.string.play_sharing_error_generate_link),
+                            actionText = getString(R.string.play_sharing_refresh),
+                        )
+                    }
                 }
             }
         }

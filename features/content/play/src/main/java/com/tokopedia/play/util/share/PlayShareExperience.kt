@@ -21,5 +21,6 @@ interface PlayShareExperience {
 
     interface Listener {
         fun onUrlCreated(linkerShareData: LinkerShareResult?, shareModel: ShareModel, shareString: String)
+        fun onError(e: Exception)
     }
 }
