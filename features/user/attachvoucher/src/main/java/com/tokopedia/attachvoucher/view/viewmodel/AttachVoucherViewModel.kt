@@ -52,7 +52,6 @@ class AttachVoucherViewModel @Inject constructor(
 
         startLoading()
         currentPage = page
-
         launchCatchError(block = {
             val param = generateParams(page, filter.value ?: NO_FILTER)
             val vouchers = getVouchersUseCase(param)

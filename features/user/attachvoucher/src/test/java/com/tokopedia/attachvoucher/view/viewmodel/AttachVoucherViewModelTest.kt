@@ -174,4 +174,20 @@ class AttachVoucherViewModelTest {
         // Then
         assertTrue(viewModel.currentPage == Dummy.firstPage)
     }
+
+    @Test
+    fun `filter toogle is clicked`() {
+        //Given
+        val dummyParam = AttachVoucherViewModel.PARAM_FILTER
+        viewModel.toggleFilter(1)
+        coVerify { filterObserver.onChanged(1) }
+    }
+
+    @Test
+    fun `filter toogle is clicked twice`() {
+        val dummyParam = AttachVoucherViewModel.PARAM_FILTER
+        viewModel.toggleFilter(1)
+        viewModel.toggleFilter(1)
+        coVerify { filterObserver.onChanged(-1) }
+    }
 }
