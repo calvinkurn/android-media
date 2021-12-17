@@ -12,7 +12,6 @@ import com.tokopedia.picker.databinding.FragmentPermissionBinding
 import com.tokopedia.picker.ui.common.PickerPageType
 import com.tokopedia.picker.ui.fragment.PickerUiConfig
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import com.tokopedia.utils.permission.request
 import com.tokopedia.utils.view.binding.viewBinding
 
 class PermissionFragment : BaseDaggerFragment() {
@@ -61,29 +60,39 @@ class PermissionFragment : BaseDaggerFragment() {
                 ))
             }
             PickerPageType.GALLERY -> {
-                _permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+                _permissions.add(
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                )
             }
         }
 
-        permissionHelper.request(
-            requireActivity(),
-            _permissions.toTypedArray(), {
-                listener?.granted()
-            }, {
-                requireActivity().finish()
-            }
-        )
+        permissionHelper.checkPermissions(
+            this,
+            _permissions.toTypedArray(),
+            object : PermissionCheckerHelper.PermissionCheckListener {
+                override fun onPermissionDenied(permissionText: String) {
+                    permissionHelper.onPermissionDenied(requireContext(), permissionText)
+                }
+
+                override fun onNeverAskAgain(permissionText: String) {
+                    permissionHelper.onNeverAskAgain(requireContext(), permissionText)
+                }
+
+                override fun onPermissionGranted() {
+                    listener?.onPermissionGranted()
+                }
+        })
     }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
-        permissions: Array<out String>,
+        permissions: Array<String>,
         grantResults: IntArray
     ) {
         permissionHelper.onRequestPermissionsResult(
             requireContext(),
             requestCode,
-            _permissions.toTypedArray(),
+            permissions,
             grantResults
         )
     }
@@ -103,7 +112,7 @@ class PermissionFragment : BaseDaggerFragment() {
     override fun getScreenName() = "Permission"
 
     interface Listener {
-        fun granted()
+        fun onPermissionGranted()
     }
 
 }

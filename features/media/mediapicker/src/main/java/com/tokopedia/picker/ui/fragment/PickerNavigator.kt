@@ -31,9 +31,9 @@ class PickerNavigator constructor(
         cameraFragment = factory.cameraFragment()
         galleryFragment = factory.galleryFragment()
 
-        addPage(permissionFragment, "Runtime Permission")
-        addPage(cameraFragment, "Camera")
-        addPage(galleryFragment, "Gallery")
+        addPage(permissionFragment, context.getString(com.tokopedia.picker.R.string.media_picker_permission))
+        addPage(cameraFragment, context.getString(com.tokopedia.picker.R.string.media_picker_camera))
+        addPage(galleryFragment, context.getString(com.tokopedia.picker.R.string.media_picker_gallery))
     }
 
     fun start(@PickerFragmentType page: Int) {
@@ -64,6 +64,14 @@ class PickerNavigator constructor(
     fun onPageSelected(@PickerFragmentType page: Int) {
         if (isActivityResumed() && !isCurrentlyOnThePage(page)) {
             showPage(page)
+        }
+    }
+
+    private fun showPage(page: Int) {
+        pageFragment(page)?.let {
+            val transaction = fm.beginTransaction()
+            showFragment(it, transaction)
+            setSelectedPage(page)
         }
     }
 
@@ -100,14 +108,6 @@ class PickerNavigator constructor(
         val fragmentByTag = fm.findFragmentByTag(tag)
 
         return fragmentByTag ?: fragment
-    }
-
-    private fun showPage(page: Int) {
-        pageFragment(page)?.let {
-            val transaction = fm.beginTransaction()
-            showFragment(it, transaction)
-            setSelectedPage(page)
-        }
     }
 
     private fun hideAllPages(transaction: FragmentTransaction) {

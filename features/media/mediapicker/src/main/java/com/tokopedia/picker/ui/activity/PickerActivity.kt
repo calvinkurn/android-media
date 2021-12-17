@@ -1,14 +1,12 @@
 package com.tokopedia.picker.ui.activity
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
-import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst.MediaPicker.*
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.picker.R
 import com.tokopedia.picker.databinding.ActivityPickerBinding
 import com.tokopedia.picker.ui.common.PickerFragmentType
@@ -20,8 +18,9 @@ import com.tokopedia.picker.ui.fragment.PickerFragmentFactoryImpl
 import com.tokopedia.picker.ui.fragment.PickerNavigator
 import com.tokopedia.picker.ui.fragment.PickerUiConfig
 import com.tokopedia.picker.ui.fragment.permission.PermissionFragment
+import com.tokopedia.picker.utils.Permissions.hasPermissionGranted
+import com.tokopedia.picker.utils.addOnTabSelected
 import com.tokopedia.utils.view.binding.viewBinding
-import com.tokopedia.abstraction.common.utils.RequestPermissionUtil.checkHasPermission as hasPermission
 
 /**
  * main applink:
@@ -64,34 +63,31 @@ import com.tokopedia.abstraction.common.utils.RequestPermissionUtil.checkHasPerm
  */
 class PickerActivity : BaseActivity(), PermissionFragment.Listener {
 
-    private var navigator: PickerNavigator? = null
     private val binding: ActivityPickerBinding? by viewBinding()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_picker)
-        setupNavigator()
-        setupQueryParameter()
-        setupInitialPage()
-        setupPickerByPage()
-    }
-
-    override fun granted() {
-        navigator?.onPageSelected(PickerUiConfig.getStatePage())
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        navigator?.cleanUp()
-    }
-
-    private fun setupNavigator() {
-        navigator = PickerNavigator(
+    private val navigator: PickerNavigator? by lazy {
+        PickerNavigator(
             this,
             R.id.container,
             supportFragmentManager,
             createFragmentFactory()
         )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_picker)
+        setupQueryParameter()
+        setupInitialPage()
+    }
+
+    override fun onPermissionGranted() {
+        setupPickerByPage()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        navigator?.cleanUp()
     }
 
     private fun setupQueryParameter() {
@@ -101,83 +97,99 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
         setupQuerySelectionType(data)
     }
 
+    /**
+     * queryPage is to specify the desired page type.
+     * mediapicker has options to set for:
+     * 1. camera page only
+     * 2. gallery page only
+     * 3. camera & gallery
+     *
+     * the data comes from:
+     * tokopedia://media-picker?page=...
+     */
     private fun setupQueryPage(data: Uri) {
-        val page = when(data.getQueryParameter(PARAM_PAGE)) {
+        PickerUiConfig.paramPage = when(data.getQueryParameter(PARAM_PAGE)) {
             VALUE_PAGE_CAMERA -> PickerPageType.CAMERA
             VALUE_PAGE_GALLERY -> PickerPageType.GALLERY
             else -> PickerPageType.COMMON
         }
-
-        PickerUiConfig.paramPage = page
     }
 
+    /**
+     * queryMode is to determine the type of media should be display.
+     * this also have ability to set the camera mode (camera only, video only, or both).
+     * we have 3 options for the type of media, such as:
+     * 1. image only
+     * 2. video only
+     * 3. image & video
+     *
+     * the data comes from:
+     * tokopedia://media-picker?mode=...
+     */
     private fun setupQueryMode(data: Uri) {
-        val mode = when(data.getQueryParameter(PARAM_MODE)) {
+        PickerUiConfig.paramMode = when(data.getQueryParameter(PARAM_MODE)) {
             VALUE_MODE_IMAGE -> PickerModeType.IMAGE_ONLY
             VALUE_MODE_VIDEO -> PickerModeType.VIDEO_ONLY
             else -> PickerModeType.COMMON
         }
-
-        PickerUiConfig.paramMode = mode
     }
 
+    /**
+     * querySelection is to specify the type of selection mode of picker.
+     * you can set the selection type as [PickerSelectionType.SINGLE] or
+     * as [PickerSelectionType.MULTIPLE].
+     *
+     * the data comes from:
+     * tokopedia://media-picker?type=...
+     */
     private fun setupQuerySelectionType(data: Uri) {
-        val selectionType = when(data.getQueryParameter(PARAM_SELECTION)) {
+        PickerUiConfig.paramType = when(data.getQueryParameter(PARAM_SELECTION)) {
             VALUE_TYPE_SINGLE -> PickerSelectionType.SINGLE
-            VALUE_TYPE_MULTIPLE -> PickerSelectionType.MULTIPLE
-            else -> null
-        }
-
-        selectionType?.let {
-            PickerUiConfig.paramType = it
+            else -> PickerSelectionType.MULTIPLE // default
         }
     }
 
+    /**
+     * set the initial page of picker to display,
+     * if the user use android M and above, runtime permission
+     * should be required. so, the first thing is, we've to
+     * ensure that the permissions has granted.
+     */
     private fun setupInitialPage() {
-        val hasPermissionStorage = hasPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-        val hasPermissionCamera = hasPermission(this, Manifest.permission.CAMERA)
-        navigator?.start(
-            if (hasPermissionStorage || hasPermissionCamera) {
-                PickerUiConfig.getStatePage()
-            } else {
-                PickerFragmentType.PERMISSION
-            }
-        )
+        if (!hasPermissionGranted()) {
+            navigator?.start(PickerFragmentType.PERMISSION)
+            return
+        }
+
+        setupPickerByPage()
     }
 
-    //TODO
     private fun setupPickerByPage() {
         when (PickerUiConfig.paramPage) {
             PickerPageType.CAMERA -> navigator?.onPageSelected(PickerFragmentType.CAMERA)
             PickerPageType.GALLERY -> navigator?.onPageSelected(PickerFragmentType.GALLERY)
             else -> {
-                // show camera as first fragment page
+                // show camera as first page
                 navigator?.onPageSelected(PickerFragmentType.CAMERA)
 
-                // show tab navigation
+                // display the tab navigation
                 setupTabView()
             }
         }
     }
 
-    //TODO
     private fun setupTabView() {
-        binding?.tabContainer?.visibility = View.VISIBLE
-        binding?.tabContainer?.addNewTab("Camera")
-        binding?.tabContainer?.addNewTab("Gallery")
+        binding?.tabContainer?.addNewTab(getString(com.tokopedia.picker.R.string.media_picker_camera))
+        binding?.tabContainer?.addNewTab(getString(com.tokopedia.picker.R.string.media_picker_gallery))
+        binding?.tabContainer?.show()
 
-        binding?.tabContainer?.tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                if (tab?.position == 0) {
-                    navigator?.onPageSelected(PickerFragmentType.CAMERA)
-                } else if (tab?.position == 1) {
-                    navigator?.onPageSelected(PickerFragmentType.GALLERY)
-                }
+        binding?.tabContainer?.tabLayout?.addOnTabSelected { position ->
+            if (position == 0) {
+                navigator?.onPageSelected(PickerFragmentType.CAMERA)
+            } else if (position == 1) {
+                navigator?.onPageSelected(PickerFragmentType.GALLERY)
             }
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-        })
+        }
     }
 
     private fun createFragmentFactory(): PickerFragmentFactory {
