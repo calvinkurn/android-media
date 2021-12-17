@@ -839,13 +839,7 @@ class PlayUpcomingTest {
 
         val mockCloseBottomSheet = PlayUpcomingUiEvent.CloseShareExperienceBottomSheet
 
-        val mockCopyEvent = PlayUpcomingUiEvent.CopyToClipboardEvent(
-            shareInfo.content
-        )
-
-        val mockShowInfoEvent = PlayUpcomingUiEvent.ShowInfoEvent(
-            UiString.Resource(123)
-        )
+        val mockErrorGenerateLink = PlayUpcomingUiEvent.ErrorGenerateShareLink
 
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
@@ -865,8 +859,7 @@ class PlayUpcomingTest {
             verify { mockPlayNewAnalytic.clickSharingOption(channelId, channelType, shareModel.socialMediaName, false) }
 
             event[0].isEqualTo(mockCloseBottomSheet)
-            event[1].isEqualTo(mockCopyEvent)
-            event[2].isEqualToIgnoringFields(mockShowInfoEvent, ShowInfoEvent::message)
+            event[1].isEqualTo(mockErrorGenerateLink)
         }
     }
 
