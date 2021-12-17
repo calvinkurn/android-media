@@ -31,8 +31,8 @@ class HomeQuestSequenceWidgetViewHolder(
 ): AbstractViewHolder<HomeQuestSequenceWidgetUiModel>(itemView) {
 
     companion object {
-        private const val QUEST_DETAIL_STAGING_URL = "https://1079-staging-feature.tokopedia.com/now/quest-channel/"
-        private const val QUEST_DETAIL_PRODUCTION_URL = "https://www.tokopedia.com/now/quest-channel/"
+        private const val QUEST_DETAIL_STAGING_URL = "https://staging.tokopedia.com/now/quest-channel"
+        private const val QUEST_DETAIL_PRODUCTION_URL = "https://www.tokopedia.com/now/quest-channel"
 
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_quest_sequence_widget
