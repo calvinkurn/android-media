@@ -244,9 +244,7 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     override fun onReportClick(view: KebabMenuSheetViewComponent) {
-        analytic.clickUserReport()
-        playViewModel.onShowUserReportSheet(userReportSheetHeight)
-        viewModel.getUserReportList()
+        shouldOpenUserReport()
     }
 
     /**
@@ -397,6 +395,10 @@ class PlayBottomSheetFragment @Inject constructor(
         viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product, position))
     }
 
+    private fun shouldOpenUserReport() {
+        viewModel.doInteractionEvent(InteractionEvent.OpenUserReport)
+    }
+
     private fun doShowToaster(
             bottomSheetType: BottomInsetsType,
             toasterType: Int,
@@ -463,6 +465,7 @@ class PlayBottomSheetFragment @Inject constructor(
         when (event) {
             is InteractionEvent.DoActionProduct -> doActionProduct(event.product, event.action, event.type)
             is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.position)
+            is InteractionEvent.OpenUserReport -> doActionUserReport()
         }
     }
 
@@ -475,6 +478,12 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun doActionProduct(product: PlayProductUiModel.Product, productAction: ProductAction, type: BottomInsetsType) {
         viewModel.addToCart(product, action = productAction, type = type)
+    }
+
+    private fun doActionUserReport(){
+        analytic.clickUserReport()
+        playViewModel.onShowUserReportSheet(userReportSheetHeight)
+        viewModel.getUserReportList()
     }
 
     private fun openLoginPage() {
