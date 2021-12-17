@@ -23,6 +23,7 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Spy
 
 
 @ExperimentalCoroutinesApi
@@ -43,6 +44,7 @@ class AttachVoucherViewModelTest {
     @RelaxedMockK
     lateinit var errorObserver: Observer<Throwable>
 
+    @Spy
     lateinit var viewModel: AttachVoucherViewModel
 
     private val dispatcherProvider = CoroutineTestDispatchersProvider
@@ -61,7 +63,7 @@ class AttachVoucherViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = AttachVoucherViewModel(getVoucherUseCase, dispatcherProvider)
+        viewModel = spyk(AttachVoucherViewModel(getVoucherUseCase, dispatcherProvider))
         viewModel.voucher.observeForever(voucherObservers)
         viewModel.filter.observeForever(filterObserver)
         viewModel.error.observeForever(errorObserver)
@@ -91,10 +93,22 @@ class AttachVoucherViewModelTest {
 
         // When
         viewModel.loadVouchers(1)
-        viewModel.cancelCurrentLoad()
 
         // Then
-        assertFalse(viewModel.isLoading)
+        verify(exactly = 1) { viewModel.cancelCurrentLoad() }
+    }
+
+    @Test
+    fun `load voucher without cancel`() {
+        // Given
+        viewModel.isLoading = false
+        // When
+        viewModel.loadVouchers(1)
+
+        // Then
+        verify(exactly = 0) { viewModel.cancelCurrentLoad() }
+
+
     }
 
     @Test
@@ -111,6 +125,7 @@ class AttachVoucherViewModelTest {
         // Then
         verify { filterObserver.onChanged(VoucherType.paramCashback) }
         assertFalse(viewModel.hasNoFilter())
+        assertEquals(VoucherType.paramCashback, viewModel.filter.value)
     }
 
     @Test
@@ -125,6 +140,7 @@ class AttachVoucherViewModelTest {
 
         // Then
         assertNull(viewModel.filter.value)
+        assertTrue(viewModel.hasNoFilter())
     }
 
     @Test
@@ -172,7 +188,7 @@ class AttachVoucherViewModelTest {
         viewModel.loadVouchers(Dummy.firstPage)
 
         // Then
-        assertTrue(viewModel.hasNext)
+        assertEquals(true, viewModel.hasNext)
     }
 
     @Test
@@ -185,7 +201,7 @@ class AttachVoucherViewModelTest {
         viewModel.loadVouchers(Dummy.firstPage)
 
         // Then
-        assertFalse(viewModel.hasNext)
+        assertEquals(false, viewModel.hasNext)
     }
 
     @Test
@@ -214,10 +230,5 @@ class AttachVoucherViewModelTest {
         viewModel.toggleFilter(1)
         viewModel.toggleFilter(1)
         coVerify { filterObserver.onChanged(-1) }
-    }
-
-    @Test
-    fun `generate param has filter`() {
-        viewModel.loadVouchers(1)
     }
 }
