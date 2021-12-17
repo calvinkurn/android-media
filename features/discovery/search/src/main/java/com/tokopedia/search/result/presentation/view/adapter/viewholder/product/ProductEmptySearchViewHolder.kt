@@ -165,12 +165,6 @@ class ProductEmptySearchViewHolder(
         productSelectedFilterAdapter?.setOptionList(selectedFilterOptionList)
     }
 
-    private fun bindBannerAds() {
-        topAdsParams?.let {
-            loadBannerAds(it)
-        }
-    }
-
     private fun loadBannerAds(topAdsParams: TopAdsParams) {
         val binding = binding ?: return
         val emptySearchModel = boundedEmptySearchModel ?: return
