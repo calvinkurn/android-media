@@ -184,7 +184,7 @@ class AffiliatePromotionHistoryFragment : BaseViewModelFragment<AffiliatePromoti
     }
 
     override fun initInject() {
-        getComponent().injectRecommendedProductFragment(this)
+        getComponent().injectPromotionHistoryFragment(this)
     }
 
     private fun getComponent(): AffiliateComponent =

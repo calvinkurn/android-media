@@ -188,4 +188,42 @@ internal class SearchProductHandleBroadMatchClick: ProductListPresenterTestFixtu
             productListView.trackEventClickSeeMoreBroadMatch(any())
         }
     }
+
+    @Test
+    fun `impression broad match`() {
+        val searchProductModel = broadMatchResponseCode0Page1Position1.jsonToObject<SearchProductModel>()
+        `Given View already load data with broad match`(searchProductModel)
+
+        val broadMatchDataView = findBroadMatchDataViewFromVisitableList()
+        `When broad match impressed`(broadMatchDataView)
+
+        `Then verify impression broad match`(broadMatchDataView)
+    }
+
+    private fun `When broad match impressed`(broadMatchDataView: BroadMatchDataView) {
+        productListPresenter.onBroadMatchImpressed(broadMatchDataView)
+    }
+
+    private fun `Then verify impression broad match`(broadMatchDataView: BroadMatchDataView) {
+        verify {
+            productListView.trackEventImpressionBroadMatch(broadMatchDataView)
+        }
+    }
+
+    @Test
+    fun `impression dynamic carousel as broad match`() {
+        val searchProductModel = dynamicProductCarousel.jsonToObject<SearchProductModel>()
+        `Given View already load data with broad match`(searchProductModel)
+
+        val broadMatchDataView = findBroadMatchDataViewFromVisitableList()
+        `When broad match impressed`(broadMatchDataView)
+
+        `Then verify broad match impression is not called`()
+    }
+
+    private fun `Then verify broad match impression is not called`() {
+        verify(exactly = 0) {
+            productListView.trackEventImpressionBroadMatch(any())
+        }
+    }
 }
