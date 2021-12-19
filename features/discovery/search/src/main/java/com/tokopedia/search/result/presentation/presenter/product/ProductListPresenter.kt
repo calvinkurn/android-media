@@ -1630,6 +1630,7 @@ class ProductListPresenter @Inject constructor(
                 createGeneralSearchTrackingRelatedKeyword(productDataView),
                 dimension90,
                 view.filterParamString,
+                productDataView.pageComponentId
             )
         )
     }
