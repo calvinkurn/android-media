@@ -3,20 +3,29 @@ package com.tokopedia.search.analytics
 import android.content.Context
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst
+import com.tokopedia.discovery.common.analytics.SearchComponentTracking
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingRollence
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.remoteconfig.RollenceKey.SEARCH_BROAD_MATCH_TRACKER_UNIFICATION
+import com.tokopedia.search.analytics.SearchEventTracking.Action.Companion.CLICK_BROAD_MATCH_LIHAT_SEMUA
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.CLICK
+import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.CURRENCY_CODE
+import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.IDR
+import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.IMPRESSIONS
+import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.LIST
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.PRODUCTS
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
-import java.util.*
-import kotlin.collections.HashMap
+import java.util.ArrayList
+import java.util.Arrays
 
 /**
  * Created by henrypriyono on 1/5/18.
@@ -36,6 +45,7 @@ object SearchTracking {
     private const val EVENT_ACTION_CLICK_SEE_ALL_NAV_WIDGET = "click - lihat semua widget"
     private const val EVENT_ACTION_IMPRESSION_WIDGET_DIGITAL_PRODUCT = "impression widget - digital product"
     private const val CAROUSEL_UNIFICATION_LIST_NAME = " /search - carousel %s - component:%s"
+    private const val BROADMATCH_LIST_NAME = "/search - broad match - %s - component:%s"
 
     @JvmStatic
     fun screenTrackSearchSectionFragment(screen: String?) {
@@ -452,7 +462,8 @@ object SearchTracking {
             SearchTrackingConstant.RELATED_KEYWORD, generalSearchTrackingModel.relatedKeyword,
             SearchTrackingConstant.PAGE_SOURCE, generalSearchTrackingModel.pageSource,
             SearchTrackingConstant.SEARCHFILTER, generalSearchTrackingModel.searchFilter,
-            SearchTrackingConstant.ANDROID_ID, TrackApp.getInstance().appsFlyer.googleAdId
+            SearchTrackingConstant.ANDROID_ID, TrackApp.getInstance().appsFlyer.googleAdId,
+            SearchComponentTrackingConst.COMPONENT, generalSearchTrackingModel.componentId,
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(value)
     }
@@ -716,58 +727,99 @@ object SearchTracking {
     }
 
     @JvmStatic
-    fun trackEventImpressionBroadMatch(trackingQueue: TrackingQueue, keyword: String?, alternativeKeyword: String?, userId: String?, broadMatchItems: List<Any>) {
+    fun trackEventImpressionBroadMatch(
+        trackingQueue: TrackingQueue,
+        keyword: String?,
+        alternativeKeyword: String?,
+        userId: String?,
+        broadMatchItems: List<Any>,
+    ) {
         val map = DataLayer.mapOf(
-                SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
+            SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
+            SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+            SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_BROAD_MATCH,
+            SearchTrackingConstant.EVENT_LABEL, String.format("%s - %s", keyword, alternativeKeyword),
+            SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+            SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+            SearchTrackingConstant.USER_ID, userId,
+            ECOMMERCE, DataLayer.mapOf(
+                CURRENCY_CODE, IDR,
+                IMPRESSIONS, DataLayer.listOf(*broadMatchItems.toTypedArray())
+            )
+        ) as HashMap<String, Any>
+
+        trackingQueue.putEETracking(map)
+    }
+
+    @JvmStatic
+    fun trackEventImpressionBroadMatch(iris: Iris, searchComponentTracking: SearchComponentTracking) {
+        SearchComponentTrackingRollence.impress(
+            iris,
+            listOf(searchComponentTracking),
+            SEARCH_BROAD_MATCH_TRACKER_UNIFICATION
+        )
+    }
+
+    @JvmStatic
+    fun trackEventClickBroadMatchSeeMore(
+        searchComponentTracking: SearchComponentTracking,
+        keyword: String?,
+        alternativeKeyword: String?,
+        pageSource: String,
+    ) {
+        SearchComponentTrackingRollence.click(
+            searchComponentTracking,
+            SEARCH_BROAD_MATCH_TRACKER_UNIFICATION,
+        ) {
+            val eventLabel = String.format("%s - %s", keyword, alternativeKeyword)
+
+            TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                    SearchTrackingConstant.EVENT, SearchEventTracking.Event.SEARCH_RESULT,
+                    SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                    SearchTrackingConstant.EVENT_ACTION, CLICK_BROAD_MATCH_LIHAT_SEMUA,
+                    SearchTrackingConstant.EVENT_LABEL, eventLabel,
+                    SearchTrackingConstant.PAGE_SOURCE, pageSource,
+                )
+            )
+        }
+    }
+
+    @JvmStatic
+    fun trackEventClickBroadMatchItem(
+        keyword: String,
+        alternativeKeyword: String,
+        userId: String,
+        isOrganicAds: Boolean,
+        componentId: String,
+        broadMatchItems: List<Any>,
+    ) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
                 SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_BROAD_MATCH,
+                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_BROAD_MATCH,
                 SearchTrackingConstant.EVENT_LABEL, String.format("%s - %s", keyword, alternativeKeyword),
                 SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
                 SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
                 SearchTrackingConstant.USER_ID, userId,
                 ECOMMERCE, DataLayer.mapOf(
-                "currencyCode", "IDR",
-                "impressions", DataLayer.listOf(
-                *broadMatchItems.toTypedArray()
-        ))
-        ) as HashMap<String, Any>
-        trackingQueue.putEETracking(
-                map
+                    CLICK, DataLayer.mapOf(
+                        ACTION_FIELD, DataLayer.mapOf(
+                            LIST, getBroadMatchListName(isOrganicAds, componentId)
+                        ),
+                        PRODUCTS, DataLayer.listOf(*broadMatchItems.toTypedArray())
+                    )
+                )
+            )
         )
     }
 
-    @JvmStatic
-    fun trackEventClickBroadMatchSeeMore(keyword: String?, alternativeKeyword: String?, pageSource: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                DataLayer.mapOf(
-                        SearchTrackingConstant.EVENT, SearchEventTracking.Event.SEARCH_RESULT,
-                        SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                        SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_BROAD_MATCH_LIHAT_SEMUA,
-                        SearchTrackingConstant.EVENT_LABEL, String.format("%s - %s", keyword, alternativeKeyword),
-                        SearchTrackingConstant.PAGE_SOURCE, pageSource,
-                )
-        )
-    }
-
-    @JvmStatic
-    fun trackEventClickBroadMatchItem(keyword: String?, alternativeKeyword: String?, userId: String?, broadMatchItems: List<Any>) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
-                        SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                        SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_BROAD_MATCH,
-                        SearchTrackingConstant.EVENT_LABEL, String.format("%s - %s", keyword, alternativeKeyword),
-                        SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
-                        SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
-                        SearchTrackingConstant.USER_ID, userId,
-                        ECOMMERCE, DataLayer.mapOf("click",
-                        DataLayer.mapOf("actionField",
-                                DataLayer.mapOf("list", "/search - broad match"),
-                                "products", DataLayer.listOf(
-                                *broadMatchItems.toTypedArray()
-                            )
-                        )
-                )
-                )
+    fun getBroadMatchListName(isOrganicAds: Boolean, componentId: String): String {
+        val organicStatus = if (isOrganicAds) ORGANIC_ADS else ORGANIC
+        return String.format(
+            BROADMATCH_LIST_NAME,
+            organicStatus,
+            componentId
         )
     }
 
