@@ -23,6 +23,8 @@ import java.math.BigInteger
 import java.text.NumberFormat
 import java.util.*
 
+private const val DIALOG_MAX_WIDTH = 900
+private const val DIALOG_MARGIN_TOP = 8
 private const val MAX_LENGTH_NUMBER_INPUT = 11 // including delimiter
 
 fun TextAreaUnify?.setText(text: String) = this?.textAreaInput?.setText(text)

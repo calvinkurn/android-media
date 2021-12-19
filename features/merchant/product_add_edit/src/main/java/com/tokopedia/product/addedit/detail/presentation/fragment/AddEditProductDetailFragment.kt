@@ -1461,8 +1461,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
 
     private fun subscribeToInputStatus() {
         viewModel.isInputValid.observe(viewLifecycleOwner, Observer {
-            if (it) enableSubmitButton()
-            else disableSubmitButton()
+            submitButton?.isEnabled = it
         })
     }
 
@@ -1547,8 +1546,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
 
     private fun subscribeToProductNameValidationFromNetwork() {
         observe(viewModel.productNameValidationFromNetwork) {
-            submitTextView?.show()
-            submitLoadingIndicator?.hide()
+            submitButton?.isLoading = false
             when(it) {
                 is Success -> {
                     val isError = it.data.isNotBlank()
@@ -1787,18 +1785,6 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     private fun disableWholesale() {
         productWholeSaleSwitch?.isChecked = false
         viewModel.shouldUpdateVariant = false
-    }
-
-    private fun enableSubmitButton() {
-        submitButton?.isClickable = true
-        submitButton?.setBackgroundResource(R.drawable.product_add_edit_rect_green_solid)
-        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)) }
-    }
-
-    private fun disableSubmitButton() {
-        submitButton?.isClickable = false
-        submitButton?.setBackgroundResource(R.drawable.rect_grey_solid)
-        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)) }
     }
 
     private fun showDurationUnitOption() {
