@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.domain.interactor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.home.beranda.di.module.query.DeclineWATFRecommendation
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.DeclineRechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.usecase.RequestParams
@@ -49,7 +50,7 @@ class DeclineRechargeRecommendationUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): DeclineRechargeRecommendation {
         graphqlUseCase.clearCache()
-        graphqlUseCase.setGraphqlQuery(query)
+        graphqlUseCase.setGraphqlQuery(DeclineWATFRecommendation())
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground().response
     }
