@@ -824,7 +824,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         val toBeRemovedPromoCodes = getToBeClearedPromoCodes(validateUsePromoRequest, bboPromoCodes)
 
         PromoCheckoutIdlingResource.increment()
-        clearCacheAutoApplyStackUseCase.setParams("", toBeRemovedPromoCodes, validateUsePromoRequest.cartType == PARAM_OCC_MULTI)
+        clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, toBeRemovedPromoCodes, validateUsePromoRequest.cartType == PARAM_OCC_MULTI)
         clearCacheAutoApplyStackUseCase.execute(
                 onSuccess = {
                     PromoCheckoutIdlingResource.decrement()
