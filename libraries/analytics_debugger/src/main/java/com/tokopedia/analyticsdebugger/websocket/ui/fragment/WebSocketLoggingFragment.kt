@@ -64,7 +64,6 @@ class WebSocketLoggingFragment: Fragment() {
      */
     private lateinit var rvWebsocketLog: RecyclerView
     private lateinit var etSearchWebSocketLog: SearchInputView
-    private lateinit var tvNoData: Typography
     private lateinit var pbLoading: ProgressBar
     private lateinit var swipeRefresh: SwipeRefreshLayout
 
@@ -109,7 +108,6 @@ class WebSocketLoggingFragment: Fragment() {
     private fun initView(view: View) {
         rvWebsocketLog = view.findViewById(R.id.rv_websocket_log)
         etSearchWebSocketLog = view.findViewById(R.id.et_websocket_log_search)
-        tvNoData = view.findViewById(R.id.tv_websocket_log_no_data)
         pbLoading = view.findViewById(R.id.pb_loading)
         swipeRefresh = view.findViewById(R.id.swipe_refresh_web_socket_log)
 
@@ -171,9 +169,6 @@ class WebSocketLoggingFragment: Fragment() {
      */
     private fun updateList(webSocketLogList: List<WebSocketLog>) {
         adapter.submitList(webSocketLogList)
-
-        if(webSocketLogList.isEmpty()) tvNoData.visible()
-        else tvNoData.hide()
     }
 
     private fun updateLoading(loading: Boolean) {

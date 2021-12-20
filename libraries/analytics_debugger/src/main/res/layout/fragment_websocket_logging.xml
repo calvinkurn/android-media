@@ -44,15 +44,4 @@
         app:layout_constraintTop_toBottomOf="@id/et_websocket_log_search"
         />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_websocket_log_no_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/websocket_log_no_data"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_websocket_log_search" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
