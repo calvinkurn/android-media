@@ -5,7 +5,7 @@ import com.tokopedia.analyticsdebugger.websocket.data.local.entity.WebSocketLogE
  * Created By : Jonathan Darwin on December 01, 2021
  */
 interface WebSocketLogRespository {
-    suspend fun get(query: String = ""): List<WebSocketLogEntity>
+    suspend fun get(query: String = "", page: Int, offset: Int): List<WebSocketLogEntity>
 
     suspend fun insert(webSocketLogEntity: WebSocketLogEntity)
 

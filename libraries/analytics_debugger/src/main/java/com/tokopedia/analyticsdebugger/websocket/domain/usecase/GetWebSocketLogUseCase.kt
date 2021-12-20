@@ -15,13 +15,17 @@ class GetWebSocketLogUseCase @Inject constructor(
 ): UseCase<List<WebSocketLogUiModel>>() {
 
     private var query: String = ""
+    private var page: Int = 0
+    private var offset: Int = 0
 
-    fun setParam(query: String) {
+    fun setParam(query: String, page: Int, offset: Int) {
         this.query = "%$query%"
+        this.page = page
+        this.offset = offset
     }
 
     override suspend fun executeOnBackground(): List<WebSocketLogUiModel> {
-        val response = webSocketLogRepository.get(query)
+        val response = webSocketLogRepository.get(query, page, offset)
         return webSocketLogMapper.mapEntityToUiModel(response)
     }
 }

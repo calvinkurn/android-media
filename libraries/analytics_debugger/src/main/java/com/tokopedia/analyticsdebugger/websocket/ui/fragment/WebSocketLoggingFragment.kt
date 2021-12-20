@@ -13,7 +13,7 @@ import com.tokopedia.analyticsdebugger.websocket.ui.adapter.WebSocketLogAdapter
  */
 class WebSocketLoggingFragment: Fragment() {
 
-    private val adapter: WebSocketLogAdapter by lazy { WebSocketLogAdapter() }
+    private val adapter: WebSocketLogAdapter by lazy(LazyThreadSafetyMode.NONE) { WebSocketLogAdapter() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
