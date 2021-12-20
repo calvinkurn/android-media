@@ -66,10 +66,6 @@ class ShopPageBuyerAnalyticTest {
 
     @Before
     fun beforeTest() {
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                RollenceKey.AB_TEST_SHOP_NEW_HOME_TAB,
-                RollenceKey.AB_TEST_SHOP_NEW_HOME_TAB
-        )
         gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse(ShopPageMockResponseConfig())
         InstrumentationAuthHelper.loginInstrumentationTestUser1()

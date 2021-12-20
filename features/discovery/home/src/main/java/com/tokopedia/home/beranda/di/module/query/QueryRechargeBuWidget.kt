@@ -10,6 +10,9 @@ internal object QueryRechargeBuWidget {
     const val RECHARGE_BU_WIDGET_QUERY = "query getBUWidget(\$widgetSource: WidgetSource!) {\n" +
             "                getBUWidget(widgetSource: \$widgetSource) {\n" +
             "                  title\n" +
+            "                  subtitle\n" +
+            "                  start_time\n" +
+            "                  end_time\n" +
             "                  media_url\n" +
             "                  app_link\n" +
             "                  web_link\n" +
@@ -51,6 +54,10 @@ internal object QueryRechargeBuWidget {
             "                      category_id\n" +
             "                      category_name\n" +
             "                    }\n" +
+            "                    sold_percentage_value\n" +
+            "                    sold_percentage_label\n" +
+            "                    sold_percentage_label_color\n" +
+            "                    show_sold_percentage\n" +
             "                  }\n" +
             "                }\n" +
             "            }"
