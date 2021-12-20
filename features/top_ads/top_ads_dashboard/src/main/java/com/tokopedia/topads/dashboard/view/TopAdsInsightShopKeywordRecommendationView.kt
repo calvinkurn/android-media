@@ -1,9 +1,11 @@
 package com.tokopedia.topads.dashboard.view
 
 import android.content.Context
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants
 import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordData
@@ -17,6 +19,7 @@ class TopAdsInsightShopKeywordRecommendationView(
     private val lstnr: (Int, Int) -> Unit
 ) : ConstraintLayout(context) {
 
+    private var recyclerViewKeyword: RecyclerView? = null
     private val mAdapter by lazy {
         TopAdsShopKeywordRecommendationAdapter.createInstance(
             recommendedKeywordData.recommendedKeywordDetails!!,
@@ -26,13 +29,20 @@ class TopAdsInsightShopKeywordRecommendationView(
 
     init {
         inflate(context, layout, this)
+        recyclerViewKeyword = findViewById(R.id.recyclerViewKeyword)
         initView()
         initRecyclerView()
         initListeners()
     }
 
     private fun initRecyclerView() {
-        with(recyclerViewKeyword) {
+        recyclerViewKeyword?.let {
+            it.adapter = mAdapter
+            it.layoutManager = LinearLayoutManager(context)
+            it.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        }
+
+        recyclerViewKeyword?.apply {
             adapter = mAdapter
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
@@ -40,7 +50,8 @@ class TopAdsInsightShopKeywordRecommendationView(
     }
 
     private fun keywordError(posi: Int) {
-        recyclerViewKeyword.scrollToPosition(posi)
+        Toast.makeText(context, resources.getString(R.string.error_bid_not_multiple_50), Toast.LENGTH_SHORT).show()
+        //recyclerViewKeyword?.layoutManager?.scrollToPosition(posi)
     }
 
     private fun onCheckBoxSelected(checked: Boolean) {

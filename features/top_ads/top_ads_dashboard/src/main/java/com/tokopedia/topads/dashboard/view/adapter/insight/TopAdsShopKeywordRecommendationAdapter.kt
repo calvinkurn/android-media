@@ -10,6 +10,7 @@ import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_CREATE
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordDetail
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsInsightShopKeywordViewHolder
+import kotlinx.android.synthetic.main.topads_insight_keyword_recomm_item.view.*
 
 class TopAdsShopKeywordRecommendationAdapter(
     private var list: MutableList<RecommendedKeywordDetail>,
@@ -35,7 +36,13 @@ class TopAdsShopKeywordRecommendationAdapter(
 
         holder.bindData(type)
 
-        holder.addListeners { checkBox, edtBid ->
+        with(holder.view) {
+            setOnClickListener {
+                holder.closeEditTextFee()
+            }
+            btnEditFee.setOnClickListener {
+                holder.openEditTextFee()
+            }
             checkBox.setOnClickListener {
                 onCheckBoxClicked(item, holder.adapterPosition,false)
             }

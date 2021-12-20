@@ -27,6 +27,7 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.insight.InsightAdObj
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightTabAdapter
+import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightShopKeywordRecommendationFragment.Companion.NOT_EXPANDED
 import com.tokopedia.topads.dashboard.view.fragment.insightbottomsheet.TopAdsInsightAdsTypeBottomSheet
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsInsightViewModel
@@ -362,6 +363,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
         (activity as? TopAdsDashboardActivity)?.toggleMultiActionButton(false)
         isAdTypeProdukSelected = produkSelected
+        TopAdsInsightShopKeywordRecommendationFragment.expandedPosi = NOT_EXPANDED
         setupSelectAdsTypeView(item)
     }
 

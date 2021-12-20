@@ -15,7 +15,7 @@ import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.topads_insight_keyword_recomm_item.view.*
 
-class TopAdsInsightShopKeywordViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+class TopAdsInsightShopKeywordViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
     private lateinit var item: RecommendedKeywordDetail
 
@@ -38,27 +38,17 @@ class TopAdsInsightShopKeywordViewHolder(private val view: View) : RecyclerView.
         )
     }
 
-    fun addListeners(lstr: (CheckboxUnify, TextFieldUnify) -> Unit) = with(view) {
-        btnEditFee.setOnClickListener {
-            openEditTextFee()
-        }
-        setOnClickListener {
-            closeEditTextFee()
-        }
-        lstr.invoke(checkBox, edtBid)
-    }
-
     fun updateRecommBudget(inputBudget: Int) = with(view.txtRecommendedBudget) {
         var isError = false
         text = if (inputBudget % 50 != 0) {
             isError = true
             resources.getString(R.string.error_bid_not_multiple_50)
-        } else if (inputBudget <= item.recommendedBid && inputBudget > item.minBid) {
+        } else if (inputBudget <= item.recommendedBid && inputBudget >= item.minBid) {
             String.format(
                 view.resources.getString(R.string.keyword_recommended_budget),
                 item.recommendedBid.toInt()
             )
-        } else if (inputBudget > item.recommendedBid && inputBudget < item.maxBid) {
+        } else if (inputBudget > item.recommendedBid && inputBudget <= item.maxBid) {
             view.resources.getString(R.string.biaya_optimal)
         } else if (inputBudget < item.minBid) {
             isError = true
@@ -76,7 +66,7 @@ class TopAdsInsightShopKeywordViewHolder(private val view: View) : RecyclerView.
             setTextColor(resources.getColor(R.color.Unify_N700_68, null))
     }
 
-    private fun View.closeEditTextFee() {
+    fun closeEditTextFee() = with(view) {
         if (edtBid.visibility == View.VISIBLE) {
             txtSubTitle2Value.show()
             btnEditFee.show()
@@ -87,7 +77,7 @@ class TopAdsInsightShopKeywordViewHolder(private val view: View) : RecyclerView.
         }
     }
 
-    private fun View.openEditTextFee() {
+    fun openEditTextFee() = with(view){
         txtRecommendedBudget.show()
         txtSubTitle2Value.invisible()
         btnEditFee.invisible()
