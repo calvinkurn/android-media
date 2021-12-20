@@ -302,9 +302,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == REQUEST_CODE_LIVENESS) {
             if (kycRedirectionUrl == null)
-                Toast.makeText(this, "Callback from Liveness SDK -> url = null ", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Callback from Liveness SDK -> url = null ", Toast.LENGTH_SHORT).show();
             else 
-                Toast.makeText(this, "Callback from Liveness SDK -> url not null", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Callback from Liveness SDK -> url not null", Toast.LENGTH_SHORT).show();
 
             RouteManager.route(getActivity(), kycRedirectionUrl);
         }
@@ -781,9 +781,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             Intent intent  = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY, projectId);
             kycRedirectionUrl = uri.getQueryParameter(LIVENESS_REDIRECTION_PATH);
              if (kycRedirectionUrl == null)
-                Toast.makeText(this, "Start Liveness SDK -> url = null ", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Start Liveness SDK -> url = null ", Toast.LENGTH_SHORT).show();
             else 
-                Toast.makeText(this, "Start Liveness SDK -> url not null", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Start Liveness SDK -> url not null", Toast.LENGTH_SHORT).show();
             startActivityForResult(intent, REQUEST_CODE_LIVENESS);
             return true;
         }
