@@ -31,23 +31,6 @@ class DeclineRechargeRecommendationUseCase @Inject constructor(
 
     private var params: RequestParams = RequestParams.create()
 
-    //region query
-    private val query by lazy {
-        val request = "\$request"
-
-        """
-            mutation declineWATFRecommendation(
-              $request:rechargeDeclineAboveTheFoldRecommendationRequest!
-            ){
-              rechargeDeclineAboveTheFoldRecommendation(declineRequest:$request){
-                isError: IsError
-                message: Message
-              }
-            }
-        """.trimIndent()
-    }
-    //endregion
-
     override suspend fun executeOnBackground(): DeclineRechargeRecommendation {
         graphqlUseCase.clearCache()
         graphqlUseCase.setGraphqlQuery(DeclineWATFRecommendation())
