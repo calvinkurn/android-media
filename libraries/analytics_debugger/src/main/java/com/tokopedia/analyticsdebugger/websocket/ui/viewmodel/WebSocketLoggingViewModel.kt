@@ -3,6 +3,7 @@ package com.tokopedia.analyticsdebugger.websocket.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.websocket.domain.usecase.DeleteAllWebSocketLogUseCase
 import com.tokopedia.analyticsdebugger.websocket.domain.usecase.GetWebSocketLogUseCase
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLog
@@ -10,6 +11,7 @@ import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogPlaceHol
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.action.WebSocketLoggingAction
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.event.WebSocketLoggingEvent
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.helper.UiString
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.state.WebSocketLogPagination
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.state.WebSocketLoggingState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -75,7 +77,8 @@ class WebSocketLoggingViewModel @Inject constructor(
                 )
             }
         }) {
-            emitMessage(it.message ?: "Something went wrong.")
+            setLoading(false)
+            emitErrorMessage(it.message)
         }
     }
 
@@ -105,7 +108,8 @@ class WebSocketLoggingViewModel @Inject constructor(
                 )
             }
         }) {
-            emitMessage(it.message ?: "Something went wrong.")
+            setLoading(false)
+            emitErrorMessage(it.message)
         }
     }
 
@@ -113,11 +117,10 @@ class WebSocketLoggingViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             deleteAllWebSocketLogUseCase.executeOnBackground()
 
-            emitMessage("Delete All Logs Success")
-
-            handleSearch("")
+            emitMessage(UiString.Resource(R.string.websocket_log_delete_all_message))
+            _uiEvent.emit(WebSocketLoggingEvent.DeleteAllLogEvent)
         }) {
-            emitMessage(it.message ?: "Something went wrong.")
+            emitErrorMessage(it.message)
         }
     }
 
@@ -132,10 +135,18 @@ class WebSocketLoggingViewModel @Inject constructor(
         _loading.value = isLoading
     }
 
-    private suspend fun emitMessage(message: String) {
+    private suspend fun emitErrorMessage(message: String?) {
+        emitMessage(
+            message?.let {
+                UiString.Text(it)
+            } ?: UiString.Resource(R.string.websocket_log_default_error_message)
+        )
+    }
+
+    private suspend fun emitMessage(uiString: UiString) {
         _uiEvent.emit(
             WebSocketLoggingEvent.ShowInfoEvent(
-                message = message
+                uiString = uiString
             )
         )
     }

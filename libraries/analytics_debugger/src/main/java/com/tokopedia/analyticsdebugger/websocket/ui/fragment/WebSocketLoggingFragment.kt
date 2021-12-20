@@ -22,6 +22,7 @@ import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLog
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.action.WebSocketLoggingAction
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.event.WebSocketLoggingEvent
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.helper.UiString
 import com.tokopedia.analyticsdebugger.websocket.ui.viewmodel.WebSocketLoggingViewModel
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.hide
@@ -139,7 +140,17 @@ class WebSocketLoggingFragment: Fragment() {
             viewModel.uiEvent.collect {
                 when(it) {
                     is WebSocketLoggingEvent.ShowInfoEvent -> {
-                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                        when(it.uiString) {
+                            is UiString.Resource -> {
+                                Toast.makeText(requireContext(), getString(it.uiString.idRes), Toast.LENGTH_SHORT).show()
+                            }
+                            is UiString.Text -> {
+                                Toast.makeText(requireContext(), it.uiString.message, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                    WebSocketLoggingEvent.DeleteAllLogEvent -> {
+                        viewModel.submitAction(WebSocketLoggingAction.SearchLogAction(""))
                     }
                 }
             }
