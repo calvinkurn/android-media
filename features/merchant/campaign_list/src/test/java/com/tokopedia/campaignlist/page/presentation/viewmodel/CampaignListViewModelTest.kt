@@ -664,7 +664,7 @@ class CampaignListViewModelTest {
     @Test
     fun `When overload product count is negative number, should return 0 as overload product count`() {
         val expected = 0
-        val totalProduct = 3
+        val totalProduct = 2
 
         val actual = viewModel.calculateOverloadProductCount(totalProduct)
 
