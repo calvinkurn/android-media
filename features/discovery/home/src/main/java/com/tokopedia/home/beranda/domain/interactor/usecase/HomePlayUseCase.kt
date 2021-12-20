@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.data.usecase
+package com.tokopedia.home.beranda.domain.interactor.usecase
 
 interface HomePlayUseCase {
     fun onBannerTotalViewUpdated()

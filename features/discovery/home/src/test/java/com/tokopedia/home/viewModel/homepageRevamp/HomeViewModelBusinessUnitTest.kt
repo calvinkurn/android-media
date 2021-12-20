@@ -3,7 +3,7 @@ package com.tokopedia.home.viewModel.homepageRevamp
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.home.beranda.data.model.HomeWidget
-import com.tokopedia.home.beranda.data.usecase.HomeDynamicChannelUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetBusinessUnitDataUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetBusinessWidgetTab
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel

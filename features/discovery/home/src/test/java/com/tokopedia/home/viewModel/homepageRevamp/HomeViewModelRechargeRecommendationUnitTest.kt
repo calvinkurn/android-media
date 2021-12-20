@@ -1,7 +1,7 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.home.beranda.data.usecase.HomeDynamicChannelUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.interactor.DeclineRechargeRecommendationUseCase
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeRechargeRecommendationRepository
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.DeclineRechargeRecommendation

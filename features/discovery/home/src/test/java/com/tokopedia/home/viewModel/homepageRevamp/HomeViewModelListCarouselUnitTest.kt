@@ -3,7 +3,7 @@ package com.tokopedia.home.viewModel.homepageRevamp
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
-import com.tokopedia.home.beranda.data.usecase.HomeDynamicChannelUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.gql.CloseChannel
 import com.tokopedia.home.beranda.domain.interactor.CloseChannelUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetDynamicChannelsUseCase

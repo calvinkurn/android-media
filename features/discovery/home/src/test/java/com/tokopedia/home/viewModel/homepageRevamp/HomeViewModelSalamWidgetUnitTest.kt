@@ -1,7 +1,7 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.home.beranda.data.usecase.HomeDynamicChannelUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.interactor.DeclineSalamWIdgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeSalamWidgetRepository
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget

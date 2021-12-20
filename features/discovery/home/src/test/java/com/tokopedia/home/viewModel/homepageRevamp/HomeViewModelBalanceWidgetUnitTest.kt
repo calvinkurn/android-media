@@ -6,7 +6,7 @@ import com.tokopedia.common_wallet.pendingcashback.view.PendingCashback
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerList
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
-import com.tokopedia.home.beranda.data.usecase.HomeDynamicChannelUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetCoroutinePendingCashbackUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetCoroutineWalletBalanceUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsListDataUseCase
