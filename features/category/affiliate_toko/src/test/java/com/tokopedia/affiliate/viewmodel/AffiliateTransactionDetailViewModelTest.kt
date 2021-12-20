@@ -62,14 +62,12 @@ class AffiliateTransactionDetailViewModelTest{
     @Test
     fun getAffiliateCommissionException() {
 
-        val exception = "Validate Data Exception"
-        coEvery { affiliateCommissionDetailUserCase.affiliateCommissionDetails(any()) } throws Exception(exception)
+        val exception = java.lang.Exception("Validate Data Exception")
+        coEvery { affiliateCommissionDetailUserCase.affiliateCommissionDetails(any()) } throws exception
 
-        affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(
-            AffiliateRecommendedProductFragment.BOUGHT_IDENTIFIER, PAGE_ZERO
-        )
+        affiliateTransactionDetailViewModel.affiliateCommission("16d106d0-38ad-43b3-9245-99cab79eb09f")
 
-        assertEquals(affiliateRecommendedProductViewModel.getErrorMessage().value, exception)
+        assertEquals(affiliateTransactionDetailViewModel.getErrorMessage().value, exception)
 
     }
 }
