@@ -1,4 +1,4 @@
-package com.tokopedia.core.app;
+package com.tokopedia.app.common;
 
 import android.os.Build;
 
@@ -6,15 +6,14 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.tokopedia.abstraction.common.di.module.AppModule;
+import com.tokopedia.app.common.di.CommonAppComponent;
+//import com.tokopedia.app.common.di.DaggerCommonAppComponent;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.DaggerAppComponent;
-import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.CoreNetworkApplication;
-import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
@@ -34,8 +33,8 @@ import java.io.File;
 public abstract class MainApplication extends CoreNetworkApplication {
 
     private LocationUtils locationUtils;
-    private DaggerAppComponent.Builder daggerBuilder;
-    private AppComponent appComponent;
+//    private DaggerCommonAppComponent.Builder daggerBuilder;
+    private CommonAppComponent appComponent;
     private UserSession userSession;
     protected RemoteConfig remoteConfig;
     private String MAINAPP_ADDGAIDTO_BRANCH = "android_addgaid_to_branch";
@@ -78,9 +77,9 @@ public abstract class MainApplication extends CoreNetworkApplication {
         userSession = new UserSession(this);
         initCrashlytics();
 
-        daggerBuilder = DaggerAppComponent.builder()
-                .appModule(new AppModule(this));
-        getApplicationComponent().inject(this);
+//        daggerBuilder = DaggerCommonAppComponent.builder()
+//                .appModule(new AppModule(this));
+//        getApplicationComponent().inject(this);
 
         initBranch();
         NotificationUtils.setNotificationChannel(this);
@@ -147,13 +146,13 @@ public abstract class MainApplication extends CoreNetworkApplication {
         }
     }
 
-    public AppComponent getApplicationComponent() {
+    public CommonAppComponent getApplicationComponent() {
         return getAppComponent();
     }
 
-    public AppComponent getAppComponent() {
+    public CommonAppComponent getAppComponent() {
         if (appComponent == null) {
-            appComponent = daggerBuilder.build();
+//            appComponent = daggerBuilder.build();
         }
         return appComponent;
     }

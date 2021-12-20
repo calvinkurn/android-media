@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.google.gson.Gson;
-import com.tokopedia.core.app.MainApplication;
+//import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.di.module.UtilModule;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
@@ -35,61 +35,62 @@ import retrofit2.Retrofit;
 @ApplicationScope
 @Component(modules = {
         AppModule.class,
-        UtilModule.class
+//        UtilModule.class
 })
 public interface AppComponent {
 
-    void inject(MainApplication mainApplication);
+//    void inject(MainApplication mainApplication);
 
-    @ApplicationContext
-    Context context();
-
-    @AceQualifier
-    Retrofit aceRetrofit();
-
-    @MerlinQualifier
-    Retrofit merlinRetrofit();
-
-    @TomeQualifier
-    Retrofit tomeRetrofit();
-
-    @MojitoQualifier
-    Retrofit mojitoRetrofit();
-
-    @HadesQualifier
-    Retrofit hadesRetrofit();
-
-    @YoutubeQualifier
-    Retrofit youtubeRetrofit();
-
-    @DefaultAuthWithErrorHandler
-    OkHttpClient okHttpClient();
-
-    @ResolutionQualifier
-    Retrofit resolutionRetrofit();
-
-    @GoldMerchantQualifier
-    Retrofit goldMerchantRetrofit();
-
-    @CartQualifier
-    Retrofit cartRetrofit();
-
-    Retrofit.Builder retrofitBuilder();
-
-    Gson gson();
-
-    @WsV4Qualifier
-    Retrofit baseDomainRetrofit();
-
-    @WsV4QualifierWithErrorHander
-    Retrofit baseDomainWithErrorHandlerRetrofit();
-
-    ChuckerInterceptor ChuckerInterceptor();
-
-    GCMHandler gcmHandler();
-
-    BearerInterceptor bearerInterceptor();
-
-    FingerprintInterceptor fingerprintInterceptor();
+//    @ApplicationContext
+//    Context context();
+//
+//    @AceQualifier
+//    Retrofit aceRetrofit();
+//
+//    @MerlinQualifier
+//    Retrofit merlinRetrofit();
+//
+//    @TomeQualifier
+//    Retrofit tomeRetrofit();
+//
+//    @MojitoQualifier
+//    Retrofit mojitoRetrofit();
+//
+//    @HadesQualifier
+//    Retrofit hadesRetrofit();
+//
+//    @YoutubeQualifier
+//    Retrofit youtubeRetrofit();
+//
+//    @DefaultAuthWithErrorHandler
+//    OkHttpClient okHttpClient();
+//
+//    @ResolutionQualifier
+//    Retrofit resolutionRetrofit();
+//
+//    @GoldMerchantQualifier
+//    Retrofit goldMerchantRetrofit();
+//
+//    @CartQualifier
+//    Retrofit cartRetrofit();
+//
+//    Retrofit.Builder retrofitBuilder();
+//
+//    Gson gson();
+//
+//    @WsV4Qualifier
+//    Retrofit baseDomainRetrofit();
+//
+//    @WsV4QualifierWithErrorHander
+//    Retrofit baseDomainWithErrorHandlerRetrofit();
+//
+//    // checked (removed from OMS, no needed in new CommonAppComponent
+//    ChuckerInterceptor ChuckerInterceptor();
+//
+//    GCMHandler gcmHandler();
+//
+//    BearerInterceptor bearerInterceptor();
+//
+//    FingerprintInterceptor fingerprintInterceptor();
 
 }

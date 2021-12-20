@@ -29,6 +29,21 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
     implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.playServicesDependencies.base
+    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.playServicesDependencies.location
+    implementation rootProject.ext.firebase.messaging
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    implementation projectOrAar(rootProject.ext.features.tkpdcore)
+
+    implementation rootProject.ext.debugToolsDependencies.chuck
+
+
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 }

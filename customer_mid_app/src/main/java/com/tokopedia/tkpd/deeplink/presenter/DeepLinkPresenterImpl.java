@@ -40,7 +40,7 @@ import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
 import com.tokopedia.shop.common.domain.interactor.GqlGetShopIdByDomainUseCaseRx;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
-import com.tokopedia.tkpd.deeplink.di.component.DaggerDeeplinkComponent;
+//import com.tokopedia.tkpd.deeplink.di.component.DaggerDeeplinkComponent;
 import com.tokopedia.tkpd.deeplink.di.component.DeeplinkComponent;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.utils.URLParser;
@@ -118,10 +118,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void initInjection(DeepLinkActivity activity) {
-        DeeplinkComponent component = DaggerDeeplinkComponent.builder()
-                .baseAppComponent(((BaseMainApplication) activity.getApplication()).getBaseAppComponent())
-                .build();
-        component.inject(this);
+//        DeeplinkComponent component = DaggerDeeplinkComponent.builder()
+//                .baseAppComponent(((BaseMainApplication) activity.getApplication()).getBaseAppComponent())
+//                .build();
+//        component.inject(this);
     }
 
     public void processDeepLinkAction(Activity activity, Uri uriData, boolean isAmp) {

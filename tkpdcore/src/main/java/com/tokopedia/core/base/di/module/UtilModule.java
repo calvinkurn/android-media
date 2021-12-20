@@ -2,7 +2,7 @@ package com.tokopedia.core.base.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.gcm.GCMHandler;
 
 import dagger.Module;
