@@ -7,7 +7,7 @@ import com.tokopedia.home.beranda.di.module.query.QueryWalletBalance.WALLET_BALA
 @GqlQuery(WALLET_BALANCE_QUERY_NAME, WALLET_BALANCE_QUERY)
 internal object QueryWalletBalance {
     const val WALLET_BALANCE_QUERY_NAME = "WalletBalanceQuery"
-    const val WALLET_BALANCE_QUERY: String = "{ queryWalletBalance() {\n" +
+    const val WALLET_BALANCE_QUERY: String = "query WalletBalance() {\n" +
             "  wallet(isGetTopup:true) {\n" +
             "    linked\n" +
             "    balance\n" +
@@ -40,6 +40,5 @@ internal object QueryWalletBalance {
             "    topup_applink\n" +
             "    topup_limit\n" +
             "  }\n" +
-            " }" +
-            "}"
+            " }"
 }
