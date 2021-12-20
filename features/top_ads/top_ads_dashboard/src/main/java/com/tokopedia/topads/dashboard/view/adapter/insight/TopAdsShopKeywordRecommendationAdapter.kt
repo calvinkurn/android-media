@@ -16,7 +16,7 @@ class TopAdsShopKeywordRecommendationAdapter(
     private var list: MutableList<RecommendedKeywordDetail>,
     private val type: Int,
     private val lstnr: (Int) -> Unit,
-    private val error: (Int) -> Unit
+    private val error: (RecommendedKeywordDetail) -> Unit
 ) : RecyclerView.Adapter<TopAdsInsightShopKeywordViewHolder>() {
 
     var selectedItemsCount = list.size
@@ -44,7 +44,7 @@ class TopAdsShopKeywordRecommendationAdapter(
                 holder.openEditTextFee()
             }
             checkBox.setOnClickListener {
-                onCheckBoxClicked(item, holder.adapterPosition,false)
+                onCheckBoxClicked(item, holder.adapterPosition, false)
             }
             edtBid.textFieldInput.afterTextChanged {
                 val inputBudget = it.toIntOrZero()
@@ -54,12 +54,12 @@ class TopAdsShopKeywordRecommendationAdapter(
         }
     }
 
-    private fun onCheckBoxClicked(item: RecommendedKeywordDetail, index: Int,isError: Boolean) {
+    private fun onCheckBoxClicked(item: RecommendedKeywordDetail, index: Int, isError: Boolean) {
         item.isChecked = !item.isChecked
         if (item.isChecked) selectedItemsCount++ else selectedItemsCount--
         lstnr.invoke(selectedItemsCount)
         notifyItemChanged(index)
-        if(isError) error.invoke(index)
+        if (isError) error.invoke(list[index])
     }
 
     fun getSelectedKeywords(): MutableMap<Pair<Int, String>, MutableList<TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation>>? {
@@ -68,7 +68,7 @@ class TopAdsShopKeywordRecommendationAdapter(
         list.forEachIndexed { index, it ->
             if (it.isChecked) {
                 if (it.isError) {
-                    onCheckBoxClicked(it, index,true)
+                    onCheckBoxClicked(it, index, true)
                     return null
                 }
 
@@ -113,8 +113,8 @@ class TopAdsShopKeywordRecommendationAdapter(
             list: MutableList<RecommendedKeywordDetail>,
             type: Int,
             lstnr: (Int) -> Unit,
-            error: (Int) -> Unit
-        ) = TopAdsShopKeywordRecommendationAdapter(list, type, lstnr,error)
+            error: (RecommendedKeywordDetail) -> Unit
+        ) = TopAdsShopKeywordRecommendationAdapter(list, type, lstnr, error)
     }
 
 }

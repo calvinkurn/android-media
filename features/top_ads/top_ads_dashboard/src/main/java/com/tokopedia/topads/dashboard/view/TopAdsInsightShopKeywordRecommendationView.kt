@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants
 import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordData
+import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordDetail
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsShopKeywordRecommendationAdapter
 import kotlinx.android.synthetic.main.topads_insight_keywords_layout.view.*
 
@@ -49,9 +50,10 @@ class TopAdsInsightShopKeywordRecommendationView(
         }
     }
 
-    private fun keywordError(posi: Int) {
-        Toast.makeText(context, resources.getString(R.string.error_bid_not_multiple_50), Toast.LENGTH_SHORT).show()
-        //recyclerViewKeyword?.layoutManager?.scrollToPosition(posi)
+    private fun keywordError(item: RecommendedKeywordDetail) {
+        if (item.isError && item.errorMessage != null) {
+            Toast.makeText(context, item.errorMessage, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun onCheckBoxSelected(checked: Boolean) {

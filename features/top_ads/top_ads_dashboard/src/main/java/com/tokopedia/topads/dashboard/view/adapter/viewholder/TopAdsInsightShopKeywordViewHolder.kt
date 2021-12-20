@@ -40,7 +40,7 @@ class TopAdsInsightShopKeywordViewHolder(val view: View) : RecyclerView.ViewHold
 
     fun updateRecommBudget(inputBudget: Int) = with(view.txtRecommendedBudget) {
         var isError = false
-        text = if (inputBudget % 50 != 0) {
+        val message = if (inputBudget % 50 != 0) {
             isError = true
             resources.getString(R.string.error_bid_not_multiple_50)
         } else if (inputBudget <= item.recommendedBid && inputBudget >= item.minBid) {
@@ -59,11 +59,16 @@ class TopAdsInsightShopKeywordViewHolder(val view: View) : RecyclerView.ViewHold
         } else {
             ""
         }
+
+        text = message
         item.isError = isError
-        if (isError)
+        if (isError) {
             setTextColor(resources.getColor(R.color.Unify_R600, null))
-        else
+            item.errorMessage = message
+        } else {
             setTextColor(resources.getColor(R.color.Unify_N700_68, null))
+            item.errorMessage = null
+        }
     }
 
     fun closeEditTextFee() = with(view) {
@@ -77,7 +82,7 @@ class TopAdsInsightShopKeywordViewHolder(val view: View) : RecyclerView.ViewHold
         }
     }
 
-    fun openEditTextFee() = with(view){
+    fun openEditTextFee() = with(view) {
         txtRecommendedBudget.show()
         txtSubTitle2Value.invisible()
         btnEditFee.invisible()
@@ -115,7 +120,7 @@ class TopAdsInsightShopKeywordViewHolder(val view: View) : RecyclerView.ViewHold
             }
         }
         updateRecommBudget(item.priceBid)
-        if(item.isError) txtRecommendedBudget.show() else txtRecommendedBudget.hide()
+        if (item.isError) txtRecommendedBudget.show() else txtRecommendedBudget.hide()
     }
 }
 

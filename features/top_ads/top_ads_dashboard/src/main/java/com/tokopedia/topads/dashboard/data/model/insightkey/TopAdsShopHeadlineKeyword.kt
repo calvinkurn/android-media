@@ -72,6 +72,7 @@ data class RecommendedKeywordDetail(
     var isChecked: Boolean = true
     var priceBid: Int = 0
     var isError: Boolean = false
+    var errorMessage: String? = null
 
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
