@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.data_explorer.R
 import com.tokopedia.data_explorer.db_explorer.presentation.databases.DbExplorerActivity
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_data_explorer_layout.*
 
 class DataExplorerFragment : BaseDaggerFragment() {
@@ -31,6 +32,7 @@ class DataExplorerFragment : BaseDaggerFragment() {
             startActivity(intent)
         }
         sharePrefCard.setOnClickListener {
+            Toaster.build(sharePrefCard, "Not just winter this is coming soon too :D", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
             // @Todo Add your Activity here
             //val intent = Intent(context, SharedPref::class.java)
             //startActivity(intent)
