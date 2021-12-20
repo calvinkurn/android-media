@@ -409,7 +409,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 setPadding(getDimens(R.dimen.hotel_6dp), getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1),getDimens(R.dimen.hotel_6dp), getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1))
                 val params: LinearLayout.LayoutParams =
                     LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                params.setMargins(0, 0, getDimens(R.dimen.hotel_6dp), 0)
+                params.setMargins(IMAGE_COUNTER_ZERO, IMAGE_COUNTER_ZERO, getDimens(R.dimen.hotel_6dp), IMAGE_COUNTER_ZERO)
                 layoutParams = params
             }
             binding?.hotelRatingContainer?.addView(textView)
