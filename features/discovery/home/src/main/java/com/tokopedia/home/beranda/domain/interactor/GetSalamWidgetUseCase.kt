@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.domain.interactor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.home.beranda.di.module.query.SalamWidgetQuery
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.UseCase
@@ -25,29 +26,9 @@ class GetSalamWidgetUseCase @Inject constructor(
         const val NULL_RESPONSE = "null response"
     }
 
-    //region query
-    private val query by lazy {
-        """query salamWidget{
-                salamWidget{
-                     ID
-                     mainText
-                     SubText
-                     AppLink
-                     Link
-                     IconURL
-                     Title
-                     BackgroundColor
-                     ButtonText
-                  }
-            }
-        """.trimIndent()
-    }
-    //endregion
-
-
     override suspend fun executeOnBackground(): SalamWidget {
         graphqlUseCase.clearCache()
-        graphqlUseCase.setGraphqlQuery(query)
+        graphqlUseCase.setGraphqlQuery(SalamWidgetQuery())
         val response = graphqlUseCase.executeOnBackground()
         return if (response != null) response
         else throw (MessageErrorException(NULL_RESPONSE))
