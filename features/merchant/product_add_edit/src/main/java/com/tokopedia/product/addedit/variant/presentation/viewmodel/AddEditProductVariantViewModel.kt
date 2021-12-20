@@ -33,6 +33,7 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_COUNT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
+import com.tokopedia.product.addedit.variant.presentation.extension.getValueOrDefault
 import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -89,20 +90,14 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
         addSource(mSelectedVariantUnitValuesLevel1) {
-            val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty()
-                .orTrue()
-            val isVariantUnitValuesLevel2Empty = mSelectedVariantUnitValuesLevel2.value?.isEmpty()
-                .orTrue()
-            this.value = isInputValid(isVariantUnitValuesLevel1Empty, isVariantUnitValuesLevel2Empty,
-                isSingleVariantTypeIsSelected)
+            val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty().orTrue()
+            val isVariantUnitValuesLevel2Empty = mSelectedVariantUnitValuesLevel2.value?.isEmpty().orTrue()
+            this.value = isInputValid(isVariantUnitValuesLevel1Empty, isVariantUnitValuesLevel2Empty, isSingleVariantTypeIsSelected)
         }
         addSource(mSelectedVariantUnitValuesLevel2) {
-            val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty()
-                .orTrue()
-            val isVariantUnitValuesLevel2Empty = mSelectedVariantUnitValuesLevel2.value?.isEmpty()
-                .orTrue()
-            this.value = isInputValid(isVariantUnitValuesLevel1Empty, isVariantUnitValuesLevel2Empty,
-                isSingleVariantTypeIsSelected)
+            val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty().orTrue()
+            val isVariantUnitValuesLevel2Empty = mSelectedVariantUnitValuesLevel2.value?.isEmpty().orTrue()
+            this.value = isInputValid(isVariantUnitValuesLevel1Empty, isVariantUnitValuesLevel2Empty, isSingleVariantTypeIsSelected)
         }
     }
     val isInputValid: LiveData<Boolean> get() = mIsInputValid
@@ -301,7 +296,7 @@ class AddEditProductVariantViewModel @Inject constructor(
             }
         }
 
-        productInputModel.value?.variantInputModel?.apply {
+        productInputModel.getValueOrDefault().variantInputModel.apply {
             products = mapProducts(selectedVariantDetails, variantPhotos, sortedVariantUnitValuesMap)
             selections =  mapSelections(selectedVariantDetails, sortedVariantUnitValuesMap, sortedSelectedVariantUnitMap)
             sizecharts = mapSizechart(variantSizechart.value)
@@ -434,7 +429,7 @@ class AddEditProductVariantViewModel @Inject constructor(
         selectedVariantUnitMap = HashMap()
         mIsVariantPhotosVisible.value = false
 
-        productInputModel.value?.detailInputModel?.categoryId?.let {
+        productInputModel.getValueOrDefault().detailInputModel.categoryId.let {
             val categoryId = it.toIntOrNull()
             categoryId?.run { getVariantCategoryCombination(this, selections) }
         }
@@ -555,7 +550,7 @@ class AddEditProductVariantViewModel @Inject constructor(
         return if (productVariant == null) {
             // condition if adding new product variant (product variant combination not listed in products)
             ProductVariantInputModel(
-                    price = productInputModel.value?.detailInputModel?.price.orZero(),
+                    price = productInputModel.getValueOrDefault().detailInputModel.price,
                     stock = MIN_PRODUCT_STOCK_LIMIT,
                     pictures = variantPicture,
                     combination = combination,

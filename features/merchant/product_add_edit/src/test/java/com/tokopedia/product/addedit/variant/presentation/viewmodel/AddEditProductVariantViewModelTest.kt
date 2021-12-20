@@ -25,6 +25,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertFalse
 
 @ExperimentalCoroutinesApi
 class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFixture() {
@@ -82,9 +83,14 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
                 VariantPhoto(variantDetailTest2.units[0].unitValues[3].value, "/url/to/file2.jpg")
         )
 
+        val colorVariantDetailTest1 = variantDetailsTest[0]
+        val colorVariantDetailTest2 = variantDetailsTest[1].apply { variantID = 1 }
+        val colorVariantDetailsTest = listOf(colorVariantDetailTest1, colorVariantDetailTest2)
+
         spiedViewModel.updateSelectedVariantUnitValuesMap(0, selectedUnitValuesLevel1)
         spiedViewModel.updateSelectedVariantUnitValuesMap(1, selectedUnitValuesLevel2)
-        spiedViewModel.setSelectedVariantDetails(variantDetailsTest)
+        spiedViewModel.updateSelectedVariantUnitMap(0, Unit(variantUnitID=62, unitName="Volume"))
+        spiedViewModel.setSelectedVariantDetails(colorVariantDetailsTest)
         spiedViewModel.isOldVariantData = true
         spiedViewModel.updateVariantInputModel(variantPhotos)
 
@@ -191,6 +197,13 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         // check clickedVariantPhotoItemPosition is changed
         viewModel.clickedVariantPhotoItemPosition = 999
         assert(viewModel.clickedVariantPhotoItemPosition == 999)
+    }
+
+    @Test
+    fun `When selectedUnitValuesLevel2 null Expect change correct isInputValid validity`() {
+        viewModel.isSingleVariantTypeIsSelected = false
+        viewModel.updateSelectedVariantUnitValuesLevel2(mutableListOf())
+        assertFalse(viewModel.isInputValid.getOrAwaitValue())
     }
 
     @Test
@@ -320,12 +333,6 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
     }
 
     @Test
-    fun `When updateSelectedVariantUnitMap Expect correct changes`() {
-        viewModel.updateSelectedVariantUnitMap(0, Unit(variantUnitID=62, unitName="Volume"))
-        assert(viewModel.getSelectedVariantUnit(0).variantUnitID == 62)
-    }
-
-    @Test
     fun `When extract variantInputModel is success Expect correct extracted values`() {
         viewModel.productInputModel.value = ProductInputModel()
 
@@ -436,6 +443,14 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         coVerify (exactly = 0) {
             getVariantCategoryCombinationUseCase.executeOnBackground()
         }
+    }
+
+    @Test
+    fun `getCategoryVariantCombination function failed should return Fail object`() = runBlocking {
+        viewModel.getVariantCategoryCombination(1, listOf())
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        assert(viewModel.getVariantCategoryCombinationResult.getOrAwaitValue() is Fail)
     }
 
     @Test
@@ -896,6 +911,12 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
 
         val result2 = viewModel.callPrivateFunc("mapVariantPhoto", VariantPhoto("", "")) as List<*>
         assert(result2.isEmpty())
+    }
+
+    @Test
+    fun `isEditMode should return false if productId is invalid`() {
+        viewModel.productInputModel.value = ProductInputModel(productId = -1)
+        assertFalse(viewModel.isEditMode.getOrAwaitValue())
     }
 
     @Test
