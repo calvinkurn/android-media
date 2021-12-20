@@ -203,7 +203,8 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
             affiliatePortfolioViewModel.affiliatePortfolioData.value?.forEach { channelItem ->
                 (channelItem as? AffiliatePortfolioUrlModel)?.let {
                     if(channelItem.portfolioItm.text?.isNotEmpty() == true){
-                        arrayListOfChannels.add(OnboardAffiliateRequest.OnboardAffiliateChannelRequest(channelItem.portfolioItm.serviceFormat,channelItem.portfolioItm.text))
+                        arrayListOfChannels.add(OnboardAffiliateRequest.OnboardAffiliateChannelRequest(channelItem.portfolioItm.serviceFormat
+                                ,channelItem.portfolioItm.id,channelItem.portfolioItm.text))
                     }
                 }
             }
