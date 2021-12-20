@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.common.analytics.CampaignListTracker
 import com.tokopedia.campaignlist.common.constant.CampaignStatusIdTypeDef
+import com.tokopedia.campaignlist.common.constant.ShopTypeDef
 import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorData
 import com.tokopedia.campaignlist.common.di.DaggerCampaignListComponent
 import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase
@@ -95,6 +96,9 @@ class CampaignListFragment : BaseDaggerFragment(),
         const val INDEX_TWO = 2
         const val INDEX_THREE = 3
         const val INDEX_FOUR = 4
+        const val POWER_MERCHANT = "Power Merchant"
+        const val OFFICIAL_STORE = "Official Store"
+        const val POWER_MERCHANT_PRO = "Power Merchant PRO"
     }
 
     override fun getScreenName(): String {
@@ -302,14 +306,18 @@ class CampaignListFragment : BaseDaggerFragment(),
                     feature = SHARE
             )
             val _totalProducts = productData.size
-            val _isOngoing = if (campaignData.statusId == CampaignStatusIdTypeDef.BERLANGSUNG) 1 else 0
+            val _isOngoing = if (validateIsOngoingCampaign(merchantBannerData)) 1 else 0
 
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.CAMPAIGN_NAME , value = campaignData.name)
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.CAMPAIGN_INFO , value = campaignData.discountPercentageText)
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.SHOP_LOGO , value = shopData.logo)
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.SHOP_NAME , value = shopData.name)
-            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.BADGE , value = shopData.badge.Title)
-            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.DATE , value = merchantBannerData.formattedSharingEndDate)
+            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.BADGE , value = validateShopType(shopData.badge.Title))
+            addImageGeneratorData(
+                    key = ImageGeneratorConstants.ImageGeneratorKeys.DATE ,
+                    value = if (validateIsOngoingCampaign(merchantBannerData))
+                        merchantBannerData.formattedSharingStartDate else merchantBannerData.formattedSharingEndDate
+            )
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.ONGOING , value = _isOngoing.toString())
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCTS_COUNT , value = _totalProducts.toString())
             addImageGeneratorData(
@@ -363,6 +371,19 @@ class CampaignListFragment : BaseDaggerFragment(),
                 addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_4_PRICE_AFTER , value = _discountedPrice)
                 addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_4_DISCOUNT , value = _discount)
             }
+        }
+    }
+
+    private fun validateIsOngoingCampaign(merchantBannerData: GetMerchantCampaignBannerGeneratorData): Boolean {
+        return merchantBannerData.campaign.statusId == CampaignStatusIdTypeDef.BERLANGSUNG
+    }
+
+    private fun validateShopType(shopType: String): String {
+        return when (shopType) {
+            POWER_MERCHANT -> ShopTypeDef.POWER_MERCHANT
+            POWER_MERCHANT_PRO -> ShopTypeDef.POWER_MERCHANT_PRO
+            OFFICIAL_STORE -> ShopTypeDef.OFFICIAL_STORE
+            else -> ShopTypeDef.REGULAR_MERCHANT // REGULAR MERCHANT
         }
     }
 
