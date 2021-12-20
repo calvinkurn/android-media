@@ -33,14 +33,14 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         const val ESTIMASI_TIDAK_TERSEDIA = "Estimasi tidak tersedia"
     }
 
-    fun bindData(data: LogisticPromoUiModel, listener: ShippingDurationAdapterListener?) {
+    fun bindData(data: LogisticPromoUiModel, listener: ShippingDurationAdapterListener?, isOcc: Boolean = false) {
         val formattedTitle = HtmlLinkHelper(itemView.context, data.freeShippingItemTitle).spannedString
         
         tvTitle.text = formattedTitle
         tvTitle.visibility = View.VISIBLE
         tvTitleExtra.visibility = View.GONE
 
-        if (!data.isBebasOngkirExtra) {
+        if (!data.isBebasOngkirExtra || !isOcc) {
             if (data.etaData.errorCode == 0 && data.etaData.textEta.isNotEmpty()) {
                 tvEta.visibility = View.VISIBLE
                 tvEta.text = data.etaData.textEta
