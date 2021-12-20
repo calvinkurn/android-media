@@ -12,4 +12,4 @@ data class WebSocketLogUiModel(
     val event: String,
     val message: String,
     val dateTime: String,
-): Serializable
+): WebSocketLog()

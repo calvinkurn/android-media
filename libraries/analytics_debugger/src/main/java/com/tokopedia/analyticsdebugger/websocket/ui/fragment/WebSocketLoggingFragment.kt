@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.websocket.di.DaggerWebSocketLoggingComponent
 import com.tokopedia.analyticsdebugger.websocket.ui.adapter.WebSocketLogAdapter
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLog
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.action.WebSocketLoggingAction
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.event.WebSocketLoggingEvent
@@ -168,8 +169,11 @@ class WebSocketLoggingFragment: Fragment() {
     /**
      * Update UI State
      */
-    private fun updateList(webSocketLogList: List<WebSocketLogUiModel>) {
+    private fun updateList(webSocketLogList: List<WebSocketLog>) {
         adapter.submitList(webSocketLogList)
+
+        if(webSocketLogList.isEmpty()) tvNoData.visible()
+        else tvNoData.hide()
     }
 
     private fun updateLoading(loading: Boolean) {

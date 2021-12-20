@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analyticsdebugger.websocket.domain.usecase.DeleteAllWebSocketLogUseCase
 import com.tokopedia.analyticsdebugger.websocket.domain.usecase.GetWebSocketLogUseCase
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLog
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogPlaceHolder
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.action.WebSocketLoggingAction
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.event.WebSocketLoggingEvent
@@ -58,7 +60,11 @@ class WebSocketLoggingViewModel @Inject constructor(
                 setLoading(true)
 
                 val newPage = 0
-                val webSocketLogList = getWebSocketLog(query, newPage)
+                val webSocketLogList: MutableList<WebSocketLog> = getWebSocketLog(query, newPage).toMutableList()
+
+                if(webSocketLogList.size == PAGINATION_LIMIT) {
+                    webSocketLogList += WebSocketLogPlaceHolder
+                }
 
                 setLoading(false)
                 _websocketLogPagination.value = _websocketLogPagination.value.copy(
@@ -83,11 +89,19 @@ class WebSocketLoggingViewModel @Inject constructor(
 
                 val webSocketLogNextList = getWebSocketLog(pagination.query, newPage)
 
+                val oldList: List<WebSocketLog> = pagination.webSocketLoggingList.filterIsInstance(WebSocketLogUiModel::class.java)
+                val newList = (oldList + webSocketLogNextList).toMutableList()
+
+                val isReachMax = webSocketLogNextList.size != PAGINATION_LIMIT
+                if(!isReachMax) {
+                    newList += WebSocketLogPlaceHolder
+                }
+
                 setLoading(false)
                 _websocketLogPagination.value = _websocketLogPagination.value.copy(
-                    webSocketLoggingList = pagination.webSocketLoggingList + webSocketLogNextList,
+                    webSocketLoggingList = newList,
                     page = newPage,
-                    isReachMax = webSocketLogNextList.isEmpty()
+                    isReachMax = isReachMax
                 )
             }
         }) {
