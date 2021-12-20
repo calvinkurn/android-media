@@ -41,6 +41,20 @@ class WebSocketLoggingFragment: Fragment() {
     private lateinit var viewModel: WebSocketLoggingViewModel
     private val adapter: WebSocketLogAdapter by lazy(LazyThreadSafetyMode.NONE) { WebSocketLogAdapter() }
     private val layoutManager = LinearLayoutManager(context)
+    private val scrollListener = object: RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            if(dy > 0) {
+                val totalItem = layoutManager.itemCount
+                val visibleItem = layoutManager.childCount
+                val pastVisibleItem = layoutManager.findFirstVisibleItemPosition()
+
+                if((visibleItem + pastVisibleItem) >= totalItem) {
+                    viewModel.submitAction(WebSocketLoggingAction.LoadNextPageAction)
+                }
+            }
+        }
+    }
 
     /**
      * View Attribute
@@ -51,6 +65,9 @@ class WebSocketLoggingFragment: Fragment() {
     private lateinit var pbLoading: ProgressBar
     private lateinit var swipeRefresh: SwipeRefreshLayout
 
+    /**
+     * Lifecycle
+     */
     override fun onAttach(context: Context) {
         inject()
         super.onAttach(context)
@@ -78,6 +95,14 @@ class WebSocketLoggingFragment: Fragment() {
         viewModel.submitAction(WebSocketLoggingAction.SearchLogAction(""))
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        rvWebsocketLog.removeOnScrollListener(scrollListener)
+    }
+
+    /**
+     * Initialization
+     */
     private fun initView(view: View) {
         rvWebsocketLog = view.findViewById(R.id.rv_websocket_log)
         etSearchWebSocketLog = view.findViewById(R.id.et_websocket_log_search)
@@ -109,30 +134,7 @@ class WebSocketLoggingFragment: Fragment() {
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            rvWebsocketLog.addOnScrollListener(object: RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    if(dy > 0) {
-                        val totalItem = layoutManager.itemCount
-                        val visibleItem = layoutManager.childCount
-                        val pastVisibleItem = layoutManager.findFirstVisibleItemPosition()
-
-                        if((visibleItem + pastVisibleItem) >= totalItem) {
-                            viewModel.submitAction(WebSocketLoggingAction.LoadNextPageAction)
-                        }
-                    }
-                }
-            })
-        }
-    }
-
-    private fun inject() {
-        DaggerWebSocketLoggingComponent.builder()
-            .baseAppComponent(
-                (requireActivity().application as BaseMainApplication).baseAppComponent
-            )
-            .build()
+        rvWebsocketLog.addOnScrollListener(scrollListener)
     }
 
     /**
@@ -145,5 +147,17 @@ class WebSocketLoggingFragment: Fragment() {
     private fun updateLoading(loading: Boolean) {
         if(loading) pbLoading.visible()
         else pbLoading.hide()
+    }
+
+    /**
+     * Helper
+     */
+    private fun inject() {
+        DaggerWebSocketLoggingComponent.builder()
+            .baseAppComponent(
+                (requireActivity().application as BaseMainApplication).baseAppComponent
+            )
+            .build()
+            .inject(this)
     }
 }
