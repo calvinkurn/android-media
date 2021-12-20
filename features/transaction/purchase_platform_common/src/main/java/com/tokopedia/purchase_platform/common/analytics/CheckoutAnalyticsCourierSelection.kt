@@ -479,7 +479,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.VIEW_COURIER_IRIS,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
-                ConstantTransactionAnalytics.EventAction.VIEW_PROMO_MESSAGE,
+                "",
                 msg
         )
     }

@@ -1,10 +1,11 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.analytics
 
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventAction
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventLabel
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.CustomDimension
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.Key
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
@@ -17,6 +18,37 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
     companion object {
         val EVENT_NAME_VIEW = "view"
         val EVENT_NAME_CLICK = "click"
+    }
+
+    object EventAction {
+        const val CLICK_BUTTON_VERIFIKASI_NOMOR_HP = "click button verifikasi nomor HP promo page"
+        const val VIEW_AVAILABLE_PROMO_LIST = "view available promo list"
+        const val CLICK_PILIH_PROMO_RECOMMENDATION = "click pilih promo recommendation"
+        const val SELECT_KUPON = "select kupon"
+        const val DESELECT_KUPON = "deselect kupon"
+        const val CLICK_LIHAT_DETAIL_KUPON = "click lihat detail kupon"
+        const val CLICK_EXPAND_PROMO_LIST = "click expand promo list"
+        const val CLICK_REMOVE_PROMO_CODE = "click remove promo code"
+        const val CLICK_TERAPKAN_PROMO = "click terapkan promo"
+        const val SELECT_PROMO = "select promo"
+        const val DESELECT_PROMO = "deselect promo"
+        const val VIEW_POP_UP_SAVE_PROMO = "view pop up save promo"
+        const val CLICK_PAKAI_PROMO = "click pakai promo"
+        const val VIEW_ERROR_POP_UP = "view error pop up"
+        const val CLICK_COBA_LAGI = "click coba lagi"
+        const val CLICK_SIMPAN_PROMO_BARU = "click simpan promo baru"
+        const val CLICK_KELUAR_HALAMAN = "click keluar halaman"
+        const val CLICK_RESET_PROMO = "click reset promo"
+        const val CLICK_BELI_TANPA_PROMO = "click beli tanpa promo"
+        const val VIEW_PROMO_MESSAGE = "view promo message"
+        const val SELECT_PROMO_CODE_FROM_LAST_SEEN = "select promo code from Last Seen"
+        const val DISMISS_LAST_SEEN = "dismiss Last Seen"
+        const val CLICK_INPUT_FIELD = "click input field"
+        const val SHOW_LAST_SEEN_POP_UP = "show Last Seen pop-up"
+
+        // Revamp
+        const val CLICK_LIHAT_DETAIL_INELIGIBLE_COUPON = "click lihat detail ineligible kupon"
+
     }
 
     private fun sendEventByPage(page: Int,
@@ -357,4 +389,90 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         )
     }
 
+    // Promo BFI / Back Funnel Improvement (Revamp)
+
+    fun eventImpressionEligiblePromoSection(page: Int) {
+        /*
+        {
+          "event": "view_item",
+          "eventAction": "impression- eligible promo section",
+          "eventCategory": "courier selection",
+          "eventLabel": "{{promo_id}} - {{index}} - {{promo_amount}} - {{promo_type}} - {{total_sisa_coupon}}",
+          "businessUnit": "promo",
+          "currentSite": "tokopediamarketplace",
+          "promotions": [
+            {
+              "creative_name": "{creative_name}",
+              "creative_slot": "{position_index}",
+              "item_id": "{promo_id}",
+              "item_name": "{promo_name}"
+            }
+          ],
+          "userId": "{user_id}"
+        }
+        * */
+        val additionalData = HashMap<String, Any>()
+//        additionalData.put(ExtraKey.USER_ID, userId)
+
+        sendEventByPage(
+                page,
+                EVENT_NAME_CLICK,
+                "impression- eligible promo section",
+                "",
+                additionalData
+        )
+    }
+
+
+    // 12
+    fun eventClickPilihOnRecommendation(page: Int, promoCodes: List<String>, isCausingClash: Boolean) {
+        val additionalData = HashMap<String, Any>()
+        additionalData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO)
+        additionalData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+
+        val promoCodeStr = promoCodes.joinToString(", ")
+        sendEventByPage(
+                page,
+                EVENT_NAME_CLICK,
+                EventAction.CLICK_PILIH_PROMO_RECOMMENDATION,
+                "$promoCodeStr - $isCausingClash",
+                additionalData
+        )
+    }
+
+    // 13
+    fun eventClickLihatDetailOnIneligibleCoupon(page: Int, promoId: String, ineligibleMessage: String) {
+        val additionalData = HashMap<String, Any>()
+        additionalData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO)
+        additionalData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+
+        sendEventByPage(
+                page,
+                EVENT_NAME_CLICK,
+                EventAction.CLICK_LIHAT_DETAIL_INELIGIBLE_COUPON,
+                "$promoId - $ineligibleMessage",
+                additionalData
+        )
+    }
+
+    // 14
+    /*
+    {
+      "event": "view_item",
+      "eventAction": "impression - ineligible promo section",
+      "eventCategory": "cart",
+      "eventLabel": "{{promo_id}} - {{message of ineligible reason}}",
+      "businessUnit": "promo",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "{creative_name}",
+          "creative_slot": "{position_index}",
+          "item_id": "{promo_id}",
+          "item_name": "{promo_name}"
+        }
+      ],
+      "userId": "{user_id}"
+    }
+    * */
 }
