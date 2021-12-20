@@ -2511,6 +2511,10 @@ class NewShopPageFragment :
         shopPageFab?.hide()
     }
 
+    fun getSelectedFragmentInstance(): Fragment? {
+        return viewPagerAdapter?.getRegisteredFragment(viewPager?.currentItem.orZero())
+    }
+
     override fun permissionAction(action: String, label: String) {
         shopPageTracking?.clickUniversalSharingPermission(action, label, shopId, userId)
     }

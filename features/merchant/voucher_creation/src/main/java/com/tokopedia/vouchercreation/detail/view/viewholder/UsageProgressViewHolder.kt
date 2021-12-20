@@ -19,13 +19,14 @@ class UsageProgressViewHolder(
 ) : AbstractViewHolder<UsageProgressUiModel>(itemView) {
 
     companion object {
+        private const val PERCENT = 100
         @LayoutRes
         val RES_LAYOUT = R.layout.item_mvc_usage_progress
     }
 
     override fun bind(element: UsageProgressUiModel) {
         with(itemView) {
-            val progressBarValue = (element.confirmedQuota / element.quota) * 100
+            val progressBarValue = (element.confirmedQuota / element.quota) * PERCENT
             progressMvcUsage?.setValue(progressBarValue, true)
             progressMvcUsage?.progressBarHeight = context.pxToDp(6).toInt()
 
