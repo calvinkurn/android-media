@@ -143,7 +143,7 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                     clashing_infos {
                                         code
                                         message
-//                                        icon
+                                        icon
                                     }
                                     currency_details_str
                                     coachmark {
