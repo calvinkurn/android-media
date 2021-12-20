@@ -10,6 +10,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.adapter.TokoNowCategoryGridAdapter
@@ -17,6 +18,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.adapter.differ.TokoNowCategoryGridDiffer
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryGridAdapterTypeFactory
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeCategoryGridBinding
 import com.tokopedia.tokopedianow.databinding.PartialTokopedianowViewStubDcTitleBinding
 import com.tokopedia.unifycomponents.LocalLoad
@@ -44,6 +46,7 @@ class TokoNowCategoryGridViewHolder(
     private var rvCategory: RecyclerView? = null
     private var categoryShimmering: View? = null
     private var categoryHeader: RelativeLayout? = null
+    private var localCacheModel: LocalCacheModel? = null
 
     private val adapter by lazy { TokoNowCategoryGridAdapter(TokoNowCategoryGridAdapterTypeFactory(this), TokoNowCategoryGridDiffer()) }
 
@@ -64,6 +67,7 @@ class TokoNowCategoryGridViewHolder(
     }
 
     private fun initView() {
+        localCacheModel = ChooseAddressUtils.getLocalizingAddressData(itemView.context)
         binding?.vsTitle?.setOnInflateListener { _, inflated ->
             stubBinding = PartialTokopedianowViewStubDcTitleBinding.bind(inflated)
         }
@@ -86,7 +90,6 @@ class TokoNowCategoryGridViewHolder(
     private fun showCategoryGrid(data: TokoNowCategoryGridUiModel) {
         tvTitle?.text = if (data.title.isEmpty()) itemView.context.getString(R.string.tokopedianow_repurchase_category_grid_title) else data.title
         tvSeeAll?.setOnClickListener {
-            val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(itemView.context)
             RouteManager.route(itemView.context, ApplinkConstInternalTokopediaNow.CATEGORY_LIST, localCacheModel?.warehouse_id)
             listener?.onAllCategoryClicked()
         }
@@ -96,7 +99,16 @@ class TokoNowCategoryGridViewHolder(
             layoutManager = GridLayoutManager(context, GRID_SPAN_COUNT, RecyclerView.HORIZONTAL, false)
         }
 
-        adapter.submitList(data.categoryList.orEmpty())
+        val newCategoryList = mutableListOf<TokoNowCategoryItemUiModel>()
+        newCategoryList.add(
+            TokoNowCategoryItemUiModel(
+                warehouseId = localCacheModel?.warehouse_id.orEmpty(),
+                appLink = ApplinkConstInternalTokopediaNow.CATEGORY_LIST,
+                isFirstCategory = true
+            )
+        )
+        newCategoryList.addAll(data.categoryList.orEmpty())
+        adapter.submitList(newCategoryList)
 
         categoryShimmering?.hide()
         llCategory?.hide()
