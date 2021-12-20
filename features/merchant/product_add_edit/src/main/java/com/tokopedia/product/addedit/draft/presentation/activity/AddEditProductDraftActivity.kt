@@ -9,13 +9,14 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.TabletAdaptiveActivity
 import com.tokopedia.product.addedit.draft.di.AddEditProductDraftComponent
 import com.tokopedia.product.addedit.draft.di.AddEditProductDraftModule
 import com.tokopedia.product.addedit.draft.di.DaggerAddEditProductDraftComponent
 import com.tokopedia.product.addedit.draft.presentation.fragment.AddEditProductDraftFragment
 
 
-open class AddEditProductDraftActivity : BaseSimpleActivity(), HasComponent<AddEditProductDraftComponent> {
+open class AddEditProductDraftActivity : TabletAdaptiveActivity(), HasComponent<AddEditProductDraftComponent> {
 
     private var toolbarDraft: HeaderUnify? = null
     private val addEditProductDraftFragment: AddEditProductDraftFragment by lazy {

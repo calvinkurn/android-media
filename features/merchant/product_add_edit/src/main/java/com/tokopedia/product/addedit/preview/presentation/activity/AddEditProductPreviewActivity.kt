@@ -8,11 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.TabletAdaptiveActivity
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_DRAFT_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_IS_PRODUCT_DUPLICATE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_PRODUCT_ID
@@ -24,11 +24,8 @@ import com.tokopedia.product.addedit.tracking.ProductAddNotifTracking
 import com.tokopedia.product.addedit.tracking.ProductEditNotifTracking
 import com.tokopedia.shop.common.util.sellerfeedbackutil.SellerFeedbackUtil
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.utils.accelerometer.orientation.AccelerometerOrientationListener
-import com.tokopedia.utils.view.TabletModeUtil.getAccelerometerRotationStatus
-import com.tokopedia.utils.view.TabletModeUtil.setOrientationToLandscape
 
-open class AddEditProductPreviewActivity : BaseSimpleActivity() {
+open class AddEditProductPreviewActivity: TabletAdaptiveActivity() {
 
     companion object {
         fun createInstance(context: Context?, draftId: String? = null): Intent {
@@ -58,13 +55,6 @@ open class AddEditProductPreviewActivity : BaseSimpleActivity() {
     private var draftId = ""
     private var isDuplicate = false
     private var mode = ""
-    private val accelerometerOrientationListener: AccelerometerOrientationListener by lazy {
-        AccelerometerOrientationListener(contentResolver) {
-            if (DeviceScreenInfo.isTablet(this)) {
-                setOrientationToLandscape(it)
-            }
-        }
-    }
 
     override fun getNewFragment(): Fragment? = null
 
@@ -104,7 +94,6 @@ open class AddEditProductPreviewActivity : BaseSimpleActivity() {
         }
         super.onCreate(savedInstanceState)
 
-        setupOrientation()
         updateActivityToolbar()
         setupNavController()
         setupScreenShootGlobalFeedback()
@@ -113,26 +102,6 @@ open class AddEditProductPreviewActivity : BaseSimpleActivity() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         if (DeviceScreenInfo.isTablet(this)) recreate()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (DeviceScreenInfo.isTablet(this)) {
-            accelerometerOrientationListener.register()
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        if (DeviceScreenInfo.isTablet(this)) {
-            accelerometerOrientationListener.unregister()
-        }
-    }
-
-    private fun setupOrientation() {
-        if (DeviceScreenInfo.isTablet(this)) {
-            setOrientationToLandscape(getAccelerometerRotationStatus(contentResolver))
-        }
     }
 
     private fun setupNavController() {
