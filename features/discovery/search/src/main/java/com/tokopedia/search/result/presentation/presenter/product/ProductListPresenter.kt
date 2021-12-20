@@ -1080,16 +1080,20 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun getFirstProductPositionWithBOELabel(list: List<Visitable<*>>): Int {
-        if (productList.isEmpty()) return -1
+        return if(productList.isEmpty()){
+            -1
+        } else {
+            val product = productList.firstOrNull {
+                (it as ProductItemDataView).hasLabelGroupFulfillment
+            }
 
-        val product = productList.firstOrNull {
-            (it as ProductItemDataView).hasLabelGroupFulfillment
+            if(product == null){
+                -1
+            } else {
+                val firstProductPositionWithBOELabel = list.indexOf(product)
+                max(firstProductPositionWithBOELabel, -1)
+            }
         }
-
-        product ?: return -1
-
-        val firstProductPositionWithBOELabel = list.indexOf(product)
-        return max(firstProductPositionWithBOELabel, -1)
     }
 
     private fun addPageTitle(list: MutableList<Visitable<*>>) {
@@ -1162,11 +1166,14 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun shouldShowCpmShop(cpmData: CpmData?): Boolean {
-        cpmData ?: return false
-        val cpm = cpmData.cpm ?: return false
+        return if(cpmData == null){
+            false
+        } else {
+            val cpm = cpmData.cpm
 
-        return if (isViewWillRenderCpmShop(cpm)) true
-        else isViewWillRenderCpmDigital(cpm)
+            if (isViewWillRenderCpmShop(cpm)) true
+            else isViewWillRenderCpmDigital(cpm)
+        }
     }
 
     private fun isViewWillRenderCpmShop(cpm: Cpm): Boolean {
