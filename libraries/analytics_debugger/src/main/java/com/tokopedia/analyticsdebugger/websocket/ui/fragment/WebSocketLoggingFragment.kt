@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.view.*
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -37,8 +39,10 @@ class WebSocketLoggingFragment: Fragment() {
     lateinit var viewModelFactory: ViewModelFactory
 
     private lateinit var viewModel: WebSocketLoggingViewModel
+
     private val adapter: WebSocketLogAdapter by lazy(LazyThreadSafetyMode.NONE) { WebSocketLogAdapter() }
-    private val layoutManager = LinearLayoutManager(context)
+    private lateinit var layoutManager: LinearLayoutManager
+
     private val scrollListener = object: RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
@@ -108,6 +112,8 @@ class WebSocketLoggingFragment: Fragment() {
         pbLoading = view.findViewById(R.id.pb_loading)
         swipeRefresh = view.findViewById(R.id.swipe_refresh_web_socket_log)
 
+        layoutManager = LinearLayoutManager(context)
+
         rvWebsocketLog.apply {
             layoutManager = this@WebSocketLoggingFragment.layoutManager
             adapter = this@WebSocketLoggingFragment.adapter
@@ -145,6 +151,17 @@ class WebSocketLoggingFragment: Fragment() {
         swipeRefresh.setOnRefreshListener {
             viewModel.submitAction(WebSocketLoggingAction.SearchLogAction(etSearchWebSocketLog.searchText))
             swipeRefresh.isRefreshing = false
+        }
+
+        adapter.setOnClickListener {
+            val bundle = bundleOf(
+                WebSocketDetailLoggingFragment.EXTRA_TITLE to it.event,
+                WebSocketDetailLoggingFragment.EXTRA_DATE_TIME to it.dateTime,
+                WebSocketDetailLoggingFragment.EXTRA_CHANNEL_ID to it.generalInfo.channelId,
+                WebSocketDetailLoggingFragment.EXTRA_GC_TOKEN to it.generalInfo.gcToken,
+                WebSocketDetailLoggingFragment.EXTRA_MESSAGE to it.message
+            )
+            findNavController().navigate(R.id.action_webSocketLoggingFragment_to_webSocketDetailLoggingFragment, bundle)
         }
     }
 
