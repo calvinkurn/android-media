@@ -1679,10 +1679,10 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
 
     override fun clickQuestLihatButton(source: Int) {
         val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = Tracker.Event.EVENT_CLICK
-        map[Tracker.Constants.EVENT_CATEGORY] = "discovery page - ${Tracker.Category.CATEGORY_QUEST_WIDGET}"
-        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_LIHAT_SEMUA
-        map[Tracker.Constants.EVENT_LABEL] = Tracker.Label.DISCO_PAGE
+        map[Tracker.Constants.EVENT] = QUEST_EVENT_CLICK
+        map[Tracker.Constants.EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE - $CATEGORY_QUEST_WIDGET"
+        map[Tracker.Constants.EVENT_ACTION] = CLICK_LIHAT_SEMUA
+        map[Tracker.Constants.EVENT_LABEL] = DISCO_SLUG
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[PAGE_PATH] = removedDashPageIdentifier
@@ -1692,10 +1692,10 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
 
     override fun viewQuestWidget(source: Int, id: String) {
         val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = Tracker.Event.EVENT_VIEW
-        map[Tracker.Constants.EVENT_CATEGORY] = "discovery page - ${Tracker.Category.CATEGORY_QUEST_WIDGET}"
-        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.VIEW_QUEST_WIDGET
-        map[Tracker.Constants.EVENT_LABEL] = "${Tracker.Label.DISCO_PAGE}_$id"
+        map[Tracker.Constants.EVENT] = QUEST_EVENT_VIEW
+        map[Tracker.Constants.EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE - $CATEGORY_QUEST_WIDGET"
+        map[Tracker.Constants.EVENT_ACTION] = VIEW_QUEST_WIDGET
+        map[Tracker.Constants.EVENT_LABEL] = "${DISCO_SLUG}_$id"
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[PAGE_PATH] = removedDashPageIdentifier
@@ -1705,10 +1705,10 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
 
     override fun clickQuestCard(source: Int, id: String) {
         val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = Tracker.Event.EVENT_CLICK
-        map[Tracker.Constants.EVENT_CATEGORY] = "discovery page - ${Tracker.Category.CATEGORY_QUEST_WIDGET}"
-        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_QUEST_WIDGET
-        map[Tracker.Constants.EVENT_LABEL] = "${Tracker.Label.DISCO_PAGE}_$id"
+        map[Tracker.Constants.EVENT] = QUEST_EVENT_CLICK
+        map[Tracker.Constants.EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE - $CATEGORY_QUEST_WIDGET"
+        map[Tracker.Constants.EVENT_ACTION] = CLICK_QUEST_WIDGET
+        map[Tracker.Constants.EVENT_LABEL] = "${DISCO_SLUG}_$id"
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[PAGE_PATH] = removedDashPageIdentifier
@@ -1718,15 +1718,15 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
 
     override fun slideQuestCard(source: Int, direction: String) {
         val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = Tracker.Event.EVENT_CLICK
-        map[Tracker.Constants.EVENT_CATEGORY] = "discovery page - ${Tracker.Category.CATEGORY_QUEST_WIDGET}"
-        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.SLIDE_QUEST_WIDGET
-        map[Tracker.Constants.EVENT_LABEL] = "${Tracker.Label.DISCO_PAGE}_$direction"
+        map[Tracker.Constants.EVENT] = QUEST_EVENT_CLICK
+        map[Tracker.Constants.EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE - $CATEGORY_QUEST_WIDGET"
+        map[Tracker.Constants.EVENT_ACTION] = SLIDE_QUEST_WIDGET
+        map[Tracker.Constants.EVENT_LABEL] = "${DISCO_SLUG}_$direction"
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[PAGE_PATH] = removedDashPageIdentifier
         map[PAGE_TYPE] = pageType
-        Tracker.getTracker().sendGeneralEvent(map)
+        getTracker().sendGeneralEvent(map)
 
     }
 }
