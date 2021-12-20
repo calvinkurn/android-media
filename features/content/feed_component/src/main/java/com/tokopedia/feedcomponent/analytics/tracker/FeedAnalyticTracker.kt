@@ -461,7 +461,7 @@ class FeedAnalyticTracker
                         KEY_EVENT_ACTION to String.format(
                                 FORMAT_THREE_PARAM,
                                 CLICK,
-                                "wishlist",
+                                if (type == TYPE_FEED_X_CARD_PRODUCT_TOPADS) "add to wishlist" else "wishlist",
                                 getPostType(type, isFollowed)
                         ),
                         finalLabel,

@@ -30,11 +30,10 @@ import com.tokopedia.autocompletecomponent.suggestion.di.DaggerSuggestionCompone
 import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionComponent
 import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionViewListenerModule
 import com.tokopedia.autocompletecomponent.util.UrlParamHelper
+import com.tokopedia.autocompletecomponent.util.addComponentId
 import com.tokopedia.autocompletecomponent.util.getWithDefault
+import com.tokopedia.autocompletecomponent.util.addQueryIfEmpty
 import com.tokopedia.autocompletecomponent.util.removeKeys
-import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_CANCEL_SEARCH
-import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.INITIAL_STATE_CANCEL_SEARCH
-import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.BASE_SRP_APPLINK
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HINT
 import com.tokopedia.discovery.common.constants.SearchConstant
@@ -43,7 +42,6 @@ import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.UrlParamUtils.isTokoNow
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
@@ -220,30 +218,22 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     override fun onQueryTextSubmit(searchParameter: SearchParameter): Boolean {
         val searchParameterCopy = SearchParameter(searchParameter)
 
-        sendTrackingSubmitQuery(searchParameterCopy)
+        if (getQueryOrHint(searchParameterCopy).isEmpty()) return true
+
+        val searchResultApplink = createSearchResultApplink(searchParameterCopy)
+
+        sendTrackingSubmitQuery(searchParameterCopy, searchResultApplink)
         clearFocusSearchView()
-        moveToSearchPage(searchParameterCopy)
+        moveToSearchPage(searchResultApplink)
 
         return true
     }
 
-    private fun sendTrackingSubmitQuery(searchParameter: SearchParameter) {
+    private fun getQueryOrHint(searchParameter: SearchParameter): String {
         val query = searchParameter.getSearchQuery()
-        val parameter = searchParameter.getSearchParameterMap()
 
-        if (isTokoNow(parameter))
-            autoCompleteTracking.eventClickSubmitTokoNow(query)
-        else
-            autoCompleteTracking.eventClickSubmit(query)
-    }
-
-    private fun clearFocusSearchView() {
-        searchBarView?.clearFocus()
-    }
-
-    private fun moveToSearchPage(searchParameter: SearchParameter) {
-        RouteManager.route(this, createSearchResultApplink(searchParameter))
-        finish()
+        return if (query.isNotEmpty()) query
+        else searchParameter.get(HINT)
     }
 
     private fun createSearchResultApplink(searchParameter: SearchParameter): String {
@@ -253,9 +243,56 @@ open class BaseAutoCompleteActivity: BaseActivity(),
             ApplinkConstInternalDiscovery.SEARCH_RESULT
         )
 
-        parameter.removeKeys(BASE_SRP_APPLINK, HINT)
+        val modifiedParameter = parameter.toMutableMap().apply {
+            addComponentId()
+            addQueryIfEmpty()
+            removeKeys(BASE_SRP_APPLINK, HINT)
+        }
 
-        return "$searchResultApplink?${UrlParamHelper.generateUrlParamString(parameter)}"
+        return "$searchResultApplink?${UrlParamHelper.generateUrlParamString(modifiedParameter)}"
+    }
+
+    private fun sendTrackingSubmitQuery(
+        searchParameter: SearchParameter,
+        searchResultApplink: String,
+    ) {
+        val query = searchParameter.getSearchQuery()
+        val queryOrHint = getQueryOrHint(searchParameter)
+        val parameter = searchParameter.getSearchParameterMap()
+        val pageSource = Dimension90Utils.getDimension90(parameter)
+        val isInitialState = query.isEmpty()
+        val fallback = { trackEventManualSearch(parameter, queryOrHint) }
+
+        if (isInitialState)
+            autoCompleteTracking.eventClickSubmitInitialState(
+                queryOrHint,
+                pageSource,
+                searchResultApplink,
+                fallback,
+            )
+        else
+            autoCompleteTracking.eventClickSubmitAutoComplete(
+                queryOrHint,
+                pageSource,
+                searchResultApplink,
+                fallback,
+            )
+    }
+
+    private fun trackEventManualSearch(parameter: Map<String, Any>, keyword: String) {
+        if (isTokoNow(parameter))
+            autoCompleteTracking.eventClickSubmitTokoNow(keyword)
+        else
+            autoCompleteTracking.eventClickSubmit(keyword)
+    }
+
+    private fun clearFocusSearchView() {
+        searchBarView?.clearFocus()
+    }
+
+    private fun moveToSearchPage(applink: String) {
+        RouteManager.route(this, applink)
+        finish()
     }
 
     override fun onQueryTextChange(searchParameter: SearchParameter) {
@@ -321,17 +358,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
 
         val query = searchParameter.getSearchQuery()
         val pageSource = Dimension90Utils.getDimension90(searchParameter.getSearchParameterMap())
-        val componentId = getCancelSearchComponentId(query)
-        val analytics = TrackApp.getInstance().gtm
 
-        searchComponentTracking(
-            keyword = query,
-            componentId = componentId,
-            dimension90 = pageSource,
-        ).clickOtherAction(analytics)
+        autoCompleteTracking.eventCancelSearch(query, pageSource)
     }
-
-    private fun getCancelSearchComponentId(query: String) =
-        if (query.isEmpty()) INITIAL_STATE_CANCEL_SEARCH
-        else AUTO_COMPLETE_CANCEL_SEARCH
 }

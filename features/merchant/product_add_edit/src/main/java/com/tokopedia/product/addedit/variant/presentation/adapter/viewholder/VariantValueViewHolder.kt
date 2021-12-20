@@ -2,21 +2,27 @@ package com.tokopedia.product.addedit.variant.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.item_variant_value.view.*
+import com.tokopedia.product.addedit.R
+import com.tokopedia.unifycomponents.ChipsUnify
 
-class VariantValueViewHolder(itemView: View, removeButtonClickListener: OnRemoveButtonClickListener) : RecyclerView.ViewHolder(itemView) {
+class VariantValueViewHolder(
+    itemView: View,
+    removeButtonClickListener: OnRemoveButtonClickListener
+) : RecyclerView.ViewHolder(itemView) {
+
+    private var chipsVariantValueName: ChipsUnify? = itemView.findViewById(R.id.chipsVariantValueName)
 
     interface OnRemoveButtonClickListener {
         fun onRemoveButtonClicked(position: Int)
     }
 
     init {
-        itemView.chipsVariantValueName.setOnRemoveListener {
+        chipsVariantValueName?.setOnRemoveListener {
             removeButtonClickListener.onRemoveButtonClicked(adapterPosition)
         }
     }
 
     fun bindData(text: String) {
-        itemView.chipsVariantValueName.chip_text.text = text
+        chipsVariantValueName?.chip_text?.text = text
     }
 }

@@ -372,6 +372,7 @@ open class DefaultMvcTrackerImpl:MvcTrackerImpl {
         eventAction: String,
         @MvcSource source: Int,
         userId: String?,
+        productPosition:Int,
         label: String
     ) {
         val map = mutableMapOf<String, Any>()

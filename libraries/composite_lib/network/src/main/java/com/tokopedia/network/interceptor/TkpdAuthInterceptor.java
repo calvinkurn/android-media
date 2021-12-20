@@ -63,7 +63,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String PARAM_BETA_TRUE = "1";
     private static final String RESPONSE_PARAM_TOKEN = "token";
     private static final String REQUEST_PARAM_REFRESH_TOKEN = "refresh_token";
-    public static final int BYTE_COUNT = 512;
+    public static final int BYTE_COUNT = 2048;
 
     public static final String PATH_REGEX = "(query)\\s*(\\w+)";
 

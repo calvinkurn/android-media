@@ -18,11 +18,4 @@ interface AttachProductContract {
         fun goToAddProduct(shopId: String)
         fun setShopName(shopName: String)
     }
-
-    interface Presenter {
-        fun loadProductData(query: String, shopId: String, page: Int, warehouseId: String)
-        fun updateCheckedList(products: List<AttachProductItemUiModel>)
-        fun resetCheckedList()
-        fun completeSelection(onFinish: (ArrayList<ResultProduct>) -> Unit)
-    }
 }

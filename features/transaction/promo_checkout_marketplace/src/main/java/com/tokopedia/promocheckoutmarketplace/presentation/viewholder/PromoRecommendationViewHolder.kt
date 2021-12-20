@@ -3,6 +3,7 @@ package com.tokopedia.promocheckoutmarketplace.presentation.viewholder
 import android.animation.Animator
 import android.view.View
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
@@ -15,6 +16,7 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import timber.log.Timber
 
 class PromoRecommendationViewHolder(private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoRecommendationBinding,
                                     private val listener: PromoCheckoutActionListener
@@ -26,6 +28,7 @@ class PromoRecommendationViewHolder(private val viewBinding: PromoCheckoutMarket
 
     override fun bind(element: PromoRecommendationUiModel) {
         with(viewBinding) {
+            setBackground()
             element.uiState.isInitialization = false
             if (element.uiState.isButtonSelectEnabled) {
                 lottieButtonApplyPromoRecommendation.progress = 0f
@@ -46,6 +49,14 @@ class PromoRecommendationViewHolder(private val viewBinding: PromoCheckoutMarket
             }
             val totalBenefitFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.uiData.promoTotalBenefit, false).removeDecimalSuffix()
             labelPromoRecommendationSubTitle.text = String.format(itemView.context.getString(R.string.promo_checkout_label_recommendation_benefit, totalBenefitFormatted))
+        }
+    }
+
+    private fun setBackground() {
+        try {
+            viewBinding.containerConstraint.setBackgroundResource(R.drawable.promo_checkout_marketplace_module_ic_promo_recommendation)
+        } catch (t: Throwable) {
+            Timber.d(t)
         }
     }
 

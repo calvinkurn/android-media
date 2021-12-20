@@ -21,11 +21,9 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
-import com.facebook.FacebookSdk;
 import com.google.firebase.FirebaseApp;
 import com.tokopedia.abstraction.newrelic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
-import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
@@ -124,7 +122,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     @Override
     public void onCreate() {
-        SplashScreenPerformanceTracker.isColdStart = true;
         initConfigValues();
         initializeSdk();
         initRemoteConfig();
@@ -158,7 +155,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             @NotNull
             @Override
             public Object execute() {
-                if (!checkPackageName()) {
+                if (!isPackageNameValid() || !isVersionNameValid()) {
                     killProcess(android.os.Process.myPid());
                 }
                 return true;
@@ -167,7 +164,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppPackageNameWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, this, true);
     }
 
-    private boolean checkPackageName() {
+    private boolean isPackageNameValid() {
         boolean packageNameValid = this.getPackageName().equals(getOriginalPackageApp());
         if (!packageNameValid) {
             Map<String, String> messageMap = new HashMap<>();
@@ -175,6 +172,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
         }
         return packageNameValid;
+    }
+
+    private boolean isVersionNameValid() {
+        String numberRegex = ".*[0-9].*";
+        return com.tokopedia.config.GlobalConfig.VERSION_NAME.matches(numberRegex) &&
+                com.tokopedia.config.GlobalConfig.RAW_VERSION_NAME.matches(numberRegex);
     }
 
     protected abstract String getOriginalPackageApp();
@@ -475,7 +478,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private void initializeSdk() {
         try {
             FirebaseApp.initializeApp(this);
-            FacebookSdk.sdkInitialize(this);
         } catch (Exception e) {
 
         }

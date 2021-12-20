@@ -19,6 +19,7 @@ import com.tokopedia.cart.databinding.ItemCartProductBundleBinding
 import com.tokopedia.cart.bundle.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.bundle.view.uimodel.CartItemHolderData
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.showSoftKeyboard
 import com.tokopedia.unifyprinciples.Typography
@@ -142,7 +143,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
                             renderActionWishlist(it, data)
                         }
                     }
-                    Action.ACTION_CHECKOUTBROWSER, Action.ACTION_SIMILARPRODUCT, Action.ACTION_FOLLOWSHOP -> {
+                    Action.ACTION_CHECKOUTBROWSER, Action.ACTION_SIMILARPRODUCT, Action.ACTION_FOLLOWSHOP, Action.ACTION_VERIFICATION -> {
                         when {
                             data.selectedUnavailableActionId == Action.ACTION_CHECKOUTBROWSER && it.id == Action.ACTION_CHECKOUTBROWSER -> {
                                 renderActionCheckoutInBrowser(it, data)
@@ -152,6 +153,9 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
                             }
                             data.selectedUnavailableActionId == Action.ACTION_FOLLOWSHOP && it.id == Action.ACTION_FOLLOWSHOP -> {
                                 renderFollowShop(it, data)
+                            }
+                            data.selectedUnavailableActionId == Action.ACTION_VERIFICATION && it.id == Action.ACTION_VERIFICATION -> {
+                                renderVerification(it, data)
                             }
                         }
                     }
@@ -542,9 +546,9 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
             textFieldNotes.show()
             textNotesChange.gone()
             textNotesFilled.gone()
-            textNotesFilled.text = element.notes
+            textNotesFilled.text = Utils.getHtmlFormat(element.notes)
             textFieldNotes.setCounter(element.maxNotesLength)
-            textFieldNotes.editText.setText(element.notes)
+            textFieldNotes.editText.setText(Utils.getHtmlFormat(element.notes))
             textFieldNotes.editText.setSelection(textFieldNotes.editText.length())
             textFieldNotes.editText.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -582,7 +586,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
     private fun renderProductNotesFilled(element: CartItemHolderData) {
         with(binding) {
             textFieldNotes.gone()
-            textNotesFilled.text = element.notes
+            textNotesFilled.text = Utils.getHtmlFormat(element.notes)
             setProductNotesWidth(element)
             textNotesFilled.show()
             textNotesChange.show()
@@ -729,11 +733,6 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
 
     private fun renderActionWishlist(action: Action, data: CartItemHolderData) {
         val textMoveToWishlist = binding.textMoveToWishlist
-        if (data.isError) {
-            textMoveToWishlist.gone()
-            return
-        }
-
         if (data.isWishlisted && action.id == Action.ACTION_WISHLISTED) {
             textMoveToWishlist.text = action.message
             textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
@@ -794,6 +793,19 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
                 }
             }
             setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+            show()
+        }
+    }
+
+    private fun renderVerification(action: Action, data: CartItemHolderData) {
+        binding.textProductUnavailableAction.apply {
+            text = action.message
+            setOnClickListener {
+                if (data.selectedUnavailableActionLink.isNotEmpty()) {
+                    actionListener?.onVerificationClicked(data.selectedUnavailableActionLink)
+                }
+            }
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             show()
         }
     }
