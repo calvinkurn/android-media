@@ -798,7 +798,7 @@ class PlayAnalytic(
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_EVENT_ACTION to "$KEY_TRACK_CLICK - laporkan on bottomsheet",
+                KEY_EVENT_ACTION to "$KEY_TRACK_CLICK - laporkan on bottom sheet",
                 KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                 KEY_EVENT_LABEL to "$mChannelId - $userId - $useValue",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
