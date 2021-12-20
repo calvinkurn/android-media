@@ -183,7 +183,6 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
                     onSaveSocialButtonClicked()
                 }
             }
-            setSelectedCheckBox()
         }else {
             (listVisitable as ArrayList<Visitable<AffiliateAdapterTypeFactory>>).add(AffiliateShareModel("WhatsApp", IconUnify.WHATSAPP,"whatsapp",12,sheetType,
                     "",false,isChecked = false, isLinkGenerationEnabled))
@@ -193,6 +192,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
 
         (listVisitable as ArrayList<Visitable<AffiliateAdapterTypeFactory>>).add(AffiliateShareModel("Lainnya",null,"others", 0,sheetType,
                 "Contoh: yourwebiste.com",false, isChecked = false,isLinkGenerationEnabled))
+        setSelectedCheckBox()
     }
 
     private fun setSelectedCheckBox(){

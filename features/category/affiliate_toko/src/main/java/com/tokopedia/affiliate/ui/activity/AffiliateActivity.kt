@@ -113,9 +113,10 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         initRollence()
         initBottomNavigationView()
         setObservers()
-        showLoginPortal()
         if(userSessionInterface.isLoggedIn)
             affiliateVM.getAffiliateValidateUser()
+        else
+            showLoginPortal()
     }
 
     private fun initRollence() {
@@ -133,7 +134,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         openFragment(AffiliateLoginFragment.getFragmentInstance(this))
     }
 
-    fun showAffiliatePortal() {
+    private fun showAffiliatePortal() {
         clearBackStack()
         findViewById<ImageUnify>(R.id.affiliate_background_image)?.show()
         affiliateBottomNavigation?.showBottomNav()

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.AFFILIATE_HELP_URL
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
@@ -18,6 +19,7 @@ import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
 import com.tokopedia.affiliate.model.request.OnBoardingRequest
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateWebViewBottomSheet
 import com.tokopedia.affiliate.viewmodel.AffiliateTermsAndConditionViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
@@ -87,6 +89,9 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
         terms_accept_btn.setOnClickListener {
             affiliateTermsAndConditionViewModel.affiliateOnBoarding(channels)
         }
+        syarat_text.setOnClickListener {
+            AffiliateWebViewBottomSheet.newInstance("HELP", AFFILIATE_HELP_URL).show(childFragmentManager,"")
+        }
     }
 
     private fun setUpNavBar() {
@@ -107,7 +112,7 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
 
     private fun initObserver() {
         affiliateTermsAndConditionViewModel.getOnBoardingData().observe(this, { onBoardingData ->
-            if(onBoardingData.data?.status == 1){
+            if(onBoardingData.data?.status == REGISTRATION_SUCCESS){
                 affiliateNavigationInterface.onRegistrationSuccessful()
             }else {
                 view?.let {
@@ -121,13 +126,13 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
         affiliateTermsAndConditionViewModel.getErrorMessage().observe(this , {
             if (it is UnknownHostException
                     || it is SocketTimeoutException) {
-                view?.let {
-                    Toaster.build(it, getString(com.tokopedia.affiliate_toko.R.string.affiliate_internet_error),
+                view?.let { view ->
+                    Toaster.build(view, getString(com.tokopedia.affiliate_toko.R.string.affiliate_internet_error),
                             Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                 }
             } else {
-                view?.let {
-                    Toaster.build(it, getString(com.tokopedia.affiliate_toko.R.string.affiliate_registeration_error),
+                view?.let { view ->
+                    Toaster.build(view, getString(com.tokopedia.affiliate_toko.R.string.affiliate_registeration_error),
                             Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                 }
             }
@@ -160,6 +165,7 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
             .build()
 
     companion object {
+        const val REGISTRATION_SUCCESS = 1
         fun getFragmentInstance(affiliateActivityInterface: AffiliateActivityInterface): AffiliateTermsAndConditionFragment {
             return AffiliateTermsAndConditionFragment().apply {
                 affiliateNavigationInterface = affiliateActivityInterface
