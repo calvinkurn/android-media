@@ -203,6 +203,9 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
             } else {
                 if (!userActionRequiredForRegister)
                     navigateToPortfolioFragment()
+                else {
+                    showLoginPortal()
+                }
             }
         })
 
