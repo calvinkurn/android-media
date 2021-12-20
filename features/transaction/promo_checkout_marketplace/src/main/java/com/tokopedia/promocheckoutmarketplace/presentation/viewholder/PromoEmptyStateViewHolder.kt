@@ -8,7 +8,7 @@ import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptySta
 
 class PromoEmptyStateViewHolder(private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoEmptyBinding,
                                 private val listener: PromoCheckoutActionListener
-) : AbstractViewHolder<PromoEmptyStateUiModel>(viewBinding.emptyStatePromo) {
+) : AbstractViewHolder<PromoEmptyStateUiModel>(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.promo_checkout_marketplace_module_item_promo_empty
