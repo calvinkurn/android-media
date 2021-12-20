@@ -32,3 +32,5 @@ const val AFFILIATE_WALLET_TRANSACTION_ENABLE = "app_affiliate_wallet_transactio
 const val AFFILIATE_TRX_ENABLED = "aff_trx_history"
 
 const val DEFAULT_VALUE = false
+
+const val AFFILIATE_MICRO_SITE_LINK = "https://affiliate.tokopedia.com/"

@@ -18,7 +18,7 @@ import com.tokopedia.affiliate.createListForTermsAndCondition
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
-import com.tokopedia.affiliate.model.request.OnBoardingRequest
+import com.tokopedia.affiliate.model.request.OnboardAffiliateRequest
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateWebViewBottomSheet
 import com.tokopedia.affiliate.viewmodel.AffiliateTermsAndConditionViewModel
 import com.tokopedia.affiliate_toko.R
@@ -38,7 +38,7 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
     private lateinit var affiliateTermsAndConditionViewModel: AffiliateTermsAndConditionViewModel
     private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory())
 
-    private var channels = arrayListOf<OnBoardingRequest.Channel>()
+    private var channels = arrayListOf<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>()
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -151,7 +151,7 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
         adapter.addMoreData(data)
     }
 
-    fun setChannels(listOfChannels: ArrayList<OnBoardingRequest.Channel>) {
+    fun setChannels(listOfChannels: ArrayList<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>) {
         channels = listOfChannels
     }
 

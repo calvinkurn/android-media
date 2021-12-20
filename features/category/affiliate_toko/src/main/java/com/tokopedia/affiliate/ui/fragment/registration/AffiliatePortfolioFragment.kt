@@ -24,7 +24,7 @@ import com.tokopedia.affiliate.interfaces.PortfolioUrlTextUpdateInterface
 import com.tokopedia.affiliate.model.pojo.AffiliateHeaderItemData
 import com.tokopedia.affiliate.model.pojo.AffiliatePortfolioButtonData
 import com.tokopedia.affiliate.model.pojo.AffiliatePortfolioUrlInputData
-import com.tokopedia.affiliate.model.request.OnBoardingRequest
+import com.tokopedia.affiliate.model.request.OnboardAffiliateRequest
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheetInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateHeaderModel
@@ -174,10 +174,10 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
         for (item in checkedSocialList){
             val portfolioDataItemText = affiliatePortfolioViewModel.finEditTextModelWithId(item.id)?.text
             if(portfolioDataItemText?.isNotBlank() == true){
-                updateList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(item.id,"${getString(com.tokopedia.affiliate_toko.R.string.affiliate_link)} ${item.name}",
+                updateList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(item.id,item.serviceFormat,"${getString(com.tokopedia.affiliate_toko.R.string.affiliate_link)} ${item.name}",
                         portfolioDataItemText,item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false)))
             }else {
-                updateList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(item.id,"${getString(com.tokopedia.affiliate_toko.R.string.affiliate_link)} ${item.name}",
+                updateList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(item.id,item.serviceFormat,"${getString(com.tokopedia.affiliate_toko.R.string.affiliate_link)} ${item.name}",
                         "",item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false)))
             }
         }
@@ -199,10 +199,12 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
 
     override fun nextButtonClicked() {
         if(affiliatePortfolioViewModel.checkDataForAtLeastOne()){
-            val arrayListOfChannels = arrayListOf<OnBoardingRequest.Channel>()
+            val arrayListOfChannels = arrayListOf<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>()
             affiliatePortfolioViewModel.affiliatePortfolioData.value?.forEach { channelItem ->
                 (channelItem as? AffiliatePortfolioUrlModel)?.let {
-                    arrayListOfChannels.add(OnBoardingRequest.Channel(channelItem.portfolioItm.id,channelItem.portfolioItm.text))
+                    if(channelItem.portfolioItm.text?.isNotEmpty() == true){
+                        arrayListOfChannels.add(OnboardAffiliateRequest.OnboardAffiliateChannelRequest(channelItem.portfolioItm.serviceFormat,channelItem.portfolioItm.text))
+                    }
                 }
             }
             affiliateNavigationInterface.navigateToTermsFragment(arrayListOfChannels)

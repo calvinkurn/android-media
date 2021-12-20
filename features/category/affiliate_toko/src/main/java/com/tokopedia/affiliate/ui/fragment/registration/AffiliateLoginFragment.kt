@@ -119,7 +119,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
                 affiliateNavigationInterface.handleBackButton()
             }
             actionTextView?.setOnClickListener {
-                AffiliateWebViewBottomSheet.newInstance("HELP", AFFILIATE_HELP_URL).show(childFragmentManager,"")
+                AffiliateWebViewBottomSheet.newInstance("", AFFILIATE_MICRO_SITE_LINK).show(childFragmentManager,"")
             }
         }
     }

@@ -22,7 +22,7 @@ import com.tokopedia.affiliate.PAGE_SEGMENT_HELP
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
-import com.tokopedia.affiliate.model.request.OnBoardingRequest
+import com.tokopedia.affiliate.model.request.OnboardAffiliateRequest
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavbar
 import com.tokopedia.affiliate.ui.custom.IBottomClickListener
@@ -62,7 +62,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     private lateinit var affiliateVM: AffiliateViewModel
     private var fragmentStack = Stack<String>()
     private var affiliateBottomNavigation: AffiliateBottomNavbar? = null
-    private var userActionRequiredForRegister = false
+    private var userActionRequiredForRegister = true
 
     private var isUserBlackListed = false
     private var isAffiliateWalletEnabled = false
@@ -357,7 +357,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         return isUserBlackListed
     }
 
-    override fun navigateToTermsFragment(channels: ArrayList<OnBoardingRequest.Channel>) {
+    override fun navigateToTermsFragment(channels: ArrayList<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>) {
         openFragment(AffiliateTermsAndConditionFragment.getFragmentInstance(this).apply {
             setChannels(channels)
         })
