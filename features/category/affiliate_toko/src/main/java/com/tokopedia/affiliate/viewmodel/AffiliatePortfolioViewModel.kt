@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.viewmodel
 
-import android.webkit.URLUtil.isValidUrl
+import android.webkit.URLUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -14,7 +14,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePortfolioUrlMode
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 
 class AffiliatePortfolioViewModel@Inject constructor(
@@ -35,20 +35,29 @@ class AffiliatePortfolioViewModel@Inject constructor(
     }
     fun updateList(position: Int, text: String) {
         (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.text = text
+        if(text.isNotEmpty()){
+            (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.isError = !URLUtil.isValidUrl(text)
+        }else {
+            (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.isError = false
+        }
     }
-    fun checkData()  : Boolean{
+
+    fun checkDataForAtLeastOne()  : Boolean{
+        var firstFound = false
         affiliatePortfolioData.value?.forEachIndexed {i,item->
             if(item is AffiliatePortfolioUrlModel)
             {
-                if(item.portfolioItm.text.isNullOrEmpty() && !isValidUrl(item.portfolioItm.text)){
+                if(!item.portfolioItm.text.isNullOrEmpty() && !URLUtil.isValidUrl(item.portfolioItm.text)){
                     item.portfolioItm.isError = true
                     updateListItem.value = i
                     return false
+                }else if(!item.portfolioItm.text.isNullOrEmpty() && URLUtil.isValidUrl(item.portfolioItm.text)){
+                    firstFound = true
                 }
 
             }
         }
-        return true
+        return firstFound
     }
 
     fun updateFocus(position: Int,focus : Boolean){
@@ -68,4 +77,25 @@ class AffiliatePortfolioViewModel@Inject constructor(
 
     fun getPortfolioUrlList() : LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = affiliatePortfolioData
     fun getUpdateItemIndex() : LiveData<Int> = updateListItem
+
+    fun finEditTextModelWithId(id : Int?) : AffiliatePortfolioUrlInputData?{
+        affiliatePortfolioData.value?.forEach {
+            if(it is AffiliatePortfolioUrlModel && it.portfolioItm.id == id){
+                return it.portfolioItm
+            }
+        }
+        return null
+    }
+
+    fun getCurrentSocialIds () : ArrayList<Int> {
+        val ids = arrayListOf<Int>()
+        affiliatePortfolioData.value?.forEach {
+            if(it is AffiliatePortfolioUrlModel){
+                it.portfolioItm.id?.let { id ->
+                    ids.add(id)
+                }
+            }
+        }
+        return ids
+    }
 }

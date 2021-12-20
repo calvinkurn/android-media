@@ -2,9 +2,9 @@ package com.tokopedia.affiliate.ui.viewholder
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Patterns
 import android.view.KeyEvent
 import android.view.View
+import android.webkit.URLUtil
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.interfaces.PortfolioUrlTextUpdateInterface
@@ -32,6 +32,12 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 portfolioUrlTextUpdateInterface?.onUrlUpdate(adapterPosition,
                     s.toString())
+                if(s.toString().isNotEmpty()){
+                    element?.portfolioItm?.isError = !URLUtil.isValidUrl(s.toString())
+                }else {
+                    element?.portfolioItm?.isError = false
+                }
+                setState(element)
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -48,12 +54,6 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
                 if ((event?.action == KeyEvent.ACTION_DOWN) &&
                         (keyCode == KeyEvent.KEYCODE_ENTER))
                 {
-                    if(Patterns.WEB_URL.matcher((urlEtView.getEditableValue().toString())).matches()) {
-                        portfolioUrlTextUpdateInterface?.onUrlSuccess(adapterPosition)
-                    }
-                    else {
-                        portfolioUrlTextUpdateInterface?.onError(adapterPosition)
-                    }
                     portfolioUrlTextUpdateInterface?.onNextKeyPressed(adapterPosition,true)
                     return true
                 }
