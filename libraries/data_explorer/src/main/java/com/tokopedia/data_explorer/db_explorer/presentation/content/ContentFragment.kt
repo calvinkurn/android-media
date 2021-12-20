@@ -104,7 +104,7 @@ class ContentFragment : BaseDaggerFragment() {
         tableGroup.gone()
         dataExplorerEmptyState.visible()
         dataExplorerEmptyState.setDescription(errorType)
-        dataExplorerEmptyState.setImageUrl("https://ecs7.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png")
+        dataExplorerEmptyState.setImageUrl(Constants.Urls.EMPTY_DATA_URL)
     }
 
     private fun observeViewModels() {
@@ -120,7 +120,7 @@ class ContentFragment : BaseDaggerFragment() {
             viewModel.getTableRowsCount(schemaName)
         })
         viewModel.resultRowLiveData.observe(viewLifecycleOwner, {
-            if (it) queryContent() else showDatabaseError("Table has no content to show")
+            if (it) queryContent() else showDatabaseError(Constants.ErrorMessages.NO_CONTENT)
         })
         viewModel.contentLiveData.observe(viewLifecycleOwner, { cells ->
             dataExplorerEmptyState.gone()
@@ -135,7 +135,7 @@ class ContentFragment : BaseDaggerFragment() {
 
                 }
                 is IllegalStateException-> showToast(it.message, Toaster.TYPE_ERROR)
-                else -> showDatabaseError(it.message?:"Invalid Request")
+                else -> showDatabaseError(it.message?: "Invalid Request")
 
             }
         })

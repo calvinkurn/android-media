@@ -13,6 +13,7 @@ import com.tokopedia.data_explorer.db_explorer.domain.shared.models.Statements
 import com.tokopedia.data_explorer.db_explorer.domain.shared.models.parameters.ContentParameters
 import com.tokopedia.data_explorer.db_explorer.domain.shared.models.parameters.PragmaParameters
 import com.tokopedia.data_explorer.db_explorer.extensions.InvalidPageRequestException
+import com.tokopedia.data_explorer.db_explorer.presentation.Constants
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
@@ -70,8 +71,8 @@ internal class ContentViewModel @Inject constructor(
         } else {
             if (totalResults != 0) {
                 --currentPage
-                onTablesError(InvalidPageRequestException("Invalid Page Request"))
-            } else onTablesError(NullPointerException("No Content Found"))
+                onTablesError(InvalidPageRequestException(Constants.ErrorMessages.INVALID_PAGE_REQUEST))
+            } else onTablesError(NullPointerException(Constants.ErrorMessages.NO_CONTENT))
         }
     }
 
@@ -82,7 +83,7 @@ internal class ContentViewModel @Inject constructor(
 
     fun dropTable(schemaName: String) {
         dropTableContentUseCase.dropTable({
-            onTablesError(NullPointerException("Table Deleted"))
+            onTablesError(NullPointerException(Constants.ErrorMessages.DELETION_SUCCESS))
         }, {
             onTablesError(it)
         },

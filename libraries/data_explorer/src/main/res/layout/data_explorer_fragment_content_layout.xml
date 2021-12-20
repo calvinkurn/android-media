@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:gravity="center"
-        android:paddingTop="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_16"
         android:visibility="gone"
         app:unifyEmptyStateTitle="Data Request Error"
         app:unifyEmptyStateDescription="Page request Cannot be Handled"

@@ -51,7 +51,7 @@ internal open class CursorSource {
                 )
                 FieldType.INTEGER -> Field(
                     type = type,
-                    text = cursor.getInt(column).toString()
+                    text = cursor.getLong(column).toString()
                 )
                 FieldType.FLOAT -> Field(
                     type = type,
