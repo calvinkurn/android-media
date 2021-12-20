@@ -176,8 +176,6 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
     private fun setupToolbarActions() {
         val color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N500)
         activity?.findViewById<HeaderUnify>(R.id.toolbar_draft)?.apply {
-            headerTitle = getString(R.string.label_title_draft_product)
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 overflowIcon?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
             }else{

@@ -33,6 +33,7 @@ open class AddEditProductDraftActivity : TabletAdaptiveActivity(), HasComponent<
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_edit_product_draft)
         toolbarDraft = findViewById(R.id.toolbar_draft)
+        toolbarDraft?.headerTitle = getString(R.string.label_title_draft_product)
         setSupportActionBar(toolbarDraft)
     }
 
