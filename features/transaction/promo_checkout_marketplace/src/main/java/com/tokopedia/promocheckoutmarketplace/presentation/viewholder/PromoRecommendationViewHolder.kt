@@ -54,7 +54,7 @@ class PromoRecommendationViewHolder(private val viewBinding: PromoCheckoutMarket
 
     private fun setBackground() {
         try {
-            viewBinding.containerConstraint.setBackgroundResource(R.drawable.promo_checkout_marketplace_module_ic_promo_recommendation)
+            viewBinding.containerConstraintPromoRecommendation.setBackgroundResource(R.drawable.promo_checkout_marketplace_module_ic_promo_recommendation)
         } catch (t: Throwable) {
             Timber.d(t)
         }

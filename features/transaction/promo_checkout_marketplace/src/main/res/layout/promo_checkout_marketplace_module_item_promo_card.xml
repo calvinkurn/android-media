@@ -117,7 +117,6 @@
             <LinearLayout
                 android:id="@+id/container_promo_info_list"
                 android:layout_width="0dp"
-                android:paddingBottom="6dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:orientation="vertical"

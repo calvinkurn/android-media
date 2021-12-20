@@ -247,7 +247,7 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
                     }
                     containerPromoInfoList.addView(promoInfoView)
                 }
-                if (promoInfoList.isNotEmpty()) {
+                if (containerPromoInfoList.childCount > 0) {
                     containerPromoInfoList.show()
                 } else {
                     containerPromoInfoList.gone()
