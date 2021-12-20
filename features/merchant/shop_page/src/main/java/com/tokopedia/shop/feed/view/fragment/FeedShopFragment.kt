@@ -117,7 +117,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private lateinit var createPostUrl: String
     private lateinit var shopId: String
     private var isLoading = false
-    private var isForceRefresh = false
+    private var isForceRefresh = true
 
     private var whitelistDomain: WhitelistDomain = WhitelistDomain()
 

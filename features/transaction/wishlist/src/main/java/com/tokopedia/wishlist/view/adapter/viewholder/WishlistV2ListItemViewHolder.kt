@@ -44,6 +44,7 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
         binding.wishlistCheckbox.setOnCheckedChangeListener(null)
         binding.wishlistCheckbox.visible()
         binding.wishlistCheckbox.isChecked = item.isChecked
+        binding.wishlistCheckbox.skipAnimation()
         binding.wishlistCheckbox.setOnClickListener {
             actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
         }

@@ -4,6 +4,7 @@
 
     <string name="affiliate_home">Home</string>
     <string name="affiliate_promo">Promosikan</string>
+    <string name="affiliate_withdrawal">Pendapatan</string>
     <string name="affiliate_bantuan">Bantuan</string>
 
     <string name="daftar_affiliate">Daftar Affiliate</string>
@@ -99,4 +100,26 @@
     <string name="affiliate_internet_error">Wah, internet putus. Cek paket data atau WiFi-mu.</string>
     <string name="terms_and_condition_upper">Syarat &amp; Ketentuan</string>
     <string name="affilite_filter_ticker_description">Selain data hari ini, Performa Affiliate akan di-update setiap 24:00 - 09:00 WIB.</string>
+    <string name="affiliate_saldo">Saldo Affiliate</string>
+    <string name="affiliate_tarik_saldo">Tarik Saldo</string>
+    <string name="affiliate_transaction_history">Riwayat Transaksi</string>
+    <string name="affiliate_zero_amount">Rp 0</string>
+    <string name="affiliate_komisi_produk">Komisi Produk Affiliate</string>
+    <string name="affiliate_empty_transaction">Tidak ada transaksi pada rentang waktu ini</string>
+    <string name="affiliate_empty_transaction_description">Coba pilih tanggal lainnya. Mungkin kamu akan menemukan transaksi.</string>
+    <string name="affiliate_choose_date">Pilih Tanggal</string>
+    <string name="affiliate_transaksi_selesai">Transaksi selesai</string>
+    <string name="affiliate_rincian_komisi">Rincian Komisi</string>
+    <string name="affiliate_total_harga_s_barang">Total Harga (%s barang)</string>
+    <string name="affiliate_komisi">Komisi</string>
+    <string name="affiliate_total_diterima">Total Diterima</string>
+    <string name="affiliate_saldo_withdrawal_balance_status">Status penarikan saldo</string>
+    <string name="affiliate_title_saldo_detail">Detail Saldo</string>
+    <string name="affiliate_saldo_withdrawal_info_details">Rincian penarikan</string>
+    <string name="affiliate_saldo_withdrawal_amount">Jumlah Penarikan</string>
+    <string name="affiliate_saldo_withdrawal_fee">Biaya Penarikan</string>
+    <string name="affiliate_saldo_transferred_amount">Jumlah yang Ditransfer</string>
+    <string name="affiliate_default_no_transaction">Kamu belum punya transaksi</string>
+    <string name="affiliate_default_no_transaction_description">Yuk, promosikan produk affiliate di sosial media supaya kamu bisa mulai bertransaksi.</string>
+    <string name="affiliate_promote_product_cta">Promosikan Produk Affiliate</string>
 </resources>
