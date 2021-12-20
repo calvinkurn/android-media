@@ -379,7 +379,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 ds.isUnderlineText = false
                 ds.color = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Neutral_N600
+                    com.tokopedia.unifyprinciples.R.color.Unify_N600
                 )
             }
         }
@@ -626,7 +626,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 ds.isUnderlineText = false
                 ds.color = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Neutral_N600
+                    com.tokopedia.unifyprinciples.R.color.Unify_N600
                 )
             }
         }
@@ -1061,7 +1061,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         feedXCard.followers.isFollowed,
                                         false,
                                         positionInFeed,
-                                        feedXCard.author.name
+                                        feedXCard.author.name,
+                                        shopName = feedXCard.author.name
                                     )
                                 }
                             }

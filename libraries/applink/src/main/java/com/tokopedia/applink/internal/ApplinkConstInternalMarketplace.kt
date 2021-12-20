@@ -69,7 +69,9 @@ object ApplinkConstInternalMarketplace {
     const val SET_CASHBACK = "$INTERNAL_MARKETPLACE/set-cashback/{productId}/"
 
     // CampaignStockActivity
-    const val RESERVED_STOCK = "$INTERNAL_MARKETPLACE/reserved-stock/{productId}/{shopId}/"
+    const val RESERVED_STOCK_BASE = "$INTERNAL_MARKETPLACE/reserved-stock"
+
+    const val RESERVED_STOCK = "$RESERVED_STOCK_BASE/{productId}/{shopId}/"
 
     // CreateReviewActivity
     const val CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/create/{reputation_id}/{product_id}/"
