@@ -470,6 +470,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                         )
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].startTime = OperationalHoursUtil.MIN_START_TIME
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].endTime = OperationalHoursUtil.MAX_END_TIME
+                        currentSetShopOperationalHourList[currentExpandedAccordionPosition].status = OperationalHoursUtil.CAN_ATC_STATUS
                         setItemAccordionViewCustomHeightByPosition(currentExpandedAccordionPosition, ACCORDION_ITEM_VIEW_24_HOURS_HEIGHT)
                     }
 
@@ -528,6 +529,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                                 holidayCanAtcDescriptionContainer = holidayCanAtcDescriptionContainer,
                                 holidayCannotAtcDescriptionContainer = holidayCannotAtcDescriptionContainer
                         )
+                        currentSetShopOperationalHourList[currentExpandedAccordionPosition].status = OperationalHoursUtil.CAN_ATC_STATUS
                         val contentHeight = if (currentExpandedAccordionPosition == DEFAULT_FIRST_INDEX) {
                             ACCORDION_ITEM_VIEW_CUSTOM_HOURS_HEIGHT_FOR_MONDAY
                         } else {
