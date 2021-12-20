@@ -20,7 +20,7 @@ import javax.inject.Inject
 class WebSocketLoggingViewModel @Inject constructor(
     private val getWebSocketLogUseCase: GetWebSocketLogUseCase,
     private val deleteAllWebSocketLogUseCase: DeleteAllWebSocketLogUseCase,
-    private val dispatchers: CoroutineDispatchers,
+    dispatchers: CoroutineDispatchers,
 ): ViewModel() {
 
     private val _websocketLogPagination = MutableStateFlow(WebSocketLogPagination())
@@ -100,6 +100,8 @@ class WebSocketLoggingViewModel @Inject constructor(
             deleteAllWebSocketLogUseCase.executeOnBackground()
 
             emitMessage("Delete All Logs Success")
+
+            handleSearch("")
         }) {
             emitMessage(it.message ?: "Something went wrong.")
         }

@@ -2,9 +2,7 @@ package com.tokopedia.analyticsdebugger.websocket.ui.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -172,5 +170,18 @@ class WebSocketLoggingFragment: Fragment() {
             )
             .build()
             .inject(this)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_web_socket_log, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_menu_delete_web_socket) {
+            viewModel.submitAction(WebSocketLoggingAction.DeleteAllLogAction)
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

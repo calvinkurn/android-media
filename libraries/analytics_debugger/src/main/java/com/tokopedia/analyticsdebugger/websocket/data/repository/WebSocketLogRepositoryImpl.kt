@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analyticsdebugger.websocket.data.local.database.WebSocketLogDatabase
 import com.tokopedia.analyticsdebugger.websocket.data.local.entity.WebSocketLogEntity
 import com.tokopedia.analyticsdebugger.websocket.domain.repository.WebSocketLogRespository
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -17,7 +16,6 @@ class WebSocketLogRepositoryImpl @Inject constructor(
 ): WebSocketLogRespository {
 
     override suspend fun get(query: String, limit: Int, offset: Int): List<WebSocketLogEntity> = withContext(dispatchers.io) {
-        delay(3000)
         database.webSocketLogDao().get(query, limit, offset)
     }
 
