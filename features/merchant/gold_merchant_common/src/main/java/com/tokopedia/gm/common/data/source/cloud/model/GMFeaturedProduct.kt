@@ -1,153 +1,66 @@
+package com.tokopedia.gm.common.data.source.cloud.model
 
-package com.tokopedia.gm.common.data.source.cloud.model;
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
-
-public class GMFeaturedProduct {
-
+data class GMFeaturedProduct (
     @SerializedName("parent_id")
     @Expose
-    private String parentId;
+    private val parentId: String? = null,
+
     @SerializedName("product_id")
     @Expose
-    private String productId;
+    var productId: String? = null,
+
     @SerializedName("name")
     @Expose
-    private String name;
+    var name: String? = null,
+
     @SerializedName("uri")
     @Expose
-    private String uri;
+    var uri: String? = null,
+
     @SerializedName("price")
     @Expose
-    private String price;
+    var price: Double? = null,
+
     @SerializedName("image_uri")
     @Expose
-    private String imageUri;
+    var imageUri: String? = null,
+
     @SerializedName("preorder")
     @Expose
-    private boolean preorder;
+    var isPreorder: Boolean = false,
+
     @SerializedName("returnable")
     @Expose
-    private boolean returnable;
+    val isReturnable: Boolean = false,
+
     @SerializedName("wholesale")
     @Expose
-    private boolean wholesale;
+    var isWholesale: Boolean = false,
+
     @SerializedName("cashback")
     @Expose
-    private boolean cashback;
+    var isCashback: Boolean = false,
+
     @SerializedName("cashback_detail")
     @Expose
-    private GMFeaturedCashBackDetail cashbackDetail;
+    val cashbackDetail: GMFeaturedCashBackDetail? = null,
+
     @SerializedName("labels")
     @Expose
-    private List<GMFeaturedLabel> labels = null;
+    var labels: List<GMFeaturedLabel>? = null,
+
     @SerializedName("is_rated")
     @Expose
-    private boolean isRated;
+    private val isRated: Boolean = false,
+
     @SerializedName("rating")
     @Expose
-    private double rating;
+    var rating: Double = 0.0,
+
     @SerializedName("total_review")
     @Expose
-    private String totalReview;
-
-    public String getProductId() {
-        return productId;
-    }
-
-    public void setProductId(String productId) {
-        this.productId = productId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
-    public String getImageUri() {
-        return imageUri;
-    }
-
-    public void setImageUri(String imageUri) {
-        this.imageUri = imageUri;
-    }
-
-    public boolean isPreorder() {
-        return preorder;
-    }
-
-    public void setPreorder(boolean preorder) {
-        this.preorder = preorder;
-    }
-
-    public boolean isReturnable() {
-        return returnable;
-    }
-
-    public boolean isWholesale() {
-        return wholesale;
-    }
-
-    public void setWholesale(boolean wholesale) {
-        this.wholesale = wholesale;
-    }
-
-    public boolean isCashback() {
-        return cashback;
-    }
-
-    public void setCashback(boolean cashback) {
-        this.cashback = cashback;
-    }
-
-    public GMFeaturedCashBackDetail getCashbackDetail() {
-        return cashbackDetail;
-    }
-
-    public List<GMFeaturedLabel> getLabels() {
-        return labels;
-    }
-
-    public void setLabels(List<GMFeaturedLabel> labels) {
-        this.labels = labels;
-    }
-
-
-    public double getRating() {
-        return rating;
-    }
-
-    public void setRating(double rating) {
-        this.rating = rating;
-    }
-
-    public String getTotalReview() {
-        return totalReview;
-    }
-
-    public void setTotalReview(String totalReview) {
-        this.totalReview = totalReview;
-    }
-}
+    var totalReview: String? = null
+)
