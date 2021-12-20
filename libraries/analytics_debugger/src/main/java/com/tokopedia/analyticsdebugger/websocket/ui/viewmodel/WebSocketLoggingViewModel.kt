@@ -29,7 +29,8 @@ class WebSocketLoggingViewModel @Inject constructor(
     private val _uiEvent = MutableSharedFlow<WebSocketLoggingEvent>()
 
     val uiState: Flow<WebSocketLoggingState> = combine(
-        _websocketLogPagination, _loading
+        _websocketLogPagination,
+        _loading
     ) { websocketLogPagination, loading ->
         WebSocketLoggingState(
             webSocketLogPagination = websocketLogPagination,

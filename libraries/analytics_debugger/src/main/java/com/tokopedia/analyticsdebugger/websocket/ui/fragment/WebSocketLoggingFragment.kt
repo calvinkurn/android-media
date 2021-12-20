@@ -114,6 +114,14 @@ class WebSocketLoggingFragment: Fragment() {
             layoutManager = this@WebSocketLoggingFragment.layoutManager
             adapter = this@WebSocketLoggingFragment.adapter
         }
+
+        etSearchWebSocketLog.setListener(object : SearchInputView.Listener {
+            override fun onSearchSubmitted(text: String?) {
+                viewModel.submitAction(WebSocketLoggingAction.SearchLogAction(text.toString()))
+            }
+
+            override fun onSearchTextChanged(text: String?) {}
+        })
     }
 
     private fun initObserver() {
