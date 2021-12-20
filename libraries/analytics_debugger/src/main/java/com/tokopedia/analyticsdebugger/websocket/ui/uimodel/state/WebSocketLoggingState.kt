@@ -14,4 +14,5 @@ data class WebSocketLogPagination(
     val webSocketLoggingList: List<WebSocketLogUiModel> = mutableListOf(),
     val query: String = "",
     val page: Int = 0,
+    val isReachMax: Boolean = false,
 )

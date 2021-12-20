@@ -54,17 +54,18 @@ class WebSocketLoggingViewModel @Inject constructor(
      */
     private fun handleSearch(query: String) {
         viewModelScope.launchCatchError(block = {
-            if(!_loading.value) {
-                _loading.value = true
+            if(!isLoading()) {
+                setLoading(true)
 
                 val newPage = 0
                 val webSocketLogList = getWebSocketLog(query, newPage)
 
-                _loading.value = false
+                setLoading(false)
                 _websocketLogPagination.value = _websocketLogPagination.value.copy(
                     webSocketLoggingList = webSocketLogList,
                     query = query,
-                    page = newPage
+                    page = newPage,
+                    isReachMax = false,
                 )
             }
         }) {
@@ -74,18 +75,19 @@ class WebSocketLoggingViewModel @Inject constructor(
 
     private fun handleLoadNextPage() {
         viewModelScope.launchCatchError(block = {
-            if(_loading.value) {
-                _loading.value = true
+            if(!isLoading() && !isReachMax()) {
+                setLoading(true)
 
                 val pagination = _websocketLogPagination.value
                 val newPage = pagination.page + 1
 
                 val webSocketLogNextList = getWebSocketLog(pagination.query, newPage)
 
-                _loading.value = false
+                setLoading(false)
                 _websocketLogPagination.value = _websocketLogPagination.value.copy(
                     webSocketLoggingList = pagination.webSocketLoggingList + webSocketLogNextList,
-                    page = newPage
+                    page = newPage,
+                    isReachMax = webSocketLogNextList.isEmpty()
                 )
             }
         }) {
@@ -95,9 +97,7 @@ class WebSocketLoggingViewModel @Inject constructor(
 
     private fun handleDeleteAllLog() {
         viewModelScope.launchCatchError(block = {
-            deleteAllWebSocketLogUseCase.let {
-                it.executeOnBackground()
-            }
+            deleteAllWebSocketLogUseCase.executeOnBackground()
 
             emitMessage("Delete All Logs Success")
         }) {
@@ -108,6 +108,14 @@ class WebSocketLoggingViewModel @Inject constructor(
     /**
      * Utility
      */
+    private fun isReachMax(): Boolean = _websocketLogPagination.value.isReachMax
+
+    private fun isLoading(): Boolean = _loading.value
+
+    private fun setLoading(isLoading: Boolean) {
+        _loading.value = isLoading
+    }
+
     private suspend fun emitMessage(message: String) {
         _uiEvent.emit(
             WebSocketLoggingEvent.ShowInfoEvent(
