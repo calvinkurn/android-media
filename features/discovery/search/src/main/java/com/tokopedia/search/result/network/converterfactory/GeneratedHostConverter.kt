@@ -3,7 +3,9 @@ package com.tokopedia.search.result.network.converterfactory
 import com.google.gson.Gson
 import com.tokopedia.search.result.network.response.GeneratedHost
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import org.json.JSONException
 import org.json.JSONObject
@@ -37,12 +39,12 @@ class GeneratedHostConverter : Converter.Factory() {
 
     override fun requestBodyConverter(type: Type, parameterAnnotations: Array<Annotation>, methodAnnotations: Array<Annotation>, retrofit: Retrofit): Converter<*, RequestBody>? {
         return if (String::class.java == type) {
-            Converter<String?, RequestBody> { value -> RequestBody.create(MEDIA_TYPE, value) }
+            Converter<String?, RequestBody> { value -> value.toRequestBody(MEDIA_TYPE) }
         } else null
     }
 
     companion object {
         private val TAG = GeneratedHostConverter::class.java.simpleName
-        private val MEDIA_TYPE = MediaType.parse("text/plain")
+        private val MEDIA_TYPE = "text/plain".toMediaTypeOrNull()
     }
 }

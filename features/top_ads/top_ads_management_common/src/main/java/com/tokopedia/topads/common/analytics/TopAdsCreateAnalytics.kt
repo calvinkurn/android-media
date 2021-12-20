@@ -191,6 +191,19 @@ class TopAdsCreateAnalytics {
         getTracker().sendGeneralEvent(map)
     }
 
+    fun sendViewFormEvent(eventAction: String, eventLabel: String) {
+        val map = mapOf(
+            KEY_EVENT to KEY_EVENT_IRIS_ADS,
+            KEY_EVENT_ACTION to eventAction,
+            KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_PRODUCT_EDIT,
+            KEY_EVENT_LABEL to eventLabel,
+            KEY_BUSINESS_UNIT_EVENT to "",
+            KEY_CURRENT_SITE_EVENT to ""
+        )
+
+        getTracker().sendGeneralEvent(map)
+    }
+
     fun sendHeadlineCreatFormEvent(eventAction: String, eventLabel: String, userId: String) {
         val map = mapOf(
                 KEY_EVENT to KEY_EVENT_HEADLINE_CREATE_FORM,

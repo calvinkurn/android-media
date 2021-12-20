@@ -134,6 +134,7 @@ class QuestWidgetView @JvmOverloads constructor(
     }
 
     private fun showSuccessUi(data: QuestData?) {
+        questWidgetLogin.hide()
         shimmerQuestWidget.hide()
         rvError.hide()
         rvQuestWidget.show()
@@ -142,7 +143,7 @@ class QuestWidgetView @JvmOverloads constructor(
     }
 
     private fun showErrorUi() {
-
+        questWidgetLogin.hide()
         shimmerQuestWidget.hide()
         rvQuestWidget.hide()
         constraintLayoutQuestWidget.show()
