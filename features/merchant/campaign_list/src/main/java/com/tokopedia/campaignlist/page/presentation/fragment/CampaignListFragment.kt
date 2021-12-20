@@ -140,7 +140,7 @@ class CampaignListFragment : BaseDaggerFragment(),
             // TODO log invalid campaign id
         }
         tracker.sendShareButtonClickEvent(
-                activeCampaign.campaignType,
+                viewModel.getCampaignTypeId(),
                 activeCampaign.campaignId,
                 userSession.shopId,
                 userSession.userId,
