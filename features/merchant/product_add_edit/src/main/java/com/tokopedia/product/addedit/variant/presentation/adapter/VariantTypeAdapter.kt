@@ -117,7 +117,7 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         // select predefined variant
         items.forEachIndexed { position, variantDetail ->
             val isVariantIdExist = selectedVariantDetails.any {
-                it.variantID == variantDetail.variantID
+                it.variantID == variantDetail.variantID && it.name == variantDetail.name
             }
             if (isVariantIdExist) {
                 selectedItems.getOrNull(position)?.let {

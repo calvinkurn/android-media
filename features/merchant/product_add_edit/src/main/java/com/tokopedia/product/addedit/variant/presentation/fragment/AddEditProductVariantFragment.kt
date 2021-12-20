@@ -758,8 +758,8 @@ class AddEditProductVariantFragment :
                     ?: mutableListOf()
             val selectedVariantData = variantTypeAdapter?.getSelectedItems()?.getOrNull(index)
                     ?: return@forEachIndexed // break loop if invalid index inputted
-            val adapterPosition = variantTypeAdapter?.getSelectedAdapterPosition()?.
-            getOrNull(index).orZero()
+            val adapterPosition = variantTypeAdapter?.getSelectedAdapterPosition()?.getOrNull(index)
+                .orZero()
             val isPredefinedVariant = variantDataList.any { it.variantID == variantDetail.variantID }
 
             // add custom unit values to variant data
@@ -1140,7 +1140,7 @@ class AddEditProductVariantFragment :
 
     private fun addPredefinedVariantType(newVariantDetail: VariantDetail) {
         val selectedIndex = variantTypeAdapter?.getItems().orEmpty().indexOfFirst {
-            it.name == newVariantDetail.name
+            it.variantID == newVariantDetail.variantID && it.name == newVariantDetail.name
         }
         val notOnAdapter = selectedIndex.isLessThanZero()
         val selectedVariantTypeCount = variantTypeAdapter?.getSelectedCount().orZero()
@@ -1165,7 +1165,7 @@ class AddEditProductVariantFragment :
     private fun editVariantType(editedIndex: Int, variantDetail: VariantDetail) {
         val oldVariantDetail = variantTypeAdapter?.getItem(editedIndex)
         val autoSelectIndex = variantTypeAdapter?.getItems().orEmpty().indexOfFirst {
-            it.name == variantDetail.name
+            it.variantID == variantDetail.variantID && it.name == variantDetail.name
         }
         val isSelected = variantTypeAdapter?.isItemAtPositionSelected(editedIndex).orFalse()
 
