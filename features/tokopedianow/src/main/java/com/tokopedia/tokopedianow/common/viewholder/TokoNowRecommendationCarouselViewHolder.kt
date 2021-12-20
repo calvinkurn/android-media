@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGENAME_PDP_3
 import com.tokopedia.recommendation_widget_common.widget.carousel.*
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
@@ -58,7 +59,7 @@ class TokoNowRecommendationCarouselViewHolder(
                 adapterPosition = adapterPosition,
                 basicListener = this,
                 tokonowListener = this,
-                scrollToPosition = scrollToPosition.orZero(),
+                scrollToPosition = scrollToPosition.orZero()
             )
             recommendationCarouselListener?.onBindRecommendationCarousel(
                 element,
@@ -206,6 +207,9 @@ class TokoNowRecommendationCarouselViewHolder(
 
     override fun onWidgetFail(pageName: String, e: Throwable) {
         binding?.tokoNowSearchCategoryRecomCarousel?.gone()
+    }
+
+    override fun onShowError(pageName: String, e: Throwable) {
     }
 
     override fun onViewRecycled() {

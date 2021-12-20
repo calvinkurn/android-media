@@ -8,7 +8,7 @@
     android:layout_height="wrap_content"
     app:card_type="border"
     android:elevation="@dimen/layout_lvl1"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
     app:layout_constraintTop_toTopOf="parent">

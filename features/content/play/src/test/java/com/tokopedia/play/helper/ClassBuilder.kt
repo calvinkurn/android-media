@@ -19,14 +19,16 @@ class ClassBuilder {
             chatMapper: PlayChatUiMapper = PlayChatUiMapper(userSession),
             channelStatusMapper: PlayChannelStatusMapper = PlayChannelStatusMapper(),
             channelInteractiveMapper: PlayChannelInteractiveMapper = PlayChannelInteractiveMapper(),
-            interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper = PlayInteractiveLeaderboardMapper()
+            interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper = PlayInteractiveLeaderboardMapper(),
+            cartMapper: PlayCartMapper = PlayCartMapper()
     ) = PlayUiModelMapper(
             productTagMapper = productTagMapper,
             merchantVoucherMapper = merchantVoucherMapper,
             chatMapper = chatMapper,
             channelStatusMapper = channelStatusMapper,
             channelInteractiveMapper = channelInteractiveMapper,
-            interactiveLeaderboardMapper = interactiveLeaderboardMapper
+            interactiveLeaderboardMapper = interactiveLeaderboardMapper,
+            cartMapper = cartMapper
     )
 
     fun getPlayChannelDetailsRecomMapper(
@@ -53,9 +55,11 @@ class ClassBuilder {
             channelId: String? = null,
             videoStartMillis: Long? = null,
             shouldTrack: Boolean = true,
+            sourceType: String = "",
     ) = PlayChannelDetailsWithRecomMapper.ExtraParams(
             channelId = channelId,
             videoStartMillis = videoStartMillis,
-            shouldTrack = shouldTrack
+            shouldTrack = shouldTrack,
+            sourceType = sourceType,
     )
 }

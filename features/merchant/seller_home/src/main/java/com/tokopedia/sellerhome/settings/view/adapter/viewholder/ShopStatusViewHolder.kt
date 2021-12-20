@@ -20,7 +20,7 @@ import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ShopS
 import com.tokopedia.unifyprinciples.Typography
 
 class ShopStatusViewHolder(itemView: View?,
-                           private val onGoToPowerMerchant: (String?) -> Unit,
+                           private val onGoToPowerMerchant: (String?, Boolean) -> Unit,
                            private val onErrorClicked: () -> Unit,
                            private val onShopStatusImpression: (ShopType) -> Unit) :
     AbstractViewHolder<ShopStatusWidgetUiModel>(itemView) {
@@ -66,6 +66,11 @@ class ShopStatusViewHolder(itemView: View?,
     }
 
     private fun setShopStatusSuccessLayout(shopType: ShopType) {
+        shopStatusDescTextView?.run {
+            setOnClickListener(null)
+            isClickable = false
+        }
+
         when (shopType) {
             is RegularMerchant -> setRegularMerchantLayout()
             is PowerMerchantStatus -> setPowerMerchantLayout(shopType)
@@ -83,7 +88,7 @@ class ShopStatusViewHolder(itemView: View?,
     }
 
     private fun setRegularMerchantLayout() {
-        setTitle(R.string.regular_merchant)
+        setTitle(com.tokopedia.seller.menu.common.R.string.regular_merchant)
         setDescription(
             R.string.sah_new_other_status_upgrade,
             com.tokopedia.unifyprinciples.R.color.Unify_GN500
@@ -95,12 +100,12 @@ class ShopStatusViewHolder(itemView: View?,
         successOsLayout?.gone()
 
         onItemViewClicked = {
-            onGoToPowerMerchant(TAB_PM)
+            onGoToPowerMerchant(TAB_PM, false)
         }
     }
 
     private fun setPowerMerchantLayout(powerMerchantStatus: PowerMerchantStatus) {
-        setTitle(R.string.power_merchant_upgrade)
+        setTitle(com.tokopedia.seller.menu.common.R.string.power_merchant_upgrade)
         when (powerMerchantStatus) {
             is PowerMerchantStatus.Active -> {
                 setDescription(
@@ -108,10 +113,16 @@ class ShopStatusViewHolder(itemView: View?,
                     com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
                 warningIcon?.gone()
+                shopStatusDescTextView?.run {
+                    isClickable = true
+                    setOnClickListener {
+                        onGoToPowerMerchant(TAB_PM_PRO, true)
+                    }
+                }
             }
             is PowerMerchantStatus.NotActive -> {
                 setDescription(
-                    R.string.setting_not_active,
+                    com.tokopedia.seller.menu.common.R.string.setting_not_active,
                     com.tokopedia.unifyprinciples.R.color.Unify_RN500
                 )
                 warningIcon?.show()
@@ -122,7 +133,7 @@ class ShopStatusViewHolder(itemView: View?,
         successOsLayout?.gone()
 
         onItemViewClicked = {
-            onGoToPowerMerchant(TAB_PM_PRO)
+            onGoToPowerMerchant(TAB_PM_PRO, false)
         }
     }
 
@@ -161,7 +172,7 @@ class ShopStatusViewHolder(itemView: View?,
         successOsLayout?.gone()
 
         onItemViewClicked = {
-            onGoToPowerMerchant(TAB_PM_PRO)
+            onGoToPowerMerchant(TAB_PM_PRO, false)
         }
     }
 
@@ -171,7 +182,7 @@ class ShopStatusViewHolder(itemView: View?,
         loadingLayout?.gone()
         errorLayout?.gone()
         onItemViewClicked = {
-            onGoToPowerMerchant(null)
+            onGoToPowerMerchant(null, false)
         }
     }
 

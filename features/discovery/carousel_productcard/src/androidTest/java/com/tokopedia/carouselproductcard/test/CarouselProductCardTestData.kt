@@ -23,6 +23,7 @@ internal val carouselProductCardTestData = mutableListOf<List<ProductCardModel>>
     it.add(createCarouselProductCardGridAddVariant())
     it.add(createCarouselProductCardStockBarAndAddToCartNonVariant())
     it.add(createCarouselProductCardStockBarAndAddToCartVariant())
+    it.add(createCarouselShortProductCardWithStockBar())
 }
 
 private fun createSmallProductCard(): ProductCardModel {
@@ -589,6 +590,41 @@ private fun createCarouselProductCardStockBarAndAddToCartVariant(): List<Product
         ),
         ProductCardModel(
             productName = "Product Card with Stock bar and variant ATC",
+            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            formattedPrice = "Rp7.999.000",
+            variant = ProductCardModel.Variant(quantity = 100),
+            stockBarLabel = "Tersedia",
+            stockBarPercentage = 25,
+        ),
+        createSmallProductCard(),
+        createSmallProductCard(),
+        createSmallProductCard(),
+        createSmallProductCard(),
+    )
+}
+
+private fun createCarouselShortProductCardWithStockBar(): List<ProductCardModel> {
+    return listOf(
+        ProductCardModel(
+            productName = "Short name 1",
+            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            formattedPrice = "Rp7.999.000",
+            variant = ProductCardModel.Variant(quantity = 0),
+            stockBarLabel = "Segera Habis",
+            stockBarPercentage = 80,
+            stockBarLabelColor = "#ef144a",
+        ),
+        ProductCardModel(
+            productName = "Short name 2",
+            productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            formattedPrice = "Rp7.999.000",
+            variant = ProductCardModel.Variant(quantity = 2),
+            stockBarLabel = "Tersedia",
+            stockBarPercentage = 80,
+            stockBarLabelColor = "#ef144a",
+        ),
+        ProductCardModel(
+            productName = "Short name 3",
             productImageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
             formattedPrice = "Rp7.999.000",
             variant = ProductCardModel.Variant(quantity = 100),

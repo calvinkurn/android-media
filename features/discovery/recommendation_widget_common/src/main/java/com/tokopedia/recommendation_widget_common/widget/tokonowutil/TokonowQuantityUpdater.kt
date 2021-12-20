@@ -41,10 +41,14 @@ object TokonowQuantityUpdater {
         data: RecommendationCarouselData,
         recomItem: RecommendationItem
     ) {
-        data.recommendationData.recommendationItemList.forEach loop@{ item ->
+        val newdata = mutableListOf<RecommendationItem>()
+        data.recommendationData.recommendationItemList.forEach { item ->
             if (item.productId == recomItem.productId) {
-                item.currentQuantity = recomItem.currentQuantity
-                return@loop
+                val copyItem = item.copy()
+                copyItem.onCardQuantityChanged(recomItem.currentQuantity)
+                newdata.add(copyItem)
+            } else {
+                newdata.add(item)
             }
         }
     }

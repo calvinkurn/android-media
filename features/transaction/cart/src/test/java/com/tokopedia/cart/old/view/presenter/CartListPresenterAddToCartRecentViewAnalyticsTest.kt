@@ -8,12 +8,12 @@ import com.tokopedia.cart.old.domain.usecase.*
 import com.tokopedia.cart.old.view.CartListPresenter
 import com.tokopedia.cart.old.view.ICartListView
 import com.tokopedia.cart.old.view.uimodel.CartRecentViewItemHolderData
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceAdd
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
@@ -39,13 +39,13 @@ object CartListPresenterAddToCartRecentViewAnalyticsTest : Spek({
     val addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()
     val updateCartUseCase: UpdateCartUseCase = mockk()
     val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase = mockk()
-    val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase = mockk()
+    val validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase = mockk()
     val compositeSubscription = CompositeSubscription()
     val addWishListUseCase: AddWishListUseCase = mockk()
     val removeWishListUseCase: RemoveWishListUseCase = mockk()
     val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
     val userSessionInterface: UserSessionInterface = mockk()
-    val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
+    val clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase = mockk()
     val getRecentViewUseCase: GetRecommendationUseCase = mockk()
     val getWishlistUseCase: GetWishlistUseCase = mockk()
     val getRecommendationUseCase: GetRecommendationUseCase = mockk()

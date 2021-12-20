@@ -5,10 +5,10 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.search.R
+import com.tokopedia.search.databinding.SearchResultProductBannerLayoutBinding
 import com.tokopedia.search.result.presentation.model.BannerDataView
 import com.tokopedia.search.result.presentation.view.listener.BannerListener
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class BannerViewHolder(itemView: View, private val bannerListener: BannerListener): AbstractViewHolder<BannerDataView>(itemView) {
 
@@ -18,13 +18,7 @@ class BannerViewHolder(itemView: View, private val bannerListener: BannerListene
         val LAYOUT = R.layout.search_result_product_banner_layout
     }
 
-    private var bannerText: Typography? = null
-    private var bannerImage: ImageUnify? = null
-
-    init {
-        bannerText = itemView.findViewById(R.id.searchProductBannerText)
-        bannerImage = itemView.findViewById(R.id.searchProductBannerImage)
-    }
+    private var binding: SearchResultProductBannerLayoutBinding? by viewBinding()
 
     override fun bind(element: BannerDataView?) {
         element ?: return
@@ -34,21 +28,25 @@ class BannerViewHolder(itemView: View, private val bannerListener: BannerListene
     }
 
     private fun bindBannerText(element: BannerDataView) {
-        bannerText?.shouldShowWithAction(element.text.isNotEmpty()) {
-            bannerText?.text = element.text
+        binding?.searchProductBannerText?.let {
+            it.shouldShowWithAction(element.text.isNotEmpty()) {
+                it.text = element.text
+            }
         }
     }
 
     private fun bindBannerImage(element: BannerDataView) {
-        bannerImage?.shouldShowWithAction(element.imageUrl.isNotEmpty()) {
-            bannerImage?.setImageUrl(element.imageUrl)
+        binding?.searchProductBannerImage?.let {
+            it.shouldShowWithAction(element.imageUrl.isNotEmpty()) {
+                it.setImageUrl(element.imageUrl)
 
-            if (element.applink.isNotEmpty()) {
-                bannerImage?.setOnClickListener {
-                    bannerListener.onBannerClicked(element)
+                if (element.applink.isNotEmpty()) {
+                    it.setOnClickListener {
+                        bannerListener.onBannerClicked(element)
+                    }
+                } else {
+                    it.setOnClickListener(null)
                 }
-            } else {
-                bannerImage?.setOnClickListener(null)
             }
         }
     }

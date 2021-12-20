@@ -75,7 +75,7 @@ import kotlin.math.abs
  * @author by jessica on 29/03/21
  */
 
-class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.ActionListener,
+open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.ActionListener,
         EmoneyPdpInputCardNumberWidget.ActionListener, EmoneyPdpProductViewHolder.ActionListener,
         EmoneyPdpBottomCheckoutWidget.ActionListener {
 
@@ -83,7 +83,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelFactory) }
     private val topUpBillsViewModel by lazy { viewModelFragmentProvider.get(TopupBillsViewModel::class.java) }
-    private val emoneyPdpViewModel by lazy { viewModelFragmentProvider.get(EmoneyPdpViewModel::class.java) }
+    protected val emoneyPdpViewModel by lazy { viewModelFragmentProvider.get(EmoneyPdpViewModel::class.java) }
     private val addToCartViewModel by lazy { viewModelFragmentProvider.get(DigitalAddToCartViewModel::class.java) }
 
     @Inject
@@ -597,7 +597,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         }
     }
 
-    private fun navigateToCart(categoryId: String) {
+    protected open fun navigateToCart(categoryId: String) {
         context?.let { context ->
             val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.CHECKOUT_DIGITAL)
             emoneyPdpViewModel.digitalCheckoutPassData.categoryId = categoryId
@@ -685,13 +685,13 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         private const val TAB_COUNT_THRESHOLD_NUMBER = 1
         private const val REQUEST_CODE_EMONEY_PDP_CHECK_SALDO = 1007
         private const val REQUEST_CODE_EMONEY_PDP_CAMERA_OCR = 1008
-        private const val REQUEST_CODE_CART_DIGITAL = 1090
+        const val REQUEST_CODE_CART_DIGITAL = 1090
         private const val REQUEST_CODE_EMONEY_PDP_DIGITAL_SEARCH_NUMBER = 1004
         private const val REQUEST_CODE_LOGIN = 1010
 
         private const val MAX_CHAR_EMONEY_CARD_NUMBER = 16
 
-        private const val EXTRA_PARAM_DIGITAL_CATEGORY_DETAIL_PASS_DATA = "EXTRA_PARAM_PASS_DATA"
+        const val EXTRA_PARAM_DIGITAL_CATEGORY_DETAIL_PASS_DATA = "EXTRA_PARAM_PASS_DATA"
         private const val EXTRA_USER_INPUT_EMONEY_NUMBER = "EXTRA_USER_INPUT_EMONEY_NUMBER"
         private const val EXTRA_EMONEY_DETAIL_PASS_DATA = "EXTRA_EMONEY_DETAIL_PASS_DATA"
 

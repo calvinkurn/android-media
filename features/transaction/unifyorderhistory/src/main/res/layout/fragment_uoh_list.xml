@@ -1,67 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <View
-        android:visibility="invisible"
         android:id="@+id/statusbar"
-        android:background="@color/Unify_N0"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_25"
+        android:background="@color/Unify_N0"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.searchbar.navigation_component.NavToolbar
         android:id="@+id/uoh_navtoolbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:visibility="visible"
-        app:toolbarPageName="@string/page_name_uoh"
-        app:layout_constraintTop_toBottomOf="@+id/statusbar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
-        app:toolbarContentType="typeSearchbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/statusbar"
+        app:toolbarAlwaysShowShadow="false"
         app:toolbarBackButton="none"
+        app:toolbarContentType="typeSearchbar"
         app:toolbarInitialTheme="light"
         app:toolbarInvertSearchBarColor="true"
-        app:toolbarAlwaysShowShadow="false" />
+        app:toolbarPageName="@string/page_name_uoh" />
 
     <com.tokopedia.sortfilter.SortFilter
         android:id="@+id/uoh_sort_filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/uoh_navtoolbar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_marginTop="12dp"
         android:layout_marginStart="12dp"
-        android:paddingBottom="12dp"/>
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal"
+        android:paddingBottom="12dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/uoh_navtoolbar" />
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/uoh_sort_filter"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginStart="12dp"
         android:layout_marginLeft="12dp"
         android:layout_marginEnd="12dp"
-        android:layout_marginRight="12dp">
+        android:layout_marginRight="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/uoh_sort_filter">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_order_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"/>
+            android:visibility="visible" />
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 

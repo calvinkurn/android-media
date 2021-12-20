@@ -42,7 +42,6 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         private const val PARAM_SHOP_DOMAIN = "shop_domain"
         private const val PARAM_PRODUCT_KEY = "product_key"
         private const val PARAM_IS_FROM_DEEPLINK = "is_from_deeplink"
-        private const val IS_FROM_EXPLORE_AFFILIATE = "is_from_explore_affiliate"
         private const val PARAM_TRACKER_ATTRIBUTION = "tracker_attribution"
         private const val PARAM_TRACKER_LIST_NAME = "tracker_list_name"
         private const val PARAM_AFFILIATE_STRING = "aff"
@@ -76,7 +75,6 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     }
 
     private var isFromDeeplink = false
-    private var isFromAffiliate: Boolean? = false
     private var shopDomain: String? = null
     private var productKey: String? = null
     private var productId: String? = null
@@ -221,7 +219,6 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         shopDomain,
         productKey,
         isFromDeeplink,
-        isFromAffiliate ?: false,
         trackerAttribution,
         trackerListName,
         affiliateString = affiliateString,
@@ -264,7 +261,6 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
             trackerListName = uri.getQueryParameter(PARAM_TRACKER_LIST_NAME)
             affiliateString = uri.getQueryParameter(PARAM_AFFILIATE_STRING)
             affiliateUniqueId = uri.getQueryParameter(PARAM_AFFILIATE_UNIQUE_ID)
-            isFromAffiliate = !uri.getQueryParameter(IS_FROM_EXPLORE_AFFILIATE).isNullOrEmpty()
             extParam = uri.getQueryParameter(PARAM_EXT_PARAM)
         }
         bundle?.let {

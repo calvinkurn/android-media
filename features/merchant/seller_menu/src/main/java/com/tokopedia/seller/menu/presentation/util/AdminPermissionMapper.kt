@@ -49,7 +49,7 @@ class AdminPermissionMapper @Inject constructor(private val userSession: UserSes
     fun mapFeatureToDestination(context: Context, @AdminFeature adminFeature: String): Intent? {
         return when (adminFeature) {
             AdminFeature.SHOP_SCORE -> {
-                RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL, userSession.shopId)
+                RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
             }
             AdminFeature.NEW_ORDER -> {
                 RouteManager.getIntent(context, ApplinkConst.SELLER_NEW_ORDER)

@@ -5,6 +5,9 @@ apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply from: "../../../compile-instrument-test.gradle"
 
 android{
+    buildFeatures {
+        viewBinding true
+    }
     testOptions {
         unitTests {
             includeAndroidResources = true
@@ -61,6 +64,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.features.searchbar)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.icons

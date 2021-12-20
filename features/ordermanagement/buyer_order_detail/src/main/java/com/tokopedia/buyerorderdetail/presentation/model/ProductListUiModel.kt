@@ -2,11 +2,12 @@ package com.tokopedia.buyerorderdetail.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
+import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
 import com.tokopedia.kotlin.extensions.view.orZero
 
 data class ProductListUiModel(
         val productList: List<ProductUiModel>,
-        val productBundlingList: List<ProductBundlingUiModel>?,
+        val productBundlingList: List<ProductBundlingUiModel>,
         val productListHeaderUiModel: ProductListHeaderUiModel
 ) {
     data class ProductListHeaderUiModel(
@@ -24,6 +25,10 @@ data class ProductListUiModel(
 
         override fun shouldShow(): Boolean {
             return header.isNotBlank()
+        }
+
+        override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {
+            return null
         }
     }
 
@@ -51,6 +56,10 @@ data class ProductListUiModel(
 
         override fun shouldShow(): Boolean {
             return true
+        }
+
+        override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {
+            return null
         }
     }
 

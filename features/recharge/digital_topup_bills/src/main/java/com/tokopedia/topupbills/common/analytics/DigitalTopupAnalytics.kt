@@ -2,12 +2,14 @@ package com.tokopedia.topupbills.common.analytics
 
 import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.common.topupbills.analytics.CommonTopupBillsEventTracking
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
+import com.tokopedia.common_digital.common.constant.DigitalTrackingConst
 import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking.Additional.Companion.REGULAR_PRODUCT
 import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking.Additional.Companion.SPECIAL_PROMO
 import com.tokopedia.topupbills.telco.data.TelcoProduct
@@ -530,6 +532,90 @@ class DigitalTopupAnalytics {
                         DigitalTopupEventTracking.Additional.CURRENT_SITE to DigitalTopupEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
                         DigitalTopupEventTracking.Additional.USER_ID to userId,
                 )
+        )
+    }
+
+    fun impressionFavoriteNumberChips(categoryId: Int, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                TrackAppUtils.EVENT, DigitalTopupEventTracking.Event.DIGITAL_GENERAL_EVENT_IRIS,
+                TrackAppUtils.EVENT_CATEGORY, DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                TrackAppUtils.EVENT_ACTION, DigitalTopupEventTracking.Action.VIEW_FAVORITE_NUMBER_CHIP,
+                TrackAppUtils.EVENT_LABEL, getTrackingCategoryName(categoryId),
+                DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
+                DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
+                DigitalTopupEventTracking.Additional.USER_ID, userId,
+            )
+        )
+    }
+
+    fun clickFavoriteNumberChips(categoryId: Int, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                TrackAppUtils.EVENT, DigitalTopupEventTracking.Event.DIGITAL_GENERAL_EVENT,
+                TrackAppUtils.EVENT_CATEGORY, DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                TrackAppUtils.EVENT_ACTION, DigitalTopupEventTracking.Action.CLICK_FAVORITE_NUMBER_CHIP,
+                TrackAppUtils.EVENT_LABEL, getTrackingCategoryName(categoryId),
+                DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
+                DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
+                DigitalTopupEventTracking.Additional.USER_ID, userId,
+            )
+        )
+    }
+
+    fun impressionFavoriteContactChips(categoryId: Int, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                TrackAppUtils.EVENT, DigitalTopupEventTracking.Event.DIGITAL_GENERAL_EVENT_IRIS,
+                TrackAppUtils.EVENT_CATEGORY, DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                TrackAppUtils.EVENT_ACTION, DigitalTopupEventTracking.Action.VIEW_FAVORITE_CONTACT_CHIP,
+                TrackAppUtils.EVENT_LABEL, getTrackingCategoryName(categoryId),
+                DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
+                DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
+                DigitalTopupEventTracking.Additional.USER_ID, userId,
+            )
+        )
+    }
+
+    fun clickFavoriteContactChips(categoryId: Int, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                TrackAppUtils.EVENT, DigitalTopupEventTracking.Event.DIGITAL_GENERAL_EVENT,
+                TrackAppUtils.EVENT_CATEGORY, DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                TrackAppUtils.EVENT_ACTION, DigitalTopupEventTracking.Action.CLICK_FAVORITE_CONTACT_CHIP,
+                TrackAppUtils.EVENT_LABEL, getTrackingCategoryName(categoryId),
+                DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
+                DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
+                DigitalTopupEventTracking.Additional.USER_ID, userId,
+            )
+        )
+    }
+
+    fun clickFavoriteNumberAutoComplete(categoryId: Int, operatorName: String, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                TrackAppUtils.EVENT, DigitalTopupEventTracking.Event.DIGITAL_GENERAL_EVENT,
+                TrackAppUtils.EVENT_CATEGORY, DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                TrackAppUtils.EVENT_ACTION, DigitalTopupEventTracking.Action.CLICK_AUTOCOMPLETE_FAVORITE_NUMBER,
+                TrackAppUtils.EVENT_LABEL, "${getTrackingCategoryName(categoryId)} - $operatorName",
+                DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
+                DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
+                DigitalTopupEventTracking.Additional.USER_ID, userId,
+            )
+        )
+    }
+
+    fun clickFavoriteContactAutoComplete(categoryId: Int, operatorName: String, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                TrackAppUtils.EVENT, DigitalTopupEventTracking.Event.DIGITAL_GENERAL_EVENT,
+                TrackAppUtils.EVENT_CATEGORY, DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                TrackAppUtils.EVENT_ACTION, DigitalTopupEventTracking.Action.CLICK_AUTOCOMPLETE_FAVORITE_CONTACT,
+                TrackAppUtils.EVENT_LABEL, "${getTrackingCategoryName(categoryId)} - $operatorName",
+                DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
+                DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
+                DigitalTopupEventTracking.Additional.USER_ID, userId,
+            )
         )
     }
 

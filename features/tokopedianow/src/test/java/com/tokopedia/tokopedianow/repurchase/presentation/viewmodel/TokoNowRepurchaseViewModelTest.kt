@@ -11,13 +11,18 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.data.*
 import com.tokopedia.tokopedianow.data.createChooseAddressLayout
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAddToCartTracker
+import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics
+import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.VALUE.REPURCHASE_TOKONOW
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_HISTORY_FILTER
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_HISTORY_SEARCH
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_RESULT
@@ -39,6 +44,12 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
+    @Test
+    fun `when tracking with setting screenName should give the same result`() {
+        viewModel.trackOpeningScreen(REPURCHASE_TOKONOW)
+        verifyTrackOpeningScreen()
+    }
+
     @Test
     fun `when showing loading layout should run and give the success result`() {
         viewModel.showLoading()
@@ -326,7 +337,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
     fun `when getMiniCart error should set miniCart value FAIL`() {
         val error = NullPointerException()
 
-        onGetMiniCart_thenReturn(error)
+        onGetMiniCart_throwException(error)
         onGetUserLoggedIn_thenReturn(isLoggedIn = true)
 
         viewModel.getMiniCart(listOf("1"), "1")
@@ -1039,7 +1050,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             shop_id = "1001"
         )
 
-        onGetMiniCart_thenReturn(error)
+        onGetMiniCart_throwException(error)
         onGetUserLoggedIn_thenReturn(isLoggedIn = true)
 
         viewModel.setLocalCacheModel(localCacheModel)

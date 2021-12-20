@@ -59,8 +59,6 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.kotlinMockito2
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.assertJCore
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.tkpddesign)
-    testImplementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
