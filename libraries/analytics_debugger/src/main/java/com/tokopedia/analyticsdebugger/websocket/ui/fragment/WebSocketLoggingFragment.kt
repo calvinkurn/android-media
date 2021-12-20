@@ -143,6 +143,11 @@ class WebSocketLoggingFragment: Fragment() {
         }
 
         rvWebsocketLog.addOnScrollListener(scrollListener)
+
+        swipeRefresh.setOnRefreshListener {
+            viewModel.submitAction(WebSocketLoggingAction.SearchLogAction(etSearchWebSocketLog.searchText))
+            swipeRefresh.isRefreshing = false
+        }
     }
 
     /**
