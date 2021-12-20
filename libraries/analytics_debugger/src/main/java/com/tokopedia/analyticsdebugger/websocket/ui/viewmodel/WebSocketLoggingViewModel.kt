@@ -11,10 +11,7 @@ import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.event.WebSocketLoggi
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.state.WebSocketLogPagination
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.state.WebSocketLoggingState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
-import java.util.concurrent.Flow
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 /**
@@ -38,7 +35,7 @@ class WebSocketLoggingViewModel @Inject constructor(
             webSocketLogPagination = websocketLogPagination,
             loading = loading,
         )
-    }
+    }.flowOn(dispatchers.computation)
 
     val uiEvent: Flow<WebSocketLoggingEvent>
         get() = _uiEvent
