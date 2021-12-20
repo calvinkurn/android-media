@@ -120,12 +120,12 @@ class WebSocketLoggingViewModel @Inject constructor(
 
     private suspend fun getWebSocketLog(query: String, page: Int): List<WebSocketLogUiModel> {
         return getWebSocketLogUseCase.let {
-            it.setParam(query, page, PAGINATION_OFFSET)
+            it.setParam(query, page, PAGINATION_LIMIT)
             it.executeOnBackground()
         }
     }
 
     private companion object {
-        const val PAGINATION_OFFSET = 20
+        const val PAGINATION_LIMIT = 20
     }
 }
