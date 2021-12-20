@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.common.viewholder
 
 import android.view.View
+import android.widget.RelativeLayout
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -42,6 +43,7 @@ class TokoNowCategoryGridViewHolder(
     private var llCategory: LocalLoad? = null
     private var rvCategory: RecyclerView? = null
     private var categoryShimmering: View? = null
+    private var categoryHeader: RelativeLayout? = null
 
     private val adapter by lazy { TokoNowCategoryGridAdapter(TokoNowCategoryGridAdapterTypeFactory(this), TokoNowCategoryGridDiffer()) }
 
@@ -52,7 +54,7 @@ class TokoNowCategoryGridViewHolder(
     override fun bind(data: TokoNowCategoryGridUiModel) {
         when(data.state) {
             TokoNowLayoutState.SHOW -> showCategoryGrid(data)
-            TokoNowLayoutState.LOADING -> showLoadingState(data)
+            TokoNowLayoutState.LOADING -> showLoadingState()
             TokoNowLayoutState.HIDE -> showLocalLoad(data)
         }
     }
@@ -71,12 +73,13 @@ class TokoNowCategoryGridViewHolder(
         llCategory = binding?.llCategory
         rvCategory = binding?.rvCategory
         categoryShimmering = binding?.categoryShimmering?.categoryShimmeringLayout
+        categoryHeader = binding?.categoryHeader
     }
 
-    private fun showLoadingState(data: TokoNowCategoryGridUiModel) {
-        tvTitle?.text = data.title
+    private fun showLoadingState() {
         llCategory?.hide()
         rvCategory?.hide()
+        categoryHeader?.hide()
         categoryShimmering?.show()
     }
 
@@ -90,13 +93,15 @@ class TokoNowCategoryGridViewHolder(
 
         rvCategory?.apply {
             adapter = this@TokoNowCategoryGridViewHolder.adapter
-            layoutManager = GridLayoutManager(context, GRID_SPAN_COUNT)
+            layoutManager = GridLayoutManager(context, GRID_SPAN_COUNT, RecyclerView.HORIZONTAL, false)
         }
 
         adapter.submitList(data.categoryList.orEmpty())
 
         categoryShimmering?.hide()
         llCategory?.hide()
+        tvSeeAll?.show()
+        categoryHeader?.show()
         rvCategory?.show()
     }
 
@@ -111,9 +116,10 @@ class TokoNowCategoryGridViewHolder(
             }
             tvTitle?.text = data.title
         }
-
+        tvSeeAll?.hide()
         categoryShimmering?.hide()
         rvCategory?.hide()
+        categoryHeader?.show()
         llCategory?.show()
     }
 
