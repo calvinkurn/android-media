@@ -78,6 +78,9 @@ class WebSocketLoggingFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        viewModel = ViewModelProvider(this, viewModelFactory).get(WebSocketLoggingViewModel::class.java)
+        viewModel.submitAction(WebSocketLoggingAction.SearchLogAction(""))
     }
 
     override fun onCreateView(
@@ -85,7 +88,6 @@ class WebSocketLoggingFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = ViewModelProvider(this, viewModelFactory).get(WebSocketLoggingViewModel::class.java)
         return inflater.inflate(R.layout.fragment_websocket_logging, container, false)
     }
 
@@ -93,8 +95,6 @@ class WebSocketLoggingFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         initObserver()
-
-        viewModel.submitAction(WebSocketLoggingAction.SearchLogAction(""))
     }
 
     override fun onDestroyView() {
