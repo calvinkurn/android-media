@@ -15,7 +15,8 @@ object ReviewCredibilityTracking {
                 ReviewTrackingConstant.EVENT_CATEGORY to getEventCategoryBasedOnSource(source),
                 ReviewTrackingConstant.EVENT_LABEL to String.format(
                     ReviewCredibilityTrackingConstant.EVENT_LABEL_CLICK_CTA,
-                    ctaValue
+                    ctaValue,
+                    userId
                 ),
                 ReviewTrackingConstant.KEY_BUSINESS_UNIT to ReviewTrackingConstant.BUSINESS_UNIT,
                 ReviewTrackingConstant.KEY_CURRENT_SITE to ReviewTrackingConstant.CURRENT_SITE,
