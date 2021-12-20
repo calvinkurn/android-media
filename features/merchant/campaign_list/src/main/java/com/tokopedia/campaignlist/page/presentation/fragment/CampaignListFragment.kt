@@ -312,11 +312,10 @@ class CampaignListFragment : BaseDaggerFragment(),
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.DATE , value = merchantBannerData.formattedSharingEndDate)
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.ONGOING , value = _isOngoing.toString())
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCTS_COUNT , value = _totalProducts.toString())
-
-            if (_totalProducts > INDEX_FOUR) {
-                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCTS_OVERLOAD , value = _totalProducts.toString())
-            }
-
+            addImageGeneratorData(
+                key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCTS_OVERLOAD,
+                value = viewModel.calculateOverloadProductCount(_totalProducts).toString()
+            )
             if (_totalProducts >= INDEX_ONE) {
                 val _imgUrl = productData.get(INDEX_ZERO).imageUrl
                 val _originalPrice = productData.get(INDEX_ZERO).productCampaign.originalPriceFmt

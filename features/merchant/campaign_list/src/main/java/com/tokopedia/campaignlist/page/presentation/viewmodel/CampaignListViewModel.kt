@@ -36,6 +36,7 @@ class CampaignListViewModel @Inject constructor(
     companion object {
         const val NPL_ICON_URL = "https://images.tokopedia.net/img/android/campaign_list/npl_icon.png"
         private const val ONGOING_STATUS_ID = "7"
+        private const val NO_OVERLOAD_PRODUCT = 0
     }
 
     private var campaignName = ""
@@ -257,6 +258,16 @@ class CampaignListViewModel @Inject constructor(
                 val template = resourceProvider.getShareOgDescription() ?: ""
                 String.format(template, shopName)
             }
+        }
+    }
+
+    fun calculateOverloadProductCount(totalProductCount: Int): Int {
+        val displayedProductCount = 3
+        val overloadProductCount = totalProductCount - displayedProductCount
+        return if (overloadProductCount <= NO_OVERLOAD_PRODUCT) {
+            NO_OVERLOAD_PRODUCT
+        } else {
+            overloadProductCount
         }
     }
 }
