@@ -12,8 +12,9 @@ import com.tokopedia.utils.view.binding.internal.findRootView
 import com.tokopedia.utils.view.binding.internal.requireViewByIdCompat
 
 private class ActivityViewBindingProperty<in A : ComponentActivity, T : ViewBinding?>(
-        viewBinder: (A) -> T?
-) : LifecycleViewBindingProperty<A, T>(viewBinder) {
+        viewBinder: (A) -> T?,
+        onClear: T?.() -> Unit? = {}
+) : LifecycleViewBindingProperty<A, T>(viewBinder, onClear) {
 
     override fun getLifecycleOwner(thisRef: A): LifecycleOwner {
         return thisRef
@@ -23,24 +24,33 @@ private class ActivityViewBindingProperty<in A : ComponentActivity, T : ViewBind
 
 @JvmName("viewBindingActivity")
 fun <A : ComponentActivity, T : ViewBinding> viewBinding(
-        viewBinder: (A) -> T
+        viewBinder: (A) -> T,
+        onClear: T?.() -> Unit? = {}
 ): ViewBindingProperty<A, T> {
-    return ActivityViewBindingProperty(viewBinder)
+    return ActivityViewBindingProperty(viewBinder, onClear)
 }
 
 @JvmName("viewBindingActivity")
 inline fun <A : ComponentActivity, T : ViewBinding> viewBinding(
         crossinline viewBindingFactory: (View) -> T,
-        crossinline viewProvider: (A) -> View = ::findRootView
+        crossinline viewProvider: (A) -> View = ::findRootView,
+        noinline onClear: T?.() -> Unit? = {}
 ): ViewBindingProperty<A, T> {
-    return viewBinding { activity -> viewBindingFactory(viewProvider(activity)) }
+    return viewBinding(
+        { activity -> viewBindingFactory(viewProvider(activity)) },
+        onClear
+    )
 }
 
 @Suppress("unused")
 @JvmName("viewBindingActivity")
 inline fun <T : ViewBinding> ComponentActivity.viewBinding(
         crossinline viewBindingFactory: (View) -> T,
-        @IdRes viewBindingRootId: Int
+        @IdRes viewBindingRootId: Int,
+        noinline onClear: T?.() -> Unit? = {}
 ): ViewBindingProperty<ComponentActivity, T> {
-    return viewBinding { activity -> viewBindingFactory(activity.requireViewByIdCompat(viewBindingRootId)) }
+    return viewBinding(
+        { activity -> viewBindingFactory(activity.requireViewByIdCompat(viewBindingRootId)) },
+        onClear
+    )
 }

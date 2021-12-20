@@ -204,7 +204,7 @@ class SellerReviewListActivityTest {
     }
 
     private fun getRatingProductFragment(): RatingProductFragment {
-        return activityRule.activity.fragmentList[0] as RatingProductFragment
+        return activityRule.activity.getFragmentList().filterIsInstance<RatingProductFragment>().first()
     }
 
     private fun waitForResume() {

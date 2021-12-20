@@ -5,6 +5,9 @@ package com.tokopedia.otp.verification.domain.data
  * @created on 9/12/2019
  */
 
+const val ROLLANCE_KEY_MISCALL_OTP = "otp_miscall_new_ui"
+const val TAG_AUTO_READ = "autoread"
+
 object OtpConstant {
 
     const val OTP_DATA_EXTRA = "otp-data-extra"
@@ -31,5 +34,9 @@ object OtpConstant {
         const val VERIFY_USER_CHANGE_PHONE_NUMBER = 200
         const val AFTER_LOGIN_PHONE = 148
         const val RESET_PIN = 149
+
+        const val INACTIVE_PHONE_VERIFY_EMAIL = 160
+        const val INACTIVE_PHONE_VERIFY_PIN = 161
+        const val INACTIVE_PHONE_VERIFY_NEW_PHONE = 162
     }
 }

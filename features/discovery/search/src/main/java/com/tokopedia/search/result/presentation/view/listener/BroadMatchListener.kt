@@ -5,13 +5,15 @@ import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 
 interface BroadMatchListener {
-    fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView)
+    fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView)
 
     fun onBroadMatchSeeMoreClicked(broadMatchDataView: BroadMatchDataView)
 
-    fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView)
-
     fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView)
+
+    fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView)
+
+    fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView)
 
     val carouselRecycledViewPool: RecyclerView.RecycledViewPool?
 }

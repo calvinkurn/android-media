@@ -10,11 +10,12 @@
     android:paddingRight="16dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_constraint_promo_recommendation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/promo_checkout_marketplace_module_ic_promo_recommendation"
+        android:background="@color/dms_promo_checkout_recommendation_background_color"
         android:orientation="horizontal"
         android:paddingLeft="12dp"
         android:paddingTop="8dp"

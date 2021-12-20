@@ -5,34 +5,37 @@ import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.*
 
-open class PgRecommendationViewHolder(itemView: View,
-                                 private val buyerOrderDetailBindRecomWidgetListener: BuyerOrderDetailBindRecomWidgetListener) :
-        AbstractViewHolder<PGRecommendationWidgetUiModel>(itemView),
-        RecomCarouselWidgetBasicListener {
+open class PgRecommendationViewHolder(
+    itemView: View,
+    private val buyerOrderDetailBindRecomWidgetListener: BuyerOrderDetailBindRecomWidgetListener
+) :
+    AbstractViewHolder<PGRecommendationWidgetUiModel>(itemView),
+    RecomCarouselWidgetBasicListener {
 
     companion object {
         val LAYOUT = R.layout.buyer_order_detail_pg_recommendation_layout
     }
 
-    private val recomWidget: RecommendationCarouselWidgetView =
-            itemView.findViewById(R.id.widget_recom)
+    private val recomWidget: RecommendationCarouselWidgetView? =
+        itemView as? RecommendationCarouselWidgetView
 
     override fun bind(element: PGRecommendationWidgetUiModel) {
-        itemView.show()
         recomWidget.run {
-            buyerOrderDetailBindRecomWidgetListener.setViewToLifecycleOwner(this)
-            this.bind(
+            if (this == null) {
+                buyerOrderDetailBindRecomWidgetListener.hidePgRecommendation()
+            } else {
+                buyerOrderDetailBindRecomWidgetListener.setViewToLifecycleOwner(this)
+                this.bind(
                     pageName = element.pageName,
                     productIds = element.productIdList,
                     adapterPosition = adapterPosition,
                     basicListener = this@PgRecommendationViewHolder,
                     tokonowPageNameListener = null
-            )
+                )
+            }
         }
     }
 
@@ -46,12 +49,23 @@ open class PgRecommendationViewHolder(itemView: View,
     override fun onRecomChannelImpressed(data: RecommendationCarouselData) {
     }
 
-    override fun onRecomProductCardImpressed(data: RecommendationCarouselData, recomItem: RecommendationItem, itemPosition: Int, adapterPosition: Int) {
+    override fun onRecomProductCardImpressed(
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        itemPosition: Int,
+        adapterPosition: Int
+    ) {
         buyerOrderDetailBindRecomWidgetListener.onProductCardImpress(recomItem)
 
     }
 
-    override fun onRecomProductCardClicked(data: RecommendationCarouselData, recomItem: RecommendationItem, applink: String, itemPosition: Int, adapterPosition: Int) {
+    override fun onRecomProductCardClicked(
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        applink: String,
+        itemPosition: Int,
+        adapterPosition: Int
+    ) {
         buyerOrderDetailBindRecomWidgetListener.onProductCardClick(recomItem, applink)
 
     }
@@ -59,7 +73,11 @@ open class PgRecommendationViewHolder(itemView: View,
     override fun onRecomBannerImpressed(data: RecommendationCarouselData, adapterPosition: Int) {
     }
 
-    override fun onRecomBannerClicked(data: RecommendationCarouselData, applink: String, adapterPosition: Int) {
+    override fun onRecomBannerClicked(
+        data: RecommendationCarouselData,
+        applink: String,
+        adapterPosition: Int
+    ) {
     }
 
     override fun onChannelWidgetEmpty() {
@@ -68,6 +86,9 @@ open class PgRecommendationViewHolder(itemView: View,
 
     override fun onWidgetFail(pageName: String, e: Throwable) {
         buyerOrderDetailBindRecomWidgetListener.hidePgRecommendation()
+    }
+
+    override fun onShowError(pageName: String, e: Throwable) {
     }
 
     interface BuyerOrderDetailBindRecomWidgetListener {

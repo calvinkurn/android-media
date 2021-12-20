@@ -41,6 +41,8 @@ data class AffiliateRecommendedProductData(
                         val image: Image?,
                         @SerializedName("productID")
                         val productID: String?,
+                        @SerializedName("shopID")
+                        val shopID: String?,
                         @SerializedName("rating")
                         val rating: Int?,
                         @SerializedName("title")
