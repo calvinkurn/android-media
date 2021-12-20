@@ -47,8 +47,8 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
             val expectedResultShopBasicData = Success(shopBasicData)
             val expectedResultGoldGetPmOsStatus = Success(pmOsStatus)
 
-            assertTrue(shopSettingsInfoViewModel.shopBadgeData.value is Success)
-            shopSettingsInfoViewModel.shopBadgeData
+            assertTrue(shopSettingsInfoViewModel.shopInfoData.value is Success)
+            shopSettingsInfoViewModel.shopInfoData
                     .verifySuccessEquals(expectedResultShopBadget)
 
             assertTrue(shopSettingsInfoViewModel.shopBasicData.value is Success)
@@ -108,7 +108,7 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
 
             shopSettingsInfoViewModel.getShopData(shopId, includeOs)
 
-            assertTrue(shopSettingsInfoViewModel.shopBadgeData.value is Fail)
+            assertTrue(shopSettingsInfoViewModel.shopInfoData.value is Fail)
         }
     }
 
@@ -185,7 +185,7 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
         assertTrue(shopSettingsInfoViewModel.checkOsMerchantTypeData.value == null)
         assertTrue(shopSettingsInfoViewModel.shopStatusData.value == null)
         assertTrue(shopSettingsInfoViewModel.updateScheduleResult.value == null)
-        assertTrue(shopSettingsInfoViewModel.shopBadgeData.value == null)
+        assertTrue(shopSettingsInfoViewModel.shopInfoData.value == null)
 
     }
 

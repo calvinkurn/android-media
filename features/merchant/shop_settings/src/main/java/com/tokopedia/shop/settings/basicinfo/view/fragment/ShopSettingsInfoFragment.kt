@@ -34,6 +34,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_OPERATIONAL_HOURS_KEY
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_OPERATIONAL_HOURS_NO_KEY
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
+import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.common.remoteconfig.ShopAbTestPlatform
 import com.tokopedia.shop.common.util.OperationalHoursUtil
@@ -89,6 +90,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     private var shopId: String = "0"     // 67726 for testing
 
     private var progressDialog: ProgressDialog? = null
+    private var isShopClosedBySchedule: Boolean = false
     private var shopBadge: String = ""
     private var viewContent: ConstraintLayout? = null
     private var loadingView: LinearLayout? = null
@@ -261,7 +263,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
         onFragmentResult()
 
-        observeShopBadgeData()
+        observeShopInfoData()
         observeShopOperationalHourList()
         observeShopBasicData()
         observeShopStatus()
@@ -293,15 +295,19 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         tvRegularMerchantType = binding?.viewContent?.tvRegularMerchantType
     }
 
-    private fun observeShopBadgeData() {
-        shopSettingsInfoViewModel.shopBadgeData.observe(viewLifecycleOwner, Observer {
+    private fun observeShopInfoData() {
+        shopSettingsInfoViewModel.shopInfoData.observe(viewLifecycleOwner, Observer {
             if (it is Success) {
-                shopBadge = it.data
+                val shopInfoData = it.data
+                shopBadge = shopInfoData.goldOS.badge
                 if (tvPowerMerchantType?.text?.isNotEmpty() == true) {
                     ivLogoPowerMerchant?.loadImage(shopBadge)
                 } else if (tvOfficialStore?.text?.isNotEmpty() == true) {
                     ivLogoOfficialStore?.loadImage(shopBadge)
                 }
+
+                isShopClosedBySchedule = shopInfoData.closedInfo.closeDetail.status == ShopStatusDef.CLOSED
+                setUIShopBasicData(shopBasicDataModel ?: ShopBasicDataModel())
             }
         })
     }
@@ -320,10 +326,22 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                             opsHour.endTime,
                             opsHour.status
                     )
-                    tvShopStatus?.text = getString(
-                            R.string.shop_settings_info_operational_hours,
-                            opsHourText.trim()
-                    )
+                    tvShopStatus?.text = if (opsHourText == OperationalHoursUtil.HOLIDAY_CAN_ATC || opsHourText == OperationalHoursUtil.HOLIDAY_CANNOT_ATC) {
+                        opsHourText.trim()
+                    } else if (opsHourText == OperationalHoursUtil.ALL_DAY) {
+                        val opsHourTextParts = opsHourText.split(" ").toMutableList().apply {
+                            remove(first())
+                        }
+                        getString(
+                                R.string.shop_settings_info_operational_hours,
+                                opsHourTextParts.joinToString(" ").trim()
+                        )
+                    } else {
+                        getString(
+                                R.string.shop_settings_info_operational_hours,
+                                opsHourText.trim()
+                        )
+                    }
                 }
             }
         })
@@ -439,7 +457,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                         description = MethodChecker.fromHtml(description).toString()
                         tagline = MethodChecker.fromHtml(tagline).toString()
                     }
-                    setUIShopBasicData(shopBasicData)
                 }
                 is Fail -> {
                     onErrorGetShopBasicData(it.throwable)
@@ -552,10 +569,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
             }
 
             if (isGetNewOperationalHours) {
-                // render shop status text
                 if (shopBasicData.isClosed) {
-                    if (shopBasicData.closeSchedule != "0") {
-                        // is ongoing scheduled holiday
+                    if (isShopClosedBySchedule) {
+                        // is shop closed by schedule, then show its schedule.
                         val startDate = Date(shopBasicData.closeSchedule.toLongOrZero() * 1000L)
                         val endDate = Date(shopBasicData.closeUntil.toLongOrZero() * 1000L)
                         tvShopStatus?.text = getString(
@@ -563,6 +579,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                                 OperationalHoursUtil.toIndonesianDateRangeFormat(startDate, endDate, isShortDateFormat = true)
                         )
                     } else {
+                        // shop shop closed by weekly operational, then get operational hour list
                         shopSettingsInfoViewModel.getOperationalHoursList(shopId)
                     }
                 } else {

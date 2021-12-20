@@ -156,6 +156,15 @@ object GqlQueryConstant {
             "                }"
 
     const val SHOP_INFO_FOR_SHOP_SETTINGS_INFO_REQUEST_QUERY_STRING = "result {\n" +
+            "                    closedInfo {\n" +
+            "                       detail {\n" +
+            "                           startDate\n" +
+            "                           endDate\n" +
+            "                           status\n" +
+            "                       }\n" +
+            "                       closedNote\n" +
+            "                       until\n" +
+            "                    }" +
             "                    goldOS {\n" +
             "                       badge\n" +
             "                       isGold\n" +
