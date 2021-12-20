@@ -462,7 +462,13 @@ class CampaignListFragment : BaseDaggerFragment(),
             LinkerManager.getInstance().executeShareRequest(
                     LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                         override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                            val shareWording = viewModel.getShareDescriptionWording(shopData, campaignData, linkerShareData?.shareUri, campaignStatusId)
+                            val shareWording = viewModel.getShareDescriptionWording(
+                                    shopData = shopData,
+                                    campaignData = campaignData,
+                                    merchantBannerData = merchantBannerData,
+                                    shareUri = linkerShareData?.shareUri,
+                                    campaignStatusId = campaignStatusId
+                            )
                             SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareWording)
                             universalShareBottomSheet?.dismiss()
                         }
