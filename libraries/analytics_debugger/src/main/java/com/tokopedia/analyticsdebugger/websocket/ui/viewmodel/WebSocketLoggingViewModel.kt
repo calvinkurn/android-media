@@ -79,11 +79,11 @@ class WebSocketLoggingViewModel @Inject constructor(
                 val pagination = _websocketLogPagination.value
                 val newPage = pagination.page + 1
 
-                val webSocketLogList = getWebSocketLog(pagination.query, newPage)
+                val webSocketLogNextList = getWebSocketLog(pagination.query, newPage)
 
                 _loading.value = false
                 _websocketLogPagination.value = _websocketLogPagination.value.copy(
-                    webSocketLoggingList = webSocketLogList,
+                    webSocketLoggingList = pagination.webSocketLoggingList + webSocketLogNextList,
                     page = newPage
                 )
             }
