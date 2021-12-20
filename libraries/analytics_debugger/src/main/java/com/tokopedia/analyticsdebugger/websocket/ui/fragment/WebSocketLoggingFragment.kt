@@ -40,6 +40,7 @@ class WebSocketLoggingFragment: Fragment() {
 
     private lateinit var viewModel: WebSocketLoggingViewModel
     private val adapter: WebSocketLogAdapter by lazy(LazyThreadSafetyMode.NONE) { WebSocketLogAdapter() }
+    private val layoutManager = LinearLayoutManager(context)
 
     /**
      * View Attribute
@@ -85,7 +86,7 @@ class WebSocketLoggingFragment: Fragment() {
         swipeRefresh = view.findViewById(R.id.swipe_refresh_web_socket_log)
 
         rvWebsocketLog.apply {
-            layoutManager = LinearLayoutManager(requireContext())
+            layoutManager = this@WebSocketLoggingFragment.layoutManager
             adapter = this@WebSocketLoggingFragment.adapter
         }
     }
@@ -106,6 +107,23 @@ class WebSocketLoggingFragment: Fragment() {
                     }
                 }
             }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            rvWebsocketLog.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if(dy > 0) {
+                        val totalItem = layoutManager.itemCount
+                        val visibleItem = layoutManager.childCount
+                        val pastVisibleItem = layoutManager.findFirstVisibleItemPosition()
+
+                        if((visibleItem + pastVisibleItem) >= totalItem) {
+                            viewModel.submitAction(WebSocketLoggingAction.LoadNextPageAction)
+                        }
+                    }
+                }
+            })
         }
     }
 
