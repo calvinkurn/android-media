@@ -26,6 +26,16 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    testOptions {
+        unitTests.all {
+            jacoco {
+                includeNoLocationClasses = true
+                excludes = ['jdk.internal.*']       //This line
+            }
+        }
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
