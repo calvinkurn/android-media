@@ -15,6 +15,9 @@ data class WebSocketLogEntity (
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
 
+    @ColumnInfo(name = "source")
+    val source: String,
+
     @ColumnInfo(name = "channel_id")
     val channelId: String,
 

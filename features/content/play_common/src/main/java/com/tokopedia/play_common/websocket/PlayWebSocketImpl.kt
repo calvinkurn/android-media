@@ -70,10 +70,10 @@ class PlayWebSocketImpl(
         }
     }
 
-    override fun connect(url: String, channelId: String, gcToken: String) {
+    override fun connect(url: String, channelId: String, gcToken: String, source: String) {
         close()
         mWebSocket = client.newWebSocket(getRequest(url, userSession.accessToken), webSocketListener)
-        WebSocketLogger.getInstance(context).init(buildGeneralInfo(channelId, gcToken).toString())
+        WebSocketLogger.getInstance(context).init(buildGeneralInfo(channelId, gcToken, source).toString())
     }
 
     override fun close() {
@@ -99,8 +99,9 @@ class PlayWebSocketImpl(
                 .build()
     }
 
-    private fun buildGeneralInfo(channelId: String, gcToken: String): Map<String, String> {
+    private fun buildGeneralInfo(channelId: String, gcToken: String, source: String): Map<String, String> {
         return mapOf(
+            "source" to if(source.isEmpty()) "\"\"" else source,
             "channelId" to if(channelId.isEmpty()) "\"\"" else channelId,
             "gcToken" to if(gcToken.isEmpty()) "\"\"" else gcToken,
         )
