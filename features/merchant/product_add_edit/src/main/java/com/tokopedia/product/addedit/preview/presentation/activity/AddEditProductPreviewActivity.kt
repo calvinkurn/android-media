@@ -99,11 +99,6 @@ open class AddEditProductPreviewActivity: TabletAdaptiveActivity() {
         setupScreenShootGlobalFeedback()
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        if (DeviceScreenInfo.isTablet(this)) recreate()
-    }
-
     private fun setupNavController() {
         // passing data into fragment
         val bundle = Bundle().apply {
