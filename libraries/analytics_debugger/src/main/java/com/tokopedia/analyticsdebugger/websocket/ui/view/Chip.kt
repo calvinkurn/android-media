@@ -23,7 +23,6 @@ class Chip: FrameLayout {
     private val bgUnchecked = ContextCompat.getDrawable(context, R.drawable.bg_chip_unchecked)
 
     private var listener: Listener? = null
-    private var isChecked: Boolean = false
     var chipModel: ChipModel? = null
 
     init {
@@ -32,8 +31,8 @@ class Chip: FrameLayout {
         chipText = findViewById(R.id.chip_text)
 
         chipText.setOnClickListener {
-            if(!isChecked) {
-                chipModel?.let {
+            chipModel?.let {
+                if(!it.selected) {
                     setModel(it.copy(selected = true))
                     listener?.onCheckedListener(it)
                 }
@@ -48,18 +47,17 @@ class Chip: FrameLayout {
         setChecked(chipModel.selected)
     }
 
-    fun setText(text: String) {
+    private fun setText(text: String) {
         chipText.text = text
     }
 
-    fun setChecked(isChecked: Boolean) {
+    private fun setChecked(isChecked: Boolean) {
         if(isChecked) {
             chipText.background = bgChecked
         }
         else {
             chipText.background = bgUnchecked
         }
-        this.isChecked = isChecked
     }
 
     fun setOnCheckedListener(listener: Listener) {

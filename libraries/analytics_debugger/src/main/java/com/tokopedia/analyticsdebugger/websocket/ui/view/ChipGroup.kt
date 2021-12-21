@@ -25,6 +25,8 @@ class ChipGroup: HorizontalScrollView {
         View.inflate(context, R.layout.view_chip_group, this)
 
         container = findViewById(R.id.chip_group_container)
+        isHorizontalScrollBarEnabled = false
+        isVerticalScrollBarEnabled = false
     }
 
     fun setOnCheckedListener(listener: Listener) {
@@ -40,8 +42,8 @@ class ChipGroup: HorizontalScrollView {
             chip.setModel(it)
             chip.setOnCheckedListener(object: Chip.Listener {
                 override fun onCheckedListener(chipModel: ChipModel) {
-                    this@ChipGroup.chipList.forEach { chip ->
-                        val currentChipModel = chip.chipModel ?: return@forEach
+                    this@ChipGroup.chipList.forEach updateForLoop@ { chip ->
+                        val currentChipModel = chip.chipModel ?: return@updateForLoop
                         currentChipModel.selected = currentChipModel.value == chipModel.value
                         chip.setModel(currentChipModel)
                     }
