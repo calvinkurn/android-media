@@ -532,6 +532,9 @@ class PlayUpcomingViewModel @Inject constructor(
             partnerName = _partnerInfo.value.name,
             coverUrl = channelInfo.coverUrl,
             redirectUrl = shareInfo.redirectUrl,
+            textDescription = shareInfo.textDescription,
+            metaTitle = shareInfo.metaTitle,
+            metaDescription = shareInfo.metaDescription,
         )
     }
 

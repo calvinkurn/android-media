@@ -237,8 +237,14 @@ data class ChannelDetailsWithRecomResponse(
         @SerializedName("redirect_url")
         val redirectUrl: String = "",
 
+        @SerializedName("meta_title")
+        val metaTitle: String = "",
+
+        @SerializedName("meta_description")
+        val metaDescription: String = "",
+
         @SerializedName("is_show_button")
-        val isShowButton: Boolean = false
+        val isShowButton: Boolean = false,
     )
 
     data class RealTimeNotificationConfig(

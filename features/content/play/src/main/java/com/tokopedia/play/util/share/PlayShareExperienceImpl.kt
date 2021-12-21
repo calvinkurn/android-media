@@ -36,26 +36,9 @@ class PlayShareExperienceImpl @Inject constructor(
         return this
     }
 
-    private fun getString(
-        resId: Int
-    ): String = context.resources.getString(resId)
-
-
     fun generateShareString(url: String): String {
-        val description = getString(R.string.play_sharing_text_description)
-        return "${data.title}\n$description\n$url"
+        return "${data.textDescription}\n$url"
     }
-
-    private fun getShareTextContent(): String {
-        val description = getString(R.string.play_sharing_text_description)
-        return "${data.title}\n$description"
-    }
-
-    private fun generateOgTitle(): String =
-        getString(R.string.play_sharing_text_og_title).format(data.partnerName)
-
-    private fun generateOgDescription(): String =
-        getString(R.string.play_sharing_text_og_description).format(data.partnerName)
 
     private fun generateDeepLinkPath(): String = "play/${data.id}"
 
@@ -63,8 +46,8 @@ class PlayShareExperienceImpl @Inject constructor(
         val linkerData = LinkerData().apply {
             id = data.id
             name = data.title
-            description = generateOgDescription()
-            textContent = getShareTextContent()
+            description = data.textDescription
+            textContent = data.textDescription
             imgUri = data.coverUrl
             deepLink = generateDeepLinkPath()
             ogUrl = data.redirectUrl
@@ -75,8 +58,8 @@ class PlayShareExperienceImpl @Inject constructor(
             channel = shareModel.channel
             campaign = shareModel.campaign
 
-            ogTitle = generateOgTitle()
-            ogDescription = generateOgDescription()
+            ogTitle = data.metaTitle
+            ogDescription = data.metaDescription
             ogImageUrl = shareModel.ogImgUrl
         }
 

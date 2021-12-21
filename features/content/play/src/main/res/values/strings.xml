@@ -90,9 +90,6 @@
     <string name="play_zero">0</string>
 
     <!-- Sharing Experience -->
-    <string name="play_sharing_text_description">Coba nonton video ini ya di Tokopedia Play!</string>
-    <string name="play_sharing_text_og_title">Tonton %s di Tokopedia Play</string>
-    <string name="play_sharing_text_og_description">Aku punya obat anti-bosen buatmu. Ayo nonton %s di Tokopedia Play!</string>
     <string name="play_sharing_error_generate_link">Oops, ada gangguan yang perlu kami bereskan. Refresh atau balik lagi nanti.</string>
     <string name="play_sharing_refresh">Refresh</string>
 </resources>

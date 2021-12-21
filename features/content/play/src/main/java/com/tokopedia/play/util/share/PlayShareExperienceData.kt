@@ -9,4 +9,7 @@ data class PlayShareExperienceData(
     val partnerName: String,
     val coverUrl: String,
     val redirectUrl: String,
+    val textDescription: String,
+    val metaTitle: String,
+    val metaDescription: String,
 )
