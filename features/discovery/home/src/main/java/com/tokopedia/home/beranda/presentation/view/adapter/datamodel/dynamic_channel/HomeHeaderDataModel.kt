@@ -7,16 +7,16 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 
-class HomeHeaderOvoDataModel(
+data class HomeHeaderDataModel(
         var needToShowUserWallet: Boolean = false,
-        var needToShowChooseAddress: Boolean = false
+        var needToShowChooseAddress: Boolean = false,
+        var headerDataModel: HeaderDataModel? = HeaderDataModel()
 ) : ImpressHolder(), HomeVisitable {
     var createdTimeMillis = ""
     private var isCache: Boolean = false
     private var trackingData: Map<String, Any>? = null
     private var trackingDataForCombination: List<Any>? = null
     private var isCombined: Boolean = false
-    var headerDataModel: HeaderDataModel? = HeaderDataModel()
 
     override fun equalsWith(b: Any?): Boolean {
         return false

@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderOvoDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.ext.observeOnce
 import io.mockk.mockk
@@ -23,7 +23,7 @@ class HomeViewModelChooseAddressTest {
 
     @Test
     fun `When choose address rollence is active then list should contains choose address widget`(){
-        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(HomeHeaderOvoDataModel(
+        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(HomeHeaderDataModel(
                 needToShowChooseAddress = false
         ))))
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)

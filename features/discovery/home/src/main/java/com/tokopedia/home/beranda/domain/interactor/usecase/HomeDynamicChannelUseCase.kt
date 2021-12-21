@@ -9,10 +9,7 @@ import com.tokopedia.home.beranda.data.datasource.local.entity.AtfCacheEntity
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper
-import com.tokopedia.home.beranda.data.model.AtfData
-import com.tokopedia.home.beranda.data.model.HomeAtfData
-import com.tokopedia.home.beranda.data.model.HomeWidget
-import com.tokopedia.home.beranda.data.model.PlayData
+import com.tokopedia.home.beranda.data.model.*
 import com.tokopedia.home.beranda.data.repository.HomeRevampRepository
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.interactor.repository.*
@@ -48,6 +45,7 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class HomeDynamicChannelUseCase @Inject constructor(
+        private val homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase,
         private val homeDataMapper: HomeDataMapper,
         private val homeDynamicChannelsRepository: HomeDynamicChannelsRepository,
         private val homeDataRepository: HomeDataRepository,
@@ -83,6 +81,18 @@ class HomeDynamicChannelUseCase @Inject constructor(
     var cachedHomeData: HomeData? = null
 
     private val jobList = mutableListOf<Deferred<AtfData>>()
+
+    fun updateHeaderData(homeHeaderDataModel: HomeHeaderDataModel, homeDataModel: HomeDynamicChannelModel, onSuccess:(HomeDynamicChannelModel) -> Unit) {
+        val homeHeaderOvoDataModel = (homeDataModel.list.find { visitable-> visitable is HomeHeaderDataModel } as HomeHeaderDataModel?)
+        homeHeaderOvoDataModel?.let {
+            val currentPosition = -1
+            val index = homeDataModel.list.withIndex().find { (_, model) ->  model is HomeHeaderDataModel }?.index ?: -1
+            val visitable = homeDataModel.list.get(index)
+            homeDataModel.updateWidgetModel(visitableToChange = visitable, visitable = homeHeaderDataModel, position = index) {
+                onSuccess.invoke(homeDataModel)
+            }
+        }
+    }
 
     @FlowPreview
     @ExperimentalCoroutinesApi
@@ -133,7 +143,25 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
 
                 /**
-                 * Get Dynamic channel data
+                 * Get header data
+                 */
+                val currentHeaderDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData(HomeHeaderDataModel())
+                updateHeaderData(currentHeaderDataModel, dynamicChannelPlainResponse) {}
+
+                /**
+                 * Get choose address data
+                 */
+                applicationContext?.let {
+                    val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(applicationContext)
+                    dynamicChannelPlainResponse.setAndEvaluateHomeChooseAddressData(
+                            HomeChooseAddressData(isActive = true)
+                                    .setLocalCacheModel(localCacheModel)
+                    )
+                }
+                emit(dynamicChannelPlainResponse)
+
+                /**
+                 * Get Dynamic channel external data
                  */
 
                 dynamicChannelPlainResponse.getWidgetDataIfExist<

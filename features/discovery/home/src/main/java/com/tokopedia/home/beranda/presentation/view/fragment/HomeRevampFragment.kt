@@ -82,7 +82,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackDa
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceCoachmark
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderOvoDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
@@ -456,7 +456,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         fragmentCreatedForFirstTime = true
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
         startToTransitionOffset = 1f.toDpInt()
-        registerBroadcastReceiverTokoCash()
         getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_CREATE_HOME)
     }
 
@@ -1081,9 +1080,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             if (isRegisteredFromStickyLogin(it)) gotoNewUserZone()
         }
 
-        getHomeViewModel().setNewBalanceWidget(remoteConfigIsNewBalanceWidget())
-        getHomeViewModel().setWalletAppRollence(isUsingWalletApp())
-
         if (isSuccessReset()) showSuccessResetPasswordDialog()
     }
 
@@ -1261,7 +1257,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         adapter = null
         homeRecyclerView?.layoutManager = null
         layoutManager = null
-        unRegisterBroadcastReceiverTokoCash()
     }
 
     private fun initRefreshLayout() {
@@ -1701,7 +1696,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showCoachmarkWithDataValidation(data: List<Visitable<*>>? = null) {
-        (data?.firstOrNull { it is HomeHeaderOvoDataModel } as? HomeHeaderOvoDataModel)?.let {
+        (data?.firstOrNull { it is HomeHeaderDataModel } as? HomeHeaderDataModel)?.let {
             val isBalanceWidgetNotEmpty =
                 it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty()
                     ?: false
@@ -1935,7 +1930,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onRequestPendingCashBack() {
-        getHomeViewModel().getTokocashPendingBalance()
     }
 
     override fun actionInfoPendingCashBackTokocash(cashBackData: CashBackData,
@@ -2493,7 +2487,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onRefreshTokoCashButtonClicked() {
-        getHomeViewModel().onRefreshTokoCash()
     }
 
     override fun onLegoBannerClicked(actionLink: String, trackingAttribution: String) {
@@ -2644,34 +2637,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     override fun onBestSellerSeeAllCardClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
         BestSellerWidgetTracker.sendViewAllCardClickTracker(bestSellerDataModel.id, bestSellerDataModel.title, userId)
         RouteManager.route(context, appLink)
-    }
-
-    protected fun registerBroadcastReceiverTokoCash() {
-        if (activity == null) return
-        activity?.let {
-            it.registerReceiver(
-                    tokoCashBroadcaseReceiver,
-                    IntentFilter(it.getString(R.string.broadcast_wallet))
-            )
-        }
-
-    }
-
-    protected fun unRegisterBroadcastReceiverTokoCash() {
-        if (activity == null) return
-        activity?.unregisterReceiver(tokoCashBroadcaseReceiver)
-    }
-
-    private val tokoCashBroadcaseReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val extras = intent.extras
-            if (extras != null) {
-                activity?.let {
-                    val data = extras.getString(it.getString(R.string.broadcast_wallet))
-                    if (data != null && data.isNotEmpty()) getHomeViewModel().getHeaderData() // update header data
-                }
-            }
-        }
     }
 
     override fun onRetryLoadFeeds() {

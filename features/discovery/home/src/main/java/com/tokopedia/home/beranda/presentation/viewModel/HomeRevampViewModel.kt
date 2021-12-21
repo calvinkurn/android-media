@@ -24,6 +24,7 @@ import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.interactor.repository.*
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.Balances
@@ -33,14 +34,12 @@ import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeCoachmarkModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeNotifModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_ERROR
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_LOADING
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.PendingCashbackModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
@@ -94,6 +93,7 @@ import javax.inject.Inject
 @SuppressLint("SyntheticAccessor")
 @ExperimentalCoroutinesApi
 open class HomeRevampViewModel @Inject constructor(
+        private val homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase,
         private val homeUseCase: Lazy<HomeDynamicChannelUseCase>,
         private val userSession: Lazy<UserSessionInterface>,
         private val closeChannelUseCase: Lazy<CloseChannelUseCase>,
@@ -237,6 +237,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     var currentTopAdsBannerToken: String = ""
     var homeDataModel = HomeDynamicChannelModel()
+    var currentHeaderDataModel = HomeHeaderDataModel()
 
     /**
      * Job list
@@ -244,11 +245,8 @@ open class HomeRevampViewModel @Inject constructor(
     private var getHomeDataJob: Job? = null
     private var getSearchHintJob: Job? = null
     private var getPlayWidgetJob: Job? = null
-    private var getTokopointJob: Job? = null
     private var getWalletBalanceJob: Job? = null
-    private var getTokocashJob: Job? = null
     private var getSuggestedReviewJob: Job? = null
-    private var getPendingCashBalanceJob: Job? = null
     private var dismissReviewJob: Job? = null
     private var getPopularKeywordJob: Job? = null
     private var buWidgetJob: Job? = null
@@ -283,7 +281,7 @@ open class HomeRevampViewModel @Inject constructor(
             refreshHomeData()
             _isNeedRefresh.value = Event(true)
         } else {
-            getHeaderData()
+            getBalanceWidgetData()
         }
         getSearchHint(isFirstInstall)
     }
@@ -382,13 +380,6 @@ open class HomeRevampViewModel @Inject constructor(
                 ), index)
             }
         }
-    }
-
-    //TODO 3.1: Remove getHeaderData -> Move to HomeWalletUseCase.onGetWalletData()
-    //Create HomeWalletRepository
-    fun getHeaderData() {
-        if (!userSession.get().isLoggedIn) return
-        getBalanceWidgetData()
     }
 
     //TODO 4.1: Remove updateBannerTotalView -> Move to HomePlayUseCase.onGetWalletData()
@@ -508,18 +499,14 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    //TODO 3.2: Remove onRefreshTokoPoint -> Move to HomeWalletUseCase.onGetTokopointData()
     fun onRefreshTokoPoint() {
         if (!userSession.get().isLoggedIn) return
-        getTokopointDrawerListData()
-
-    }
-
-    //TODO 3.3: Remove onRefreshTokoCash -> Move to HomeWalletUseCase.onGetTokoCashData()
-    fun onRefreshTokoCash() {
-        if (!userSession.get().isLoggedIn) return
-        getWalletBalanceData()
-
+        launch {
+            currentHeaderDataModel = homeBalanceWidgetUseCase.onGetTokopointData(currentHeaderDataModel)
+            homeUseCase.get().updateHeaderData(currentHeaderDataModel, homeDataModel) {
+                updateHomeData(it)
+            }
+        }
     }
 
     //TODO 9: Remove insertRechargeBUWidget -> Move to HomeDynamicChannelUseCase
@@ -543,7 +530,6 @@ open class HomeRevampViewModel @Inject constructor(
     fun getRecommendationFeedSectionPosition() = homeDataModel.list.size -1
 
     fun refreshHomeData() {
-        getHeaderData()
         if (homeFlowDataCancelled) {
             initFlow()
             homeFlowDataCancelled = false
@@ -900,12 +886,6 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    //TODO 3.4: Remove getTokocashPendingBalance -> Move to HomeWalletUseCase.onGetTokocashPendingBalance()
-    //Create HomeWalletRepository
-    fun getTokocashPendingBalance(){
-
-    }
-
     //TODO 20: Remove injectCouponTimeBased -> Move to HomeCouponUseCase.onInjectCouponUseCase()
     //Create HomeWalletRepository
     fun injectCouponTimeBased() {
@@ -976,16 +956,12 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    //TODO 3.5: Remove setNewBalanceWidget -> Move to HomeWalletUseCase
-
-    //TODO 3.6: Remove setWalletAppRollence -> Move to HomeWalletUseCase
-    fun setWalletAppRollence(useWalletApp: Boolean) {
-        this.useWalletApp = useWalletApp
-    }
-
     //TODO 23: Remove updateChooseAddressData -> Move to HomeDynamicChannelUseCase
     fun updateChooseAddressData(homeChooseAddressData: HomeChooseAddressData) {
         this.homeDataModel.setAndEvaluateHomeChooseAddressData(homeChooseAddressData)
+        homeUseCase.get().updateHeaderData(currentHeaderDataModel, this.homeDataModel) {
+            updateHomeData(it)
+        }
     }
 
     //TODO 24: Remove getAddressData -> Move to HomeDynamicChannelUseCase
@@ -996,9 +972,9 @@ open class HomeRevampViewModel @Inject constructor(
     //TODO 25: Remove removeChooseAddressWidget -> Move to HomeDynamicChannelUseCase
     fun removeChooseAddressWidget() {
         val homeHeaderOvoDataModel = homeDataModel.list.withIndex().find {
-            it.value is HomeHeaderOvoDataModel
+            it.value is HomeHeaderDataModel
         }
-        (homeHeaderOvoDataModel?.value as? HomeHeaderOvoDataModel)?.needToShowChooseAddress = false
+        (homeHeaderOvoDataModel?.value as? HomeHeaderDataModel)?.needToShowChooseAddress = false
         homeHeaderOvoDataModel?.let {
             updateWidget(homeHeaderOvoDataModel.value, homeHeaderOvoDataModel.index)
         }
@@ -1066,14 +1042,11 @@ open class HomeRevampViewModel @Inject constructor(
     //TODO 33: Remove updateHomeData -> Move to HomeDynamicChannelUseCase
     private fun updateHomeData(homeNewDynamicChannelModel: HomeDynamicChannelModel) {
         logChannelUpdate("Update channel: (Update all home data) data: ${homeDataModel.list.map { it.javaClass.simpleName }}")
-        homeNewDynamicChannelModel.copyStaticWidgetDataFrom(homeDataModel)
+//        homeNewDynamicChannelModel.copyStaticWidgetDataFrom(homeDataModel)
         this.homeDataModel = homeNewDynamicChannelModel
+        this.homeDataModel.homeBalanceModel = currentHeaderDataModel?.headerDataModel?.homeBalanceModel?:HomeBalanceModel()
 
         if (!homeNewDynamicChannelModel.isProcessingDynamicChannle) {
-            homeNewDynamicChannelModel.evaluateHomeFlagData(
-                    onNewBalanceWidgetSelected = {  },
-                    onNeedToGetBalanceData = { getBalanceWidgetData() }
-            )
             homeNewDynamicChannelModel.evaluateRecommendationSection(
                     onNeedTabLoad = { getFeedTabData() }
             )
@@ -1085,18 +1058,6 @@ open class HomeRevampViewModel @Inject constructor(
     //TODO 34: Remove ajalah
     private fun logChannelUpdate(message: String){
         if(GlobalConfig.DEBUG) Timber.tag(this.javaClass.simpleName).e(message)
-    }
-
-    //TODO 3.9: Remove balanceRemoteConfigCondition -> Move to HomeWalletUseCase
-    private suspend fun walletAppAbTestCondition(
-        isUsingWalletApp: suspend () -> Unit,
-        isUsingOldWallet: suspend () -> Unit
-    ) {
-        if (useWalletApp || isGopayEligible) {
-            isUsingWalletApp.invoke()
-        } else {
-            isUsingOldWallet.invoke()
-        }
     }
 
     //TODO 37: Remove balanceRemoteConfigCondition -> Move to HomeDynamicChannelUseCase
@@ -1121,29 +1082,6 @@ open class HomeRevampViewModel @Inject constructor(
             )
         }
         return dataList
-    }
-
-    //TODO 3.10: Remove mapToHomeHeaderWalletAction -> Move to HomeWalletUseCase
-    private fun mapToHomeHeaderWalletAction(walletBalanceModel: WalletBalanceModel): HomeHeaderWalletAction? {
-        return HomeHeaderWalletAction(
-                isLinked = walletBalanceModel.link,
-                balance = walletBalanceModel.balance,
-                labelTitle = walletBalanceModel.titleText,
-                appLinkBalance = walletBalanceModel.applinks,
-                labelActionButton = walletBalanceModel.actionBalanceModel?.labelAction ?: "",
-                isVisibleActionButton = (walletBalanceModel.actionBalanceModel?.visibility == "1"),
-                appLinkActionButton = walletBalanceModel.actionBalanceModel?.applinks ?: "",
-                abTags = walletBalanceModel.abTags ?: listOf(),
-                pointBalance = walletBalanceModel.pointBalance,
-                rawPointBalance = walletBalanceModel.rawPointBalance,
-                cashBalance = walletBalanceModel.cashBalance,
-                rawCashBalance = walletBalanceModel.rawCashBalance,
-                walletType = walletBalanceModel.walletType,
-                isShowAnnouncement = walletBalanceModel.isShowAnnouncement,
-                isShowTopup = walletBalanceModel.isShowTopup,
-                topupUrl = walletBalanceModel.topupUrl,
-                topupLimit = walletBalanceModel.topupLimit
-        )
     }
 
     //TODO 38: Remove removeDynamicChannelLoadingModel -> Move to HomeDynamicChannelUseCase
@@ -1198,207 +1136,25 @@ open class HomeRevampViewModel @Inject constructor(
         updateWidget(onUpdate(dataModel), index)
     }
 
-    //TODO 3.11: Remove getDrawerListByType -> Move to HomeWalletUseCase
-    private fun List<TokopointsDrawer>.getDrawerListByType(type: String) : TokopointsDrawer? {
-        return this.find { it.type == type }
-    }
-
     //TODO 3.14: Remove getBalanceWidgetData -> Move to HomeWalletUseCase
     private fun getBalanceWidgetData() {
         if (!userSession.get().isLoggedIn) return
-
-        if (getHeaderDataJob == null || getHeaderDataJob?.isActive == false) {
-            getHeaderDataJob = launchCatchError(coroutineContext, block = {
-                var walletContent: HomeHeaderWalletAction? = null
-                var tokopointContent: TokopointsDrawerListHomeData? = null
-                var pendingCashback: PendingCashback? = null
-                var walletAppBalance: Balances? = null
-
-                if (!isGopayEligible) {
-                    try {
-                        isGopayEligible = getWalletEligibilityUseCase.get().executeOnBackground().isGoPointsEligible
-                        val homeBalanceModel = HomeBalanceModel()
-                        homeBalanceModel.balanceDrawerItemModels = homeDataModel.homeBalanceModel.balanceDrawerItemModels
-                        homeBalanceModel.balanceType = homeDataModel.homeBalanceModel.balanceType
-                        homeBalanceModel.isGopayEligible = this@HomeRevampViewModel.isGopayEligible
-                        homeBalanceModel.initBalanceModelByType()
-                        newUpdateHeaderViewModel(homeBalanceModel)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                } else {
-                    val homeBalanceModel = HomeBalanceModel()
-                    homeBalanceModel.balanceDrawerItemModels = homeDataModel.homeBalanceModel.balanceDrawerItemModels
-                    homeBalanceModel.balanceType = homeDataModel.homeBalanceModel.balanceType
-                    homeBalanceModel.isGopayEligible = this@HomeRevampViewModel.isGopayEligible
-                    homeBalanceModel.initBalanceModelByType()
-                    newUpdateHeaderViewModel(homeBalanceModel)
-                }
-
-                walletAppAbTestCondition(
-                    isUsingWalletApp = {
-                        walletAppBalance = getHomeBalanceWalletAppData(updateView = false)
-                        _homeCoachmarkData.postValue(Event(
-                            HomeCoachmarkModel(
-                                isGopayActive = walletAppBalance?.isLinked?:false,
-                                isGopayEligible = isGopayEligible
-                            )))
-                    },
-                    isUsingOldWallet = {
-                        try {
-                            walletContent = getWalletBalanceContent()
-
-                            walletContent?.let { walletContent ->
-                                if (!walletContent.isLinked) {
-                                    try {
-                                        pendingCashback = getPendingTokoCashContent()
-                                        pendingCashback?.let { pendingData ->
-                                            homeDataModel.homeBalanceModel.mapBalanceData(
-                                                tokopointDrawerListHomeData = tokopointContent,
-                                                homeHeaderWalletAction = walletContent.copy(cashBalance = pendingData.amountText),
-                                                pendingCashBackData = PendingCashbackModel(
-                                                    pendingCashback = pendingData,
-                                                    labelActionButton = walletContent.labelActionButton,
-                                                    labelTitle = walletContent.labelTitle,
-                                                    walletType = walletContent.walletType
-                                                )
-                                            )
-                                        }
-                                    } catch (e: Exception) {
-                                        homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
-                                        homeDataModel.homeBalanceModel.mapErrorWallet(isWalletApp = false)
-                                    }
-                                } else {
-                                    homeDataModel.homeBalanceModel.mapBalanceData(homeHeaderWalletAction = walletContent)
-                                }
-                            }
-                        } catch (e: Exception) {
-                            homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
-                            homeDataModel.homeBalanceModel.mapErrorWallet(isWalletApp = false)
-                        }
-                    }
-                )
-
-                try {
-                    tokopointContent = getTokopointBalanceContent()
-                } catch (e: Exception) {
-                    homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
-                    homeDataModel.homeBalanceModel.mapErrorTokopoints()
-                }
-
-                tokopointContent?.let {
-                    homeDataModel.homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = tokopointContent)
-                }
-
-                newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy())
-            }) {
-
-            }
-        }
-    }
-
-    //TODO 3.15: Remove getTokopointDrawerListData -> Move to HomeWalletUseCase
-    private fun getTokopointDrawerListData() {
-        //set loading to wallet item
-        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setTokopointBalanceState(state = STATE_LOADING))
-
-        launchCatchError(coroutineContext, block = {
-            val tokopointsDrawerListHome = getTokopointListBasedOnElibility()
-            homeDataModel.homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = tokopointsDrawerListHome)
-            newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
-        }) {
-            homeDataModel.homeBalanceModel.mapErrorTokopoints()
-            homeDataModel.homeBalanceModel.setTokopointBalanceState(state = STATE_ERROR)
-            newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
-        }
-    }
-
-    //TODO 3.16: Remove getWalletBalanceData -> Move to HomeWalletUseCase
-    private fun getWalletBalanceData() {
-        if (getWalletBalanceJob?.isActive == true || !userSession.get().isLoggedIn) return
-
-        //set loading to wallet item
-        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_LOADING))
-
-        getWalletBalanceJob = launchCatchError(coroutineContext, block = {
-            walletAppAbTestCondition(
-                isUsingWalletApp = {
-                    getHomeBalanceWalletAppData(updateView = true)
-                },
-                isUsingOldWallet = {
-                    try {
-                        val homeHeaderWalletAction = mapToHomeHeaderWalletAction(getWalletBalanceUseCase.get().executeOnBackground())
-                        homeDataModel.homeBalanceModel.mapBalanceData(homeHeaderWalletAction = homeHeaderWalletAction)
-                        newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
-                        if (homeHeaderWalletAction?.isShowAnnouncement == true && homeHeaderWalletAction.appLinkActionButton.isNotEmpty()) {
-                            _popupIntroOvoLiveData.postValue(Event(homeHeaderWalletAction.appLinkActionButton))
-                        }
-                    } catch (e: Exception) {
-                        homeDataModel.homeBalanceModel.mapErrorWallet(isWalletApp = false)
-                        homeDataModel.homeBalanceModel.setWalletBalanceState(state = STATE_ERROR)
-                        newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
-                    }
-                }
-            )
-        }){
-
-        }
-    }
-
-    //TODO 3.17: Remove getTokopointBalanceContent -> Move to HomeWalletUseCase
-    private suspend fun getTokopointBalanceContent(): TokopointsDrawerListHomeData? {
-        val tokopointsDrawerListHome = getTokopointListBasedOnElibility()
-        if (tokopointsDrawerListHome.tokopointsDrawerList.drawerList.isEmpty()) {
-            throw IllegalStateException("Tokopoints data is null")
-        }
-        return tokopointsDrawerListHome
-    }
-
-    //TODO 3.18: Remove getTokopointListBasedOnElibility -> Move to HomeWalletUseCase
-    private suspend fun getTokopointListBasedOnElibility(): TokopointsDrawerListHomeData {
-        getHomeTokopointsListDataUseCase.get().setParams(isGopayEligible)
-        return getHomeTokopointsListDataUseCase.get().executeOnBackground()
-    }
-
-    //TODO 3.19: Remove getWalletBalanceContent -> Move to HomeWalletUseCase
-    private suspend fun getWalletBalanceContent(): HomeHeaderWalletAction? {
-        return mapToHomeHeaderWalletAction(getWalletBalanceUseCase.get().executeOnBackground())
-    }
-
-    //TODO 3.20: Remove getWalletAppData -> Move to HomeWalletUseCase
-    private suspend fun getWalletAppData(): WalletAppData {
-        return getWalletAppBalanceUseCase.get().executeOnBackground()
-    }
-
-    //TODO 3.21: Remove getHomeBalanceWalletAppData -> Move to HomeWalletUseCase
-    private suspend fun getHomeBalanceWalletAppData(updateView: Boolean = false): Balances? {
-        try {
-            val walletAppData = getWalletAppData()
-            walletAppData.let { walletContent ->
-                if (walletContent.walletappGetBalance.balances.isNotEmpty()) {
-                    homeDataModel.homeBalanceModel.mapBalanceData(walletAppData = walletAppData)
-                    if (updateView) newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel.copy())
-                    return walletAppData.walletappGetBalance.balances.getOrNull(0)
-                } else {
-                    HomeServerLogger.logWarning(
-                        type = HomeServerLogger.TYPE_WALLET_APP_ERROR,
-                        throwable = MessageErrorException(error_unable_to_parse_wallet),
-                        reason = error_unable_to_parse_wallet
+        launch {
+            homeUseCase.get().updateHeaderData(currentHeaderDataModel.copy(
+                    headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
+                            homeBalanceModel = currentHeaderDataModel?.headerDataModel?.homeBalanceModel.apply {
+                                this?.initBalanceModelByType()
+                            }?: HomeBalanceModel()
                     )
-                    throw IllegalStateException(error_unable_to_parse_wallet)
-                }
+            ), homeDataModel) {
+                updateHomeData(it)
             }
-        } catch (e: Exception) {
-            homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
-            homeDataModel.homeBalanceModel.mapErrorWallet(isWalletApp = true)
-            newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
-            return null
-        }
-    }
 
-    //TODO 3.22: Remove getPendingTokoCashContent -> Move to HomeWalletUseCase
-    private suspend fun getPendingTokoCashContent(): PendingCashback {
-        return getPendingCashbackUseCase.get().executeOnBackground()
+            currentHeaderDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData(currentHeaderDataModel)
+            homeUseCase.get().updateHeaderData(currentHeaderDataModel, homeDataModel) {
+                updateHomeData(it)
+            }
+        }
     }
 
     //TODO 39: Remove getDisplayTopAdsHeader -> Move to HomeDynamicChannelUseCase
@@ -1427,27 +1183,6 @@ open class HomeRevampViewModel @Inject constructor(
             }
         }
     }
-
-    //TODO 3.23: Remove newUpdateHeaderViewModel -> Move to HomeWalletUseCase
-    private fun newUpdateHeaderViewModel(homeBalanceModel: HomeBalanceModel) {
-        val homeHeaderOvoDataModel = (homeDataModel.list.find { visitable-> visitable is HomeHeaderOvoDataModel } as HomeHeaderOvoDataModel?)
-        homeHeaderOvoDataModel?.let {
-            val currentPosition = -1
-            if(headerDataModel == null){
-                homeDataModel.list.withIndex().find { (_, model) ->  model is HomeHeaderOvoDataModel }?.index ?: -1
-                headerDataModel = homeHeaderOvoDataModel.headerDataModel
-            }
-
-            homeHeaderOvoDataModel.headerDataModel = HeaderDataModel(
-                    homeBalanceModel = homeBalanceModel,
-                    isUserLogin = userSession.get().isLoggedIn
-            )
-            this.homeDataModel.homeBalanceModel = homeBalanceModel
-            updateWidget(homeHeaderOvoDataModel as Visitable<*>, currentPosition)
-        }
-    }
-
-    //TODO 3.24: Remove updateHeaderViewModel -> Move to HomeWalletUseCase
 
     //TODO 5.2: Remove getReviewData -> Move to HomeDynamicChannelUseCase
     private fun getReviewData() {
@@ -1493,32 +1228,6 @@ open class HomeRevampViewModel @Inject constructor(
             deleteWidget(rechargeBuModel, index)
         }
     }
-
-    //TODO 43: Delete
-//    private fun initCacheData() {
-//        _isRequestNetworkLiveData.value = Event(true)
-//
-//        launch {
-//            val homeCacheData = homeUseCase.get().getHomeCachedData()
-//            homeCacheData?.let { homeDataModel ->
-//                homeDataModel.evaluateChooseAddressData()
-//                _homeLiveDynamicChannel.postValue(homeDataModel)
-//
-//                if (homeDataModel.list.size > 1) {
-//                    _isRequestNetworkLiveData.postValue(Event(false))
-//                    takeTicker = false
-//                }
-//                if (homeDataModel.list.size == 1) {
-//                    val initialHomeDataModel = HomeDynamicChannelModel(list = listOf(
-//                            HomeHeaderOvoDataModel(),
-//                            HomeInitialShimmerDataModel()
-//                    ))
-//                    updateHomeData(initialHomeDataModel)
-//                }
-//            }
-//            initFlow()
-//        }
-//    }
 
     private fun initFlow() {
         launchCatchError(coroutineContext, block = {

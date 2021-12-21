@@ -41,6 +41,7 @@ import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.interactor.repository.*
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.banner.HomeBannerData
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
@@ -101,7 +102,8 @@ class HomeUseCaseModule {
             bestSellerMapper: BestSellerMapper,
             homeTopadsImageRepository: HomeTopadsImageRepository,
             homeRechargeRecommendationRepository: HomeRechargeRecommendationRepository,
-            homeSalamWidgetRepository: HomeSalamWidgetRepository
+            homeSalamWidgetRepository: HomeSalamWidgetRepository,
+            homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase
     ) = HomeDynamicChannelUseCase(
             homeDataMapper = homeDataMapper,
             homeDynamicChannelsRepository = homeDynamicChannelsRepository,
@@ -125,7 +127,8 @@ class HomeUseCaseModule {
             bestSellerMapper = bestSellerMapper,
             homeTopadsImageRepository = homeTopadsImageRepository,
             homeRechargeRecommendationRepository = homeRechargeRecommendationRepository,
-            homeSalamWidgetRepository = homeSalamWidgetRepository
+            homeSalamWidgetRepository = homeSalamWidgetRepository,
+            homeBalanceWidgetUseCase = homeBalanceWidgetUseCase
     )
 
 

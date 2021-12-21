@@ -31,7 +31,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_WITH_TOPUP
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel.Companion.OVO_WALLET_TYPE
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderOvoDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.navigation_common.model.wallet.WalletStatus
 import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
@@ -58,7 +58,7 @@ class HomeViewModelBalanceWidgetUnitTest{
     private val getCoroutineWalletBalanceUseCase = mockk<GetCoroutineWalletBalanceUseCase>(relaxed = true)
     private val getWalletAppBalanceUseCase = mockk<GetWalletAppBalanceUseCase>(relaxed = true)
     private val getCoroutinePendingCashbackUseCase = mockk<GetCoroutinePendingCashbackUseCase>(relaxed = true)
-    private val headerDataModel = HomeHeaderOvoDataModel()
+    private val headerDataModel = HomeHeaderDataModel()
 
     private val WALLET_CODE_PEMUDA = "PEMUDA"
 
