@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-        val appLink = etAppLink.text.toString()
+        val appLink = "sellerapp://campaign-list"
         if(appLink.isNotBlank())
             RouteManager.route(this, appLink)
         else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
