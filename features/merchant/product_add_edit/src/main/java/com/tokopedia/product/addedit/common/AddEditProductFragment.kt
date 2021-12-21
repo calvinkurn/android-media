@@ -1,12 +1,18 @@
 package com.tokopedia.product.addedit.common
 
+import android.content.res.Configuration
+import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.constraintlayout.widget.Guideline
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.product.addedit.R
+import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifyprinciples.Typography
 
 abstract class AddEditProductFragment : BaseDaggerFragment() {
@@ -18,9 +24,19 @@ abstract class AddEditProductFragment : BaseDaggerFragment() {
         INDICATOR_SHIPMENT_PAGE
     }
 
+    enum class PageState {
+        ADD_MODE,
+        EDIT_MODE
+    }
+
+    companion object {
+        const val GUIDELINE_PERCENT = 0.2f
+    }
+
     var toolbar: HeaderUnify? = null
     var doneButton: TextView? = null
 
+    private var pageState: PageState = PageState.ADD_MODE
     private var btnIndicatorMain: Typography? = null
     private var btnIndicatorDetail: Typography? = null
     private var btnIndicatorDescription: Typography? = null
@@ -30,10 +46,22 @@ abstract class AddEditProductFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         toolbar = activity?.findViewById(R.id.toolbar)
+
         btnIndicatorMain = activity?.findViewById(R.id.btn_indicator_main)
         btnIndicatorDetail = activity?.findViewById(R.id.btn_indicator_detail)
         btnIndicatorDescription = activity?.findViewById(R.id.btn_indicator_description)
         btnIndicatorShipment = activity?.findViewById(R.id.btn_indicator_shipment)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val guideline: Guideline? = activity?.findViewById(R.id.guideline)
+        val dividerNavigation: DividerUnify? = activity?.findViewById(R.id.divider_navigation)
+        val isLandscape = resources.configuration.orientation == ORIENTATION_LANDSCAPE
+        val guidelinePercent = if (isLandscape) GUIDELINE_PERCENT else Int.ZERO.toFloat()
+
+        guideline?.setGuidelinePercent(guidelinePercent)
+        dividerNavigation?.isVisible = isLandscape
     }
 
     fun initializeToolbar() {
@@ -46,6 +74,11 @@ abstract class AddEditProductFragment : BaseDaggerFragment() {
             doneButton?.contentDescription = getString(R.string.content_desc_tv_done)
             doneButton = actionTextView
         }
+    }
+
+    fun setPageState(newPageState: PageState) {
+        pageState = newPageState
+        enableSidebar(pageState)
     }
 
     // Only appear at tablet mode
@@ -86,11 +119,22 @@ abstract class AddEditProductFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun enableSidebar(pageState: PageState) {
+        enableSidebar(pageState == PageState.EDIT_MODE)
+    }
+
+    private fun enableSidebar(enabled: Boolean) {
+        btnIndicatorMain?.isEnabled = enabled
+        btnIndicatorDetail?.isEnabled = enabled
+        btnIndicatorDescription?.isEnabled = enabled
+        btnIndicatorShipment?.isEnabled = enabled
+    }
+
     private fun activateHighlight(typography: Typography?, isActive: Boolean) {
         val backgroundColor = if (isActive) {
             MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G200)
         } else {
-            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
         }
         typography?.setBackgroundColor(backgroundColor)
     }

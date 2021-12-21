@@ -6,11 +6,13 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import androidx.activity.OnBackPressedCallback
+import androidx.constraintlayout.widget.Guideline
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -28,6 +30,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
+import com.tokopedia.product.addedit.common.AddEditProductFragment
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_INPUT_MODEL
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISADDING
@@ -69,6 +72,7 @@ import com.tokopedia.product.addedit.tracking.ProductEditDescriptionTracking
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantActivity
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
+import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -719,6 +723,17 @@ class AddEditProductDescriptionFragment:
         super.renderList(mutableListOf(VideoLinkModel()))
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val guideline: Guideline? = activity?.findViewById(R.id.guideline)
+        val dividerNavigation: DividerUnify? = activity?.findViewById(R.id.divider_navigation)
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        val guidelinePercent = if (isLandscape) AddEditProductFragment.GUIDELINE_PERCENT else Int.ZERO.toFloat()
+
+        guideline?.setGuidelinePercent(guidelinePercent)
+        dividerNavigation?.isVisible = isLandscape
+    }
+
     private fun showVariantDialog() {
         context?.run {
             val cacheManager = SaveInstanceCacheManager(this, true).apply {
@@ -828,7 +843,7 @@ class AddEditProductDescriptionFragment:
         val backgroundColor = if (isActive) {
             MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G200)
         } else {
-            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
         }
         typography?.setBackgroundColor(backgroundColor)
     }

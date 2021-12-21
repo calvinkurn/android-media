@@ -957,7 +957,8 @@ class AddEditProductPreviewFragment :
     }
 
     private fun observeIsEditingStatus() {
-        viewModel.isEditing.observe(viewLifecycleOwner, Observer {
+        viewModel.isEditing.observe(viewLifecycleOwner, {
+            setPageState(if (it || viewModel.isDuplicate) PageState.EDIT_MODE else PageState.ADD_MODE)
             if (it) {
                 toolbar?.headerTitle = getString(R.string.label_title_edit_product)
                 doneButton?.show()
