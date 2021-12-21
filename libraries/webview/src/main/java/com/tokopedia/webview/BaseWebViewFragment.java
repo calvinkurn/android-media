@@ -305,8 +305,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 Toast.makeText(getContext(), "Callback from Liveness SDK -> url = null ", Toast.LENGTH_SHORT).show();
             else 
                 Toast.makeText(getContext(), "Callback from Liveness SDK -> url not null", Toast.LENGTH_SHORT).show();
-
-            RouteManager.route(getActivity(), kycRedirectionUrl);
+            webView.loadUrl(kycRedirectionUrl);
         }
         if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);
