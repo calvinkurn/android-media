@@ -143,7 +143,6 @@ class OvoWidgetView: FrameLayout {
             // error state wallet -> get use case error
             tokoCashHolder.setOnClickListener {
                 tokocashProgressBar.visibility = View.VISIBLE
-                listener?.onRefreshTokoCashButtonClicked()
             }
             tvTitleTokocash.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             tvTitleTokocash.setText(R.string.home_header_tokocash_unable_to_load_label)

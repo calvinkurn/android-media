@@ -11,6 +11,7 @@ class HomeTokopointsListRepository @Inject constructor(
         private val getHomeTokopointsListDataUseCase: GetHomeTokopointsListDataUseCase
 ): HomeRepository<TokopointsDrawerListHomeData> {
     override suspend fun getRemoteData(bundle: Bundle): TokopointsDrawerListHomeData {
+        getHomeTokopointsListDataUseCase.setParams(useNewBalanceWidget = true)
         return getHomeTokopointsListDataUseCase.executeOnBackground()
     }
 

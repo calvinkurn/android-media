@@ -115,48 +115,11 @@ data class HomeDynamicChannelModel(
     private fun visitableValidToAssign(position: Int, newList: MutableList<Visitable<*>>, visitable: Visitable<*>) =
             position != -1 && newList.isNotEmpty() && newList.size > position && newList[position]::class.java == visitable::class.java
 
-    fun evaluateHomeFlagData(
-            onNewBalanceWidgetSelected: (Boolean) -> Unit,
-            onNeedToGetBalanceData: () -> Unit
-    ) {
-        val isNeedToGetData = homeBalanceModel.balanceType == null || homeBalanceModel.balanceDrawerItemModels.isEmpty()
-        if (isNeedToGetData) {
-            homeBalanceModel.balanceType = when(homeFlag.getFlagValue(HomeFlag.TYPE.HAS_TOKOPOINTS)) {
-                1 -> {
-                    onNewBalanceWidgetSelected(false)
-                    HomeBalanceModel.TYPE_STATE_1
-                }
-                2 -> {
-                    onNewBalanceWidgetSelected(true)
-                    HomeBalanceModel.TYPE_STATE_2
-                }
-                3 -> {
-                    onNewBalanceWidgetSelected(true)
-                    HomeBalanceModel.TYPE_STATE_3
-                }
-                else -> {
-                    onNewBalanceWidgetSelected(true)
-                    HomeBalanceModel.TYPE_STATE_4
-                }
-            }
-            homeBalanceModel.initBalanceModelByType()
-
-            val homeHeaderOvoDataModel = _list.find { visitable -> visitable is HomeHeaderOvoDataModel}
-            val headerIndex = _list.indexOfFirst { visitable -> visitable is HomeHeaderOvoDataModel }
-            (homeHeaderOvoDataModel as? HomeHeaderOvoDataModel)?.let {
-                it.needToShowUserWallet = homeFlag.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
-                _list[headerIndex] = homeHeaderOvoDataModel
-            }
-
-            onNeedToGetBalanceData.invoke()
-        }
-    }
-
     fun evaluateChooseAddressData() {
         val processList = _list.copy()
-        val homeHeaderOvoDataModel = processList.find { visitable -> visitable is HomeHeaderOvoDataModel }
-        val headerIndex = processList.indexOfFirst { visitable -> visitable is HomeHeaderOvoDataModel }
-        (homeHeaderOvoDataModel as? HomeHeaderOvoDataModel)?.let {
+        val homeHeaderOvoDataModel = processList.find { visitable -> visitable is HomeHeaderDataModel }
+        val headerIndex = processList.indexOfFirst { visitable -> visitable is HomeHeaderDataModel }
+        (homeHeaderOvoDataModel as? HomeHeaderDataModel)?.let {
             it.needToShowChooseAddress = homeChooseAddressData.isActive
             _list[headerIndex] = homeHeaderOvoDataModel
         }
@@ -180,7 +143,7 @@ data class HomeDynamicChannelModel(
         copyWidget(homeDynamicChannelModel = homeDynamicChannelModel, validation = { it is NewBusinessUnitWidgetDataModel })
         copyWidget(homeDynamicChannelModel = homeDynamicChannelModel, validation = { it is HomeRecommendationFeedDataModel })
         copyWidget(homeDynamicChannelModel = homeDynamicChannelModel, validation = { it is HomeLoadingMoreModel })
-        copyWidget(homeDynamicChannelModel = homeDynamicChannelModel, validation = { it is HomeHeaderOvoDataModel })
+        copyWidget(homeDynamicChannelModel = homeDynamicChannelModel, validation = { it is HomeHeaderDataModel })
 
         setAndEvaluateHomeBalanceWidget(homeDynamicChannelModel.homeBalanceModel)
         setAndEvaluateHomeChooseAddressData(homeDynamicChannelModel.homeChooseAddressData)

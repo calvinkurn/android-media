@@ -13,6 +13,7 @@ import javax.inject.Inject
 class HomeFlagRepository @Inject constructor(
         private val graphqlUseCase: GraphqlUseCase<HomeFlagData>
 ) : UseCase<HomeFlagData>(), HomeRepository<HomeFlagData> {
+    private var currentFlag: HomeFlagData? = null
     private val params = RequestParams.create()
 
     init {
@@ -27,12 +28,12 @@ class HomeFlagRepository @Inject constructor(
     }
 
     override suspend fun getRemoteData(bundle: Bundle): HomeFlagData {
-        return executeOnBackground()
+        this.currentFlag = executeOnBackground()
+        return currentFlag!!
     }
 
     override suspend fun getCachedData(bundle: Bundle): HomeFlagData {
-        return HomeFlagData(
-
-        )
+        currentFlag?.let { return it }
+        return getRemoteData()
     }
 }
