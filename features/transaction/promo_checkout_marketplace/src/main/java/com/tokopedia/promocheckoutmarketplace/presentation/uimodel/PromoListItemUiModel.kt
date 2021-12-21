@@ -17,14 +17,15 @@ data class PromoListItemUiModel(
     }
 
     data class UiData(
+            var promoId: String = "", // todo : set promo id value
             var uniqueId: String = "",
             var shopId: Int = 0,
             var parentIdentifierId: Int = 0,
             var title: String = "",
             var currencyDetailStr: String = "",
 
-            var clashingInfoMessage: String = "",
-            var clashingInfoIcon: String = "",
+            var errorMessage: String = "",
+            var errorIcon: String = "",
             var imageResourceUrls: List<String> = emptyList(),
             var benefitAmount: Int = 0,
             var promoCode: String = "",

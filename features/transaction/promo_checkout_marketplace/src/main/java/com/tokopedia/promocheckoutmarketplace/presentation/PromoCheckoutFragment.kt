@@ -74,7 +74,6 @@ import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.android.synthetic.main.promo_checkout_marketplace_module_fragment.*
 import kotlinx.coroutines.*
 import java.net.UnknownHostException
 import javax.inject.Inject

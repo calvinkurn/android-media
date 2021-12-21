@@ -61,6 +61,10 @@ object ConstantTransactionAnalytics {
         const val CART = "Cart"
         const val CLICK_WISHLIST = "clickWishlist"
         const val CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer"
+        const val VIEW_CHECKOUT_IRIS = "viewCheckoutIris"
+        const val VIEW_ORDER_IRIS = "viewOrderIris"
+        const val CLICK_ORDER = "clickOrder"
+        const val VIEW_ITEM = "view_item"
     }
 
     object EventCategory {
@@ -267,6 +271,9 @@ object ConstantTransactionAnalytics {
         //Campaign
         const val VIEW_POP_UP_MESSAGE_TIMER = "view pop up message payment time expired"
         const val CLICK_BELANJA_LAGI_ON_POP_UP = "click belanja lagi on pop up message payment time expired"
+
+        // Promo checkout revamp
+        const val VIEW_PROMO_MESSAGE = "view promo message"
 
         //OCC
         const val CLICK_BACK_ARROW_IN_PILIH_METHOD_PAYMENT = "click back in pilih metode bayar"

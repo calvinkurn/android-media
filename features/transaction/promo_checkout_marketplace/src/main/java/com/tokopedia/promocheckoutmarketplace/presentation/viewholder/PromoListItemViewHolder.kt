@@ -240,7 +240,7 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
                     imagePromoInfo.setImageUrl(it.icon)
                     val textPromoInfo = promoInfoView.findViewById<Typography>(R.id.text_promo_info)
                     textPromoInfo.text = HtmlLinkHelper(itemView.context, it.title).spannedString
-                    if (!element.uiState.isParentEnabled || element.uiState.isDisabled || element.uiData.clashingInfoMessage.isNotBlank()) {
+                    if (!element.uiState.isParentEnabled || element.uiState.isDisabled || element.uiData.errorMessage.isNotBlank()) {
                         textPromoInfo.setTextColor(colorTextDisabled)
                     } else {
                         textPromoInfo.setTextColor(colorTextEnabledLowEmphasis)
@@ -295,9 +295,9 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
     private fun renderClashInfo(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
                                 element: PromoListItemUiModel) {
         with(viewBinding) {
-            if (element.uiData.clashingInfoMessage.isNotBlank()) {
-                imageClashInfo.setImageUrl(element.uiData.clashingInfoIcon)
-                textClashInfo.text = HtmlLinkHelper(itemView.context, element.uiData.clashingInfoMessage).spannedString
+            if (element.uiData.errorMessage.isNotBlank()) {
+                imageClashInfo.setImageUrl(element.uiData.errorIcon)
+                textClashInfo.text = HtmlLinkHelper(itemView.context, element.uiData.errorMessage).spannedString
                 containerClashInfo.show()
             } else {
                 containerClashInfo.gone()

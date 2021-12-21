@@ -1,24 +1,42 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.analytics
 
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
+import android.os.Bundle
+import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.CustomDimension
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventLabel
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.CustomDimension
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.Key
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
 import com.tokopedia.purchase_platform.common.constant.PAGE_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.PAGE_OCC
+import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.parcelize.Parcelize
 import javax.inject.Inject
 
-class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
+class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSessionInterface) : TransactionAnalytics() {
 
     companion object {
         val EVENT_NAME_VIEW = "view"
         val EVENT_NAME_CLICK = "click"
     }
+
+    @Parcelize
+    class Promotion(
+            @SerializedName("creative_name")
+            var creativeName: String = "",
+            @SerializedName("creative_slot")
+            var creativeSlot: String = "",
+            @SerializedName("item_id")
+            var itemId: String = "",
+            @SerializedName("item_name")
+            var itemName: String = ""
+    ): Parcelable
 
     object EventAction {
         const val CLICK_BUTTON_VERIFIKASI_NOMOR_HP = "click button verifikasi nomor HP promo page"
@@ -40,7 +58,6 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         const val CLICK_KELUAR_HALAMAN = "click keluar halaman"
         const val CLICK_RESET_PROMO = "click reset promo"
         const val CLICK_BELI_TANPA_PROMO = "click beli tanpa promo"
-        const val VIEW_PROMO_MESSAGE = "view promo message"
         const val SELECT_PROMO_CODE_FROM_LAST_SEEN = "select promo code from Last Seen"
         const val DISMISS_LAST_SEEN = "dismiss Last Seen"
         const val CLICK_INPUT_FIELD = "click input field"
@@ -48,14 +65,15 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
 
         // Revamp
         const val CLICK_LIHAT_DETAIL_INELIGIBLE_COUPON = "click lihat detail ineligible kupon"
-
+        const val IMPRESSION_INELIGIBLE_PROMO_SECTION = "impression - ineligible promo section"
     }
 
     private fun sendEventByPage(page: Int,
                                 event: String,
                                 eventAction: String,
                                 eventLabel: String,
-                                additionalData: Map<String, Any> = emptyMap()) {
+                                additionalData: Map<String, Any> = emptyMap(),
+                                isPromoBackFunnelImprovement: Boolean = false) {
         var eventCategoryPage: String? = null
         var eventNamePage: String? = null
         when (page) {
@@ -68,15 +86,15 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
             }
             PAGE_CHECKOUT -> {
                 when (event) {
-                    EVENT_NAME_VIEW -> eventNamePage = EventName.VIEW_COURIER_IRIS
-                    EVENT_NAME_CLICK -> eventNamePage = EventName.CLICK_COURIER
+                    EVENT_NAME_VIEW -> eventNamePage = if (isPromoBackFunnelImprovement) EventName.VIEW_CHECKOUT_IRIS else EventName.VIEW_COURIER_IRIS
+                    EVENT_NAME_CLICK -> eventNamePage = if (isPromoBackFunnelImprovement) EventName.CLICK_CHECKOUT else EventName.CLICK_COURIER
                 }
                 eventCategoryPage = EventCategory.COURIER_SELECTION
             }
             PAGE_OCC -> {
                 when (event) {
-                    EVENT_NAME_VIEW -> eventNamePage = EventName.VIEW_CHECKOUT_EXPRESS_IRIS
-                    EVENT_NAME_CLICK -> eventNamePage = EventName.CLICK_CHECKOUT_EXPRESS
+                    EVENT_NAME_VIEW -> eventNamePage = if (isPromoBackFunnelImprovement) EventName.VIEW_ORDER_IRIS else EventName.VIEW_CHECKOUT_EXPRESS_IRIS
+                    EVENT_NAME_CLICK -> eventNamePage = if (isPromoBackFunnelImprovement) EventName.CLICK_ORDER else EventName.CLICK_CHECKOUT_EXPRESS
                 }
                 eventCategoryPage = EventCategory.ORDER_SUMMARY
             }
@@ -95,10 +113,10 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         }
     }
 
-    fun sendEventEnhancedEcommerceByPage(page: Int,
-                                         eventAction: String,
-                                         eventLabel: String,
-                                         eCommerceMapData: Map<String, Any>) {
+    private fun sendEventEnhancedEcommerceByPage(page: Int,
+                                                 eventAction: String,
+                                                 eventLabel: String,
+                                                 eCommerceMapData: Map<String, Any>) {
         val dataLayer = getGtmData(
                 EventName.PROMO_VIEW,
                 when (page) {
@@ -112,6 +130,33 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         )
         dataLayer[Key.E_COMMERCE] = eCommerceMapData
         sendEnhancedEcommerce(dataLayer)
+    }
+
+    private fun sendEventEnhancedEcommerceByPage(page: Int,
+                                                 eventAction: String,
+                                                 eventLabel: String,
+                                                 bundle: Bundle) {
+        bundle.apply {
+            putString(TrackAppUtils.EVENT, EventName.VIEW_ITEM)
+            putString(TrackAppUtils.EVENT_CATEGORY,
+                    when (page) {
+                        PAGE_CART -> EventCategory.CART
+                        PAGE_CHECKOUT -> EventCategory.COURIER_SELECTION
+                        PAGE_OCC -> EventCategory.ORDER_SUMMARY
+                        else -> ""
+                    }
+            )
+            putString(TrackAppUtils.EVENT_ACTION, eventAction)
+            putString(TrackAppUtils.EVENT_LABEL, eventLabel)
+            putString(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO)
+            putString(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            putString(ExtraKey.USER_ID, userSession.userId)
+        }
+
+        sendEnhancedEcommerce(
+                eventName = EventName.VIEW_ITEM,
+                bundle = bundle
+        )
     }
 
     fun eventViewBlacklistErrorAfterApplyPromo(page: Int) {
@@ -391,6 +436,7 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
 
     // Promo BFI / Back Funnel Improvement (Revamp)
 
+    // 1
     fun eventImpressionEligiblePromoSection(page: Int) {
         /*
         {
@@ -423,9 +469,194 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         )
     }
 
+    // 2
+    fun eventImpressionIndexEligiblePromoSection() {
+        /*
+        {
+          "event": "viewATCIris",
+          "eventAction": "impression index - eligible promo section",
+          "eventCategory": "cart",
+          "eventLabel": "{{promo_id}} - {{x}} - {{promo_amount}}",
+          "businessUnit": "{businessUnit}",
+          "currentSite": "{currentSite}"
+        }
+        * */
+    }
+
+    // 3
+    fun eventImpressionPromoTypeEligiblePromoSection() {
+        /*
+        {
+          "event": "viewATCIris",
+          "eventAction": "impression promo type - eligible promo section",
+          "eventCategory": "cart",
+          "eventLabel": "{{promo_id}} - {{promo_amount}} - {{promo_type}}",
+          "businessUnit": "{businessUnit}",
+          "currentSite": "{currentSite}"
+        }
+        * */
+    }
+
+    // 4
+    fun eventImpressionBenefitEligiblePromoSection() {
+        /*
+        {
+          "event": "viewATCIris",
+          "eventAction": "impression benefit - eligible promo section",
+          "eventCategory": "cart",
+          "eventLabel": "{{promo_id}} - {{promo_amount}}",
+          "businessUnit": "{businessUnit}",
+          "currentSite": "{currentSite}"
+        }
+        * */
+    }
+
+    // 5
+    fun eventImpressionLockToPaymentPromoSection() {
+        /*
+        {
+          "event": "view_item",
+          "eventAction": "impression - lock to payment promo section",
+          "eventCategory": "cart",
+          "eventLabel": "{{promo_id}} - {{promo_amount}} - {{payament option}}",
+          "businessUnit": "promo",
+          "currentSite": "tokopediamarketplace",
+          "promotions": [
+            {
+              "creative_name": "{creative_name}",
+              "creative_slot": "{position_index}",
+              "item_id": "{promo_id}",
+              "item_name": "{promo_name}"
+            }
+          ],
+          "userId": "{user_id}"
+        }
+        * */
+    }
+
+    // 6
+    fun eventImpressionLockToShippingPromoSection() {
+        /*
+        {
+          "event": "view_item",
+          "eventAction": "impression - lock to shipping promo section",
+          "eventCategory": "cart",
+          "eventLabel": "{{promo_id}} - {{promo_amount}} - {{shipping option}}",
+          "businessUnit": "promo",
+          "currentSite": "tokopediamarketplace",
+          "promotions": [
+            {
+              "creative_name": "{creative_name}",
+              "creative_slot": "{position_index}",
+              "item_id": "{promo_id}",
+              "item_name": "{promo_name}"
+            }
+          ],
+          "userId": "{user_id}"
+        }
+        * */
+    }
+
+    // 7
+    fun eventImpressionHighlightedPromoSection() {
+        /*
+        {
+          "event": "view_item",
+          "eventAction": "impression - highlighted promo section",
+          "eventCategory": "cart",
+          "eventLabel": "{{promo_id}} - {{promo_amount}}",
+          "businessUnit": "promo",
+          "currentSite": "tokopediamarketplace",
+          "promotions": [
+            {
+              "creative_name": "{creative_name}",
+              "creative_slot": "{position_index}",
+              "item_id": "{promo_id}",
+              "item_name": "{promo_name}"
+            }
+          ],
+          "userId": "{user_id}"
+        }
+        * */
+    }
+
+    // 8
+    fun eventViewErrorAfterClickTerapkanPromo() {
+        /*
+        {
+          "event": "view_item",
+          "eventAction": "view error after click terapkan promo",
+          "eventCategory": "cart",
+          "eventLabel": "{{promo_id}} - {{error message}}",
+          "businessUnit": "promo",
+          "currentSite": "tokopediamarketplace",
+          "promotions": [
+            {
+              "creative_name": "{creative_name}",
+              "creative_slot": "{position_index}",
+              "item_id": "{promo_id}",
+              "item_name": "{promo_name}"
+            }
+          ],
+          "userId": "{user_id}"
+        }
+        * */
+    }
+
+    // 9
+    fun eventViewErrorAfterClickPakaiPromo() {
+        /*
+        {
+          "event": "viewATCIris",
+          "eventAction": "view error after click pakai promo",
+          "eventCategory": "cart",
+          "eventLabel": "{{promo_id}} - {{error message}}",
+          "businessUnit": "{businessUnit}",
+          "currentSite": "{currentSite}"
+        }
+        * */
+    }
+
+    // 10
+    fun eventClickTabPromoCategory() {
+        /*
+        {
+          "event": "clickATC",
+          "eventAction": "click tab promo category",
+          "eventCategory": "cart",
+          "eventLabel": "{{category name}}",
+          "businessUnit": "{businessUnit}",
+          "currentSite": "{currentSite}"
+        }
+        * */
+    }
+
+    // 11
+    fun eventImpressionRecommendationPromoSection() {
+        /*
+        {
+          "event": "viewATCIris",
+          "eventAction": "impression - recommendation promo section",
+          "eventCategory": "cart",
+          "eventLabel": "{{total coupon can apply}} - {{all potential benefit}}",
+          "businessUnit": "{businessUnit}",
+          "currentSite": "{currentSite}"
+        }
+        * */
+    }
 
     // 12
     fun eventClickPilihOnRecommendation(page: Int, promoCodes: List<String>, isCausingClash: Boolean) {
+        /*
+        {
+          "event": "clickATC",
+          "eventAction": "click pilih promo recommendation",
+          "eventCategory": "cart",
+          "eventLabel": "{{promo_code}} - {{status trigger clashing or not}}",
+          "businessUnit": "{businessUnit}",
+          "currentSite": "{currentSite}"
+        }
+        * */
         val additionalData = HashMap<String, Any>()
         additionalData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO)
         additionalData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
@@ -442,6 +673,16 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
 
     // 13
     fun eventClickLihatDetailOnIneligibleCoupon(page: Int, promoId: String, ineligibleMessage: String) {
+        /*
+        {
+          "event": "clickATC",
+          "eventAction": "click lihat detail ineligible kupon",
+          "eventCategory": "cart",
+          "eventLabel": "{{promo_id}} - {{message of ineligible reason}}",
+          "businessUnit": "{businessUnit}",
+          "currentSite": "{currentSite}"
+        }
+        * */
         val additionalData = HashMap<String, Any>()
         additionalData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO)
         additionalData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
@@ -456,23 +697,41 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
     }
 
     // 14
-    /*
-    {
-      "event": "view_item",
-      "eventAction": "impression - ineligible promo section",
-      "eventCategory": "cart",
-      "eventLabel": "{{promo_id}} - {{message of ineligible reason}}",
-      "businessUnit": "promo",
-      "currentSite": "tokopediamarketplace",
-      "promotions": [
+    fun eventImpressionIneligiblePromoSection(page: Int, promoItem: PromoListItemUiModel) {
+        /*
         {
-          "creative_name": "{creative_name}",
-          "creative_slot": "{position_index}",
-          "item_id": "{promo_id}",
-          "item_name": "{promo_name}"
+          "event": "view_item",
+          "eventAction": "impression - ineligible promo section",
+          "eventCategory": "cart",
+          "eventLabel": "{{promo_id}} - {{message of ineligible reason}}",
+          "businessUnit": "promo",
+          "currentSite": "tokopediamarketplace",
+          "promotions": [
+            {
+              "creative_name": "{creative_name}",
+              "creative_slot": "{position_index}",
+              "item_id": "{promo_id}",
+              "item_name": "{promo_name}"
+            }
+          ],
+          "userId": "{user_id}"
         }
-      ],
-      "userId": "{user_id}"
-    }
     * */
+        val promotion = Promotion(
+                creativeName = "",
+                creativeSlot = "",
+                itemId = promoItem.uiData.promoId,
+                itemName = promoItem.uiData.title
+        )
+
+        val bundle = Bundle().apply {
+            putParcelableArrayList("promotions", arrayListOf(promotion))
+        }
+        sendEventEnhancedEcommerceByPage(
+                page = page,
+                eventAction = EventAction.IMPRESSION_INELIGIBLE_PROMO_SECTION,
+                eventLabel = "${promoItem.uiData.promoId} - ${promoItem.uiData.errorMessage}",
+                bundle = bundle
+        )
+    }
 }

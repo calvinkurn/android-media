@@ -776,7 +776,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     private fun setPromoItemDisabled(redStateMap: HashMap<String, String>, it: PromoListItemUiModel) {
         if (redStateMap.containsKey(it.uiData.promoCode)) {
             it.uiState.isSelected = false
-            it.uiData.clashingInfoMessage = redStateMap[it.uiData.promoCode] ?: ""
+            it.uiData.errorMessage = redStateMap[it.uiData.promoCode] ?: ""
             it.uiState.isDisabled = true
             _tmpUiModel.value = Update(it)
         }
@@ -1002,7 +1002,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 // Reset promo on expanded item
                 it.uiState.isSelected = false
                 it.uiData.currentClashingPromo.clear()
-                it.uiData.clashingInfoMessage = ""
+                it.uiData.errorMessage = ""
                 promoList.add(it)
             }
         }
@@ -1309,9 +1309,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                             return@forEach
                         }
                     }
-                    promoListItemUiModel.uiData.clashingInfoMessage = errorMessageBuilder.toString()
+                    promoListItemUiModel.uiData.errorMessage = errorMessageBuilder.toString()
                 } else {
-                    promoListItemUiModel.uiData.clashingInfoMessage = ""
+                    promoListItemUiModel.uiData.errorMessage = ""
                 }
             }
         }
@@ -1323,12 +1323,12 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         if (clashingInfo != null) {
             if (!promoListItemUiModel.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
                 promoListItemUiModel.uiData.currentClashingPromo.add(selectedItem.uiData.promoCode)
-                val errorMessageBuilder = StringBuilder(promoListItemUiModel.uiData.clashingInfoMessage)
-                if (promoListItemUiModel.uiData.clashingInfoMessage.isNotBlank()) {
+                val errorMessageBuilder = StringBuilder(promoListItemUiModel.uiData.errorMessage)
+                if (promoListItemUiModel.uiData.errorMessage.isNotBlank()) {
                     errorMessageBuilder.clear()
                 }
                 errorMessageBuilder.append(clashingInfo.message)
-                promoListItemUiModel.uiData.clashingInfoMessage = errorMessageBuilder.toString()
+                promoListItemUiModel.uiData.errorMessage = errorMessageBuilder.toString()
                 clashResult = true
             }
         }
