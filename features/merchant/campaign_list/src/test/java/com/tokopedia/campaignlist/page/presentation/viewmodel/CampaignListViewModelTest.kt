@@ -54,6 +54,7 @@ class CampaignListViewModelTest {
 
     private val shop = ShopData(name = "Compass")
     private val campaign = Campaign(name = "Flash Deal")
+    private val merchantBannerData = GetMerchantCampaignBannerGeneratorData()
     
     companion object {
         private const val EMPTY_STRING = ""
@@ -364,10 +365,11 @@ class CampaignListViewModelTest {
         every { resourceProvider.getShareCampaignDescriptionWording() } returns "Wah, ada %s dari %s di @Tokopedia, lho. Mulai %s pukul %s WIB! Cek sekarang, yuk!"
 
         val actual = viewModel.getShareDescriptionWording(
-            shop,
-            campaign,
-            shareUri,
-            campaignStatusOngoing
+                shopData = shop,
+                campaignData = campaign,
+                merchantBannerData = merchantBannerData,
+                shareUri = shareUri,
+                campaignStatusId = campaignStatusOngoing
         )
 
         assertEquals(expected, actual)
@@ -383,10 +385,11 @@ class CampaignListViewModelTest {
         every { resourceProvider.getShareCampaignDescriptionWording() } returns null
 
         val actual = viewModel.getShareDescriptionWording(
-            shop,
-            campaign,
-            shareUri,
-            campaignStatusOngoing
+                shopData = shop,
+                campaignData = campaign,
+                merchantBannerData = merchantBannerData,
+                shareUri = shareUri,
+                campaignStatusId = campaignStatusOngoing
         )
 
         assertEquals(expected, actual)
@@ -403,10 +406,11 @@ class CampaignListViewModelTest {
         every { resourceProvider.getShareOngoingCampaignDescriptionWording() } returns "Kejar eksklusif launching %s dari %s hanya di @Tokopedia. Hanya sampai %s pukul %s WIB!"
 
         val actual = viewModel.getShareDescriptionWording(
-            shop,
-            campaign,
-            shareUri,
-            campaignStatusUpcoming
+                shopData = shop,
+                campaignData = campaign,
+                merchantBannerData = merchantBannerData,
+                shareUri = shareUri,
+                campaignStatusId = campaignStatusUpcoming
         )
 
         assertEquals(expected, actual)
@@ -423,10 +427,11 @@ class CampaignListViewModelTest {
         every { resourceProvider.getShareOngoingCampaignDescriptionWording() } returns "Kejar eksklusif launching %s dari %s hanya di @Tokopedia. Hanya sampai %s pukul %s WIB!"
 
         val actual = viewModel.getShareDescriptionWording(
-            shop,
-            campaign,
-            shareUri,
-            campaignStatus
+                shopData = shop,
+                campaignData = campaign,
+                merchantBannerData = merchantBannerData,
+                shareUri = shareUri,
+                campaignStatusId = campaignStatus
         )
 
         assertEquals(expected, actual)
@@ -442,10 +447,11 @@ class CampaignListViewModelTest {
         every { resourceProvider.getShareOngoingCampaignDescriptionWording() } returns null
 
         val actual = viewModel.getShareDescriptionWording(
-            shop,
-            campaign,
-            shareUri,
-            campaignStatusUpcoming
+                shopData = shop,
+                campaignData = campaign,
+                merchantBannerData = merchantBannerData,
+                shareUri = shareUri,
+                campaignStatusId = campaignStatusUpcoming
         )
 
         assertEquals(expected, actual)

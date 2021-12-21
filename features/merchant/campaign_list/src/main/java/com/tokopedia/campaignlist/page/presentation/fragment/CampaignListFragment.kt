@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.common.analytics.CampaignListTracker
 import com.tokopedia.campaignlist.common.constant.CampaignStatusIdTypeDef
+import com.tokopedia.campaignlist.common.constant.ShopTypeDef
 import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorData
 import com.tokopedia.campaignlist.common.di.DaggerCampaignListComponent
 import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase
@@ -85,7 +86,7 @@ class CampaignListFragment : BaseDaggerFragment(),
     companion object {
         @JvmStatic
         fun createInstance() = CampaignListFragment()
-        private const val SHARE = "Share"
+        private const val SHARE = "share"
         private const val EMPTY_SEARCH_KEYWORD = ""
         const val TICKER_STATE_PREFERENCE = "TICKER_STATE_PREFERENCE"
         const val IS_DISMISS_TICKER = "IS_DISMISS_TICKER"
@@ -95,6 +96,10 @@ class CampaignListFragment : BaseDaggerFragment(),
         const val INDEX_TWO = 2
         const val INDEX_THREE = 3
         const val INDEX_FOUR = 4
+        const val POWER_MERCHANT = "Power Merchant"
+        const val OFFICIAL_STORE = "Official Store"
+        const val POWER_MERCHANT_PRO = "Power Merchant PRO"
+        const val VALUE_SHARE_RS = "ShopRS" // Rilisan Spesial
     }
 
     override fun getScreenName(): String {
@@ -136,7 +141,7 @@ class CampaignListFragment : BaseDaggerFragment(),
             // TODO log invalid campaign id
         }
         tracker.sendShareButtonClickEvent(
-                activeCampaign.campaignType,
+                viewModel.getCampaignTypeId(),
                 activeCampaign.campaignId,
                 userSession.shopId,
                 userSession.userId,
@@ -160,8 +165,8 @@ class CampaignListFragment : BaseDaggerFragment(),
     override fun onApplyCampaignStatusFilter(selectedCampaignStatus: CampaignStatusSelection) {
         campaignStatusFilter?.type = ChipsUnify.TYPE_SELECTED
         campaignStatusFilter?.title = selectedCampaignStatus.statusText
-        viewModel.setCampaignStatusId(listOf(selectedCampaignStatus.statusId))
-        viewModel.getCampaignList(statusId = listOf(selectedCampaignStatus.statusId))
+        viewModel.setCampaignStatusId(selectedCampaignStatus.statusId)
+        viewModel.getCampaignList(statusId = selectedCampaignStatus.statusId)
         tracker.sendSelectCampaignStatusClickEvent(selectedCampaignStatus.statusId, userSession.shopId)
     }
 
@@ -296,20 +301,25 @@ class CampaignListFragment : BaseDaggerFragment(),
                     tnImage = NPL_ICON_URL
             )
             setUtmCampaignData(
-                    pageName = this@CampaignListFragment.getString(R.string.active_campaign_list),
+                    listOf(VALUE_SHARE_RS, userSession.userId, userSession.shopId, viewModel.getCampaignStatusId().toString()),
                     userId = userSession.userId,
                     pageId = userSession.shopId,
                     feature = SHARE
             )
+
             val _totalProducts = productData.size
-            val _isOngoing = if (campaignData.statusId == CampaignStatusIdTypeDef.BERLANGSUNG) 1 else 0
+            val _isOngoing = if (validateIsOngoingCampaign(merchantBannerData)) 1 else 0
 
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.CAMPAIGN_NAME , value = campaignData.name)
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.CAMPAIGN_INFO , value = campaignData.discountPercentageText)
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.SHOP_LOGO , value = shopData.logo)
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.SHOP_NAME , value = shopData.name)
-            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.BADGE , value = shopData.badge.Title)
-            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.DATE , value = merchantBannerData.formattedSharingEndDate)
+            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.BADGE , value = validateShopType(shopData.badge.Title))
+            addImageGeneratorData(
+                    key = ImageGeneratorConstants.ImageGeneratorKeys.DATE ,
+                    value = if (validateIsOngoingCampaign(merchantBannerData))
+                        merchantBannerData.formattedSharingStartDate else merchantBannerData.formattedSharingEndDate
+            )
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.ONGOING , value = _isOngoing.toString())
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCTS_COUNT , value = _totalProducts.toString())
             addImageGeneratorData(
@@ -363,6 +373,19 @@ class CampaignListFragment : BaseDaggerFragment(),
                 addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_4_PRICE_AFTER , value = _discountedPrice)
                 addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_4_DISCOUNT , value = _discount)
             }
+        }
+    }
+
+    private fun validateIsOngoingCampaign(merchantBannerData: GetMerchantCampaignBannerGeneratorData): Boolean {
+        return merchantBannerData.campaign.statusId == CampaignStatusIdTypeDef.BERLANGSUNG
+    }
+
+    private fun validateShopType(shopType: String): String {
+        return when (shopType) {
+            POWER_MERCHANT -> ShopTypeDef.POWER_MERCHANT
+            POWER_MERCHANT_PRO -> ShopTypeDef.POWER_MERCHANT_PRO
+            OFFICIAL_STORE -> ShopTypeDef.OFFICIAL_STORE
+            else -> ShopTypeDef.REGULAR_MERCHANT // REGULAR MERCHANT
         }
     }
 
@@ -441,7 +464,13 @@ class CampaignListFragment : BaseDaggerFragment(),
             LinkerManager.getInstance().executeShareRequest(
                     LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                         override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                            val shareWording = viewModel.getShareDescriptionWording(shopData, campaignData, linkerShareData?.shareUri, campaignStatusId)
+                            val shareWording = viewModel.getShareDescriptionWording(
+                                    shopData = shopData,
+                                    campaignData = campaignData,
+                                    merchantBannerData = merchantBannerData,
+                                    shareUri = linkerShareData?.shareUri,
+                                    campaignStatusId = campaignStatusId
+                            )
                             SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareWording)
                             universalShareBottomSheet?.dismiss()
                         }
