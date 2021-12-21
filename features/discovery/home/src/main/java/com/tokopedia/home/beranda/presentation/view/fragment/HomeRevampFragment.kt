@@ -2398,16 +2398,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getHomeViewModel().declineRechargeRecommendationItem(requestParams)
     }
 
-    override fun getRechargeRecommendation() {
-        getHomeViewModel().getRechargeRecommendation()
-    }
-
     override fun declineSalamItem(requestParams: Map<String, Int>) {
         getHomeViewModel().declineSalamItem(requestParams)
-    }
-
-    override fun getSalamWidget() {
-        getHomeViewModel().getSalamWidget()
     }
 
     override fun getRechargeBUWidget(source: WidgetSource) {
@@ -2471,10 +2463,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun getBusinessUnit(tabId: Int, position: Int, tabName: String) {
         getHomeViewModel().getBusinessUnitData(tabId, position, tabName)
-    }
-
-    override fun getPlayChannel(position: Int) {
-        getHomeViewModel().getPlayBanner(position)
     }
 
     override fun onRefreshTokoPointButtonClicked() {

@@ -344,29 +344,6 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    //TODO 4.2: Remove getPlayBanner -> Move to HomePlayLiveDynamicRepository
-    // integrate with HomeDynamicChannelUseCase to update data
-    fun getPlayBanner(position: Int){
-        val playBanner =
-                if (position < homeDataModel.list.size
-                        && homeDataModel.list.get(position) is PlayCardDataModel)
-                    homeDataModel.list.getOrNull(position) as PlayCardDataModel
-                else homeDataModel.list.find { it is PlayCardDataModel }
-        playBanner?.let {
-            getLoadPlayBannerFromNetwork(playBanner as PlayCardDataModel)
-        }
-    }
-
-    //TODO 4.3: Remove getPlayBanner -> Move to HomePlayLiveDynamicRepository
-    // integrate with HomeDynamicChannelUseCase to update data
-    // Logic detect play banner should load data from API
-    private fun getPlayBanner(){
-        // Check the current index is play card view model
-        findWidget<PlayCardDataModel> { playCardModel, index ->
-            getLoadPlayBannerFromNetwork(playCardModel)
-        }
-    }
-
     //TODO 4.4: Remove setPlayBanner -> Move to HomePlayLiveDynamicRepository,
     // integrate with HomeDynamicChannelUseCase to update data
     // If the image is valid it will be set play banner to UI
@@ -609,53 +586,6 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    //TODO 13.1: Remove getRechargeRecommendation -> Move to HomeDynamicChannelUseCase
-    // integrate with HomeDynamicChannelUseCase to update data
-    fun getRechargeRecommendation() {
-        if(getRechargeRecommendationJob?.isActive == true) return
-        findWidget<ReminderWidgetModel>(
-                actionOnFound = { reminderWidgetModel, i ->
-                    getRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
-                        homeRechargeRecommendationRepository.get().setParams()
-                        val data = homeRechargeRecommendationRepository.get().executeOnBackground()
-                        val newFindRechargeRecommendationViewModel = reminderWidgetModel.copy(
-                                data = mapperRechargetoReminder(data),
-                                source = ReminderEnum.RECHARGE
-                        )
-                        updateWidget(newFindRechargeRecommendationViewModel, i)
-                    }) {
-                        removeRechargeRecommendation()
-                    }
-                },
-                predicate = {
-                    it?.source == ReminderEnum.RECHARGE
-                }
-        )
-    }
-
-    //TODO 14.1: Remove getSalamWidget -> Move to HomeDynamicChannelUseCase
-    // integrate with HomeDynamicChannelUseCase to update data
-    fun getSalamWidget(){
-        if(getSalamWidgetJob?.isActive == true) return
-        findWidget<ReminderWidgetModel>(
-                actionOnFound = { reminderWidgetModel, i ->
-                    getSalamWidgetJob = launchCatchError(coroutineContext,  block = {
-                        val data = homeSalamWidgetRepository.get().executeOnBackground()
-                        val newFindRechargeRecommendationViewModel = reminderWidgetModel.copy(
-                                data = mapperSalamtoReminder(data),
-                                source = ReminderEnum.SALAM
-                        )
-                        updateWidget(newFindRechargeRecommendationViewModel, i)
-                    }){
-                        removeSalamWidget()
-                    }
-                },
-                predicate = {
-                    it?.source == ReminderEnum.SALAM
-                }
-        )
-    }
-
     //TODO 13.2: Remove declineRechargeRecommendationItem -> Move to HomeRechargeRecommendationUseCase.onCloseHomeRechargeRecommendation
     fun declineRechargeRecommendationItem(requestParams: Map<String, String>) {
         removeRechargeRecommendation()
@@ -864,33 +794,11 @@ open class HomeRevampViewModel @Inject constructor(
         return homeDataModel.homeChooseAddressData
     }
 
-    //TODO 25: Remove removeChooseAddressWidget -> Move to HomeDynamicChannelUseCase
     fun removeChooseAddressWidget() {
-        val homeHeaderOvoDataModel = homeDataModel.list.withIndex().find {
-            it.value is HomeHeaderDataModel
-        }
-        (homeHeaderOvoDataModel?.value as? HomeHeaderDataModel)?.needToShowChooseAddress = false
-        homeHeaderOvoDataModel?.let {
-            updateWidget(homeHeaderOvoDataModel.value, homeHeaderOvoDataModel.index)
+        homeUseCase.get().removeChooseAddressData(homeDataModel) {
+            updateHomeData(it)
         }
     }
-
-    //TODO 27: Remove findWidgetList -> Move to HomeDynamicChannelUseCase
-    private inline fun <reified T> findWidgetList(predicate: (T?) -> Boolean = {true}, actionOnFound: (List<IndexedValue<T>>) -> Unit) {
-        val listFound = mutableListOf<IndexedValue<T>>()
-        homeDataModel.list.withIndex().filter { it.value is T && predicate.invoke(it.value as? T) }.let {
-            it.forEach { indexedValue ->
-                if (indexedValue.value is T) {
-                    (indexedValue as? IndexedValue<T>)?.let { findValue ->
-                        listFound.add(findValue)
-                    }
-                }
-            }
-        }
-        actionOnFound.invoke(listFound)
-    }
-
-
 
     //TODO 29: Remove findWidget -> Move to HomeDynamicChannelUseCase
     private inline fun <reified T> findWidget(predicate: (T?) -> Boolean = {true}, actionOnFound: (T, Int) -> Unit) {
@@ -920,28 +828,12 @@ open class HomeRevampViewModel @Inject constructor(
 
     //TODO 33: Remove updateHomeData -> Move to HomeDynamicChannelUseCase
     private fun updateHomeData(homeNewDynamicChannelModel: HomeDynamicChannelModel) {
-        logChannelUpdate("Update channel: (Update all home data) data: ${homeDataModel.list.map { it.javaClass.simpleName }}")
-//        homeNewDynamicChannelModel.copyStaticWidgetDataFrom(homeDataModel)
         this.homeDataModel = homeNewDynamicChannelModel
         this.homeDataModel.homeBalanceModel = currentHeaderDataModel?.headerDataModel?.homeBalanceModel?:HomeBalanceModel()
 
 
         _homeLiveDynamicChannel.postValue(homeDataModel)
         _resetNestedScrolling.postValue(Event(true))
-    }
-
-    //TODO 34: Remove ajalah
-    private fun logChannelUpdate(message: String){
-        if(GlobalConfig.DEBUG) Timber.tag(this.javaClass.simpleName).e(message)
-    }
-
-    //TODO 37: Remove balanceRemoteConfigCondition -> Move to HomeDynamicChannelUseCase
-    private fun getHomeLocationDataParam() : String {
-        return try {
-            getAddressData().localCacheModel.convertToLocationParams()
-        } catch (e:Exception) {
-            ""
-        }
     }
 
     //TODO 17.2: Remove convertPopularKeywordDataList -> Move to HomeDynamicChannelUseCase
@@ -1031,51 +923,6 @@ open class HomeRevampViewModel @Inject constructor(
             homeUseCase.get().updateHeaderData(currentHeaderDataModel, homeDataModel) {
                 updateHomeData(it)
             }
-        }
-    }
-
-    //TODO 39: Remove getDisplayTopAdsHeader -> Move to HomeDynamicChannelUseCase
-    private fun getDisplayTopAdsHeader(){
-        findWidgetList<FeaturedShopDataModel> { indexedFeaturedShopModelList ->
-            indexedFeaturedShopModelList.forEach { model ->
-                val featuredShopDataModel = model.value
-                val index = model.index
-
-                launchCatchError(coroutineContext, block={
-                    getDisplayHeadlineAds.get().createParams(featuredShopDataModel.channelModel.widgetParam)
-                    val data = getDisplayHeadlineAds.get().executeOnBackground()
-                    if(data.isEmpty()){
-                        deleteWidget(featuredShopDataModel, index)
-                    } else {
-                        updateWidget(featuredShopDataModel.copy(
-                            channelModel = featuredShopDataModel.channelModel.copy(
-                                channelGrids = data.mappingTopAdsHeaderToChannelGrid()
-                            ),
-                            state = FeaturedShopDataModel.STATE_READY)
-                                , index)
-                    }
-                }){
-                    deleteWidget(featuredShopDataModel, index)
-                }
-            }
-        }
-    }
-
-    //TODO 5.2: Remove getReviewData -> Move to HomeDynamicChannelUseCase
-    private fun getReviewData() {
-        if(getSuggestedReviewJob?.isActive == true) return
-        if (userSession.get().isLoggedIn) {
-            getSuggestedReviewJob = launchCatchError(coroutineContext, block = {
-                findWidget<ReviewDataModel> { reviewWidget, index ->
-                    val data = homeReviewSuggestedRepository.get().executeOnBackground()
-                    val newFindReviewViewModel = reviewWidget.copy(suggestedProductReview = data)
-                    updateWidget(newFindReviewViewModel, index)
-                }
-            }) {
-                onRemoveSuggestedReview()
-            }
-        } else {
-            onRemoveSuggestedReview()
         }
     }
 
@@ -1172,41 +1019,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     //TODO 44: Delete
     private fun getExternalApi() {
-        getPlayWidget()
-        getReviewData()
-        getPlayBanner()
         getPopularKeyword()
-        getDisplayTopAdsHeader()
-        getTopAdsBannerData()
-        getRechargeRecommendation()
-        getSalamWidget()
-    }
-
-    //TODO 45: Remove getTopAdsBannerData -> Move to HomeDynamicChannelUseCase
-    private fun getTopAdsBannerData() {
-        if(getTopAdsBannerDataJob?.isActive == true) return
-        findWidget<HomeTopAdsBannerDataModel> { topAdsModel, index ->
-            getTopAdsBannerDataJob = launchCatchError(coroutineContext, {
-                val results = topAdsImageViewUseCase.get().getImageData(
-                        topAdsImageViewUseCase.get().getQueryMap(
-                                "",
-                                TOP_ADS_HOME_SOURCE,
-                                "",
-                                TOP_ADS_COUNT,
-                                TOP_ADS_BANNER_DIMEN_ID,
-                                "")
-                )
-                if (results.isNotEmpty()) {
-                    val newTopAdsModel = topAdsModel.copy(topAdsImageViewModel = results[0])
-                    updateWidget(newTopAdsModel, index)
-                } else {
-                    deleteWidget(topAdsModel, index)
-                }
-            }){
-                it.printStackTrace()
-                deleteWidget(topAdsModel, index)
-            }
-        }
     }
 
     //TODO 46: Remove getBeautyFest -> Move to HomeBeautyFestUseCase

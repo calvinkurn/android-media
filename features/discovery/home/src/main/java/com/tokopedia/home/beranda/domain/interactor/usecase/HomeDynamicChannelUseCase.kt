@@ -87,6 +87,20 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     private val jobList = mutableListOf<Deferred<AtfData>>()
 
+    fun removeChooseAddressData(homeDataModel: HomeDynamicChannelModel, onSuccess:(HomeDynamicChannelModel) -> Unit) {
+        val homeHeaderOvoDataModel = homeDataModel.list.withIndex().find {
+            it.value is HomeHeaderDataModel
+        }
+        (homeHeaderOvoDataModel?.value as? HomeHeaderDataModel)?.needToShowChooseAddress = false
+        homeDataModel.updateWidgetModel(
+                visitableToChange = homeHeaderOvoDataModel?.value,
+                visitable = homeHeaderOvoDataModel?.value,
+                position = homeHeaderOvoDataModel?.index?:-1
+        ) {
+            onSuccess.invoke(homeDataModel)
+        }
+    }
+
     fun updateHeaderData(homeHeaderDataModel: HomeHeaderDataModel, homeDataModel: HomeDynamicChannelModel, onSuccess:(HomeDynamicChannelModel) -> Unit) {
         val homeHeaderOvoDataModel = (homeDataModel.list.find { visitable-> visitable is HomeHeaderDataModel } as HomeHeaderDataModel?)
         homeHeaderOvoDataModel?.let {
@@ -146,13 +160,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     emit(dynamicChannelPlainResponse)
                 }
 
-
-                /**
-                 * Get header data
-                 */
-                val currentHeaderDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData(HomeHeaderDataModel())
-                updateHeaderData(currentHeaderDataModel, dynamicChannelPlainResponse) {}
-
                 /**
                  * Get choose address data
                  */
@@ -163,6 +170,12 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                     .setLocalCacheModel(localCacheModel)
                     )
                 }
+                /**
+                 * Get header data
+                 */
+                val currentHeaderDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData(HomeHeaderDataModel())
+                updateHeaderData(currentHeaderDataModel, dynamicChannelPlainResponse) {}
+
                 emit(dynamicChannelPlainResponse)
 
                 /**
@@ -180,7 +193,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         SuggestedProductReview>(widgetRepository = homeReviewSuggestedRepository) { visitableFound, data, position ->
                     visitableFound.copy(suggestedProductReview = data)
                 }
-
 
                 dynamicChannelPlainResponse.getWidgetDataIfExist<
                         PlayCardDataModel,
