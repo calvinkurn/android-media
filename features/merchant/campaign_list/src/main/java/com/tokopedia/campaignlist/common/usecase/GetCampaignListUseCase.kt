@@ -21,7 +21,7 @@ class GetCampaignListUseCase @Inject constructor(
         const val NPL_LIST_TYPE = 20
 
         // sorting : tesedia, akan datang, berlangsung
-        val statusId = listOf(5, 6, 7)
+        val statusId = listOf(5, 6, 7, 14)
 
         private var query = """
             query getCampaignListV2(${'$'}params:GetCampaignListForSellerRequest) {
