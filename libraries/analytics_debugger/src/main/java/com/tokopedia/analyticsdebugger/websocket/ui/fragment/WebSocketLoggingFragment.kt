@@ -3,6 +3,7 @@ package com.tokopedia.analyticsdebugger.websocket.ui.fragment
 import android.content.Context
 import android.os.Bundle
 import android.view.*
+import android.widget.HorizontalScrollView
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.os.bundleOf
@@ -13,24 +14,21 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.websocket.di.DaggerWebSocketLoggingComponent
 import com.tokopedia.analyticsdebugger.websocket.ui.adapter.WebSocketLogAdapter
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLog
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketSourceUiModel
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.action.WebSocketLoggingAction
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.event.WebSocketLoggingEvent
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.helper.UiString
+import com.tokopedia.analyticsdebugger.websocket.ui.view.Chip
 import com.tokopedia.analyticsdebugger.websocket.ui.viewmodel.WebSocketLoggingViewModel
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -70,7 +68,7 @@ class WebSocketLoggingFragment: Fragment() {
     private lateinit var etSearchWebSocketLog: SearchInputView
     private lateinit var pbLoading: ProgressBar
     private lateinit var swipeRefresh: SwipeRefreshLayout
-    private lateinit var chipGroup: ChipGroup
+    private lateinit var chipScroll: HorizontalScrollView
 
     /**
      * Lifecycle
@@ -115,7 +113,7 @@ class WebSocketLoggingFragment: Fragment() {
         etSearchWebSocketLog = view.findViewById(R.id.et_websocket_log_search)
         pbLoading = view.findViewById(R.id.pb_loading)
         swipeRefresh = view.findViewById(R.id.swipe_refresh_web_socket_log)
-        chipGroup = view.findViewById(R.id.cg_websocket_log)
+        chipScroll = view.findViewById(R.id.hsv_chip)
 
         layoutManager = LinearLayoutManager(context)
 
@@ -194,15 +192,17 @@ class WebSocketLoggingFragment: Fragment() {
     }
 
     private fun updateChip(sources: List<WebSocketSourceUiModel>) {
-        chipGroup.removeAllViews()
+        chipScroll.removeAllViews()
 
         sources.forEach {
             val chip = Chip(requireContext())
-            chip.text = it.label
-            chip.setOnCheckedChangeListener { compoundButton, b ->
-                viewModel.submitAction(WebSocketLoggingAction.SearchLogAction(etSearchWebSocketLog.searchText))
-            }
-            chipGroup.addView(chip)
+            chip.setText(it.label)
+            chip.setOnCheckedListener(object: Chip.Listener {
+                override fun onCheckedListener(checked: Boolean) {
+                    viewModel.submitAction(WebSocketLoggingAction.SearchLogAction(etSearchWebSocketLog.searchText))
+                }
+            })
+            chipScroll.addView(chip)
         }
 
     }

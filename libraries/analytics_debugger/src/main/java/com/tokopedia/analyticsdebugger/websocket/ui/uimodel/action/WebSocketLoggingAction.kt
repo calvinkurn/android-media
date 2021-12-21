@@ -9,4 +9,5 @@ sealed class WebSocketLoggingAction {
     object LoadNextPageAction: WebSocketLoggingAction()
     object DeleteAllLogAction: WebSocketLoggingAction()
     object GetSourceList: WebSocketLoggingAction()
+    data class SelectSource(val value: String, val query: String): WebSocketLoggingAction()
 }

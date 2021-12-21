@@ -11,7 +11,11 @@ import com.tokopedia.unifyprinciples.Typography
 /**
  * Created By : Jonathan Darwin on December 21, 2021
  */
-class Chip(context: Context, attrs: AttributeSet): FrameLayout(context, attrs) {
+class Chip: FrameLayout {
+
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle)
 
     private val chipText: Typography = findViewById(R.id.chip_text)
 
@@ -20,14 +24,30 @@ class Chip(context: Context, attrs: AttributeSet): FrameLayout(context, attrs) {
 
     private var listener: Listener? = null
     private var isChecked: Boolean = false
+    private var chipModel: ChipModel? = null
 
     init {
         View.inflate(context, R.layout.view_chip, this)
 
         chipText.setOnClickListener {
-            setChecked(!isChecked)
-            listener?.onCheckedListener(isChecked)
+            if(!isChecked) {
+                chipModel?.let {
+                    setModel(it.copy(selected = true))
+                    listener?.onCheckedListener(it.value)
+                }
+            }
         }
+    }
+
+    fun setModel(chipModel: ChipModel) {
+        this.chipModel = chipModel
+
+        setText(chipModel.label)
+        setChecked(chipModel.selected)
+    }
+
+    fun setText(text: String) {
+        chipText.text = text
     }
 
     fun setChecked(isChecked: Boolean) {
@@ -45,6 +65,6 @@ class Chip(context: Context, attrs: AttributeSet): FrameLayout(context, attrs) {
     }
 
     interface Listener {
-        fun onCheckedListener(checked: Boolean)
+        fun onCheckedListener(value: String)
     }
 }
