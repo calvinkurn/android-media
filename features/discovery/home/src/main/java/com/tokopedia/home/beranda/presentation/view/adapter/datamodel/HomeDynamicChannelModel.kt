@@ -125,7 +125,7 @@ data class HomeDynamicChannelModel(
         }
     }
 
-    fun initRecom(onNeedTabLoad: () -> Unit) {
+    suspend fun initRecom(onNeedTabLoad: suspend () -> Unit) {
         val mutableIterator = _list.iterator()
         for (e in mutableIterator) {
             if (e is HomeRetryModel) {
@@ -154,7 +154,7 @@ data class HomeDynamicChannelModel(
         this.homeBalanceModel = homeBalanceModel
     }
 
-    fun evaluateRecommendationSection(onNeedTabLoad: () -> Unit) {
+    suspend fun evaluateRecommendationSection(onNeedTabLoad: suspend () -> Unit) {
         if(_list.find { it::class.java == HomeLoadingMoreModel::class.java } != null)
             return
 
