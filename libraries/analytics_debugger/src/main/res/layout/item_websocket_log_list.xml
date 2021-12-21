@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/spacing_lvl3"
     android:background="@color/white"
     android:paddingStart="@dimen/spacing_lvl4"
@@ -15,12 +15,24 @@
         android:id="@+id/tv_websocket_log_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        app:layout_constraintEnd_toStartOf="@id/tv_websocket_log_source"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_3"
         app:typographyWeight="bold"
         tools:text="Contoh Event Name" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_websocket_log_source"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black_36"
+        app:layout_constraintBottom_toBottomOf="@id/tv_websocket_log_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_websocket_log_title"
+        app:layout_constraintTop_toTopOf="@id/tv_websocket_log_title"
+        tools:text="viewer" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_websocket_log_date_time"
