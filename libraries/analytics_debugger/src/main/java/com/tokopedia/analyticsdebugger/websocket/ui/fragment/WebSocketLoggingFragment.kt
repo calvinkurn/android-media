@@ -13,6 +13,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analyticsdebugger.R
@@ -20,6 +22,7 @@ import com.tokopedia.analyticsdebugger.websocket.di.DaggerWebSocketLoggingCompon
 import com.tokopedia.analyticsdebugger.websocket.ui.adapter.WebSocketLogAdapter
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLog
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketSourceUiModel
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.action.WebSocketLoggingAction
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.event.WebSocketLoggingEvent
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.helper.UiString
@@ -67,6 +70,7 @@ class WebSocketLoggingFragment: Fragment() {
     private lateinit var etSearchWebSocketLog: SearchInputView
     private lateinit var pbLoading: ProgressBar
     private lateinit var swipeRefresh: SwipeRefreshLayout
+    private lateinit var chipGroup: ChipGroup
 
     /**
      * Lifecycle
@@ -81,7 +85,7 @@ class WebSocketLoggingFragment: Fragment() {
         setHasOptionsMenu(true)
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(WebSocketLoggingViewModel::class.java)
-        viewModel.submitAction(WebSocketLoggingAction.SearchLogAction(""))
+        viewModel.submitAction(WebSocketLoggingAction.InitPage)
     }
 
     override fun onCreateView(
@@ -111,6 +115,7 @@ class WebSocketLoggingFragment: Fragment() {
         etSearchWebSocketLog = view.findViewById(R.id.et_websocket_log_search)
         pbLoading = view.findViewById(R.id.pb_loading)
         swipeRefresh = view.findViewById(R.id.swipe_refresh_web_socket_log)
+        chipGroup = view.findViewById(R.id.cg_websocket_log)
 
         layoutManager = LinearLayoutManager(context)
 
@@ -133,6 +138,7 @@ class WebSocketLoggingFragment: Fragment() {
             viewModel.uiState.collectLatest {
                 updateList(it.webSocketLogPagination.webSocketLoggingList)
                 updateLoading(it.loading)
+                updateChip(it.sources)
             }
         }
 
@@ -185,6 +191,20 @@ class WebSocketLoggingFragment: Fragment() {
     private fun updateLoading(loading: Boolean) {
         if(loading) pbLoading.visible()
         else pbLoading.hide()
+    }
+
+    private fun updateChip(sources: List<WebSocketSourceUiModel>) {
+        chipGroup.removeAllViews()
+
+        sources.forEach {
+            val chip = Chip(requireContext())
+            chip.text = it.label
+            chip.setOnCheckedChangeListener { compoundButton, b ->
+                viewModel.submitAction(WebSocketLoggingAction.SearchLogAction(etSearchWebSocketLog.searchText))
+            }
+            chipGroup.addView(chip)
+        }
+
     }
 
     /**

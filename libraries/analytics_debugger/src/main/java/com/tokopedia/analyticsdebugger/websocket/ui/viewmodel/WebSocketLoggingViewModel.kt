@@ -5,15 +5,18 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.websocket.domain.usecase.DeleteAllWebSocketLogUseCase
+import com.tokopedia.analyticsdebugger.websocket.domain.usecase.GetSourcesLogUseCase
 import com.tokopedia.analyticsdebugger.websocket.domain.usecase.GetWebSocketLogUseCase
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLog
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogPlaceHolder
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketSourceUiModel
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.action.WebSocketLoggingAction
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.event.WebSocketLoggingEvent
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.helper.UiString
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.state.WebSocketLogPagination
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.state.WebSocketLoggingState
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -24,21 +27,25 @@ import javax.inject.Inject
 class WebSocketLoggingViewModel @Inject constructor(
     private val getWebSocketLogUseCase: GetWebSocketLogUseCase,
     private val deleteAllWebSocketLogUseCase: DeleteAllWebSocketLogUseCase,
+    private val getSourcesLogUseCase: GetSourcesLogUseCase,
     dispatchers: CoroutineDispatchers,
 ): ViewModel() {
 
     private val _websocketLogPagination = MutableStateFlow(WebSocketLogPagination())
     private val _loading = MutableStateFlow(false)
+    private val _sources = MutableStateFlow(listOf<WebSocketSourceUiModel>())
 
     private val _uiEvent = MutableSharedFlow<WebSocketLoggingEvent>()
 
     val uiState: Flow<WebSocketLoggingState> = combine(
         _websocketLogPagination,
-        _loading
-    ) { websocketLogPagination, loading ->
+        _loading,
+        _sources,
+    ) { websocketLogPagination, loading, sources ->
         WebSocketLoggingState(
             webSocketLogPagination = websocketLogPagination,
             loading = loading,
+            sources = sources
         )
     }.flowOn(dispatchers.computation)
 
@@ -47,22 +54,33 @@ class WebSocketLoggingViewModel @Inject constructor(
 
     fun submitAction(action: WebSocketLoggingAction) {
         when(action) {
+            WebSocketLoggingAction.InitPage -> handleInitPage()
             is WebSocketLoggingAction.SearchLogAction -> handleSearch(action.query)
             WebSocketLoggingAction.LoadNextPageAction -> handleLoadNextPage()
             WebSocketLoggingAction.DeleteAllLogAction -> handleDeleteAllLog()
+            WebSocketLoggingAction.GetSourceList -> handleGetSourceList()
         }
     }
 
     /**
      * Handling Action
      */
+    private fun handleInitPage() {
+        viewModelScope.launchCatchError(block = {
+            handleGetSourceList()
+            handleSearch("")
+        }) {
+            emitErrorMessage(it.message)
+        }
+    }
+
     private fun handleSearch(query: String) {
         viewModelScope.launchCatchError(block = {
             if(!isLoading()) {
                 setLoading(true)
 
                 val newPage = 0
-                val webSocketLogList: MutableList<WebSocketLog> = getWebSocketLog(query, "", newPage).toMutableList()
+                val webSocketLogList: MutableList<WebSocketLog> = getWebSocketLog(query, newPage).toMutableList()
 
                 if(webSocketLogList.size == PAGINATION_LIMIT) {
                     webSocketLogList += WebSocketLogPlaceHolder
@@ -90,7 +108,7 @@ class WebSocketLoggingViewModel @Inject constructor(
                 val pagination = _websocketLogPagination.value
                 val newPage = pagination.page + 1
 
-                val webSocketLogNextList = getWebSocketLog(pagination.query, "", newPage)
+                val webSocketLogNextList = getWebSocketLog(pagination.query, newPage)
 
                 val oldList: List<WebSocketLog> = pagination.webSocketLoggingList.filterIsInstance(WebSocketLogUiModel::class.java)
                 val newList = (oldList + webSocketLogNextList).toMutableList()
@@ -124,6 +142,14 @@ class WebSocketLoggingViewModel @Inject constructor(
         }
     }
 
+    private fun handleGetSourceList() {
+        viewModelScope.launchCatchError(block = {
+            _sources.value = getSourcesLogUseCase.executeOnBackground()
+        }) {
+            emitErrorMessage(it.message)
+        }
+    }
+
     /**
      * Utility
      */
@@ -151,11 +177,15 @@ class WebSocketLoggingViewModel @Inject constructor(
         )
     }
 
-    private suspend fun getWebSocketLog(query: String, source: String, page: Int): List<WebSocketLogUiModel> {
+    private suspend fun getWebSocketLog(query: String, page: Int): List<WebSocketLogUiModel> {
         return getWebSocketLogUseCase.let {
-            it.setParam(query, source, page, PAGINATION_LIMIT)
+            it.setParam(query, getSelectedSource(), page, PAGINATION_LIMIT)
             it.executeOnBackground()
         }
+    }
+
+    private fun getSelectedSource(): String {
+        return _sources.value.find { it.selected }?.value ?: ""
     }
 
     private companion object {

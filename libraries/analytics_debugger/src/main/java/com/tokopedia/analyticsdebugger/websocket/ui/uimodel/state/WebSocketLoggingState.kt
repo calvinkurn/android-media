@@ -1,6 +1,7 @@
 package com.tokopedia.analyticsdebugger.websocket.ui.uimodel.state
 
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLog
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketSourceUiModel
 
 /**
  * Created By : Jonathan Darwin on December 20, 2021
@@ -8,6 +9,7 @@ import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLog
 data class WebSocketLoggingState(
     val webSocketLogPagination: WebSocketLogPagination,
     val loading: Boolean,
+    val sources: List<WebSocketSourceUiModel>,
 )
 
 data class WebSocketLogPagination(

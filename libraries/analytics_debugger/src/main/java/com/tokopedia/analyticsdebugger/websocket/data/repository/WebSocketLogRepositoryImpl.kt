@@ -30,4 +30,8 @@ class WebSocketLogRepositoryImpl @Inject constructor(
             database.webSocketLogDao().deleteAll()
         }
     }
+
+    override suspend fun getSources(): List<String> = withContext(dispatchers.io) {
+        database.webSocketLogDao().getSources()
+    }
 }

@@ -32,6 +32,6 @@ class PlayChannelWebSocket @Inject constructor(
 
         private const val KEY_GROUPCHAT_DEVELOPER_OPTION_PREFERENCES = "ip_groupchat"
 
-        private const val SOURCE_PLAY_VIEWER = "viewer"
+        private const val SOURCE_PLAY_VIEWER = "Viewer"
     }
 }

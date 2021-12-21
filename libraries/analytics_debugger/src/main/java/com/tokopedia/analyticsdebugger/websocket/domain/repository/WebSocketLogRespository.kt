@@ -10,4 +10,6 @@ interface WebSocketLogRespository {
     suspend fun insert(webSocketLogEntity: WebSocketLogEntity)
 
     suspend fun deleteAll()
+
+    suspend fun getSources(): List<String>
 }

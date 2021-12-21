@@ -2,8 +2,10 @@ package com.tokopedia.analyticsdebugger.websocket.ui.mapper
 
 import com.tokopedia.analyticsdebugger.util.DateTimeUtil
 import com.tokopedia.analyticsdebugger.websocket.data.local.entity.WebSocketLogEntity
+import com.tokopedia.analyticsdebugger.websocket.domain.usecase.GetSourcesLogUseCase
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogGeneralInfoUiModel
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
+import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketSourceUiModel
 import javax.inject.Inject
 
 /**
@@ -22,6 +24,14 @@ class WebSocketLogMapper @Inject constructor() {
             event = it.event,
             message = it.message,
             dateTime = DateTimeUtil.formatDate(it.timestamp)
+        )
+    }
+
+    fun mapSources(sources: List<String>) = sources.map {
+        WebSocketSourceUiModel(
+            label = it,
+            value = if(it == GetSourcesLogUseCase.ALL) "" else it,
+            selected = it == GetSourcesLogUseCase.ALL,
         )
     }
 }
