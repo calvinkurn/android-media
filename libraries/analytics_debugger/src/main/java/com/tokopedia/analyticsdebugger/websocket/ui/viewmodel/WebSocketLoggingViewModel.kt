@@ -59,7 +59,7 @@ class WebSocketLoggingViewModel @Inject constructor(
             is WebSocketLoggingAction.SearchLogAction -> handleSearch(action.query)
             WebSocketLoggingAction.LoadNextPageAction -> handleLoadNextPage()
             WebSocketLoggingAction.DeleteAllLogAction -> handleDeleteAllLog()
-            WebSocketLoggingAction.GetSourceList -> handleGetSourceList()
+            is WebSocketLoggingAction.SelectSource -> handleSelectSource(action.value, action.query)
         }
     }
 
@@ -68,33 +68,17 @@ class WebSocketLoggingViewModel @Inject constructor(
      */
     private fun handleInitPage() {
         viewModelScope.launchCatchError(block = {
-            handleGetSourceList()
-            handleSearch("")
+            getSourceList()
+            searchData("")
         }) {
+            setLoading(false)
             emitErrorMessage(it.message)
         }
     }
 
     private fun handleSearch(query: String) {
         viewModelScope.launchCatchError(block = {
-            if(!isLoading()) {
-                setLoading(true)
-
-                val newPage = 0
-                val webSocketLogList: MutableList<WebSocketLog> = getWebSocketLog(query, newPage).toMutableList()
-
-                if(webSocketLogList.size == PAGINATION_LIMIT) {
-                    webSocketLogList += WebSocketLogPlaceHolder
-                }
-
-                setLoading(false)
-                _websocketLogPagination.value = _websocketLogPagination.value.copy(
-                    webSocketLoggingList = webSocketLogList,
-                    query = query,
-                    page = newPage,
-                    isReachMax = false,
-                )
-            }
+            searchData(query)
         }) {
             setLoading(false)
             emitErrorMessage(it.message)
@@ -143,12 +127,12 @@ class WebSocketLoggingViewModel @Inject constructor(
         }
     }
 
-    private fun handleGetSourceList() {
-        viewModelScope.launchCatchError(block = {
-            _chips.value = getSourcesLogUseCase.executeOnBackground()
-        }) {
-            emitErrorMessage(it.message)
+    private fun handleSelectSource(value: String, query: String) {
+        _chips.value.forEach {
+            it.selected = it.value == value
         }
+
+        handleSearch(query)
     }
 
     /**
@@ -176,6 +160,35 @@ class WebSocketLoggingViewModel @Inject constructor(
                 uiString = uiString
             )
         )
+    }
+
+    private suspend fun getSourceList() {
+        if(!isLoading()) {
+            setLoading(true)
+            _chips.value = getSourcesLogUseCase.executeOnBackground()
+            setLoading(false)
+        }
+    }
+
+    private suspend fun searchData(query: String) {
+        if(!isLoading()) {
+            setLoading(true)
+
+            val newPage = 0
+            val webSocketLogList: MutableList<WebSocketLog> = getWebSocketLog(query, newPage).toMutableList()
+
+            if(webSocketLogList.size == PAGINATION_LIMIT) {
+                webSocketLogList += WebSocketLogPlaceHolder
+            }
+
+            setLoading(false)
+            _websocketLogPagination.value = _websocketLogPagination.value.copy(
+                webSocketLoggingList = webSocketLogList,
+                query = query,
+                page = newPage,
+                isReachMax = false,
+            )
+        }
     }
 
     private suspend fun getWebSocketLog(query: String, page: Int): List<WebSocketLogUiModel> {

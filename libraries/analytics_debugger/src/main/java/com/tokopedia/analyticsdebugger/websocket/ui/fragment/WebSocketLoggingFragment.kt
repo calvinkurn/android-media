@@ -179,7 +179,7 @@ class WebSocketLoggingFragment: Fragment() {
 
         chipGroup.setOnCheckedListener(object: ChipGroup.Listener {
             override fun onChecked(model: ChipModel) {
-
+                viewModel.submitAction(WebSocketLoggingAction.SelectSource(model.value, etSearchWebSocketLog.searchText))
             }
         })
     }
