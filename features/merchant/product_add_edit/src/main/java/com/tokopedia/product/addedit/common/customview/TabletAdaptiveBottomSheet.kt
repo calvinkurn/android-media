@@ -17,8 +17,8 @@ import java.lang.Exception
 open class TabletAdaptiveBottomSheet: BottomSheetUnify() {
 
     companion object {
-        const val MODAL_WIDTH = 900
-        const val MODAL_WIDE_WIDTH_MARGIN = 200
+        const val MODAL_WIDTH_RATIO = 0.7
+        const val MODAL_WIDE_WIDTH_RATIO = 0.9
         const val MODAL_MARGIN_PERCENTAGE = 0.4f
     }
 
@@ -53,8 +53,11 @@ open class TabletAdaptiveBottomSheet: BottomSheetUnify() {
     }
 
     private fun changeToModalLayout(bsLayout: LinearLayout) {
-        bsLayout.layoutParams.width = if (useWideModal) getScreenWidth() - MODAL_WIDE_WIDTH_MARGIN
-                                        else MODAL_WIDTH
+        bsLayout.layoutParams.width = if (useWideModal) {
+            getScreenWidth() * MODAL_WIDE_WIDTH_RATIO
+        } else {
+            getScreenWidth() * MODAL_WIDTH_RATIO
+        }.toInt()
         bsLayout.background = requireContext().getDrawable(R.drawable.product_add_edit_modal_bg)
         bsLayout.requestLayout()
     }
