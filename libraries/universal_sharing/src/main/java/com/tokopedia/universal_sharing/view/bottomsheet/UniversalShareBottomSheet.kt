@@ -805,6 +805,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun executeMediaImageSharingFlow(shareModel: ShareModel, mediaImageUrl: String){
+        loaderUnify?.visibility = View.GONE
         preserveImage = true
         shareModel.ogImgUrl = mediaImageUrl
         shareModel.savedImageFilePath = savedImagePath
@@ -812,6 +813,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun executeSharingFlow(shareModel:ShareModel){
+        loaderUnify?.visibility = View.GONE
         preserveImage = true
         shareModel.ogImgUrl = ogImageUrl
         shareModel.savedImageFilePath = savedImagePath
@@ -883,6 +885,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private fun executeImageGeneratorUseCase(sourceId: String, args: ArrayList<ImageGeneratorRequestData>,
                                              shareModel: ShareModel){
+        loaderUnify?.visibility = View.VISIBLE
         gqlJob = CoroutineScope(Dispatchers.IO).launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 imageGeneratorUseCase = ImageGeneratorUseCase(GraphqlInteractor.getInstance().graphqlRepository)
