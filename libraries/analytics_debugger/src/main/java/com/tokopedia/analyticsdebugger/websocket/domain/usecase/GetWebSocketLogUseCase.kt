@@ -21,7 +21,7 @@ class GetWebSocketLogUseCase @Inject constructor(
 
     fun setParam(query: String, source: String, page: Int, limit: Int) {
         this.query = "%$query%"
-        this.source = source
+        this.source = "%$source%"
         this.page = page
         this.limit = limit
     }
