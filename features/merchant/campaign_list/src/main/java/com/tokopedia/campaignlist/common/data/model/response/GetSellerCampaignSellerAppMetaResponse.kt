@@ -17,7 +17,7 @@ data class GetSellerCampaignSellerAppMeta(
 
 data class CampaignStatus(
         @SerializedName("status")
-        @Expose val status: Int = 0,
+        @Expose val status: List<Int> = emptyList(),
         @SerializedName("status_text")
         @Expose val statusText: String = ""
 )
