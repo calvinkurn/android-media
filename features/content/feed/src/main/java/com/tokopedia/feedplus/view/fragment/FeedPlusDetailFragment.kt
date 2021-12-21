@@ -94,6 +94,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private lateinit var feedViewModel: FeedViewModel
     private var detailId: String = ""
     private var shopId: String = ""
+    private var shopName: String = ""
     private var postType: String = ""
     private var isFollowed: Boolean = false
     private var productList = emptyList<FeedXProduct>()
@@ -164,6 +165,13 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             arguments?.run {
                 getString(FeedPlusDetailActivity.PARAM_POST_TYPE)?.let {
                     postType = it
+                }
+            }
+        }
+        if (shopName.isEmpty()) {
+            arguments?.run {
+                getString(FeedPlusDetailActivity.PARAM_SHOP_NAME)?.let {
+                    shopName = it
                 }
             }
         }
@@ -321,6 +329,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     item.shopId,
                     item.postType,
                     item.isFollowed,
+                    item.shopName,
                     item.playChannelId
             )
         }
@@ -384,12 +393,13 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             shopId: String,
             type: String,
             isFollowed: Boolean,
+            shopName: String,
             playChannelId: String
     ) {
         if (type == TYPE_FEED_X_CARD_PLAY)
-            feedAnalytics.eventAddToCartFeedVOD(playChannelId, postTagItem.id, postTagItem.productName, postTagItem.price.toString(), 1, shopId, postTagItem.authorName, type, isFollowed)
+            feedAnalytics.eventAddToCartFeedVOD(playChannelId, postTagItem.id, postTagItem.name, postTagItem.price.toString(), 1, shopId, postTagItem.authorName, type, isFollowed)
         else
-            feedAnalytics.eventAddToCartFeedVOD(activityId, postTagItem.id, postTagItem.productName, postTagItem.price.toString(), 1, shopId, postTagItem.authorName, type, isFollowed)
+            feedAnalytics.eventAddToCartFeedVOD(activityId, postTagItem.id, postTagItem.name, postTagItem.price.toString(), 1, shopId, shopName, type, isFollowed)
         if (userSession.isLoggedIn) {
             feedViewModel.doAtc(postTagItem, shopId, type, isFollowed, activityId)
         } else {
@@ -635,10 +645,10 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     postTagItem.totalSold,
                     postTagItem.star,
                     postTagItem.mods,
-                    shopId,
+                    shopName = shopName,
+                    shopId = shopId,
                     postType = postType,
                     isFollowed = isFollowed,
-
                     description = postDescription,
                     isTopads = postTagItem.isTopads,
                     adClickUrl = adClickUrl

@@ -15,6 +15,7 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
     private lateinit var detailId: String
     private lateinit var shopId: String
     private lateinit var activityId: String
+    private lateinit var shopName: String
     private lateinit var productList: List<FeedXProduct>
     private lateinit var postType: String
     private var isFollowed: Boolean = false
@@ -27,6 +28,7 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
         const val PARAM_PRODUCT_LIST = "product_list"
         const val PARAM_IS_FOLLOWED = "is_followed"
         const val PARAM_POST_TYPE = "post_type"
+        const val PARAM_SHOP_NAME = "shop_name"
 
     }
 
@@ -66,6 +68,10 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
             intent.getStringExtra(PARAM_ACTIVITY_ID) ?: ""
         else ""
 
+        shopName = if(intent.hasExtra(PARAM_SHOP_NAME))
+            intent.getStringExtra(PARAM_SHOP_NAME) ?: ""
+        else ""
+
 
 
     }
@@ -76,6 +82,7 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
         bundle.putString(PARAM_SHOP_ID, shopId)
         bundle.putString(PARAM_ACTIVITY_ID, activityId)
         bundle.putString(PARAM_POST_TYPE, postType)
+        bundle.putString(PARAM_SHOP_NAME, shopName)
         bundle.putBoolean(PARAM_IS_FOLLOWED, isFollowed)
         bundle.putParcelableArrayList(PARAM_PRODUCT_LIST, ArrayList(productList))
         return FeedPlusDetailFragment.createInstance(bundle)

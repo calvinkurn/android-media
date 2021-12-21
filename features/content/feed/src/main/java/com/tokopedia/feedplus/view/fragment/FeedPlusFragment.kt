@@ -269,6 +269,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val PRODUCT_LIST = "product_list"
         private const val IS_FOLLOWED = "is_followed"
         private const val POST_TYPE = "post_type"
+        private const val SHOP_NAME = "shop_name"
 
 
         private val TAG = FeedPlusFragment::class.java.simpleName
@@ -2067,7 +2068,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (type == TYPE_FEED_X_CARD_PLAY || type == TYPE_TOPADS_HEADLINE_NEW)
             feedAnalytics.eventAddToCartFeedVOD(if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else activityId, postTagItem.id, postTagItem.name, postTagItem.priceFmt, 1, shopId, shopName, type, isFollowed)
         else
-            feedAnalytics.eventAddToCartFeedVOD(playChannelId, postTagItem.id, postTagItem.productName, postTagItem.price.toString(), 1,shopId,postTagItem.authorName, type, isFollowed)
+            feedAnalytics.eventAddToCartFeedVOD(activityId, postTagItem.id, postTagItem.name, postTagItem.price.toString(), 1, shopId, shopName, type, isFollowed)
         if (userSession.isLoggedIn) {
             if (::productTagBS.isInitialized) {
                 productTagBS.dismissedByClosing = true
@@ -2863,6 +2864,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     val intent = RouteManager.getIntent(context, link)
                     intent.putParcelableArrayListExtra(PRODUCT_LIST, ArrayList(products))
                     intent.putExtra(IS_FOLLOWED, isFollowed)
+                    intent.putExtra(SHOP_NAME, products[0].authorName)
                     intent.putExtra(PARAM_SHOP_ID, shopId)
                     intent.putExtra(PARAM_ACTIVITY_ID, activityId)
                     intent.putExtra(POST_TYPE, type)
@@ -3201,6 +3203,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             intent.putParcelableArrayListExtra(PRODUCT_LIST, ArrayList(feedXCard.products))
             intent.putExtra(IS_FOLLOWED, isFollowed)
             intent.putExtra(PARAM_SHOP_ID, shopId)
+            intent.putExtra(SHOP_NAME, feedXCard.author.name)
             intent.putExtra(PARAM_ACTIVITY_ID, postId)
             intent.putExtra(POST_TYPE, type)
             requireActivity().startActivity(intent)

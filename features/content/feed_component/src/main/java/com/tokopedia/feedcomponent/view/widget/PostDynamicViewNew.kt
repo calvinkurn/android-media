@@ -1064,7 +1064,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         feedXCard.followers.isFollowed,
                                         false,
                                         positionInFeed,
-                                        feedXCard.author.name,
+                                        feedXCard.playChannelID,
                                         shopName = feedXCard.author.name
                                     )
                                 }
@@ -1215,6 +1215,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             isFollowed,
                             true,
                             positionInFeed,
+                            feedXCard.playChannelID,
                             shopName = shopName
                     )
                 }
@@ -1342,7 +1343,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             isFollowed,
                             true,
                             positionInFeed,
-                            playChannelId =   feedXCard.playChannelID,
+                            playChannelId = feedXCard.playChannelID,
                             shopName = shopName
                     )
                 }
@@ -1855,6 +1856,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         feedXCard.followers.isFollowed,
                                         false,
                                         positionInFeed,
+                                        feedXCard.playChannelID,
                                         feedXCard.author.name
                                 )
                             }

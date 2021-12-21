@@ -297,7 +297,7 @@ class FeedAnalyticTracker
         activityId: String,
         type: String, isFollowed: Boolean, shopId: String, isVideo: Boolean, isCaption: Boolean,
     ) {
-        val actionField = if (isCaption)
+        val actionField = if (isCaption && type != ASGC && type!= ASGC_RECOM)
             "shop name below"
         else
             "shop"
