@@ -99,6 +99,7 @@ class CampaignListFragment : BaseDaggerFragment(),
         const val POWER_MERCHANT = "Power Merchant"
         const val OFFICIAL_STORE = "Official Store"
         const val POWER_MERCHANT_PRO = "Power Merchant PRO"
+        const val VALUE_SHARE_RS = "ShopRS" // Rilisan Spesial
     }
 
     override fun getScreenName(): String {
@@ -300,11 +301,12 @@ class CampaignListFragment : BaseDaggerFragment(),
                     tnImage = NPL_ICON_URL
             )
             setUtmCampaignData(
-                    pageName = this@CampaignListFragment.getString(R.string.active_campaign_list),
-                    userId = userSession.userId,
-                    pageId = userSession.shopId,
-                    feature = SHARE
+                    listOf(VALUE_SHARE_RS, "${userSession.userId}", "${userSession.shopId}", "${viewModel.getCampaignStatusId()}"),
+                    userId = "${userSession.userId}",
+                    pageId = "${CAMPAIGN_LIST_PAGE_SOURCE_ID}",
+                    feature = "${SHARE}"
             )
+
             val _totalProducts = productData.size
             val _isOngoing = if (validateIsOngoingCampaign(merchantBannerData)) 1 else 0
 
