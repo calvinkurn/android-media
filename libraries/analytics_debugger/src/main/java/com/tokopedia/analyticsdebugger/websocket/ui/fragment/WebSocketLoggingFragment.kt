@@ -3,7 +3,6 @@ package com.tokopedia.analyticsdebugger.websocket.ui.fragment
 import android.content.Context
 import android.os.Bundle
 import android.view.*
-import android.widget.HorizontalScrollView
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.os.bundleOf
@@ -20,11 +19,11 @@ import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.websocket.di.DaggerWebSocketLoggingComponent
 import com.tokopedia.analyticsdebugger.websocket.ui.adapter.WebSocketLogAdapter
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLog
-import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketSourceUiModel
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.action.WebSocketLoggingAction
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.event.WebSocketLoggingEvent
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.helper.UiString
-import com.tokopedia.analyticsdebugger.websocket.ui.view.Chip
+import com.tokopedia.analyticsdebugger.websocket.ui.view.ChipGroup
+import com.tokopedia.analyticsdebugger.websocket.ui.view.ChipModel
 import com.tokopedia.analyticsdebugger.websocket.ui.viewmodel.WebSocketLoggingViewModel
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.hide
@@ -68,7 +67,7 @@ class WebSocketLoggingFragment: Fragment() {
     private lateinit var etSearchWebSocketLog: SearchInputView
     private lateinit var pbLoading: ProgressBar
     private lateinit var swipeRefresh: SwipeRefreshLayout
-    private lateinit var chipScroll: HorizontalScrollView
+    private lateinit var chipGroup: ChipGroup
 
     /**
      * Lifecycle
@@ -113,7 +112,7 @@ class WebSocketLoggingFragment: Fragment() {
         etSearchWebSocketLog = view.findViewById(R.id.et_websocket_log_search)
         pbLoading = view.findViewById(R.id.pb_loading)
         swipeRefresh = view.findViewById(R.id.swipe_refresh_web_socket_log)
-        chipScroll = view.findViewById(R.id.hsv_chip)
+        chipGroup = view.findViewById(R.id.chip_group_websocket_log)
 
         layoutManager = LinearLayoutManager(context)
 
@@ -136,7 +135,7 @@ class WebSocketLoggingFragment: Fragment() {
             viewModel.uiState.collectLatest {
                 updateList(it.webSocketLogPagination.webSocketLoggingList)
                 updateLoading(it.loading)
-                updateChip(it.sources)
+                updateChip(it.chips)
             }
         }
 
@@ -177,6 +176,12 @@ class WebSocketLoggingFragment: Fragment() {
             )
             findNavController().navigate(R.id.action_webSocketLoggingFragment_to_webSocketDetailLoggingFragment, bundle)
         }
+
+        chipGroup.setOnCheckedListener(object: ChipGroup.Listener {
+            override fun onChecked(model: ChipModel) {
+
+            }
+        })
     }
 
     /**
@@ -191,20 +196,8 @@ class WebSocketLoggingFragment: Fragment() {
         else pbLoading.hide()
     }
 
-    private fun updateChip(sources: List<WebSocketSourceUiModel>) {
-        chipScroll.removeAllViews()
-
-        sources.forEach {
-            val chip = Chip(requireContext())
-            chip.setText(it.label)
-            chip.setOnCheckedListener(object: Chip.Listener {
-                override fun onCheckedListener(checked: Boolean) {
-                    viewModel.submitAction(WebSocketLoggingAction.SearchLogAction(etSearchWebSocketLog.searchText))
-                }
-            })
-            chipScroll.addView(chip)
-        }
-
+    private fun updateChip(chips: List<ChipModel>) {
+        chipGroup.setChips(chips)
     }
 
     /**

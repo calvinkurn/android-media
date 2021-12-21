@@ -16,13 +16,15 @@ class ChipGroup: HorizontalScrollView {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle)
 
-    private val container = findViewById<LinearLayout>(R.id.chip_group_container)
+    private val container: LinearLayout
 
     private val chipList = mutableListOf<Chip>()
     private var listener: Listener? = null
 
     init {
         View.inflate(context, R.layout.view_chip_group, this)
+
+        container = findViewById(R.id.chip_group_container)
     }
 
     fun setOnCheckedListener(listener: Listener) {
@@ -30,24 +32,24 @@ class ChipGroup: HorizontalScrollView {
     }
 
     fun setChips(chipModelList: List<ChipModel>) {
+        this.chipList.clear()
         container.removeAllViews()
 
         chipModelList.forEach {
             val chip = Chip(context)
             chip.setModel(it)
-            chip
             chip.setOnCheckedListener(object: Chip.Listener {
-                override fun onCheckedListener(value: String) {
-                    
-                }
-
                 override fun onCheckedListener(chipModel: ChipModel) {
-                    this@ChipGroup.chipList.forEach { currChip ->
-                        currChip
-                        currChip.setModel()
+                    this@ChipGroup.chipList.forEach { chip ->
+                        val currentChipModel = chip.chipModel ?: return@forEach
+                        currentChipModel.selected = currentChipModel.value == chipModel.value
+                        chip.setModel(currentChipModel)
                     }
+
+                    listener?.onChecked(chipModel)
                 }
             })
+
             container.addView(chip)
             this.chipList.add(chip)
         }

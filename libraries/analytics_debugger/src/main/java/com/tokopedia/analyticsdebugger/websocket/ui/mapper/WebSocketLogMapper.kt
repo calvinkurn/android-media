@@ -6,6 +6,7 @@ import com.tokopedia.analyticsdebugger.websocket.domain.usecase.GetSourcesLogUse
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogGeneralInfoUiModel
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogUiModel
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketSourceUiModel
+import com.tokopedia.analyticsdebugger.websocket.ui.view.ChipModel
 import javax.inject.Inject
 
 /**
@@ -28,7 +29,7 @@ class WebSocketLogMapper @Inject constructor() {
     }
 
     fun mapSources(sources: List<String>) = sources.map {
-        WebSocketSourceUiModel(
+        ChipModel(
             label = it,
             value = if(it == GetSourcesLogUseCase.ALL) "" else it,
             selected = it == GetSourcesLogUseCase.ALL,

@@ -16,6 +16,7 @@ import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.event.WebSocketLoggi
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.helper.UiString
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.state.WebSocketLogPagination
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.state.WebSocketLoggingState
+import com.tokopedia.analyticsdebugger.websocket.ui.view.ChipModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.flow.*
@@ -33,19 +34,19 @@ class WebSocketLoggingViewModel @Inject constructor(
 
     private val _websocketLogPagination = MutableStateFlow(WebSocketLogPagination())
     private val _loading = MutableStateFlow(false)
-    private val _sources = MutableStateFlow(listOf<WebSocketSourceUiModel>())
+    private val _chips = MutableStateFlow(listOf<ChipModel>())
 
     private val _uiEvent = MutableSharedFlow<WebSocketLoggingEvent>()
 
     val uiState: Flow<WebSocketLoggingState> = combine(
         _websocketLogPagination,
         _loading,
-        _sources,
-    ) { websocketLogPagination, loading, sources ->
+        _chips,
+    ) { websocketLogPagination, loading, chips ->
         WebSocketLoggingState(
             webSocketLogPagination = websocketLogPagination,
             loading = loading,
-            sources = sources
+            chips = chips,
         )
     }.flowOn(dispatchers.computation)
 
@@ -144,7 +145,7 @@ class WebSocketLoggingViewModel @Inject constructor(
 
     private fun handleGetSourceList() {
         viewModelScope.launchCatchError(block = {
-            _sources.value = getSourcesLogUseCase.executeOnBackground()
+            _chips.value = getSourcesLogUseCase.executeOnBackground()
         }) {
             emitErrorMessage(it.message)
         }
@@ -185,7 +186,7 @@ class WebSocketLoggingViewModel @Inject constructor(
     }
 
     private fun getSelectedSource(): String {
-        return _sources.value.find { it.selected }?.value ?: ""
+        return _chips.value.find { it.selected }?.value ?: ""
     }
 
     private companion object {

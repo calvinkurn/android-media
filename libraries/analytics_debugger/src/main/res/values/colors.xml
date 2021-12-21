@@ -10,4 +10,6 @@
     <color name="topads_item_label">#73777E</color>
 
     <color name="web_socket_placeholder">#4DFFFFFF</color>
+    <color name="web_socket_chip_checked">#1AAC0E</color>
+    <color name="web_socket_chip_unchecked">#C9C9C9</color>
 </resources>

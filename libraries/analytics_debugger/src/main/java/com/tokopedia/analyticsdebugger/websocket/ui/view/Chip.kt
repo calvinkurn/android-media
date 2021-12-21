@@ -17,23 +17,25 @@ class Chip: FrameLayout {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle)
 
-    private val chipText: Typography = findViewById(R.id.chip_text)
+    private val chipText: Typography
 
     private val bgChecked = ContextCompat.getDrawable(context, R.drawable.bg_chip_checked)
     private val bgUnchecked = ContextCompat.getDrawable(context, R.drawable.bg_chip_unchecked)
 
     private var listener: Listener? = null
     private var isChecked: Boolean = false
-    private var chipModel: ChipModel? = null
+    var chipModel: ChipModel? = null
 
     init {
         View.inflate(context, R.layout.view_chip, this)
+
+        chipText = findViewById(R.id.chip_text)
 
         chipText.setOnClickListener {
             if(!isChecked) {
                 chipModel?.let {
                     setModel(it.copy(selected = true))
-                    listener?.onCheckedListener(it.value)
+                    listener?.onCheckedListener(it)
                 }
             }
         }
@@ -65,6 +67,6 @@ class Chip: FrameLayout {
     }
 
     interface Listener {
-        fun onCheckedListener(value: String)
+        fun onCheckedListener(chipModel: ChipModel)
     }
 }

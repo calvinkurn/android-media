@@ -14,8 +14,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <HorizontalScrollView
-        android:id="@+id/hsv_chip"
+    <com.tokopedia.analyticsdebugger.websocket.ui.view.ChipGroup
+        android:id="@+id/chip_group_websocket_log"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/et_websocket_log_search"
@@ -31,7 +31,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/hsv_chip">
+        app:layout_constraintTop_toBottomOf="@id/chip_group_websocket_log">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_websocket_log"
