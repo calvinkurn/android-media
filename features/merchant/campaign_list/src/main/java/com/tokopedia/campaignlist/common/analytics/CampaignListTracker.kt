@@ -12,6 +12,7 @@ class CampaignListTracker @Inject constructor() {
     companion object {
         private const val CAMPAIGN_STATUS_AVAILABLE = 5
         private const val CAMPAIGN_STATUS_UPCOMING = 6
+        private const val CAMPAIGN_STATUS_UPCOMING_IN_NEAR_TIME = 14
         private const val CAMPAIGN_STATUS_ONGOING = 7
     }
 
@@ -63,23 +64,25 @@ class CampaignListTracker @Inject constructor() {
         )
     }
 
-    fun sendSelectCampaignStatusClickEvent(selectedCampaignStatus: Int, shopId: String) {
-        val action = when (selectedCampaignStatus) {
-            CAMPAIGN_STATUS_AVAILABLE -> CampaignListTrackerConstant.Action.CLICK_CAMPAIGN_STATUS_AVAILABLE
-            CAMPAIGN_STATUS_UPCOMING -> CampaignListTrackerConstant.Action.CLICK_CAMPAIGN_STATUS_UPCOMING
-            CAMPAIGN_STATUS_ONGOING -> CampaignListTrackerConstant.Action.CLICK_CAMPAIGN_STATUS_ONGOING
-            else -> CampaignListTrackerConstant.Action.NOT_SPECIFIED
-        }
+    fun sendSelectCampaignStatusClickEvent(selectedCampaignStatus: List<Int>, shopId: String) {
+        selectedCampaignStatus.forEach { status ->
+            val action = when (status) {
+                CAMPAIGN_STATUS_AVAILABLE -> CampaignListTrackerConstant.Action.CLICK_CAMPAIGN_STATUS_AVAILABLE
+                CAMPAIGN_STATUS_UPCOMING, CAMPAIGN_STATUS_UPCOMING_IN_NEAR_TIME -> CampaignListTrackerConstant.Action.CLICK_CAMPAIGN_STATUS_UPCOMING
+                CAMPAIGN_STATUS_ONGOING -> CampaignListTrackerConstant.Action.CLICK_CAMPAIGN_STATUS_ONGOING
+                else -> CampaignListTrackerConstant.Action.NOT_SPECIFIED
+            }
 
-        sendGeneralTracking(
-            event = CampaignListTrackerConstant.Event.CLICK_RELEASE_PAGE,
-            action = action,
-            category = CampaignListTrackerConstant.EventCategory.SPECIAL_RELEASE,
-            label = EMPTY,
-            shopId = shopId,
-            businessUnit = CampaignListTrackerConstant.Values.PHYSICAL_GOODS,
-            currentSite = CampaignListTrackerConstant.Values.TOKOPEDIA_SELLER
-        )
+            sendGeneralTracking(
+                event = CampaignListTrackerConstant.Event.CLICK_RELEASE_PAGE,
+                action = action,
+                category = CampaignListTrackerConstant.EventCategory.SPECIAL_RELEASE,
+                label = EMPTY,
+                shopId = shopId,
+                businessUnit = CampaignListTrackerConstant.Values.PHYSICAL_GOODS,
+                currentSite = CampaignListTrackerConstant.Values.TOKOPEDIA_SELLER
+            )
+        }
     }
 
     fun sendShareButtonClickEvent(

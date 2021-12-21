@@ -165,8 +165,8 @@ class CampaignListFragment : BaseDaggerFragment(),
     override fun onApplyCampaignStatusFilter(selectedCampaignStatus: CampaignStatusSelection) {
         campaignStatusFilter?.type = ChipsUnify.TYPE_SELECTED
         campaignStatusFilter?.title = selectedCampaignStatus.statusText
-        viewModel.setCampaignStatusId(listOf(selectedCampaignStatus.statusId))
-        viewModel.getCampaignList(statusId = listOf(selectedCampaignStatus.statusId))
+        viewModel.setCampaignStatusId(selectedCampaignStatus.statusId)
+        viewModel.getCampaignList(statusId = selectedCampaignStatus.statusId)
         tracker.sendSelectCampaignStatusClickEvent(selectedCampaignStatus.statusId, userSession.shopId)
     }
 

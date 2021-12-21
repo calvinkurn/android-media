@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class CampaignStatusSelection(
-        val statusId: Int = 0,
+        val statusId: List<Int> = emptyList(),
         val statusText: String = "",
         var isSelected: Boolean = false
 ) : Parcelable
