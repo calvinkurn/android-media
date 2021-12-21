@@ -20,15 +20,19 @@ import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
+import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.network.exception.MessageErrorException
@@ -68,8 +72,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
         private val bestSellerMapper: BestSellerMapper,
         private val homeTopadsImageRepository: HomeTopadsImageRepository,
         private val homeRechargeRecommendationRepository: HomeRechargeRecommendationRepository,
-        private val homeSalamWidgetRepository: HomeSalamWidgetRepository
-
+        private val homeSalamWidgetRepository: HomeSalamWidgetRepository,
+        private val homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository,
+        private val homeChooseAddressRepository: HomeChooseAddressRepository
 ): HomeRevampRepository {
 
 
@@ -261,6 +266,16 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 emit(dynamicChannelPlainResponse.copy(
                         isCache = false
                 ))
+
+                if (!dynamicChannelPlainResponse.isProcessingDynamicChannle) {
+                    dynamicChannelPlainResponse.evaluateRecommendationSection(
+                            onNeedTabLoad = { getFeedTabData(dynamicChannelPlainResponse) }
+                    )
+                }
+
+                emit(dynamicChannelPlainResponse.copy(
+                        isCache = false
+                ))
             }
         }
 
@@ -271,6 +286,83 @@ class HomeDynamicChannelUseCase @Inject constructor(
             isCache = false
         }
     }
+
+    private inline fun <reified T> widgetIsAvailable(homeDataModel: HomeDynamicChannelModel, predicate: (T) -> Boolean = {true}): Boolean {
+        homeDataModel.list.filterIsInstance<T>().let {
+            return it.find { predicate.invoke(it) } != null
+        }
+    }
+
+    suspend fun getFeedTabData(homeDataModel: HomeDynamicChannelModel) {
+        if (!widgetIsAvailable<HomeRecommendationFeedDataModel>(homeDataModel)) {
+            homeDataModel.addWidgetModel(HomeLoadingMoreModel())
+        }
+        try {
+            val homeRecommendationTabs = homeRecommendationFeedTabRepository.getRemoteData(
+                    Bundle().apply {
+                        putString(
+                                HomeRecommendationFeedTabRepository.LOCATION_PARAM,
+                                homeChooseAddressRepository.getRemoteData()?.convertToLocationParams()
+                        )
+                    }
+            )
+            val findRetryModel = homeDataModel.list.withIndex().find { data -> data.value is HomeRetryModel
+            }
+
+            val findLoadingModel = homeDataModel.list.withIndex().find {
+                data -> data.value is HomeLoadingMoreModel
+            }
+
+            homeDataModel.list.withIndex().find {
+                it.value is HomeRecommendationFeedDataModel ||
+                        it.value is HomeLoadingMoreModel ||
+                        it.value is HomeRetryModel
+            }.let {
+                it?.let {
+                    when {
+                        findLoadingModel != null -> {
+                            homeDataModel.updateWidgetModel(
+                                    visitable = HomeRecommendationFeedDataModel(
+                                            recommendationTabDataModel = homeRecommendationTabs,
+                                            homeChooseAddressData = homeDataModel.homeChooseAddressData.copy()
+                                    ),
+                                    visitableToChange = findLoadingModel.value,
+                                    position = it.index) {}
+                        }
+                        findRetryModel != null -> {
+                            homeDataModel.updateWidgetModel(
+                                    visitable = HomeRecommendationFeedDataModel(
+                                            recommendationTabDataModel = homeRecommendationTabs,
+                                            homeChooseAddressData = homeDataModel.homeChooseAddressData.copy()
+                                    ),
+                                    visitableToChange = findRetryModel.value,
+                                    position = it.index) {}
+                        }
+                        else -> {
+                            (it.value as? HomeRecommendationFeedDataModel)?.let { recomModel ->
+                                val newModel = recomModel.copy(
+                                        recommendationTabDataModel = homeRecommendationTabs,
+                                        homeChooseAddressData = homeDataModel.homeChooseAddressData.copy()
+                                )
+                                newModel.recommendationTabDataModel = homeRecommendationTabs
+                                newModel.isNewData = true
+                                homeDataModel.updateWidgetModel(visitable = recomModel, visitableToChange = newModel, position = it.index) {}
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            val findRetryModel = homeDataModel.list.withIndex().find { data -> data.value is HomeRetryModel
+            }
+            val findLoadingModel = homeDataModel.list.withIndex().find { data -> data.value is HomeLoadingMoreModel
+            }
+            homeDataModel.addWidgetModel(HomeRetryModel())
+            homeDataModel.deleteWidgetModel(findLoadingModel?.value, findLoadingModel?.index ?: -1) {}
+            homeDataModel.deleteWidgetModel(findRetryModel?.value, findRetryModel?.index ?: -1) {}
+        }
+    }
+
     suspend fun getRecommendationWidget(homeDataModel: HomeDynamicChannelModel){
         findWidget<BestSellerDataModel>(homeDataModel) { bestSellerDataModel, index ->
             val recomFilterList = mutableListOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
@@ -316,7 +408,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         position = index
                 ) {}
             } else {
-//                deleteWidget(bestSellerDataModel, index)
+                homeDataModel.deleteWidgetModel(bestSellerDataModel, index) {}
             }
         }
     }
@@ -366,7 +458,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
             }
         }
     }
-
 
     /**
      * Home repository flow:

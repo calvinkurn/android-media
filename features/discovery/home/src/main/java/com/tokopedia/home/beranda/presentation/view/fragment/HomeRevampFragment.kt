@@ -1110,11 +1110,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         stickyLoginView?.hide()
     }
 
-    private fun scrollToRecommendList() {
-        homeRecyclerView?.smoothScrollToPosition(getHomeViewModel().getRecommendationFeedSectionPosition())
-        scrollToRecommendList = false
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(KEY_IS_LIGHT_THEME_STATUS_BAR, isLightThemeStatusBar)
@@ -2420,7 +2415,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onDynamicChannelRetryClicked() {
-        getHomeViewModel().onDynamicChannelRetryClicked()
+        getHomeViewModel().refreshHomeData()
     }
 
     private fun openApplink(applink: String, trackingAttribution: String) {
@@ -2726,7 +2721,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun showFeedSectionViewHolderShadow(show: Boolean) {
         val feedViewHolder = homeRecyclerView?.findViewHolderForAdapterPosition(
-                getHomeViewModel().getRecommendationFeedSectionPosition()
+                homeRecyclerView?.adapter?.itemCount?:0
         )
         if (feedViewHolder is HomeRecommendationFeedViewHolder) {
             feedViewHolder.showFeedTabShadow(show)

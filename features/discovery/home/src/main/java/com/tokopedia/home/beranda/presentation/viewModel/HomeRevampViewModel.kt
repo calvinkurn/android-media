@@ -232,7 +232,6 @@ open class HomeRevampViewModel @Inject constructor(
     private var takeTicker = true
     private var homeNotifModel = HomeNotifModel()
     private val homeFlowDynamicChannel: Flow<HomeDynamicChannelModel?> = homeUseCase.get().getHomeDataFlow().flowOn(homeDispatcher.get().io)
-    private var useWalletApp: Boolean = false
     private var popularKeywordRefreshCount = 1
 
     var currentTopAdsBannerToken: String = ""
@@ -245,7 +244,6 @@ open class HomeRevampViewModel @Inject constructor(
     private var getHomeDataJob: Job? = null
     private var getSearchHintJob: Job? = null
     private var getPlayWidgetJob: Job? = null
-    private var getWalletBalanceJob: Job? = null
     private var getSuggestedReviewJob: Job? = null
     private var dismissReviewJob: Job? = null
     private var getPopularKeywordJob: Job? = null
@@ -258,7 +256,6 @@ open class HomeRevampViewModel @Inject constructor(
     private var injectCouponTimeBasedJob: Job? = null
     private var getTopAdsBannerDataJob: Job? = null
     private var getTabRecommendationJob: Job? = null
-    private var getHeaderDataJob: Job? = null
 
     init {
         _isViewModelInitialized.value = Event(true)
@@ -284,55 +281,6 @@ open class HomeRevampViewModel @Inject constructor(
             getBalanceWidgetData()
         }
         getSearchHint(isFirstInstall)
-    }
-
-    //TODO 1: Remove getRecommendationWidget -> Move to HomeDynamicChannelUseCase
-    fun getRecommendationWidget(){
-        findWidget<BestSellerDataModel> { bestSellerDataModel, index ->
-            launchCatchError(coroutineContext, block = {
-                val recomFilterList = mutableListOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
-
-                getRecommendationFilterChips.get().setParams(
-                        userId = if (userSession.get().userId.isEmpty()) 0 else userSession.get().userId.toInt(),
-                        pageName = bestSellerDataModel.pageName,
-                        queryParam = bestSellerDataModel.widgetParam
-                )
-                recomFilterList.addAll(getRecommendationFilterChips.get().executeOnBackground().filterChip)
-                val activatedChip = recomFilterList.find { it.isActivated }
-                val recomData = if (activatedChip == null) {
-                    getRecommendationUseCase.get().getData(
-                            GetRecommendationRequestParam(
-                                    pageName = bestSellerDataModel.pageName,
-                                    queryParam = bestSellerDataModel.widgetParam
-                            )
-                    )
-                } else {
-                    getRecommendationUseCase.get().getData(
-                            GetRecommendationRequestParam(
-                                    pageName = bestSellerDataModel.pageName,
-                                    queryParam = if(activatedChip.isActivated) activatedChip.value else ""
-                            )
-                    )
-                }
-
-                if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
-                    val recomWidget = recomData.first().copy(
-                            recommendationFilterChips = recomFilterList
-                    )
-                    val dataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget)
-                    updateWidget(dataModel.copy(
-                            id = bestSellerDataModel.id,
-                            pageName = dataModel.pageName,
-                            widgetParam = bestSellerDataModel.widgetParam,
-                            dividerType = bestSellerDataModel.dividerType
-                    ), index)
-                } else {
-                    deleteWidget(bestSellerDataModel, index)
-                }
-            }){
-                deleteWidget(bestSellerDataModel, index)
-            }
-        }
     }
 
     //TODO 2: Remove getRecommendationWidget -> Move to HomeRecommendationUseCase.onHomeBestSellerFilterClick()
@@ -525,9 +473,6 @@ open class HomeRevampViewModel @Inject constructor(
             removeRechargeBUWidget()
         }
     }
-
-    //TODO 10: Use HomeDynamicChannelUse to get position of a widget
-    fun getRecommendationFeedSectionPosition() = homeDataModel.list.size -1
 
     fun refreshHomeData() {
         if (homeFlowDataCancelled) {
@@ -744,50 +689,9 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    //TODO 16: Remove getFeedTabData -> Move to HomeRecommendationUseCase.onGetHomeFeedTabRecommendationData
     fun getFeedTabData() {
-        if (getTabRecommendationJob?.isActive == true) return
-        if (!widgetIsAvailable<HomeRecommendationFeedDataModel>()) {
-            addWidget(HomeLoadingMoreModel())
-        }
-        getTabRecommendationJob = launchCatchError(coroutineContext, block={
-            getRecommendationTabUseCase.get().setParams(getHomeLocationDataParam())
-            val homeRecommendationTabs = getRecommendationTabUseCase.get().executeOnBackground()
-            val findRetryModel = homeDataModel.list.withIndex().find { data -> data.value is HomeRetryModel
-            }
-
-            val findLoadingModel = homeDataModel.list.withIndex().find {
-                data -> data.value is HomeLoadingMoreModel
-            }
-
-            findWidget<HomeRecommendationFeedDataModel> { model, index ->
-                val newModel = model.copy(
-                    recommendationTabDataModel = homeRecommendationTabs,
-                    homeChooseAddressData = homeDataModel.homeChooseAddressData.copy()
-                )
-                if (findLoadingModel == null) {
-                    updateWidget(visitable = newModel, position = index)
-                } else {
-                    updateWidget(visitable = newModel, visitableToChange = findLoadingModel.value, position = index)
-                }
-                _resetNestedScrolling.postValue(Event(true))
-                return@launchCatchError
-            }
-
-            val homeRecommendationFeedViewModel = HomeRecommendationFeedDataModel(homeDataModel.homeChooseAddressData)
-            homeRecommendationFeedViewModel.recommendationTabDataModel = homeRecommendationTabs
-            homeRecommendationFeedViewModel.isNewData = true
-
-            findLoadingModel?.value?.let { updateWidget(homeRecommendationFeedViewModel, findLoadingModel.index?:-1, it) }
-            findRetryModel?.value?.let { updateWidget(homeRecommendationFeedViewModel, findRetryModel?.index?:-1, it) }
-        }){
-            val findRetryModel = homeDataModel.list.withIndex().find { data -> data.value is HomeRetryModel
-            }
-            val findLoadingModel = homeDataModel.list.withIndex().find { data -> data.value is HomeLoadingMoreModel
-            }
-            addWidget(HomeRetryModel())
-            deleteWidget(findLoadingModel?.value, findLoadingModel?.index ?: -1)
-            deleteWidget(findRetryModel?.value, findRetryModel?.index ?: -1)
+        launch {
+            homeUseCase.get().getFeedTabData(homeDataModel)
         }
     }
 
@@ -949,14 +853,6 @@ open class HomeRevampViewModel @Inject constructor(
         _homeNotifLiveData.value = homeNotifModel
     }
 
-    //TODO 22: Remove onDynamicChannelRetryClicked -> Move to HomeDynamicChannelUseCase
-    fun onDynamicChannelRetryClicked() {
-        launch(coroutineContext) {
-            refreshHomeData()
-        }
-    }
-
-    //TODO 23: Remove updateChooseAddressData -> Move to HomeDynamicChannelUseCase
     fun updateChooseAddressData(homeChooseAddressData: HomeChooseAddressData) {
         this.homeDataModel.setAndEvaluateHomeChooseAddressData(homeChooseAddressData)
         homeUseCase.get().updateHeaderData(currentHeaderDataModel, this.homeDataModel) {
@@ -964,7 +860,6 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    //TODO 24: Remove getAddressData -> Move to HomeDynamicChannelUseCase
     fun getAddressData(): HomeChooseAddressData {
         return homeDataModel.homeChooseAddressData
     }
@@ -978,17 +873,6 @@ open class HomeRevampViewModel @Inject constructor(
         homeHeaderOvoDataModel?.let {
             updateWidget(homeHeaderOvoDataModel.value, homeHeaderOvoDataModel.index)
         }
-    }
-
-    //TODO 26: Remove isAddressDataEmpty -> Move to HomeDynamicChannelUseCase
-    fun isAddressDataEmpty(): Boolean {
-        return getAddressData().localCacheModel.lat.isEmpty() &&
-                getAddressData().localCacheModel.long.isEmpty() &&
-                getAddressData().localCacheModel.district_id.isEmpty() &&
-                getAddressData().localCacheModel.city_id.isEmpty() &&
-                getAddressData().localCacheModel.address_id.isEmpty() &&
-                getAddressData().localCacheModel.postal_code.isEmpty()
-
     }
 
     //TODO 27: Remove findWidgetList -> Move to HomeDynamicChannelUseCase
@@ -1006,12 +890,7 @@ open class HomeRevampViewModel @Inject constructor(
         actionOnFound.invoke(listFound)
     }
 
-    //TODO 28: Remove widgetIsAvailable -> Move to HomeDynamicChannelUseCase
-    private inline fun <reified T> widgetIsAvailable(predicate: (T) -> Boolean = {true}): Boolean {
-        homeDataModel.list.filterIsInstance<T>().let {
-            return it.find { predicate.invoke(it) } != null
-        }
-    }
+
 
     //TODO 29: Remove findWidget -> Move to HomeDynamicChannelUseCase
     private inline fun <reified T> findWidget(predicate: (T?) -> Boolean = {true}, actionOnFound: (T, Int) -> Unit) {
@@ -1046,11 +925,7 @@ open class HomeRevampViewModel @Inject constructor(
         this.homeDataModel = homeNewDynamicChannelModel
         this.homeDataModel.homeBalanceModel = currentHeaderDataModel?.headerDataModel?.homeBalanceModel?:HomeBalanceModel()
 
-        if (!homeNewDynamicChannelModel.isProcessingDynamicChannle) {
-            homeNewDynamicChannelModel.evaluateRecommendationSection(
-                    onNeedTabLoad = { getFeedTabData() }
-            )
-        }
+
         _homeLiveDynamicChannel.postValue(homeDataModel)
         _resetNestedScrolling.postValue(Event(true))
     }
@@ -1062,9 +937,11 @@ open class HomeRevampViewModel @Inject constructor(
 
     //TODO 37: Remove balanceRemoteConfigCondition -> Move to HomeDynamicChannelUseCase
     private fun getHomeLocationDataParam() : String {
-        return if (!isAddressDataEmpty()) {
+        return try {
             getAddressData().localCacheModel.convertToLocationParams()
-        } else ""
+        } catch (e:Exception) {
+            ""
+        }
     }
 
     //TODO 17.2: Remove convertPopularKeywordDataList -> Move to HomeDynamicChannelUseCase
@@ -1300,7 +1177,6 @@ open class HomeRevampViewModel @Inject constructor(
         getPlayBanner()
         getPopularKeyword()
         getDisplayTopAdsHeader()
-        getRecommendationWidget()
         getTopAdsBannerData()
         getRechargeRecommendation()
         getSalamWidget()
