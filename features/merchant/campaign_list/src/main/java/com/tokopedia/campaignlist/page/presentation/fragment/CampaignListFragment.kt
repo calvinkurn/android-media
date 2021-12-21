@@ -86,7 +86,7 @@ class CampaignListFragment : BaseDaggerFragment(),
     companion object {
         @JvmStatic
         fun createInstance() = CampaignListFragment()
-        private const val SHARE = "Share"
+        private const val SHARE = "share"
         private const val EMPTY_SEARCH_KEYWORD = ""
         const val TICKER_STATE_PREFERENCE = "TICKER_STATE_PREFERENCE"
         const val IS_DISMISS_TICKER = "IS_DISMISS_TICKER"
@@ -301,10 +301,10 @@ class CampaignListFragment : BaseDaggerFragment(),
                     tnImage = NPL_ICON_URL
             )
             setUtmCampaignData(
-                    listOf(VALUE_SHARE_RS, "${userSession.userId}", "${userSession.shopId}", "${viewModel.getCampaignStatusId()}"),
-                    userId = "${userSession.userId}",
-                    pageId = "${CAMPAIGN_LIST_PAGE_SOURCE_ID}",
-                    feature = "${SHARE}"
+                    listOf(VALUE_SHARE_RS, userSession.userId, userSession.shopId, viewModel.getCampaignStatusId().toString()),
+                    userId = userSession.userId,
+                    pageId = userSession.shopId,
+                    feature = SHARE
             )
 
             val _totalProducts = productData.size
