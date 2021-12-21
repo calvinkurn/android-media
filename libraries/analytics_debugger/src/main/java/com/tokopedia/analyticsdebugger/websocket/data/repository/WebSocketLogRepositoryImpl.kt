@@ -15,8 +15,8 @@ class WebSocketLogRepositoryImpl @Inject constructor(
     private val database: WebSocketLogDatabase
 ): WebSocketLogRespository {
 
-    override suspend fun get(query: String, limit: Int, offset: Int): List<WebSocketLogEntity> = withContext(dispatchers.io) {
-        database.webSocketLogDao().get(query, limit, offset)
+    override suspend fun get(query: String, source: String, limit: Int, offset: Int): List<WebSocketLogEntity> = withContext(dispatchers.io) {
+        database.webSocketLogDao().get(query, source, limit, offset)
     }
 
     override suspend fun insert(webSocketLogEntity: WebSocketLogEntity) {

@@ -28,6 +28,7 @@ class InsertWebSocketLogUseCase @Inject constructor(
     override suspend fun executeOnBackground() {
         param?.let {
             val request = WebSocketLogEntity(
+                source = it.generalInfo.source,
                 channelId = it.generalInfo.channelId,
                 gcToken = it.generalInfo.gcToken,
                 event = it.event,

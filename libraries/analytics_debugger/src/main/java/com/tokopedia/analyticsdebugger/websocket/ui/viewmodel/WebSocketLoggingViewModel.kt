@@ -62,7 +62,7 @@ class WebSocketLoggingViewModel @Inject constructor(
                 setLoading(true)
 
                 val newPage = 0
-                val webSocketLogList: MutableList<WebSocketLog> = getWebSocketLog(query, newPage).toMutableList()
+                val webSocketLogList: MutableList<WebSocketLog> = getWebSocketLog(query, "", newPage).toMutableList()
 
                 if(webSocketLogList.size == PAGINATION_LIMIT) {
                     webSocketLogList += WebSocketLogPlaceHolder
@@ -90,7 +90,7 @@ class WebSocketLoggingViewModel @Inject constructor(
                 val pagination = _websocketLogPagination.value
                 val newPage = pagination.page + 1
 
-                val webSocketLogNextList = getWebSocketLog(pagination.query, newPage)
+                val webSocketLogNextList = getWebSocketLog(pagination.query, "", newPage)
 
                 val oldList: List<WebSocketLog> = pagination.webSocketLoggingList.filterIsInstance(WebSocketLogUiModel::class.java)
                 val newList = (oldList + webSocketLogNextList).toMutableList()
@@ -151,9 +151,9 @@ class WebSocketLoggingViewModel @Inject constructor(
         )
     }
 
-    private suspend fun getWebSocketLog(query: String, page: Int): List<WebSocketLogUiModel> {
+    private suspend fun getWebSocketLog(query: String, source: String, page: Int): List<WebSocketLogUiModel> {
         return getWebSocketLogUseCase.let {
-            it.setParam(query, page, PAGINATION_LIMIT)
+            it.setParam(query, source, page, PAGINATION_LIMIT)
             it.executeOnBackground()
         }
     }
