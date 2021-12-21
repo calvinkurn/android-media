@@ -4,15 +4,9 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.topchat.chattemplate.view.fragment.TemplateChatFragment;
 import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract;
 import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemAddTemplateChatViewHolder;
 import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
-import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemAddTemplateChatViewHolder;
-import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder;
-import com.tokopedia.topchat.chattemplate.view.fragment.TemplateChatFragment;
-import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
 
 /**

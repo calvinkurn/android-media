@@ -4,8 +4,6 @@ import com.google.gson.JsonObject;
 import com.tokopedia.topchat.chattemplate.data.factory.TemplateChatFactory;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel;
 
-import java.util.HashMap;
-
 import rx.Observable;
 
 /**
@@ -18,11 +16,6 @@ public class TemplateRepositoryImpl implements TemplateRepository {
 
     public TemplateRepositoryImpl(TemplateChatFactory templateChatFactory) {
         this.templateChatFactory = templateChatFactory;
-    }
-
-    @Override
-    public Observable<GetTemplateUiModel> getTemplate(HashMap<String, Object> parameters) {
-        return templateChatFactory.createCloudGetTemplateDataSource().getTemplate(parameters);
     }
 
     @Override

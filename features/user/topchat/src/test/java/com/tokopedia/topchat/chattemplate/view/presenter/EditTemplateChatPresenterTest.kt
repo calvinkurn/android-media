@@ -76,12 +76,12 @@ class EditTemplateChatPresenterTest {
     }
 
     private fun successfullyEditSubmitText(
-            expectedReturn: EditTemplateUiModel,
-            testSubscriber: TestSubscriber<EditTemplateUiModel>,
-            testIsSeller: Boolean,
-            testString: String,
-            testMessage: String,
-            testList: List<String>
+        expectedReturn: EditTemplateUiModel,
+        testSubscriber: TestSubscriber<EditTemplateUiModel>,
+        testIsSeller: Boolean,
+        testString: String,
+        testMessage: String,
+        testList: List<String>
     ) {
         presenter.setMode(testIsSeller)
         presenter.submitText(testString, testMessage, testList)
@@ -96,12 +96,12 @@ class EditTemplateChatPresenterTest {
     }
 
     private fun failedEditSubmitText(
-            expectedReturn: Throwable,
-            testSubscriber: TestSubscriber<EditTemplateUiModel>,
-            testIsSeller: Boolean,
-            testString: String,
-            testMessage: String,
-            testList: List<String>
+        expectedReturn: Throwable,
+        testSubscriber: TestSubscriber<EditTemplateUiModel>,
+        testIsSeller: Boolean,
+        testString: String,
+        testMessage: String,
+        testList: List<String>
     ) {
 
         presenter.setMode(testIsSeller)
@@ -116,12 +116,12 @@ class EditTemplateChatPresenterTest {
     }
 
     private fun successfullyCreateSubmitText(
-            expectedReturn: EditTemplateUiModel,
-            testSubscriber: TestSubscriber<EditTemplateUiModel>,
-            testIsSeller: Boolean,
-            testString: String,
-            testMessage: String,
-            testList: List<String>
+        expectedReturn: EditTemplateUiModel,
+        testSubscriber: TestSubscriber<EditTemplateUiModel>,
+        testIsSeller: Boolean,
+        testString: String,
+        testMessage: String,
+        testList: List<String>
     ) {
         presenter.setMode(testIsSeller)
         presenter.submitText(testString, testMessage, testList)
@@ -136,12 +136,12 @@ class EditTemplateChatPresenterTest {
     }
 
     private fun failedCreateSubmitText(
-            expectedReturn: Throwable,
-            testSubscriber: TestSubscriber<EditTemplateUiModel>,
-            testIsSeller: Boolean,
-            testString: String,
-            testMessage: String,
-            testList: List<String>
+        expectedReturn: Throwable,
+        testSubscriber: TestSubscriber<EditTemplateUiModel>,
+        testIsSeller: Boolean,
+        testString: String,
+        testMessage: String,
+        testList: List<String>
     ) {
         presenter.setMode(testIsSeller)
         presenter.submitText(testString, testMessage, testList)

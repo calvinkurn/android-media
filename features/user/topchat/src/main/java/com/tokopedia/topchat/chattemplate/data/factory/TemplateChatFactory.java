@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chattemplate.data.factory;
 
 import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper;
-import com.tokopedia.topchat.chattemplate.data.source.CloudGetTemplateChatDataSource;
 import com.tokopedia.topchat.chattemplate.data.source.CloudSetTemplateChatDataSource;
 import com.tokopedia.topchat.common.chat.api.ChatApi;
 
@@ -20,10 +19,6 @@ public class TemplateChatFactory {
     public TemplateChatFactory(TemplateChatMapper templateChatMapper, ChatApi chatApi) {
         this.templateChatMapper = templateChatMapper;
         this.chatApi = chatApi;
-    }
-
-    public CloudGetTemplateChatDataSource createCloudGetTemplateDataSource() {
-        return new CloudGetTemplateChatDataSource(templateChatMapper, chatApi);
     }
 
     public CloudSetTemplateChatDataSource createCloudSetTemplateDataSource() {

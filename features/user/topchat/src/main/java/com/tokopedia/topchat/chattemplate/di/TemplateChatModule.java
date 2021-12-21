@@ -24,7 +24,10 @@ import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepository
 import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepositoryImpl;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImpl;
+import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImplKt;
+import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryKt;
 import com.tokopedia.topchat.common.chat.api.ChatApi;
+import com.tokopedia.topchat.common.chat.api.ChatApiKt;
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier;
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext;
 import com.tokopedia.user.session.UserSession;
@@ -186,6 +189,18 @@ public class TemplateChatModule {
     @Provides
     EditTemplateRepository provideEditTemplateRepository(EditTemplateChatFactory templateChatFactory) {
         return new EditTemplateRepositoryImpl(templateChatFactory);
+    }
+
+    @TemplateChatScope
+    @Provides
+    ChatApiKt provideChatApiKt(@InboxQualifier Retrofit retrofit) {
+        return retrofit.create(ChatApiKt.class);
+    }
+
+    @TemplateChatScope
+    @Provides
+    TemplateRepositoryKt provideTemplateRepositoryKt(TemplateRepositoryImplKt templateRepositoryImplKt) {
+        return templateRepositoryImplKt;
     }
 
 }

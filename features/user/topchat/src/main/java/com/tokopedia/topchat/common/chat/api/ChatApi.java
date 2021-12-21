@@ -12,14 +12,12 @@ import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.GET;
 import retrofit2.http.HTTP;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-import retrofit2.http.QueryMap;
 import rx.Observable;
 
 /**
@@ -31,11 +29,6 @@ public interface ChatApi {
     @POST(TkpdBaseURL.Chat.DELETE)
     Observable<Response<DataResponse<DeleteChatListUiModel>>> deleteMessage(@Body JsonObject
                                                                                     parameters);
-
-    @GET(TkpdBaseURL.Chat.GET_TEMPLATE)
-    Observable<Response<DataResponse<TemplateData>>> getTemplate(@QueryMap Map<String, Object>
-                                                                         parameters);
-
     @FormUrlEncoded
     @PUT(TkpdBaseURL.Chat.UPDATE_TEMPLATE)
     Observable<Response<DataResponse<TemplateData>>> editTemplate(@Path("index") int index,

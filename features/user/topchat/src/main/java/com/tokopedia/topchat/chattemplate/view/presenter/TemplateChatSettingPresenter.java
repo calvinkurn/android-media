@@ -1,13 +1,10 @@
 package com.tokopedia.topchat.chattemplate.view.presenter;
 
 import com.google.gson.JsonArray;
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCase;
 import com.tokopedia.topchat.chattemplate.domain.usecase.SetAvailabilityTemplateUseCase;
 import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,53 +21,17 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
         implements TemplateChatContract.Presenter {
 
     private final SetAvailabilityTemplateUseCase setAvailabilityTemplateUseCase;
-    private GetTemplateUseCase getTemplateUseCase;
     private boolean isSeller;
 
     @Inject
-    TemplateChatSettingPresenter(GetTemplateUseCase getTemplateUseCase,
-                                 SetAvailabilityTemplateUseCase setAvailabilityTemplateUseCase) {
-        this.getTemplateUseCase = getTemplateUseCase;
+    TemplateChatSettingPresenter(SetAvailabilityTemplateUseCase setAvailabilityTemplateUseCase) {
         this.setAvailabilityTemplateUseCase = setAvailabilityTemplateUseCase;
     }
 
     @Override
     public void detachView() {
         super.detachView();
-        getTemplateUseCase.unsubscribe();
         setAvailabilityTemplateUseCase.unsubscribe();
-    }
-
-    public void getTemplate() {
-        getView().showLoading();
-        getTemplateUseCase.execute(GetTemplateUseCase.generateParam(isSeller), new Subscriber<GetTemplateUiModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                getView().setTemplate(null);
-                getView().finishLoading();
-            }
-
-            @Override
-            public void onNext(GetTemplateUiModel getTemplateViewModel) {
-                List<Visitable> temp = getTemplateViewModel.getListTemplate();
-                int size;
-                if (temp == null) {
-                    size = 0;
-                    temp = new ArrayList<>();
-                } else {
-                    size = temp.size();
-                }
-                temp.add(new TemplateChatModel(false, size));
-                getView().setTemplate(temp);
-                getView().setChecked(getTemplateViewModel.isEnabled());
-                getView().finishLoading();
-            }
-        });
     }
 
     @Override
@@ -132,12 +93,6 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
             array.add(o);
         }
         return array;
-    }
-
-    @Override
-    public void reloadTemplate() {
-        getView().showLoading();
-        getTemplate();
     }
 
     public void setMode(Boolean isSeller) {

@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chattemplate.view.presenter
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCase
 import com.tokopedia.topchat.chattemplate.domain.usecase.SetAvailabilityTemplateUseCase
 import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
@@ -18,9 +17,6 @@ import rx.observers.TestSubscriber
 class TemplateChatSettingPresenterTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
-
-    @RelaxedMockK
-    private lateinit var getTemplateUseCase: GetTemplateUseCase
     @RelaxedMockK
     private lateinit var setAvailabilityTemplateUseCase: SetAvailabilityTemplateUseCase
     @RelaxedMockK
@@ -31,39 +27,39 @@ class TemplateChatSettingPresenterTest {
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        presenter = TemplateChatSettingPresenter(getTemplateUseCase, setAvailabilityTemplateUseCase)
+        presenter = TemplateChatSettingPresenter(setAvailabilityTemplateUseCase)
         presenter.attachView(view)
     }
 
-    private fun everySuccessGetTemplate(expectedReturn: GetTemplateUiModel, testSubscriber: TestSubscriber<GetTemplateUiModel>) {
-        every {
-            getTemplateUseCase.execute(any(), any())
-        } answers {
-            testSubscriber.onStart()
-            testSubscriber.onCompleted()
-            testSubscriber.onNext(expectedReturn)
-        }
-    }
-
-    private fun everyFailGetTemplate(expectedReturn: Throwable, testSubscriber: TestSubscriber<GetTemplateUiModel>) {
-        every {
-            getTemplateUseCase.execute(any(), any())
-        } answers {
-            testSubscriber.onStart()
-            testSubscriber.onCompleted()
-            testSubscriber.onError(expectedReturn)
-        }
-    }
-
-    private fun testGetTemplate(testIsSeller: Boolean) {
-
-        presenter.setMode(testIsSeller)
-        presenter.getTemplate()
-
-        verify {
-            getTemplateUseCase.execute(any(), any())
-        }
-    }
+//    private fun everySuccessGetTemplate(expectedReturn: GetTemplateUiModel, testSubscriber: TestSubscriber<GetTemplateUiModel>) {
+//        every {
+//            getTemplateUseCase.execute(any(), any())
+//        } answers {
+//            testSubscriber.onStart()
+//            testSubscriber.onCompleted()
+//            testSubscriber.onNext(expectedReturn)
+//        }
+//    }
+//
+//    private fun everyFailGetTemplate(expectedReturn: Throwable, testSubscriber: TestSubscriber<GetTemplateUiModel>) {
+//        every {
+//            getTemplateUseCase.execute(any(), any())
+//        } answers {
+//            testSubscriber.onStart()
+//            testSubscriber.onCompleted()
+//            testSubscriber.onError(expectedReturn)
+//        }
+//    }
+//
+//    private fun testGetTemplate(testIsSeller: Boolean) {
+//
+//        presenter.setMode(testIsSeller)
+//        presenter.getTemplate()
+//
+//        verify {
+//            getTemplateUseCase.execute(any(), any())
+//        }
+//    }
 
     private fun successGetTemplate(expectedReturn: GetTemplateUiModel, testSubscriber: TestSubscriber<GetTemplateUiModel>) {
         testSubscriber.assertNoErrors()
@@ -76,49 +72,49 @@ class TemplateChatSettingPresenterTest {
         testSubscriber.assertCompleted()
     }
 
-    @Test
-    fun `successfully get template buyer` () {
-        val expectedReturn = mockk<GetTemplateUiModel>(relaxed = true)
-        val testSubscriber: TestSubscriber<GetTemplateUiModel> = TestSubscriber()
-        val testIsSeller = false
-
-        everySuccessGetTemplate(expectedReturn, testSubscriber)
-        testGetTemplate(testIsSeller)
-        successGetTemplate(expectedReturn, testSubscriber)
-    }
-
-    @Test
-    fun `successfully get template seller` () {
-        val expectedReturn = mockk<GetTemplateUiModel>(relaxed = true)
-        val testSubscriber: TestSubscriber<GetTemplateUiModel> = TestSubscriber()
-        val testIsSeller = true
-
-        everySuccessGetTemplate(expectedReturn, testSubscriber)
-        testGetTemplate(testIsSeller)
-        successGetTemplate(expectedReturn, testSubscriber)
-    }
-
-    @Test
-    fun `failed get template buyer` () {
-        val expectedReturn = mockk<Throwable>(relaxed = true)
-        val testSubscriber: TestSubscriber<GetTemplateUiModel> = TestSubscriber()
-        val testIsSeller = false
-
-        everyFailGetTemplate(expectedReturn, testSubscriber)
-        testGetTemplate(testIsSeller)
-        failGetTemplate(expectedReturn, testSubscriber)
-    }
-
-    @Test
-    fun `failed get template seller` () {
-        val expectedReturn = mockk<Throwable>(relaxed = true)
-        val testSubscriber: TestSubscriber<GetTemplateUiModel> = TestSubscriber()
-        val testIsSeller = true
-
-        everyFailGetTemplate(expectedReturn, testSubscriber)
-        testGetTemplate(testIsSeller)
-        failGetTemplate(expectedReturn, testSubscriber)
-    }
+//    @Test
+//    fun `successfully get template buyer` () {
+//        val expectedReturn = mockk<GetTemplateUiModel>(relaxed = true)
+//        val testSubscriber: TestSubscriber<GetTemplateUiModel> = TestSubscriber()
+//        val testIsSeller = false
+//
+//        everySuccessGetTemplate(expectedReturn, testSubscriber)
+//        testGetTemplate(testIsSeller)
+//        successGetTemplate(expectedReturn, testSubscriber)
+//    }
+//
+//    @Test
+//    fun `successfully get template seller` () {
+//        val expectedReturn = mockk<GetTemplateUiModel>(relaxed = true)
+//        val testSubscriber: TestSubscriber<GetTemplateUiModel> = TestSubscriber()
+//        val testIsSeller = true
+//
+//        everySuccessGetTemplate(expectedReturn, testSubscriber)
+//        testGetTemplate(testIsSeller)
+//        successGetTemplate(expectedReturn, testSubscriber)
+//    }
+//
+//    @Test
+//    fun `failed get template buyer` () {
+//        val expectedReturn = mockk<Throwable>(relaxed = true)
+//        val testSubscriber: TestSubscriber<GetTemplateUiModel> = TestSubscriber()
+//        val testIsSeller = false
+//
+//        everyFailGetTemplate(expectedReturn, testSubscriber)
+//        testGetTemplate(testIsSeller)
+//        failGetTemplate(expectedReturn, testSubscriber)
+//    }
+//
+//    @Test
+//    fun `failed get template seller` () {
+//        val expectedReturn = mockk<Throwable>(relaxed = true)
+//        val testSubscriber: TestSubscriber<GetTemplateUiModel> = TestSubscriber()
+//        val testIsSeller = true
+//
+//        everyFailGetTemplate(expectedReturn, testSubscriber)
+//        testGetTemplate(testIsSeller)
+//        failGetTemplate(expectedReturn, testSubscriber)
+//    }
 
     private fun everySucessSwitchAvailability(expectedReturn: GetTemplateUiModel, testSubscriber: TestSubscriber<GetTemplateUiModel>) {
         every {
@@ -326,17 +322,16 @@ class TemplateChatSettingPresenterTest {
         failSetArrange(expectedReturn, testSubscriber)
     }
 
-    @Test
-    fun `reload template` () {
-        presenter.reloadTemplate()
-        verify { view.showLoading() }
-    }
+//    @Test
+//    fun `reload template` () {
+//        presenter.reloadTemplate()
+//        verify { view.showLoading() }
+//    }
 
     @Test
     fun `on detach` () {
         presenter.detachView()
         verify {
-            getTemplateUseCase.unsubscribe()
             setAvailabilityTemplateUseCase.unsubscribe()
         }
     }

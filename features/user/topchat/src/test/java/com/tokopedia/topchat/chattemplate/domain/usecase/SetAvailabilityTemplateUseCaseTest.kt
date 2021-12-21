@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chattemplate.domain.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.google.gson.JsonObject
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import io.mockk.MockKAnnotations

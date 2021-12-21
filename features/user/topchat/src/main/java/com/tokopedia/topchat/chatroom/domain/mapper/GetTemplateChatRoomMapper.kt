@@ -33,12 +33,14 @@ class GetTemplateChatRoomMapper @Inject constructor() : Func1<Response<DataRespo
     }
 
     private fun convertToDomain(data: TemplateData): GetTemplateUiModel {
-        val model = GetTemplateUiModel()
+        val model =
+            GetTemplateUiModel()
         val list = ArrayList<Visitable<*>>()
         if (data.templates != null) {
             for (i in 0 until data.templates.size) {
                 if (data.templates[i] != "_") {
-                    val templateChatModel = TemplateChatModel()
+                    val templateChatModel =
+                        TemplateChatModel()
                     templateChatModel.message = data.templates[i]
                     list.add(templateChatModel)
                 }

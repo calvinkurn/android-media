@@ -11,7 +11,8 @@ import dagger.Component;
  */
 
 @TemplateChatScope
-@Component(modules = TemplateChatModule.class, dependencies = BaseAppComponent.class)
+@Component(modules = {TemplateChatModule.class, ChatTemplateViewModelModule.class},
+        dependencies = BaseAppComponent.class)
 public interface TemplateChatComponent {
     void inject(TemplateChatFragment fragment);
 

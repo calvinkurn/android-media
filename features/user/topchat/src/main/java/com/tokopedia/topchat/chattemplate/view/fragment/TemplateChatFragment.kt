@@ -27,6 +27,8 @@ import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateCh
 import com.tokopedia.topchat.chattemplate.view.dialog.TemplateInfoBottomSheet
 import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract
 import com.tokopedia.topchat.chattemplate.view.presenter.TemplateChatSettingPresenter
+import com.tokopedia.topchat.chattemplate.view.viewmodel.ChatTemplateViewModel
+import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.util.SimpleItemTouchHelperCallback
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
@@ -34,6 +36,8 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifycomponents.Toaster.build
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import java.util.*
 import javax.inject.Inject
 
@@ -51,6 +55,9 @@ class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
     @JvmField
     @Inject
     var presenter: TemplateChatSettingPresenter? = null
+
+    @Inject
+    lateinit var viewModel: ChatTemplateViewModel
 
     @JvmField
     @Inject
@@ -79,6 +86,7 @@ class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
         ).also {
             bindView(it)
             setupPresenter()
+            getTemplate()
         }
     }
 
@@ -94,7 +102,11 @@ class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
     private fun setupPresenter() {
         presenter?.attachView(this)
         presenter?.setMode(isSeller)
-        presenter?.getTemplate()
+    }
+
+    private fun getTemplate() {
+        showLoading()
+        viewModel.getTemplate(isSeller)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -103,6 +115,7 @@ class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
         setupRecyclerView()
         setupSwitchTemplate()
         setupInfo()
+        setupObservers()
     }
 
     private fun setupRecyclerView() {
@@ -259,7 +272,7 @@ class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             100 -> if (resultCode == Activity.RESULT_OK) {
-                presenter?.reloadTemplate()
+                getTemplate()
                 val string = data?.getStringExtra(LIST_RESULT)
                 val index = data?.getIntExtra(INDEX_RESULT, -1) ?: -1
                 var text = ""
@@ -307,6 +320,22 @@ class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
         view?.let {
             build(it, text, LENGTH_SHORT, type).show()
         }
+    }
+
+    private fun setupObservers() {
+        viewModel.chatTemplate.observe(viewLifecycleOwner, {
+            when(it) {
+                is Success -> {
+                    val temp: MutableList<Visitable<*>?> = it.data.listTemplate
+                    val size: Int = temp.size
+                    temp.add(TemplateChatModel(false, size))
+                    setTemplate(temp)
+                    setChecked(it.data.isEnabled)
+                }
+                is Fail -> setTemplate(null)
+            }
+            finishLoading()
+        })
     }
 
     companion object {

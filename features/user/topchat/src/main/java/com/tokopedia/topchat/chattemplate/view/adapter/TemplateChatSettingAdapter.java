@@ -12,10 +12,6 @@ import com.tokopedia.topchat.common.util.ItemTouchHelperAdapter;
 import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract;
 import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
-import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder;
-import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
-import com.tokopedia.topchat.common.util.ItemTouchHelperAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
