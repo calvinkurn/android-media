@@ -9,9 +9,9 @@ internal object QueryRechargeRecommendation {
     const val RECHARGE_RECOMMENDATION_QUERY_NAME = "RechargeRecommendationQuery"
     const val RECHARGE_RECOMMENDATION_QUERY = "query rechargeRecommendation(\$type: Int!) {\n" +
             "              rechargeRecommendation(recommendationType: \$type) {\n" +
-//            "                #LIST OF RECOMMENDATION\n" +
+// LIST OF RECOMMENDATION
             "                UUID " +
-//            "# recharge_watf_userID, used as recommendation hash_key\n" +
+// recharge_watf_userID, used as recommendation hash_key"
             "                recommendations: Recommendations {\n" +
             "                  contentID: ContentID\n" +
             "                  mainText: MainText\n" +
