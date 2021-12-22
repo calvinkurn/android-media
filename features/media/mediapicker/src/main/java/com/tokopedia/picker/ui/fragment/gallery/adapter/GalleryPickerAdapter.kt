@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.picker.R
 import com.tokopedia.picker.data.entity.Media
-import com.tokopedia.picker.databinding.WidgetItemGalleryPickerBinding
+import com.tokopedia.picker.databinding.ViewItemGalleryPickerBinding
 import com.tokopedia.picker.ui.fragment.OnImageSelectedListener
 import com.tokopedia.picker.ui.fragment.OnMediaClickListener
 import com.tokopedia.picker.ui.fragment.gallery.adapter.utils.GalleryDiffUtil
@@ -109,8 +109,8 @@ class GalleryPickerAdapter(
         view: View
     ) : RecyclerView.ViewHolder(view) {
 
+        private val binding: ViewItemGalleryPickerBinding? by viewBinding()
         private val context by lazy { itemView.context }
-        private val binding: WidgetItemGalleryPickerBinding? by viewBinding()
 
         private var isSelected = false
 
@@ -144,7 +144,7 @@ class GalleryPickerAdapter(
         }
 
         companion object {
-            @LayoutRes val LAYOUT = R.layout.widget_item_gallery_picker
+            @LayoutRes val LAYOUT = R.layout.view_item_gallery_picker
 
             fun create(parent: ViewGroup): GalleryPickerViewHolder {
                 val view = LayoutInflater

@@ -171,8 +171,8 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
     }
 
     private fun setupTabView() {
-        binding?.tabContainer?.addNewTab(getString(com.tokopedia.picker.R.string.media_picker_camera))
-        binding?.tabContainer?.addNewTab(getString(com.tokopedia.picker.R.string.media_picker_gallery))
+        binding?.tabContainer?.addNewTab(getString(com.tokopedia.picker.R.string.picker_title_camera))
+        binding?.tabContainer?.addNewTab(getString(com.tokopedia.picker.R.string.picker_title_gallery))
         binding?.tabContainer?.show()
 
         binding?.tabContainer?.tabLayout?.addOnTabSelected { position ->

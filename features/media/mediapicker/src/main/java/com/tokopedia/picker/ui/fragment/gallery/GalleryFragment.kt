@@ -1,5 +1,7 @@
 package com.tokopedia.picker.ui.fragment.gallery
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +15,9 @@ import com.tokopedia.picker.databinding.FragmentGalleryBinding
 import com.tokopedia.picker.di.DaggerPickerComponent
 import com.tokopedia.picker.di.module.PickerModule
 import com.tokopedia.picker.common.PickerSelectionType
+import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.ui.PickerUiConfig
+import com.tokopedia.picker.ui.activity.album.AlbumActivity
 import com.tokopedia.picker.ui.fragment.gallery.adapter.GalleryPickerAdapter
 import com.tokopedia.picker.ui.fragment.gallery.adapter.utils.GridSpacingItemDecoration
 import com.tokopedia.picker.utils.EventChannelState
@@ -62,6 +66,17 @@ class GalleryFragment : BaseDaggerFragment() {
         initView()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RC_ALBUM_SELECTOR && resultCode == Activity.RESULT_OK) {
+            data?.getParcelableArrayListExtra<Media>(
+                AlbumActivity.RC_SELECTED_DIRECTORY
+            )?.toList()?.let {
+                adapter.setData(it)
+            }
+        }
+    }
+
     private fun initObservable() {
         viewModel.files.observe(viewLifecycleOwner, {
             adapter.setData(it)
@@ -73,11 +88,21 @@ class GalleryFragment : BaseDaggerFragment() {
     }
 
     private fun initView() {
-        setRecyclerView()
+        setupWidgetAlbumSelector()
+        setupRecyclerView()
         viewModel.fetch(config)
     }
 
-    private fun setRecyclerView() {
+    private fun setupWidgetAlbumSelector() {
+        binding?.selector?.container?.setOnClickListener {
+            startActivityForResult(Intent(
+                requireContext(),
+                AlbumActivity::class.java
+            ), RC_ALBUM_SELECTOR)
+        }
+    }
+
+    private fun setupRecyclerView() {
         val spanCount = 3
 
         binding?.lstMedia?.layoutManager = GridLayoutManager(
@@ -133,5 +158,9 @@ class GalleryFragment : BaseDaggerFragment() {
     }
 
     override fun getScreenName() = "Camera"
+
+    companion object {
+        const val RC_ALBUM_SELECTOR = 123
+    }
 
 }

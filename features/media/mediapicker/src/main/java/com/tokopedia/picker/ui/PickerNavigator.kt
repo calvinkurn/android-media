@@ -31,9 +31,9 @@ class PickerNavigator constructor(
         cameraFragment = factory.cameraFragment()
         galleryFragment = factory.galleryFragment()
 
-        addPage(permissionFragment, context.getString(com.tokopedia.picker.R.string.media_picker_permission))
-        addPage(cameraFragment, context.getString(com.tokopedia.picker.R.string.media_picker_camera))
-        addPage(galleryFragment, context.getString(com.tokopedia.picker.R.string.media_picker_gallery))
+        addPage(permissionFragment, context.getString(com.tokopedia.picker.R.string.picker_title_permission))
+        addPage(cameraFragment, context.getString(com.tokopedia.picker.R.string.picker_title_camera))
+        addPage(galleryFragment, context.getString(com.tokopedia.picker.R.string.picker_title_gallery))
     }
 
     fun start(@PickerFragmentType page: Int) {
