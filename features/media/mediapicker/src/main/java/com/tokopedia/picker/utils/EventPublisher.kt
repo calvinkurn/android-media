@@ -39,4 +39,8 @@ object EventPublisher : CoroutineScope {
         }
     }
 
+    fun clear() {
+        coroutineContext.cancelChildren()
+    }
+
 }
