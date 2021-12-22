@@ -2,6 +2,7 @@ package com.tokopedia.picker.ui.activity.album
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -43,7 +44,16 @@ class AlbumActivity : BaseActivity() {
         setContentView(R.layout.activity_album)
         initInjector()
         initObservable()
+        initToolbar()
         initView()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            finish()
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     private fun initObservable() {
@@ -52,6 +62,11 @@ class AlbumActivity : BaseActivity() {
                 adapter.setData(it)
             }
         })
+    }
+
+    private fun initToolbar() {
+        setSupportActionBar(binding?.toolbarContainer)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun initView() {
