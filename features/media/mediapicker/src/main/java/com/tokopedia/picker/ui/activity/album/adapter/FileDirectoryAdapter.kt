@@ -13,29 +13,29 @@ import com.tokopedia.picker.databinding.ViewItemAlbumPickerBinding
 import com.tokopedia.picker.ui.fragment.OnDirectoryClickListener
 import com.tokopedia.utils.view.binding.viewBinding
 
-class AlbumAdapter constructor(
-    private val albums: MutableList<Directory> = mutableListOf(),
+class FileDirectoryAdapter constructor(
+    private val directories: MutableList<Directory> = mutableListOf(),
     private val listener: OnDirectoryClickListener? = null
-) : RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder>() {
+) : RecyclerView.Adapter<FileDirectoryAdapter.FileDirectoryViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlbumViewHolder {
-        return AlbumViewHolder.create(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileDirectoryViewHolder {
+        return FileDirectoryViewHolder.create(parent)
     }
 
-    override fun onBindViewHolder(holder: AlbumViewHolder, position: Int) {
-        holder.bind(albums[position], listener)
+    override fun onBindViewHolder(holder: FileDirectoryViewHolder, position: Int) {
+        holder.bind(directories[position], listener)
     }
 
-    override fun getItemCount() = albums.size
+    override fun getItemCount() = directories.size
 
     @SuppressLint("NotifyDataSetChanged")
     fun setData(albums: List<Directory>) {
-        this.albums.clear()
-        this.albums.addAll(albums)
+        this.directories.clear()
+        this.directories.addAll(albums)
         notifyDataSetChanged()
     }
 
-    class AlbumViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class FileDirectoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         private val binding: ViewItemAlbumPickerBinding? by viewBinding()
         private val context by lazy { itemView.context }
@@ -44,7 +44,7 @@ class AlbumAdapter constructor(
             binding?.txtName?.text = directory.name
 
             binding?.txtCount?.text = context.getString(
-                com.tokopedia.picker.R.string.picker_album_subtitle,
+                R.string.picker_album_subtitle,
                 directory.medias.size
             )
 
@@ -61,12 +61,12 @@ class AlbumAdapter constructor(
         companion object {
             @LayoutRes val LAYOUT = R.layout.view_item_album_picker
 
-            fun create(parent: ViewGroup): AlbumViewHolder {
+            fun create(parent: ViewGroup): FileDirectoryViewHolder {
                 val view = LayoutInflater
                     .from(parent.context)
                     .inflate(LAYOUT, parent, false)
 
-                return AlbumViewHolder(view)
+                return FileDirectoryViewHolder(view)
             }
         }
 

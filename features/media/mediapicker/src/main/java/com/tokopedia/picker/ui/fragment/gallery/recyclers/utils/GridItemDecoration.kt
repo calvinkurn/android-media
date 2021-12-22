@@ -1,10 +1,10 @@
-package com.tokopedia.picker.ui.fragment.gallery.adapter.utils
+package com.tokopedia.picker.ui.fragment.gallery.recyclers.utils
 
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-class GridSpacingItemDecoration(
+class GridItemDecoration(
     private val spanCount: Int,
     private val spacing: Int
 ) : RecyclerView.ItemDecoration() {

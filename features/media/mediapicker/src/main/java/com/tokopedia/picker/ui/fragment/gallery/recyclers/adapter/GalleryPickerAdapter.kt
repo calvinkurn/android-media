@@ -1,4 +1,4 @@
-package com.tokopedia.picker.ui.fragment.gallery.adapter
+package com.tokopedia.picker.ui.fragment.gallery.recyclers.adapter
 
 import android.annotation.SuppressLint
 import android.net.Uri
@@ -17,13 +17,13 @@ import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.databinding.ViewItemGalleryPickerBinding
 import com.tokopedia.picker.ui.fragment.OnImageSelectedListener
 import com.tokopedia.picker.ui.fragment.OnMediaClickListener
-import com.tokopedia.picker.ui.fragment.gallery.adapter.utils.GalleryDiffUtil
+import com.tokopedia.picker.ui.fragment.gallery.recyclers.utils.GalleryDiffUtil
 import com.tokopedia.picker.utils.getVideoDurationLabel
 import com.tokopedia.picker.utils.isVideoFormat
 import com.tokopedia.utils.view.binding.viewBinding
 
 class GalleryPickerAdapter(
-    selectedMedias: List<Media>,
+    selectedMedias: List<Media>?,
     private val shouldSelectListener: OnMediaClickListener
 ) : RecyclerView.Adapter<GalleryPickerAdapter.GalleryPickerViewHolder>() {
 
@@ -36,7 +36,7 @@ class GalleryPickerAdapter(
     private var itemSelectedListener: OnImageSelectedListener? = null
 
     init {
-        if (selectedMedias.isNotEmpty()) {
+        if (selectedMedias?.isNotEmpty() == true) {
             this.selectedMedias.addAll(selectedMedias)
         }
     }

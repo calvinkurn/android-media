@@ -1,4 +1,4 @@
-package com.tokopedia.picker.ui.fragment.gallery.adapter.utils
+package com.tokopedia.picker.ui.fragment.gallery.recyclers.utils
 
 import androidx.recyclerview.widget.DiffUtil
 
