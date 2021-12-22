@@ -19,13 +19,9 @@ class GalleryViewModel @Inject constructor(
     private var _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
-    init {
-        load()
-    }
-
-    fun load() {
+    fun fetch(config: ConfigLoaderParam) {
         repository.abort()
-        repository.loadFiles(ConfigLoaderParam(), object : FileLoaderRepository.LoaderListener {
+        repository.loadFiles(config, object : FileLoaderRepository.LoaderListener {
             override fun onFileLoaded(files: List<Media>, dirs: List<Directory>) {
                 _files.postValue(files)
             }
