@@ -6,37 +6,41 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 
 data class PayLaterWidget(
 
-    val name: String? = null,
-    val type: String? = null,
-    val allWidjetList: List<PayLaterModel?>? = null
+    val name: String = "",
+    val type: String = "",
+    val widgetData: List<PayLaterModel?> = listOf()
 
 ) : DynamicPdpDataModel {
     override fun type(): String {
-        TODO("Not yet implemented")
+        return type
     }
 
-    override fun type(typeFactory: DynamicProductDetailAdapterFactory?): Int {
-        TODO("Not yet implemented")
+    override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
+        return typeFactory.type(this)
     }
 
     override fun name(): String {
-        TODO("Not yet implemented")
+        return name
     }
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
-        TODO("Not yet implemented")
+        return if (newData is PayLaterWidget) {
+            widgetData.hashCode() == newData.widgetData.hashCode()
+        } else
+            return false
     }
 
     override fun newInstance(): DynamicPdpDataModel {
-        TODO("Not yet implemented")
+        return this.copy()
     }
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
-        TODO("Not yet implemented")
+        val bundle = Bundle()
+        // TODO change the payload implementation
+        return bundle
     }
 
-    override val impressHolder: ImpressHolder
-        get() = TODO("Not yet implemented")
+    override val impressHolder: ImpressHolder = ImpressHolder()
 
 }
 
