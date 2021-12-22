@@ -1,10 +1,10 @@
 package com.tokopedia.picker.ui
 
 import android.net.Uri
+import com.tokopedia.applink.ApplinkConst.MediaPicker
 import com.tokopedia.picker.common.PickerModeType
 import com.tokopedia.picker.common.PickerPageType
 import com.tokopedia.picker.common.PickerSelectionType
-import com.tokopedia.applink.ApplinkConst.MediaPicker as MediaPicker
 
 object PickerUiConfig {
 
@@ -17,14 +17,18 @@ object PickerUiConfig {
     @PickerSelectionType
     var paramType = PickerSelectionType.MULTIPLE
 
+    private var pickerParam: PickerParam? = null
+
     fun createFileLoaderParam(): PickerParam {
         val isOnlyVideo = paramMode == PickerModeType.VIDEO_ONLY
         val isIncludeVideo = paramMode == PickerModeType.COMMON
 
-        return PickerParam(
+        return pickerParam ?: PickerParam(
             isIncludeVideo = isIncludeVideo,
             isOnlyVideo = isOnlyVideo
-        )
+        ).also {
+            pickerParam = it
+        }
     }
 
     /**
