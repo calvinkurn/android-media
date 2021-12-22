@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.picker.data.entity.Directory
 import com.tokopedia.picker.data.entity.Media
-import com.tokopedia.picker.data.param.ConfigLoaderParam
+import com.tokopedia.picker.ui.PickerParam
 import com.tokopedia.picker.data.repository.FileLoaderRepository
 import javax.inject.Inject
 
@@ -19,7 +19,7 @@ class GalleryViewModel @Inject constructor(
     private var _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
-    fun fetch(config: ConfigLoaderParam) {
+    fun fetch(config: PickerParam) {
         repository.abort()
         repository.loadFiles(config, object : FileLoaderRepository.LoaderListener {
             override fun onFileLoaded(files: List<Media>, dirs: List<Directory>) {

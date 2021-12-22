@@ -1,4 +1,4 @@
-package com.tokopedia.picker.ui.common
+package com.tokopedia.picker.common
 
 import androidx.annotation.IntDef
 

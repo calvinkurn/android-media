@@ -1,4 +1,4 @@
-package com.tokopedia.picker.ui.fragment
+package com.tokopedia.picker.ui
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.picker.ui.fragment.camera.CameraFragment

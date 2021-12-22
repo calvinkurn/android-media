@@ -12,8 +12,8 @@ import com.tokopedia.picker.R
 import com.tokopedia.picker.databinding.FragmentGalleryBinding
 import com.tokopedia.picker.di.DaggerPickerComponent
 import com.tokopedia.picker.di.module.PickerModule
-import com.tokopedia.picker.ui.common.PickerSelectionType
-import com.tokopedia.picker.ui.fragment.PickerUiConfig
+import com.tokopedia.picker.common.PickerSelectionType
+import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.fragment.gallery.adapter.GalleryPickerAdapter
 import com.tokopedia.picker.ui.fragment.gallery.adapter.utils.GridSpacingItemDecoration
 import com.tokopedia.picker.utils.EventChannelState

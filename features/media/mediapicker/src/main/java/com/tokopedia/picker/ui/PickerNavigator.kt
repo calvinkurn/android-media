@@ -1,4 +1,4 @@
-package com.tokopedia.picker.ui.fragment
+package com.tokopedia.picker.ui
 
 import android.content.Context
 import androidx.annotation.IdRes
@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
-import com.tokopedia.picker.ui.common.PickerFragmentType
+import com.tokopedia.picker.common.PickerFragmentType
 import java.lang.Exception
 
 class PickerNavigator constructor(

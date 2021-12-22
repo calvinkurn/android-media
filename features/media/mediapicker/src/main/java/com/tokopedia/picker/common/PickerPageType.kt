@@ -1,4 +1,4 @@
-package com.tokopedia.picker.ui.common
+package com.tokopedia.picker.common
 
 import androidx.annotation.IntDef
 
@@ -9,14 +9,14 @@ import androidx.annotation.IntDef
     AnnotationTarget.VALUE_PARAMETER
 )
 @IntDef(value = [
-    PickerModeType.COMMON,
-    PickerModeType.IMAGE_ONLY,
-    PickerModeType.VIDEO_ONLY,
+    PickerPageType.COMMON,
+    PickerPageType.CAMERA,
+    PickerPageType.GALLERY,
 ])
-annotation class PickerModeType {
+annotation class PickerPageType {
     companion object {
         const val COMMON = 0
-        const val IMAGE_ONLY = 1
-        const val VIDEO_ONLY = 2
+        const val CAMERA = 1
+        const val GALLERY = 2
     }
 }

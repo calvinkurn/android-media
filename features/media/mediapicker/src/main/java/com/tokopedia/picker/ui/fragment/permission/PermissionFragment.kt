@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.picker.R
 import com.tokopedia.picker.databinding.FragmentPermissionBinding
-import com.tokopedia.picker.ui.common.PickerPageType
-import com.tokopedia.picker.ui.fragment.PickerUiConfig
+import com.tokopedia.picker.common.PickerPageType
+import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.view.binding.viewBinding
 

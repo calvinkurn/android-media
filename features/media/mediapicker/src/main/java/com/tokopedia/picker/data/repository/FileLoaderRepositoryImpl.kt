@@ -10,7 +10,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import com.tokopedia.picker.data.entity.Directory
 import com.tokopedia.picker.data.entity.Media
-import com.tokopedia.picker.data.param.ConfigLoaderParam
+import com.tokopedia.picker.ui.PickerParam
 import com.tokopedia.picker.utils.isGifFormat
 import java.io.File
 import java.util.*
@@ -24,7 +24,7 @@ open class FileLoaderRepositoryImpl constructor(
     private var executor: ExecutorService? = null
 
     override fun loadFiles(
-        config: ConfigLoaderParam,
+        config: PickerParam,
         listener: FileLoaderRepository.LoaderListener
     ) {
         val isFolderMode = config.isFolderMode

@@ -1,10 +1,10 @@
-package com.tokopedia.picker.data.param
+package com.tokopedia.picker.ui
 
 import android.annotation.SuppressLint
 import java.io.File
 
 @SuppressLint("ResponseFieldAnnotation")
-data class ConfigLoaderParam(
+data class PickerParam(
     var limit: Int = 2,
     var isFolderMode: Boolean = true,
     var isIncludeVideo: Boolean = true,
