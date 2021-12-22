@@ -2,22 +2,23 @@ package com.tokopedia.picker.ui.activity.main
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.applink.ApplinkConst.MediaPicker.*
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.picker.R
+import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.databinding.ActivityPickerBinding
 import com.tokopedia.picker.ui.common.PickerFragmentType
-import com.tokopedia.picker.ui.common.PickerModeType
 import com.tokopedia.picker.ui.common.PickerPageType
-import com.tokopedia.picker.ui.common.PickerSelectionType
 import com.tokopedia.picker.ui.fragment.PickerFragmentFactory
 import com.tokopedia.picker.ui.fragment.PickerFragmentFactoryImpl
 import com.tokopedia.picker.ui.fragment.PickerNavigator
 import com.tokopedia.picker.ui.fragment.PickerUiConfig
 import com.tokopedia.picker.ui.fragment.permission.PermissionFragment
+import com.tokopedia.picker.utils.EventChannelState
+import com.tokopedia.picker.utils.EventPublisher
 import com.tokopedia.picker.utils.Permissions.hasPermissionGranted
 import com.tokopedia.picker.utils.addOnTabSelected
 import com.tokopedia.utils.view.binding.viewBinding
@@ -64,6 +65,11 @@ import com.tokopedia.utils.view.binding.viewBinding
 class PickerActivity : BaseActivity(), PermissionFragment.Listener {
 
     private val binding: ActivityPickerBinding? by viewBinding()
+    private val selectedMedias: MutableList<Media> = mutableListOf()
+
+    private val viewModel by lazy {
+        ViewModelProvider(this)[PickerViewModel::class.java]
+    }
 
     private val navigator: PickerNavigator? by lazy {
         PickerNavigator(
@@ -77,8 +83,13 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_picker)
-        setupQueryParameter()
+        // this queries builder should be call first
+        setupQueryAndUIConfigBuilder()
+
         setupInitialPage()
+        initObservable()
+        initToolbar()
+        initView()
     }
 
     override fun onPermissionGranted() {
@@ -90,62 +101,43 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
         navigator?.cleanUp()
     }
 
-    private fun setupQueryParameter() {
+    private fun setupQueryAndUIConfigBuilder() {
         val data = intent?.data ?: return
-        setupQueryPage(data)
-        setupQueryMode(data)
-        setupQuerySelectionType(data)
+        PickerUiConfig.setupQueryPage(data)
+        PickerUiConfig.setupQueryMode(data)
+        PickerUiConfig.setupQuerySelectionType(data)
     }
 
-    /**
-     * queryPage is to specify the desired page type.
-     * mediapicker has options to set for:
-     * 1. camera page only
-     * 2. gallery page only
-     * 3. camera & gallery
-     *
-     * the data comes from:
-     * tokopedia://media-picker?page=...
-     */
-    private fun setupQueryPage(data: Uri) {
-        PickerUiConfig.paramPage = when(data.getQueryParameter(PARAM_PAGE)) {
-            VALUE_PAGE_CAMERA -> PickerPageType.CAMERA
-            VALUE_PAGE_GALLERY -> PickerPageType.GALLERY
-            else -> PickerPageType.COMMON
+    private fun initObservable() {
+        viewModel.finishButtonState.observe(this, {
+            val color = if (it) {
+                com.tokopedia.unifyprinciples.R.color.Unify_G500
+            } else {
+                com.tokopedia.unifyprinciples.R.color.Unify_N600
+            }
+
+            binding?.toolbar?.btnDone?.setTextColor(
+                ContextCompat.getColor(applicationContext, color)
+            )
+        })
+    }
+
+    private fun initView() {
+        EventPublisher.consumer {
+            if (it is EventChannelState.SelectedMedia) {
+                selectedMedias.clear()
+                selectedMedias.addAll(it.medias)
+                viewModel.setFinishButtonState(it.medias.isNotEmpty())
+            }
         }
     }
 
-    /**
-     * queryMode is to determine the type of media should be display.
-     * this also have ability to set the camera mode (camera only, video only, or both).
-     * we have 3 options for the type of media, such as:
-     * 1. image only
-     * 2. video only
-     * 3. image & video
-     *
-     * the data comes from:
-     * tokopedia://media-picker?mode=...
-     */
-    private fun setupQueryMode(data: Uri) {
-        PickerUiConfig.paramMode = when(data.getQueryParameter(PARAM_MODE)) {
-            VALUE_MODE_IMAGE -> PickerModeType.IMAGE_ONLY
-            VALUE_MODE_VIDEO -> PickerModeType.VIDEO_ONLY
-            else -> PickerModeType.COMMON
-        }
-    }
-
-    /**
-     * querySelection is to specify the type of selection mode of picker.
-     * you can set the selection type as [PickerSelectionType.SINGLE] or
-     * as [PickerSelectionType.MULTIPLE].
-     *
-     * the data comes from:
-     * tokopedia://media-picker?type=...
-     */
-    private fun setupQuerySelectionType(data: Uri) {
-        PickerUiConfig.paramType = when(data.getQueryParameter(PARAM_SELECTION)) {
-            VALUE_TYPE_SINGLE -> PickerSelectionType.SINGLE
-            else -> PickerSelectionType.MULTIPLE // default
+    private fun initToolbar() {
+        binding?.toolbar?.btnDone?.setOnClickListener {
+            println("MEDIAPICKER -> start")
+            selectedMedias.forEach {
+                println("MEDIAPICKER -> ${it.path}")
+            }
         }
     }
 
