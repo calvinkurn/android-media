@@ -5,10 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.unifyprinciples.Typography
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lst_media"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Gallery"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
