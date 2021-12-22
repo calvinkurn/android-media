@@ -99,6 +99,7 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
     override fun onDestroy() {
         super.onDestroy()
         navigator?.cleanUp()
+        EventPublisher.clear()
     }
 
     private fun setupQueryAndUIConfigBuilder() {
@@ -133,6 +134,7 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
     }
 
     private fun initToolbar() {
+        binding?.toolbar?.btnDone?.show()
         binding?.toolbar?.btnDone?.setOnClickListener {
             println("MEDIAPICKER -> start")
             selectedMedias.forEach {

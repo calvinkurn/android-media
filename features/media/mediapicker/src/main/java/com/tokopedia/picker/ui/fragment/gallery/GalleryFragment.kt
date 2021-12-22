@@ -135,7 +135,10 @@ class GalleryFragment : BaseDaggerFragment() {
             if (adapter.selectedMedias.size >= config.limit && !isSelected) {
                 Toast.makeText(
                     requireContext(),
-                    "media selection limit",
+                    getString(
+                        R.string.picker_selection_limit_message,
+                        config.limit
+                    ),
                     Toast.LENGTH_SHORT
                 ).show()
                 return false
