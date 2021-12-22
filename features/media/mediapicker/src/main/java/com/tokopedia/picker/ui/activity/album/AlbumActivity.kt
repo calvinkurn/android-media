@@ -2,7 +2,6 @@ package com.tokopedia.picker.ui.activity.album
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -13,7 +12,7 @@ import com.tokopedia.picker.databinding.ActivityAlbumBinding
 import com.tokopedia.picker.di.DaggerPickerComponent
 import com.tokopedia.picker.di.module.PickerModule
 import com.tokopedia.picker.ui.PickerUiConfig
-import com.tokopedia.picker.ui.activity.album.adapter.AlbumAdapter
+import com.tokopedia.picker.ui.activity.album.adapter.FileDirectoryAdapter
 import com.tokopedia.picker.ui.fragment.OnDirectoryClickListener
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
@@ -29,7 +28,7 @@ class AlbumActivity : BaseActivity() {
     }
 
     private val adapter by lazy {
-        AlbumAdapter(listener = onDirectoryClickListener)
+        FileDirectoryAdapter(listener = onDirectoryClickListener)
     }
 
     private val viewModel by lazy {
@@ -44,29 +43,24 @@ class AlbumActivity : BaseActivity() {
         setContentView(R.layout.activity_album)
         initInjector()
         initObservable()
-        initToolbar()
         initView()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            finish()
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
-
     private fun initObservable() {
-        viewModel.directories.observe(this, {
-            if (it.isNotEmpty()) {
-                adapter.setData(it)
+        viewModel.result.observe(this, {
+            val files = it.first
+            val directories = it.second.toMutableList()
+
+            // add recent medias
+            directories.add(0, Directory("Recent").also { dir ->
+                dir.medias.addAll(files)
+            })
+
+            // TODO, empty state
+            if (files.isNotEmpty()) {
+                adapter.setData(directories)
             }
         })
-    }
-
-    private fun initToolbar() {
-        setSupportActionBar(binding?.toolbarContainer)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun initView() {

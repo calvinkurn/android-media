@@ -13,8 +13,8 @@ class AlbumViewModel @Inject constructor(
     private val repository: FileLoaderRepository
 ) : ViewModel() {
 
-    private var _directories = MutableLiveData<List<Directory>>()
-    val directories: LiveData<List<Directory>> get() = _directories
+    private var _result = MutableLiveData<Pair<List<Media>, List<Directory>>>()
+    val result: LiveData<Pair<List<Media>, List<Directory>>> get() = _result
 
     private var _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
@@ -23,7 +23,7 @@ class AlbumViewModel @Inject constructor(
         repository.abort()
         repository.loadFiles(config, object : FileLoaderRepository.LoaderListener {
             override fun onFileLoaded(files: List<Media>, dirs: List<Directory>) {
-                _directories.postValue(dirs)
+                _result.postValue(Pair(files, dirs))
             }
 
             override fun onFailed(throwable: Throwable) {
