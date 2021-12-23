@@ -111,7 +111,7 @@ data class RechargeHomepageSections(
         val dueDate: String = "",
         @SerializedName("attributes")
         @Expose
-        val attributes: Attributes
+        val attributes: Attributes = Attributes()
     )
 
     data class Attributes(
