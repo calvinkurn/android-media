@@ -4,12 +4,12 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.datamodel.PayLaterWidget
+import com.tokopedia.product.detail.data.model.datamodel.PayLaterWidgetDataModel
 import com.tokopedia.product.detail.databinding.PaylaterWidgetBaseViewBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 
 class PayLaterWidgetViewHolder(itemView: View, listener: DynamicProductDetailListener) :
-    AbstractViewHolder<PayLaterWidget>(itemView) {
+    AbstractViewHolder<PayLaterWidgetDataModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -18,7 +18,7 @@ class PayLaterWidgetViewHolder(itemView: View, listener: DynamicProductDetailLis
 
     private val binding = PaylaterWidgetBaseViewBinding.bind(itemView)
 
-    override fun bind(element: PayLaterWidget?) {
+    override fun bind(element: PayLaterWidgetDataModel?) {
         TODO("Not yet implemented")
     }
 }

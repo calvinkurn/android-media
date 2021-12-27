@@ -4,11 +4,11 @@ import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
-data class PayLaterWidget(
+data class PayLaterWidgetDataModel(
 
     val name: String = "",
     val type: String = "",
-    val widgetData: List<PayLaterModel?> = listOf()
+    val widgetData: List<PayLaterWidgetList?> = listOf()
 
 ) : DynamicPdpDataModel {
     override fun type(): String {
@@ -24,7 +24,7 @@ data class PayLaterWidget(
     }
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
-        return if (newData is PayLaterWidget) {
+        return if (newData is PayLaterWidgetDataModel) {
             widgetData.hashCode() == newData.widgetData.hashCode()
         } else
             return false
@@ -45,7 +45,7 @@ data class PayLaterWidget(
 }
 
 
-data class PayLaterModel(
+data class PayLaterWidgetList(
     val widgetName: String? = null,
     val witgetDetail: String? = null
 )

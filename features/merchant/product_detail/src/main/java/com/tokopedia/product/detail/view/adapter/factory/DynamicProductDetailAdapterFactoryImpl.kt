@@ -134,7 +134,7 @@ class DynamicProductDetailAdapterFactoryImpl(
         return ContentWidgetViewHolder.LAYOUT
     }
 
-    override fun type(data: PayLaterWidget): Int {
+    override fun type(data: PayLaterWidgetDataModel): Int {
         return PayLaterWidgetViewHolder.LAYOUT
     }
 
