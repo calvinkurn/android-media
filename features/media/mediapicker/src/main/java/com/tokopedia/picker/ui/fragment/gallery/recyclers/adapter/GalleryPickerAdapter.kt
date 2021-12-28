@@ -15,7 +15,7 @@ import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.picker.R
 import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.databinding.ViewItemGalleryPickerBinding
-import com.tokopedia.picker.ui.fragment.OnImageSelectedListener
+import com.tokopedia.picker.ui.fragment.OnMediaSelectedListener
 import com.tokopedia.picker.ui.fragment.OnMediaClickListener
 import com.tokopedia.picker.ui.fragment.gallery.recyclers.utils.GalleryDiffUtil
 import com.tokopedia.picker.utils.getVideoDurationLabel
@@ -33,7 +33,7 @@ class GalleryPickerAdapter(
         AsyncListDiffer<Media>(this, GalleryDiffUtil())
     }
 
-    private var itemSelectedListener: OnImageSelectedListener? = null
+    private var itemSelectedListener: OnMediaSelectedListener? = null
 
     init {
         if (selectedMedias.isNotEmpty()) {
@@ -74,7 +74,7 @@ class GalleryPickerAdapter(
         }
     }
 
-    fun setListener(itemSelectedListener: OnImageSelectedListener?) {
+    fun setListener(itemSelectedListener: OnMediaSelectedListener?) {
         this.itemSelectedListener = itemSelectedListener
     }
 

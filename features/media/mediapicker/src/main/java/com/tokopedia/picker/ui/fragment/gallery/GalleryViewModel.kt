@@ -3,7 +3,7 @@ package com.tokopedia.picker.ui.fragment.gallery
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.picker.data.entity.Directory
+import com.tokopedia.picker.data.entity.Album
 import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.ui.PickerParam
 import com.tokopedia.picker.data.repository.FileLoaderRepository
@@ -22,7 +22,7 @@ class GalleryViewModel @Inject constructor(
     fun fetch(config: PickerParam) {
         repository.abort()
         repository.loadFiles(config, object : FileLoaderRepository.LoaderListener {
-            override fun onFileLoaded(files: List<Media>, dirs: List<Directory>) {
+            override fun onFileLoaded(files: List<Media>, dirs: List<Album>) {
                 _files.postValue(files)
             }
 

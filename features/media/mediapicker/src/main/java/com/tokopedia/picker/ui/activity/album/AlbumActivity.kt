@@ -6,14 +6,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.picker.R
-import com.tokopedia.picker.data.entity.Directory
+import com.tokopedia.picker.data.entity.Album
 import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.databinding.ActivityAlbumBinding
 import com.tokopedia.picker.di.DaggerPickerComponent
 import com.tokopedia.picker.di.module.PickerModule
 import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.activity.album.adapter.FileDirectoryAdapter
-import com.tokopedia.picker.ui.fragment.OnDirectoryClickListener
+import com.tokopedia.picker.ui.fragment.OnAlbumClickListener
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -52,7 +52,7 @@ class AlbumActivity : BaseActivity() {
             val directories = it.second.toMutableList()
 
             // add recent medias
-            directories.add(0, Directory("Recent").also { dir ->
+            directories.add(0, Album("Recent").also { dir ->
                 dir.medias.addAll(files)
             })
 
@@ -73,9 +73,9 @@ class AlbumActivity : BaseActivity() {
         binding?.lstAlbum?.adapter = adapter
     }
 
-    private val onDirectoryClickListener = object : OnDirectoryClickListener {
-        override fun invoke(directory: Directory) {
-            setResult(RESULT_OK, createResultIntent(directory.medias))
+    private val onDirectoryClickListener = object : OnAlbumClickListener {
+        override fun invoke(album: Album) {
+            setResult(RESULT_OK, createResultIntent(album.medias))
             finish()
         }
     }

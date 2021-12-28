@@ -8,14 +8,14 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.picker.R
-import com.tokopedia.picker.data.entity.Directory
+import com.tokopedia.picker.data.entity.Album
 import com.tokopedia.picker.databinding.ViewItemAlbumPickerBinding
-import com.tokopedia.picker.ui.fragment.OnDirectoryClickListener
+import com.tokopedia.picker.ui.fragment.OnAlbumClickListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class FileDirectoryAdapter constructor(
-    private val directories: MutableList<Directory> = mutableListOf(),
-    private val listener: OnDirectoryClickListener? = null
+    private val albums: MutableList<Album> = mutableListOf(),
+    private val listener: OnAlbumClickListener? = null
 ) : RecyclerView.Adapter<FileDirectoryAdapter.FileDirectoryViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileDirectoryViewHolder {
@@ -23,15 +23,15 @@ class FileDirectoryAdapter constructor(
     }
 
     override fun onBindViewHolder(holder: FileDirectoryViewHolder, position: Int) {
-        holder.bind(directories[position], listener)
+        holder.bind(albums[position], listener)
     }
 
-    override fun getItemCount() = directories.size
+    override fun getItemCount() = albums.size
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(albums: List<Directory>) {
-        this.directories.clear()
-        this.directories.addAll(albums)
+    fun setData(albums: List<Album>) {
+        this.albums.clear()
+        this.albums.addAll(albums)
         notifyDataSetChanged()
     }
 
@@ -40,21 +40,21 @@ class FileDirectoryAdapter constructor(
         private val binding: ViewItemAlbumPickerBinding? by viewBinding()
         private val context by lazy { itemView.context }
 
-        fun bind(directory: Directory, listener: OnDirectoryClickListener?) {
-            binding?.txtName?.text = directory.name
+        fun bind(album: Album, listener: OnAlbumClickListener?) {
+            binding?.txtName?.text = album.name
 
             binding?.txtCount?.text = context.getString(
                 R.string.picker_album_subtitle,
-                directory.medias.size
+                album.medias.size
             )
 
             binding?.imgPreview?.loadImageRounded(
-                directory.medias.first().uri,
+                album.medias.first().uri,
                 10f
             )
 
             itemView.setOnClickListener {
-                listener?.invoke(directory)
+                listener?.invoke(album)
             }
         }
 

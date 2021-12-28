@@ -3,7 +3,7 @@ package com.tokopedia.picker.ui.activity.album
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.picker.data.entity.Directory
+import com.tokopedia.picker.data.entity.Album
 import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.data.repository.FileLoaderRepository
 import com.tokopedia.picker.ui.PickerParam
@@ -13,8 +13,8 @@ class AlbumViewModel @Inject constructor(
     private val repository: FileLoaderRepository
 ) : ViewModel() {
 
-    private var _result = MutableLiveData<Pair<List<Media>, List<Directory>>>()
-    val result: LiveData<Pair<List<Media>, List<Directory>>> get() = _result
+    private var _result = MutableLiveData<Pair<List<Media>, List<Album>>>()
+    val result: LiveData<Pair<List<Media>, List<Album>>> get() = _result
 
     private var _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
@@ -22,7 +22,7 @@ class AlbumViewModel @Inject constructor(
     fun fetch(config: PickerParam) {
         repository.abort()
         repository.loadFiles(config, object : FileLoaderRepository.LoaderListener {
-            override fun onFileLoaded(files: List<Media>, dirs: List<Directory>) {
+            override fun onFileLoaded(files: List<Media>, dirs: List<Album>) {
                 _result.postValue(Pair(files, dirs))
             }
 

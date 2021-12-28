@@ -8,7 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import com.tokopedia.picker.data.entity.Directory
+import com.tokopedia.picker.data.entity.Album
 import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.ui.PickerParam
 import com.tokopedia.picker.utils.isGifFormat
@@ -160,7 +160,7 @@ open class FileLoaderRepositoryImpl constructor(
             }
 
             val result: MutableList<Media> = ArrayList()
-            val folderMap: MutableMap<String, Directory> = mutableMapOf()
+            val folderMap: MutableMap<String, Album> = mutableMapOf()
 
             if (cursor.moveToFirst()) {
                 do {
@@ -181,7 +181,7 @@ open class FileLoaderRepositoryImpl constructor(
                         if (bucket != null) {
                             var folder = folderMap[bucket]
                             if (folder == null) {
-                                folder = Directory(bucket)
+                                folder = Album(bucket)
 
                                 folderMap[bucket] = folder
                             }

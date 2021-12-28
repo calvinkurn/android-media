@@ -2,7 +2,7 @@ package com.tokopedia.picker.data.entity
 
 import android.net.Uri
 
-data class Directory(
+data class Album(
     var name: String,
     var preview: Uri? = null,
     var count: Int = 0

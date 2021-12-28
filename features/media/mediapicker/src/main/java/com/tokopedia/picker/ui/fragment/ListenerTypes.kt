@@ -1,8 +1,8 @@
 package com.tokopedia.picker.ui.fragment
 
-import com.tokopedia.picker.data.entity.Directory
+import com.tokopedia.picker.data.entity.Album
 import com.tokopedia.picker.data.entity.Media
 
+typealias OnAlbumClickListener = (Album) -> Unit
 typealias OnMediaClickListener = (Boolean) -> Boolean
-typealias OnDirectoryClickListener = (Directory) -> Unit
-typealias OnImageSelectedListener = (List<Media>) -> Unit
+typealias OnMediaSelectedListener = (List<Media>) -> Unit
