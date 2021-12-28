@@ -18,8 +18,8 @@ import com.tokopedia.picker.common.PickerSelectionType
 import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.activity.album.AlbumActivity
-import com.tokopedia.picker.ui.fragment.gallery.adapter.GalleryPickerAdapter
-import com.tokopedia.picker.ui.fragment.gallery.adapter.utils.GridSpacingItemDecoration
+import com.tokopedia.picker.ui.fragment.gallery.recyclers.adapter.GalleryPickerAdapter
+import com.tokopedia.picker.ui.fragment.gallery.recyclers.utils.GridItemDecoration
 import com.tokopedia.picker.utils.EventChannelState
 import com.tokopedia.picker.utils.EventPublisher
 import com.tokopedia.utils.view.binding.viewBinding
@@ -32,12 +32,12 @@ class GalleryFragment : BaseDaggerFragment() {
     private val binding: FragmentGalleryBinding? by viewBinding()
 
     private val config by lazy {
-        PickerUiConfig.createFileLoaderParam()
+        PickerUiConfig.getFileLoaderParam()
     }
 
     private val adapter by lazy {
         GalleryPickerAdapter(emptyList()) {
-            selectImage(it)
+            selectMedia(it)
         }
     }
 
@@ -111,7 +111,7 @@ class GalleryFragment : BaseDaggerFragment() {
         )
 
         binding?.lstMedia?.addItemDecoration(
-            GridSpacingItemDecoration(
+            GridItemDecoration(
                 spanCount,
                 resources.getDimensionPixelSize(
                     R.dimen.picker_item_padding
@@ -130,7 +130,7 @@ class GalleryFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun selectImage(isSelected: Boolean): Boolean {
+    private fun selectMedia(isSelected: Boolean): Boolean {
         if (PickerUiConfig.paramType == PickerSelectionType.MULTIPLE) {
             if (adapter.selectedMedias.size >= config.limit && !isSelected) {
                 Toast.makeText(

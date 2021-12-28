@@ -24,7 +24,7 @@ class AlbumActivity : BaseActivity() {
     private val binding: ActivityAlbumBinding? by viewBinding()
 
     private val config by lazy {
-        PickerUiConfig.createFileLoaderParam()
+        PickerUiConfig.getFileLoaderParam()
     }
 
     private val adapter by lazy {

@@ -23,7 +23,7 @@ import com.tokopedia.picker.utils.isVideoFormat
 import com.tokopedia.utils.view.binding.viewBinding
 
 class GalleryPickerAdapter(
-    selectedMedias: List<Media>?,
+    selectedMedias: List<Media>,
     private val shouldSelectListener: OnMediaClickListener
 ) : RecyclerView.Adapter<GalleryPickerAdapter.GalleryPickerViewHolder>() {
 
@@ -36,7 +36,7 @@ class GalleryPickerAdapter(
     private var itemSelectedListener: OnImageSelectedListener? = null
 
     init {
-        if (selectedMedias?.isNotEmpty() == true) {
+        if (selectedMedias.isNotEmpty()) {
             this.selectedMedias.addAll(selectedMedias)
         }
     }
@@ -49,9 +49,7 @@ class GalleryPickerAdapter(
         val media = getItem(position)?: return
         val isSelected = isSelected(media)
 
-        holder.setSelection(isSelected)
-
-        holder.bind(media) {
+        holder.bind(media, isSelected) {
             val shouldSelect = shouldSelectListener(isSelected)
 
             if (isSelected) {
@@ -112,13 +110,7 @@ class GalleryPickerAdapter(
         private val binding: ViewItemGalleryPickerBinding? by viewBinding()
         private val context by lazy { itemView.context }
 
-        private var isSelected = false
-
-        fun setSelection(value: Boolean) {
-            isSelected = value
-        }
-
-        fun bind(element: Media, click: () -> Unit) {
+        fun bind(element: Media, isSelected: Boolean, click: () -> Unit) {
             videoDurationLabel(element)
             binding?.viewAlpha?.alpha = if (isSelected) 0.5f else 0f
             binding?.imgPreview?.loadImageRounded(
