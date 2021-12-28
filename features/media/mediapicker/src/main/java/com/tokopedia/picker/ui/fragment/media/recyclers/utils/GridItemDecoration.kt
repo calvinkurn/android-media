@@ -1,4 +1,4 @@
-package com.tokopedia.picker.ui.fragment.gallery.recyclers.utils
+package com.tokopedia.picker.ui.fragment.media.recyclers.utils
 
 import android.graphics.Rect
 import android.view.View

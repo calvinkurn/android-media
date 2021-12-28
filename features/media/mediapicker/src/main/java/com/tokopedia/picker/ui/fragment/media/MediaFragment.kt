@@ -1,4 +1,4 @@
-package com.tokopedia.picker.ui.fragment.gallery
+package com.tokopedia.picker.ui.fragment.media
 
 import android.app.Activity
 import android.content.Intent
@@ -18,14 +18,14 @@ import com.tokopedia.picker.common.PickerSelectionType
 import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.activity.album.AlbumActivity
-import com.tokopedia.picker.ui.fragment.gallery.recyclers.adapter.GalleryPickerAdapter
-import com.tokopedia.picker.ui.fragment.gallery.recyclers.utils.GridItemDecoration
+import com.tokopedia.picker.ui.fragment.media.recyclers.adapter.MediaPickerAdapter
+import com.tokopedia.picker.ui.fragment.media.recyclers.utils.GridItemDecoration
 import com.tokopedia.picker.utils.EventChannelState
 import com.tokopedia.picker.utils.EventPublisher
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-class GalleryFragment : BaseDaggerFragment() {
+class MediaFragment : BaseDaggerFragment() {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
 
@@ -36,7 +36,7 @@ class GalleryFragment : BaseDaggerFragment() {
     }
 
     private val adapter by lazy {
-        GalleryPickerAdapter(emptyList()) {
+        MediaPickerAdapter(emptyList()) {
             selectMedia(it)
         }
     }
@@ -45,7 +45,7 @@ class GalleryFragment : BaseDaggerFragment() {
         ViewModelProvider(
             this,
             factory
-        ).get(GalleryViewModel::class.java)
+        ).get(MediaViewModel::class.java)
     }
 
     override fun onCreateView(

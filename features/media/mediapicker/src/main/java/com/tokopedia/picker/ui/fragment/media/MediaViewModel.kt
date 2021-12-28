@@ -1,4 +1,4 @@
-package com.tokopedia.picker.ui.fragment.gallery
+package com.tokopedia.picker.ui.fragment.media
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,7 +9,7 @@ import com.tokopedia.picker.ui.PickerParam
 import com.tokopedia.picker.data.repository.FileLoaderRepository
 import javax.inject.Inject
 
-class GalleryViewModel @Inject constructor(
+class MediaViewModel @Inject constructor(
     private val repository: FileLoaderRepository
 ) : ViewModel() {
 
