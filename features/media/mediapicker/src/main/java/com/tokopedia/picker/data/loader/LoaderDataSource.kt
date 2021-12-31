@@ -22,6 +22,7 @@ open class LoaderDataSource(private val context: Context) {
     val projection = arrayOf(
         MediaStore.Images.Media._ID,
         MediaStore.Images.Media.DISPLAY_NAME,
+        MediaStore.Images.Media.DATA,
         MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
         MediaStore.Images.Media.BUCKET_ID,
     )

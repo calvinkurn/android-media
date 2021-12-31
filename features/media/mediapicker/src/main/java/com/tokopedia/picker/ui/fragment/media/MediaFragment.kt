@@ -70,16 +70,14 @@ class MediaFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_ALBUM_SELECTOR && resultCode == Activity.RESULT_OK) {
-            val bucketId = data?.getLongExtra(AlbumActivity.INTENT_BUCKET_ID, -1)
+            val bucketId = data?.getLongExtra(AlbumActivity.INTENT_BUCKET_ID, 0)?: -1
             val bucketName = data?.getStringExtra(AlbumActivity.INTENT_BUCKET_NAME)
 
-            if (bucketId != null && bucketId != -1L) {
-                // set the title of album selector
-                binding?.selector?.txtName?.text = bucketName
+            // set the title of album selector
+            binding?.selector?.txtName?.text = bucketName
 
-                // fetch album by bucket id
-                viewModel.fetch(bucketId, param)
-            }
+            // fetch album by bucket id
+            viewModel.fetch(bucketId, param)
         }
     }
 

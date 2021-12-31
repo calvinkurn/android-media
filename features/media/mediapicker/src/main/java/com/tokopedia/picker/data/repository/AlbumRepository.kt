@@ -27,8 +27,8 @@ class AlbumRepositoryImpl constructor(
                 val media = medias(cursor, param) ?: continue
                 if (recentPreviewUri == null) recentPreviewUri = media.uri
 
-                val bucketId = cursor.getLong(projection[3])
-                var bucket = cursor.getString(projection[2])
+                val bucketId = cursor.getLong(projection[4])
+                var bucket = cursor.getString(projection[3])
 
                 if (bucket == null) {
                     bucket = File(media.path).parentFile.let {
@@ -79,8 +79,8 @@ class AlbumRepositoryImpl constructor(
 
     companion object {
         private const val DEFAULT_ALBUM_NAME = "SDCARD"
-        private const val RECENT_ALBUM_NAME = "Recent"
 
+        const val RECENT_ALBUM_NAME = "Semua Media"
         const val RECENT_ALBUM_ID = -1L
     }
 
