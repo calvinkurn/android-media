@@ -13,10 +13,10 @@ import com.tokopedia.picker.databinding.ViewItemAlbumPickerBinding
 import com.tokopedia.picker.ui.fragment.OnAlbumClickListener
 import com.tokopedia.utils.view.binding.viewBinding
 
-class FileDirectoryAdapter constructor(
+class AlbumAdapter constructor(
     private val albums: MutableList<Album> = mutableListOf(),
     private val listener: OnAlbumClickListener? = null
-) : RecyclerView.Adapter<FileDirectoryAdapter.FileDirectoryViewHolder>() {
+) : RecyclerView.Adapter<AlbumAdapter.FileDirectoryViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileDirectoryViewHolder {
         return FileDirectoryViewHolder.create(parent)
@@ -45,13 +45,13 @@ class FileDirectoryAdapter constructor(
 
             binding?.txtCount?.text = context.getString(
                 R.string.picker_album_subtitle,
-                album.medias.size
+                album.count
             )
 
-            binding?.imgPreview?.loadImageRounded(
-                album.medias.first().uri,
-                10f
-            )
+            // TODO, didn't rounded yet
+            album.preview?.let {
+                binding?.imgPreview?.loadImageRounded(it, 10f)
+            }
 
             itemView.setOnClickListener {
                 listener?.invoke(album)

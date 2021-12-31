@@ -22,10 +22,10 @@ import com.tokopedia.picker.utils.getVideoDurationLabel
 import com.tokopedia.picker.utils.isVideoFormat
 import com.tokopedia.utils.view.binding.viewBinding
 
-class MediaPickerAdapter(
+class MediaAdapter(
     selectedMedias: List<Media>,
     private val shouldSelectListener: OnMediaClickListener
-) : RecyclerView.Adapter<MediaPickerAdapter.GalleryPickerViewHolder>() {
+) : RecyclerView.Adapter<MediaAdapter.GalleryPickerViewHolder>() {
 
     val selectedMedias: MutableList<Media> = mutableListOf()
 
@@ -63,6 +63,7 @@ class MediaPickerAdapter(
     override fun getItemCount() = listDiffer.currentList.size
 
     fun setData(medias: List<Media>) {
+        listDiffer.submitList(null)
         listDiffer.submitList(medias)
     }
 
@@ -113,10 +114,13 @@ class MediaPickerAdapter(
         fun bind(element: Media, isSelected: Boolean, click: () -> Unit) {
             videoDurationLabel(element)
             binding?.viewAlpha?.alpha = if (isSelected) 0.5f else 0f
+
+            // TODO, didn't rounded yet
             binding?.imgPreview?.loadImageRounded(
                 element.uri,
                 10f
             )
+
             itemView.setOnClickListener {
                 click()
             }

@@ -9,19 +9,20 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.picker.R
+import com.tokopedia.picker.common.PickerSelectionType
+import com.tokopedia.picker.data.repository.AlbumRepositoryImpl.Companion.RECENT_ALBUM_ID
 import com.tokopedia.picker.databinding.FragmentGalleryBinding
 import com.tokopedia.picker.di.DaggerPickerComponent
 import com.tokopedia.picker.di.module.PickerModule
-import com.tokopedia.picker.common.PickerSelectionType
-import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.activity.album.AlbumActivity
-import com.tokopedia.picker.ui.fragment.media.recyclers.adapter.MediaPickerAdapter
+import com.tokopedia.picker.ui.activity.main.PickerActivity
+import com.tokopedia.picker.ui.fragment.media.recyclers.adapter.MediaAdapter
 import com.tokopedia.picker.ui.fragment.media.recyclers.utils.GridItemDecoration
-import com.tokopedia.picker.utils.EventChannelState
-import com.tokopedia.picker.utils.EventPublisher
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -31,12 +32,12 @@ class MediaFragment : BaseDaggerFragment() {
 
     private val binding: FragmentGalleryBinding? by viewBinding()
 
-    private val config by lazy {
+    private val param by lazy {
         PickerUiConfig.getFileLoaderParam()
     }
 
     private val adapter by lazy {
-        MediaPickerAdapter(emptyList()) {
+        MediaAdapter(emptyList()) {
             selectMedia(it)
         }
     }
@@ -69,10 +70,15 @@ class MediaFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_ALBUM_SELECTOR && resultCode == Activity.RESULT_OK) {
-            data?.getParcelableArrayListExtra<Media>(
-                AlbumActivity.RC_SELECTED_DIRECTORY
-            )?.toList()?.let {
-                adapter.setData(it)
+            val bucketId = data?.getLongExtra(AlbumActivity.INTENT_BUCKET_ID, -1)
+            val bucketName = data?.getStringExtra(AlbumActivity.INTENT_BUCKET_NAME)
+
+            if (bucketId != null && bucketId != -1L) {
+                // set the title of album selector
+                binding?.selector?.txtName?.text = bucketName
+
+                // fetch album by bucket id
+                viewModel.fetch(bucketId, param)
             }
         }
     }
@@ -90,9 +96,11 @@ class MediaFragment : BaseDaggerFragment() {
     private fun initView() {
         setupWidgetAlbumSelector()
         setupRecyclerView()
-        viewModel.fetch(config)
+
+        viewModel.fetch(RECENT_ALBUM_ID, param)
     }
 
+    //TODO, create separated view component
     private fun setupWidgetAlbumSelector() {
         binding?.selector?.container?.setOnClickListener {
             startActivityForResult(Intent(
@@ -103,16 +111,14 @@ class MediaFragment : BaseDaggerFragment() {
     }
 
     private fun setupRecyclerView() {
-        val spanCount = 3
-
         binding?.lstMedia?.layoutManager = GridLayoutManager(
             requireContext(),
-            spanCount
+            LIST_SPAN_COUNT
         )
 
         binding?.lstMedia?.addItemDecoration(
             GridItemDecoration(
-                spanCount,
+                LIST_SPAN_COUNT,
                 resources.getDimensionPixelSize(
                     R.dimen.picker_item_padding
                 )
@@ -121,23 +127,26 @@ class MediaFragment : BaseDaggerFragment() {
 
         binding?.lstMedia?.adapter = adapter
 
+        // force scroll to top if user trying to change the album
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+                binding?.lstMedia?.scrollToPosition(positionStart)
+            }
+        })
+
         adapter.setListener {
-            EventPublisher.send(
-                EventChannelState.SelectedMedia(
-                    it
-                )
-            )
+            (activity as PickerActivity).onUpdateSelectedMedia(it)
         }
     }
 
     private fun selectMedia(isSelected: Boolean): Boolean {
         if (PickerUiConfig.paramType == PickerSelectionType.MULTIPLE) {
-            if (adapter.selectedMedias.size >= config.limit && !isSelected) {
+            if (adapter.selectedMedias.size >= param.limit && !isSelected) {
                 Toast.makeText(
                     requireContext(),
                     getString(
                         R.string.picker_selection_limit_message,
-                        config.limit
+                        param.limit
                     ),
                     Toast.LENGTH_SHORT
                 ).show()
@@ -152,18 +161,19 @@ class MediaFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        context?.applicationContext?.let {
-            DaggerPickerComponent.builder()
-                .pickerModule(PickerModule(it))
-                .build()
-                .inject(this)
-        }
+        DaggerPickerComponent.builder()
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .pickerModule(PickerModule())
+            .build()
+            .inject(this)
     }
 
     override fun getScreenName() = "Camera"
 
     companion object {
         const val RC_ALBUM_SELECTOR = 123
+
+        const val LIST_SPAN_COUNT = 3
     }
 
 }

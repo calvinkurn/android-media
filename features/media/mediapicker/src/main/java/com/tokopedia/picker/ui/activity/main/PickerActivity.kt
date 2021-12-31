@@ -8,17 +8,15 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.picker.R
-import com.tokopedia.picker.data.entity.Media
-import com.tokopedia.picker.databinding.ActivityPickerBinding
 import com.tokopedia.picker.common.PickerFragmentType
 import com.tokopedia.picker.common.PickerPageType
+import com.tokopedia.picker.data.entity.Media
+import com.tokopedia.picker.databinding.ActivityPickerBinding
 import com.tokopedia.picker.ui.PickerFragmentFactory
 import com.tokopedia.picker.ui.PickerFragmentFactoryImpl
 import com.tokopedia.picker.ui.PickerNavigator
 import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.fragment.permission.PermissionFragment
-import com.tokopedia.picker.utils.EventChannelState
-import com.tokopedia.picker.utils.EventPublisher
 import com.tokopedia.picker.utils.Permissions.hasPermissionGranted
 import com.tokopedia.picker.utils.addOnTabSelected
 import com.tokopedia.utils.view.binding.viewBinding
@@ -83,23 +81,26 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_picker)
+
         // this queries builder should be call first
         setupQueryAndUIConfigBuilder()
 
         setupInitialPage()
         initObservable()
         initToolbar()
-        initView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        navigator?.cleanUp()
     }
 
     override fun onPermissionGranted() {
         setupPickerByPage()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        navigator?.cleanUp()
-        EventPublisher.clear()
+    fun onUpdateSelectedMedia(medias: List<Media>) {
+        viewModel.setSelectedMedia(medias)
     }
 
     private fun setupQueryAndUIConfigBuilder() {
@@ -121,16 +122,11 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
                 ContextCompat.getColor(applicationContext, color)
             )
         })
-    }
 
-    private fun initView() {
-        EventPublisher.consumer {
-            if (it is EventChannelState.SelectedMedia) {
-                selectedMedias.clear()
-                selectedMedias.addAll(it.medias)
-                viewModel.setFinishButtonState(it.medias.isNotEmpty())
-            }
-        }
+        viewModel.selectedMedia.observe(this, {
+            selectedMedias.clear()
+            selectedMedias.addAll(it)
+        })
     }
 
     private fun initToolbar() {
@@ -188,6 +184,10 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
 
     private fun createFragmentFactory(): PickerFragmentFactory {
         return PickerFragmentFactoryImpl()
+    }
+
+    interface Listener {
+        fun onUpdateSelectedMedia(medias: List<Media>)
     }
 
     companion object {

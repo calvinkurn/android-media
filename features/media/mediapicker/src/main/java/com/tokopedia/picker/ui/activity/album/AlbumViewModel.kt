@@ -3,38 +3,30 @@ package com.tokopedia.picker.ui.activity.album
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.picker.data.entity.Album
-import com.tokopedia.picker.data.entity.Media
-import com.tokopedia.picker.data.repository.FileLoaderRepository
+import com.tokopedia.picker.data.repository.AlbumRepository
 import com.tokopedia.picker.ui.PickerParam
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AlbumViewModel @Inject constructor(
-    private val repository: FileLoaderRepository
+    private val album: AlbumRepository
 ) : ViewModel() {
 
-    private var _result = MutableLiveData<Pair<List<Media>, List<Album>>>()
-    val result: LiveData<Pair<List<Media>, List<Album>>> get() = _result
+    private var _albums = MutableLiveData<List<Album>>()
+    val albums: LiveData<List<Album>> get() = _albums
 
-    private var _error = MutableLiveData<Throwable>()
-    val error: LiveData<Throwable> get() = _error
+    fun fetch(param: PickerParam) {
+        viewModelScope.launch {
+            val albums = album(param)
 
-    fun fetch(config: PickerParam) {
-        repository.abort()
-        repository.loadFiles(config, object : FileLoaderRepository.LoaderListener {
-            override fun onFileLoaded(files: List<Media>, dirs: List<Album>) {
-                _result.postValue(Pair(files, dirs))
+            withContext(Dispatchers.Main) {
+                _albums.value = albums
             }
-
-            override fun onFailed(throwable: Throwable) {
-                _error.postValue(throwable)
-            }
-        })
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        repository.abort()
+        }
     }
 
 }

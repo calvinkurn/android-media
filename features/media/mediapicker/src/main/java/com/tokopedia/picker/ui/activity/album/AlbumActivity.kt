@@ -4,15 +4,15 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.picker.R
 import com.tokopedia.picker.data.entity.Album
-import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.databinding.ActivityAlbumBinding
 import com.tokopedia.picker.di.DaggerPickerComponent
 import com.tokopedia.picker.di.module.PickerModule
 import com.tokopedia.picker.ui.PickerUiConfig
-import com.tokopedia.picker.ui.activity.album.adapter.FileDirectoryAdapter
+import com.tokopedia.picker.ui.activity.album.adapter.AlbumAdapter
 import com.tokopedia.picker.ui.fragment.OnAlbumClickListener
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
@@ -23,12 +23,12 @@ class AlbumActivity : BaseActivity() {
 
     private val binding: ActivityAlbumBinding? by viewBinding()
 
-    private val config by lazy {
+    private val param by lazy {
         PickerUiConfig.getFileLoaderParam()
     }
 
     private val adapter by lazy {
-        FileDirectoryAdapter(listener = onDirectoryClickListener)
+        AlbumAdapter(listener = onDirectoryClickListener)
     }
 
     private val viewModel by lazy {
@@ -47,25 +47,16 @@ class AlbumActivity : BaseActivity() {
     }
 
     private fun initObservable() {
-        viewModel.result.observe(this, {
-            val files = it.first
-            val directories = it.second.toMutableList()
-
-            // add recent medias
-            directories.add(0, Album("Recent").also { dir ->
-                dir.medias.addAll(files)
-            })
-
-            // TODO, empty state
-            if (files.isNotEmpty()) {
-                adapter.setData(directories)
+        viewModel.albums.observe(this, {
+            if (it.isNotEmpty()) {
+                adapter.setData(it)
             }
         })
     }
 
     private fun initView() {
         setupRecyclerView()
-        viewModel.fetch(config)
+        viewModel.fetch(param)
     }
 
     private fun setupRecyclerView() {
@@ -75,27 +66,26 @@ class AlbumActivity : BaseActivity() {
 
     private val onDirectoryClickListener = object : OnAlbumClickListener {
         override fun invoke(album: Album) {
-            setResult(RESULT_OK, createResultIntent(album.medias))
+            setResult(RESULT_OK, Intent().apply {
+                putExtra(INTENT_BUCKET_ID, album.id)
+                putExtra(INTENT_BUCKET_NAME, album.name)
+            })
+
             finish()
         }
     }
 
-    fun createResultIntent(medias: List<Media>?): Intent {
-        val data = Intent()
-        val mediaList = ArrayList(medias ?: emptyList())
-        data.putParcelableArrayListExtra(RC_SELECTED_DIRECTORY, mediaList)
-        return data
-    }
-
     private fun initInjector() {
         DaggerPickerComponent.builder()
-            .pickerModule(PickerModule(applicationContext))
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .pickerModule(PickerModule())
             .build()
             .inject(this)
     }
 
     companion object {
-        const val RC_SELECTED_DIRECTORY = "dir_selection"
+        const val INTENT_BUCKET_ID = "bucket_id"
+        const val INTENT_BUCKET_NAME = "bucket_name"
     }
 
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.picker.di
 
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.picker.di.module.PickerModule
 import com.tokopedia.picker.di.module.PickerViewModelModule
 import com.tokopedia.picker.di.scope.PickerScope
@@ -11,6 +12,8 @@ import dagger.Component
 @Component(modules = [
     PickerModule::class,
     PickerViewModelModule::class
+], dependencies = [
+    BaseAppComponent::class
 ])
 interface PickerComponent {
     fun inject(activity: AlbumActivity)
