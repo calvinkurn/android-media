@@ -15,8 +15,8 @@ import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.picker.R
 import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.databinding.ViewItemGalleryPickerBinding
-import com.tokopedia.picker.ui.fragment.OnMediaSelectedListener
 import com.tokopedia.picker.ui.fragment.OnMediaClickListener
+import com.tokopedia.picker.ui.fragment.OnMediaSelectedListener
 import com.tokopedia.picker.ui.fragment.media.recyclers.utils.MediaDiffUtil
 import com.tokopedia.picker.utils.getVideoDurationLabel
 import com.tokopedia.picker.utils.isVideoFormat
@@ -114,12 +114,7 @@ class MediaAdapter(
         fun bind(element: Media, isSelected: Boolean, click: () -> Unit) {
             videoDurationLabel(element)
             binding?.viewAlpha?.alpha = if (isSelected) 0.5f else 0f
-
-            // TODO, didn't rounded yet
-            binding?.imgPreview?.loadImageRounded(
-                element.uri,
-                10f
-            )
+            binding?.imgPreview?.loadImageRounded(element.uri)
 
             itemView.setOnClickListener {
                 click()

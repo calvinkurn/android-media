@@ -42,15 +42,13 @@ class AlbumAdapter constructor(
 
         fun bind(album: Album, listener: OnAlbumClickListener?) {
             binding?.txtName?.text = album.name
-
             binding?.txtCount?.text = context.getString(
                 R.string.picker_album_subtitle,
                 album.count
             )
 
-            // TODO, didn't rounded yet
             album.preview?.let {
-                binding?.imgPreview?.loadImageRounded(it, 10f)
+                binding?.imgPreview?.loadImageRounded(it)
             }
 
             itemView.setOnClickListener {
