@@ -102,8 +102,6 @@ interface HomeCategoryListener {
 
     fun getBusinessUnit(tabId: Int, position: Int, tabName: String)
 
-    fun getPlayChannel(position: Int)
-
     fun updateExpiredChannel(dynamicChannelDataModel: DynamicChannelDataModel, position: Int)
 
     fun removeViewHolderAtPosition(position: Int)
@@ -122,11 +120,7 @@ interface HomeCategoryListener {
 
     fun declineRechargeRecommendationItem(requestParams: Map<String, String>)
 
-    fun getRechargeRecommendation()
-
     fun declineSalamItem(requestParams: Map<String, Int>)
-
-    fun getSalamWidget()
 
     fun getRechargeBUWidget(source: WidgetSource)
 

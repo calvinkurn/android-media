@@ -45,10 +45,6 @@ class RechargeRecommendationCallback (val context: Context?,
         }
     }
 
-    override fun getRechargeRecommendation() {
-        homeCategoryListener.getRechargeRecommendation()
-    }
-
     private fun mapRemindertoRechargeRecommendationData(reminderData: ReminderData): RechargeRecommendationData {
         reminderData.let {
             return RechargeRecommendationData(

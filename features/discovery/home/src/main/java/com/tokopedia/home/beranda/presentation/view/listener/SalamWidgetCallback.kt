@@ -46,10 +46,6 @@ class SalamWidgetCallback (val context: Context?,
         }
     }
 
-    override fun getSalamWidget() {
-        homeCategoryListener.getSalamWidget()
-    }
-
     private fun mapRemindertoSalamWidgetData(reminderData: ReminderData): SalamWidgetData {
         reminderData.let {
             return SalamWidgetData(
