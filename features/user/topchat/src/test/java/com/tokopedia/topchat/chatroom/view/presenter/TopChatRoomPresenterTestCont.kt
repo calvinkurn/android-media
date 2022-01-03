@@ -9,8 +9,6 @@ import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.pojo.ChatDelete
-import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.usecase.TopChatWebSocketParam
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
@@ -94,7 +92,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     fun `onMessage ws event reply when not in the middle of the page`() {
         // Given
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { presenter.isInTheMiddleOfThePage() } returns false
         val wsChatPojo = mockkParseResponse(wsResponseReplyText)
         val wsChatVisitable = mockkWsMapper(wsChatPojo)
 
@@ -113,7 +111,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     fun `onMessage ws event reply when response has different msgId`() {
         // Given
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { presenter.isInTheMiddleOfThePage() } returns false
         val wsChatPojo = mockkParseResponse(wsResponseReplyText)
         val wsChatVisitable = mockkWsMapper(wsChatPojo)
 
@@ -132,7 +130,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     fun `should remove SRW bubble if receive image attachment event`() {
         // Given
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { presenter.isInTheMiddleOfThePage() } returns false
 
         // When
         presenter.connectWebSocket(exMessageId)
@@ -146,7 +144,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     fun `should remove SRW bubble if receive product attachment event`() {
         // Given
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { presenter.isInTheMiddleOfThePage() } returns false
         val wsChatPojo = mockkParseResponse(wsResponseProductAttachment)
         val wsChatVisitable = mockkWsMapper(wsChatPojo) as ProductAttachmentUiModel
 
@@ -162,7 +160,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     fun `onMessage ws event reply when in the middle of the page`() {
         // Given
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns true
+        every { presenter.isInTheMiddleOfThePage() } returns true
         mockkParseResponse(wsResponseReplyText)
 
         // When
@@ -178,7 +176,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     fun `onMessage ws event typing when not the middle of the page`() {
         // Given
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { presenter.isInTheMiddleOfThePage() } returns false
 
         // When
         presenter.connectWebSocket(exMessageId)
@@ -192,7 +190,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     fun `onMessage ws event end typing when not the middle of the page`() {
         // Given
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { presenter.isInTheMiddleOfThePage() } returns false
 
         // When
         presenter.connectWebSocket(exMessageId)
@@ -206,7 +204,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     fun `onMessage ws event read message`() {
         // Given
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { presenter.isInTheMiddleOfThePage() } returns false
 
         // When
         presenter.connectWebSocket(exMessageId)
@@ -302,64 +300,6 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     }
 
     @Test
-    fun `Get chat usecase called when load page`() {
-        // Given
-        val mockOnSuccess: (ChatroomViewModel, ChatReplies) -> Unit = mockk()
-        val mockOnError: (Throwable) -> Unit = mockk()
-        val roomMetaDataSlot = slot<(RoomMetaData) -> Unit>()
-        every {
-            getChatUseCase.getFirstPageChat(any(), any(), any(), capture(roomMetaDataSlot))
-        } just Runs
-
-        // When
-        presenter.getExistingChat(exMessageId, mockOnError, mockOnSuccess)
-
-        // Then
-        verify(exactly = 1) {
-            getChatUseCase.getFirstPageChat(
-                exMessageId,
-                mockOnSuccess,
-                mockOnError,
-                roomMetaDataSlot.captured
-            )
-        }
-    }
-
-    @Test
-    fun `Get chat usecase called when load top page chat`() {
-        // Given
-        val mockOnSuccess: (ChatroomViewModel, ChatReplies) -> Unit = mockk()
-        val mockOnError: (Throwable) -> Unit = mockk()
-
-        // When
-        presenter.loadTopChat(exMessageId, mockOnError, mockOnSuccess)
-
-        // Then
-        verify(exactly = 1) {
-            getChatUseCase.getTopChat(exMessageId, mockOnSuccess, mockOnError)
-        }
-    }
-
-    @Test
-    fun `Get chat usecase called when load bottom page chat`() {
-        // Given
-        val mockOnSuccess: (ChatroomViewModel, ChatReplies) -> Unit = mockk()
-        val mockOnError: (Throwable) -> Unit = mockk()
-
-        // When
-        presenter.loadBottomChat(exMessageId, mockOnError, mockOnSuccess)
-
-        // Then
-        verify(exactly = 1) {
-            getChatUseCase.getBottomChat(
-                exMessageId,
-                mockOnSuccess,
-                mockOnError
-            )
-        }
-    }
-
-    @Test
     fun `On success get chat template`() {
         // Given
         val slot = slot<Subscriber<GetTemplateUiModel>>()
@@ -423,7 +363,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
             onSuccess.invoke(exImageUploadId, imageUploadViewModel)
         }
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { presenter.isInTheMiddleOfThePage() } returns false
         val wsChatPojo = mockkParseResponse(wsResponseImageAttachment, false)
         val wsChatVisitable = mockkWsMapper(wsChatPojo)
         val websocketParam = TopChatWebSocketParam.generateParamSendImage(
@@ -474,7 +414,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
             subs.onNext(replyChatViewModelApiSuccess)
         }
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { presenter.isInTheMiddleOfThePage() } returns false
 
         // When
         presenter.connectWebSocket(exMessageId)
@@ -518,7 +458,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
         } returns chatReply
 
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { presenter.isInTheMiddleOfThePage() } returns false
 
         // When
         presenter.connectWebSocket(exMessageId)
@@ -649,7 +589,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
         val paramSendAttachment = "paramSendAttachment"
         val paramStopTyping = TopChatWebSocketParam.generateParamStopTyping(exMessageId)
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { presenter.isInTheMiddleOfThePage() } returns false
         every {
             TopChatWebSocketParam.generateParamSendMessage(
                 any(), any(), any(), any(),
@@ -679,79 +619,12 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     }
 
     @Test
-    fun `on success delete chat`() {
-        // Given
-        val successDelete = ChatDelete(
-            isSuccess = 1, detailResponse = "", messageId = exMessageId.toLong())
-        val result = ChatDeleteStatus().apply {
-            this.chatMoveToTrash.list = listOf(successDelete)
-        }
-
-        val onError: (Throwable) -> Unit = mockk(relaxed = true)
-        val onSuccessDeleteConversation: () -> Unit = mockk(relaxed = true)
-        coEvery {
-            moveChatToTrashUseCase.execute(exMessageId)
-        } returns result
-
-        // When
-        presenter.deleteChat(exMessageId, onError, onSuccessDeleteConversation)
-
-        // Then
-        verify {
-            onSuccessDeleteConversation.invoke()
-        }
-    }
-
-    @Test
-    fun `on failed to delete chat`() {
-        // Given
-        val failedDelete = ChatDelete(
-            isSuccess = 0, detailResponse = "Error", messageId = exMessageId.toLong())
-        val result = ChatDeleteStatus().apply {
-            this.chatMoveToTrash.list = listOf(failedDelete)
-        }
-
-        val onError: (Throwable) -> Unit = mockk(relaxed = true)
-        val onSuccessDeleteConversation: () -> Unit = mockk(relaxed = true)
-        coEvery {
-            moveChatToTrashUseCase.execute(exMessageId)
-        } returns result
-
-        // When
-        presenter.deleteChat(exMessageId, onError, onSuccessDeleteConversation)
-
-        // Then
-        verify {
-            onError.invoke(any())
-        }
-    }
-
-    @Test
-    fun `on error delete chat`() {
-        // Given
-        val throwable = mockk<Throwable>(relaxed = true)
-        val onError: (Throwable) -> Unit = mockk(relaxed = true)
-        val onSuccessDeleteConversation: () -> Unit = mockk(relaxed = true)
-        coEvery {
-            moveChatToTrashUseCase.execute(exMessageId)
-        } throws throwable
-
-        // When
-        presenter.deleteChat(exMessageId, onError, onSuccessDeleteConversation)
-
-        // Then
-        verify {
-            onError.invoke(throwable)
-        }
-    }
-
-    @Test
     fun `resend SRW from bubble attachment header`() {
         // Given
         val attachment = HeaderCtaButtonAttachment()
         val stopTypingParam = TopChatWebSocketParam.generateParamStopTyping(exMessageId)
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { presenter.isInTheMiddleOfThePage() } returns false
 
         // When
         presenter.connectWebSocket(exMessageId)
