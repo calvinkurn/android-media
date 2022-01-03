@@ -1,6 +1,11 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
+android {
+    packagingOptions {
+        pickFirst 'META-INF/*.kotlin_module'
+    }
+}
 
 project.ext {
     artifactId = 'authentication'
