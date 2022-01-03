@@ -95,13 +95,16 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         }
     }
 
-    private fun getTNCfromContent(content: EventContentByIdEntity): String {
+    fun getTNCfromContent(content: EventContentByIdEntity): String {
         val sections = content.eventContentById.data.sectionData
-        return sections.filter {
-            it.section == SECTION_INFORMATION
-        }.map {
-            it.content.firstOrNull()?.valueAccordion?.firstOrNull()?.content ?: ""
-        }.firstOrNull() ?: ""
+        val tnc = if (!sections.isNullOrEmpty()) {
+            sections.filter {
+                it.section == SECTION_INFORMATION
+            }.map {
+                it.content.firstOrNull()?.valueAccordion?.firstOrNull()?.content ?: ""
+            }.firstOrNull() ?: ""
+        } else ""
+        return tnc
     }
 
     companion object {
