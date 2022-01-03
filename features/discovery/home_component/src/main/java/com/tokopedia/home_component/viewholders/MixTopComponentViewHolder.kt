@@ -67,6 +67,7 @@ class MixTopComponentViewHolder(
     private val recyclerView = itemView.findViewById<RecyclerView>(R.id.dc_banner_rv)
     private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START) }
     private val background = itemView.findViewById<View>(R.id.background)
+    private val containerInside = itemView.findViewById<ConstraintLayout>(R.id.container_inside)
     private var adapter: MixTopComponentAdapter? = null
     private var isCacheData = false
     companion object{
@@ -173,7 +174,7 @@ class MixTopComponentViewHolder(
             layoutParams.setMargins(0, 0, 0, 0)
             recyclerView.layoutParams = layoutParams
             recyclerView.translationY = itemView.context.resources.getDimensionPixelSize(R.dimen.home_padding_vertical_use_compat_padding_product_card).toFloat()
-            recyclerView.setPadding(0, 0, 0, 7f.toDpInt())
+            containerInside.setPadding(0, 0, 0, 5f.toDpInt())
         } else {
             background.visible()
             background.setGradientBackground(bannerItem.gradientColor)
@@ -188,6 +189,7 @@ class MixTopComponentViewHolder(
             )
             recyclerView.layoutParams = layoutParams
             recyclerView.translationY = 0f
+            containerInside.setPadding(0, 0, 0, 11f.toDpInt())
         }
         bannerTitle.setTextColor(textColor)
         bannerDescription.setTextColor(textColor)
