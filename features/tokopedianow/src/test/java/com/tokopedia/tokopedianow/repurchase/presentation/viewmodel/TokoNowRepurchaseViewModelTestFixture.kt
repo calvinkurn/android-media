@@ -13,9 +13,15 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.common.model.*
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
+import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.VALUE.REPURCHASE_TOKONOW
 import com.tokopedia.tokopedianow.repurchase.domain.model.TokoNowRepurchasePageResponse.*
 import com.tokopedia.tokopedianow.repurchase.domain.param.GetRepurchaseProductListParam
@@ -146,8 +152,8 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
 
     protected fun verifyGetCategoryGridLayoutSuccess(expectedResponse: RepurchaseLayoutUiModel) {
         val actualResponse = viewModel.getLayout.value
-        val expectedObject = (expectedResponse.layoutList.firstOrNull { it is TokoNowCategoryChipsUiModel } as TokoNowCategoryChipsUiModel)
-        val actualObject = ((actualResponse as Success).data.layoutList.firstOrNull { it is TokoNowCategoryChipsUiModel } as TokoNowCategoryChipsUiModel)
+        val expectedObject = (expectedResponse.layoutList.firstOrNull { it is TokoNowCategoryGridUiModel } as TokoNowCategoryGridUiModel)
+        val actualObject = ((actualResponse as Success).data.layoutList.firstOrNull { it is TokoNowCategoryGridUiModel } as TokoNowCategoryGridUiModel)
         Assert.assertEquals(expectedObject, actualObject)
     }
 

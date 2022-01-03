@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.searchcategory.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryChipsUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
@@ -49,7 +49,7 @@ open class SearchCategoryDiffUtil: BaseTokopediaNowDiffer() {
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
             safeGuardPosition(oldItemPosition, newItemPosition) { oldItem, newItem ->
-                if (oldItem is TokoNowCategoryChipsUiModel && newItem is TokoNowCategoryChipsUiModel) {
+                if (oldItem is TokoNowCategoryGridUiModel && newItem is TokoNowCategoryGridUiModel) {
                     areGridContentTheSame(oldItem, newItem)
                 } else if(oldItem is CategoryFilterDataView && newItem is CategoryFilterDataView) {
                     oldItem.categoryFilterItemList == newItem.categoryFilterItemList
@@ -63,8 +63,8 @@ open class SearchCategoryDiffUtil: BaseTokopediaNowDiffer() {
             }
 
     private fun areGridContentTheSame(
-        oldItem: TokoNowCategoryChipsUiModel,
-        newItem: TokoNowCategoryChipsUiModel,
+            oldItem: TokoNowCategoryGridUiModel,
+            newItem: TokoNowCategoryGridUiModel,
     ): Boolean {
         return oldItem.state == newItem.state
                 && oldItem.categoryList?.size == newItem.categoryList?.size

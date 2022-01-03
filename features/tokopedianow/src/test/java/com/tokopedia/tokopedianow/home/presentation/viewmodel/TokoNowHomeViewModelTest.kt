@@ -16,6 +16,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.*
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.data.*
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -23,6 +24,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.model.*
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.*
@@ -304,7 +306,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetCategoryList_thenReturn(createCategoryGridListSecondFetch())
 
         //prepare model that need to be changed
-        val model = TokoNowCategoryChipsUiModel(
+        val model = TokoNowCategoryGridUiModel(
                 id="11111",
                 title="Category Tokonow",
                 categoryList = emptyList(),
@@ -314,7 +316,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getCategoryGrid(model, "1")
 
         //prepare model for expectedResult
-        val expectedResponse = TokoNowCategoryChipsUiModel(
+        val expectedResponse = TokoNowCategoryGridUiModel(
             id = "11111",
             title = "Category Tokonow",
             categoryList = listOf(
@@ -353,7 +355,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetCategoryList_thenReturn(Exception())
 
         //prepare model that need to be changed
-        val model = TokoNowCategoryChipsUiModel(
+        val model = TokoNowCategoryGridUiModel(
                 id="11111",
                 title="Category Tokonow",
                 categoryList = emptyList(),
@@ -363,7 +365,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getCategoryGrid(model, "1")
 
         //prepare model for expectedResult
-        val expectedResponse = TokoNowCategoryChipsUiModel(
+        val expectedResponse = TokoNowCategoryGridUiModel(
             id = "11111",
             title = "Category Tokonow",
             categoryList = null,
@@ -402,7 +404,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     "",
                     "Lego Banner"
                 ),
-                TokoNowCategoryChipsUiModel(
+                TokoNowCategoryGridUiModel(
                     id = "11111",
                     title = "Category Tokonow",
                     categoryList = null,

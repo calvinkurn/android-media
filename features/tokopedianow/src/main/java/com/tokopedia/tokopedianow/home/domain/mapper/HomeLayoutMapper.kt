@@ -40,6 +40,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_HOME_PAGE
 import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingEducationMapper.mapSharingEducationUiModel
@@ -137,7 +138,7 @@ object HomeLayoutMapper {
     }
 
     fun MutableList<HomeLayoutItemUiModel>.mapHomeCategoryGridData(
-        item: TokoNowCategoryChipsUiModel,
+        item: TokoNowCategoryGridUiModel,
         response: List<CategoryResponse>?
     ) {
         updateItemById(item.id) {
@@ -379,7 +380,7 @@ object HomeLayoutMapper {
             is HomeLayoutUiModel -> visitableId
             is HomeComponentVisitable -> visitableId()
             is TokoNowRepurchaseUiModel -> id
-            is TokoNowCategoryChipsUiModel -> id
+            is TokoNowCategoryGridUiModel -> id
             else -> null
         }
     }

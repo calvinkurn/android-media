@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryChipsTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryGridTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowChooseAddressWidgetTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateOocTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowRecommendationCarouselTypeFactory
@@ -27,7 +27,7 @@ import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseS
 class RepurchaseAdapterTypeFactory(
     private val tokoNowListener: TokoNowView? = null,
     private val tokoNowEmptyStateOocListener: TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener? = null,
-    private val tokoNowCategoryChipsListener: TokoNowCategoryChipsViewHolder.TokoNowCategoryGridListener? = null,
+    private val tokoNowCategoryGridListener: TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener? = null,
     private val tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener? = null,
     private val productCardListener: RepurchaseProductCardListener,
     private val emptyStateNoHistorylistener: RepurchaseEmptyStateNoHistoryViewHolder.RepurchaseEmptyStateNoHistoryListener? = null,
@@ -38,7 +38,7 @@ class RepurchaseAdapterTypeFactory(
     private val tokonowRecomBindPageNameListener: TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener? = null
 ) : BaseAdapterTypeFactory(),
     RepurchaseTypeFactory,
-    TokoNowCategoryChipsTypeFactory,
+    TokoNowCategoryGridTypeFactory,
     TokoNowChooseAddressWidgetTypeFactory,
     TokoNowEmptyStateOocTypeFactory,
     TokoNowRecommendationCarouselTypeFactory,
@@ -46,7 +46,7 @@ class RepurchaseAdapterTypeFactory(
     TokoNowServerErrorTypeFactory {
 
     // region Common TokoNow Component
-    override fun type(uiModel: TokoNowCategoryChipsUiModel): Int = TokoNowCategoryChipsViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowCategoryGridUiModel): Int = TokoNowCategoryGridViewHolder.LAYOUT
     override fun type(uiModel: TokoNowChooseAddressWidgetUiModel): Int = TokoNowChooseAddressWidgetViewHolder.LAYOUT
     override fun type(uiModel: TokoNowRecommendationCarouselUiModel): Int = TokoNowRecommendationCarouselViewHolder.LAYOUT
     override fun type(uiModel: TokoNowEmptyStateNoResultUiModel): Int = TokoNowEmptyStateNoResultViewHolder.LAYOUT
@@ -64,7 +64,7 @@ class RepurchaseAdapterTypeFactory(
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             // region Common TokoNow Component
-            TokoNowCategoryChipsViewHolder.LAYOUT -> TokoNowCategoryChipsViewHolder(view, tokoNowCategoryChipsListener)
+            TokoNowCategoryGridViewHolder.LAYOUT -> TokoNowCategoryGridViewHolder(view, tokoNowCategoryGridListener)
             TokoNowChooseAddressWidgetViewHolder.LAYOUT -> TokoNowChooseAddressWidgetViewHolder(view, tokoNowListener, tokoNowChooseAddressWidgetListener)
             TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(
                 view,

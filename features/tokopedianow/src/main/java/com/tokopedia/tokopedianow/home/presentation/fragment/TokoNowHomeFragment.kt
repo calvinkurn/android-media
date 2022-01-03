@@ -67,10 +67,10 @@ import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryChipsUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokopedianow.common.view.TokoNowView
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryChipsViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
@@ -128,7 +128,7 @@ class TokoNowHomeFragment: Fragment(),
         TokoNowView,
         TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener,
         HomeTickerViewHolder.HomeTickerListener,
-        TokoNowCategoryChipsViewHolder.TokoNowCategoryGridListener,
+        TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener,
         MiniCartWidgetListener,
         BannerComponentListener,
         HomeProductRecomViewHolder.HomeProductRecomListener,
@@ -176,7 +176,7 @@ class TokoNowHomeFragment: Fragment(),
                 tokoNowView = this,
                 homeTickerListener = this,
                 tokoNowChooseAddressWidgetListener = this,
-                tokoNowCategoryChipsListener = this,
+                tokoNowCategoryGridListener = this,
                 bannerComponentListener = this,
                 homeProductRecomListener = this,
                 tokoNowProductCardListener = this,
@@ -343,8 +343,8 @@ class TokoNowHomeFragment: Fragment(),
     override fun onClickChooseAddressWidgetTracker() { }
 
     override fun onCategoryRetried() {
-        val item = adapter.getItem(TokoNowCategoryChipsUiModel::class.java)
-        if (item is TokoNowCategoryChipsUiModel) {
+        val item = adapter.getItem(TokoNowCategoryGridUiModel::class.java)
+        if (item is TokoNowCategoryGridUiModel) {
             viewModelTokoNow.getCategoryGrid(item, localCacheModel?.warehouse_id.orEmpty())
         }
     }

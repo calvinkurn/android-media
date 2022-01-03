@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryItemViewHolder
 
-class TokoNowCategoryChipsAdapterTypeFactory(
+class TokoNowCategoryGridAdapterTypeFactory(
     private val tokoNowCategoryItemListener: TokoNowCategoryItemViewHolder.TokoNowCategoryItemListener? = null,
 ):BaseAdapterTypeFactory(), TokoNowCategoryItemTypeFactory {
     override fun type(uiModel: TokoNowCategoryItemUiModel): Int = TokoNowCategoryItemViewHolder.LAYOUT

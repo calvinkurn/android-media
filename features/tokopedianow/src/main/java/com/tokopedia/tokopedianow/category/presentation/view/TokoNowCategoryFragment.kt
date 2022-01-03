@@ -34,7 +34,7 @@ import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategor
 import com.tokopedia.tokopedianow.category.utils.RECOM_QUERY_PARAM_CATEGORY_ID
 import com.tokopedia.tokopedianow.category.utils.RECOM_QUERY_PARAM_REF
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryChipsViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
@@ -45,7 +45,7 @@ import javax.inject.Inject
 class TokoNowCategoryFragment:
         BaseSearchCategoryFragment(),
         CategoryAisleListener,
-        TokoNowCategoryChipsViewHolder.TokoNowCategoryGridListener {
+        TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener {
 
     companion object {
         @JvmStatic

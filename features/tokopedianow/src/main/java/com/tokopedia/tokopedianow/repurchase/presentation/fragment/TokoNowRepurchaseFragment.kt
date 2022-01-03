@@ -73,7 +73,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.*
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryChipsViewHolder.*
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.*
@@ -147,7 +147,7 @@ class TokoNowRepurchaseFragment:
                 tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(),
                 tokoNowChooseAddressWidgetListener = this,
                 tokoNowListener = this,
-                tokoNowCategoryChipsListener = this,
+                tokoNowCategoryGridListener = this,
                 tokoNowEmptyStateNoResultListener = this,
                 tokoNowRecommendationCarouselListener = this,
                 emptyStateNoHistorylistener = this,

@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryChipsUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.searchcategory.EmptyProductTestHelper
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_GRID_TITLE
@@ -46,9 +46,9 @@ class CategoryEmptyProductTest: CategoryTestFixtures(), EmptyProductTestHelper.C
     }
 
     private fun Visitable<*>.assertTokonowCategoryGrid() {
-        assertThat(this, instanceOf(TokoNowCategoryChipsUiModel::class.java))
+        assertThat(this, instanceOf(TokoNowCategoryGridUiModel::class.java))
 
-        val categoryGridUiModel = this as TokoNowCategoryChipsUiModel
+        val categoryGridUiModel = this as TokoNowCategoryGridUiModel
 
         assertThat(categoryGridUiModel.title, shouldBe(CATEGORY_GRID_TITLE))
     }
