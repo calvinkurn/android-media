@@ -2,7 +2,7 @@ package com.tokopedia.play.ui.userreport.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play.ui.userreport.adapter.delegate.UserReportAdapterDelegate
-import com.tokopedia.play.ui.userreport.adapter.delegate.UserReportSectionAdapter
+import com.tokopedia.play.ui.userreport.adapter.delegate.UserReportSectionAdapterDelegate
 import com.tokopedia.play.ui.userreport.adapter.delegate.UserReportShimmeringAdapterDelegate
 import com.tokopedia.play.ui.userreport.viewholder.UserReportReasoningViewHolder
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
@@ -18,7 +18,7 @@ class UserReportReasoningAdapter(
         delegatesManager
             .addDelegate(UserReportAdapterDelegate(listener))
             .addDelegate(UserReportShimmeringAdapterDelegate())
-            .addDelegate(UserReportSectionAdapter())
+            .addDelegate(UserReportSectionAdapterDelegate())
     }
 
     override fun areItemsTheSame(

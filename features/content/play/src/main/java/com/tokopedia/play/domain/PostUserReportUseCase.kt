@@ -76,7 +76,7 @@ class PostUserReportUseCase @Inject constructor(
 
         const val QUERY_NAME = "PostUserReportUseCaseQuery"
         const val QUERY = """
-            mutation x(${'$'}input: ReportVideoPlayRequest!){
+            mutation submitUserReport(${'$'}input: ReportVideoPlayRequest!){
              visionPostReportVideoPlay($INPUT: ${'$'}input) {
                 status
             }

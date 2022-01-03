@@ -11,7 +11,7 @@ import com.tokopedia.play.view.uimodel.PlayUserReportSection
 /**
  * @author by astidhiyaa on 16/12/21
  */
-class UserReportSectionAdapter : TypedAdapterDelegate<PlayUserReportSection, PlayUserReportReasoningUiModel,
+class UserReportSectionAdapterDelegate : TypedAdapterDelegate<PlayUserReportSection, PlayUserReportReasoningUiModel,
         UserReportSectionViewHolder>(
     R.layout.item_user_report_section
 ) {
