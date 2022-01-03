@@ -49,6 +49,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: AppVersionUiModel): Int = AppVersionViewHolder.LAYOUT
     override fun type(uiModel: UrlEnvironmentUiModel): Int = UrlEnvironmentViewHolder.LAYOUT
     override fun type(uiModel: FakeResponseActivityUiModel): Int = FakeResponseActivityViewHolder.LAYOUT
+    override fun type(uiModel: DataExplorerActivityUiModel): Int = DataExplorerActivityViewHolder.LAYOUT
     override fun type(uiModel: HomeAndNavigationRevampSwitcherUiModel): Int = HomeAndNavigationRevampSwitcherViewHolder.LAYOUT
     override fun type(uiModel: RollenceAbTestingManualSwitcherUiModel): Int = RollenceAbTestingManualSwitcherViewHolder.LAYOUT
     override fun type(uiModel: RequestNewFcmTokenUiModel): Int = RequestNewFcmTokenViewHolder.LAYOUT
@@ -91,6 +92,7 @@ class DeveloperOptionTypeFactoryImpl(
             AppVersionViewHolder.LAYOUT -> AppVersionViewHolder(view)
             UrlEnvironmentViewHolder.LAYOUT -> UrlEnvironmentViewHolder(view, urlEnvironmentListener)
             FakeResponseActivityViewHolder.LAYOUT -> FakeResponseActivityViewHolder(view)
+            DataExplorerActivityViewHolder.LAYOUT -> DataExplorerActivityViewHolder(view)
             HomeAndNavigationRevampSwitcherViewHolder.LAYOUT -> HomeAndNavigationRevampSwitcherViewHolder(view)
             RollenceAbTestingManualSwitcherViewHolder.LAYOUT -> RollenceAbTestingManualSwitcherViewHolder(view)
             RequestNewFcmTokenViewHolder.LAYOUT -> RequestNewFcmTokenViewHolder(view)

@@ -55,6 +55,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_STAGING = "Staging"
         const val KEYWORD_LIVE = "Live"
         const val KEYWORD_FAKE_RESPONSE_ACTIVITY = "Fake Response Activity"
+        const val KEYWORD_DATA_EXPLORER_ACTIVITY = "Data Explrorer Activity"
         const val KEYWORD_HOME_AND_NAVIGATION_REVAMP_SWITCHER = "Home and Navigation Revamp Switcher"
         const val KEYWORD_NEW_NAVIGATION = "New Navigation"
         const val KEYWORD_ALWAYS_OS_EXPERIMENT = "Always OS Experiment"
@@ -131,6 +132,7 @@ class DeveloperOptionAdapter(
             KEYWORD_STAGING, KEYWORD_LIVE)
         ),
         FakeResponseActivityUiModel(listOf(KEYWORD_FAKE_RESPONSE_ACTIVITY)),
+        DataExplorerActivityUiModel(listOf(KEYWORD_DATA_EXPLORER_ACTIVITY)),
         TranslatorUiModel(listOf(
             KEYWORD_API_KEY_SETTING,
             KEYWORD_VISIT_BELOW_FOR_API_KEY,
