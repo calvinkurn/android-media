@@ -831,9 +831,9 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         const val CHARSET_UTF_8 = "UTF-8"
 
         const val HCI_CAMERA_REQUEST_CODE = 978
-        const val REQUEST_CODE_LIVENESS = 1235;
+        private const val REQUEST_CODE_LIVENESS = 1235;
         const val FORCE_TIMEOUT = 90000L
-        const val LIVENESS_REDIRECTION_PATH = "redirectUrl"
+        private const val LIVENESS_REDIRECTION_PATH = "redirectUrl"
 
         const val LOG_TIMEOUT = 1000
 
