@@ -2571,7 +2571,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 is Fail -> onErrorGetBottomChat(it.throwable)
             }
         })
-                 l.deleteBubble.observe(viewLifecycleOwner, {
+
+        viewModel.deleteBubble.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     adapter.deleteMsg(it.data)
