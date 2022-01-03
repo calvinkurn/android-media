@@ -516,6 +516,13 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, LINK_ACCOUNT_SOURCE_PAYMENT)
             startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
         }
+        
+        fun goToAlaKarteKyc(uri: Uri) {
+            val projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID) ?: ""
+            val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConst.KYC_FORM_ONLY, projectId)
+            kycRedirectionUrl = uri.getQueryParameter(LIVENESS_REDIRECTION_PATH) ?: ""
+            startActivityForResult(intent, REQUEST_CODE_LIVENESS)
+        }
 
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
             if (url != null) {
@@ -614,10 +621,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                     return true
                 }
                 if (url.startsWith(ApplinkConst.KYC_FORM_ONLY_NO_PARAM)) {
-                    val projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID) ?: ""
-                    val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConst.KYC_FORM_ONLY, projectId)
-                    kycRedirectionUrl = uri.getQueryParameter(LIVENESS_REDIRECTION_PATH) ?: ""
-                    startActivityForResult(intent, REQUEST_CODE_LIVENESS)
+                    goToAlaKarteKyc(uri)
                     return true
                 }
             }
