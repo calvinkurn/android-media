@@ -18,7 +18,7 @@ import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUs
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.interactor.repository.*
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitTabUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.helper.Event
@@ -84,31 +84,18 @@ open class HomeRevampViewModel @Inject constructor(
     private val closeChannelUseCase: Lazy<CloseChannelUseCase>,
     private val dismissHomeReviewUseCase: Lazy<DismissHomeReviewUseCase>,
     private val getAtcUseCase: Lazy<AddToCartOccMultiUseCase>,
-    private val homeBusinessUnitDataRepository: Lazy<HomeBusinessUnitDataRepository>,
-    private val getDisplayHeadlineAds: Lazy<GetDisplayHeadlineAds>,
-    private val homeReviewSuggestedRepository: Lazy<HomeReviewSuggestedRepository>,
-    private val getHomeTokopointsListDataUseCase: Lazy<GetHomeTokopointsListDataUseCase>,
     private val getKeywordSearchUseCase: Lazy<GetKeywordSearchUseCase>,
-    private val getPendingCashbackUseCase: Lazy<GetCoroutinePendingCashbackUseCase>,
     private val homePlayCardHomeRepository: Lazy<HomePlayLiveDynamicRepository>,
-    private val getRecommendationTabUseCase: Lazy<GetRecommendationTabUseCase>,
     private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
-    private val getRecommendationFilterChips: Lazy<GetRecommendationFilterChips>,
-    private val getWalletBalanceUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
     private val popularKeywordRepository: Lazy<HomePopularKeywordRepository>,
     private val injectCouponTimeBasedUseCase: Lazy<InjectCouponTimeBasedUseCase>,
-    private val homeRechargeRecommendationRepository: Lazy<HomeRechargeRecommendationRepository>,
     private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
-    private val homeSalamWidgetRepository: Lazy<HomeSalamWidgetRepository>,
     private val declineSalamWidgetUseCase: Lazy<DeclineSalamWIdgetUseCase>,
     private val getRechargeBUWidgetUseCase: Lazy<GetRechargeBUWidgetUseCase>,
-    private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
     private val bestSellerMapper: Lazy<BestSellerMapper>,
     private val homeDispatcher: Lazy<CoroutineDispatchers>,
     private val playWidgetTools: Lazy<PlayWidgetTools>,
-    private val getWalletAppBalanceUseCase: Lazy<GetWalletAppBalanceUseCase>,
-    private val getWalletEligibilityUseCase: Lazy<GetWalletEligibilityUseCase>,
-    private val homeBusinessUnitTabUseCase: Lazy<HomeBusinessUnitTabUseCase>) : BaseCoRoutineScope(homeDispatcher.get().io) {
+    private val homeBusinessUnitUseCase: Lazy<HomeBusinessUnitUseCase>) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
         private const val HOME_LIMITER_KEY = "HOME_LIMITER_KEY"
@@ -481,7 +468,7 @@ open class HomeRevampViewModel @Inject constructor(
     //Create BusinessUnitRepository
     fun getBusinessUnitTabData(position: Int){
         launchCatchError(coroutineContext, block = {
-            val data = homeBusinessUnitTabUseCase.get().getBusinessUnitTab()
+            val data = homeBusinessUnitUseCase.get().getBusinessUnitTab()
             (homeDataModel.list.getOrNull(position) as? NewBusinessUnitWidgetDataModel)?.let{ buWidget ->
                 val buWidgetData = buWidget.copy(
                     tabList = data.tabBusinessList,
@@ -500,11 +487,25 @@ open class HomeRevampViewModel @Inject constructor(
     //TODO 11.2: Remove getBusinessUnitTabData -> Move to HomeBusinessUnitUseCase.onClickBusinessUnitTab
     //Create BusinessUnitRepository
     fun getBusinessUnitData(tabId: Int, position: Int, tabName: String){
-        launch {
-            homeBusinessUnitTabUseCase.get()
-                .getBusinessUnitData(tabId, position, tabName, homeDataModel) {
-                    updateWidget()
-                }
+        if(buWidgetJob?.isActive == true) return
+        buWidgetJob = launchCatchError(coroutineContext, block = {
+            val data = homeBusinessUnitUseCase.get().getBusinessUnitData(tabId, position, tabName)
+            homeDataModel.list.withIndex().find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
+                val oldBuData = buModel.value as NewBusinessUnitWidgetDataModel
+                val newBuList = oldBuData.contentsList.copy().toMutableList()
+                newBuList[position] = newBuList[position].copy(list = data)
+                updateWidget(oldBuData.copy(contentsList = newBuList), buModel.index)
+            }
+        }){
+            // show error
+            homeDataModel.list.withIndex().find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
+                val oldBuData = buModel.value as NewBusinessUnitWidgetDataModel
+                val newBuList = oldBuData.contentsList.copy().toMutableList()
+                newBuList[position] = newBuList[position].copy(list = listOf())
+                val newList = homeDataModel.list.copy().toMutableList()
+                newList[buModel.index] = oldBuData.copy(contentsList = newBuList)
+                updateWidget(oldBuData.copy(contentsList = newBuList),buModel.index)
+            }
         }
     }
 
@@ -986,7 +987,8 @@ open class HomeRevampViewModel @Inject constructor(
                 reason = (it?.message ?: "No error propagated").take(ConstantKey.HomeTimber.MAX_LIMIT),
                 data = stackTrace.take(ConstantKey.HomeTimber.MAX_LIMIT)
             )
-            homeFlowDataCancelled = true
+            //TODO fix for unit test
+//            homeFlowDataCancelled = true
         }
 
         refreshHomeData()

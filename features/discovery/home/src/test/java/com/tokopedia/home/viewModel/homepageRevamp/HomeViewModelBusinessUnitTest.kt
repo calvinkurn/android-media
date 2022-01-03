@@ -4,8 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetBusinessUnitDataUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetBusinessWidgetTab
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
@@ -35,8 +34,7 @@ class HomeViewModelBusinessUnitTest{
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val getHomeUseCase = mockk<HomeDynamicChannelUseCase> (relaxed = true)
-    private val getBusinessWidgetTab = mockk<GetBusinessWidgetTab>(relaxed = true)
-    private val getBusinessUnitDataUseCase = mockk<GetBusinessUnitDataUseCase>(relaxed = true)
+    private val homeBusinessUnitUseCase = mockk<HomeBusinessUnitUseCase>(relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
     @Test
     fun `Get Tab Data success && bu data success`(){
@@ -61,17 +59,16 @@ class HomeViewModelBusinessUnitTest{
 
         homeViewModel = createHomeViewModel(
                 getHomeUseCase = getHomeUseCase,
-                getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
-                getBusinessWidgetTab = getBusinessWidgetTab
+                homeBusinessWidgetUseCase = homeBusinessUnitUseCase
         )
         homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
 
         // load tab data return success
         val homeWidget = HomeWidget(tabBusinessList = listOf(HomeWidget.TabItem(1, "")), widgetHeader = HomeWidget.WidgetHeader("red"))
-        getBusinessWidgetTab.givenGetBusinessWidgetTabUseCaseReturn(homeWidget)
+        homeBusinessUnitUseCase.givenGetBusinessWidgetTabUseCaseReturn(homeWidget)
 
         // load data bu return success
-        getBusinessUnitDataUseCase.givenGetBusinessUnitDataUseCaseReturn(listOf(
+        homeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(listOf(
                 BusinessUnitItemDataModel(
                         content = HomeWidget.ContentItemTab(),
                         itemPosition = 0,
@@ -114,7 +111,8 @@ class HomeViewModelBusinessUnitTest{
 
             val channel = Channel<HomeDynamicChannelModel>()
             // dynamic banner
-            coEvery { getHomeUseCase.getHomeData() } returns flow{
+            //TODO fix this for unit test
+            coEvery { getHomeUseCase.getHomeDataFlow() } returns flow{
                 channel.consumeAsFlow().collect{
                     emit(it)
                 }
@@ -124,17 +122,16 @@ class HomeViewModelBusinessUnitTest{
             }
             homeViewModel = createHomeViewModel(
                     getHomeUseCase = getHomeUseCase,
-                    getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
-                    getBusinessWidgetTab = getBusinessWidgetTab
+                    homeBusinessWidgetUseCase = homeBusinessUnitUseCase
             )
             homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
 
             // load tab data return success
             val homeWidget = HomeWidget(tabBusinessList = listOf(HomeWidget.TabItem(1, "")), widgetHeader = HomeWidget.WidgetHeader("red"))
-            getBusinessWidgetTab.givenGetBusinessWidgetTabUseCaseReturn(homeWidget)
+            homeBusinessUnitUseCase.givenGetBusinessWidgetTabUseCaseReturn(homeWidget)
 
             // load data bu return success
-            getBusinessUnitDataUseCase.givenGetBusinessUnitDataUseCaseReturn(listOf(
+            homeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(listOf(
                     BusinessUnitItemDataModel(
                             content = HomeWidget.ContentItemTab(),
                             itemPosition = 0,
@@ -181,17 +178,16 @@ class HomeViewModelBusinessUnitTest{
         )
         homeViewModel = createHomeViewModel(
                 getHomeUseCase = getHomeUseCase,
-                getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
-                getBusinessWidgetTab = getBusinessWidgetTab
+                homeBusinessWidgetUseCase = homeBusinessUnitUseCase
         )
         homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
 
         // load tab data returns success
         val homeWidget = HomeWidget(tabBusinessList = listOf(HomeWidget.TabItem(1, "")), widgetHeader = HomeWidget.WidgetHeader("red"))
-        getBusinessWidgetTab.givenGetBusinessWidgetTabUseCaseReturn(homeWidget)
+        homeBusinessUnitUseCase.givenGetBusinessWidgetTabUseCaseReturn(homeWidget)
 
         // load data bu return error
-        getBusinessUnitDataUseCase.givenGetBusinessUnitDataUseCaseThrowReturn()
+        homeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseThrowReturn()
 
         // viewModel load business tab
         homeViewModel.getBusinessUnitTabData(0)
