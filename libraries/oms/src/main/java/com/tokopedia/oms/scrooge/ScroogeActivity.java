@@ -276,7 +276,7 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
         if (requestCode == CommonWebViewClient.ATTACH_FILE_REQUEST && webChromeWebviewClient != null) {
             webChromeWebviewClient.onActivityResult(requestCode, resultCode, intent);
         } else if (requestCode == REQUEST_CODE_LIVENESS) {
-            RouteManager.route(ScroogeActivity.this, kycRedirectionUrl);
+            mWebView.loadUrl(kycRedirectionUrl);
         } else if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);
             String base64 = encodeToBase64(imagePath);
