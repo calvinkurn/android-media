@@ -61,6 +61,14 @@ class ProductFeaturedViewComponent(
         val featuredItems = getFinalFeaturedItems(products, maxProducts)
         adapter.setItemsAndAnimateChanges(featuredItems)
 
+        if (products != adapter.getItems()) {
+            try {
+                rvProductFeatured.post {
+                    rvProductFeatured.invalidateItemDecorations()
+                }
+            } catch (ignored: IllegalStateException) {}
+        }
+
         if (featuredItems.isEmpty()) hide()
         else show()
 
