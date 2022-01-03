@@ -517,7 +517,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
         }
         
-        fun goToAlaKarteKyc(uri: Uri) {
+        fun goToAlaCarteKyc(uri: Uri) {
             val projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID) ?: ""
             val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConst.KYC_FORM_ONLY, projectId)
             kycRedirectionUrl = uri.getQueryParameter(LIVENESS_REDIRECTION_PATH) ?: ""
@@ -621,7 +621,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                     return true
                 }
                 if (url.startsWith(ApplinkConst.KYC_FORM_ONLY_NO_PARAM)) {
-                    goToAlaKarteKyc(uri)
+                    goToAlaCarteKyc(uri)
                     return true
                 }
             }

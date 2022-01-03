@@ -772,10 +772,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return redirectToExternalAppAndFinish(activity, uri);
         }
         if (url.startsWith(ApplinkConst.KYC_FORM_ONLY_NO_PARAM)) {
-            String projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
-            Intent intent  = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY, projectId);
-            kycRedirectionUrl = uri.getQueryParameter(LIVENESS_REDIRECTION_PATH);
-            startActivityForResult(intent, REQUEST_CODE_LIVENESS);
+            gotoAlaCarteKyc(uri);
             return true;
         }
 
@@ -800,6 +797,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
+    }
+
+    private void gotoAlaCarteKyc(Uri uri) {
+        String projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
+        Intent intent  = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY, projectId);
+        kycRedirectionUrl = uri.getQueryParameter(LIVENESS_REDIRECTION_PATH);
+        startActivityForResult(intent, REQUEST_CODE_LIVENESS);
     }
 
     private boolean isFDLHostEnabled(Uri uri){

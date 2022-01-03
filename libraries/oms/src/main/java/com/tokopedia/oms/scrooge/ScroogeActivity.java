@@ -249,10 +249,7 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
                     routeToHomeCredit(ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE, queryParam, headerText);
                     return true;
                 } else if (url.startsWith(ApplinkConst.KYC_FORM_NO_PARAM)) {
-                    String projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
-                    Intent intent  = RouteManager.getIntent(ScroogeActivity.this, ApplinkConst.KYC_FORM_ONLY, projectId);
-                    kycRedirectionUrl = uri.getQueryParameter(LIVENESS_REDIRECTION_PATH);
-                    startActivityForResult(intent, REQUEST_CODE_LIVENESS);
+                    gotoAlaCarteKyc(uri);
                     return true;
                 } else {
                     returnVal = false;
@@ -268,6 +265,13 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
             webview.getSettings().setUserAgentString(userAgent);
             webview.getSettings().setJavaScriptEnabled(true);
         }
+    }
+
+    private void gotoAlaCarteKyc(Uri uri) {
+        String projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
+        Intent intent  = RouteManager.getIntent(ScroogeActivity.this, ApplinkConst.KYC_FORM_ONLY, projectId);
+        kycRedirectionUrl = uri.getQueryParameter(LIVENESS_REDIRECTION_PATH);
+        startActivityForResult(intent, REQUEST_CODE_LIVENESS);
     }
 
     @Override
