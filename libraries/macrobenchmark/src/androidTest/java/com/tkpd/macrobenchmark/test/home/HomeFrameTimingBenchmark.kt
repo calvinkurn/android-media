@@ -25,10 +25,10 @@ class HomeFrameTimingBenchmark: BaseFrameTimingBenchmark() {
         MacroDevOps.setupEnvironment(MacroIntent.Home.getHomeMacroSetupIntent())
     }
 
-    override fun pageInteractionTest() {
+    override fun pageInteractionTest(currentIteration: Int) {
         MacroInteration.basicRecyclerviewInteraction(
-            MacroIntent.TKPD_PACKAGE_NAME,
-            MacroIntent.Home.RV_RESOURCE_ID
+                MacroIntent.TKPD_PACKAGE_NAME,
+                MacroIntent.Home.RV_RESOURCE_ID
         )
     }
 

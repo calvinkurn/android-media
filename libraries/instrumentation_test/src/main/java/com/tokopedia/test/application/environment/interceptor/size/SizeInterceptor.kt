@@ -19,13 +19,13 @@ class SizeInterceptor(private val sizeModelConfig: SizeModelConfig, private val 
             try {
                 val copy = chain.request().newBuilder().build()
                 val buffer = Buffer()
-                copy.body()?.writeTo(buffer)
+                copy.body?.writeTo(buffer)
                 val response = chain.proceed(chain.request())
 
                 sizeModelConfig.getResponseList().forEach {
                     if (it.value.findType == FIND_BY_CONTAINS || it.value.findType == FIND_BY_QUERY_NAME) {
                         if (!sizeInEachRequest.containsKey(it.key)) {
-                            val size = response.body()?.bytes()?.size?:0
+                            val size = response.body?.bytes()?.size ?: 0
                             adder.invoke(size)
                             sizeInEachRequest[it.key] = size
                         }

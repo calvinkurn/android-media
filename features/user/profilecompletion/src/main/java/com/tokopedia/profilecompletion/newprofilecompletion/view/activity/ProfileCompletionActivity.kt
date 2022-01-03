@@ -36,7 +36,7 @@ class ProfileCompletionActivity : BaseSimpleActivity(), HasComponent<ProfileComp
     }
 
     private fun initView() {
-        supportActionBar?.setBackgroundDrawable(ColorDrawable(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)))
+        supportActionBar?.setBackgroundDrawable(ColorDrawable(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background)))
         toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N500))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.elevation = 10f

@@ -20,6 +20,7 @@ class TickerDataView(
     Parcelable,
     Visitable<ProductListTypeFactory?>,
     SearchComponentTracking by searchComponentTracking(
+        trackingOption = trackingOption,
         keyword = keyword,
         componentId = componentId,
         applink = query,

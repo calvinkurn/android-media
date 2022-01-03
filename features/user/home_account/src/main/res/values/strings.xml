@@ -31,7 +31,7 @@
 
     <string name="new_home_account_safe_mode_selected_dialog_title">Aktifkan Safe Mode</string>
     <string name="new_home_account_safe_mode_selected_dialog_msg">Fitur ini akan otomatis menyaring hasil pencarian sesuai kebijakan dan batasan usia pengguna</string>
-    <string name="new_home_account_safe_mode_unselected_dialog_msg">Hasil pencarian tidak disaring otomais sesuai kebijakan dan batasan usia pengguna</string>
+    <string name="new_home_account_safe_mode_unselected_dialog_msg">Hasil pencarian tidak disaring otomatis sesuai kebijakan dan batasan usia pengguna</string>
     <string name="new_home_account_safe_mode_unselected_dialog_title">Nonaktifkan Safe Mode</string>
     <string name="new_home_account_safe_mode_selected_dialog_positive_button">Aktifkan</string>
     <string name="new_home_account_safe_mode_unselected_dialog_positive_button">Nonaktifkan</string>
@@ -127,6 +127,8 @@
     <string name="title_bank_account_setting">Akun Bank</string>
     <string name="title_credit_card_setting">Kartu Kredit/Debit</string>
     <string name="title_debit_instant_setting">Debit Instan</string>
+
+    <string name="title_gopay_setting">GoPay</string>
 
     <string name="label_link_acc_unknown_error">Hubungi</string>
 

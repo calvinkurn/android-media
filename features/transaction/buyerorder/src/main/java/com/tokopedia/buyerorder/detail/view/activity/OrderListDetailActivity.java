@@ -100,7 +100,6 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
         orderListComponent = DaggerOrderDetailsComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
                 .build();
-        GraphqlClient.init(this);
     }
 
     @Override

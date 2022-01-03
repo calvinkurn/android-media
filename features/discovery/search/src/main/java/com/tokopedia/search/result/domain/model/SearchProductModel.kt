@@ -167,6 +167,10 @@ data class SearchProductModel(
             @Expose
             val position: Int = 0,
 
+            @SerializedName("trackingOption")
+            @Expose
+            val trackingOption: Int = 0,
+
             @SerializedName("otherRelated")
             @Expose
             val otherRelatedList: List<OtherRelated> = listOf()
@@ -184,6 +188,10 @@ data class SearchProductModel(
             @SerializedName("applink")
             @Expose
             val applink: String = "",
+
+            @SerializedName("componentId")
+            @Expose
+            val componentId: String = "",
 
             @SerializedName("product")
             @Expose
@@ -246,7 +254,11 @@ data class SearchProductModel(
 
             @SerializedName("ads")
             @Expose
-            val ads: ProductAds = ProductAds()
+            val ads: ProductAds = ProductAds(),
+
+            @SerializedName("componentId")
+            @Expose
+            val componentId: String = "",
     ) {
             fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
     }
@@ -652,6 +664,10 @@ data class SearchProductModel(
             @Expose
             val layout: String = "",
 
+            @SerializedName("tracking_option")
+            @Expose
+            val trackingOption: String = "0",
+
             @SerializedName("options")
             @Expose
             val inspirationCarouselOptions: List<InspirationCarouselOption> = listOf()
@@ -689,6 +705,10 @@ data class SearchProductModel(
             @SerializedName("meta")
             @Expose
             val meta: String = "",
+
+            @SerializedName("component_id")
+            @Expose
+            val componentId: String = "",
 
             @SerializedName("product")
             @Expose
@@ -772,6 +792,10 @@ data class SearchProductModel(
             @SerializedName("ads")
             @Expose
             val ads: ProductAds = ProductAds(),
+
+            @SerializedName("component_id")
+            @Expose
+            val componentId: String = "",
     ) {
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
     }

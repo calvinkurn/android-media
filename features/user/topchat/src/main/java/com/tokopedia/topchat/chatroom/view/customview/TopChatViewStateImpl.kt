@@ -253,6 +253,10 @@ open class TopChatViewStateImpl constructor(
         attachmentPreviewContainer.hide()
     }
 
+    override fun notifyPreviewRemoved(model: SendablePreview) {
+        fragmentView?.notifyPreviewRemoved(model)
+    }
+
     override fun onSetCustomMessage(customMessage: String) {
         if (customMessage.isNotEmpty()) {
             replyEditText.setText(customMessage)
@@ -639,6 +643,7 @@ open class TopChatViewStateImpl constructor(
                 }
                 setPrimaryCTAClickListener {
                     headerMenuListener.onDeleteConversation()
+                    dismiss()
                 }
             }.show()
         }
