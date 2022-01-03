@@ -26,11 +26,16 @@ internal class FilterCategoryDetailViewModel {
     val updateContentInPositionEventLiveData: LiveData<Event<Int>>
         get() = updateContentInPositionEventMutableLiveData
 
+    private val isButtonResetVisibleMutableLiveData = MutableLiveData<Boolean>()
+    val isButtonResetVisibleLiveData: LiveData<Boolean>
+        get() = isButtonResetVisibleMutableLiveData
+
     private val isButtonSaveVisibleMutableLiveData = MutableLiveData<Boolean>()
     val isButtonSaveVisibleLiveData: LiveData<Boolean>
         get() = isButtonSaveVisibleMutableLiveData
 
     private var categoryFilter: Filter? = null
+    private var initialSelectedCategoryFilterValue: String = ""
     var selectedCategoryFilterValue: String = ""
         private set
 
@@ -40,8 +45,13 @@ internal class FilterCategoryDetailViewModel {
 
     fun init(filter: Filter?, selectedCategoryFilterValue: String) {
         this.categoryFilter = filter
+        this.initialSelectedCategoryFilterValue = selectedCategoryFilterValue
         this.selectedCategoryFilterValue = selectedCategoryFilterValue
+
+        isButtonResetVisibleMutableLiveData.value = isInitialSelectedCategoryFilterValueNotEmpty()
     }
+
+    private fun isInitialSelectedCategoryFilterValueNotEmpty() = initialSelectedCategoryFilterValue.isNotEmpty()
 
     fun onViewCreated() {
         val categoryFilter = this.categoryFilter ?: return
@@ -138,13 +148,13 @@ internal class FilterCategoryDetailViewModel {
         }
     }
 
-    fun onFilterCategoryClicked(clickedFilterCategoryLevelTwoViewModel: FilterCategoryLevelTwoViewModel, isChecked: Boolean) {
-        selectedCategoryFilterValue = if (isChecked) clickedFilterCategoryLevelTwoViewModel.levelTwoCategory.value else ""
+    fun onFilterCategoryClicked(clickedFilterCategoryLevelTwoViewModel: FilterCategoryLevelTwoViewModel) {
+        selectedCategoryFilterValue = clickedFilterCategoryLevelTwoViewModel.levelTwoCategory.value
 
         var previousSelectedIndex = -1
         updateUnselectedToAllCategoryFilter { previousSelectedIndex = it }
 
-        clickedFilterCategoryLevelTwoViewModel.isSelectedOrExpanded = isChecked
+        clickedFilterCategoryLevelTwoViewModel.isSelectedOrExpanded = true
 
         val currentSelectedIndex = contentViewModelList.indexOf(clickedFilterCategoryLevelTwoViewModel)
 
@@ -165,17 +175,29 @@ internal class FilterCategoryDetailViewModel {
         }
     }
 
-    fun onFilterCategoryClicked(clickedFilterCategoryLevelThreeViewModel: FilterCategoryLevelThreeViewModel, isChecked: Boolean) {
-        selectedCategoryFilterValue = if (isChecked) clickedFilterCategoryLevelThreeViewModel.levelThreeCategory.value else ""
+    fun onFilterCategoryClicked(clickedFilterCategoryLevelThreeViewModel: FilterCategoryLevelThreeViewModel) {
+        selectedCategoryFilterValue = clickedFilterCategoryLevelThreeViewModel.levelThreeCategory.value
 
         var previousSelectedIndex = -1
         updateUnselectedToAllCategoryFilter { previousSelectedIndex = it }
 
-        clickedFilterCategoryLevelThreeViewModel.isSelected = isChecked
+        clickedFilterCategoryLevelThreeViewModel.isSelected = true
 
         val currentSelectedIndex = getLevelThreePositionInContent(clickedFilterCategoryLevelThreeViewModel)
 
         notifyViewUpdate(currentSelectedIndex, previousSelectedIndex)
+    }
+
+    fun onResetButtonClicked() {
+        selectedCategoryFilterValue = ""
+
+        var previousSelectedIndex = -1
+        updateUnselectedToAllCategoryFilter { previousSelectedIndex = it }
+
+        notifyContentUpdatePosition(previousSelectedIndex)
+
+        isButtonResetVisibleMutableLiveData.value = false
+        isButtonSaveVisibleMutableLiveData.value = isInitialSelectedCategoryFilterValueNotEmpty()
     }
 
     private fun notifyViewUpdate(currentSelectedIndex: Int, previousSelectedIndex: Int) {
@@ -187,6 +209,7 @@ internal class FilterCategoryDetailViewModel {
         }
 
         isButtonSaveVisibleMutableLiveData.value = true
+        isButtonResetVisibleMutableLiveData.value = true
     }
 
     private fun notifyContentUpdatePosition(currentSelectedIndex: Int) {
