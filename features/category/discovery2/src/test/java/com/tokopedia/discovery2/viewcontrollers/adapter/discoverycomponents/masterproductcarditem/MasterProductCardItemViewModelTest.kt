@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.user.session.UserSession
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
@@ -62,5 +63,28 @@ class MasterProductCardItemViewModelTest {
         assert(viewModel.getUserID() == "")
         every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).userId } returns "1012"
         assert(viewModel.getUserID() == "1012")
+    }
+
+    @Test
+    fun `get product data item`(){
+        every { componentsItem.data } returns null
+        assert(viewModel.getProductDataItem() == null)
+        val list = ArrayList<DataItem>()
+        every { componentsItem.data } returns list
+        assert(viewModel.getProductDataItem() == null)
+        val item:DataItem = mockk()
+        list.add(item)
+        assert(viewModel.getProductDataItem() === item)
+
+    }
+
+    @Test
+    fun `update quantity confirmation test`(){
+        val list = ArrayList<DataItem>()
+        every { componentsItem.data } returns list
+        val item = DataItem()
+        list.add(item)
+        viewModel.updateProductQuantity(10)
+        assert(item.quantity == 10)
     }
 }
