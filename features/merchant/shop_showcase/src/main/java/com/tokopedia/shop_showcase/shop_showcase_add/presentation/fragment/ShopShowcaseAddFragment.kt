@@ -17,7 +17,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -25,6 +24,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
@@ -204,11 +204,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     }
 
     override fun setupDeleteCounter(firstDeletedItem: ShowcaseProduct) {
-        // try catch to avoid ImageUnify crash on set image to delete product counter image
-        try {
-            if(counterProductImage?.context?.isValidGlideContext() == true)
-                ImageHandler.LoadImage(counterProductImage, firstDeletedItem.productImageUrl)
-        } catch (e : Throwable) {}
+        counterProductImage?.loadImage(firstDeletedItem.productImageUrl)
         counterProductText?.text = context?.getString(
                 R.string.deleted_product_counter_text,
                 getDeletedProductSize().toString()

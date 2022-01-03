@@ -43,9 +43,15 @@ abstract class BaseInactivePhoneOnboardingFragment : BaseDaggerFragment() {
     }
 
     open fun initView() {
+        updateImageHeader(IMAGE_HEADER)
+
         viewBinding?.buttonNext?.setOnClickListener {
             onButtonNextClicked()
         }
+    }
+
+    fun updateImageHeader(url: String) {
+        viewBinding?.imgHeader?.setImageUrl(url, isSkipCache = true)
     }
 
     fun updateTitle(title: String) {
@@ -54,5 +60,9 @@ abstract class BaseInactivePhoneOnboardingFragment : BaseDaggerFragment() {
 
     fun updateDescription(description: String) {
         viewBinding?.textDescription?.text = description
+    }
+
+    companion object {
+        const val IMAGE_HEADER = "https://images.tokopedia.net/img/android/user/inactive-phone/inactivephone_onboarding.png"
     }
 }

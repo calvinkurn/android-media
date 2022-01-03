@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
@@ -36,7 +37,12 @@ class BroadMatchViewHolder(
     }
 
     private fun bindTitle(broadMatchDataView: BroadMatchDataView) {
-        binding?.searchBroadMatchTitle?.text = getTitle(broadMatchDataView)
+        val searchBroadMatchTitle = binding?.searchBroadMatchTitle ?: return
+
+        searchBroadMatchTitle.text = getTitle(broadMatchDataView)
+        searchBroadMatchTitle.addOnImpressionListener(broadMatchDataView) {
+            broadMatchListener.onBroadMatchImpressed(broadMatchDataView)
+        }
     }
 
     private fun getTitle(broadMatchDataView: BroadMatchDataView) =

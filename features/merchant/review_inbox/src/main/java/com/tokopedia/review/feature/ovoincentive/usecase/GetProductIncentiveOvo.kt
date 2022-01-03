@@ -19,7 +19,6 @@ class GetProductIncentiveOvo @Inject constructor(private val graphqlRepository: 
                 query getProductRevIncentiveOvo(${'$'}productID: String, ${'$'}reputationID: String) {
                   productrevIncentiveOvo(productID: ${'$'}productID, reputationID: ${'$'}reputationID) {
                     ticker {
-                      title
                       subtitle
                     }
                     title
@@ -28,8 +27,6 @@ class GetProductIncentiveOvo @Inject constructor(private val graphqlRepository: 
                     numbered_list
                     cta_text
                     amount
-                    bottom_sheet
-                    image_url
                   }
                 }
             """

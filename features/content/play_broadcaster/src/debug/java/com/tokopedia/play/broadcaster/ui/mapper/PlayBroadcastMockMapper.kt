@@ -12,6 +12,7 @@ import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveCon
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
+import com.tokopedia.play.broadcaster.type.PriceUnknown
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
@@ -67,7 +68,8 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                     },
                     isSelectedHandler = { false },
                     stock = StockAvailable((it % 2) * 10),
-                    isSelectable = { Selectable }
+                    isSelectable = { Selectable },
+                    price = PriceUnknown
             )
         }
     }

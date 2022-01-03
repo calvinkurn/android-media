@@ -3,8 +3,10 @@ package com.tokopedia.analyticsdebugger.debugger.data.network
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.config.GlobalConfig
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
@@ -42,8 +44,8 @@ class TetraService(private val context: Context) {
 
         fun parse(data: String) : RequestBody {
             val jsonObject = JSONObject(data).toString()
-            return RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),
-                    jsonObject)
+            return jsonObject
+                .toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
         }
     }
 }
