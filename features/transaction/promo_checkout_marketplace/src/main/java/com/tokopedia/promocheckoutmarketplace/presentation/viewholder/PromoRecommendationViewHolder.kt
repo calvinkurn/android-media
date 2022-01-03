@@ -40,15 +40,15 @@ class PromoRecommendationViewHolder(private val viewBinding: PromoCheckoutMarket
                 imageCheckPromoRecommendation.gone()
                 buttonApplyPromoRecommendation.isEnabled = true
                 buttonApplyPromoRecommendation.text = itemView.context.getString(R.string.label_promo_recommendation_select)
-                labelPromoRecommendationTitle.text = String.format(itemView.context.getString(R.string.promo_checkout_label_promo_recommendation_title, element.uiData.promoCount))
+                labelPromoRecommendationSubTitle.text = String.format(itemView.context.getString(R.string.promo_checkout_label_promo_recommendation_title, element.uiData.promoCount))
             } else {
                 imageCheckPromoRecommendation.show()
                 buttonApplyPromoRecommendation.isEnabled = false
                 buttonApplyPromoRecommendation.text = itemView.context.getString(R.string.label_promo_recommendation_selected)
-                labelPromoRecommendationTitle.text = String.format(itemView.context.getString(R.string.promo_checkout_label_promo_recommendation_title_after_apply, element.uiData.promoCount))
+                labelPromoRecommendationSubTitle.text = String.format(itemView.context.getString(R.string.promo_checkout_label_promo_recommendation_title_after_apply, element.uiData.promoCount))
             }
             val totalBenefitFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.uiData.promoTotalBenefit, false).removeDecimalSuffix()
-            labelPromoRecommendationSubTitle.text = String.format(itemView.context.getString(R.string.promo_checkout_label_recommendation_benefit, totalBenefitFormatted))
+            labelPromoRecommendationTitle.text = String.format(itemView.context.getString(R.string.promo_checkout_label_recommendation_benefit, totalBenefitFormatted))
         }
     }
 

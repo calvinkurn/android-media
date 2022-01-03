@@ -19,7 +19,7 @@
         android:paddingRight="12dp"
         android:paddingBottom="8dp">
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/image_check_promo_recommendation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/button_apply_promo_recommendation"
-            android:layout_width="@dimen/dp_80"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:enabled="true"
             android:foreground="?selectableItemBackground"
@@ -78,7 +78,7 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_button_apply_promo_recommendation"
-        android:layout_width="@dimen/dp_80"
+        android:layout_width="80dp"
         android:layout_height="54dp"
         android:layout_gravity="center_vertical|end"
         android:layout_marginEnd="12dp"
