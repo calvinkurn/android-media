@@ -118,5 +118,6 @@
     <string name="btn_mengerti">Mengerti</string>
     <string name="btn_kembali">Kembali</string>
     <string name="btn_nonaktifkan">Nonaktifkan</string>
+    <string name="shop_postal_code_invalid">Format kode pos invalid</string>
 
 </resources>

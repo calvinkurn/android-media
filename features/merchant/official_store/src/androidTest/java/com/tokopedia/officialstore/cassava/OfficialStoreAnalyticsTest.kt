@@ -28,11 +28,11 @@ import com.tokopedia.officialstore.extension.selectTabAtPosition
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.*
 import com.tokopedia.officialstore.util.OSRecyclerViewIdlingResource
-import com.tokopedia.officialstore.util.preloadRecomOnOSPage
 import com.tokopedia.officialstore.util.removeProgressBarOnOsPage
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher
+import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
@@ -214,12 +214,13 @@ class OfficialStoreAnalyticsTest {
             }
             is FeaturedBrandViewHolder -> {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList,0)
+                onView(firstView(withId(R.id.see_all_button))).perform(ViewActions.click())
             }
         }
     }
     @Test
     fun checkOSAnalyticsWithCassava2() {
-        onView(CommonMatcher.firstView(withId(R.id.os_child_recycler_view))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(firstView(withId(R.id.os_child_recycler_view))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
         OSCassavaTest {
             initTest()

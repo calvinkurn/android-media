@@ -79,4 +79,10 @@ class ProductProfile {
     var parentId: String = "0"
     @SerializedName("is_variant")
     var isSupportVariant: Boolean = false
+    @SerializedName("is_upcoming_campaign_product")
+    @Expose
+    var isUpcomingCampaign: Boolean = false
+    @SerializedName("location_stock")
+    @Expose
+    var locationStock: LocationStock = LocationStock()
 }

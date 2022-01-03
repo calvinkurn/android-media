@@ -1,9 +1,9 @@
 package com.tokopedia.review.feature.inbox.pending.presentation.adapter.viewholder
 
+import android.graphics.Rect
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
+import android.view.ViewGroup
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingCredibilityUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
@@ -11,49 +11,48 @@ import com.tokopedia.review.inbox.R
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class ReviewPendingCredibilityViewHolder(view: View, private val reviewPendingItemListener: ReviewPendingItemListener) : AbstractViewHolder<ReviewPendingCredibilityUiModel>(view) {
+class ReviewPendingCredibilityViewHolder(
+    private val itemView: View,
+    private val reviewPendingItemListener: ReviewPendingItemListener
+) {
 
     companion object {
         val LAYOUT = R.layout.item_review_pending_credibility
+
+        private const val MINIMUM_WIDTH_PERCENT_TO_HIT_IMPRESS_TRACKER = 40
     }
 
     private var parentLayout: View? = null
     private var credibilityImage: ImageUnify? = null
     private var credibilityTitle: Typography? = null
     private var credibilitySubtitle: Typography? = null
-    private var coachMark: CoachMark2? = null
 
     init {
         bindViews()
     }
 
-    override fun bind(element: ReviewPendingCredibilityUiModel) {
+    fun bind(element: ReviewPendingCredibilityUiModel, index: Int) {
         with(element) {
             credibilityImage?.loadImage(imageUrl)
             credibilityTitle?.text = title
             credibilitySubtitle?.text = subtitle
             itemView.setOnClickListener {
-                reviewPendingItemListener.onReviewCredibilityWidgetClicked()
-            }
-            if (reviewPendingItemListener.shouldShowCoachMark()) {
-                coachMark = CoachMark2(itemView.context)
-                coachMark?.showCoachMark(getCoachMarkItem())
-                reviewPendingItemListener.updateCoachMark()
-            }
-        }
-    }
-
-    private fun getCoachMarkItem(): ArrayList<CoachMark2Item> {
-        parentLayout?.let {
-            return arrayListOf(
-                CoachMark2Item(
-                    it,
-                    getString(R.string.review_pending_credibility_coach_mark_title),
-                    getString(R.string.review_pending_credibility_coach_mark_subtitle)
+                reviewPendingItemListener.onReviewCredibilityWidgetClicked(
+                    element.appLink,
+                    element.title,
+                    index
                 )
-            )
+            }
+            itemView.viewTreeObserver.addOnGlobalLayoutListener {
+                if (!element.impressHolder.isInvoke && itemView.shouldHitImpressTracker()) {
+                    reviewPendingItemListener.onReviewCredibilityWidgetImpressed(
+                        element.title,
+                        index
+                    )
+                    element.impressHolder.invoke()
+                }
+            }
         }
-        return arrayListOf()
     }
 
     private fun bindViews() {
@@ -63,5 +62,14 @@ class ReviewPendingCredibilityViewHolder(view: View, private val reviewPendingIt
         credibilitySubtitle = itemView.findViewById(R.id.review_pending_credibility_subtitle)
     }
 
-
+    private fun View.shouldHitImpressTracker(): Boolean {
+        return parent?.let {
+            if (it !is ViewGroup) return false
+            val rect = Rect()
+            it.getHitRect(rect)
+            getLocalVisibleRect(rect)
+                    && height == rect.height()
+                    && rect.width() * 100 / width >= MINIMUM_WIDTH_PERCENT_TO_HIT_IMPRESS_TRACKER
+        }.orFalse()
+    }
 }

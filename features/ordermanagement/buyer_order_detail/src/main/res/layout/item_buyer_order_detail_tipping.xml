@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_lvl4"
+    android:layout_marginTop="@dimen/buyer_order_detail_section_top_margin"
+    android:layout_marginEnd="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivBuyerOrderDetailTippingIcon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBuyerOrderDetailTippingTitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toTopOf="@id/tvBuyerOrderDetailTippingDescription"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ivBuyerOrderDetailTippingIcon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Yuk, beri tip ke driver" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBuyerOrderDetailTippingDescription"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ivBuyerOrderDetailTippingIcon"
+        app:layout_constraintTop_toBottomOf="@id/tvBuyerOrderDetailTippingTitle"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Kamu bisa berikan via halaman Lacak. Beri Tip " />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

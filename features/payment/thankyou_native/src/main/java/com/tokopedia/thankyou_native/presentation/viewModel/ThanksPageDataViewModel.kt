@@ -56,12 +56,12 @@ class ThanksPageDataViewModel @Inject constructor(
             if (it.success) {
                 it.engineData?.let { featureEngineData ->
                     gyroResponseLiveData.value = featureEngineData
+
                     val topAdsRequestParams = getTopAdsRequestParams(it.engineData)
-                    if (topAdsRequestParams == null) {
-                        postGyroRecommendation(it.engineData)
-                    } else {
+                    if (topAdsRequestParams != null) {
                         loadTopAdsViewModelData(topAdsRequestParams, thanksPageData)
                     }
+                    postGyroRecommendation(it.engineData)
                 }
             }
         }
@@ -76,12 +76,8 @@ class ThanksPageDataViewModel @Inject constructor(
             if (it.isNotEmpty()) {
                 topAdsRequestParams.topAdsUIModelList = it
                 topAdsDataLiveData.postValue(topAdsRequestParams)
-            } else {
-                postGyroRecommendation(gyroResponseLiveData.value)
             }
-        }, {
-            postGyroRecommendation(gyroResponseLiveData.value)
-        })
+        }, { it.printStackTrace() })
     }
 
     private fun getTopAdsRequestParams(engineData: FeatureEngineData?): TopAdsRequestParams? {
