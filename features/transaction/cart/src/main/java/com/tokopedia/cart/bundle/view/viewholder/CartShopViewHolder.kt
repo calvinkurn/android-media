@@ -57,6 +57,7 @@ class CartShopViewHolder(private val binding: ItemShopBundleBinding,
         renderFreeShipping(cartShopHolderData)
         renderEstimatedTimeArrival(cartShopHolderData)
         renderMaximumWeight(cartShopHolderData)
+        renderBoAfford(cartShopHolderData)
     }
 
     private fun renderIconPin(cartShopHolderData: CartShopHolderData) {
@@ -415,6 +416,14 @@ class CartShopViewHolder(private val binding: ItemShopBundleBinding,
         val paddingOffset = itemView.context?.resources?.getDimensionPixelSize(R.dimen.dp_12)
                 ?: 0
         return offset + paddingOffset + tickerHeight
+    }
+
+    private fun renderBoAfford(cartShopHolderData: CartShopHolderData) {
+        if (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected) {
+            binding.layoutBoAfford.show()
+        } else {
+            binding.layoutBoAfford.gone()
+        }
     }
 
     companion object {
