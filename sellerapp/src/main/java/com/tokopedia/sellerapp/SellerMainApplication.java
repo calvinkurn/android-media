@@ -302,11 +302,6 @@ public class SellerMainApplication extends SellerRouterApplication {
         }
     }
 
-    private void generateSellerAppNetworkKeys() {
-        AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = SellerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
-        AuthUtil.KEY.ZEUS_WHITELIST = SellerAppNetworkKeys.ZEUS_WHITELIST;
-    }
-
     public int getCurrentVersion(Context context) {
         PackageInfo pInfo = null;
         try {

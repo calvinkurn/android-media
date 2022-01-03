@@ -11,7 +11,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.intl.BuildConfig;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
@@ -74,7 +73,6 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         initFileDirConfig();
 
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
-        GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         com.tokopedia.config.GlobalConfig.IS_PREINSTALL = BuildConfig.IS_PREINSTALL;
@@ -92,7 +90,6 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         if (BuildConfig.DEBUG_TRACE_NAME != null) {
             com.tokopedia.config.GlobalConfig.DEBUG_TRACE_NAME = BuildConfig.DEBUG_TRACE_NAME.split(",");
         }
-        generateConsumerAppNetworkKeys();
     }
 
     public String getOriginalPackageApp(){
@@ -113,11 +110,6 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
             GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
             com.tokopedia.config.GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
         }
-    }
-
-    public void generateConsumerAppNetworkKeys() {
-        AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = ConsumerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
-        AuthUtil.KEY.ZEUS_WHITELIST = ConsumerAppNetworkKeys.ZEUS_WHITELIST;
     }
 
     private void openFeedbackForm(Uri uri, String className, boolean isFromScreenshot) {

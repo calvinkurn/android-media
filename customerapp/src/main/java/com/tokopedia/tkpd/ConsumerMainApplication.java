@@ -12,7 +12,6 @@ import androidx.preference.PreferenceManager;
 import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.analytics.performance.util.AppStartPerformanceTracker;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -53,7 +52,6 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         if (BuildConfig.DEBUG_TRACE_NAME != null) {
             com.tokopedia.config.GlobalConfig.DEBUG_TRACE_NAME = BuildConfig.DEBUG_TRACE_NAME.split(",");
         }
-        generateConsumerAppNetworkKeys();
     }
 
     public String getOriginalPackageApp() {
@@ -74,13 +72,6 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     public int versionCode() {
         return BuildConfig.VERSION_CODE;
     }
-
-    @Override
-    public void generateConsumerAppNetworkKeys() {
-        AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = ConsumerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
-        AuthUtil.KEY.ZEUS_WHITELIST = ConsumerAppNetworkKeys.ZEUS_WHITELIST;
-    }
-
 
     @Override
     public void onCreate() {
