@@ -32,11 +32,11 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.campaign_list_share_title_og)
     }
 
-    fun getShareOgDescription(): String? {
+    fun getShareDescription(): String? {
         return getString(R.string.campaign_list_share_desc_og)
     }
 
-    fun getShareOngoingOgDescription(): String? {
+    fun getShareOngoingDescription(): String? {
         return getString(R.string.campaign_list_ongoing_share_desc_og)
     }
 }

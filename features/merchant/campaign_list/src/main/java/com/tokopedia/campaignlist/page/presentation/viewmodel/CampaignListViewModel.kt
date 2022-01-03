@@ -219,8 +219,7 @@ class CampaignListViewModel @Inject constructor(
     fun generateLinkerShareData(
             shopData: ShopData,
             campaignData: Campaign,
-            shareModel: ShareModel,
-            campaignStatusId: String?
+            shareModel: ShareModel
     ): LinkerShareData {
         val linkerData = LinkerData()
         linkerData.apply {
@@ -231,9 +230,9 @@ class CampaignListViewModel @Inject constructor(
             linkerData.type = LinkerData.SHOP_TYPE
             name = getShareOgTitle(campaignData.name, shopData.name)
             uri = "https://www.tokopedia.com/${shopData.domain}"
-            description = getShareOgDescription(campaignStatusId, shopData.name)
+            description = getShareDescription(shopData.name)
             ogTitle = getShareOgTitle(campaignData.name, shopData.name)
-            ogDescription = getShareOgDescription(campaignStatusId, shopData.name)
+            ogDescription = getShareOngoingDescription(shopData.name)
             if (!TextUtils.isEmpty(shareModel.ogImgUrl)) {
                 ogImageUrl = shareModel.ogImgUrl
             }
@@ -249,17 +248,14 @@ class CampaignListViewModel @Inject constructor(
         return String.format(template, campaignName, shopName)
     }
 
-    private fun getShareOgDescription(campaignStatusId: String?, shopName: String): String {
-        return when (campaignStatusId ?: "") {
-            ONGOING_STATUS_ID -> {
-                val template = resourceProvider.getShareOngoingCampaignDescriptionWording() ?: ""
-                String.format(template, shopName)
-            }
-            else -> {
-                val template = resourceProvider.getShareOgDescription() ?: ""
-                String.format(template, shopName)
-            }
-        }
+    private fun getShareDescription(shopName: String): String {
+        val template = resourceProvider.getShareDescription() ?: ""
+        return String.format(template, shopName)
+    }
+
+    private fun getShareOngoingDescription(shopName: String): String {
+        val template = resourceProvider.getShareOngoingDescription() ?: ""
+        return String.format(template, shopName)
     }
 
     fun calculateOverloadProductCount(totalProductCount: Int): Int {
