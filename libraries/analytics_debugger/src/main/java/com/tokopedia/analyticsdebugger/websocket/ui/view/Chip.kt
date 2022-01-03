@@ -52,12 +52,7 @@ class Chip: FrameLayout {
     }
 
     private fun setChecked(isChecked: Boolean) {
-        if(isChecked) {
-            chipText.background = bgChecked
-        }
-        else {
-            chipText.background = bgUnchecked
-        }
+        chipText.background = if(isChecked) bgChecked else bgUnchecked
     }
 
     fun setOnCheckedListener(listener: Listener) {
