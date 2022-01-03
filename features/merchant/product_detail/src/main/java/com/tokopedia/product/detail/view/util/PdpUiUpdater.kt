@@ -251,6 +251,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 } else {
                     dataP1.bestSellerContent?.let {
                         this.oneLinersContent = it[productId]
+
                     }
                 }
             }
