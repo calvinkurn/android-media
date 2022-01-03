@@ -3,6 +3,7 @@ package com.tokopedia.product.manage.feature.stockreminder.view.activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.manage.R
@@ -11,6 +12,12 @@ import com.tokopedia.product.manage.feature.stockreminder.constant.AppScreen
 import com.tokopedia.product.manage.feature.stockreminder.view.fragment.StockReminderFragment
 
 class StockReminderActivity : BaseSimpleActivity() {
+
+    companion object {
+        private const val IDEAL_SEGMENT_SIZE = 5
+
+        private const val SLASH_CHAR = "/"
+    }
 
     private var productName: String = ""
 
@@ -27,10 +34,12 @@ class StockReminderActivity : BaseSimpleActivity() {
         var stock = 0
         val uri = intent.data
         if (uri != null) {
-            val segments = uri.pathSegments
-            productId = segments[segments.size - 3].toLongOrZero()
-            productName = segments[segments.size - 2]
-            stock = segments[segments.size - 1].toIntOrZero()
+            val segments =
+                uri.toString().replace(ApplinkConstInternalMarketplace.STOCK_REMINDER_BASE, "")
+                    .split(SLASH_CHAR)
+            productId = segments[1].toLongOrZero()
+            productName = segments.getProductName()
+            stock = segments.getOrNull(segments.lastIndex - 1).toIntOrZero()
         }
         return StockReminderFragment.createInstance(productId, productName, stock)
     }
@@ -54,4 +63,27 @@ class StockReminderActivity : BaseSimpleActivity() {
             headerSubTitle = productName
         }
     }
+
+    /**
+     * Get product name depending on the uri format.
+     * This method is used to suffice the requirement when the product name contains slash ("/")
+     *
+     * @return  productName
+     */
+    private fun List<String>.getProductName(): String {
+        val idealSegmentPosition = size - 3
+        return if (size <= IDEAL_SEGMENT_SIZE) {
+            this[idealSegmentPosition]
+        } else {
+            var appendedString = ""
+            for (i in 2..idealSegmentPosition) {
+                appendedString += this[i]
+                if (i != idealSegmentPosition) {
+                    appendedString += SLASH_CHAR
+                }
+            }
+            appendedString
+        }
+    }
+
 }
