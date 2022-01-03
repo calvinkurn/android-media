@@ -17,13 +17,10 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.utils.OkHttpRetryPolicy;
 import com.tokopedia.topchat.chatlist.data.TopChatUrl;
 import com.tokopedia.topchat.chattemplate.data.factory.EditTemplateChatFactory;
-import com.tokopedia.topchat.chattemplate.data.factory.TemplateChatFactory;
 import com.tokopedia.topchat.chattemplate.data.mapper.EditTemplateChatMapper;
 import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper;
 import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepository;
 import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepositoryImpl;
-import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository;
-import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImpl;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImplKt;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryKt;
 import com.tokopedia.topchat.common.chat.api.ChatApi;
@@ -165,24 +162,10 @@ public class TemplateChatModule {
 
     @TemplateChatScope
     @Provides
-    TemplateChatFactory provideTemplateChatFactory(
-            ChatApi chatApi,
-            TemplateChatMapper templateChatMapper) {
-        return new TemplateChatFactory(templateChatMapper, chatApi);
-    }
-
-    @TemplateChatScope
-    @Provides
     EditTemplateChatFactory provideEditTemplateChatFactory(
             ChatApi chatApi,
             EditTemplateChatMapper templateChatMapper) {
         return new EditTemplateChatFactory(templateChatMapper, chatApi);
-    }
-
-    @TemplateChatScope
-    @Provides
-    TemplateRepository provideTemplateRepository(TemplateChatFactory templateChatFactory) {
-        return new TemplateRepositoryImpl(templateChatFactory);
     }
 
     @TemplateChatScope

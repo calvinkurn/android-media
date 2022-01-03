@@ -21,7 +21,7 @@ class GetTemplateUseCaseTest {
     @RelaxedMockK
     private lateinit var templateRepository: TemplateRepositoryKt
 
-    private lateinit var getTemplateUseCase: GetTemplateUseCaseNew
+    private lateinit var getTemplateUseCase: GetTemplateUseCase
 
     private val testTemplate = arrayListOf("template1, template2, template3")
     private val testException = Exception("Oops!")
@@ -29,7 +29,7 @@ class GetTemplateUseCaseTest {
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        getTemplateUseCase = GetTemplateUseCaseNew(
+        getTemplateUseCase = GetTemplateUseCase(
             templateRepository, CoroutineTestDispatchersProvider)
     }
 

@@ -43,11 +43,4 @@ public class TemplateChatContract {
 
         void revertArrange(int from, int to);
     }
-
-    public interface Presenter extends CustomerPresenter<View> {
-
-        void switchTemplateAvailability(boolean enabled);
-
-        void setArrange(boolean enabled, ArrayList<Integer> arrayList, int from, int to);
-    }
 }

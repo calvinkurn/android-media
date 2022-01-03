@@ -2,7 +2,8 @@ package com.tokopedia.topchat.chattemplate.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCaseNew
+import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCase
+import com.tokopedia.topchat.chattemplate.domain.usecase.SetAvailabilityTemplateUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
@@ -15,7 +16,10 @@ abstract class BaseChatTemplateViewModel {
 
     //UseCases
     @RelaxedMockK
-    lateinit var getTemplateUseCase: GetTemplateUseCaseNew
+    lateinit var getTemplateUseCase: GetTemplateUseCase
+
+    @RelaxedMockK
+    lateinit var setAvailabilityTemplateUseCase: SetAvailabilityTemplateUseCase
 
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
@@ -28,6 +32,7 @@ abstract class BaseChatTemplateViewModel {
         MockKAnnotations.init(this)
         viewModel = ChatTemplateViewModel(
             getTemplateUseCase,
+            setAvailabilityTemplateUseCase,
             dispatchers
         )
     }

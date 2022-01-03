@@ -40,10 +40,6 @@ public interface ChatApi {
     Observable<Response<DataResponse<TemplateData>>> createTemplate(@FieldMap Map<String, Object>
                                                                             parameters);
 
-    @Headers("Content-Type: application/json")
-    @PUT(TkpdBaseURL.Chat.SET_TEMPLATE)
-    Observable<Response<DataResponse<TemplateData>>> setTemplate(@Body JsonObject parameters, @Query("is_seller") boolean isSeller);
-
     @HTTP(method = "DELETE", path = TkpdBaseURL.Chat.DELETE_TEMPLATE + "/{is_seller}", hasBody = true)
     Observable<Response<DataResponse<TemplateData>>> deleteTemplate(@Path("index") int index
             , @Path("is_seller") boolean isSeller

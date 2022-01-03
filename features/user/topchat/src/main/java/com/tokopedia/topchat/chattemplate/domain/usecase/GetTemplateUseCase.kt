@@ -6,7 +6,7 @@ import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class GetTemplateUseCaseNew @Inject constructor(
+class GetTemplateUseCase @Inject constructor(
     private val templateRepository: TemplateRepositoryKt,
     private val dispatcher: CoroutineDispatchers
 ) {

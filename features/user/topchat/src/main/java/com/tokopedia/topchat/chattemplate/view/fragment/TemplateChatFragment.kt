@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,7 +25,6 @@ import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingTypeFa
 import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder
 import com.tokopedia.topchat.chattemplate.view.dialog.TemplateInfoBottomSheet
 import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract
-import com.tokopedia.topchat.chattemplate.view.presenter.TemplateChatSettingPresenter
 import com.tokopedia.topchat.chattemplate.view.viewmodel.ChatTemplateViewModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel
 import com.tokopedia.topchat.common.InboxMessageConstant
@@ -51,10 +49,6 @@ class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
     private var typeFactory = TemplateChatSettingTypeFactoryImpl(this)
     private var adapter = TemplateChatSettingAdapter(typeFactory, this)
     private var layoutManager: LinearLayoutManager? = null
-
-    @JvmField
-    @Inject
-    var presenter: TemplateChatSettingPresenter? = null
 
     @Inject
     lateinit var viewModel: ChatTemplateViewModel
@@ -85,7 +79,6 @@ class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
                 R.layout.fragment_template_chat, container, false
         ).also {
             bindView(it)
-            setupPresenter()
             getTemplate()
         }
     }
@@ -97,11 +90,6 @@ class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
         info = view.findViewById(R.id.template_list_info)
         switchTemplate = view.findViewById(R.id.switch_chat_template)
         templateContainer = view.findViewById(R.id.template_container)
-    }
-
-    private fun setupPresenter() {
-        presenter?.attachView(this)
-        presenter?.setMode(isSeller)
     }
 
     private fun getTemplate() {
@@ -135,7 +123,7 @@ class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
         switchTemplate?.setOnClickListener {
             val b = switchTemplate?.isChecked ?: false
             analytic?.trackOnCheckedChange(b)
-            presenter?.switchTemplateAvailability(b)
+            switchTemplateAvailability(b)
             if (b) {
                 templateContainer?.visibility = View.VISIBLE
             } else {
@@ -144,15 +132,15 @@ class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
         }
     }
 
+    private fun switchTemplateAvailability(isEnabled: Boolean) {
+        showLoading()
+        viewModel.switchTemplateAvailability(isSeller, isEnabled)
+    }
+
     private fun setupInfo() {
         info?.setOnClickListener {
             templateInfo.show(childFragmentManager, TemplateInfoBottomSheet::class.simpleName)
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter?.detachView()
     }
 
     override fun getScreenName(): String {
@@ -218,7 +206,8 @@ class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
 
     override fun reArrange(from: Int, to: Int) {
         switchTemplate?.let {
-            presenter?.setArrange(it.isChecked, arrangeList(from, to), from, to)
+            showLoading()
+            viewModel.setArrange(isSeller, it.isChecked, arrangeList(from, to), from, to)
         }
     }
 
@@ -333,6 +322,33 @@ class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
                     setChecked(it.data.isEnabled)
                 }
                 is Fail -> setTemplate(null)
+            }
+            finishLoading()
+        })
+
+        viewModel.templateAvailability.observe(viewLifecycleOwner, {
+            val isEnabled = it.first
+            when(val result = it.second) {
+                is Success -> {
+                    if (result.data.isSuccess) {
+                        successSwitch()
+                    }
+                }
+                is Fail -> {
+                    showError(result.throwable)
+                    setChecked(!isEnabled)
+                }
+            }
+            finishLoading()
+        })
+
+        viewModel.arrangeTemplate.observe(viewLifecycleOwner, {
+            when(val result = it.templateResult) {
+                is Success -> successRearrange()
+                is Fail -> {
+                    showError(result.throwable)
+                    revertArrange(it.from, it.to)
+                }
             }
             finishLoading()
         })
