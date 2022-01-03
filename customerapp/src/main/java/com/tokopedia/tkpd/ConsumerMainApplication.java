@@ -29,6 +29,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     @Override
     public void initConfigValues() {
         GlobalConfig.PACKAGE_APPLICATION = "com.tokopedia.tkpd";
+        GlobalConfig.LAUNCHER_ICON_RES_ID = com.tokopedia.tkpd.R.mipmap.ic_launcher_customerapp;
         setVersionCode();
         setVersionName();
         initFileDirConfig();

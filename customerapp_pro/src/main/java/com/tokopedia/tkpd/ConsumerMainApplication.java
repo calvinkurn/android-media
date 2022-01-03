@@ -13,6 +13,7 @@ import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.intl.BuildConfig;
+import com.tokopedia.intl.R;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.screenshot_observer.Screenshot;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -70,6 +71,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
 
         GlobalConfig.APPLICATION_TYPE = 3;
         GlobalConfig.PACKAGE_APPLICATION = "com.tokopedia.intl";
+        GlobalConfig.LAUNCHER_ICON_RES_ID = R.mipmap.ic_launcher_customerapp_pro;
         initFileDirConfig();
 
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
