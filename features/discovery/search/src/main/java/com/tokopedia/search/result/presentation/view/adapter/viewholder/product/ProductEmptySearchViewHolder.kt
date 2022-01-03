@@ -166,9 +166,21 @@ class ProductEmptySearchViewHolder(
     }
 
     private fun loadBannerAds(topAdsParams: TopAdsParams) {
-        val binding = binding ?: return
-        val emptySearchModel = boundedEmptySearchModel ?: return
-        if (!emptySearchModel.isBannerAdsAllowed) return
+        var isProcessSkipped = false
+
+        val binding = binding
+        val emptySearchModel = boundedEmptySearchModel
+        var isBannerAdsAllowed = false
+
+        if(binding == null || emptySearchModel == null){
+            isProcessSkipped = true
+        } else {
+            isBannerAdsAllowed = emptySearchModel.isBannerAdsAllowed
+        }
+
+        if(isProcessSkipped || !isBannerAdsAllowed){
+            return
+        }
 
         val bannerAdsConfig = Config.Builder()
                 .setSessionId(emptyStateListener.getRegistrationId())
@@ -178,11 +190,11 @@ class ProductEmptySearchViewHolder(
                 .setEndpoint(Endpoint.CPM)
                 .build()
 
-        binding.bannerAds.setConfig(bannerAdsConfig)
-        binding.bannerAds.setTopAdsBannerClickListener { position, appLink: String?, data: CpmData? ->
+        binding?.bannerAds?.setConfig(bannerAdsConfig)
+        binding?.bannerAds?.setTopAdsBannerClickListener { position, appLink: String?, data: CpmData? ->
             bannerAdsListener.onBannerAdsClicked(position, appLink, data)
         }
-        binding.bannerAds.loadTopAds()
+        binding?.bannerAds?.loadTopAds()
     }
 
     private fun bindGlobalSearchButton() {
