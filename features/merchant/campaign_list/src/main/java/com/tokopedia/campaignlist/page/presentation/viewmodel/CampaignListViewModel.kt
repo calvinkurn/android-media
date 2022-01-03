@@ -219,8 +219,7 @@ class CampaignListViewModel @Inject constructor(
     fun generateLinkerShareData(
             shopData: ShopData,
             campaignData: Campaign,
-            shareModel: ShareModel,
-            campaignStatusId: String?
+            shareModel: ShareModel
     ): LinkerShareData {
         val linkerData = LinkerData()
         linkerData.apply {
@@ -250,12 +249,12 @@ class CampaignListViewModel @Inject constructor(
     }
 
     private fun getShareDescription(shopName: String): String {
-        val template = resourceProvider.getShareOgDescription() ?: ""
+        val template = resourceProvider.getShareDescription() ?: ""
         return String.format(template, shopName)
     }
 
     private fun getShareOngoingDescription(shopName: String): String {
-        val template = resourceProvider.getShareOngoingOgDescription() ?: ""
+        val template = resourceProvider.getShareOngoingDescription() ?: ""
         return String.format(template, shopName)
     }
 

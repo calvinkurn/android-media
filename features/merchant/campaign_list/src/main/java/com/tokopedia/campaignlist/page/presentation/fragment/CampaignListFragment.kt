@@ -460,7 +460,7 @@ class CampaignListFragment : BaseDaggerFragment(),
             val shopData = merchantBannerData.shopData
             val campaignData = merchantBannerData.campaign
             val campaignStatusId = viewModel.getSelectedActiveCampaign()?.campaignStatus
-            val linkerShareData = viewModel.generateLinkerShareData(shopData, campaignData, shareModel, campaignStatusId)
+            val linkerShareData = viewModel.generateLinkerShareData(shopData, campaignData, shareModel)
             LinkerManager.getInstance().executeShareRequest(
                     LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                         override fun urlCreated(linkerShareData: LinkerShareResult?) {
