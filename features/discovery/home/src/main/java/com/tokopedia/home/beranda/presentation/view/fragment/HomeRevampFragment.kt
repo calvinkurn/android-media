@@ -2120,16 +2120,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean) {
-        if (!chooseAddressWidgetInitialized) {
-            chooseAddressWidget.bindChooseAddress(ChooseAddressWidgetCallback(context, this, this))
-            chooseAddressWidget.run {
-                visibility = if (needToShowChooseAddress) {
-                    View.VISIBLE
-                } else {
-                    View.GONE
-                }
+        chooseAddressWidget.bindChooseAddress(ChooseAddressWidgetCallback(context, this, this))
+        chooseAddressWidget.run {
+            visibility = if (needToShowChooseAddress) {
+                View.VISIBLE
+            } else {
+                View.GONE
             }
-            chooseAddressWidgetInitialized = true
         }
     }
 

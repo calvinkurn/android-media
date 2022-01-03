@@ -72,10 +72,12 @@ class HomeHeaderOvoViewHolder(itemView: View,
     private fun renderChooseAddress(needToShowChooseAddress: Boolean) {
         val chooseAddressView = binding?.widgetChooseAddress
         chooseAddressView?.let {
-            if (needToShowChooseAddress) {
-                listener.initializeChooseAddressWidget(it, needToShowChooseAddress)
-            } else {
-                it.gone()
+            if ((it.visibility == View.INVISIBLE || it.visibility == View.GONE)) {
+                if (needToShowChooseAddress) {
+                    listener.initializeChooseAddressWidget(it, needToShowChooseAddress)
+                } else {
+                    it.gone()
+                }
             }
         }
     }
