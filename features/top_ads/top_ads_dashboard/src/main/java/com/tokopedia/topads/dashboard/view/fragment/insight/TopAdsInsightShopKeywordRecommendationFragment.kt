@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
@@ -33,6 +34,8 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    private lateinit var emptyView: ConstraintLayout
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -117,11 +120,11 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
         accordionUnify.accordionData[posi].expandableView as TopAdsInsightShopKeywordRecommendationView
 
     private fun initView() {
-        empty_view.findViewById<Typography>(R.id.text_title).text =
+        emptyView.findViewById<Typography>(R.id.text_title).text =
             resources.getString(R.string.empty_view_title)
-        empty_view.findViewById<Typography>(R.id.text_desc).text =
-            resources.getString(R.string.empty_view_desc)
-        empty_view.findViewById<ImageUnify>(R.id.image_empty)
+        emptyView.findViewById<Typography>(R.id.text_desc).text =
+            resources.getString(R.string.topads_dash_empty_daily_budget_desc)
+        emptyView.findViewById<ImageUnify>(R.id.image_empty)
             .setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_success))
     }
 
@@ -142,7 +145,7 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
         Toaster.build(
             requireView(),
             String.format(
-                resources.getString(R.string.toast_message),
+                resources.getString(R.string.apply_keyword_toast_message),
                 getExpandedView(expandedPosi).selectedItemsCount()
             ),
             actionText = resources.getString(R.string.topads_headline_oke_button)
@@ -155,7 +158,10 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View {
         initInjector()
-        return inflater.inflate(layout, container, false)
+        val view = inflater.inflate(layout, container, false)
+
+        emptyView = view.findViewById(R.id.empty_view)
+        return view
     }
 
     override fun getScreenName(): String {

@@ -325,7 +325,7 @@
     <string name="topads_insight_recomm_keyword_subtitle">tampil lebih banyak hingga +%s kali!</string>
 
     <!-- TOPADS INSIGHT KEYWORDS LAYOUT -->
-    <string name="toast_message">"%d rekomendasi anggaran harian berhasil diterapkan"</string>
+    <string name="apply_keyword_toast_message">"%d rekomendasi anggaran harian berhasil diterapkan"</string>
     <string name="empty_view_title">Semua kata kunci iklanmu sudah dimaksimalkan!</string>
     <string name="empty_view_desc">Ayo cek rekomendasi iklan lainnya yang masih menunggumu untuk dioptimalkan.</string>
     <string name="label_select_all">Pilih Semua</string>
