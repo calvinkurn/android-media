@@ -3,6 +3,7 @@ package com.tokopedia.linter
 import com.android.tools.lint.client.api.IssueRegistry
 import com.android.tools.lint.detector.api.CURRENT_API
 import com.tokopedia.linter.detectors.AnimatedVectorDetector
+import com.tokopedia.linter.detectors.DeprecatedMethodDetector
 import com.tokopedia.linter.detectors.DimenResourceValueDetector
 import com.tokopedia.linter.detectors.ResourcePackageDetector
 import com.tokopedia.linter.detectors.UnsupportedColorDetector
@@ -37,6 +38,7 @@ class IssueRegistry : IssueRegistry() {
                 DeprecatedResourceDetector.ISSUE,
                 ResponseFieldAnnotationDetector.ISSUE,
                 UnifyBackgroundDetector.ISSUE,
+                DeprecatedMethodDetector.ISSUE,
                 HANSEL_REQUIRED
         )
 
