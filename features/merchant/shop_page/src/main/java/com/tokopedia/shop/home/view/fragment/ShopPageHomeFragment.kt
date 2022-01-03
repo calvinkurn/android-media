@@ -400,6 +400,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     }
                     is Fail -> {
                         val throwable = it.throwable
+                        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
                         if (!ShopUtil.isExceptionIgnored(throwable)) {
                             ShopUtil.logShopPageP2BuyerFlowAlerting(
                                     tag = SHOP_PAGE_BUYER_FLOW_TAG,
@@ -413,6 +414,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                                     errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
                             )
                         }
+                        showErrorToast(errorMessage)
                     }
                 }
                 getRecyclerView(view)?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
