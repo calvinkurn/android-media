@@ -17,7 +17,7 @@ class GetEvUrlUseCase @Inject constructor(private val getEvUrlRepository: GetEvU
     override suspend fun executeOnBackground(): String {
         if(::network.isInitialized && url.isNotEmpty()) {
             val result = getEvUrlRepository.getEvUrl(network, url).execute()
-            return result.body()?.string() ?: ""
+            return result.body?.string() ?: ""
         }
         return ""
     }
