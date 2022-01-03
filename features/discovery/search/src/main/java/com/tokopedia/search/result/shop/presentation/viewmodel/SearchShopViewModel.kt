@@ -305,11 +305,12 @@ internal class SearchShopViewModel(
 
     private fun shouldShowCpmShop(searchShopModel: SearchShopModel): Boolean {
         if (searchShopModel.cpmModel.data.size <= 0) return false
+        val cpm = searchShopModel.cpmModel.data?.first()?.cpm
 
-        val cpm = searchShopModel.cpmModel.data?.first()?.cpm ?: return false
-
-        return if (isViewWillRenderCpmShop(cpm)) true
-        else isViewWillRenderCpmDigital(cpm)
+        return cpm?.let {
+            if (isViewWillRenderCpmShop(cpm)) true
+            else isViewWillRenderCpmDigital(cpm)
+        } ?: false
     }
 
     private fun isViewWillRenderCpmShop(cpm: Cpm): Boolean {
