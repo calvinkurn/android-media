@@ -26,7 +26,7 @@ import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L2
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryChipsUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper
@@ -193,7 +193,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         super.createVisitableListWithEmptyProduct()
 
         val categoryGridIndex = minOf(visitableList.size, 2)
-        val categoryGridUIModel = TokoNowCategoryGridUiModel(
+        val categoryGridUIModel = TokoNowCategoryChipsUiModel(
                 id = "",
                 title = CATEGORY_GRID_TITLE,
                 categoryList = null,
@@ -243,15 +243,15 @@ class TokoNowCategoryViewModel @Inject constructor (
         suspendUpdateVisitableListLiveData()
     }
 
-    private fun getCategoryGridUIModelInVisitableList(): TokoNowCategoryGridUiModel? {
+    private fun getCategoryGridUIModelInVisitableList(): TokoNowCategoryChipsUiModel? {
         return visitableList
-                .find { it is TokoNowCategoryGridUiModel }
-                as? TokoNowCategoryGridUiModel
+                .find { it is TokoNowCategoryChipsUiModel }
+                as? TokoNowCategoryChipsUiModel
     }
 
     private fun replaceCategoryUIModelInVisitableList(
-            current: TokoNowCategoryGridUiModel,
-            updated: TokoNowCategoryGridUiModel,
+        current: TokoNowCategoryChipsUiModel,
+        updated: TokoNowCategoryChipsUiModel,
     ) {
         val position = visitableList.indexOf(current)
 

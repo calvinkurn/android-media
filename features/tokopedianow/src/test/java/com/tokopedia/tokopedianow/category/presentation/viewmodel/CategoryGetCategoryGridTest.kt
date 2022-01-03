@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.categorylist.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryChipsUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_LIST_DEPTH
@@ -59,8 +59,8 @@ class CategoryGetCategoryGridTest: CategoryTestFixtures() {
     }
 
     private fun List<Visitable<*>>.findIndexedCategoryGridUIModel() =
-            find { it is TokoNowCategoryGridUiModel }
-                as? TokoNowCategoryGridUiModel
+            find { it is TokoNowCategoryChipsUiModel }
+                as? TokoNowCategoryChipsUiModel
                 ?: throw AssertionError("Cannot find category grid ui model")
 
     @Test

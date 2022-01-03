@@ -47,7 +47,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     BaseSearchCategoryTypeFactory,
     TokoNowEmptyStateNoResultTypeFactory,
     TokoNowRecommendationCarouselTypeFactory,
-    TokoNowCategoryGridTypeFactory,
+    TokoNowCategoryChipsTypeFactory,
     TokoNowRepurchaseTypeFactory,
     TokoNowEmptyStateOocTypeFactory{
 
@@ -71,7 +71,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
 
     override fun type(uiModel: TokoNowRepurchaseUiModel): Int = TokoNowRepurchaseViewHolder.LAYOUT
 
-    override fun type(uiModel: TokoNowCategoryGridUiModel): Int = TokoNowCategoryGridViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowCategoryChipsUiModel): Int = TokoNowCategoryChipsViewHolder.LAYOUT
 
     override fun type(uiModel: TokoNowRecommendationCarouselUiModel): Int = TokoNowRecommendationCarouselViewHolder.LAYOUT
 

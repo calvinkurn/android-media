@@ -61,14 +61,16 @@ class TokoNowCategoryItemViewHolder(
         binding?.root?.setOnClickListener {
             if (data.warehouseId.isBlank()) {
                 RouteManager.route(itemView.context, data.appLink)
+                listener?.onCategoryClicked(adapterPosition, data.id)
             } else {
                 RouteManager.route(itemView.context, data.appLink, data.warehouseId)
+                listener?.onAllCategoryClicked()
             }
-            listener?.onCategoryClicked(adapterPosition, data.id)
         }
     }
 
     interface TokoNowCategoryItemListener {
+        fun onAllCategoryClicked()
         fun onCategoryClicked(position: Int, categoryId: String)
     }
 }

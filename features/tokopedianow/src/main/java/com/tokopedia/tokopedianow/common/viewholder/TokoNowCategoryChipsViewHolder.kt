@@ -6,38 +6,37 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.adapter.TokoNowCategoryGridAdapter
+import com.tokopedia.tokopedianow.common.adapter.TokoNowCategoryChipsAdapter
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.adapter.differ.TokoNowCategoryGridDiffer
-import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryGridAdapterTypeFactory
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryChipsAdapterTypeFactory
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryChipsUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
-import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeCategoryGridBinding
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeCategoryChipsBinding
 import com.tokopedia.tokopedianow.databinding.PartialTokopedianowViewStubDcTitleBinding
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
-class TokoNowCategoryGridViewHolder(
+class TokoNowCategoryChipsViewHolder(
     itemView: View,
     private val listener: TokoNowCategoryGridListener? = null,
-): AbstractViewHolder<TokoNowCategoryGridUiModel>(itemView),
+): AbstractViewHolder<TokoNowCategoryChipsUiModel>(itemView),
     TokoNowCategoryItemViewHolder.TokoNowCategoryItemListener {
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokopedianow_home_category_grid
+        val LAYOUT = R.layout.item_tokopedianow_home_category_chips
         private const val GRID_SPAN_COUNT = 2
     }
 
-    private var binding: ItemTokopedianowHomeCategoryGridBinding? by viewBinding()
+    private var binding: ItemTokopedianowHomeCategoryChipsBinding? by viewBinding()
     private var stubBinding: PartialTokopedianowViewStubDcTitleBinding? by viewBinding()
 
     private var tvTitle: Typography? = null
@@ -48,18 +47,22 @@ class TokoNowCategoryGridViewHolder(
     private var categoryHeader: RelativeLayout? = null
     private var localCacheModel: LocalCacheModel? = null
 
-    private val adapter by lazy { TokoNowCategoryGridAdapter(TokoNowCategoryGridAdapterTypeFactory(this), TokoNowCategoryGridDiffer()) }
+    private val adapter by lazy { TokoNowCategoryChipsAdapter(TokoNowCategoryChipsAdapterTypeFactory(this), TokoNowCategoryGridDiffer()) }
 
     init {
         initView()
     }
 
-    override fun bind(data: TokoNowCategoryGridUiModel) {
+    override fun bind(data: TokoNowCategoryChipsUiModel) {
         when(data.state) {
-            TokoNowLayoutState.SHOW -> showCategoryGrid(data)
+            TokoNowLayoutState.SHOW -> showCategoryChips(data)
             TokoNowLayoutState.LOADING -> showLoadingState()
             TokoNowLayoutState.HIDE -> showLocalLoad(data)
         }
+    }
+
+    override fun onAllCategoryClicked() {
+        listener?.onAllCategoryClicked()
     }
 
     override fun onCategoryClicked(position: Int, categoryId: String) {
@@ -73,7 +76,6 @@ class TokoNowCategoryGridViewHolder(
         }
         binding?.vsTitle?.inflate()
         tvTitle = stubBinding?.channelTitle
-        tvSeeAll = binding?.tvSeeAll
         llCategory = binding?.llCategory
         rvCategory = binding?.rvCategory
         categoryShimmering = binding?.categoryShimmering?.categoryShimmeringLayout
@@ -87,15 +89,11 @@ class TokoNowCategoryGridViewHolder(
         categoryShimmering?.show()
     }
 
-    private fun showCategoryGrid(data: TokoNowCategoryGridUiModel) {
+    private fun showCategoryChips(data: TokoNowCategoryChipsUiModel) {
         tvTitle?.text = if (data.title.isEmpty()) itemView.context.getString(R.string.tokopedianow_repurchase_category_grid_title) else data.title
-        tvSeeAll?.setOnClickListener {
-            RouteManager.route(itemView.context, ApplinkConstInternalTokopediaNow.CATEGORY_LIST, localCacheModel?.warehouse_id)
-            listener?.onAllCategoryClicked()
-        }
 
         rvCategory?.apply {
-            adapter = this@TokoNowCategoryGridViewHolder.adapter
+            adapter = this@TokoNowCategoryChipsViewHolder.adapter
             layoutManager = GridLayoutManager(context, GRID_SPAN_COUNT, RecyclerView.HORIZONTAL, false)
         }
 
@@ -117,7 +115,7 @@ class TokoNowCategoryGridViewHolder(
         rvCategory?.show()
     }
 
-    private fun showLocalLoad(data: TokoNowCategoryGridUiModel) {
+    private fun showLocalLoad(data: TokoNowCategoryChipsUiModel) {
         llCategory?.apply {
             progressState = false
             title?.text = itemView.context.getString(R.string.tokopedianow_category_is_failed_to_display_title)
