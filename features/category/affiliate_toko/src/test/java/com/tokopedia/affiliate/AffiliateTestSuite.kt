@@ -7,12 +7,16 @@ import org.junit.runners.Suite
 @RunWith(Suite::class)
 @Suite.SuiteClasses(
         AffiliateHomeViewModelTest::class,
+        AffiliateIncomeViewModelTest::class,
+        AffiliateLoginViewModelTest::class,
         AffiliatePromotionBSViewModelTest::class,
         AffiliatePromoViewModelTest::class,
         AffiliatePromotionHistoryViewModelTest::class,
         AffiliateRecommendedProductViewModelTest::class,
         AffiliateTransactionDetailViewModelTest::class,
-        AffiliateTermsAndConditionViewModelTest::class
+        AffiliateTermsAndConditionViewModelTest::class,
+        AffiliateViewModelTest::class
+
 )
 class AffiliateTestSuite
 {
