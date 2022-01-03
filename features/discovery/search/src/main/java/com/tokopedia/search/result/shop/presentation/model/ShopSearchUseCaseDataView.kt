@@ -5,7 +5,7 @@ import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.usecase.coroutines.UseCase
 import dagger.Lazy
 
-internal data class ShopSearchModelUseCase(
+internal data class ShopSearchUseCaseDataView(
     val searchShopFirstPageUseCase: Lazy<UseCase<SearchShopModel>>,
     val searchShopLoadMoreUseCase: Lazy<UseCase<SearchShopModel>>,
     val getDynamicFilterUseCase: Lazy<UseCase<DynamicFilterModel>>,

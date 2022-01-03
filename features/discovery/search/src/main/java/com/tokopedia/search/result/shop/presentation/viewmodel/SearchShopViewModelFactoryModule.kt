@@ -12,7 +12,7 @@ import com.tokopedia.search.result.shop.domain.usecase.SearchShopUseCaseModule
 import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapperModule
 import com.tokopedia.search.result.shop.presentation.model.ShopCpmDataView
 import com.tokopedia.search.result.shop.presentation.model.ShopDataView
-import com.tokopedia.search.result.shop.presentation.model.ShopSearchModelUseCase
+import com.tokopedia.search.result.shop.presentation.model.ShopSearchUseCaseDataView
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -46,7 +46,7 @@ internal class SearchShopViewModelFactoryModule(
             userSession: daggerLazy<UserSessionInterface>,
             coroutineDispatchers: CoroutineDispatchers
     ): ViewModelProvider.Factory {
-        val useCaseCollection = ShopSearchModelUseCase(
+        val useCaseCollection = ShopSearchUseCaseDataView(
             searchShopFirstPageUseCase,
             searchShopLoadMoreUseCase,
             getDynamicFilterUseCase,

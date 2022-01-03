@@ -4,12 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.Mapper
-import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.model.ShopCpmDataView
 import com.tokopedia.search.result.shop.presentation.model.ShopDataView
-import com.tokopedia.search.result.shop.presentation.model.ShopSearchModelUseCase
-import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.search.result.shop.presentation.model.ShopSearchUseCaseDataView
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy as daggerLazy
 
@@ -19,7 +17,7 @@ internal class SearchShopViewModelFactory(
         private val shopCpmDataViewMapper: daggerLazy<Mapper<SearchShopModel, ShopCpmDataView>>,
         private val shopDataViewMapper: daggerLazy<Mapper<SearchShopModel, ShopDataView>>,
         private val userSession: daggerLazy<UserSessionInterface>,
-        private val shopSearchUseCase: ShopSearchModelUseCase
+        private val shopSearchUseCaseDataView: ShopSearchUseCaseDataView
 ): ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
@@ -38,7 +36,7 @@ internal class SearchShopViewModelFactory(
                 shopCpmDataViewMapper,
                 shopDataViewMapper,
                 userSession,
-                shopSearchUseCase
+                shopSearchUseCaseDataView
         )
     }
 }

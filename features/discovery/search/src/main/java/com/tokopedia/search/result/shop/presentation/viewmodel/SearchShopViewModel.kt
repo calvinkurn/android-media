@@ -25,12 +25,11 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.search.analytics.GeneralSearchTrackingShop
 import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
-import com.tokopedia.search.result.shop.presentation.model.*
 import com.tokopedia.search.result.shop.presentation.model.ShopCpmDataView
 import com.tokopedia.search.result.shop.presentation.model.ShopDataView
 import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchDataView
 import com.tokopedia.search.result.shop.presentation.model.ShopRecommendationTitleDataView
-import com.tokopedia.search.result.shop.presentation.model.ShopSearchModelUseCase
+import com.tokopedia.search.result.shop.presentation.model.ShopSearchUseCaseDataView
 import com.tokopedia.search.result.shop.presentation.model.ShopSuggestionDataView
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.convertValuesToString
@@ -39,7 +38,6 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.domain.model.Cpm
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import dagger.Lazy
@@ -50,7 +48,7 @@ internal class SearchShopViewModel(
         private val shopCpmDataViewMapper: Lazy<Mapper<SearchShopModel, ShopCpmDataView>>,
         private val shopDataViewMapper: Lazy<Mapper<SearchShopModel, ShopDataView>>,
         private val userSession: Lazy<UserSessionInterface>,
-        private val shopSearchUseCase: ShopSearchModelUseCase
+        private val shopSearchUseCaseDataView: ShopSearchUseCaseDataView
 ) : BaseViewModel(dispatcher.main) {
 
     companion object {
@@ -157,7 +155,7 @@ internal class SearchShopViewModel(
 
         val requestParams = createSearchShopParam()
 
-        shopSearchUseCase.searchShopFirstPageUseCase.get().execute(this::onSearchShopSuccess, this::catchSearchShopException, requestParams)
+        shopSearchUseCaseDataView.searchShopFirstPageUseCase.get().execute(this::onSearchShopSuccess, this::catchSearchShopException, requestParams)
     }
 
     private fun startSearchShopFirstPagePerformanceMonitoring() {
@@ -581,7 +579,7 @@ internal class SearchShopViewModel(
     private fun getDynamicFilter() {
         val requestParams = createGetDynamicFilterParams()
 
-        shopSearchUseCase.getDynamicFilterUseCase.get().execute(this::onGetDynamicFilterSuccess, this::catchGetDynamicFilterException, requestParams)
+        shopSearchUseCaseDataView.getDynamicFilterUseCase.get().execute(this::onGetDynamicFilterSuccess, this::catchGetDynamicFilterException, requestParams)
     }
 
     private fun onGetDynamicFilterSuccess(dynamicFilterModel: DynamicFilterModel) {
@@ -659,7 +657,7 @@ internal class SearchShopViewModel(
 
         val requestParams = createSearchShopParam()
 
-        shopSearchUseCase.searchShopLoadMoreUseCase.get().execute(this::onSearchMoreShopSuccess, this::catchSearchShopException, requestParams)
+        shopSearchUseCaseDataView.searchShopLoadMoreUseCase.get().execute(this::onSearchMoreShopSuccess, this::catchSearchShopException, requestParams)
     }
 
     private fun getTotalShopItemCount(): Int {
@@ -827,7 +825,7 @@ internal class SearchShopViewModel(
     }
 
     fun onViewRequestShopCount(mapParameter: Map<String, Any>) {
-        shopSearchUseCase.getShopCountUseCase.get().execute(
+        shopSearchUseCaseDataView.getShopCountUseCase.get().execute(
                 this::setShopCount,
                 this::catchRequestShopCountError,
                 createGetShopCountRequestParams(mapParameter)
