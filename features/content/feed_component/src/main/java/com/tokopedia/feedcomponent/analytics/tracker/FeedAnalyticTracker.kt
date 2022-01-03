@@ -211,7 +211,10 @@ class FeedAnalyticTracker
         const val PRICE = "price"
         const val QTY = "quantity"
         const val SHOP_ID = "shop_id"
+        const val CATEGORY_ID = "category_id"
+        const val DIMENSION_40 = "dimension40"
         const val SHOP_NAME = "shop_name"
+        const val SHOP_TYPE = "shop_type"
         const val MEDIA_PREVIEW = "/feed media preview - {role} post"
         const val MEDIA_PREVIEW_TAG = "{role}"
         const val CURRENCY_CODE = "currencyCode"
@@ -597,7 +600,9 @@ class FeedAnalyticTracker
                                                             price.getDigits().toZeroIfNull(),
                                                             quantity,
                                                             shopId.toIntOrZero(),
-                                                            shopName
+                                                            shopName,
+                                                            type,
+                                                            isFollowed
                                                     )
                                             )
                                     )
@@ -2790,13 +2795,21 @@ class FeedAnalyticTracker
         quantity: Int,
         shopId: Int,
         shopName: String,
+        type: String = "",
+        isFollowed: Boolean = false
     ): Map<String, Any> = DataLayer.mapOf(
-        Product.ID, id,
-        Product.NAME, name,
-        Product.PRICE, price,
-        Product.QTY, quantity,
-        Product.SHOP_ID, shopId,
-        Product.SHOP_NAME, shopName
+            Product.ID, id,
+            Product.CATEGORY_ID,id,
+            Product.NAME, name,
+            Product.PRICE, price,
+            Product.QTY, quantity,
+            Product.SHOP_ID, shopId,
+            Product.SHOP_NAME, shopName,
+            Product.SHOP_TYPE, "",
+            Product.VARIANT, "",
+            Product.BRAND, "",
+            Product.CATEGORY, "",
+            Product.DIMENSION_40, "/feed - ${getPostType(type, isFollowed)} "
     )
 
     fun getEcommerceView(listProduct: List<ProductItem>): Map<String, Any> {
