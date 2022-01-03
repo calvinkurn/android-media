@@ -10,4 +10,5 @@ data class GeneralSearchTrackingModel(
     val relatedKeyword: String,
     val pageSource: String,
     val searchFilter: String,
+    val componentId: String,
 )
