@@ -480,9 +480,19 @@ open class HomeRevampViewModel @Inject constructor(
     //TODO 11.1: Remove getBusinessUnitTabData -> Move to HomeDynamicChannelUseCase
     //Create BusinessUnitRepository
     fun getBusinessUnitTabData(position: Int){
-        launch {
-            homeBusinessUnitTabUseCase.get().getBuUnitTab(homeDataModel, position) {
-                updateWidget()
+        launchCatchError(coroutineContext, block = {
+            val data = homeBusinessUnitTabUseCase.get().getBusinessUnitTab()
+            (homeDataModel.list.getOrNull(position) as? NewBusinessUnitWidgetDataModel)?.let{ buWidget ->
+                val buWidgetData = buWidget.copy(
+                    tabList = data.tabBusinessList,
+                    backColor = data.widgetHeader.backColor,
+                    contentsList = data.tabBusinessList.withIndex().map { BusinessUnitDataModel(tabName = it.value.name, tabPosition = it.index) })
+                updateWidget(buWidgetData, position)
+            }
+
+        }) {
+            (homeDataModel.list.getOrNull(position) as? NewBusinessUnitWidgetDataModel)?.let{ buWidget ->
+                updateWidget(buWidget.copy(tabList = listOf()), position)
             }
         }
     }
