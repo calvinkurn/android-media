@@ -300,13 +300,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == REQUEST_CODE_LIVENESS) {
-            if (kycRedirectionUrl == null)
-                Toast.makeText(getContext(), "Callback from Liveness SDK -> url = null ", Toast.LENGTH_SHORT).show();
-            else
-                Toast.makeText(getContext(), "Callback from Liveness SDK -> url not null", Toast.LENGTH_SHORT).show();
+        if (requestCode == REQUEST_CODE_LIVENESS)
             webView.loadUrl(kycRedirectionUrl);
-        }
+
         if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);
             String base64 = encodeToBase64(imagePath, PICTURE_QUALITY);
@@ -779,10 +775,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             String projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
             Intent intent  = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY, projectId);
             kycRedirectionUrl = uri.getQueryParameter(LIVENESS_REDIRECTION_PATH);
-             if (kycRedirectionUrl == null)
-                Toast.makeText(getContext(), "Start Liveness SDK -> url = null ", Toast.LENGTH_SHORT).show();
-            else
-                Toast.makeText(getContext(), "Start Liveness SDK -> url not null", Toast.LENGTH_SHORT).show();
             startActivityForResult(intent, REQUEST_CODE_LIVENESS);
             return true;
         }
