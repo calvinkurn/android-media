@@ -24,7 +24,7 @@ class PlayBroadcastWebSocket @Inject constructor(
             if (gcToken.isNotEmpty()) append("&token=$gcToken")
         }
 
-        playWebSocket.connect(wsFullUrl, channelId, gcToken, SOURCE_PLAY_VIEWER)
+        playWebSocket.connect(wsFullUrl, channelId, gcToken, SOURCE_PLAY_BROADCASTER)
     }
 
     companion object {
@@ -32,6 +32,6 @@ class PlayBroadcastWebSocket @Inject constructor(
 
         private const val KEY_GROUPCHAT_DEVELOPER_OPTION_PREFERENCES = "ip_groupchat"
 
-        private const val SOURCE_PLAY_VIEWER = "Broadcaster"
+        private const val SOURCE_PLAY_BROADCASTER = "Broadcaster"
     }
 }
