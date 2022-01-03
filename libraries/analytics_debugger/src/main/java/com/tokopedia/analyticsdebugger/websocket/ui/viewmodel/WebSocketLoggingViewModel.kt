@@ -203,6 +203,6 @@ class WebSocketLoggingViewModel @Inject constructor(
     }
 
     private companion object {
-        const val PAGINATION_LIMIT = 20
+        const val PAGINATION_LIMIT = 50
     }
 }
