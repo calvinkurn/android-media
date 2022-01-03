@@ -106,6 +106,7 @@
         layout="@layout/view_like_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
         android:layout_marginBottom="@dimen/spacing_lvl2"
         app:layout_constraintStart_toStartOf="@id/view_like"
         app:layout_constraintEnd_toEndOf="@id/view_like"
