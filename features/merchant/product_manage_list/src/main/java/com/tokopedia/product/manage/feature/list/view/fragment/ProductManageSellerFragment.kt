@@ -155,8 +155,9 @@ class ProductManageSellerFragment : ProductManageFragment() {
     }
 
     private fun getDefaultKeywordOptionFromArguments() {
-        val searchKeyword = arguments?.getString(SEARCH_KEYWORD_OPTIONS).orEmpty()
-        super.setSearchKeywordOptions(searchKeyword)
+        arguments?.getString(SEARCH_KEYWORD_OPTIONS)?.let {
+            super.setSearchKeywordOptions(it)
+        }
     }
 
     private fun getDefaultFilterOptionsFromArguments() {

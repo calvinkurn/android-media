@@ -23,7 +23,6 @@ import android.view.View.OnFocusChangeListener
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.autocompletecomponent.R
@@ -67,20 +66,6 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     private var lastQuery: String? = null
     private var hint: String? = null
     private var isTyping = false
-    private val isABTestNavigationRevamp = isABTestNavigationRevamp()
-
-    private fun isABTestNavigationRevamp(): Boolean = true
-
-    private val mOnClickListener = OnClickListener { v ->
-        if (v === actionUpBtn || v === actionCancelButton) {
-            KeyboardHandler.DropKeyboard(activity, searchTextView)
-            activity?.finish()
-        } else if (v === actionVoiceButton) {
-            onVoiceClicked()
-        } else if (v === actionEmptyButton) {
-            searchTextView?.text = null
-        }
-    }
 
     private val searchNavigationOnClickListener = OnClickListener { v ->
         when {
@@ -126,12 +111,8 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     private fun initiateView() {
         LayoutInflater.from(mContext).inflate(R.layout.autocomplete_search_bar_view, this, true)
 
-        if (isABTestNavigationRevamp) {
-            configureSearchNavigationLayout()
-            setSearchNavigationListener()
-        } else {
-            setListener()
-        }
+        configureSearchNavigationLayout()
+        setSearchNavigationListener()
 
         allowVoiceSearch = true
 
@@ -143,15 +124,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     }
 
     private fun configureSearchNavigationLayout() {
-        configureOldNavButton()
         configureSearchNavigationView()
-    }
-
-    private fun configureOldNavButton() {
-        actionUpBtn?.visibility = View.GONE
-        autocompleteIconSearch?.visibility = View.GONE
-        actionEmptyButton?.visibility = View.GONE
-        actionVoiceButton?.visibility = View.GONE
     }
 
     private fun configureSearchNavigationView() {
@@ -176,26 +149,17 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         )
     }
 
-    private fun setSearchNavigationListener(){
+    private fun setSearchNavigationListener() {
         autocompleteActionUpButton?.setOnClickListener(searchNavigationOnClickListener)
         autocompleteVoiceButton?.setOnClickListener(searchNavigationOnClickListener)
         autocompleteClearButton?.setOnClickListener(searchNavigationOnClickListener)
     }
 
-    private fun setListener(){
-        actionUpBtn?.setOnClickListener(mOnClickListener)
-        actionVoiceButton?.setOnClickListener(mOnClickListener)
-        actionEmptyButton?.setOnClickListener(mOnClickListener)
-        actionCancelButton?.setOnClickListener(mOnClickListener)
-    }
-
     private fun showVoiceButton(show: Boolean) {
         if (show && isVoiceAvailable && allowVoiceSearch) {
-            if (isABTestNavigationRevamp) autocompleteVoiceButton?.visibility = View.VISIBLE
-            else actionVoiceButton?.visibility = View.VISIBLE
+            autocompleteVoiceButton?.visibility = View.VISIBLE
         } else {
-            if (isABTestNavigationRevamp) autocompleteVoiceButton?.visibility = View.GONE
-            else actionVoiceButton?.visibility = View.GONE
+            autocompleteVoiceButton?.visibility = View.GONE
 
             if (!isVoiceAvailable) {
                 setMargin(searchTextView, convertDpToPx(8), 0, convertDpToPx(12), 0)
@@ -223,7 +187,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         }
 
         searchTextView?.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) { }
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s != null) {
@@ -294,7 +258,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Subscriber<String>() {
-                    override fun onCompleted() { }
+                    override fun onCompleted() {}
 
                     override fun onError(e: Throwable) {
                         Log.d(TAG, e.localizedMessage)
@@ -321,19 +285,11 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         mUserQuery = text
         val hasText = !TextUtils.isEmpty(text)
         if (hasText) {
-            if (isABTestNavigationRevamp) autocompleteClearButton?.visibility = View.VISIBLE
-            else {
-                actionEmptyButton?.visibility = View.VISIBLE
-                actionCancelButton?.visibility = View.VISIBLE
-            }
+            autocompleteClearButton?.visibility = View.VISIBLE
 
             showVoiceButton(false)
         } else {
-            if (isABTestNavigationRevamp) autocompleteClearButton?.visibility = View.GONE
-            else {
-                actionEmptyButton?.visibility = View.GONE
-                actionCancelButton?.visibility = View.GONE
-            }
+            autocompleteClearButton?.visibility = View.GONE
 
             showVoiceButton(true)
         }
@@ -343,13 +299,6 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         }
 
         mOldQueryText = newText.toString()
-    }
-
-    private fun setConstraint(layout: ConstraintLayout?, startId: Int, startSide: Int, endId: Int, endSide: Int, margin: Int) {
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(layout)
-        constraintSet.connect(startId, startSide, endId, endSide, margin)
-        constraintSet.applyTo(layout)
     }
 
     fun setActivity(activity: AppCompatActivity) {
@@ -393,7 +342,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         }
     }
 
-    fun showSearch(searchParameter: SearchParameter) : SearchParameter{
+    fun showSearch(searchParameter: SearchParameter): SearchParameter {
         val param = this.searchParameter
         this.searchParameter = searchParameter
 
@@ -484,7 +433,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
 
         constructor(superState: Parcelable?) : super(superState)
 
-        constructor(parcel: Parcel): super(parcel) {
+        constructor(parcel: Parcel) : super(parcel) {
             query = parcel.readString()
             isSearchOpen = parcel.readInt() == 1
             hint = parcel.readString()

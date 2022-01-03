@@ -32,9 +32,8 @@ class WishlistV2EmptyStateCarouselViewHolder(private val binding: WishlistV2Empt
             freeMode = false
             centerMode = true
             slideToScroll = 1
-            infinite = false
+            infinite = true
             addItems(R.layout.wishlist_v2_empty_state_custom_item, items, itemParam)
-
         }
 
         binding.buttonEmptyState.setOnClickListener {

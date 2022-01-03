@@ -39,7 +39,7 @@ class ItemStatusPMViewHolder(
         binding?.run {
             tvPmReputationValue.text = getString(R.string.title_pm_value)
             element?.descPM?.let {
-                tvDescContentPmSection.setTextMakeHyperlink(it) {
+                tvDescContentPmSection.setTextMakeHyperlink(getString(it)) {
                     itemStatusPowerMerchantListener.onItemClickedGotoPMPro()
                 }
             }
