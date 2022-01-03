@@ -8,7 +8,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class HomeBusinessUnitRepository @Inject constructor(
+class HomeBusinessUnitTabRepository @Inject constructor(
     private val graphqlUseCase: GraphqlUseCase<HomeWidget.Data>
 ) : UseCase<HomeWidget>() {
     private val params = RequestParams.create()

@@ -1,17 +1,17 @@
 package com.tokopedia.home.beranda.domain.interactor.usecase
 
-import com.tokopedia.home.beranda.domain.interactor.repository.HomeBusinessUnitRepository
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeBusinessUnitTabRepository
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
 import javax.inject.Inject
 
-class HomeBusinessUnitUseCase @Inject constructor(
-    private val homeBusinessUnitRepository: HomeBusinessUnitRepository
+class HomeBusinessUnitTabUseCase @Inject constructor(
+    private val homeBusinessUnitTabRepository: HomeBusinessUnitTabRepository
 ) {
     suspend fun getBuUnitTab(homeDataModel: HomeDynamicChannelModel, position: Int) {
         try {
-            val data = homeBusinessUnitRepository.executeOnBackground()
+            val data = homeBusinessUnitTabRepository.executeOnBackground()
             (homeDataModel.list.getOrNull(position) as? NewBusinessUnitWidgetDataModel)?.let{ buWidget ->
                 val buWidgetData = buWidget.copy(
                     tabList = data.tabBusinessList,
