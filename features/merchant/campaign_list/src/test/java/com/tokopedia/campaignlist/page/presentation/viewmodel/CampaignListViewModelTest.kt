@@ -355,8 +355,8 @@ class CampaignListViewModelTest {
 
 
     @Test
-    fun `When get share description wording while campaign status is ongoing, should return correct wording`() {
-        val campaignStatusOngoing = "7"
+    fun `When get share description wording while campaign status is not ongoing, should return correct wording`() {
+        val campaignStatusUpcoming = "6"
         val shareUri = "https://api.whatsapp.com?phone=082210000000"
         val campaign = Campaign(name = "Flash Deal")
         val expected =
@@ -370,7 +370,7 @@ class CampaignListViewModelTest {
                 campaignData = campaign,
                 merchantBannerData = merchantBanner,
                 shareUri = shareUri,
-                campaignStatusId = campaignStatusOngoing
+                campaignStatusId = campaignStatusUpcoming
         )
 
         assertEquals(expected, actual)
@@ -397,8 +397,8 @@ class CampaignListViewModelTest {
     }
 
     @Test
-    fun `When get share description wording while campaign status is not ongoing, should return correct wording`() {
-        val campaignStatusUpcoming = "6"
+    fun `When get share description wording while campaign status is ongoing, should return correct wording`() {
+        val campaignStatusOngoing = "7"
         val shareUri = "https://api.whatsapp.com?phone=082210000000"
         val campaign = Campaign(name = "Flash Deal")
         val expected =
@@ -412,29 +412,7 @@ class CampaignListViewModelTest {
                 campaignData = campaign,
                 merchantBannerData = merchantBanner,
                 shareUri = shareUri,
-                campaignStatusId = campaignStatusUpcoming
-        )
-
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `When get share description wording while campaign status is not specified, should return correct wording`() {
-        val campaignStatus = null
-        val shareUri = "https://api.whatsapp.com?phone=082210000000"
-        val campaign = Campaign(name = "Flash Deal")
-        val expected =
-            "Kejar eksklusif launching ${campaign.name} dari ${shop.name} hanya di @Tokopedia. Hanya sampai 03 Jan 2022 pukul 14:00 WIB! $shareUri"
-        val merchantBanner = GetMerchantCampaignBannerGeneratorData(formattedEndDate = "03 Jan 2022, 14:00 WIB")
-
-        every { resourceProvider.getShareOngoingCampaignDescriptionWording() } returns "Kejar eksklusif launching %s dari %s hanya di @Tokopedia. Hanya sampai %s pukul %s!"
-
-        val actual = viewModel.getShareDescriptionWording(
-                shopData = shop,
-                campaignData = campaign,
-                merchantBannerData = merchantBanner,
-                shareUri = shareUri,
-                campaignStatusId = campaignStatus
+                campaignStatusId = campaignStatusOngoing
         )
 
         assertEquals(expected, actual)
