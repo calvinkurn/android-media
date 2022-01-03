@@ -15,15 +15,15 @@ import javax.inject.Inject
 
 class ShowInterruptUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
-    dispatcher: CoroutineDispatcher): CoroutineUseCase<Unit, ShowInterruptResponse>(dispatcher) {
+    dispatcher: CoroutineDispatcher): CoroutineUseCase<Map<String, Any>, ShowInterruptResponse>(dispatcher) {
 
-    override suspend fun execute(params: Unit): ShowInterruptResponse {
-        return repository.request(graphqlQuery(), Unit)
+    override suspend fun execute(params: Map<String, Any>): ShowInterruptResponse {
+        return repository.request(graphqlQuery(), params)
     }
 
     override fun graphqlQuery(): String = """
-        query showInterrupt{
-            show_interrupt {
+        query showInterrupt(${'$'}module: String!){
+            show_interrupt(module: ${'$'}module) {
                 popup_2fa
                 interval
                 show_skip
@@ -35,4 +35,8 @@ class ShowInterruptUseCase @Inject constructor(
             }
         }
     """.trimIndent()
+
+    companion object {
+        const val PARAM_MODULE = "module"
+    }
 }

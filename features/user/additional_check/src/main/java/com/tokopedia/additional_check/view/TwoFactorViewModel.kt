@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.additional_check.data.ShowInterruptData
 import com.tokopedia.additional_check.data.pref.AdditionalCheckPreference
 import com.tokopedia.additional_check.domain.usecase.ShowInterruptUseCase
+import com.tokopedia.additional_check.domain.usecase.ShowInterruptUseCase.Companion.PARAM_MODULE
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -22,7 +23,10 @@ class TwoFactorViewModel @Inject constructor (@Named(SessionModule.SESSION_MODUL
     fun check(onSuccess: (ShowInterruptData) -> Unit, onError: (Throwable) -> Unit) {
         if(additionalCheckPreference.isNeedCheck() && userSession.isLoggedIn) {
             launchCatchError(block = {
-                val result = showInterruptUseCase(Unit).data
+                val params = mapOf(
+                    PARAM_MODULE to "account_linking"
+                )
+                val result = showInterruptUseCase(params).data
                 if(result.popupType == AdditionalCheckConstants.POPUP_TYPE_NONE) {
                     additionalCheckPreference.setInterval(result.accountLinkReminderData.interval)
                 } else {
