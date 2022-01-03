@@ -75,11 +75,13 @@ object UrlParamUtils {
 
     @JvmStatic
     fun removeKeysFromQueryParams(queryParams: String?, keysToRemove: List<String?>?): String {
-        if (queryParams == null) return ""
-        if (keysToRemove == null || keysToRemove.isEmpty()) return queryParams
-        val queryParamsMap = getParamMap(queryParams)
-        for (key in keysToRemove) queryParamsMap.remove(key)
-        return generateUrlParamString(queryParamsMap)
+        return if(queryParams == null) ""
+        else if(keysToRemove == null || keysToRemove.isEmpty()) queryParams
+        else {
+            val queryParamsMap = getParamMap(queryParams)
+            for (key in keysToRemove) queryParamsMap.remove(key)
+            generateUrlParamString(queryParamsMap)
+        }
     }
 
     @JvmStatic
