@@ -21,6 +21,7 @@ class ReactivatedBeforeMondayOSActivityTest: ShopScoreTest() {
         super.setup()
         getShopInfoPeriodUseCaseStub.responseStub = shopInfoPeriodResponse
         getShopPerformanceUseCaseStub.responseStub = reactivatedBeforeMondayOsResponse
+        shopScorePrefManagerStub.setFinishCoachMark(true)
     }
 
     @Test
@@ -37,7 +38,6 @@ class ReactivatedBeforeMondayOSActivityTest: ShopScoreTest() {
 
     @Test
     fun show_header_performance_when_reactivated_os() {
-        shopScorePrefManagerStub.setFinishCoachMark(true)
         activityRule.launchActivity(getShopPerformancePageIntent())
         showHeaderPerformanceNewSellerOs(reactivatedBeforeMondayOsResponse, shopInfoPeriodAfterMondayResponse)
     }
@@ -66,6 +66,6 @@ class ReactivatedBeforeMondayOSActivityTest: ShopScoreTest() {
     fun show_faq_shop_score_new_reactivated_before_monday_os() {
         activityRule.launchActivity(getShopPerformancePageIntent())
         activityRule.activity.scrollTo<SectionFaqUiModel>()
-        showFaqItemList(reactivatedBeforeMondayOsResponse)
+        showFaqItemList()
     }
 }
