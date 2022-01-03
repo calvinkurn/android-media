@@ -64,11 +64,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.product.manage.feature.etalase.view.activity.EtalasePickerActivity"
-            android:label="@string/product_manage_etalase_picker_title"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".feature.campaignstock.ui.activity.CampaignStockActivity"
             android:label="@string/product_manage_campaign_stock_allocation"
             android:theme="@style/Theme.White"

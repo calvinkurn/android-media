@@ -8,7 +8,6 @@ object ProfileCompletionQueryConstant {
     const val MUTATION_ADD_PHONE = "add_phone"
     const val MUTATION_ADD_BOD = "add_bod"
     const val MUTATION_CHECK_PHONE = "check_msisdn"
-    const val MUTATION_CHANGE_PICTURE = "change_picture"
     const val MUTATION_USER_VALIDATE = "user_validate"
     const val MUTATION_CREATE_PIN = "create_pin"
     const val MUTATION_UPDATE_PIN = "update_pin"
