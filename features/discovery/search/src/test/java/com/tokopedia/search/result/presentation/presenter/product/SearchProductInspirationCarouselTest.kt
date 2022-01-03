@@ -893,9 +893,13 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         )
     }
 
+    /**
+     * inspirationCarouselData => ignored
+     * detekt UnusedPrivateMember, need to rename unused using detekt white list name
+     */
     private fun assertCarouselProductTypeBroadMatch(
             broadMatchDataView: BroadMatchDataView,
-            inspirationCarouselData: SearchProductModel.InspirationCarouselData,
+            ignored: SearchProductModel.InspirationCarouselData,
     ) {
         val carouselOptionType = broadMatchDataView.carouselOptionType
         carouselOptionType.shouldBeInstanceOf<BroadMatch>()
