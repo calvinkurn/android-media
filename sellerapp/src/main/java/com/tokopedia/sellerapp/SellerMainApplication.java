@@ -107,7 +107,6 @@ public class SellerMainApplication extends SellerRouterApplication {
         initFileDirConfig();
         FpmLogger.init(this);
         TokopediaUrl.Companion.init(this);
-        generateSellerAppNetworkKeys();
         initRemoteConfig();
         initCacheManager();
 
