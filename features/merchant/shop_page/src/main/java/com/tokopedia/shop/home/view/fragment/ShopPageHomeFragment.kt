@@ -601,6 +601,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 }
                 is Fail -> {
                     val throwable = it.throwable
+                    val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
                     if (!ShopUtil.isExceptionIgnored(throwable)) {
                         ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
@@ -609,10 +610,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                                 userId = userId,
                                 shopId = shopId,
                                 shopName = shopName,
-                                errorMessage = ErrorHandler.getErrorMessage(context, throwable),
+                                errorMessage = errorMessage,
                                 stackTrace = Log.getStackTraceString(throwable),
                                 errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
                         )
+                    }
+                    if(shopHomeAdapter.isProductGridListPlaceholderExists()){
+                        showErrorToast(errorMessage)
                     }
                 }
             }
