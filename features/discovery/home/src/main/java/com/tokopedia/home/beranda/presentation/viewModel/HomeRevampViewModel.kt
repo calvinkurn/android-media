@@ -78,37 +78,37 @@ import javax.inject.Inject
 @SuppressLint("SyntheticAccessor")
 @ExperimentalCoroutinesApi
 open class HomeRevampViewModel @Inject constructor(
-        private val homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase,
-        private val homeUseCase: Lazy<HomeDynamicChannelUseCase>,
-        private val userSession: Lazy<UserSessionInterface>,
-        private val closeChannelUseCase: Lazy<CloseChannelUseCase>,
-        private val dismissHomeReviewUseCase: Lazy<DismissHomeReviewUseCase>,
-        private val getAtcUseCase: Lazy<AddToCartOccMultiUseCase>,
-        private val getBusinessUnitDataUseCase: Lazy<GetBusinessUnitDataUseCase>,
-        private val getDisplayHeadlineAds: Lazy<GetDisplayHeadlineAds>,
-        private val homeReviewSuggestedRepository: Lazy<HomeReviewSuggestedRepository>,
-        private val getHomeTokopointsListDataUseCase: Lazy<GetHomeTokopointsListDataUseCase>,
-        private val getKeywordSearchUseCase: Lazy<GetKeywordSearchUseCase>,
-        private val getPendingCashbackUseCase: Lazy<GetCoroutinePendingCashbackUseCase>,
-        private val homePlayCardHomeRepository: Lazy<HomePlayLiveDynamicRepository>,
-        private val getRecommendationTabUseCase: Lazy<GetRecommendationTabUseCase>,
-        private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
-        private val getRecommendationFilterChips: Lazy<GetRecommendationFilterChips>,
-        private val getWalletBalanceUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
-        private val popularKeywordRepository: Lazy<HomePopularKeywordRepository>,
-        private val injectCouponTimeBasedUseCase: Lazy<InjectCouponTimeBasedUseCase>,
-        private val homeRechargeRecommendationRepository: Lazy<HomeRechargeRecommendationRepository>,
-        private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
-        private val homeSalamWidgetRepository: Lazy<HomeSalamWidgetRepository>,
-        private val declineSalamWidgetUseCase: Lazy<DeclineSalamWIdgetUseCase>,
-        private val getRechargeBUWidgetUseCase: Lazy<GetRechargeBUWidgetUseCase>,
-        private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
-        private val bestSellerMapper: Lazy<BestSellerMapper>,
-        private val homeDispatcher: Lazy<CoroutineDispatchers>,
-        private val playWidgetTools: Lazy<PlayWidgetTools>,
-        private val getWalletAppBalanceUseCase: Lazy<GetWalletAppBalanceUseCase>,
-        private val getWalletEligibilityUseCase: Lazy<GetWalletEligibilityUseCase>,
-        private val homeBusinessUnitTabUseCase: Lazy<HomeBusinessUnitTabUseCase>) : BaseCoRoutineScope(homeDispatcher.get().io) {
+    private val homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase,
+    private val homeUseCase: Lazy<HomeDynamicChannelUseCase>,
+    private val userSession: Lazy<UserSessionInterface>,
+    private val closeChannelUseCase: Lazy<CloseChannelUseCase>,
+    private val dismissHomeReviewUseCase: Lazy<DismissHomeReviewUseCase>,
+    private val getAtcUseCase: Lazy<AddToCartOccMultiUseCase>,
+    private val homeBusinessUnitDataRepository: Lazy<HomeBusinessUnitDataRepository>,
+    private val getDisplayHeadlineAds: Lazy<GetDisplayHeadlineAds>,
+    private val homeReviewSuggestedRepository: Lazy<HomeReviewSuggestedRepository>,
+    private val getHomeTokopointsListDataUseCase: Lazy<GetHomeTokopointsListDataUseCase>,
+    private val getKeywordSearchUseCase: Lazy<GetKeywordSearchUseCase>,
+    private val getPendingCashbackUseCase: Lazy<GetCoroutinePendingCashbackUseCase>,
+    private val homePlayCardHomeRepository: Lazy<HomePlayLiveDynamicRepository>,
+    private val getRecommendationTabUseCase: Lazy<GetRecommendationTabUseCase>,
+    private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
+    private val getRecommendationFilterChips: Lazy<GetRecommendationFilterChips>,
+    private val getWalletBalanceUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
+    private val popularKeywordRepository: Lazy<HomePopularKeywordRepository>,
+    private val injectCouponTimeBasedUseCase: Lazy<InjectCouponTimeBasedUseCase>,
+    private val homeRechargeRecommendationRepository: Lazy<HomeRechargeRecommendationRepository>,
+    private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
+    private val homeSalamWidgetRepository: Lazy<HomeSalamWidgetRepository>,
+    private val declineSalamWidgetUseCase: Lazy<DeclineSalamWIdgetUseCase>,
+    private val getRechargeBUWidgetUseCase: Lazy<GetRechargeBUWidgetUseCase>,
+    private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
+    private val bestSellerMapper: Lazy<BestSellerMapper>,
+    private val homeDispatcher: Lazy<CoroutineDispatchers>,
+    private val playWidgetTools: Lazy<PlayWidgetTools>,
+    private val getWalletAppBalanceUseCase: Lazy<GetWalletAppBalanceUseCase>,
+    private val getWalletEligibilityUseCase: Lazy<GetWalletEligibilityUseCase>,
+    private val homeBusinessUnitTabUseCase: Lazy<HomeBusinessUnitTabUseCase>) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
         private const val HOME_LIMITER_KEY = "HOME_LIMITER_KEY"
@@ -481,33 +481,20 @@ open class HomeRevampViewModel @Inject constructor(
     //Create BusinessUnitRepository
     fun getBusinessUnitTabData(position: Int){
         launch {
-            homeBusinessUnitTabUseCase.get().getBuUnitTab(homeDataModel, position)
+            homeBusinessUnitTabUseCase.get().getBuUnitTab(homeDataModel, position) {
+                updateWidget()
+            }
         }
     }
 
     //TODO 11.2: Remove getBusinessUnitTabData -> Move to HomeBusinessUnitUseCase.onClickBusinessUnitTab
     //Create BusinessUnitRepository
     fun getBusinessUnitData(tabId: Int, position: Int, tabName: String){
-        if(buWidgetJob?.isActive == true) return
-        buWidgetJob = launchCatchError(coroutineContext, block = {
-            getBusinessUnitDataUseCase.get().setParams(tabId, position, tabName)
-            val data = getBusinessUnitDataUseCase.get().executeOnBackground()
-            homeDataModel.list.withIndex().find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
-                val oldBuData = buModel.value as NewBusinessUnitWidgetDataModel
-                val newBuList = oldBuData.contentsList.copy().toMutableList()
-                newBuList[position] = newBuList[position].copy(list = data)
-                updateWidget(oldBuData.copy(contentsList = newBuList), buModel.index)
-            }
-        }){
-            // show error
-            homeDataModel.list.withIndex().find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
-                val oldBuData = buModel.value as NewBusinessUnitWidgetDataModel
-                val newBuList = oldBuData.contentsList.copy().toMutableList()
-                newBuList[position] = newBuList[position].copy(list = listOf())
-                val newList = homeDataModel.list.copy().toMutableList()
-                newList[buModel.index] = oldBuData.copy(contentsList = newBuList)
-                updateWidget(oldBuData.copy(contentsList = newBuList),buModel.index)
-            }
+        launch {
+            homeBusinessUnitTabUseCase.get()
+                .getBusinessUnitData(tabId, position, tabName, homeDataModel) {
+                    updateWidget()
+                }
         }
     }
 
@@ -793,6 +780,10 @@ open class HomeRevampViewModel @Inject constructor(
     //TODO 31: Remove updateWidget -> Move to HomeDynamicChannelUseCase
     private fun updateWidget(visitable: Visitable<*>, position: Int, visitableToChange: Visitable<*>? = null) {
         homeDataModel.updateWidgetModel(visitable, visitableToChange, position) { _homeLiveDynamicChannel.postValue(homeDataModel) }
+    }
+
+    private fun updateWidget() {
+        _homeLiveDynamicChannel.postValue(homeDataModel)
     }
 
     //TODO 32: Remove deleteWidget -> Move to HomeDynamicChannelUseCase
