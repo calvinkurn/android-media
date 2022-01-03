@@ -577,7 +577,10 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun observeUserReportSubmission(){
         viewModel.observableUserReportSubmission.observe(viewLifecycleOwner, DistinctObserver {
             when (it) {
-                is PlayResult.Success -> playViewModel.hideInsets(false)
+                is PlayResult.Success -> {
+                    playFragment.hideKeyboard()
+                    playViewModel.hideInsets(isKeyboardHandled = true)
+                }
                 is PlayResult.Failure -> doShowToaster(
                     bottomSheetType = BottomInsetsType.UserReportSubmissionSheet,
                     toasterType = Toaster.TYPE_ERROR,

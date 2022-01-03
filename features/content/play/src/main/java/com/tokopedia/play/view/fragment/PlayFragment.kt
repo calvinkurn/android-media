@@ -514,7 +514,7 @@ class PlayFragment @Inject constructor(
         pageMonitoring.stopMonitoring()
     }
 
-    private fun hideKeyboard() {
+    fun hideKeyboard() {
         val view = activity?.currentFocus
         view?.let { v ->
             val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
