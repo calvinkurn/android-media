@@ -6,9 +6,8 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.tokopedia.abstraction.common.di.module.AppModule;
 import com.tokopedia.app.common.di.CommonAppComponent;
-//import com.tokopedia.app.common.di.DaggerCommonAppComponent;
+import com.tokopedia.app.common.di.DaggerCommonAppComponent;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
@@ -33,7 +32,7 @@ import java.io.File;
 public abstract class MainApplication extends CoreNetworkApplication {
 
     private LocationUtils locationUtils;
-//    private DaggerCommonAppComponent.Builder daggerBuilder;
+    private DaggerCommonAppComponent.Builder daggerBuilder;
     private CommonAppComponent appComponent;
     private UserSession userSession;
     protected RemoteConfig remoteConfig;
@@ -77,9 +76,9 @@ public abstract class MainApplication extends CoreNetworkApplication {
         userSession = new UserSession(this);
         initCrashlytics();
 
-//        daggerBuilder = DaggerCommonAppComponent.builder()
-//                .appModule(new AppModule(this));
-//        getApplicationComponent().inject(this);
+        daggerBuilder = DaggerCommonAppComponent.builder()
+                .baseAppComponent((MainApplication.this).getBaseAppComponent());
+        getApplicationComponent().inject(this);
 
         initBranch();
         NotificationUtils.setNotificationChannel(this);
@@ -152,7 +151,7 @@ public abstract class MainApplication extends CoreNetworkApplication {
 
     public CommonAppComponent getAppComponent() {
         if (appComponent == null) {
-//            appComponent = daggerBuilder.build();
+            appComponent = daggerBuilder.build();
         }
         return appComponent;
     }

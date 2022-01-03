@@ -60,10 +60,9 @@ public class ThanksTrackerService extends JobIntentService {
     }
 
     private void initInjection() {
-        CommonAppComponent appComponent = ((MainApplication) getApplication()).getAppComponent();
         DaggerThanksTrackerComponent component =
                 (DaggerThanksTrackerComponent) DaggerThanksTrackerComponent.builder()
-                        .commonAppComponent(appComponent)
+                        .baseAppComponent(((MainApplication) getApplication()).getBaseAppComponent())
                         .build();
 
         component.inject(this);

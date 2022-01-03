@@ -106,7 +106,6 @@ public abstract class SellerRouterApplication extends MainApplication implements
         LinkerRouter,
         SellerHomeRouter,
         LoginRouter {
-    ConsumerMainApplication
     private TopAdsComponent topAdsComponent;
     private TetraDebugger tetraDebugger;
 

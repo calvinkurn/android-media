@@ -31,6 +31,12 @@ import dagger.Provides;
 public class ThanksTrackerModule {
     @Provides
     @ThanksTrackerScope
+    public GCMHandler provideGcmHandler(@ApplicationContext Context context){
+        return new GCMHandler(context);
+    }
+
+    @Provides
+    @ThanksTrackerScope
     DigitalTrackerService provideDigitalThanksService() {
         return new DigitalTrackerService();
     }
