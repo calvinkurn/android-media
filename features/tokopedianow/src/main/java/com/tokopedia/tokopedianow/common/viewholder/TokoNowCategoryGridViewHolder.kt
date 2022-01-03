@@ -41,7 +41,6 @@ class TokoNowCategoryGridViewHolder(
     private var stubBinding: PartialTokopedianowViewStubDcTitleBinding? by viewBinding()
 
     private var tvTitle: Typography? = null
-    private var tvSeeAll: Typography? = null
     private var llCategory: LocalLoad? = null
     private var rvCategory: RecyclerView? = null
     private var categoryShimmering: View? = null
@@ -62,6 +61,10 @@ class TokoNowCategoryGridViewHolder(
         }
     }
 
+    override fun onAllCategoryClicked() {
+        listener?.onAllCategoryClicked()
+    }
+
     override fun onCategoryClicked(position: Int, categoryId: String) {
         listener?.onCategoryClicked(position, categoryId)
     }
@@ -73,7 +76,6 @@ class TokoNowCategoryGridViewHolder(
         }
         binding?.vsTitle?.inflate()
         tvTitle = stubBinding?.channelTitle
-        tvSeeAll = binding?.tvSeeAll
         llCategory = binding?.llCategory
         rvCategory = binding?.rvCategory
         categoryShimmering = binding?.categoryShimmering?.categoryShimmeringLayout
@@ -89,10 +91,6 @@ class TokoNowCategoryGridViewHolder(
 
     private fun showCategoryGrid(data: TokoNowCategoryGridUiModel) {
         tvTitle?.text = if (data.title.isEmpty()) itemView.context.getString(R.string.tokopedianow_repurchase_category_grid_title) else data.title
-        tvSeeAll?.setOnClickListener {
-            RouteManager.route(itemView.context, ApplinkConstInternalTokopediaNow.CATEGORY_LIST, localCacheModel?.warehouse_id)
-            listener?.onAllCategoryClicked()
-        }
 
         rvCategory?.apply {
             adapter = this@TokoNowCategoryGridViewHolder.adapter
@@ -112,7 +110,6 @@ class TokoNowCategoryGridViewHolder(
 
         categoryShimmering?.hide()
         llCategory?.hide()
-        tvSeeAll?.show()
         categoryHeader?.show()
         rvCategory?.show()
     }
@@ -128,7 +125,6 @@ class TokoNowCategoryGridViewHolder(
             }
             tvTitle?.text = data.title
         }
-        tvSeeAll?.hide()
         categoryShimmering?.hide()
         rvCategory?.hide()
         categoryHeader?.show()

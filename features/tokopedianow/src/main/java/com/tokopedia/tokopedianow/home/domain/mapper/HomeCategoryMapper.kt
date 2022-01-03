@@ -10,7 +10,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
 
 object HomeCategoryMapper {
 
-    private const val MAX_HOME_CATEGORY_ITEM_COUNT = 8
+    private const val MAX_HOME_CATEGORY_ITEM_COUNT = 9
 
     fun mapToCategoryLayout(response: HomeLayoutResponse, state: HomeLayoutItemState): HomeLayoutItemUiModel {
         val categoryGridUiModel = TokoNowCategoryGridUiModel(
