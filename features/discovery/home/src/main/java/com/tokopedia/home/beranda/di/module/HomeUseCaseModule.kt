@@ -210,6 +210,14 @@ class HomeUseCaseModule {
 
     @HomeScope
     @Provides
+    fun getBusinessWidgetTabUseCase(graphqlRepository: GraphqlRepository): HomeBusinessUnitRepository {
+        val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeWidget.Data>(graphqlRepository)
+        usecase.setGraphqlQuery(businessWidgetQuery)
+        return HomeBusinessUnitRepository(usecase)
+    }
+
+    @HomeScope
+    @Provides
     fun getBusinessUnitDataTab(graphqlRepository: GraphqlRepository): GetBusinessUnitDataUseCase {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeWidget.Data>(graphqlRepository)
         useCase.setGraphqlQuery(businessUnitDataQuery)

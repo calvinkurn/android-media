@@ -25,6 +25,7 @@ import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUs
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.interactor.repository.*
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.Balances
@@ -123,7 +124,8 @@ open class HomeRevampViewModel @Inject constructor(
         private val homeDispatcher: Lazy<CoroutineDispatchers>,
         private val playWidgetTools: Lazy<PlayWidgetTools>,
         private val getWalletAppBalanceUseCase: Lazy<GetWalletAppBalanceUseCase>,
-        private val getWalletEligibilityUseCase: Lazy<GetWalletEligibilityUseCase>) : BaseCoRoutineScope(homeDispatcher.get().io) {
+        private val getWalletEligibilityUseCase: Lazy<GetWalletEligibilityUseCase>,
+        private val homeBusinessUnitUseCase: Lazy<HomeBusinessUnitUseCase>) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
         private const val HOME_LIMITER_KEY = "HOME_LIMITER_KEY"
@@ -495,19 +497,8 @@ open class HomeRevampViewModel @Inject constructor(
     //TODO 11.1: Remove getBusinessUnitTabData -> Move to HomeDynamicChannelUseCase
     //Create BusinessUnitRepository
     fun getBusinessUnitTabData(position: Int){
-        launchCatchError(coroutineContext, block = {
-            val data = getBusinessWidgetTab.get().executeOnBackground()
-            (homeDataModel.list.getOrNull(position) as? NewBusinessUnitWidgetDataModel)?.let{ buWidget ->
-                val buWidgetData = buWidget.copy(
-                        tabList = data.tabBusinessList,
-                        backColor = data.widgetHeader.backColor,
-                        contentsList = data.tabBusinessList.withIndex().map { BusinessUnitDataModel(tabName = it.value.name, tabPosition = it.index) })
-                updateWidget(buWidgetData, position)
-            }
-        }){
-            (homeDataModel.list.getOrNull(position) as? NewBusinessUnitWidgetDataModel)?.let{ buWidget ->
-                updateWidget(buWidget.copy(tabList = listOf()), position)
-            }
+        launch {
+            homeBusinessUnitUseCase.get().getBuUnitTab(homeDataModel, position)
         }
     }
 
