@@ -35,13 +35,10 @@ internal class SearchShopViewModelFactory(
         return SearchShopViewModel(
                 coroutineDispatcher,
                 searchParameter,
-                shopSearchUseCase.searchShopFirstPageUseCase,
-                shopSearchUseCase.searchShopLoadMoreUseCase,
-                shopSearchUseCase.getDynamicFilterUseCase,
-                shopSearchUseCase.getShopCountUseCase,
                 shopCpmDataViewMapper,
                 shopDataViewMapper,
-                userSession
+                userSession,
+                shopSearchUseCase
         )
     }
 }
