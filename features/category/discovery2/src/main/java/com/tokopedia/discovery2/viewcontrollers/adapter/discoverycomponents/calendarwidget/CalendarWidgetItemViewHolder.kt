@@ -17,6 +17,7 @@ import com.tokopedia.discovery2.Constant.Calendar
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.TIMER_DATE_FORMAT
+import com.tokopedia.discovery2.analytics.CALENDAR_WIDGET_CLICK
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.di.getSubComponent
@@ -193,8 +194,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                     calendarDateAlpha.gone()
                     calendarDate.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.discovery2_dms_clr_2F89FC))
                 }
-                /**Commented code to be removed when backend is ready **/
-//                if (Utils.isFutureSaleOngoing(startDate ?: "", endDate ?: "", TIMER_DATE_FORMAT)) {
+                if (Utils.isFutureSaleOngoing(startDate ?: "", endDate ?: "", TIMER_DATE_FORMAT)) {
                     calendarButton.text =
                         itemView.context.getString(R.string.discovery_button_event_ongoing)
                     calendarButton.buttonType = UnifyButton.Type.MAIN
@@ -208,12 +208,12 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                                 )
                         }
                     }
-//                } else {
-//                    calendarButton.text = itemView.context.getString(R.string.discovery_button_event_reminder)
-//                    calendarButton.buttonType = UnifyButton.Type.ALTERNATE
-//                    calendarWidgetItemViewModel.checkUserPushStatus(notifyCampaignId)
-//                    mNotifyCampaignId = notifyCampaignId
-//                }
+                } else {
+                    calendarButton.text = itemView.context.getString(R.string.discovery_button_event_reminder)
+                    calendarButton.buttonType = UnifyButton.Type.ALTERNATE
+                    calendarWidgetItemViewModel.checkUserPushStatus(notifyCampaignId)
+                    mNotifyCampaignId = notifyCampaignId
+                }
             }
             if(buttonApplink.isNullOrEmpty()){
                 calendarButtonParent.hide()
@@ -266,6 +266,13 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
             calendarWidgetItemViewModel.getPushBannerSubscriptionData().observe(fragment.viewLifecycleOwner, {
                 updateButton(it)
             })
+            calendarWidgetItemViewModel.getShowErrorToastData().observe(fragment.viewLifecycleOwner, {
+                Toaster.build(
+                    itemView, it, Toast.LENGTH_SHORT,
+                    Toaster.TYPE_ERROR,
+                    itemView.context.getString(R.string.discovery_calendar_push_action)
+                ).show()
+            })
             calendarWidgetItemViewModel.getPushBannerStatusData().observe(fragment.viewLifecycleOwner, {
                 updateButton(it.first)
                 if (it.second.isNotEmpty()) {
@@ -314,6 +321,11 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 calendarWidgetItemViewModel.getUserId())
     }
     private fun setOnClick(subscribed: Boolean) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+            .trackEventClickCalendarCTA(
+                calendarWidgetItemViewModel.components,
+                calendarWidgetItemViewModel.getUserId()
+            )
         if (subscribed)
             calendarWidgetItemViewModel.unSubscribeUserForPushNotification(mNotifyCampaignId)
         else

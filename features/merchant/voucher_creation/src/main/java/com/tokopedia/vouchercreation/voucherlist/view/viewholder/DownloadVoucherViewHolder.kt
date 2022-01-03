@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.vouchercreation.R
@@ -20,6 +21,7 @@ class DownloadVoucherViewHolder(itemView: View?) : AbstractViewHolder<DownloadVo
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.item_mvc_download_voucher
+        private const val STRAIGHT_ANGLE = 180
     }
 
     override fun bind(element: DownloadVoucherUiModel) {
@@ -68,7 +70,7 @@ class DownloadVoucherViewHolder(itemView: View?) : AbstractViewHolder<DownloadVo
     }
 
     private fun rotateChevronIcon(isExpanded: Boolean) = with(itemView) {
-        val angle = if (isExpanded) 0 else 180
+        val angle = if (isExpanded) Int.ZERO else STRAIGHT_ANGLE
         icMvcChevron.rotation = angle.toFloat()
     }
 

@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.analytic
 
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
+import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -494,6 +495,26 @@ class PlayBroadcastAnalytic(
     }
 
     /**
+     * Impress Product Tag Carousel
+     */
+    fun impressProductTag(channelId: String) {
+        impressionGeneralEvent(
+            "- product tag carousel",
+            "- $channelId"
+        )
+    }
+
+    /**
+     * Scroll Product Tag Carousel
+     */
+    fun scrollProductTag(channelId: String, product: ProductContentUiModel, position: Int) {
+        scrollGeneralEvent(
+            "- product tag carousel",
+            "- $channelId - ${product.id} - $position"
+        )
+    }
+
+    /**
      * View Exit Pop Up on Live Room
      */
     fun viewDialogExitOnLivePage(channelId: String, titleChannel: String) {
@@ -737,6 +758,36 @@ class PlayBroadcastAnalytic(
                 event = KEY_TRACK_CLICK_EVENT,
                 action = eventAction.toString(),
                 label = label
+        )
+    }
+
+    private fun impressionGeneralEvent(action: String, label: String =  "") {
+        val eventAction = StringBuilder()
+        eventAction.append(KEY_TRACK_IMPRESSION)
+        if (action.isNotBlank()) {
+            eventAction.append(" ")
+            eventAction.append(action)
+        }
+
+        sendGeneralEvent(
+            event = KEY_TRACK_VIEW_EVENT,
+            action = eventAction.toString(),
+            label = label
+        )
+    }
+
+    private fun scrollGeneralEvent(action: String, label: String =  "") {
+        val eventAction = StringBuilder()
+        eventAction.append(KEY_TRACK_SCROLL)
+        if (action.isNotBlank()) {
+            eventAction.append(" ")
+            eventAction.append(action)
+        }
+
+        sendGeneralEvent(
+            event = KEY_TRACK_CLICK_EVENT,
+            action = eventAction.toString(),
+            label = label
         )
     }
 

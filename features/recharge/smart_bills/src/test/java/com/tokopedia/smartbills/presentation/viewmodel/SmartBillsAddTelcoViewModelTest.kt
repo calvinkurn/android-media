@@ -80,11 +80,10 @@ class SmartBillsAddTelcoViewModelTest {
 
     @Test
     fun createCatalogNominal() {
-        val actual = smartBillsAddTelcoViewModel.createCatalogNominal(menuId, platformId, operator, clientNumber)
+        val actual = smartBillsAddTelcoViewModel.createCatalogNominal(menuId, platformId, operator)
         Assert.assertEquals(actual, mapOf( SmartBillsAddTelcoViewModel.PARAM_MENU_ID to menuId,
                 SmartBillsAddTelcoViewModel.PARAM_PLATFORM_ID to platformId,
-                SmartBillsAddTelcoViewModel.PARAM_OPERATOR to operator,
-                SmartBillsAddTelcoViewModel.PARAM_CLIENT_NUMBER to clientNumber))
+                SmartBillsAddTelcoViewModel.PARAM_OPERATOR to operator))
     }
 
     @Test

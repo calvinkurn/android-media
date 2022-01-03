@@ -5,21 +5,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="@dimen/play_view_stats_info_height"
-    android:layout_marginStart="@dimen/spacing_lvl2"
-    android:layout_marginLeft="@dimen/spacing_lvl2"
-    android:background="@drawable/bg_play_stats_info_view_badge"
     android:orientation="horizontal"
     android:gravity="center_vertical"
+    tools:background="@color/black"
     >
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_total_view"
         android:layout_width="@dimen/spacing_lvl4"
         android:layout_height="@dimen/spacing_lvl4"
-        android:layout_marginStart="@dimen/spacing_lvl2"
-        android:layout_marginLeft="@dimen/spacing_lvl2"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginBottom="@dimen/spacing_lvl2"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
         app:icon_name="VISIBILITY"
