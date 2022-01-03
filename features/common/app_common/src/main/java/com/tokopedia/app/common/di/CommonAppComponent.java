@@ -25,6 +25,4 @@ public interface CommonAppComponent {
 
     void inject(MainApplication mainApplication);
 
-    // [Misael] kita coba langsung provide ke masing" component (OmsComponent)
-//    ChuckerInterceptor ChuckerInterceptor();
 }
