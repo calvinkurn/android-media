@@ -14,23 +14,12 @@ import java.lang.ref.WeakReference;
 public class StatusBarUtil {
 
     private final WeakReference<Activity> activityWeakReference;
-    private boolean isLighStatusBar = true;
 
     public StatusBarUtil(WeakReference<Activity> activityWeakReference) {
         this.activityWeakReference = activityWeakReference;
     }
 
     public void requestStatusBarDark() {
-//        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) && activityWeakReference.get() != null) {
-//            activityWeakReference.get().getWindow().getDecorView().setSystemUiVisibility(
-//                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-//            setWindowFlag(activityWeakReference.get(), WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
-//            activityWeakReference.get().getWindow().setStatusBarColor(Color.TRANSPARENT);
-//            isLighStatusBar = false;
-//        }
-
-        //for tokopedia lightmode, triggered when in top page
-        //for tokopedia darkmode, triggered when not in top page
         if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
             //to trigger white text when tokopedia darkmode not on top page
             requestStatusBarLight();
@@ -52,7 +41,6 @@ public class StatusBarUtil {
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
             setWindowFlag(activityWeakReference.get(), WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
             activityWeakReference.get().getWindow().setStatusBarColor(Color.TRANSPARENT);
-            isLighStatusBar = true;
         }
     }
 
