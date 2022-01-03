@@ -198,20 +198,20 @@ class CampaignListViewModel @Inject constructor(
             campaignData: Campaign,
             merchantBannerData: GetMerchantCampaignBannerGeneratorData,
             shareUri: String?,
-            campaignStatusId: String?
+            campaignStatusId: String
     ): String {
-        return when (campaignStatusId ?: "") {
+        return when (campaignStatusId) {
             ONGOING_STATUS_ID -> {
-                val template = resourceProvider.getShareCampaignDescriptionWording() ?: ""
-                val startDate = merchantBannerData.formattedStartDate.split(", ").first()
-                val startTime = merchantBannerData.formattedStartDate.split(", ").last()
-                String.format(template, campaignData.name, shopData.name, startDate, startTime).plus(" $shareUri")
-            }
-            else -> {
                 val template = resourceProvider.getShareOngoingCampaignDescriptionWording() ?: ""
                 val endDate = merchantBannerData.formattedEndDate.split(", ").first()
                 val endTime = merchantBannerData.formattedEndDate.split(", ").last()
                 String.format(template, campaignData.name, shopData.name, endDate, endTime).plus(" $shareUri")
+            }
+            else -> {
+                val template = resourceProvider.getShareCampaignDescriptionWording() ?: ""
+                val startDate = merchantBannerData.formattedStartDate.split(", ").first()
+                val startTime = merchantBannerData.formattedStartDate.split(", ").last()
+                String.format(template, campaignData.name, shopData.name, startDate, startTime).plus(" $shareUri")
             }
         }
     }
