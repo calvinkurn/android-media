@@ -279,7 +279,7 @@ class PlayBottomSheetFragment @Inject constructor(
 
         viewModel.submitUserReport(
             channelId = channelData.id.toLongOrZero(),
-            ownerChannelUserId = channelData.partnerInfo.id,
+            shopId = channelData.partnerInfo.id,
             mediaUrl = convertStringToUrl(channelData.channelDetail.shareInfo.content),
             timestamp = getTimestampVideo(channelData.channelDetail.channelInfo.startTime),
             reportDesc = description,

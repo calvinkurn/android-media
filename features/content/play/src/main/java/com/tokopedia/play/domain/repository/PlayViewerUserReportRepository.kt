@@ -12,7 +12,7 @@ interface PlayViewerUserReportRepository {
     suspend fun submitReport(
         channelId: Long,
         mediaUrl: String,
-        ownerChannelUserId: Long,
+        shopId: Long,
         reasonId: Int,
         timestamp: Long,
         reportDesc: String

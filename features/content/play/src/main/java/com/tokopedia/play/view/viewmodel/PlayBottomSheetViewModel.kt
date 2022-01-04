@@ -137,7 +137,7 @@ class PlayBottomSheetViewModel @Inject constructor(
 
     fun submitUserReport(channelId: Long,
                mediaUrl: String,
-               ownerChannelUserId: Long,
+               shopId: Long,
                reasonId: Int,
                timestamp: Long,
                reportDesc: String){
@@ -146,7 +146,7 @@ class PlayBottomSheetViewModel @Inject constructor(
                 repo.submitReport(
                     channelId = channelId,
                     mediaUrl = mediaUrl,
-                    ownerChannelUserId = ownerChannelUserId,
+                    shopId = shopId,
                     reasonId = reasonId,
                     timestamp = timestamp,
                     reportDesc = reportDesc

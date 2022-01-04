@@ -31,20 +31,20 @@ class PlayViewerUserReportRepositoryImpl @Inject constructor(
     override suspend fun submitReport(
         channelId: Long,
         mediaUrl: String,
-        ownerChannelUserId: Long,
+        shopId: Long,
         reasonId: Int,
         timestamp: Long,
         reportDesc: String
     ): Boolean = withContext(dispatchers.io)
     {
         val request = postUserReportUseCase.createParam(
-            userSession.userId.toLongOrZero(),
-            channelId,
-            mediaUrl,
-            ownerChannelUserId,
-            reasonId,
-            timestamp,
-            reportDesc
+            reporterId = userSession.userId.toLongOrZero(),
+            channelId = channelId,
+            mediaUrl = mediaUrl,
+            shopId = shopId,
+            reasonId = reasonId,
+            timestamp = timestamp,
+            reportDesc = reportDesc
         )
         postUserReportUseCase.params = request
         val response = postUserReportUseCase.executeOnBackground()
