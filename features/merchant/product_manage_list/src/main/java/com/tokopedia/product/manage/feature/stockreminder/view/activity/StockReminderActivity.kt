@@ -14,7 +14,8 @@ import com.tokopedia.product.manage.feature.stockreminder.view.fragment.StockRem
 
 class StockReminderActivity : BaseSimpleActivity() {
 
-    companion object {private const val SLASH_CHAR = "/"
+    companion object {
+        private const val SLASH_CHAR = "/"
     }
 
     private var productName: String = ""
