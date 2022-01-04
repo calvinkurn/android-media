@@ -43,7 +43,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     private val miniSocialProofMap: ProductMiniSocialProofDataModel?
         get() = mapOfData[ProductDetailConstant.MINI_SOCIAL_PROOF] as? ProductMiniSocialProofDataModel
 
-
+    dataP1
 
     private val miniSocialProofStockMap: ProductMiniSocialProofStockDataModel?
         get() = mapOfData[ProductDetailConstant.MINI_SOCIAL_PROOF_STOCK] as? ProductMiniSocialProofStockDataModel
@@ -216,7 +216,14 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
 
             val productId = it.basic.productID
-            dataP1.bestSellerContent?.let { bestSellerInfoContent ->
+
+
+
+
+
+
+
+                .bestSellerContent?.let { bestSellerInfoContent ->
                 if (bestSellerInfoContent.contains(productId)) {
                     updateBestSellerData(dataP1 = dataP1, productId = productId)
                 } else {
@@ -232,7 +239,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
             updateData(ProductDetailConstant.SHOPADS_CAROUSEL, loadInitialData) {
                 topAdsProductBundlingData?.run {
-                    this.productId = dataP1.basic.productID
+                    this.productId = dataP1?.basic?.productID
                 }
             }
         }
@@ -249,7 +256,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 } else {
                     dataP1.bestSellerContent?.let {
                         this.oneLinersContent = it[productId]
-
                     }
                 }
             }
