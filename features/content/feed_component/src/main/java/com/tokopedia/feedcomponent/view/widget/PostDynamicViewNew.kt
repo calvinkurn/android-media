@@ -815,11 +815,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 if (media.size > 1) {
                     pageControl.show()
                     pageControl.setIndicator(media.size)
-                    pageControl.indicatorCurrentPosition = activeIndex
+                    pageControl.indicatorCurrentPosition = feedXCard.lastCarouselIndex
+                    pageControl.setCurrentIndicator(feedXCard.lastCarouselIndex)
+                    carouselView.activeIndex = feedXCard.lastCarouselIndex
                 } else {
                     pageControl.hide()
                 }
-                pageControl.setCurrentIndicator(feedXCard.currentCarouselIndex)
+
 
                 if (media.isNotEmpty()) {
                     imagePostListener.userCarouselImpression(
@@ -1097,7 +1099,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
                     override fun onActiveIndexChanged(prev: Int, current: Int) {
                         pageControl.setCurrentIndicator(current)
-                        feedXCard.currentCarouselIndex = current
                         imagePostListener.userCarouselImpression(
                                 feedXCard.id,
                                 media[current],
@@ -1109,6 +1110,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 feedXCard.cpmData,
                                 feedXCard.listProduct
                         )
+                        feedXCard.lastCarouselIndex = current
                         if (media[current].type == TYPE_IMAGE) {
                             videoPlayer?.pause()
                             bindImage(feedXCard.tags, feedXCard.media[current], current)
@@ -1629,7 +1631,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             if (products.size > 1) {
                 pageControl.show()
                 pageControl.setIndicator(if (totalProducts <= 5) totalProducts else 5)
-                pageControl.indicatorCurrentPosition = activeIndex
+                pageControl.indicatorCurrentPosition = feedXCard.lastCarouselIndex
+                pageControl.setCurrentIndicator(feedXCard.lastCarouselIndex)
+                carouselView.activeIndex = feedXCard.lastCarouselIndex
             } else {
                 pageControl.hide()
             }
@@ -1876,6 +1880,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 override fun onActiveIndexChanged(prev: Int, current: Int) {
                     val list = mutableListOf<FeedXProduct>()
                     list.add(products[current])
+                    feedXCard.lastCarouselIndex = current
                     imagePostListener.userProductImpression(
                             positionInFeed,
                             feedXCard.id,
@@ -1884,7 +1889,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             list
                     )
 
-                    feedXCard.currentCarouselIndex = current
                     pageControl.setCurrentIndicator(current)
                     bindImage(feedXCard.products, feedXCard.media[current], current)
 
@@ -2068,12 +2072,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
             handlerHide = null
         }
         if (!fromSlide) {
-//            carouselView.activeIndex = 0
             if (model is DynamicPostUiModel) {
+                carouselView.onActiveIndexChangedListener = null
                 model?.feedXCard?.media?.firstOrNull()?.canPlay = false
                 model?.feedXCard?.media?.firstOrNull()?.isImageImpressedFirst = true
-            }
-            else if (model is TopadsHeadLineV2Model){
+            } else if (model is TopadsHeadLineV2Model) {
+                carouselView.onActiveIndexChangedListener = null
                 model?.feedXCard?.media?.firstOrNull()?.canPlay = false
                 model?.feedXCard?.media?.firstOrNull()?.isImageImpressedFirst = true
             }

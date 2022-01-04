@@ -76,6 +76,8 @@ data class FeedXCard(
     @SerializedName("hashtagWebLinkFmt")
     var hashtagWebLinkFmt: String = "",
     val impressHolder: ImpressHolder = ImpressHolder(),
+    //Active carousel index
+    var lastCarouselIndex : Int = 0,
     //Topads
     val isTopAds: Boolean = false,
     val shopId: String = "",
@@ -92,8 +94,7 @@ data class FeedXCard(
     var mediaRatio: FeedXMediaRatio = FeedXMediaRatio(),
     @SerializedName("views")
     var views: FeedXViews = FeedXViews(),
-    //Active carousel index
-    var currentCarouselIndex:Int = 0
+
 
 
 ) : ImpressHolder() {

@@ -300,7 +300,7 @@ class FeedAnalyticTracker
         activityId: String,
         type: String, isFollowed: Boolean, shopId: String, isVideo: Boolean, isCaption: Boolean,
     ) {
-        val actionField = if (isCaption && type != ASGC && type!= ASGC_RECOM)
+        val actionField = if (isCaption && type != TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT)
             "shop name below"
         else
             "shop"
@@ -1059,9 +1059,10 @@ class FeedAnalyticTracker
                 getPostType(type, isFollowed)
             ),
             String.format(
-                FORMAT_TWO_PARAM,
+                FORMAT_THREE_PARAM,
                 activityId,
-                shopId
+                shopId,
+                products[0].id
             ),
             DataLayer.mapOf(
                 Product.CURRENCY_CODE, Product.CURRENCY_CODE_IDR,
@@ -1263,7 +1264,7 @@ class FeedAnalyticTracker
             Product.VARIANT, "",
             Product.PRICE,
             if (feedXProduct.isDiscount) feedXProduct.priceDiscount.toString() else feedXProduct.price.toString(),
-            "dimension39", "/feed - ${getPostType(type, isFollowed)} "
+            "dimension39", "/feed - ${getPostType(type, isFollowed)}"
         )
 
     fun eventCloseThreeDotBS(activityId: String, type: String, isFollowed: Boolean, shopId: String) {
@@ -2809,7 +2810,7 @@ class FeedAnalyticTracker
             Product.VARIANT, "",
             Product.BRAND, "",
             Product.CATEGORY, "",
-            Product.DIMENSION_40, "/feed - ${getPostType(type, isFollowed)} "
+            Product.DIMENSION_40, "/feed - ${getPostType(type, isFollowed)}"
     )
 
     fun getEcommerceView(listProduct: List<ProductItem>): Map<String, Any> {
