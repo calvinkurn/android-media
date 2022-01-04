@@ -21,6 +21,7 @@ import com.tokopedia.campaignlist.common.constant.ShopTypeDef
 import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorData
 import com.tokopedia.campaignlist.common.di.DaggerCampaignListComponent
 import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase
+import com.tokopedia.campaignlist.common.util.DateManager
 import com.tokopedia.campaignlist.common.util.onTextChanged
 import com.tokopedia.campaignlist.databinding.FragmentCampaignListBinding
 import com.tokopedia.campaignlist.page.presentation.adapter.ActiveCampaignListAdapter
@@ -65,6 +66,9 @@ class CampaignListFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var tracker: CampaignListTracker
+
+    @Inject
+    lateinit var dateManager: DateManager
 
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
@@ -300,8 +304,13 @@ class CampaignListFragment : BaseDaggerFragment(),
                     tnTitle = viewModel.getShareBottomSheetTitle(shopData.name),
                     tnImage = NPL_ICON_URL
             )
+
+            val campaignType = viewModel.getSelectedActiveCampaign()?.campaignTypeId ?: return
+            val campaignId = viewModel.getSelectedActiveCampaign()?.campaignId ?: return
+            val sharingDate = dateManager.getCurrentDateTime(DateManager.DATE_TIME_FORMAT_DAY_MONTH_YEAR)
+
             setUtmCampaignData(
-                    listOf(VALUE_SHARE_RS, userSession.userId, userSession.shopId, viewModel.getCampaignStatusId().toString()),
+                    listOf(VALUE_SHARE_RS, userSession.userId, userSession.shopId, campaignType, campaignId, sharingDate),
                     userId = userSession.userId,
                     pageId = userSession.shopId,
                     feature = SHARE

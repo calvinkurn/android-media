@@ -3,6 +3,7 @@ package com.tokopedia.campaignlist.page.presentation.model
 data class ActiveCampaign(
         val campaignId: String = "",
         val campaignType: String = "",
+        val campaignTypeId : String = "",
         val campaignStatus: String = "",
         val campaignStatusId: String = "",
         val campaignPictureUrl: String = "",

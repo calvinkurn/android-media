@@ -152,17 +152,18 @@ class CampaignListViewModel @Inject constructor(
             val endDate = campaignListV2.endDate.split(" ").first()
             val endTime = campaignListV2.endDate.split(" ").last()
             ActiveCampaign(
-                    campaignId = campaignListV2.campaignId,
-                    campaignType = campaignListV2.campaignTypeName,
-                    campaignStatus = campaignListV2.statusText,
-                    campaignStatusId = campaignListV2.statusId,
-                    campaignPictureUrl = campaignListV2.coverImg,
-                    campaignName = campaignListV2.campaignName,
-                    productQty = campaignListV2.sellerCampaignInfo.AcceptedProduct.toString(),
-                    startDate = startDate,
-                    endDate = endDate,
-                    startTime = startTime,
-                    endTime = endTime
+                campaignId = campaignListV2.campaignId,
+                campaignType = campaignListV2.campaignTypeName,
+                campaignTypeId = campaignListV2.campaignTypeId,
+                campaignStatus = campaignListV2.statusText,
+                campaignStatusId = campaignListV2.statusId,
+                campaignPictureUrl = campaignListV2.coverImg,
+                campaignName = campaignListV2.campaignName,
+                productQty = campaignListV2.sellerCampaignInfo.AcceptedProduct.toString(),
+                startDate = startDate,
+                endDate = endDate,
+                startTime = startTime,
+                endTime = endTime
             )
         }
     }
