@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.feature.stockreminder.view.activity
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -13,10 +14,7 @@ import com.tokopedia.product.manage.feature.stockreminder.view.fragment.StockRem
 
 class StockReminderActivity : BaseSimpleActivity() {
 
-    companion object {
-        private const val IDEAL_SEGMENT_SIZE = 5
-
-        private const val SLASH_CHAR = "/"
+    companion object {private const val SLASH_CHAR = "/"
     }
 
     private var productName: String = ""
@@ -34,12 +32,10 @@ class StockReminderActivity : BaseSimpleActivity() {
         var stock = 0
         val uri = intent.data
         if (uri != null) {
-            val segments =
-                uri.toString().replace(ApplinkConstInternalMarketplace.STOCK_REMINDER_BASE, "")
-                    .split(SLASH_CHAR)
-            productId = segments[1].toLongOrZero()
-            productName = segments.getProductName()
-            stock = segments.getOrNull(segments.lastIndex - 1).toIntOrZero()
+            val (infoProductId, infoProductName, infoStock) = uri.getProductInformation()
+            productId = infoProductId
+            productName = infoProductName
+            stock = infoStock
         }
         return StockReminderFragment.createInstance(productId, productName, stock)
     }
@@ -65,25 +61,19 @@ class StockReminderActivity : BaseSimpleActivity() {
     }
 
     /**
-     * Get product name depending on the uri format.
-     * This method is used to suffice the requirement when the product name contains slash ("/")
+     * Parse uri to get relevant product information
+     * This method is used to suffice requirement for product which name contains slash ("/")
      *
-     * @return  productName
+     * @return  Triple of productId, productName, and stock
      */
-    private fun List<String>.getProductName(): String {
-        val idealSegmentPosition = size - 3
-        return if (size <= IDEAL_SEGMENT_SIZE) {
-            this[idealSegmentPosition]
-        } else {
-            var appendedString = ""
-            for (i in 2..idealSegmentPosition) {
-                appendedString += this[i]
-                if (i != idealSegmentPosition) {
-                    appendedString += SLASH_CHAR
-                }
-            }
-            appendedString
-        }
+    private fun Uri.getProductInformation(): Triple<Long, String, Int> {
+        val uriString =
+            this.toString().replace(ApplinkConstInternalMarketplace.STOCK_REMINDER_BASE, "")
+        val productId = uriString.substringBefore(SLASH_CHAR).toLongOrZero()
+        val informationUriString = uriString.substringAfter(SLASH_CHAR).substringBeforeLast(SLASH_CHAR)
+        val stock = informationUriString.substringAfterLast(SLASH_CHAR).toIntOrZero()
+        val productName = informationUriString.substringBeforeLast(SLASH_CHAR)
+        return Triple(productId, productName, stock)
     }
 
 }
