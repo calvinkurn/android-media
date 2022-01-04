@@ -438,13 +438,13 @@ class CartShopViewHolder(private val binding: ItemShopBundleBinding,
                     CartShopBoAffordabilityState.SUCCESS -> {
                         largeLoaderBoAffordability.gone()
                         smallLoaderBoAffordability.gone()
-                        textBoAffordability.text = boAffordability.tickerText
+                        textBoAffordability.text = MethodChecker.fromHtml(boAffordability.tickerText)
                         textBoAffordability.show()
                         arrowBoAffordability.setImage(IconUnify.CHEVRON_RIGHT)
                         arrowBoAffordability.show()
                         layoutBoAffordability.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
                         layoutBoAffordability.setOnClickListener {
-                            actionListener.onCartBoAffordabilityClicked()
+                            actionListener.onCartBoAffordabilityClicked(cartShopHolderData.shopId)
                         }
                     }
                     CartShopBoAffordabilityState.FAILED -> {
