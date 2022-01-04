@@ -58,9 +58,6 @@ class ProductFeaturedViewComponent(
     }
 
     fun setFeaturedProducts(products: List<PlayProductUiModel>, maxProducts: Int) {
-        val featuredItems = getFinalFeaturedItems(products, maxProducts)
-        adapter.setItemsAndAnimateChanges(featuredItems)
-
         if (products != adapter.getItems()) {
             try {
                 rvProductFeatured.post {
@@ -68,6 +65,9 @@ class ProductFeaturedViewComponent(
                 }
             } catch (ignored: IllegalStateException) {}
         }
+
+        val featuredItems = getFinalFeaturedItems(products, maxProducts)
+        adapter.setItemsAndAnimateChanges(featuredItems)
 
         if (featuredItems.isEmpty()) hide()
         else show()
