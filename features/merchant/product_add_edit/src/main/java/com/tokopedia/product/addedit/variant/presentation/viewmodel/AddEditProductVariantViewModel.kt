@@ -34,6 +34,8 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_COUNT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.extension.getValueOrDefault
+import com.tokopedia.product.addedit.variant.presentation.extension.hasVariant
+import com.tokopedia.product.addedit.variant.presentation.extension.removeVariantCombinations
 import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -699,5 +701,11 @@ class AddEditProductVariantViewModel @Inject constructor(
             units = listOf(Unit()),
             isCustom = true
         )
+    }
+
+    fun removeCombinations(position: Int, layoutPosition: Int) {
+        if (productInputModel.hasVariant()) {
+            productInputModel.removeVariantCombinations(position, layoutPosition)
+        }
     }
 }

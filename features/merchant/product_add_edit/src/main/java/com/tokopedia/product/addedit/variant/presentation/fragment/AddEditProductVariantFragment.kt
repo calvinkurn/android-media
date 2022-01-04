@@ -513,6 +513,7 @@ class AddEditProductVariantFragment :
 
     override fun onRemoveButtonClicked(position: Int, layoutPosition: Int, removedUnitValue: UnitValue) {
         viewModel.removeSelectedVariantUnitValue(layoutPosition, removedUnitValue)
+        viewModel.removeCombinations(position, layoutPosition)
         val variantData = viewModel.getVariantData(layoutPosition)
         val variantId = variantData.variantID
 
