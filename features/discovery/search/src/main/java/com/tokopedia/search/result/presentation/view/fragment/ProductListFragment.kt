@@ -1351,7 +1351,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onImpressedInspirationCarouselInfoProduct(product: InspirationCarouselDataView.Option.Product) {
         val trackingQueue = trackingQueue ?: return
 
-        val products: MutableList<Any> = ArrayList()
+        val products = ArrayList<Any>()
         products.add(product.getInspirationCarouselInfoProductAsObjectDataLayer())
 
         SearchTracking.trackImpressionInspirationCarouselInfo(
