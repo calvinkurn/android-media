@@ -98,6 +98,7 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -1692,13 +1693,23 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
         adapter.data.clear()
         adapter.data.addAll(newWidgets)
-        diffUtilResult.dispatchUpdatesTo(adapter)
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                diffUtilResult.dispatchUpdatesTo(adapter)
+            } else {
+                recyclerView?.post {
+                    diffUtilResult.dispatchUpdatesTo(adapter)
+                }
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
     }
 
     @SuppressLint("AnnotateVersionCheck")
     private fun notifyWidgetWithSdkChecking(callback: () -> Unit) {
         try {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 callback()
             } else {
                 Handler(Looper.getMainLooper()).post {
