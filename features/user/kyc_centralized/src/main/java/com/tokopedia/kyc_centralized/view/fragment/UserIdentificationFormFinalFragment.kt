@@ -44,6 +44,8 @@ import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivit
 import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
+import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_FACE_CACHE
+import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -134,7 +136,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     }
 
     private fun initObserver() {
-        kycUploadViewModel.kycResponseLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        kycUploadViewModel.kycResponseLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     sendSuccessTimberLog()
@@ -149,7 +151,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
             }
         })
 
-        kycUploadViewModel.encryptImageLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        kycUploadViewModel.encryptImageLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     uploadButton?.isEnabled = true
@@ -229,7 +231,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private fun encryptImage() {
         if (isUsingEncrypt()) {
             uploadButton?.isEnabled = false
-            kycUploadViewModel.encryptImageFace(stepperModel?.faceFile.toEmptyStringIfNull())
+            kycUploadViewModel.encryptImage(stepperModel?.faceFile.toEmptyStringIfNull(), KYC_IV_FACE_CACHE)
         }
     }
 
@@ -424,7 +426,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                 retakeActionCode = RETAKE_KTP
                 stepperModel?.ktpFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT).toEmptyStringIfNull()
                 if (isUsingEncrypt()) {
-                    kycUploadViewModel.encryptImageKtp(stepperModel?.ktpFile.toEmptyStringIfNull())
+                    kycUploadViewModel.encryptImage(stepperModel?.ktpFile.toEmptyStringIfNull(), KYC_IV_KTP_CACHE)
                 } else {
                     goToLivenessOrSelfie()
                 }
@@ -437,7 +439,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                     stepperModel?.faceFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT).toEmptyStringIfNull()
                 }
                 if (isUsingEncrypt()) {
-                    kycUploadViewModel.encryptImageFace(stepperModel?.faceFile.toEmptyStringIfNull())
+                    kycUploadViewModel.encryptImage(stepperModel?.faceFile.toEmptyStringIfNull(), KYC_IV_FACE_CACHE)
                 } else {
                     uploadKycFiles()
                 }
