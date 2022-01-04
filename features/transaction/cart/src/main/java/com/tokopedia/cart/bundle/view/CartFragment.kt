@@ -19,7 +19,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.annotation.Keep
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -579,6 +578,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun routeToShopPage(shopId: String?) {
         activity?.let {
             val intent = RouteManager.getIntent(it, ApplinkConst.SHOP, shopId)
+            startActivityForResult(intent, NAVIGATION_SHOP_PAGE)
+        }
+    }
+
+    private fun routeToShopProductPage(shopId: String?) {
+        activity?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConst.SHOP_PRODUCT, shopId)
             startActivityForResult(intent, NAVIGATION_SHOP_PAGE)
         }
     }
@@ -1660,8 +1666,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         setGlobalDeleteVisibility()
     }
 
-    override fun onCartBoAffordabilityClicked() {
-        Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show()
+    override fun onCartBoAffordabilityClicked(shopId: String) {
+        routeToShopProductPage(shopId)
     }
 
     override fun onCartBoAffordabilityRefreshClicked(index: Int, cartShopHolderData: CartShopHolderData) {
@@ -2312,6 +2318,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun renderCartAvailableItems(cartData: CartData) {
         if (cartData.availableSection.availableGroupGroups.isNotEmpty()) {
             val availableShopList = CartUiModelMapper.mapAvailableShopUiModel(cartData)
+            availableShopList.forEach {
+                checkBoAffordability(it)
+            }
             cartAdapter.addItems(availableShopList)
         }
     }

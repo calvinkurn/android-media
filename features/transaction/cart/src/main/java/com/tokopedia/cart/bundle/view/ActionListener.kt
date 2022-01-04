@@ -20,7 +20,7 @@ interface ActionListener {
 
     fun onShopItemCheckChanged(index: Int, checked: Boolean)
 
-    fun onCartBoAffordabilityClicked()
+    fun onCartBoAffordabilityClicked(shopId: String)
 
     fun onCartBoAffordabilityRefreshClicked(index: Int, cartShopHolderData: CartShopHolderData)
 

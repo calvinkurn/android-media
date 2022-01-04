@@ -1560,10 +1560,11 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         if (lastBoAffordabilityCartString == cartShopHolderData.cartString) {
             boAffordabilityJob?.cancel()
         }
+        lastBoAffordabilityCartString = cartShopHolderData.cartString
         boAffordabilityJob = launch {
-            delay(3_000)
-            cartShopHolderData.boAffordability.tickerText = "asdf"
-            cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.FAILED
+            delay(500)
+            cartShopHolderData.boAffordability.tickerText = "asdfasd fas <s>dfas</s> df"
+            cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.SUCCESS
             view?.updateCartBoAffordability(cartShopHolderData)
         }
     }

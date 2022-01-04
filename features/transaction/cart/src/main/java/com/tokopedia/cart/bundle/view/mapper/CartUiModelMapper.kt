@@ -130,6 +130,7 @@ object CartUiModelMapper {
                 isError = false
                 promoCodes = availableGroup.promoCodes
                 shopTypeInfo = availableGroup.shop.shopTypeInfo
+                boAffordability = CartShopBoAffordabilityData(enable = availableGroup.shipmentInformation.enableBoAffordability)
             }
             cartShopHolderDataList.add(shopUiModel)
         }
