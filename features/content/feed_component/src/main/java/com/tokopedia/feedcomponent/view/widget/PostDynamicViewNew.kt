@@ -1113,7 +1113,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         feedXCard.lastCarouselIndex = current
                         if (media[current].type == TYPE_IMAGE) {
                             videoPlayer?.pause()
-                            bindImage(feedXCard.tags, feedXCard.media[current], current)
+                            bindImage(feedXCard.tags, feedXCard.media[current])
                         } else {
                             detach(true)
                             media[current].canPlay = true
@@ -1890,7 +1890,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     )
 
                     pageControl.setCurrentIndicator(current)
-                    bindImage(feedXCard.products, feedXCard.media[current], current)
+                    bindImage(feedXCard.products, feedXCard.media[current])
 
                 }
             }
@@ -2149,7 +2149,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     fun bindImage(cardProducts: List<FeedXProduct>, media: FeedXMedia) {
-        pageControl.setCurrentIndicator(index)
         val imageItem = media.imageView
         val tags = media.tagging
         val tagProducts = mutableListOf<FeedXProduct>()
