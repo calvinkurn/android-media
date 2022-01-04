@@ -2002,7 +2002,7 @@ class ProductListFragment: BaseDaggerFragment(),
         val data = createCarouselTrackingUnificationData(inspirationCarouselProduct)
 
         inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data) {
-            val broadMatchItemAsObjectDataLayer: MutableList<Any> = ArrayList()
+            val broadMatchItemAsObjectDataLayer = ArrayList<Any>()
             broadMatchItemAsObjectDataLayer.add(dynamicProductCarousel.asImpressionObjectDataLayer())
 
             SearchTracking.trackEventImpressionDynamicProductCarousel(
