@@ -467,38 +467,19 @@ open class HomeRevampViewModel @Inject constructor(
     //TODO 11.1: Remove getBusinessUnitTabData -> Move to HomeDynamicChannelUseCase
     //Create BusinessUnitRepository
     fun getBusinessUnitTabData(position: Int){
-        launchCatchError(coroutineContext, block = {
+        launch {
             val buWidgetData = homeBusinessUnitUseCase.get().getBusinessUnitTab(homeDataModel, position)
             updateWidget(buWidgetData, position)
-        }) {
-            (homeDataModel.list.getOrNull(position) as? NewBusinessUnitWidgetDataModel)?.let{ buWidget ->
-                updateWidget(buWidget.copy(tabList = listOf()), position)
-            }
         }
     }
 
     //TODO 11.2: Remove getBusinessUnitTabData -> Move to HomeBusinessUnitUseCase.onClickBusinessUnitTab
     //Create BusinessUnitRepository
     fun getBusinessUnitData(tabId: Int, position: Int, tabName: String){
-        if(buWidgetJob?.isActive == true) return
-        buWidgetJob = launchCatchError(coroutineContext, block = {
-            val data = homeBusinessUnitUseCase.get().getBusinessUnitData(tabId, position, tabName)
-            homeDataModel.list.withIndex().find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
-                val oldBuData = buModel.value as NewBusinessUnitWidgetDataModel
-                val newBuList = oldBuData.contentsList.copy().toMutableList()
-                newBuList[position] = newBuList[position].copy(list = data)
-                updateWidget(oldBuData.copy(contentsList = newBuList), buModel.index)
-            }
-        }){
-            // show error
-            homeDataModel.list.withIndex().find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
-                val oldBuData = buModel.value as NewBusinessUnitWidgetDataModel
-                val newBuList = oldBuData.contentsList.copy().toMutableList()
-                newBuList[position] = newBuList[position].copy(list = listOf())
-                val newList = homeDataModel.list.copy().toMutableList()
-                newList[buModel.index] = oldBuData.copy(contentsList = newBuList)
-                updateWidget(oldBuData.copy(contentsList = newBuList),buModel.index)
-            }
+        launch{
+            val (buData, channelPosition) = homeBusinessUnitUseCase.get().getBusinessUnitData(tabId, position, tabName, homeDataModel)
+            updateWidget(buData, channelPosition)
+
         }
     }
 
