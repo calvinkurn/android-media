@@ -793,10 +793,6 @@ open class HomeRevampViewModel @Inject constructor(
         homeDataModel.updateWidgetModel(visitable, visitableToChange, position) { _homeLiveDynamicChannel.postValue(homeDataModel) }
     }
 
-    private fun updateWidget() {
-        _homeLiveDynamicChannel.postValue(homeDataModel)
-    }
-
     //TODO 32: Remove deleteWidget -> Move to HomeDynamicChannelUseCase
     private fun deleteWidget(visitable: Visitable<*>?, position: Int) {
         homeDataModel.deleteWidgetModel(visitable, position) { _homeLiveDynamicChannel.postValue(homeDataModel) }
