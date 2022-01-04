@@ -287,7 +287,7 @@ class TokoNowHomeViewModel @Inject constructor(
     fun getCategoryGrid(item: TokoNowCategoryGridUiModel, warehouseId: String) {
         launchCatchError(block = {
             val response = getCategoryList(warehouseId)
-            homeLayoutItemList.mapHomeCategoryGridData(item, response)
+            homeLayoutItemList.mapHomeCategoryGridData(item, response, warehouseId)
             val data = HomeLayoutListUiModel(
                     items = getHomeVisitableList(),
                     state = TokoNowLayoutState.SHOW
@@ -456,7 +456,7 @@ class TokoNowHomeViewModel @Inject constructor(
     ): Deferred<Unit?> {
         return asyncCatchError(block = {
             val response = getCategoryList(warehouseId)
-            homeLayoutItemList.mapHomeCategoryGridData(item, response)
+            homeLayoutItemList.mapHomeCategoryGridData(item, response, warehouseId)
         }) {
             homeLayoutItemList.mapHomeCategoryGridData(item, emptyList())
         }

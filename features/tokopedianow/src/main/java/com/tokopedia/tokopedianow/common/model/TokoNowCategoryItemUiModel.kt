@@ -8,7 +8,6 @@ data class TokoNowCategoryItemUiModel(
     val title: String = "",
     val imageUrl: String? = null,
     val appLink: String = "",
-    val isFirstCategory: Boolean = false,
     val warehouseId: String = ""
 ): Visitable<TokoNowCategoryItemTypeFactory> {
     override fun type(typeFactoryCategory: TokoNowCategoryItemTypeFactory): Int {

@@ -27,9 +27,10 @@ class TokoNowCategoryItemViewHolder(
 
     override fun bind(data: TokoNowCategoryItemUiModel) {
         binding?.apply {
+            val isFirstCategory = data.warehouseId.isNotBlank()
             checkTitleCategory(data.title)
-            checkFirstData(data.isFirstCategory, data.imageUrl.orEmpty())
-            checkLayoutClicked(data)
+            checkFirstData(isFirstCategory, data.imageUrl.orEmpty())
+            checkLayoutClicked(data, isFirstCategory)
         }
     }
 
@@ -57,14 +58,14 @@ class TokoNowCategoryItemViewHolder(
         }
     }
 
-    private fun checkLayoutClicked(data: TokoNowCategoryItemUiModel) {
+    private fun checkLayoutClicked(data: TokoNowCategoryItemUiModel, isFirstCategory: Boolean) {
         binding?.root?.setOnClickListener {
-            if (data.warehouseId.isBlank()) {
-                RouteManager.route(itemView.context, data.appLink)
-                listener?.onCategoryClicked(adapterPosition, data.id)
-            } else {
+            if (isFirstCategory) {
                 RouteManager.route(itemView.context, data.appLink, data.warehouseId)
                 listener?.onAllCategoryClicked()
+            } else {
+                RouteManager.route(itemView.context, data.appLink)
+                listener?.onCategoryClicked(adapterPosition, data.id)
             }
         }
     }

@@ -6,8 +6,6 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -18,7 +16,6 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.adapter.differ.TokoNowCategoryGridDiffer
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryGridAdapterTypeFactory
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeCategoryGridBinding
 import com.tokopedia.tokopedianow.databinding.PartialTokopedianowViewStubDcTitleBinding
 import com.tokopedia.unifycomponents.LocalLoad
@@ -97,16 +94,7 @@ class TokoNowCategoryGridViewHolder(
             layoutManager = GridLayoutManager(context, GRID_SPAN_COUNT, RecyclerView.HORIZONTAL, false)
         }
 
-        val newCategoryList = mutableListOf<TokoNowCategoryItemUiModel>()
-        newCategoryList.add(
-            TokoNowCategoryItemUiModel(
-                warehouseId = localCacheModel?.warehouse_id.orEmpty(),
-                appLink = ApplinkConstInternalTokopediaNow.CATEGORY_LIST,
-                isFirstCategory = true
-            )
-        )
-        newCategoryList.addAll(data.categoryList.orEmpty())
-        adapter.submitList(newCategoryList)
+        adapter.submitList(data.categoryList.orEmpty())
 
         categoryShimmering?.hide()
         llCategory?.hide()

@@ -15,7 +15,7 @@
         android:paddingBottom="8dp"
         android:elevation="4dp"
         android:scaleType="centerCrop"
-        app:srcCompat="@color/tokopedianow_cardview_background_dms_color"
+        android:background="@color/tokopedianow_cardview_background_dms_color"
         app:cardCornerRadius="8dp"
         app:shapeAppearanceOverlay="@style/roundedCornerImageDisplay"
         app:layout_constraintBottom_toTopOf="@+id/tp_category"
