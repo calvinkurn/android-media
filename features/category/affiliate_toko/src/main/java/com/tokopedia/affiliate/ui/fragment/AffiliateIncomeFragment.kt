@@ -36,15 +36,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
-import com.tokopedia.affiliate.APP_LINK_KYC
-import com.tokopedia.affiliate.KYC_DONE
-import com.tokopedia.affiliate.PAGE_ZERO
-import com.tokopedia.affiliate.WITHDRAWAL_APPLINK
+import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.model.response.AffiliateKycDetailsData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import java.net.SocketTimeoutException
@@ -240,6 +238,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     }
 
     private fun afterViewCreated() {
+        initUi()
         affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
         view?.findViewById<Typography>(R.id.withdrawal_user_name)?.text = userName
         view?.findViewById<SwipeRefreshLayout>(R.id.swipe)?.let {
@@ -281,6 +280,16 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
         }
         initDateRangeClickListener()
         affiliateIncomeViewModel.getAffiliateBalance()
+    }
+
+    private fun initUi() {
+        when (RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            AFFILIATE_WITHDRAWAL,
+            ""
+        )) {
+            AFFILIATE_WITHDRAWAL -> view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.show()
+            else -> view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.invisible()
+        }
     }
 
     private fun openWithdrawalScreen() {

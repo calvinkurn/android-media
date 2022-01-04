@@ -34,6 +34,8 @@ const val AFFILIATE_WALLET_TRANSACTION_ENABLE = "app_affiliate_wallet_transactio
 
 const val AFFILIATE_TRX_ENABLED = "aff_trx_history"
 
+const val AFFILIATE_WITHDRAWAL = "Aff_withdrawal"
+
 const val DEFAULT_VALUE = false
 
 const val PROJECT_ID = 20
