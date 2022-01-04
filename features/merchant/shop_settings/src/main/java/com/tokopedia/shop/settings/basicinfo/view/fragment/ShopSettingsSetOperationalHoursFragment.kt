@@ -309,7 +309,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                                 isExpanded = index == DEFAULT_FIRST_INDEX
                         )
                         if (index == hourList.lastIndex) {
-                            accordionOpsHourItem.setBorder(borderTop = false, borderBottom = false)
+                            accordionOpsHourItem.setBorder(borderTop = false, borderBottom = true)
                         }
                         if (index == DEFAULT_FIRST_INDEX) {
                             currentSelectedStartTime = opsHour.startTime
