@@ -12,6 +12,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.listener.*
 import com.tokopedia.topads.sdk.base.Config
 
+@Suppress("LongParameterList")
 class ProductListTypeFactoryImpl(
     private val productListener: ProductListener,
     private val tickerListener: TickerListener,
