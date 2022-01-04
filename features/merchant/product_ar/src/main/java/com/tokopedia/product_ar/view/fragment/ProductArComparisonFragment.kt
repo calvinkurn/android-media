@@ -17,20 +17,22 @@ import com.modiface.mfemakeupkit.data.MFEMakeupRenderingParameters
 import com.modiface.mfemakeupkit.effects.MFEMakeupProduct
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observeOnce
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.di.ProductArComponent
 import com.tokopedia.product_ar.model.state.GenerateMakeUpMode
 import com.tokopedia.product_ar.model.state.ImageMapMode
 import com.tokopedia.product_ar.util.ArGridImageDownloader
 import com.tokopedia.product_ar.util.ItemDividerGrid
-import com.tokopedia.product_ar.view.ProductArActivity
 import com.tokopedia.product_ar.view.ProductArListener
 import com.tokopedia.product_ar.view.adapter.PhotoComparisonAdapter
 import com.tokopedia.product_ar.view.partialview.PartialBottomArComparisonView
 import com.tokopedia.product_ar.viewmodel.ProductArComparisonViewModel
 import com.tokopedia.product_ar.viewmodel.ProductArSharedViewModel
 import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -59,6 +61,7 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
     private var layoutManager: GridLayoutManager? = null
     private val mainThreadHandler: Handler = Handler(Looper.getMainLooper())
     private var makeUpEngineComparison: MFEMakeupEngine? = null
+    private var loader: LoaderUnify? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -90,17 +93,37 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bottomComparissonView = PartialBottomArComparisonView.build(view, this)
+        loader = view.findViewById(R.id.ar_grid_loader)
+        loader?.show()
+        setupEngine()
         initView(view)
         setupNavToolbar()
         setupRv()
-        makeUpEngineComparison = MFEMakeupEngine(activity, MFEMakeupEngine.Region.US
-        ) { p0, p1, p2 -> }
-        makeUpEngineComparison?.setMakeupRenderingParameters(MFEMakeupRenderingParameters(false));
-        makeUpEngineComparison?.loadResources(activity, null)
-
     }
 
-    private fun getArActivity(): ProductArActivity? = activity as? ProductArActivity
+    private fun setupEngine() {
+        makeUpEngineComparison = MFEMakeupEngine(activity, MFEMakeupEngine.Region.US) { p0, p1, p2 ->
+            //noop
+        }
+        makeUpEngineComparison?.setMakeupRenderingParameters(MFEMakeupRenderingParameters(false))
+        makeUpEngineComparison?.loadResources(activity, null)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        makeUpEngineComparison?.onResume(context)
+    }
+
+    override fun onPause() {
+        makeUpEngineComparison?.onPause()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        makeUpEngineComparison?.close()
+        makeUpEngineComparison = null
+    }
 
     private fun observeData() {
         observeInitialData()
@@ -153,10 +176,12 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
 
     private fun observeInitialData() {
         sharedViewModel?.arListData?.observeOnce(viewLifecycleOwner) {
+            makeUpEngineComparison?.startRunningWithPhoto(it.second, false)
             makeUpEngineComparison?.applyMakeupToPhotoInBackground(it.second, false,
                     object : MFEMakeupEngine.ApplyMakeupToPhotoCompletionHandler {
                         override fun onMakeupAppliedToPhoto(p0: Bitmap?, p1: Bitmap?, p2: Throwable?) {
                             activity?.runOnUiThread(Runnable {
+                                loader?.hide()
                                 viewModel?.addGridImages(p1!!, comparisonAdapter.listBitmap)
                             })
                         }
@@ -164,7 +189,6 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
 
             viewModel?.renderInitialData(it.first)
         }
-
     }
 
     /**
@@ -214,7 +238,8 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
     }
 
     override fun onButtonClicked(productId: String) {
-        ArGridImageDownloader.screenShotAndSaveGridImage(rvComparison as? View) {
+        ArGridImageDownloader.screenShotAndSaveGridImage(rvComparison as? View,
+                viewModel?.addRemoveImageGrid?.value?.imagesBitmap?.size ?: -1) {
             mainThreadHandler.postDelayed({
                 bottomComparissonView?.stopButtonLoading()
             }, 500)
