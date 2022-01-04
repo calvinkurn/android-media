@@ -121,7 +121,7 @@ class ChatMessageUnifyViewHolder(
                 true
             }
         } else {
-            fxChat?.setOnClickListener(null)
+            fxChat?.setOnLongClickListener(null)
         }
     }
 
