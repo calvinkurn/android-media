@@ -28,6 +28,8 @@ import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
 import com.tokopedia.imagepicker.editor.analytics.ImageEditorTracking;
 import com.tokopedia.imagepicker.editor.analytics.ImageEditorTrackingConstant;
 import com.tokopedia.imagepicker.editor.main.Constant;
+import com.tokopedia.imagepicker.editor.config.AbTestRemoveBackground;
+import com.tokopedia.imagepicker.editor.config.WatermarkRemoteConfig;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditCropListWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditThumbnailListWidget;
@@ -81,7 +83,6 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     public static final String SAVED_EDIT_TYPE = "SAVED_EDIT_TYPE";
     public static final String SAVED_RATIO = "RATIO";
 
-    private static final String WATERMARK_REMOTE_CONFIG = "media_watermark_editor_tool";
     private static final int REQUEST_STORAGE_PERMISSIONS = 5109;
 
     public static final int MAX_HISTORY_PER_IMAGE = 5;
@@ -252,7 +253,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         userSession = new UserSession(getApplicationContext());
         remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
 
-        remoteConfigEditor();
+        abTestAndRemoteConfigSetup();
 
         vgDownloadProgressBar = findViewById(R.id.vg_download_progress_bar);
         vgContentContainer = findViewById(R.id.vg_content_container);
@@ -317,8 +318,14 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         trackOpen();
     }
 
-    private void remoteConfigEditor() {
-        if (!remoteConfig.getBoolean(WATERMARK_REMOTE_CONFIG)) {
+    private void abTestAndRemoteConfigSetup() {
+        // remove background
+        if (!AbTestRemoveBackground.get()) {
+            imageEditActionType.remove(ImageEditActionType.ACTION_REMOVE_BACKGROUND);
+        }
+
+        // watermark
+        if (!WatermarkRemoteConfig.get(remoteConfig)) {
             imageEditActionType.remove(ImageEditActionType.ACTION_WATERMARK);
         }
     }
