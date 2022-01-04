@@ -1,16 +1,21 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
-import android.app.Activity
+import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
+import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
+import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
+import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.data.model.PlayData
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.interactor.repository.*
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.*
+import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.DeclineRechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
@@ -18,107 +23,149 @@ import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
-import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recharge_component.model.RechargePerso
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flow
 import java.util.concurrent.TimeoutException
 
 /**
  * Created by Lukas on 14/05/20.
  */
 
+@ExperimentalCoroutinesApi
 fun createHomeViewModel(
         getHomeUseCase: HomeDynamicChannelUseCase = mockk(relaxed = true),
         userSessionInterface: UserSessionInterface = mockk(relaxed = true),
-        dismissHomeReviewUseCase: DismissHomeReviewUseCase = mockk(relaxed = true),
-        getAtcUseCase: AddToCartOccMultiUseCase = mockk(relaxed = true),
-        homeReviewSuggestedRepository: HomeReviewSuggestedRepository = mockk(relaxed = true),
-        getKeywordSearchUseCase: GetKeywordSearchUseCase = mockk(relaxed = true),
-        getRecommendationTabUseCase: GetRecommendationTabUseCase = mockk(relaxed = true),
-        getHomeTokopointsListDataUseCase: GetHomeTokopointsListDataUseCase = mockk(relaxed = true),
-        getCoroutinePendingCashbackUseCase: GetCoroutinePendingCashbackUseCase = mockk(relaxed = true),
-        homePlayLiveDynamicRepository: HomePlayLiveDynamicRepository = mockk(relaxed = true),
-        getCoroutineWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase = mockk(relaxed = true),
-        homePopularKeywordRepository: HomePopularKeywordRepository = mockk(relaxed = true),
-        getRecommendationUseCase: GetRecommendationUseCase = mockk(relaxed = true),
-        getRecommendationFilterChips: GetRecommendationFilterChips = mockk(relaxed = true),
-        closeChannelUseCase: CloseChannelUseCase = mockk(relaxed = true),
-        injectCouponTimeBasedUseCase: InjectCouponTimeBasedUseCase = mockk(relaxed = true),
-        homeRechargeRecommendationRepository: HomeRechargeRecommendationRepository = mockk(relaxed = true),
-        homeSalamWidgetRepository: HomeSalamWidgetRepository = mockk(relaxed = true),
-        declineSalamWidgetUseCase: DeclineSalamWIdgetUseCase = mockk{ mockk(relaxed = true)},
-        getRechargeBUWidgetUseCase: GetRechargeBUWidgetUseCase = mockk{ mockk(relaxed = true)},
-        declineRechargeRecommendationUseCase: DeclineRechargeRecommendationUseCase = mockk(relaxed = true),
-        topadsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true),
-        getDisplayHeadlineAds: GetDisplayHeadlineAds = mockk(relaxed = true),
-        playWidgetTools: PlayWidgetTools = mockk(relaxed = true),
-        bestSellerMapper: BestSellerMapper = mockk(relaxed = true),
         dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider,
-        getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase = mockk(relaxed = true),
-        getWalletEligibilityUseCase: GetWalletEligibilityUseCase = mockk(relaxed = true),
-        homeBusinessWidgetUseCase: HomeBusinessUnitUseCase = mockk(relaxed = true),
-        homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase = mockk(relaxed = true)
+        homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase = mockk(relaxed = true),
+        homeSuggestedReviewUseCase: HomeSuggestedReviewUseCase = mockk(relaxed = true),
+        homeListCarouselUseCase: HomeListCarouselUseCase = mockk(relaxed = true),
+        homePlayUseCase: HomePlayUseCase = mockk(relaxed = true),
+        homePopularKeywordUseCase: HomePopularKeywordUseCase = mockk(relaxed = true),
+        homeRechargeRecommendationUseCase: HomeRechargeRecommendationUseCase = mockk(relaxed = true),
+        homeRechargeBuWidgetUseCase: HomeRechargeBuWidgetUseCase = mockk(relaxed = true),
+        homeRecommendationUseCase: HomeRecommendationUseCase = mockk(relaxed = true),
+        homeSalamRecommendationUseCase: HomeSalamRecommendationUseCase = mockk(relaxed = true),
+        homeSearchUseCase: HomeSearchUseCase = mockk(relaxed = true),
+        homeBusinessUnitUseCase: HomeBusinessUnitUseCase = mockk(relaxed = true)
 ): HomeRevampViewModel{
-    val context: Activity = mockk(relaxed = true)
     return HomeRevampViewModel(
-            dismissHomeReviewUseCase = Lazy{dismissHomeReviewUseCase},
-            //TODO fix this for unit test
-//            getHomeReviewSuggestedUseCase = Lazy{homeReviewSuggestedRepository},
-            getKeywordSearchUseCase = Lazy{getKeywordSearchUseCase},
-            //TODO fix this for unit test
-//            getPlayCardHomeUseCase = Lazy{homePlayLiveDynamicRepository},
             homeDispatcher = Lazy{ dispatchers },
             homeUseCase = Lazy{ getHomeUseCase },
-            //TODO fix this for unit test
-//            popularKeywordUseCase = Lazy{homePopularKeywordRepository},
-            injectCouponTimeBasedUseCase = Lazy{injectCouponTimeBasedUseCase},
-            getAtcUseCase = Lazy{getAtcUseCase},
             userSession = Lazy{userSessionInterface},
-            closeChannelUseCase = Lazy{closeChannelUseCase},
-            declineSalamWidgetUseCase = Lazy{declineSalamWidgetUseCase},
-            declineRechargeRecommendationUseCase = Lazy {declineRechargeRecommendationUseCase},
-            //TODO fix this for unit test
-//            getSalamWidgetUseCase = Lazy{homeSalamWidgetRepository},
-            getRechargeBUWidgetUseCase = Lazy{getRechargeBUWidgetUseCase},
-            getRecommendationUseCase = Lazy{ getRecommendationUseCase},
-            //TODO fix this for unit test
-//            getRechargeRecommendationUseCase = Lazy{homeRechargeRecommendationRepository},
-            playWidgetTools = Lazy { playWidgetTools },
-            bestSellerMapper = Lazy { bestSellerMapper },
-            homeBusinessUnitUseCase = Lazy { homeBusinessWidgetUseCase },
-            homeBalanceWidgetUseCase = homeBalanceWidgetUseCase,
-            homePlayCardHomeRepository = Lazy { homePlayLiveDynamicRepository },
-            popularKeywordRepository = Lazy { homePopularKeywordRepository }
+            homeBalanceWidgetUseCase = Lazy { homeBalanceWidgetUseCase },
+            homeSuggestedReviewUseCase = Lazy { homeSuggestedReviewUseCase },
+            homeListCarouselUseCase = Lazy { homeListCarouselUseCase },
+            homePlayUseCase = Lazy { homePlayUseCase },
+            homePopularKeywordUseCase = Lazy { homePopularKeywordUseCase },
+            homeRechargeBuWidgetUseCase = Lazy { homeRechargeBuWidgetUseCase },
+            homeRechargeRecommendationUseCase = Lazy { homeRechargeRecommendationUseCase },
+            homeRecommendationUseCase = Lazy { homeRecommendationUseCase },
+            homeSalamRecommendationUseCase = Lazy { homeSalamRecommendationUseCase },
+            homeSearchUseCase = Lazy { homeSearchUseCase },
+            homeBusinessUnitUseCase = Lazy { homeBusinessUnitUseCase }
     )
 }
 
+@ExperimentalCoroutinesApi
+fun createHomeDynamicChannelUseCase(
+        homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase = mockk(relaxed = true),
+        homeDataMapper: HomeDataMapper = mockk(relaxed = true),
+        homeDynamicChannelsRepository: HomeDynamicChannelsRepository = mockk(relaxed = true),
+        homeDataRepository: HomeDataRepository = mockk(relaxed = true),
+        homeAtfRepository: HomeAtfRepository = mockk(relaxed = true),
+        homeFlagRepository: HomeFlagRepository = mockk(relaxed = true),
+        homePageBannerRepository: HomePageBannerRepository = mockk(relaxed = true),
+        homeTickerRepository: HomeTickerRepository = mockk(relaxed = true),
+        homeIconRepository: HomeIconRepository = mockk(relaxed = true),
+        homeRoomDataSource: HomeRoomDataSource = mockk(relaxed = true),
+        homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper = mockk(relaxed = true),
+        applicationContext: Context = mockk(relaxed = true),
+        remoteConfig: RemoteConfig = mockk(relaxed = true),
+        homePlayRepository: HomePlayRepository = mockk(relaxed = true),
+        homeReviewSuggestedRepository: HomeReviewSuggestedRepository = mockk(relaxed = true),
+        homePlayLiveDynamicRepository: HomePlayLiveDynamicRepository = mockk(relaxed = true),
+        homePopularKeywordRepository: HomePopularKeywordRepository = mockk(relaxed = true),
+        homeHeadlineAdsRepository: HomeHeadlineAdsRepository = mockk(relaxed = true),
+        homeRecommendationRepository: HomeRecommendationRepository = mockk(relaxed = true),
+        homeRecommendationChipRepository: HomeRecommendationChipRepository = mockk(relaxed = true),
+        bestSellerMapper: BestSellerMapper = mockk(relaxed = true),
+        homeTopadsImageRepository: HomeTopadsImageRepository = mockk(relaxed = true),
+        homeRechargeRecommendationRepository: HomeRechargeRecommendationRepository = mockk(relaxed = true),
+        homeSalamWidgetRepository: HomeSalamWidgetRepository = mockk(relaxed = true),
+        homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository = mockk(relaxed = true),
+        homeChooseAddressRepository: HomeChooseAddressRepository = mockk(relaxed = true)
+): HomeDynamicChannelUseCase {
+    return HomeDynamicChannelUseCase(
+            homeBalanceWidgetUseCase = homeBalanceWidgetUseCase,
+            homeDataMapper = homeDataMapper,
+            homeDynamicChannelsRepository = homeDynamicChannelsRepository,
+            homeDataRepository = homeDataRepository,
+            atfDataRepository = homeAtfRepository,
+            homeFlagRepository = homeFlagRepository,
+            homePageBannerRepository = homePageBannerRepository,
+            homeTickerRepository = homeTickerRepository,
+            homeIconRepository = homeIconRepository,
+            getHomeRoomDataSource = homeRoomDataSource,
+            homeDynamicChannelDataMapper = homeDynamicChannelDataMapper,
+            applicationContext = applicationContext,
+            remoteConfig = remoteConfig,
+            homePlayRepository = homePlayRepository,
+            homeReviewSuggestedRepository = homeReviewSuggestedRepository,
+            homePlayLiveDynamicRepository = homePlayLiveDynamicRepository,
+            homePopularKeywordRepository = homePopularKeywordRepository,
+            homeHeadlineAdsRepository = homeHeadlineAdsRepository,
+            homeRecommendationRepository = homeRecommendationRepository,
+            homeRecommendationChipRepository = homeRecommendationChipRepository,
+            bestSellerMapper = bestSellerMapper,
+            homeTopadsImageRepository = homeTopadsImageRepository,
+            homeRechargeRecommendationRepository = homeRechargeRecommendationRepository,
+            homeSalamWidgetRepository = homeSalamWidgetRepository,
+            homeRecommendationFeedTabRepository = homeRecommendationFeedTabRepository,
+            homeChooseAddressRepository = homeChooseAddressRepository
+    )
+}
+
+fun HomeRoomDataSource.givenGetHomeRoomDataReturn(homeData: HomeData) {
+    coEvery { getCachedHomeData() } returns flow {
+        homeData
+    }
+}
+
 fun HomeDynamicChannelUseCase.givenGetHomeDataReturn(homeDynamicChannelModel: HomeDynamicChannelModel? = createDefaultHomeDataModel()) {
-//    coEvery { getHomeData() } returns flow{
-//        emit(homeDynamicChannelModel)
-//    }
+    coEvery { getHomeDataFlow() } returns flow{
+        emit(homeDynamicChannelModel)
+    }
+}
+
+fun HomeDynamicChannelUseCase.givenUpdateHeaderData(homeHeaderDataModel: HomeHeaderDataModel) {
+    coEvery { updateHeaderData(any(), any()) } returns homeHeaderDataModel
+}
+
+fun HomeBalanceWidgetUseCase.givenGetHomeBalanceWidgetReturn(homeHeaderDataModel: HomeHeaderDataModel) {
+    coEvery { onGetBalanceWidgetData(any()) } returns homeHeaderDataModel
 }
 
 fun HomeDynamicChannelUseCase.givenGetHomeDataReturn(homeDynamicChannelModel: HomeDynamicChannelModel, newHomeDynamicChannelModel: HomeDynamicChannelModel) {
-//    coEvery { getHomeData() } returns flow{
-//        emit(homeDynamicChannelModel)
-//        emit(newHomeDynamicChannelModel)
-//    }
+    coEvery { getHomeDataFlow() } returns flow{
+        emit(homeDynamicChannelModel)
+        emit(newHomeDynamicChannelModel)
+    }
 }
 
 fun HomeDynamicChannelUseCase.givenGetDynamicChannelsUseCase(dynamicChannelDataModels: List<DynamicChannelDataModel>) {
@@ -177,7 +224,7 @@ fun HomeRechargeRecommendationRepository.givenGetRechargeRecommendationThrowRetu
     coEvery { executeOnBackground() } throws Exception()
 }
 
-fun DeclineRechargeRecommendationUseCase.givenDeclineRechargeRecommendationUseCase(declineRechargeRecommendation: DeclineRechargeRecommendation){
+fun HomeDeclineRechargeRecommendationRepository.givenDeclineRechargeRecommendationUseCase(declineRechargeRecommendation: DeclineRechargeRecommendation){
     coEvery { executeOnBackground() } returns declineRechargeRecommendation
 }
 
@@ -189,7 +236,7 @@ fun HomeSalamWidgetRepository.givenGetSalamWidgetThrowReturn(){
     coEvery { executeOnBackground() } throws Exception()
 }
 
-fun DeclineSalamWIdgetUseCase.givenDeclineSalamWidgetUseCase(salamWidget: SalamWidget){
+fun HomeDeclineSalamWIdgetRepository.givenDeclineSalamWidgetUseCase(salamWidget: SalamWidget){
     coEvery { executeOnBackground() } returns salamWidget
 }
 

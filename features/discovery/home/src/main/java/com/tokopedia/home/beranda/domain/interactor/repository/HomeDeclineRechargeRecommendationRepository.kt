@@ -1,10 +1,11 @@
-package com.tokopedia.home.beranda.domain.interactor
+package com.tokopedia.home.beranda.domain.interactor.repository
 
+import android.os.Bundle
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.home.beranda.domain.interactor.HomeRepository
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.DeclineRechargeRecommendation
-import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -13,9 +14,9 @@ import javax.inject.Inject
  * @author by resakemal on 2020-03-09
  */
 
-class DeclineRechargeRecommendationUseCase @Inject constructor(
+class HomeDeclineRechargeRecommendationRepository @Inject constructor(
         private val graphqlUseCase: GraphqlUseCase<DeclineRechargeRecommendation.Response>)
-    : UseCase<DeclineRechargeRecommendation>() {
+    : UseCase<DeclineRechargeRecommendation>(), HomeRepository<DeclineRechargeRecommendation> {
 
     init {
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
@@ -52,6 +53,14 @@ class DeclineRechargeRecommendationUseCase @Inject constructor(
         graphqlUseCase.setGraphqlQuery(query)
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground().response
+    }
+
+    override suspend fun getRemoteData(bundle: Bundle): DeclineRechargeRecommendation {
+        return executeOnBackground()
+    }
+
+    override suspend fun getCachedData(bundle: Bundle): DeclineRechargeRecommendation {
+        return DeclineRechargeRecommendation()
     }
 
     fun setParams(requestParams: Map<String, String>) {

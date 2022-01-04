@@ -180,8 +180,8 @@ class HomeUseCaseModule {
 
     @HomeScope
     @Provides
-    fun getKeywordSearchUseCase(graphqlRepository: GraphqlRepository): GetKeywordSearchUseCase {
-        return GetKeywordSearchUseCase(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository))
+    fun getKeywordSearchUseCase(graphqlRepository: GraphqlRepository): HomeKeywordSearchRepository {
+        return HomeKeywordSearchRepository(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository))
     }
 
     @HomeScope
@@ -307,10 +307,10 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideCloseChannelUseCase(graphqlRepository: GraphqlRepository): CloseChannelUseCase{
+    fun provideCloseChannelUseCase(graphqlRepository: GraphqlRepository): HomeCloseChannelRepository {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<CloseChannelMutation>(graphqlRepository)
         useCase.setGraphqlQuery(closeChannel)
-        return CloseChannelUseCase(useCase)
+        return HomeCloseChannelRepository(useCase)
     }
 
     @Provides
