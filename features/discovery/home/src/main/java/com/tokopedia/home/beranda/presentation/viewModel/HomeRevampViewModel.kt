@@ -477,9 +477,11 @@ open class HomeRevampViewModel @Inject constructor(
     //Create BusinessUnitRepository
     fun getBusinessUnitData(tabId: Int, position: Int, tabName: String){
         launch{
-            val (buData, channelPosition) = homeBusinessUnitUseCase.get().getBusinessUnitData(tabId, position, tabName, homeDataModel)
-            updateWidget(buData, channelPosition)
-
+            findWidget<NewBusinessUnitWidgetDataModel> { buModel, index ->
+                val buData = homeBusinessUnitUseCase.get()
+                    .getBusinessUnitData(tabId, position, tabName, homeDataModel, buModel, index)
+                updateWidget(buData, index)
+            }
         }
     }
 

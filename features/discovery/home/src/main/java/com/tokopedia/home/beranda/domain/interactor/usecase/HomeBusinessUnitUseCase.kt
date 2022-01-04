@@ -30,28 +30,26 @@ class HomeBusinessUnitUseCase @Inject constructor(
         return NewBusinessUnitWidgetDataModel(channelModel = ChannelModel(id = "", groupId = ""))
     }
 
-    suspend fun getBusinessUnitData(tabId: Int, position: Int, tabName: String, homeDataModel: HomeDynamicChannelModel) : Pair<NewBusinessUnitWidgetDataModel, Int> {
-        try {
+    suspend fun getBusinessUnitData(
+        tabId: Int,
+        position: Int,
+        tabName: String,
+        homeDataModel: HomeDynamicChannelModel,
+        buModel: NewBusinessUnitWidgetDataModel,
+        buModelIndex: Int
+    ): NewBusinessUnitWidgetDataModel {
+        return try {
             homeBusinessUnitDataRepository.setParams(tabId, position, tabName)
             val data = homeBusinessUnitDataRepository.executeOnBackground()
-            homeDataModel.list.withIndex().find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
-                val oldBuData = buModel.value as NewBusinessUnitWidgetDataModel
-                val newBuList = oldBuData.contentsList.copy().toMutableList()
-                newBuList[position] = newBuList[position].copy(list = data)
-                return Pair(oldBuData.copy(contentsList = newBuList), buModel.index)
-            }
+            val newBuList = buModel.contentsList.copy().toMutableList()
+            newBuList[position] = newBuList[position].copy(list = data)
+            buModel.copy(contentsList = newBuList)
+        } catch (e: Exception) {
+            val newBuList = buModel.contentsList.copy().toMutableList()
+            newBuList[position] = newBuList[position].copy(list = listOf())
+            val newList = homeDataModel.list.copy().toMutableList()
+            newList[buModelIndex] = buModel.copy(contentsList = newBuList)
+            buModel.copy(contentsList = newBuList)
         }
-        catch (e: Exception) {
-            homeDataModel.list.withIndex().find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
-                val oldBuData = buModel.value as NewBusinessUnitWidgetDataModel
-                val newBuList = oldBuData.contentsList.copy().toMutableList()
-                newBuList[position] = newBuList[position].copy(list = listOf())
-                val newList = homeDataModel.list.copy().toMutableList()
-                newList[buModel.index] = oldBuData.copy(contentsList = newBuList)
-                return Pair(oldBuData.copy(contentsList = newBuList), buModel.index)
-            }
-        }
-        val defaultIndexPosition = 0
-        return Pair(NewBusinessUnitWidgetDataModel(channelModel = ChannelModel(id = "", groupId = "")), defaultIndexPosition)
     }
 }

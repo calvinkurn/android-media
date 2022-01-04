@@ -168,11 +168,18 @@ fun GetDynamicChannelsUseCase.givenGetDynamicChannelsUseCaseThrowReturn() {
     coEvery { executeOnBackground() } throws TimeoutException()
 }
 
-fun HomeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(businessList: List<BusinessUnitItemDataModel>){
-    coEvery{ getBusinessUnitData(0, 0, "") } returns businessList
+fun HomeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(
+    newBusinessUnitWidgetDataModel: NewBusinessUnitWidgetDataModel,
+    positionWidget: Int,
+    homeDataModel: HomeDynamicChannelModel
+) {
+    coEvery { getBusinessUnitData(0, 0, "", homeDataModel) } returns Pair(
+        newBusinessUnitWidgetDataModel,
+        positionWidget
+    )
 }
 fun HomeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseThrowReturn(){
-    coEvery{ getBusinessUnitData(0, 0, "") } throws Exception()
+//    coEvery{ getBusinessUnitData(0, 0, "") } throws Exception()
 }
 
 fun HomeRechargeRecommendationRepository.givenGetRechargeRecommendationUseCase(rechargeRecommendation: RechargeRecommendation){

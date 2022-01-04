@@ -70,14 +70,16 @@ class HomeViewModelBusinessUnitTest{
 //        homeBusinessUnitUseCase.givenGetBusinessWidgetTabUseCaseReturn(homeWidget)
 
         // load data bu return success
-        homeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(listOf(
-                BusinessUnitItemDataModel(
-                        content = HomeWidget.ContentItemTab(),
-                        itemPosition = 0,
-                        tabPosition = 0,
-                        tabName = "Keuangan"
-                )
-        ))
+        val listBusinessUnit = listOf(
+            BusinessUnitItemDataModel(
+                content = HomeWidget.ContentItemTab(),
+                itemPosition = 0,
+                tabPosition = 0,
+                tabName = "Keuangan"
+            )
+        )
+//        val newBusinessUnitWidgetDataModel = NewBusinessUnitWidgetDataModel()
+//        homeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn()
 
         // viewModel load business tab
         homeViewModel.getBusinessUnitTabData(0)
@@ -134,14 +136,14 @@ class HomeViewModelBusinessUnitTest{
 //            homeBusinessUnitUseCase.givenGetBusinessWidgetTabUseCaseReturn(homeWidget)
 
             // load data bu return success
-            homeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(listOf(
-                    BusinessUnitItemDataModel(
-                            content = HomeWidget.ContentItemTab(),
-                            itemPosition = 0,
-                            tabPosition = 0,
-                            tabName = "Keuangan"
-                    )
-            ))
+//            homeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(listOf(
+//                    BusinessUnitItemDataModel(
+//                            content = HomeWidget.ContentItemTab(),
+//                            itemPosition = 0,
+//                            tabPosition = 0,
+//                            tabName = "Keuangan"
+//                    )
+//            ))
 
             // viewModel load business tab
             homeViewModel.getBusinessUnitTabData(0)
@@ -161,6 +163,10 @@ class HomeViewModelBusinessUnitTest{
 
     @Test
     fun `Get bu tab success && bu data first error`(){
+        val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
+
+        // load tab data returns success
+        val homeWidget = HomeWidget(tabBusinessList = listOf(HomeWidget.TabItem(1, "")), widgetHeader = HomeWidget.WidgetHeader("red"))
         val businessUnitDataModel = NewBusinessUnitWidgetDataModel(
             channelModel = ChannelModel(
                 id = "2222",
@@ -169,31 +175,27 @@ class HomeViewModelBusinessUnitTest{
                 channelHeader = ChannelHeader(name = "Selalu bisa topup dan Liburan"),
                 channelConfig = ChannelConfig(layout = "bu_widget"),
                 layout = "bu_widget"
-            )
+            ),
+            tabList = homeWidget.tabBusinessList,
+            backColor = homeWidget.widgetHeader.backColor,
+            contentsList = homeWidget.tabBusinessList.withIndex().map { BusinessUnitDataModel(tabName = it.value.name, tabPosition = it.index) }
         )
 
-        val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
         // dynamic banner
         getHomeUseCase.givenGetHomeDataReturn(
                 HomeDynamicChannelModel(
                         list = listOf(businessUnitDataModel)
                 )
         )
+
         homeViewModel = createHomeViewModel(
                 getHomeUseCase = getHomeUseCase,
                 homeBusinessWidgetUseCase = homeBusinessUnitUseCase
         )
         homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
 
-        // load tab data returns success
-        val homeWidget = HomeWidget(tabBusinessList = listOf(HomeWidget.TabItem(1, "")), widgetHeader = HomeWidget.WidgetHeader("red"))
 
-        val newBusinessUnitWidgetDataModel = NewBusinessUnitWidgetDataModel(
-            tabList = homeWidget.tabBusinessList,
-            backColor = homeWidget.widgetHeader.backColor,
-            contentsList = homeWidget.tabBusinessList.withIndex().map { BusinessUnitDataModel(tabName = it.value.name, tabPosition = it.index) },
-            channelModel = ChannelModel(id = "", groupId = ""))
-        homeBusinessUnitUseCase.givenGetBusinessWidgetTabUseCaseReturn(newBusinessUnitWidgetDataModel, homeViewModel.homeDataModel)
+        homeBusinessUnitUseCase.givenGetBusinessWidgetTabUseCaseReturn(businessUnitDataModel, homeViewModel.homeDataModel)
 
         // load data bu return error
         homeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseThrowReturn()
