@@ -137,6 +137,7 @@ class ProductListTypeFactoryImpl(
     override fun type(lastFilterDataView: LastFilterDataView): Int =
         LastFilterViewHolder.LAYOUT
 
+    @Suppress("ComplexMethod")
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ListProductItemViewHolder.LAYOUT ->
