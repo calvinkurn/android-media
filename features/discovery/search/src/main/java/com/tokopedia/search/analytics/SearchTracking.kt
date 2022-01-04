@@ -334,7 +334,7 @@ object SearchTracking {
 
     @JvmStatic
     fun trackEventImpressionGlobalNavWidgetItem(trackingQueue: TrackingQueue,
-                                                list: List<Any>,
+                                                list: ArrayList<Any>,
                                                 keyword: String?) {
         trackingQueue.putEETracking(
                 DataLayer.mapOf(
@@ -342,7 +342,7 @@ object SearchTracking {
                         SearchTrackingConstant.EVENT_CATEGORY, EVENT_CATEGORY_SEARCH_RESULT,
                         SearchTrackingConstant.EVENT_ACTION, EVENT_ACTION_IMPRESSION_WIDGET_DIGITAL_PRODUCT,
                         SearchTrackingConstant.EVENT_LABEL, keyword,
-                        ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(*list.toTypedArray())))
+                        ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, list))
                 ) as HashMap<String, Any>
         )
     }

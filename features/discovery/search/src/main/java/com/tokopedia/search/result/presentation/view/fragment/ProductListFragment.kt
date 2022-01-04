@@ -1202,8 +1202,9 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun sendImpressionGlobalNav(globalNavDataView: GlobalNavDataView) {
-        val dataLayerList = globalNavDataView.itemList.map { item ->
-            item.getGlobalNavItemAsObjectDataLayer(item.applink)
+        val dataLayerList = ArrayList<Any>()
+        globalNavDataView.itemList.forEach { item ->
+            dataLayerList.add(item.getGlobalNavItemAsObjectDataLayer(item.applink))
         }
 
         trackingQueue?.let {
