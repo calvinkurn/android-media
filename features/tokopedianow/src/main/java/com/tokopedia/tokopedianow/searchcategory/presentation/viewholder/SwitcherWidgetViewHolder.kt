@@ -25,6 +25,8 @@ class SwitcherWidgetViewHolder(
     override fun bind(element: SwitcherWidgetDataView) {
         binding?.apply {
             switcherLayout.setBackgroundResource(R.drawable.tokopedianow_bg_search_category_switcher_widget)
+            containerCardFifteenMinutes.setBackgroundResource(R.drawable.tokopedianow_bg_search_category_switcher_widget_card_fifteenminutes)
+            containerCardTwoHours.setBackgroundResource(R.drawable.tokopedianow_bg_search_category_switcher_widget_card_twohours)
             tpDescFifteenMinutes.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_search_category_description_fifteen_minutes))
             tpDescTwoHours.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_search_category_description_two_hours))
             cardFifthteenMinutes.setOnClickListener {

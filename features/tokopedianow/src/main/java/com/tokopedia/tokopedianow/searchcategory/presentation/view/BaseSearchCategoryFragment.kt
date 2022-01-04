@@ -979,6 +979,8 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onClickFifteenMinutes() {
+        getViewModel().chooseAddressData
+
         Toast.makeText(context, "Click 15 Menit Loh", Toast.LENGTH_LONG).show()
     }
 
