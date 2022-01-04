@@ -1,21 +1,15 @@
 package com.tokopedia.search.result.presentation.view.activity
 
 import android.content.Intent
-import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.WindowManager
-import android.widget.ImageView
-import android.widget.TextView
-
-import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
-
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -24,24 +18,15 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition
 import com.tokopedia.discovery.common.model.SearchParameter
-import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.URLParser
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerAdapter
@@ -52,7 +37,6 @@ import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceM
 import com.tokopedia.search.result.presentation.viewmodel.SearchViewModel
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModelFactoryModule
-import com.tokopedia.search.utils.CountDrawable
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.searchbar.data.HintData
@@ -62,20 +46,17 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
-
 import java.net.URLEncoder
-
 import javax.inject.Inject
 import javax.inject.Named
 
-class SearchActivity: BaseActivity(),
+class SearchActivity : BaseActivity(),
         RedirectionListener,
         SearchNavigationListener,
         SearchPerformanceMonitoringListener,
         HasComponent<BaseAppComponent> {
 
     private var searchNavigationToolbar: NavToolbar? = null
-    private var toolbar: Toolbar? = null
     private var container: MotionLayout? = null
     private var loadingView: LoaderUnify? = null
     private var tabLayout: TabLayout? = null
@@ -83,18 +64,12 @@ class SearchActivity: BaseActivity(),
     private var tabShadow: View? = null
     private var quickFilterTopPadding: View? = null
     private var searchSectionPagerAdapter: SearchSectionPagerAdapter? = null
-    private var backButton: View? = null
-    private var searchTextView: TextView? = null
-    private var buttonChangeGrid: ImageView? = null
-    private var buttonCart: ImageView? = null
-    private var buttonHome: ImageView? = null
 
     private var productTabTitle = ""
     private var shopTabTitle = ""
     private var autocompleteApplink = ""
     private var searchNavigationClickListener: SearchNavigationListener.ClickListener? = null
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
-    private var isABTestNavigationRevamp = false
     private var isEnableChooseAddress = false
 
     @Inject
@@ -125,7 +100,6 @@ class SearchActivity: BaseActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.search_activity_search)
 
-        isABTestNavigationRevamp = isABTestNavigationRevamp()
         isEnableChooseAddress = getIsEnableChooseAddress()
 
         setStatusBarColor()
@@ -148,15 +122,6 @@ class SearchActivity: BaseActivity(),
         )
         pageLoadTimePerformanceMonitoring?.startMonitoring(SearchConstant.SEARCH_RESULT_TRACE)
         pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
-    }
-
-    private fun isABTestNavigationRevamp(): Boolean {
-        return try {
-            true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
     }
 
     private fun getIsEnableChooseAddress(): Boolean {
@@ -196,7 +161,6 @@ class SearchActivity: BaseActivity(),
     }
 
     private fun initActivityOnCreate() {
-        GraphqlClient.init(this)
         initInjector()
     }
 
@@ -216,16 +180,10 @@ class SearchActivity: BaseActivity(),
 
     private fun findViews() {
         searchNavigationToolbar = findViewById(R.id.searchNavigationToolbar)
-        toolbar = findViewById(R.id.toolbar)
         container = findViewById(R.id.container)
         loadingView = findViewById(R.id.progressBar)
         tabLayout = findViewById(R.id.tabs)
         viewPager = findViewById(R.id.pager)
-        backButton = findViewById(R.id.action_up_btn)
-        searchTextView = findViewById(R.id.searchTextView)
-        buttonChangeGrid = findViewById(R.id.search_change_grid_button)
-        buttonCart = findViewById(R.id.search_cart_button)
-        buttonHome = findViewById(R.id.search_home_button)
         tabShadow = findViewById(R.id.search_top_bar_shadow)
         quickFilterTopPadding = findViewById(R.id.search_quick_filter_top_padding)
     }
@@ -237,27 +195,17 @@ class SearchActivity: BaseActivity(),
     }
 
     private fun initToolbar() {
-        if (isABTestNavigationRevamp) {
-            configureSearchNavigationToolbar()
-        } else {
-            configureSupportActionBar()
-            configureToolbarOnClickListener()
-        }
+        configureSearchNavigationToolbar()
         configureToolbarVisibility()
     }
 
     private fun configureSearchNavigationToolbar() {
-        hideToolbar()
         setSearchNavigationToolbar()
-    }
-
-    private fun hideToolbar() {
-        toolbar?.visibility = View.GONE
     }
 
     private fun setSearchNavigationToolbar() {
         searchNavigationToolbar?.let {
-            this.getLifecycle().addObserver(it)
+            this.lifecycle.addObserver(it)
             it.bringToFront()
             it.setToolbarPageName(SearchConstant.SEARCH_RESULT_PAGE)
             it.setIcon(
@@ -266,32 +214,6 @@ class SearchActivity: BaseActivity(),
                             .addIcon(IconList.ID_NAV_GLOBAL, disableRouteManager = false, disableDefaultGtmTracker = false) { }
             )
         }
-    }
-
-    private fun configureSupportActionBar() {
-        setSupportActionBar(toolbar)
-
-        supportActionBar?.let {
-            it.setDisplayHomeAsUpEnabled(false)
-            it.setDisplayShowHomeEnabled(false)
-            it.setHomeButtonEnabled(false)
-        }
-
-        buttonChangeGrid?.showWithCondition(!isEnableChooseAddress)
-    }
-
-    private fun configureToolbarOnClickListener() {
-        searchTextView?.setOnClickListener { _ -> onSearchBarClicked() }
-        backButton?.setOnClickListener { _ -> onBackPressed() }
-        buttonChangeGrid?.setOnClickListener { _ -> changeGrid() }
-        buttonCart?.setOnClickListener { _ -> onCartButtonClicked() }
-        buttonHome?.setOnClickListener { _ -> moveToHomeActivity() }
-    }
-
-    private fun onSearchBarClicked() {
-        val pageSource = Dimension90Utils.getDimension90(searchParameter.getSearchParameterMap())
-        SearchTracking.trackEventClickSearchBar(searchParameter.getSearchQuery(), pageSource)
-        moveToAutoCompleteActivity()
     }
 
     private fun moveToAutoCompleteActivity() {
@@ -315,24 +237,6 @@ class SearchActivity: BaseActivity(),
     private fun getAutoCompleteApplink(query: String) =
             if (autocompleteApplink.isNotEmpty()) autocompleteApplink
             else ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?q=" + query
-
-    private fun changeGrid() {
-        searchNavigationClickListener?.onChangeGridClick()
-    }
-
-    private fun onCartButtonClicked() {
-        SearchTracking.eventActionClickCartButton(searchParameter.getSearchQuery())
-
-        val applink = if (userSession.isLoggedIn) ApplinkConstInternalMarketplace.CART
-        else ApplinkConst.LOGIN
-
-        RouteManager.route(this, applink)
-    }
-
-    private fun moveToHomeActivity() {
-        SearchTracking.eventActionClickHomeButton(searchParameter.getSearchQuery())
-        RouteManager.route(this, ApplinkConst.HOME)
-    }
 
 
     private fun configureToolbarVisibility() {
@@ -530,10 +434,7 @@ class SearchActivity: BaseActivity(),
             }
 
     private fun setToolbarTitle(query: String?) {
-        if (isABTestNavigationRevamp)
-            configureSearchNavigationSearchBar()
-        else
-            searchTextView?.text = getToolbarTitle(query)
+        configureSearchNavigationSearchBar()
     }
 
     private fun configureSearchNavigationSearchBar() {
@@ -554,16 +455,9 @@ class SearchActivity: BaseActivity(),
         moveToAutoCompleteActivity()
     }
 
-    private fun getToolbarTitle(query: String?): String {
-        if (resources == null) return query ?: ""
-        return if (query.isNullOrEmpty()) resources.getString(R.string.search_toolbar_title_default) else query
-    }
-
     override fun onResume() {
         super.onResume()
-
-        if (isABTestNavigationRevamp) setSearchNavigationCartButton()
-        else showButtonCart()
+        setSearchNavigationCartButton()
     }
 
     private fun setSearchNavigationCartButton() {
@@ -577,27 +471,6 @@ class SearchActivity: BaseActivity(),
 
     private fun getCartCount() =
             localCacheHandler.getInt(SearchConstant.Cart.CACHE_TOTAL_CART, 0)
-
-    private fun showButtonCart() {
-        if (userSession.isLoggedIn)
-            setButtonCartCount()
-
-        buttonCart?.visible()
-    }
-
-    private fun setButtonCartCount() {
-        val drawable = ContextCompat.getDrawable(this, R.drawable.search_ic_cart)
-        if (drawable !is LayerDrawable) return
-
-        val cartCount = getCartCount()
-        val countDrawable = CountDrawable(this)
-        countDrawable.setCount(cartCount.toString())
-
-        drawable.mutate()
-        drawable.setDrawableByLayerId(R.id.ic_cart_count, countDrawable)
-
-        buttonCart?.setImageDrawable(drawable)
-    }
 
     override fun isAllowShake() = false
 
@@ -625,9 +498,6 @@ class SearchActivity: BaseActivity(),
     }
 
     override fun refreshMenuItemGridIcon(titleResId: Int, iconResId: Int) {
-        if (isABTestNavigationRevamp) return
-
-        buttonChangeGrid?.setImageResource(iconResId)
     }
 
     override fun getComponent(): BaseAppComponent {

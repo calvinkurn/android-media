@@ -2,7 +2,6 @@ package com.tokopedia.loginregister.login.viewmodel
 
 import android.util.Base64
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
@@ -80,6 +79,8 @@ class LoginEmailPhoneViewModelTest {
     private var goToSecurityAfterReloginQuestionObserver = mockk<Observer<String>>(relaxed = true)
     private var goToActivationPage = mockk<Observer<String>>(relaxed = true)
 
+    private var showLocationAdminPopUp = mockk<Observer<Result<Boolean>>>(relaxed = true)
+
     private var loginTokenV2UseCase = mockk<LoginTokenV2UseCase>(relaxed = true)
     private var getAdminTypeUseCase = mockk<GetAdminTypeUseCase>(relaxed = true)
     private var generatePublicKeyUseCase = mockk<GeneratePublicKeyUseCase>(relaxed = true)
@@ -126,6 +127,7 @@ class LoginEmailPhoneViewModelTest {
         viewModel.goToSecurityQuestionAfterRelogin.observeForever(goToSecurityAfterReloginQuestionObserver)
         viewModel.registerCheckFingerprint.observeForever(registerCheckFingerprintObserver)
         viewModel.loginBiometricResponse.observeForever(loginFingerprint)
+        viewModel.showLocationAdminPopUp.observeForever(showLocationAdminPopUp)
     }
 
     private val throwable = Throwable("Error")
@@ -177,6 +179,24 @@ class LoginEmailPhoneViewModelTest {
         /* Then */
         MatcherAssert.assertThat(viewModel.registerCheckResponse.value, CoreMatchers.instanceOf(Fail::class.java))
         MatcherAssert.assertThat((viewModel.registerCheckResponse.value as Fail).throwable, CoreMatchers.instanceOf(MessageErrorException::class.java))
+    }
+
+    @Test
+    fun `on Register check has other Errors`() {
+        /* When */
+        val errors = arrayListOf("")
+        val responseData = RegisterCheckData(errors = errors)
+        val response = RegisterCheckPojo(data = responseData)
+
+        val testId = "123456"
+
+        coEvery { registerCheckUseCase.executeOnBackground() } returns response
+
+        viewModel.registerCheck(testId)
+
+        /* Then */
+        MatcherAssert.assertThat(viewModel.registerCheckResponse.value, CoreMatchers.instanceOf(Fail::class.java))
+        MatcherAssert.assertThat((viewModel.registerCheckResponse.value as Fail).throwable, CoreMatchers.instanceOf(RuntimeException::class.java))
     }
 
     @Test
@@ -450,7 +470,7 @@ class LoginEmailPhoneViewModelTest {
         val responseToken = LoginTokenPojo(loginToken = loginToken)
 
         /* When */
-        every { userSession.loginMethod } returns "facebook"
+        every { userSession.loginMethod } returns "phone"
         every { loginTokenUseCase.executeLoginAfterSQ(any(), any()) } answers {
             secondArg<LoginTokenSubscriber>().onSuccessLoginToken(responseToken)
         }
@@ -468,7 +488,7 @@ class LoginEmailPhoneViewModelTest {
         val validateToken = "asdf123"
 
         /* When */
-        every { userSession.loginMethod } returns "facebook"
+        every { userSession.loginMethod } returns "phone"
         every { loginTokenUseCase.executeLoginAfterSQ(any(), any()) } answers {
             secondArg<LoginTokenSubscriber>().onErrorLoginToken(throwable)
         }
@@ -683,6 +703,41 @@ class LoginEmailPhoneViewModelTest {
     }
 
     @Test
+    fun `on Success Login Fingerprint has Errors`() {
+        val errorMsg = "message"
+        /* When */
+        val responseToken = LoginToken(errors = arrayListOf(Error("error", errorMsg)))
+
+        every { loginFingerprintUseCase.loginBiometric(any(), any(), any(), any(), any(), any(), any()) } answers {
+            arg<(LoginToken) -> Unit>(2).invoke(responseToken)
+        }
+
+        viewModel.loginTokenBiometric("test", "1234")
+
+        /* Then */
+        verify { loginFingerprint.onChanged(any<Fail>()) }
+        val result = viewModel.loginBiometricResponse.value as Fail
+        assert(result.throwable.message == errorMsg)
+    }
+
+    @Test
+    fun `on Success Login Fingerprint has empty Errors`() {
+        val errorMsg = ""
+        /* When */
+        val responseToken = LoginToken(errors = arrayListOf(Error("error", errorMsg)))
+
+        every { loginFingerprintUseCase.loginBiometric(any(), any(), any(), any(), any(), any(), any()) } answers {
+            arg<(LoginToken) -> Unit>(2).invoke(responseToken)
+        }
+
+        viewModel.loginTokenBiometric("test", "1234")
+
+        /* Then */
+        verify { loginFingerprint.onChanged(any<Fail>()) }
+        MatcherAssert.assertThat((viewModel.loginBiometricResponse.value as Fail).throwable, CoreMatchers.instanceOf(RuntimeException::class.java))
+    }
+
+    @Test
     fun `on Failed Login Fingerprint`() {
 
         every { loginFingerprintUseCase.loginBiometric(any(), any(), any(), any(), any(), any(), any()) } answers {
@@ -694,6 +749,85 @@ class LoginEmailPhoneViewModelTest {
         /* Then */
         MatcherAssert.assertThat(viewModel.loginBiometricResponse.value, CoreMatchers.instanceOf(Fail::class.java))
         assertEquals((viewModel.loginBiometricResponse.value as Fail).throwable.message, throwable.message)
+    }
+
+    @Test
+    fun `on Failed Login Fingerprint Show Popup Error`() {
+        /* When */
+        val popupError = mockk<PopupError>(relaxed = true)
+        val responseToken = LoginToken(accessToken = "abc123", refreshToken = "azzz", tokenType = "12", popupError = popupError)
+
+        every { loginFingerprintUseCase.loginBiometric(any(), any(), any(), any(), any(), any(), any()) } answers {
+            arg<(LoginToken) -> Unit>(4).invoke(responseToken)
+        }
+
+        viewModel.loginTokenBiometric("test", "1234")
+
+        /* Then */
+        verify {
+            showPopupErrorObserver.onChanged(popupError)
+        }
+    }
+
+    @Test
+    fun `on Failed Login Fingerprint onGoToActivationPage`() {
+        /* When */
+        val messageErrorException = mockk<MessageErrorException>(relaxed = true)
+
+        every { loginFingerprintUseCase.loginBiometric(any(), any(), any(), any(), any(), any(), any()) } answers {
+            arg<(MessageErrorException) -> Unit>(5).invoke(messageErrorException)
+        }
+
+        viewModel.loginTokenBiometric("test", "1234")
+
+        /* Then */
+        verify {
+            goToActivationPage.onChanged("test")
+        }
+    }
+
+    @Test
+    fun `on Failed Login Fingerprint onGoToSecurityQuestion`() {
+        every { loginFingerprintUseCase.loginBiometric(any(), any(), any(), any(), any(), any(), any()) } answers {
+            arg<() -> Unit>(6).invoke()
+        }
+
+        viewModel.loginTokenBiometric("test", "1234")
+
+        /* Then */
+        verify {
+            goToSecurityQuestionObserver.onChanged("test")
+        }
+    }
+
+    @Test
+    fun `on Show Location Admin Popup`() {
+
+        every { getProfileUseCase.execute(any()) } answers {
+            firstArg<GetProfileSubscriber>().showLocationAdminPopUp?.invoke()
+        }
+
+        viewModel.getUserInfo()
+
+        /* Then */
+        verify {
+            showLocationAdminPopUp.onChanged(Success(true))
+        }
+    }
+
+    @Test
+    fun `on Show Location Admin Popup Error`() {
+
+        every { getProfileUseCase.execute(any()) } answers {
+            firstArg<GetProfileSubscriber>().showErrorGetAdminType?.invoke(throwable)
+        }
+
+        viewModel.getUserInfo()
+
+        /* Then */
+        verify {
+            showLocationAdminPopUp.onChanged(Fail(throwable))
+        }
     }
 
     @Test

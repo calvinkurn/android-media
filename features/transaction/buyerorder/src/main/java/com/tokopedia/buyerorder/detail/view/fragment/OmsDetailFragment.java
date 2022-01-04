@@ -593,23 +593,28 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void askPermission(String uri, Boolean isDownloadable, String downloadFileName) {
-        permissionCheckerHelper = new PermissionCheckerHelper();
-        permissionCheckerHelper.checkPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, new PermissionCheckerHelper.PermissionCheckListener() {
-            @Override
-            public void onPermissionDenied(@NotNull String permissionText) {
+        if (getActivity() != null) {
+            String[] permissionList = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+            permissionCheckerHelper = new PermissionCheckerHelper();
+            permissionCheckerHelper.checkPermissions(getActivity(), permissionList, new PermissionCheckerHelper.PermissionCheckListener() {
+                @Override
+                public void onPermissionDenied(@NotNull String permissionText) {
 
-            }
+                }
 
-            @Override
-            public void onNeverAskAgain(@NotNull String permissionText) {
+                @Override
+                public void onNeverAskAgain(@NotNull String permissionText) {
 
-            }
+                }
 
-            @Override
-            public void onPermissionGranted() {
-                permissionGrantedContinueDownload(uri, downloadFileName, isDownloadable);
-            }
-        }, "");
+                @Override
+                public void onPermissionGranted() {
+                    if (isDownloadable && !uri.isEmpty() && !downloadFileName.isEmpty()) {
+                        permissionGrantedContinueDownload(uri, downloadFileName, isDownloadable);
+                    }
+                }
+            }, "");
+        }
     }
 
     @Override

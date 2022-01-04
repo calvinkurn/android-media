@@ -254,26 +254,14 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
 
     protected fun onGetMiniCart_thenReturn(response: MiniCartSimplifiedData) {
         coEvery {
-            getMiniCartUseCase.execute(any(), any())
-        } answers {
-            firstArg<(MiniCartSimplifiedData)-> Unit>().invoke(response)
-        }
-    }
-
-    protected fun onGetMiniCart_thenReturn(error: Throwable) {
-        coEvery {
-            getMiniCartUseCase.execute(any(), any())
-        } answers {
-            secondArg<(Throwable)-> Unit>().invoke(error)
-        }
+            getMiniCartUseCase.executeOnBackground()
+        } returns response
     }
 
     protected fun onGetMiniCart_throwException(error: Throwable) {
         coEvery {
-            getMiniCartUseCase.execute(any(), any())
-        } answers {
-            throw error
-        }
+            getMiniCartUseCase.executeOnBackground()
+        } throws error
     }
 
     protected fun onGetUserLoggedIn_thenReturn(isLoggedIn: Boolean) {
@@ -289,12 +277,12 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
     }
 
     protected fun verifyGetMiniCartUseCaseCalled(){
-        coVerify { getMiniCartUseCase.execute(any(), any()) }
+        coVerify { getMiniCartUseCase.executeOnBackground() }
 
     }
 
     protected fun verifyGetMiniCartUseCaseNotCalled(){
-        coVerify(exactly = 0) { getMiniCartUseCase.execute(any(), any()) }
+        coVerify(exactly = 0) { getMiniCartUseCase.executeOnBackground() }
     }
 
     protected fun verifyAddToCartUseCaseCalled() {

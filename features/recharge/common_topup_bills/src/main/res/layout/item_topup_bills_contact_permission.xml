@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/common_topupbills_contact_permission_image"
+        android:layout_width="@dimen/layout_lvl8"
+        android:layout_height="@dimen/layout_lvl8"
+        tools:src="@drawable/iconunify_placeholder_filled"
+        app:layout_constraintTop_toTopOf="@id/common_topupbills_contact_permission_title"
+        app:layout_constraintBottom_toBottomOf="@id/common_topupbills_contact_permission_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintDimensionRatio="1:1"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/common_topupbills_contact_permission_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:text="@string/common_topup_contact_permission_title"
+        app:typographyType="heading_4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/common_topupbills_contact_permission_image"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/common_topupbills_contact_permission_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:text="@string/common_topup_contact_permission_desc"
+        app:typographyType="body_3"
+        app:layout_constraintTop_toBottomOf="@id/common_topupbills_contact_permission_title"
+        app:layout_constraintStart_toEndOf="@id/common_topupbills_contact_permission_image"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/common_topupbills_contact_permission_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:text="@string/common_topup_contact_permission_settings_button"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonSize="small"
+        app:unifyButtonType="main"
+        app:layout_constraintTop_toBottomOf="@id/common_topupbills_contact_permission_desc"
+        app:layout_constraintStart_toEndOf="@id/common_topupbills_contact_permission_image"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

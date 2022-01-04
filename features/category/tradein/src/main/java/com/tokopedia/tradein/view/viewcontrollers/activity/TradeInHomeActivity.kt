@@ -21,12 +21,10 @@ import com.laku6.tradeinsdk.api.Laku6TradeIn
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.authentication.AuthKey
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
-import com.tokopedia.keys.Keys
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.TradeInAnalytics

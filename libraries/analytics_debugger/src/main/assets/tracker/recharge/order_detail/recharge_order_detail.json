@@ -1,0 +1,64 @@
+{
+  "readme": "Recharge Order Detail",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "openScreen",
+      "eventCategory": "null",
+      "eventAction": "null",
+      "eventLabel": "null",
+      "currentSite": "tokopediadigital",
+      "businessUnit": "recharge",
+      "isLoggedInStatus": "true|false",
+      "screenName": "/order-detail-digital",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickCheckout",
+      "eventCategory": "digital - order detail page",
+      "eventAction": "click lihat invoice",
+      "eventLabel": ".* - .*",
+      "currentSite": "tokopediadigital",
+      "businessUnit": "recharge",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickCheckout",
+      "eventCategory": "digital - order detail page",
+      "eventAction": "click copy button",
+      "eventLabel": ".* - .*",
+      "currentSite": "tokopediadigital",
+      "businessUnit": "recharge",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickCheckout",
+      "eventCategory": "digital - order detail page",
+      "eventAction": "click primary button",
+      "eventLabel": ".* - .*",
+      "currentSite": "tokopediadigital",
+      "businessUnit": "recharge",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickCheckout",
+      "eventCategory": "digital - order detail page",
+      "eventAction": "click secondary button",
+      "eventLabel": ".* - .*",
+      "currentSite": "tokopediadigital",
+      "businessUnit": "recharge",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickCheckout",
+      "eventCategory": "digital - order detail page",
+      "eventAction": "click on feature button",
+      "eventLabel": ".* - .*",
+      "currentSite": "tokopediadigital",
+      "businessUnit": "recharge",
+      "sessionIris": ".*",
+      "userId": ".*"
+    }
+  ]
+}

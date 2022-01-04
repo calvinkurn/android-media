@@ -12,6 +12,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chat_common.data.ImageUploadUiModel
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.matcher.hasTotalItemOf
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.atPositionIsInstanceOf
@@ -25,6 +26,7 @@ import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Test
 
+@UiTest
 class TopchatRoomUploadImageTest : TopchatRoomTest() {
 
     @Test

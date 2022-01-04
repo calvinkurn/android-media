@@ -11,8 +11,9 @@ import com.tokopedia.contactus.inboxticket2.data.model.SecureImageParameter
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.utils.image.ImageProcessingUtil
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import javax.inject.Inject
 
@@ -78,7 +79,7 @@ class ContactUsUploadImageUseCase @Inject constructor(private val context: Conte
 
 
     private fun createRequestBody(content: String): RequestBody {
-        return RequestBody.create(MediaType.parse("text/plain"), content)
+        return content.toRequestBody("text/plain".toMediaTypeOrNull())
     }
 
     @Throws(IOException::class)

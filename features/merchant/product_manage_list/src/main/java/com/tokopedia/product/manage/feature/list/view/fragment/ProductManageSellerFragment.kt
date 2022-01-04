@@ -70,7 +70,7 @@ class ProductManageSellerFragment : ProductManageFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         checkLogin()
         super.onViewCreated(view, savedInstanceState)
-        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Background))
         tvDraftProduct?.visibility = View.GONE
         getDefaultKeywordOptionFromArguments()
         getDefaultFilterOptionsFromArguments()
@@ -155,8 +155,9 @@ class ProductManageSellerFragment : ProductManageFragment() {
     }
 
     private fun getDefaultKeywordOptionFromArguments() {
-        val searchKeyword = arguments?.getString(SEARCH_KEYWORD_OPTIONS).orEmpty()
-        super.setSearchKeywordOptions(searchKeyword)
+        arguments?.getString(SEARCH_KEYWORD_OPTIONS)?.let {
+            super.setSearchKeywordOptions(it)
+        }
     }
 
     private fun getDefaultFilterOptionsFromArguments() {

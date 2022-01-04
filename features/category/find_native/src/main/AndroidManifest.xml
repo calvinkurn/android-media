@@ -6,8 +6,8 @@
         <activity
             android:name=".view.activity.FindNavActivity"
             android:label="@string/title_find_native"
-            android:exported="false"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -29,6 +29,5 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
     </application>
 </manifest>

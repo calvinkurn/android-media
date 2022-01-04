@@ -31,6 +31,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
+import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.*
 import com.tokopedia.discovery2.data.*
@@ -385,12 +386,28 @@ class DiscoveryFragment :
     private fun setAdapter() {
         recyclerView.apply {
             addDecorator(MasterProductCardItemDecorator())
-            staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            staggeredGridLayoutManager = getLayoutManager()
             setLayoutManager(staggeredGridLayoutManager!!)
             discoveryAdapter = DiscoveryRecycleAdapter(this@DiscoveryFragment).also {
                 setAdapter(it)
             }
         }
+    }
+
+    private fun getLayoutManager():StaggeredGridLayoutManager{
+       return object: StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL) {
+           override fun supportsPredictiveItemAnimations():Boolean {
+               return false
+           }
+
+           override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State?) {
+               try {
+                   super.onLayoutChildren(recycler, state)
+               } catch (e: Exception) {
+                   e.printStackTrace()
+               }
+           }
+       }
     }
 
     fun reSync() {
@@ -1182,12 +1199,12 @@ class DiscoveryFragment :
     private fun getTabTextColor(context: Context, textColor: String?): Int {
         return try {
             if(textColor.isNullOrEmpty()){
-                ContextCompat.getColor(context, R.color.Unify_G500)
+                ContextCompat.getColor(context, RUnify.color.Unify_G500)
             }else{
                 Color.parseColor(textColor)
             }
         } catch (exception: Exception) {
-            ContextCompat.getColor(context, R.color.Unify_G500)
+            ContextCompat.getColor(context, RUnify.color.Unify_G500)
         }
     }
 

@@ -131,6 +131,7 @@ dependencies {
         transitive = true
     }
     implementation projectOrAar(rootProject.ext.features.promoMvcWidget)
+    implementation project(rootProject.ext.features.playWidget)
 
     // Embrace
     implementation rootProject.ext.miscDependencies.embraceSdk
@@ -162,6 +163,9 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     androidTestImplementation rootProject.ext.testDependencies.testCore
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents

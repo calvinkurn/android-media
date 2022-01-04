@@ -14,7 +14,7 @@ data class OthersBalance (
         @SerializedName("buyer_usable")
         var buyerBalance: Float = 0f) {
 
-        val totalBalance: String?
+        val totalBalance: String
                 get() {
                         val total = sellerBalance + buyerBalance
                         return total.getCurrencyFormatted()

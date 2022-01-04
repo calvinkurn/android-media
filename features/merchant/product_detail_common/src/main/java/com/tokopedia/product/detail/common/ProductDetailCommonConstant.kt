@@ -31,6 +31,7 @@ object ProductDetailCommonConstant {
     //notify me (teaser campaign)
     const val PARAM_TEASER_CAMPAIGN_ID = "campaignId"
     const val PARAM_TEASER_PRODUCT_ID = "productId"
+    const val PARAM_TEASER_PRODUCT_ID_64 = "product_id_64"
     const val PARAM_TEASER_ACTION = "action"
     const val PARAM_TEASER_SOURCE = "source"
     const val PARAM_TOKO_NOW = "isTokoNow"

@@ -7,13 +7,13 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.addpin.data.*
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.CoreMatchers
 import org.junit.Assert
 import org.junit.Before
@@ -34,7 +34,6 @@ class AddChangePinViewModelTest {
     val getStatusPinUseCase = mockk<GraphqlUseCase<StatusPinPojo>>(relaxed = true)
     val validatePinUseCase = mockk<GraphqlUseCase<ValidatePinPojo>>(relaxed = true)
     val skipOtpPinUseCase = mockk<GraphqlUseCase<SkipOtpPinPojo>>(relaxed = true)
-    private val testDispatcher = TestCoroutineDispatcher()
     lateinit var viewModel: AddChangePinViewModel
 
     private val rawQueries = mapOf(
@@ -60,7 +59,7 @@ class AddChangePinViewModelTest {
             validatePinUseCase,
             skipOtpPinUseCase,
             rawQueries,
-            testDispatcher
+            CoroutineTestDispatchersProvider
         )
         viewModel.addPinResponse.observeForever(addPinObserver)
         viewModel.checkPinResponse.observeForever(checkPinObserver)
@@ -92,7 +91,7 @@ class AddChangePinViewModelTest {
         verify {
             addPinUseCase.setTypeClass(any())
             addPinUseCase.setRequestParams(mockParam)
-            addPinUseCase.setGraphqlQuery(any())
+            addPinUseCase.setGraphqlQuery(any<String>())
             addPinUseCase.execute(any(), any())
         }
     }
@@ -173,7 +172,7 @@ class AddChangePinViewModelTest {
         verify {
             checkPinUseCase.setTypeClass(any())
             checkPinUseCase.setRequestParams(mockParam)
-            checkPinUseCase.setGraphqlQuery(any())
+            checkPinUseCase.setGraphqlQuery(any<String>())
             checkPinUseCase.execute(any(), any())
         }
     }
@@ -248,7 +247,7 @@ class AddChangePinViewModelTest {
         verify {
             viewModel.loadingState.postValue(true)
             getStatusPinUseCase.setTypeClass(any())
-            getStatusPinUseCase.setGraphqlQuery(any())
+            getStatusPinUseCase.setGraphqlQuery(any<String>())
             getStatusPinUseCase.execute(any(), any())
         }
     }
@@ -309,7 +308,7 @@ class AddChangePinViewModelTest {
         verify {
             validatePinUseCase.setTypeClass(any())
             validatePinUseCase.setRequestParams(mockParam)
-            validatePinUseCase.setGraphqlQuery(any())
+            validatePinUseCase.setGraphqlQuery(any<String>())
             validatePinUseCase.execute(any(), any())
         }
     }
@@ -388,7 +387,7 @@ class AddChangePinViewModelTest {
         verify {
             skipOtpPinUseCase.setRequestParams(mockParam)
             skipOtpPinUseCase.setTypeClass(any())
-            skipOtpPinUseCase.setGraphqlQuery(any())
+            skipOtpPinUseCase.setGraphqlQuery(any<String>())
             skipOtpPinUseCase.execute(any(), any())
         }
     }

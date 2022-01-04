@@ -193,7 +193,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         notifyItemChanged(position);
     }
 
-    private View.OnClickListener getActionButtonClickListener(final String uri, Boolean isDownloadable, String downloadFileName) {
+    private void onClickActionButton(final String uri, Boolean isDownloadable, String downloadFileName) {
         if (BuyerUtils.isUridownloadable(uri, isDownloadable)) {
             setEventDetails.askPermission(uri, isDownloadable, downloadFileName);
         } else {
@@ -201,7 +201,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, uri);
             }
         }
-        return view -> presenter.pdfUri = uri;
+        presenter.pdfUri = uri;
     }
 
     @Override
@@ -623,9 +623,13 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     if (view == null) {
                         RouteManager.route(context, actionButton.getBody().getAppURL());
                     } else if (isDownloadable(actionButton)) {
-                        view.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL(), true, "Tokopedia E-Ticket"));
+                        view.setOnClickListener(v -> {
+                            onClickActionButton(actionButton.getBody().getAppURL(), true, context.getResources().getString(com.tokopedia.buyerorder.R.string.oms_order_detail_ticket_title));
+                        });
                     } else {
-                        view.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL(), false, ""));
+                        view.setOnClickListener(v -> {
+                            onClickActionButton(actionButton.getBody().getAppURL(), false, "");
+                        });
                     }
                 }
             } else if (actionButton.getControl().equalsIgnoreCase(KEY_QRCODE)) {
@@ -863,7 +867,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     if (view == null)
                         RouteManager.route(context, actionButton.getBody().getAppURL());
                     else
-                        view.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL(), false, ""));
+                        view.setOnClickListener(v -> {
+                            onClickActionButton(actionButton.getBody().getAppURL(), false, "");
+                        });
                 }
             }
         }

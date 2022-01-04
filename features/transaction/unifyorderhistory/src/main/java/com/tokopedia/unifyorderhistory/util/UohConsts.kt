@@ -71,6 +71,7 @@ object UohConsts {
     const val GQL_MP_REJECT = "gql-mp-reject"
     const val GQL_MP_CHAT = "gql-mp-chat"
     const val GQL_MP_FINISH = "gql-mp-finish"
+    const val GQL_MP_EXTEND = "gql-mp-extend"
     const val GQL_RECHARGE_BATALKAN = "gql-recharge-batalkan"
 
     const val FINISH_ORDER_BOTTOMSHEET_TITLE = "Selesaikan pesanan ini?"
@@ -115,13 +116,10 @@ object UohConsts {
 
     const val E_TIKET = "E-tiket & E-voucher Aktif"
     const val DALAM_PROSES = "Dalam Proses"
-    const val VERTICAL_CATEGORY_MP = "mp_pym,marketplace"
-    const val VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT = "deals,event,flight,train,hotel"
     const val VERTICAL_CATEGORY_EVENTS = "event"
     const val VERTICAL_CATEGORY_DEALS = "deals"
     const val VERTICAL_CATEGORY_FLIGHT = "flight"
     const val VERTICAL_CATEGORY_TRAIN = "train"
-    const val VERTICAL_CATEGORY_KEUANGAN = "mutual_fund,gold,insurance,gift_card,modal_toko"
     const val VERTICAL_CATEGORY_GIFTCARD = "gift_card"
     const val VERTICAL_CATEGORY_INSURANCE = "insurance"
     const val VERTICAL_CATEGORY_MODALTOKO = "modal_toko"
