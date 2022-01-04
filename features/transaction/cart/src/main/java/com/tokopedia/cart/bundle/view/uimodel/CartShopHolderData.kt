@@ -30,7 +30,8 @@ data class CartShopHolderData(
         var clickedCollapsedProductIndex: Int = -1,
         var isNeedToRefreshWeight: Boolean = false,
         var isError: Boolean = false,
-        var promoCodes: List<String> = emptyList()
+        var promoCodes: List<String> = emptyList(),
+        var boAffordability: CartShopBoAffordabilityData = CartShopBoAffordabilityData()
 ) {
     val shouldValidateWeight: Boolean
         get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()
@@ -63,11 +64,22 @@ data class CartShopHolderData(
                 clickedCollapsedProductIndex = this.clickedCollapsedProductIndex,
                 isNeedToRefreshWeight = this.isNeedToRefreshWeight,
                 isError = this.isError,
-                promoCodes = this.promoCodes.toMutableList()
+                promoCodes = this.promoCodes.toMutableList(),
+                boAffordability = this.boAffordability
         )
     }
 
     companion object {
         const val MAXIMUM_WEIGHT_WORDING_REPLACE_KEY = "{{weight}}"
     }
+}
+
+class CartShopBoAffordabilityData(
+        var enable: Boolean = true,
+        var state: CartShopBoAffordabilityState = CartShopBoAffordabilityState.LOADING,
+        var tickerText: String = ""
+)
+
+enum class CartShopBoAffordabilityState {
+    LOADING, SUCCESS, FAILED
 }
