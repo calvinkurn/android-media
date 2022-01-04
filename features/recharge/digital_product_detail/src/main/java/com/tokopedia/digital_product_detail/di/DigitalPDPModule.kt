@@ -1,0 +1,97 @@
+package com.tokopedia.digital_product_detail.di
+
+import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
+import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.network.NetworkRouter
+import com.tokopedia.network.interceptor.FingerprintInterceptor
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
+import dagger.Module
+import dagger.Provides
+import okhttp3.Interceptor
+import okhttp3.logging.HttpLoggingInterceptor
+
+/**
+ * @author by firmanda on 04/01/21
+ */
+
+@Module
+class DigitalPDPModule {
+
+    @DigitalPDPScope
+    @Provides
+    fun provideGraphqlRepository(): GraphqlRepository {
+        return GraphqlInteractor.getInstance().graphqlRepository
+    }
+
+    @DigitalPDPScope
+    @Provides
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
+    }
+
+    @DigitalPDPScope
+    @Provides
+    internal fun provideFingerprintInterceptor(networkRouter: NetworkRouter, userSession: UserSessionInterface): FingerprintInterceptor {
+        return FingerprintInterceptor(networkRouter, userSession)
+    }
+
+    @DigitalPDPScope
+    @Provides
+    internal fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
+        return context as NetworkRouter
+    }
+
+    @DigitalPDPScope
+    @Provides
+    fun provideDigitalInterceptor(@ApplicationContext context: Context,
+                                  networkRouter: NetworkRouter,
+                                  userSession: UserSessionInterface
+    ): DigitalInterceptor {
+        return DigitalInterceptor(context, networkRouter, userSession)
+    }
+
+
+    @DigitalPDPScope
+    @Provides
+    fun provideAnalyticsCommon(): CommonTopupBillsAnalytics {
+        return CommonTopupBillsAnalytics()
+    }
+
+    @Provides
+    @DigitalPDPScope
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
+        return ChuckerInterceptor(context)
+    }
+
+    @Provides
+    @DigitalPDPScope
+    fun provideInterceptors(fingerprintInterceptor: FingerprintInterceptor,
+                            httpLoggingInterceptor: HttpLoggingInterceptor,
+                            digitalInterceptor: DigitalInterceptor,
+                            chuckerInterceptor: ChuckerInterceptor
+    ): MutableList<Interceptor> {
+        val listInterceptor = mutableListOf<Interceptor>()
+        listInterceptor.add(fingerprintInterceptor)
+        listInterceptor.add(digitalInterceptor)
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            listInterceptor.add(chuckerInterceptor)
+            listInterceptor.add(httpLoggingInterceptor)
+        }
+        return listInterceptor
+    }
+
+    @Provides
+    @DigitalPDPScope
+    fun provideRemoteConfig(@ApplicationContext context: Context): FirebaseRemoteConfigImpl {
+        return FirebaseRemoteConfigImpl(context)
+    }
+}
