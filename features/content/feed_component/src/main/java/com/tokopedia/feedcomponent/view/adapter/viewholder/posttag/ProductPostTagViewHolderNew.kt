@@ -30,6 +30,7 @@ class ProductPostTagViewHolderNew(
     private lateinit var productImage: ImageUnify
     private lateinit var productPrice: Typography
     private lateinit var productName: Typography
+    private lateinit var discountlayout: LinearLayout
     private lateinit var productTag: Typography
     private lateinit var productNameSection: LinearLayout
     private lateinit var rating: Typography
@@ -45,8 +46,10 @@ class ProductPostTagViewHolderNew(
         productLayout = itemView.findViewById(R.id.productLayout)
         productImage = itemView.findViewById(R.id.productImage)
         productPrice = itemView.findViewById(R.id.productPrice)
+        discountlayout = itemView.findViewById(R.id.discount_layout)
         productTag = itemView.findViewById(R.id.productTag)
         productNameSection = itemView.findViewById(R.id.productNameSection)
+        productName = itemView.findViewById(R.id.productName)
         productName = itemView.findViewById(R.id.productName)
         rating = itemView.findViewById(R.id.rating)
         label = itemView.findViewById(R.id.discountLabel)
@@ -58,6 +61,7 @@ class ProductPostTagViewHolderNew(
         card = itemView.findViewById(R.id.container)
         label.showWithCondition(item.isDiscount)
         productTag.showWithCondition(item.isDiscount)
+        discountlayout.showWithCondition(item.isDiscount)
         if (item.isDiscount) {
             productTag.apply {
                 paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG

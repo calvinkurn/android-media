@@ -9,10 +9,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.listener.FeedPlusDetailListener
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailItemModel
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.list_feed_detail.view.*
 
@@ -27,11 +24,15 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
 
     override fun bind(productFeedDetailViewModelNew: ProductFeedDetailViewModelNew) {
         itemView.run {
-            ImageHandler.LoadImage(productImage, productFeedDetailViewModelNew.imgUrl)
+//            ImageHandler.LoadImage(productImage, productFeedDetailViewModelNew.imgUrl)
 
+            productImage.setImageUrl(productFeedDetailViewModelNew.imgUrl)
             productName.text = MethodChecker.fromHtml(productFeedDetailViewModelNew.text)
             productPrice.text = productFeedDetailViewModelNew.priceFmt
 
+
+
+            discount_layout.showWithCondition(productFeedDetailViewModelNew.isDiscount)
             if (productFeedDetailViewModelNew.isDiscount) {
                 productTag.apply {
                     paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG

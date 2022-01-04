@@ -22,29 +22,37 @@
         android:background="@color/Unify_Background"
         android:foreground="?android:attr/selectableItemBackground"
         tools:ignore="UnusedAttribute"
-        android:padding="8dp">
+        android:padding="4dp">
 
-        <com.tokopedia.feedplus.view.customview.RoundedCornerImageView
-            android:id="@+id/productImage"
-            android:layout_width="@dimen/feed_detail_product"
-            android:layout_height="@dimen/feed_detail_product"
-            android:layout_margin="10dp"
-            android:scaleType="centerCrop"
-            android:background="@drawable/feed_container_rounded_corners_border"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/productNameSection"
+        <FrameLayout
+            android:id="@+id/productLayout"
+            android:layout_width="@dimen/dp_96"
+            android:layout_height="@dimen/dp_96"
+            android:padding="@dimen/dp_2"
+            android:background="@drawable/bg_frame_rounded"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/avatars" />
+            app:layout_constraintTop_toTopOf="@id/productNameSection">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/productImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:background="@color/Unify_N0"
+                android:scaleType="centerCrop"
+                tools:ignore="ContentDescription"
+                tools:src="@tools:sample/avatars" />
+        </FrameLayout>
 
         <LinearLayout
             android:id="@+id/productNameSection"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_8"
             android:layout_marginStart="8dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/productImage"
+            app:layout_constraintStart_toEndOf="@id/productLayout"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.tokopedia.unifyprinciples.Typography
@@ -58,6 +66,7 @@
                 tools:text="Enfagrow A+ Susu Anak 1-3 Tahun - Vanilla Enak Sekali Diminum Setiap hari" />
 
             <LinearLayout
+                android:id="@+id/discount_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -152,8 +161,8 @@
             android:id="@+id/menu"
             android:layout_width="16dp"
             android:layout_height="16dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="6dp"
             app:icon_name="MENU_KEBAB_HORIZONTAL"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
