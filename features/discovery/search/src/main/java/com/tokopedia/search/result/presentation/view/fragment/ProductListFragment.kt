@@ -1668,7 +1668,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun trackEventImpressionBroadMatchItem(broadMatchItemDataView: BroadMatchItemDataView) {
         val trackingQueue = trackingQueue ?: return
-        val broadMatchItemAsObjectDataLayer: MutableList<Any> = ArrayList()
+        val broadMatchItemAsObjectDataLayer = ArrayList<Any>()
         broadMatchItemAsObjectDataLayer.add(broadMatchItemDataView.asImpressionObjectDataLayer())
 
         SearchTracking.trackEventImpressionBroadMatch(

@@ -728,7 +728,7 @@ object SearchTracking {
         keyword: String?,
         alternativeKeyword: String?,
         userId: String?,
-        broadMatchItems: List<Any>,
+        broadMatchItems: ArrayList<Any>,
     ) {
         val map = DataLayer.mapOf(
             SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
@@ -740,7 +740,7 @@ object SearchTracking {
             SearchTrackingConstant.USER_ID, userId,
             ECOMMERCE, DataLayer.mapOf(
                 CURRENCY_CODE, IDR,
-                IMPRESSIONS, DataLayer.listOf(*broadMatchItems.toTypedArray())
+                IMPRESSIONS, broadMatchItems
             )
         ) as HashMap<String, Any>
 
