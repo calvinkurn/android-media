@@ -318,7 +318,7 @@ class CampaignListFragment : BaseDaggerFragment(),
             addImageGeneratorData(
                     key = ImageGeneratorConstants.ImageGeneratorKeys.DATE ,
                     value = if (validateIsOngoingCampaign(merchantBannerData))
-                        merchantBannerData.formattedSharingStartDate else merchantBannerData.formattedSharingEndDate
+                        merchantBannerData.formattedSharingEndDate else merchantBannerData.formattedSharingStartDate
             )
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.ONGOING , value = _isOngoing.toString())
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCTS_COUNT , value = _totalProducts.toString())
