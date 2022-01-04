@@ -647,7 +647,7 @@ object SearchTracking {
             trackingQueue: TrackingQueue,
             keyword: String,
             userId: String?,
-            list: List<Any>,
+            list: ArrayList<Any>,
             carouselAnalyticsData: InspirationCarouselAnalyticsData
     ) {
         val map = DataLayer.mapOf(
@@ -660,9 +660,7 @@ object SearchTracking {
                 SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
                 ECOMMERCE, DataLayer.mapOf(
                 "currencyCode", "IDR",
-                "impressions", DataLayer.listOf(
-                *list.toTypedArray()
-        )
+                "impressions", list
         )
         ) as HashMap<String, Any>
         trackingQueue.putEETracking(
