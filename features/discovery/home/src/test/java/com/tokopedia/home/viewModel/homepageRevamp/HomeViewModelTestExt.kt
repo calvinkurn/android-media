@@ -206,6 +206,7 @@ fun GetDynamicChannelsUseCase.givenGetDynamicChannelsUseCaseThrowReturn() {
 }
 
 fun HomeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(
+    tabId: Int,
     resultBuModel: NewBusinessUnitWidgetDataModel,
     positionTab: Int,
     homeDataModel: HomeDynamicChannelModel,
@@ -213,7 +214,7 @@ fun HomeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(
     positionBuModelIndex: Int,
     tabName: String
 ) {
-    coEvery { getBusinessUnitData(0, positionTab, tabName, homeDataModel, buModel, positionBuModelIndex) } returns resultBuModel
+    coEvery { getBusinessUnitData(tabId, positionTab, tabName, homeDataModel, buModel, positionBuModelIndex) } returns resultBuModel
 }
 
 fun HomeRechargeRecommendationRepository.givenGetRechargeRecommendationUseCase(rechargeRecommendation: RechargeRecommendation){

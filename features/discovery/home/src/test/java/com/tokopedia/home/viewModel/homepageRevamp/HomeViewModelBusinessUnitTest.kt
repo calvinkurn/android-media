@@ -84,6 +84,7 @@ class HomeViewModelBusinessUnitTest{
             contentsList = listBusinessUnit
         )
         homeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(
+            position,
             resultBuModel,
             position,
             homeViewModel.homeDataModel,
@@ -142,6 +143,7 @@ class HomeViewModelBusinessUnitTest{
         homeBusinessUnitUseCase.givenGetBusinessWidgetTabUseCaseReturn(businessUnitDataModel)
 
         homeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(
+            position,
             businessUnitDataModel,
             position,
             homeViewModel.homeDataModel,
