@@ -1096,31 +1096,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         }
                     }
                 }
-                onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
-                    override fun onActiveIndexChanged(prev: Int, current: Int) {
-                        pageControl.setCurrentIndicator(current)
-                        imagePostListener.userCarouselImpression(
-                                feedXCard.id,
-                                media[current],
-                                current,
-                                feedXCard.typename,
-                                feedXCard.followers.isFollowed,
-                                feedXCard.author.id,
-                                positionInFeed,
-                                feedXCard.cpmData,
-                                feedXCard.listProduct
-                        )
-                        feedXCard.lastCarouselIndex = current
-                        if (media[current].type == TYPE_IMAGE) {
-                            videoPlayer?.pause()
-                            bindImage(feedXCard.tags, feedXCard.media[current])
-                        } else {
-                            detach(true)
-                            media[current].canPlay = true
-                            playVideo(feedXCard, current)
-                        }
-                    }
-                }
+               resetCaraouselActiveListener(feedXCard)
             }
 
         } else if (feedXCard.typename == TYPE_FEED_X_CARD_VOD) {
@@ -1876,24 +1852,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
             feedXCard.media = mediaList
             feedXCard.tags = feedXCard.products
-            onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
-                override fun onActiveIndexChanged(prev: Int, current: Int) {
-                    val list = mutableListOf<FeedXProduct>()
-                    list.add(products[current])
-                    feedXCard.lastCarouselIndex = current
-                    imagePostListener.userProductImpression(
-                            positionInFeed,
-                            feedXCard.id,
-                            feedXCard.typename,
-                            feedXCard.author.id,
-                            list
-                    )
-
-                    pageControl.setCurrentIndicator(current)
-                    bindImage(feedXCard.products, feedXCard.media[current])
-
-                }
-            }
+            resetCaraouselActiveListener(feedXCard)
         }
     }
 
@@ -2147,11 +2106,58 @@ class PostDynamicViewNew @JvmOverloads constructor(
         else
             videoPlayer?.pause()
     }
+    private fun resetCaraouselActiveListener(feedXCard: FeedXCard){
+        carouselView.apply {
+            if (onActiveIndexChangedListener == null) {
+                onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
+                    override fun onActiveIndexChanged(prev: Int, current: Int) {
+                        pageControl.setCurrentIndicator(current)
+                        feedXCard.lastCarouselIndex = current
+                        if (feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT) {
+                            val list = mutableListOf<FeedXProduct>()
+                            list.add(feedXCard.products[current])
+                            imagePostListener.userProductImpression(
+                                    positionInFeed,
+                                    feedXCard.id,
+                                    feedXCard.typename,
+                                    feedXCard.author.id,
+                                    list
+                            )
 
-    fun bindImage(cardProducts: List<FeedXProduct>, media: FeedXMedia) {
+                            bindImage(feedXCard.products, feedXCard.media[current], feedXCard)
+                        } else {
+                            imagePostListener.userCarouselImpression(
+                                    feedXCard.id,
+                                    feedXCard.media[current],
+                                    current,
+                                    feedXCard.typename,
+                                    feedXCard.followers.isFollowed,
+                                    feedXCard.author.id,
+                                    positionInFeed,
+                                    feedXCard.cpmData,
+                                    feedXCard.listProduct
+                            )
+
+                            if (feedXCard.media[current].type == TYPE_IMAGE) {
+                                videoPlayer?.pause()
+                                bindImage(feedXCard.tags, feedXCard.media[current], feedXCard)
+                            } else {
+                                detach(true)
+                                feedXCard.media[current].canPlay = true
+                                playVideo(feedXCard, current)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun bindImage(cardProducts: List<FeedXProduct>, media: FeedXMedia, feedXCard: FeedXCard) {
         val imageItem = media.imageView
         val tags = media.tagging
         val tagProducts = mutableListOf<FeedXProduct>()
+        resetCaraouselActiveListener(feedXCard)
         tags.map {
             if (!ifProductAlreadyPresent(cardProducts[it.tagIndex], tagProducts))
                 tagProducts.add(cardProducts[it.tagIndex])
