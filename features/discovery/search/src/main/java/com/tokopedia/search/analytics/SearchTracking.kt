@@ -871,7 +871,7 @@ object SearchTracking {
             type: String?,
             keyword: String?,
             userId: String?,
-            broadMatchItems: List<Any>,
+            broadMatchItems: ArrayList<Any>,
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
@@ -885,7 +885,7 @@ object SearchTracking {
                         ECOMMERCE, DataLayer.mapOf(CLICK,
                             DataLayer.mapOf(
                                     SearchEventTracking.ECommerce.ACTION_FIELD, DataLayer.mapOf("list", "/search - carousel dynamic"),
-                                    PRODUCTS, DataLayer.listOf(*broadMatchItems.toTypedArray())
+                                    PRODUCTS, broadMatchItems
                             )
                         )
                 )

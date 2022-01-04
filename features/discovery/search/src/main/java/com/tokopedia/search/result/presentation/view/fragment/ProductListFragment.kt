@@ -2022,7 +2022,7 @@ class ProductListFragment: BaseDaggerFragment(),
         val data = createCarouselTrackingUnificationData(inspirationCarouselProduct)
 
         inspirationCarouselTrackingUnification.trackCarouselClick(data) {
-            val broadMatchItem: MutableList<Any> = ArrayList()
+            val broadMatchItem = ArrayList<Any>()
             broadMatchItem.add(dynamicProductCarousel.asClickObjectDataLayer())
 
             SearchTracking.trackEventClickDynamicProductCarousel(
