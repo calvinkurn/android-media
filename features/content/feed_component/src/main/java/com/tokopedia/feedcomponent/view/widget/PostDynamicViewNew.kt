@@ -2148,7 +2148,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             videoPlayer?.pause()
     }
 
-    fun bindImage(cardProducts: List<FeedXProduct>, media: FeedXMedia, index: Int) {
+    fun bindImage(cardProducts: List<FeedXProduct>, media: FeedXMedia) {
         pageControl.setCurrentIndicator(index)
         val imageItem = media.imageView
         val tags = media.tagging
