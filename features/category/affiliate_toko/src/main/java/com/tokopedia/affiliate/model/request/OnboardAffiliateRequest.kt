@@ -9,6 +9,8 @@ data class OnboardAffiliateRequest(
     data class OnboardAffiliateChannelRequest(
             @SerializedName("Name")
             val name: String? = "",
+            @SerializedName("ChannelID")
+            val channelID: Int? = 0,
             @SerializedName("ProfileID")
             val profileid: String? = ""
     )

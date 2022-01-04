@@ -4,7 +4,7 @@ package com.tokopedia.affiliate.model.response
 import com.google.gson.annotations.SerializedName
 
 data class AffiliateOnBoardingData(
-        @SerializedName("onBoardAffiliate")
+        @SerializedName("onboardAffiliate")
         var onBoardAffiliate: OnBoardAffiliate?
 ) {
     data class OnBoardAffiliate(
