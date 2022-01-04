@@ -3,6 +3,7 @@ package com.tokopedia.home.viewModel.homepageRevamp
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
@@ -11,6 +12,8 @@ import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.data.model.PlayData
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.interactor.repository.*
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.*
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
@@ -18,8 +21,8 @@ import com.tokopedia.home.beranda.domain.model.recharge_recommendation.DeclineRe
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
@@ -46,8 +49,6 @@ import java.util.concurrent.TimeoutException
 
 @ExperimentalCoroutinesApi
 fun createHomeViewModel(
-        getBusinessUnitDataUseCase: GetBusinessUnitDataUseCase = mockk(relaxed = true),
-        getBusinessWidgetTab: GetBusinessWidgetTab = mockk(relaxed = true),
         getHomeUseCase: HomeDynamicChannelUseCase = mockk(relaxed = true),
         userSessionInterface: UserSessionInterface = mockk(relaxed = true),
         dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider,
@@ -60,11 +61,10 @@ fun createHomeViewModel(
         homeRechargeBuWidgetUseCase: HomeRechargeBuWidgetUseCase = mockk(relaxed = true),
         homeRecommendationUseCase: HomeRecommendationUseCase = mockk(relaxed = true),
         homeSalamRecommendationUseCase: HomeSalamRecommendationUseCase = mockk(relaxed = true),
-        homeSearchUseCase: HomeSearchUseCase = mockk(relaxed = true)
+        homeSearchUseCase: HomeSearchUseCase = mockk(relaxed = true),
+        homeBusinessUnitUseCase: HomeBusinessUnitUseCase = mockk(relaxed = true)
 ): HomeRevampViewModel{
     return HomeRevampViewModel(
-            getBusinessUnitDataUseCase = Lazy{getBusinessUnitDataUseCase},
-            getBusinessWidgetTab = Lazy{getBusinessWidgetTab},
             homeDispatcher = Lazy{ dispatchers },
             homeUseCase = Lazy{ getHomeUseCase },
             userSession = Lazy{userSessionInterface},
@@ -77,7 +77,8 @@ fun createHomeViewModel(
             homeRechargeRecommendationUseCase = Lazy { homeRechargeRecommendationUseCase },
             homeRecommendationUseCase = Lazy { homeRecommendationUseCase },
             homeSalamRecommendationUseCase = Lazy { homeSalamRecommendationUseCase },
-            homeSearchUseCase = Lazy { homeSearchUseCase }
+            homeSearchUseCase = Lazy { homeSearchUseCase },
+            homeBusinessUnitUseCase = Lazy { homeBusinessUnitUseCase }
     )
 }
 
@@ -194,19 +195,25 @@ fun PlayWidgetTools.givenPlayWidgetToolsReturn(playWidget: PlayWidget, dispatche
     coEvery { getWidgetFromNetwork(PlayWidgetUseCase.WidgetType.Home, dispatchers.io) } returns playWidget
 }
 
-fun GetBusinessWidgetTab.givenGetBusinessWidgetTabUseCaseReturn(homeWidget: HomeWidget) {
-    coEvery { executeOnBackground() } returns homeWidget
+fun HomeBusinessUnitUseCase.givenGetBusinessWidgetTabUseCaseReturn(
+    newBusinessUnitWidgetDataModel: NewBusinessUnitWidgetDataModel
+) {
+    coEvery { getBusinessUnitTab(newBusinessUnitWidgetDataModel) } returns newBusinessUnitWidgetDataModel
 }
 
 fun GetDynamicChannelsUseCase.givenGetDynamicChannelsUseCaseThrowReturn() {
     coEvery { executeOnBackground() } throws TimeoutException()
 }
 
-fun GetBusinessUnitDataUseCase.givenGetBusinessUnitDataUseCaseReturn(businessList: List<BusinessUnitItemDataModel>){
-    coEvery{ executeOnBackground() } returns businessList
-}
-fun GetBusinessUnitDataUseCase.givenGetBusinessUnitDataUseCaseThrowReturn(){
-    coEvery{ executeOnBackground() } throws Exception()
+fun HomeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(
+    resultBuModel: NewBusinessUnitWidgetDataModel,
+    positionTab: Int,
+    homeDataModel: HomeDynamicChannelModel,
+    buModel: NewBusinessUnitWidgetDataModel,
+    positionBuModelIndex: Int,
+    tabName: String
+) {
+    coEvery { getBusinessUnitData(0, positionTab, tabName, homeDataModel, buModel, positionBuModelIndex) } returns resultBuModel
 }
 
 fun HomeRechargeRecommendationRepository.givenGetRechargeRecommendationUseCase(rechargeRecommendation: RechargeRecommendation){

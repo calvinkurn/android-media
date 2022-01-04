@@ -7,10 +7,18 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.home.beranda.common.BaseCoRoutineScope
 import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
+import com.tokopedia.home.beranda.data.model.HomeWidget
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.interactor.usecase.*
+import com.tokopedia.home.beranda.domain.interactor.repository.*
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.helper.Event
@@ -20,6 +28,7 @@ import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeCoachmarkModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeNotifModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
@@ -32,10 +41,13 @@ import com.tokopedia.home.util.HomeServerLogger.TYPE_REVAMP_ERROR_REFRESH
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ReminderEnum
+import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
+import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.switch
@@ -68,8 +80,7 @@ open class HomeRevampViewModel @Inject constructor(
         private val homeRechargeRecommendationUseCase: Lazy<HomeRechargeRecommendationUseCase>,
         private val homeSalamRecommendationUseCase: Lazy<HomeSalamRecommendationUseCase>,
         private val userSession: Lazy<UserSessionInterface>,
-        private val getBusinessUnitDataUseCase: Lazy<GetBusinessUnitDataUseCase>,
-        private val getBusinessWidgetTab: Lazy<GetBusinessWidgetTab>,
+        private val homeBusinessUnitUseCase: Lazy<HomeBusinessUnitUseCase>,
         private val homeDispatcher: Lazy<CoroutineDispatchers>) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -314,18 +325,10 @@ open class HomeRevampViewModel @Inject constructor(
     //TODO 11.1: Remove getBusinessUnitTabData -> Move to HomeDynamicChannelUseCase
     //Create BusinessUnitRepository
     fun getBusinessUnitTabData(position: Int){
-        launchCatchError(coroutineContext, block = {
-            val data = getBusinessWidgetTab.get().executeOnBackground()
-            (homeDataModel.list.getOrNull(position) as? NewBusinessUnitWidgetDataModel)?.let{ buWidget ->
-                val buWidgetData = buWidget.copy(
-                        tabList = data.tabBusinessList,
-                        backColor = data.widgetHeader.backColor,
-                        contentsList = data.tabBusinessList.withIndex().map { BusinessUnitDataModel(tabName = it.value.name, tabPosition = it.index) })
+        findWidget<NewBusinessUnitWidgetDataModel> { buModel, _ ->
+            launch{
+                val buWidgetData = homeBusinessUnitUseCase.get().getBusinessUnitTab(buModel)
                 updateWidget(buWidgetData, position)
-            }
-        }){
-            (homeDataModel.list.getOrNull(position) as? NewBusinessUnitWidgetDataModel)?.let{ buWidget ->
-                updateWidget(buWidget.copy(tabList = listOf()), position)
             }
         }
     }
@@ -333,25 +336,11 @@ open class HomeRevampViewModel @Inject constructor(
     //TODO 11.2: Remove getBusinessUnitTabData -> Move to HomeBusinessUnitUseCase.onClickBusinessUnitTab
     //Create BusinessUnitRepository
     fun getBusinessUnitData(tabId: Int, position: Int, tabName: String){
-        if(buWidgetJob?.isActive == true) return
-        buWidgetJob = launchCatchError(coroutineContext, block = {
-            getBusinessUnitDataUseCase.get().setParams(tabId, position, tabName)
-            val data = getBusinessUnitDataUseCase.get().executeOnBackground()
-            homeDataModel.list.withIndex().find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
-                val oldBuData = buModel.value as NewBusinessUnitWidgetDataModel
-                val newBuList = oldBuData.contentsList.copy().toMutableList()
-                newBuList[position] = newBuList[position].copy(list = data)
-                updateWidget(oldBuData.copy(contentsList = newBuList), buModel.index)
-            }
-        }){
-            // show error
-            homeDataModel.list.withIndex().find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
-                val oldBuData = buModel.value as NewBusinessUnitWidgetDataModel
-                val newBuList = oldBuData.contentsList.copy().toMutableList()
-                newBuList[position] = newBuList[position].copy(list = listOf())
-                val newList = homeDataModel.list.copy().toMutableList()
-                newList[buModel.index] = oldBuData.copy(contentsList = newBuList)
-                updateWidget(oldBuData.copy(contentsList = newBuList),buModel.index)
+        findWidget<NewBusinessUnitWidgetDataModel> { buModel, index ->
+            launch{
+                val buData = homeBusinessUnitUseCase.get()
+                    .getBusinessUnitData(tabId, position, tabName, homeDataModel, buModel, index)
+                updateWidget(buData, index)
             }
         }
     }
@@ -664,7 +653,8 @@ open class HomeRevampViewModel @Inject constructor(
                 reason = (it?.message ?: "No error propagated").take(ConstantKey.HomeTimber.MAX_LIMIT),
                 data = stackTrace.take(ConstantKey.HomeTimber.MAX_LIMIT)
             )
-            homeFlowDataCancelled = true
+            //TODO fix for unit test
+//            homeFlowDataCancelled = true
         }
     }
 
