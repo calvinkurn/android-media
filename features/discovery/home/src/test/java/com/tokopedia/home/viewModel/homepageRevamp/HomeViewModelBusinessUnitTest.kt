@@ -41,6 +41,7 @@ class HomeViewModelBusinessUnitTest{
     @Test
     fun `Get Tab Data success && bu data success with success data`(){
         val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
+        val position = 0
 
         // load tab data return success
         val homeWidget = HomeWidget(tabBusinessList = listOf(HomeWidget.TabItem(1, "")), widgetHeader = HomeWidget.WidgetHeader("red"))
@@ -77,14 +78,14 @@ class HomeViewModelBusinessUnitTest{
         val listBusinessUnitItem = listOf(
             BusinessUnitItemDataModel(
                 content = HomeWidget.ContentItemTab(),
-                itemPosition = 0,
-                tabPosition = 0,
+                itemPosition = position,
+                tabPosition = position,
                 tabName = "Keuangan"
             )
         )
         val listBusinessUnit = listOf(BusinessUnitDataModel(
             tabName = "Keuangan",
-            tabPosition = 0,
+            tabPosition = position,
             list = listBusinessUnitItem
         ))
         val resultBuModel = businessUnitDataModel.copy(
@@ -92,18 +93,18 @@ class HomeViewModelBusinessUnitTest{
         )
         homeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(
             resultBuModel,
-            0,
+            position,
             homeViewModel.homeDataModel,
             businessUnitDataModel,
-            0,
+            position,
             listBusinessUnit[0].tabName
         )
 
         // viewModel load business tab
-        homeViewModel.getBusinessUnitTabData(0)
+        homeViewModel.getBusinessUnitTabData(position)
 
         // viewModel load business data
-        homeViewModel.getBusinessUnitData(0, 0, listBusinessUnit[0].tabName)
+        homeViewModel.getBusinessUnitData(position, position, listBusinessUnit[0].tabName)
 
         homeViewModel.homeDataModel.findWidget<NewBusinessUnitWidgetDataModel> { widget, index ->
             Assert.assertNotNull(widget.tabList)
@@ -115,6 +116,8 @@ class HomeViewModelBusinessUnitTest{
     @Test
     fun `Get Tab Data success && bu data success with default data`(){
         val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
+        val tabName = ""
+        val position = 0
 
         // load tab data return success
         val homeWidget = HomeWidget(tabBusinessList = listOf(HomeWidget.TabItem(1, "")), widgetHeader = HomeWidget.WidgetHeader("red"))
@@ -149,18 +152,18 @@ class HomeViewModelBusinessUnitTest{
 
         homeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(
             businessUnitDataModel,
-            0,
+            position,
             homeViewModel.homeDataModel,
             businessUnitDataModel,
-            0,
-            ""
+            position,
+            tabName
         )
 
         // viewModel load business tab
-        homeViewModel.getBusinessUnitTabData(0)
+        homeViewModel.getBusinessUnitTabData(position)
 
         // viewModel load business data
-        homeViewModel.getBusinessUnitData(0, 0, "")
+        homeViewModel.getBusinessUnitData(position, position, tabName)
 
         homeViewModel.homeDataModel.findWidget<NewBusinessUnitWidgetDataModel> { widget, index ->
             Assert.assertEquals(widget, businessUnitDataModel)
