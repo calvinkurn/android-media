@@ -361,7 +361,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         initBtnAction()
         navToolbar = view.findViewById(R.id.pdp_navtoolbar)
         navAbTestCondition({ initToolbarMainApp() }, { initToolbarSellerApp() })
-
+        
         if (!viewModel.isUserSessionActive) initStickyLogin(view)
         screenshotDetector = context?.let {
             UniversalShareBottomSheet.createAndStartScreenShotDetector(

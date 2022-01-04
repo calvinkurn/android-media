@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="pdp_fintech_16_dp">16dp</dimen>
+    <dimen name="pfp_fintech_10_dp">10dp</dimen>
+    <dimen name="pdp_fintech_14_dp">14dp</dimen>
+    <dimen name="pdp_fintech_8_dp">8dp</dimen>
+    <dimen name="pdp_fintech_12_dp">12dp</dimen>
+</resources>
