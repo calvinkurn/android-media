@@ -14,9 +14,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Protocol
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
@@ -74,8 +72,7 @@ class NetworkModule {
     }
 
     companion object {
-        private const val BASE_URL = "https://mu-staging.tokopedia.com/"
-//        private const val BASE_URL = "https://api.remove.bg/"
+        private const val BASE_URL = "https://mu.tokopedia.com/"
         private const val DEFAULT_TIMEOUT = 600
     }
 

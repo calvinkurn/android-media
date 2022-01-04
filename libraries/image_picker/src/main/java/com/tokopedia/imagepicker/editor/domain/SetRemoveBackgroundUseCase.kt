@@ -13,28 +13,6 @@ class SetRemoveBackgroundUseCase @Inject constructor(
     private val services: NetworkServices
 ) {
 
-//    fun invoke(params: String): Observable<ResponseBody> {
-//        return services.removeBackground(
-//            base64 = params,
-//            size = COMPRESS_SIZE_TYPE,
-//            apiKey = API_KEY
-//        )
-//    }
-//
-//    fun File.fileBody(
-//        type: String,
-//        bodyName: String
-//    ): MultipartBody.Part {
-//        val contentType = MediaType.parse(type)
-//        val requestBody = RequestBody.create(contentType, this)
-//        return MultipartBody.Part.createFormData(bodyName, this.name, requestBody)
-//    }
-//
-//    companion object {
-//        private const val API_KEY = "gaq7AqrqmZK7YFYApsTm6Jx3" //StU7eRw6z5tmPsmG61tbeHKX
-//        private const val COMPRESS_SIZE_TYPE = "preview"
-//    }
-
     fun invoke(params: File): Observable<ResponseBody> {
         return services.removeBackground(params.fileBody())
     }
