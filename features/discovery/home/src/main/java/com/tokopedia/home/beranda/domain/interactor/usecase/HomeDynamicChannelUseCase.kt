@@ -77,7 +77,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
         private val homeChooseAddressRepository: HomeChooseAddressRepository
 ): HomeRevampRepository {
 
-
     private var CHANNEL_LIMIT_FOR_PAGINATION = 1
     companion object{
         private const val TYPE_ATF_1 = "atf-1"
@@ -101,16 +100,15 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
     }
 
-    fun updateHeaderData(homeHeaderDataModel: HomeHeaderDataModel, homeDataModel: HomeDynamicChannelModel, onSuccess:(HomeDynamicChannelModel) -> Unit) {
+    fun updateHeaderData(homeHeaderDataModel: HomeHeaderDataModel, homeDataModel: HomeDynamicChannelModel): Visitable<*>? {
         val homeHeaderOvoDataModel = (homeDataModel.list.find { visitable-> visitable is HomeHeaderDataModel } as HomeHeaderDataModel?)
         homeHeaderOvoDataModel?.let {
             val currentPosition = -1
             val index = homeDataModel.list.withIndex().find { (_, model) ->  model is HomeHeaderDataModel }?.index ?: -1
             val visitable = homeDataModel.list.get(index)
-            homeDataModel.updateWidgetModel(visitableToChange = visitable, visitable = homeHeaderDataModel, position = index) {
-                onSuccess.invoke(homeDataModel)
-            }
+            return visitable
         }
+        return null
     }
 
     @FlowPreview
@@ -174,7 +172,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                  * Get header data
                  */
                 val currentHeaderDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData(HomeHeaderDataModel())
-                updateHeaderData(currentHeaderDataModel, dynamicChannelPlainResponse) {}
+                updateHeaderData(currentHeaderDataModel, dynamicChannelPlainResponse)
 
                 emit(dynamicChannelPlainResponse)
 

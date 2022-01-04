@@ -1,5 +1,6 @@
-package com.tokopedia.home.beranda.domain.interactor
+package com.tokopedia.home.beranda.domain.interactor.repository
 
+import android.os.Bundle
 import android.text.TextUtils
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -7,12 +8,13 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.home.beranda.data.model.KeywordSearchData
 import com.tokopedia.home.beranda.domain.gql.searchHint.KeywordSearchHintQuery
+import com.tokopedia.home.beranda.domain.interactor.HomeRepository
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetKeywordSearchUseCase @Inject constructor(
+class HomeKeywordSearchRepository @Inject constructor(
         private val graphqlUseCase: GraphqlUseCase<KeywordSearchData>
-): UseCase<KeywordSearchData>(){
+): UseCase<KeywordSearchData>(), HomeRepository<KeywordSearchData>{
 
     var params : Map<String, Any> = mapOf()
 
@@ -39,8 +41,23 @@ class GetKeywordSearchUseCase @Inject constructor(
         return graphqlUseCase.executeOnBackground()
     }
 
+    override suspend fun getRemoteData(bundle: Bundle): KeywordSearchData {
+        createParams(
+                isFirstInstall = bundle.getBoolean(FIRST_INSTALL, false),
+                deviceId = bundle.getString(DEVICE_ID, ""),
+                userId = bundle.getString(USER_ID, "")
+        )
+        return executeOnBackground()
+    }
+
+    override suspend fun getCachedData(bundle: Bundle): KeywordSearchData {
+        return getRemoteData(bundle)
+    }
+
     companion object {
         const val FIRST_INSTALL = "firstInstall"
         const val UNIQUE_ID = "uniqueId"
+        const val DEVICE_ID = "deviceId"
+        const val USER_ID = "userId"
     }
 }

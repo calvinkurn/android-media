@@ -102,8 +102,6 @@ interface HomeCategoryListener {
 
     fun getBusinessUnit(tabId: Int, position: Int, tabName: String)
 
-    fun updateExpiredChannel(dynamicChannelDataModel: DynamicChannelDataModel, position: Int)
-
     fun removeViewHolderAtPosition(position: Int)
 
     fun onDynamicChannelRetryClicked()

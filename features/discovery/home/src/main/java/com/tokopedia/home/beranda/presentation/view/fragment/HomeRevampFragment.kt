@@ -3,9 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.*
-import android.graphics.Bitmap
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -18,7 +16,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.annotation.VisibleForTesting
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
@@ -30,8 +27,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -83,7 +78,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynami
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceCoachmark
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
@@ -1274,14 +1268,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         observeErrorEvent()
         observeSendLocation()
         observeTrackingData()
-        observeRequestImagePlayBanner()
         observeViewModelInitialized()
         observeHomeRequestNetwork()
         observeIsNeedRefresh()
         observeSearchHint()
         observePlayWidgetReminder()
         observePlayWidgetReminderEvent()
-        observeRechargeBUWidget()
         observeResetNestedScrolling()
         observeBeautyFestData()
         observeGopayEligibility()
@@ -1485,26 +1477,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun observeRechargeBUWidget() {
-        context?.let {
-            getHomeViewModel().rechargeBUWidgetLiveData.observe(viewLifecycleOwner, Observer {
-                getHomeViewModel().insertRechargeBUWidget(it.peekContent())
-            })
-        }
-    }
-
-    private fun observeHomeNotif() {
-        context?.let {
-            getHomeViewModel().homeNotifLiveData.observe(viewLifecycleOwner, Observer {
-                if (!useNewInbox) {
-                    navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, it.notifCount)
-                }
-                navToolbar?.setBadgeCounter(getInboxIcon(), it.messageCount)
-                navToolbar?.setBadgeCounter(IconList.ID_CART, it.cartCount)
-            })
-        }
-    }
-
     private fun observePlayWidgetReminder() {
         getHomeViewModel().playWidgetReminderObservable.observe(viewLifecycleOwner, Observer {
             when (it.status) {
@@ -1642,27 +1614,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 resources.getDimensionPixelSize(R.dimen.home_background_no_choose_address)
             backgroundViewImage.layoutParams = layoutParams
             loaderHeaderImage.layoutParams = layoutParams
-        }
-    }
-
-    @VisibleForTesting
-    private fun observeRequestImagePlayBanner() {
-        context?.let {
-            getHomeViewModel().requestImageTestLiveData.observe(viewLifecycleOwner, Observer { playCardViewModelEvent: Event<PlayCardDataModel> ->
-                Glide.with(it)
-                        .asBitmap()
-                        .load(playCardViewModelEvent.peekContent().playCardHome?.coverUrl)
-                        .into(object : CustomTarget<Bitmap>() {
-                            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                                getHomeViewModel().setPlayBanner(playCardViewModelEvent.peekContent())
-                            }
-
-                            override fun onLoadCleared(placeholder: Drawable?) {}
-                            override fun onLoadFailed(errorDrawable: Drawable?) {
-                                getHomeViewModel().clearPlayBanner()
-                            }
-                        })
-            })
         }
     }
 
@@ -2188,7 +2139,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun onPageLoadTimeEnd() {
         stickyLoginView?.loadContent()
-        observeHomeNotif()
         adapter?.currentList?.let {
             showCoachmarkWithDataValidation(it)
         }
@@ -2350,10 +2300,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         onActionLinkClicked(applink)
     }
 
-    override fun updateExpiredChannel(dynamicChannelDataModel: DynamicChannelDataModel, position: Int) {
-        getHomeViewModel().getDynamicChannelData(dynamicChannelDataModel, position)
-    }
-
     private fun onActionLinkClicked(actionLink: String, trackingAttribution: String = "") {
         val now = System.currentTimeMillis()
         if (now - mLastClickTime < CLICK_TIME_INTERVAL) {
@@ -2376,7 +2322,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun getDynamicChannelData(visitable: Visitable<*>, channelModel: ChannelModel, channelPosition: Int) {
-        getHomeViewModel().getDynamicChannelData(visitable, channelModel, channelPosition)
+        getHomeViewModel().getDynamicChannelDataOnExpired(visitable, channelModel, channelPosition)
     }
 
     override fun getUserIdFromViewModel(): String {
@@ -2575,7 +2521,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onPopularKeywordSectionReloadClicked(position: Int, channel: DynamicHomeChannel.Channels) {
-        getHomeViewModel().getPopularKeyword()
+        getHomeViewModel().getPopularKeywordOnRefresh()
         PopularKeywordTracking.sendPopularKeywordClickReload(channel, getUserSession().userId)
     }
 
@@ -2683,13 +2629,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onNotificationChanged(notificationCount: Int, inboxCount: Int, cartCount: Int) {
-        try {
-            getHomeViewModel().setHomeNotif(notificationCount, inboxCount, cartCount)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
 
+    }
 
     override val homeMainToolbarHeight: Int
         get() {
@@ -2961,7 +2902,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onWidgetShouldRefresh(view: PlayWidgetView) {
-        getHomeViewModel().getPlayWidget()
+        getHomeViewModel().getPlayWidgetWhenShouldRefresh()
     }
 
     private fun notifyPlayWidgetTotalView(data: Intent) {

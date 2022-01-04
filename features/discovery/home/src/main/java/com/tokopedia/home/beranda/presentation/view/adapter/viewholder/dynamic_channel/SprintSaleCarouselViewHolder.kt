@@ -88,7 +88,6 @@ class SprintSaleCarouselViewHolder(itemView: View, private val listener: HomeCat
             val timeDiff = serverTime.getTimeDiff(expiredTime)
             countDownView.targetDate = timeDiff
             countDownView.onFinish = {
-                listener.updateExpiredChannel(element, adapterPosition)
             }
             if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channels!!.header))) {
                 seeMore.visibility = View.VISIBLE
