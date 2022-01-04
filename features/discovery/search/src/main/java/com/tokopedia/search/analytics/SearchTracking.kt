@@ -539,7 +539,7 @@ object SearchTracking {
     }
 
     @JvmStatic
-    fun trackImpressionInspirationCarouselList(trackingQueue: TrackingQueue, type: String, keyword: String, list: List<Any>) {
+    fun trackImpressionInspirationCarouselList(trackingQueue: TrackingQueue, type: String, keyword: String, list: ArrayList<Any>) {
         val map = DataLayer.mapOf(
                 SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
                 SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
@@ -547,9 +547,7 @@ object SearchTracking {
                 SearchTrackingConstant.EVENT_LABEL, "$type - $keyword",
                 ECOMMERCE, DataLayer.mapOf(
                 "currencyCode", "IDR",
-                "impressions", DataLayer.listOf(
-                *list.toTypedArray()
-        )
+                "impressions", list
         )
         ) as HashMap<String, Any>
         trackingQueue.putEETracking(
