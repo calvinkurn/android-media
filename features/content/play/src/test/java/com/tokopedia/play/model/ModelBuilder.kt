@@ -1,17 +1,12 @@
 package com.tokopedia.play.model
 
 import com.google.gson.Gson
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.CartFeedbackUiModel
-import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.VariantSheetUiModel
-import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
+import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.recom.PlayShareInfoUiModel
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -961,6 +956,190 @@ class ModelBuilder {
               }
         }""".trimIndent()
 
+    private val userReportReasonListJson = """
+        {
+    "data": {
+      "visionGetReportVideoReason": [
+        {
+          "category_id": 1,
+          "detail": "Konten yang mengandung unsur SARA, kebencian atau pelecehan terhadap individu atau kelompok tertentu.",
+          "value": "SARA, Pelecehan dan Kebencian",
+          "additional_fields": [
+            {
+              "key": "report_reason",
+              "max": 255,
+              "min": 10,
+              "type": "textarea",
+              "label": "Detail laporan(Wajib diisi)"
+            }
+          ],
+          "child": []
+        },
+        {
+          "category_id": 2,
+          "detail": "Konten yang mengandung kekerasan atau pengancaman dalam bentuk fisik maupun verbal.",
+          "value": "Kekerasan atau Pengancaman",
+          "additional_fields": [
+            {
+              "key": "report_reason",
+              "max": 255,
+              "min": 10,
+              "type": "textarea",
+              "label": "Detail laporan(Wajib diisi)"
+            }
+          ],
+          "child": []
+        },
+        {
+          "category_id": 3,
+          "detail": "Konten yang mendukung unsur terorisme atau mengandung aliran sesat.",
+          "value": "Konten Terorisme atau Aliran Sesat",
+          "additional_fields": [
+            {
+              "key": "report_reason",
+              "max": 255,
+              "min": 10,
+              "type": "textarea",
+              "label": "Detail laporan(Wajib diisi)"
+            }
+          ],
+          "child": []
+        },
+        {
+          "category_id": 4,
+          "detail": "Konten berupa ajakan, dukungan atau kampanye terhadap partai atau individu tertentu.",
+          "value": "Konten Politik",
+          "additional_fields": [
+            {
+              "key": "report_reason",
+              "max": 255,
+              "min": 10,
+              "type": "textarea",
+              "label": "Detail laporan(Wajib diisi)"
+            }
+          ],
+          "child": []
+        },
+        {
+          "category_id": 5,
+          "detail": "Konten pornografi yang mengandung unsur seksual, ketelanjangan, atau jenis konten dewasa lainnya.",
+          "value": "Pornografi",
+          "additional_fields": [
+            {
+              "key": "report_reason",
+              "max": 255,
+              "min": 10,
+              "type": "textarea",
+              "label": "Detail laporan(Wajib diisi)"
+            }
+          ],
+          "child": []
+        },
+        {
+          "category_id": 6,
+          "detail": "Konten yang mempromosikan platform lain atau mengajak bertransaksi di luar Tokopedia.",
+          "value": "Promosi Platform Lain",
+          "additional_fields": [
+            {
+              "key": "report_reason",
+              "max": 255,
+              "min": 10,
+              "type": "textarea",
+              "label": "Detail laporan(Wajib diisi)"
+            }
+          ],
+          "child": []
+        },
+        {
+          "category_id": 7,
+          "detail": "Konten mempromosikan produk yang melanggar syarat dan ketentuan Tokopedia.",
+          "value": "Produk yang dipromosikan melanggar syarat dan ketentuan Tokopedia",
+          "additional_fields": [
+            {
+              "key": "report_reason",
+              "max": 255,
+              "min": 10,
+              "type": "textarea",
+              "label": "Detail laporan(Wajib diisi)"
+            }
+          ],
+          "child": []
+        },
+        {
+          "category_id": 8,
+          "detail": "Konten tidak menunjukan kegiatan promosi.",
+          "value": "Konten Spam",
+          "additional_fields": [
+            {
+              "key": "report_reason",
+              "max": 255,
+              "min": 10,
+              "type": "textarea",
+              "label": "Detail laporan(Wajib diisi)"
+            }
+          ],
+          "child": []
+        },
+        {
+          "category_id": 9,
+          "detail": "Melakukan streaming ke lebih dari satu akun secara bersamaan.",
+          "value": "Konten Duplikat",
+          "additional_fields": [
+            {
+              "key": "report_reason",
+              "max": 255,
+              "min": 10,
+              "type": "textarea",
+              "label": "Detail laporan(Wajib diisi)"
+            }
+          ],
+          "child": []
+        },
+        {
+          "category_id": 10,
+          "detail": "Konten berisikan kegiatan yang berbahaya seperti, namun tidak terbatas pada kegiatan merokok atau penggunaan obat terlarang.",
+          "value": "Tidakan Berbahaya",
+          "additional_fields": [
+            {
+              "key": "report_reason",
+              "max": 255,
+              "min": 10,
+              "type": "textarea",
+              "label": "Detail laporan(Wajib diisi)"
+            }
+          ],
+          "child": []
+        },
+        {
+          "category_id": 11,
+          "detail": "Konten melanggar lainnya yang tidak termasuk dalam kategori yang tersedia.",
+          "value": "Pelanggaran lainnya",
+          "additional_fields": [
+            {
+              "key": "report_reason",
+              "max": 255,
+              "min": 10,
+              "type": "textarea",
+              "label": "Detail laporan(Wajib diisi)"
+            }
+          ],
+          "child": []
+        }
+      ]
+    }
+  }
+    """.trimIndent()
+
+    private val submitReportJson = """
+        {
+            "data": {
+              "visionPostReportVideoPlay": {
+                "status": "success"
+              }
+            }
+  }
+    """.trimIndent()
+
     fun buildChannel(): ChannelDetailsWithRecomResponse = gson.fromJson(channelJsonWithRecom, ChannelDetailsWithRecomResponse::class.java)
 
     fun buildSocketCredential(): SocketCredential = gson.fromJson(socketCredential, SocketCredential::class.java)
@@ -1162,5 +1341,23 @@ class ModelBuilder {
                         && channel.configuration.active
                         && !channel.configuration.freezed
         )
+    }
+
+    fun buildUserReportList(
+        reasoningId: Int = 1,
+        title: String = "Harga Detail",
+        detail: String = "Harga Tidak Wajar",
+        submissionData: UserReportOptions.OptionAdditionalField = UserReportOptions.OptionAdditionalField(
+            key = "report_reason",
+            label = "Detail Laporan",
+            max = 255,
+            min = 10,
+            type = "textarea"
+        )
+    ) : PlayUserReportUiModel.Loaded{
+        val userReportOpt = PlayUserReportReasoningUiModel.Reasoning(
+            title = title, reasoningId = reasoningId, detail = detail, submissionData = submissionData
+        )
+        return PlayUserReportUiModel.Loaded(listOf(userReportOpt))
     }
 }
