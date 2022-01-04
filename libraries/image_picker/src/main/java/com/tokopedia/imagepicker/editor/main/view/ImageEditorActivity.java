@@ -695,7 +695,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         if (fragment == null) return;
 
         if (position == 0) {
-            fragment.cancelRemoveBackground();
+            fragment.resetRemoveBackgroundBitmap();
             fragment.setImageData(imagePath);
             return;
         }

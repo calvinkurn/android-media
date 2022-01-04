@@ -82,8 +82,9 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     private int[] widthHeight;
 
     private UserSessionInterface userSession;
-
     private Bitmap lastStateImage;
+
+    private String removeBackgroundResultPath = "";
 
     public interface OnImageEditPreviewFragmentListener {
         boolean isInEditCropMode();
@@ -290,7 +291,8 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     public void setRemoveBackground(int color) {
         removeBackgroundColor = color;
 
-        if (hasRequestRemoveBackground) {
+        if (hasRequestRemoveBackground && !removeBackgroundResultPath.isEmpty()) {
+            setImageData(removeBackgroundResultPath);
             gestureCropImageView.setBackgroundColor(removeBackgroundColor);
             return;
         }
@@ -314,8 +316,12 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     }
 
     public void cancelRemoveBackground() {
-        removeBackgroundColor = 0;
         hasRequestRemoveBackground = false;
+        resetRemoveBackgroundBitmap();
+    }
+
+    public void resetRemoveBackgroundBitmap() {
+        removeBackgroundColor = 0;
 
         if (lastStateImage == null) return;
         gestureCropImageView.setImageBitmap(lastStateImage);
@@ -337,8 +343,12 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     @Override
     public void onSuccessGetRemoveBackground(String filePath) {
         hideLoadingAndShowPreview();
+
         hasRequestRemoveBackground = true;
+        removeBackgroundResultPath = filePath;
+
         gestureCropImageView.setBackgroundColor(removeBackgroundColor);
+
         setImageData(filePath);
     }
 
@@ -588,14 +598,14 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     }
 
     private void showLoadingAndHidePreview() {
-        uCropView.setVisibility(View.INVISIBLE);
+        //uCropView.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.VISIBLE);
         blockingView.setVisibility(View.VISIBLE);
     }
 
     private void hideLoadingAndShowPreview() {
         progressBar.setVisibility(View.GONE);
-        uCropView.setVisibility(View.VISIBLE);
+        //uCropView.setVisibility(View.VISIBLE);
         setEditCropMode(onImageEditPreviewFragmentListener.isInEditCropMode());
     }
 
