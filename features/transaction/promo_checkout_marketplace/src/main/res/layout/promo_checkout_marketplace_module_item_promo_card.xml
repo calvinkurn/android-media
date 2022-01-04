@@ -98,7 +98,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/container_promo_title"
                 app:typographyType="body_3"
-                tools:visibility="visible" />
+                tools:visibility="gone" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_promo_code"
@@ -112,7 +112,7 @@
                 app:typographyType="body_3"
                 app:typographyWeight="bold"
                 tools:text="HHBSFDUJKSBS"
-                tools:visibility="visible" />
+                tools:visibility="gone" />
 
             <LinearLayout
                 android:id="@+id/container_promo_info_list"
@@ -141,16 +141,17 @@
                     android:layout_width="13dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="12dp"
+                    android:layout_marginEnd="6dp"
                     android:scaleType="fitCenter"
                     app:unify_image_corner_radius="0"
                     app:unify_image_type="rect"
-                    tools:srcCompat="@drawable/ic_action_x" />
+                    tools:srcCompat="@drawable/ic_action_x"
+                    tools:visibility="visible" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_time_validity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
                     android:textColor="@color/Unify_N700_68"
                     app:typographyType="body_3"
                     tools:text="Berakhir 20 menit lagi!" />
@@ -176,7 +177,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/container_time_validity"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/image_user_validity"

@@ -6,6 +6,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckoutmarketplace.R
@@ -38,8 +40,8 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
             element.uiState.isUpdateState = false
             renderPromoState(viewBinding, element)
         } else {
-            renderPromoState(viewBinding, element)
             renderPromoData(viewBinding, element)
+            renderPromoState(viewBinding, element)
             setPromoItemClickListener(viewBinding, element)
             adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let {
                 listener.onShowPromoItem(element, it)
@@ -65,7 +67,7 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
                 renderPromoDisabled(viewBinding)
             } else {
                 if (element.uiState.isSelected) {
-                    renderPromoSelected(viewBinding)
+                    renderPromoSelected(viewBinding, element)
                 } else {
                     renderPromoEnabled(viewBinding)
                 }
@@ -75,15 +77,37 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
         }
     }
 
-    private fun renderPromoSelected(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding) {
+    private fun renderPromoSelected(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
         renderPromoEnabled(viewBinding)
         with(viewBinding) {
             promoHighlightIdentifier.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_highlighted_identifier_selected)
             containerUserValidity.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN100))
             cardPromoItem.cardType = CardUnify.TYPE_BORDER_ACTIVE
             cardPromoItem.setCardBackgroundColor(colorBackgroundSelected)
+
             imageSelectPromo.show()
+            val imageSelectPromoLayoutParam = imageSelectPromo.layoutParams as ViewGroup.MarginLayoutParams
+            if (element.uiData.remainingPromoCount > 1) {
+                if (getPromoInformationDetailsCount(element) <= 1) {
+                    imageSelectPromoLayoutParam.topMargin = itemView.context.resources.getDimension(R.dimen.dp_22).toInt()
+                } else {
+                    imageSelectPromoLayoutParam.topMargin = itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_16).toInt()
+                }
+            } else {
+                imageSelectPromoLayoutParam.topMargin = 0
+            }
         }
+    }
+
+    private fun getPromoInformationDetailsCount(element: PromoListItemUiModel): Int {
+        var promoInformationDetailsCount = 0
+        element.uiData.promoInfos.forEach {
+            if (it.type == PromoInfo.TYPE_PROMO_INFO || it.type == PromoInfo.TYPE_BOTTOM_BANNER || it.type == PromoInfo.TYPE_PROMO_VALIDITY) {
+                promoInformationDetailsCount++
+            }
+        }
+
+        return promoInformationDetailsCount
     }
 
     private fun renderPromoEnabled(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding) {
@@ -173,7 +197,7 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
                 if (element.uiState.isHighlighted && topBanner != null) {
                     promoQuantityIdentifierLayoutParam.topMargin = itemView.context.resources.getDimension(R.dimen.dp_32).toInt()
                 } else {
-                    promoQuantityIdentifierLayoutParam.topMargin = itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_16).toInt()
+                    promoQuantityIdentifierLayoutParam.topMargin = itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_14).toInt()
                 }
             } else {
                 textPromoQuantity.gone()
