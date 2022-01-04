@@ -24,5 +24,6 @@ annotation class HomeStaticLayoutId {
         const val LOADING_STATE = "5"
         const val PRODUCT_RECOM_OOC = "6"
         const val PROGRESS_BAR = "7"
+        const val SWITCH_SERVICE_WIDGET = "8"
     }
 }

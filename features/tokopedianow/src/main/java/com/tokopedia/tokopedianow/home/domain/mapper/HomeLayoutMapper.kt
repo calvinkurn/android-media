@@ -40,10 +40,10 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_HOME_PAGE
 import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingEducationMapper.mapSharingEducationUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.SwitcherMapper.create15mSwitcherUiModel
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -88,7 +88,8 @@ object HomeLayoutMapper {
         response: List<HomeLayoutResponse>,
         hasTickerBeenRemoved: Boolean,
         hasSharingEducationBeenRemoved: Boolean,
-        miniCartData: MiniCartSimplifiedData?
+        miniCartData: MiniCartSimplifiedData?,
+        onClickSwitcher: () -> Unit
     ) {
         val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
@@ -102,6 +103,11 @@ object HomeLayoutMapper {
             if (!(hasSharingEducationBeenRemoved && it.layout == SHARING_EDUCATION)) {
                 mapToHomeUiModel(it, miniCartData = miniCartData)?.let { item ->
                     add(item)
+                }
+
+                // Temporary Hardcode Position
+                if (it.layout == EDUCATIONAL_INFORMATION) {
+                    add(create15mSwitcherUiModel(onClickSwitcher))
                 }
             }
         }
