@@ -468,8 +468,10 @@ open class HomeRevampViewModel @Inject constructor(
     //Create BusinessUnitRepository
     fun getBusinessUnitTabData(position: Int){
         launch {
-            val buWidgetData = homeBusinessUnitUseCase.get().getBusinessUnitTab(homeDataModel, position)
-            updateWidget(buWidgetData, position)
+            findWidget<NewBusinessUnitWidgetDataModel> { buModel, _ ->
+                val buWidgetData = homeBusinessUnitUseCase.get().getBusinessUnitTab(buModel)
+                updateWidget(buWidgetData, position)
+            }
         }
     }
 
