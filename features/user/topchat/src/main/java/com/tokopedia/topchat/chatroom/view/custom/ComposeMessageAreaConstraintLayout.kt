@@ -5,8 +5,12 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.topchat.R
+import com.tokopedia.unifyprinciples.Typography
 
 class ComposeMessageAreaConstraintLayout : ConstraintLayout {
+
+    private var errorComposeMsg: Typography? = null
+
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -24,10 +28,15 @@ class ComposeMessageAreaConstraintLayout : ConstraintLayout {
 
     init {
         initViewLayout()
+        initViewBind()
     }
 
     private fun initViewLayout() {
         View.inflate(context, LAYOUT, this)
+    }
+
+    private fun initViewBind() {
+        errorComposeMsg = findViewById(R.id.tp_error_compose)
     }
 
     companion object {
