@@ -591,7 +591,7 @@ object SearchTracking {
     @JvmStatic
     fun trackEventClickInspirationCarouselListProduct(type: String,
                                                       keyword: String,
-                                                      products: List<Any>) {
+                                                      products: ArrayList<Any>) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
                         SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
@@ -600,9 +600,7 @@ object SearchTracking {
                         ECOMMERCE, DataLayer.mapOf("click",
                         DataLayer.mapOf("actionField",
                                 DataLayer.mapOf("list", "/search - carousel"),
-                                "products", DataLayer.listOf(
-                                *products.toTypedArray()
-                        )
+                                "products", products
                         )
                 )
                 )

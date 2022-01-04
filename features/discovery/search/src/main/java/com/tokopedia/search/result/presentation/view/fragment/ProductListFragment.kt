@@ -1397,7 +1397,7 @@ class ProductListFragment: BaseDaggerFragment(),
         val data = createCarouselTrackingUnificationData(product)
 
         inspirationCarouselTrackingUnification.trackCarouselClick(data) {
-            val products: MutableList<Any> = ArrayList()
+            val products = ArrayList<Any>()
             products.add(product.getInspirationCarouselListProductAsObjectDataLayer())
 
             SearchTracking.trackEventClickInspirationCarouselListProduct(
@@ -1435,7 +1435,7 @@ class ProductListFragment: BaseDaggerFragment(),
         val data = createCarouselTrackingUnificationData(product)
 
         inspirationCarouselTrackingUnification.trackCarouselClick(data) {
-            val products: MutableList<Any> = ArrayList()
+            val products = ArrayList<Any>()
             products.add(product.getInspirationCarouselListProductAsObjectDataLayer())
 
             SearchTracking.trackEventClickInspirationCarouselListProduct(
