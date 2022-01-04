@@ -4,11 +4,11 @@ import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.product_ar.view.fragment.asdInterface
+import com.tokopedia.product_ar.view.fragment.ComparissonHelperListener
 import com.tokopedia.product_ar.view.viewholder.FullImageViewHolder
 import com.tokopedia.product_ar.view.viewholder.GridImageViewHolder
 
-class PhotoComparisonAdapter(val listener: asdInterface) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PhotoComparisonAdapter(val listener: ComparissonHelperListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         const val SINGLE_PHOTO_TYPE = 1
@@ -17,14 +17,16 @@ class PhotoComparisonAdapter(val listener: asdInterface) : RecyclerView.Adapter<
 
     var listBitmap: MutableList<Bitmap> = mutableListOf()
 
-    fun setData(data:List<Bitmap>) {
+    fun setData(data: List<Bitmap>) {
         listBitmap = data.toMutableList()
         notifyDataSetChanged()
     }
 
     fun removeData(position: Int) {
-        listBitmap.removeAt(position)
-        notifyItemRemoved(position)
+        if (position != -1) {
+            listBitmap.removeAt(position)
+            notifyItemRemoved(position)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

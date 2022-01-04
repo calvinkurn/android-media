@@ -10,4 +10,6 @@
     <string name="txt_animated_text_icon_use_camera">Pakai Kamera</string>
 
     <string name="txt_comparison_desc">Kamu bisa pilih hingga 4 varian untuk dibandingkan.</string>
+
+    <string name="txt_btn_save_photo">Simpan Foto ke Galeri</string>
 </resources>

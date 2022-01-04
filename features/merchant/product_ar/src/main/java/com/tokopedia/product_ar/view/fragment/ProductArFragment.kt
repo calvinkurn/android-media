@@ -43,6 +43,7 @@ import com.tokopedia.product_ar.view.ProductArActivity
 import com.tokopedia.product_ar.view.ProductArListener
 import com.tokopedia.product_ar.view.bottomsheet.ProductArBottomSheetBuilder
 import com.tokopedia.product_ar.view.partialview.PartialBottomArView
+import com.tokopedia.product_ar.viewmodel.ProductArSharedViewModel
 import com.tokopedia.product_ar.viewmodel.ProductArViewModel
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -72,6 +73,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     lateinit var userSessionInterface: UserSessionInterface
 
     private var viewModel: ProductArViewModel? = null
+    private var sharedViewModel: ProductArSharedViewModel? = null
 
     private var mMakeupView: MFEMakeupView? = null
 
@@ -98,6 +100,9 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
 
         context?.let {
             activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            activity?.let { activity ->
+                sharedViewModel = ViewModelProvider(activity).get(ProductArSharedViewModel::class.java)
+            }
         }
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(ProductArViewModel::class.java)
@@ -109,7 +114,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
 
         arViewLoader?.show()
         icComparison?.setOnClickListener {
-            getArActivity()?.goToArComparisonFragment()
+            goToArComparissonPage()
         }
 
         getMakeUpEngine()?.setDetectionCallbackForCameraFeed(this)
@@ -126,6 +131,15 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         animatedTextIcon1 = view.findViewById(R.id.animated_txt_icon_1)
         productArToolbar = view.findViewById(R.id.product_ar_toolbar)
         partialBottomArView = PartialBottomArView.build(view, this)
+    }
+
+    private fun goToArComparissonPage() {
+        viewModel?.imageDrawable?.let {
+            sharedViewModel?.setArListData((viewModel?.productArList?.value as? Success)?.data
+                    ?: listOf(), it)
+        }
+
+        getArActivity()?.goToArComparisonFragment()
     }
 
     private fun setupNavToolbar() {
@@ -179,7 +193,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
 
     private fun setupUseImageCamera(drawablePath: String) {
         val selectedImageBitmap = getBitmapFromPath(drawablePath)
-
+        viewModel?.imageDrawable = selectedImageBitmap
         selectedImageBitmap?.let {
             getMakeUpEngine()?.clearMakeupLook()
             getMakeUpEngine()?.startRunningWithPhoto(it, false,

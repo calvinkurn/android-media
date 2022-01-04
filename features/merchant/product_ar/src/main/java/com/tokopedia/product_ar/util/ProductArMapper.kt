@@ -1,10 +1,14 @@
 package com.tokopedia.product_ar.util
 
+import android.graphics.Bitmap
 import android.graphics.Color
+import com.modiface.mfemakeupkit.effects.MFEMakeupLayer
+import com.modiface.mfemakeupkit.effects.MFEMakeupLook
 import com.modiface.mfemakeupkit.effects.MFEMakeupProduct
 import com.tokopedia.product_ar.model.ModifaceProvider
 import com.tokopedia.product_ar.model.ModifaceUiModel
 import com.tokopedia.product_ar.model.ProductArUiModel
+import com.tokopedia.product_ar.model.state.ImageMapMode
 
 object ProductArMapper {
 
@@ -33,9 +37,112 @@ object ProductArMapper {
         }
     }
 
+    fun generateMfMakeUpLook(data: List<ModifaceUiModel>): MFEMakeupLook {
+        val selectedData = data.firstOrNull { it.isSelected }
+        return MFEMakeupLook().apply {
+            lipLayers.add(MFEMakeupLayer(selectedData?.modifaceProductData))
+        }
+    }
+
+    fun needToDisableSelection(selectedProductId: String,
+                               data: List<ModifaceUiModel>,
+                               isSelected: Boolean,
+                               currentCounter: Int): Boolean {
+        val tryUnselectOneData = data.any {
+            it.productId == selectedProductId
+                    && it.isSelected
+                    && it.counter == 1
+                    && currentCounter == 1
+        }
+        val tryToSelectMoreThanFour = currentCounter + 1 > 5 && !isSelected
+
+        return (tryUnselectOneData || tryToSelectMoreThanFour)
+    }
+
+    /**
+     * Comparison Fragment Mapper
+     */
+    fun updateInitialListWithCounter(data: List<ModifaceUiModel>): List<ModifaceUiModel> {
+        return data.map {
+            if (it.isSelected) {
+                it.copy(counter = 1)
+            } else {
+                it
+            }
+        }
+    }
+
+    fun decideSpanSize(listImages: List<Bitmap>,
+                       mode: ImageMapMode): Int {
+        return if (mode == ImageMapMode.APPEND) {
+            return if (listImages.size > 1) {
+                2
+            } else {
+                1
+            }
+        } else {
+            1
+        }
+    }
+
+    fun decideRemovedPosition(isSelected: Boolean,
+                              unUpdatedList: List<ModifaceUiModel>,
+                              selectedProductId: String): Int {
+        return if (isSelected) {
+            (unUpdatedList.firstOrNull {
+                it.productId == selectedProductId
+            }?.counter ?: -1) - 1
+        } else {
+            -1
+        }
+
+    }
+
+    fun updateListAfterSelectedCounter(data: List<ModifaceUiModel>,
+                                       counterTotal: Int,
+                                       selectedProductId: String,
+                                       selectedListener: () -> Unit,
+                                       unselectedListener: () -> Unit): List<ModifaceUiModel> {
+
+        val unselectCounter = data.firstOrNull {
+            //value if unselect
+            it.isSelected && it.productId == selectedProductId
+        }?.counter ?: -1
+
+        return data.map {
+            if (it.productId == selectedProductId) {
+                if (it.isSelected) {
+                    //unselect chip
+                    unselectedListener.invoke()
+                    it.copy(isSelected = false, counter = null)
+                } else {
+                    //select chip
+                    selectedListener.invoke()
+                    it.copy(isSelected = true, counter = counterTotal + 1)
+                }
+            } else {
+                if (unselectCounter != -1) {
+                    //means there is unselect somewhere else
+                    if (it.counter ?: 1 > unselectCounter) {
+                        /**
+                         * Need to update other counter
+                         * ex:total counter 3 -> unselect position 2 -> subtract counter at position 3
+                         */
+                        it.copy(counter = (it.counter ?: 1) - 1)
+                    } else {
+                        it
+                    }
+                } else {
+                    it
+                }
+            }
+        }
+    }
+    // [1,2,3,4,5]
+
     private fun convertToMfeMakeUpProduct(productId: String, data: ModifaceProvider?): MFEMakeupProduct? {
         if (data == null) return null
-        val color = if(productId.toInt() % 2 == 0) {
+        val color = if (productId.toInt() % 2 == 0) {
             Color.argb(255, 222, 119, 133)
         } else {
             Color.argb(255, 109, 37, 39)

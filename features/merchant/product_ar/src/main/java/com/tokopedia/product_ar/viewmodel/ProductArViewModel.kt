@@ -1,5 +1,6 @@
 package com.tokopedia.product_ar.viewmodel
 
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -67,6 +68,8 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private val _mfeMakeUpLook = MutableLiveData<Result<MFEMakeupLook>>()
     val mfeMakeUpLook: LiveData<Result<MFEMakeupLook>>
         get() = _mfeMakeUpLook
+
+    var imageDrawable: Bitmap? = null
 
     private fun getArData() {
         viewModelScope.launchCatchError(block = {

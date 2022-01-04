@@ -28,6 +28,14 @@ class ImageRoundedBorderSelectionView : AppCompatImageView {
 
     var mode: SELECTMODE = SELECTMODE.SINGLE
     var textCounter: String = ""
+        set(value) {
+            val temp = field
+            field = value
+
+            if (temp != value) {
+                invalidate()
+            }
+        }
 
 
     private val textPaint = Paint()

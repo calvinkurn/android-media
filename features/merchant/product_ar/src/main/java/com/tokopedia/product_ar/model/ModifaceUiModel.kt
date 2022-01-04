@@ -8,5 +8,6 @@ data class ModifaceUiModel(
         val backgroundUrl: String = "",
         val productName: String = "",
         val productId: String = "",
-        val modifaceType: String = ""
+        val modifaceType: String = "",
+        val counter: Int? = null
 )

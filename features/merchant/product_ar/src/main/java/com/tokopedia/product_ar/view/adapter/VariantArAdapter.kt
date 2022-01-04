@@ -13,10 +13,13 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.model.ModifaceUiModel
 import com.tokopedia.product_ar.util.ImageRoundedBorderSelectionView
+import com.tokopedia.product_ar.util.SELECTMODE
 import com.tokopedia.product_ar.view.ProductArListener
+import com.tokopedia.product_ar.view.adapter.VariantArDiffutilCallback.Companion.BUNDLE_PAYLOAD_UPDATE_BORDER_KEY
 import com.tokopedia.unifyprinciples.Typography
 
-class VariantArAdapter(private val listener: ProductArListener) : RecyclerView.Adapter<VariantArAdapter.ItemArImage>() {
+class VariantArAdapter(private val listener: ProductArListener,
+                       val viewHolderSelectedMode: SELECTMODE = SELECTMODE.SINGLE) : RecyclerView.Adapter<VariantArAdapter.ItemArImage>() {
 
     private var arImageDatas: MutableList<ModifaceUiModel> = mutableListOf()
 
@@ -60,20 +63,34 @@ class VariantArAdapter(private val listener: ProductArListener) : RecyclerView.A
         private val txtVariantName = itemView.findViewById<Typography>(R.id.txt_variant_ar)
 
         fun bind(data: ModifaceUiModel) {
-            imgVariant.loadImage(data.backgroundUrl)
+            renderImageVariant(data)
             txtVariantName.text = data.productName
-
-            imgVariant?.setSelected = data.isSelected
             renderText(data.isSelected)
-            setupImageColor(data.modifaceProductData)
             bindClickListener(data)
         }
 
         fun bind(data: ModifaceUiModel, bundle: Bundle) {
-            if (bundle.containsKey("asdf")) {
+            if (bundle.containsKey(BUNDLE_PAYLOAD_UPDATE_BORDER_KEY)) {
                 bindClickListener(data)
                 renderText(data.isSelected)
-                imgVariant?.setSelected = data.isSelected
+                setupSelectedCounter(data.isSelected, data.counter)
+            }
+        }
+
+        private fun renderImageVariant(data: ModifaceUiModel) {
+            imgVariant.mode = viewHolderSelectedMode
+            imgVariant.loadImage(data.backgroundUrl)
+            setupSelectedCounter(data.isSelected, data.counter)
+            setupImageColor(data.modifaceProductData)
+        }
+
+        private fun setupSelectedCounter(isSelected: Boolean, counter: Int?) {
+            imgVariant?.setSelected = isSelected
+
+            if (viewHolderSelectedMode == SELECTMODE.SINGLE) {
+                imgVariant?.textCounter = ""
+            } else {
+                imgVariant?.textCounter = counter?.toString() ?: ""
             }
         }
 
