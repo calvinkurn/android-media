@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -129,7 +128,6 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
     private fun initSearchInputView() {
         editTextSearch = viewBinding?.editTextSearchProduct
         actionUpBtn = viewBinding?.actionUpBtn
-        editTextSearch?.setHintTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
         editTextSearch?.setText(keyword)
         editTextSearch?.setKeyListener(null)
         editTextSearch?.setMovementMethod(null)
