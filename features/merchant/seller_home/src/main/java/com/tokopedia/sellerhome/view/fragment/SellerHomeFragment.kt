@@ -16,7 +16,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.*
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -59,7 +58,7 @@ import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.databinding.FragmentSahBinding
-import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.di.component.HomeDashboardComponent
 import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.newrelic.SellerHomeNewRelic
@@ -150,12 +149,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private val sellerHomeViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SellerHomeViewModel::class.java)
     }
-    private val recyclerView: RecyclerView?
-        get() = try {
-            super.getRecyclerView(view)
-        } catch (ex: Exception) {
-            null
-        }
 
     private val deviceDisplayHeight: Float
         get() = try {
@@ -198,16 +191,20 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var shopImageFilePath: String = ""
     private var binding by autoClearedNullable<FragmentSahBinding>()
 
+    private val recyclerView: RecyclerView?
+        get() = try {
+            super.getRecyclerView(view)
+        } catch (ex: Exception) {
+            null
+        }
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
 
     override fun getScreenName(): String = TrackingConstant.SCREEN_NAME_SELLER_HOME
 
     override fun initInjector() {
-        DaggerSellerHomeComponent.builder()
-            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
-            .inject(this)
+        getComponent(HomeDashboardComponent::class.java).inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
