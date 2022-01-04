@@ -117,6 +117,7 @@ import javax.inject.Inject
 import javax.inject.Named
 import kotlin.math.max
 
+@Suppress("LongParameterList")
 class ProductListPresenter @Inject constructor(
         @param:Named(SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
         private val searchProductFirstPageUseCase: UseCase<SearchProductModel>,
