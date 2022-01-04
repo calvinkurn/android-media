@@ -19,6 +19,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.annotation.Keep
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -1653,6 +1654,17 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         setGlobalDeleteVisibility()
     }
 
+    override fun onCartBoAffordabilityClicked() {
+        Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onCartBoAffordabilityRefreshClicked(index: Int, cartShopHolderData: CartShopHolderData) {
+        cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.LOADING
+        cartShopHolderData.isNeedToRefreshWeight = true
+        onNeedToUpdateViewItem(index)
+        dPresenter.checkBoAffordability(cartShopHolderData)
+    }
+
     override fun onCartDataEnableToCheckout() {
         if (isAdded) {
             binding?.vDisabledGoToCourierPageButton?.gone()
@@ -1777,6 +1789,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData) {
         val (data, index) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartItemHolderData.cartString)
         if (data != null) {
+            checkBoAffordability(data)
             onNeedToUpdateViewItem(index)
         }
     }
@@ -3402,4 +3415,18 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    override fun updateCartBoAffordability(cartShopHolderData: CartShopHolderData) {
+        val (data, index) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartShopHolderData.cartString)
+        if (data != null) {
+            data.isNeedToRefreshWeight = true
+            onNeedToUpdateViewItem(index)
+        }
+    }
+
+    private fun checkBoAffordability(cartShopHolderData: CartShopHolderData) {
+        if (cartShopHolderData.boAffordability.enable) {
+            cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.LOADING
+            dPresenter.checkBoAffordability(cartShopHolderData)
+        }
+    }
 }

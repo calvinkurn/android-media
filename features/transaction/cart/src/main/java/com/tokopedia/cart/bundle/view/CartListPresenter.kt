@@ -1,5 +1,6 @@
 package com.tokopedia.cart.bundle.view
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -48,9 +49,11 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import kotlinx.coroutines.*
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: GetCartRevampV3UseCase,
                                             private val deleteCartUseCase: DeleteCartUseCase,
@@ -74,7 +77,11 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                                             private val validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
                                             private val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
                                             private val followShopUseCase: FollowShopUseCase,
-                                            private val schedulers: ExecutorSchedulers) : ICartListPresenter {
+                                            private val schedulers: ExecutorSchedulers,
+                                            private val dispatchers: CoroutineDispatchers) : ICartListPresenter, CoroutineScope {
+
+    override val coroutineContext: CoroutineContext
+        get() = SupervisorJob() + dispatchers.immediate
 
     private var view: ICartListView? = null
 
@@ -93,6 +100,12 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     // Store last validate use request for clearing promo if got akamai error
     var lastValidateUseRequest: ValidateUsePromoRequest? = null
+
+    // Store last bo affordability cart string for debounce handling
+    var lastBoAffordabilityCartString: String = ""
+
+    // Bo affordability debounce job
+    var boAffordabilityJob: Job? = null
 
     companion object {
         private const val PERCENTAGE = 100.0f
@@ -117,6 +130,8 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         compositeSubscription.unsubscribe()
         addWishListUseCase.unsubscribe()
         removeWishListUseCase.unsubscribe()
+        boAffordabilityJob?.cancel()
+        coroutineContext.cancelChildren()
         view = null
     }
 
@@ -1539,5 +1554,17 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         compositeSubscription.add(followShopUseCase.createObservable(requestParams)
                 .subscribe(FollowShopSubscriber(view, this))
         )
+    }
+
+    override fun checkBoAffordability(cartShopHolderData: CartShopHolderData) {
+        if (lastBoAffordabilityCartString == cartShopHolderData.cartString) {
+            boAffordabilityJob?.cancel()
+        }
+        boAffordabilityJob = launch {
+            delay(3_000)
+            cartShopHolderData.boAffordability.tickerText = "asdf"
+            cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.FAILED
+            view?.updateCartBoAffordability(cartShopHolderData)
+        }
     }
 }

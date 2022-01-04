@@ -10,7 +10,6 @@ import com.tokopedia.cart.bundle.view.uimodel.CartShopHolderData
 import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
@@ -130,4 +129,6 @@ interface ICartListView : CustomerView {
     fun isBundleToggleChanged(): Boolean
 
     fun recreateActivity()
+
+    fun updateCartBoAffordability(cartShopHolderData: CartShopHolderData)
 }

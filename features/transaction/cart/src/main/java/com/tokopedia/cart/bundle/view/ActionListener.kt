@@ -1,10 +1,7 @@
 package com.tokopedia.cart.bundle.view
 
 import androidx.fragment.app.Fragment
-import com.tokopedia.cart.bundle.view.uimodel.CartItemHolderData
-import com.tokopedia.cart.bundle.view.uimodel.CartRecentViewItemHolderData
-import com.tokopedia.cart.bundle.view.uimodel.CartRecommendationItemHolderData
-import com.tokopedia.cart.bundle.view.uimodel.DisabledAccordionHolderData
+import com.tokopedia.cart.bundle.view.uimodel.*
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 /**
@@ -22,6 +19,10 @@ interface ActionListener {
     fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean)
 
     fun onShopItemCheckChanged(index: Int, checked: Boolean)
+
+    fun onCartBoAffordabilityClicked()
+
+    fun onCartBoAffordabilityRefreshClicked(index: Int, cartShopHolderData: CartShopHolderData)
 
     fun onCartDataEnableToCheckout()
 
