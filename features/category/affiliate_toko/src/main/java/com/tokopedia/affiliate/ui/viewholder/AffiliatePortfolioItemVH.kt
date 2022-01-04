@@ -2,6 +2,7 @@ package com.tokopedia.affiliate.ui.viewholder
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Patterns
 import android.view.KeyEvent
 import android.view.View
 import android.webkit.URLUtil
@@ -33,7 +34,7 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
                 portfolioUrlTextUpdateInterface?.onUrlUpdate(adapterPosition,
                     s.toString())
                 if(s.toString().isNotEmpty()){
-                    element?.portfolioItm?.isError = !URLUtil.isValidUrl(s.toString())
+                    element?.portfolioItm?.isError = !Patterns.WEB_URL.matcher(s.toString()).matches()
                 }else {
                     element?.portfolioItm?.isError = false
                 }

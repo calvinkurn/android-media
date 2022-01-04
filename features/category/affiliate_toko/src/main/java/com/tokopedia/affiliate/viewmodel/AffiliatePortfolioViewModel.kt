@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate.viewmodel
 
+import android.util.Patterns
 import android.webkit.URLUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -36,7 +37,7 @@ class AffiliatePortfolioViewModel@Inject constructor(
     fun updateList(position: Int, text: String) {
         (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.text = text
         if(text.isNotEmpty()){
-            (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.isError = !URLUtil.isValidUrl(text)
+            (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.isError = !Patterns.WEB_URL.matcher(text).matches()
         }else {
             (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.isError = false
         }
