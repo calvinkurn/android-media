@@ -157,6 +157,13 @@ fun HomeBusinessUnitUseCase.givenGetBusinessWidgetTabUseCaseReturn(
     coEvery { getBusinessUnitTab(homeDataModel, 1) } returns newBusinessUnitWidgetDataModel
 }
 
+fun HomeBusinessUnitUseCase.givenGetBusinessWidgetTabUseCaseThrowReturn(
+    newBusinessUnitWidgetDataModel: NewBusinessUnitWidgetDataModel,
+    homeDataModel: HomeDynamicChannelModel
+) {
+    coEvery { getBusinessUnitTab(homeDataModel, 1) } throws TimeoutException()
+}
+
 fun GetDynamicChannelsUseCase.givenGetDynamicChannelsUseCaseThrowReturn() {
     coEvery { executeOnBackground() } throws TimeoutException()
 }
