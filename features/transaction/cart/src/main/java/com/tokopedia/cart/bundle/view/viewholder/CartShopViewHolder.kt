@@ -19,10 +19,7 @@ import com.tokopedia.cart.databinding.ItemShopBundleBinding
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_LOOSE
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
@@ -160,7 +157,7 @@ class CartShopViewHolder(private val binding: ItemShopBundleBinding,
         if (itemDecorationCount > 0) {
             binding.rvCartItem.removeItemDecorationAt(0)
         }
-        val paddingLeft = itemView.context?.resources?.getDimension(R.dimen.dp_48)?.toInt() ?: 0
+        val paddingLeft = ITEM_DECORATION_PADDING_LEFT.dpToPx(itemView.resources.displayMetrics)
         val paddingRight = itemView.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0
         binding.rvCartItem.addItemDecoration(CartHorizontalItemDecoration(paddingLeft, paddingRight))
     }
@@ -226,7 +223,7 @@ class CartShopViewHolder(private val binding: ItemShopBundleBinding,
 
     private fun renderCheckBox(cartShopHolderData: CartShopHolderData) {
         with(binding) {
-            val padding10 = itemView.resources.getDimensionPixelSize(R.dimen.dp_10)
+            val padding10 = SHOP_HEADER_PADDING_10.dpToPx(itemView.resources.displayMetrics)
             val padding16 = itemView.resources.getDimensionPixelSize(R.dimen.dp_16)
             if (!cartShopHolderData.isError) {
                 cbSelectShop.show()
@@ -417,8 +414,7 @@ class CartShopViewHolder(private val binding: ItemShopBundleBinding,
         val child: View? = binding.rvCartItem.getChildAt(0)
         val productHeight = child?.height ?: 0
         val offset = productIndex * productHeight
-        val paddingOffset = itemView.context?.resources?.getDimensionPixelSize(R.dimen.dp_12)
-                ?: 0
+        val paddingOffset = SCROLL_PADDING_OFFSET.dpToPx(itemView.resources.displayMetrics)
         return offset + paddingOffset + tickerHeight
     }
 
@@ -475,6 +471,10 @@ class CartShopViewHolder(private val binding: ItemShopBundleBinding,
         const val CHECKBOX_WATCHER_DEBOUNCE_TIME = 500L
         const val KEY_ONBOARDING_ICON_PIN = "KEY_ONBOARDING_ICON_PIN"
         const val KEY_HAS_SHOWN_ICON_PIN_ONBOARDING = "KEY_HAS_SHOWN_ICON_PIN_ONBOARDING"
+
+        private const val ITEM_DECORATION_PADDING_LEFT = 48
+        private const val SHOP_HEADER_PADDING_10 = 10
+        private const val SCROLL_PADDING_OFFSET = 12
     }
 
 }
