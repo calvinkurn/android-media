@@ -294,7 +294,12 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
             }
 
             if (timeValidityInfo != null) {
-                imageTimeValidity.setImageUrl(timeValidityInfo.icon)
+                if (timeValidityInfo.title.isNotBlank() && timeValidityInfo.icon.isNotBlank()) {
+                    imageTimeValidity.setImageUrl(timeValidityInfo.icon)
+                    imageTimeValidity.show()
+                } else {
+                    imageTimeValidity.gone()
+                }
                 textTimeValidity.text = HtmlLinkHelper(itemView.context, timeValidityInfo.title).spannedString
                 buttonPromoDetail.setOnClickListener {
                     listener.onClickPromoItemDetail(element)
