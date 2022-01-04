@@ -7,6 +7,7 @@ import android.util.SparseIntArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -69,12 +70,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCate
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView
 import com.tokopedia.tokopedianow.searchcategory.presentation.itemdecoration.ProductItemDecoration
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.*
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
@@ -98,6 +94,7 @@ abstract class BaseSearchCategoryFragment:
     CategoryChooserBottomSheet.Callback,
     MiniCartWidgetListener,
     ProductItemListener,
+    SwitcherWidgetListener,
     TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
     TokoNowProductCardListener,
     TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
@@ -981,6 +978,13 @@ abstract class BaseSearchCategoryFragment:
 
     }
 
+    override fun onClickFifteenMinutes() {
+        Toast.makeText(context, "Click 15 Menit Loh", Toast.LENGTH_LONG).show()
+    }
+
+    override fun onClickTwoHours() {
+        Toast.makeText(context, "Click 2 Jam Loh", Toast.LENGTH_LONG).show()
+    }
 
     protected open fun goToLogin() {
         activity?.let {

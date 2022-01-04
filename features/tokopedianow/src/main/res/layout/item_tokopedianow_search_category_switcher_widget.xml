@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/switcher_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:typographyType="heading_4"
+        android:text="@string/tokopedianow_search_category_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpDescFifteenMinutes"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center"
+        android:translationZ="6dp"
+        app:layout_constraintBottom_toTopOf="@+id/tpTitleFifteenMinutes"
+        app:layout_constraintEnd_toEndOf="@+id/cardFifthteenMinutes"
+        app:layout_constraintStart_toStartOf="@+id/cardFifthteenMinutes"
+        app:layout_constraintTop_toTopOf="@+id/cardFifthteenMinutes"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpTitleFifteenMinutes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/tokopedianow_search_category_title_fifteen_minutes"
+        android:translationZ="6dp"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintBottom_toBottomOf="@+id/cardFifthteenMinutes"
+        app:layout_constraintEnd_toEndOf="@+id/cardFifthteenMinutes"
+        app:layout_constraintStart_toStartOf="@+id/cardFifthteenMinutes" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpDescTwoHours"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center"
+        android:translationZ="6dp"
+        app:layout_constraintBottom_toTopOf="@+id/tpTitleFifteenMinutes"
+        app:layout_constraintEnd_toEndOf="@+id/cardTwoHours"
+        app:layout_constraintStart_toStartOf="@+id/cardTwoHours"
+        app:layout_constraintTop_toTopOf="@+id/cardTwoHours"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpTitleTwoHours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:textColor="@color/Unify_GN500"
+        android:text="@string/tokopedianow_search_category_title_two_hours"
+        android:translationZ="6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/cardTwoHours"
+        app:layout_constraintEnd_toEndOf="@+id/cardTwoHours"
+        app:layout_constraintStart_toStartOf="@+id/cardTwoHours" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardFifthteenMinutes"
+        android:layout_width="0dp"
+        android:layout_height="106dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardTwoHours"
+        android:layout_width="0dp"
+        android:layout_height="106dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/cardFifthteenMinutes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
