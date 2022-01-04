@@ -152,9 +152,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     /* Network Call Section : Get Promo List */
     //---------------------------------------//
 
-    fun getPromoList(promoRequest: PromoRequest, promoCode: String, chosenAddress: ChosenAddress? = null, tmpContext: Context? = null) {
+    fun getPromoList(promoRequest: PromoRequest, attemptedPromoCode: String, chosenAddress: ChosenAddress? = null, tmpContext: Context? = null) {
         // Set request data
-        prepareGetPromoRequestData(promoCode, promoRequest, chosenAddress)
+        prepareGetPromoRequestData(attemptedPromoCode, promoRequest, chosenAddress)
 
         // Get response data
         PromoCheckoutIdlingResource.increment()
@@ -162,11 +162,12 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         getCouponListRecommendationUseCase.execute(
                 onSuccess = {
                     PromoCheckoutIdlingResource.decrement()
-                    onSuccessGetPromoList(it, promoCode)
+                    onSuccessGetPromoList(it, attemptedPromoCode)
                 },
                 onError = {
                     PromoCheckoutIdlingResource.decrement()
                     setFragmentStateLoadPromoListFailed(it)
+                    sendAnalyticsOnErrorAttemptPromo(attemptedPromoCode, it.message ?: "")
                 }
         )
     }
@@ -238,21 +239,22 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    private fun onSuccessGetPromoList(response: CouponListRecommendationResponse, tmpPromoCode: String) {
+    private fun onSuccessGetPromoList(response: CouponListRecommendationResponse, attemptedPromoCode: String) {
         if (response.couponListRecommendation.status == "OK") {
             if (response.couponListRecommendation.data.errorPage.isShowErrorPage) {
                 handleShowErrorPage(response.couponListRecommendation.data.errorPage)
             } else {
                 if (response.couponListRecommendation.data.couponSections.isNotEmpty()) {
-                    handlePromoListNotEmpty(response, tmpPromoCode)
+                    handlePromoListNotEmpty(response, attemptedPromoCode)
                 } else {
-                    handlePromoListEmpty(response, tmpPromoCode)
+                    handlePromoListEmpty(response, attemptedPromoCode)
                 }
             }
         } else {
             PromoCheckoutLogger.logOnErrorLoadPromoCheckoutPage(PromoErrorException("response status error"))
             val exception = PromoErrorException()
             setFragmentStateLoadPromoListFailed(exception)
+            sendAnalyticsOnErrorAttemptPromo(attemptedPromoCode, exception.message ?: "")
         }
     }
 
@@ -276,23 +278,23 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         updateRecommendationState()
     }
 
-    private fun handlePromoListEmpty(response: CouponListRecommendationResponse, tmpPromoCode: String) {
+    private fun handlePromoListEmpty(response: CouponListRecommendationResponse, attemptedPromoCode: String) {
         initGetPromoListResponseAction()
 
         if (response.couponListRecommendation.data.emptyState.title.isEmpty() &&
                 response.couponListRecommendation.data.emptyState.description.isEmpty() &&
                 response.couponListRecommendation.data.emptyState.imageUrl.isEmpty()) {
-            handleEmptyStateDataNotAvailable(tmpPromoCode, response)
+            handleEmptyStateDataNotAvailable(attemptedPromoCode, response)
         } else {
             setFragmentStateStopLoading()
-            handleEmptyStateDataAvailable(tmpPromoCode, response)
+            handleEmptyStateDataAvailable(attemptedPromoCode, response)
         }
 
         setPromoInputErrorIfAny(response)
     }
 
-    private fun handleEmptyStateDataNotAvailable(tmpPromoCode: String, response: CouponListRecommendationResponse) {
-        if (tmpPromoCode.isNotBlank()) {
+    private fun handleEmptyStateDataNotAvailable(attemptedPromoCode: String, response: CouponListRecommendationResponse) {
+        if (attemptedPromoCode.isNotBlank()) {
             getPromoListResponseAction.value?.let {
                 it.state = GetPromoListResponseAction.ACTION_SHOW_TOAST_ERROR
                 it.exception = PromoErrorException(response.couponListRecommendation.data.resultStatus.message.joinToString { ". " })
@@ -303,6 +305,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             PromoCheckoutLogger.logOnErrorLoadPromoCheckoutPage(PromoErrorException("response status ok but data is empty"))
             val exception = PromoErrorException()
             setFragmentStateLoadPromoListFailed(exception)
+            sendAnalyticsOnErrorAttemptPromo(attemptedPromoCode, exception.message ?: "")
         }
     }
 
@@ -351,6 +354,10 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
         }
         _promoEmptyStateUiModel.value = emptyState
+    }
+
+    private fun sendAnalyticsOnErrorAttemptPromo(promoCode: String, errorMessage: String) {
+        analytics.eventViewErrorAfterClickTerapkanPromo(getPageSource(), errorMessage, 0, promoCode)
     }
 
     private fun initGetPromoListResponseAction() {
@@ -573,15 +580,24 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 },
                 onError = {
                     PromoCheckoutIdlingResource.decrement()
-                    onErrorValidateUse(it)
+                    onErrorValidateUse(it, selectedPromoList)
                 }
         )
     }
 
-    private fun onErrorValidateUse(throwable: Throwable) {
+    private fun onErrorValidateUse(throwable: Throwable, selectedPromoList: ArrayList<String>) {
         PromoCheckoutLogger.logOnErrorApplyPromo(throwable)
         // Notify fragment apply promo to stop loading
-        setApplyPromoStateFailed(throwable)
+        setApplyPromoStateFailed(throwable, selectedPromoList)
+        sendAnalyticsOnErrorApplyPromo(throwable, selectedPromoList)
+    }
+
+    private fun sendAnalyticsOnErrorApplyPromo(throwable: Throwable, promoCodeList: ArrayList<String>) {
+        promoCodeList.forEach { promoCode ->
+            analytics.eventViewErrorAfterClickPakaiPromo(getPageSource(), promoCode, throwable.message
+                    ?: "")
+        }
+
     }
 
     private fun onSuccessValidateUse(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel,
@@ -599,7 +615,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 if (validateUsePromoRevampUiModel.promoUiModel.globalSuccess) {
                     handleApplyPromoSuccess(selectedPromoList, validateUsePromoRevampUiModel, validateUsePromoRequest)
                 } else {
-                    handleApplyPromoFailed(validateUsePromoRevampUiModel)
+                    handleApplyPromoFailed(selectedPromoList, validateUsePromoRevampUiModel)
                 }
             }
         } else {
@@ -607,7 +623,8 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             val exception = PromoErrorException(validateUsePromoRevampUiModel.message.joinToString(". "))
             PromoCheckoutLogger.logOnErrorApplyPromo(exception)
             // Notify fragment apply promo to stop loading
-            setApplyPromoStateFailed(exception)
+            setApplyPromoStateFailed(exception, selectedPromoList)
+            sendAnalyticsOnErrorApplyPromo(exception, selectedPromoList)
         }
     }
 
@@ -711,7 +728,8 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 val exception = PromoErrorException(voucherOrder.messageUiModel.text)
                 PromoCheckoutLogger.logOnErrorApplyPromo(exception)
                 // Notify fragment apply promo to stop loading
-                setApplyPromoStateFailed(exception)
+                setApplyPromoStateFailed(exception, selectedPromoList)
+                sendAnalyticsOnErrorApplyPromo(exception, selectedPromoList)
             }
         }
 
@@ -729,7 +747,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    private fun handleApplyPromoFailed(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
+    private fun handleApplyPromoFailed(selectedPromoList: ArrayList<String>, validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
         val responseValidatePromo = validateUsePromoRevampUiModel.promoUiModel
         val redStateMap = HashMap<String, String>()
         if (!responseValidatePromo.success) {
@@ -762,14 +780,16 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             val exception = PromoErrorException(responseValidatePromo.additionalInfoUiModel.errorDetailUiModel.message)
             PromoCheckoutLogger.logOnErrorApplyPromo(exception)
             // Notify fragment apply promo to stop loading
-            setApplyPromoStateFailed(exception)
+            setApplyPromoStateFailed(exception, selectedPromoList)
+            sendAnalyticsOnErrorApplyPromo(exception, selectedPromoList)
         } else {
             // Voucher global is empty and voucher orders are empty but the response is OK
             // This section is added as fallback mechanism
             PromoCheckoutLogger.logOnErrorApplyPromo(PromoErrorException("response is ok but got empty applied promo"))
             val exception = PromoErrorException()
             // Notify fragment apply promo to stop loading
-            setApplyPromoStateFailed(exception)
+            setApplyPromoStateFailed(exception, selectedPromoList)
+            sendAnalyticsOnErrorApplyPromo(exception, selectedPromoList)
         }
     }
 
@@ -805,7 +825,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    private fun setApplyPromoStateFailed(throwable: Throwable) {
+    private fun setApplyPromoStateFailed(throwable: Throwable, promoCodeList: List<String>) {
         // Initialize response action state if needed
         initApplyPromoResponseAction()
         applyPromoResponseAction.value?.let {
@@ -1111,6 +1131,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         _tmpUiModel.value = Update(it)
                         calculateClash(it)
                         expandedParentIdentifierList.add(it.uiData.parentIdentifierId)
+                        analytics.eventClickPilihOnRecommendation(getPageSource(), it.uiData.promoCode, it.uiState.isCausingOtherPromoClash)
                     }
                 }
             }

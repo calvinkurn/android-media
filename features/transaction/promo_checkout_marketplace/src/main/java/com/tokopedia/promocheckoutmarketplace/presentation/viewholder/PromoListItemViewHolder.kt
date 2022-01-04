@@ -41,15 +41,19 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
             renderPromoState(viewBinding, element)
             renderPromoData(viewBinding, element)
             setPromoItemClickListener(viewBinding, element)
+            adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let {
+                listener.onShowPromoItem(element, it)
+            }
         }
     }
 
     private fun setPromoItemClickListener(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
                                           element: PromoListItemUiModel) {
         viewBinding.cardPromoItem.setOnClickListener {
-            if (adapterPosition != RecyclerView.NO_POSITION && element.uiData.currentClashingPromo.isNullOrEmpty() &&
-                    element.uiState.isParentEnabled && !element.uiState.isDisabled) {
-                listener.onClickPromoListItem(element, adapterPosition)
+            adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let {
+                if (element.uiData.currentClashingPromo.isNullOrEmpty() && element.uiState.isParentEnabled && !element.uiState.isDisabled) {
+                    listener.onClickPromoListItem(element, adapterPosition)
+                }
             }
         }
     }

@@ -488,6 +488,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                                 viewModel.changeSelectedTab(currentTabUiModel)
                                 scrollToTabIndex(currentTabUiModel)
                             }
+
+                            analytics.eventClickTabPromoCategory(viewModel.getPageSource(), currentTabUiModel.uiData.tabs[currentTabUiModel.uiState.selectedTabPosition].title)
                         }
                     }
 
@@ -1065,6 +1067,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onClickPromoItemDetail(element: PromoListItemUiModel) {
         analytics.eventClickLihatDetailKupon(viewModel.getPageSource(), element.uiData.promoCode)
+        if (!element.uiState.isParentEnabled) {
+            analytics.eventClickLihatDetailOnIneligibleCoupon(viewModel.getPageSource(), element.uiData.promoCode, element.uiData.errorMessage)
+        }
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_MARKETPLACE).apply {
             val promoCodeLink = element.uiData.couponAppLink + element.uiData.promoCode
             putExtra(EXTRA_KUPON_CODE, promoCodeLink)
@@ -1098,10 +1103,41 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onTabSelected(element: PromoTabUiModel) {
         selectTab(element)
+        analytics.eventClickTabPromoCategory(viewModel.getPageSource(), element.uiData.tabs[element.uiState.selectedTabPosition].title)
     }
 
     private fun selectTab(element: PromoTabUiModel) {
         viewBinding?.tabsPromoHeader?.tabsPromo?.getUnifyTabLayout()?.getTabAt(element.uiState.selectedTabPosition)?.select()
+    }
+
+    override fun onShowPromoItem(element: PromoListItemUiModel, position: Int) {
+        if (element.uiState.isParentEnabled) {
+            analytics.eventImpressionEligiblePromoSection(viewModel.getPageSource(), position, element)
+        } else {
+            analytics.eventImpressionIneligiblePromoSection(viewModel.getPageSource(), position, element)
+        }
+
+        if (element.uiData.shippingOptions.isNotBlank()) {
+            analytics.eventImpressionLockToShippingPromoSection(viewModel.getPageSource(), position, element)
+        }
+
+        if (element.uiData.paymentOptions.isNotBlank()) {
+            analytics.eventImpressionLockToPaymentPromoSection(viewModel.getPageSource(), position, element)
+        }
+
+        if (element.uiState.isHighlighted) {
+            analytics.eventImpressionHighlightedPromoSection(viewModel.getPageSource(), position, element)
+        }
+    }
+
+    override fun onShowPromoRecommendation(element: PromoRecommendationUiModel) {
+        var totalPotentialBenefit = 0
+        viewModel.promoListUiModel.value?.forEach {
+            if (it is PromoListItemUiModel && element.uiData.promoCodes.contains(it.uiData.promoCode)) {
+                totalPotentialBenefit += it.uiData.benefitAmount
+            }
+        }
+        analytics.eventImpressionRecommendationPromoSection(viewModel.getPageSource(), element.uiData.promoCodes.size, totalPotentialBenefit)
     }
 
     private fun scrollToTabIndex(element: PromoTabUiModel) {

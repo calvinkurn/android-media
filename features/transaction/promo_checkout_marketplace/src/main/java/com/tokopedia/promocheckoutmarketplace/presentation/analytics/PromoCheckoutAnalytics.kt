@@ -36,7 +36,7 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
             var itemId: String = "",
             @SerializedName("item_name")
             var itemName: String = ""
-    ): Parcelable
+    ) : Parcelable
 
     object EventAction {
         const val CLICK_BUTTON_VERIFIKASI_NOMOR_HP = "click button verifikasi nomor HP promo page"
@@ -66,6 +66,13 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         // Revamp
         const val CLICK_LIHAT_DETAIL_INELIGIBLE_COUPON = "click lihat detail ineligible kupon"
         const val IMPRESSION_INELIGIBLE_PROMO_SECTION = "impression - ineligible promo section"
+        const val IMPRESSION_RECOMMENDATION_PROMO_SECTION = "impression - recommendation promo section"
+        const val CLICK_TAB_PROMO_CATEGORY = "click tab promo category"
+        const val VIEW_ERROR_AFTER_CLICK_PAKAI_PROMO = "view error after click pakai promo"
+        const val VIEW_ERROR_AFTER_CLICK_TERAPKAN_PROMO = "view error after click terapkan promo"
+        const val IMPRESSION_LOCK_TO_SHIPPING_PROMO_SECTION = "impression - lock to shipping promo section"
+        const val IMPRESSION_LOCK_TO_PAYMENT_PROMO_SECTION = "impression - lock to payment promo section"
+        const val IMPRESSION_ELIGIBLE_PROMO_SECTION = "impression- eligible promo section"
     }
 
     private fun sendEventByPage(page: Int,
@@ -436,8 +443,8 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
 
     // Promo BFI / Back Funnel Improvement (Revamp)
 
-    // 1
-    fun eventImpressionEligiblePromoSection(page: Int) {
+    // 1 - Done
+    fun eventImpressionEligiblePromoSection(page: Int, index: Int, promoItem: PromoListItemUiModel) {
         /*
         {
           "event": "view_item",
@@ -457,62 +464,28 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
           "userId": "{user_id}"
         }
         * */
-        val additionalData = HashMap<String, Any>()
-//        additionalData.put(ExtraKey.USER_ID, userId)
+        val promotion = Promotion(
+                creativeName = "",
+                creativeSlot = index.toString(),
+                itemId = promoItem.uiData.promoCode,
+                itemName = promoItem.uiData.title
+        )
 
-        sendEventByPage(
-                page,
-                EVENT_NAME_CLICK,
-                "impression- eligible promo section",
-                "",
-                additionalData
+        val bundle = Bundle().apply {
+            putParcelableArrayList("promotions", arrayListOf(promotion))
+        }
+        sendEventEnhancedEcommerceByPage(
+                page = page,
+                eventAction = EventAction.IMPRESSION_ELIGIBLE_PROMO_SECTION,
+                eventLabel = "${promoItem.uiData.promoCode} - $index - ${promoItem.uiData.benefitAmount} - promo type - ${promoItem.uiData.remainingPromoCount} ",
+                bundle = bundle
         )
     }
 
-    // 2
-    fun eventImpressionIndexEligiblePromoSection() {
-        /*
-        {
-          "event": "viewATCIris",
-          "eventAction": "impression index - eligible promo section",
-          "eventCategory": "cart",
-          "eventLabel": "{{promo_id}} - {{x}} - {{promo_amount}}",
-          "businessUnit": "{businessUnit}",
-          "currentSite": "{currentSite}"
-        }
-        * */
-    }
+    // 2,3,4 - Canceled
 
-    // 3
-    fun eventImpressionPromoTypeEligiblePromoSection() {
-        /*
-        {
-          "event": "viewATCIris",
-          "eventAction": "impression promo type - eligible promo section",
-          "eventCategory": "cart",
-          "eventLabel": "{{promo_id}} - {{promo_amount}} - {{promo_type}}",
-          "businessUnit": "{businessUnit}",
-          "currentSite": "{currentSite}"
-        }
-        * */
-    }
-
-    // 4
-    fun eventImpressionBenefitEligiblePromoSection() {
-        /*
-        {
-          "event": "viewATCIris",
-          "eventAction": "impression benefit - eligible promo section",
-          "eventCategory": "cart",
-          "eventLabel": "{{promo_id}} - {{promo_amount}}",
-          "businessUnit": "{businessUnit}",
-          "currentSite": "{currentSite}"
-        }
-        * */
-    }
-
-    // 5
-    fun eventImpressionLockToPaymentPromoSection() {
+    // 5 - Done
+    fun eventImpressionLockToPaymentPromoSection(page: Int, index: Int, promoItem: PromoListItemUiModel) {
         /*
         {
           "event": "view_item",
@@ -532,10 +505,26 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
           "userId": "{user_id}"
         }
         * */
+        val promotion = Promotion(
+                creativeName = "",
+                creativeSlot = index.toString(),
+                itemId = promoItem.uiData.promoCode,
+                itemName = promoItem.uiData.title
+        )
+
+        val bundle = Bundle().apply {
+            putParcelableArrayList("promotions", arrayListOf(promotion))
+        }
+        sendEventEnhancedEcommerceByPage(
+                page = page,
+                eventAction = EventAction.IMPRESSION_LOCK_TO_PAYMENT_PROMO_SECTION,
+                eventLabel = "${promoItem.uiData.promoCode} - ${promoItem.uiData.benefitAmount} - ${promoItem.uiData.paymentOptions}",
+                bundle = bundle
+        )
     }
 
-    // 6
-    fun eventImpressionLockToShippingPromoSection() {
+    // 6 - Done
+    fun eventImpressionLockToShippingPromoSection(page: Int, index: Int, promoItem: PromoListItemUiModel) {
         /*
         {
           "event": "view_item",
@@ -555,10 +544,26 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
           "userId": "{user_id}"
         }
         * */
+        val promotion = Promotion(
+                creativeName = "",
+                creativeSlot = index.toString(),
+                itemId = promoItem.uiData.promoCode,
+                itemName = promoItem.uiData.title
+        )
+
+        val bundle = Bundle().apply {
+            putParcelableArrayList("promotions", arrayListOf(promotion))
+        }
+        sendEventEnhancedEcommerceByPage(
+                page = page,
+                eventAction = EventAction.IMPRESSION_LOCK_TO_SHIPPING_PROMO_SECTION,
+                eventLabel = "${promoItem.uiData.promoCode} - ${promoItem.uiData.benefitAmount} - ${promoItem.uiData.shippingOptions} ",
+                bundle = bundle
+        )
     }
 
     // 7
-    fun eventImpressionHighlightedPromoSection() {
+    fun eventImpressionHighlightedPromoSection(page: Int, index: Int, promoItem: PromoListItemUiModel) {
         /*
         {
           "event": "view_item",
@@ -578,10 +583,26 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
           "userId": "{user_id}"
         }
         * */
+        val promotion = Promotion(
+                creativeName = "",
+                creativeSlot = index.toString(),
+                itemId = promoItem.uiData.promoCode,
+                itemName = promoItem.uiData.title
+        )
+
+        val bundle = Bundle().apply {
+            putParcelableArrayList("promotions", arrayListOf(promotion))
+        }
+        sendEventEnhancedEcommerceByPage(
+                page = page,
+                eventAction = EventAction.VIEW_ERROR_AFTER_CLICK_TERAPKAN_PROMO,
+                eventLabel = "${promoItem.uiData.promoCode} - ${promoItem.uiData.benefitAmount}",
+                bundle = bundle
+        )
     }
 
-    // 8
-    fun eventViewErrorAfterClickTerapkanPromo() {
+    // 8 - Done
+    fun eventViewErrorAfterClickTerapkanPromo(page: Int, errorMessage: String, index: Int, promoCode: String) {
         /*
         {
           "event": "view_item",
@@ -601,10 +622,26 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
           "userId": "{user_id}"
         }
         * */
+        val promotion = Promotion(
+                creativeName = "",
+                creativeSlot = index.toString(),
+                itemId = promoCode,
+                itemName = ""
+        )
+
+        val bundle = Bundle().apply {
+            putParcelableArrayList("promotions", arrayListOf(promotion))
+        }
+        sendEventEnhancedEcommerceByPage(
+                page = page,
+                eventAction = EventAction.VIEW_ERROR_AFTER_CLICK_TERAPKAN_PROMO,
+                eventLabel = "$promoCode - $errorMessage",
+                bundle = bundle
+        )
     }
 
-    // 9
-    fun eventViewErrorAfterClickPakaiPromo() {
+    // 9 - Done
+    fun eventViewErrorAfterClickPakaiPromo(page: Int, promoCode: String, errorMessage: String) {
         /*
         {
           "event": "viewATCIris",
@@ -615,10 +652,21 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
           "currentSite": "{currentSite}"
         }
         * */
+        val additionalData = HashMap<String, Any>()
+        additionalData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO
+        additionalData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+
+        sendEventByPage(
+                page,
+                EVENT_NAME_VIEW,
+                EventAction.VIEW_ERROR_AFTER_CLICK_PAKAI_PROMO,
+                "$promoCode - $errorMessage",
+                additionalData
+        )
     }
 
-    // 10
-    fun eventClickTabPromoCategory() {
+    // 10 - Done
+    fun eventClickTabPromoCategory(page: Int, promoCategoryName: String) {
         /*
         {
           "event": "clickATC",
@@ -629,10 +677,21 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
           "currentSite": "{currentSite}"
         }
         * */
+        val additionalData = HashMap<String, Any>()
+        additionalData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO
+        additionalData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+
+        sendEventByPage(
+                page,
+                EVENT_NAME_CLICK,
+                EventAction.CLICK_TAB_PROMO_CATEGORY,
+                promoCategoryName,
+                additionalData
+        )
     }
 
-    // 11
-    fun eventImpressionRecommendationPromoSection() {
+    // 11 - Done
+    fun eventImpressionRecommendationPromoSection(page: Int, totalCouponCanApply: Int, totalPotentialBenefit: Int) {
         /*
         {
           "event": "viewATCIris",
@@ -643,10 +702,21 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
           "currentSite": "{currentSite}"
         }
         * */
+        val additionalData = HashMap<String, Any>()
+        additionalData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO
+        additionalData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+
+        sendEventByPage(
+                page,
+                EVENT_NAME_VIEW,
+                EventAction.IMPRESSION_RECOMMENDATION_PROMO_SECTION,
+                "$totalCouponCanApply - $totalPotentialBenefit",
+                additionalData
+        )
     }
 
-    // 12
-    fun eventClickPilihOnRecommendation(page: Int, promoCodes: List<String>, isCausingClash: Boolean) {
+    // 12 - Done
+    fun eventClickPilihOnRecommendation(page: Int, promoCode:  String, isCausingClash: Boolean) {
         /*
         {
           "event": "clickATC",
@@ -658,21 +728,20 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         }
         * */
         val additionalData = HashMap<String, Any>()
-        additionalData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO)
-        additionalData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+        additionalData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO
+        additionalData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
 
-        val promoCodeStr = promoCodes.joinToString(", ")
         sendEventByPage(
                 page,
                 EVENT_NAME_CLICK,
                 EventAction.CLICK_PILIH_PROMO_RECOMMENDATION,
-                "$promoCodeStr - $isCausingClash",
+                "$promoCode - $isCausingClash",
                 additionalData
         )
     }
 
-    // 13
-    fun eventClickLihatDetailOnIneligibleCoupon(page: Int, promoId: String, ineligibleMessage: String) {
+    // 13 - Done
+    fun eventClickLihatDetailOnIneligibleCoupon(page: Int, promoCode: String, ineligibleMessage: String) {
         /*
         {
           "event": "clickATC",
@@ -684,20 +753,20 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         }
         * */
         val additionalData = HashMap<String, Any>()
-        additionalData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO)
-        additionalData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+        additionalData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO
+        additionalData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
 
         sendEventByPage(
                 page,
                 EVENT_NAME_CLICK,
                 EventAction.CLICK_LIHAT_DETAIL_INELIGIBLE_COUPON,
-                "$promoId - $ineligibleMessage",
+                "$promoCode - $ineligibleMessage",
                 additionalData
         )
     }
 
-    // 14
-    fun eventImpressionIneligiblePromoSection(page: Int, promoItem: PromoListItemUiModel) {
+    // 14 - Done
+    fun eventImpressionIneligiblePromoSection(page: Int, index: Int, promoItem: PromoListItemUiModel) {
         /*
         {
           "event": "view_item",
@@ -719,8 +788,8 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
     * */
         val promotion = Promotion(
                 creativeName = "",
-                creativeSlot = "",
-                itemId = promoItem.uiData.promoId,
+                creativeSlot = index.toString(),
+                itemId = promoItem.uiData.promoCode,
                 itemName = promoItem.uiData.title
         )
 
@@ -730,7 +799,7 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         sendEventEnhancedEcommerceByPage(
                 page = page,
                 eventAction = EventAction.IMPRESSION_INELIGIBLE_PROMO_SECTION,
-                eventLabel = "${promoItem.uiData.promoId} - ${promoItem.uiData.errorMessage}",
+                eventLabel = "${promoItem.uiData.promoCode} - ${promoItem.uiData.errorMessage}",
                 bundle = bundle
         )
     }

@@ -17,7 +17,6 @@ data class PromoListItemUiModel(
     }
 
     data class UiData(
-            var promoId: String = "", // todo : set promo id value
             var uniqueId: String = "",
             var shopId: Int = 0,
             var parentIdentifierId: Int = 0,
@@ -38,7 +37,9 @@ data class PromoListItemUiModel(
             var currentClashingPromo: MutableList<String> = mutableListOf(),
             var promoInfos: List<PromoInfo> = emptyList(),
             var remainingPromoCount: Int = 0,
-            var tabId: String = ""
+            var tabId: String = "",
+            var shippingOptions: String = "", // Todo : fill this field from BE
+            var paymentOptions: String = "" // Todo : fill this field from BE
     )
 
     data class UiState(

@@ -21,4 +21,8 @@ interface PromoCheckoutActionListener {
     fun onClickErrorStateButton(destination: String)
 
     fun onTabSelected(element: PromoTabUiModel)
+
+    fun onShowPromoItem(element: PromoListItemUiModel, position: Int)
+
+    fun onShowPromoRecommendation(element: PromoRecommendationUiModel)
 }
