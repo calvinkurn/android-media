@@ -1638,6 +1638,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dPresenter.setHasPerformChecklistChange(true)
         cartAdapter.setShopSelected(index, checked)
         dPresenter.reCalculateSubTotal(cartAdapter.allAvailableShopGroupDataList)
+        if (checked) {
+            val data = cartAdapter.getData()[index]
+            if (data is CartShopHolderData) {
+                checkBoAffordability(data)
+            }
+        }
         onNeedToUpdateViewItem(index)
         validateGoToCheckout()
         dPresenter.saveCheckboxState(cartAdapter.allAvailableCartItemHolderData)
