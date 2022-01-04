@@ -468,15 +468,8 @@ open class HomeRevampViewModel @Inject constructor(
     //Create BusinessUnitRepository
     fun getBusinessUnitTabData(position: Int){
         launchCatchError(coroutineContext, block = {
-            val data = homeBusinessUnitUseCase.get().getBusinessUnitTab()
-            (homeDataModel.list.getOrNull(position) as? NewBusinessUnitWidgetDataModel)?.let{ buWidget ->
-                val buWidgetData = buWidget.copy(
-                    tabList = data.tabBusinessList,
-                    backColor = data.widgetHeader.backColor,
-                    contentsList = data.tabBusinessList.withIndex().map { BusinessUnitDataModel(tabName = it.value.name, tabPosition = it.index) })
-                updateWidget(buWidgetData, position)
-            }
-
+            val buWidgetData = homeBusinessUnitUseCase.get().getBusinessUnitTab(homeDataModel, position)
+            updateWidget(buWidgetData, position)
         }) {
             (homeDataModel.list.getOrNull(position) as? NewBusinessUnitWidgetDataModel)?.let{ buWidget ->
                 updateWidget(buWidget.copy(tabList = listOf()), position)

@@ -4,7 +4,6 @@ import android.app.Activity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
-import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.data.model.PlayData
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
@@ -19,6 +18,7 @@ import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
@@ -150,8 +150,11 @@ fun PlayWidgetTools.givenPlayWidgetToolsReturn(playWidget: PlayWidget, dispatche
     coEvery { getWidgetFromNetwork(PlayWidgetUseCase.WidgetType.Home, dispatchers.io) } returns playWidget
 }
 
-fun HomeBusinessUnitUseCase.givenGetBusinessWidgetTabUseCaseReturn(homeWidget: HomeWidget) {
-    coEvery { getBusinessUnitTab() } returns homeWidget
+fun HomeBusinessUnitUseCase.givenGetBusinessWidgetTabUseCaseReturn(
+    newBusinessUnitWidgetDataModel: NewBusinessUnitWidgetDataModel,
+    homeDataModel: HomeDynamicChannelModel
+) {
+    coEvery { getBusinessUnitTab(homeDataModel, 1) } returns newBusinessUnitWidgetDataModel
 }
 
 fun GetDynamicChannelsUseCase.givenGetDynamicChannelsUseCaseThrowReturn() {
