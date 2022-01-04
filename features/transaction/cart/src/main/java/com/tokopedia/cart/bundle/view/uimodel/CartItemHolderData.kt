@@ -14,6 +14,7 @@ data class CartItemHolderData(
         var selectedUnavailableActionId: String = "",
         var selectedUnavailableActionLink: String = "",
         var shouldValidateWeight: Boolean = false,
+        var shouldCheckBoAffordability: Boolean = true,
         var productName: String = "",
         var productImage: String = "",
         var productId: String = "",

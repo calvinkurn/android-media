@@ -726,6 +726,9 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
         } else if (data.shouldValidateWeight) {
             viewHolderListener?.onNeedToRefreshWeight(data)
             viewHolderListener?.onNeedToRefreshSingleProduct(adapterPosition)
+        } else if (data.shouldCheckBoAffordability) {
+            viewHolderListener?.onNeedToRefreshBoAffordability(data)
+            viewHolderListener?.onNeedToRefreshSingleProduct(adapterPosition)
         } else {
             viewHolderListener?.onNeedToRefreshSingleProduct(adapterPosition)
         }
@@ -830,6 +833,8 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
         fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData)
 
         fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData)
+
+        fun onNeedToRefreshBoAffordability(cartItemHolderData: CartItemHolderData)
 
         fun onNeedToRefreshAllShop()
 

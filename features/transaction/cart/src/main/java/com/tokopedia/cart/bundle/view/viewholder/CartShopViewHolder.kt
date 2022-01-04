@@ -423,8 +423,7 @@ class CartShopViewHolder(private val binding: ItemShopBundleBinding,
     }
 
     private fun renderBoAfford(cartShopHolderData: CartShopHolderData) {
-        val hasSelectedProduct = cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected
-        if (hasSelectedProduct && !cartShopHolderData.isError && cartShopHolderData.boAffordability.enable) {
+        if (cartShopHolderData.hasSelectedProduct && !cartShopHolderData.isError && cartShopHolderData.boAffordability.enable) {
             binding.apply {
                 val boAffordability = cartShopHolderData.boAffordability
                 when (boAffordability.state) {

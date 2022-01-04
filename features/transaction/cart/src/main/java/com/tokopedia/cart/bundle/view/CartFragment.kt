@@ -1804,12 +1804,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val (data, index) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartItemHolderData.cartString)
         if (data != null) {
             data.isNeedToRefreshWeight = true
+            checkBoAffordability(data)
             onNeedToUpdateViewItem(index)
         }
     }
 
     override fun onNeedToRefreshMultipleShop() {
-        val firstShopIndexAndCount = cartAdapter.getFirstShopAndShopCount()
+        val firstShopIndexAndCount = cartAdapter.iterateAllAvailableShop {
+            checkBoAffordability(it)
+        }
         onNeedToUpdateMultipleViewItem(firstShopIndexAndCount.first, firstShopIndexAndCount.second)
     }
 
@@ -2694,7 +2697,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             showToastMessageGreen(message, getString(R.string.toaster_cta_cancel), View.OnClickListener { onUndoDeleteClicked(deletedCartIds) })
         }
 
-        val updateListResult = cartAdapter.removeProductByCartId(deletedCartIds)
+        val needRefresh = removeAllItems || isFromEditBundle
+        val updateListResult = cartAdapter.removeProductByCartId(deletedCartIds, needRefresh, isFromGlobalCheckbox)
         removeLocalCartItem(updateListResult, forceExpandCollapsedUnavailableItems)
 
         hideProgressLoading()
@@ -2766,7 +2770,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
         }
 
-        val updateListResult = cartAdapter.removeProductByCartId(listOf(cartId))
+        val updateListResult = cartAdapter.removeProductByCartId(listOf(cartId), isLastItem, false)
         removeLocalCartItem(updateListResult, forceExpandCollapsedUnavailableItems)
 
         setTopLayoutVisibility()
@@ -3429,8 +3433,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    private fun checkBoAffordability(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.boAffordability.enable) {
+    override fun checkBoAffordability(cartShopHolderData: CartShopHolderData) {
+        if (cartShopHolderData.boAffordability.enable && cartShopHolderData.hasSelectedProduct) {
             cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.LOADING
             dPresenter.checkBoAffordability(cartShopHolderData)
         }

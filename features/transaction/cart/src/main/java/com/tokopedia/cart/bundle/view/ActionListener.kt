@@ -24,6 +24,8 @@ interface ActionListener {
 
     fun onCartBoAffordabilityRefreshClicked(index: Int, cartShopHolderData: CartShopHolderData)
 
+    fun checkBoAffordability(cartShopHolderData: CartShopHolderData)
+
     fun onCartDataEnableToCheckout()
 
     fun onCartDataDisableToCheckout()

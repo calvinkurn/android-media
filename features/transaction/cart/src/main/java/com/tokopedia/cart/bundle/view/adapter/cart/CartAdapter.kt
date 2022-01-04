@@ -4,12 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.collection.ArraySet
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.cart.databinding.*
 import com.tokopedia.cart.bundle.view.ActionListener
 import com.tokopedia.cart.bundle.view.adapter.recentview.CartRecentViewAdapter
 import com.tokopedia.cart.bundle.view.adapter.wishlist.CartWishlistAdapter
 import com.tokopedia.cart.bundle.view.uimodel.*
 import com.tokopedia.cart.bundle.view.viewholder.*
+import com.tokopedia.cart.databinding.*
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
@@ -976,7 +976,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 data is CartRecommendationItemHolderData
     }
 
-    fun removeProductByCartId(cartIds: List<String>): Pair<List<Int>, List<Int>> {
+    fun removeProductByCartId(cartIds: List<String>, needRefresh: Boolean, isFromGlobalCheckbox: Boolean): Pair<List<Int>, List<Int>> {
         val toBeRemovedItems = mutableListOf<Any>()
         val toBeRemovedIndices = mutableListOf<Int>()
         val toBeUpdatedIndices = mutableListOf<Int>()
@@ -993,9 +993,13 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 data is DisabledAccordionHolderData -> disabledAccordionHolderDataIndexPair = Pair(data, index)
                 data is CartShopHolderData -> {
                     val toBeDeletedProducts = mutableListOf<CartItemHolderData>()
+                    var hasSelectDeletedProducts = false
                     data.productUiModelList.forEach { cartItemHolderData ->
                         if (cartIds.contains(cartItemHolderData.cartId)) {
                             toBeDeletedProducts.add(cartItemHolderData)
+                            if (cartItemHolderData.isSelected) {
+                                hasSelectDeletedProducts = true
+                            }
                         }
                     }
                     if (toBeDeletedProducts.isNotEmpty()) {
@@ -1012,6 +1016,9 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                             toBeRemovedItems.add(data)
                             toBeRemovedIndices.add(index)
                         } else {
+                            if (!needRefresh && (isFromGlobalCheckbox || hasSelectDeletedProducts)) {
+                                actionListener.checkBoAffordability(data)
+                            }
                             toBeUpdatedIndices.add(index)
                         }
                     }
@@ -1226,6 +1233,27 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         return Pair(firstIndex, count)
     }
 
+    fun iterateAllAvailableShop(func: (CartShopHolderData) -> Unit): Pair<Int, Int> {
+        var firstIndex = 0
+        var count = 0
+        cartDataList.forEachIndexed { index, any ->
+            when (any) {
+                is CartShopHolderData -> {
+                    count++
+                    if (firstIndex == 0) {
+                        firstIndex = index
+                    }
+                    func(any)
+                }
+                is DisabledItemHeaderHolderData, is ShipmentSellerCashbackModel, is CartSectionHeaderHolderData -> {
+                    return@forEachIndexed
+                }
+            }
+        }
+
+        return Pair(firstIndex, count)
+    }
+
     fun setLastItemAlwaysSelected(): Boolean {
         var cartItemCount = 0
         getData().forEach outer@{ any ->
@@ -1301,6 +1329,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     if (changeShopLevelCheckboxState) {
                         data.isAllSelected = cheked
                         data.isPartialSelected = false
+                        actionListener.checkBoAffordability(data)
                     }
                 }
                 is DisabledItemHeaderHolderData, is CartSectionHeaderHolderData -> {
