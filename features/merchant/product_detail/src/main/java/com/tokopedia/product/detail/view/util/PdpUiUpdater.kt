@@ -214,7 +214,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
 
             val productId = it.basic.productID
-                .bestSellerContent?.let { bestSellerInfoContent ->
+
+                datap1.bestSellerContent?.let { bestSellerInfoContent ->
                 if (bestSellerInfoContent.contains(productId)) {
                     updateBestSellerData(dataP1 = dataP1, productId = productId)
                 } else {
