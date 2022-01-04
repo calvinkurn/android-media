@@ -4,19 +4,20 @@ import android.app.Activity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
-import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.data.model.PlayData
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.interactor.repository.*
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
 import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.DeclineRechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
@@ -36,7 +37,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flow
 import java.util.concurrent.TimeoutException
 
 /**
@@ -44,8 +44,6 @@ import java.util.concurrent.TimeoutException
  */
 
 fun createHomeViewModel(
-        getBusinessUnitDataUseCase: GetBusinessUnitDataUseCase = mockk(relaxed = true),
-        getBusinessWidgetTab: GetBusinessWidgetTab = mockk(relaxed = true),
         getHomeUseCase: HomeDynamicChannelUseCase = mockk(relaxed = true),
         userSessionInterface: UserSessionInterface = mockk(relaxed = true),
         dismissHomeReviewUseCase: DismissHomeReviewUseCase = mockk(relaxed = true),
@@ -73,54 +71,54 @@ fun createHomeViewModel(
         bestSellerMapper: BestSellerMapper = mockk(relaxed = true),
         dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider,
         getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase = mockk(relaxed = true),
-        getWalletEligibilityUseCase: GetWalletEligibilityUseCase = mockk(relaxed = true)
+        getWalletEligibilityUseCase: GetWalletEligibilityUseCase = mockk(relaxed = true),
+        homeBusinessWidgetUseCase: HomeBusinessUnitUseCase = mockk(relaxed = true),
+        homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase = mockk(relaxed = true)
 ): HomeRevampViewModel{
     val context: Activity = mockk(relaxed = true)
     return HomeRevampViewModel(
             dismissHomeReviewUseCase = Lazy{dismissHomeReviewUseCase},
-            getBusinessUnitDataUseCase = Lazy{getBusinessUnitDataUseCase},
-            getBusinessWidgetTab = Lazy{getBusinessWidgetTab},
-            getHomeReviewSuggestedUseCase = Lazy{homeReviewSuggestedRepository},
-            getHomeTokopointsListDataUseCase = Lazy{getHomeTokopointsListDataUseCase},
+            //TODO fix this for unit test
+//            getHomeReviewSuggestedUseCase = Lazy{homeReviewSuggestedRepository},
             getKeywordSearchUseCase = Lazy{getKeywordSearchUseCase},
-            getPendingCashbackUseCase = Lazy{getCoroutinePendingCashbackUseCase},
-            getPlayCardHomeUseCase = Lazy{homePlayLiveDynamicRepository},
-            getRecommendationTabUseCase = Lazy{getRecommendationTabUseCase},
-            getWalletBalanceUseCase = Lazy{getCoroutineWalletBalanceUseCase},
+            //TODO fix this for unit test
+//            getPlayCardHomeUseCase = Lazy{homePlayLiveDynamicRepository},
             homeDispatcher = Lazy{ dispatchers },
             homeUseCase = Lazy{ getHomeUseCase },
-            popularKeywordUseCase = Lazy{homePopularKeywordRepository},
+            //TODO fix this for unit test
+//            popularKeywordUseCase = Lazy{homePopularKeywordRepository},
             injectCouponTimeBasedUseCase = Lazy{injectCouponTimeBasedUseCase},
             getAtcUseCase = Lazy{getAtcUseCase},
             userSession = Lazy{userSessionInterface},
             closeChannelUseCase = Lazy{closeChannelUseCase},
             declineSalamWidgetUseCase = Lazy{declineSalamWidgetUseCase},
             declineRechargeRecommendationUseCase = Lazy {declineRechargeRecommendationUseCase},
-            getSalamWidgetUseCase = Lazy{homeSalamWidgetRepository},
+            //TODO fix this for unit test
+//            getSalamWidgetUseCase = Lazy{homeSalamWidgetRepository},
             getRechargeBUWidgetUseCase = Lazy{getRechargeBUWidgetUseCase},
-            topAdsImageViewUseCase = Lazy{topadsImageViewUseCase},
-            getDisplayHeadlineAds = Lazy{ getDisplayHeadlineAds },
             getRecommendationUseCase = Lazy{ getRecommendationUseCase},
-            getRecommendationFilterChips = Lazy { getRecommendationFilterChips },
-            getRechargeRecommendationUseCase = Lazy{homeRechargeRecommendationRepository},
+            //TODO fix this for unit test
+//            getRechargeRecommendationUseCase = Lazy{homeRechargeRecommendationRepository},
             playWidgetTools = Lazy { playWidgetTools },
             bestSellerMapper = Lazy { bestSellerMapper },
-            getWalletAppBalanceUseCase = Lazy { getWalletAppBalanceUseCase },
-            getWalletEligibilityUseCase = Lazy { getWalletEligibilityUseCase }
+            homeBusinessUnitUseCase = Lazy { homeBusinessWidgetUseCase },
+            homeBalanceWidgetUseCase = homeBalanceWidgetUseCase,
+            homePlayCardHomeRepository = Lazy { homePlayLiveDynamicRepository },
+            popularKeywordRepository = Lazy { homePopularKeywordRepository }
     )
 }
 
 fun HomeDynamicChannelUseCase.givenGetHomeDataReturn(homeDynamicChannelModel: HomeDynamicChannelModel? = createDefaultHomeDataModel()) {
-    coEvery { getHomeData() } returns flow{
-        emit(homeDynamicChannelModel)
-    }
+//    coEvery { getHomeData() } returns flow{
+//        emit(homeDynamicChannelModel)
+//    }
 }
 
 fun HomeDynamicChannelUseCase.givenGetHomeDataReturn(homeDynamicChannelModel: HomeDynamicChannelModel, newHomeDynamicChannelModel: HomeDynamicChannelModel) {
-    coEvery { getHomeData() } returns flow{
-        emit(homeDynamicChannelModel)
-        emit(newHomeDynamicChannelModel)
-    }
+//    coEvery { getHomeData() } returns flow{
+//        emit(homeDynamicChannelModel)
+//        emit(newHomeDynamicChannelModel)
+//    }
 }
 
 fun HomeDynamicChannelUseCase.givenGetDynamicChannelsUseCase(dynamicChannelDataModels: List<DynamicChannelDataModel>) {
@@ -150,19 +148,25 @@ fun PlayWidgetTools.givenPlayWidgetToolsReturn(playWidget: PlayWidget, dispatche
     coEvery { getWidgetFromNetwork(PlayWidgetUseCase.WidgetType.Home, dispatchers.io) } returns playWidget
 }
 
-fun GetBusinessWidgetTab.givenGetBusinessWidgetTabUseCaseReturn(homeWidget: HomeWidget) {
-    coEvery { executeOnBackground() } returns homeWidget
+fun HomeBusinessUnitUseCase.givenGetBusinessWidgetTabUseCaseReturn(
+    newBusinessUnitWidgetDataModel: NewBusinessUnitWidgetDataModel
+) {
+    coEvery { getBusinessUnitTab(newBusinessUnitWidgetDataModel) } returns newBusinessUnitWidgetDataModel
 }
 
 fun GetDynamicChannelsUseCase.givenGetDynamicChannelsUseCaseThrowReturn() {
     coEvery { executeOnBackground() } throws TimeoutException()
 }
 
-fun GetBusinessUnitDataUseCase.givenGetBusinessUnitDataUseCaseReturn(businessList: List<BusinessUnitItemDataModel>){
-    coEvery{ executeOnBackground() } returns businessList
-}
-fun GetBusinessUnitDataUseCase.givenGetBusinessUnitDataUseCaseThrowReturn(){
-    coEvery{ executeOnBackground() } throws Exception()
+fun HomeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(
+    resultBuModel: NewBusinessUnitWidgetDataModel,
+    positionTab: Int,
+    homeDataModel: HomeDynamicChannelModel,
+    buModel: NewBusinessUnitWidgetDataModel,
+    positionBuModelIndex: Int,
+    tabName: String
+) {
+    coEvery { getBusinessUnitData(0, positionTab, tabName, homeDataModel, buModel, positionBuModelIndex) } returns resultBuModel
 }
 
 fun HomeRechargeRecommendationRepository.givenGetRechargeRecommendationUseCase(rechargeRecommendation: RechargeRecommendation){

@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.domain.interactor
+package com.tokopedia.home.beranda.domain.interactor.repository
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
@@ -8,8 +8,8 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetBusinessWidgetTab @Inject constructor(
-        private val graphqlUseCase: GraphqlUseCase<HomeWidget.Data>
+class HomeBusinessUnitTabRepository @Inject constructor(
+    private val graphqlUseCase: GraphqlUseCase<HomeWidget.Data>
 ) : UseCase<HomeWidget>() {
     private val params = RequestParams.create()
     init {

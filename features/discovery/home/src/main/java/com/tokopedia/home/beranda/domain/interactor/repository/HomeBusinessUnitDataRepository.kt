@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.domain.interactor
+package com.tokopedia.home.beranda.domain.interactor.repository
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
@@ -9,7 +9,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetBusinessUnitDataUseCase @Inject constructor(
+class HomeBusinessUnitDataRepository @Inject constructor(
         private val graphqlUseCase: GraphqlUseCase<HomeWidget.Data>
 ) : UseCase<List<BusinessUnitItemDataModel>>(){
     private val params = RequestParams.create()
@@ -24,7 +24,8 @@ class GetBusinessUnitDataUseCase @Inject constructor(
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground().homeWidget.contentItemTabList.withIndex().map {
-            BusinessUnitItemDataModel(it.value, it.index, params.getInt(PARAM_TAB_POSITION, 0), params.getString(PARAM_TAB_NAME, ""))
+            BusinessUnitItemDataModel(it.value, it.index, params.getInt(PARAM_TAB_POSITION, 0), params.getString(
+                PARAM_TAB_NAME, ""))
         }
     }
 
