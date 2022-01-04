@@ -229,7 +229,7 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/layout_bo_afford"
+        android:id="@+id/layout_bo_affordability"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/Unify_BN50"
@@ -239,21 +239,23 @@
         android:paddingBottom="8dp">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/text_bo_afford"
+            android:id="@+id/text_bo_affordability"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/arrow_bo_afford"
+            android:layout_toStartOf="@+id/arrow_bo_affordability"
+            android:layout_marginEnd="4dp"
             android:visibility="gone"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
+            android:textColor="@color/Unify_N700_96"
             tools:text="Ongkirmu Rp10.000 Rp30.000 karena Bebas Ongkir!" />
 
         <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/arrow_bo_afford"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:id="@+id/arrow_bo_affordability"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="@color/transparent"
@@ -263,18 +265,18 @@
             app:icon_name="CHEVRON_RIGHT" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:id="@+id/large_loader_bo_afford"
+            android:id="@+id/large_loader_bo_affordability"
             android:layout_width="match_parent"
             android:layout_height="8dp"
             android:layout_centerVertical="true"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="60dp"
             android:layout_marginBottom="8dp"
-            android:layout_toStartOf="@+id/small_loader_bo_afford"
+            android:layout_toStartOf="@+id/small_loader_bo_affordability"
             app:loader_type="line"/>
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:id="@+id/small_loader_bo_afford"
+            android:id="@+id/small_loader_bo_affordability"
             android:layout_width="14dp"
             android:layout_height="8dp"
             android:layout_alignParentEnd="true"
