@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.di.broadcast
+package com.tokopedia.play.broadcaster.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
