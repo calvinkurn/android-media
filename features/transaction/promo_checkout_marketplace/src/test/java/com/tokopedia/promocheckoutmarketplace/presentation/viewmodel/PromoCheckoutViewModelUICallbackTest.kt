@@ -160,6 +160,7 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
         )
 
         every { analytics.eventClickPilihPromoRecommendation(any(), any()) } just Runs
+        every { analytics.eventClickPilihOnRecommendation(any(), any(), any()) } just Runs
 
         //when
         viewModel.applyRecommendedPromo()

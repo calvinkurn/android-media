@@ -13,6 +13,7 @@ import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommenda
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.just
 import org.junit.Test
 import java.lang.reflect.Type
@@ -29,6 +30,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest : BasePromoCheckoutViewMod
         coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(CouponListRecommendationResponse())
         }
+        every { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
 
         //when
         viewModel.getPromoList(promoRequest, attemptedPromoCode)
@@ -47,6 +49,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest : BasePromoCheckoutViewMod
         coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(CouponListRecommendationResponse())
         }
+        every { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
 
         //when
         viewModel.getPromoList(promoRequest, attemptedPromoCode)
@@ -66,6 +69,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest : BasePromoCheckoutViewMod
         coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(CouponListRecommendationResponse())
         }
+        every { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
 
         //when
         viewModel.getPromoList(promoRequest, attemptedPromoCode)
@@ -85,6 +89,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest : BasePromoCheckoutViewMod
         coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(CouponListRecommendationResponse())
         }
+        every { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
 
         //when
         viewModel.getPromoList(promoRequest, attemptedPromoCode)
@@ -104,6 +109,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest : BasePromoCheckoutViewMod
         coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(CouponListRecommendationResponse())
         }
+        every { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
 
         //when
         viewModel.getPromoList(promoRequest, attemptedPromoCode)
@@ -123,6 +129,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest : BasePromoCheckoutViewMod
         coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(CouponListRecommendationResponse())
         }
+        every { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
 
         //when
         viewModel.getPromoList(promoRequest, "GLOBAL PROMO")
@@ -141,6 +148,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest : BasePromoCheckoutViewMod
         coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(CouponListRecommendationResponse())
         }
+        every { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
 
         //when
         viewModel.getPromoList(promoRequest, "MERCHANT PROMO")

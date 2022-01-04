@@ -1,9 +1,6 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.google.gson.Gson
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promocheckoutmarketplace.domain.usecase.GetCouponListRecommendationUseCase
 import com.tokopedia.promocheckoutmarketplace.domain.usecase.GetPromoSuggestionUseCase
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics

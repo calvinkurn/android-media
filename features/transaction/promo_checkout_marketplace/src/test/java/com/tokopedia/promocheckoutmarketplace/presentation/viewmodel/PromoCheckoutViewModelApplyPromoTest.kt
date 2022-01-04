@@ -121,6 +121,7 @@ class PromoCheckoutViewModelApplyPromoTest : BasePromoCheckoutViewModelTest() {
         coEvery { validateUseUseCase.execute(any(), any()) } answers {
             firstArg<(ValidateUsePromoRevampUiModel) -> Unit>().invoke(ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(response.validateUsePromoRevamp))
         }
+        every { analytics.eventViewErrorAfterClickPakaiPromo(any(), any(), any()) } just Runs
 
         //when
         viewModel.applyPromo(ValidateUsePromoRequest(), ArrayList())
@@ -140,6 +141,7 @@ class PromoCheckoutViewModelApplyPromoTest : BasePromoCheckoutViewModelTest() {
         coEvery { validateUseUseCase.execute(any(), any()) } answers {
             firstArg<(ValidateUsePromoRevampUiModel) -> Unit>().invoke(ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(response.validateUsePromoRevamp))
         }
+        every { analytics.eventViewErrorAfterClickPakaiPromo(any(), any(), any()) } just Runs
 
         //when
         viewModel.applyPromo(ValidateUsePromoRequest(), ArrayList())

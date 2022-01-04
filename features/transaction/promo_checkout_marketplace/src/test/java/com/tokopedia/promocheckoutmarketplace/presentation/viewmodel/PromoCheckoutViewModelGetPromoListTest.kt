@@ -276,6 +276,7 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
         coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(CouponListRecommendationResponse())
         }
+        every { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
 
         //when
         viewModel.getPromoList(promoRequest, "")
@@ -294,6 +295,7 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
         coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(CouponListRecommendationResponse())
         }
+        every { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
 
         //when
         viewModel.getPromoList(promoRequest, "")
@@ -313,6 +315,7 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
         coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
+        every { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
 
         //when
         viewModel.getPromoList(PromoRequest(), "")
@@ -330,6 +333,7 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
         coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
+        every { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
 
         //when
         viewModel.getPromoList(PromoRequest(), "")
@@ -515,6 +519,7 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
         coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
             firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
         }
+        every { analytics.eventViewErrorAfterClickTerapkanPromo(any(), any(), any(), any()) } just Runs
 
         viewModel.getPromoList(PromoRequest(), "")
 
