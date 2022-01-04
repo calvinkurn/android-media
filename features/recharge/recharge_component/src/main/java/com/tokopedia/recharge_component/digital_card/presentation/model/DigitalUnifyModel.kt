@@ -64,6 +64,7 @@ data class DigitalCardRatingModel(
 data class DigitalCardPriceModel(
     val price: String,
     val discountLabel: String,
+    val discountType: String,
     val discountLabelType: Int,
     val slashedPrice: String,
     val pricePrefix: String,

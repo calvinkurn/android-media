@@ -15,5 +15,10 @@ class DigitalUnifyConst {
         const val MEDIA_TYPE_SQUARE_RATIO = "H,1:1"
         const val MEDIA_TYPE_RECTANGLE = "rectangle"
         const val MEDIA_TYPE_RECTANGLE_RATIO = "H,2:1"
+
+        // Discount Type
+        const val DISCOUNT_CASHBACK = "DISCOUNT_CASHBACK"
+        const val DISCOUNT_SPECIAL = "DISCOUNT_SPECIAL"
+        const val DISCOUNT_SLASH = "DISCOUNT_SLASH"
     }
 }

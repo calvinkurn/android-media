@@ -440,6 +440,25 @@ data class RechargeProductCardUnifyModel(val section: RechargeHomepageSections.S
     val digitalUnifyItems: List<DigitalUnifyModel>
         get() =
             section.items.map {
+                val discountLabel: String = when {
+                    it.attributes.cashback.isNotEmpty() -> it.attributes.cashback
+                    it.attributes.specialDiscount.isNotEmpty() -> it.attributes.specialDiscount
+                    else -> it.label3
+                }
+
+                val discountType: String = when {
+                    it.attributes.cashback.isNotEmpty() -> DigitalUnifyConst.DISCOUNT_CASHBACK
+                    it.attributes.specialDiscount.isNotEmpty() -> DigitalUnifyConst.DISCOUNT_SPECIAL
+                    it.label3.isNotEmpty() -> DigitalUnifyConst.DISCOUNT_SLASH
+                    else -> ""
+                }
+
+                val discountLabelType: Int = when (discountType) {
+                    DigitalUnifyConst.DISCOUNT_CASHBACK -> Label.HIGHLIGHT_LIGHT_GREEN
+                    DigitalUnifyConst.DISCOUNT_SPECIAL, DigitalUnifyConst.DISCOUNT_SLASH -> Label.HIGHLIGHT_LIGHT_RED
+                    else -> 0
+                }
+
                 DigitalUnifyModel(
                     id = it.id,
                     mediaUrl = it.mediaUrl,
@@ -472,8 +491,9 @@ data class RechargeProductCardUnifyModel(val section: RechargeHomepageSections.S
                     ),
                     priceData = DigitalCardPriceModel(
                         price = it.label2,
-                        discountLabel = it.label3,
-                        discountLabelType = Label.HIGHLIGHT_LIGHT_RED,
+                        discountLabel = discountLabel,
+                        discountType = discountType,
+                        discountLabelType = discountLabelType,
                         slashedPrice = it.label1,
                         pricePrefix = it.attributes.pricePrefix,
                         priceSuffix = it.attributes.priceSuffix

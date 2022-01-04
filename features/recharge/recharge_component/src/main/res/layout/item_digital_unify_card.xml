@@ -303,17 +303,6 @@
             tools:text="Rp8.499.000"
             tools:visibility="visible" />
 
-        <com.tokopedia.unifycomponents.Label
-            android:id="@+id/dgu_cashback_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/unify_space_8"
-            android:layout_marginTop="@dimen/unify_space_4"
-            app:labelType="general_light_green"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dgu_discount_label"
-            tools:text="Cashback" />
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/dgu_subtitle"
             android:layout_width="0dp"
@@ -324,7 +313,7 @@
             android:textColor="@color/Unify_NN600"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dgu_cashback_label"
+            app:layout_constraintTop_toBottomOf="@id/dgu_discount_label"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="Terjual 1111" />

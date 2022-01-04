@@ -18,10 +18,11 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.ItemDigitalUnifyCardBinding
-import com.tokopedia.recharge_component.digital_card.presentation.model.*
+import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalCardRatingModel
+import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalCardSoldPercentageModel
+import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalUnifyConst
+import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalUnifyModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
-import com.tokopedia.unifycomponents.UnifyButton
-import java.net.URLDecoder
 
 class DigitalUnifyCardViewHolder(
     private val binding: ItemDigitalUnifyCardBinding,
@@ -36,7 +37,6 @@ class DigitalUnifyCardViewHolder(
         renderRating(element)
         renderSpecialInfo(element)
         renderPriceAndDiscount(element)
-        renderCashbackLabel(element.cashback)
         renderSubtitle(element)
         renderSoldPercentage(element)
         renderActionButton(element)
@@ -159,7 +159,7 @@ class DigitalUnifyCardViewHolder(
             element.priceData.priceSuffix
         )
         renderDiscountLabel(element.priceData.discountLabel, element.priceData.discountLabelType)
-        renderSlashedPrice(element.priceData.slashedPrice)
+        renderSlashedPrice(element.priceData.discountType, element.priceData.slashedPrice)
     }
 
     private fun renderSubtitle(element: DigitalUnifyModel) {
@@ -377,18 +377,7 @@ class DigitalUnifyCardViewHolder(
         }
     }
 
-    private fun renderCashbackLabel(label: String) {
-        with(binding.dguCashbackLabel) {
-            if (label.isNotEmpty()) {
-                text = label
-                show()
-            } else {
-                hide()
-            }
-        }
-    }
-
-    private fun renderSlashedPrice(slashedPrice: String) {
+    private fun renderSlashedPrice(discountType: String, slashedPrice: String) {
         with(binding.dguDiscountSlashPrice) {
             if (slashedPrice.isNotEmpty()) {
                 text = slashedPrice
