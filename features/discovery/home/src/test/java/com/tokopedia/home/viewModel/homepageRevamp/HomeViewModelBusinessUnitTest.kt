@@ -58,13 +58,12 @@ class HomeViewModelBusinessUnitTest{
         )
 
         homeViewModel = createHomeViewModel(
-                getHomeUseCase = getHomeUseCase,
-                homeBusinessWidgetUseCase = homeBusinessUnitUseCase
+            getHomeUseCase = getHomeUseCase,
+            homeBusinessUnitUseCase = homeBusinessUnitUseCase
         )
         homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
         homeViewModel.homeDataModel.addWidgetModel(businessUnitDataModel)
 
-        //TODO fix for unit test
         homeBusinessUnitUseCase.givenGetBusinessWidgetTabUseCaseReturn(businessUnitDataModel)
 
         // load data bu return success
@@ -135,12 +134,11 @@ class HomeViewModelBusinessUnitTest{
 
         homeViewModel = createHomeViewModel(
             getHomeUseCase = getHomeUseCase,
-            homeBusinessWidgetUseCase = homeBusinessUnitUseCase
+            homeBusinessUnitUseCase = homeBusinessUnitUseCase
         )
         homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
         homeViewModel.homeDataModel.addWidgetModel(businessUnitDataModel)
 
-        //TODO fix for unit test
         homeBusinessUnitUseCase.givenGetBusinessWidgetTabUseCaseReturn(businessUnitDataModel)
 
         homeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(

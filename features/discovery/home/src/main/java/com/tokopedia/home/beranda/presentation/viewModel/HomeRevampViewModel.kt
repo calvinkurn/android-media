@@ -322,8 +322,6 @@ open class HomeRevampViewModel @Inject constructor(
         launch { homeSuggestedReviewUseCase.get().onReviewDismissed() }
     }
 
-    //TODO 11.1: Remove getBusinessUnitTabData -> Move to HomeDynamicChannelUseCase
-    //Create BusinessUnitRepository
     fun getBusinessUnitTabData(position: Int){
         findWidget<NewBusinessUnitWidgetDataModel> { buModel, _ ->
             launch{
@@ -333,8 +331,6 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    //TODO 11.2: Remove getBusinessUnitTabData -> Move to HomeBusinessUnitUseCase.onClickBusinessUnitTab
-    //Create BusinessUnitRepository
     fun getBusinessUnitData(tabId: Int, position: Int, tabName: String){
         findWidget<NewBusinessUnitWidgetDataModel> { buModel, index ->
             launch{
