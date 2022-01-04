@@ -129,6 +129,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     val tmpCurrentClashingPromoList = ArrayList<String>()
                     var tmpClashingIconUrl = ""
                     val tmpErrorMessage = StringBuilder()
+                    tmpClashingIconUrl = clashingInfos.firstOrNull()?.icon ?: ""
                     selectedPromo.forEach { promoCode ->
                         val clashingInfo = clashingInfos.firstOrNull { clashingInfo -> clashingInfo.code == promoCode }
                         if (clashingInfo != null) {

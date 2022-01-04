@@ -329,7 +329,16 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
                                 element: PromoListItemUiModel) {
         with(viewBinding) {
             if (element.uiData.errorMessage.isNotBlank()) {
-                imageClashInfo.setImageUrl(element.uiData.errorIcon)
+                if (element.uiData.errorIcon.isNotBlank()) {
+                    imageClashInfo.setImageUrl(element.uiData.errorIcon)
+                } else {
+                    val drawable = getIconUnifyDrawable(
+                            itemView.context,
+                            IconUnify.INFORMATION,
+                            ContextCompat.getColor(itemView.context, com.tokopedia.unifycomponents.R.color.Unify_NN900)
+                    )
+                    imageClashInfo.setImageDrawable(drawable)
+                }
                 textClashInfo.text = HtmlLinkHelper(itemView.context, element.uiData.errorMessage).spannedString
                 containerClashInfo.show()
             } else {
