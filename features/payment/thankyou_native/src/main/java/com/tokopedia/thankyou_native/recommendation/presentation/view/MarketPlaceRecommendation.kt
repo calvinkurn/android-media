@@ -159,14 +159,14 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
         return object : ProductCardViewListener {
             override fun onProductClick(item: RecommendationItem,
                                         layoutType: String?, vararg position: Int) {
-                topAdsUrlHitter.hitClickUrl(MarketPlaceRecommendation.javaClass.canonicalName, item.clickUrl,"","","")
+                topAdsUrlHitter.hitClickUrl(this@MarketPlaceRecommendation.javaClass.simpleName, item.clickUrl,"","","")
                 if (position.isNotEmpty())
                     onRecomProductClick(item, position[0])
             }
 
 
             override fun onProductImpression(item: RecommendationItem, position: Int) {
-                topAdsUrlHitter.hitImpressionUrl(MarketPlaceRecommendation.javaClass.canonicalName, item.trackerImageUrl, "", "", "")
+                topAdsUrlHitter.hitImpressionUrl(this@MarketPlaceRecommendation.javaClass.simpleName, item.trackerImageUrl, "", "", "")
             }
 
 
