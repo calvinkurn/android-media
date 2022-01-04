@@ -1624,7 +1624,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun trackEventClickBroadMatchItem(broadMatchItemDataView: BroadMatchItemDataView) {
-        val broadMatchItem: MutableList<Any> = ArrayList()
+        val broadMatchItem = ArrayList<Any>()
         broadMatchItem.add(broadMatchItemDataView.asClickObjectDataLayer())
 
         SearchTracking.trackEventClickBroadMatchItem(
