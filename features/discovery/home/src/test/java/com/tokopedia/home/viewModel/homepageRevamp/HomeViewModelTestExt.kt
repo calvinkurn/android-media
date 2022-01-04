@@ -151,17 +151,15 @@ fun PlayWidgetTools.givenPlayWidgetToolsReturn(playWidget: PlayWidget, dispatche
 }
 
 fun HomeBusinessUnitUseCase.givenGetBusinessWidgetTabUseCaseReturn(
-    newBusinessUnitWidgetDataModel: NewBusinessUnitWidgetDataModel,
-    homeDataModel: HomeDynamicChannelModel
+    newBusinessUnitWidgetDataModel: NewBusinessUnitWidgetDataModel
 ) {
-    coEvery { getBusinessUnitTab(homeDataModel, 1) } returns newBusinessUnitWidgetDataModel
+    coEvery { getBusinessUnitTab(newBusinessUnitWidgetDataModel) } returns newBusinessUnitWidgetDataModel
 }
 
 fun HomeBusinessUnitUseCase.givenGetBusinessWidgetTabUseCaseThrowReturn(
-    newBusinessUnitWidgetDataModel: NewBusinessUnitWidgetDataModel,
-    homeDataModel: HomeDynamicChannelModel
+    newBusinessUnitWidgetDataModel: NewBusinessUnitWidgetDataModel
 ) {
-    coEvery { getBusinessUnitTab(homeDataModel, 1) } throws TimeoutException()
+    coEvery { getBusinessUnitTab(newBusinessUnitWidgetDataModel) } throws TimeoutException()
 }
 
 fun GetDynamicChannelsUseCase.givenGetDynamicChannelsUseCaseThrowReturn() {
@@ -169,14 +167,14 @@ fun GetDynamicChannelsUseCase.givenGetDynamicChannelsUseCaseThrowReturn() {
 }
 
 fun HomeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(
-    newBusinessUnitWidgetDataModel: NewBusinessUnitWidgetDataModel,
-    positionWidget: Int,
-    homeDataModel: HomeDynamicChannelModel
+    resultBuModel: NewBusinessUnitWidgetDataModel,
+    positionTab: Int,
+    homeDataModel: HomeDynamicChannelModel,
+    buModel: NewBusinessUnitWidgetDataModel,
+    positionBuModelIndex: Int,
+    tabName: String
 ) {
-    coEvery { getBusinessUnitData(0, 0, "", homeDataModel) } returns Pair(
-        newBusinessUnitWidgetDataModel,
-        positionWidget
-    )
+    coEvery { getBusinessUnitData(0, positionTab, tabName, homeDataModel, buModel, positionBuModelIndex) } returns resultBuModel
 }
 fun HomeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseThrowReturn(){
 //    coEvery{ getBusinessUnitData(0, 0, "") } throws Exception()
