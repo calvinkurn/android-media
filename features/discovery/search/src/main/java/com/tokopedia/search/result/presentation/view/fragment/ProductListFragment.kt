@@ -1468,12 +1468,12 @@ class ProductListFragment: BaseDaggerFragment(),
 
     private fun createInspirationCarouselChipsProductDataLayer(
         product: InspirationCarouselDataView.Option.Product
-    ): List<Any> {
+    ): ArrayList<Any> {
         val filterSortParams = getSortFilterParamStringFromSearchParameter()
         val productDataLayer =
             product.getInspirationCarouselChipsProductAsObjectDataLayer(filterSortParams)
 
-        return listOf(productDataLayer)
+        return arrayListOf(productDataLayer)
     }
 
     private fun getSortFilterParamStringFromSearchParameter() =
