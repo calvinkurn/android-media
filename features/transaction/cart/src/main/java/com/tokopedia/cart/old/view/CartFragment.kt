@@ -44,11 +44,11 @@ import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.cart.CartActivity
+import com.tokopedia.cart.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.FragmentCartBinding
 import com.tokopedia.cart.old.domain.model.cartlist.*
 import com.tokopedia.cart.old.domain.model.cartlist.ActionData.Companion.ACTION_CHECKOUTBROWSER
-import com.tokopedia.cart.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.old.view.ICartListPresenter.Companion.GET_CART_STATE_AFTER_CHOOSE_ADDRESS
 import com.tokopedia.cart.old.view.ICartListPresenter.Companion.GET_CART_STATE_DEFAULT
 import com.tokopedia.cart.old.view.adapter.cart.CartAdapter
@@ -1492,7 +1492,6 @@ open class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
 
         recommendationItemClick?.let {
             cartPageAnalytics.enhancedEcommerceClickProductRecommendationOnEmptyCart(
-                    index.toString(),
                     dPresenter.generateRecommendationDataOnClickAnalytics(it, FLAG_IS_CART_EMPTY, index)
             )
         }

@@ -138,6 +138,7 @@
     <string name="topads_common_maximum_daily_budget">Batas maksimum Rp%s</string>
     <string name="topads_common_minimum_daily_budget">Batas minimum Rp%s</string>
     <string name="topads_common_keyword_avg_cost">Biaya rata-rata kompetitor %s</string>
+    <string name="error_bid_multiple_50">Biaya harus kelipatan 50</string>
 
     <string name="topads_common_recommended_budget">Rekomendasi Biaya</string>
     <string name="topads_common_klik_">/klik</string>

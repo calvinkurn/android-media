@@ -58,9 +58,6 @@ object RouteManagerKt {
             DeepLinkChecker.HOT -> {
                 return DeepLinkChecker.openHot(url, activity)
             }
-            DeepLinkChecker.FIND -> {
-                return DeepLinkChecker.openFind(url, activity)
-            }
             DeepLinkChecker.CATALOG -> {
                 //TODO still use className
                 return DeepLinkChecker.openCatalog(url, activity)

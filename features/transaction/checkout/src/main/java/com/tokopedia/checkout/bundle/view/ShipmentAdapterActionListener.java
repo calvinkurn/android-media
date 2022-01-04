@@ -2,6 +2,7 @@ package com.tokopedia.checkout.bundle.view;
 
 import androidx.fragment.app.FragmentManager;
 
+import com.tokopedia.checkout.bundle.view.uimodel.CrossSellModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
@@ -58,6 +59,8 @@ public interface ShipmentAdapterActionListener {
     void onInsuranceCheckedForTrackingAnalytics();
 
     void onDonationChecked(boolean checked);
+
+    void onCrossSellItemChecked(boolean checked, CrossSellModel crossSellModel, int index);
 
     void onEgoldChecked(boolean checked);
 

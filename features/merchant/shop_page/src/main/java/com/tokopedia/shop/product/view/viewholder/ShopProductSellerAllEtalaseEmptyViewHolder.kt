@@ -26,13 +26,9 @@ class ShopProductSellerAllEtalaseEmptyViewHolder(
         val LAYOUT = R.layout.item_shop_product_seller_empty_state
     }
 
-    init {
-        initLayout()
-    }
-
     private val viewBinding : ItemShopProductSellerEmptyStateBinding? by viewBinding()
-    private var labelShopProductSellerEmptyState: Typography? = null
-    private var imageViewBackgroundPattern: ImageView? = null
+    private var labelShopProductSellerEmptyState: Typography? = viewBinding?.labelShopProductSellerEmptyState
+    private var imageViewBackgroundPattern: ImageView? = viewBinding?.imageViewBackground
 
     override fun bind(shopSellerEmptyProductAllEtalaseUiModel: ShopSellerEmptyProductAllEtalaseUiModel) {
         labelShopProductSellerEmptyState?.text = MethodChecker.fromHtml(
@@ -43,8 +39,4 @@ class ShopProductSellerAllEtalaseEmptyViewHolder(
         }
     }
 
-    private fun initLayout() {
-        labelShopProductSellerEmptyState = viewBinding?.labelShopProductSellerEmptyState
-        imageViewBackgroundPattern = viewBinding?.imageViewBackground
-    }
 }

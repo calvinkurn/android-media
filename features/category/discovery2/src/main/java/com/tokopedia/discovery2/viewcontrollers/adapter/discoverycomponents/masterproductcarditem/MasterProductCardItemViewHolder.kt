@@ -29,7 +29,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private lateinit var masterProductCardItemViewModel: MasterProductCardItemViewModel
     private var masterProductCardGridView: ProductCardGridView? = null
     private var masterProductCardListView: ProductCardListView? = null
-    private var productCardView: CardView = itemView.findViewById(R.id.cardViewProductCard)
+    private var productCardView: CardView = itemView.findViewById(com.tokopedia.productcard.R.id.cardViewProductCard)
     private var productCardName = ""
     private var dataItem: DataItem? = null
     private var componentPosition: Int? = null

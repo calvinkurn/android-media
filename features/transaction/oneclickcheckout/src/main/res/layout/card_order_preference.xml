@@ -181,12 +181,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="@dimen/spacing_lvl3"
-                        android:textColor="@color/Unify_N700_96"
+                        android:textColor="@color/tickerunify_content_text_color"
                         app:layout_constraintEnd_toStartOf="@+id/ticker_action"
                         app:layout_constraintStart_toEndOf="@+id/ticker_shipping_promo_icon"
                         app:layout_constraintTop_toTopOf="parent"
                         app:typographyType="body_3"
-                        app:typographyWeight="bold" />
+                        app:typographyWeight="reguler" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/ticker_shipping_promo_subtitle"
@@ -195,7 +195,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="4dp"
                         android:layout_marginBottom="@dimen/spacing_lvl3"
-                        android:textColor="@color/Unify_N700_96"
+                        android:textColor="@color/tickerunify_content_text_color"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/ticker_action"
                         app:layout_constraintStart_toEndOf="@+id/ticker_shipping_promo_icon"
@@ -208,7 +208,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:textColor="@color/Unify_N700_96"
+                        android:textColor="@color/tickerunify_content_text_color"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/ticker_action"
                         app:layout_constraintStart_toEndOf="@+id/ticker_shipping_promo_icon"
@@ -288,7 +288,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_shipping_duration_eta"
                 app:typographyType="body_3"
-                app:typographyWeight="bold"
+                app:typographyWeight="reguler"
                 tools:ignore="RtlSymmetry" />
 
             <com.tokopedia.unifyprinciples.Typography

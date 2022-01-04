@@ -5,7 +5,6 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
@@ -41,7 +40,6 @@ internal open class ProductListPresenterTestFixtures {
     protected val saveLastFilterUseCase = mockk<UseCase<Int>>(relaxed = true)
     protected val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
-    protected val remoteConfig = mockk<RemoteConfig>()
     protected val searchCoachMarkLocalCache = mockk<CoachMarkLocalCache>(relaxed = true)
     protected val testSchedulersProvider = object : SchedulersProvider {
         override fun io() = Schedulers.immediate()
@@ -67,12 +65,10 @@ internal open class ProductListPresenterTestFixtures {
             { saveLastFilterUseCase },
             topAdsUrlHitter,
             testSchedulersProvider,
-            { remoteConfig },
         )
         productListPresenter.attachView(productListView)
 
         verify {
-            productListView.abTestRemoteConfig
             productListView.isChooseAddressWidgetEnabled
         }
     }
@@ -131,7 +127,11 @@ internal open class ProductListPresenterTestFixtures {
         productItem.position shouldBe position
     }
 
-    protected fun Visitable<*>.assertOrganicProduct(organicProduct: SearchProductModel.Product, position: Int) {
+    protected fun Visitable<*>.assertOrganicProduct(
+        organicProduct: SearchProductModel.Product,
+        position: Int,
+        expectedPageTitle: String = "",
+    ) {
         val productItem = this as ProductItemDataView
 
         productItem.isOrganicAds shouldBe organicProduct.isOrganicAds()
@@ -154,6 +154,7 @@ internal open class ProductListPresenterTestFixtures {
         productItem.productName shouldBe organicProduct.name
         productItem.price shouldBe organicProduct.price
         productItem.minOrder shouldBe organicProduct.minOrder
+        productItem.pageTitle shouldBe expectedPageTitle
     }
 
     @Suppress("UNCHECKED_CAST")

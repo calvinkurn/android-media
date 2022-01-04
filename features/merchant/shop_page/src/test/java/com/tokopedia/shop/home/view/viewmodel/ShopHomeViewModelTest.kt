@@ -548,6 +548,24 @@ class ShopHomeViewModelTest {
     }
 
     @Test
+    fun `check whether campaignFlashSaleRemindMeStatusData post Success value`() {
+        val mockCampaignId ="12345"
+        coEvery { getCampaignNotifyMeUseCase.get().executeOnBackground() } returns GetCampaignNotifyMeModel()
+        viewModel.getCampaignFlashSaleRemindMeStatus(mockCampaignId)
+        coVerify { getCampaignNotifyMeUseCase.get().executeOnBackground() }
+        assert(viewModel.campaignFlashSaleStatusData.value is Success)
+    }
+
+    @Test
+    fun `check whether campaignFlashSaleRemindMeStatusData value is null when error`() {
+        val mockCampaignId ="12345"
+        coEvery { getCampaignNotifyMeUseCase.get().executeOnBackground() } throws Throwable()
+        viewModel.getCampaignFlashSaleRemindMeStatus(mockCampaignId)
+        coVerify { getCampaignNotifyMeUseCase.get().executeOnBackground() }
+        assert(viewModel.campaignFlashSaleStatusData.value == null)
+    }
+
+    @Test
     fun `check whether checkCampaignNplRemindMeStatusData post Success value`() {
         val mockAction = "action"
         coEvery { checkCampaignNotifyMeUseCase.get().executeOnBackground() } returns CheckCampaignNotifyMeModel()
@@ -563,6 +581,24 @@ class ShopHomeViewModelTest {
         viewModel.clickRemindMe(mockCampaignId, mockAction)
         coVerify { checkCampaignNotifyMeUseCase.get().executeOnBackground() }
         assert(viewModel.checkCampaignNplRemindMeStatusData.value is Fail)
+    }
+
+    @Test
+    fun `check whether checkCampaignFlashSaleRemindMeStatusData post Success value`() {
+        val mockAction = "action"
+        coEvery { checkCampaignNotifyMeUseCase.get().executeOnBackground() } returns CheckCampaignNotifyMeModel()
+        viewModel.clickFlashSaleReminder(mockCampaignId, mockAction)
+        coVerify { checkCampaignNotifyMeUseCase.get().executeOnBackground() }
+        assert(viewModel.checkCampaignFlashSaleRemindMeStatusData.value is Success)
+    }
+
+    @Test
+    fun `check whether checkCampaignFlashSaleRemindMeStatusData post Fail value`() {
+        val mockAction = "action"
+        coEvery { checkCampaignNotifyMeUseCase.get().executeOnBackground() } throws Throwable()
+        viewModel.clickFlashSaleReminder(mockCampaignId, mockAction)
+        coVerify { checkCampaignNotifyMeUseCase.get().executeOnBackground() }
+        assert(viewModel.checkCampaignFlashSaleRemindMeStatusData.value is Fail)
     }
 
     @Test
@@ -955,6 +991,7 @@ class ShopHomeViewModelTest {
                                 PlayWidgetVideoUiModel("", false, "", ""),
                                 PlayWidgetChannelType.Upcoming,
                                 false,
+                                "",
                                 ""
                         )
                 )
@@ -1042,6 +1079,7 @@ class ShopHomeViewModelTest {
                     PlayWidgetShareUiModel("", false),
                     "",
                     false,
+                    "",
                     ""
                 )
             )
@@ -1109,6 +1147,7 @@ class ShopHomeViewModelTest {
                                 PlayWidgetShareUiModel("", false),
                                 "",
                                 false,
+                                "",
                                 ""
                         )
                 )

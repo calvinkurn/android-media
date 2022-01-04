@@ -4,7 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.officialstore.DynamicChannelIdentifiers
+import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.officialstore.GQLQueryConstant
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
 import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
@@ -54,6 +54,6 @@ class GetOfficialStoreDynamicChannelUseCase @Inject constructor(
     }
 
     companion object{
-        private val DYNAMIC_HEIGHT_CHANNEL = listOf(DynamicChannelIdentifiers.LAYOUT_MIX_LEFT, DynamicChannelIdentifiers.LAYOUT_MIX_TOP)
+        private val DYNAMIC_HEIGHT_CHANNEL = listOf(DynamicChannelLayout.LAYOUT_MIX_LEFT, DynamicChannelLayout.LAYOUT_MIX_TOP)
     }
 }

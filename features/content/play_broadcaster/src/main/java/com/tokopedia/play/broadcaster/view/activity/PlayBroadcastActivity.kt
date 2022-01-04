@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
+import com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
@@ -40,13 +41,13 @@ import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
 import com.tokopedia.play.broadcaster.view.contract.PlayBaseCoordinator
 import com.tokopedia.play.broadcaster.view.custom.PlayTermsAndConditionView
-import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
 import com.tokopedia.play.broadcaster.view.fragment.PlayBeforeLiveFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPrepareFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPermissionFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.extension.awaitResume
@@ -196,6 +197,9 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     }
 
     private fun initViewModel() {
+        /** Must be created here to avoid this PlayBroadcastSummaryViewModel being injected
+         * with different instance of dependencies when configuration changes occur */
+        ViewModelProvider(this, viewModelFactory).get(PlayBroadcastSummaryViewModel::class.java)
         viewModel = ViewModelProvider(this, viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
@@ -474,6 +478,11 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
             pauseLiveDialog.show()
             analytic.viewDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.channelTitle)
         }
+    }
+
+    fun isDialogContinueLiveStreamOpen(): Boolean {
+        return if(!::pauseLiveDialog.isInitialized) false
+        else pauseLiveDialog.isShowing
     }
 
     private fun showTermsAndConditionBottomSheet(

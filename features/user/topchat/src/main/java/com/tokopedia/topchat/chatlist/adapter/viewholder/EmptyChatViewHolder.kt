@@ -4,10 +4,10 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.model.EmptyChatModel
@@ -48,7 +48,9 @@ class EmptyChatViewHolder constructor(
     }
 
     private fun bindImage(element: EmptyChatModel) {
-        ImageHandler.loadImage2(image, element.image, R.drawable.empty_chat)
+        image.loadImage(element.image) {
+            setErrorDrawable(R.drawable.empty_chat)
+        }
     }
 
     private fun bindCta(element: EmptyChatModel) {

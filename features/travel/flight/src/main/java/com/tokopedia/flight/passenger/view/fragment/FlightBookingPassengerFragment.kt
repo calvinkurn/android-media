@@ -36,6 +36,7 @@ import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivi
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_DEPATURE
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_IS_AIRASIA
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_IS_DOMESTIC
+import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_IS_IDENTIFICATION_NUMBER
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_LUGGAGES
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_MEALS
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_PASSENGER
@@ -82,6 +83,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     var isDomestic: Boolean = false
     var returnId: String? = null
     var autofillName: String = ""
+    var isMandatoryIdentificationNumber: Boolean = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -108,6 +110,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             luggageModels = it.getParcelableArrayList(EXTRA_LUGGAGES) ?: arrayListOf()
             mealModels = it.getParcelableArrayList(EXTRA_MEALS) ?: arrayListOf()
             isAirAsiaAirlines = it.getBoolean(EXTRA_IS_AIRASIA)
+            isMandatoryIdentificationNumber = it.getBoolean(EXTRA_IS_IDENTIFICATION_NUMBER)
             depatureDate = it.getString(EXTRA_DEPARTURE_DATE, "")
             requestId = it.getString(EXTRA_REQUEST_ID, "")
             isDomestic = it.getBoolean(EXTRA_IS_DOMESTIC)
@@ -234,6 +237,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             passengerModel.passengerTitleId = getPassengerTitleId(getPassengerTitle())
             passengerModel.passengerFirstName = getFirstName()
             passengerModel.passengerLastName = getLastName()
+            if(isMandatoryIdentificationNumber && isDomestic) passengerModel.identificationNumber = getIdentificationNumber()
             if (isMandatoryDoB() || !isDomestic) passengerModel.passengerBirthdate = DateUtil
                     .formatDate(DateUtil.DEFAULT_VIEW_FORMAT, DateUtil.YYYY_MM_DD, getPassengerBirthDate())
             if (!isDomestic) {
@@ -286,6 +290,8 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
     private fun getPassportNumber(): String = binding?.tilPassportNo?.textFieldInput?.text.toString().trim()
 
+    private fun getIdentificationNumber(): String = binding?.tilIdentificationNumber?.textFieldInput?.text.toString().trim()
+
     private fun renderPassengerData() {
         if (passengerModel.passengerFirstName.isNotEmpty()) {
             binding?.etFirstName?.setText(passengerModel.passengerFirstName)
@@ -313,6 +319,9 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             val entries = resources.getStringArray(R.array.flight_child_infant_titles)
             binding?.rvPassengerTitle?.setItem(ArrayList(Arrays.asList(*entries)),
                     initialSelectedItemPos = if (passengerModel.passengerTitle != null) getPassengerTitleId(passengerModel.passengerTitle) - 1 else null)
+        }
+        if(isDomestic && isMandatoryIdentificationNumber && passengerModel.identificationNumber.isNotEmpty()){
+            binding?.tilIdentificationNumber?.textFieldInput?.setText(passengerModel.identificationNumber)
         }
     }
 
@@ -540,6 +549,12 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                 renderPassengerMeals(mealModels, passengerModel.flightBookingMealMetaViewModels)
             }
         }
+
+        if(isDomestic && isMandatoryIdentificationNumber){
+            binding?.tilIdentificationNumber?.show()
+        }else{
+            binding?.tilIdentificationNumber?.hide()
+        }
     }
 
     private fun onBirthdateClicked() {
@@ -605,11 +620,37 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         datePicker.show()
     }
 
+    private fun validateIdenNumber(): Boolean =
+        when {
+            flightPassengerInfoValidator.validateNameIsEmpty(getIdentificationNumber()) && (isMandatoryIdentificationNumber && isDomestic) -> {
+                binding?.tilIdentificationNumber?.setMessage(getString(R.string.flight_booking_passenger_identification_number_empty))
+                binding?.tilIdentificationNumber?.setError(true)
+                false
+            }
+            /* max / min length */
+            flightPassengerInfoValidator.validateIdenNumLength(getIdentificationNumber()) && (isMandatoryIdentificationNumber && isDomestic) -> {
+                binding?.tilIdentificationNumber?.setMessage(getString(R.string.flight_booking_passenger_identification_number_min_length))
+                binding?.tilIdentificationNumber?.setError(true)
+                false
+            }
+            flightPassengerInfoValidator.isNumberOnly(getIdentificationNumber()) && (isMandatoryIdentificationNumber && isDomestic) -> {
+                binding?.tilIdentificationNumber?.setMessage(getString(R.string.flight_booking_passenger_identification_number_only))
+                binding?.tilIdentificationNumber?.setError(true)
+                false
+            }
+            else ->{
+                binding?.tilIdentificationNumber?.setError(false)
+                true
+            }
+        }
+
+
     private fun clearAllFields() {
         binding?.etFirstName?.setText("")
         binding?.tilLastName?.textFieldInput?.setText("")
         renderPassengerTitle("")
         binding?.tilBirthDate?.textFieldInput?.setText("")
+        binding?.tilIdentificationNumber?.textFieldInput?.setText("")
         binding?.tilPassportNo?.textFieldInput?.setText("")
         binding?.tilPassportIssuerCountry?.textFieldInput?.setText("")
         binding?.tilPassportExpirationDate?.textFieldInput?.setText("")
@@ -723,6 +764,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         if (!validatePassportExpiredDate(isNeedPassport)) isValid = false
         if (!validatePassportNationality(isNeedPassport)) isValid = false
         if (!validatePassportIssuerCountry(isNeedPassport)) isValid = false
+        if (!validateIdenNumber()) isValid = false
 
         return isValid
     }
@@ -901,7 +943,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             }
 
     private fun resetEditTextErrorText() {
-        binding?.etFirstName?.error = ""
+        binding?.etFirstName?.error = null
 
         binding?.tilLastName?.setMessage("")
         binding?.tilLastName?.setError(false)
@@ -921,6 +963,9 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         binding?.tilPassportIssuerCountry?.setMessage("")
         binding?.tilPassportIssuerCountry?.setError(false)
 
+        binding?.tilIdentificationNumber?.setMessage("")
+        binding?.tilIdentificationNumber?.setError(false)
+
         when {
             isAdultPassenger() -> {
                 if (isMandatoryDoB() || !isDomestic) binding?.tilBirthDate?.setMessage(getString(R.string.flight_booking_passenger_birthdate_adult_helper_text))
@@ -935,6 +980,9 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
         binding?.tilPassportExpirationDate?.setMessage(getString(R.string.flight_booking_passenger_passport_expiry_helper_text))
         binding?.tilPassportExpirationDate?.setError(false)
+
+        binding?.tilIdentificationNumber?.setMessage(getString(R.string.flight_booking_passenger_identification_number_message))
+        binding?.tilIdentificationNumber?.setError(false)
     }
 
     private fun showMessageErrorInSnackBar(resId: Int) {
@@ -1011,6 +1059,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                         luggageModels: List<FlightBookingAmenityMetaModel>,
                         mealModels: List<FlightBookingAmenityMetaModel>,
                         isAirAsiaAirlines: Boolean,
+                        isMandatoryIdentificationNumber: Boolean,
                         depatureDate: String,
                         requestId: String,
                         isDomestic: Boolean,
@@ -1022,6 +1071,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             bundle.putString(EXTRA_RETURN, returnId)
             bundle.putString(EXTRA_DEPARTURE_DATE, depatureDate)
             bundle.putBoolean(EXTRA_IS_AIRASIA, isAirAsiaAirlines)
+            bundle.putBoolean(EXTRA_IS_IDENTIFICATION_NUMBER, isMandatoryIdentificationNumber)
             bundle.putParcelable(EXTRA_PASSENGER, passengerModel)
             bundle.putParcelableArrayList(EXTRA_LUGGAGES, luggageModels as ArrayList<out Parcelable>)
             bundle.putParcelableArrayList(EXTRA_MEALS, mealModels as ArrayList<out Parcelable>)

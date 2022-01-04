@@ -1,6 +1,10 @@
 package com.tokopedia.product.info.widget
 
-import android.animation.*
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.view.View
 import android.view.ViewGroup
 

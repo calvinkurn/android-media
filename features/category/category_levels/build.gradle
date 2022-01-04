@@ -70,8 +70,10 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.junit
+    testImplementation projectOrAar(rootProject.ext.features.productCard)
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation projectOrAar(rootProject.ext.features.productCard)
 }
 
 project.ext {

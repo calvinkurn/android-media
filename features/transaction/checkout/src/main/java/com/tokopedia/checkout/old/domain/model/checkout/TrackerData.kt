@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.old.domain.model.checkout
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class TrackerData(

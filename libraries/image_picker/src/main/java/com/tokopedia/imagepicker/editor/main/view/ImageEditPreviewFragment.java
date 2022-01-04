@@ -76,6 +76,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     private ImageEditPreviewPresenter imageEditPreviewPresenter;
     private int imageIndex;
     private int[] widthHeight;
+    private Bitmap[] listOutputWatermark;
 
     private UserSessionInterface userSession;
 
@@ -272,10 +273,13 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         cancelWatermark();
 
         Bitmap bitmap = gestureCropImageView.getViewBitmap();
+        String userInfo;
 
-        String userInfo = userSession.hasShop() ?
-                userSession.getShopName() :
-                userSession.getName();
+        try {
+            userInfo = userSession.hasShop() ? userSession.getShopName() : userSession.getName();
+        } catch (Exception e) {
+            userInfo = "";
+        }
 
         imageEditPreviewPresenter.setTokopediaWatermark(userInfo, bitmap);
     }
@@ -397,6 +401,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
     @Override
     public void onSuccessGetWatermarkImage(Bitmap[] bitmap) {
+        listOutputWatermark = bitmap;
         gestureCropImageView.setImageBitmap(bitmap[0]);
         onImageEditPreviewFragmentListener.itemSelectionWidgetPreview(bitmap);
     }
@@ -563,6 +568,11 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     }
 
     public void cancelWatermark() {
+        if (listOutputWatermark != null) {
+            for(Bitmap bitmap: listOutputWatermark) {
+                bitmap.recycle();
+            }
+        }
         if (lastStateImage == null) return;
         gestureCropImageView.setImageBitmap(lastStateImage);
     }

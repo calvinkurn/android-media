@@ -1,17 +1,19 @@
 package com.tokopedia.topchat.stub.chatroom.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.GetChatRoomSettingUseCase
-import com.tokopedia.topchat.stub.common.GraphqlUseCaseStub
+import com.tokopedia.topchat.stub.common.GraphqlRepositoryStub
+import javax.inject.Inject
 
-class GetChatRoomSettingUseCaseStub(
-        private val gqlUseCase: GraphqlUseCaseStub<RoomSettingResponse>
-) : GetChatRoomSettingUseCase(gqlUseCase) {
+class GetChatRoomSettingUseCaseStub @Inject constructor(
+    private val repository: GraphqlRepositoryStub,
+    dispatcher: CoroutineDispatchers
+): GetChatRoomSettingUseCase(repository, dispatcher) {
 
-    var response = RoomSettingResponse()
+    var response: RoomSettingResponse = RoomSettingResponse()
         set(value) {
-            gqlUseCase.response = value
+            repository.createMapResult(response::class.java, value)
             field = value
         }
-
 }
