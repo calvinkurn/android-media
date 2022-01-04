@@ -37,7 +37,8 @@ class PlayShareExperienceImpl @Inject constructor(
     }
 
     fun generateShareString(url: String): String {
-        return "${data.textDescription}\n$url"
+        return if(data.textDescription.contains("${'$'}{url}")) data.textDescription.replace("${'$'}{url}", url)
+                else "${data.textDescription}\n$url"
     }
 
     private fun generateDeepLinkPath(): String = "play/${data.id}"
