@@ -571,7 +571,8 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         startDateTextField?.textFieldInput?.apply {
             inputType = InputType.TYPE_NULL
             keyListener = null
-            isFocusable = false
+            isClickable = false
+            requestFocus()
         }
     }
 
@@ -579,7 +580,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         endDateTextField?.textFieldInput?.apply {
             inputType = InputType.TYPE_NULL
             keyListener = null
-            isFocusable = false
+            isClickable = false
         }
     }
 
@@ -674,6 +675,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 OperationalHoursUtil.toIndonesianDateFormat(date, isRequireSimpleFormat = true, isShowYear = false)
         ))
         endDateTextField?.textFieldInput?.text?.clear()
+        endDateTextField?.textFieldInput?.requestFocus()
     }
 
     private fun onSelectedHolidayEndDate(date: Date) {
@@ -683,6 +685,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 OperationalHoursUtil.toSimpleIndonesianDayFormat(date),
                 OperationalHoursUtil.toIndonesianDateFormat(date, isRequireSimpleFormat = true, isShowYear = false)
         ))
+        endDateTextField?.textFieldInput?.clearFocus()
     }
 
     private fun resetSelectedDates(isActionEdit: Boolean) {
