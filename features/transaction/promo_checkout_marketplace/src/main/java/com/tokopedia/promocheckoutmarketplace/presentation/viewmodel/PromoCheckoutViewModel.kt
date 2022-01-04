@@ -182,7 +182,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             promoListUiModel.value?.forEach { visitable ->
                 if (visitable is PromoListItemUiModel) {
                     // Goes here if coupon state is expanded
-                    setGetPromoRequestDataFromSelectedPromoItem(visitable, order, promoRequest)
+                    setPromoRequestDataFromSelectedPromoItem(visitable, order, promoRequest)
                 }
             }
         }
@@ -190,7 +190,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         removeDuplicateAttemptedPromoRequestData(promoRequest, promoCode)
     }
 
-    private fun setGetPromoRequestDataFromSelectedPromoItem(it: PromoListItemUiModel, order: Order, promoRequest: PromoRequest) {
+    private fun setPromoRequestDataFromSelectedPromoItem(it: PromoListItemUiModel, order: Order, promoRequest: PromoRequest) {
         if (it.uiState.isSelected) {
             // If coupon is selected, add to request param
             // If unique_id = 0, means it's a coupon global, else it's a coupon merchant
@@ -1053,8 +1053,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             // Update view
             _tmpUiModel.value = Update(promoItem)
 
-            // Perform clash calculation
-            calculateClash(promoItem)
+            // Send tracker
             if (promoItem.uiState.isSelected) {
                 analytics.eventClickSelectKupon(getPageSource(), promoItem.uiData.promoCode, promoItem.uiState.isCausingOtherPromoClash)
                 if (promoItem.uiState.isAttempted) {
@@ -1067,49 +1066,56 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 }
             }
 
-            // Update header sub total
-            var header: PromoListHeaderUiModel? = null
-            promoListUiModel.value?.forEach {
-                if (it is PromoListHeaderUiModel && it.uiState.isEnabled && it.uiData.identifierId == promoItem.uiData.parentIdentifierId) {
-                    header = it
-                    return@forEach
-                }
+            // Update header sub total and sibling check uncheck state
+            updateHeaderAndSiblingState(promoItem, element)
+
+            // Perform clash calculation
+            calculateClash(promoItem)
+
+            // Calculate total benefit
+            calculateAndRenderTotalBenefit()
+        }
+    }
+
+    private fun updateHeaderAndSiblingState(promoItem: PromoListItemUiModel, element: PromoListItemUiModel) {
+        var header: PromoListHeaderUiModel? = null
+        promoListUiModel.value?.forEach {
+            if (it is PromoListHeaderUiModel && it.uiState.isEnabled && it.uiData.identifierId == promoItem.uiData.parentIdentifierId) {
+                header = it
+                return@forEach
             }
+        }
 
-            header?.let {
-                val hasSelectPromo = isPromoScopeHasAnySelectedPromoItem(it.uiData.identifierId)
-                it.uiState.hasSelectedPromoItem = hasSelectPromo
+        header?.let {
+            val hasSelectPromo = isPromoScopeHasAnySelectedPromoItem(it.uiData.identifierId)
+            it.uiState.hasSelectedPromoItem = hasSelectPromo
 
-                val headerIndex = promoListUiModel.value?.indexOf(it) ?: 0
-                _tmpUiModel.value = Update(it)
+            val headerIndex = promoListUiModel.value?.indexOf(it) ?: 0
+            _tmpUiModel.value = Update(it)
 
-                if (headerIndex != -1) {
-                    // Un check other item on current header if previously selected
-                    val promoListSize = promoListUiModel.value?.size ?: 0
-                    for (index in headerIndex + 1 until promoListSize) {
-                        if (promoListUiModel.value?.get(index) !is PromoListItemUiModel) {
-                            break
-                        } else {
-                            val tmpPromoItem = promoListUiModel.value?.get(index) as PromoListItemUiModel
-                            if (tmpPromoItem.uiData.promoCode != element.uiData.promoCode && tmpPromoItem.uiState.isSelected) {
-                                tmpPromoItem.uiState.isSelected = false
-                                if (tmpPromoItem.uiState.isRecommended) {
-                                    resetRecommendedPromo()
-                                }
-                                _tmpUiModel.value = Update(tmpPromoItem)
-                                // Calculate clash after uncheck
-                                // Clash result is ignoned
-                                calculateClash(tmpPromoItem)
-                                break
+            if (headerIndex != -1) {
+                // Un check other item on current header if previously selected
+                val promoListSize = promoListUiModel.value?.size ?: 0
+                for (index in headerIndex + 1 until promoListSize) {
+                    if (promoListUiModel.value?.get(index) !is PromoListItemUiModel) {
+                        break
+                    } else {
+                        val tmpPromoItem = promoListUiModel.value?.get(index) as PromoListItemUiModel
+                        if (tmpPromoItem.uiData.promoCode != element.uiData.promoCode && tmpPromoItem.uiState.isSelected) {
+                            tmpPromoItem.uiState.isSelected = false
+                            if (tmpPromoItem.uiState.isRecommended) {
+                                resetRecommendedPromo()
                             }
+                            _tmpUiModel.value = Update(tmpPromoItem)
+                            // Calculate clash after uncheck
+                            calculateClash(tmpPromoItem)
+                            break
                         }
                     }
-
-                    updateResetButtonState()
                 }
-            }
 
-            calculateAndRenderTotalBenefit()
+                updateResetButtonState()
+            }
         }
     }
 
@@ -1290,7 +1296,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             // Calculate clash on selection event
             promoListUiModel.value?.forEach {
                 if (it is PromoListItemUiModel && it.uiData.promoCode != selectedItem.uiData.promoCode) {
-                    // Calculate clash on expanded promo item
                     if (it.uiData.clashingInfos.isNotEmpty()) {
                         val tmpClashResult = checkAndSetClashOnSelectionEvent(it, selectedItem)
                         if (!clashResult) clashResult = tmpClashResult
@@ -1302,7 +1307,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             // Calculate clash on un selection event
             promoListUiModel.value?.forEach {
                 if (it is PromoListItemUiModel && it.uiData.promoCode != selectedItem.uiData.promoCode) {
-                    // Calculate clash on expanded promo item
                     if (it.uiData.clashingInfos.isNotEmpty()) {
                         checkAndSetClashOnUnSelectionEvent(it, selectedItem)
                         _tmpUiModel.value = Update(it)
