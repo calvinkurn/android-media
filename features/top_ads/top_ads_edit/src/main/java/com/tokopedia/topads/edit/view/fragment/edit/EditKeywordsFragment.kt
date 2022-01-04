@@ -434,6 +434,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private fun onSuccessRecommended(keywords: List<KeywordData>) {
         receivedRecom = true
+        recommendedKeywords?.clear()
         keywords.forEach {
             recommendedKeywords?.addAll(0, it.keywordData)
         }
