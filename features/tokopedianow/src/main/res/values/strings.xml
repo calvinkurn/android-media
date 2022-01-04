@@ -100,4 +100,11 @@
     <string name="tokopedianow_text_apply">Terapkan</string>
     <string name="tokopedianow_text_reset">Reset</string>
     <string name="tokopedianow_back_to_tokopedia">Kembali ke Tokopedia</string>
+
+    <string name="tokopedianow_15m_switcher_title">Butuh produk tiba lebih cepat?</string>
+    <string name="tokopedianow_15m_switcher_subtitle">Ke Tokopedia NOW! 15 menit tiba</string>
+    <string name="tokopedianow_2h_switcher_title">Butuh produk lebih lengkap?</string>
+    <string name="tokopedianow_2h_switcher_subtitle">Tokopedia NOW! 2 jam tiba</string>
+    <string name="tokopedianow_15m_coachmark_title">Baru! Pesanan bisa tiba ke lokasimu dalam 15 menit  🚀</string>
+    <string name="tokopedianow_15m_coachmark_description">Lebih cepat, tetap gratis ongkir!</string>
 </resources>
