@@ -449,7 +449,7 @@ object SearchTracking {
                 SearchEventTracking.MOENGAGE.IS_RESULT_FOUND, hasProductList
         )
         if (category != null) {
-            value[SearchEventTracking.MOENGAGE.CATEGORY_ID_MAPPING] = JSONArray(Arrays.asList<Any?>(*category.keys.toTypedArray()))
+            value[SearchEventTracking.MOENGAGE.CATEGORY_ID_MAPPING] = JSONArray(category.keys)
             value[SearchEventTracking.MOENGAGE.CATEGORY_NAME_MAPPING] = JSONArray(category.values)
         }
         TrackApp.getInstance().moEngage.sendTrackEvent(value, SearchEventTracking.EventMoEngage.SEARCH_ATTEMPT)
