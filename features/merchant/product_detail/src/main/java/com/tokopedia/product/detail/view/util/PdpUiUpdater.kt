@@ -44,8 +44,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         get() = mapOfData[ProductDetailConstant.MINI_SOCIAL_PROOF] as? ProductMiniSocialProofDataModel
 
 
-    private val payLaterWidgetMap: PayLaterWidgetDataModel?
-        get() = mapOfData[ProductDetailConstant.PAYLATER_WIDGET] as? PayLaterWidgetDataModel
 
     private val miniSocialProofStockMap: ProductMiniSocialProofStockDataModel?
         get() = mapOfData[ProductDetailConstant.MINI_SOCIAL_PROOF_STOCK] as? ProductMiniSocialProofStockDataModel

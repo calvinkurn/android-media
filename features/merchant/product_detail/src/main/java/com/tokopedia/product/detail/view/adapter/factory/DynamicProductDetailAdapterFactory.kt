@@ -34,6 +34,5 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: TopadsHeadlineUiModel): Int
     fun type(data: ProductBundlingDataModel): Int
     fun type(data: ContentWidgetDataModel): Int
-    fun type(data: PayLaterWidgetDataModel): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

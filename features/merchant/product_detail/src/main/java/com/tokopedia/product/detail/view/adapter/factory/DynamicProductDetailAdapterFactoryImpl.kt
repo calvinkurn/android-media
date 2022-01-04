@@ -134,13 +134,11 @@ class DynamicProductDetailAdapterFactoryImpl(
         return ContentWidgetViewHolder.LAYOUT
     }
 
-    override fun type(data: PayLaterWidgetDataModel): Int {
-        return PayLaterWidgetViewHolder.LAYOUT
-    }
+
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            PayLaterWidgetViewHolder.LAYOUT -> PayLaterWidgetViewHolder(view, listener)
+
             ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(
                 view,
                 listener
