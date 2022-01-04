@@ -46,7 +46,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@color/bg_button_green_border_outline"
+            tools:src="@color/Unify_G500"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -95,7 +95,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/dgu_media_image"
-            tools:src="@color/bg_button_border_outline" />
+            tools:src="@color/Unify_NN600" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/dgu_campaign_label"
