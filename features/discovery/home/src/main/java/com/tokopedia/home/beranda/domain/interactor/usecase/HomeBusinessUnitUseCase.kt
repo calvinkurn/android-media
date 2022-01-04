@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.domain.interactor.usecase
 
+import android.content.res.Resources
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeBusinessUnitDataRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeBusinessUnitTabRepository
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
@@ -21,7 +22,7 @@ class HomeBusinessUnitUseCase @Inject constructor(
                     backColor = data.widgetHeader.backColor,
                     contentsList = data.tabBusinessList.withIndex().map { BusinessUnitDataModel(tabName = it.value.name, tabPosition = it.index) })
             }
-            throw Exception()
+            throw Resources.NotFoundException()
         } catch (e: Exception) {
             throw e
         }
