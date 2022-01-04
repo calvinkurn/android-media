@@ -16,7 +16,6 @@ import com.tokopedia.home.beranda.domain.model.recharge_recommendation.DeclineRe
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
@@ -38,7 +37,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flow
 import java.util.concurrent.TimeoutException
 
 /**
@@ -156,12 +154,6 @@ fun HomeBusinessUnitUseCase.givenGetBusinessWidgetTabUseCaseReturn(
     coEvery { getBusinessUnitTab(newBusinessUnitWidgetDataModel) } returns newBusinessUnitWidgetDataModel
 }
 
-fun HomeBusinessUnitUseCase.givenGetBusinessWidgetTabUseCaseThrowReturn(
-    newBusinessUnitWidgetDataModel: NewBusinessUnitWidgetDataModel
-) {
-    coEvery { getBusinessUnitTab(newBusinessUnitWidgetDataModel) } throws TimeoutException()
-}
-
 fun GetDynamicChannelsUseCase.givenGetDynamicChannelsUseCaseThrowReturn() {
     coEvery { executeOnBackground() } throws TimeoutException()
 }
@@ -175,9 +167,6 @@ fun HomeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(
     tabName: String
 ) {
     coEvery { getBusinessUnitData(0, positionTab, tabName, homeDataModel, buModel, positionBuModelIndex) } returns resultBuModel
-}
-fun HomeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseThrowReturn(){
-//    coEvery{ getBusinessUnitData(0, 0, "") } throws Exception()
 }
 
 fun HomeRechargeRecommendationRepository.givenGetRechargeRecommendationUseCase(rechargeRecommendation: RechargeRecommendation){
