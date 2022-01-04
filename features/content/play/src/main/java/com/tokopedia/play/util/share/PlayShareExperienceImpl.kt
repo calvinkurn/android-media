@@ -47,7 +47,7 @@ class PlayShareExperienceImpl @Inject constructor(
         val linkerData = LinkerData().apply {
             id = data.id
             name = data.title
-            description = data.textDescription
+            description = data.title
             textContent = data.textDescription
             imgUri = data.coverUrl
             deepLink = generateDeepLinkPath()
