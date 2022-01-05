@@ -31,8 +31,10 @@ import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.model.RechargePerso
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
@@ -153,6 +155,35 @@ fun HomeDynamicChannelUseCase.givenGetHomeDataReturn(homeDynamicChannelModel: Ho
     }
 }
 
+fun HomeRechargeRecommendationUseCase.givenOnDeclineRechargeRecommendationSuccess() {
+    coEvery { onDeclineRechargeRecommendation(any()) } answers { }
+}
+
+fun HomeSalamRecommendationUseCase.givenOnDeclineSalamRecommendationSuccess() {
+    coEvery { onDeclineSalamRecommendation(any()) } answers { }
+}
+
+fun HomeRechargeRecommendationUseCase.givenOnDeclineRechargeRecommendationError() {
+    coEvery { onDeclineRechargeRecommendation(any()) } throws Exception()
+}
+
+fun HomeSalamRecommendationUseCase.givenOnDeclineSalamRecommendationError() {
+    coEvery { onDeclineSalamRecommendation(any()) } throws Exception()
+}
+
+
+fun HomeRecommendationUseCase.givenOnHomeBestSellerFilterClickReturn(bestSellerDataModel: BestSellerDataModel = BestSellerDataModel()) {
+    coEvery { onHomeBestSellerFilterClick(any(), any(), any()) } returns bestSellerDataModel
+}
+
+fun HomeRechargeBuWidgetUseCase.givenOnGetRechargeBuWidgetFromHolderReturn(rechargeBUWidgetDataModel: RechargeBUWidgetDataModel) {
+    coEvery { onGetRechargeBuWidgetFromHolder(any(), any()) } returns rechargeBUWidgetDataModel
+}
+
+fun HomeRechargeBuWidgetUseCase.givenOnGetRechargeBuWidgetFromHolderError() {
+    coEvery { onGetRechargeBuWidgetFromHolder(any(), any()) } throws Exception()
+}
+
 fun HomeDynamicChannelUseCase.givenUpdateHeaderData(homeHeaderDataModel: HomeHeaderDataModel) {
     coEvery { updateHeaderData(any(), any()) } returns homeHeaderDataModel
 }
@@ -263,14 +294,16 @@ fun areEqualKeyValues(first: Map<String, Any>, second: Map<String,Any>): Boolean
     return true
 }
 
-inline fun <reified T> HomeDynamicChannelModel.findWidget(predicate: (T?) -> Boolean = {true}, actionOnFound: (T, Int) -> Unit) {
+inline fun <reified T> HomeDynamicChannelModel.findWidget(predicate: (T?) -> Boolean = {true}, actionOnFound: (T, Int) -> Unit, actionOnNotFound: () -> Unit) {
     this.list.withIndex().find { it.value is T && predicate.invoke(it.value as? T) }.let {
         it?.let {
             if (it.value is T) {
                 actionOnFound.invoke(it.value as T, it. index)
+                return
             }
         }
     }
+    actionOnNotFound.invoke()
 }
 
 inline fun <reified T> HomeDynamicChannelModel.findWidgetList(actionOnFound: (List<T>) -> Unit) {

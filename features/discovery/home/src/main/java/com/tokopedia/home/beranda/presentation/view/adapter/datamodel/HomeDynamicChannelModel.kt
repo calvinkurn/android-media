@@ -21,7 +21,8 @@ data class HomeDynamicChannelModel(
         val isProcessingAtf: Boolean = true,
         val isProcessingDynamicChannle: Boolean = false,
         var homeChooseAddressData: HomeChooseAddressData = HomeChooseAddressData(),
-        var homeBalanceModel: HomeBalanceModel = HomeBalanceModel()
+        var homeBalanceModel: HomeBalanceModel = HomeBalanceModel(),
+        var topadsNextPageToken: String = ""
 ) {
     private var _list: MutableList<Visitable<*>> = list.toMutableList()
 

@@ -86,20 +86,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     private val jobList = mutableListOf<Deferred<AtfData>>()
 
-    fun removeChooseAddressData(homeDataModel: HomeDynamicChannelModel, onSuccess:(HomeDynamicChannelModel) -> Unit) {
-        val homeHeaderOvoDataModel = homeDataModel.list.withIndex().find {
-            it.value is HomeHeaderDataModel
-        }
-        (homeHeaderOvoDataModel?.value as? HomeHeaderDataModel)?.needToShowChooseAddress = false
-        homeDataModel.updateWidgetModel(
-                visitableToChange = homeHeaderOvoDataModel?.value,
-                visitable = homeHeaderOvoDataModel?.value,
-                position = homeHeaderOvoDataModel?.index?:-1
-        ) {
-            onSuccess.invoke(homeDataModel)
-        }
-    }
-
     fun updateHeaderData(homeHeaderDataModel: HomeHeaderDataModel, homeDataModel: HomeDynamicChannelModel): Visitable<*>? {
         val homeHeaderOvoDataModel = (homeDataModel.list.find { visitable-> visitable is HomeHeaderDataModel } as HomeHeaderDataModel?)
         homeHeaderOvoDataModel?.let {
@@ -240,6 +226,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         HomeTopAdsBannerDataModel,
                         ArrayList<TopAdsImageViewModel>>(widgetRepository = homeTopadsImageRepository) { visitableFound, data, position ->
                     val newTopAdsModel = visitableFound.copy(topAdsImageViewModel = data[0])
+                    dynamicChannelPlainResponse.topadsNextPageToken = newTopAdsModel.topAdsImageViewModel?.nextPageToken?:""
                     newTopAdsModel
                 }
 

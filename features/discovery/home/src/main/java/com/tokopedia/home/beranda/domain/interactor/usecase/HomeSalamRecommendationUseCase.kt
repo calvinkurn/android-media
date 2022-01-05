@@ -5,7 +5,7 @@ import javax.inject.Inject
 
 class HomeSalamRecommendationUseCase @Inject constructor(
         private val homeDeclineSalamWIdgetRepository: HomeDeclineSalamWIdgetRepository) {
-    suspend fun onDeclineRechargeRecommendation(requestParams: Map<String, Int>) {
+    suspend fun onDeclineSalamRecommendation(requestParams: Map<String, Int>) {
         homeDeclineSalamWIdgetRepository.setParams(requestParams)
         homeDeclineSalamWIdgetRepository.executeOnBackground()
     }
