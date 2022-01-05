@@ -165,6 +165,7 @@ class ProductEmptySearchViewHolder(
         productSelectedFilterAdapter?.setOptionList(selectedFilterOptionList)
     }
 
+    @Suppress("UnusedPrivateMember")
     private fun loadBannerAds(topAdsParams: TopAdsParams) {
         var isProcessSkipped = false
 
