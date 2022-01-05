@@ -5,6 +5,7 @@
     app:cardBackgroundColor="@color/Neutral_N50"
     app:cardElevation="@dimen/unify_space_0"
     app:cardCornerRadius="@dimen/spacing_lvl3"
+    android:layout_marginRight="@dimen/spacing_lvl4"
     android:layout_width="@dimen/widget_recommendation_card_width"
     android:layout_height="@dimen/widget_recommendation_big_card_height">
 
@@ -34,6 +35,7 @@
             app:layout_constraintLeft_toRightOf="@+id/img_recharge_recommendation_card_big"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginLeft="@dimen/unify_space_12"
             tools:text="Token Listrik 100 ribu"
             app:typographyType="body_2"
             android:textColor="@color/Unify_N700_96"
@@ -48,9 +50,9 @@
             app:layout_constraintTop_toBottomOf="@+id/tg_title_recharge_recommendation_card_big"
             app:layout_constraintLeft_toRightOf="@+id/img_recharge_recommendation_card_big"
             android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginLeft="@dimen/unify_space_12"
             tools:text="3 GB"
             app:typographyType="heading_2"
-            app:typographyWeight="bold"
             android:textColor="@color/Unify_N700_96"
             />
 
@@ -89,6 +91,7 @@
             app:layout_constraintLeft_toRightOf="@+id/img_recharge_recommendation_card_big"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginLeft="@dimen/unify_space_12"
             tools:text="Rp100.000"
             app:typographyType="body_3"
             app:typographyWeight="bold"

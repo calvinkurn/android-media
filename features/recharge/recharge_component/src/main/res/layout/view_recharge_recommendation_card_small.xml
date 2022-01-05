@@ -5,6 +5,7 @@
     app:cardBackgroundColor="@color/Neutral_N50"
     app:cardElevation="@dimen/unify_space_0"
     app:cardCornerRadius="@dimen/spacing_lvl3"
+    android:layout_marginRight="@dimen/spacing_lvl4"
     android:layout_width="@dimen/widget_recommendation_card_width"
     android:layout_height="@dimen/widget_recommendation_small_card_height">
 
@@ -21,7 +22,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginLeft="@dimen/unify_space_12"
-            android:layout_marginRight="@dimen/spacing_lvl4"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -34,6 +34,7 @@
             app:layout_constraintLeft_toRightOf="@+id/img_recharge_recommendation_card_small"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
             tools:text="Token Listrik 100 ribu"
             app:typographyType="body_2"
             android:textColor="@color/Unify_N700_96"
@@ -49,6 +50,7 @@
             app:layout_constraintLeft_toRightOf="@+id/img_recharge_recommendation_card_small"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginLeft="@dimen/unify_space_12"
             tools:text="Rp100.000"
             app:typographyType="body_3"
             app:typographyWeight="bold"

@@ -55,28 +55,64 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
                         RouteManager.route(it, applinkUrl)
                     }
                 }
-            },
-                "Paling sering kamu beli",
-                listOf(
-                    RecommendationCardWidgetModel(
-                        RecommendationCardEnum.SMALL,
-                        "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png",
-                        "Token Listrik 100ribu",
-                        "Rp101.500"
-                    ),
-                    RecommendationCardWidgetModel(
-                        RecommendationCardEnum.SMALL,
-                        "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png",
-                        "Token Listrik 20 ribu",
-                        "Rp20.500"
-                    ),
-                    RecommendationCardWidgetModel(
-                        RecommendationCardEnum.SMALL,
-                        "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png",
-                        "Token Listrik 30 ribu",
-                        "Rp30.500"
-                    )
-                )
+            }, "", listOf()
+                //use data dummy,
+//                "Paling sering kamu beli",
+//                listOf(
+//                    RecommendationCardWidgetModel(
+//                        RecommendationCardEnum.SMALL,
+//                        "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png",
+//                        "Token Listrik 100ribu",
+//                        "Rp101.500",
+//                        "tokopedia://deals"
+//                    ),
+//                    RecommendationCardWidgetModel(
+//                        RecommendationCardEnum.SMALL,
+//                        "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png",
+//                        "Token Listrik 20 ribu",
+//                        "Rp20.500",
+//                        "tokopedia://deals"
+//                    ),
+//                    RecommendationCardWidgetModel(
+//                        RecommendationCardEnum.SMALL,
+//                        "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png",
+//                        "Token Listrik 30 ribu",
+//                        "Rp30.500",
+//                        "tokopedia://deals"
+//                    )
+//                )
+//                listOf(
+//                    RecommendationCardWidgetModel(
+//                        RecommendationCardEnum.BIG,
+//                        "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png",
+//                        "Token Listrik 100ribu",
+//                        "Rp101.500",
+//                        "tokopedia://deals",
+//                        "30 GB",
+//                        "30 Days"
+//                    ),
+//
+//                    RecommendationCardWidgetModel(
+//                        RecommendationCardEnum.BIG,
+//                        "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png",
+//                        "Token Listrik 100ribu",
+//                        "Rp201.500",
+//                        "tokopedia://deals",
+//                        "3 GB",
+//                        "20 Days"
+//                    ),
+//
+//                    RecommendationCardWidgetModel(
+//                        RecommendationCardEnum.BIG,
+//                        "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png",
+//                        "Token Listrik 100ribu",
+//                        "Rp1.500",
+//                        "tokopedia://deals",
+//                        "3 - 5 GB",
+//                        "10 Days"
+//                    ),
+//
+//                )
             )
         }
     }
