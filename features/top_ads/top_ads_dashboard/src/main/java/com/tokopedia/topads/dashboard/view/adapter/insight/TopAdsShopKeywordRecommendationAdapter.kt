@@ -65,35 +65,38 @@ class TopAdsShopKeywordRecommendationAdapter(
         if (item.isChecked) selectedItemsCount++ else selectedItemsCount--
         lstnr.invoke(selectedItemsCount)
         if (isError) error.invoke(list[index])
+        notifyItemChanged(index)
     }
 
     fun getSelectedKeywords(): MutableMap<Pair<Int, String>, MutableList<TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation>>? {
         val groupMap =
             mutableMapOf<Pair<Int, String>, MutableList<TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation>>()
+        var isError = false
         list.forEachIndexed { index, it ->
             if (it.isChecked) {
                 if (it.isError) {
+                    isError = true
                     onCheckBoxClicked(it, index, true)
-                    return null
-                }
-
-                val keyword = TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation(
-                    action = ACTION_CREATE,
-                    TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation.Keyword(
-                        type = "positive_phrase",
-                        status = "active",
-                        tag = it.keywordTag,
-                        priceBid = it.priceBid.toLong()
-                    )
-                )
-                val pair = it.groupID to it.groupName
-                if (groupMap.containsKey(pair)) {
-                    groupMap[pair]!!.add(keyword)
                 } else {
-                    groupMap[pair] = mutableListOf(keyword)
+                    val keyword = TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation(
+                        action = ACTION_CREATE,
+                        TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation.Keyword(
+                            type = "positive_phrase",
+                            status = "active",
+                            tag = it.keywordTag,
+                            priceBid = it.priceBid.toLong()
+                        )
+                    )
+                    val pair = it.groupID to it.groupName
+                    if (groupMap.containsKey(pair)) {
+                        groupMap[pair]!!.add(keyword)
+                    } else {
+                        groupMap[pair] = mutableListOf(keyword)
+                    }
                 }
             }
         }
+        if (isError) return null
         return groupMap
     }
 
