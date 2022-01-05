@@ -975,7 +975,7 @@ object SearchTracking {
     fun trackEventImpressionInspirationCarouselUnification(
         trackingQueue: TrackingQueue,
         eventLabel: String,
-        products: List<Any>,
+        products: ArrayList<Any>,
     ) {
         val impressionDataLayer = DataLayer.mapOf(
             SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
@@ -984,7 +984,7 @@ object SearchTracking {
             SearchTrackingConstant.EVENT_LABEL, eventLabel,
             ECOMMERCE, DataLayer.mapOf(
                 "currencyCode", "IDR",
-                "impressions", DataLayer.listOf(*products.toTypedArray())
+                "impressions", products
             )
         ) as HashMap<String, Any>
 
@@ -995,7 +995,7 @@ object SearchTracking {
         eventLabel: String,
         type: String,
         componentId: String,
-        products: List<Any>,
+        products: ArrayList<Any>,
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(
@@ -1008,7 +1008,7 @@ object SearchTracking {
                         "actionField", DataLayer.mapOf(
                             "list", getInspirationCarouselUnificationListName(type, componentId)
                         ),
-                        "products", DataLayer.listOf(*products.toTypedArray())
+                        "products", products
                     )
                 )
             )

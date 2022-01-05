@@ -43,7 +43,7 @@ class InspirationCarouselTrackingUnification @Inject constructor() {
             SearchTracking.trackEventImpressionInspirationCarouselUnification(
                 trackingQueue,
                 data.eventLabel,
-                listOf(data.productDataLayer)
+                arrayListOf(data.productDataLayer)
             )
         else
             fallback()
@@ -55,7 +55,7 @@ class InspirationCarouselTrackingUnification @Inject constructor() {
                 data.eventLabel,
                 data.product.inspirationCarouselType,
                 data.product.componentId,
-                listOf(data.productDataLayer),
+                arrayListOf(data.productDataLayer),
             )
         else
             fallback()
