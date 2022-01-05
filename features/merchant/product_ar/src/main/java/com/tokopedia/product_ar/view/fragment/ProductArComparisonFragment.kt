@@ -184,8 +184,10 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
                     object : MFEMakeupEngine.ApplyMakeupToPhotoCompletionHandler {
                         override fun onMakeupAppliedToPhoto(p0: Bitmap?, p1: Bitmap?, p2: Throwable?) {
                             activity?.runOnUiThread(Runnable {
-                                loader?.hide()
-                                viewModel?.addGridImages(p1!!, comparisonAdapter.listBitmap)
+                                p1?.let {
+                                    loader?.hide()
+                                    viewModel?.addGridImages(it, comparisonAdapter.listBitmap)
+                                }
                             })
                         }
                     })
