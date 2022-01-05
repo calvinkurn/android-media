@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.presentation.model
 
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class RecommendationItem(
