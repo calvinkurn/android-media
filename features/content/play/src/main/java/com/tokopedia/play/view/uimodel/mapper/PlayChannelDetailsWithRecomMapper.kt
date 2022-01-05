@@ -52,7 +52,6 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                 pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner),
                 quickReplyInfo = mapQuickReply(it.quickReplies),
                 videoMetaInfo = if(it.airTime == PlayUpcomingUiModel.COMING_SOON) emptyVideoMetaInfo() else mapVideoMeta(it.video, it.id, it.title, extraParams),
-//                statusInfo = mapChannelStatusInfo(it.config, it.title),
                 leaderboardInfo = mapLeaderboardInfo(),
                 upcomingInfo = mapUpcoming(it.title, it.airTime, it.config.reminder.isSet, it.coverUrl, it.startTime),
                 tagItems = mapTagItems(it.config),
@@ -220,33 +219,12 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             title = title
     )
 
-    private fun mapChannelStatusInfo(
-            configResponse: ChannelDetailsWithRecomResponse.Config,
-            title: String
-    ) = PlayStatusInfoUiModel(
-            statusType = mapStatusType(!configResponse.active || configResponse.freezed),
-            bannedModel = mapBannedModel(configResponse.bannedData),
-            freezeModel = mapFreezeModel(configResponse.freezeData, title),
-            shouldAutoSwipeOnFreeze = true,
-            waitingDuration = 0,
-    )
-
     private fun mapBannedModel(
             bannedDataResponse: ChannelDetailsWithRecomResponse.BannedData
-    ) = PlayBannedUiModel(
+    ) = BannedUiModel(
             title = bannedDataResponse.title,
             message = bannedDataResponse.message,
             btnTitle = bannedDataResponse.buttonText
-    )
-
-    private fun mapFreezeModel(
-            freezeDataResponse: ChannelDetailsWithRecomResponse.FreezeData,
-            title: String
-    ) = PlayFreezeUiModel(
-            title = String.format(freezeDataResponse.title, title),
-            message = freezeDataResponse.desc,
-            btnTitle = freezeDataResponse.buttonText,
-            btnUrl = freezeDataResponse.buttonAppLink
     )
 
     private fun mapVideoBufferControl(bufferControl: ChannelDetailsWithRecomResponse.BufferControl?): PlayBufferControl {

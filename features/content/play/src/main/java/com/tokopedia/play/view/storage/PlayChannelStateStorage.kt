@@ -32,7 +32,6 @@ data class PlayChannelData(
     val pinnedInfo: PlayPinnedInfoUiModel,
     val quickReplyInfo: PlayQuickReplyInfoUiModel,
     val videoMetaInfo: PlayVideoMetaInfoUiModel,
-//    val statusInfo: PlayStatusInfoUiModel,
     val leaderboardInfo: PlayLeaderboardWrapperUiModel,
     val upcomingInfo: PlayUpcomingUiModel,
     val tagItems: TagItemUiModel,

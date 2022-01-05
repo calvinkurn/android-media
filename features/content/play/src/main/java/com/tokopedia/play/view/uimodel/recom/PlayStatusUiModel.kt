@@ -17,13 +17,13 @@ data class PlayStatusUiModel(
 }
 
 data class PlayStatusConfig(
-    val bannedModel: PlayBannedUiModel,
+    val bannedModel: BannedUiModel,
     val freezeModel: FreezeUiModel,
 ) {
     companion object {
         val Empty: PlayStatusConfig
             get() = PlayStatusConfig(
-                bannedModel = PlayBannedUiModel.Empty,
+                bannedModel = BannedUiModel.Empty,
                 freezeModel = FreezeUiModel.Empty,
             )
     }
@@ -40,6 +40,21 @@ data class PlayChannelStatus(
                 statusType = PlayStatusType.Active,
                 statusSource = PlayStatusSource.Network,
                 waitingDuration = 0,
+            )
+    }
+}
+
+data class BannedUiModel(
+    val title: String,
+    val message: String,
+    val btnTitle: String
+) {
+    companion object {
+        val Empty: BannedUiModel
+            get() = BannedUiModel(
+                title = "",
+                message = "",
+                btnTitle = "",
             )
     }
 }

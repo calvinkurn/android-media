@@ -1,6 +1,6 @@
 package com.tokopedia.play.model
 
-import com.tokopedia.play.view.uimodel.recom.PlayBannedUiModel
+import com.tokopedia.play.view.uimodel.recom.BannedUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayFreezeUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayStatusInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
@@ -11,11 +11,11 @@ import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 class PlayStatusInfoModelBuilder {
 
     fun build(
-            statusType: PlayStatusType = PlayStatusType.Active,
-            bannedModel: PlayBannedUiModel = buildBannedModel(),
-            freezeModel: PlayFreezeUiModel = buildFreezeModel(),
-            shouldAutoSwipeOnFreeze: Boolean = true,
-            waitingDuration: Int = 0,
+        statusType: PlayStatusType = PlayStatusType.Active,
+        bannedModel: BannedUiModel = buildBannedModel(),
+        freezeModel: PlayFreezeUiModel = buildFreezeModel(),
+        shouldAutoSwipeOnFreeze: Boolean = true,
+        waitingDuration: Int = 0,
     ) = PlayStatusInfoUiModel(
             statusType = statusType,
             bannedModel = bannedModel,
@@ -28,7 +28,7 @@ class PlayStatusInfoModelBuilder {
             title: String = "Anda di banned",
             message: String = "Anda telah melanggar peraturan",
             btnTitle: String = "Keluar"
-    ) = PlayBannedUiModel(
+    ) = BannedUiModel(
             title = title,
             message = message,
             btnTitle = btnTitle
