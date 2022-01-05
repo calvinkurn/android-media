@@ -308,7 +308,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
 
     private fun goToWishlist() {
         if (activity == null) return
-        RouteManager.route(activity, ApplinkConst.NEW_WISHLIST)
+        RouteManager.route(activity, ApplinkConst.WISHLIST)
     }
 
     private fun showMessageSuccessRemoveWishlist() {
