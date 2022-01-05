@@ -136,7 +136,7 @@ object SearchTracking {
         )
     }
 
-    fun eventImpressionSearchResultShopProductPreview(shopItemProductList: List<Any>, keyword: String?) {
+    fun eventImpressionSearchResultShopProductPreview(shopItemProductList: ArrayList<Any>, keyword: String?) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
                         SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
@@ -144,9 +144,8 @@ object SearchTracking {
                         SearchTrackingConstant.EVENT_LABEL, keyword,
                         ECOMMERCE, DataLayer.mapOf(
                         "currencyCode", "IDR",
-                        "impressions", DataLayer.listOf(
-                        *shopItemProductList.toTypedArray()
-                ))
+                        "impressions", shopItemProductList
+                )
                 )
         )
     }
