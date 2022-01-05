@@ -571,23 +571,23 @@ open class HomeRevampViewModel @Inject constructor(
         if (!userSession.get().isLoggedIn) return
         findWidget<HomeHeaderDataModel> { headerModel, index ->
             launch {
+                val homeBalanceModel = currentHeaderDataModel.headerDataModel?.homeBalanceModel.apply {
+                    this?.initBalanceModelByType()
+                } ?: HomeBalanceModel()
+                val headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
+                        homeBalanceModel = homeBalanceModel
+                )
                 val initialHeaderModel = currentHeaderDataModel.copy(
-                        headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
-                                homeBalanceModel = currentHeaderDataModel.headerDataModel?.homeBalanceModel.apply {
-                                    this?.initBalanceModelByType()
-                                } ?: HomeBalanceModel()
-                        )
+                        headerDataModel = headerDataModel
                 )
                 updateHeaderData(initialHeaderModel, index)
                 currentHeaderDataModel = homeBalanceWidgetUseCase.get().onGetBalanceWidgetData(currentHeaderDataModel)
                 updateHeaderData(currentHeaderDataModel, index)
-            }
-
-            val visitable = homeUseCase.get().updateHeaderData(currentHeaderDataModel, this.homeDataModel)
-
-            visitable?.let {
-                homeDataModel.updateWidgetModel(visitableToChange = visitable, visitable = currentHeaderDataModel, position = index) {
-                    updateHomeData(homeDataModel)
+                val visitable = updateHeaderData(currentHeaderDataModel, index)
+                visitable?.let {
+                    homeDataModel.updateWidgetModel(visitableToChange = visitable, visitable = currentHeaderDataModel, position = index) {
+                        updateHomeData(homeDataModel)
+                    }
                 }
             }
         }

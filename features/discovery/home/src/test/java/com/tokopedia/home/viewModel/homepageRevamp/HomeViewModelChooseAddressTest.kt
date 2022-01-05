@@ -1,56 +1,56 @@
-package com.tokopedia.home.viewModel.homepageRevamp
-
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
-import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
-import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
-import com.tokopedia.home.ext.observeOnce
-import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.Rule
-import org.junit.Test
-
-@ExperimentalCoroutinesApi
-class HomeViewModelChooseAddressTest {
-
-    @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
-
-    private val getHomeUseCase = mockk<HomeDynamicChannelUseCase> (relaxed = true)
-    private lateinit var homeViewModel: HomeRevampViewModel
-
-    @Test
-    fun `When choose address rollence is active then list should contains choose address widget`(){
-        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(HomeHeaderDataModel(
-                needToShowChooseAddress = false
-        ))))
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.updateChooseAddressData(HomeChooseAddressData(isActive = true))
-        homeViewModel.refreshHomeData()
-
-        homeViewModel.homeLiveDynamicChannel.observeOnce { homeDataModel ->
-            //TODO fix this for unit test
-//            val homeHeaderOvoDataModel = (homeDataModel.list.find{ it::class.java == HomeHeaderOvoDataModel::class.java } as? HomeHeaderOvoDataModel)
-//            assert(homeHeaderOvoDataModel?.needToShowChooseAddress == true)
-        }
-    }
-
-    @Test
-    fun `When choose address rollence is inactive then list should not contains choose address widget`(){
-        //TODO fix this for unit test
-//        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(HomeHeaderOvoDataModel(
-//                needToShowChooseAddress = true
+//package com.tokopedia.home.viewModel.homepageRevamp
+//
+//import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+//import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
+//import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
+//import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
+//import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
+//import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
+//import com.tokopedia.home.ext.observeOnce
+//import io.mockk.mockk
+//import kotlinx.coroutines.ExperimentalCoroutinesApi
+//import org.junit.Rule
+//import org.junit.Test
+//
+//@ExperimentalCoroutinesApi
+//class HomeViewModelChooseAddressTest {
+//
+//    @get:Rule
+//    val instantTaskExecutorRule = InstantTaskExecutorRule()
+//
+//    private val getHomeUseCase = mockk<HomeDynamicChannelUseCase> (relaxed = true)
+//    private lateinit var homeViewModel: HomeRevampViewModel
+//
+//    @Test
+//    fun `When choose address rollence is active then list should contains choose address widget`(){
+//        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(HomeHeaderDataModel(
+//                needToShowChooseAddress = false
 //        ))))
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.updateChooseAddressData(HomeChooseAddressData(isActive = false))
-        homeViewModel.refreshHomeData()
-
-        homeViewModel.homeLiveDynamicChannel.observeOnce { homeDataModel ->
-            //TODO fix this for unit test
-//            val homeHeaderOvoDataModel = (homeDataModel.list.find{ it::class.java == HomeHeaderOvoDataModel::class.java } as? HomeHeaderOvoDataModel)
-//            assert(homeHeaderOvoDataModel?.needToShowChooseAddress == false)
-        }
-    }
-}
+//        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+//        homeViewModel.updateChooseAddressData(HomeChooseAddressData(isActive = true))
+//        homeViewModel.refreshHomeData()
+//
+//        homeViewModel.homeLiveDynamicChannel.observeOnce { homeDataModel ->
+//            //TODO fix this for unit test
+////            val homeHeaderOvoDataModel = (homeDataModel.list.find{ it::class.java == HomeHeaderOvoDataModel::class.java } as? HomeHeaderOvoDataModel)
+////            assert(homeHeaderOvoDataModel?.needToShowChooseAddress == true)
+//        }
+//    }
+//
+//    @Test
+//    fun `When choose address rollence is inactive then list should not contains choose address widget`(){
+//        //TODO fix this for unit test
+////        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(HomeHeaderOvoDataModel(
+////                needToShowChooseAddress = true
+////        ))))
+//        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+//        homeViewModel.updateChooseAddressData(HomeChooseAddressData(isActive = false))
+//        homeViewModel.refreshHomeData()
+//
+//        homeViewModel.homeLiveDynamicChannel.observeOnce { homeDataModel ->
+//            //TODO fix this for unit test
+////            val homeHeaderOvoDataModel = (homeDataModel.list.find{ it::class.java == HomeHeaderOvoDataModel::class.java } as? HomeHeaderOvoDataModel)
+////            assert(homeHeaderOvoDataModel?.needToShowChooseAddress == false)
+//        }
+//    }
+//}
