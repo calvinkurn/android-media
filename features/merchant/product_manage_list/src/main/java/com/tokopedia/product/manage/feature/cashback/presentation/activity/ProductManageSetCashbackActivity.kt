@@ -72,8 +72,8 @@ class ProductManageSetCashbackActivity: BaseSimpleActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         setActivityOrientation()
+        super.onCreate(savedInstanceState)
         supportActionBar?.hide()
     }
 
@@ -110,18 +110,17 @@ class ProductManageSetCashbackActivity: BaseSimpleActivity() {
     }
 
     private fun setActivityOrientation() {
-        if (DeviceScreenInfo.isTablet(this)) {
+        requestedOrientation = if (DeviceScreenInfo.isTablet(this)) {
             val isAccelerometerRotationEnabled = Settings.System.getInt(
                 contentResolver,
                 Settings.System.ACCELEROMETER_ROTATION,
                 0
             ) == 1
 
-            requestedOrientation = if (isAccelerometerRotationEnabled)
-                ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
-            else
-                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+            if (isAccelerometerRotationEnabled) ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+            else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
+        } else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
 
 }
