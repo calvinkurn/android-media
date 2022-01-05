@@ -1327,7 +1327,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 }
             }
             ic_vod_play?.setOnClickListener {
-                playVOD(feedXCard =  feedXCard)
+                playVOD(feedXCard =  feedXCard, carouselView.activeIndex)
             }
             vod_full_screen_icon?.setOnClickListener {
                 isPaused = true
@@ -2020,6 +2020,16 @@ class PostDynamicViewNew @JvmOverloads constructor(
         detach()
     }
 
+    fun attach(
+             model: Visitable<*>? = null
+    ) {
+        if (model is DynamicPostUiModel) {
+            resetCaraouselActiveListener(model?.feedXCard)
+        }else if (model is TopadsHeadLineV2Model){
+            resetCaraouselActiveListener(model?.feedXCard)
+        }
+    }
+
     fun detach(
         fromSlide: Boolean = false, model: Visitable<*>? = null
     ) {
@@ -2066,7 +2076,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         videoPlayer?.destroy()
     }
 
-    fun playVideo(feedXCard: FeedXCard, position: Int = carouselView.activeIndex) {
+    fun playVideo(feedXCard: FeedXCard, position: Int = feedXCard.lastCarouselIndex) {
         if (videoPlayer == null)
             feedXCard.media[position].canPlay = true
         if (feedXCard.media[position].canPlay) {
@@ -2080,7 +2090,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             )
         }
     }
-    fun playVOD(feedXCard: FeedXCard, position: Int = carouselView.activeIndex) {
+    fun playVOD(feedXCard: FeedXCard, position: Int = feedXCard.lastCarouselIndex) {
         if (videoPlayer == null)
             feedXCard.media[position].canPlay = true
         if (feedXCard.media[position].canPlay) {
@@ -2106,14 +2116,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
         else
             videoPlayer?.pause()
     }
-    private fun resetCaraouselActiveListener(feedXCard: FeedXCard){
+    private fun resetCaraouselActiveListener(feedXCard: FeedXCard?){
         carouselView.apply {
             if (onActiveIndexChangedListener == null) {
                 onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
                     override fun onActiveIndexChanged(prev: Int, current: Int) {
                         pageControl.setCurrentIndicator(current)
-                        feedXCard.lastCarouselIndex = current
-                        if (feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT) {
+                        feedXCard?.lastCarouselIndex = current
+                        if (feedXCard?.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT) {
                             val list = mutableListOf<FeedXProduct>()
                             list.add(feedXCard.products[current])
                             imagePostListener.userProductImpression(
@@ -2125,7 +2135,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             )
 
                             bindImage(feedXCard.products, feedXCard.media[current], feedXCard)
-                        } else {
+                        } else if (feedXCard != null) {
                             imagePostListener.userCarouselImpression(
                                     feedXCard.id,
                                     feedXCard.media[current],
@@ -2157,7 +2167,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val imageItem = media.imageView
         val tags = media.tagging
         val tagProducts = mutableListOf<FeedXProduct>()
-        resetCaraouselActiveListener(feedXCard)
+
         tags.map {
             if (!ifProductAlreadyPresent(cardProducts[it.tagIndex], tagProducts))
                 tagProducts.add(cardProducts[it.tagIndex])

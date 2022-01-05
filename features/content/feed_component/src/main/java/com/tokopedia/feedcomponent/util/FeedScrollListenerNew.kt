@@ -207,7 +207,8 @@ object FeedScrollListenerNew {
 
     private fun getCardViewModel(list: List<Visitable<*>>, position: Int): FeedXMedia? {
         try {
-            return (list[position] as DynamicPostUiModel).feedXCard.media.firstOrNull()
+            val feedXCard = (list[position] as DynamicPostUiModel).feedXCard
+            return feedXCard.media[feedXCard.lastCarouselIndex]
         } catch (e: Exception) {
             e.localizedMessage
         }
@@ -223,7 +224,8 @@ object FeedScrollListenerNew {
 
     private fun getTopadsCardViewModel(list: List<Visitable<*>>, position: Int): FeedXMedia? {
         try {
-            return (list[position] as TopadsHeadLineV2Model).feedXCard.media.firstOrNull()
+            val feedXCard = (list[position] as TopadsHeadLineV2Model).feedXCard
+            return feedXCard.media[feedXCard.lastCarouselIndex]
         } catch (e: Exception) {
             e.localizedMessage
         }
