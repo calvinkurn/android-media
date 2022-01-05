@@ -12,6 +12,7 @@ import com.tokopedia.analyticsdebugger.websocket.domain.usecase.InsertWebSocketL
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogGeneralInfoUiModel
 import com.tokopedia.config.GlobalConfig
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
@@ -23,11 +24,15 @@ class WebSocketLogger(context: Context): RealtimeNetworkLoggerInterface {
     private val insertWebSocketLogUseCase: InsertWebSocketLogUseCase
     private val dispatchers: CoroutineDispatchers
     private val gson: Gson
+    private val job: Job
+    private val scope: CoroutineScope
 
     init {
         dispatchers = CoroutineDispatchersProvider
         insertWebSocketLogUseCase = InsertWebSocketLogUseCase(WebSocketLogRepositoryImpl(dispatchers, WebSocketLogDatabase.getInstance(context)))
         gson = GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create()
+        job = Job()
+        scope = CoroutineScope(dispatchers.io + job)
     }
 
     private var generalInfo: WebSocketLogGeneralInfoUiModel? = null
@@ -37,7 +42,7 @@ class WebSocketLogger(context: Context): RealtimeNetworkLoggerInterface {
     }
 
     override fun send(event: String, message: String) {
-        CoroutineScope(dispatchers.io).launch {
+        scope.launch {
             generalInfo?.let {
                 insertWebSocketLogUseCase.setParam(event, beautifyMessage(message), it)
                 insertWebSocketLogUseCase.executeOnBackground()
