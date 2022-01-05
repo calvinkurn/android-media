@@ -777,6 +777,7 @@ object SearchTracking {
         }
     }
 
+    @Suppress("LongParameterList")
     @JvmStatic
     fun trackEventClickBroadMatchItem(
         keyword: String,
