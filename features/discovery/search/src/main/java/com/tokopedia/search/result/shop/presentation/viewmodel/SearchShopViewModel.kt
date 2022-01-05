@@ -41,6 +41,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import dagger.Lazy
+import java.util.ArrayList
 
 internal class SearchShopViewModel(
         dispatcher: CoroutineDispatchers,
@@ -75,7 +76,7 @@ internal class SearchShopViewModel(
     private val productPreviewImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
     private val searchShopFirstPagePerformanceMonitoringEventLiveData = MutableLiveData<Event<Boolean>>()
     private val shopRecommendationItemImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
-    private val shopRecommendationProductPreviewImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
+    private val shopRecommendationProductPreviewImpressionTrackingEventLiveData = MutableLiveData<Event<ArrayList<Any>>>()
     private val clickShopItemTrackingEventLiveData = MutableLiveData<Event<ShopDataView.ShopItem>>()
     private val clickNotActiveShopItemTrackingEventLiveData = MutableLiveData<Event<ShopDataView.ShopItem>>()
     private val clickShopRecommendationItemTrackingEventLiveData = MutableLiveData<Event<ShopDataView.ShopItem>>()
@@ -873,7 +874,7 @@ internal class SearchShopViewModel(
     fun getShopRecommendationItemImpressionTrackingEventLiveData(): LiveData<Event<List<Any>>> =
             shopRecommendationItemImpressionTrackingEventLiveData
 
-    fun getShopRecommendationProductPreviewImpressionTrackingEventLiveData(): LiveData<Event<List<Any>>> =
+    fun getShopRecommendationProductPreviewImpressionTrackingEventLiveData(): LiveData<Event<ArrayList<Any>>> =
             shopRecommendationProductPreviewImpressionTrackingEventLiveData
 
     fun getClickShopItemTrackingEventLiveData(): LiveData<Event<ShopDataView.ShopItem>> = clickShopItemTrackingEventLiveData
