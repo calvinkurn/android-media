@@ -12,6 +12,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <View
+        android:id="@+id/bg_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_NN900"
+        android:alpha="0.7"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/progressbar"
         style="?android:attr/indeterminate"
