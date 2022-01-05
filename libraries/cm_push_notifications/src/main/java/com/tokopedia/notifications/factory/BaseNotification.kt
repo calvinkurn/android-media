@@ -143,10 +143,7 @@ abstract class BaseNotification internal constructor(
             R.mipmap.ic_statusbar_notif_customer
 
     private val drawableLargeIcon: Int
-        get() = if (GlobalConfig.isSellerApp())
-            com.tokopedia.resources.common.R.mipmap.ic_launcher_sellerapp
-        else
-            com.tokopedia.resources.common.R.mipmap.ic_launcher_customerapp
+        get() = GlobalConfig.LAUNCHER_ICON_RES_ID
     internal val bitmapLargeIcon: Bitmap
         get() = createBitmap()
 
