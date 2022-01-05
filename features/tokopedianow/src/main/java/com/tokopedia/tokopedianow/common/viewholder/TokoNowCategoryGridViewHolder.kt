@@ -8,8 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.adapter.TokoNowCategoryGridAdapter
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -42,7 +40,6 @@ class TokoNowCategoryGridViewHolder(
     private var rvCategory: RecyclerView? = null
     private var categoryShimmering: View? = null
     private var categoryHeader: RelativeLayout? = null
-    private var localCacheModel: LocalCacheModel? = null
 
     private val adapter by lazy { TokoNowCategoryGridAdapter(TokoNowCategoryGridAdapterTypeFactory(this), TokoNowCategoryGridDiffer()) }
 
@@ -67,7 +64,6 @@ class TokoNowCategoryGridViewHolder(
     }
 
     private fun initView() {
-        localCacheModel = ChooseAddressUtils.getLocalizingAddressData(itemView.context)
         binding?.vsTitle?.setOnInflateListener { _, inflated ->
             stubBinding = PartialTokopedianowViewStubDcTitleBinding.bind(inflated)
         }
