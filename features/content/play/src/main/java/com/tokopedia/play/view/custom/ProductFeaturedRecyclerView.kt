@@ -56,14 +56,17 @@ class ProductFeaturedRecyclerView : RecyclerView {
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        invalidateEndGradientRect()
-        invalidate()
+        setupEndGradientRect(mEndBounds)
     }
 
     fun setFadingEndBounds(endBounds: Int) {
         if (mEndBounds == endBounds) return
 
         mEndBounds = endBounds
+        setupEndGradientRect(endBounds)
+    }
+
+    private fun setupEndGradientRect(endBounds: Int) {
         val startGradient = width - 3 * endBounds
         mFadingEdgePaint.shader = getHorizontalGradientShader(
             startGradient.toFloat(),
