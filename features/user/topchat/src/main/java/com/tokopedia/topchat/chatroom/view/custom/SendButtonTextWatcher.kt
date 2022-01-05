@@ -12,9 +12,9 @@ class SendButtonTextWatcher (
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
         if(s.isNullOrEmpty()) {
-            replyBoxTextListener.onReplyBoxEmpty()
+            replyBoxTextListener.disableSendButton()
         } else {
-            replyBoxTextListener.onReplyBoxNotEmpty()
+            replyBoxTextListener.enableSendButton()
         }
     }
 }

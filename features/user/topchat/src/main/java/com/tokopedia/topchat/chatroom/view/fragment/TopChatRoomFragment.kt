@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.StringRes
@@ -128,7 +127,6 @@ import com.tokopedia.topchat.common.custom.TopChatKeyboardHandler
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.util.TopChatSellerReviewHelper
 import com.tokopedia.topchat.common.util.Utils
-import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifycomponents.toPx
@@ -454,7 +452,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         setupBeforeReplyTime()
         loadInitialData()
         initLoadMoreListener()
-        onReplyBoxEmpty()
+        disableSendButton()
         initKeyboardListener(view)
         removeAttachmentIfNecessary(savedInstanceState)
         setupObservers()
@@ -2279,7 +2277,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun onReplyBoxEmpty() {
+    override fun disableSendButton() {
         sendButton?.background =
             MethodChecker.getDrawable(context, R.drawable.bg_topchat_send_btn_disabled)
         sendButton?.setOnClickListener {
@@ -2287,7 +2285,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun onReplyBoxNotEmpty() {
+    override fun enableSendButton() {
         sendButton?.background = MethodChecker.getDrawable(context, R.drawable.bg_topchat_send_btn)
         sendButton?.setOnClickListener {
             onSendButtonClicked()
