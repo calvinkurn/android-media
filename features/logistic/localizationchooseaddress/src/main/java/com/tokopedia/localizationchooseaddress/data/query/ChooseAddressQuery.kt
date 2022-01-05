@@ -58,6 +58,11 @@ object ChooseAddressQuery {
               tokonow {
                 shop_id
                 warehouse_id
+                warehouses {
+                    warehouse_id
+                    service_type
+                }
+                service_type
               }
             }
             status
@@ -86,6 +91,11 @@ object ChooseAddressQuery {
             tokonow {
               shop_id
               warehouse_id
+              warehouses {
+                warehouse_id
+                service_type
+              }
+              service_type
             }
             kero_addr_error {
               code
@@ -124,6 +134,11 @@ object ChooseAddressQuery {
             tokonow {
               shop_id
               warehouse_id
+              warehouses {
+                warehouse_id
+                service_type
+              }
+              service_type
             }
             kero_addr_error {
               code
