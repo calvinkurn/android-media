@@ -85,8 +85,6 @@
     <dimen name="product_card_button_similar_product_height">32dp</dimen>
     <dimen name="product_card_button_similar_product_margin_top">8dp</dimen>
 
-    <dimen name="product_card_flashsale_width">148dp</dimen>
-
     <dimen name="product_card_flashsale_pdpcount_height">16dp</dimen>
     <dimen name="product_card_flashsale_pdpcount_margintop">2dp</dimen>
     <dimen name="product_card_flashsale_pdpcount_gone_margintop">0dp</dimen>
@@ -126,6 +124,7 @@
 
     <dimen name="carousel_product_card_grid_width">140dp</dimen>
     <dimen name="carousel_product_card_list_width">248dp</dimen>
+    <dimen name="product_card_flashsale_width">140dp</dimen>
 
     <dimen name="product_card_quantity_editor_margin_top">8dp</dimen>
     <dimen name="product_card_quantity_editor_height">30dp</dimen>
@@ -142,4 +141,15 @@
 
     <dimen name="product_card_text_add_variant_quantity_margin_top">6dp</dimen>
     <dimen name="product_card_text_add_variant_quantity_height">14dp</dimen>
+
+    <dimen name="product_card_button_secondary_height">32dp</dimen>
+    <dimen name="product_card_button_secondary_width">32dp</dimen>
+    <dimen name="product_card_button_secondary_margin_start">8dp</dimen>
+    <dimen name="product_card_button_secondary_margin_end">8dp</dimen>
+    <dimen name="product_card_button_secondary_padding">6dp</dimen>
+    <dimen name="product_card_button_image_secondary_width">20dp</dimen>
+    <dimen name="product_card_button_image_secondary_height">20dp</dimen>
+
+    <dimen name="product_card_button_primary_height">32dp</dimen>
+    <dimen name="product_card_button_primary_margin">8dp</dimen>
 </resources>

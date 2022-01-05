@@ -40,7 +40,6 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher_customerapp"
         android:label="@string/app_name"
         android:resizeableActivity="false"
         android:theme="@style/Theme.Tokopedia3">
@@ -48,13 +47,12 @@
             android:name="android.app.default_searchable"
             android:value=".BrowseCategory" />
 
+        <!-- ======================================================= -->
+        <!-- ACTIVITIES REGISTRY -->
+        <!-- ======================================================= -->
+
         <activity
-            android:name="com.facebook.react.devsupport.DevSettingsActivity"
-            android:label="@string/app_name" />
-        <activity
-            android:name="com.facebook.FacebookActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/app_name" />
-        <activity android:name="com.journeyapps.barcodescanner.CaptureActivity" />
+            android:name="com.journeyapps.barcodescanner.CaptureActivity" />
+
     </application>
 </manifest>

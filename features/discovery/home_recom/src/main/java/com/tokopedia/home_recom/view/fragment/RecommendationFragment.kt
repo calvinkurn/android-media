@@ -58,7 +58,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import kotlinx.android.synthetic.main.fragment_product_info.*
 import javax.inject.Inject
 
 /**
@@ -88,6 +87,7 @@ import javax.inject.Inject
  */
 @SuppressLint("SyntheticAccessor")
 open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl>(), RecommendationListener, TitleListener, RecommendationErrorListener, ProductInfoViewHolder.ProductInfoListener {
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private var trackingQueue: TrackingQueue? = null
@@ -116,6 +116,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         private const val REQUEST_FROM_PDP = 394
         private const val REQUEST_CODE_LOGIN = 283
         private const val SPACING_30 = 30
+        private const val PRIMARY_PRODUCT_POS = 0
 
         fun newInstance(productId: String = "", queryParam: String = "", ref: String = "null", internalRef: String = "",@FragmentInflater fragmentInflater: String = FragmentInflater.DEFAULT) = RecommendationFragment().apply {
             this.productId = productId
@@ -380,7 +381,10 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                     }
                 }
                 else -> {
-                    add_to_cart?.isEnabled = true
+                    val view = getRecyclerView(view)?.findViewHolderForAdapterPosition(PRIMARY_PRODUCT_POS)
+                    (view as? ProductInfoViewHolder)?.let {
+                        it.getAddToCartView()?.isEnabled = true
+                    }
                     activity?.run {
                         showToastError(response.exception)
                     }
@@ -403,7 +407,10 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                     }
                 }
                 else -> {
-                    buy_now?.isEnabled = true
+                    val view = getRecyclerView(view)?.findViewHolderForAdapterPosition(PRIMARY_PRODUCT_POS)
+                    (view as? ProductInfoViewHolder)?.let {
+                        it.getBuyNowView()?.isEnabled = true
+                    }
                     activity?.run {
                         showToastError(response.exception)
                     }

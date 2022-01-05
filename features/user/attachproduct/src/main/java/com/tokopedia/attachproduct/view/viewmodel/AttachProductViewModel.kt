@@ -4,11 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachproduct.data.model.mapper.mapToListProduct
 import com.tokopedia.attachproduct.domain.model.mapper.toDomainModelMapper
 import com.tokopedia.attachproduct.domain.usecase.AttachProductUseCase
-import com.tokopedia.attachproduct.view.presenter.AttachProductContract
 import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel
 import com.tokopedia.usecase.coroutines.*
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -38,17 +36,15 @@ class AttachProductViewModel @Inject constructor
     fun loadProductData(query: String, shopId: String, page: Int, warehouseId: String) {
         launchCatchError(block = {
             val start = (page * ROW) - ROW
-            val result = useCase(hashMapOf<String, Any>(PARAM to "device=android&source=shop_product&rows=$ROW&q=$query&shop_id=" +
+            val result = useCase(hashMapOf<String, Any>(PARAM to "device=android&source=attach_product&rows=$ROW&q=$query&shop_id=" +
                     "$shopId&start=$start&user_warehouseId=$warehouseId"))
             val resultModel = result.mapToListProduct().toDomainModelMapper()
-            _products.value = Success(resultModel)
-
             if (query.isEmpty()) {
-                _products.value.let { data ->
-                    if (data != null) {
-                        cacheData(data)
-                    }
-                }
+                _products.value = Success(resultModel)
+                val dataSuccess = _products.value as Success
+                cacheData(dataSuccess)
+            } else {
+                _products.value = Success(resultModel)
             }
         }, onError = {
             _products.value = Fail(it)
@@ -62,21 +58,18 @@ class AttachProductViewModel @Inject constructor
     }
 
     fun clearCache() {
-        if (_cacheList.isNotEmpty()) {
-            _cacheList.clear()
-        }
+        _cacheList.clear()
     }
 
-    private fun cacheData(result: Result<List<AttachProductItemUiModel>>){
-        if (result is Success) {
-            val listData = result.data.toMutableList()
+    private fun cacheData(result: Success<List<AttachProductItemUiModel>>){
+        val listData = result.data.toMutableList()
+        if (result.data.size >= DEFAULT_ROWS) {
+            _cacheHasNext = true
+            listData.removeAt(result.data.size - 1)
+        } else {
             _cacheHasNext = false
-            if (result.data.size >= DEFAULT_ROWS) {
-                _cacheHasNext = true
-                listData.removeAt(result.data.size - 1)
-            }
-            _cacheList.addAll(listData)
         }
+        _cacheList.addAll(listData)
     }
 
     companion object {

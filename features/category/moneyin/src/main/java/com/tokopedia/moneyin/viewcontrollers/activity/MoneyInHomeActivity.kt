@@ -177,7 +177,6 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
                             sendGoToProductDetailGTM()
                             finish()
                         }
-                        showDeviceNotElligiblePopup(R.string.tradein_not_elligible_price_high)
                         mTvNotUpto?.visibility = View.GONE
                         mTvModelName?.text = homeResult.deviceDisplayName
                         mTvInitialPrice?.text = homeResult.displayMessage
@@ -225,6 +224,7 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
                         viewMoneyInPriceGTM(homeResult.deviceDisplayName + " - " + homeResult.displayMessage)
                     }
                     PriceState.MONEYIN_ERROR -> {
+                        mTvPriceElligible?.text = homeResult.displayMessage
                         showMessageWithAction(homeResult.displayMessage,
                                 getString(R.string.tradein_return)) { this.finish() }
                         errorDialogGTMLabel = homeResult.displayMessage

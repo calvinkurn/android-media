@@ -10,7 +10,9 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.buyerorderdetail.stub.common.di.component.BaseAppComponentStubInstance
 import com.tokopedia.buyerorderdetail.stub.common.graphql.coroutines.domain.repository.GraphqlRepositoryStub
 import com.tokopedia.buyerorderdetail.stub.detail.presentation.activity.BuyerOrderDetailActivityStub
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailCoachMarkData
 import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
 import org.junit.Before
 import org.junit.Rule
@@ -37,6 +39,7 @@ abstract class BuyerOrderDetailTrackerValidationTestFixture {
     fun init() {
         setVersionName()
         getGraphqlRepositoryStub()
+        preventCoachMarkFromShowing()
     }
 
     private fun setVersionName() {
@@ -49,5 +52,9 @@ abstract class BuyerOrderDetailTrackerValidationTestFixture {
             applicationContext
         ).graphqlRepository() as GraphqlRepositoryStub
         graphqlRepositoryStub.clearMocks()
+    }
+
+    private fun preventCoachMarkFromShowing() {
+        CoachMarkPreference.setShown(context, BuyerOrderDetailCoachMarkData.DRIVER_TIPPING_INFO_COACHMARK_KEY, true)
     }
 }

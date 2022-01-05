@@ -129,7 +129,7 @@ open class GMStatHeaderViewHelper(protected var itemView: View, private val isGm
         intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, selectionType)
         intent.putExtra(
             DatePickerConstant.EXTRA_PAGE_TITLE,
-            activity.getString(com.tokopedia.review.R.string.set_date)
+            activity.getString(com.tokopedia.review.R.string.reputation_history_set_date)
         )
         activity.startActivityForResult(intent, MOVE_TO_SET_DATE)
     }
@@ -168,7 +168,7 @@ open class GMStatHeaderViewHelper(protected var itemView: View, private val isGm
         intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, selectionType)
         intent.putExtra(
             DatePickerConstant.EXTRA_PAGE_TITLE,
-            fragment.getString(com.tokopedia.review.R.string.set_date)
+            fragment.getString(com.tokopedia.review.R.string.reputation_history_set_date)
         )
         fragment.startActivityForResult(intent, MOVE_TO_SET_DATE)
     }
@@ -182,7 +182,7 @@ open class GMStatHeaderViewHelper(protected var itemView: View, private val isGm
         periodRangeList.add(
             PeriodRangeModel(
                 startCalendar.timeInMillis, startCalendar.timeInMillis, context?.getString(
-                    R.string.yesterday
+                    com.tokopedia.datepicker.range.R.string.yesterday
                 )
             )
         )
@@ -192,7 +192,7 @@ open class GMStatHeaderViewHelper(protected var itemView: View, private val isGm
         periodRangeList.add(
             PeriodRangeModel(
                 startCalendar.timeInMillis, endCalendar.timeInMillis, context?.getString(
-                    R.string.seven_days_ago
+                    com.tokopedia.datepicker.range.R.string.seven_days_ago
                 )
             )
         )
@@ -202,7 +202,7 @@ open class GMStatHeaderViewHelper(protected var itemView: View, private val isGm
         periodRangeList.add(
             PeriodRangeModel(
                 startCalendar.timeInMillis, endCalendar.timeInMillis, context?.getString(
-                    R.string.thirty_days_ago
+                    com.tokopedia.datepicker.range.R.string.thirty_days_ago
                 )
             )
         )

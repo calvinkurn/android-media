@@ -1,17 +1,20 @@
 package com.tokopedia.search.result.presentation.model
 
-import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.search.analytics.SearchTracking.getInspirationCarouselUnificationListName
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionTypeFactory
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.utils.getFormattedPositionName
 
 class InspirationCarouselDataView(
         val title: String = "",
         val type: String = "",
         val position: Int = 0,
         val layout: String = "",
+        val trackingOption: Int = 0,
         val options: List<Option> = listOf(),
 ) : Visitable<ProductListTypeFactory> {
 
@@ -36,6 +39,9 @@ class InspirationCarouselDataView(
             var isChipsActive: Boolean = false,
             val hexColor: String = "",
             val chipImageUrl: String = "",
+            val componentId: String = "",
+            val trackingOption: Int = 0,
+            val dimension90: String = "",
     ): Visitable<InspirationCarouselOptionTypeFactory>{
 
         override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
@@ -87,6 +93,9 @@ class InspirationCarouselDataView(
                 val topAdsViewUrl: String = "",
                 val topAdsClickUrl: String = "",
                 val topAdsWishlistUrl: String = "",
+                val componentId: String = "",
+                val inspirationCarouselTitle: String = "",
+                val dimension90: String = "",
         ): ImpressHolder(), Visitable<InspirationCarouselOptionTypeFactory> {
 
             override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
@@ -160,16 +169,19 @@ class InspirationCarouselDataView(
                 )
             }
 
-            fun getInspirationCarouselDynamicProductAsObjectDataLayer(): Any {
+            fun asUnificationObjectDataLayer(filterSortParams: String): Any {
                 return DataLayer.mapOf(
-                        "brand", "none / other",
-                        "category", "none / other",
-                        "id", id,
-                        "list", "/search - carousel",
-                        "name", name,
-                        "position", position,
-                        "price", price,
-                        "variant", "none / other"
+                    "name", name,
+                    "id", id,
+                    "price", price,
+                    "brand", "none / other",
+                    "category", "none / other",
+                    "variant", "none / other",
+                    "list", getInspirationCarouselUnificationListName(inspirationCarouselType, componentId),
+                    "position", optionPosition,
+                    "dimension115", labelGroupDataList.getFormattedPositionName(),
+                    "dimension61", filterSortParams,
+                    "dimension90", dimension90,
                 )
             }
         }

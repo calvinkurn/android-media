@@ -26,7 +26,7 @@ data class ProductData(
         @SerializedName("is_topads")
         val isTopads: Boolean = false,
         @SerializedName("is_wishlist")
-        val isWishlist: Boolean = false,
+        var isWishlist: Boolean = false,
         @SerializedName("labels")
         val labels: List<Any> = listOf(),
         @SerializedName("min_order")
@@ -48,13 +48,17 @@ data class ProductData(
         @SerializedName("stock")
         val stock: Int = 0,
         @SerializedName("type_button")
-        val typeButton: Int = 0,
+        var typeButton: Int = 0,
         @SerializedName("url")
         val url: String = "",
         @SerializedName("variant")
-        val variant: List<Variant> = listOf(),
+        var variant: List<Variant> = listOf(),
         @SerializedName("has_reminder")
-        var hasReminder: Boolean = false
+        var hasReminder: Boolean = false,
+        @SerializedName("is_variant")
+        var isVariant: Boolean = false,
+        @SerializedName("is_preorder")
+        var isPreorder: Boolean = false
 ) {
     var loadingReminderState: Boolean = false
 
@@ -63,6 +67,7 @@ data class ProductData(
     fun isBuyButton() = typeButton == BUTTON_TYPE_BUY
     fun isReminderButton() = typeButton == BUTTON_TYPE_REMINDER
     fun isEmptyButton() = typeButton == BUTTON_TYPE_EMPTY_STOCK
+    fun isWishlistButton() = typeButton == BUTTON_TYPE_WISHLIST
 
     fun hasEmptyStock(): Boolean {
         return isShow
@@ -88,5 +93,6 @@ data class ProductData(
         const val BUTTON_TYPE_BUY = 0
         const val BUTTON_TYPE_REMINDER = 1
         const val BUTTON_TYPE_EMPTY_STOCK = 2
+        const val BUTTON_TYPE_WISHLIST = 3
     }
 }

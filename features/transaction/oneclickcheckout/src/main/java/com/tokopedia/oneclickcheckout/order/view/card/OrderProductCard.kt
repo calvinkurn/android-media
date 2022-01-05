@@ -19,6 +19,7 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
+import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.showSoftKeyboard
 import com.tokopedia.unifyprinciples.Typography
@@ -206,7 +207,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 }
                 return@apply
             }
-            tvProductNotesPreview.text = product.notes
+            tvProductNotesPreview.text = Utils.getHtmlFormat(product.notes)
             tvProductNotesPlaceholder.gone()
             tvProductNotesPreview.visible()
             tvProductNotesEdit.visible()
@@ -233,7 +234,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             if (noteTextWatcher != null) {
                 tfNote.editText.removeTextChangedListener(noteTextWatcher)
             }
-            tfNote.editText.setText(product.notes)
+            tfNote.editText.setText(Utils.getHtmlFormat(product.notes))
             noteTextWatcher = object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     product.notes = s?.toString() ?: ""
