@@ -4,7 +4,11 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.search.result.presentation.model.*
+import com.tokopedia.search.result.presentation.model.BadgeItemDataView
+import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
+import com.tokopedia.search.result.presentation.model.LabelGroupDataView
+import com.tokopedia.search.result.presentation.model.LabelGroupVariantDataView
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import kotlin.math.roundToInt
 
@@ -44,6 +48,7 @@ abstract class ProductItemViewHolder(
         } ?: listOf()
     }
 
+    @Suppress("UnusedPrivateMember")
     private fun Int.toRatingCount(isTopAds: Boolean): Int {
         return if (isTopAds)
             (this / RATING_COUNT_CONVERTER_DIVISOR).roundToInt()
