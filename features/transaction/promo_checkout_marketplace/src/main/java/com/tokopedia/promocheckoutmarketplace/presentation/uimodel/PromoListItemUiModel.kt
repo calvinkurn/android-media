@@ -50,12 +50,8 @@ data class PromoListItemUiModel(
             var isRecommended: Boolean = false,
             var isDisabled: Boolean = false,
             var isHighlighted: Boolean = false,
-            var isUpdateState: Boolean = false
-    ) {
-        companion object {
-            const val STATE_IS_ENABLED = "enabled"
-            const val STATE_IS_DISABLED = "disabled"
-        }
-    }
+            var isUpdateState: Boolean = false,
+            var isLastPromoItem: Boolean = false
+    )
 
 }

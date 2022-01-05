@@ -18,17 +18,12 @@ class PromoListHeaderUiModel(
             var iconUrl: String = "",
             var identifierId: Int = 0,
             var tabId: String = ""
-    ) {
-        companion object {
-            const val PROMO_TYPE_GLOBAL = 1
-            const val PROMO_TYPE_MERCHANT_OFFICIAL = 2
-            const val PROMO_TYPE_POWER_MERCHANT = 3
-        }
-    }
+    )
 
     data class UiState(
             var isEnabled: Boolean = false,
-            var hasSelectedPromoItem: Boolean = false
+            var hasSelectedPromoItem: Boolean = false,
+            var isFirstPromoHeader: Boolean = false
     )
 
 }

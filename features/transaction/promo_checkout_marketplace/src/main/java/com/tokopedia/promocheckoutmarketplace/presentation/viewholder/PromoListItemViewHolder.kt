@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckoutmarketplace.R
 import com.tokopedia.promocheckoutmarketplace.data.response.PromoInfo
@@ -123,7 +124,7 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
             textPromoCode.setTextColor(colorTextEnabledDefault)
             textTimeValidity.setTextColor(colorTextEnabledLowEmphasis)
             textUserValidity.setTextColor(colorTextEnabledLowEmphasis)
-            containerUserValidity.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN100))
+            containerUserValidity.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50))
             cardPromoItem.cardType = CardUnify.TYPE_BORDER
             cardPromoItem.setCardBackgroundColor(colorBackgroundEnabled)
             imageSelectPromo.gone()
@@ -161,6 +162,7 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
         renderTimeValidity(viewBinding, element)
         renderUserValidity(viewBinding, element)
         renderClashInfo(viewBinding, element)
+        renderDivider(viewBinding, element)
     }
 
     private fun renderHighlightIdentifier(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
@@ -343,6 +345,19 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
                 containerClashInfo.show()
             } else {
                 containerClashInfo.gone()
+            }
+        }
+    }
+
+    private fun renderDivider(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
+                              element: PromoListItemUiModel) {
+        with(viewBinding) {
+            if (element.uiState.isParentEnabled && element.uiState.isLastPromoItem) {
+                lastPromoDivider.show()
+                lastPromoDivider2.invisible()
+            } else {
+                lastPromoDivider.gone()
+                lastPromoDivider2.gone()
             }
         }
     }

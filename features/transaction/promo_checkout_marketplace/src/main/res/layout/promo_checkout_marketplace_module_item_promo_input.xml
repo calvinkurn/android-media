@@ -8,9 +8,7 @@
     android:focusableInTouchMode="true"
     android:orientation="horizontal"
     android:paddingLeft="16dp"
-    android:paddingTop="8dp"
-    android:paddingRight="16dp"
-    android:paddingBottom="16dp">
+    android:paddingRight="16dp">
 
     <com.tokopedia.unifycomponents.TextFieldUnify2
         android:id="@+id/text_field_input_promo"

@@ -162,6 +162,8 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     isAttempted = couponItem.isAttempted
                     isCausingOtherPromoClash = false
                     isHighlighted = couponItem.isHighlighted
+                    val lastPromo = couponSubSection.coupons.lastOrNull()
+                    isLastPromoItem = lastPromo != null && lastPromo.code == couponItem.code
                 }
         )
     }

@@ -473,6 +473,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             if (it.uiState.isInitialization) {
                 if (viewBinding?.tabsPromoHeader?.tabsPromo?.getUnifyTabLayout()?.getTabAt(0) == null) {
                     viewBinding?.tabsPromoHeader?.tabsPromo?.customTabMode = TabLayout.MODE_SCROLLABLE
+                    viewBinding?.tabsPromoHeader?.tabsPromo?.customTabGravity = TabLayout.GRAVITY_FILL
                     viewModel.promoTabUiModel.value?.uiData?.tabs?.forEach {
                         viewBinding?.tabsPromoHeader?.tabsPromo?.addNewTab(it.title)
                     }

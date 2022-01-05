@@ -296,4 +296,21 @@
         app:unify_image_corner_radius="0"
         app:unify_image_type="rect" />
 
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/last_promo_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card_promo_item" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/last_promo_divider_2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:visibility="invisible"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/last_promo_divider" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

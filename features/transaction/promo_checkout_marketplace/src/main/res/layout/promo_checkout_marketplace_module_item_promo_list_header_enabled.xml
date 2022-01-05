@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="16dp">
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image_promo_list_header"
@@ -30,16 +31,17 @@
         app:layout_constraintTop_toTopOf="@+id/image_promo_list_header"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
-        tools:text="Kupon saya saya saya vsaya saya saya 111" />
+        tools:text="Kupon saya 111" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/label_promo_list_header_sub_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:gravity="end"
         app:layout_constraintBottom_toBottomOf="@+id/label_promo_list_header_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/label_promo_list_header_title"
         app:typographyType="body_3"
-        tools:text="Hanya bisa pilih satu aja" />
+        tools:text="Pilih satu aja" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

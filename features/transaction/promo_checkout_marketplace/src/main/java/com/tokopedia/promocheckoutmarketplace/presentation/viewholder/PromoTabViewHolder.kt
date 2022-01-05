@@ -29,6 +29,7 @@ class PromoTabViewHolder(private val viewBinding: PromoCheckoutMarketplaceModule
 
             element.uiState.isInitialization = false
             tabsPromo.customTabMode = TabLayout.MODE_SCROLLABLE
+            tabsPromo.customTabGravity = TabLayout.GRAVITY_FILL
             if (element.uiData.tabs.isNotEmpty() && tabsPromo.getUnifyTabLayout().getTabAt(0) == null) {
                 element.uiData.tabs.forEach {
                     tabsPromo.addNewTab(it.title)
