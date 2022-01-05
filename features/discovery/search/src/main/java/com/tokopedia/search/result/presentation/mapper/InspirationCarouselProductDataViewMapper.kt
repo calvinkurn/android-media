@@ -1,6 +1,9 @@
 package com.tokopedia.search.result.presentation.mapper
 
-import com.tokopedia.search.result.domain.model.SearchProductModel.*
+import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelGroup
+import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselProductBadge
+import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselProductFreeOngkir
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
@@ -10,7 +13,7 @@ class InspirationCarouselProductDataViewMapper {
 
     @Suppress("LongParameterList")
     fun convertToInspirationCarouselProductDataView(
-        inspirationCarouselProduct: List<InspirationCarouselProduct>,
+        inspirationCarouselProduct: List<SearchProductModel.InspirationCarouselProduct>,
         productPosition: Int,
         inspirationCarouselType: String,
         layout: String,
