@@ -7,6 +7,7 @@ import androidx.annotation.AttrRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter
+import com.tokopedia.pdp.fintech.listner.ProductUpdateListner
 import com.tokopedia.pdp_fintech.R
 import com.tokopedia.unifycomponents.BaseCustomView
 
@@ -14,7 +15,7 @@ class PdpFintechWidget @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     @AttrRes defStyleAttr: Int = 0
-) : BaseCustomView(context, attrs, defStyleAttr) {
+) : BaseCustomView(context, attrs, defStyleAttr), ProductUpdateListner {
 
     private lateinit var baseView: View
 
@@ -32,6 +33,10 @@ class PdpFintechWidget @JvmOverloads constructor(
 
     private fun initView() {
        baseView =  inflate(context, R.layout.pdp_fintech_widget_layout,this)
+    }
+
+    override fun updateProduct(productID: String) {
+        
     }
 
 

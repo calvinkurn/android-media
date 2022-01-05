@@ -55,6 +55,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val productReviewMap: ProductMostHelpfulReviewDataModel?
         get() = mapOfData[ProductDetailConstant.REVIEW] as? ProductMostHelpfulReviewDataModel
 
+    val fintechWidgetMap: FintechWidgetDataModel?
+        get()= mapOfData[ProductDetailConstant.FINTECH_WIDGET_NAME] as? FintechWidgetDataModel
+
     val productTradeinMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.TRADE_IN] as? ProductGeneralInfoDataModel
 
@@ -143,6 +146,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     data?.price?.priceFmt = it.data.price.value.getCurrencyFormatted()
                 }
             }
+
+            updateData(ProductDetailConstant.FINTECH_WIDGET_NAME){}
 
             updateData(ProductDetailConstant.VARIANT_OPTIONS, loadInitialData) {
                 productNewVariantDataModel?.run {

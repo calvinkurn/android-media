@@ -134,11 +134,14 @@ class DynamicProductDetailAdapterFactoryImpl(
         return ContentWidgetViewHolder.LAYOUT
     }
 
+    override fun type(data: FintechWidgetDataModel): Int {
+        return FintechWidgetViewHolder.LAYOUT
+    }
 
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-
+            FintechWidgetViewHolder.LAYOUT -> FintechWidgetViewHolder(view)
             ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(
                 view,
                 listener
@@ -167,6 +170,7 @@ class DynamicProductDetailAdapterFactoryImpl(
                 view,
                 listener
             )
+
             ProductMiniShopWidgetViewHolder.LAYOUT -> ProductMiniShopWidgetViewHolder(view, listener)
             ProductTickerInfoViewHolder.LAYOUT -> ProductTickerInfoViewHolder(view, listener)
             ProductShopCredibilityViewHolder.LAYOUT -> ProductShopCredibilityViewHolder(view, listener)
