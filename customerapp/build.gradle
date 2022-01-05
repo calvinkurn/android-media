@@ -296,7 +296,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.features.mediaCommon)
-    implementation projectOrAar(rootProject.ext.features.productAr)
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.network
