@@ -377,6 +377,48 @@ class CampaignListViewModelTest {
     }
 
     @Test
+    fun `When failed to fetch ongoing description wording, should return only share URL`() {
+        val campaignStatusOngoing = "7"
+        val shareUri = "https://api.whatsapp.com?phone=082210000000"
+        val campaign = Campaign(name = "Flash Deal")
+        val expected = " $shareUri"
+        val merchantBanner = GetMerchantCampaignBannerGeneratorData(formattedStartDate = "03 Jan 2022, 11:20 WIB")
+
+        every { resourceProvider.getShareOngoingCampaignDescriptionWording() } returns null
+
+        val actual = viewModel.getShareDescriptionWording(
+            shopData = shop,
+            campaignData = campaign,
+            merchantBannerData = merchantBanner,
+            shareUri = shareUri,
+            campaignStatusId = campaignStatusOngoing
+        )
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When failed to fetch upcoming description wording, should return only share URL`() {
+        val campaignStatusUpcoming = "6"
+        val shareUri = "https://api.whatsapp.com?phone=082210000000"
+        val campaign = Campaign(name = "Flash Deal")
+        val expected = " $shareUri"
+        val merchantBanner = GetMerchantCampaignBannerGeneratorData(formattedStartDate = "03 Jan 2022, 11:20 WIB")
+
+        every { resourceProvider.getShareCampaignDescriptionWording() } returns null
+
+        val actual = viewModel.getShareDescriptionWording(
+            shopData = shop,
+            campaignData = campaign,
+            merchantBannerData = merchantBanner,
+            shareUri = shareUri,
+            campaignStatusId = campaignStatusUpcoming
+        )
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
     fun `When get wording ongoing campaign return null, should return share uri only`() {
         val campaignStatusOngoing = "7"
         val shareUri = "https://api.whatsapp.com?phone=082210000000"
@@ -440,6 +482,7 @@ class CampaignListViewModelTest {
 
     @Test
     fun `When get title wording for linker data return success, should produce correct values`() {
+        val campaignStatusOngoing = "7"
         val shareModel = ShareModel.Whatsapp()
 
         every { resourceProvider.getShareOgTitle() } returns "%s dari %s"
@@ -453,7 +496,8 @@ class CampaignListViewModelTest {
         val actual = viewModel.generateLinkerShareData(
             shop,
             campaign,
-            shareModel
+            shareModel,
+            campaignStatusOngoing
         )
 
         assertEquals(expected.name, actual.linkerData.name)
@@ -462,6 +506,7 @@ class CampaignListViewModelTest {
 
     @Test
     fun `When get title wording for linker data return null, should produce empty wording`() {
+        val campaignStatusOngoing = "7"
         val shareModel = ShareModel.Whatsapp()
 
         every { resourceProvider.getShareOgTitle() } returns null
@@ -475,7 +520,8 @@ class CampaignListViewModelTest {
         val actual = viewModel.generateLinkerShareData(
             shop,
             campaign,
-            shareModel
+            shareModel,
+            campaignStatusOngoing
         )
 
         assertEquals(expected.name, actual.linkerData.name)
@@ -484,6 +530,7 @@ class CampaignListViewModelTest {
 
     @Test
     fun `When get ongoing campaign description for linker data return null, should produce empty string`() {
+        val campaignStatusOngoing = "7"
         val shareModel = ShareModel.Whatsapp()
 
         val expected = LinkerData().apply {
@@ -495,7 +542,8 @@ class CampaignListViewModelTest {
         val actual = viewModel.generateLinkerShareData(
             shop,
             campaign,
-            shareModel
+            shareModel,
+            campaignStatusOngoing
         )
 
         assertEquals(expected.ogDescription, actual.linkerData.ogDescription)
@@ -503,6 +551,7 @@ class CampaignListViewModelTest {
 
     @Test
     fun `When get ongoing campaign description for linker data return success, should produce correct values`() {
+        val campaignStatusOngoing = "7"
         val shareModel = ShareModel.Whatsapp()
         val stubbedDescription = "Kejar eksklusif launching"
 
@@ -515,14 +564,16 @@ class CampaignListViewModelTest {
         val actual = viewModel.generateLinkerShareData(
             shop,
             campaign,
-            shareModel
+            shareModel,
+            campaignStatusOngoing
         )
 
         assertEquals(expected.ogDescription, actual.linkerData.ogDescription)
     }
 
     @Test
-    fun `When get linker data while campaign status is null, should produce empty string`() {
+    fun `When get linker data while campaign status is empty, should produce empty string`() {
+        val campaignStatus= EMPTY_STRING
         val shareModel = ShareModel.Whatsapp()
 
         val expected = LinkerData().apply {
@@ -533,7 +584,8 @@ class CampaignListViewModelTest {
         val actual = viewModel.generateLinkerShareData(
             shop,
             campaign,
-            shareModel
+            shareModel,
+            campaignStatus
         )
 
         assertEquals(expected.description, actual.linkerData.description)
@@ -542,6 +594,7 @@ class CampaignListViewModelTest {
 
     @Test
     fun `When get upcoming campaign description for linker data return null, should produce empty string`() {
+        val campaignStatusUpcoming = "6"
         val shareModel = ShareModel.Whatsapp()
 
         val expected = LinkerData().apply {
@@ -553,7 +606,8 @@ class CampaignListViewModelTest {
         val actual = viewModel.generateLinkerShareData(
             shop,
             campaign,
-            shareModel
+            shareModel,
+            campaignStatusUpcoming
         )
 
         assertEquals(expected.description, actual.linkerData.description)
@@ -561,6 +615,7 @@ class CampaignListViewModelTest {
 
     @Test
     fun `When get upcoming campaign description for linker data return success, should produce correct values`() {
+        val campaignStatusUpcoming = "6"
         val shareModel = ShareModel.Whatsapp()
         val stubbedDescription = "Dapatkan produk Rilisan Spesial"
 
@@ -573,7 +628,8 @@ class CampaignListViewModelTest {
         val actual = viewModel.generateLinkerShareData(
             shop,
             campaign,
-            shareModel
+            shareModel,
+            campaignStatusUpcoming
         )
 
         assertEquals(expected.description, actual.linkerData.description)
@@ -582,6 +638,7 @@ class CampaignListViewModelTest {
 
     @Test
     fun `When get linker data while share model image url is specified, should set it to linker data`() {
+        val campaignStatusUpcoming = "6"
         val imageUrl = "https://aws.tokopedia.com/whatsapp.png"
 
         val shareModel = ShareModel.Whatsapp()
@@ -590,7 +647,8 @@ class CampaignListViewModelTest {
         val actual = viewModel.generateLinkerShareData(
             shop,
             campaign,
-            shareModel
+            shareModel,
+            campaignStatusUpcoming
         )
 
         assertEquals(imageUrl, actual.linkerData.ogImageUrl)
@@ -598,6 +656,7 @@ class CampaignListViewModelTest {
 
     @Test
     fun `When get linker data while share model image url is null, should not set it to linker data`() {
+        val campaignStatusUpcoming = "6"
         val shareModel = ShareModel.Whatsapp()
 
         mockkStatic(TextUtils::class)
@@ -606,7 +665,8 @@ class CampaignListViewModelTest {
         val actual = viewModel.generateLinkerShareData(
             shop,
             campaign,
-            shareModel
+            shareModel,
+            campaignStatusUpcoming
         )
 
         assertEquals(null, actual.linkerData.ogImageUrl)
