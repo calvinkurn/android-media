@@ -21,7 +21,7 @@ class ComposeMessageAreaConstraintLayout : ConstraintLayout, LifecycleObserver {
     private var errorComposeMsg: Typography? = null
 
     private var textWatcher: MessageTextWatcher? = null
-    private var sendButtontextWatcher: SendButtonTextWatcher? = null
+    private var sendButtontextWatcher: ComposeTextWatcher? = null
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -106,7 +106,7 @@ class ComposeMessageAreaConstraintLayout : ConstraintLayout, LifecycleObserver {
             composeArea?.addTextChangedListener(textWatcher)
         }
         replyBoxTextListener?.let {
-            sendButtontextWatcher = SendButtonTextWatcher(replyBoxTextListener)
+            sendButtontextWatcher = ComposeTextWatcher(replyBoxTextListener)
             composeArea?.addTextChangedListener(sendButtontextWatcher)
         }
     }

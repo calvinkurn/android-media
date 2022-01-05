@@ -4,7 +4,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import com.tokopedia.topchat.chatroom.view.listener.ReplyBoxTextListener
 
-class SendButtonTextWatcher (
+class ComposeTextWatcher (
         private val replyBoxTextListener: ReplyBoxTextListener
 ): TextWatcher {
 
