@@ -369,6 +369,7 @@ class PlayFragment @Inject constructor(
         ivClose.setOnClickListener { hideKeyboard() }
         fragmentVideoView.safeInit()
         fragmentUserInteractionView.safeInit()
+        fragmentBottomSheetView.safeInit()
 
         invalidateVideoTopBounds()
         hideAllInsets()
@@ -387,11 +388,9 @@ class PlayFragment @Inject constructor(
     }
 
     private fun setupObserve() {
-//        observeStatusInfo()
         observeVideoMeta()
         observeChannelInfo()
         observeBottomInsetsState()
-        observePinned()
         observePiPEvent()
 
         observeUiState()
@@ -454,12 +453,6 @@ class PlayFragment @Inject constructor(
         })
     }
 
-    private fun observePinned() {
-        playViewModel.observablePinnedProduct.observe(viewLifecycleOwner, DistinctObserver {
-            fragmentBottomSheetView.safeInit()
-        })
-    }
-
     private fun observePiPEvent() {
         playViewModel.observableEventPiPState.observe(viewLifecycleOwner, EventObserver {
             if (it is PiPState.Requesting) onEnterPiPState(it)
@@ -471,10 +464,6 @@ class PlayFragment @Inject constructor(
             playViewModel.uiState.withCache().collectLatest { cachedState ->
                 val state = cachedState.value
                 val prevState = cachedState.prevValue
-                if (
-                    prevState?.winnerBadge?.shouldShow != state.winnerBadge.shouldShow &&
-                    state.winnerBadge.shouldShow
-                ) fragmentBottomSheetView.safeInit()
 
                 handleStatus(state.status)
             }

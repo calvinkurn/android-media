@@ -1,9 +1,9 @@
 package com.tokopedia.play_common.model.result
 
-enum class ResultState {
-    Success,
-    Loading,
-    Fail;
+sealed class ResultState {
+    object Success : ResultState()
+    object Loading : ResultState()
+    data class Fail(val error: Throwable) : ResultState()
 
     val isSuccess: Boolean
         get() = this == Success
@@ -12,5 +12,5 @@ enum class ResultState {
         get() = this == Loading
 
     val isFail: Boolean
-        get() = this == Fail
+        get() = this is Fail
 }

@@ -43,4 +43,9 @@ object ClickShareAction : PlayViewerNewAction()
  */
 object SetChannelActiveAction : PlayViewerNewAction()
 
+/**
+ * Product
+ */
+object RetryGetTagItemsAction : PlayViewerNewAction()
+
 data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()

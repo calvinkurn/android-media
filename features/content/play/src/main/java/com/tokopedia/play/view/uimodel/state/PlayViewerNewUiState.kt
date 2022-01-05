@@ -3,6 +3,7 @@ package com.tokopedia.play.view.uimodel.state
 import androidx.annotation.StringRes
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
@@ -12,6 +13,7 @@ import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
  * Created by jegul on 28/06/21
  */
 data class PlayViewerNewUiState(
+    val channel: PlayChannelDetailUiModel,
     val interactiveView: PlayInteractiveViewUiState,
     val partner: PlayPartnerUiState,
     val winnerBadge: PlayWinnerBadgeUiState,
@@ -21,7 +23,6 @@ data class PlayViewerNewUiState(
     val share: PlayShareUiState,
     val rtn: PlayRtnUiState,
     val title: PlayTitleUiState,
-    val viewAllProduct: PlayViewAllProductUiState,
     val tagItems: TagItemUiModel,
     val status: PlayStatusUiModel,
 )
@@ -54,6 +55,7 @@ sealed class PlayInteractiveUiState {
 }
 
 data class PlayPartnerUiState(
+    val id: Long,
     val name: String,
     val followStatus: PlayPartnerFollowStatus,
     val iconUrl: String,
@@ -96,10 +98,6 @@ data class PlayTotalViewUiState(
 
 data class PlayTitleUiState(
     val title: String
-)
-
-data class PlayViewAllProductUiState(
-    val shouldShow: Boolean
 )
 
 enum class ViewVisibility {

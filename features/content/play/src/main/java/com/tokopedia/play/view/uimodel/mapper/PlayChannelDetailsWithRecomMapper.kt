@@ -44,11 +44,12 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                         it.config.realTimeNotif
                     ),
                     videoInfo = mapVideoInfo(it.video),
+                    bottomSheetTitle = it.config.pinnedProductConfig.bottomSheetTitle,
                 ),
                 partnerInfo = mapPartnerInfo(it.partner),
                 likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
                 channelReportInfo = mapChannelReportInfo(it.id, extraParams),
-                pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
+                pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner),
                 quickReplyInfo = mapQuickReply(it.quickReplies),
                 videoMetaInfo = if(it.airTime == PlayUpcomingUiModel.COMING_SOON) emptyVideoMetaInfo() else mapVideoMeta(it.video, it.id, it.title, extraParams),
 //                statusInfo = mapChannelStatusInfo(it.config, it.title),
@@ -143,10 +144,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     private fun mapPinnedInfo(
             pinnedMessageResponse: ChannelDetailsWithRecomResponse.PinnedMessage,
             partnerResponse: ChannelDetailsWithRecomResponse.Partner,
-            configResponse: ChannelDetailsWithRecomResponse.Config
     ) = PlayPinnedInfoUiModel(
             pinnedMessage = mapPinnedMessage(pinnedMessageResponse, partnerResponse),
-            pinnedProduct = mapPinnedProduct(configResponse, partnerResponse)
     )
 
     private fun mapProductTagsInfo(

@@ -37,7 +37,8 @@ import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
-import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
+import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
+import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.viewcomponent.ProductSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.ShopCouponSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.VariantSheetViewComponent
@@ -46,6 +47,7 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
+import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 import com.tokopedia.play_common.ui.leaderboard.PlayInteractiveLeaderboardViewComponent
 import com.tokopedia.play_common.util.event.EventObserver
@@ -252,8 +254,8 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun setupObserve() {
         observeLoggedInInteractionEvent()
-        observeProductSheetContent()
-        observePinned()
+//        observeProductSheetContent()
+//        observePinned()
         observeVariantSheetContent()
         observeBottomInsetsState()
         observeBuyEvent()
@@ -405,32 +407,32 @@ class PlayBottomSheetFragment @Inject constructor(
     /**
      * Observe
      */
-    private fun observePinned() {
-        playViewModel.observablePinnedProduct.observe(viewLifecycleOwner) {
-            if (it.productTags is PlayProductTagsUiModel.Complete) {
-                if (it.productTags.productList.isNotEmpty()) {
-                    productSheetView.setProductSheet(it.productTags)
+//    private fun observePinned() {
+//        playViewModel.observablePinnedProduct.observe(viewLifecycleOwner) {
+//            if (it.productTags is PlayProductTagsUiModel.Complete) {
+//                if (it.productTags.productList.isNotEmpty()) {
+//                    productSheetView.setProductSheet(it.productTags)
+//
+//                    trackImpressedProduct()
+//                    return@observe
+//                }
+//            }
+//
+//            productSheetView.showEmpty(it.productTags.basicInfo.partnerId)
+//        }
+//    }
 
-                    trackImpressedProduct()
-                    return@observe
-                }
-            }
-
-            productSheetView.showEmpty(it.productTags.basicInfo.partnerId)
-        }
-    }
-
-    private fun observeProductSheetContent() {
-        playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, DistinctObserver {
-            when (it) {
-                is PlayResult.Loading -> if (it.showPlaceholder) productSheetView.showPlaceholder()
-                is PlayResult.Failure -> productSheetView.showError(
-                        isConnectionError = it.error is ConnectException || it.error is UnknownHostException,
-                        onError = it.onRetry
-                )
-            }
-        })
-    }
+//    private fun observeProductSheetContent() {
+//        playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, DistinctObserver {
+//            when (it) {
+//                is PlayResult.Loading -> if (it.showPlaceholder) productSheetView.showPlaceholder()
+//                is PlayResult.Failure -> productSheetView.showError(
+//                        isConnectionError = it.error is ConnectException || it.error is UnknownHostException,
+//                        onError = it.onRetry
+//                )
+//            }
+//        })
+//    }
 
     private fun observeVariantSheetContent() {
         viewModel.observableProductVariant.observe(viewLifecycleOwner, DistinctObserver {
@@ -486,15 +488,6 @@ class PlayBottomSheetFragment @Inject constructor(
         })
     }
 
-//    private fun observeStatusInfo() {
-//        playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
-//            if (it.statusType.isFreeze || it.statusType.isBanned) {
-//                viewModel.onFreezeBan()
-//                hideLoadingView()
-//            }
-//        })
-//    }
-
     private fun observeLoggedInInteractionEvent() {
         viewModel.observableLoggedInInteractionEvent.observe(viewLifecycleOwner, EventObserver(::handleLoginInteractionEvent))
     }
@@ -541,7 +534,7 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            playViewModel.uiState.withCache().collectLatest { (_, state) ->
+            playViewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 when(state.winnerBadge.leaderboards) {
                     is PlayLeaderboardWrapperUiModel.Success ->
                         leaderboardSheetView.setData(state.winnerBadge.leaderboards.data.leaderboardWinners)
@@ -557,6 +550,13 @@ class PlayBottomSheetFragment @Inject constructor(
                     viewModel.onFreezeBan()
                     hideLoadingView()
                 }
+
+                renderProductSheet(
+                    prevState?.tagItems,
+                    state.tagItems,
+                    state.channel.bottomSheetTitle,
+                    state.partner.id
+                )
             }
         }
     }
@@ -567,5 +567,35 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun trackImpressedVoucher(vouchers: List<MerchantVoucherUiModel> = couponSheetView.getVisibleVouchers()) {
         if (playViewModel.bottomInsets.isCouponSheetsShown) productAnalyticHelper.trackImpressedVouchers(vouchers)
+    }
+
+    /**
+     * Render View
+     */
+    private fun renderProductSheet(
+        prevTagItem: TagItemUiModel?,
+        tagItem: TagItemUiModel,
+        bottomSheetTitle: String,
+        partnerId: Long,
+    ) {
+        if (tagItem.resultState.isLoading && tagItem.product.productList.isEmpty()) {
+            productSheetView.showPlaceholder()
+        } else if (tagItem.resultState is ResultState.Fail) {
+            productSheetView.showError(
+                isConnectionError = tagItem.resultState.error is ConnectException ||
+                        tagItem.resultState.error is UnknownHostException,
+                onError = { playViewModel.submitAction(RetryGetTagItemsAction) }
+            )
+        } else if (tagItem.product.productList.isNotEmpty()) {
+            productSheetView.setProductSheet(
+                productList = tagItem.product.productList,
+                voucherList = tagItem.voucher.voucherList,
+                title = bottomSheetTitle,
+            )
+
+            if (tagItem.product.productList != prevTagItem?.product?.productList) trackImpressedProduct()
+        } else {
+            productSheetView.showEmpty(partnerId)
+        }
     }
 }
