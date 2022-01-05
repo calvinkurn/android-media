@@ -226,6 +226,18 @@ fun HomeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnTrue(
     coEvery { getBeautyFest(data) } returns HomeRevampFragment.BEAUTY_FEST_TRUE
 }
 
+fun HomeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnFalse(
+    data: List<Visitable<*>>
+) {
+    coEvery { getBeautyFest(data) } returns HomeRevampFragment.BEAUTY_FEST_FALSE
+}
+
+fun HomeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnNotSet(
+    data: List<Visitable<*>>
+) {
+    coEvery { getBeautyFest(data) } returns HomeRevampFragment.BEAUTY_FEST_NOT_SET
+}
+
 fun HomeRechargeRecommendationRepository.givenGetRechargeRecommendationUseCase(rechargeRecommendation: RechargeRecommendation){
     coEvery { executeOnBackground() } returns rechargeRecommendation
 }

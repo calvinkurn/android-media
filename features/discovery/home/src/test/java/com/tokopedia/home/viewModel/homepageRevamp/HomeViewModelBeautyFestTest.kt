@@ -1,8 +1,6 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
-import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBeautyFestUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
@@ -27,10 +25,7 @@ class HomeViewModelBeautyFestTest {
     private lateinit var homeViewModel: HomeRevampViewModel
 
     @Test
-    fun `Get beauty fest use case`(){
-        val observerHome: Observer<HomeDynamicChannelModel> = mockk(relaxed = true)
-
-        val homeWidget = HomeWidget(tabBusinessList = listOf(HomeWidget.TabItem(1, "")), widgetHeader = HomeWidget.WidgetHeader("red"))
+    fun `Get beauty fest use case with success result then show pink header`(){
         val businessUnitDataModel = NewBusinessUnitWidgetDataModel(
             channelModel = ChannelModel(
                 id = "129362",
@@ -39,8 +34,7 @@ class HomeViewModelBeautyFestTest {
                 channelHeader = ChannelHeader(name = "Selalu bisa topup dan Liburan"),
                 channelConfig = ChannelConfig(layout = "bu_widget"),
                 layout = "bu_widget"
-            ),
-            tabList = homeWidget.tabBusinessList
+            )
         )
 
         // dynamic banner
@@ -54,14 +48,75 @@ class HomeViewModelBeautyFestTest {
             getHomeUseCase = getHomeUseCase,
             homeBeautyFestUseCase = homeBeautyFestUseCase
         )
-        homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
         homeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnTrue(homeViewModel.homeDataModel.list)
 
-
-        // viewModel load business tab
         homeViewModel.getBeautyFest(homeViewModel.homeDataModel.list)
 
         val beautyFestEvent = homeViewModel.beautyFestLiveData.value
         Assert.assertEquals(beautyFestEvent, HomeRevampFragment.BEAUTY_FEST_TRUE)
+    }
+
+    @Test
+    fun `Get beauty fest use case with false result then show green header`(){
+        val businessUnitDataModel = NewBusinessUnitWidgetDataModel(
+            channelModel = ChannelModel(
+                id = "129362",
+                groupId = "",
+                style = ChannelStyle.ChannelHome,
+                channelHeader = ChannelHeader(name = "Selalu bisa topup dan Liburan"),
+                channelConfig = ChannelConfig(layout = "bu_widget"),
+                layout = "bu_widget"
+            )
+        )
+
+        // dynamic banner
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(
+                list = listOf(businessUnitDataModel)
+            )
+        )
+
+        homeViewModel = createHomeViewModel(
+            getHomeUseCase = getHomeUseCase,
+            homeBeautyFestUseCase = homeBeautyFestUseCase
+        )
+        homeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnFalse(homeViewModel.homeDataModel.list)
+
+        homeViewModel.getBeautyFest(homeViewModel.homeDataModel.list)
+
+        val beautyFestEvent = homeViewModel.beautyFestLiveData.value
+        Assert.assertEquals(beautyFestEvent, HomeRevampFragment.BEAUTY_FEST_FALSE)
+    }
+
+    @Test
+    fun `Get beauty fest use case with not set result then show shimmer`(){
+        val businessUnitDataModel = NewBusinessUnitWidgetDataModel(
+            channelModel = ChannelModel(
+                id = "129362",
+                groupId = "",
+                style = ChannelStyle.ChannelHome,
+                channelHeader = ChannelHeader(name = "Selalu bisa topup dan Liburan"),
+                channelConfig = ChannelConfig(layout = "bu_widget"),
+                layout = "bu_widget"
+            )
+        )
+
+        // dynamic banner
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(
+                list = listOf(businessUnitDataModel)
+            )
+        )
+
+        homeViewModel = createHomeViewModel(
+            getHomeUseCase = getHomeUseCase,
+            homeBeautyFestUseCase = homeBeautyFestUseCase
+        )
+        homeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnNotSet(homeViewModel.homeDataModel.list)
+
+        homeViewModel.getBeautyFest(homeViewModel.homeDataModel.list)
+
+        val beautyFestEvent = homeViewModel.beautyFestLiveData.value
+        Assert.assertEquals(beautyFestEvent, HomeRevampFragment.BEAUTY_FEST_NOT_SET)
     }
 }
