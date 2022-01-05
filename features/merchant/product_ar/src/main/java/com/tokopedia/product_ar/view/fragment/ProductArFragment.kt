@@ -141,14 +141,13 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         } else {
             captureImageToComparisson()
         }
-
-        getArActivity()?.goToArComparisonFragment()
     }
 
     private fun captureImageToComparisson() {
         viewModel?.imageDrawable?.let {
             sharedViewModel?.setArListData((viewModel?.productArList?.value as? Success)?.data
                     ?: listOf(), it)
+            getArActivity()?.goToArComparisonFragment()
         }
     }
 
@@ -158,6 +157,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
                 before?.let {
                     sharedViewModel?.setArListData((viewModel?.productArList?.value as? Success)?.data
                             ?: listOf(), it)
+                    getArActivity()?.goToArComparisonFragment()
                 }
             }
         }
