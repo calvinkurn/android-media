@@ -22,7 +22,7 @@ import com.tokopedia.affiliate.PAGE_SEGMENT_HELP
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
-import com.tokopedia.affiliate.model.request.OnBoardingRequest
+import com.tokopedia.affiliate.model.request.OnboardAffiliateRequest
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavbar
 import com.tokopedia.affiliate.ui.custom.IBottomClickListener
@@ -62,7 +62,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     private lateinit var affiliateVM: AffiliateViewModel
     private var fragmentStack = Stack<String>()
     private var affiliateBottomNavigation: AffiliateBottomNavbar? = null
-    private var userActionRequiredForRegister = false
+    private var userActionRequiredForRegister = true
 
     private var isUserBlackListed = false
     private var isAffiliateWalletEnabled = false
@@ -113,9 +113,10 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         initRollence()
         initBottomNavigationView()
         setObservers()
-        showAffiliatePortal()
-//        if(userSessionInterface.isLoggedIn)
-//            affiliateVM.getAffiliateValidateUser()
+        if(userSessionInterface.isLoggedIn)
+            affiliateVM.getAffiliateValidateUser()
+        else
+            showLoginPortal()
     }
 
     private fun initRollence() {
@@ -130,10 +131,11 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun showLoginPortal() {
-        openFragment(AffiliateLoginFragment.getFragmentInstance(this))
+        if(fragmentStack.isEmpty() || (fragmentStack.peek() != (AffiliateLoginFragment::class.java.canonicalName)))
+            openFragment(AffiliateLoginFragment.getFragmentInstance(this))
     }
 
-    fun showAffiliatePortal() {
+    private fun showAffiliatePortal() {
         clearBackStack()
         findViewById<ImageUnify>(R.id.affiliate_background_image)?.show()
         affiliateBottomNavigation?.showBottomNav()
@@ -202,6 +204,9 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
             } else {
                 if (!userActionRequiredForRegister)
                     navigateToPortfolioFragment()
+                else {
+                    showLoginPortal()
+                }
             }
         })
 
@@ -333,18 +338,10 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
     private fun setBottomState(peek: String?) {
         when (peek) {
-            AffiliateHomeFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
-                HOME_MENU
-            )
-            AffiliatePromoFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
-                PROMO_MENU
-            )
-            AffiliateIncomeFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
-                INCOME_MENU
-            )
-            BaseSessionWebViewFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
-                HELP_MENU
-            )
+            AffiliateHomeFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(HOME_MENU)
+            AffiliatePromoFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(PROMO_MENU)
+            AffiliateIncomeFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(INCOME_MENU)
+            BaseSessionWebViewFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(HELP_MENU)
         }
     }
 
@@ -356,7 +353,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         return isUserBlackListed
     }
 
-    override fun navigateToTermsFragment(channels: ArrayList<OnBoardingRequest.Channel>) {
+    override fun navigateToTermsFragment(channels: ArrayList<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>) {
         openFragment(AffiliateTermsAndConditionFragment.getFragmentInstance(this).apply {
             setChannels(channels)
         })
