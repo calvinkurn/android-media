@@ -420,7 +420,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         super.onActivityResult(requestCode, resultCode, intent)
         if (requestCode == CommonWebViewClient.ATTACH_FILE_REQUEST && webChromeWebviewClient != null) {
             webChromeWebviewClient?.onActivityResult(requestCode, resultCode, intent)
-        } else if (requestCode == REQUEST_CODE_LIVENESS) {
+        } else if (requestCode == REQUEST_CODE_LIVENESS && resultCode == Activity.RESULT_OK) {
             scroogeWebView?.loadUrl(kycRedirectionUrl)
         } else if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val imagePath = intent?.getStringExtra(HCI_KTP_IMAGE_PATH)

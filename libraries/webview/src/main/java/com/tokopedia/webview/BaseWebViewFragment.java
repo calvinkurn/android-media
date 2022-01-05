@@ -300,7 +300,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == REQUEST_CODE_LIVENESS)
+        if (requestCode == REQUEST_CODE_LIVENESS && resultCode == RESULT_OK)
             webView.loadUrl(kycRedirectionUrl);
 
         if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
