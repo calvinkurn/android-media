@@ -64,6 +64,7 @@ import com.tokopedia.play_common.sse.model.SSECloseReason
 import com.tokopedia.play_common.sse.model.SSEResponse
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.Event
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
 import com.tokopedia.play_common.websocket.WebSocketResponse
@@ -98,7 +99,7 @@ class PlayViewModel @Inject constructor(
         private val remoteConfig: RemoteConfig,
         private val playPreference: PlayPreference,
         private val videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
-        private val playChannelWebSocket: PlayChannelWebSocket,
+        private val playChannelWebSocket: PlayWebSocket,
         private val repo: PlayViewerRepository,
         private val playAnalytic: PlayNewAnalytic,
         private val timerFactory: TimerFactory,
@@ -945,7 +946,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun connectWebSocket(channelId: String, socketCredential: SocketCredential) {
-        playChannelWebSocket.connectSocket(channelId, socketCredential.gcToken)
+        playChannelWebSocket.connect(channelId, socketCredential.gcToken, WEB_SOCKET_SOURCE_PLAY_VIEWER)
     }
 
     private fun stopWebSocket() {
@@ -1877,5 +1878,7 @@ class PlayViewModel @Inject constructor(
         private const val REQUEST_CODE_LOGIN_FOLLOW = 571
         private const val REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE = 572
         private const val REQUEST_CODE_LOGIN_LIKE = 573
+
+        private const val WEB_SOCKET_SOURCE_PLAY_VIEWER = "Viewer"
     }
 }

@@ -14,16 +14,7 @@ class PlayChannelWebSocket @Inject constructor(
 ) : PlayWebSocket by playWebSocket {
 
     fun connectSocket(channelId: String, gcToken: String) {
-        val wsBaseUrl = localCacheHandler.getString(
-                KEY_GROUPCHAT_DEVELOPER_OPTION_PREFERENCES,
-                TokopediaUrl.getInstance().WS_PLAY
-        )
-        val wsFullUrl = buildString {
-            append("$wsBaseUrl$PLAY_WEB_SOCKET_GROUP_CHAT$channelId")
-            if (gcToken.isNotEmpty()) append("&token=$gcToken")
-        }
-
-        playWebSocket.connect(wsFullUrl, channelId, gcToken, SOURCE_PLAY_VIEWER)
+        playWebSocket.connect(channelId, gcToken, SOURCE_PLAY_VIEWER)
     }
 
     companion object {
