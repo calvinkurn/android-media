@@ -85,6 +85,6 @@ class DigitTextView : FrameLayout {
     }
 
     companion object {
-        private const val ANIMATION_DURATION = 250
+        private const val ANIMATION_DURATION = 80
     }
 }

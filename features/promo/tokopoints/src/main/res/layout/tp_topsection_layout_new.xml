@@ -57,15 +57,14 @@
         app:typographyWeight="bold"
         tools:text="Classic Member" />-->
 
-    <com.tokopedia.tokopoints.view.customview.DigitTextView
-        android:id="@+id/digittextView"
+    <LinearLayout
+        android:id="@+id/containerss"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/img_egg"
         android:layout_alignStart="@id/img_egg"
-        android:layout_marginTop="@dimen/unify_space_12"
-        android:layout_marginBottom="4dp"
-        tools:text="Classic Member" />
+        android:orientation="horizontal">
+    </LinearLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_transaksi_value"
@@ -82,36 +81,40 @@
         app:typographyWeight="bold"
         tools:text="Gold" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
         android:id="@+id/container_progressbar"
         android:layout_width="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:layout_marginEnd="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_10"
-        android:layout_below="@id/digittextView"
-        android:layout_alignStart="@id/digittextView"
+        android:layout_below="@id/containerss"
+        android:layout_alignStart="@id/containerss"
         android:layout_alignEnd="@id/text_transaksi_value"
         android:layout_height="wrap_content">
 
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/tier_icon_progressbar"
+            android:layout_gravity="center_vertical|end"
+            android:layout_width="20dp"
+            android:layout_marginTop="@dimen/dp_8"
+            android:translationZ="@dimen/dp_10"
+            android:layout_height="20dp" />
+
         <com.tokopedia.unifycomponents.ProgressBarUnify
             android:id="@+id/progressbar_membership"
-            android:layout_width="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_50"
+            android:clipToPadding="false"
+            android:clipChildren="false"
             android:layout_gravity="center_vertical"
             app:unify_progress_bar_color_type="color_green"
             app:unify_progress_bar_from_color="@color/green_50"
             app:unify_progress_bar_height="10" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/progressbar_membership"
-        app:layout_constraintBottom_toBottomOf="@id/progressbar_membership"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
-        android:layout_gravity="end|center"
-        android:src="@color/black"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </FrameLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_target"
@@ -119,7 +122,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/container_progressbar"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="@dimen/unify_space_16"
         android:layout_marginEnd="@dimen/tp_margin_medium">
 
         <com.tokopedia.unifyprinciples.Typography

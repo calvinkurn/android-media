@@ -1,5 +1,8 @@
 package com.tokopedia.tokopoints.view.tokopointhome.header
 
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Color
@@ -11,12 +14,10 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -34,15 +35,14 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContext
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.view.customview.DigitTextView
-import com.tokopedia.tokopoints.view.customview.DynamicItemActionView
+import com.tokopedia.tokopoints.view.customview.*
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.BBO
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.KUPON
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.TOKOMEMBER
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.TOPQUEST
-import com.tokopedia.tokopoints.view.customview.RewardCommonBottomSheet
 import com.tokopedia.tokopoints.view.model.BottomSheetModel
 import com.tokopedia.tokopoints.view.model.homeresponse.TopSectionResponse
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
@@ -55,6 +55,7 @@ import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.convertSecondsToHrMmSs
 import com.tokopedia.tokopoints.view.util.isDarkMode
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -91,8 +92,12 @@ class TopSectionVH(
     private var ivStatusBackground: AppCompatImageView? = null
     private var progressBar: ProgressBarUnify? = null
     private var digittextView: DigitTextView? = null
+    private var digitTextView1:DigitTextView?=null
+    private var tierIconProgress: ImageUnify?=null
+    private var frameLayout:FrameLayout?=null
     private val MEMBER_STATUS_BG_RADII = 16F
     private val TP_CONFETTI_STATUS_MATCHING = "tp_confetti_entry_point.zip"
+    private var linearLayout:LinearLayout?=null
 
     fun bind(model: TopSectionResponse) {
 
@@ -114,7 +119,8 @@ class TopSectionVH(
         statusMatchingTimer = itemView.findViewById(R.id.countdown_status)
         ivStatusBackground = itemView.findViewById(R.id.iv_gojek)
         progressBar = itemView.findViewById(R.id.progressbar_membership)
-        digittextView = itemView?.findViewById(R.id.digittextView)
+        tierIconProgress = itemView.findViewById(R.id.tier_icon_progressbar)
+        linearLayout = itemView.findViewById(R.id.containerss)
 
         renderToolbarWithHeader(model.tokopediaRewardTopSection)
         model.userSavingResponse?.userSaving?.let {
@@ -136,19 +142,74 @@ class TopSectionVH(
         }
         mTextMembershipLabel?.text = data?.introductionText
 
-        digittextView?.setValue(5)
+       tierIconProgress?.loadImage(data?.progressInfoList?.get(0)?.iconImageURL?:"")
+        var getdigitvalue:String = data?.progressInfoList?.get(0)?.currentAmount.toString()
+        getdigitvalue = "35.8979.0"
+        val x = getdigitvalue.toCharArray()
+        for (i in x){
+            if(i.isDigit()){
+                val digitTextView = DigitTextView(itemView.context)
+                digitTextView.setValue(i.digitToInt())
+                linearLayout?.addView(digitTextView)
+            }
+            else{
+                val dotviewv =Typography(itemView.context)
+                dotviewv.text="."
+                dotviewv.setWeight(Typography.BOLD)
+                linearLayout?.gravity = Gravity.BOTTOM
+                dotviewv.setTextColor(Color.WHITE)
+                linearLayout?.addView(dotviewv)
+            }
+        }
+        val container = progressBar?.progressBarContainer
+        val lpTarget  = container?.layoutParams
+        lpTarget?.height = 800
+        container?.layoutParams = lpTarget
+        progressBar?.progressBarHeight = ProgressBarUnify.SIZE_MEDIUM
+        (progressBar?.progressBarWrapper?.parent as ViewGroup).clipChildren = false
+        (progressBar?.progressBarWrapper)?.clipChildren = false
+        (progressBar?.progressBarIndicatorWrapper)?.clipChildren = false
+        (progressBar?.progressBarWrapper?.parent as ViewGroup).clipToPadding = false
+        progressBar?.gravity= Gravity.CENTER_VERTICAL
+        progressBar?.setProgressIcon(itemView.resources.getDrawable(R.drawable.confetti))
+
+        if(container?.childCount?.minus(1) ?:0  >= 0){
+            val target = container?.getChildAt(container.childCount - 1)
+            val moveXX = ObjectAnimator.ofFloat(target, "scaleX", 2f).setDuration(800)
+            val animatorContainerX =
+                ObjectAnimator.ofFloat(target, "scaleY", 2f).setDuration(800)
+            val animSet = AnimatorSet()
+
+        animSet.addListener(object :Animator.AnimatorListener{
+            override fun onAnimationStart(p0: Animator?) {
+            }
+
+            override fun onAnimationEnd(p0: Animator?) {
+                progressBar?.setProgressIcon(null)
+            }
+
+            override fun onAnimationCancel(p0: Animator?) {
+            }
+
+            override fun onAnimationRepeat(p0: Animator?) {
+            }
+
+        })
+
+
+            animSet.playTogether(animatorContainerX,moveXX)
+            animSet.start()
+
+
+        }
+
         progressBar?.apply {
-            setProgressIcon(resources.getDrawable(R.drawable.ic_tp_green_clock))
             onValueChangeListener = { oldValue: Int, newValue: Int ->
                 if (newValue == 100) {
                     showBottomSheetMembership(this.context)
-                    this.postDelayed( {
-                        this.setValue(0)
-                        this.setValue(10, true)
-                    },2000L)
                 }
             }
-            setValue(100,true)
+            setValue(96,true)
             progressBarColorType = ProgressBarUnify.COLOR_GREEN
         }
 
@@ -465,5 +526,9 @@ class TopSectionVH(
 
     interface CardRuntimeHeightListener {
         fun setCardLayoutHeight(height: Int)
+    }
+
+    interface RefreshOnTierUpgrade {
+        fun refreshReward()
     }
 }
