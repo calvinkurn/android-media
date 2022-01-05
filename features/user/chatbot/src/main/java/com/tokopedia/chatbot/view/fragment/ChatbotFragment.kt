@@ -340,6 +340,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                         hashMap.get("used_by").toBlankOrString()
                     )
                 }
+                enableTyping()
             } else {
 
                 isSendButtonActivated = false
@@ -421,15 +422,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         getViewState()?.onShowInvoiceToChat(generatedInvoice)
         presenter.sendInvoiceAttachment(
             messageId, invoice, generatedInvoice.startTime,
-            opponentId, isArticleEntry,hashMap.get("used_by").toBlankOrString()
+            opponentId, isArticleEntry, hashMap.get("used_by").toBlankOrString()
         )
 
-
-        //Send message here
         val startTime = SendableUiModel.generateStartTime()
         val msg = replyEditText.text.toString()
         var quickReplyViewModel = QuickReplyViewModel(msg, msg, msg)
-        //       presenter.sendQuickReply(messageId,quickReplyViewModel,startTime,opponentId)
 
         presenter.sendQuickReplyInvoice(
             messageId,
