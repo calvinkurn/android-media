@@ -124,9 +124,6 @@ open class HomeRevampViewModel @Inject constructor(
     private val _requestImageTestLiveData = MutableLiveData<Event<PlayCardDataModel>>()
     val requestImageTestLiveData: LiveData<Event<PlayCardDataModel>> get() = _requestImageTestLiveData
 
-    val oneClickCheckout: LiveData<Event<Any>> get() = _oneClickCheckout
-    private val _oneClickCheckout = MutableLiveData<Event<Any>>()
-
     val oneClickCheckoutHomeComponent: LiveData<Event<Any>> get() = _oneClickCheckoutHomeComponent
     private val _oneClickCheckoutHomeComponent = MutableLiveData<Event<Any>>()
 
@@ -319,8 +316,6 @@ open class HomeRevampViewModel @Inject constructor(
         launch { homeSuggestedReviewUseCase.get().onReviewDismissed() }
     }
 
-    //TODO 11.1: Remove getBusinessUnitTabData -> Move to HomeDynamicChannelUseCase
-    //Create BusinessUnitRepository
     fun getBusinessUnitTabData(position: Int){
         findWidget<NewBusinessUnitWidgetDataModel> { buModel, _ ->
             launch{
@@ -330,8 +325,6 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    //TODO 11.2: Remove getBusinessUnitTabData -> Move to HomeBusinessUnitUseCase.onClickBusinessUnitTab
-    //Create BusinessUnitRepository
     fun getBusinessUnitData(tabId: Int, position: Int, tabName: String){
         findWidget<NewBusinessUnitWidgetDataModel> { buModel, index ->
             launch{
@@ -349,11 +342,7 @@ open class HomeRevampViewModel @Inject constructor(
             if(visitableList.isEmpty()){
                 deleteWidget(visitable, position)
             } else {
-                var lastIndex = position
-                val dynamicData = homeDataModel.list.getOrNull(lastIndex)
-                if(dynamicData !is DynamicChannelDataModel && dynamicData != visitable){
-                    lastIndex = homeDataModel.list.indexOf(visitable)
-                }
+                val lastIndex = position
                 deleteWidget(visitable, lastIndex)
                 visitableList.reversed().forEach {
                     addWidget(it, lastIndex)
@@ -423,8 +412,8 @@ open class HomeRevampViewModel @Inject constructor(
                     homeListCarouselUseCase.get().onOneClickCheckOut(channel, grid, position, getUserId()))
             )
         }){
-            it.printStackTrace()
             _oneClickCheckoutHomeComponent.postValue(Event(it))
+            it.printStackTrace()
         }
     }
 
@@ -550,8 +539,7 @@ open class HomeRevampViewModel @Inject constructor(
             updateWidget(DynamicChannelRetryModel(false),index)
         }
         findWidget<DynamicChannelRetryModel> { retryWidget, index ->
-            updateWidget(retryWidget, index)
-            addWidget(DynamicChannelRetryModel(false), homeDataModel.list.size)
+            updateWidget(DynamicChannelRetryModel(false), index)
         }
     }
 
@@ -599,7 +587,7 @@ open class HomeRevampViewModel @Inject constructor(
         return visitable
     }
 
-    private fun initFlow() {
+    fun initFlow() {
         launchCatchError(coroutineContext, block = {
             homeFlowDynamicChannel.collect { homeNewDataModel ->
                 if (homeNewDataModel?.isCache == false) {
@@ -635,7 +623,7 @@ open class HomeRevampViewModel @Inject constructor(
             }
         }) {
             _updateNetworkLiveData.postValue(Result.error(error = it, data = null))
-            val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
+            val stackTrace = Log.getStackTraceString(it)
             HomeServerLogger.logWarning(
                 type = TYPE_REVAMP_ERROR_INIT_FLOW,
                 throwable = it,

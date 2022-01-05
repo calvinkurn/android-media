@@ -43,6 +43,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
+import net.bytebuddy.implementation.bytecode.Throw
 import java.util.concurrent.TimeoutException
 
 /**
@@ -155,6 +156,44 @@ fun HomeDynamicChannelUseCase.givenGetHomeDataReturn(homeDynamicChannelModel: Ho
     }
 }
 
+fun HomeDynamicChannelUseCase.givenGetHomeDataError(t: Throwable = Throwable("Unit test simulate error")) {
+    coEvery { getHomeDataFlow() } returns flow{
+        throw t
+    }
+}
+
+fun HomeDynamicChannelUseCase.givenUpdateHomeDataReturn(result: com.tokopedia.home.beranda.helper.Result<Any>) {
+    coEvery { updateHomeData() } returns flow{
+        emit(result)
+    }
+}
+
+fun HomeDynamicChannelUseCase.givenUpdateHomeDataError(t: Throwable = Throwable("Unit test simulate error")) {
+    coEvery { updateHomeData() } returns flow{
+        throw t
+    }
+}
+
+fun HomeDynamicChannelUseCase.givenOnDynamicChannelExpiredReturns(visitableList: List<Visitable<*>> = listOf()) {
+    coEvery { onDynamicChannelExpired(any()) } returns visitableList
+}
+
+fun HomeDynamicChannelUseCase.givenOnDynamicChannelExpiredError() {
+    coEvery { onDynamicChannelExpired(any()) } throws Exception()
+}
+
+fun HomeListCarouselUseCase.givenOnOneClickCheckoutReturn(mapResponse: Map<String, Any> = mapOf()) {
+    coEvery { onOneClickCheckOut(any(), any(), any(), any()) } returns mapResponse
+}
+
+fun HomeListCarouselUseCase.givenOnOneClickCheckoutError() {
+    coEvery { onOneClickCheckOut(any(), any(), any(), any()) } throws Exception()
+}
+
+fun HomeListCarouselUseCase.givenOnClickCloseListCarouselReturn(value: Boolean) {
+    coEvery { onClickCloseListCarousel(any()) } returns value
+}
+
 fun HomeRechargeRecommendationUseCase.givenOnDeclineRechargeRecommendationSuccess() {
     coEvery { onDeclineRechargeRecommendation(any()) } answers { }
 }
@@ -190,6 +229,10 @@ fun HomeDynamicChannelUseCase.givenUpdateHeaderData(homeHeaderDataModel: HomeHea
 
 fun HomeBalanceWidgetUseCase.givenGetHomeBalanceWidgetReturn(homeHeaderDataModel: HomeHeaderDataModel) {
     coEvery { onGetBalanceWidgetData(any()) } returns homeHeaderDataModel
+}
+
+fun HomeBalanceWidgetUseCase.givenGetTokopointDataReturn(homeHeaderDataModel: HomeHeaderDataModel) {
+    coEvery { onGetTokopointData(any()) } returns homeHeaderDataModel
 }
 
 fun HomeDynamicChannelUseCase.givenGetHomeDataReturn(homeDynamicChannelModel: HomeDynamicChannelModel, newHomeDynamicChannelModel: HomeDynamicChannelModel) {
