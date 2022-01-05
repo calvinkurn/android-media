@@ -106,7 +106,7 @@ object SearchTracking {
         )
     }
 
-    fun trackImpressionSearchResultShop(shopItemList: List<Any>, keyword: String?) {
+    fun trackImpressionSearchResultShop(shopItemList: ArrayList<Any>, keyword: String?) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.PROMO_VIEW,
                         SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
@@ -114,7 +114,7 @@ object SearchTracking {
                         SearchTrackingConstant.EVENT_LABEL, keyword,
                         ECOMMERCE, DataLayer.mapOf(
                         "promoView", DataLayer.mapOf(
-                        "promotions", DataLayer.listOf(*shopItemList.toTypedArray())
+                        "promotions", shopItemList
                 )
                 )
                 )

@@ -72,7 +72,7 @@ internal class SearchShopViewModel(
     private val dynamicFilterEventLiveData = MutableLiveData<Event<Boolean>>()
     private val openFilterPageTrackingEventMutableLiveData = MutableLiveData<Event<Boolean>>()
     private val openFilterPageEventLiveData = MutableLiveData<Event<Boolean>>()
-    private val shopItemImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
+    private val shopItemImpressionTrackingEventLiveData = MutableLiveData<Event<ArrayList<Any>>>()
     private val productPreviewImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
     private val searchShopFirstPagePerformanceMonitoringEventLiveData = MutableLiveData<Event<Boolean>>()
     private val shopRecommendationItemImpressionTrackingEventLiveData = MutableLiveData<Event<ArrayList<Any>>>()
@@ -863,7 +863,7 @@ internal class SearchShopViewModel(
 
     fun getActiveFilterOptionListForEmptySearch() = filterController.getActiveFilterOptionList()
 
-    fun getShopItemImpressionTrackingEventLiveData(): LiveData<Event<List<Any>>> = shopItemImpressionTrackingEventLiveData
+    fun getShopItemImpressionTrackingEventLiveData(): LiveData<Event<ArrayList<Any>>> = shopItemImpressionTrackingEventLiveData
 
     fun getProductPreviewImpressionTrackingEventLiveData(): LiveData<Event<List<Any>>> =
             productPreviewImpressionTrackingEventLiveData
