@@ -10,23 +10,25 @@ object TncAnalytics : BaseTrackerConst() {
     private const val VIEW_ADDRESS = "viewAddressIris"
     private const val VIEW_TNC = "view syarat dan ketentuan"
 
-    fun onClickTnC(category: String) {
+    fun onClickTnC(userId: String, category: String) {
         getTracker().sendGeneralEvent(BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(category)
                 .appendEventAction(CLICK_TNC)
                 .appendEventLabel("")
+                .appendUserId(userId)
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .build())
     }
 
-    fun onViewTnC(category: String) {
+    fun onViewTnC(userId: String, category: String) {
         getTracker().sendGeneralEvent(BaseTrackerBuilder()
                 .appendEvent(VIEW_ADDRESS)
                 .appendEventCategory(category)
                 .appendEventAction(VIEW_TNC)
                 .appendEventLabel("")
+                .appendUserId(userId)
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .build())

@@ -18,11 +18,11 @@ import com.tokopedia.logisticCommon.ui.userconsent.analytic.TncAnalytics
 
 class LogisticUserConsentHelper {
 
-    fun displayUserConsent(context: Context, textView: TextView?, buttonText: String, screenName: String = "") {
+    fun displayUserConsent(context: Context, userId: String, textView: TextView?, buttonText: String, screenName: String = "") {
         val onTermsAndConditionClicked: ClickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
                 if (screenName.isNotEmpty()) {
-                    TncAnalytics.onClickTnC(screenName)
+                    TncAnalytics.onClickTnC(userId, screenName)
                 }
                 RouteManager.route(context, ApplinkConstInternalLogistic.TNC_WEBVIEW)
             }
@@ -53,7 +53,7 @@ class LogisticUserConsentHelper {
             setText(consentText, TextView.BufferType.SPANNABLE)
         }
         if (screenName.isNotEmpty()) {
-            TncAnalytics.onViewTnC(screenName)
+            TncAnalytics.onViewTnC(userId, screenName)
         }
     }
 
