@@ -8,6 +8,7 @@ import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 
 class InspirationCarouselProductDataViewMapper {
 
+    @Suppress("LongParameterList")
     fun convertToInspirationCarouselProductDataView(
         inspirationCarouselProduct: List<InspirationCarouselProduct>,
         productPosition: Int,
