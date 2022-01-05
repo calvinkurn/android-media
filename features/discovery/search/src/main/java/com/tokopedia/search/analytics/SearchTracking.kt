@@ -784,7 +784,7 @@ object SearchTracking {
         userId: String,
         isOrganicAds: Boolean,
         componentId: String,
-        broadMatchItems: List<Any>,
+        broadMatchItems: ArrayList<Any>,
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
@@ -799,7 +799,7 @@ object SearchTracking {
                         ACTION_FIELD, DataLayer.mapOf(
                             LIST, getBroadMatchListName(isOrganicAds, componentId)
                         ),
-                        PRODUCTS, DataLayer.listOf(*broadMatchItems.toTypedArray())
+                        PRODUCTS, broadMatchItems
                     )
                 )
             )
