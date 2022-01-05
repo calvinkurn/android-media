@@ -16,6 +16,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.SellerHomeConst
+import com.tokopedia.sellerhome.settings.view.activity.SellerEduWebviewActivity
 import java.util.*
 
 class OtherMenuAdapter(
@@ -26,7 +27,7 @@ class OtherMenuAdapter(
     BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>(typeFactory) {
 
     companion object {
-        private const val APPLINK_FORMAT = "%s?url=%s"
+        private const val WEBVIEW_APPLINK_FORMAT = "%s?url=%s"
         private const val FEEDBACK_EXPIRED_DATE = 1638115199000 //28-11-2021
     }
 
@@ -70,7 +71,7 @@ class OtherMenuAdapter(
         ) {
             val applink = String.format(
                 Locale.getDefault(),
-                APPLINK_FORMAT,
+                WEBVIEW_APPLINK_FORMAT,
                 ApplinkConst.WEBVIEW,
                 "${SellerBaseUrl.HOSTNAME}${SellerBaseUrl.RESO_INBOX_SELLER}"
             )
@@ -98,14 +99,10 @@ class OtherMenuAdapter(
             eventActionSuffix = SettingTrackingConstant.SELLER_CENTER,
             iconUnify = IconUnify.SHOP_INFO
         ) {
-            val applink = String.format(
-                Locale.getDefault(),
-                APPLINK_FORMAT,
-                ApplinkConst.WEBVIEW,
-                "${SellerBaseUrl.SELLER_HOSTNAME}${SellerBaseUrl.SELLER_EDU}"
-            )
-            val intent = RouteManager.getIntent(context, applink)
-            context?.startActivity(intent)
+            context?.let {
+                val intent = SellerEduWebviewActivity.createIntent(it)
+                it.startActivity(intent)
+            }
         },
         MenuItemUiModel(
             title = context?.getString(R.string.setting_menu_tokopedia_care).orEmpty(),
