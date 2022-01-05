@@ -487,4 +487,10 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
             compositeSubscription.unsubscribe();
         }
     }
+
+    public void unsubscribe() {
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
+            compositeSubscription.unsubscribe();
+        }
+    }
 }
