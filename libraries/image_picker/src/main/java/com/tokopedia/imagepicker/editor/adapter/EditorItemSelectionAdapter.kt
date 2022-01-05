@@ -40,9 +40,9 @@ class EditorItemSelectionAdapter constructor(
             onItemSelected(position)
 
             if (item.placeholderBitmap != null) {
-                listener?.onItemSelected(item.placeholderBitmap, item.itemType)
+                listener?.onItemSelected(position, item.placeholderBitmap, item.itemType)
             } else {
-                listener?.onItemSelected(null, item.itemType)
+                listener?.onItemSelected(position, null, item.itemType)
             }
         }
     }
@@ -157,7 +157,7 @@ class EditorItemSelectionAdapter constructor(
     }
 
     interface EditorItemSelectionListener {
-        fun onItemSelected(bitmap: Bitmap?, type: Int)
+        fun onItemSelected(position: Int, bitmap: Bitmap?, type: Int)
     }
 
 }
