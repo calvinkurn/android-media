@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -22,6 +21,7 @@ import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActiv
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user_identification_common.KYCConstant
@@ -121,8 +121,8 @@ class UserIdentificationFormFaceFragment : BaseUserIdentificationStepperFragment
     private fun setExampleImages() {
         correctImage?.visibility = View.VISIBLE
         wrongImage?.visibility = View.VISIBLE
-        ImageHandler.LoadImage(correctImage, KycUrl.SELFIE_OK)
-        ImageHandler.LoadImage(wrongImage, KycUrl.SELFIE_FAIL)
+        correctImage?.loadImage(KycUrl.SELFIE_OK)
+        wrongImage?.loadImage(KycUrl.SELFIE_FAIL)
     }
 
     private fun goToKycSelfie() {
