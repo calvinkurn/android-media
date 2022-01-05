@@ -25,6 +25,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
@@ -62,7 +63,8 @@ fun createHomeViewModel(
         homeRecommendationUseCase: HomeRecommendationUseCase = mockk(relaxed = true),
         homeSalamRecommendationUseCase: HomeSalamRecommendationUseCase = mockk(relaxed = true),
         homeSearchUseCase: HomeSearchUseCase = mockk(relaxed = true),
-        homeBusinessUnitUseCase: HomeBusinessUnitUseCase = mockk(relaxed = true)
+        homeBusinessUnitUseCase: HomeBusinessUnitUseCase = mockk(relaxed = true),
+        homeBeautyFestUseCase: HomeBeautyFestUseCase = mockk(relaxed = true)
 ): HomeRevampViewModel{
     return HomeRevampViewModel(
             homeDispatcher = Lazy{ dispatchers },
@@ -78,7 +80,8 @@ fun createHomeViewModel(
             homeRecommendationUseCase = Lazy { homeRecommendationUseCase },
             homeSalamRecommendationUseCase = Lazy { homeSalamRecommendationUseCase },
             homeSearchUseCase = Lazy { homeSearchUseCase },
-            homeBusinessUnitUseCase = Lazy { homeBusinessUnitUseCase }
+            homeBusinessUnitUseCase = Lazy { homeBusinessUnitUseCase },
+            homeBeautyFestUseCase = Lazy { homeBeautyFestUseCase }
     )
 }
 
@@ -215,6 +218,12 @@ fun HomeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(
     tabName: String
 ) {
     coEvery { getBusinessUnitData(tabId, positionTab, tabName, homeDataModel, buModel, positionBuModelIndex) } returns resultBuModel
+}
+
+fun HomeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnTrue(
+    data: List<Visitable<*>>
+) {
+    coEvery { getBeautyFest(data) } returns HomeRevampFragment.BEAUTY_FEST_TRUE
 }
 
 fun HomeRechargeRecommendationRepository.givenGetRechargeRecommendationUseCase(rechargeRecommendation: RechargeRecommendation){
