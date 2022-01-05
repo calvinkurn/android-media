@@ -46,19 +46,16 @@ internal class SearchShopViewModelFactoryModule(
             userSession: daggerLazy<UserSessionInterface>,
             coroutineDispatchers: CoroutineDispatchers
     ): ViewModelProvider.Factory {
-        val useCaseCollection = ShopSearchUseCaseDataView(
-            searchShopFirstPageUseCase,
-            searchShopLoadMoreUseCase,
-            getDynamicFilterUseCase,
-            getShopCountUseCase
-        )
         return SearchShopViewModelFactory(
                 coroutineDispatchers,
                 searchParameter,
+                searchShopFirstPageUseCase,
+                searchShopLoadMoreUseCase,
+                getDynamicFilterUseCase,
+                getShopCountUseCase,
                 shopCpmDataViewMapper,
                 shopDataViewMapper,
-                userSession,
-                useCaseCollection
+                userSession
         )
     }
 }
