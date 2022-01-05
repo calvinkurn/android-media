@@ -240,7 +240,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     }
 
     fun navigateToActivity(goToIntent: Intent) {
-        reloadUrl = scroogeWebView?.url.orEmpty()
         startActivityForResult(goToIntent, REQUEST_CODE_GOPAY_TOP_UP)
     }
 
@@ -450,10 +449,9 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             } else {
                 hideFullLoading()
             }
-        } else if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_GOPAY_TOP_UP &&
-            reloadUrl.contains(getBaseUrlDomainPayment())) {
-            // refresh page
-            reloadPayment()
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_GOPAY_TOP_UP) {
+            if (reloadUrl.contains(getBaseUrlDomainPayment()))
+                reloadPayment()
         }
     }
 
@@ -595,6 +593,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                         data = Uri.parse(url)
                     }
                     if (isGoPayTopUpLink(url)) {
+                        reloadUrl = scroogeWebView?.url.orEmpty()
                         navigateToActivity(intent)
                     } else {
                         navigateToActivityAndFinish(intent)
