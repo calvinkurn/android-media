@@ -1,5 +1,7 @@
 package com.tokopedia.product.addedit.variant.presentation.adapter
 
+import android.os.Handler
+import android.os.Looper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailFieldsUiModel
@@ -68,6 +70,10 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
 
     private fun notifyElement(adapterPosition: Int, element: Visitable<*>) {
         visitables[adapterPosition] = element
-        notifyItemChanged(adapterPosition)
+        Handler(Looper.getMainLooper()).post {
+            try {
+                notifyItemChanged(adapterPosition)
+            } catch (e: Exception) {}
+        }
     }
 }
