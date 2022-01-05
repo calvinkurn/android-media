@@ -142,14 +142,10 @@ class ProductListAdapter(
         viewHoldersList.remove(holder)
     }
 
-    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<*>) {
-        holder.onViewRecycled()
-        viewHoldersList.remove(holder)
-        super.onViewDetachedFromWindow(holder)
-    }
-
     fun appendItems(list: List<Visitable<*>>) {
+        val start = itemCount
         this.list.addAll(list)
+        notifyItemRangeInserted(start, list.size)
     }
 
     fun updateWishlistStatus(productId: String, isWishlisted: Boolean) {
@@ -197,7 +193,9 @@ class ProductListAdapter(
     }
 
     fun addLoading() {
+        val loadingModelPosition = list.size
         list.add(loadingMoreModel)
+        notifyItemInserted(loadingModelPosition)
     }
 
     fun removeLoading() {
