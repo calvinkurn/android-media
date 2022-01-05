@@ -12,14 +12,17 @@ import com.tokopedia.shop.score.uitest.stub.common.util.isViewDisplayed
 import com.tokopedia.shop.score.uitest.stub.common.util.onClick
 import com.tokopedia.shop.score.uitest.stub.common.util.onIdView
 import com.tokopedia.shop.score.uitest.stub.common.util.scrollTo
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 
+@UiTest
 class NewOsAfterMondayActivityTest: ShopScoreTest() {
 
     override fun setup() {
         super.setup()
         getShopInfoPeriodUseCaseStub.responseStub = shopInfoPeriodAfterMondayResponse
         getShopPerformanceUseCaseStub.responseStub = newOsAfterMondayResponse
+        shopScorePrefManagerStub.setFinishCoachMark(true)
     }
 
     @Test
@@ -80,7 +83,7 @@ class NewOsAfterMondayActivityTest: ShopScoreTest() {
     fun show_faq_shop_score_new_after_monday_os() {
         activityRule.launchActivity(getShopPerformancePageIntent())
         activityRule.activity.scrollTo<SectionFaqUiModel>()
-        showFaqItemList(newOsAfterMondayResponse)
+        showFaqItemList()
     }
 
     @Test

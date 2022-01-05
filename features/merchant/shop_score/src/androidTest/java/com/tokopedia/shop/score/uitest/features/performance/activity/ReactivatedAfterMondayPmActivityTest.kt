@@ -13,14 +13,17 @@ import com.tokopedia.shop.score.uitest.stub.common.util.onClick
 import com.tokopedia.shop.score.uitest.stub.common.util.onIdView
 import com.tokopedia.shop.score.uitest.stub.common.util.scrollTo
 import com.tokopedia.shop.score.uitest.stub.common.util.withTextStr
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 
+@UiTest
 class ReactivatedAfterMondayPmActivityTest: ShopScoreTest() {
 
     override fun setup() {
         super.setup()
         getShopInfoPeriodUseCaseStub.responseStub = shopInfoPeriodResponse
         getShopPerformanceUseCaseStub.responseStub = reactivatedAfterMondayPmResponse
+        shopScorePrefManagerStub.setFinishCoachMark(true)
     }
 
     @Test
@@ -59,7 +62,6 @@ class ReactivatedAfterMondayPmActivityTest: ShopScoreTest() {
 
     @Test
     fun show_header_performance_when_reactivated_after_monday_pm() {
-        shopScorePrefManagerStub.setFinishCoachMark(true)
         activityRule.launchActivity(getShopPerformancePageIntent())
         showHeaderPerformanceExistingPm(reactivatedAfterMondayPmResponse, shopInfoPeriodResponse)
     }

@@ -2,6 +2,7 @@ package com.tokopedia.autocompletecomponent.util
 
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_MANUAL_ENTER
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.INITIAL_STATE_MANUAL_ENTER
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.SRP_COMPONENT_ID
@@ -50,6 +51,8 @@ internal fun MutableMap<String, String>.addComponentId() {
 
     if (query.isEmpty())
         put(SRP_COMPONENT_ID, INITIAL_STATE_MANUAL_ENTER)
+    else
+        put(SRP_COMPONENT_ID, AUTO_COMPLETE_MANUAL_ENTER)
 }
 
 internal fun MutableMap<String, String>.addQueryIfEmpty() {

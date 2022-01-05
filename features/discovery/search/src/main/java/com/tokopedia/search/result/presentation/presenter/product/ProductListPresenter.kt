@@ -6,6 +6,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.IDENTIFIER
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.SRP_COMPONENT_ID
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE
 import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.HEADLINE_ITEM_VALUE_FIRST_PAGE
@@ -1335,6 +1337,7 @@ class ProductListPresenter @Inject constructor(
                         topAdsViewUrl = product.topAdsViewUrl,
                         topAdsClickUrl = product.topAdsClickUrl,
                         topAdsWishlistUrl = product.topAdsWishlistUrl,
+                        componentId = product.componentId,
                     )
                 }
             )
@@ -1627,6 +1630,7 @@ class ProductListPresenter @Inject constructor(
                 createGeneralSearchTrackingRelatedKeyword(productDataView),
                 dimension90,
                 view.filterParamString,
+                productDataView.pageComponentId
             )
         )
     }
@@ -2037,7 +2041,7 @@ class ProductListPresenter @Inject constructor(
             sendTrackingImpressBroadMatchAds(broadMatchItemDataView)
 
         when(val carouselProductType = broadMatchItemDataView.carouselProductType) {
-            is BroadMatchProduct -> view.trackBroadMatchImpression(broadMatchItemDataView)
+            is BroadMatchProduct -> view.trackEventImpressionBroadMatchItem(broadMatchItemDataView)
             is DynamicCarouselProduct -> view.trackDynamicProductCarouselImpression(
                     broadMatchItemDataView,
                     carouselProductType.type,
@@ -2083,6 +2087,13 @@ class ProductListPresenter @Inject constructor(
                 broadMatchItemDataView.imageUrl,
                 SearchConstant.TopAdsComponent.BROAD_MATCH_ADS
         )
+    }
+
+    override fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView) {
+        if (isViewNotAttached) return
+
+        if (broadMatchDataView.carouselOptionType == BroadMatch)
+            view.trackEventImpressionBroadMatch(broadMatchDataView)
     }
 
     override fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView) {
@@ -2222,33 +2233,34 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun getInspirationCarouselChipProducts(
-            adapterPosition: Int,
-            clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-            searchParameter: Map<String, Any>,
-            inspirationCarouselTitle: String,
+        adapterPosition: Int,
+        clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
+        searchParameter: Map<String, Any>,
+        inspirationCarouselTitle: String,
     ) {
         getInspirationCarouselChipsUseCase.get().unsubscribe()
 
         getInspirationCarouselChipsUseCase.get().execute(
-                createGetInspirationCarouselChipProductsRequestParams(
-                    clickedInspirationCarouselOption,
-                    searchParameter
-                ),
-                createGetInspirationCarouselChipProductsSubscriber(
-                    adapterPosition,
-                    clickedInspirationCarouselOption,
-                    inspirationCarouselTitle,
-                )
+            createGetInspirationCarouselChipProductsRequestParams(
+                clickedInspirationCarouselOption,
+                searchParameter
+            ),
+            createGetInspirationCarouselChipProductsSubscriber(
+                adapterPosition,
+                clickedInspirationCarouselOption,
+                inspirationCarouselTitle,
+            )
         )
     }
 
     private fun createGetInspirationCarouselChipProductsRequestParams(
-            clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-            searchParameter: Map<String, Any>,
+        clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
+        searchParameter: Map<String, Any>,
     ): RequestParams {
         val requestParams = createInitializeSearchParam(searchParameter)
 
-        requestParams.putString(SearchApiConst.IDENTIFIER, clickedInspirationCarouselOption.identifier)
+        requestParams.putString(IDENTIFIER, clickedInspirationCarouselOption.identifier)
+        requestParams.putString(SRP_COMPONENT_ID, clickedInspirationCarouselOption.componentId)
 
         return requestParams
     }

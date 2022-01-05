@@ -82,12 +82,28 @@
         app:layout_constraintTop_toBottomOf="@id/title"
         tools:text="Loren Ipsum lasnlsandlsnaldsakndlsandlsanldnsalkdnlsandlksnalkdnlsakndlsandlknsalkdnlaksndlkasndlkaslkdnsalkndlkansdklnaldnalsndlasdlknsaldnlndsa" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/courier_name_history"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:paddingTop="5dp"
+        app:typographyType="body_2"
+        android:textColor="@color/Unify_N200"
+        app:layout_constraintStart_toEndOf="@id/dot_image"
+        app:layout_constraintLeft_toRightOf="@id/dot_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/description"
+        tools:text="Kurir: JNE" />
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_proof"
         android:layout_width="58dp"
         android:layout_height="58dp"
         android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/description"
+        app:layout_constraintTop_toBottomOf="@id/courier_name_history"
         app:layout_constraintStart_toStartOf="@id/description"
         app:layout_constraintLeft_toLeftOf="@id/description"
         tools:visibility="visible"

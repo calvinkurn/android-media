@@ -6,6 +6,7 @@ import android.os.Build
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
+import android.util.Log
 import android.util.TypedValue
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.imagepicker.editor.main.Constant
@@ -278,6 +279,7 @@ object BitmapHelper {
                 dstBitmap.setPixel(col, row, Color.HSVToColor(sourceAlpha, dstHSV))
             }
         }
+        this.recycle()
         return dstBitmap
     }
 
