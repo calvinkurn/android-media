@@ -1,3 +1,4 @@
+@file:Suppress("WildcardImport")
 package com.tokopedia.search.result.shop.presentation.model
 
 import android.os.Parcel
