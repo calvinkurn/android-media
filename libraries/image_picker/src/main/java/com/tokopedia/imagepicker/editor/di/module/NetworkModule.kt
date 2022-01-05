@@ -73,7 +73,7 @@ class NetworkModule {
 
     companion object {
         private const val BASE_URL = "https://mu.tokopedia.com/"
-        private const val DEFAULT_TIMEOUT = 600
+        private const val DEFAULT_TIMEOUT = 60
     }
 
 }
