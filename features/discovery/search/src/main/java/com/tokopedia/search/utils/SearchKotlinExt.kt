@@ -33,7 +33,7 @@ internal fun String?.decodeQueryParameter(): String {
             val queryParameterEncoded = UrlParamUtils.generateUrlParamString(UrlParamUtils.getParamMap(queryParameters))
 
             "$path?$queryParameterEncoded"
-        } else ""
+        } else this
     } ?: return ""
 }
 
