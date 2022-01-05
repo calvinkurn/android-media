@@ -416,7 +416,7 @@ internal class ShopListFragment:
         })
     }
 
-    private fun trackEventImpressionShopRecommendation(trackingObjectList: List<Any>) {
+    private fun trackEventImpressionShopRecommendation(trackingObjectList: java.util.ArrayList<Any>) {
         val keyword = searchShopViewModel?.getSearchParameterQuery()
         SearchTracking.trackEventImpressionShopRecommendation(trackingObjectList, keyword)
     }

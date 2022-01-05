@@ -75,7 +75,7 @@ internal class SearchShopViewModel(
     private val shopItemImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
     private val productPreviewImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
     private val searchShopFirstPagePerformanceMonitoringEventLiveData = MutableLiveData<Event<Boolean>>()
-    private val shopRecommendationItemImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
+    private val shopRecommendationItemImpressionTrackingEventLiveData = MutableLiveData<Event<ArrayList<Any>>>()
     private val shopRecommendationProductPreviewImpressionTrackingEventLiveData = MutableLiveData<Event<ArrayList<Any>>>()
     private val clickShopItemTrackingEventLiveData = MutableLiveData<Event<ShopDataView.ShopItem>>()
     private val clickNotActiveShopItemTrackingEventLiveData = MutableLiveData<Event<ShopDataView.ShopItem>>()
@@ -871,7 +871,7 @@ internal class SearchShopViewModel(
     fun getSearchShopFirstPagePerformanceMonitoringEventLiveData(): LiveData<Event<Boolean>> =
             searchShopFirstPagePerformanceMonitoringEventLiveData
 
-    fun getShopRecommendationItemImpressionTrackingEventLiveData(): LiveData<Event<List<Any>>> =
+    fun getShopRecommendationItemImpressionTrackingEventLiveData(): LiveData<Event<ArrayList<Any>>> =
             shopRecommendationItemImpressionTrackingEventLiveData
 
     fun getShopRecommendationProductPreviewImpressionTrackingEventLiveData(): LiveData<Event<ArrayList<Any>>> =
