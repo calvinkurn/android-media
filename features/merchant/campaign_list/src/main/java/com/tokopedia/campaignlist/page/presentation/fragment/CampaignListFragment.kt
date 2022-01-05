@@ -21,7 +21,6 @@ import com.tokopedia.campaignlist.common.constant.ShopTypeDef
 import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorData
 import com.tokopedia.campaignlist.common.di.DaggerCampaignListComponent
 import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase
-import com.tokopedia.campaignlist.common.util.DateManager
 import com.tokopedia.campaignlist.common.util.onTextChanged
 import com.tokopedia.campaignlist.databinding.FragmentCampaignListBinding
 import com.tokopedia.campaignlist.page.presentation.adapter.ActiveCampaignListAdapter
@@ -67,9 +66,6 @@ class CampaignListFragment : BaseDaggerFragment(),
     @Inject
     lateinit var tracker: CampaignListTracker
 
-    @Inject
-    lateinit var dateManager: DateManager
-
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
     }
@@ -94,7 +90,6 @@ class CampaignListFragment : BaseDaggerFragment(),
         private const val EMPTY_SEARCH_KEYWORD = ""
         const val TICKER_STATE_PREFERENCE = "TICKER_STATE_PREFERENCE"
         const val IS_DISMISS_TICKER = "IS_DISMISS_TICKER"
-        const val CAMPAIGN_LIST_PAGE_SOURCE_ID = "CAMPAIGN_LIST"
         const val INDEX_ZERO = 0
         const val INDEX_ONE = 1
         const val INDEX_TWO = 2
