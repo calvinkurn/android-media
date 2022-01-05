@@ -43,6 +43,7 @@ import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import dagger.Lazy
 import java.util.ArrayList
 
+@Suppress("LongParameterList")
 internal class SearchShopViewModel(
         dispatcher: CoroutineDispatchers,
         searchParameter: Map<String, Any>,
