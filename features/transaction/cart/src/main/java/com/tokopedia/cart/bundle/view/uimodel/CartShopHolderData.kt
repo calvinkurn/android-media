@@ -33,6 +33,10 @@ data class CartShopHolderData(
         var isError: Boolean = false,
         var promoCodes: List<String> = emptyList(),
         var shopShipments: List<ShopShipment> = emptyList(),
+        var districtId: String = "",
+        var postalCode: String = "",
+        var latitude: String = "",
+        var longitude: String = "",
         var boAffordability: CartShopBoAffordabilityData = CartShopBoAffordabilityData()
 ) {
     val shouldValidateWeight: Boolean
@@ -40,39 +44,6 @@ data class CartShopHolderData(
 
     val hasSelectedProduct: Boolean
         get() = isAllSelected || isPartialSelected
-
-    fun deepCopy(): CartShopHolderData {
-        return CartShopHolderData(
-                cartString = this.cartString,
-                shopId = this.shopId,
-                shopName = this.shopName,
-                shopTypeInfo = this.shopTypeInfo,
-                isFulfillment = this.isFulfillment,
-                fulfillmentName = this.fulfillmentName,
-                fulfillmentBadgeUrl = this.fulfillmentBadgeUrl,
-                estimatedTimeArrival = this.estimatedTimeArrival,
-                productUiModelList = this.productUiModelList.toMutableList(),
-                isShowPin = this.isShowPin,
-                pinCoachmarkMessage = this.pinCoachmarkMessage,
-                isTokoNow = this.isTokoNow,
-                preOrderInfo = this.preOrderInfo,
-                incidentInfo = this.incidentInfo,
-                isFreeShippingExtra = this.isFreeShippingExtra,
-                freeShippingBadgeUrl = this.freeShippingBadgeUrl,
-                maximumWeightWording = this.maximumWeightWording,
-                maximumShippingWeight = this.maximumShippingWeight,
-                totalWeight = this.totalWeight,
-                isAllSelected = this.isAllSelected,
-                isPartialSelected = this.isPartialSelected,
-                isCollapsible = this.isCollapsible,
-                isCollapsed = this.isCollapsed,
-                clickedCollapsedProductIndex = this.clickedCollapsedProductIndex,
-                isNeedToRefreshWeight = this.isNeedToRefreshWeight,
-                isError = this.isError,
-                promoCodes = this.promoCodes.toMutableList(),
-                boAffordability = this.boAffordability
-        )
-    }
 
     companion object {
         const val MAXIMUM_WEIGHT_WORDING_REPLACE_KEY = "{{weight}}"

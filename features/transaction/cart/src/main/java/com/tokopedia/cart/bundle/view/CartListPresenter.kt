@@ -1,5 +1,6 @@
 package com.tokopedia.cart.bundle.view
 
+import android.util.Log
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -29,6 +30,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.network.exception.MessageErrorException
@@ -1579,23 +1581,42 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         }
         lastBoAffordabilityCartString = cartShopHolderData.cartString
         boAffordabilityJob = launch(dispatchers.io) {
-            delay(500)
-            val shopShipments = cartShopHolderData.shopShipments
-            val (shopProductList, shopTotalWeight) = getAvailableCartItemDataListAndShopTotalWeight(cartShopHolderData)
-            val calculatePriceMarketplaceProduct = calculatePriceMarketplaceProduct(shopProductList)
-            val subtotalPrice = calculatePriceMarketplaceProduct.second.second
-            val shipping = ShippingParam().apply {
-                originDistrictId = lca?.district_id
-                originLongitude = lca?.long
-                originLatitude = lca?.lat
-                originPostalCode = lca?.postal_code
-            }
-            val ratesParam = RatesParam.Builder(shopShipments, shipping)
+            try {
+                delay(500)
+                val shopShipments = cartShopHolderData.shopShipments
+                // Recalculate total price and total weight, to prevent racing condition
+                val (shopProductList, shopTotalWeight) = getAvailableCartItemDataListAndShopTotalWeight(cartShopHolderData)
+                val calculatePriceMarketplaceProduct = calculatePriceMarketplaceProduct(shopProductList)
+                val subtotalPrice = calculatePriceMarketplaceProduct.second.second
+                val shipping = ShippingParam().apply {
+                    destinationDistrictId = lca?.district_id
+                    destinationLongitude = lca?.long
+                    destinationLatitude = lca?.lat
+                    destinationPostalCode = lca?.postal_code
+                    originDistrictId = cartShopHolderData.districtId
+                    originLongitude = cartShopHolderData.longitude
+                    originLatitude = cartShopHolderData.latitude
+                    originPostalCode = cartShopHolderData.postalCode
+                    weightInKilograms = shopTotalWeight / 1000
+                    orderValue = subtotalPrice.toLong()
+                    shopId = cartShopHolderData.shopId
+                    uniqueId = cartShopHolderData.cartString
+                    products = shopProductList.map { Product(it.productId.toLong(), it.isFreeShipping, it.isFreeShippingExtra) }
+                }
+                val ratesParam = RatesParam.Builder(shopShipments, shipping).build().toMap()
+                Log.i("qwertyuiop", ratesParam.toString())
 
-            cartShopHolderData.boAffordability.tickerText = "asdfasd fas <s>dfas</s> df"
-            cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.SUCCESS
-            withContext(dispatchers.main) {
-                view?.updateCartBoAffordability(cartShopHolderData)
+                cartShopHolderData.boAffordability.tickerText = "asdfasd fas <s>dfas</s> df"
+                cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.SUCCESS
+                withContext(dispatchers.main) {
+                    view?.updateCartBoAffordability(cartShopHolderData)
+                }
+            } catch (t: Throwable) {
+                Timber.d(t)
+                cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.FAILED
+                withContext(dispatchers.main) {
+                    view?.updateCartBoAffordability(cartShopHolderData)
+                }
             }
         }
     }

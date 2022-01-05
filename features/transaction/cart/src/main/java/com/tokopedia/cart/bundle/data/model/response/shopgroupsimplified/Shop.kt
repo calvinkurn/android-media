@@ -23,6 +23,8 @@ data class Shop(
         val longitude: String = "",
         @SerializedName("district_name")
         val districtName: String = "",
+        @SerializedName("district_id")
+        val districtId: String = "",
         @SerializedName("origin")
         val origin: Int = 0,
         @SerializedName("address_street")

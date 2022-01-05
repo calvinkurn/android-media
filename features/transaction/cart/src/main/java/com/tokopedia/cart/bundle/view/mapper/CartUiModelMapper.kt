@@ -132,6 +132,10 @@ object CartUiModelMapper {
                 promoCodes = availableGroup.promoCodes
                 shopTypeInfo = availableGroup.shop.shopTypeInfo
                 shopShipments = mapShopShipment(availableGroup.shop.shopShipments)
+                districtId = availableGroup.shop.districtId
+                postalCode = availableGroup.shop.postalCode
+                longitude = availableGroup.shop.longitude
+                latitude = availableGroup.shop.latitude
                 boAffordability = CartShopBoAffordabilityData(enable = availableGroup.shipmentInformation.enableBoAffordability)
             }
             cartShopHolderDataList.add(shopUiModel)
