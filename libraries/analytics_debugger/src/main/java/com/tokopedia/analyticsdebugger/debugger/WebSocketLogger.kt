@@ -29,7 +29,7 @@ class WebSocketLogger(context: Context): RealtimeNetworkLoggerInterface {
 
     init {
         dispatchers = CoroutineDispatchersProvider
-        insertWebSocketLogUseCase = InsertWebSocketLogUseCase(WebSocketLogRepositoryImpl(dispatchers, WebSocketLogDatabase.getInstance(context)))
+        insertWebSocketLogUseCase = InsertWebSocketLogUseCase(WebSocketLogRepositoryImpl(dispatchers, WebSocketLogDatabase.getInstance(context.applicationContext)))
         gson = GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create()
         job = Job()
         scope = CoroutineScope(dispatchers.io + job)
