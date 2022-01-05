@@ -377,6 +377,48 @@ class CampaignListViewModelTest {
     }
 
     @Test
+    fun `When failed to fetch ongoing description wording, should return only share URL`() {
+        val campaignStatusOngoing = "7"
+        val shareUri = "https://api.whatsapp.com?phone=082210000000"
+        val campaign = Campaign(name = "Flash Deal")
+        val expected = " $shareUri"
+        val merchantBanner = GetMerchantCampaignBannerGeneratorData(formattedStartDate = "03 Jan 2022, 11:20 WIB")
+
+        every { resourceProvider.getShareOngoingCampaignDescriptionWording() } returns null
+
+        val actual = viewModel.getShareDescriptionWording(
+            shopData = shop,
+            campaignData = campaign,
+            merchantBannerData = merchantBanner,
+            shareUri = shareUri,
+            campaignStatusId = campaignStatusOngoing
+        )
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When failed to fetch upcoming description wording, should return only share URL`() {
+        val campaignStatusUpcoming = "6"
+        val shareUri = "https://api.whatsapp.com?phone=082210000000"
+        val campaign = Campaign(name = "Flash Deal")
+        val expected = " $shareUri"
+        val merchantBanner = GetMerchantCampaignBannerGeneratorData(formattedStartDate = "03 Jan 2022, 11:20 WIB")
+
+        every { resourceProvider.getShareCampaignDescriptionWording() } returns null
+
+        val actual = viewModel.getShareDescriptionWording(
+            shopData = shop,
+            campaignData = campaign,
+            merchantBannerData = merchantBanner,
+            shareUri = shareUri,
+            campaignStatusId = campaignStatusUpcoming
+        )
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
     fun `When get wording ongoing campaign return null, should return share uri only`() {
         val campaignStatusOngoing = "7"
         val shareUri = "https://api.whatsapp.com?phone=082210000000"
