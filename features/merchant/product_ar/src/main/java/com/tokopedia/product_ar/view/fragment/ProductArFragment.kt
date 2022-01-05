@@ -134,12 +134,34 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     }
 
     private fun goToArComparissonPage() {
+        val cameraMode = viewModel?.modifaceViewState?.value?.mode ?: ModifaceViewMode.LIVE
+
+        if (cameraMode == ModifaceViewMode.LIVE) {
+            captureLiveCameraToComparisson()
+        } else {
+            captureImageToComparisson()
+        }
+
+        getArActivity()?.goToArComparisonFragment()
+    }
+
+    private fun captureImageToComparisson() {
         viewModel?.imageDrawable?.let {
             sharedViewModel?.setArListData((viewModel?.productArList?.value as? Success)?.data
                     ?: listOf(), it)
         }
+    }
 
-        getArActivity()?.goToArComparisonFragment()
+    private fun captureLiveCameraToComparisson() {
+        getMakeUpEngine()?.captureOutputWithCompletionHandler { before, after ->
+            activity?.runOnUiThread {
+                before?.let {
+                    sharedViewModel?.setArListData((viewModel?.productArList?.value as? Success)?.data
+                            ?: listOf(), it)
+                    getArActivity()?.goToArComparisonFragment()
+                }
+            }
+        }
     }
 
     private fun setupNavToolbar() {
@@ -318,6 +340,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     override fun onResume() {
         super.onResume()
         getMakeUpEngine()?.onResume(context)
+        arViewLoader?.hide()
         getMakeUpEngine()?.setDetectionCallbackForCameraFeed(this)
     }
 
