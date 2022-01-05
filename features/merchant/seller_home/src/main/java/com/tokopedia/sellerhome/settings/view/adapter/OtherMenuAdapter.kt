@@ -45,26 +45,33 @@ class OtherMenuAdapter(
             iconUnify = IconUnify.PROMO_ADS
         ),
         MenuItemUiModel(
-            title = context?.getString(R.string.setting_menu_performance).orEmpty(),
+            title = context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_performance)
+                .orEmpty(),
             clickApplink = ApplinkConstInternalMarketplace.SHOP_PERFORMANCE,
             eventActionSuffix = SettingTrackingConstant.SHOP_PERFORMANCE,
             iconUnify = IconUnify.PERFORMANCE,
         ),
-        SettingTitleUiModel(context?.getString(R.string.setting_menu_buyer_info).orEmpty()),
+        SettingTitleUiModel(
+            context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_buyer_info)
+                .orEmpty()
+        ),
         MenuItemUiModel(
-            title = context?.getString(R.string.setting_menu_discussion).orEmpty(),
+            title = context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_discussion)
+                .orEmpty(),
             clickApplink = ApplinkConst.TALK,
             eventActionSuffix = SettingTrackingConstant.DISCUSSION,
             iconUnify = IconUnify.DISCUSSION
         ),
         MenuItemUiModel(
-            title = context?.getString(R.string.setting_menu_review).orEmpty(),
+            title = context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_review)
+                .orEmpty(),
             clickApplink = ApplinkConst.REPUTATION,
             eventActionSuffix = SettingTrackingConstant.REVIEW,
             iconUnify = IconUnify.STAR
         ),
         MenuItemUiModel(
-            title = context?.getString(R.string.setting_menu_complaint).orEmpty(),
+            title = context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_complaint)
+                .orEmpty(),
             clickApplink = null,
             eventActionSuffix = SettingTrackingConstant.COMPLAINT,
             iconUnify = IconUnify.PRODUCT_INFO
@@ -94,7 +101,8 @@ class OtherMenuAdapter(
             RouteManager.route(context, ApplinkConst.LAYANAN_FINANSIAL)
         },
         MenuItemUiModel(
-            title = context?.getString(R.string.setting_menu_seller_education_center).orEmpty(),
+            title = context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_seller_education_center)
+                .orEmpty(),
             clickApplink = null,
             eventActionSuffix = SettingTrackingConstant.SELLER_CENTER,
             iconUnify = IconUnify.SHOP_INFO
@@ -105,14 +113,16 @@ class OtherMenuAdapter(
             }
         },
         MenuItemUiModel(
-            title = context?.getString(R.string.setting_menu_tokopedia_care).orEmpty(),
+            title = context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_tokopedia_care)
+                .orEmpty(),
             clickApplink = ApplinkConst.CONTACT_US_NATIVE,
             eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE,
             iconUnify = IconUnify.CALL_CENTER
         ),
         DividerUiModel(DividerType.THIN_PARTIAL),
         MenuItemUiModel(
-            title = context?.getString(R.string.setting_menu_setting).orEmpty(),
+            title = context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_setting)
+                .orEmpty(),
             clickApplink = null,
             eventActionSuffix = SettingTrackingConstant.SETTINGS,
             iconUnify = IconUnify.SETTING,
