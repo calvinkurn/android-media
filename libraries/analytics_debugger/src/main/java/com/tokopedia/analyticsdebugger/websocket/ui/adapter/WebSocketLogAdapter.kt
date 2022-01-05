@@ -19,7 +19,7 @@ class WebSocketLogAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
             LOG -> WebSocketLogViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_websocket_log_list, parent, false))
-            else -> WebSocketLogPlaceholderViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_websocket_log_placeholder, parent, false))
+            else -> object: RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_websocket_log_placeholder, parent, false)) {}
         }
     }
 
