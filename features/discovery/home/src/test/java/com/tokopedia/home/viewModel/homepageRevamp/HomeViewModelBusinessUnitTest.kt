@@ -98,11 +98,14 @@ class HomeViewModelBusinessUnitTest{
         // viewModel load business data
         homeViewModel.getBusinessUnitData(position, position, listBusinessUnit[0].tabName)
 
-        homeViewModel.homeDataModel.findWidget<NewBusinessUnitWidgetDataModel> { widget, index ->
-            Assert.assertNotNull(widget.tabList)
-            Assert.assertNotNull(widget.contentsList)
-            Assert.assertNotNull(widget.contentsList?.first()?.list)
-        }
+        homeViewModel.homeDataModel.findWidget<NewBusinessUnitWidgetDataModel>(
+                actionOnFound = { widget, index ->
+                    Assert.assertNotNull(widget.tabList)
+                    Assert.assertNotNull(widget.contentsList)
+                    Assert.assertNotNull(widget.contentsList?.first()?.list)
+                },
+                actionOnNotFound = {}
+        )
     }
 
     @Test
@@ -156,8 +159,13 @@ class HomeViewModelBusinessUnitTest{
         // viewModel load business data
         homeViewModel.getBusinessUnitData(position, position, tabName)
 
-        homeViewModel.homeDataModel.findWidget<NewBusinessUnitWidgetDataModel> { widget, index ->
-            Assert.assertEquals(widget, businessUnitDataModel)
-        }
+        homeViewModel.homeDataModel.findWidget<NewBusinessUnitWidgetDataModel>(
+                actionOnFound = { widget, index ->
+                    Assert.assertEquals(widget, businessUnitDataModel)
+                },
+                actionOnNotFound = {
+
+                }
+        )
     }
 }

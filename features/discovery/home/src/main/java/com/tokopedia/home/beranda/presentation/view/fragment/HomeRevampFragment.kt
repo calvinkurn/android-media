@@ -1424,24 +1424,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun observeOneClickCheckout() {
-        getHomeViewModel().oneClickCheckout.observe(viewLifecycleOwner, Observer { event: Event<Any> ->
-            val data = event.peekContent()
-            if (data is Throwable) { // error
-                showToaster(getErrorString(MessageErrorException(data.message)), TYPE_ERROR)
-            } else {
-                val dataMap = data as Map<*, *>
-                sendEETracking(RecommendationListTracking.getAddToCartOnDynamicListCarousel(
-                        (dataMap[HomeRevampViewModel.CHANNEL] as DynamicHomeChannel.Channels?)!!,
-                        (dataMap[HomeRevampViewModel.GRID] as DynamicHomeChannel.Grid?)!!,
-                        dataMap[HomeRevampViewModel.POSITION] as Int,
-                        (dataMap[HomeRevampViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
-                        DEFAULT_CART_QUANTITY,
-                        viewModel.get().getUserId()
-                ) as HashMap<String, Any>)
-                RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
-            }
-        })
-
         viewModel.get().oneClickCheckoutHomeComponent.observe(viewLifecycleOwner, Observer { event: Event<Any> ->
             val data = event.peekContent()
             if (data is Throwable) { // error
