@@ -751,25 +751,17 @@ class VoucherListFragment :
         setupActionBar()
         setupBroadCastChatTicker()
         setupRecyclerViewVoucherList()
-
         val filterData = ArrayList<SortFilterItem>()
         val sortFilter = SortFilterItem("Urutkan")
         sortFilter.listener = {
-
             sortFilter.toggle()
-
             sortFilter.updateSelectedRef = { chipType, _, _, _, _ ->
                 sortFilter.refChipUnify.chipType = chipType
             }
-
             showSortBottomSheet()
-
-
         }
         filterData.add(sortFilter)
-
         sf_voucher_list.addItem(filterData)
-
         sf_voucher_list.sortFilterPrefix.setOnClickListener {
             showFilterBottomSheet()
         }

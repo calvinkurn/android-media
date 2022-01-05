@@ -563,10 +563,9 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                 if (type != VoucherTypeConst.FREE_ONGKIR) {
                     add(DividerUiModel(DividerUiModel.THICK))
                 }
-                getButtonUiModel(status, type)?.let { button ->
-                    add(button)
-                }
+                // no duplicate button , cancel button for vps & subsidy voucher
                 if (!voucherUiModel.isSubsidy && !voucherUiModel.isVps) {
+                    getButtonUiModel(status, type)?.let { button -> add(button) }
                     getFooterUiModel(status)?.let { footer -> add(footer) }
                 }
             }

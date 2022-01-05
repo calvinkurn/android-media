@@ -132,7 +132,7 @@ class VoucherViewHolder(
                     showNewBroadCastVoucherExperience(element.showNewBc, VoucherStatusConst.NOT_STARTED)
                 }
                 else -> {
-                    if (element.type != VoucherTypeConst.FREE_ONGKIR) {
+                    if (element.type != VoucherTypeConst.FREE_ONGKIR && !element.isSubsidy && !element.isVps) {
                         btnMvcVoucherCta?.visible()
                     } else {
                         btnMvcVoucherCta?.invisible()
