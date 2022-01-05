@@ -55,7 +55,8 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
                         RouteManager.route(it, applinkUrl)
                     }
                 }
-            }, "", listOf()
+            },
+                "", listOf()
                 //use data dummy,
 //                "Paling sering kamu beli",
 //                listOf(

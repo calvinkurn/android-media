@@ -2,6 +2,7 @@ package com.tokopedia.recharge_component.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.recharge_component.databinding.ViewRechargeRecommendationCardBigBinding
 import com.tokopedia.recharge_component.databinding.ViewRechargeRecommendationCardSmallBinding
@@ -35,7 +36,7 @@ class RecommendationCardWidgetAdapter(private val recommendationListener: Rechar
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
+        val viewHolder =  when (viewType) {
             RecommendationCardEnum.BIG.ordinal -> {
                 val binding = ViewRechargeRecommendationCardBigBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -63,6 +64,10 @@ class RecommendationCardWidgetAdapter(private val recommendationListener: Rechar
                 RecommendationCardSmallViewHolder(recommendationListener, binding)
             }
         }
+        if (listRecommendationProduct.size == 1){
+            viewHolder.itemView.layoutParams?.width = MATCH_PARENT
+        }
+        return viewHolder
     }
 
     fun setRecommendationList(listRecommendationProduct: List<RecommendationCardWidgetModel>){
