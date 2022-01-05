@@ -124,6 +124,7 @@ class SearchActivity : BaseActivity(),
         pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
     }
 
+    @Suppress("FunctionOnlyReturningConstant")
     private fun getIsEnableChooseAddress(): Boolean {
         return true
     }
@@ -433,7 +434,11 @@ class SearchActivity : BaseActivity(),
                 else -> SearchTabPosition.TAB_FIRST_POSITION
             }
 
-    private fun setToolbarTitle(query: String?) {
+    /**
+     * query => ignored
+     * need to replace unused param variable following detekt guidelines
+     */
+    private fun setToolbarTitle(ignored: String?) {
         configureSearchNavigationSearchBar()
     }
 
