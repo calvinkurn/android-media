@@ -28,6 +28,7 @@ import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_OOC_PARAM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
+import com.tokopedia.tokopedianow.common.domain.model.ServiceType
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAddToCartTracker
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_HISTORY_FILTER
@@ -588,7 +589,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
             else -> {
                 layoutList.clear()
                 layoutList.addChooseAddress()
-                layoutList.addEmptyStateNoResult()
+                layoutList.addEmptyStateNoResult(ServiceType.NOW_15M)
                 getCategoryGridAsync().await()
                 layoutList.addRecomWidget(PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM)
             }

@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.domain.model.ServiceType
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getDeliveryDurationCopy
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeSharingEducationWidgetBinding
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingEducationWidgetUiModel
@@ -43,8 +45,15 @@ class HomeSharingEducationWidgetViewHolder(
 
     private fun setupUi() {
         binding?.apply {
+            tpSharingEducation.text = MethodChecker.fromHtml(
+                getDeliveryDurationCopy(
+                    serviceType = ServiceType.NOW_15M,
+                    fifteenMinCopy = getString(R.string.tokopedianow_home_sharing_education_title_fifteen_minutes),
+                    twoHrCopy = getString(R.string.tokopedianow_home_sharing_education_title_two_hours)
+                )
+            )
+
             iuSharingEducation.setImageUrl(IMG_SHARING_EDUCATION)
-            tpSharingEducation.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_home_sharing_education_title))
             iCloseSharingEducation.setImage(IconUnify.CLOSE)
             iCloseSharingEducation.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
         }

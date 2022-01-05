@@ -13,6 +13,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.domain.model.ServiceType
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getDeliveryDurationCopy
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowEducationalInformationBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -57,7 +59,15 @@ class TokoNowEducationalInfoBottomSheet :
         context?.let { context ->
             binding?.apply {
                 val boldColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).toString()
-                tpTwoHours.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_home_educational_information_two_hours_bottomsheet, boldColor, boldColor))
+
+                tpTime.text = MethodChecker.fromHtml(
+                    getDeliveryDurationCopy(
+                        serviceType = ServiceType.NOW_15M,
+                        fifteenMinCopy = getString(R.string.tokopedianow_home_educational_information_bottomsheet_fifteen_minutes, boldColor, boldColor),
+                        twoHrCopy = getString(R.string.tokopedianow_home_educational_information_bottomsheet_two_hours, boldColor, boldColor)
+                    )
+                )
+
                 tpStockAvailable.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_home_educational_information_stock_available_bottomsheet, boldColor))
                 tpGuaranteedQuality.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_home_educational_information_guaranteed_quality_bottomsheet, boldColor))
 
