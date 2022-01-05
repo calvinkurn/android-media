@@ -403,8 +403,8 @@ internal class SearchShopViewModel(
     private fun postImpressionTrackingEvent(searchShopModel: SearchShopModel, visitableList: List<Visitable<*>>) {
         if (!searchShopModel.hasShopList()) return
 
-        val dataLayerShopItemList = mutableListOf<Any>()
-        val dataLayerShopItemProductList = mutableListOf<Any>()
+        val dataLayerShopItemList = ArrayList<Any>()
+        val dataLayerShopItemProductList = ArrayList<Any>()
 
         for (shopItem in visitableList) {
             if (shopItem is ShopDataView.ShopItem) {
@@ -477,8 +477,8 @@ internal class SearchShopViewModel(
     private fun postRecommendationImpressionTrackingEvent(searchShopModel: SearchShopModel, visitableList: List<Visitable<*>>) {
         if (!searchShopModel.hasRecommendationShopList()) return
 
-        val dataLayerShopItemList = mutableListOf<Any>()
-        val dataLayerShopItemProductList = mutableListOf<Any>()
+        val dataLayerShopItemList = ArrayList<Any>()
+        val dataLayerShopItemProductList = ArrayList<Any>()
 
         for (shopItem in visitableList) {
             if (shopItem is ShopDataView.ShopItem) {
