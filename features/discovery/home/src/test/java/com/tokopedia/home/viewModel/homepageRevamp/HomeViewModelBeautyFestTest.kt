@@ -55,9 +55,8 @@ class HomeViewModelBeautyFestTest {
             homeBeautyFestUseCase = homeBeautyFestUseCase
         )
         homeViewModel.homeLiveDynamicChannel.observeForever(observerHome)
-        homeViewModel.homeDataModel.addWidgetModel(businessUnitDataModel)
+        homeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnTrue(homeViewModel.homeDataModel.list)
 
-        homeBeautyFestUseCase.getBeautyFest(homeViewModel.homeDataModel.list)
 
         // viewModel load business tab
         homeViewModel.getBeautyFest(homeViewModel.homeDataModel.list)
