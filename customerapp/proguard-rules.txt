@@ -294,27 +294,3 @@
   private static native <methods>;
   *;
 }
--keepclassmembers class * {
-  private static native <methods>;
-  *;
-}
--keepclassmembers class * {
-    native <methods>;
-    *;
-}
--keepclassmembers class * {
-    public native <methods>;
-    *;
-}
--keepclassmembers class * {
-    private native <methods>;
-    *;
-}
--keepclassmembers class * {
-    protected native <methods>;
-    *;
-}
--keepclassmembers class * {
-    native <methods>;
-    *;
-}
