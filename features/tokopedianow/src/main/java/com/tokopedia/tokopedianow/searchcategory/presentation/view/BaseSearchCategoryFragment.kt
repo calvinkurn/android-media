@@ -978,13 +978,14 @@ abstract class BaseSearchCategoryFragment:
 
     }
 
-    override fun onClickFifteenMinutes() {
+    override fun onClickSwitcherTo15M() {
+        // waiting until LCA ready
         getViewModel().chooseAddressData
-
         Toast.makeText(context, "Click 15 Menit Loh", Toast.LENGTH_LONG).show()
     }
 
-    override fun onClickTwoHours() {
+    override fun onClickSwitcherTo2H() {
+        // waiting until LCA ready
         Toast.makeText(context, "Click 2 Jam Loh", Toast.LENGTH_LONG).show()
     }
 

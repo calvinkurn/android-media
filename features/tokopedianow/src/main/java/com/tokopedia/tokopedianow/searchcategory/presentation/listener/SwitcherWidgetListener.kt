@@ -1,6 +1,6 @@
 package com.tokopedia.tokopedianow.searchcategory.presentation.listener
 
 interface SwitcherWidgetListener {
-    fun onClickFifteenMinutes()
-    fun onClickTwoHours()
+    fun onClickSwitcherTo15M()
+    fun onClickSwitcherTo2H()
 }

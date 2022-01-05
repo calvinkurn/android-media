@@ -25,15 +25,17 @@ class SwitcherWidgetViewHolder(
     override fun bind(element: SwitcherWidgetDataView) {
         binding?.apply {
             switcherLayout.setBackgroundResource(R.drawable.tokopedianow_bg_search_category_switcher_widget)
-            containerCardFifteenMinutes.setBackgroundResource(R.drawable.tokopedianow_bg_search_category_switcher_widget_card_fifteenminutes)
-            containerCardTwoHours.setBackgroundResource(R.drawable.tokopedianow_bg_search_category_switcher_widget_card_twohours)
-            tpDescFifteenMinutes.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_search_category_description_fifteen_minutes))
-            tpDescTwoHours.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_search_category_description_two_hours))
-            cardFifthteenMinutes.setOnClickListener {
-                listener?.onClickFifteenMinutes()
+            container15m.setBackgroundResource(R.drawable.tokopedianow_bg_search_category_switcher_widget_card_15m)
+            container2h.setBackgroundResource(R.drawable.tokopedianow_bg_search_category_switcher_widget_card_2h)
+
+            tpDesc15m.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_search_category_description_fifteen_minutes))
+            tpDesc2h.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_search_category_description_two_hours))
+
+            cv15m.setOnClickListener {
+                listener?.onClickSwitcherTo15M()
             }
-            cardTwoHours.setOnClickListener {
-                listener?.onClickTwoHours()
+            cv2h.setOnClickListener {
+                listener?.onClickSwitcherTo2H()
             }
         }
     }
