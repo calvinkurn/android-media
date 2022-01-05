@@ -782,9 +782,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
 //  can be called like this  setUtmCampaignData(listOf("a", "b"), "c", "d", "e")
 //  seller specific example  setUtmCampaignData(listOf("ShopRS", "$[User ID]", "$[Shop ID]", "$[Campaign Type ID]"), "$userId", "$pageId", "$feature")
-    fun setUtmCampaignData(pageNameConstituents: List<String>, userId: String, pageId: String, feature: String){
-        val pageNameCombined = TextUtils.join("-", pageNameConstituents)
-        setUtmCampaignData(pageNameCombined, userId, pageId, feature)
+    fun setUtmCampaignData(pageName: String, userId: String, pageIdConstituents: List<String>, feature: String){
+        val pageIdCombined = TextUtils.join("-", pageIdConstituents)
+        setUtmCampaignData(pageName, userId, pageIdCombined, feature)
     }
 
 

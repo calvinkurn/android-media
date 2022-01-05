@@ -307,13 +307,12 @@ class CampaignListFragment : BaseDaggerFragment(),
 
             val campaignType = viewModel.getSelectedActiveCampaign()?.campaignTypeId ?: return
             val campaignId = viewModel.getSelectedActiveCampaign()?.campaignId ?: return
-            val sharingDate = dateManager.getCurrentDateTime(DateManager.DATE_TIME_FORMAT_DAY_MONTH_YEAR)
 
             setUtmCampaignData(
-                    listOf(VALUE_SHARE_RS, userSession.userId, userSession.shopId, campaignType, campaignId, sharingDate),
-                    userId = userSession.userId,
-                    pageId = userSession.shopId,
-                    feature = SHARE
+                pageName = VALUE_SHARE_RS,
+                userId = userSession.userId,
+                pageIdConstituents = listOf(userSession.shopId, campaignType, campaignId),
+                feature = SHARE
             )
 
             val _totalProducts = productData.size
