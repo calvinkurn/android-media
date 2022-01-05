@@ -158,7 +158,6 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
                 before?.let {
                     sharedViewModel?.setArListData((viewModel?.productArList?.value as? Success)?.data
                             ?: listOf(), it)
-                    getArActivity()?.goToArComparisonFragment()
                 }
             }
         }
