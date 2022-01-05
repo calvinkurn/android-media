@@ -131,7 +131,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun showLoginPortal() {
-        openFragment(AffiliateLoginFragment.getFragmentInstance(this))
+        if(fragmentStack.isEmpty() || fragmentStack.peek() != (AffiliateLoginFragment.javaClass.simpleName))
+            openFragment(AffiliateLoginFragment.getFragmentInstance(this))
     }
 
     private fun showAffiliatePortal() {
@@ -337,18 +338,10 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
     private fun setBottomState(peek: String?) {
         when (peek) {
-            AffiliateHomeFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
-                HOME_MENU
-            )
-            AffiliatePromoFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
-                PROMO_MENU
-            )
-            AffiliateIncomeFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
-                INCOME_MENU
-            )
-            BaseSessionWebViewFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
-                HELP_MENU
-            )
+            AffiliateHomeFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(HOME_MENU)
+            AffiliatePromoFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(PROMO_MENU)
+            AffiliateIncomeFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(INCOME_MENU)
+            BaseSessionWebViewFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(HELP_MENU)
         }
     }
 
