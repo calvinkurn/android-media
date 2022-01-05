@@ -15,6 +15,7 @@ import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.mainnav.view.fragment.MainNavFragmentArgs
 import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.utils.resources.isDarkMode
 
 class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
 
@@ -51,7 +52,11 @@ class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
         pageSource = intent.getStringExtra(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE)?:""
         findViewById<NavToolbar>(R.id.toolbar)?.let {
             it.setToolbarTitle(getString(R.string.title_main_nav))
-            it.setupToolbarWithStatusBar(this, NavToolbar.Companion.StatusBar.STATUS_BAR_LIGHT, true)
+            it.setupToolbarWithStatusBar(
+                this,
+                if (applicationContext.isDarkMode()) NavToolbar.Companion.StatusBar.STATUS_BAR_DARK else NavToolbar.Companion.StatusBar.STATUS_BAR_LIGHT,
+                true
+            )
             it.setShowShadowEnabled(true)
         }
         setupNavigation()
