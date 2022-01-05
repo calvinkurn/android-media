@@ -27,8 +27,8 @@ import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
 import com.tokopedia.imagepicker.editor.analytics.ImageEditorTracking;
 import com.tokopedia.imagepicker.editor.analytics.ImageEditorTrackingConstant;
-import com.tokopedia.imagepicker.editor.main.Constant;
 import com.tokopedia.imagepicker.editor.config.AbTestRemoveBackground;
+import com.tokopedia.imagepicker.editor.main.Constant;
 import com.tokopedia.imagepicker.editor.config.WatermarkRemoteConfig;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditCropListWidget;
@@ -52,6 +52,7 @@ import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -65,7 +66,6 @@ import static com.tokopedia.imagepicker.editor.main.Constant.HALF_BRIGHTNESS_RAN
 import static com.tokopedia.imagepicker.editor.main.Constant.HALF_CONTRAST_RANGE;
 import static com.tokopedia.imagepicker.editor.main.Constant.HALF_ROTATE_RANGE;
 import static com.tokopedia.imagepicker.editor.main.Constant.INITIAL_CONTRAST_VALUE;
-import static com.tokopedia.imagepicker.editor.main.Constant.TYPE_REMOVE_BG_NORMAL;
 
 /**
  * Created by Hendry on 9/25/2017.
@@ -155,7 +155,6 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     private String pageSource = ImageEditorTracking.UNKNOWN_PAGE;
 
     private int removeBackgroundType = Constant.TYPE_REMOVE_BG_NORMAL;
-    private int currentRemoveBackgroundState = 0;
 
     public static Intent getIntent(Context context, ImageEditorBuilder imageEditorBuilder) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
@@ -354,7 +353,6 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     fragment.cancelContrast();
                     break;
                 case ACTION_REMOVE_BACKGROUND:
-                    currentRemoveBackgroundState = 0;
                     fragment.cancelRemoveBackground();
                     break;
             }
@@ -674,26 +672,28 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
 
         items.add(ItemSelection.createWithPlaceholderResourceId(
                 getString(com.tokopedia.imagepicker.R.string.editor_remove_bg_grey),
-                R.drawable.ic_toped_icon_remove_bg_grey,
+                R.drawable.ic_toped_icon_remove_bg_gray,
                 Constant.TYPE_REMOVE_BG_BLACK,
                 false
         ));
 
-        removeBgItemSelection.setData(items, (bitmap, type) -> setupRemoveBackgroundWidgetSelection(type));
-        removeBgItemSelection.setActiveItem(currentRemoveBackgroundState);
+        removeBgItemSelection.setData(
+                items,
+                (position, bitmap, type) -> setupRemoveBackgroundWidgetSelection(position, type)
+        );
     }
 
-    private void setupRemoveBackgroundWidgetSelection(int type) {
+    private void setupRemoveBackgroundWidgetSelection(int position, int type) {
         String preview = edittedImagePaths.get(currentImageIndex).get(getCurrentStepForCurrentImage());
+        int color = 0;
 
-        if (type == TYPE_REMOVE_BG_NORMAL) {
-            setRemoveBackgroundColor(0, preview, 0);
+        if (type == Constant.TYPE_REMOVE_BG_BLACK) {
+            color = ContextCompat.getColor(getApplicationContext(), R.color.dms_grey_neutral_200);
         } else if (type == Constant.TYPE_REMOVE_BG_WHITE) {
-            setRemoveBackgroundColor(1, preview, Color.WHITE);
-        } else if (type == Constant.TYPE_REMOVE_BG_BLACK) {
-            setRemoveBackgroundColor(2, preview, Color.parseColor("#D6DFEB"));
+            color = Color.WHITE;
         }
 
+        setRemoveBackgroundColor(position, preview, color);
         removeBackgroundType = type;
     }
 
@@ -706,8 +706,6 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
             fragment.setImageData(imagePath);
             return;
         }
-
-        currentRemoveBackgroundState = position;
 
         fragment.setRemoveBackground(color);
     }
@@ -848,7 +846,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                         Arrays.asList(bitmaps), // placeholder preview
                         true,
                         Arrays.asList(Constant.TYPE_WATERMARK_TOPED, Constant.TYPE_WATERMARK_CENTER_TOPED)
-                ), (bitmap, type) -> {
+                ), (position, bitmap, type) -> {
                     imageEditPreviewFragment.setPreviewImageWatermark(bitmap);
                     watermarkType = type;
                 }
