@@ -12,4 +12,5 @@
     <string name="txt_comparison_desc">Kamu bisa pilih hingga 4 varian untuk dibandingkan.</string>
 
     <string name="txt_btn_save_photo">Simpan Foto ke Galeri</string>
+    <string name="message_success_save_photo_to_gallery">Foto berhasil disimpan di galeri HP-mu.</string>
 </resources>

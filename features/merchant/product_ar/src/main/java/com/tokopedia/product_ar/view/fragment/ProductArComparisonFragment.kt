@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.di.ProductArComponent
 import com.tokopedia.product_ar.model.state.GenerateMakeUpMode
@@ -111,11 +112,13 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
 
     override fun onResume() {
         super.onResume()
+        setEngineCallback(true)
         makeUpEngineComparison?.onResume(context)
     }
 
     override fun onPause() {
         makeUpEngineComparison?.onPause()
+        makeUpEngineComparison?.clearMakeupLook()
         super.onPause()
     }
 
@@ -191,11 +194,18 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
         }
     }
 
-    /**
-     * override fun a(p0: Bitmap?, p1: Bitmap?)
-     */
-    private fun setEngineCallback() {
-        makeUpEngineComparison?.setCallback(this)
+    private fun setEngineCallback(disabled: Boolean = false) {
+        makeUpEngineComparison?.setCallback(object : MFEMakeupEngine.u {
+            override fun a(p0: Bitmap?, p1: Bitmap?) {
+                if (!disabled) {
+                    activity?.runOnUiThread {
+                        p1?.let {
+                            viewModel?.addGridImages(it, comparisonAdapter.listBitmap)
+                        }
+                    }
+                }
+            }
+        })
     }
 
     private fun setupRv() {
@@ -242,6 +252,9 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
                 viewModel?.addRemoveImageGrid?.value?.imagesBitmap?.size ?: -1) {
             mainThreadHandler.postDelayed({
                 bottomComparissonView?.stopButtonLoading()
+                val messageSuccess = context?.getString(R.string.message_success_save_photo_to_gallery)
+                        ?: ""
+                view?.showToasterSuccess(messageSuccess)
             }, 500)
         }
     }

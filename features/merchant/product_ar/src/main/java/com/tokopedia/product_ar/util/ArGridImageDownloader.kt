@@ -8,8 +8,8 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.file.PublicFolderUtil
 
 object ArGridImageDownloader {
-    private const val TOTAL_MARGIN_LEFT_RIGHT_MULTIPLE_COMPARISSON_RV = 32
-    private const val TOTAL_MARGIN_LEFT_RIGHT_SINGLE_COMPARISSON_RV = 34
+    private const val TOTAL_MARGIN_LEFT_RIGHT_MULTIPLE_COMPARISSON_RV = 32 //padding left right rv
+    private const val TOTAL_MARGIN_LEFT_RIGHT_SINGLE_COMPARISSON_RV = 34 //padding left right + padding item decorator
 
     fun screenShotAndSaveGridImage(v: View?, bitmapsSize: Int, finishScreenshot: () -> Unit) {
         try {

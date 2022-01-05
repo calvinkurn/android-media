@@ -13,17 +13,22 @@ import com.tokopedia.product_ar.model.state.ImageMapMode
 object ProductArMapper {
 
     fun mapToModifaceUiModel(initialProductId: String, data: ProductArUiModel): List<ModifaceUiModel> {
+        var count = -1
         return data.options.map {
+            count++
             val isSelected = initialProductId == it.value.productID
             ModifaceUiModel(
-                    modifaceProductData = convertToMfeMakeUpProduct(it.value.productID, it.value.providerDataCompiled)
-                            ?: MFEMakeupProduct(),
+                    modifaceProductData = convertToMfeMakeUpProduct(
+                            it.value.productID,
+                            it.value.providerDataCompiled,
+                            count) ?: MFEMakeupProduct(),
                     isSelected = isSelected,
                     backgroundUrl = data.optionBgImage,
                     productName = it.value.name,
                     productId = it.value.productID,
                     modifaceType = it.value.type
             )
+
         }
     }
 
@@ -37,8 +42,16 @@ object ProductArMapper {
         }
     }
 
-    fun generateMfMakeUpLook(data: List<ModifaceUiModel>): MFEMakeupLook {
+    fun generateInitialMfMakeUpLook(data: List<ModifaceUiModel>): MFEMakeupLook {
         val selectedData = data.firstOrNull { it.isSelected }
+        return MFEMakeupLook().apply {
+            lipLayers.add(MFEMakeupLayer(selectedData?.modifaceProductData))
+        }
+    }
+
+    fun generateSelectedMfMakeUpLook(data: List<ModifaceUiModel>,
+                                     selectedProductId: String): MFEMakeupLook {
+        val selectedData = data.firstOrNull { it.productId == selectedProductId }
         return MFEMakeupLook().apply {
             lipLayers.add(MFEMakeupLayer(selectedData?.modifaceProductData))
         }
@@ -140,19 +153,27 @@ object ProductArMapper {
     }
     // [1,2,3,4,5]
 
-    private fun convertToMfeMakeUpProduct(productId: String, data: ModifaceProvider?): MFEMakeupProduct? {
+    private fun convertToMfeMakeUpProduct(productId: String,
+                                          data: ModifaceProvider?,
+                                          position: Int): MFEMakeupProduct? {
         if (data == null) return null
         val color = if (productId.toInt() % 2 == 0) {
             Color.argb(255, 222, 119, 133)
         } else {
             Color.argb(255, 109, 37, 39)
         }
+
+        val colorByPosition = when(position) {
+            0 -> Color.argb(255, 66, 14, 18)
+            1 -> Color.argb(255, 222, 119, 133)
+            else -> Color.argb(255, 159, 42, 48)
+        }
         return MFEMakeupProduct().also {
 //            it.color = Color.argb(data.colorA.toInt(),
 //                    data.colorR.toInt(),
 //                    data.colorG.toInt(),
 //                    data.colorB.toInt())
-            it.color = Color.argb(255, 66, 14, 18)
+            it.color = colorByPosition
 //            it.vinylIntensity = data.vinylIntensity
 //            it.glossDetail = data.glossDetail
 //            it.metallicIntensity = data.metallicIntensity

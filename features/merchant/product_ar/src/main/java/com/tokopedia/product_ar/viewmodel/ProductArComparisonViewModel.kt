@@ -47,7 +47,7 @@ class ProductArComparisonViewModel @Inject constructor() : ViewModel() {
         val updatedData = ProductArMapper.updateInitialListWithCounter(data)
         _processedVariantData.value = updatedData
 
-        val selectedMfMakeUpLook = ProductArMapper.generateMfMakeUpLook(data)
+        val selectedMfMakeUpLook = ProductArMapper.generateInitialMfMakeUpLook(data)
         _generateMakeUpBackground.value = _generateMakeUpBackground.value.copy(
                 mfeMakeupLook = selectedMfMakeUpLook
         )
@@ -79,7 +79,7 @@ class ProductArComparisonViewModel @Inject constructor() : ViewModel() {
 
         if (!isSelected) {
             //append state
-            processImageWithModify(updatedVariants)
+            processImageWithModify(updatedVariants, selectedProductId)
         } else {
             //remove state
             removeImageAtPosition(
@@ -92,8 +92,12 @@ class ProductArComparisonViewModel @Inject constructor() : ViewModel() {
         _processedVariantData.value = updatedVariants
     }
 
-    private fun processImageWithModify(updatedVariants: List<ModifaceUiModel>) {
-        val selectedMfLookData = ProductArMapper.generateMfMakeUpLook(updatedVariants)
+    private fun processImageWithModify(updatedVariants: List<ModifaceUiModel>,
+                                       selectedProductId: String) {
+        val selectedMfLookData = ProductArMapper.generateSelectedMfMakeUpLook(
+                updatedVariants,
+                selectedProductId
+        )
         _generateMakeUpBackground.value = _generateMakeUpBackground.value.copy(
                 mode = GenerateMakeUpMode.SELECTION,
                 mfeMakeupLook = selectedMfLookData
