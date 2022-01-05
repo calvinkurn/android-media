@@ -63,28 +63,4 @@ class MarketPlaceRecommendationViewModelTest {
 
     }
 
-
-//    @Test
-//    fun getFailProductRecommendationData() {
-//
-//        val throwable  = Throwable()
-//        every {
-//            runBlocking {
-//                typGetRecommendationUseCase.get().getProductRecommendationData()
-//            }
-//        } answers {
-//           null
-//        }
-//
-//        runBlocking {
-//            marketPlaceRecommendationViewModel.loadRecommendationData()
-//            Assert.assertEquals(
-//                marketPlaceRecommendationViewModel.recommendationMutableData.value,
-//                Fail(throwable)
-//            )
-//        }
-//
-//
-//    }
-
 }
