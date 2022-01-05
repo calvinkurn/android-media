@@ -66,7 +66,11 @@
     <string name="placeholder_image_watermark_preview">placeholder image watermark preview</string>
     <string name="thumbnail_image_watermark_preview">thumbnail image watermark preview</string>
 
+    <string name="editor_retry_button">Coba Lagi</string>
+
     <string name="editor_remove_bg_original">Original</string>
     <string name="editor_remove_bg_white">Latar Putih</string>
     <string name="editor_remove_bg_grey">Latar Kelabu</string>
+
+    <string name="editor_remove_bg_error_message">Tidak ada koneksi internet untuk menggunakan fitur hapus latar ini.</string>
 </resources>
