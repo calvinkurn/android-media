@@ -220,7 +220,8 @@ class CampaignListViewModel @Inject constructor(
     fun generateLinkerShareData(
             shopData: ShopData,
             campaignData: Campaign,
-            shareModel: ShareModel
+            shareModel: ShareModel,
+            campaignStatusId: String
     ): LinkerShareData {
         val linkerData = LinkerData()
         linkerData.apply {
@@ -231,9 +232,8 @@ class CampaignListViewModel @Inject constructor(
             linkerData.type = LinkerData.SHOP_TYPE
             name = getShareOgTitle(campaignData.name, shopData.name)
             uri = "https://www.tokopedia.com/${shopData.domain}"
-            description = getShareDescription(shopData.name)
             ogTitle = getShareOgTitle(campaignData.name, shopData.name)
-            ogDescription = getShareOngoingDescription(shopData.name)
+            ogDescription = getShareDescription(shopData.name, campaignStatusId)
             if (!TextUtils.isEmpty(shareModel.ogImgUrl)) {
                 ogImageUrl = shareModel.ogImgUrl
             }
@@ -249,13 +249,16 @@ class CampaignListViewModel @Inject constructor(
         return String.format(template, campaignName, shopName)
     }
 
-    private fun getShareDescription(shopName: String): String {
-        val template = resourceProvider.getShareDescription() ?: ""
-        return String.format(template, shopName)
-    }
-
-    private fun getShareOngoingDescription(shopName: String): String {
-        val template = resourceProvider.getShareOngoingDescription() ?: ""
+    private fun getShareDescription(shopName: String, campaignStatusId: String): String {
+        var template = ""
+        when (campaignStatusId) {
+            ONGOING_STATUS_ID -> {
+                template = resourceProvider.getShareOngoingDescription() ?: ""
+            }
+            else -> {
+                template = resourceProvider.getShareDescription() ?: ""
+            }
+        }
         return String.format(template, shopName)
     }
 
