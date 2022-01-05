@@ -566,8 +566,8 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                 getButtonUiModel(status, type)?.let { button ->
                     add(button)
                 }
-                getFooterUiModel(status)?.let { footer ->
-                    add(footer)
+                if (!voucherUiModel.isSubsidy && !voucherUiModel.isVps) {
+                    getFooterUiModel(status)?.let { footer -> add(footer) }
                 }
             }
 
