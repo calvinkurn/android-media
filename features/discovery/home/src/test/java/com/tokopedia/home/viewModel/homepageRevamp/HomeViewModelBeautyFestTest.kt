@@ -25,7 +25,7 @@ class HomeViewModelBeautyFestTest {
     private lateinit var homeViewModel: HomeRevampViewModel
 
     @Test
-    fun `Get beauty fest use case with success result then show pink header`(){
+    fun `when founded beauty fest then show pink header`(){
         val businessUnitDataModel = NewBusinessUnitWidgetDataModel(
             channelModel = ChannelModel(
                 id = "129362",
@@ -57,7 +57,7 @@ class HomeViewModelBeautyFestTest {
     }
 
     @Test
-    fun `Get beauty fest use case with false result then show green header`(){
+    fun `when found there are no beauty fest then show green header`(){
         val businessUnitDataModel = NewBusinessUnitWidgetDataModel(
             channelModel = ChannelModel(
                 id = "129362",
@@ -89,7 +89,7 @@ class HomeViewModelBeautyFestTest {
     }
 
     @Test
-    fun `Get beauty fest use case with not set result then show shimmer`(){
+    fun `Get failed find beauty fest event then show shimmer`(){
         val businessUnitDataModel = NewBusinessUnitWidgetDataModel(
             channelModel = ChannelModel(
                 id = "129362",
