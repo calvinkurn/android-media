@@ -96,6 +96,8 @@ data class Product(
         val productQuantity: Int = 0,
         @SerializedName("product_weight")
         val productWeight: Int = 0,
+        @SerializedName("product_weight_actual")
+        val productWeightActual: Long = 0,
         @SerializedName("product_weight_unit_code")
         val productWeightUnitCode: Int = 0,
         @SerializedName("product_weight_unit_text")

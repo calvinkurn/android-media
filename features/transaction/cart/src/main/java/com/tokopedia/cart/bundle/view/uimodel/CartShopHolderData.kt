@@ -1,6 +1,7 @@
 package com.tokopedia.cart.bundle.view.uimodel
 
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.ShopTypeInfo
+import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import java.util.*
 
 data class CartShopHolderData(
@@ -31,6 +32,7 @@ data class CartShopHolderData(
         var isNeedToRefreshWeight: Boolean = false,
         var isError: Boolean = false,
         var promoCodes: List<String> = emptyList(),
+        var shopShipments: List<ShopShipment> = emptyList(),
         var boAffordability: CartShopBoAffordabilityData = CartShopBoAffordabilityData()
 ) {
     val shouldValidateWeight: Boolean

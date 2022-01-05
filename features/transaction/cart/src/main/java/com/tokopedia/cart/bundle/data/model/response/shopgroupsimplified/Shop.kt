@@ -46,5 +46,7 @@ data class Shop(
         @SerializedName("maximum_shipping_weight")
         val maximumShippingWeight: Double = 0.0,
         @SerializedName("is_tokonow")
-        val isTokoNow: Boolean = false
+        val isTokoNow: Boolean = false,
+        @SerializedName("shop_shipments")
+        val shopShipments: List<ShopShipment> = emptyList()
 )

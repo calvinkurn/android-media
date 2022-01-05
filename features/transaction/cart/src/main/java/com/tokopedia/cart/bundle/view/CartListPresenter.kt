@@ -28,6 +28,9 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.logisticcart.shipping.model.RatesParam
+import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -100,6 +103,9 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     // Store last validate use request for clearing promo if got akamai error
     var lastValidateUseRequest: ValidateUsePromoRequest? = null
+
+    // Store LCA data for bo affordability
+    var lca: LocalCacheModel? = null
 
     // Store last bo affordability cart string for debounce handling
     var lastBoAffordabilityCartString: String = ""
@@ -533,26 +539,33 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         summaryTransactionUiModel?.sellerCashbackValue = subtotalCashback.toLong()
     }
 
+    private fun getAvailableCartItemDataListAndShopTotalWeight(cartShopHolderData: CartShopHolderData): Pair<ArrayList<CartItemHolderData>, Double> {
+        val allCartItemDataList = ArrayList<CartItemHolderData>()
+        var shopWeight = 0.0
+        if (!cartShopHolderData.isError && (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected)) {
+            cartShopHolderData.productUiModelList.forEach { cartItemHolderData ->
+                if (!cartItemHolderData.isError && cartItemHolderData.isSelected) {
+                    allCartItemDataList.add(cartItemHolderData)
+                    val quantity =
+                            if (cartItemHolderData.isBundlingItem) cartItemHolderData.quantity * cartItemHolderData.bundleQuantity
+                            else cartItemHolderData.quantity
+
+                    val weight = cartItemHolderData.productWeight
+                    shopWeight += quantity * weight
+                }
+            }
+        }
+        return allCartItemDataList to shopWeight
+    }
+
     private fun getAvailableCartItemDataList(dataList: List<CartShopHolderData>): ArrayList<CartItemHolderData> {
         // Collect all Cart Item, if has no error and selected
         // Also calculate total weight on each shop
         val allCartItemDataList = ArrayList<CartItemHolderData>()
         for (cartShopHolderData in dataList) {
-            var shopWeight = 0.0
-            if (!cartShopHolderData.isError && (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected)) {
-                cartShopHolderData.productUiModelList.forEach { cartItemHolderData ->
-                    if (!cartItemHolderData.isError && cartItemHolderData.isSelected) {
-                        allCartItemDataList.add(cartItemHolderData)
-                        val quantity =
-                                if (cartItemHolderData.isBundlingItem) cartItemHolderData.quantity * cartItemHolderData.bundleQuantity
-                                else cartItemHolderData.quantity
-
-                        val weight = cartItemHolderData.productWeight
-                        shopWeight += quantity * weight
-                    }
-                }
-            }
-            cartShopHolderData.totalWeight = shopWeight
+            val (shopProductList, shopTotalWeight) = getAvailableCartItemDataListAndShopTotalWeight(cartShopHolderData)
+            allCartItemDataList.addAll(shopProductList)
+            cartShopHolderData.totalWeight = shopTotalWeight
         }
 
         return allCartItemDataList
@@ -1556,16 +1569,34 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         )
     }
 
+    override fun setLocalizingAddressData(lca: LocalCacheModel?) {
+        this.lca = lca
+    }
+
     override fun checkBoAffordability(cartShopHolderData: CartShopHolderData) {
         if (lastBoAffordabilityCartString == cartShopHolderData.cartString) {
             boAffordabilityJob?.cancel()
         }
         lastBoAffordabilityCartString = cartShopHolderData.cartString
-        boAffordabilityJob = launch {
+        boAffordabilityJob = launch(dispatchers.io) {
             delay(500)
+            val shopShipments = cartShopHolderData.shopShipments
+            val (shopProductList, shopTotalWeight) = getAvailableCartItemDataListAndShopTotalWeight(cartShopHolderData)
+            val calculatePriceMarketplaceProduct = calculatePriceMarketplaceProduct(shopProductList)
+            val subtotalPrice = calculatePriceMarketplaceProduct.second.second
+            val shipping = ShippingParam().apply {
+                originDistrictId = lca?.district_id
+                originLongitude = lca?.long
+                originLatitude = lca?.lat
+                originPostalCode = lca?.postal_code
+            }
+            val ratesParam = RatesParam.Builder(shopShipments, shipping)
+
             cartShopHolderData.boAffordability.tickerText = "asdfasd fas <s>dfas</s> df"
             cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.SUCCESS
-            view?.updateCartBoAffordability(cartShopHolderData)
+            withContext(dispatchers.main) {
+                view?.updateCartBoAffordability(cartShopHolderData)
+            }
         }
     }
 }

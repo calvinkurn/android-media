@@ -6,6 +6,7 @@ import com.tokopedia.cart.bundle.data.model.response.promo.*
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.*
 import com.tokopedia.cart.bundle.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.bundle.view.uimodel.*
+import com.tokopedia.logisticcart.shipping.model.ShipProd
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.SummariesItem
@@ -130,12 +131,35 @@ object CartUiModelMapper {
                 isError = false
                 promoCodes = availableGroup.promoCodes
                 shopTypeInfo = availableGroup.shop.shopTypeInfo
+                shopShipments = mapShopShipment(availableGroup.shop.shopShipments)
                 boAffordability = CartShopBoAffordabilityData(enable = availableGroup.shipmentInformation.enableBoAffordability)
             }
             cartShopHolderDataList.add(shopUiModel)
         }
 
         return cartShopHolderDataList
+    }
+
+    private fun mapShopShipment(shopShipments: List<ShopShipment>): List<com.tokopedia.logisticcart.shipping.model.ShopShipment> {
+        return shopShipments.map { shipment ->
+            com.tokopedia.logisticcart.shipping.model.ShopShipment(
+                    shipId = shipment.shipId,
+                    shipName = shipment.shipName,
+                    shipCode = shipment.shipCode,
+                    shipLogo = shipment.shipLogo,
+                    shipProds = shipment.shipProds.map {
+                        ShipProd(
+                                shipProdId = it.shipProdId,
+                                shipProdName = it.shipProdName,
+                                shipGroupName = it.shipGroupName,
+                                shipGroupId = it.shipGroupId,
+                                additionalFee = it.additionalFee,
+                                minimumWeight = it.minimumWeight
+                        )
+                    },
+                    isDropshipEnabled = shipment.isDropshipEnabled == 1
+            )
+        }
     }
 
     private fun isPartialSelected(availableGroup: AvailableGroup): Boolean {

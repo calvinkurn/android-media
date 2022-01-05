@@ -5,6 +5,7 @@ import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.CartDat
 import com.tokopedia.cart.bundle.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.bundle.domain.model.updatecart.UpdateAndValidateUseData
 import com.tokopedia.cart.bundle.view.uimodel.*
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -124,6 +125,8 @@ interface ICartListPresenter {
     fun followShop(shopId: String)
 
     fun doClearAllPromo()
+
+    fun setLocalizingAddressData(lca: LocalCacheModel?)
 
     fun checkBoAffordability(cartShopHolderData: CartShopHolderData)
 

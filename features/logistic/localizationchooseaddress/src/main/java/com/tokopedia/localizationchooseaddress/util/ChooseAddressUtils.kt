@@ -117,6 +117,11 @@ object ChooseAddressUtils {
         chooseAddressPref.setLocalCache(localData)
     }
 
+    fun updateLocalizingAddressDataFromOther(context: Context, localData: LocalCacheModel) {
+        val chooseAddressPref = ChooseAddressSharePref(context)
+        chooseAddressPref.setLocalCache(localData)
+    }
+
     /**
      * Host can use this for show or not coachmark
      * we not provide coackmark. just KEY for identifier.

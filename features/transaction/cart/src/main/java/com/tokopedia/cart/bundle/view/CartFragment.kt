@@ -2014,15 +2014,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun validateLocalCacheAddress(activity: FragmentActivity, localizationChooseAddress: LocalizationChooseAddress) {
         var snippetMode = false
-        ChooseAddressUtils.getLocalizingAddressData(activity)?.let {
+        var lca = ChooseAddressUtils.getLocalizingAddressData(activity)
+        lca?.let {
             if (it.address_id.toLongOrZero() == 0L && it.district_id.toLongOrZero() != 0L) {
                 snippetMode = true
             }
         }
 
         if (!snippetMode && localizationChooseAddress.state == LocalizationChooseAddress.STATE_ADDRESS_ID_NOT_MATCH) {
-            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                    context = activity,
+            lca = ChooseAddressUtils.setLocalizingAddressData(
                     addressId = localizationChooseAddress.addressId,
                     cityId = localizationChooseAddress.cityId,
                     districtId = localizationChooseAddress.districtId,
@@ -2032,7 +2032,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     postalCode = localizationChooseAddress.postalCode,
                     shopId = localizationChooseAddress.tokoNow.shopId,
                     warehouseId = localizationChooseAddress.tokoNow.warehouseId)
+            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                    context = activity,
+                    localData = lca)
         }
+        dPresenter.setLocalizingAddressData(lca)
     }
 
     private fun renderCartOutOfService(outOfService: OutOfService) {
