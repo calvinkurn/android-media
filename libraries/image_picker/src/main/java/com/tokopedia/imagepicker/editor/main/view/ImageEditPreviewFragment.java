@@ -31,6 +31,7 @@ import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.editor.di.DaggerImageEditorComponent;
 import com.tokopedia.imagepicker.editor.di.module.ImageEditorModule;
 import com.tokopedia.imagepicker.editor.presenter.ImageEditPreviewPresenter;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
@@ -64,6 +65,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     private float brightness = 0, contrast = INITIAL_CONTRAST_VALUE;
 
     private View progressBar;
+    private View bgShadow;
 
     private UCropView uCropView;
     private View blockingView;
@@ -85,6 +87,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     private Bitmap lastStateImage;
 
     private String removeBackgroundResultPath = "";
+    private int maxRetry = 3;
 
     public interface OnImageEditPreviewFragmentListener {
         boolean isInEditCropMode();
@@ -152,7 +155,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         isCirclePreview = bundle.getBoolean(ARG_CIRCLE_PREVIEW);
 
         initUCrop(view);
-        initProgressBar(view);
+        initLoader(view);
 
         blockingView = view.findViewById(R.id.blocking_view);
 
@@ -288,6 +291,15 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         imageEditPreviewPresenter.setTokopediaWatermark(userInfo, bitmap);
     }
 
+    private void setRemoveBackgroundCurrentBitmap() {
+        showLoadingAndHidePreview();
+
+        Bitmap bitmap = gestureCropImageView.getViewBitmap();
+        Bitmap.CompressFormat compressFormat = ImageProcessingUtil.getCompressFormat(edittedImagePath);
+
+        imageEditPreviewPresenter.setRemoveBackground(bitmap, compressFormat);
+    }
+
     public void setRemoveBackground(int color) {
         removeBackgroundColor = color;
 
@@ -297,12 +309,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
             return;
         }
 
-        showLoadingAndHidePreview();
-
-        Bitmap bitmap = gestureCropImageView.getViewBitmap();
-        Bitmap.CompressFormat compressFormat = ImageProcessingUtil.getCompressFormat(edittedImagePath);
-
-        imageEditPreviewPresenter.setRemoveBackground(bitmap, compressFormat);
+        setRemoveBackgroundCurrentBitmap();
     }
 
     public void saveRemoveBackground() {
@@ -316,8 +323,11 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     }
 
     public void cancelRemoveBackground() {
+        imageEditPreviewPresenter.unsubscribe();
         hasRequestRemoveBackground = false;
+
         resetRemoveBackgroundBitmap();
+        hideLoadingAndShowPreview();
     }
 
     public void resetRemoveBackgroundBitmap() {
@@ -354,7 +364,28 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
     @Override
     public void onErrorGetRemoveBackground(Throwable e) {
-        onImageEditPreviewFragmentListener.onErrorSaveEditImage(e);
+        if (maxRetry == 0) {
+            onImageEditPreviewFragmentListener.onErrorSaveEditImage(e);
+            return;
+        }
+
+        View rootView = requireView().getRootView();
+
+        if (rootView != null) {
+            hideLoadingAndShowPreview();
+
+            Toaster.build(
+                    rootView,
+                    getString(com.tokopedia.imagepicker.R.string.editor_remove_bg_error_message),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(com.tokopedia.imagepicker.R.string.editor_retry_button),
+                    v -> {
+                        setRemoveBackgroundCurrentBitmap();
+                        maxRetry--;
+                    }
+            ).show();
+        }
     }
 
     public int getImageIndex() {
@@ -482,8 +513,9 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         gestureCropImageView.setImageBitmap(bitmap);
     }
 
-    private void initProgressBar(View view) {
+    private void initLoader(View view) {
         progressBar = view.findViewById(R.id.progressbar);
+        bgShadow = view.findViewById(R.id.bg_shadow);
     }
 
     @Override
@@ -598,14 +630,14 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     }
 
     private void showLoadingAndHidePreview() {
-        //uCropView.setVisibility(View.INVISIBLE);
+        bgShadow.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
         blockingView.setVisibility(View.VISIBLE);
     }
 
     private void hideLoadingAndShowPreview() {
+        bgShadow.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
-        //uCropView.setVisibility(View.VISIBLE);
         setEditCropMode(onImageEditPreviewFragmentListener.isInEditCropMode());
     }
 
