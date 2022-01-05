@@ -18,11 +18,6 @@ import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.multiplelikes.UpdateMultipleLikeConfig
 import com.tokopedia.play.data.realtimenotif.RealTimeNotification
-import com.tokopedia.play_common.sse.PlayChannelSSE
-import com.tokopedia.play_common.sse.PlayChannelSSEPageSource
-import com.tokopedia.play.data.ssemapper.PlaySSEMapper
-import com.tokopedia.play.data.websocket.PlayChannelWebSocket
-import com.tokopedia.play.data.UpcomingChannelUpdateActive
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.*
 import com.tokopedia.play.extensions.combine
@@ -59,9 +54,6 @@ import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.*
-import com.tokopedia.play_common.sse.model.SSEAction
-import com.tokopedia.play_common.sse.model.SSECloseReason
-import com.tokopedia.play_common.sse.model.SSEResponse
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.play_common.websocket.PlayWebSocket
