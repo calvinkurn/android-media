@@ -169,6 +169,7 @@ class ProductItemDecoration(private val spacing: Int) : ItemDecoration() {
         return !isProductItem(parent, absolutePos - relativePos % totalSpanCount - 1)
     }
 
+    @Suppress("UnusedPrivateMember")
     private fun isBottomProductItem(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Boolean {
         return !isProductItem(parent, absolutePos + totalSpanCount - relativePos % totalSpanCount)
     }
