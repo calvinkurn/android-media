@@ -63,7 +63,7 @@ class ShopPageProductListViewModel @Inject constructor() : BaseViewModel(Dispatc
             val variablesMain = java.util.HashMap<String, Any>()
             variablesMain[PARAM_SHOP_ID] = shopId!!
             variablesMain[PARAM_PAGE_NUMBER] = pageNumber
-            variablesMain[PARAM_PER_PAGE] = 10
+            variablesMain[PARAM_PER_PAGE] = getPerPageSize()
 
             if (!sort.isZero()) {
                 variablesMain[PARAM_SORT] = sort!!.toInt()
@@ -86,6 +86,9 @@ class ShopPageProductListViewModel @Inject constructor() : BaseViewModel(Dispatc
     }
     fun getSortPosition() :Int?{
         return sortPosition
+    }
+    fun getPerPageSize() :Int{
+        return 60
     }
 
     fun getSortData() {

@@ -182,7 +182,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             val logisticPromo = shipping.shippingRecommendationData?.logisticPromo
             if (shipping.logisticPromoTickerMessage?.isNotEmpty() == true && logisticPromo != null) {
                 val formattedLogisticPromoTickerMessage = HtmlLinkHelper(tickerShippingPromoTitle.context, shipping.logisticPromoTickerMessage).spannedString
-                if (logisticPromo.etaData.errorCode == 0) {
+                if (logisticPromo.etaData.errorCode == 0 && !logisticPromo.isBebasOngkirExtra) {
                     if (logisticPromo.etaData.textEta.isEmpty()) {
                         tickerShippingPromoSubtitle.setText(com.tokopedia.logisticcart.R.string.estimasi_tidak_tersedia)
                     } else {
@@ -218,7 +218,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             btnChangeDuration.gone()
             tvShippingCourierNotes.gone()
             tvShippingPrice.gone()
-            if (logisticPromoViewModel.etaData.errorCode == 0) {
+            if (logisticPromoViewModel.etaData.errorCode == 0 && !logisticPromoViewModel.isBebasOngkirExtra) {
                 if (logisticPromoViewModel.etaData.textEta.isEmpty()) {
                     tvShippingCourierEta.setText(com.tokopedia.logisticcart.R.string.estimasi_tidak_tersedia)
                 } else {

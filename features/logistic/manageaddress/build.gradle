@@ -92,6 +92,8 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.networkDependencies.retrofit
+    androidTestImplementation rootProject.ext.networkDependencies.loggingInterceptor
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
     //-------------------------------------------------------------------//
