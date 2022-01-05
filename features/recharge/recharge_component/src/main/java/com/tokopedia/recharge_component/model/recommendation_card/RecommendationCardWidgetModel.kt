@@ -6,7 +6,6 @@ data class RecommendationCardWidgetModel(
     val title: String = "",
     val price: String = "",
     val appUrl: String = "",
-    val dueDate: String = "",
     val productType: String = "",
     val productExpired: String = ""
 )

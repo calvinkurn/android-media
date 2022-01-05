@@ -10,7 +10,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
-import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardEnum
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel

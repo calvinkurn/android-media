@@ -4,13 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.recharge_component.databinding.ViewRechargeRecommendationCardBigBinding
-import com.tokopedia.recharge_component.databinding.ViewRechargeRecommendationCardSingleBinding
 import com.tokopedia.recharge_component.databinding.ViewRechargeRecommendationCardSmallBinding
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardEnum
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.recommendation_card.RecommendationCardBigViewHolder
-import com.tokopedia.recharge_component.presentation.adapter.viewholder.recommendation_card.RecommendationCardSingleViewHolder
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.recommendation_card.RecommendationCardSmallViewHolder
 
 class RecommendationCardWidgetAdapter(private val recommendationListener: RechargeRecommendationCardListener) :
@@ -30,10 +28,6 @@ class RecommendationCardWidgetAdapter(private val recommendationListener: Rechar
                 (holder as RecommendationCardBigViewHolder).bind(listRecommendationProduct[position])
             }
 
-            RecommendationCardEnum.SINGLE.ordinal -> {
-                (holder as RecommendationCardSingleViewHolder).bind(listRecommendationProduct[position])
-            }
-
             RecommendationCardEnum.SMALL.ordinal -> {
                 (holder as RecommendationCardSmallViewHolder).bind(listRecommendationProduct[position])
             }
@@ -49,15 +43,6 @@ class RecommendationCardWidgetAdapter(private val recommendationListener: Rechar
                     false
                 )
                 RecommendationCardBigViewHolder(recommendationListener, binding)
-            }
-
-            RecommendationCardEnum.SINGLE.ordinal -> {
-                val binding = ViewRechargeRecommendationCardSingleBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-                RecommendationCardSingleViewHolder(recommendationListener, binding)
             }
 
             RecommendationCardEnum.SMALL.ordinal -> {
