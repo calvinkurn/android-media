@@ -16,7 +16,6 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.*
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.data.*
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -24,7 +23,6 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.model.*
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.*
@@ -39,6 +37,7 @@ import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import org.junit.Assert.assertEquals
+import org.junit.Ignore
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyString
@@ -1968,6 +1967,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             .verifySuccessEquals(expected)
     }
 
+    @Ignore
     @Test
     fun `when removeSharingEducationWidget should remove education widget from home layout list`() {
         val channelId = "34923"

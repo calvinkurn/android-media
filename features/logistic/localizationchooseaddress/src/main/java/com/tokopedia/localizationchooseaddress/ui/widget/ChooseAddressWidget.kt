@@ -14,6 +14,7 @@ import com.tokopedia.localizationchooseaddress.R
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
 import com.tokopedia.localizationchooseaddress.di.DaggerChooseAddressComponent
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
@@ -95,7 +96,9 @@ class ChooseAddressWidget : ConstraintLayout,
                                 label = defaultAddress.label,
                                 postalCode = defaultAddress.postal_code,
                                 shopId = data.tokonowModel.shopId.toString(),
-                                warehouseId = data.tokonowModel.warehouseId.toString()
+                                warehouseId = data.tokonowModel.warehouseId.toString(),
+                                warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses),
+                                serviceType = data.tokonowModel.serviceType
                             )
                             chooseAddressPref?.setLocalCache(localData)
                             chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
@@ -110,7 +113,9 @@ class ChooseAddressWidget : ConstraintLayout,
                                 label = "${data.addressName} ${data.receiverName}",
                                 postalCode = data.postalCode,
                                 shopId = data.tokonowModel.shopId.toString(),
-                                warehouseId = data.tokonowModel.warehouseId.toString()
+                                warehouseId = data.tokonowModel.warehouseId.toString(),
+                                warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses),
+                                serviceType = data.tokonowModel.serviceType
                             )
                             chooseAddressPref?.setLocalCache(localData)
                             chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()

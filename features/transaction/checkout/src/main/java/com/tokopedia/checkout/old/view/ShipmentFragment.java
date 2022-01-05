@@ -67,7 +67,10 @@ import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress;
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
+import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel;
+import com.tokopedia.localizationchooseaddress.domain.model.WarehouseModel;
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
@@ -77,6 +80,7 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
+import com.tokopedia.logisticCommon.data.entity.address.WarehouseDataModel;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.logisticCommon.util.LogisticCommonUtil;
@@ -3148,7 +3152,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     String.format("%s %s", userAddress.getAddressName(), userAddress.getReceiverName()),
                     userAddress.getPostalCode(),
                     userAddress.getShopId(),
-                    userAddress.getWarehouseId()
+                    userAddress.getWarehouseId(),
+                    // TODO: 21/12/21 UPDATE AFTER BE ADJUSTMENT
+                    new ArrayList<LocalWarehouseModel>(),
+                    ""
             );
         }
     }
@@ -3166,7 +3173,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     String.format("%s %s", saveAddressDataModel.getAddressName(), saveAddressDataModel.getReceiverName()),
                     saveAddressDataModel.getPostalCode(),
                     String.valueOf(saveAddressDataModel.getShopId()),
-                    String.valueOf(saveAddressDataModel.getWarehouseId())
+                    String.valueOf(saveAddressDataModel.getWarehouseId()),
+                    TokonowWarehouseMapper.INSTANCE.mapWarehousesAddAddressModelToLocal(saveAddressDataModel.getWarehouses()),
+                    saveAddressDataModel.getServiceType()
             );
         }
     }

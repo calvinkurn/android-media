@@ -1,26 +1,53 @@
 package com.tokopedia.localizationchooseaddress.domain.model
 
+import android.annotation.SuppressLint
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class LocalCacheModel (
+        @Expose
         @SerializedName("address_id")
         val address_id: String = "",
+
+        @Expose
         @SerializedName("city_id")
         val city_id: String = "",
+
+        @Expose
         @SerializedName("district_id")
         val district_id: String = "",
+
+        @Expose
         @SerializedName("lat")
         val lat: String = "",
+
+        @Expose
         @SerializedName("long")
         val long: String = "",
+
+        @Expose
         @SerializedName("postal_code")
         val postal_code: String = "",
+
+        @Expose
         @SerializedName("label")
         val label: String = "",
+
+        @Expose
         @SerializedName("shop_id")
         val shop_id: String = "",
+
+        @Expose
         @SerializedName("warehouse_id")
-        val warehouse_id: String = ""
+        val warehouse_id: String = "",
+
+        @Expose
+        @SerializedName("warehouses")
+        val warehouses: List<LocalWarehouseModel> = listOf(),
+
+        @Expose
+        @SerializedName("service_type")
+        val service_type: String = ""
 ) {
 
     /**
@@ -36,3 +63,14 @@ data class LocalCacheModel (
             }
         }
 }
+
+data class LocalWarehouseModel(
+        @Expose
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("warehouse_id")
+        val warehouse_id: Long = 0,
+
+        @Expose
+        @SerializedName("service_type")
+        val service_type: String = ""
+)
