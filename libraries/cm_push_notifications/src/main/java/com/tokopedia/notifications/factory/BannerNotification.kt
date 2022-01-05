@@ -19,26 +19,44 @@ class BannerNotification(context: Context, baseNotificationModel: BaseNotificati
         if (baseNotificationModel.media == null)
             return null
 
-        val bitmap: Bitmap = getBitmap(baseNotificationModel.media?.mediumQuality)
-
-        val style: NotificationCompat.BigPictureStyle? = NotificationCompat.BigPictureStyle()
-                .setSummaryText(baseNotificationModel.message)
-                .setBigContentTitle(baseNotificationModel.title)
-                .bigPicture(bitmap)
+        val iconBitmap = if (!baseNotificationModel.icon.isNullOrBlank())
+            getBitmap(baseNotificationModel.icon)
+        else null
 
         val builder = builder.apply {
             setContentTitle(baseNotificationModel.title)
             setContentText(baseNotificationModel.message)
-            setLargeIcon(null)
-            setCustomContentView(createCollapsedView(bitmap))
-            setCustomHeadsUpContentView(createHeadsUpRemoteView(bitmap))
-            setContentIntent(getPendingIntent(context, getBaseBroadcastIntent(context, baseNotificationModel).apply {
-                action = ACTION_BANNER_CLICK
-            }, requestCode))
-            setStyle(style)
-            setDeleteIntent(createDismissPendingIntent(baseNotificationModel.notificationId, requestCode))
+            iconBitmap?.let { setLargeIcon(iconBitmap) }
+            setContentIntent(
+                getPendingIntent(
+                    context,
+                    getBaseBroadcastIntent(context, baseNotificationModel).apply {
+                        action = ACTION_BANNER_CLICK
+                    },
+                    requestCode
+                )
+            )
+            setDeleteIntent(
+                createDismissPendingIntent(
+                    baseNotificationModel.notificationId,
+                    requestCode
+                )
+            )
         }
 
+        val bitmap: Bitmap? = loadBitmap(baseNotificationModel.media?.mediumQuality)
+        bitmap?.let {
+            val style: NotificationCompat.BigPictureStyle? = NotificationCompat.BigPictureStyle()
+                .setSummaryText(baseNotificationModel.message)
+                .setBigContentTitle(baseNotificationModel.title)
+                .bigPicture(bitmap)
+            builder.apply {
+                setLargeIcon(null)
+                setCustomContentView(createCollapsedView(bitmap))
+                setCustomHeadsUpContentView(createHeadsUpRemoteView(bitmap))
+                setStyle(style)
+            }
+        }
         return builder.build()
     }
 
