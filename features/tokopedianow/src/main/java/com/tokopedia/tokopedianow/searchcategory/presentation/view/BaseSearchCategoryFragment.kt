@@ -70,7 +70,13 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCate
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView
 import com.tokopedia.tokopedianow.searchcategory.presentation.itemdecoration.ProductItemDecoration
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.*
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
