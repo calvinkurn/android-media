@@ -334,16 +334,6 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         tapETollCardView.showInitialState()
     }
 
-    protected fun goToNewTapcash(): Boolean {
-        return try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                    RollenceKey.KEY_VARIANT_TAPCASH_GRADUAL, ""
-            ) == RollenceKey.KEY_VARIANT_TAPCASH_GRADUAL
-        } catch (e: Exception) {
-            false
-        }
-    }
-
     companion object {
         const val REQUEST_CODE_LOGIN = 1980
 
