@@ -1693,17 +1693,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
         adapter.data.clear()
         adapter.data.addAll(newWidgets)
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                diffUtilResult.dispatchUpdatesTo(adapter)
-            } else {
-                recyclerView?.post {
-                    diffUtilResult.dispatchUpdatesTo(adapter)
-                }
-            }
-        } catch (e: Exception) {
-            Timber.e(e)
-        }
+        diffUtilResult.dispatchUpdatesTo(adapter)
     }
 
     @SuppressLint("AnnotateVersionCheck")
@@ -1712,7 +1702,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 callback()
             } else {
-                Handler(Looper.getMainLooper()).post {
+                recyclerView?.post {
                     callback()
                 }
             }
