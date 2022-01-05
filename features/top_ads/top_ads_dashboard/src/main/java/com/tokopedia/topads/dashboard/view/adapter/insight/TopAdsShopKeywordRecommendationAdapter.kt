@@ -1,5 +1,7 @@
 package com.tokopedia.topads.dashboard.view.adapter.insight
 
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -26,7 +28,23 @@ class TopAdsShopKeywordRecommendationAdapter(
         viewType: Int
     ): TopAdsInsightShopKeywordViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
-        return TopAdsInsightShopKeywordViewHolder(view)
+        val holder = TopAdsInsightShopKeywordViewHolder(view)
+        holder.edtBid.textFieldInput.addTextChangedListener(object : TextWatcher {
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+                val item = list[holder.adapterPosition]
+                val inputBudget = holder.edtBid.textFieldInput.text.toString().toIntOrZero()
+                item.priceBid = inputBudget
+                holder.updateRecommBudget(item)
+            }
+        })
+        return holder
     }
 
     override fun onBindViewHolder(holder: TopAdsInsightShopKeywordViewHolder, position: Int) {
@@ -34,31 +52,18 @@ class TopAdsShopKeywordRecommendationAdapter(
         if (item.priceBid == 0) item.priceBid = item.recommendedBid.toInt()
         holder.initView(type, item)
 
-        holder.bindData(type)
-
-        with(holder.view) {
-            setOnClickListener {
-                holder.closeEditTextFee()
-            }
-            btnEditFee.setOnClickListener {
-                holder.openEditTextFee()
-            }
-            checkBox.setOnClickListener {
-                onCheckBoxClicked(item, holder.adapterPosition, false)
-            }
-            edtBid.textFieldInput.afterTextChanged {
-                val inputBudget = it.toIntOrZero()
-                holder.updateRecommBudget(inputBudget)
-                item.priceBid = inputBudget
-            }
+        holder.bindData(item)
+        holder.checkBox.setOnClickListener {
+            onCheckBoxClicked(item, holder.adapterPosition, false)
         }
+
+
     }
 
     private fun onCheckBoxClicked(item: RecommendedKeywordDetail, index: Int, isError: Boolean) {
         item.isChecked = !item.isChecked
         if (item.isChecked) selectedItemsCount++ else selectedItemsCount--
         lstnr.invoke(selectedItemsCount)
-        notifyItemChanged(index)
         if (isError) error.invoke(list[index])
     }
 

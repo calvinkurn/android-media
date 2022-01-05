@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.adapter.viewholder
 import android.text.Html
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.dashboard.R
@@ -10,35 +11,63 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants.BID_K
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants.NEGATIVE_KEYWORD
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants.NEW_KEYWORD
 import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordDetail
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.topads_insight_keyword_recomm_item.view.*
 
-class TopAdsInsightShopKeywordViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+class TopAdsInsightShopKeywordViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
-    private lateinit var item: RecommendedKeywordDetail
+    val edtBid: TextFieldUnify = view.findViewById(R.id.edtBid)
+    val checkBox: CheckboxUnify = view.findViewById(R.id.checkBox)
+    private val txtTitle: Typography = view.findViewById(R.id.txtTitle)
+    private val textGroupTitle: Typography = view.findViewById(R.id.textGroupTitle)
+    private val textGroupName: Typography = view.findViewById(R.id.textGroupName)
+    private val txtNoOfSearches: Typography = view.findViewById(R.id.txtNoOfSearches)
+    private val txtSubTitle1: Typography = view.findViewById(R.id.txtSubTitle1)
+    private val txtSubTitle2: Typography = view.findViewById(R.id.txtSubTitle2)
+    private val txtSubTitle2Value: Typography = view.findViewById(R.id.txtSubTitle2Value)
+    private val txtSubTitle1Value: Typography = view.findViewById(R.id.txtSubTitle1Value)
+    private val txtRecommendedBudget: Typography = view.findViewById(R.id.txtRecommendedBudget)
+    private val txtFooter: Typography = view.findViewById(R.id.txtFooter)
+    private val searchIcon: ImageUnify = view.findViewById(R.id.searchIcon)
+    private val arrow: ImageUnify = view.findViewById(R.id.arrow)
+    private val btnEditFee: ImageUnify = view.findViewById(R.id.btnEditFee)
+    private val searchGroup: Group = view.findViewById(R.id.searchGroup)
+    private val newKeywordGroup: Group = view.findViewById(R.id.newKeywordGroup)
 
-    fun bindData(type: Int) = with(view) {
+
+    fun bindData(item: RecommendedKeywordDetail) {
+
         checkBox.isChecked = item.isChecked
 
         txtTitle.text = item.keywordTag
         textGroupName.text = item.groupName
 
         txtNoOfSearches.attributedString(
-            String.format(resources.getString(R.string.no_of_searches), item.totalHits)
+            String.format(view.resources.getString(R.string.no_of_searches), item.totalHits)
         )
 
         updateSubTitle2Value(item.priceBid)
+
         edtBid.textFieldInput.setText("${item.priceBid}")
-        updateRecommBudget(item.priceBid)
+        updateRecommBudget(item)
 
         txtFooter.attributedString(
-            String.format(resources.getString(R.string.max_times_month), item.impressionCount)
+            String.format(view.resources.getString(R.string.max_times_month), item.impressionCount)
         )
+
+        itemView.setOnClickListener {
+            closeEditTextFee(item)
+        }
+        btnEditFee.setOnClickListener {
+            openEditTextFee()
+        }
     }
 
-    fun updateRecommBudget(inputBudget: Int) = with(view.txtRecommendedBudget) {
+    fun updateRecommBudget(item: RecommendedKeywordDetail) = with(txtRecommendedBudget) {
+        val inputBudget = item.priceBid
         var isError = false
         val message = if (inputBudget % 50 != 0) {
             isError = true
@@ -71,7 +100,7 @@ class TopAdsInsightShopKeywordViewHolder(val view: View) : RecyclerView.ViewHold
         }
     }
 
-    fun closeEditTextFee() = with(view) {
+    fun closeEditTextFee(item: RecommendedKeywordDetail) {
         if (edtBid.visibility == View.VISIBLE) {
             txtSubTitle2Value.show()
             btnEditFee.show()
@@ -97,8 +126,7 @@ class TopAdsInsightShopKeywordViewHolder(val view: View) : RecyclerView.ViewHold
         )
     }
 
-    fun initView(type: Int, it: RecommendedKeywordDetail) = with(view) {
-        item = it
+    fun initView(type: Int, item: RecommendedKeywordDetail) = with(view) {
         when (type) {
             BID_KEYWORD -> {
                 searchGroup.hide()
@@ -119,7 +147,7 @@ class TopAdsInsightShopKeywordViewHolder(val view: View) : RecyclerView.ViewHold
                 btnEditFee.hide()
             }
         }
-        updateRecommBudget(item.priceBid)
+        updateRecommBudget(item)
         if (item.isError) txtRecommendedBudget.show() else txtRecommendedBudget.hide()
     }
 }

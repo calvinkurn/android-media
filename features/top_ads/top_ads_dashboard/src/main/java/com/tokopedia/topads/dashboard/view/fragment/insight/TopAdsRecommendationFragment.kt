@@ -1,11 +1,13 @@
 package com.tokopedia.topads.dashboard.view.fragment.insight
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
@@ -27,10 +29,12 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.insight.InsightAdObj
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightTabAdapter
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightShopKeywordRecommendationFragment.Companion.NOT_EXPANDED
 import com.tokopedia.topads.dashboard.view.fragment.insightbottomsheet.TopAdsInsightAdsTypeBottomSheet
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsInsightViewModel
+import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineBaseFragment
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_dash_fragment_recommendation_layout.*
@@ -38,6 +42,7 @@ import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import kotlin.math.abs
 
 /**
  * Created by Pika on 9/7/20.
@@ -49,6 +54,8 @@ const val CLICK_IKLANKAN = "click - iklankan"
 
 class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
+    private var mCurrentState = TopAdsProductIklanFragment.State.IDLE
+    private var collapseStateCallBack: TopAdsHeadlineBaseFragment.AppBarActionHeadline? = null
     private var isAdTypeProdukSelected = true
     private val adTypeList by lazy { getAdsTypeList() }
     private val adsTypeBottomSheet
@@ -117,11 +124,43 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         getComponent(TopAdsDashboardComponent::class.java).inject(this)
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is TopAdsHeadlineBaseFragment.AppBarActionHeadline)
+            collapseStateCallBack = context
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initListener()
         setupSelectAdsTypeView(adTypeList[if(isAdTypeProdukSelected) ADTYPE_PRODUK else ADTYPE_TOKO])
         observeLiveData()
+        app_bar_layout?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
+            when {
+                offset == 0 -> {
+                    if (mCurrentState != TopAdsProductIklanFragment.State.EXPANDED) {
+                        onStateChanged(TopAdsProductIklanFragment.State.EXPANDED);
+                    }
+                    mCurrentState = TopAdsProductIklanFragment.State.EXPANDED;
+                }
+                abs(offset) >= appBarLayout.totalScrollRange -> {
+                    if (mCurrentState != TopAdsProductIklanFragment.State.COLLAPSED) {
+                        onStateChanged(TopAdsProductIklanFragment.State.COLLAPSED);
+                    }
+                    mCurrentState = TopAdsProductIklanFragment.State.COLLAPSED;
+                }
+                else -> {
+                    if (mCurrentState != TopAdsProductIklanFragment.State.IDLE) {
+                        onStateChanged(TopAdsProductIklanFragment.State.IDLE);
+                    }
+                    mCurrentState = TopAdsProductIklanFragment.State.IDLE;
+                }
+            }
+        })
+    }
+
+    private fun onStateChanged(state: TopAdsProductIklanFragment.State?) {
+        collapseStateCallBack?.setAppBarStateHeadline(state)
     }
 
     private fun observeLiveData() {
