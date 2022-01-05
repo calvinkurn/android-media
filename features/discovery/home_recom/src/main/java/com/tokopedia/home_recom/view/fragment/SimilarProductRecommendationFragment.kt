@@ -298,14 +298,14 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     }
 
     private fun showMessageSuccessAddWishlist() {
-        showToastSuccessWithAction(getString(R.string.recom_msg_success_add_wishlist), getString(R.string.home_recom_go_to_wishlist)){
-            View.OnClickListener { goToWishlist() }
+        showToastSuccessWithAction(getString(R.string.recom_msg_success_add_wishlist), getString(R.string.home_recom_go_to_wishlist)) {
+            goToWishlist()
         }
     }
 
     private fun goToWishlist() {
         if (activity == null) return
-        RouteManager.route(activity, ApplinkConst.WISHLIST)
+        RouteManager.route(activity, ApplinkConst.NEW_WISHLIST)
     }
 
     private fun showMessageSuccessRemoveWishlist() {
