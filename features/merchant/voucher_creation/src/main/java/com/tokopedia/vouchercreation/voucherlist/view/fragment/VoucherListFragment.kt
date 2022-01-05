@@ -1090,10 +1090,9 @@ class VoucherListFragment :
             (activity as? MvcPerformanceMonitoringListener)?.startRenderPerformanceMonitoring()
             when (it) {
                 is Success -> {
-                    val showNewBroadCastExperience = RollenceUtil.getBroadCastVoucherRollenceValue()
                     val voucherList = it.data
                     voucherList.forEach { voucherUiModel ->
-                        voucherUiModel.showNewBc = showNewBroadCastExperience
+                        voucherUiModel.showNewBc = true
                     }
                     setOnSuccessGetVoucherList(voucherList)
                     rvVoucherList?.setOnLayoutListenerReady()
