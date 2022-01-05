@@ -45,6 +45,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.url.TokopediaUrl
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -170,7 +171,12 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
 
     private fun onGetAffiliateKycData(kycProjectInfo: AffiliateKycDetailsData.KycProjectInfo) {
         when(kycProjectInfo.status){
-            KYC_DONE -> RouteManager.route(context, WITHDRAWAL_APPLINK)
+            KYC_DONE ->{
+                if(TokopediaUrl.getInstance().GQL.contains("staging"))
+                    RouteManager.route(context, WITHDRAWAL_APPLINK_STAGING)
+                else
+                    RouteManager.route(context, WITHDRAWAL_APPLINK_PROD)
+            }
             else -> RouteManager.route(context, APP_LINK_KYC)
         }
     }
