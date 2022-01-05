@@ -131,7 +131,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun showLoginPortal() {
-        if(fragmentStack.isEmpty() || fragmentStack.peek() != (AffiliateLoginFragment.javaClass.simpleName))
+        if(fragmentStack.isEmpty() || (fragmentStack.peek() != (AffiliateLoginFragment::class.java.canonicalName)))
             openFragment(AffiliateLoginFragment.getFragmentInstance(this))
     }
 
