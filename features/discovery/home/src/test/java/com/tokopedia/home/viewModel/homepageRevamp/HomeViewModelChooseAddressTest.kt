@@ -7,8 +7,10 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynami
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.ext.observeOnce
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 
@@ -21,36 +23,47 @@ class HomeViewModelChooseAddressTest {
     private val getHomeUseCase = mockk<HomeDynamicChannelUseCase> (relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
 
+    val updatedState = true
+    val mockLocalCacheModel = LocalCacheModel(
+            address_id = "12345"
+    )
+    val mockHomeChooseAddressData = HomeChooseAddressData(isActive = updatedState, localCacheModel = mockLocalCacheModel)
     @Test
-    fun `When choose address rollence is active then list should contains choose address widget`(){
+    fun `When choose address state updated on updateChooseAddressData then homeDataModel choose address value should be updated`(){
         getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(HomeHeaderDataModel(
                 needToShowChooseAddress = false
         ))))
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.updateChooseAddressData(HomeChooseAddressData(isActive = true))
-        homeViewModel.refreshHomeData()
-
-        homeViewModel.homeLiveDynamicChannel.observeOnce { homeDataModel ->
-            //TODO fix this for unit test
-//            val homeHeaderOvoDataModel = (homeDataModel.list.find{ it::class.java == HomeHeaderOvoDataModel::class.java } as? HomeHeaderOvoDataModel)
-//            assert(homeHeaderOvoDataModel?.needToShowChooseAddress == true)
-        }
+        homeViewModel.updateChooseAddressData(mockHomeChooseAddressData)
+        Assert.assertTrue(homeViewModel.homeDataModel.homeChooseAddressData == mockHomeChooseAddressData)
+        Assert.assertTrue(
+                (homeViewModel.homeDataModel.list[0] as? HomeHeaderDataModel)?.needToShowChooseAddress == updatedState
+        )
     }
 
     @Test
-    fun `When choose address rollence is inactive then list should not contains choose address widget`(){
-        //TODO fix this for unit test
-//        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(HomeHeaderOvoDataModel(
-//                needToShowChooseAddress = true
-//        ))))
+    fun `When choose address state updated on updateChooseAddressData then get address data should return latest data`(){
+        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(HomeHeaderDataModel(
+                needToShowChooseAddress = false
+        ))))
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        homeViewModel.updateChooseAddressData(HomeChooseAddressData(isActive = false))
-        homeViewModel.refreshHomeData()
+        homeViewModel.updateChooseAddressData(mockHomeChooseAddressData)
+        Assert.assertTrue(homeViewModel.getAddressData() == mockHomeChooseAddressData)
+        Assert.assertTrue(
+                (homeViewModel.homeDataModel.list[0] as? HomeHeaderDataModel)?.needToShowChooseAddress == updatedState
+        )
+    }
 
-        homeViewModel.homeLiveDynamicChannel.observeOnce { homeDataModel ->
-            //TODO fix this for unit test
-//            val homeHeaderOvoDataModel = (homeDataModel.list.find{ it::class.java == HomeHeaderOvoDataModel::class.java } as? HomeHeaderOvoDataModel)
-//            assert(homeHeaderOvoDataModel?.needToShowChooseAddress == false)
-        }
+    @Test
+    fun `When choose address removed on removeChooseAddressWidget then address data state should be false`(){
+        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(HomeHeaderDataModel(
+                needToShowChooseAddress = true
+        ))))
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel.removeChooseAddressWidget()
+        Assert.assertTrue(!homeViewModel.homeDataModel.homeChooseAddressData.isActive)
+        Assert.assertTrue(
+                (homeViewModel.homeDataModel.list[0] as? HomeHeaderDataModel)?.needToShowChooseAddress == false
+        )
     }
 }

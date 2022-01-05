@@ -46,8 +46,6 @@ import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
-import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.switch
@@ -127,9 +125,6 @@ open class HomeRevampViewModel @Inject constructor(
     private val _requestImageTestLiveData = MutableLiveData<Event<PlayCardDataModel>>()
     val requestImageTestLiveData: LiveData<Event<PlayCardDataModel>> get() = _requestImageTestLiveData
 
-    val oneClickCheckout: LiveData<Event<Any>> get() = _oneClickCheckout
-    private val _oneClickCheckout = MutableLiveData<Event<Any>>()
-
     val oneClickCheckoutHomeComponent: LiveData<Event<Any>> get() = _oneClickCheckoutHomeComponent
     private val _oneClickCheckoutHomeComponent = MutableLiveData<Event<Any>>()
 
@@ -186,7 +181,6 @@ open class HomeRevampViewModel @Inject constructor(
      * Job list
      */
     private var getHomeDataJob: Job? = null
-    private var buWidgetJob: Job? = null
     private var declineRechargeRecommendationJob: Job? = null
     private var declineSalamWidgetJob : Job? = null
 
@@ -349,11 +343,7 @@ open class HomeRevampViewModel @Inject constructor(
             if(visitableList.isEmpty()){
                 deleteWidget(visitable, position)
             } else {
-                var lastIndex = position
-                val dynamicData = homeDataModel.list.getOrNull(lastIndex)
-                if(dynamicData !is DynamicChannelDataModel && dynamicData != visitable){
-                    lastIndex = homeDataModel.list.indexOf(visitable)
-                }
+                val lastIndex = position
                 deleteWidget(visitable, lastIndex)
                 visitableList.reversed().forEach {
                     addWidget(it, lastIndex)
@@ -366,7 +356,7 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun declineRechargeRecommendationItem(requestParams: Map<String, String>) {
-        findWidget<ReminderWidgetModel>({it?.source == ReminderEnum.RECHARGE}) { rechargeModel, index ->
+        findWidget<ReminderWidgetModel>({it.source == ReminderEnum.RECHARGE}) { rechargeModel, index ->
             deleteWidget(rechargeModel, index) }
         declineRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
             homeRechargeRecommendationUseCase.get().onDeclineRechargeRecommendation(requestParams)
@@ -374,10 +364,10 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun declineSalamItem(requestParams: Map<String, Int>){
-        findWidget<ReminderWidgetModel>({it?.source == ReminderEnum.SALAM}) { rechargeModel, index ->
+        findWidget<ReminderWidgetModel>({it.source == ReminderEnum.SALAM}) { rechargeModel, index ->
             deleteWidget(rechargeModel, index) }
         declineSalamWidgetJob = launchCatchError(coroutineContext, block = {
-            homeSalamRecommendationUseCase.get().onDeclineRechargeRecommendation(requestParams) }){}
+            homeSalamRecommendationUseCase.get().onDeclineSalamRecommendation(requestParams) }){}
     }
 
     fun getRechargeBUWidget(source: WidgetSource) {
@@ -423,8 +413,8 @@ open class HomeRevampViewModel @Inject constructor(
                     homeListCarouselUseCase.get().onOneClickCheckOut(channel, grid, position, getUserId()))
             )
         }){
-            it.printStackTrace()
             _oneClickCheckoutHomeComponent.postValue(Event(it))
+            it.printStackTrace()
         }
     }
 
@@ -496,13 +486,7 @@ open class HomeRevampViewModel @Inject constructor(
     fun updateChooseAddressData(homeChooseAddressData: HomeChooseAddressData) {
         this.homeDataModel.setAndEvaluateHomeChooseAddressData(homeChooseAddressData)
         findWidget<HomeHeaderDataModel> { headerModel, index ->
-            val visitable = homeUseCase.get().updateHeaderData(currentHeaderDataModel, this.homeDataModel)
-
-            visitable?.let {
-                homeDataModel.updateWidgetModel(visitableToChange = visitable, visitable = currentHeaderDataModel, position = index) {
-                    updateHomeData(homeDataModel)
-                }
-            }
+            updateHomeData(homeDataModel)
         }
     }
 
@@ -512,13 +496,16 @@ open class HomeRevampViewModel @Inject constructor(
 
     //adjust unit test
     fun removeChooseAddressWidget() {
-        homeUseCase.get().removeChooseAddressData(homeDataModel) {
-            updateHomeData(it)
+        findWidget<HomeHeaderDataModel> { homeHeaderModel, index ->
+            homeHeaderModel.needToShowChooseAddress = false
+            homeDataModel.homeChooseAddressData.isActive = false
+            homeDataModel.updateWidgetModel(homeHeaderModel, homeHeaderModel, index){}
+            updateHomeData(homeDataModel)
         }
     }
 
-    private inline fun <reified T> findWidget(predicate: (T?) -> Boolean = {true}, actionOnFound: (T, Int) -> Unit) {
-        homeDataModel.list.withIndex().find { it.value is T && predicate.invoke(it.value as? T) }.let {
+    private inline fun <reified T> findWidget(predicate: (T) -> Boolean = {true}, actionOnFound: (T, Int) -> Unit) {
+        homeDataModel.list.withIndex().find { it.value is T && predicate.invoke(it.value as T) }.let {
             it?.let {
                 if (it.value is T) {
                     actionOnFound.invoke(it.value as T, it. index)
@@ -553,8 +540,7 @@ open class HomeRevampViewModel @Inject constructor(
             updateWidget(DynamicChannelRetryModel(false),index)
         }
         findWidget<DynamicChannelRetryModel> { retryWidget, index ->
-            updateWidget(retryWidget, index)
-            addWidget(DynamicChannelRetryModel(false), homeDataModel.list.size)
+            updateWidget(DynamicChannelRetryModel(false), index)
         }
     }
 
@@ -568,23 +554,23 @@ open class HomeRevampViewModel @Inject constructor(
         if (!userSession.get().isLoggedIn) return
         findWidget<HomeHeaderDataModel> { headerModel, index ->
             launch {
+                val homeBalanceModel = currentHeaderDataModel.headerDataModel?.homeBalanceModel.apply {
+                    this?.initBalanceModelByType()
+                } ?: HomeBalanceModel()
+                val headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
+                        homeBalanceModel = homeBalanceModel
+                )
                 val initialHeaderModel = currentHeaderDataModel.copy(
-                        headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
-                                homeBalanceModel = currentHeaderDataModel.headerDataModel?.homeBalanceModel.apply {
-                                    this?.initBalanceModelByType()
-                                } ?: HomeBalanceModel()
-                        )
+                        headerDataModel = headerDataModel
                 )
                 updateHeaderData(initialHeaderModel, index)
                 currentHeaderDataModel = homeBalanceWidgetUseCase.get().onGetBalanceWidgetData(currentHeaderDataModel)
                 updateHeaderData(currentHeaderDataModel, index)
-            }
-
-            val visitable = homeUseCase.get().updateHeaderData(currentHeaderDataModel, this.homeDataModel)
-
-            visitable?.let {
-                homeDataModel.updateWidgetModel(visitableToChange = visitable, visitable = currentHeaderDataModel, position = index) {
-                    updateHomeData(homeDataModel)
+                val visitable = updateHeaderData(currentHeaderDataModel, index)
+                visitable?.let {
+                    homeDataModel.updateWidgetModel(visitableToChange = visitable, visitable = currentHeaderDataModel, position = index) {
+                        updateHomeData(homeDataModel)
+                    }
                 }
             }
         }
@@ -594,16 +580,20 @@ open class HomeRevampViewModel @Inject constructor(
         visitable.let {
             homeDataModel.updateWidgetModel(visitableToChange = visitable, visitable = currentHeaderDataModel, position = index) {
                 updateHomeData(homeDataModel)
+                if (it is HomeHeaderDataModel) {
+                    this.currentHeaderDataModel = it
+                }
             }
         }
         return visitable
     }
 
-    private fun initFlow() {
+    fun initFlow() {
         launchCatchError(coroutineContext, block = {
             homeFlowDynamicChannel.collect { homeNewDataModel ->
                 if (homeNewDataModel?.isCache == false) {
                     _isRequestNetworkLiveData.postValue(Event(false))
+                    currentTopAdsBannerToken = homeNewDataModel.topadsNextPageToken
                     onRefreshState = false
                     if (homeNewDataModel.list.isEmpty()) {
                         val error = "type:" + "revamp_empty_update; " +
@@ -634,7 +624,7 @@ open class HomeRevampViewModel @Inject constructor(
             }
         }) {
             _updateNetworkLiveData.postValue(Result.error(error = it, data = null))
-            val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
+            val stackTrace = Log.getStackTraceString(it)
             HomeServerLogger.logWarning(
                 type = TYPE_REVAMP_ERROR_INIT_FLOW,
                 throwable = it,
