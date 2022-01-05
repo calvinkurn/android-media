@@ -125,6 +125,7 @@ fun getQueryCartRevampV3(): String {
                       is_preorder
                       duration
                     }
+                    # enable_bo_affordability
                   }
                   pinned {
                     is_pinned
