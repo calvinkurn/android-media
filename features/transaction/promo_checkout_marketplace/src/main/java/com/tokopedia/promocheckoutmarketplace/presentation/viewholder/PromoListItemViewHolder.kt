@@ -100,17 +100,6 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
         }
     }
 
-    private fun getPromoInformationDetailsCount(element: PromoListItemUiModel): Int {
-        var promoInformationDetailsCount = 0
-        element.uiData.promoInfos.forEach {
-            if (it.type == PromoInfo.TYPE_PROMO_INFO || it.type == PromoInfo.TYPE_BOTTOM_BANNER || it.type == PromoInfo.TYPE_PROMO_VALIDITY) {
-                promoInformationDetailsCount++
-            }
-        }
-
-        return promoInformationDetailsCount
-    }
-
     private fun renderPromoEnabled(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding) {
         with(viewBinding) {
             promoHighlightIdentifier.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_highlighted_identifier_enabled)
@@ -361,4 +350,16 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
             }
         }
     }
+
+    private fun getPromoInformationDetailsCount(element: PromoListItemUiModel): Int {
+        var promoInformationDetailsCount = 0
+        element.uiData.promoInfos.forEach {
+            if (it.type == PromoInfo.TYPE_PROMO_INFO || it.type == PromoInfo.TYPE_BOTTOM_BANNER || it.type == PromoInfo.TYPE_PROMO_VALIDITY) {
+                promoInformationDetailsCount++
+            }
+        }
+
+        return promoInformationDetailsCount
+    }
+
 }
