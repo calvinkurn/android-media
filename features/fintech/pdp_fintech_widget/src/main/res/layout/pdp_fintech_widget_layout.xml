@@ -1,48 +1,41 @@
-<androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider1"
-        android:background="@color/light_N50"
         android:layout_width="match_parent"
         android:layout_height="@dimen/pdp_fintech_8_dp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/light_N50"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        />
-
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/quickText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/pdp_fintech_quick_buy_with_paylater"
-        android:textSize="@dimen/sp_14"
-        android:textColor="@color/Unify_N700_96"
-        android:textStyle="normal"
         android:layout_marginStart="@dimen/pdp_fintech_16_dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginEnd="@dimen/pdp_fintech_16_dp"
-        app:layout_constraintTop_toBottomOf="@id/divider1"
         android:layout_marginTop="@dimen/pdp_fintech_14_dp"
-        />
+        android:layout_marginEnd="@dimen/pdp_fintech_16_dp"
+        android:text="@string/pdp_fintech_quick_buy_with_paylater"
+        android:textColor="@color/Unify_N700_96"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider1" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_items"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/quickText"
-        android:layout_marginTop="@dimen/pdp_fintech_16_dp"
-        app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="@dimen/pdp_fintech_16_dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="@dimen/pdp_fintech_16_dp"
         android:layout_marginBottom="@dimen/pdp_fintech_12_dp"
-        />
-
-
-
-
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/quickText" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

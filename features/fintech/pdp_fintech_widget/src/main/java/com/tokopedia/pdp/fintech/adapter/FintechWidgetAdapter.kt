@@ -1,10 +1,10 @@
 package com.tokopedia.pdp.fintech.adapter
 
-import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter.MyViewHolder
-import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter.MyViewHolder
 import com.tokopedia.pdp_fintech.R
 
 class FintechWidgetAdapter : RecyclerView.Adapter<MyViewHolder>() {
