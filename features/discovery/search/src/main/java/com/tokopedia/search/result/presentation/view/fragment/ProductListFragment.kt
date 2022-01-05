@@ -573,7 +573,7 @@ class ProductListFragment: BaseDaggerFragment(),
     ) {
         val userId = getUserId()
         val eventLabel = getSearchProductTrackingEventLabel(item, suggestedRelatedKeyword)
-        val dataLayerList = mutableListOf<Any>()
+        val dataLayerList = ArrayList<Any>()
         val productItemDataViews = mutableListOf<ProductItemDataView>()
         val irisSessionId = irisSession?.getSessionId() ?: ""
         val filterSortParams = searchParameter?.let {

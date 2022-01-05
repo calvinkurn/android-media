@@ -231,7 +231,7 @@ object SearchTracking {
     @JvmStatic
     fun eventImpressionSearchResultProduct(
             trackingQueue: TrackingQueue,
-            list: List<Any>,
+            list: ArrayList<Any>,
             eventLabel: String?,
             irisSessionId: String,
             userId: String
@@ -245,9 +245,8 @@ object SearchTracking {
                 SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
                 ECOMMERCE, DataLayer.mapOf(
                 "currencyCode", "IDR",
-                "impressions", DataLayer.listOf(
-                *list.toTypedArray()
-        ))
+                "impressions", list
+            )
         ) as HashMap<String, Any>
         if (!TextUtils.isEmpty(irisSessionId)) map[KEY_SESSION_IRIS] = irisSessionId
         trackingQueue.putEETracking(
