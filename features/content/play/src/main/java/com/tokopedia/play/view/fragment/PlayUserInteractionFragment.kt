@@ -65,6 +65,7 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewcomponent.interactive.*
@@ -224,7 +225,9 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
+        playViewModel = ViewModelProvider(
+            requireParentFragment(), (requireParentFragment() as PlayFragment).viewModelProviderFactory
+        ).get(PlayViewModel::class.java)
         viewModel = ViewModelProvider(this, viewModelFactory).get(PlayInteractionViewModel::class.java)
     }
 
@@ -635,7 +638,7 @@ class PlayUserInteractionFragment @Inject constructor(
         observePinnedMessage()
         observePinnedProduct()
         observeBottomInsetsState()
-        observeStatusInfo()
+//        observeStatusInfo()
         observeProductContent()
 
         observeUiState()
@@ -795,45 +798,45 @@ class PlayUserInteractionFragment @Inject constructor(
         })
     }
 
-    private fun observeStatusInfo() {
-        playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
-            getBottomSheetInstance().setState(it.statusType.isFreeze)
-
-            if (it.statusType.isFreeze || it.statusType.isBanned) {
-                gradientBackgroundView.hide()
-                likeCountView.hide()
-                likeView.hide()
-                quickReplyView?.hide()
-                chatListView?.hide()
-                pinnedView?.hide()
-                immersiveBoxView.hide()
-                playButtonView.hide()
-                shareLinkView?.setIsShareable(false)
-
-                videoControlViewOnStateChanged(isFreezeOrBanned = true)
-
-                sendChatView?.focusChatForm(false)
-                sendChatView?.invisible()
-
-                videoSettingsViewOnStateChanged(isFreezeOrBanned = true)
-                toolbarViewOnStateChanged(isFreezeOrBanned = true)
-                statsInfoViewOnStateChanged(isFreezeOrBanned = true)
-                pipViewOnStateChanged(isFreezeOrBanned = true)
-                pinnedViewOnStateChanged(isFreezeOrBanned = true)
-                productFeaturedViewOnStateChanged(isFreezeOrBanned = true)
-
-                /**
-                 * Non view component
-                 */
-                hideBottomSheet()
-                cancelAllAnimations()
-
-                triggerImmersive(false)
-            }
-
-            endLiveInfoViewOnStateChanged(event = it)
-        })
-    }
+//    private fun observeStatusInfo() {
+//        playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
+//            getBottomSheetInstance().setState(it.statusType.isFreeze)
+//
+//            if (it.statusType.isFreeze || it.statusType.isBanned) {
+//                gradientBackgroundView.hide()
+//                likeCountView.hide()
+//                likeView.hide()
+//                quickReplyView?.hide()
+//                chatListView?.hide()
+//                pinnedView?.hide()
+//                immersiveBoxView.hide()
+//                playButtonView.hide()
+//                shareLinkView?.setIsShareable(false)
+//
+//                videoControlViewOnStateChanged(isFreezeOrBanned = true)
+//
+//                sendChatView?.focusChatForm(false)
+//                sendChatView?.invisible()
+//
+//                videoSettingsViewOnStateChanged(isFreezeOrBanned = true)
+//                toolbarViewOnStateChanged(isFreezeOrBanned = true)
+//                statsInfoViewOnStateChanged(isFreezeOrBanned = true)
+//                pipViewOnStateChanged(isFreezeOrBanned = true)
+//                pinnedViewOnStateChanged(isFreezeOrBanned = true)
+//                productFeaturedViewOnStateChanged(isFreezeOrBanned = true)
+//
+//                /**
+//                 * Non view component
+//                 */
+//                hideBottomSheet()
+//                cancelAllAnimations()
+//
+//                triggerImmersive(false)
+//            }
+//
+//            endLiveInfoViewOnStateChanged(event = it)
+//        })
+//    }
 
     private fun observeProductContent() {
         playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, DistinctObserver {
@@ -841,12 +844,12 @@ class PlayUserInteractionFragment @Inject constructor(
                 is PlayResult.Loading -> {
                     if (it.showPlaceholder) {
                         pinnedVoucherView?.showPlaceholder()
-                        productFeaturedView?.showPlaceholder()
+//                        productFeaturedView?.showPlaceholder()
                     }
                 }
                 is PlayResult.Failure -> {
                     pinnedVoucherView?.hide()
-                    productFeaturedView?.hide()
+//                    productFeaturedView?.hide()
                 }
             }
         })
@@ -867,6 +870,9 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
                 renderViewAllProductView(state.viewAllProduct)
+                renderFeaturedProductView(prevState?.tagItems, state.tagItems, state.bottomInsets, state.status)
+
+                handleStatus(state.status)
             }
         }
     }
@@ -1339,22 +1345,22 @@ class PlayUserInteractionFragment @Inject constructor(
     ) {
         if (isFreezeOrBanned) {
             pinnedVoucherView?.hide()
-            productFeaturedView?.hide()
+//            productFeaturedView?.hide()
             return
         }
 
         if (pinnedModel != null && pinnedModel.productTags is PlayProductTagsUiModel.Complete) {
             pinnedVoucherView?.setVoucher(pinnedModel.productTags.voucherList)
-            productFeaturedView?.setFeaturedProducts(pinnedModel.productTags.productList, pinnedModel.productTags.basicInfo.maxFeaturedProducts)
+//            productFeaturedView?.setFeaturedProducts(pinnedModel.productTags.productList, pinnedModel.productTags.basicInfo.maxFeaturedProducts)
             productSeeMoreView?.setTotalProduct(pinnedModel.productTags.productList.size)
         }
 
         if (!bottomInsets.isAnyShown && pinnedModel?.shouldShow == true) {
             pinnedVoucherView?.showIfNotEmpty()
-            productFeaturedView?.showIfNotEmpty()
+//            productFeaturedView?.showIfNotEmpty()
         } else {
             pinnedVoucherView?.hide()
-            productFeaturedView?.hide()
+//            productFeaturedView?.hide()
         }
 
         changePinnedMessageConstraint()
@@ -1438,10 +1444,10 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun endLiveInfoViewOnStateChanged(
-            event: PlayStatusInfoUiModel
+            event: PlayStatusUiModel
     ) {
-        if(event.statusType.isFreeze) {
-            endLiveInfoView.setInfo(title = event.freezeModel.title)
+        if(event.channelStatus.statusType.isFreeze) {
+            endLiveInfoView.setInfo(title = event.config.freezeModel.title)
             endLiveInfoView.show()
         } else endLiveInfoView.hide()
     }
@@ -1577,6 +1583,30 @@ class PlayUserInteractionFragment @Inject constructor(
         else productSeeMoreView?.hide()
     }
 
+    private fun renderFeaturedProductView(
+        prevTagItem: TagItemUiModel?,
+        tagItem: TagItemUiModel,
+        bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
+        status: PlayStatusUiModel,
+    ) {
+        if (tagItem.product.canShow &&
+            !bottomInsets.isAnyShown &&
+            !tagItem.resultState.isFail &&
+            status.channelStatus.statusType.isActive
+        ) {
+            if (tagItem.resultState.isLoading) {
+                productFeaturedView?.showPlaceholder()
+            } else if (prevTagItem?.product != tagItem.product) {
+                productFeaturedView?.setFeaturedProducts(
+                    tagItem.product.productList,
+                    tagItem.maxFeatured,
+                )
+            }
+
+            productFeaturedView?.showIfNotEmpty()
+        } else productFeaturedView?.hide()
+    }
+
     private fun castViewOnStateChanged(
         bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
     ) {
@@ -1590,6 +1620,44 @@ class PlayUserInteractionFragment @Inject constructor(
         else castView?.hide()
     }
     //endregion
+
+    private fun handleStatus(status: PlayStatusUiModel) {
+        getBottomSheetInstance().setState(status.channelStatus.statusType.isFreeze)
+
+        if (status.channelStatus.statusType.isFreeze || status.channelStatus.statusType.isBanned) {
+            gradientBackgroundView.hide()
+            likeCountView.hide()
+            likeView.hide()
+            quickReplyView?.hide()
+            chatListView?.hide()
+            pinnedView?.hide()
+            immersiveBoxView.hide()
+            playButtonView.hide()
+            shareLinkView?.setIsShareable(false)
+
+            videoControlViewOnStateChanged(isFreezeOrBanned = true)
+
+            sendChatView?.focusChatForm(false)
+            sendChatView?.invisible()
+
+            videoSettingsViewOnStateChanged(isFreezeOrBanned = true)
+            toolbarViewOnStateChanged(isFreezeOrBanned = true)
+            statsInfoViewOnStateChanged(isFreezeOrBanned = true)
+            pipViewOnStateChanged(isFreezeOrBanned = true)
+            pinnedViewOnStateChanged(isFreezeOrBanned = true)
+            productFeaturedViewOnStateChanged(isFreezeOrBanned = true)
+
+            /**
+             * Non view component
+             */
+            hideBottomSheet()
+            cancelAllAnimations()
+
+            triggerImmersive(false)
+        }
+
+        endLiveInfoViewOnStateChanged(event = status)
+    }
 
     private fun getTextFromUiString(uiString: UiString): String {
         return when (uiString) {

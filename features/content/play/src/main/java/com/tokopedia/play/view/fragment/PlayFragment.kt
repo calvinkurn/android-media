@@ -10,6 +10,7 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.Nullable
 import androidx.core.view.ViewCompat
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -46,6 +47,8 @@ import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.util.KeyboardWatcher
 import com.tokopedia.play.view.uimodel.action.SetChannelActiveAction
+import com.tokopedia.play.view.uimodel.recom.PlayStatusSource
+import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.play_common.util.extension.dismissToaster
@@ -62,9 +65,10 @@ import javax.inject.Inject
  * Created by jegul on 29/11/19
  */
 class PlayFragment @Inject constructor(
-        private val viewModelFactory: ViewModelProvider.Factory,
-        private val pageMonitoring: PlayPltPerformanceCallback,
-        private val analytic: PlayAnalytic
+    viewModelFactory: PlayViewModel.Factory,
+//        private val viewModelFactory: ViewModelProvider.Factory,
+    private val pageMonitoring: PlayPltPerformanceCallback,
+    private val analytic: PlayAnalytic
 ) :
         TkpdBaseV4Fragment(),
         PlayFragmentContract,
@@ -86,11 +90,17 @@ class PlayFragment @Inject constructor(
         FragmentYouTubeViewComponent(channelId, it, R.id.fl_youtube, childFragmentManager, this)
     }
 
-    private lateinit var playParentViewModel: PlayParentViewModel
-    private lateinit var playViewModel: PlayViewModel
-
     private val channelId: String
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
+
+    val viewModelProviderFactory = object : ViewModelProvider.Factory {
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            return viewModelFactory.create(channelId) as T
+        }
+    }
+
+    private lateinit var playParentViewModel: PlayParentViewModel
+    private lateinit var playViewModel: PlayViewModel
 
     private val keyboardWatcher = KeyboardWatcher()
 
@@ -110,7 +120,8 @@ class PlayFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
+        playViewModel = ViewModelProvider(this, viewModelProviderFactory)
+            .get(PlayViewModel::class.java)
 
         val theActivity = requireActivity()
         if (theActivity is PlayActivity) {
@@ -376,7 +387,7 @@ class PlayFragment @Inject constructor(
     }
 
     private fun setupObserve() {
-        observeStatusInfo()
+//        observeStatusInfo()
         observeVideoMeta()
         observeChannelInfo()
         observeBottomInsetsState()
@@ -390,25 +401,23 @@ class PlayFragment @Inject constructor(
     /**
      * Observe
      */
-    private fun observeStatusInfo() {
-        playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
-            if (it.statusType.isFreeze) {
-                dismissToaster()
+    private fun handleStatus(status: PlayStatusUiModel) {
+        if (status.channelStatus.statusType.isFreeze) {
+            dismissToaster()
 
-                if (!playViewModel.bottomInsets.isAnyBottomSheetsShown && it.shouldAutoSwipeOnFreeze) doAutoSwipe()
-                else if (!playViewModel.bottomInsets.isAnyBottomSheetsShown) onBottomInsetsViewHidden()
+            if (!playViewModel.bottomInsets.isAnyBottomSheetsShown && status.channelStatus.statusSource == PlayStatusSource.Socket) doAutoSwipe()
+            else if (!playViewModel.bottomInsets.isAnyBottomSheetsShown) onBottomInsetsViewHidden()
 
-            } else if (it.statusType.isBanned) {
-                showEventDialog(it.bannedModel.title, it.bannedModel.message, it.bannedModel.btnTitle)
-            }
-            if (it.statusType.isFreeze || it.statusType.isBanned) {
-                unregisterKeyboardListener(requireView())
-            }
+        } else if (status.channelStatus.statusType.isBanned) {
+            showEventDialog(status.config.bannedModel.title, status.config.bannedModel.message, status.config.bannedModel.btnTitle)
+        }
+        if (status.channelStatus.statusType.isFreeze || status.channelStatus.statusType.isBanned) {
+            unregisterKeyboardListener(requireView())
+        }
 
-            fragmentVideoViewOnStateChanged(isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned)
-            fragmentBottomSheetViewOnStateChanged(isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned)
-            fragmentYouTubeViewOnStateChanged(isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned)
-        })
+        fragmentVideoViewOnStateChanged(isFreezeOrBanned = status.channelStatus.statusType.isFreeze || status.channelStatus.statusType.isBanned)
+        fragmentBottomSheetViewOnStateChanged(isFreezeOrBanned = status.channelStatus.statusType.isFreeze || status.channelStatus.statusType.isBanned)
+        fragmentYouTubeViewOnStateChanged(isFreezeOrBanned = status.channelStatus.statusType.isFreeze || status.channelStatus.statusType.isBanned)
     }
 
     private fun observeVideoMeta() {
@@ -466,6 +475,8 @@ class PlayFragment @Inject constructor(
                     prevState?.winnerBadge?.shouldShow != state.winnerBadge.shouldShow &&
                     state.winnerBadge.shouldShow
                 ) fragmentBottomSheetView.safeInit()
+
+                handleStatus(state.status)
             }
         }
     }

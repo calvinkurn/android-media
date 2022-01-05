@@ -103,7 +103,9 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
+        playViewModel = ViewModelProvider(
+            requireParentFragment(), (requireParentFragment() as PlayFragment).viewModelProviderFactory
+        ).get(PlayViewModel::class.java)
         viewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayBottomSheetViewModel::class.java)
     }
 
@@ -255,7 +257,7 @@ class PlayBottomSheetFragment @Inject constructor(
         observeVariantSheetContent()
         observeBottomInsetsState()
         observeBuyEvent()
-        observeStatusInfo()
+//        observeStatusInfo()
 
         observeUiState()
     }
@@ -484,14 +486,14 @@ class PlayBottomSheetFragment @Inject constructor(
         })
     }
 
-    private fun observeStatusInfo() {
-        playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
-            if (it.statusType.isFreeze || it.statusType.isBanned) {
-                viewModel.onFreezeBan()
-                hideLoadingView()
-            }
-        })
-    }
+//    private fun observeStatusInfo() {
+//        playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
+//            if (it.statusType.isFreeze || it.statusType.isBanned) {
+//                viewModel.onFreezeBan()
+//                hideLoadingView()
+//            }
+//        })
+//    }
 
     private fun observeLoggedInInteractionEvent() {
         viewModel.observableLoggedInInteractionEvent.observe(viewLifecycleOwner, EventObserver(::handleLoginInteractionEvent))
@@ -548,6 +550,12 @@ class PlayBottomSheetFragment @Inject constructor(
                     PlayLeaderboardWrapperUiModel.Loading ->
                         leaderboardSheetView.setLoading()
                     PlayLeaderboardWrapperUiModel.Unknown -> {}
+                }
+
+                if (state.status.channelStatus.statusType.isFreeze ||
+                    state.status.channelStatus.statusType.isBanned) {
+                    viewModel.onFreezeBan()
+                    hideLoadingView()
                 }
             }
         }

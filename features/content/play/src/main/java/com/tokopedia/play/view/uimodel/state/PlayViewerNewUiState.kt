@@ -4,6 +4,8 @@ import androidx.annotation.StringRes
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
+import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 
 /**
@@ -20,6 +22,8 @@ data class PlayViewerNewUiState(
     val rtn: PlayRtnUiState,
     val title: PlayTitleUiState,
     val viewAllProduct: PlayViewAllProductUiState,
+    val tagItems: TagItemUiModel,
+    val status: PlayStatusUiModel,
 )
 
 data class PlayInteractiveViewUiState(

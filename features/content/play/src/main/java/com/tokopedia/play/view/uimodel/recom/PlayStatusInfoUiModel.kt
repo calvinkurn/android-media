@@ -17,7 +17,16 @@ data class PlayBannedUiModel(
         val title: String,
         val message: String,
         val btnTitle: String
-)
+) {
+        companion object {
+                val Empty: PlayBannedUiModel
+                        get() = PlayBannedUiModel(
+                                title = "",
+                                message = "",
+                                btnTitle = "",
+                        )
+        }
+}
 
 data class PlayFreezeUiModel(
         val title: String,
