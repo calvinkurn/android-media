@@ -34,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.mapper.AddAddressMapper
 import com.tokopedia.logisticCommon.data.response.DistrictItem
 import com.tokopedia.logisticCommon.util.LogisticCommonUtil
 import com.tokopedia.logisticCommon.util.LogisticUserConsentHelper
@@ -211,6 +212,10 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 is Success -> {
                     if (it.data.isSuccess == 1) {
                         saveDataModel?.id = it.data.addrId
+                        saveDataModel?.warehouseId = it.data.tokonow.warehouseId
+                        saveDataModel?.shopId = it.data.tokonow.shopId
+                        saveDataModel?.warehouses = AddAddressMapper.mapWarehouses(it.data.tokonow.warehouses)
+                        saveDataModel?.serviceType = it.data.tokonow.serviceType
                         if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickSimpanPositive(userSession.userId, SUCCESS)
                         else AddNewAddressRevampAnalytics.onClickSimpanNegative(userSession.userId, SUCCESS)
                         onSuccessAddAddress()

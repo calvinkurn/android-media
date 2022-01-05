@@ -34,9 +34,13 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.model.WarehouseModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
+import com.tokopedia.localizationchooseaddress.domain.response.Warehouse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
@@ -103,10 +107,13 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CAT
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.analytic.HomePageLoadTimeMonitoring
 import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home15mSwitcher
+import com.tokopedia.tokopedianow.home.presentation.view.coachmark.SwitcherCoachMark
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingEducationWidgetViewHolder.*
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
+import com.tokopedia.tokopedianow.home.util.HomeSharedPreference
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
@@ -168,6 +175,9 @@ class TokoNowHomeFragment: Fragment(),
     @Inject
     lateinit var analytics: HomeAnalytics
 
+    @Inject
+    lateinit var homeSharedPref: HomeSharedPreference
+
     private var binding by autoClearedNullable<FragmentTokopedianowHomeBinding>()
 
     private val adapter by lazy {
@@ -202,13 +212,13 @@ class TokoNowHomeFragment: Fragment(),
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var movingPosition = 0
-    private var isFirstImpressionOnBanner = false
     private var isRefreshed = true
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector : ScreenshotDetector? = null
     private var carouselScrollState = mutableMapOf<Int, Parcelable?>()
     private var hasEducationalInformationAppeared = false
     private var pageLoadTimeMonitoring: HomePageLoadTimeMonitoring? = null
+    private var switcherCoachMark: SwitcherCoachMark? = null
 
     private val homeMainToolbarHeight: Int
         get() {
@@ -928,7 +938,9 @@ class TokoNowHomeFragment: Fragment(),
                 ),
                 postalCode = chooseAddressData.data.postalCode,
                 warehouseId = chooseAddressData.tokonow.warehouseId.toString(),
-                shopId = chooseAddressData.tokonow.shopId.toString()
+                shopId = chooseAddressData.tokonow.shopId.toString(),
+                warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(chooseAddressData.tokonow.warehouses),
+                serviceType = chooseAddressData.tokonow.serviceType
             )
         }
         checkIfChooseAddressWidgetDataUpdated()
@@ -1031,6 +1043,7 @@ class TokoNowHomeFragment: Fragment(),
         loadHeaderBackground()
         checkAddressDataAndServiceArea()
         showHideChooseAddress()
+        hideSwitcherCoachMark()
     }
 
     private fun showHideChooseAddress() {
@@ -1051,7 +1064,28 @@ class TokoNowHomeFragment: Fragment(),
         showHeaderBackground()
         stickyLoginLoadContent()
         getProductAddToCartQuantity()
+        showSwitcherCoachMark()
         stopRenderPerformanceMonitoring()
+    }
+
+    private fun showSwitcherCoachMark() {
+        if(!homeSharedPref.getSwitcherCoachMarkShown()) {
+            rvHome?.addOneTimeGlobalLayoutListener {
+                adapter.getItem(Home15mSwitcher::class.java)?.let {
+                    val index = adapter.findPosition(it)
+                    val view = rvHome?.findViewHolderForAdapterPosition(index)?.itemView
+                        ?.findViewById<View>(R.id.coachMarkTarget)
+                    switcherCoachMark = SwitcherCoachMark(view) {
+                        homeSharedPref.setSwitcherCoachMarkShown(true)
+                    }
+                    switcherCoachMark?.show()
+                }
+            }
+        }
+    }
+
+    private fun hideSwitcherCoachMark() {
+        switcherCoachMark?.hide()
     }
 
     private fun checkAddressDataAndServiceArea() {

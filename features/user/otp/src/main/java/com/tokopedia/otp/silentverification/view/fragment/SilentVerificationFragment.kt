@@ -39,7 +39,7 @@ import com.tokopedia.sessioncommon.util.ConnectivityUtils
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.view.binding.noreflection.viewBinding
+import com.tokopedia.utils.view.binding.viewBinding
 import java.net.URLDecoder
 import java.util.*
 import javax.inject.Inject
@@ -63,7 +63,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     private var isFirstTry = true
 
     private lateinit var viewModel: SilentVerificationViewModel
-    private val binding by viewBinding(FragmentSilentVerificationBinding::bind)
+    private var binding: FragmentSilentVerificationBinding? by viewBinding()
     private var otpData: OtpData? = null
     private var modeListData: ModeListData? = null
     private var lottieTaskList: ArrayList<LottieTask<LottieComposition>> = arrayListOf()
@@ -438,7 +438,9 @@ class SilentVerificationFragment: BaseDaggerFragment() {
                     viewModel.verifyBoku(network, url)
                 }
                 override fun onError(throwable: Throwable) {
-                    onValidateFailed(throwable)
+                    activity?.runOnUiThread {
+                        onValidateFailed(throwable)
+                    }
                 }
             })
         }

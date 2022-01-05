@@ -80,3 +80,6 @@ https://phab.tokopedia.com/XXXXX
 - **approved for rollence** - send along with the approval to cast the magic
 *(more info: @tokopedia/android-gatekeeper-risk-analysis)*
 
+- **approved for ut-decrease** - send along with the approval to cast the magic
+*(more info: https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1867484824/Unit+Test+Coverage+Decrease+Checker)*
+

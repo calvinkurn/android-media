@@ -1979,7 +1979,10 @@ open class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
                     label = String.format("%s %s", localizationChooseAddressData.addressName, localizationChooseAddressData.receiverName),
                     postalCode = localizationChooseAddressData.postalCode,
                     shopId = localizationChooseAddressData.shopId,
-                    warehouseId = localizationChooseAddressData.warehouseId)
+                    warehouseId = localizationChooseAddressData.warehouseId,
+                    // TODO: 21/12/21 UPDATE AFTER BE ADJUSTMENT
+                    warehouses = listOf(),
+                    serviceType = "")
         }
     }
 

@@ -23,12 +23,16 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.model.WarehouseModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.address.WarehouseDataModel
+import com.tokopedia.logisticCommon.data.response.WarehousesAddAddress
 import com.tokopedia.logisticCommon.util.LogisticCommonUtil
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.databinding.BottomsheetActionAddressBinding
@@ -266,7 +270,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                         }
                         ChooseAddressUtils.updateLocalizingAddressDataFromOther(context, data.addressId.toString(), data.cityId.toString(),
                                 data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data),
-                                data.postalCode, data.tokonowModel.shopId.toString(), data.tokonowModel.warehouseId.toString())
+                                data.postalCode, data.tokonowModel.shopId.toString(), data.tokonowModel.warehouseId.toString(),
+                                TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses), data.tokonowModel.serviceType)
 
                         if (isFromDeleteAddress == true) {
                             context?.let {
@@ -294,7 +299,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                         context ->
                         ChooseAddressUtils.updateLocalizingAddressDataFromOther(context, data.addressId.toString(), data.cityId.toString(),
                                 data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data),
-                                data.postalCode, data.tokonowModel.shopId.toString(), data.tokonowModel.warehouseId.toString())
+                                data.postalCode, data.tokonowModel.shopId.toString(), data.tokonowModel.warehouseId.toString(),
+                                TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses), data.tokonowModel.serviceType)
                     }
                     if (isFromCheckoutChangeAddress == true) {
                         val resultIntent = Intent().apply {
@@ -628,7 +634,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(it,
                     addressDataModel.id.toString(), addressDataModel.cityId.toString(), addressDataModel.districtId.toString(),
                     addressDataModel.latitude, addressDataModel.longitude, "${addressDataModel.addressName} ${addressDataModel.receiverName}",
-                    addressDataModel.postalCode, addressDataModel.shopId.toString(), addressDataModel.warehouseId.toString())
+                    addressDataModel.postalCode, addressDataModel.shopId.toString(), addressDataModel.warehouseId.toString(),
+                    TokonowWarehouseMapper.mapWarehousesAddAddressModelToLocal(addressDataModel.warehouses), addressDataModel.serviceType)
         }
 
         if (isLocalization == true) {
