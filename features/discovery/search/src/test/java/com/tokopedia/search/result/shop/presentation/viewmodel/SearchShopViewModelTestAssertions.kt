@@ -19,7 +19,11 @@ internal inline fun <reified T> Any?.shouldBeInstanceOf(customMessage: String = 
     }
 }
 
-internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithLoadingMoreViewModel(query: String) {
+/**
+ * query => ignored
+ * need to replace unused param variable following detekt guidelines
+ */
+internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithLoadingMoreViewModel(ignored: String) {
     val lastIndex = this?.data?.lastIndex ?: 0
 
     this.shouldNotBeNull()
@@ -29,7 +33,11 @@ internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithLoadin
     this.shouldHaveLoadingMoreViewModel(lastIndex)
 }
 
-internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithoutLoadingMoreViewModel(query: String) {
+/**
+ * query => ignored
+ * need to replace unused param variable following detekt guidelines
+ */
+internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithoutLoadingMoreViewModel(ignored: String) {
     val lastIndex = this?.data?.lastIndex ?: 0
 
     this.shouldNotBeNull()
