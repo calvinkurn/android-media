@@ -52,7 +52,7 @@
         app:icon_color_light_enable="@color/Unify_N700"
         app:icon_color_night_enable="@color/Unify_N700"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:srcCompat ="@drawable/ic_shop_page_product_grid_list_old"
+        app:srcCompat ="@drawable/ic_shop_page_product_grid_list"
         app:layout_constraintHorizontal_bias="1"
         android:layout_height="wrap_content" />
 

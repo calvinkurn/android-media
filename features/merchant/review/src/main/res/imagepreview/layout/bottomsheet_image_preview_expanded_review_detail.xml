@@ -22,9 +22,15 @@
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginEnd="@dimen/layout_lvl2"
             android:layout_weight="1"
-            android:paddingBottom="@dimen/layout_lvl2"
             android:scrollbars="vertical"
             app:typographyType="body_3" />
+
+        <com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
+            android:id="@+id/review_gallery_expanded_review_bad_reason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:paddingBottom="16dp" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

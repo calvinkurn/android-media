@@ -44,11 +44,11 @@ import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.cart.CartActivity
+import com.tokopedia.cart.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.FragmentCartBinding
 import com.tokopedia.cart.old.domain.model.cartlist.*
 import com.tokopedia.cart.old.domain.model.cartlist.ActionData.Companion.ACTION_CHECKOUTBROWSER
-import com.tokopedia.cart.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.old.view.ICartListPresenter.Companion.GET_CART_STATE_AFTER_CHOOSE_ADDRESS
 import com.tokopedia.cart.old.view.ICartListPresenter.Companion.GET_CART_STATE_DEFAULT
 import com.tokopedia.cart.old.view.adapter.cart.CartAdapter
@@ -82,7 +82,6 @@ import com.tokopedia.navigation_common.listener.CartNotifyListener
 import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
@@ -105,6 +104,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -1492,7 +1492,6 @@ open class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
 
         recommendationItemClick?.let {
             cartPageAnalytics.enhancedEcommerceClickProductRecommendationOnEmptyCart(
-                    index.toString(),
                     dPresenter.generateRecommendationDataOnClickAnalytics(it, FLAG_IS_CART_EMPTY, index)
             )
         }

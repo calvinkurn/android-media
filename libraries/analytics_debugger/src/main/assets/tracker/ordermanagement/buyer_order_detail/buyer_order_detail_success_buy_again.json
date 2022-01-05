@@ -27,7 +27,7 @@
         }
       ],
       "productId": ".+",
-      "userId": "\\d+",
+      "userId": "\\d*",
       "sessionIris": ".+",
       "clientId": ".+"
     }

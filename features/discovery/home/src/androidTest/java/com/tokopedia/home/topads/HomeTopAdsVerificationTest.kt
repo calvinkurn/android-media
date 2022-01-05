@@ -1,15 +1,19 @@
 package com.tokopedia.home.topads
 
 import android.Manifest
+import android.app.Activity
+import android.app.Instrumentation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.R
@@ -44,6 +48,13 @@ import org.junit.*
  * @see [Testing documentation](http://d.android.com/tools/testing)
  */
 class HomeTopAdsVerificationTest {
+    companion object {
+        private const val LIMIT_COUNT_TO_IDLE = 10
+
+        // min item 3 : blank space item, product item, and see all card item
+        private const val MIX_LEFT_ITEM_COUNT_THRESHOLD = 3
+    }
+
     private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private var topAdsCount = 0
@@ -53,7 +64,7 @@ class HomeTopAdsVerificationTest {
     var grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
     @get:Rule
-    var activityRule = object: ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
+    var activityRule = object: IntentsTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             disableCoachMark(context)
@@ -64,11 +75,12 @@ class HomeTopAdsVerificationTest {
 
     @Before
     fun setupEnvironment() {
+        Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         val recyclerView: RecyclerView =
             activityRule.activity.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerViewIdlingResource = HomeRecyclerViewIdlingResource(
             recyclerView = recyclerView,
-            limitCountToIdle = 0
+            limitCountToIdle = LIMIT_COUNT_TO_IDLE
         )
         IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
         activityRule.deleteHomeDatabase()
@@ -83,7 +95,6 @@ class HomeTopAdsVerificationTest {
     @Test
     fun testTopAdsHome() {
         Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(isDisplayed()))
-
         val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
         val itemCount = homeRecyclerView.adapter?.itemCount?:0
 
@@ -142,7 +153,11 @@ class HomeTopAdsVerificationTest {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
             }
             is MixLeftComponentViewHolder -> {
-                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
+                val childRecyclerView: RecyclerView = viewHolder.itemView.findViewById(R.id.rv_product)
+                val childItemCount = childRecyclerView.adapter?.itemCount?:0
+                if (childItemCount >= MIX_LEFT_ITEM_COUNT_THRESHOLD) {
+                    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
+                }
             }
             is DynamicChannelSprintViewHolder -> {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)

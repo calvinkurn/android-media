@@ -1,9 +1,18 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-parcelize'
 apply plugin: 'io.hansel.preprocessor.module'
 
-repositories {
-    maven { url 'https://maven-hansel.tokopedia.com/maven' }
+android {
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
 }
 
 buildscript {
@@ -21,25 +30,38 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.webview)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.empty_state
-    implementation rootProject.ext.debugToolsDependencies.chuck
+
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.miscDependencies.rxJava
+    implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
-    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants;
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+
+    implementation rootProject.ext.networkDependencies.retrofit
+    implementation rootProject.ext.networkDependencies.converterGson
+    implementation rootProject.ext.networkDependencies.adapterRxJava
+    implementation rootProject.ext.networkDependencies.okHttp
+    implementation rootProject.ext.debugToolsDependencies.chuck
+
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.supportLibDependencies.design
 }
 
 project.ext {

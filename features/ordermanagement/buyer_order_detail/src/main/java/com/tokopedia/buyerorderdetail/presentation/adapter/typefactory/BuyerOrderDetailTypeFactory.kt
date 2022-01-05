@@ -9,14 +9,16 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.*
 import com.tokopedia.buyerorderdetail.presentation.model.*
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
 
-class BuyerOrderDetailTypeFactory(
-        private val productViewListener: ProductViewHolder.ProductViewListener,
-        private val productBundlingViewListener: ProductBundlingViewHolder.Listener,
-        private val navigator: BuyerOrderDetailNavigator,
-        private val tickerViewHolderListener: TickerViewHolder.TickerViewHolderListener,
-        private val digitalRecommendationData: DigitalRecommendationData,
-        private val digitalRecommendationListener: DigitalRecommendationViewHolder.ActionListener,
-        private val courierInfoViewHolderListener: CourierInfoViewHolder.CourierInfoViewHolderListener
+@Suppress("UNUSED_PARAMETER")
+open class BuyerOrderDetailTypeFactory(
+    private val productBundlingViewListener: ProductBundlingViewHolder.Listener,
+    private val tickerViewHolderListener: TickerViewHolder.TickerViewHolderListener,
+    private val digitalRecommendationData: DigitalRecommendationData,
+    private val digitalRecommendationListener: DigitalRecommendationViewHolder.ActionListener,
+    private val courierInfoViewHolderListener: CourierInfoViewHolder.CourierInfoViewHolderListener,
+    protected val productViewListener: ProductViewHolder.ProductViewListener,
+    protected val navigator: BuyerOrderDetailNavigator,
+    protected val  buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener
 ) : BaseAdapterTypeFactory() {
 
     fun type(awbInfoUiModel: ShipmentInfoUiModel.AwbInfoUiModel): Int {
@@ -86,6 +88,13 @@ class BuyerOrderDetailTypeFactory(
     fun type(digitalRecommendationUiModel: DigitalRecommendationUiModel): Int =
             DigitalRecommendationViewHolder.LAYOUT
 
+    fun type(pgRecommendationWidgetUiModel: PGRecommendationWidgetUiModel): Int =
+            PgRecommendationViewHolder.LAYOUT
+
+    fun type(driverTippingInfoUiModel: ShipmentInfoUiModel.DriverTippingInfoUiModel): Int {
+        return DriverTippingInfoViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             AwbInfoViewHolder.LAYOUT -> AwbInfoViewHolder(parent)
@@ -105,6 +114,8 @@ class BuyerOrderDetailTypeFactory(
             ThinDividerViewHolder.LAYOUT -> ThinDividerViewHolder(parent)
             TickerViewHolder.LAYOUT -> TickerViewHolder(parent, navigator, tickerViewHolderListener)
             DigitalRecommendationViewHolder.LAYOUT -> DigitalRecommendationViewHolder(parent, digitalRecommendationData, digitalRecommendationListener)
+            PgRecommendationViewHolder.LAYOUT -> PgRecommendationViewHolder(parent, buyerOrderDetailBindRecomWidgetListener)
+            DriverTippingInfoViewHolder.LAYOUT -> DriverTippingInfoViewHolder(parent, navigator)
             else -> super.createViewHolder(parent, type)
         }
     }

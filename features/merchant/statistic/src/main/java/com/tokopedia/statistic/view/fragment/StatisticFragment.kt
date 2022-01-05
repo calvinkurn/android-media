@@ -51,6 +51,7 @@ import com.tokopedia.statistic.view.bottomsheet.DateFilterBottomSheet
 import com.tokopedia.statistic.view.model.DateFilterItem
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
 import com.tokopedia.statistic.view.viewhelper.FragmentListener
+import com.tokopedia.statistic.view.viewhelper.StatisticItemDecoration
 import com.tokopedia.statistic.view.viewhelper.StatisticLayoutManager
 import com.tokopedia.statistic.view.viewmodel.StatisticViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -214,6 +215,14 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
         inflater.inflate(R.menu.menu_stc_action_calendar, menu)
 
+        for (i in 0 until menu.size()) {
+            menu.getItem(i)?.let { menuItem ->
+                menuItem.actionView?.setOnClickListener {
+                    onOptionsItemSelected(menuItem)
+                }
+            }
+        }
+
         setMenuItemVisibility(menu)
         sendActionBarMenuImpressionEvent(menu)
     }
@@ -256,6 +265,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         recyclerView?.post {
             adapter.data.remove(widget)
             adapter.notifyItemRemoved(position)
+            checkForSectionToBeRemoved(position)
         }
     }
 
@@ -527,6 +537,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
 
         recyclerView?.run {
+            addItemDecoration(StatisticItemDecoration())
             layoutManager = mLayoutManager
             (itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         }
@@ -700,7 +711,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         val mWidgetList = mutableListOf<BaseWidgetUiModel<*>>()
         mWidgetList.add(tickerWidget)
         mWidgetList.addAll(widgets)
-        mWidgetList.add(WhiteSpaceUiModel())
         adapter.data.clear()
         super.renderList(mWidgetList)
 

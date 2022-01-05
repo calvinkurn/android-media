@@ -5,7 +5,8 @@
         <activity
             android:name=".view.activity.StartUpgradeToOvoActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -21,7 +22,8 @@
         <activity
             android:name=".view.activity.UpgradeProcessCompleteActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

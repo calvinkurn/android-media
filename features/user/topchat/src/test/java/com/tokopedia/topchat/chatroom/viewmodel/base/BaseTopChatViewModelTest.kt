@@ -2,13 +2,22 @@ package com.tokopedia.topchat.chatroom.viewmodel.base
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.GetExistingMessageIdUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.GetShopFollowingUseCase
+import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
+import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
+import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
+import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
+import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.MockKAnnotations
+import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
 import org.junit.Rule
@@ -17,7 +26,8 @@ abstract class BaseTopChatViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    @RelaxedMockK
+    //UseCases
+    @MockK
     lateinit var getExistingMessageIdUseCase: GetExistingMessageIdUseCase
 
     @RelaxedMockK
@@ -27,7 +37,69 @@ abstract class BaseTopChatViewModelTest {
     lateinit var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase
 
     @RelaxedMockK
+    lateinit var addToCartUseCase: AddToCartUseCase
+
+    @RelaxedMockK
+    lateinit var seamlessLoginUsecase: SeamlessLoginUsecase
+
+    @RelaxedMockK
+    lateinit var getChatRoomSettingUseCase: GetChatRoomSettingUseCase
+
+    @RelaxedMockK
+    lateinit var orderProgressUseCase: OrderProgressUseCase
+
+    @MockK
+    lateinit var reminderTickerUseCase: GetReminderTickerUseCase
+
+    @RelaxedMockK
+    lateinit var closeReminderTicker: CloseReminderTicker
+
+    @RelaxedMockK
+    lateinit var addToCartOccMultiUseCase: AddToCartOccMultiUseCase
+
+    @MockK
+    lateinit var chatToggleBlockChatUseCase: ChatToggleBlockChatUseCase
+
+    @RelaxedMockK
+    lateinit var mutationMoveChatToTrashUseCase: MutationMoveChatToTrashUseCase
+
+    @RelaxedMockK
+    lateinit var getChatBackgroundUseCase: GetChatBackgroundUseCase
+
+    @MockK
+    lateinit var chatAttachmentUseCase: ChatAttachmentUseCase
+
+    @RelaxedMockK
+    lateinit var getChatListGroupStickerUseCase: GetChatListGroupStickerUseCase
+
+    @MockK
+    lateinit var getSmartReplyQuestionUseCase: GetSmartReplyQuestionUseCase
+
+    @RelaxedMockK
+    lateinit var getChatTokoNowWarehouseUseCase: GetChatTokoNowWarehouseUseCase
+
+    @RelaxedMockK
+    lateinit var addWishListUseCase: AddWishListUseCase
+
+    @RelaxedMockK
+    lateinit var removeWishListUseCase: RemoveWishListUseCase
+
+    @RelaxedMockK
+    lateinit var getChatUseCase: GetChatUseCase
+
+    //Misc
+    @RelaxedMockK
     lateinit var remoteConfig: RemoteConfig
+
+    @RelaxedMockK
+    lateinit var cacheManager: TopchatCacheManager
+
+    @RelaxedMockK
+    lateinit var chatAttachmentMapper: ChatAttachmentMapper
+
+    @RelaxedMockK
+    lateinit var existingChatMapper: TopChatRoomGetExistingChatMapper
+
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
     protected lateinit var viewModel: TopChatViewModel
@@ -36,16 +108,36 @@ abstract class BaseTopChatViewModelTest {
     protected val testUserId = "345"
     protected val source = "testSource"
     protected val expectedThrowable = Throwable("Oops!")
+    protected val testMessageId = "123123"
 
     @Before
-    fun before() {
+    open fun before() {
         MockKAnnotations.init(this)
         viewModel = TopChatViewModel(
             getExistingMessageIdUseCase,
             getShopFollowingUseCase,
             toggleFavouriteShopUseCase,
+            addToCartUseCase,
+            seamlessLoginUsecase,
+            getChatRoomSettingUseCase,
+            orderProgressUseCase,
+            reminderTickerUseCase,
+            closeReminderTicker,
+            addToCartOccMultiUseCase,
+            chatToggleBlockChatUseCase,
+            mutationMoveChatToTrashUseCase,
+            getChatBackgroundUseCase,
+            chatAttachmentUseCase,
+            getChatListGroupStickerUseCase,
+            getSmartReplyQuestionUseCase,
+            getChatTokoNowWarehouseUseCase,
+            addWishListUseCase,
+            removeWishListUseCase,
+            getChatUseCase,
             dispatchers,
-            remoteConfig
+            remoteConfig,
+            chatAttachmentMapper,
+            existingChatMapper
         )
     }
 }

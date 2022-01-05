@@ -7,7 +7,12 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
@@ -65,7 +70,7 @@ class PartialButtonActionView private constructor(val view: View,
     private val btnChat = view.findViewById<UnifyButton>(R.id.btn_topchat)
 
     companion object {
-        fun build(_view: View, _buttonListener: PartialButtonActionListener) = PartialButtonActionView(_view, _buttonListener)
+        fun build(view: View, buttonListener: PartialButtonActionListener) = PartialButtonActionView(view, buttonListener)
 
         private const val QUANTITY_REGEX = "[^0-9]"
         private const val TEXTWATCHER_QUANTITY_DEBOUNCE_TIME = 500L

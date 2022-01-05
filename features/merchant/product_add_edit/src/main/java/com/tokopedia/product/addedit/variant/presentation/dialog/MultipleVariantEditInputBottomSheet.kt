@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.getText
@@ -18,8 +16,9 @@ import com.tokopedia.product.addedit.tracking.ProductAddVariantDetailTracking
 import com.tokopedia.product.addedit.tracking.ProductEditVariantDetailTracking
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
-import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_input_bottom_sheet_content.view.*
 import java.math.BigInteger
 
 class MultipleVariantEditInputBottomSheet(
@@ -34,6 +33,11 @@ class MultipleVariantEditInputBottomSheet(
     }
 
     private var contentView: View? = null
+    private var tfuStock: TextFieldUnify? = null
+    private var tfuSku: TextFieldUnify? = null
+    private var tfuPrice: TextFieldUnify? = null
+    private var buttonApply: UnifyButton? = null
+
     private var isPriceError = false
     private var isStockError = false
     private var trackerShopId = ""
@@ -87,26 +91,32 @@ class MultipleVariantEditInputBottomSheet(
     private fun initChildLayout() {
         setTitle(getString(com.tokopedia.product.addedit.R.string.label_variant_multiple_input_bottom_sheet_title))
         overlayClickDismiss = false
+
         contentView = View.inflate(context,
                 R.layout.add_edit_product_multiple_variant_edit_input_bottom_sheet_content, null)
-        contentView?.tfuSku?.visibility = if (enableEditSku) View.VISIBLE else View.GONE
-        contentView?.tfuPrice?.visibility = if (enableEditPrice) View.VISIBLE else View.GONE
-        contentView?.tfuPrice.setModeToNumberInput()
-        contentView?.tfuPrice?.textFieldInput?.afterTextChanged {
+        tfuStock = contentView?.findViewById(R.id.tfuStock)
+        tfuSku = contentView?.findViewById(R.id.tfuSku)
+        tfuPrice = contentView?.findViewById(R.id.tfuPrice)
+        buttonApply = contentView?.findViewById(R.id.buttonApply)
+
+        tfuSku?.visibility = if (enableEditSku) View.VISIBLE else View.GONE
+        tfuPrice?.visibility = if (enableEditPrice) View.VISIBLE else View.GONE
+        tfuPrice.setModeToNumberInput()
+        tfuPrice?.textFieldInput?.afterTextChanged {
             if (enableEditPrice) {
                 validatePrice()
                 updateSubmitButtonInput()
             }
         }
-        contentView?.tfuStock.setModeToNumberInput()
-        contentView?.tfuStock?.textFieldInput?.afterTextChanged {
+        tfuStock.setModeToNumberInput()
+        tfuStock?.textFieldInput?.afterTextChanged {
             validateStock()
             updateSubmitButtonInput()
         }
-        contentView?.tfuSku?.textFieldInput?.afterTextChanged {
+        tfuSku?.textFieldInput?.afterTextChanged {
             updateSubmitButtonInput()
         }
-        contentView?.buttonApply?.setOnClickListener {
+        buttonApply?.setOnClickListener {
             submitInput()
             updateSubmitButtonInput()
             sendTrackerTrackManageAllPriceData()
@@ -118,9 +128,9 @@ class MultipleVariantEditInputBottomSheet(
     }
 
     private fun sendTrackerTrackManageAllPriceData() {
-        val price = contentView?.tfuPrice.getText()
-        val stock = contentView?.tfuStock.getText()
-        val sku = contentView?.tfuSku.getText()
+        val price = tfuPrice.getText()
+        val stock = tfuStock.getText()
+        val sku = tfuSku.getText()
 
         if (trackerIsEditMode) {
             if (price.isNotEmpty())
@@ -140,45 +150,45 @@ class MultipleVariantEditInputBottomSheet(
     }
 
     private fun validatePrice() {
-        if (contentView?.tfuPrice.getText().isNotEmpty()) {
-            val inputText = contentView?.tfuPrice.getTextBigIntegerOrZero()
+        if (tfuPrice.getText().isNotEmpty()) {
+            val inputText = tfuPrice.getTextBigIntegerOrZero()
             val errorMessage = multipleVariantEditInputListener?.onMultipleEditInputValidatePrice(inputText).orEmpty()
             val isErrorValidating = errorMessage.isNotEmpty()
 
-            contentView?.tfuPrice?.setMessage(errorMessage)
-            contentView?.tfuPrice?.setError(isErrorValidating)
+            tfuPrice?.setMessage(errorMessage)
+            tfuPrice?.setError(isErrorValidating)
             isPriceError = isErrorValidating
         } else {
             // ignore validation if field is empty
-            contentView?.tfuPrice?.setMessage("")
-            contentView?.tfuPrice?.setError(false)
+            tfuPrice?.setMessage("")
+            tfuPrice?.setError(false)
             isPriceError = false
         }
     }
 
     private fun validateStock() {
-        if (contentView?.tfuStock.getText().isNotEmpty()) {
-            val inputText = contentView?.tfuStock.getTextBigIntegerOrZero()
+        if (tfuStock.getText().isNotEmpty()) {
+            val inputText = tfuStock.getTextBigIntegerOrZero()
             val errorMessage = multipleVariantEditInputListener?.onMultipleEditInputValidateStock(inputText).orEmpty()
             val isErrorValidating = errorMessage.isNotEmpty()
 
-            contentView?.tfuStock?.setMessage(errorMessage)
-            contentView?.tfuStock?.setError(isErrorValidating)
+            tfuStock?.setMessage(errorMessage)
+            tfuStock?.setError(isErrorValidating)
             isStockError = isErrorValidating
         } else {
             // ignore validation if field is empty
-            contentView?.tfuStock?.setMessage("")
-            contentView?.tfuStock?.setError(false)
+            tfuStock?.setMessage("")
+            tfuStock?.setError(false)
             isStockError = false
         }
     }
 
     private fun updateSubmitButtonInput() {
-        val isPriceEmpty = contentView?.tfuPrice.getText().isEmpty()
-        val isStockEmpty = contentView?.tfuStock.getText().isEmpty()
-        val isSkuEmpty = contentView?.tfuSku.getText().isEmpty()
+        val isPriceEmpty = tfuPrice.getText().isEmpty()
+        val isStockEmpty = tfuStock.getText().isEmpty()
+        val isSkuEmpty = tfuSku.getText().isEmpty()
 
-        contentView?.buttonApply?.isEnabled = if (isPriceEmpty && isStockEmpty && isSkuEmpty) {
+        buttonApply?.isEnabled = if (isPriceEmpty && isStockEmpty && isSkuEmpty) {
             false
         } else {
             !isPriceError && !isStockError

@@ -141,7 +141,7 @@ object HomeLayoutMapper {
         item: TokoNowCategoryGridUiModel,
         response: List<CategoryResponse>?
     ) {
-        updateItemById(item.visitableId) {
+        updateItemById(item.id) {
             if (!response.isNullOrEmpty()) {
                 val categoryList = mapToCategoryList(response)
                 val layout = item.copy(categoryList = categoryList, state = TokoNowLayoutState.SHOW)
@@ -176,7 +176,7 @@ object HomeLayoutMapper {
         response: RepurchaseData,
         miniCartData: MiniCartSimplifiedData? = null
     ) {
-        updateItemById(item.visitableId) {
+        updateItemById(item.id) {
             val uiModel = mapToRepurchaseUiModel(item, response, miniCartData)
             HomeLayoutItemUiModel(uiModel, HomeLayoutItemState.LOADED)
         }
@@ -379,7 +379,8 @@ object HomeLayoutMapper {
         return when (this) {
             is HomeLayoutUiModel -> visitableId
             is HomeComponentVisitable -> visitableId()
-            is TokoNowLayoutUiModel -> visitableId
+            is TokoNowRepurchaseUiModel -> id
+            is TokoNowCategoryGridUiModel -> id
             else -> null
         }
     }

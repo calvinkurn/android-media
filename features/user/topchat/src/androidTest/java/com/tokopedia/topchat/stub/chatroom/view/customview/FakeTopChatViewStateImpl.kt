@@ -2,6 +2,7 @@ package com.tokopedia.topchat.stub.chatroom.view.customview
 
 import android.view.View
 import androidx.appcompat.widget.Toolbar
+import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
@@ -35,6 +36,15 @@ class FakeTopChatViewStateImpl(
         headerMenuListener,
         toolbar,
         analytics) {
+
+
+    override fun showHeaderMenuBottomSheet(
+        chatroomViewModel: ChatroomViewModel,
+        headerMenuListener: HeaderMenuListener
+    ) {
+        super.showHeaderMenuBottomSheet(chatroomViewModel, headerMenuListener)
+        sendListener.getSupportChildFragmentManager().executePendingTransactions()
+    }
 
     override fun onGlobalLayout() {
         TopchatRoomTest.keyboardStateIdling?.increment()

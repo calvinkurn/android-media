@@ -74,6 +74,10 @@ class RechargeHomepageAdapterTypeFactory(
         return RechargeHomepageTickerViewHolder.LAYOUT
     }
 
+    fun type(swipeBannerModel: RechargeHomepageSwipeBannerModel): Int {
+        return RechargeHomepageSwipeBannerViewHolder.LAYOUT
+    }
+
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return DynamicLegoBannerViewHolder.LAYOUT
     }
@@ -130,6 +134,10 @@ class RechargeHomepageAdapterTypeFactory(
         return 0
     }
 
+    override fun type(questWidgetModel: QuestWidgetModel): Int {
+        return -1
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             RechargeHomepageLoadingViewholder.LAYOUT -> RechargeHomepageLoadingViewholder(parent)
@@ -150,6 +158,7 @@ class RechargeHomepageAdapterTypeFactory(
             RechargeHomepageProductCardCustomBannerViewHolder.LAYOUT -> RechargeHomepageProductCardCustomBannerViewHolder(parent, listener)
             RechargeHomepageCarousellViewHolder.LAYOUT -> RechargeHomepageCarousellViewHolder(parent, listener)
             RechargeHomepageTickerViewHolder.LAYOUT -> RechargeHomepageTickerViewHolder(parent, listener)
+            RechargeHomepageSwipeBannerViewHolder.LAYOUT -> RechargeHomepageSwipeBannerViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

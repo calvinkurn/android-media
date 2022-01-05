@@ -21,6 +21,7 @@ import com.tokopedia.unifycomponents.toPx
 private const val POSITION_TOP = 1
 private const val DOT_HALF_DIMEN = 8
 private const val LIHAT_PRODUK_EXPANDED_WIDTH = 100
+private const val LIHAT_PRODUK_SHRINKED_WIDTH = 24
 private const val POINTER_ACTUAL_WIDTH = 79
 
 
@@ -190,23 +191,7 @@ fun showViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
 fun hideViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
     val expandedWidthDp = 100F
     val shrinkedWidthDp = 24F
-    val anim = ValueAnimator.ofInt(convertDpToPixel(expandedWidthDp, context), convertDpToPixel(shrinkedWidthDp, context))
-    anim.cancel()
-    anim.addUpdateListener { valueAnimator ->
-        val animatedFinalValue = valueAnimator.animatedValue as Int
-        val layoutParams: ViewGroup.LayoutParams =
-            layoutLihatProdukParent.layoutParams
-        layoutParams.width = animatedFinalValue
-        layoutLihatProdukParent.layoutParams = layoutParams
-    }
-    anim.duration = 300
-    anim.start()
-}
-
-fun hideViewWithoutAnimation(layoutLihatProdukParent: View, context: Context) {
-    val expandedWidthDp = 100F
-    val shrinkedWidthDp = 24F
-    if (layoutLihatProdukParent.width.toDp() == LIHAT_PRODUK_EXPANDED_WIDTH) {
+    if (layoutLihatProdukParent.width.toDp() >= LIHAT_PRODUK_SHRINKED_WIDTH){
         val anim = ValueAnimator.ofInt(convertDpToPixel(expandedWidthDp, context), convertDpToPixel(shrinkedWidthDp, context))
         anim.cancel()
         anim.addUpdateListener { valueAnimator ->
@@ -217,6 +202,24 @@ fun hideViewWithoutAnimation(layoutLihatProdukParent: View, context: Context) {
             layoutLihatProdukParent.layoutParams = layoutParams
         }
         anim.duration = 0
+        anim.start()
+    }
+}
+
+fun hideViewWithoutAnimation(layoutLihatProdukParent: View, context: Context) {
+    val expandedWidthDp = 100F
+    val shrinkedWidthDp = 24F
+    if (layoutLihatProdukParent.width.toDp() >= LIHAT_PRODUK_SHRINKED_WIDTH){
+    val anim = ValueAnimator.ofInt(convertDpToPixel(expandedWidthDp, context), convertDpToPixel(shrinkedWidthDp, context))
+        anim.cancel()
+        anim.addUpdateListener { valueAnimator ->
+            val animatedFinalValue = valueAnimator.animatedValue as Int
+            val layoutParams: ViewGroup.LayoutParams =
+                    layoutLihatProdukParent.layoutParams
+            layoutParams.width = animatedFinalValue
+            layoutLihatProdukParent.layoutParams = layoutParams
+        }
+        anim.duration = 300
         anim.start()
     }
 }

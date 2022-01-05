@@ -61,11 +61,11 @@ class TickerViewHolder(
         } else {
             StringBuilder().apply {
                 if (description.isNotBlank()) {
-                    append("$description.")
+                    append(description)
                 }
                 if (actionText.isNotBlank()) {
                     if (isNotBlank()) append(" ")
-                    append("$actionText.")
+                    append(actionText)
                 }
             }.toString()
         }

@@ -25,6 +25,15 @@ sealed class PlaySource {
     object PlayHome : PlaySource() {
         override val key: String = SOURCE_TYPE_PLAY_HOME
     }
+    object VodPost : PlaySource() {
+        override val key: String = SOURCE_TYPE_VOD_POST
+    }
+    object PushNotification : PlaySource() {
+        override val key: String = SOURCE_TYPE_PUSH_NOTIFICATION
+    }
+    object PDPWidget : PlaySource() {
+        override val key: String = SOURCE_TYPE_PDP_WIDGET
+    }
     object Unknown : PlaySource() {
         override val key: String = ""
     }
@@ -37,6 +46,9 @@ sealed class PlaySource {
         private const val SOURCE_TYPE_DISCOVERY_PAGE = "DISCOPAGE"
         private const val SOURCE_TYPE_CLP = "CLP"
         private const val SOURCE_TYPE_PLAY_HOME = "PLAY_HOME"
+        private const val SOURCE_TYPE_VOD_POST = "VOD_POST"
+        private const val SOURCE_TYPE_PUSH_NOTIFICATION = "PUSH_NOTIFICATION"
+        private const val SOURCE_TYPE_PDP_WIDGET = "PDP_WIDGET"
 
         fun getBySource(sourceType: String, sourceId: String? = null): PlaySource {
             return when (sourceType) {
@@ -48,6 +60,9 @@ sealed class PlaySource {
                 SOURCE_TYPE_DISCOVERY_PAGE -> DiscoveryPage
                 SOURCE_TYPE_CLP -> CLP
                 SOURCE_TYPE_PLAY_HOME -> PlayHome
+                SOURCE_TYPE_VOD_POST -> VodPost
+                SOURCE_TYPE_PUSH_NOTIFICATION -> PushNotification
+                SOURCE_TYPE_PDP_WIDGET -> PDPWidget
                 else -> Unknown
             }
         }

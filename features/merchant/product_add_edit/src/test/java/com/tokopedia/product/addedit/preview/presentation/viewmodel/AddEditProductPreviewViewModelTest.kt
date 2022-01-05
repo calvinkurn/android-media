@@ -1,8 +1,10 @@
 package com.tokopedia.product.addedit.preview.presentation.viewmodel
 
 import androidx.lifecycle.MediatorLiveData
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
@@ -20,14 +22,12 @@ import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
-import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
 import com.tokopedia.shop.common.constant.AccessId
+import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
+import io.mockk.*
 import junit.framework.Assert
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
@@ -433,6 +433,19 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
+    fun  `When validate shop location error, should post error to observer`() = runBlocking {
+        coEvery { getShopInfoLocationUseCase.executeOnBackground() } throws MessageErrorException("")
+
+        viewModel.validateShopLocation(121313)
+
+        coVerify {
+            getShopInfoLocationUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.locationValidation.value is Fail)
+    }
+
+    @Test
     fun  `When save shop location should be successful`() = runBlocking {
         onSaveShopShipmentLocation_thenReturn()
 
@@ -440,6 +453,19 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         viewModel.saveShopShipmentLocationResponse.getOrAwaitValue()
         verifyGetShopInfoLocation()
+    }
+
+    @Test
+    fun  `When save shop location error, should post error to observer`() = runBlocking {
+        coEvery { saveShopShipmentLocationUseCase.executeOnBackground() } throws MessageErrorException("")
+
+        viewModel.saveShippingLocation(mutableMapOf())
+
+        coVerify {
+            saveShopShipmentLocationUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.saveShopShipmentLocationResponse.value is Fail)
     }
 
     @Test
@@ -705,6 +731,22 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
+    fun `When getAnnotationCategory is error, should log error to crashlytics`() {
+        coEvery { annotationCategoryUseCase.executeOnBackground() } throws MessageErrorException("")
+
+        //Mock FirebaseCrashlytics because .getInstance() method is a static method
+        mockkStatic(FirebaseCrashlytics::class)
+
+        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns mockk(relaxed = true)
+
+        viewModel.updateSpecificationFromRemote("", "11090")
+
+        coVerify { annotationCategoryUseCase.executeOnBackground() }
+
+        coVerify { AddEditProductErrorHandler.logExceptionToCrashlytics(any()) }
+    }
+
+    @Test
     fun `updateSpecificationByAnnotationCategory should return empty when annotation category is not selected`() = runBlocking {
         val annotationCategoryData = listOf(
                 AnnotationCategoryData(
@@ -734,6 +776,17 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         val result = viewModel.productLimitationData.getOrAwaitValue()
         verifyProductLimitationData(result)
+    }
+
+    @Test
+    fun `When get product limitation error, should post error to observer`() = runBlocking {
+        coEvery { productLimitationUseCase.executeOnBackground() } throws MessageErrorException("")
+
+        viewModel.getProductLimitation()
+
+        coVerify { productLimitationUseCase.executeOnBackground() }
+
+        assert(viewModel.productLimitationData.value is Fail)
     }
 
     private fun onGetProductLimitation_thenReturn(successResponse: ProductAddRuleResponse) {

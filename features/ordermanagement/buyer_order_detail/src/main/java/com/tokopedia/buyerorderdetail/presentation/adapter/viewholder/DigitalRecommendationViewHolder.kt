@@ -10,27 +10,31 @@ import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationD
 /**
  * @author by furqan on 22/09/2021
  */
-class DigitalRecommendationViewHolder(itemView: View,
-                                      val digitalRecommendationData: DigitalRecommendationData,
-                                      val listener: ActionListener) :
-        AbstractViewHolder<DigitalRecommendationUiModel>(itemView) {
+class DigitalRecommendationViewHolder(
+    itemView: View,
+    val digitalRecommendationData: DigitalRecommendationData,
+    val listener: ActionListener
+) :
+    AbstractViewHolder<DigitalRecommendationUiModel>(itemView) {
 
-    private val dgRecommendation = itemView.findViewById<DigitalRecommendationWidget>(R.id.dgRecommendationBuyerOrderDetail)
+    private val dgRecommendation =
+        itemView.findViewById<DigitalRecommendationWidget>(R.id.dgRecommendationBuyerOrderDetail)
+    private val dgRecommendationWidgetListener = object : DigitalRecommendationWidget.Listener {
+        override fun onFetchFailed(throwable: Throwable) {
+            listener.hideDigitalRecommendation()
+        }
+
+        override fun onEmptyResult() {
+            listener.hideDigitalRecommendation()
+        }
+    }
 
     override fun bind(element: DigitalRecommendationUiModel?) {
         dgRecommendation.setViewModelFactory(digitalRecommendationData.viewModelFactory)
         dgRecommendation.setLifecycleOwner(digitalRecommendationData.lifecycleOwner)
         dgRecommendation.setAdditionalData(digitalRecommendationData.additionalTrackingData)
         dgRecommendation.setPage(digitalRecommendationData.page)
-        dgRecommendation.listener = object : DigitalRecommendationWidget.Listener {
-            override fun onFetchFailed(throwable: Throwable) {
-                listener.hideDigitalRecommendation()
-            }
-
-            override fun onEmptyResult() {
-                listener.hideDigitalRecommendation()
-            }
-        }
+        dgRecommendation.listener = dgRecommendationWidgetListener
         dgRecommendation.build()
     }
 

@@ -41,6 +41,7 @@ class ShopSecondaryInfoAdapterTypeFactory(private val listener: OtherMenuViewHol
             )
             RMTransactionViewHolder.LAYOUT_RES -> RMTransactionViewHolder(
                 parent,
+                listener::onRmTransactionClicked,
                 listener::onRefreshShopInfo
             )
             ReputationBadgeViewHolder.LAYOUT_RES -> ReputationBadgeViewHolder(

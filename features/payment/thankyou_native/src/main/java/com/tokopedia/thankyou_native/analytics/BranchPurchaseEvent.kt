@@ -50,7 +50,7 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
     private fun getBranchPaymentData(shopOrder: ShopOrder): PaymentData {
         val paymentData = PaymentData()
         paymentData.isFromNative = true
-        paymentData.setPaymentId(thanksPageData.paymentID.toString())
+        paymentData.setPaymentId(thanksPageData.paymentID)
         paymentData.setOrderId(shopOrder.orderId)
         paymentData.setShipping(shopOrder.shippingAmount.toString())
         paymentData.setProductType(getProductTypeForBranch())

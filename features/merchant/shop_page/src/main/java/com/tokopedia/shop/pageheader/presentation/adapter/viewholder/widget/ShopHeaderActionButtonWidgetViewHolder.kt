@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.*
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.LayoutShopHeaderButtonWidgetBinding
 import com.tokopedia.shop.pageheader.presentation.ShopPageActionButtonWidgetMarginItemDivider
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopActionButtonWidgetAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopHeaderActionButtonWidgetAdapterTypeFactory
@@ -13,6 +14,7 @@ import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.S
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetFollowButtonComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetNoteButtonComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHeaderActionButtonWidgetViewHolder(
         itemView: View,
@@ -26,7 +28,8 @@ class ShopHeaderActionButtonWidgetViewHolder(
         val LAYOUT = R.layout.layout_shop_header_button_widget
     }
 
-    private val recyclerViewButtonComponent: RecyclerView? = itemView.findViewById(R.id.rv_button_component)
+    private val viewBinding: LayoutShopHeaderButtonWidgetBinding? by viewBinding()
+    private val recyclerViewButtonComponent: RecyclerView? = viewBinding?.rvButtonComponent
 
     override fun bind(model: ShopHeaderWidgetUiModel) {
         val shopActionButtonWidgetAdapter = ShopActionButtonWidgetAdapter(ShopHeaderActionButtonWidgetAdapterTypeFactory(
