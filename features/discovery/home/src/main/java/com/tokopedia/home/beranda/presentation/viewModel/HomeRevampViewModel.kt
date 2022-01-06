@@ -59,7 +59,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
-import rx.subscriptions.CompositeSubscription
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -121,10 +120,6 @@ open class HomeRevampViewModel @Inject constructor(
         get() = _popupIntroOvoLiveData
     private val _popupIntroOvoLiveData = MutableLiveData<Event<String>>()
 
-    // Test cover banner url play widget is valid or not
-    private val _requestImageTestLiveData = MutableLiveData<Event<PlayCardDataModel>>()
-    val requestImageTestLiveData: LiveData<Event<PlayCardDataModel>> get() = _requestImageTestLiveData
-
     val oneClickCheckoutHomeComponent: LiveData<Event<Any>> get() = _oneClickCheckoutHomeComponent
     private val _oneClickCheckoutHomeComponent = MutableLiveData<Event<Any>>()
 
@@ -166,7 +161,6 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
 
     private var fetchFirstData = false
-    private var compositeSubscription: CompositeSubscription = CompositeSubscription()
     private var homeFlowDataCancelled = false
     private var onRefreshState = true
     private var takeTicker = true
@@ -189,13 +183,6 @@ open class HomeRevampViewModel @Inject constructor(
         _isRequestNetworkLiveData.value = Event(true)
         initFlow()
         refreshHomeData()
-    }
-
-    override fun onCleared() {
-        if (!compositeSubscription.isUnsubscribed) {
-            compositeSubscription.unsubscribe()
-        }
-        super.onCleared()
     }
 
     /**
@@ -225,17 +212,9 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun updateBannerTotalView(channelId: String?, totalView: String?) {
         if (channelId == null || totalView == null) return
-        findWidget<PlayCardDataModel>(predicate = { it?.playCardHome?.channelId == channelId}) { playCard, index ->
-            if(playCard.playCardHome != null) {
-                val newPlayCard = playCard.copy(playCardHome = playCard.playCardHome.copy(totalView = totalView))
-                updateWidget(newPlayCard, index)
-            }
-        }
-    }
-
-    fun onRemoveSuggestedReview() {
-        findWidget<ReviewDataModel> { reviewWidget, index ->
-            deleteWidget(reviewWidget, -1)
+        findWidget<PlayCardDataModel>(predicate = { it.playCardHome?.channelId == channelId}) { playCard, index ->
+            val newPlayCard = playCard.copy(playCardHome = playCard.playCardHome?.copy(totalView = totalView))
+            updateWidget(newPlayCard, index)
         }
     }
 
@@ -270,12 +249,8 @@ open class HomeRevampViewModel @Inject constructor(
         findWidget<HomeHeaderDataModel> { headerModel, index ->
             launch {
                 currentHeaderDataModel = homeBalanceWidgetUseCase.get().onGetTokopointData(currentHeaderDataModel)
-                val visitable = homeUseCase.get().updateHeaderData(currentHeaderDataModel, homeDataModel)
-                visitable?.let {
-                    homeDataModel.updateWidgetModel(visitableToChange = visitable, visitable = currentHeaderDataModel, position = index) {
-                        updateWidget(visitable, index)
-                    }
-                }
+                val visitable = updateHeaderData(currentHeaderDataModel, index)
+                visitable?.let { updateWidget(visitable, index) }
             }
         }
     }
@@ -315,6 +290,12 @@ open class HomeRevampViewModel @Inject constructor(
     fun dismissReview() {
         onRemoveSuggestedReview()
         launch { homeSuggestedReviewUseCase.get().onReviewDismissed() }
+    }
+
+    fun onRemoveSuggestedReview() {
+        findWidget<ReviewDataModel> { reviewWidget, index ->
+            deleteWidget(reviewWidget, -1)
+        }
     }
 
     fun getBusinessUnitTabData(position: Int){
@@ -458,27 +439,20 @@ open class HomeRevampViewModel @Inject constructor(
                         it.widgetUiModel, channelId, reminderType
                 ))
             }
-            launchCatchError(block = {
-                when(val success = homePlayUseCase.get().onUpdatePlayWidgetToggleReminder(channelId, reminderType)) {
-                    success -> {
+            launch {
+                when(homePlayUseCase.get().onUpdatePlayWidgetToggleReminder(channelId, reminderType)) {
+                    true -> {
                         _playWidgetReminderObservable.postValue(Result.success(reminderType))
                     }
                     else -> {
                         updateCarouselPlayWidget {
                             it.copy(widgetUiModel = homePlayUseCase.get().onGetPlayWidgetUiModel(
-                                    it.widgetUiModel, channelId, reminderType.switch()
+                                    it.widgetUiModel, channelId, reminderType
                             ))
                         }
                         _playWidgetReminderObservable.postValue(Result.error(error = Throwable()))
                     }
                 }
-            }) { throwable ->
-                updateCarouselPlayWidget {
-                    it.copy(widgetUiModel = homePlayUseCase.get().onGetPlayWidgetUiModel(
-                            it.widgetUiModel, channelId, reminderType.switch()
-                    ))
-                }
-                _playWidgetReminderObservable.postValue(Result.error(error = throwable))
             }
         }
     }
@@ -640,8 +614,7 @@ open class HomeRevampViewModel @Inject constructor(
                 reason = (it?.message ?: "No error propagated").take(ConstantKey.HomeTimber.MAX_LIMIT),
                 data = stackTrace.take(ConstantKey.HomeTimber.MAX_LIMIT)
             )
-            //TODO fix for unit test
-//            homeFlowDataCancelled = true
+            homeFlowDataCancelled = true
         }
     }
 

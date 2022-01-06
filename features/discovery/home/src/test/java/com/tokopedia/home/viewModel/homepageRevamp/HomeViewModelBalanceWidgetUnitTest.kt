@@ -122,52 +122,52 @@ class HomeViewModelBalanceWidgetUnitTest{
         Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == false)
     }
 
-//    @ExperimentalCoroutinesApi
-//    @Test
-//    fun `When userSession is not loggedIn onRefreshTokopoint then homeDataModel should not contains balance item data`() {
-//        every { userSessionInterface.isLoggedIn } returns false
-//
-//        getHomeUseCase.givenGetHomeDataReturn(
-//                HomeDynamicChannelModel(list = listOf(mockInitialHomeHeaderDataModel))
-//        )
-//
-//        getHomeBalanceWidgetUseCase.givenGetHomeBalanceWidgetReturn(
-//                homeHeaderDataModel = mockSuccessHomeHeaderDataModel
-//        )
-//        homeViewModel = createHomeViewModel(
-//                userSessionInterface = userSessionInterface,
-//                getHomeUseCase = getHomeUseCase,
-//                homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
-//        )
-//        //On refresh
-//        homeViewModel.onRefreshTokoPoint()
-//
-//        val homeBalanceModel = getHomeBalanceModel()
-//        Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == false)
-//    }
-//
-//    @ExperimentalCoroutinesApi
-//    @Test
-//    fun `When onGetTokopointData is not empty onRefreshTokopoint then homeDataModel contains balance item data`() {
-//        every { userSessionInterface.isLoggedIn } returns true
-//
-//        getHomeUseCase.givenGetHomeDataReturn(
-//                HomeDynamicChannelModel(list = listOf(mockInitialHomeHeaderDataModel))
-//        )
-//        getHomeBalanceWidgetUseCase.givenGetTokopointDataReturn(
-//                homeHeaderDataModel = mockSuccessHomeHeaderDataModel
-//        )
-//        homeViewModel = createHomeViewModel(
-//                userSessionInterface = userSessionInterface,
-//                getHomeUseCase = getHomeUseCase,
-//                homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
-//        )
-//        //On refresh
-//        homeViewModel.onRefreshTokoPoint()
-//
-//        val homeBalanceModel = getHomeBalanceModel()
-//        Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
-//    }
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `When userSession is not loggedIn onRefreshTokopoint then homeDataModel should not contains balance item data`() {
+        every { userSessionInterface.isLoggedIn } returns false
+
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDynamicChannelModel(list = listOf(mockInitialHomeHeaderDataModel))
+        )
+
+        getHomeBalanceWidgetUseCase.givenGetHomeBalanceWidgetReturn(
+                homeHeaderDataModel = mockSuccessHomeHeaderDataModel
+        )
+        homeViewModel = createHomeViewModel(
+                userSessionInterface = userSessionInterface,
+                getHomeUseCase = getHomeUseCase,
+                homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
+        )
+        //On refresh
+        homeViewModel.onRefreshTokoPoint()
+
+        val homeBalanceModel = getHomeBalanceModel()
+        Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == false)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `When onGetTokopointData is not empty onRefreshTokopoint then homeDataModel contains balance item data`() {
+        every { userSessionInterface.isLoggedIn } returns true
+
+        getHomeUseCase.givenGetHomeDataReturn(
+                HomeDynamicChannelModel(list = listOf(mockInitialHomeHeaderDataModel))
+        )
+        getHomeBalanceWidgetUseCase.givenGetTokopointDataReturn(
+                homeHeaderDataModel = mockSuccessHomeHeaderDataModel
+        )
+        homeViewModel = createHomeViewModel(
+                userSessionInterface = userSessionInterface,
+                getHomeUseCase = getHomeUseCase,
+                homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
+        )
+        //On refresh
+        homeViewModel.onRefreshTokoPoint()
+
+        val homeBalanceModel = getHomeBalanceModel()
+        Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
+    }
 
     @ExperimentalCoroutinesApi
     private fun getHomeBalanceModel(): HomeBalanceModel? {
