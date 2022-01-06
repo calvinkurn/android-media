@@ -103,6 +103,19 @@ object TopChatAnalyticsKt {
         )
     }
 
+    fun eventConfirmDeleteMsg(replyId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CHAT_DETAIL,
+                category = Category.CHAT_DETAIL,
+                action = Action.CLICK_CONFIRM_DELETE_MSG,
+                label = replyId,
+                businessUnit = COMMUNICATION_MEDIA,
+                currentSite = CURRENT_SITE_TOKOPEDIA
+            )
+        )
+    }
+
     private fun createGeneralEvent(
         event: String,
         category: String,
@@ -139,6 +152,7 @@ object TopChatAnalyticsKt {
     object Action {
         const val TAP_AND_HOLD_BUBBLE = "tap and hold bubble chat"
         const val CLICK_MSG_MENU = "click menu on atur pesan bottomsheet"
+        const val CLICK_CONFIRM_DELETE_MSG = "click confirm delete message"
     }
 
     //Event Name

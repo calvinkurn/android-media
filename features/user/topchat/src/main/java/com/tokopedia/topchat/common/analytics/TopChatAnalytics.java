@@ -165,7 +165,6 @@ public class TopChatAnalytics {
         String IMPRESSION_SMART_REPLY_TICKER = "impression smart reply ticker";
         String CLICK_CLOSE_TICKER = "click close on smart reply ticker";
         String CLICK_CTA_TICKER = "click cta on smart reply ticker";
-        String CLICK_CONFIRM_DELETE_MSG = "click confirm delete message";
         String CLICK_CLOSE_REPLY_BUUBLE_PREVIEW = "click close preview replied bubble chat above keyboard";
         String CLICK_REPLY_BUBBLE = "click view parent replied bubble chat";
     }
@@ -717,20 +716,6 @@ public class TopChatAnalytics {
                         Category.MESSAGE_ROOM,
                         Action.CLICK_THREE_BULLET_MENU,
                         "pengaturan chat - " + shopId,
-                        BusinessUnit.CommunicationMedia,
-                        CurrentSite.TokopediaMarketplace,
-                        null
-                )
-        );
-    }
-
-    public void eventConfirmDeleteMsg(String replyId) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                createGeneralEvent(
-                        Name.CHAT_DETAIL,
-                        Category.CHAT_DETAIL,
-                        Action.CLICK_CONFIRM_DELETE_MSG,
-                        replyId,
                         BusinessUnit.CommunicationMedia,
                         CurrentSite.TokopediaMarketplace,
                         null
