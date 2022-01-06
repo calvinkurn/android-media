@@ -328,11 +328,13 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
 
     override fun onResume() {
         super.onResume()
+        getMakeUpEngine()?.onResume(requireContext())
         getMakeUpEngine()?.setDetectionCallbackForCameraFeed(this)
     }
 
     override fun onPause() {
         getMakeUpEngine()?.setDetectionCallbackForCameraFeed(null)
+        getMakeUpEngine()?.onPause()
         super.onPause()
     }
 
@@ -361,6 +363,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
                     val imagePath = result.imageUrlOrPathList.firstOrNull()
 
                     imagePath?.let {
+                        getMakeUpEngine()?.onResume(requireContext())
                         viewModel?.changeMode(ModifaceViewMode.IMAGE, it)
                     }
                 }

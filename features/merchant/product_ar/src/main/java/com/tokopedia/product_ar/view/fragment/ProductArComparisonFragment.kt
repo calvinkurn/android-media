@@ -106,7 +106,13 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
 
     override fun onResume() {
         super.onResume()
+        getMakeUpEngine()?.onResume(requireContext())
         setEngineCallback(true)
+    }
+
+    override fun onPause() {
+        getMakeUpEngine()?.onPause()
+        super.onPause()
     }
 
     private fun observeData() {

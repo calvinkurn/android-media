@@ -105,16 +105,6 @@ class ProductArActivity : BaseSimpleActivity(), HasComponent<ProductArComponent>
         mMakeupEngine?.close()
     }
 
-    override fun onPause() {
-        getMakeUpEngine()?.onPause()
-        super.onPause()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        getMakeUpEngine()?.onResume(this)
-    }
-
     override fun onMakeupEngineError(p0: MFEMakeupEngine.ErrorSeverity, p1: MFEMakeupEngine.ErrorType, p2: ArrayList<Throwable>) {
         Log.e("errornya", "ini ${p1.name}")
     }
