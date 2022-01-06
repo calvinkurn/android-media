@@ -726,20 +726,6 @@ public class TopChatAnalytics {
         );
     }
 
-    public void eventTapAndHoldBubbleChat(String replyId) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                createGeneralEvent(
-                        Name.CHAT_DETAIL,
-                        Category.CHAT_DETAIL,
-                        Action.TAP_AND_HOLD_BUBBLE,
-                        replyId,
-                        BusinessUnit.CommunicationMedia,
-                        CurrentSite.TokopediaMarketplace,
-                        null
-                )
-        );
-    }
-
     public void eventClickMsgMenu(String title) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 createGeneralEvent(
