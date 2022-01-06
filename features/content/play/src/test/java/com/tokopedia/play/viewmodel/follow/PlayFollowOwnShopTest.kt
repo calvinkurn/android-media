@@ -77,7 +77,7 @@ class PlayFollowOwnShopTest {
             submitAction(ClickFollowAction)
         } thenVerify {
             withState {
-                partner.followStatus.isEqualTo(
+                partner.status.isEqualTo(
                         PlayPartnerFollowStatus.NotFollowable
                 )
             }
@@ -101,7 +101,7 @@ class PlayFollowOwnShopTest {
             submitAction(ClickFollowAction)
         } thenVerify {
             withState {
-                partner.followStatus.isEqualTo(
+                partner.status.isEqualTo(
                         PlayPartnerFollowStatus.NotFollowable
                 )
             }
@@ -110,8 +110,16 @@ class PlayFollowOwnShopTest {
 
     @Test
     fun `given user is not logged in, when click follow, the shop should be not followable`() {
+        val mockChannelData = channelDataBuilder.buildChannelData(
+            partnerInfo = partnerInfoModelBuilder.buildPlayPartnerInfo(
+                id = partnerId,
+            ),
+        )
+
         val mockRepo: PlayViewerRepository = mockk(relaxed = true)
         coEvery { mockRepo.getIsFollowingPartner(any()) } returns false
+
+        every { mockRepo.getChannelData(any()) } returns mockChannelData
 
         givenPlayViewModelRobot(
                 repo = mockRepo,
@@ -125,7 +133,7 @@ class PlayFollowOwnShopTest {
             submitAction(ClickFollowAction)
         } thenVerify {
             withState {
-                partner.followStatus.isEqualTo(
+                partner.status.isEqualTo(
                         PlayPartnerFollowStatus.NotFollowable
                 )
             }

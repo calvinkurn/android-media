@@ -15,9 +15,7 @@ class PlayChannelDataModelBuilder {
     private val partnerInfoBuilder = PlayPartnerInfoModelBuilder()
     private val likeModelBuilder = PlayLikeModelBuilder()
     private val channelReportBuilder = PlayChannelReportModelBuilder()
-    private val cartInfoBuilder = PlayCartInfoModelBuilder()
     private val pinnedBuilder = PlayPinnedModelBuilder()
-    private val quickReplyBuilder = PlayQuickReplyModelBuilder()
     private val videoInfoBuilder = PlayVideoModelBuilder()
     private val upcomingInfoBuilder = PlayUpcomingInfoModelBuilder()
 
@@ -30,7 +28,7 @@ class PlayChannelDataModelBuilder {
         likeInfo: PlayLikeInfoUiModel = likeModelBuilder.buildLikeInfo(),
         channelReportInfo: PlayChannelReportUiModel = channelReportBuilder.buildChannelReport(),
         pinnedInfo: PlayPinnedInfoUiModel = pinnedBuilder.buildInfo(),
-        quickReplyInfo: PlayQuickReplyInfoUiModel = quickReplyBuilder.build(),
+        quickReplyInfo: PlayQuickReplyInfoUiModel = uiModelBuilder.buildQuickReply(),
         videoMetaInfo: PlayVideoMetaInfoUiModel = videoInfoBuilder.buildVideoMeta(),
         status: PlayStatusUiModel = uiModelBuilder.buildStatus(),
         leaderboardInfo: PlayLeaderboardWrapperUiModel = PlayLeaderboardWrapperUiModel.Unknown,

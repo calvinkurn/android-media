@@ -780,6 +780,8 @@ class PlayViewModel @AssistedInject constructor(
 
         updateTagItems()
         updateChannelStatus()
+
+        updateChannelInfo(channelData)
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {

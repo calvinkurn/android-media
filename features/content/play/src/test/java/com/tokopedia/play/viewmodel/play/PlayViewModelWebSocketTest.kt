@@ -170,35 +170,35 @@ class PlayViewModelWebSocketTest {
         }
     }
 
-    @Test
-    fun `when get quick reply data from web socket, then it should update the data`() {
-        val quickReplyModelBuilder = PlayQuickReplyModelBuilder()
-        every { mockUserSession.userId } returns "1"
-        val quickReplyObserver: Observer<PlayQuickReplyInfoUiModel> = mockk(relaxed = true)
-        every { quickReplyObserver.onChanged(any()) }.just(Runs)
-
-        val mockResponse = quickReplyModelBuilder.build(
-            quickReplyList = PlayQuickReplySocketResponse.quickReplyList
-        )
-
-        givenPlayViewModelRobot(
-            playChannelWebSocket = playChannelWebSocket,
-            dispatchers = testDispatcher,
-            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
-        ) {
-            viewModel.observableQuickReply.observeForever(quickReplyObserver)
-
-            createPage(channelData)
-            focusPage(channelData)
-        } andThen {
-            fakePlayWebSocket.fakeReceivedMessage(PlayQuickReplySocketResponse.response)
-        } thenVerify {
-            verifySequence {
-                quickReplyObserver.onChanged(channelData.quickReplyInfo)
-                quickReplyObserver.onChanged(mockResponse)
-            }
-        }
-    }
+//    @Test
+//    fun `when get quick reply data from web socket, then it should update the data`() {
+//        val quickReplyModelBuilder = PlayQuickReplyModelBuilder()
+//        every { mockUserSession.userId } returns "1"
+//        val quickReplyObserver: Observer<PlayQuickReplyInfoUiModel> = mockk(relaxed = true)
+//        every { quickReplyObserver.onChanged(any()) }.just(Runs)
+//
+//        val mockResponse = quickReplyModelBuilder.build(
+//            quickReplyList = PlayQuickReplySocketResponse.quickReplyList
+//        )
+//
+//        givenPlayViewModelRobot(
+//            playChannelWebSocket = playChannelWebSocket,
+//            dispatchers = testDispatcher,
+//            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
+//        ) {
+//            viewModel.observableQuickReply.observeForever(quickReplyObserver)
+//
+//            createPage(channelData)
+//            focusPage(channelData)
+//        } andThen {
+//            fakePlayWebSocket.fakeReceivedMessage(PlayQuickReplySocketResponse.response)
+//        } thenVerify {
+//            verifySequence {
+//                quickReplyObserver.onChanged(channelData.quickReplyInfo)
+//                quickReplyObserver.onChanged(mockResponse)
+//            }
+//        }
+//    }
 
 //    @Test
 //    fun `when get banned status from web socket, then it should update the data`() {
