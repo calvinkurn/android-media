@@ -96,6 +96,7 @@ fun getQueryCartRevampV3(): String {
                 ErrorProductAvailableStockDetail
                 ErrorProductMaxQuantity
                 ErrorProductMinQuantity
+                # ErrorBOAffordability
               }
               fulfillment_message
               toko_cabang {

@@ -456,7 +456,7 @@ class CartShopViewHolder(private val binding: ItemShopBundleBinding,
                     CartShopBoAffordabilityState.FAILED -> {
                         largeLoaderBoAffordability.gone()
                         smallLoaderBoAffordability.gone()
-                        textBoAffordability.text = boAffordability.errorText
+                        textBoAffordability.text = MethodChecker.fromHtml(boAffordability.errorText)
                         textBoAffordability.show()
                         arrowBoAffordability.setImage(IconUnify.RELOAD)
                         arrowBoAffordability.show()
