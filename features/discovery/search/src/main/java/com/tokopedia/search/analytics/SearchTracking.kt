@@ -186,7 +186,7 @@ object SearchTracking {
         item: Any?,
         eventLabel: String,
         userId: String,
-        productAnalyticsData: ProductClickAnalyticsData
+        productAnalyticsData: ProductClickAnalyticsData,
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(
