@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.applink.ApplinkConst
@@ -76,7 +75,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private lateinit var shareButton: ImageButton
     private lateinit var seeShopButton: Typography
     private lateinit var progressBar: ProgressBar
-    private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
+    private lateinit var recyclerviewScrollListener: RecyclerView.OnScrollListener
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var adapter: DetailFeedAdapter
     private lateinit var pagingHandler: PagingHandler
@@ -89,6 +88,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private var productList = emptyList<FeedXProduct>()
     private var activityId: String = ""
     private lateinit var shareData: LinkerData
+    private var lastScrollPosition: Int = -1
 
     companion object {
         const val KEY_OTHER = "lainnya"
@@ -223,7 +223,15 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 }
             }
         }
-        layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        layoutManager = object : LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false){
+            override fun onLayoutCompleted(state: RecyclerView.State?) {
+                super.onLayoutCompleted(state)
+                var index = layoutManager.findLastVisibleItemPosition()
+                if (index > lastScrollPosition)
+                    lastScrollPosition = index
+            }
+        }
+
         recyclerviewScrollListener = onRecyclerViewListener()
         val typeFactory: FeedPlusDetailTypeFactory = FeedPlusDetailTypeFactoryImpl(this)
         adapter = DetailFeedAdapter(typeFactory)
@@ -231,12 +239,16 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     }
 
 
-    private fun onRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollListener(layoutManager) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-
-            }
-        }
+    private fun onRecyclerViewListener(): RecyclerView.OnScrollListener {
+        return object : RecyclerView.OnScrollListener() {
+           override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+               if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                   var index = layoutManager.findLastVisibleItemPosition()
+                   if (index > lastScrollPosition)
+                       lastScrollPosition = index
+               }
+           }
+       }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -277,7 +289,6 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         adapter.addList(ret)
         adapter.notifyDataSetChanged()
         setUpShopDataHeader()
-        trackImpression(productList)
     }
 
 
@@ -615,25 +626,23 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     }
 
     private fun trackImpression(postTagItemList: List<FeedXProduct>) {
-        val productList = ArrayList<ProductEcommerce>()
-        for (position in postTagItemList.indices) {
-            val model = postTagItemList[position]
-                productList.add(ProductEcommerce(model.id,
-                        model.name,
-                        model.priceFmt,
-                        position
-                ))
 
-        }
+
         feedAnalytics.eventImpressionProductBottomSheet(
                 activityId,
-                postTagItemList,
+                postTagItemList.slice(0..lastScrollPosition),
                 shopId,
                 postType,
                 isFollowed,
                 true
         )
     }
+
+    override fun onPause() {
+        super.onPause()
+        trackImpression(productList)
+    }
+
 
     override fun urlCreated(linkerShareData: LinkerShareResult) {
         val intent = getIntent(linkerShareData.shareContents, linkerShareData.url)
