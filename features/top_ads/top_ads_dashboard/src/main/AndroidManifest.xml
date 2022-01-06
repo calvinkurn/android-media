@@ -7,9 +7,9 @@
         <activity
             android:name=".view.activity.TopAdsDashboardActivity"
             android:label="@string/top_ads_title_dashboard"
+            tools:replace="android:label"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"
-            tools:replace="android:label">
+            android:theme="@style/Theme.WhiteUnify" >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
