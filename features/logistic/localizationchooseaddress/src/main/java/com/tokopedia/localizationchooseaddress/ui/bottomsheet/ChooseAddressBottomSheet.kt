@@ -380,6 +380,30 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 }
             }
         })
+
+        viewModel.eligibleForAnaRevamp.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.eligible) {
+                        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
+                            putExtra(EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
+                            putExtra(EXTRA_IS_FULL_FLOW, true)
+                            putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+                        }, REQUEST_CODE_ADD_ADDRESS)
+                    } else {
+                        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
+                            putExtra(EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
+                            putExtra(EXTRA_IS_FULL_FLOW, true)
+                            putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+                        }, REQUEST_CODE_ADD_ADDRESS)
+                    }
+                }
+
+                is Fail -> {
+                    showToaster(it.throwable.message ?: getString(R.string.default_error_message), Toaster.TYPE_ERROR)
+                }
+            }
+        })
     }
 
     private fun showToaster(message: String, type: Int) {
@@ -444,19 +468,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
 
         buttonAddAddress?.setOnClickListener {
             ChooseAddressTracking.onClickButtonTambahAlamatBottomSheet(userSession.userId)
-            if (LogisticCommonUtil.isRollOutUserANARevamp()) {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
-                    putExtra(EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
-                    putExtra(EXTRA_IS_FULL_FLOW, true)
-                    putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                }, REQUEST_CODE_ADD_ADDRESS)
-            } else {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
-                    putExtra(EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
-                    putExtra(EXTRA_IS_FULL_FLOW, true)
-                    putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                }, REQUEST_CODE_ADD_ADDRESS)
-            }
+            viewModel.checkUserEligibilityForAnaRevamp()
         }
 
         buttonSnippet?.setOnClickListener {

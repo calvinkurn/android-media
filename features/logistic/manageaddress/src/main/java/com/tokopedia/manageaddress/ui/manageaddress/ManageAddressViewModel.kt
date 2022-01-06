@@ -148,7 +148,7 @@ class ManageAddressViewModel @Inject constructor(
         }
     }
 
-    fun isUserEligibleForAnaRevamp() {
+    fun checkUserEligibilityForAnaRevamp() {
         viewModelScope.launch {
             eligibleForAddressUseCase.eligibleForAddressFeature(
                     {

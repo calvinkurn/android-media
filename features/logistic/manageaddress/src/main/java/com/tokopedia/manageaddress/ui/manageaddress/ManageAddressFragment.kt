@@ -29,7 +29,6 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticCommon.util.LogisticCommonUtil
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.databinding.BottomsheetActionAddressBinding
 import com.tokopedia.manageaddress.databinding.FragmentManageAddressBinding
@@ -480,7 +479,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     private fun openFormAddressView(data: RecipientAddressModel?) {
         if (data == null) {
-            viewModel.isUserEligibleForAnaRevamp()
+            viewModel.checkUserEligibilityForAnaRevamp()
         } else {
             val token = viewModel.token
             val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V1)
