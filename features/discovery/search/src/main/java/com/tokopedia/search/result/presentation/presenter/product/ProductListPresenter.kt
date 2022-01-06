@@ -1081,20 +1081,14 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun getFirstProductPositionWithBOELabel(list: List<Visitable<*>>): Int {
-        return if(productList.isEmpty()){
-            -1
-        } else {
-            val product = productList.firstOrNull {
-                (it as ProductItemDataView).hasLabelGroupFulfillment
-            }
-
-            if(product == null){
-                -1
-            } else {
-                val firstProductPositionWithBOELabel = list.indexOf(product)
-                max(firstProductPositionWithBOELabel, -1)
-            }
+        val product = productList.firstOrNull {
+            (it as ProductItemDataView).hasLabelGroupFulfillment
         }
+
+        product ?: return -1
+
+        val firstProductPositionWithBOELabel = list.indexOf(product)
+        return max(firstProductPositionWithBOELabel, -1)
     }
 
     private fun addPageTitle(list: MutableList<Visitable<*>>) {
