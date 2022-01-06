@@ -87,4 +87,34 @@ class MasterProductCardItemViewModelTest {
         viewModel.updateProductQuantity(10)
         assert(item.quantity == 10)
     }
+
+    @Test
+    fun `handle ATCFailed quantity recheck and reload`(){
+        val viewmodel = spyk(MasterProductCardItemViewModel(application, componentsItem, 99))
+        every { viewmodel.onAttachToViewHolder() } just Runs
+        val list = ArrayList<DataItem>()
+        every { componentsItem.data } returns list
+        val item = DataItem()
+        list.add(item)
+        viewmodel.updateProductQuantity(1)
+        assert(item.quantity == 1)
+        viewmodel.handleATCFailed()
+        assert(item.quantity == 0)
+        verify { viewmodel.onAttachToViewHolder() }
+    }
+
+    @Test
+    fun `product card type name`(){
+        every { componentsItem.name } returns null
+        assert(viewModel.getComponentName().isEmpty())
+        every { componentsItem.name } returns "XYZ"
+        assert(viewModel.getComponentName() == "XYZ")
+    }
+
+    @Test
+    fun `get component positon LD`(){
+        every {componentsItem.data} returns null
+        viewModel.onAttachToViewHolder()
+        every { viewModel.getComponentPosition().value == 99 }
+    }
 }

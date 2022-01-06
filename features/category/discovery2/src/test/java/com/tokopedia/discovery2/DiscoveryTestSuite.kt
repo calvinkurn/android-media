@@ -24,7 +24,13 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.dyna
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponItemModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.MerchantVoucherCarouselItemViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.MerchantVoucherCarouselViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.MerchantVoucherListViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navigationChips.NavigationChipsViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardItemModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardModelTest
@@ -68,6 +74,13 @@ import org.junit.runners.Suite
         ShopCardItemModelTest::class,
         MyCouponItemModelTest::class,
         MyCouponModelTest::class,
+        MasterProductCardItemViewModelTest::class,
+        ProductCardCarouselViewModelTest::class,
+        MerchantVoucherCarouselItemViewModelTest::class,
+        MerchantVoucherCarouselViewModelTest::class,
+        MerchantVoucherListViewModelTest::class,
+        DiscoMerchantVoucherViewModelTest::class,
+
 )
 
 
