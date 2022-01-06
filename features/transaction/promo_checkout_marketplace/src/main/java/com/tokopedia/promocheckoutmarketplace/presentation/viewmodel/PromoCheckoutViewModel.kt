@@ -1044,7 +1044,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             // Get the promo item data and set inverted selected value
             val promoItem = promoListUiModel.value?.get(it) as PromoListItemUiModel
             promoItem.uiState.isSelected = !promoItem.uiState.isSelected
-            promoItem.uiState.isUpdateState = true
+            promoItem.uiState.isUpdateSelectionStateAction = true
 
             if (!promoItem.uiState.isSelected && promoItem.uiState.isRecommended) {
                 resetRecommendedPromo()

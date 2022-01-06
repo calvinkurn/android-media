@@ -37,8 +37,8 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
     private var colorBackgroundDisabled = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
 
     override fun bind(element: PromoListItemUiModel) {
-        if (element.uiState.isUpdateState) {
-            element.uiState.isUpdateState = false
+        if (element.uiState.isUpdateSelectionStateAction) {
+            element.uiState.isUpdateSelectionStateAction = false
             renderPromoState(viewBinding, element)
         } else {
             renderPromoData(viewBinding, element)
