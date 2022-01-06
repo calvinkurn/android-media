@@ -2,12 +2,14 @@ package com.tokopedia.play.repo
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.repository.PlayViewerCartRepositoryImpl
 import com.tokopedia.play.domain.PostAddToCartUseCase
 import com.tokopedia.play.domain.repository.PlayViewerCartRepository
 import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.assertTrue
 import com.tokopedia.play.util.isEqualTo
+import com.tokopedia.play.util.isInstanceOf
 import com.tokopedia.play.view.uimodel.mapper.PlayCartMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -68,7 +70,6 @@ class PlayViewerCartRepositoryTest {
         runBlockingTest {
 
             /** Prepare */
-            val mockErrorMessage = ""
             val mockCartId = "1"
             val mockResponse = AddToCartDataModel(
                 errorMessage = arrayListOf(),
@@ -90,7 +91,6 @@ class PlayViewerCartRepositoryTest {
 
             /** Verify */
             response.isSuccess.assertTrue()
-            response.errorMessage.isEqualTo(mockErrorMessage)
             response.cartId.isEqualTo(mockCartId)
         }
     }
@@ -100,7 +100,6 @@ class PlayViewerCartRepositoryTest {
         runBlockingTest {
 
             /** Prepare */
-            val mockErrorMessage = "Error 1 , Error 2 "
             val mockResponse = AddToCartDataModel(
                 errorMessage = arrayListOf("Error 1", "Error 2"),
                 data = DataModel(
@@ -120,7 +119,6 @@ class PlayViewerCartRepositoryTest {
 
             /** Verify */
             response.isSuccess.assertFalse()
-            response.errorMessage.isEqualTo(mockErrorMessage)
             response.cartId.isEqualTo("")
         }
     }

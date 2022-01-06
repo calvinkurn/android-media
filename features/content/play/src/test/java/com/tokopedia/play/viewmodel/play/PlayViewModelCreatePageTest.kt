@@ -84,38 +84,6 @@ class PlayViewModelCreatePageTest {
     }
 
     @Test
-    fun `given channel data is set, when page is created, then pinned value should be the same as in channel data`() {
-        val pinnedMessage = "Saksikan keseruan BTS di sini"
-        val shouldShowPinnedProduct = pinnedMessage.isEmpty()
-
-        val channelData = channelDataBuilder.buildChannelData(
-                pinnedInfo = pinnedBuilder.buildInfo(
-                        pinnedMessage = pinnedBuilder.buildPinnedMessage(
-                                title = pinnedMessage
-                        ),
-                        pinnedProduct = pinnedBuilder.buildPinnedProduct(
-                                shouldShow = shouldShowPinnedProduct
-                        )
-                )
-        )
-
-        val expectedModel = pinnedBuilder.buildPinnedMessage(
-                title = pinnedMessage
-        )
-
-        givenPlayViewModelRobot(
-        ) andWhen {
-            createPage(channelData)
-        } thenVerify {
-            viewModel.observablePinnedMessage.getOrAwaitValue()
-                    .isEqualTo(expectedModel)
-
-            viewModel.observablePinnedProduct.getOrAwaitValue()
-                    .isEqualTo(channelData.pinnedInfo.pinnedProduct)
-        }
-    }
-
-    @Test
     fun `given channel data is set, when page is created and has not shown onboarding before, should show one tap onboarding after 5s`() {
         coroutineTestRule.runBlockingTest {
             val playPreference: PlayPreference = mockk(relaxed = true)

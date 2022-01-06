@@ -981,15 +981,15 @@ class ModelBuilder {
 
     fun buildProduct(): Product = gson.fromJson(product, Product::class.java)
 
-    fun buildAddToCartModelResponseSuccess() =  CartFeedbackResponseModel(isSuccess = true, errorMessage = "", cartId = "123")
-    fun buildAddToCartModelResponseFail() = CartFeedbackResponseModel(isSuccess = false, errorMessage = "error message ", cartId = "")
+    fun buildAddToCartModelResponseSuccess() =  CartFeedbackResponseModel(isSuccess = true, errorMessage = IllegalStateException(""), cartId = "123")
+    fun buildAddToCartModelResponseFail() = CartFeedbackResponseModel(isSuccess = false, errorMessage = IllegalStateException("error message "), cartId = "")
 
     fun buildCartUiModel(
             product: PlayProductUiModel.Product,
             action: ProductAction,
             bottomInsetsType: BottomInsetsType,
             isSuccess: Boolean = true,
-            errorMessage: String = "",
+            errorMessage: Throwable = Throwable(),
             cartId: String = "123"
     ) = CartFeedbackUiModel(
             isSuccess = isSuccess,

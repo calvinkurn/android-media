@@ -36,6 +36,7 @@ import java.io.Closeable
  * Created by jegul on 10/02/21
  */
 class PlayViewModelRobot2(
+    channelId: String,
     playVideoBuilder: PlayVideoWrapper.Builder,
     videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
     channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
@@ -61,15 +62,13 @@ class PlayViewModelRobot2(
 ) : Closeable {
 
     val viewModel: PlayViewModel = PlayViewModel(
+        channelId,
         playVideoBuilder,
         videoStateProcessorFactory,
         channelStateProcessorFactory,
         videoBufferGovernorFactory,
-        getChannelStatusUseCase,
         getSocketCredentialUseCase,
         getReportSummariesUseCase,
-        getProductTagItemsUseCase,
-        trackProductTagBroadcasterUseCase,
         trackVisitChannelBroadcasterUseCase,
         playSocketToModelMapper,
         playUiModelMapper,
@@ -168,6 +167,7 @@ class PlayViewModelRobot2(
 }
 
 fun createPlayViewModelRobot(
+    channelId: String = "1",
     dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
     playVideoBuilder: PlayVideoWrapper.Builder = mockk(relaxed = true),
     videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory = mockk(relaxed = true),
@@ -193,6 +193,7 @@ fun createPlayViewModelRobot(
     fn: PlayViewModelRobot2.() -> Unit = {}
 ): PlayViewModelRobot2 {
     return PlayViewModelRobot2(
+        channelId = channelId,
         playVideoBuilder = playVideoBuilder,
         videoStateProcessorFactory = videoStateProcessorFactory,
         channelStateProcessorFactory = channelStateProcessorFactory,

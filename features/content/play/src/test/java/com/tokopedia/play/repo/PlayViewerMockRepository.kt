@@ -14,12 +14,18 @@ object PlayViewerMockRepository {
             partnerRepo: PlayViewerPartnerRepository = mockk(relaxed = true),
             likeRepo: PlayViewerLikeRepository = mockk(relaxed = true),
             cartRepo: PlayViewerCartRepository = mockk(relaxed = true),
+            channelRepo: PlayViewerChannelRepository = mockk(relaxed = true),
+            tagItemRepo: PlayViewerTagItemRepository = mockk(relaxed = true),
+            broTrackerRepo: PlayViewerBroTrackerRepository = mockk(relaxed = true),
     ): PlayViewerRepository {
         return PlayViewerRepositoryImpl(
-                interactiveRepo = interactiveRepo,
-                partnerRepo = partnerRepo,
-                likeRepo = likeRepo,
-                cartRepo = cartRepo,
+            interactiveRepo = interactiveRepo,
+            partnerRepo = partnerRepo,
+            likeRepo = likeRepo,
+            cartRepo = cartRepo,
+            channelRepo = channelRepo,
+            tagItemRepo = tagItemRepo,
+            broTrackerRepo = broTrackerRepo,
         )
     }
 }

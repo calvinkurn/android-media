@@ -88,9 +88,9 @@ class PlayBottomSheetViewModelTest {
         coEvery { mockRepo.addItemToCart(any(), any(), any(), any(), any()) } returns modelBuilder.buildAddToCartModelResponseSuccess()
 
         val expectedModel = modelBuilder.buildCartUiModel(
-                action = ProductAction.AddToCart,
-                product = productModelBuilder.buildProductLine(),
-                bottomInsetsType = BottomInsetsType.VariantSheet
+            action = ProductAction.AddToCart,
+            product = productModelBuilder.buildProductLine(),
+            bottomInsetsType = BottomInsetsType.VariantSheet,
         )
         val expectedResult = PlayResult.Success(
                 Event(expectedModel)
@@ -110,7 +110,7 @@ class PlayBottomSheetViewModelTest {
 
         Assertions
                 .assertThat((actualValue as PlayResult.Success).data.peekContent())
-                .isEqualToIgnoringGivenFields(expectedResult.data.peekContent(), "product")
+                .isEqualToIgnoringGivenFields(expectedResult.data.peekContent(), "product", "errorMessage")
 
         Assertions
                 .assertThat(actualValue.data.peekContent().product)
@@ -126,7 +126,7 @@ class PlayBottomSheetViewModelTest {
                 product = productModelBuilder.buildProductLine(),
                 bottomInsetsType = BottomInsetsType.VariantSheet,
                 isSuccess = false,
-                errorMessage = "error message ",
+                errorMessage = IllegalStateException("error message "),
                 cartId = ""
         )
         val expectedResult = PlayResult.Success(
@@ -147,7 +147,7 @@ class PlayBottomSheetViewModelTest {
 
         Assertions
                 .assertThat((actualValue as PlayResult.Success).data.peekContent())
-                .isEqualToIgnoringGivenFields(expectedResult.data.peekContent(), "product")
+                .isEqualToIgnoringGivenFields(expectedResult.data.peekContent(), "product", "errorMessage")
 
         Assertions
                 .assertThat(actualValue.data.peekContent().product)

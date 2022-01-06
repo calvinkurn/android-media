@@ -46,17 +46,19 @@ class PlayProductTagsModelBuilder {
     )
 
     fun buildMerchantVoucher(
-            type: MerchantVoucherType = MerchantVoucherType.Discount,
-            title: String = "Diskon 10%",
-            description: String = "Min. Pembelanjaan 10rb"
+        type: MerchantVoucherType = MerchantVoucherType.Discount,
+        title: String = "Diskon 10%",
+        description: String = "Min. Pembelanjaan 10rb"
     ) = MerchantVoucherUiModel(
-            type = type,
-            title = title,
-            description = description,
-            id = "1",
-            code = "123",
-            copyable = true,
-            highlighted = true
+        type = type,
+        title = title,
+        description = description,
+        id = "1",
+        code = "123",
+        copyable = true,
+        highlighted = true,
+        expiredDate = "2021-06-06",
+        voucherStock = 1,
     )
 
     fun buildOriginalProductPrice(

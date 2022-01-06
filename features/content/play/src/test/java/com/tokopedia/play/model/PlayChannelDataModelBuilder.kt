@@ -3,6 +3,7 @@ package com.tokopedia.play.model
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 
 /**
@@ -18,8 +19,9 @@ class PlayChannelDataModelBuilder {
     private val pinnedBuilder = PlayPinnedModelBuilder()
     private val quickReplyBuilder = PlayQuickReplyModelBuilder()
     private val videoInfoBuilder = PlayVideoModelBuilder()
-    private val statusInfoBuilder = PlayStatusInfoModelBuilder()
     private val upcomingInfoBuilder = PlayUpcomingInfoModelBuilder()
+
+    private val uiModelBuilder = UiModelBuilder.get()
 
     fun buildChannelData(
         id: String = "1",
@@ -30,20 +32,22 @@ class PlayChannelDataModelBuilder {
         pinnedInfo: PlayPinnedInfoUiModel = pinnedBuilder.buildInfo(),
         quickReplyInfo: PlayQuickReplyInfoUiModel = quickReplyBuilder.build(),
         videoMetaInfo: PlayVideoMetaInfoUiModel = videoInfoBuilder.buildVideoMeta(),
-        statusInfo: PlayStatusInfoUiModel = statusInfoBuilder.build(),
+        status: PlayStatusUiModel = uiModelBuilder.buildStatus(),
         leaderboardInfo: PlayLeaderboardWrapperUiModel = PlayLeaderboardWrapperUiModel.Unknown,
-        upcomingInfo: PlayUpcomingUiModel = upcomingInfoBuilder.buildUpcomingInfo()
+        upcomingInfo: PlayUpcomingUiModel = upcomingInfoBuilder.buildUpcomingInfo(),
+        tagItems: TagItemUiModel = uiModelBuilder.buildTagItem()
     ) = PlayChannelData(
-            id = id,
-            channelDetail = channelDetail,
-            partnerInfo = partnerInfo,
-            likeInfo = likeInfo,
-            pinnedInfo = pinnedInfo,
-            quickReplyInfo = quickReplyInfo,
-            videoMetaInfo = videoMetaInfo,
-            statusInfo = statusInfo,
-            leaderboardInfo = leaderboardInfo,
-            channelReportInfo = channelReportInfo,
-            upcomingInfo = upcomingInfo
+        id = id,
+        channelDetail = channelDetail,
+        partnerInfo = partnerInfo,
+        likeInfo = likeInfo,
+        pinnedInfo = pinnedInfo,
+        quickReplyInfo = quickReplyInfo,
+        videoMetaInfo = videoMetaInfo,
+        status = status,
+        leaderboardInfo = leaderboardInfo,
+        channelReportInfo = channelReportInfo,
+        upcomingInfo = upcomingInfo,
+        tagItems = tagItems,
     )
 }

@@ -69,6 +69,8 @@ class PlayWinnerBadgeInteractiveTest {
     init {
         every { socket.listenAsFlow() } returns socketFlow
         every { mockRemoteConfig.getBoolean(any(), any()) } returns true
+
+        every { interactiveRepo.getChannelData(any()) } returns mockChannelData
     }
 
     @Test
