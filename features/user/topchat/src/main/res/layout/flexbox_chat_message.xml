@@ -42,8 +42,8 @@
         android:id="@+id/iu_msg_icon"
         android:layout_width="22dp"
         android:layout_height="22dp"
-        android:layout_marginEnd="2dp"
-        android:padding="4dp"
+        android:layout_marginEnd="@dimen/unify_space_2"
+        android:padding="@dimen/unify_space_4"
         android:visibility="gone"
         tools:src="@tools:sample/avatars"
         tools:visibility="visible" />
