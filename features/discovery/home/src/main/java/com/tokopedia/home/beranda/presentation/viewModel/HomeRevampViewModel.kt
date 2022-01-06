@@ -59,7 +59,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
-import rx.subscriptions.CompositeSubscription
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -121,10 +120,6 @@ open class HomeRevampViewModel @Inject constructor(
         get() = _popupIntroOvoLiveData
     private val _popupIntroOvoLiveData = MutableLiveData<Event<String>>()
 
-    // Test cover banner url play widget is valid or not
-    private val _requestImageTestLiveData = MutableLiveData<Event<PlayCardDataModel>>()
-    val requestImageTestLiveData: LiveData<Event<PlayCardDataModel>> get() = _requestImageTestLiveData
-
     val oneClickCheckoutHomeComponent: LiveData<Event<Any>> get() = _oneClickCheckoutHomeComponent
     private val _oneClickCheckoutHomeComponent = MutableLiveData<Event<Any>>()
 
@@ -166,7 +161,6 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
 
     private var fetchFirstData = false
-    private var compositeSubscription: CompositeSubscription = CompositeSubscription()
     private var homeFlowDataCancelled = false
     private var onRefreshState = true
     private var takeTicker = true
@@ -189,13 +183,6 @@ open class HomeRevampViewModel @Inject constructor(
         _isRequestNetworkLiveData.value = Event(true)
         initFlow()
         refreshHomeData()
-    }
-
-    override fun onCleared() {
-        if (!compositeSubscription.isUnsubscribed) {
-            compositeSubscription.unsubscribe()
-        }
-        super.onCleared()
     }
 
     /**
