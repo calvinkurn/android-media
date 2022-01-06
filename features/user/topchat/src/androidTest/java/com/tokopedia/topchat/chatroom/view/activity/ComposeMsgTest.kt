@@ -11,6 +11,10 @@ import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.TopchatRoomInvoiceAttachmentTest.Companion.getInvoiceAttachmentIntent
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.composearea.ComposeAreaResult.assertSendBtnDisabled
+import com.tokopedia.topchat.chatroom.view.activity.robot.composearea.ComposeAreaResult.assertTooLongErrorMsg
+import com.tokopedia.topchat.chatroom.view.activity.robot.composearea.ComposeAreaRobot.setComposedText
+import com.tokopedia.topchat.chatroom.view.custom.ComposeTextWatcher.Companion.MAX_CHAR
 import org.junit.Test
 
 @UiTest
@@ -51,7 +55,23 @@ class ComposeMsgTest : TopchatRoomTest() {
         assertSnackbarText(context.getString(R.string.topchat_desc_empty_text_box))
     }
 
-    // TODO: should_show_error_msg_with_the_right_offset_when_composed_msg_exceed_limit
+    @Test
+    fun should_show_error_msg_with_the_right_offset_when_composed_msg_exceed_limit() {
+        //Given
+        getChatUseCase.response = firstPageChatAsSeller
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        launchChatRoomActivity()
+        val offset = 10
+
+        //When
+        clickComposeArea()
+        setComposedText("a".repeat(MAX_CHAR + offset))
+
+        //Then
+        assertSendBtnDisabled()
+        assertTooLongErrorMsg(context.getString(R.string.desc_topchat_max_char_exceeded, offset))
+    }
+
     // TODO: should hide error msg if composed msg is not empty and equal or less than limit
     // TODO: should not show error toaster when send btn clicked if msg exceed limit
 }
