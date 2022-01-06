@@ -23,10 +23,6 @@ class RechargeHomepageProductCardUnifyViewHolder(
 
     private val digitalUnifyCardListener =
         object : DigitalUnifyCardViewHolder.DigitalUnifyCardListener {
-            override fun onItemBinding(item: DigitalUnifyModel) {
-                // no op
-            }
-
             override fun onItemClicked(item: DigitalUnifyModel, index: Int) {
                 if (section.items.size > index)
                     listener.onRechargeSectionItemClicked(section.items[index])

@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -41,8 +40,11 @@ class DigitalUnifyCardViewHolder(
         renderSoldPercentage(element)
         renderActionButton(element)
 
-        binding.root.addOnImpressionListener(element) {
-            listener?.onItemBinding(element)
+        with(binding.root) {
+            setOnClickListener {
+                listener?.onItemClicked(element, adapterPosition)
+                RouteManager.route(context, element.actionButton.applink)
+            }
         }
     }
 
@@ -432,7 +434,6 @@ class DigitalUnifyCardViewHolder(
     }
 
     interface DigitalUnifyCardListener {
-        fun onItemBinding(item: DigitalUnifyModel)
         fun onItemClicked(item: DigitalUnifyModel, index: Int)
     }
 
