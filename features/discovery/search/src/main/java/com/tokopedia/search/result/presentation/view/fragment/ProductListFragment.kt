@@ -827,7 +827,7 @@ class ProductListFragment: BaseDaggerFragment(),
             item.getProductAsObjectDataLayer(filterSortParams, pageComponentId),
             eventLabel,
             userId,
-            productAnalyticsData
+            productAnalyticsData,
         )
     }
 
@@ -1507,7 +1507,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 queryKey,
                 getUserId(),
                 productDataLayerList,
-                inspirationCarouselAnalyticsData
+                inspirationCarouselAnalyticsData,
             )
         }
     }
