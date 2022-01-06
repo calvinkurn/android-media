@@ -19,10 +19,6 @@ internal inline fun <reified T> Any?.shouldBeInstanceOf(customMessage: String = 
     }
 }
 
-/**
- * query => ignored
- * need to replace unused param variable following detekt guidelines
- */
 internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithLoadingMoreViewModel(ignored: String) {
     val lastIndex = this?.data?.lastIndex ?: 0
 
@@ -33,10 +29,6 @@ internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithLoadin
     this.shouldHaveLoadingMoreViewModel(lastIndex)
 }
 
-/**
- * query => ignored
- * need to replace unused param variable following detekt guidelines
- */
 internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithoutLoadingMoreViewModel(ignored: String) {
     val lastIndex = this?.data?.lastIndex ?: 0
 
