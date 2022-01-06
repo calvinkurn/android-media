@@ -1,12 +1,9 @@
 package com.tokopedia.home.beranda.domain.interactor.usecase
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.domain.interactor.repository.HomePopularKeywordRepository
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
-import com.tokopedia.play.widget.util.PlayWidgetTools
-import dagger.Lazy
 import javax.inject.Inject
 
 class HomePopularKeywordUseCase @Inject constructor(
