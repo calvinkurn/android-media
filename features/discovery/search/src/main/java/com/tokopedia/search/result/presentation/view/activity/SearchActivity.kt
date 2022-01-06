@@ -258,9 +258,9 @@ class SearchActivity : BaseActivity(),
     private fun onPageSelected(position: Int) {
         when (position) {
             SearchTabPosition.TAB_FIRST_POSITION ->
-                SearchTracking.eventSearchResultTabClick(this, productTabTitle)
+                SearchTracking.eventSearchResultTabClick(productTabTitle)
             SearchTabPosition.TAB_SECOND_POSITION ->
-                SearchTracking.eventSearchResultTabClick(this, shopTabTitle)
+                SearchTracking.eventSearchResultTabClick(shopTabTitle)
         }
     }
 

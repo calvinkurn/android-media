@@ -264,12 +264,8 @@ object SearchTracking {
         ))
     }
 
-    /**
-     * context => ignored
-     * need to replace unused param variable following detekt guidelines
-     */
     @JvmStatic
-    fun eventSearchResultTabClick(ignored: Context?, tabTitle: String?) {
+    fun eventSearchResultTabClick(tabTitle: String?) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 SearchEventTracking.Event.SEARCH_RESULT,
                 SearchEventTracking.Category.SEARCH_TAB,
