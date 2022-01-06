@@ -39,8 +39,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginEnd="@dimen/spacing_lvl4"
-            app:typographyType="body_3"
             android:textColor="@color/Unify_N700_44"
+            app:typographyType="body_3"
             tools:text="31/38" />
 
         <View
