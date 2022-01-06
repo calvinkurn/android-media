@@ -25,7 +25,6 @@ import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerPageSource
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.ImagePickerTab
-import com.tokopedia.imagepicker.common.ImageRatioType
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.kotlin.extensions.view.hide
@@ -357,7 +356,6 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_CODE_IMAGE_PICKER -> {
-
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val result = ImagePickerResultExtractor.extract(data)
                     val imagePath = result.imageUrlOrPathList.firstOrNull()
@@ -373,10 +371,8 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     private fun onAddImageClick() {
         context?.let {
             val builder = ImagePickerBuilder.getSquareImageBuilder(it)
-                    .withSimpleEditor()
                     .apply {
                         title = it.getString(R.string.txt_image_picker_title)
-                        imageRatioType = ImageRatioType.RATIO_9_16
                         imagePickerTab = arrayOf(
                                 ImagePickerTab.TYPE_GALLERY)
                     }
