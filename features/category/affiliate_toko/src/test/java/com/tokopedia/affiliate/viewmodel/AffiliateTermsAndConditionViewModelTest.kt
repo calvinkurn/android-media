@@ -51,6 +51,7 @@ class AffiliateTermsAndConditionViewModelTest{
         affiliateTermViewModel.affiliateOnBoarding(ArrayList())
 
         assertEquals(affiliateTermViewModel.getOnBoardingData().value , affiliateOnboarding)
+        assertEquals(affiliateTermViewModel.progressBar().value,false)
 
     }
 
@@ -62,5 +63,6 @@ class AffiliateTermsAndConditionViewModelTest{
         affiliateTermViewModel.affiliateOnBoarding(ArrayList())
 
         assertEquals(affiliateTermViewModel.getErrorMessage().value, exception)
+        assertEquals(affiliateTermViewModel.progressBar().value,false)
     }
 }
