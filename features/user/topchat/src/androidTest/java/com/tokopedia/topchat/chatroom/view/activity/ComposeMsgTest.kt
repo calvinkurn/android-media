@@ -51,4 +51,7 @@ class ComposeMsgTest : TopchatRoomTest() {
         assertSnackbarText(context.getString(R.string.topchat_desc_empty_text_box))
     }
 
+    // TODO: should_show_error_msg_with_the_right_offset_when_composed_msg_exceed_limit
+    // TODO: should hide error msg if composed msg is not empty and equal or less than limit
+    // TODO: should not show error toaster when send btn clicked if msg exceed limit
 }
