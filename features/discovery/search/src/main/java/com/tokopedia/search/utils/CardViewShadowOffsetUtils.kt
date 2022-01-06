@@ -9,9 +9,9 @@ import kotlin.math.roundToInt
  * shadow calculation formula (include the const value) based on CardView shadow formula
  * https://developer.android.com/reference/kotlin/androidx/cardview/widget/CardView
  */
-const val VERTICAL_SHADOW_MULTIPLIER = 1.5
-const val BASE_RADIUS_AREA = 1
-const val CORNER_RADIUS_DEGREE = 45.0
+internal const val VERTICAL_SHADOW_MULTIPLIER = 1.5
+internal const val BASE_RADIUS_AREA = 1
+internal const val CORNER_RADIUS_DEGREE = 45.0
 
 internal fun CardView.getVerticalShadowOffset(): Int {
     val maxElevation = this.maxCardElevation
