@@ -316,6 +316,40 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 }
             }
         })
+
+        viewModel.eligibleForAnaRevamp.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    val token = viewModel.token
+                    val screenName = if (isFromCheckoutChangeAddress == true && isLocalization == false) {
+                        SCREEN_NAME_CART_EXISTING_USER
+                    } else if (isFromCheckoutChangeAddress == false && isLocalization == true) {
+                        SCREEN_NAME_CHOOSE_ADDRESS_EXISTING_USER
+                    } else {
+                        SCREEN_NAME_USER_NEW
+                    }
+
+                    if (it.data.eligible) {
+                        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+                        intent.putExtra(KERO_TOKEN, token)
+                        intent.putExtra(EXTRA_REF, screenName)
+                        startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
+                    } else {
+                        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
+                        intent.putExtra(KERO_TOKEN, token)
+                        intent.putExtra(EXTRA_REF, screenName)
+                        startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
+                    }
+                }
+
+                is Fail -> {
+                    view?.let { view ->
+                        Toaster.build(view, it.throwable.message
+                                ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                    }
+                }
+            }
+        })
     }
 
     private fun initScrollListener() {
@@ -445,28 +479,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun openFormAddressView(data: RecipientAddressModel?) {
-        val token = viewModel.token
         if (data == null) {
-            val screenName = if (isFromCheckoutChangeAddress == true && isLocalization == false) {
-                SCREEN_NAME_CART_EXISTING_USER
-            } else if (isFromCheckoutChangeAddress == false && isLocalization == true) {
-                SCREEN_NAME_CHOOSE_ADDRESS_EXISTING_USER
-            } else {
-                SCREEN_NAME_USER_NEW
-            }
-
-            if (LogisticCommonUtil.isRollOutUserANARevamp()) {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
-                intent.putExtra(KERO_TOKEN, token)
-                intent.putExtra(EXTRA_REF, screenName)
-                startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
-            } else {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
-                intent.putExtra(KERO_TOKEN, token)
-                intent.putExtra(EXTRA_REF, screenName)
-                startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
-            }
+            viewModel.isUserEligibleForAnaRevamp()
         } else {
+            val token = viewModel.token
             val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V1)
             val mapper = AddressModelMapper()
             intent.putExtra(EDIT_PARAM, mapper.transform(data))

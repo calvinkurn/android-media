@@ -10,7 +10,7 @@ class EligibleForAddressUseCase @Inject constructor(private val repository: Kero
 
     private var featureId = 0
 
-    fun getStateChosenAddress(success: (KeroAddrIsEligibleForAddressFeature) -> Unit, onFail: (Throwable) -> Unit, featureId: Int) {
+    fun eligibleForAddressFeature(success: (KeroAddrIsEligibleForAddressFeature) -> Unit, onFail: (Throwable) -> Unit, featureId: Int) {
         execute({
             success(it.data)
         }, {
