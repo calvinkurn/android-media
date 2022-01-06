@@ -28,7 +28,7 @@ import static com.tokopedia.utils.view.DarkModeUtil.isDarkMode;
  * Created by nathan on 7/11/17.
  */
 
-abstract class BaseToolbarActivity extends BaseActivity {
+abstract class BaseToolbarActivity extends BaseFoldableActivity {
 
     private final static int TEXT_COLOR_BACKGROUND_WHITE = com.tokopedia.unifyprinciples.R.color.Unify_N700;
     protected Toolbar toolbar;
