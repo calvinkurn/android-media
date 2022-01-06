@@ -6,12 +6,16 @@ import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_6
 import com.tokopedia.topads.sdk.domain.model.Cpm
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
+import javax.inject.Inject
 
-object TopAdsHeadlineHelper {
+class TopAdsHeadlineHelper  @Inject constructor() {
+
+    var seenAds: Int = 0
+
     fun processHeadlineAds(
             cpmModel: CpmModel,
             pageNumber: Int = 2,
-            process: (Int, ArrayList<CpmData>, Int) -> Unit,
+            process: (Int, ArrayList<CpmData>, Boolean) -> Unit,
     ) {
 
         val listLayoutFive = arrayListOf<CpmData>()
@@ -25,23 +29,23 @@ object TopAdsHeadlineHelper {
                     LAYOUT_6 -> {
                         listLayoutSix.add(cpmData)
                         if (cpmModel.data.size - 1 != index) return@forEachIndexed
-                        process(index, listLayoutSix, LAYOUT_6)
+                        process(index, listLayoutSix, false)
                     }
                     LAYOUT_5 -> {
                         listLayoutFive.add(cpmData)
                         if (cpmModel.data.size - 1 != index) return@forEachIndexed
-                        process(index, listLayoutFive, LAYOUT_5)
+                        process(index, listLayoutFive, false)
                     }
                     LAYOUT_2 -> {
                         val list = arrayListOf<CpmData>()
                         list.add(cpmData)
-                        process(index, list, 0)
+                        process(index, list, true)
                         return@breaker
                     }
                     else -> {
                         val list = arrayListOf<CpmData>()
                         list.add(cpmData)
-                        process(index, list, 0)
+                        process(index, list, true)
                     }
                 }
             }

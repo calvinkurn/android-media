@@ -89,7 +89,6 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.TopAdsConstants.SEEN_ADS
 import com.tokopedia.topads.sdk.domain.TopAdsParams
 import com.tokopedia.topads.sdk.domain.model.Badge
-import com.tokopedia.topads.sdk.domain.model.Cpm
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir
@@ -136,6 +135,7 @@ class ProductListPresenter @Inject constructor(
         private val saveLastFilterUseCase: Lazy<UseCase<Int>>,
         private val topAdsUrlHitter: TopAdsUrlHitter,
         private val schedulersProvider: SchedulersProvider,
+        private val topAdsHeadlineHelper : TopAdsHeadlineHelper,
         remoteConfig: Lazy<RemoteConfig>,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
         ProductListSectionContract.Presenter {
@@ -172,7 +172,6 @@ class ProductListPresenter @Inject constructor(
         private const val EMPTY_LOCAL_SEARCH_RESPONSE_CODE = "11"
     }
 
-    private var seenAds: Int = 0
     private var compositeSubscription: CompositeSubscription? = CompositeSubscription()
 
     private var enableGlobalNavWidget = true
@@ -406,7 +405,7 @@ class ProductListPresenter @Inject constructor(
             putBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET, isLocalSearch)
             putBoolean(SEARCH_PRODUCT_SKIP_GLOBAL_NAV, isSkipGlobalNavWidget)
             putBoolean(SEARCH_PRODUCT_SKIP_GET_LAST_FILTER_WIDGET, isSkipGetLastFilterWidget)
-            putString(SEEN_ADS, seenAds.toString())
+            putString(SEEN_ADS, topAdsHeadlineHelper.seenAds.toString())
         }
     }
 
@@ -613,9 +612,9 @@ class ProductListPresenter @Inject constructor(
         searchProductModel: SearchProductModel,
         list: MutableList<Visitable<*>>,
     ) {
-        TopAdsHeadlineHelper.processHeadlineAds(searchProductModel.cpmModel) { _, cpmDataList, layoutType ->
+        topAdsHeadlineHelper.processHeadlineAds(searchProductModel.cpmModel) { _, cpmDataList, isUseSeparator ->
             val cpmDataView = createCpmDataView(searchProductModel.cpmModel, cpmDataList)
-            processHeadlineAdsAtPosition(list, productList.size, cpmDataView, layoutType)
+            processHeadlineAdsAtPosition(list, productList.size, cpmDataView, isUseSeparator)
         }
     }
 
@@ -1144,12 +1143,12 @@ class ProductListPresenter @Inject constructor(
         list: MutableList<Visitable<*>>,
     ) {
         if (!isHeadlineAdsAllowed()) return
-        TopAdsHeadlineHelper.processHeadlineAds(searchProductModel.cpmModel, 1) { index, cpmDataList,  layoutType ->
+        topAdsHeadlineHelper.processHeadlineAds(searchProductModel.cpmModel, 1) { index, cpmDataList,  isUseSeparator ->
             val cpmDataView = createCpmDataView(searchProductModel.cpmModel, cpmDataList)
             if (index == 0)
                 processHeadlineAdsAtTop(list, cpmDataView)
             else
-                processHeadlineAdsAtPosition(list, productList.size, cpmDataView, layoutType)
+                processHeadlineAdsAtPosition(list, productList.size, cpmDataView, isUseSeparator)
         }
     }
 
@@ -1185,10 +1184,10 @@ class ProductListPresenter @Inject constructor(
             visitableList: MutableList<Visitable<*>>,
             position: Int,
             cpmDataView: CpmDataView,
-            layoutType: Int,
+            isUseSeparator: Boolean,
     ) {
         val headlineAdsVisitableList = arrayListOf<Visitable<ProductListTypeFactory>>()
-        if (layoutType == 0) {
+        if (isUseSeparator) {
             headlineAdsVisitableList.add(SeparatorDataView())
             headlineAdsVisitableList.add(cpmDataView)
             headlineAdsVisitableList.add(SeparatorDataView())
@@ -2302,7 +2301,7 @@ class ProductListPresenter @Inject constructor(
     }
 
     override fun shopAdsImpressionCount(impressionCount: Int) {
-        seenAds = impressionCount
+        topAdsHeadlineHelper.seenAds = impressionCount
     }
 
     override fun detachView() {
