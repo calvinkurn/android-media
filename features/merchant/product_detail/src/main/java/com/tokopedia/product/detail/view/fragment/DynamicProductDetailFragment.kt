@@ -758,6 +758,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         return lifecycle
     }
 
+    override fun getProductId(): String? {
+        return productId
+    }
+
     /**
      * ImpressionComponent
      */

@@ -5,6 +5,7 @@ package com.tokopedia.product.detail.common.data.model.variant.uimodel
  */
 data class VariantOptionWithAttribute(
         val variantId: String = "",
+        val variantProductId: String = "",
         val currentState: Int = 0,
         val variantHex: String = "",
         val variantName: String = "",

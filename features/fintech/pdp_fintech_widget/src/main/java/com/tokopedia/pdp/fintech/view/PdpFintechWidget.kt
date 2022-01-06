@@ -16,7 +16,6 @@ class PdpFintechWidget @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     @AttrRes defStyleAttr: Int = 0,
-   val  variantInterface:AtcVariantListener,
 ) : BaseCustomView(context, attrs, defStyleAttr), ProductUpdateListner {
 
     private lateinit var baseView: View
@@ -37,9 +36,11 @@ class PdpFintechWidget @JvmOverloads constructor(
         baseView = inflate(context, R.layout.pdp_fintech_widget_layout, this)
     }
 
-    override fun updateProduct(productID: String) {
+    override fun updateProductId(productID: String) {
 
     }
+
+
 
 
 }
