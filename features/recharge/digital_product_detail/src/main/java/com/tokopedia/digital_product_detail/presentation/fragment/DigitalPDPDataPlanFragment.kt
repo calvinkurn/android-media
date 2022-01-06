@@ -10,7 +10,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
+import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
+import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardEnum
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -52,7 +54,7 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
             it.widgetRecommendationCard.renderRecommendationLayout(recommendationListener = object : RechargeRecommendationCardListener{
                 override fun onProductRecommendationCardClicked(applinkUrl: String) {
                     context?.let {
-                        RouteManager.route(it, applinkUrl)
+                        RouteManager.route(it, applink)
                     }
                 }
             },
@@ -114,7 +116,7 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
 //                    ),
 //
 //                )
-            )
+//            )
         }
     }
 
