@@ -7,10 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.AFFILIATE_HELP_URL
+import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
@@ -26,9 +28,12 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.affiliate_terms_and_condition_fragment_layout.*
+import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -36,12 +41,15 @@ import javax.inject.Inject
 class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAndConditionViewModel>(){
 
     private lateinit var affiliateTermsAndConditionViewModel: AffiliateTermsAndConditionViewModel
-    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory())
+    private val affiliateAdapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory())
 
     private var channels = arrayListOf<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>()
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSessionInterface : UserSessionInterface
 
     private lateinit var affiliateNavigationInterface: AffiliateActivityInterface
 
@@ -76,22 +84,33 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
     private fun afterViewCreated() {
         setUpNavBar()
         initClickListener()
-        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        terms_condition_rv.layoutManager=layoutManager
-        terms_condition_rv.adapter = adapter
+        view?.findViewById<RecyclerView>(R.id.terms_condition_rv)?.run {
+            val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            layoutManager = linearLayoutManager
+            adapter = affiliateAdapter
+        }
         setDataToRV(createListForTermsAndCondition(context))
     }
 
     private fun initClickListener() {
-        checkbox_terms.setOnCheckedChangeListener { _, isChecked ->
-                terms_accept_btn.isEnabled = isChecked
+        view?.findViewById<CheckboxUnify>(R.id.checkbox_terms)?.setOnCheckedChangeListener { _, isChecked ->
+                view?.findViewById<UnifyButton>(R.id.terms_accept_btn)?.isEnabled = isChecked
         }
-        terms_accept_btn.setOnClickListener {
+        view?.findViewById<UnifyButton>(R.id.terms_accept_btn)?.setOnClickListener {
+            sendTracker()
             affiliateTermsAndConditionViewModel.affiliateOnBoarding(channels)
         }
-        syarat_text.setOnClickListener {
+        view?.findViewById<Typography>(R.id.syarat_text)?.setOnClickListener {
             AffiliateWebViewBottomSheet.newInstance("HELP", AFFILIATE_HELP_URL).show(childFragmentManager,"")
         }
+    }
+
+    private fun sendTracker() {
+        AffiliateAnalytics.sendEvent(
+                AffiliateAnalytics.EventKeys.CLICK_REGISTER,
+                AffiliateAnalytics.ActionKeys.CLICK_DAFTAR,
+                AffiliateAnalytics.CategoryKeys.REGISTRATION_PAGE,
+                "", userSessionInterface.userId)
     }
 
     private fun setUpNavBar() {
@@ -101,7 +120,7 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
             text = getString(R.string.affiliate_subtitle_terms)
         }
         customView.findViewById<Typography>(R.id.navbar_tittle).text = getString(R.string.daftar_affiliate)
-        affiliate_terms_toolbar.apply {
+        view?.findViewById<com.tokopedia.header.HeaderUnify>(R.id.affiliate_terms_toolbar)?.apply {
             customView(customView)
             setNavigationOnClickListener {
                 affiliateNavigationInterface.handleBackButton()
@@ -140,15 +159,15 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
 
         affiliateTermsAndConditionViewModel.progressBar().observe(this , { progress ->
             if(progress){
-                affiliate_progress_bar.show()
+                view?.findViewById<LoaderUnify>(R.id.affiliate_progress_bar)?.show()
             }else {
-                affiliate_progress_bar.hide()
+                view?.findViewById<LoaderUnify>(R.id.affiliate_progress_bar)?.hide()
             }
         })
     }
 
     private fun setDataToRV(data: ArrayList<Visitable<AffiliateAdapterTypeFactory>>?) {
-        adapter.addMoreData(data)
+        affiliateAdapter.addMoreData(data)
     }
 
     fun setChannels(listOfChannels: ArrayList<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>) {
