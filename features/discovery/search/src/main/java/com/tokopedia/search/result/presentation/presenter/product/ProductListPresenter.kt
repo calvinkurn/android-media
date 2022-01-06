@@ -222,6 +222,19 @@ class ProductListPresenter @Inject constructor(
         if (isEnableChooseAddress) chooseAddressData = view.chooseAddressData
     }
 
+    private val isABTestNegativeNoAds : Boolean
+        get() {
+            return try {
+                val abTestKeywordAdvNeg = view.abTestRemoteConfig?.getString(
+                    SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEYWORD_ADV_NEG,
+                    ""
+                )
+                SearchConstant.ABTestRemoteConfigKey.AB_TEST_NEGATIVE_NO_ADS == abTestKeywordAdvNeg
+            } catch (e: Exception) {
+                false
+            }
+        }
+
     override val userId: String
         get() = if (userSession.isLoggedIn) userSession.userId else DEFAULT_USER_ID
 
@@ -443,6 +456,12 @@ class ProductListPresenter @Inject constructor(
         totalData = productDataView.totalData
     }
 
+    private fun SearchProductModel.isAdvancedNegativeKeywordSearch() : Boolean {
+        val keywordProcessed = searchProduct.header.keywordProcess
+        if(keywordProcessed.isEmpty()) return false
+        return keywordProcessed.toIntOrZero() in 16..31
+    }
+
     private fun createProductDataView(
         searchProductModel: SearchProductModel,
         pageTitleEventLabel: String = "",
@@ -457,6 +476,7 @@ class ProductListPresenter @Inject constructor(
             isLocalSearch(),
             dimension90,
             keyword,
+            isABTestNegativeNoAds && searchProductModel.isAdvancedNegativeKeywordSearch()
         )
 
         saveLastProductItemPositionToCache(lastProductItemPosition, productDataView.productList)
@@ -509,7 +529,9 @@ class ProductListPresenter @Inject constructor(
         val searchProduct = searchProductModel.searchProduct
 
         processHeadlineAdsLoadMore(searchProductModel, list)
-        processTopAdsImageViewModel(searchParameter, list)
+        if (!isABTestNegativeNoAds || !searchProductModel.isAdvancedNegativeKeywordSearch()) {
+            processTopAdsImageViewModel(searchParameter, list)
+        }
         processInspirationCardPosition(searchParameter, list)
         processInspirationCarouselPosition(searchParameter, list)
         processBannerAndBroadmatchInSamePosition(searchProduct, list)
@@ -523,14 +545,15 @@ class ProductListPresenter @Inject constructor(
     private fun createProductItemVisitableList(productDataView: ProductDataView): MutableList<Visitable<*>> {
         val list: MutableList<Visitable<*>> = productDataView.productList.toMutableList()
         if (isLocalSearch()) return list
+        val adsModel = productDataView.adsModel ?: return list
 
         var j = 0
         for (i in 0 until productDataView.getTotalItem()) {
             try {
                 // Already surrounded by try catch per looping, safe to force nullable
-                if (productDataView.adsModel!!.templates.size <= 0) continue
-                if (productDataView.adsModel!!.templates[i].isIsAd) {
-                    val topAds = productDataView.adsModel!!.data[j]
+                if (adsModel.templates.size <= 0) continue
+                if (adsModel.templates[i].isIsAd) {
+                    val topAds = adsModel.data[j]
                     val item = ProductItemDataView()
                     item.productID = topAds.product.id
                     item.isTopAds = true
@@ -1040,7 +1063,9 @@ class ProductListPresenter @Inject constructor(
         productList = createProductItemVisitableList(productDataView)
         list.addAll(productList)
 
+//        if(!isABTestNegativeNoAds || !searchProductModel.isAdvancedNegativeKeywordSearch()) {
         processHeadlineAdsFirstPage(searchProductModel, list)
+//        }
 
         additionalParams = productDataView.additionalParams
 
@@ -1053,8 +1078,10 @@ class ProductListPresenter @Inject constructor(
         processBannerAndBroadmatchInSamePosition(searchProduct, list)
         processBanner(searchProduct, list)
         processBroadMatch(searchProduct, list)
-        topAdsImageViewModelList = searchProductModel.getTopAdsImageViewModelList().toMutableList()
-        processTopAdsImageViewModel(searchParameter, list)
+        if(!isABTestNegativeNoAds || !searchProductModel.isAdvancedNegativeKeywordSearch()) {
+            topAdsImageViewModelList = searchProductModel.getTopAdsImageViewModelList().toMutableList()
+            processTopAdsImageViewModel(searchParameter, list)
+        }
 
         addSearchInTokopedia(searchProduct, list)
         firstProductPositionWithBOELabel = getFirstProductPositionWithBOELabel(list)

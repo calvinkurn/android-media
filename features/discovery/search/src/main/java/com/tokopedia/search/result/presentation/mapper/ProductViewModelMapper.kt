@@ -40,7 +40,6 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RelatedDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
-import java.util.*
 
 class ProductViewModelMapper {
 
@@ -51,12 +50,15 @@ class ProductViewModelMapper {
         isLocalSearch: Boolean,
         dimension90: String,
         keyword: String,
+        excludeTopAds: Boolean,
     ): ProductDataView {
         val (searchProductHeader, searchProductData) = searchProductModel.searchProduct
 
         val productDataView = ProductDataView()
 
-        productDataView.adsModel = searchProductModel.topAdsModel
+        if(!excludeTopAds) {
+            productDataView.adsModel = searchProductModel.topAdsModel
+        }
         productDataView.globalNavDataView = convertToViewModel(
             searchProductModel.globalSearchNavigation
         )
@@ -73,7 +75,6 @@ class ProductViewModelMapper {
             pageTitle,
             dimension90,
         )
-        productDataView.adsModel = searchProductModel.topAdsModel
         productDataView.tickerModel = convertToTickerDataView(
             searchProductData,
             keyword,
