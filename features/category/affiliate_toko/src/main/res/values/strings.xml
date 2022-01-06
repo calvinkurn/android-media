@@ -122,4 +122,6 @@
     <string name="affiliate_default_no_transaction">Kamu belum punya transaksi</string>
     <string name="affiliate_default_no_transaction_description">Yuk, promosikan produk affiliate di sosial media supaya kamu bisa mulai bertransaksi.</string>
     <string name="affiliate_promote_product_cta">Promosikan Produk Affiliate</string>
+    <string name="affiliate_please_fill_one_social_media">Silakan isi minimal 1 media sosial.</string>
+    <string name="affiliate_retry_message">Silakan coba lagi nanti</string>
 </resources>

@@ -18,7 +18,7 @@ import com.tokopedia.affiliate.adapter.AffiliateTutorialPagerAdapter
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
-import com.tokopedia.affiliate.ui.activity.AffiliateActivity
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateWebViewBottomSheet
 import com.tokopedia.affiliate.viewmodel.AffiliateLoginViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.ApplinkConst
@@ -109,17 +109,27 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
         setupViewPager()
         setUpNavBar()
         checkLoggedIn()
+        sendTracking()
+    }
+
+    private fun sendTracking() {
+        AffiliateAnalytics.sendOpenScreenEvent(
+                AffiliateAnalytics.EventKeys.OPEN_SCREEN,
+                "${AffiliateAnalytics.ScreenKeys.AFFILIATE_LOGIN_SCREEN_NAME}${userSessionInterface.isLoggedIn}",
+                userSessionInterface.isLoggedIn,
+                userSessionInterface.userId
+        )
     }
 
     private fun setUpNavBar() {
         val customView = layoutInflater.inflate(R.layout.affiliate_navbar_custom_content,null,false)
-        affiliate_login_toolbar.apply {
+        view?.findViewById<com.tokopedia.header.HeaderUnify>(R.id.affiliate_login_toolbar)?.apply {
             customView(customView)
             setNavigationOnClickListener {
                 affiliateNavigationInterface.handleBackButton()
             }
             actionTextView?.setOnClickListener {
-                (activity as? AffiliateActivity)?.showAffiliatePortal()
+                AffiliateWebViewBottomSheet.newInstance("", AFFILIATE_MICRO_SITE_LINK).show(childFragmentManager,"")
             }
         }
     }
@@ -152,6 +162,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
             affiliate_keluar_btn.text = getString(R.string.affiliate_keluar)
             affiliate_sign_up_btn.text = getString(R.string.affiliate_daftar_sekarang)
             affiliate_sign_up_btn.setOnClickListener {
+                sendTrackerDaftar()
                 affiliateNavigationInterface.navigateToPortfolioFragment()
             }
 
@@ -164,6 +175,14 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
             affiliate_user_email.text = affiliateLoginViewModel.getUserEmail()
             ImageHandler.loadImageCircle2(context, affiliate_user_image, affiliateLoginViewModel.getUserProfilePicture())
         }
+    }
+
+    private fun sendTrackerDaftar() {
+        AffiliateAnalytics.sendEvent(
+                AffiliateAnalytics.EventKeys.CLICK_REGISTER,
+                AffiliateAnalytics.ActionKeys.CLICK_DAFTAR_SEKARANG,
+                AffiliateAnalytics.CategoryKeys.REGISTRATION_PAGE,
+                userSessionInterface.isLoggedIn.toString(), userSessionInterface.userId)
     }
 
     private fun showDialogLogout() {
