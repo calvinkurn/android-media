@@ -9,6 +9,7 @@ import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategorySwit
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SwitcherWidgetDataView
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.tokopedianow.common.util.ImageUtil.setBackgroundImageFromUrl
 
 class SwitcherWidgetViewHolder(
     itemView: View,
@@ -18,19 +19,36 @@ class SwitcherWidgetViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_search_category_switcher_widget
+        private const val SWITCHER_WIDGET_BG_URL = "https://images.tokopedia.net/img/android/tokonow/tokopedianow_bg_search_category_switcher_widget.png"
+        private const val SWITCHER_WIDGET_CARD_2H_BG_URL = "https://images.tokopedia.net/img/android/tokonow/tokopedianow_bg_search_category_switcher_widget_card_2h.png"
+        private const val SWITCHER_WIDGET_CARD_15M_BG_URL = "https://images.tokopedia.net/img/android/tokonow/tokopedianow_bg_search_category_switcher_widget_card_15m.png"
     }
 
     private var binding: ItemTokopedianowSearchCategorySwitcherWidgetBinding? by viewBinding()
 
     override fun bind(element: SwitcherWidgetDataView) {
-        binding?.apply {
-            switcherLayout.setBackgroundResource(R.drawable.tokopedianow_bg_search_category_switcher_widget)
-            container15m.setBackgroundResource(R.drawable.tokopedianow_bg_search_category_switcher_widget_card_15m)
-            container2h.setBackgroundResource(R.drawable.tokopedianow_bg_search_category_switcher_widget_card_2h)
+        setImage()
+        setText()
+        setListener()
+    }
 
+    private fun setImage() {
+        binding?.root?.context?.let {
+            setBackgroundImageFromUrl(it, SWITCHER_WIDGET_BG_URL, binding?.switcherLayout)
+            setBackgroundImageFromUrl(it, SWITCHER_WIDGET_CARD_2H_BG_URL, binding?.container2h)
+            setBackgroundImageFromUrl(it, SWITCHER_WIDGET_CARD_15M_BG_URL, binding?.container15m)
+        }
+    }
+
+    private fun setText() {
+        binding?.apply {
             tpDesc15m.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_search_category_description_fifteen_minutes))
             tpDesc2h.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_search_category_description_two_hours))
+        }
+    }
 
+    private fun setListener() {
+        binding?.apply {
             cv15m.setOnClickListener {
                 listener?.onClickSwitcherTo15M()
             }

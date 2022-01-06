@@ -39,6 +39,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
@@ -985,13 +986,30 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onClickSwitcherTo15M() {
-        // waiting until LCA ready
-        getViewModel().chooseAddressData
+        // waiting until usecase ready
+        // will call use case
+        // the update will be put after gql response that has been got, then refresh the page,  check if there is 15min or not. If not then switch to 2hr.
+        ChooseAddressUtils.updateTokoNowData(
+            context = requireContext(),
+            warehouseId = "12131",
+            shopId = userSession.shopId,
+            serviceType = "15m",
+            warehouses = listOf()
+        )
         Toast.makeText(context, "Click 15 Menit Loh", Toast.LENGTH_LONG).show()
     }
 
     override fun onClickSwitcherTo2H() {
-        // waiting until LCA ready
+        // waiting until usecase ready
+        // will call use case
+        // the update will be put after gql response that has been got, then refresh the page
+        ChooseAddressUtils.updateTokoNowData(
+            context = requireContext(),
+            warehouseId = "12131",
+            shopId = userSession.shopId,
+            serviceType = "2hr",
+            warehouses = listOf()
+        )
         Toast.makeText(context, "Click 2 Jam Loh", Toast.LENGTH_LONG).show()
     }
 
