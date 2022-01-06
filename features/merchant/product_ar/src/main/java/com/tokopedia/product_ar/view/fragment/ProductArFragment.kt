@@ -26,6 +26,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerPageSource
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.ImagePickerTab
 import com.tokopedia.imagepicker.common.ImageRatioType
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepicker.common.putParamPageSource
@@ -349,12 +350,6 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         super.onPause()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        getMakeUpEngine()?.clearMakeupLook()
-        getMakeUpEngine()?.close()
-    }
-
     override fun onVariantClicked(productId: String,
                                   isSelected: Boolean,
                                   selectedMfeProduct: MFEMakeupProduct) {
@@ -394,6 +389,8 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
                     .apply {
                         title = it.getString(R.string.txt_image_picker_title)
                         imageRatioType = ImageRatioType.RATIO_9_16
+                        imagePickerTab = arrayOf(
+                                ImagePickerTab.TYPE_GALLERY)
                     }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
             intent.putImagePickerBuilder(builder)

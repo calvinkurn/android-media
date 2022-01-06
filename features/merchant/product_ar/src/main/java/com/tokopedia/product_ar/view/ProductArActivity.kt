@@ -1,7 +1,11 @@
 package com.tokopedia.product_ar.view
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.modiface.mfemakeupkit.MFEMakeupEngine
 import com.modiface.mfemakeupkit.data.MFEMakeupRenderingParameters
@@ -12,6 +16,7 @@ import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.di.DaggerProductArComponent
 import com.tokopedia.product_ar.di.ProductArComponent
 import com.tokopedia.product_ar.di.ProductArModule
+import com.tokopedia.product_ar.util.ProductArConstant
 import com.tokopedia.product_ar.view.fragment.ProductArComparisonFragment
 import com.tokopedia.product_ar.view.fragment.ProductArComparisonFragment.Companion.PRODUCT_AR_COMPARISON_FRAGMENT
 import com.tokopedia.product_ar.view.fragment.ProductArFragment
@@ -52,6 +57,27 @@ class ProductArActivity : BaseSimpleActivity(), HasComponent<ProductArComponent>
         }
     }
 
+    override fun setupFragment(savedInstance: Bundle?) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    arrayOf(Manifest.permission.CAMERA),
+                    ProductArConstant.REQUEST_CODE_CAMERA_PERMISSION)
+        } else {
+            inflateFragment()
+        }
+    }
+
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (requestCode == ProductArConstant.REQUEST_CODE_CAMERA_PERMISSION) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                inflateFragment()
+            } else {
+                finish()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val uri = intent.data
@@ -72,6 +98,11 @@ class ProductArActivity : BaseSimpleActivity(), HasComponent<ProductArComponent>
                 .baseAppComponent(baseComponent)
                 .productArModule(ProductArModule(productId, shopId))
                 .build()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mMakeupEngine?.close()
     }
 
     override fun onMakeupEngineError(p0: MFEMakeupEngine.ErrorSeverity, p1: MFEMakeupEngine.ErrorType, p2: ArrayList<Throwable>) {

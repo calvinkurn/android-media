@@ -55,10 +55,4 @@ class AnimatedTextIcon : LinearLayout {
         txtTitle?.startAnimation(fadeOutAnimation)
         invalidate()
     }
-
-    override fun onFinishInflate() {
-        super.onFinishInflate()
-        requestLayout()
-        invalidate()
-    }
 }

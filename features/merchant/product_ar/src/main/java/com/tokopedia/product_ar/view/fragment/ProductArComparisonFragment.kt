@@ -118,7 +118,6 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
 
     override fun onPause() {
         makeUpEngineComparison?.onPause()
-        makeUpEngineComparison?.clearMakeupLook()
         super.onPause()
     }
 
