@@ -90,6 +90,19 @@ object TopChatAnalyticsKt {
         )
     }
 
+    fun eventClickMsgMenu(title: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CHAT_DETAIL,
+                category = Category.CHAT_DETAIL,
+                action = Action.CLICK_MSG_MENU,
+                label = title,
+                businessUnit = COMMUNICATION_MEDIA,
+                currentSite = CURRENT_SITE_TOKOPEDIA
+            )
+        )
+    }
+
     private fun createGeneralEvent(
         event: String,
         category: String,
@@ -125,6 +138,7 @@ object TopChatAnalyticsKt {
 
     object Action {
         const val TAP_AND_HOLD_BUBBLE = "tap and hold bubble chat"
+        const val CLICK_MSG_MENU = "click menu on atur pesan bottomsheet"
     }
 
     //Event Name

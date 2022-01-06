@@ -2675,7 +2675,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val bs = TopchatBottomSheetBuilder.getLongClickBubbleMenuBs(
             context, msg, menus
         ) { itemMenu, msg ->
-            analytics.eventClickMsgMenu(itemMenu.title)
+            TopChatAnalyticsKt.eventClickMsgMenu(itemMenu.title)
             when (itemMenu.id) {
                 MENU_ID_REPLY -> replyCompose?.composeReplyData(msg, text, true)
                 MENU_ID_COPY_TO_CLIPBOARD -> copyToClipboard(text)
