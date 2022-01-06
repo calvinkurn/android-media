@@ -271,4 +271,12 @@ class CampaignListViewModel @Inject constructor(
             overloadProductCount
         }
     }
+
+    fun getProductCount(unsafeProductCount: String): Int {
+        return try {
+            unsafeProductCount.toInt()
+        } catch (e: Exception) {
+            0
+        }
+    }
 }
