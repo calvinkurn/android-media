@@ -205,7 +205,6 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
                     , dealDetails.getOutlets().size()));
         }
         tickerApplyPromo.enableView();
-        //todo
         tvPaymentMethod.setOnClickListener(this);
         tickerApplyPromo.setOnClickListener(this);
         tvNumberLocations.setOnClickListener(this);

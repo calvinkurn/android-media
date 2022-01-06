@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital_deals.R
 import com.tokopedia.digital_deals.di.DealsComponent
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity
@@ -81,6 +83,17 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
         dealsDetail = dealFragmentCallback.dealDetails
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_CODE_LOGIN -> context?.let {
+                    goToCheckoutPage()
+                }
+            }
+        }
+    }
+
     private fun showLayout(){
         toolbar.apply {
             (activity as BaseSimpleActivity).setSupportActionBar(this)
@@ -129,14 +142,29 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
             setTotalAmount()
             setButtons()
         }
-
         tv_continue.setOnClickListener {
-            dealsAnalytics.sendEcommerceQuantity(dealsDetail.id, currentQuantity, dealsDetail.salesPrice,
-                    dealsDetail.displayName, dealsDetail.brand.title, dealsDetail.categoryId, userSession.userId)
-            showProgress()
-            verify()
+            if (userSession.isLoggedIn) {
+                goToCheckoutPage()
+            } else {
+                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                    REQUEST_CODE_LOGIN)
+            }
         }
 
+    }
+
+    private fun goToCheckoutPage(){
+        dealsAnalytics.sendEcommerceQuantity(
+            dealsDetail.id,
+            currentQuantity,
+            dealsDetail.salesPrice,
+            dealsDetail.displayName,
+            dealsDetail.brand.title,
+            dealsDetail.categoryId,
+            userSession.userId
+        )
+        showProgress()
+        verify()
     }
 
     private fun observeVerify(){
@@ -196,6 +224,8 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
     }
 
     companion object{
+        const val REQUEST_CODE_LOGIN = 101
+
         fun createInstance(): RevampSelecDealsQuantityFragment {
             return RevampSelecDealsQuantityFragment()
         }

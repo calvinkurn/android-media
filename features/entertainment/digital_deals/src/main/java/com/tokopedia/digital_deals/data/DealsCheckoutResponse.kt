@@ -30,7 +30,7 @@ data class Checkout(
 data class Data(
         @SerializedName("data")
         @Expose
-        val data: DataX = DataX(),
+        val data: DataValidation = DataValidation(),
         @SerializedName("error")
         @Expose
         val error: String = "",
@@ -42,7 +42,7 @@ data class Data(
         val success: Int = 0
 )
 
-data class DataX(
+data class DataValidation(
         @SerializedName("callback_url")
         @Expose
         val callbackUrl: String = "",

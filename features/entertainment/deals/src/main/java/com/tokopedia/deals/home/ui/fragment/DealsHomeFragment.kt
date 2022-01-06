@@ -70,7 +70,6 @@ class DealsHomeFragment : DealsBaseFragment(),
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        loadData(0)
         observeLayout()
     }
 

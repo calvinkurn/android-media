@@ -105,8 +105,4 @@ class DealsOMPViewHolder(private val setEventDetails: ItemsAdapter.SetEventDetai
             return date
         }
     }
-
-    companion object{
-
-    }
 }
