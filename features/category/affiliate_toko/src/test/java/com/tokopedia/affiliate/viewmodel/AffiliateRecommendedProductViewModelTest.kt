@@ -64,6 +64,7 @@ class AffiliateRecommendedProductViewModelTest{
             AffiliateRecommendedProductFragment.BOUGHT_IDENTIFIER, PAGE_ZERO
         )
         assertEquals(affiliateRecommendedProductViewModel.getAffiliateDataItems().value,response)
+        assertEquals(affiliateRecommendedProductViewModel.getAffiliateItemCount().value,affiliateRecommendedProduct.recommendedAffiliateProduct?.data?.pageInfo)
     }
 
     @Test
@@ -76,5 +77,6 @@ class AffiliateRecommendedProductViewModelTest{
         )
 
         assertEquals(affiliateRecommendedProductViewModel.getErrorMessage().value, exception)
+        assertEquals(affiliateRecommendedProductViewModel.getShimmerVisibility().value,false)
     }
 }

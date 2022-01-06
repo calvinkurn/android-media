@@ -57,6 +57,8 @@ class AffiliateTransactionDetailViewModelTest{
         affiliateTransactionDetailViewModel.affiliateCommission("16d106d0-38ad-43b3-9245-99cab79eb09f")
 
         assertEquals(affiliateTransactionDetailViewModel.getDetailList().value,response)
+        assertEquals(affiliateTransactionDetailViewModel.getCommissionData().value,affiliateCommisionDetails.getAffiliateCommissionDetail)
+        assertEquals(affiliateTransactionDetailViewModel.progressBar().value,false)
     }
 
     @Test
@@ -68,6 +70,7 @@ class AffiliateTransactionDetailViewModelTest{
         affiliateTransactionDetailViewModel.affiliateCommission("16d106d0-38ad-43b3-9245-99cab79eb09f")
 
         assertEquals(affiliateTransactionDetailViewModel.getErrorMessage().value, exception)
+        assertEquals(affiliateTransactionDetailViewModel.progressBar().value,false)
 
     }
 }
