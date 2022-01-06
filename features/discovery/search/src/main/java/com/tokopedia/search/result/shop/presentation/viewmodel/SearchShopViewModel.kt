@@ -841,10 +841,6 @@ internal class SearchShopViewModel(
         shopCountMutableLiveData.value = shopCount.toString()
     }
 
-    /**
-     * throwable => ignored
-     * unused var name should following detekt rules
-     */
     private fun catchRequestShopCountError(ignored: Throwable) {
         setShopCount(0)
     }
