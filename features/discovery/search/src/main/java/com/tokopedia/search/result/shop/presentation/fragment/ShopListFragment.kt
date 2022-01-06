@@ -587,7 +587,7 @@ internal class ShopListFragment:
     }
 
     override fun onEmptyButtonClicked() {
-        SearchTracking.eventUserClickNewSearchOnEmptySearch(context, screenName)
+        SearchTracking.eventUserClickNewSearchOnEmptySearch(screenName)
         searchViewModel?.showAutoCompleteView()
     }
 

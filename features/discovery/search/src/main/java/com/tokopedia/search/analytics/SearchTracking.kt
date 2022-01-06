@@ -278,11 +278,7 @@ object SearchTracking {
         ))
     }
 
-    /**
-     * context => ignored
-     * need to replace unused param variable following detekt guidelines
-     */
-    fun eventUserClickNewSearchOnEmptySearch(ignored: Context?, screenName: String?) {
+    fun eventUserClickNewSearchOnEmptySearch(screenName: String?) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 EVENT_CLICK_SEARCH_RESULT,
                 EVENT_CATEGORY_EMPTY_SEARCH,
