@@ -9,6 +9,7 @@ import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordDa
 import com.tokopedia.topads.dashboard.data.model.insightkey.TopAdsShopHeadlineKeyword
 import com.tokopedia.topads.dashboard.domain.interactor.CreateHeadlineAdsUseCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsShopKeywordSuggestionUseCase
+import com.tokopedia.topads.dashboard.view.model.TopadsManageHeadlineAdResponse
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
@@ -48,7 +49,7 @@ class TopAdsInsightViewModel @Inject constructor(
         launchCatchError(
             block = {
                 createHeadlineAdsUseCase.setParams(input)
-                val response = createHeadlineAdsUseCase.executeOnBackground()
+                val response : TopadsManageHeadlineAdResponse.Data = createHeadlineAdsUseCase.executeOnBackground()
                 if (response.topadsManageHeadlineAd.success.id.isNotEmpty()) {
                     _applyKeyword.postValue(input.operation.group.keywordOperations.size)
                 }

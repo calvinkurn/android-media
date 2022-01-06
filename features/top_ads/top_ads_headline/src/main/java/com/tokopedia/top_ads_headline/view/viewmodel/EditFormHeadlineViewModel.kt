@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput
 import com.tokopedia.topads.dashboard.domain.interactor.CreateHeadlineAdsUseCase
+import com.tokopedia.topads.dashboard.view.model.TopadsManageHeadlineAdResponse
 import javax.inject.Inject
 
 class EditFormHeadlineViewModel @Inject constructor(
@@ -16,7 +17,7 @@ class EditFormHeadlineViewModel @Inject constructor(
         viewModelScope.launchCatchError(
                 block = {
                     createHeadlineAdsUseCase.setParams(input)
-                    val response = createHeadlineAdsUseCase.executeOnBackground()
+                    val response : TopadsManageHeadlineAdResponse.Data = createHeadlineAdsUseCase.executeOnBackground()
                     if (response.topadsManageHeadlineAd.success.id.isNotEmpty()) {
                         onSuccess()
                     } else {
