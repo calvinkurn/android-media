@@ -535,7 +535,9 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                         } else {
                             VoucherTargetType.PRIVATE
                         }
-                val voucherInfoHasCta = voucherUiModel.status == VoucherStatusConst.NOT_STARTED && voucherUiModel.type != VoucherTypeConst.FREE_ONGKIR
+                val voucherInfoHasCta = voucherUiModel.status == VoucherStatusConst.NOT_STARTED &&
+                        voucherUiModel.type != VoucherTypeConst.FREE_ONGKIR && !voucherUiModel.isVps && !voucherUiModel.isSubsidy
+
                 addAll(listOf(
                         DividerUiModel(DividerUiModel.THICK),
                         getVoucherInfoSection(voucherTargetType, name, code, voucherInfoHasCta).apply {

@@ -239,6 +239,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
                     ViewDetail(context?.getString(R.string.mvc_view_detail).orEmpty(), R.drawable.ic_mvc_detail),
                     ItemDivider,
                     BroadCast(context?.getString(R.string.mvc_broadcast_chat).orEmpty(), R.drawable.ic_mvc_broadcast),
+                    ShareVoucher(context?.getString(R.string.mvc_share).orEmpty(), R.drawable.ic_mvc_share),
                     DownloadVoucher(context?.getString(R.string.mvc_download).orEmpty(), R.drawable.ic_mvc_download)
             )
 
@@ -247,6 +248,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
                     ViewDetail(context?.getString(R.string.mvc_view_detail).orEmpty(), R.drawable.ic_mvc_detail),
                     ItemDivider,
                     BroadCast(context?.getString(R.string.mvc_broadcast_chat).orEmpty(), R.drawable.ic_mvc_broadcast),
+                    ShareVoucher(context?.getString(R.string.mvc_share).orEmpty(), R.drawable.ic_mvc_share),
                     DownloadVoucher(context?.getString(R.string.mvc_download).orEmpty(), R.drawable.ic_mvc_download)
             )
 
