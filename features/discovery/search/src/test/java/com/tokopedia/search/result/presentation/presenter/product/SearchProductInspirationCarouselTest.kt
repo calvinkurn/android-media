@@ -893,10 +893,6 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         )
     }
 
-    /**
-     * inspirationCarouselData => ignored
-     * detekt UnusedPrivateMember, need to rename unused using detekt white list name
-     */
     private fun assertCarouselProductTypeBroadMatch(
             broadMatchDataView: BroadMatchDataView,
             ignored: SearchProductModel.InspirationCarouselData,
