@@ -16,15 +16,7 @@ class RechargeRecommendationCardWidget @JvmOverloads constructor(@NotNull contex
                                                                  defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
-    private lateinit var rechargeRecommendationViewBinding: WidgetRechargeRecommendationCardBinding
-
-    init {
-        initLayout()
-    }
-
-    private fun initLayout(){
-        rechargeRecommendationViewBinding = WidgetRechargeRecommendationCardBinding.inflate(LayoutInflater.from(context), this, true)
-    }
+    private var rechargeRecommendationViewBinding: WidgetRechargeRecommendationCardBinding = WidgetRechargeRecommendationCardBinding.inflate(LayoutInflater.from(context), this, true)
 
     fun renderRecommendationLayout(recommendationListener: RechargeRecommendationCardListener, titleRecommendation:String, listRecommendation: List<RecommendationCardWidgetModel>){
         val adapterRecommendation = RecommendationCardWidgetAdapter(recommendationListener)
