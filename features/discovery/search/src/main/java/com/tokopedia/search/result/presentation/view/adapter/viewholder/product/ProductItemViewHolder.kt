@@ -48,14 +48,6 @@ abstract class ProductItemViewHolder(
         } ?: listOf()
     }
 
-    @Suppress("UnusedPrivateMember")
-    private fun Int.toRatingCount(isTopAds: Boolean): Int {
-        return if (isTopAds)
-            (this / RATING_COUNT_CONVERTER_DIVISOR).roundToInt()
-        else
-            this
-    }
-
     private fun FreeOngkirDataView.toProductCardModelFreeOngkir(): ProductCardModel.FreeOngkir {
         return ProductCardModel.FreeOngkir(isActive, imageUrl)
     }
