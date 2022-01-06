@@ -17,6 +17,7 @@ import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout.Companion.
 import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout.Companion.LEFT_MSG_ORIENTATION
 import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout.Companion.RIGHT_MSG_ORIENTATION
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.unifycomponents.Toaster
 
 class ReplyBubbleAreaMessage : ConstraintLayout {
@@ -156,7 +157,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         if (enableCloseButton) {
             closeBtn?.show()
             closeBtn?.setOnClickListener {
-                listener?.getAnalytic()?.eventClickCloseReplyBubblePreview(referredMsg?.replyId)
+                TopChatAnalyticsKt.eventClickCloseReplyBubblePreview(referredMsg?.replyId)
                 clearReferTo()
                 hide()
             }
