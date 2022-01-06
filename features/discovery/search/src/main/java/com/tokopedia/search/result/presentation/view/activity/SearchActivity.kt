@@ -70,7 +70,6 @@ class SearchActivity : BaseActivity(),
     private var autocompleteApplink = ""
     private var searchNavigationClickListener: SearchNavigationListener.ClickListener? = null
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
-    private var isEnableChooseAddress = false
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -100,8 +99,6 @@ class SearchActivity : BaseActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.search_activity_search)
 
-        isEnableChooseAddress = getIsEnableChooseAddress()
-
         setStatusBarColor()
         getExtrasFromIntent(intent)
         initActivityOnCreate()
@@ -122,11 +119,6 @@ class SearchActivity : BaseActivity(),
         )
         pageLoadTimePerformanceMonitoring?.startMonitoring(SearchConstant.SEARCH_RESULT_TRACE)
         pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
-    }
-
-    @Suppress("FunctionOnlyReturningConstant")
-    private fun getIsEnableChooseAddress(): Boolean {
-        return true
     }
 
     private fun setStatusBarColor() {
