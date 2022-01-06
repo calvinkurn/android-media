@@ -16,7 +16,7 @@ data class FintechWidgetDataModel(
     override fun name() = name
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
-        return true
+        return false
     }
 
     override fun newInstance() = this.copy()

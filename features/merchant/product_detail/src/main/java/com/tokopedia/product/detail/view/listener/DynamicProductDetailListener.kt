@@ -40,6 +40,8 @@ interface DynamicProductDetailListener {
 
     fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int)
 
+
+
     /**
      * ProductSnapshotViewHolder
      */

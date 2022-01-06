@@ -3306,6 +3306,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun updateProductId() {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             productId = productInfo.basic.productID
+
+            //  Update productID in the listner so viewmodel can use
+            getProductId()
         }
     }
 
