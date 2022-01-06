@@ -8,5 +8,5 @@ interface BannerAdsListener {
 
     fun onBannerAdsImpressionListener(position: Int, data: CpmData?)
 
-    fun onTopAdsCarouselItemImpressionListener(position: Int, data: CpmData?){}
+    fun onTopAdsCarouselItemImpressionListener(impressionCount: Int) {}
 }

@@ -8,9 +8,6 @@ import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE
-import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.LAYOUT_2
-import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.LAYOUT_5
-import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.LAYOUT_6
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_INSPIRATION_CAROUSEL_KEYWORD
 import com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.LOCAL_CACHE_NAME
 import com.tokopedia.discovery.common.constants.SearchConstant.SaveLastFilter.INPUT_PARAMS
@@ -89,6 +86,7 @@ import com.tokopedia.search.utils.createSearchProductDefaultQuickFilter
 import com.tokopedia.search.utils.getValueString
 import com.tokopedia.search.utils.toSearchParams
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.topads.sdk.TopAdsConstants.SEEN_ADS
 import com.tokopedia.topads.sdk.domain.TopAdsParams
 import com.tokopedia.topads.sdk.domain.model.Badge
 import com.tokopedia.topads.sdk.domain.model.Cpm
@@ -97,6 +95,7 @@ import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir
 import com.tokopedia.topads.sdk.domain.model.LabelGroup
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.utils.TopAdsHeadlineHelper
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
@@ -407,7 +406,7 @@ class ProductListPresenter @Inject constructor(
             putBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET, isLocalSearch)
             putBoolean(SEARCH_PRODUCT_SKIP_GLOBAL_NAV, isSkipGlobalNavWidget)
             putBoolean(SEARCH_PRODUCT_SKIP_GET_LAST_FILTER_WIDGET, isSkipGetLastFilterWidget)
-            putString(SearchConstant.HeadlineAds.SEEN_ADS, seenAds.toString())
+            putString(SEEN_ADS, seenAds.toString())
         }
     }
 
@@ -614,7 +613,8 @@ class ProductListPresenter @Inject constructor(
         searchProductModel: SearchProductModel,
         list: MutableList<Visitable<*>>,
     ) {
-        processHeadlineAds(searchProductModel) { _, cpmDataView, layoutType ->
+        TopAdsHeadlineHelper.processHeadlineAds(searchProductModel.cpmModel) { _, cpmDataList, layoutType ->
+            val cpmDataView = createCpmDataView(searchProductModel.cpmModel, cpmDataList)
             processHeadlineAdsAtPosition(list, productList.size, cpmDataView, layoutType)
         }
     }
@@ -1143,7 +1143,9 @@ class ProductListPresenter @Inject constructor(
         searchProductModel: SearchProductModel,
         list: MutableList<Visitable<*>>,
     ) {
-        processHeadlineAds(searchProductModel, 1) { index, cpmDataView, layoutType ->
+        if (!isHeadlineAdsAllowed()) return
+        TopAdsHeadlineHelper.processHeadlineAds(searchProductModel.cpmModel, 1) { index, cpmDataList,  layoutType ->
+            val cpmDataView = createCpmDataView(searchProductModel.cpmModel, cpmDataList)
             if (index == 0)
                 processHeadlineAdsAtTop(list, cpmDataView)
             else
@@ -1151,72 +1153,10 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
-    private fun processHeadlineAds(
-            searchProductModel: SearchProductModel,
-            pageNumber: Int = 2,
-            process: (Int, CpmDataView, Int) -> Unit,
-    ) {
-        if (!isHeadlineAdsAllowed()) return
-
-        val cpmModel = searchProductModel.cpmModel
-        val listLayoutFive = arrayListOf<CpmData>()
-        val listLayoutSix = arrayListOf<CpmData>()
-        run breaker@ {
-            cpmModel.data?.forEachIndexed { index, cpmData ->
-                if (pageNumber == 2 && index >= 1) return
-                if (!shouldShowCpmShop(cpmData)) return@forEachIndexed
-
-                when (cpmData.cpm.layout) {
-                    LAYOUT_6 -> {
-                        listLayoutSix.add(cpmData)
-                        if (cpmModel.data.size - 1 != index) return@forEachIndexed
-                        val cpmDataView = createCpmDataView(cpmModel, listLayoutSix)
-                        process(index, cpmDataView, LAYOUT_6)
-                    }
-                    LAYOUT_5 -> {
-                        listLayoutFive.add(cpmData)
-                        if (cpmModel.data.size - 1 != index) return@forEachIndexed
-                        val cpmDataView = createCpmDataView(cpmModel, listLayoutFive)
-                        process(index, cpmDataView, LAYOUT_5)
-                    }
-                    LAYOUT_2 -> {
-                        val list = arrayListOf<CpmData>()
-                        list.add(cpmData)
-                        val cpmDataView = createCpmDataView(cpmModel, list)
-                        process(index, cpmDataView, 0)
-                        return@breaker
-                    }
-                    else -> {
-                        val list = arrayListOf<CpmData>()
-                        list.add(cpmData)
-                        val cpmDataView = createCpmDataView(cpmModel, list)
-                        process(index, cpmDataView, 0)
-                    }
-                }
-            }
-        }
-    }
-
     private fun isHeadlineAdsAllowed(): Boolean {
         return !isLocalSearch()
                 && (!isGlobalNavWidgetAvailable || isShowHeadlineAdsBasedOnGlobalNav)
     }
-
-    private fun shouldShowCpmShop(cpmData: CpmData?): Boolean {
-        cpmData ?: return false
-        val cpm = cpmData.cpm ?: return false
-
-        return if (isViewWillRenderCpmShop(cpm)) true
-        else isViewWillRenderCpmDigital(cpm)
-    }
-
-    private fun isViewWillRenderCpmShop(cpm: Cpm): Boolean {
-        return cpm.cpmShop != null
-                && cpm.cta.isNotEmpty()
-                && cpm.promotedText.isNotEmpty()
-    }
-
-    private fun isViewWillRenderCpmDigital(cpm: Cpm) = cpm.templateId == SearchConstant.CPM_TEMPLATE_ID
 
     private fun createCpmDataView(cpmModel: CpmModel, cpmData: ArrayList<CpmData>): CpmDataView {
         val cpmForViewModel = createCpmForViewModel(cpmModel, cpmData)
@@ -2361,8 +2301,8 @@ class ProductListPresenter @Inject constructor(
         updateLastFilter(searchParameter, listOf())
     }
 
-    override fun shopAdsImpressionCount(count: Int) {
-         seenAds = count
+    override fun shopAdsImpressionCount(impressionCount: Int) {
+        seenAds = impressionCount
     }
 
     override fun detachView() {

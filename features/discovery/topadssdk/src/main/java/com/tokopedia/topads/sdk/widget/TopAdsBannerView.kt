@@ -37,6 +37,7 @@ import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.listener.*
 import com.tokopedia.topads.sdk.presenter.BannerAdsPresenter
 import com.tokopedia.topads.sdk.snaphelper.GravitySnapHelper
+import com.tokopedia.topads.sdk.utils.TopAdsHeadlineHelper
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.view.BannerAdsContract
 import com.tokopedia.topads.sdk.view.adapter.BannerAdsAdapter
@@ -83,6 +84,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private var showProductShimmer: Boolean = false
     private var hasAddToCartButton: Boolean = false
     private var isShowCta: Boolean = true
+    var impressionCount: Int = 0
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
         TopAdsUrlHitter(context)
     }
@@ -270,6 +272,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 ), object : ShopAdsProductListener{
             override fun onItemImpressed(position: Int) {
                 val cpmData = cpmModel.data?.getOrNull(position)
+                impressionCount = position + 1
                 impressionListener?.onImpressionHeadlineAdsItem(position, cpmData)
                 topAdsUrlHitter.hitImpressionUrl(
                         className,
@@ -324,6 +327,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 ), object : TopAdsCarouselListener {
             override fun onItemImpressed(position: Int) {
                 val cpmData = cpmModel?.data?.getOrNull(position)
+                impressionCount = position + 1
                 impressionListener?.onImpressionHeadlineAdsItem(position, cpmData)
                 topAdsUrlHitter.hitImpressionUrl(
                         className,
