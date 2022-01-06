@@ -25,6 +25,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
@@ -65,7 +66,8 @@ fun createHomeViewModel(
         homeRecommendationUseCase: HomeRecommendationUseCase = mockk(relaxed = true),
         homeSalamRecommendationUseCase: HomeSalamRecommendationUseCase = mockk(relaxed = true),
         homeSearchUseCase: HomeSearchUseCase = mockk(relaxed = true),
-        homeBusinessUnitUseCase: HomeBusinessUnitUseCase = mockk(relaxed = true)
+        homeBusinessUnitUseCase: HomeBusinessUnitUseCase = mockk(relaxed = true),
+        homeBeautyFestUseCase: HomeBeautyFestUseCase = mockk(relaxed = true)
 ): HomeRevampViewModel{
     return HomeRevampViewModel(
             homeDispatcher = Lazy{ dispatchers },
@@ -81,7 +83,8 @@ fun createHomeViewModel(
             homeRecommendationUseCase = Lazy { homeRecommendationUseCase },
             homeSalamRecommendationUseCase = Lazy { homeSalamRecommendationUseCase },
             homeSearchUseCase = Lazy { homeSearchUseCase },
-            homeBusinessUnitUseCase = Lazy { homeBusinessUnitUseCase }
+            homeBusinessUnitUseCase = Lazy { homeBusinessUnitUseCase },
+            homeBeautyFestUseCase = Lazy { homeBeautyFestUseCase }
     )
 }
 
@@ -280,6 +283,7 @@ fun GetDynamicChannelsUseCase.givenGetDynamicChannelsUseCaseThrowReturn() {
 }
 
 fun HomeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(
+    tabId: Int,
     resultBuModel: NewBusinessUnitWidgetDataModel,
     positionTab: Int,
     homeDataModel: HomeDynamicChannelModel,
@@ -287,7 +291,25 @@ fun HomeBusinessUnitUseCase.givenGetBusinessUnitDataUseCaseReturn(
     positionBuModelIndex: Int,
     tabName: String
 ) {
-    coEvery { getBusinessUnitData(0, positionTab, tabName, homeDataModel, buModel, positionBuModelIndex) } returns resultBuModel
+    coEvery { getBusinessUnitData(tabId, positionTab, tabName, homeDataModel, buModel, positionBuModelIndex) } returns resultBuModel
+}
+
+fun HomeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnTrue(
+    data: List<Visitable<*>>
+) {
+    coEvery { getBeautyFest(data) } returns HomeRevampFragment.BEAUTY_FEST_TRUE
+}
+
+fun HomeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnFalse(
+    data: List<Visitable<*>>
+) {
+    coEvery { getBeautyFest(data) } returns HomeRevampFragment.BEAUTY_FEST_FALSE
+}
+
+fun HomeBeautyFestUseCase.givenGetBeautyFestUseCaseReturnNotSet(
+    data: List<Visitable<*>>
+) {
+    coEvery { getBeautyFest(data) } returns HomeRevampFragment.BEAUTY_FEST_NOT_SET
 }
 
 fun HomeRechargeRecommendationRepository.givenGetRechargeRecommendationUseCase(rechargeRecommendation: RechargeRecommendation){

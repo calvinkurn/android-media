@@ -79,7 +79,8 @@ open class HomeRevampViewModel @Inject constructor(
         private val homeSalamRecommendationUseCase: Lazy<HomeSalamRecommendationUseCase>,
         private val userSession: Lazy<UserSessionInterface>,
         private val homeBusinessUnitUseCase: Lazy<HomeBusinessUnitUseCase>,
-        private val homeDispatcher: Lazy<CoroutineDispatchers>) : BaseCoRoutineScope(homeDispatcher.get().io) {
+        private val homeDispatcher: Lazy<CoroutineDispatchers>,
+        private val homeBeautyFestUseCase: Lazy<HomeBeautyFestUseCase>) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
         private const val HOME_LIMITER_KEY = "HOME_LIMITER_KEY"
@@ -419,7 +420,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun injectCouponTimeBased() {
         launch {
-            _injectCouponTimeBasedResult.value = homeBalanceWidgetUseCase.get().onGetInjectCouponTimeBased()
+//            _injectCouponTimeBasedResult.value = homeBalanceWidgetUseCase.get().onGetInjectCouponTimeBased()
         }
     }
 
@@ -644,21 +645,12 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    //TODO 46: Remove getBeautyFest -> Move to HomeBeautyFestUseCase
     fun getBeautyFest(data: List<Visitable<*>>) {
-        //beauty fest event will qualify if contains "isChannelBeautyFest":true
-        launchCatchError(coroutineContext, {
-            if (Gson().toJson(data).toString().contains("\"isChannelBeautyFest\":true"))
-                _beautyFestLiveData.postValue(HomeRevampFragment.BEAUTY_FEST_TRUE)
-            else
-                _beautyFestLiveData.postValue(HomeRevampFragment.BEAUTY_FEST_FALSE)
-        }, {
-            it.printStackTrace()
-            _beautyFestLiveData.postValue(HomeRevampFragment.BEAUTY_FEST_NOT_SET)
-        })
+        launch{
+            _beautyFestLiveData.postValue(homeBeautyFestUseCase.get().getBeautyFest(data))
+        }
     }
 
-    //TODO 47: Remove deleteQuestWidget -> Move to HomeDynamicChannelUseCase
     fun deleteQuestWidget() {
         findWidget<QuestWidgetModel> { questWidgetModel, index ->
             deleteWidget(questWidgetModel, index)

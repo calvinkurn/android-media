@@ -27,10 +27,10 @@ class HomeViewModelBestSellingWidgetTest {
 
     private val mockInitialBestSellerDataModel = BestSellerDataModel()
     private val mockSuccessBestSellerDataModel = BestSellerDataModel(
-            recommendationItemList = listOf(
-                    RecommendationItem(),
-                    RecommendationItem()
-            )
+        recommendationItemList = listOf(
+            RecommendationItem(),
+            RecommendationItem()
+        )
     )
 
     @ExperimentalCoroutinesApi
@@ -40,23 +40,23 @@ class HomeViewModelBestSellingWidgetTest {
     @Test
     fun `when homeRecommendationUseCase success on onHomeBestSellerFilterClick then currentHomeDataModel should be updated with latest data`() = runBlocking{
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDynamicChannelModel(list = listOf(mockInitialBestSellerDataModel))
+            HomeDynamicChannelModel(list = listOf(mockInitialBestSellerDataModel))
         )
         getHomeRecommendationUseCase.givenOnHomeBestSellerFilterClickReturn(
-                mockSuccessBestSellerDataModel
+            mockSuccessBestSellerDataModel
         )
 
         homeViewModel = createHomeViewModel(
-                getHomeUseCase = getHomeUseCase,
-                homeRecommendationUseCase = getHomeRecommendationUseCase
+            getHomeUseCase = getHomeUseCase,
+            homeRecommendationUseCase = getHomeRecommendationUseCase
         )
         homeViewModel.getRecommendationWidget(
-                filterChip = RecommendationFilterChipsEntity.RecommendationFilterChip(),
-                bestSellerDataModel = mockInitialBestSellerDataModel,
-                selectedChipsPosition = 0
+            filterChip = RecommendationFilterChipsEntity.RecommendationFilterChip(),
+            bestSellerDataModel = mockInitialBestSellerDataModel,
+            selectedChipsPosition = 0
         )
         Assert.assertTrue(
-                (homeViewModel.homeDataModel.list[0] as? BestSellerDataModel)?.recommendationItemList?.isNotEmpty() == true
+            (homeViewModel.homeDataModel.list[0] as? BestSellerDataModel)?.recommendationItemList?.isNotEmpty() == true
         )
     }
 
@@ -64,23 +64,23 @@ class HomeViewModelBestSellingWidgetTest {
     @Test
     fun `when homeRecommendationUseCase failed on onHomeBestSellerFilterClick then currentHomeDataModel should be updated with latest data`() = runBlocking{
         getHomeUseCase.givenGetHomeDataReturn(
-                HomeDynamicChannelModel(list = listOf(mockInitialBestSellerDataModel))
+            HomeDynamicChannelModel(list = listOf(mockInitialBestSellerDataModel))
         )
         getHomeRecommendationUseCase.givenOnHomeBestSellerFilterClickReturn(
-                mockInitialBestSellerDataModel
+            mockInitialBestSellerDataModel
         )
 
         homeViewModel = createHomeViewModel(
-                getHomeUseCase = getHomeUseCase,
-                homeRecommendationUseCase = getHomeRecommendationUseCase
+            getHomeUseCase = getHomeUseCase,
+            homeRecommendationUseCase = getHomeRecommendationUseCase
         )
         homeViewModel.getRecommendationWidget(
-                filterChip = RecommendationFilterChipsEntity.RecommendationFilterChip(),
-                bestSellerDataModel = mockInitialBestSellerDataModel,
-                selectedChipsPosition = 0
+            filterChip = RecommendationFilterChipsEntity.RecommendationFilterChip(),
+            bestSellerDataModel = mockInitialBestSellerDataModel,
+            selectedChipsPosition = 0
         )
         Assert.assertTrue(
-                (homeViewModel.homeDataModel.list[0] as? BestSellerDataModel)?.recommendationItemList?.isEmpty() == true
+            (homeViewModel.homeDataModel.list[0] as? BestSellerDataModel)?.recommendationItemList?.isEmpty() == true
         )
     }
 }

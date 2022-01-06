@@ -340,4 +340,9 @@ class HomeUseCaseModule {
     @Provides
     fun provideBestSellerMapper(@ApplicationContext context: Context) = BestSellerMapper(context)
 
+    @Provides
+    @HomeScope
+    fun provideHomeBeautyFestUseCase(): HomeBeautyFestRepository {
+        return HomeBeautyFestRepository()
+    }
 }
