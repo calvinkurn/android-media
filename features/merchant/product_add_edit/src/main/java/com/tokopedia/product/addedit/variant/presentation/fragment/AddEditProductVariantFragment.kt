@@ -1184,6 +1184,7 @@ class AddEditProductVariantFragment :
             val selectedVariantDetails = viewModel.getSelectedVariantDetails().toMutableList()
             selectedVariantDetails[layoutPosition] = variantDetail
             viewModel.setSelectedVariantDetails(selectedVariantDetails)
+            viewModel.updateVariantDataMap(layoutPosition, variantDetail)
             when (layoutPosition) {
                 VARIANT_VALUE_LEVEL_ONE_POSITION -> {
                     typographyVariantValueLevel1Title.text = variantDetail.name
