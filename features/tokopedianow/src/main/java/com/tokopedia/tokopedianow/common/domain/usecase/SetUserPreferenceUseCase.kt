@@ -23,8 +23,8 @@ class SetUserPreferenceUseCase @Inject constructor(graphqlRepository: GraphqlRep
     suspend fun execute(localCacheModel: LocalCacheModel): SetUserPreferenceData {
         graphql.apply {
             val requestParams = RequestParams().apply {
-                putString(PARAM_SHOP_ID, localCacheModel.shop_id)
-                putString(PARAM_WAREHOUSE_ID, localCacheModel.warehouse_id)
+                putInt(PARAM_SHOP_ID, localCacheModel.shop_id.toInt())
+                putInt(PARAM_WAREHOUSE_ID, localCacheModel.warehouse_id.toInt())
                 putString(PARAM_SERVICE_TYPE, localCacheModel.service_type)
                 putObject(PARAM_WAREHOUSES, localCacheModel.warehouses)
             }.parameters
