@@ -42,6 +42,9 @@ data class CartShopHolderData(
     val shouldValidateWeight: Boolean
         get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()
 
+    val isOverweight: Boolean
+        get() = shouldValidateWeight && totalWeight > maximumShippingWeight
+
     val hasSelectedProduct: Boolean
         get() = isAllSelected || isPartialSelected
 

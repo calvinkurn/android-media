@@ -1586,6 +1586,15 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 val shopShipments = cartShopHolderData.shopShipments
                 // Recalculate total price and total weight, to prevent racing condition
                 val (shopProductList, shopTotalWeight) = getAvailableCartItemDataListAndShopTotalWeight(cartShopHolderData)
+                if (cartShopHolderData.shouldValidateWeight && shopTotalWeight > cartShopHolderData.maximumShippingWeight) {
+                    // overweight
+                    cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.FAILED
+                    withContext(dispatchers.main) {
+                        view?.showToastMessageRed()
+                        view?.updateCartBoAffordability(cartShopHolderData)
+                    }
+                    return@launch
+                }
                 val calculatePriceMarketplaceProduct = calculatePriceMarketplaceProduct(shopProductList)
                 val subtotalPrice = calculatePriceMarketplaceProduct.second.second
                 val shipping = ShippingParam().apply {

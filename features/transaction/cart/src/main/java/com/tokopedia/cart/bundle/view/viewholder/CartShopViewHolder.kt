@@ -419,7 +419,8 @@ class CartShopViewHolder(private val binding: ItemShopBundleBinding,
     }
 
     private fun renderBoAfford(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.hasSelectedProduct && !cartShopHolderData.isError && cartShopHolderData.boAffordability.enable) {
+        if (cartShopHolderData.hasSelectedProduct && !cartShopHolderData.isError
+                && cartShopHolderData.boAffordability.enable && !cartShopHolderData.isOverweight) {
             binding.apply {
                 val boAffordability = cartShopHolderData.boAffordability
                 when (boAffordability.state) {
@@ -440,7 +441,7 @@ class CartShopViewHolder(private val binding: ItemShopBundleBinding,
                         arrowBoAffordability.show()
                         layoutBoAffordability.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
                         layoutBoAffordability.setOnClickListener {
-                            actionListener.onCartBoAffordabilityClicked(cartShopHolderData.shopId)
+                            actionListener.onCartBoAffordabilityClicked(cartShopHolderData.shopId, cartShopHolderData.isTokoNow)
                         }
                     }
                     CartShopBoAffordabilityState.FAILED -> {
