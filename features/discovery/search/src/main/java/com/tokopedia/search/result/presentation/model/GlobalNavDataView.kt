@@ -51,10 +51,6 @@ class GlobalNavDataView(
             return 0
         }
 
-        /**
-         * flag => ignored
-         * Follow detekt regulation for UnusedPrivateMember
-         */
         override fun writeToParcel(dest: Parcel, ignored: Int) {
             dest.writeString(categoryName)
             dest.writeString(name)
