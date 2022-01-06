@@ -1,5 +1,6 @@
 package com.tokopedia.statistic.view.fragment
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -199,8 +200,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     override fun onResume() {
         super.onResume()
         setHeaderSubTitle(headerSubTitle)
-        if (userVisibleHint)
+        if (userVisibleHint) {
             StatisticTracker.sendScreen(screenName)
+        }
     }
 
     override fun onPause() {
@@ -521,13 +523,13 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun setupRecyclerView() = binding?.run {
-        val statisticSpanCount = getWidgetSpanCount()
+        val statisticSpanCount = getWidgetSpanCountByDeviceType()
         val isTablet = (statisticSpanCount == WidgetGridSize.GRID_SIZE_4)
         mLayoutManager = StatisticLayoutManager(context, statisticSpanCount)
         mLayoutManager?.run {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
-                    return getSpanSizeByDeviceType(position, isTablet, spanCount)
+                    return getWidgetSpanSize(position, isTablet, spanCount)
                 }
             }
 
@@ -543,7 +545,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
-    private fun getSpanSizeByDeviceType(
+    private fun getWidgetSpanSize(
         position: Int,
         isTablet: Boolean,
         defaultSpanCount: Int
@@ -551,7 +553,21 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         return try {
             val widget = adapter.data[position]
             return if (isTablet) {
-                widget.gridSize
+                val orientation = resources.configuration.orientation
+                val isPortrait = orientation == Configuration.ORIENTATION_PORTRAIT
+                if (isPortrait) {
+                    when (widget) {
+                        is CardWidgetUiModel -> WidgetGridSize.GRID_SIZE_2
+                        is PieChartWidgetUiModel -> widget.gridSize
+                        else -> defaultSpanCount
+                    }
+                } else {
+                    when (widget) {
+                        is CardWidgetUiModel -> WidgetGridSize.GRID_SIZE_1
+                        is SectionWidgetUiModel -> defaultSpanCount
+                        else -> widget.gridSize
+                    }
+                }
             } else {
                 val isCardWidget = widget.widgetType == WidgetType.CARD
                 if (isCardWidget) WidgetGridSize.GRID_SIZE_1 else defaultSpanCount
@@ -561,7 +577,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
-    private fun getWidgetSpanCount(): Int {
+    private fun getWidgetSpanCountByDeviceType(): Int {
         return if (DeviceProperties.isTablet(requireActivity().resources)) {
             WidgetGridSize.GRID_SIZE_4
         } else {
