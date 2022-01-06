@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.top_ads_headline">
 
     <application
         android:allowBackup="true"
+        tools:replace="android:label"
         android:label="@string/topads_headline_app_name"
         android:supportsRtl="true">
 
