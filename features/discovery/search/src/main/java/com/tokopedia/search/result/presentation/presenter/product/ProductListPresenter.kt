@@ -1161,14 +1161,10 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun shouldShowCpmShop(cpmData: CpmData?): Boolean {
-        return if(cpmData == null){
-            false
-        } else {
-            val cpm = cpmData.cpm
+        val cpm = cpmData?.cpm ?: return false
 
-            if (isViewWillRenderCpmShop(cpm)) true
-            else isViewWillRenderCpmDigital(cpm)
-        }
+        return if (isViewWillRenderCpmShop(cpm)) true
+        else isViewWillRenderCpmDigital(cpm)
     }
 
     private fun isViewWillRenderCpmShop(cpm: Cpm): Boolean {
