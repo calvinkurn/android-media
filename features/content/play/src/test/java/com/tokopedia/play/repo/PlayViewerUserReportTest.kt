@@ -77,7 +77,7 @@ class PlayViewerUserReportTest {
             val result = userReportRepo.submitReport(
                 channelId = 1L,
                 mediaUrl = "htpp://tokopedia",
-                ownerChannelUserId = 111L,
+                shopId = 111L,
                 timestamp = 9000L,
                 reasonId = 1,
                 reportDesc = "OK"
@@ -101,7 +101,7 @@ class PlayViewerUserReportTest {
             val result = userReportRepo.submitReport(
                 channelId = 1L,
                 mediaUrl = "htpp://tokopedia",
-                ownerChannelUserId = 111L,
+                shopId = 111L,
                 timestamp = 9000L,
                 reasonId = 1,
                 reportDesc = "OK"
