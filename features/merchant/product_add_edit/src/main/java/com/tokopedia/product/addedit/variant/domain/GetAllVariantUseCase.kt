@@ -16,7 +16,7 @@ class GetAllVariantUseCase @Inject constructor(
 ) : GraphqlUseCase<GetVariantCategoryCombinationResponse>(repository) {
 
     companion object {
-        private const val CACHE_EXPIRY_TIME = 1 // in days
+        private const val CACHE_EXPIRY_TIME_IN_DAYS = 1
         private const val PARAM_CATEGORY_ID = "categoryID"
         private const val PARAM_ALL_VARIANTS = "allVariants"
         private val query = String.format(
@@ -37,7 +37,7 @@ class GetAllVariantUseCase @Inject constructor(
 
     private fun createCacheStrategy(): GraphqlCacheStrategy {
         return GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-            .setExpiryTime(CACHE_EXPIRY_TIME * GraphqlConstant.ExpiryTimes.DAY.`val`())
+            .setExpiryTime(CACHE_EXPIRY_TIME_IN_DAYS * GraphqlConstant.ExpiryTimes.DAY.`val`())
             .setSessionIncluded(true)
             .build()
     }
