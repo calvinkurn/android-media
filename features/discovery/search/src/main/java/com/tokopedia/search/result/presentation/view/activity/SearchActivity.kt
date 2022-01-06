@@ -303,7 +303,7 @@ class SearchActivity : BaseActivity(),
         initViewModel()
         observeViewModel()
         performProductSearch()
-        setToolbarTitle(searchParameter.getSearchQuery())
+        setToolbarTitle()
     }
 
     private fun initResources() {
@@ -426,11 +426,7 @@ class SearchActivity : BaseActivity(),
                 else -> SearchTabPosition.TAB_FIRST_POSITION
             }
 
-    /**
-     * query => ignored
-     * need to replace unused param variable following detekt guidelines
-     */
-    private fun setToolbarTitle(ignored: String?) {
+    private fun setToolbarTitle() {
         configureSearchNavigationSearchBar()
     }
 
@@ -448,10 +444,6 @@ class SearchActivity : BaseActivity(),
         )
     }
 
-    /**
-     * keyword => ignored
-     * need to replace unused param variable following detekt guidelines
-     */
     private fun onSearchNavigationSearchBarClicked(ignored: String) {
         moveToAutoCompleteActivity()
     }
@@ -546,6 +538,6 @@ class SearchActivity : BaseActivity(),
     }
 
     private fun updateKeyword() {
-        setToolbarTitle(searchParameter.getSearchQuery())
+        setToolbarTitle()
     }
 }
