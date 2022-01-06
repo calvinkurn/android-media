@@ -108,8 +108,8 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         val saldoHistoryPagerAdapter = SaldoHistoryPagerAdapter(childFragmentManager)
         saldoHistoryPagerAdapter.setItems(saldoTabItems)
         transactionHistoryViewPager.adapter = saldoHistoryPagerAdapter
-        saldoTransactionTabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
-        saldoTransactionTabsUnify.customTabGravity = TabLayout.GRAVITY_START
+        saldoTransactionTabsUnify.customTabMode = TabLayout.MODE_FIXED
+        saldoTransactionTabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
         saldoTransactionTabsUnify.setupWithViewPager(transactionHistoryViewPager)
     }
 
@@ -124,9 +124,9 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         //penjualan tab
         saldoTabItems.add(SaldoHistoryTabItem().apply {
             title = TransactionTitle.SALDO_SALES
-            fragment = SaldoTransactionListFragment.getInstance(TransactionTitle.SALDO_SALES)
+            fragment = BaseSaldoTransactionListFragment.getInstance(TransactionTitle.SALDO_SALES)
         })
-
+        /*
         //Saldo Refund
         saldoTabItems.add(SaldoHistoryTabItem().apply {
             title = TransactionTitle.SALDO_REFUND
@@ -139,6 +139,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
             title = TransactionTitle.SALDO_INCOME
             fragment = SaldoTransactionListFragment.getInstance(TransactionTitle.SALDO_INCOME)
         })
+        */
 
         saldoTransactionTabsUnify.run {
             getUnifyTabLayout().removeAllTabs()

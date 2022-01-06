@@ -26,6 +26,14 @@ object TransactionTypeMapper{
         }
     }
 
+    fun getFilterList(): ArrayList<String> {
+        val filterList = arrayListOf<String>()
+        filterList.add(TransactionTitle.ALL_TRANSACTION)
+        filterList.add(TransactionTitle.SALDO_REFUND)
+        filterList.add(TransactionTitle.SALDO_INCOME)
+        return filterList
+    }
+
 
 
 }

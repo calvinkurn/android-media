@@ -28,6 +28,9 @@ class TransactionHistoryViewModel @Inject constructor(
 
     private var dateFrom: Date = Date()
     private var dateTo: Date = Date()
+    // default and oldSelected
+    var selectedFilter: Int = 0
+
 
     private val allTransactionList = TransactionList()
     private val refundTransactionList = TransactionList()

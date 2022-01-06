@@ -13,7 +13,9 @@ import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.listener.DataEndLessScrollListener
-import com.tokopedia.saldodetails.commom.utils.*
+import com.tokopedia.saldodetails.commom.utils.SalesTransaction
+import com.tokopedia.saldodetails.commom.utils.TransactionType
+import com.tokopedia.saldodetails.commom.utils.TransactionTypeMapper
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.adapter.SaldoDetailTransactionFactory
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.adapter.SaldoTransactionAdapter
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.domain.data.DepositHistoryList
@@ -21,13 +23,11 @@ import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.domain.dat
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.viewmodel.*
 import com.tokopedia.saldodetails.transactionDetailPages.penjualan.SaldoSalesDetailActivity
 import com.tokopedia.saldodetails.transactionDetailPages.withdrawal.SaldoWithdrawalDetailActivity
-import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.saldo_fragment_transaction_list.*
 import javax.inject.Inject
 
-class SaldoTransactionListFragment : BaseDaggerFragment() {
+class BaseSaldoTransactionListFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -49,36 +49,19 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
     override fun getScreenName(): String? = null
 
     private lateinit var transactionType: TransactionType
-    private val adapter: SaldoTransactionAdapter by lazy { SaldoTransactionAdapter(getAdapterTypeFactory()) }
-    private val filterTitleList by lazy { TransactionTypeMapper.getFilterList() }
+
+    private val adapter: SaldoTransactionAdapter by lazy {
+        SaldoTransactionAdapter(getAdapterTypeFactory())
+    }
+
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
-
-    private fun setFilterItem(input: ArrayList<String>, filterList: ArrayList<SortFilterItem>) {
-        input.forEachIndexed { index, title ->
-            val chipSelection = if (index == 0) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
-            val item  = SortFilterItem(title, chipSelection, ChipsUnify.SIZE_SMALL) {
-                selectTransactionType(index, title)
-            }
-            filterList.add(item)
-        }
-    }
-
-    private fun selectTransactionType(index: Int, transactionTitle: String) {
-        if (transactionHistoryViewModel?.selectedFilter != index) {
-            val newType = TransactionTypeMapper.getTransactionListType(transactionTitle) ?: AllTransaction
-            val oldType = TransactionTypeMapper.getTransactionListType(filterTitleList[transactionHistoryViewModel?.selectedFilter ?: 0])
-            oldType?.let {
-                transactionHistoryViewModel?.getLiveDataByTransactionType(it)?.removeObservers(viewLifecycleOwner)
-            }
-            transactionType = newType
-            transactionHistoryViewModel?.selectedFilter = index
-            initObservers()
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this.transactionType = AllTransaction
+        val transactionTitleStr = arguments?.getString(PARAM_TRANSACTION_TYPE, null)
+        val transactionType = TransactionTypeMapper.getTransactionListType(transactionTitleStr)
+        if (transactionType != null)
+            this.transactionType = transactionType
     }
 
     override fun initInjector() {
@@ -90,24 +73,17 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(
-            R.layout.saldo_fragment_transaction_list,
+            R.layout.base_saldo_fragment_transaction_list,
             container, false
         )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        generateSortFilter()
         if (::transactionType.isInitialized) {
             initRecyclerView()
             initObservers()
         }
-    }
-
-    private fun generateSortFilter() {
-        val filterData = arrayListOf<SortFilterItem>()
-        setFilterItem(filterTitleList, filterData)
-        transactionFilter.addItem(filterData)
     }
 
     private fun initRecyclerView() {
@@ -210,8 +186,8 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
     companion object {
         const val PARAM_TRANSACTION_TYPE = "PARAM_TRANSACTION_TYPE"
 
-        fun getInstance(transactionTitleStr: String): SaldoTransactionListFragment {
-            return SaldoTransactionListFragment().apply {
+        fun getInstance(transactionTitleStr: String): BaseSaldoTransactionListFragment {
+            return BaseSaldoTransactionListFragment().apply {
                 val bundle = Bundle()
                 bundle.putString(PARAM_TRANSACTION_TYPE, transactionTitleStr)
                 arguments = bundle
