@@ -1062,7 +1062,8 @@ class FeedAnalyticTracker
                 FORMAT_THREE_PARAM,
                 activityId,
                 shopId,
-                products[0].id
+                if (isProductDetailPage) products[products.size - 1].id else
+                    products[0].id
             ),
             DataLayer.mapOf(
                 Product.CURRENCY_CODE, Product.CURRENCY_CODE_IDR,
