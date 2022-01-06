@@ -110,7 +110,6 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         super.onViewCreated(view, savedInstanceState)
         initView(view)
 
-        arViewLoader?.show()
         icComparison?.setOnClickListener {
             goToArComparissonPage()
         }
@@ -238,7 +237,6 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
             }
             AnimatedTextIconClickMode.USE_CAMERA -> {
                 view.setOnClickListener {
-                    arViewLoader?.show()
                     viewModel?.changeMode(ModifaceViewMode.LIVE)
                 }
             }
@@ -272,6 +270,16 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
                     setupLiveCamera()
                 } else {
                     setupUseImageCamera(it.imageDrawablePath)
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel?.loadingState?.collectLatest {
+                if (it) {
+                    arViewLoader?.show()
+                } else {
+                    arViewLoader?.hide()
                 }
             }
         }
@@ -325,7 +333,6 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     }
 
     override fun onPause() {
-        getMakeUpEngine()?.onPause()
         getMakeUpEngine()?.setDetectionCallbackForCameraFeed(null)
         super.onPause()
     }
@@ -350,7 +357,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_CODE_IMAGE_PICKER -> {
-                arViewLoader?.hide()
+
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val result = ImagePickerResultExtractor.extract(data)
                     val imagePath = result.imageUrlOrPathList.firstOrNull()
@@ -390,7 +397,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         }
 
         activity?.runOnUiThread {
-            if (arViewLoader?.isShown == true) arViewLoader?.hide()
+            if (arViewLoader?.isShown == true) viewModel?.setLoadingState(false)
         }
     }
 }

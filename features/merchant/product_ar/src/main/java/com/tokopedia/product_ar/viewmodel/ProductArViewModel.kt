@@ -57,6 +57,9 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     )
     val modifaceViewState: StateFlow<ModifaceViewState> = _modifaceViewState
 
+    private val _loadingState = MutableStateFlow(true)
+    val loadingState: StateFlow<Boolean> = _loadingState
+
     private val _selectedProductArData = MutableLiveData<Result<ProductAr>>()
     val selectedProductArData: LiveData<Result<ProductAr>>
         get() = _selectedProductArData
@@ -70,6 +73,14 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         get() = _mfeMakeUpLook
 
     var imageDrawable: Bitmap? = null
+
+    fun setLoadingState(isLoading: Boolean) {
+        if (_loadingState.value == isLoading) return
+
+        _loadingState.update {
+            isLoading
+        }
+    }
 
     private fun getArData() {
         viewModelScope.launchCatchError(block = {
@@ -118,6 +129,7 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     fun changeMode(modifaceViewMode: ModifaceViewMode,
                    pathImageDrawable: String = "") {
         if (modifaceViewMode == ModifaceViewMode.LIVE) {
+            setLoadingState(true)
             _modifaceViewState.update {
                 it.copy(mode = ModifaceViewMode.LIVE,
                         imageDrawablePath = "")
