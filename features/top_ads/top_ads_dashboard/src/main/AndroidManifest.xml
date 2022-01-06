@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.topads.dashboard">
 
     <application>
@@ -7,7 +8,8 @@
             android:name=".view.activity.TopAdsDashboardActivity"
             android:label="@string/top_ads_title_dashboard"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify" >
+            android:theme="@style/Theme.WhiteUnify"
+            tools:replace="android:label">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
