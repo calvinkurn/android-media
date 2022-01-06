@@ -88,7 +88,7 @@ class KycUploadViewModelTest {
         provideEveryUseCase(kycData)
 
         every {
-            sharedPreference.getCache<ByteArray>(any(), any())
+            sharedPreference.getByteArrayCache<ByteArray>(any(), any())
         } answers {
             encryptedImagePath.encodeToByteArray()
         }
@@ -105,7 +105,7 @@ class KycUploadViewModelTest {
         provideEverySuccessEncrypt()
 
         every {
-            sharedPreference.getCache<ByteArray>(any(), any())
+            sharedPreference.getByteArrayCache<ByteArray>(any(), any())
         } answers {
             encryptedImagePath.encodeToByteArray()
         }
@@ -132,7 +132,7 @@ class KycUploadViewModelTest {
         provideEverySuccessEncrypt()
 
         every {
-            sharedPreference.getCache<ByteArray>(any(), any())
+            sharedPreference.getByteArrayCache<ByteArray>(any(), any())
         } answers {
             encryptedImagePath.encodeToByteArray()
         }
@@ -293,7 +293,7 @@ class KycUploadViewModelTest {
         mockEncryptionUtil()
 
         every {
-            sharedPreference.getCache<ByteArray>(any(), any())
+            sharedPreference.getByteArrayCache<ByteArray>(any(), any())
         } answers {
             encryptedImagePath.encodeToByteArray()
         }
