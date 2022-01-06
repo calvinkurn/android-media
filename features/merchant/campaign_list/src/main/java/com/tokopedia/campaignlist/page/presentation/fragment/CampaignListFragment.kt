@@ -310,7 +310,7 @@ class CampaignListFragment : BaseDaggerFragment(),
                 feature = SHARE
             )
 
-            val _totalProducts = merchantBannerData.campaign.totalProduct.toInt()
+            val _totalProducts = viewModel.getProductCount(merchantBannerData.campaign.totalProduct)
             val _isOngoing = if (validateIsOngoingCampaign(merchantBannerData)) 1 else 0
 
             addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.CAMPAIGN_NAME , value = campaignData.name)

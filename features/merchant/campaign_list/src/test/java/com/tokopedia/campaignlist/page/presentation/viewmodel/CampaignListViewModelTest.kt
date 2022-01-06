@@ -692,6 +692,24 @@ class CampaignListViewModelTest {
         assertEquals(expected, actual)
     }
 
+    @Test
+    fun `When product count is not a number, should return 0 as fallback`() {
+        val incorrectProductCount = "m"
+        val expected = 0
+
+        val actual = viewModel.getProductCount(incorrectProductCount)
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When product count is a valid number, should return correct value`() {
+        val productCount = "20"
+        val expected = 20
+
+        val actual = viewModel.getProductCount(productCount)
+        assertEquals(expected, actual)
+    }
+
     @After
     fun tearDown() {
         viewModel.getCampaignListResult.removeObserver(getCampaignListObserver)
