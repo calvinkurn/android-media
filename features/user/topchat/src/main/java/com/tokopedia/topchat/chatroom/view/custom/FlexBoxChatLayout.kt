@@ -373,8 +373,7 @@ class FlexBoxChatLayout : ViewGroup {
         } else {
             0f
         }
-        val offset = 5
-        val lastLineWidth = msgLastLineWidth + iconWidth + statusWidth - offset
+        val lastLineWidth = msgLastLineWidth + iconWidth + statusWidth - REPLY_WIDTH_OFFSET
         if (lastLineWidth > maxAvailableWidth) {
             totalHeight += statusHeight
             isOverlapped = true
@@ -560,6 +559,7 @@ class FlexBoxChatLayout : ViewGroup {
     companion object {
         const val DEFAULT_USE_MAX_WIDTH = false
         const val DEFAULT_SHOW_CHECK_MARK = true
+        const val REPLY_WIDTH_OFFSET = 5
         val LAYOUT = R.layout.flexbox_chat_message
     }
 }
