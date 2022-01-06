@@ -1,8 +1,10 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.unsendreply.UnsendReplyResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.UnsendReplyUseCase.Param.Companion.MSG_ID
@@ -16,16 +18,7 @@ open class UnsendReplyUseCase @Inject constructor(
 ) : CoroutineUseCase<UnsendReplyUseCase.Param, UnsendReplyResponse>(dispatcher.io) {
 
     override suspend fun execute(params: Param): UnsendReplyResponse {
-        val param = generateParam(params)
-        return repository.request(graphqlQuery(), param)
-    }
-
-    private fun generateParam(param: Param): Map<String, Any> {
-        return mapOf(
-            MSG_ID to param.msgID,
-            REPLY_IDS to param.replyIDs,
-            REPLY_TIMES to param.replyTimes,
-        )
+        return repository.request(graphqlQuery(), params)
     }
 
     override fun graphqlQuery(): String = """
@@ -45,10 +38,13 @@ open class UnsendReplyUseCase @Inject constructor(
         """
 
     class Param(
+        @SerializedName(MSG_ID)
         val msgID: Long = 0,
+        @SerializedName(REPLY_IDS)
         val replyIDs: String = "",
+        @SerializedName(REPLY_TIMES)
         val replyTimes: String = ""
-    ) {
+    ) : GqlParam {
         companion object {
             const val MSG_ID = "msgId"
             const val REPLY_IDS = "replyIDs"
