@@ -2277,11 +2277,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun disableSendButton() {
+    override fun disableSendButton(isExceedLimit: Boolean) {
         sendButton?.background =
             MethodChecker.getDrawable(context, R.drawable.bg_topchat_send_btn_disabled)
         sendButton?.setOnClickListener {
-            showSnackbarError(getString(R.string.topchat_desc_empty_text_box))
+            if (!isExceedLimit) {
+                showSnackbarError(getString(R.string.topchat_desc_empty_text_box))
+            }
         }
     }
 

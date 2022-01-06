@@ -27,7 +27,7 @@ class ComposeTextWatcher(
             } else {
                 listener?.hideTextLimitError()
             }
-            replyBoxTextListener.disableSendButton()
+            replyBoxTextListener.disableSendButton(isExceedLimit(s))
         }
     }
 
