@@ -48,6 +48,11 @@ data class ImagePickerBuilder(
         return this
     }
 
+    fun withRemoveBackgroundEditor(): ImagePickerBuilder {
+        imagePickerEditorBuilder?.imageEditActionType?.add(ImageEditActionType.ACTION_REMOVE_BACKGROUND)
+        return this
+    }
+
     fun withSimpleMultipleSelection(initialImagePathList: ArrayList<String> = arrayListOf(),
                                     maxPick:Int = DEFAULT_MAXIMUM_NO_PICK)
             :ImagePickerBuilder {
@@ -104,7 +109,6 @@ data class ImagePickerEditorBuilder(
             ImageEditActionType.ACTION_CONTRAST,
             ImageEditActionType.ACTION_CROP,
             ImageEditActionType.ACTION_ROTATE,
-            ImageEditActionType.ACTION_REMOVE_BACKGROUND,
         )
     }
 }
