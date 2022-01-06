@@ -45,10 +45,9 @@ class HomeSharingEducationWidgetViewHolder(
     private fun setupUi(serviceType: String) {
         binding?.apply {
             tpSharingEducation.text = MethodChecker.fromHtml(
-                getServiceTypeCopyWriting(
-                    serviceType = serviceType,
-                    copyWriting15M = getString(R.string.tokopedianow_home_sharing_education_title_fifteen_minutes),
-                    copyWriting2H = getString(R.string.tokopedianow_home_sharing_education_title_two_hours)
+                getString(
+                    R.string.tokopedianow_home_sharing_education_title,
+                    getServiceTypeCopyWriting(serviceType = serviceType, context = root.context)
                 )
             )
 

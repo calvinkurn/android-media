@@ -61,10 +61,10 @@ class TokoNowEducationalInfoBottomSheet :
                 val boldColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).toString()
 
                 tpTime.text = MethodChecker.fromHtml(
-                    getServiceTypeCopyWriting(
-                        serviceType = LocalCacheModel().service_type,
-                        copyWriting15M = getString(R.string.tokopedianow_home_educational_information_bottomsheet_fifteen_minutes, boldColor, boldColor),
-                        copyWriting2H = getString(R.string.tokopedianow_home_educational_information_bottomsheet_two_hours, boldColor, boldColor)
+                    getString(
+                        R.string.tokopedianow_home_educational_information_duration_bottomsheet,
+                        boldColor,
+                        getServiceTypeCopyWriting(serviceType = LocalCacheModel().service_type, context = context)
                     )
                 )
 

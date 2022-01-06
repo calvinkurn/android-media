@@ -1,9 +1,17 @@
 package com.tokopedia.tokopedianow.common.util
 
+import android.content.Context
+import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
+
 object TokoNowServiceTypeUtil {
-    private const val NOW_15M = "15m"
+    fun getServiceTypeCopyWriting(serviceType: String, context: Context) = if (serviceType == NOW_15M)
+        context.getString(R.string.tokopedianow_15m_copy)
+    else
+        context.getString(R.string.tokopedianow_2h_copy)
 
-    fun getServiceTypeCopyWriting(serviceType: String, copyWriting15M: String, copyWriting2H: String) = if (serviceType == NOW_15M) copyWriting15M else copyWriting2H
-
-    fun getServiceTypeCopyWritingRes(serviceType: String, copyWriting15MRes: Int, copyWriting2HRes: Int) = if (serviceType == NOW_15M) copyWriting15MRes else copyWriting2HRes
+    fun getServiceTypeCopyWritingRes(serviceType: String, copyWriting15MRes: Int, copyWriting2HRes: Int) = if (serviceType == NOW_15M)
+        copyWriting15MRes
+    else
+        copyWriting2HRes
 }

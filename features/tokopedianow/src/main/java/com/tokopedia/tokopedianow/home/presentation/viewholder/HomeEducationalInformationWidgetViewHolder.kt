@@ -49,13 +49,12 @@ class HomeEducationalInformationWidgetViewHolder(
             cvEducationalInfo.show()
 
             tpTime.text = MethodChecker.fromHtml(
-                getServiceTypeCopyWriting(
-                    serviceType = serviceType,
-                    copyWriting15M = getString(R.string.tokopedianow_home_educational_information_fifteen_minutes),
-                    copyWriting2H = getString(R.string.tokopedianow_home_educational_information_two_hours)
+                getString(
+                    R.string.tokopedianow_home_educational_information_duration,
+                    getServiceTypeCopyWriting(serviceType = serviceType, context = root.context)
                 )
             )
-
+            
             iuTime.setImageUrl(IMG_TIME)
             iuStockAvailable.setImageUrl(IMG_STOCK_AVAILABLE)
             iuGuaranteedQuality.setImageUrl(IMG_GUARANTEED_QUALITY)
