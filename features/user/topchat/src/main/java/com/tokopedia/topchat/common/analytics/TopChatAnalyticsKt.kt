@@ -116,13 +116,26 @@ object TopChatAnalyticsKt {
         )
     }
 
-    fun eventClickCloseReplyBubblePreview(replyId: String?) {
+    fun eventClickCloseReplyBubblePreview(replyId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             createGeneralEvent(
                 event = Event.CHAT_DETAIL,
                 category = Category.CHAT_DETAIL,
                 action = Action.CLICK_CLOSE_REPLY_BUUBLE_PREVIEW,
-                label = replyId!!,
+                label = replyId,
+                businessUnit = COMMUNICATION_MEDIA,
+                currentSite = CURRENT_SITE_TOKOPEDIA
+            )
+        )
+    }
+
+    fun eventCLickReplyBubble(childReplyId: String, parentReplyId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CHAT_DETAIL,
+                category = Category.CHAT_DETAIL,
+                action = Action.CLICK_REPLY_BUBBLE,
+                label = "$childReplyId - $parentReplyId",
                 businessUnit = COMMUNICATION_MEDIA,
                 currentSite = CURRENT_SITE_TOKOPEDIA
             )
@@ -167,6 +180,7 @@ object TopChatAnalyticsKt {
         const val CLICK_MSG_MENU = "click menu on atur pesan bottomsheet"
         const val CLICK_CONFIRM_DELETE_MSG = "click confirm delete message"
         const val CLICK_CLOSE_REPLY_BUUBLE_PREVIEW = "click close preview replied bubble chat above keyboard"
+        const val CLICK_REPLY_BUBBLE = "click view parent replied bubble chat"
     }
 
     //Event Name

@@ -102,7 +102,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         setOnClickListener {
             if (!parentReply.isExpired) {
                 childReplyId?.let {
-                    listener?.getAnalytic()?.eventCLickReplyBubble(it, parentReply.replyId)
+                    TopChatAnalyticsKt.eventCLickReplyBubble(it, parentReply.replyId)
                 }
                 listener?.goToBubble(parentReply)
             } else {
@@ -157,7 +157,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         if (enableCloseButton) {
             closeBtn?.show()
             closeBtn?.setOnClickListener {
-                TopChatAnalyticsKt.eventClickCloseReplyBubblePreview(referredMsg?.replyId)
+                TopChatAnalyticsKt.eventClickCloseReplyBubblePreview(referredMsg?.replyId ?: "")
                 clearReferTo()
                 hide()
             }
