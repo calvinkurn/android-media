@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.checkout.bundle.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.bundle.domain.model.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.bundle.domain.model.checkout.Prompt;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentCostModel;
 import com.tokopedia.checkout.bundle.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.bundle.domain.model.checkout.PriceValidationData;
@@ -80,6 +81,8 @@ public interface ShipmentContract {
         void renderCheckoutCartError(String message);
 
         void renderCheckoutPriceUpdated(PriceValidationData priceValidationData);
+
+        void renderPrompt(Prompt prompt);
 
         void renderPromoCheckoutFromCourierSuccess(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel, int itemPosition, boolean noToast);
 

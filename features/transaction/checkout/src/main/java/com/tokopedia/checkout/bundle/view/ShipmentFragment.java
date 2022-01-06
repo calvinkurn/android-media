@@ -44,6 +44,7 @@ import com.tokopedia.checkout.bundle.domain.model.cartshipmentform.CampaignTimer
 import com.tokopedia.checkout.bundle.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.bundle.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.bundle.domain.model.checkout.PriceValidationData;
+import com.tokopedia.checkout.bundle.domain.model.checkout.Prompt;
 import com.tokopedia.checkout.bundle.domain.model.checkout.TrackerData;
 import com.tokopedia.checkout.bundle.subfeature.webview.CheckoutWebViewActivity;
 import com.tokopedia.checkout.bundle.view.adapter.ShipmentAdapter;
@@ -142,6 +143,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -299,7 +301,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 savedShipmentCostModel = saveInstanceCacheManager.get(ShipmentCostModel.class.getSimpleName(), ShipmentCostModel.class);
                 savedEgoldAttributeModel = saveInstanceCacheManager.get(EgoldAttributeModel.class.getSimpleName(), EgoldAttributeModel.class);
                 savedShipmentDonationModel = saveInstanceCacheManager.get(ShipmentDonationModel.class.getSimpleName(), ShipmentDonationModel.class);
-                savedListShipmentCrossSellModel = saveInstanceCacheManager.get(ShipmentCrossSellModel.class.getSimpleName(), (new TypeToken<ArrayList<ShipmentCrossSellModel>>() {}).getType());
+                savedListShipmentCrossSellModel = saveInstanceCacheManager.get(ShipmentCrossSellModel.class.getSimpleName(), (new TypeToken<ArrayList<ShipmentCrossSellModel>>() {
+                }).getType());
                 savedShipmentButtonPaymentModel = saveInstanceCacheManager.get(ShipmentButtonPaymentModel.class.getSimpleName(), ShipmentButtonPaymentModel.class);
                 savedLastApplyData = saveInstanceCacheManager.get(LastApplyUiModel.class.getSimpleName(), LastApplyUiModel.class);
             }
@@ -526,7 +529,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         if (!shipmentCrossSellModelList.isEmpty()) {
             shipmentAdapter.addListShipmentCrossSellModel(shipmentCrossSellModelList);
-            for (int i=0; i<shipmentCrossSellModelList.size(); i++) {
+            for (int i = 0; i < shipmentCrossSellModelList.size(); i++) {
                 CrossSellModel crossSellModel = shipmentCrossSellModelList.get(i).getCrossSellModel();
                 String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
                 String digitalProductId = crossSellModel.getId();
@@ -534,7 +537,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 String digitalProductName = crossSellModel.getInfo().getTitle();
 
                 checkoutAnalyticsCourierSelection.eventViewAutoCheckCrossSell(userSessionInterface.getUserId(),
-                        String.valueOf(i+1), eventLabel, digitalProductName, getCrossSellChildCategoryId(shipmentCartItemModelList));
+                        String.valueOf(i + 1), eventLabel, digitalProductName, getCrossSellChildCategoryId(shipmentCartItemModelList));
             }
         }
 
@@ -914,6 +917,24 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (message.contains("Pre Order") && message.contains("Corner"))
             mTrackerCorner.sendViewCornerPoError();
         showToastError(message);
+    }
+
+    @Override
+    public void renderPrompt(Prompt prompt) {
+        Activity activity = getActivity();
+        if (activity != null) {
+            DialogUnify promptDialog = new DialogUnify(activity, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
+            promptDialog.setTitle(prompt.getTitle());
+            promptDialog.setDescription(prompt.getDescription());
+            promptDialog.setPrimaryCTAText(prompt.getButton().getText());
+            promptDialog.setPrimaryCTAClickListener(() -> {
+                Activity activity1 = getActivity();
+                if (activity1 != null) activity1.finish();
+                return Unit.INSTANCE;
+            });
+            promptDialog.setOverlayClose(false);
+            promptDialog.show();
+        }
     }
 
     @Override
