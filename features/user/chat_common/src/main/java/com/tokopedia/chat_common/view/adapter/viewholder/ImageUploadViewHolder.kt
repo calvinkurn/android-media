@@ -20,7 +20,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadLis
  * Created by stevenfredian on 11/28/17.
  */
 
-open class ImageUploadViewHolder(itemView: View?, private val listener: ImageUploadListener)
+open class ImageUploadViewHolder(itemView: View?, protected val listener: ImageUploadListener)
     : BaseChatViewHolder<ImageUploadUiModel>(itemView) {
 
     protected val chatStatus: ImageView? = itemView?.findViewById(getReadStatusId())
@@ -58,7 +58,7 @@ open class ImageUploadViewHolder(itemView: View?, private val listener: ImageUpl
         }
     }
 
-    private fun bindClickListener(element: ImageUploadUiModel) {
+    protected open fun bindClickListener(element: ImageUploadUiModel) {
         view.setOnClickListener { view ->
             if (element.imageUrl != null && element.replyTime != null) {
                 listener.onImageUploadClicked(element.imageUrl!!, element.replyTime!!)
