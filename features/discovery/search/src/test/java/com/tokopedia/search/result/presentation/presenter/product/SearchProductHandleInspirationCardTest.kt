@@ -394,7 +394,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
                         "visitable list at index $index should be SearchProductCountViewModel"
                 )
             }
-            else if (inspirationCardViewModelIndex.any { it == index }) {
+            else if (inspirationCardViewModelIndex.contains(index)) {
                 visitable.shouldBeInstanceOf<InspirationCardDataView>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )
