@@ -2,7 +2,9 @@ package com.tokopedia.affiliate.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.affiliate.PAGE_ZERO
+import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.model.response.*
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.usecase.*
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
@@ -119,6 +121,21 @@ class AffiliateHomeViewModelTest{
 
 //        assertEquals(affiliateHomeViewModel.getAffiliateDataItems().value,listResponse)
     }
+
+    @Test
+    fun getAffiliatePerformanceException() {
+        val throwable = Throwable("Validate Data Exception")
+        coEvery { affiliateUserPerformanceUseCase.affiliateUserperformance(any()) } throws throwable
+
+        affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO)
+
+        assertEquals(affiliateHomeViewModel.getDataShimmerVisibility().value, false)
+        assertEquals(affiliateHomeViewModel.getErrorMessage().value, throwable)
+
+        affiliateHomeViewModel.getAffiliatePerformance(1)
+
+        assertEquals(affiliateHomeViewModel.getShimmerVisibility().value, false)
+    }
     /**************************** userSession() *******************************************/
 
     @Test
@@ -136,4 +153,20 @@ class AffiliateHomeViewModelTest{
         assertEquals(affiliateHomeViewModel.isUserLoggedIn(), isLoggedIn)
 
     }
+    /**************************** getSelectedDate() *******************************************/
+    @Test
+    fun getSelectedDataTest(){
+        val selectedDate = AffiliateBottomDatePicker.SEVEN_DAYS
+        assertEquals(affiliateHomeViewModel.getSelectedDate(),selectedDate)
+    }
+
+    /**************************** onRangeChanged() *******************************************/
+    @Test
+    fun onRangeChangeTest(){
+        val range : AffiliateDatePickerData = mockk(relaxed = true)
+        affiliateHomeViewModel.onRangeChanged(range)
+
+        assertEquals(affiliateHomeViewModel.getRangeChanged().value,true)
+    }
+
 }
