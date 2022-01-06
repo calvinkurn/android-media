@@ -51,6 +51,7 @@
             app:layout_constraintEnd_toStartOf="@id/cl_timer"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:textColor="@color/play_dms_N700_96"
             app:typographyType="small" />
 
         <com.tokopedia.play_common.view.RoundedConstraintLayout
