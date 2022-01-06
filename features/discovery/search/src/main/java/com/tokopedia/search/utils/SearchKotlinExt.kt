@@ -25,16 +25,21 @@ internal fun RecyclerView.addItemDecorationIfNotExists(itemDecoration: RecyclerV
 }
 
 internal fun String?.decodeQueryParameter(): String {
-    this?.let {
-        val queryParametersSplitIndex = it.indexOf("?")
-        return if (queryParametersSplitIndex < 0){
-            val path = it.substring(0, queryParametersSplitIndex)
-            val queryParameters = it.substring(queryParametersSplitIndex + 1, length)
-            val queryParameterEncoded = UrlParamUtils.generateUrlParamString(UrlParamUtils.getParamMap(queryParameters))
+    this ?: return ""
 
-            "$path?$queryParameterEncoded"
-        } else this
-    } ?: return ""
+    val queryParametersSplitIndex = this.indexOf("?")
+
+    return if (queryParametersSplitIndex < 0) this
+    else decodeQueryParameter(queryParametersSplitIndex)
+}
+
+private fun String.decodeQueryParameter(queryParamIndex: Int): String {
+    val path = this.substring(0, queryParamIndex)
+    val queryParameters = this.substring(queryParamIndex + 1, length)
+    val queryParameterEncoded =
+        UrlParamUtils.generateUrlParamString(UrlParamUtils.getParamMap(queryParameters))
+
+    return "$path?$queryParameterEncoded"
 }
 
 internal fun safeCastRupiahToInt(price: String?): Int {
