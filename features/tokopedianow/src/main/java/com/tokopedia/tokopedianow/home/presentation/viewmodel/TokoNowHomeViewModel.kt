@@ -37,9 +37,6 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
-import com.tokopedia.tokopedianow.common.domain.model.ServiceType
-import com.tokopedia.tokopedianow.common.domain.model.ServiceType.NOW_15M
-import com.tokopedia.tokopedianow.common.domain.model.ServiceType.NOW_2H
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addLoadingIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addMoreHomeLayout
@@ -194,7 +191,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 hasTickerBeenRemoved,
                 hasSharingEducationBeenRemoved,
                 miniCartSimplifiedData
-            ) { refreshPage(NOW_15M) }
+            ) { refreshPage() }
 
             getLayoutComponentData(warehouseId)
 
@@ -492,7 +489,7 @@ class TokoNowHomeViewModel @Inject constructor(
         return getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
     }
 
-    private fun refreshPage(serviceType: ServiceType) {
+    private fun refreshPage() {
         // to do: refresh page based on service type
         getLoadingState()
     }
