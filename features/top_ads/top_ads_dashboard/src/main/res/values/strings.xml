@@ -323,6 +323,8 @@
     <string name="topads_insight_title_negative_keyword">Rekomendasi kata kunci negatif (%d)</string>
     <string name="topads_insight_recomm_keyword_title">Tambah biaya kata kunci untuk %d iklanmu supaya bisa</string>
     <string name="topads_insight_recomm_keyword_subtitle">tampil lebih banyak hingga +%s kali!</string>
+    <string name="topads_insight_keyword_error">Lengkapi informasi iklan produkmu.</string>
+    <string name="topads_insight_oke_button">Oke</string>
 
     <!-- TOPADS INSIGHT KEYWORDS LAYOUT -->
     <string name="apply_keyword_toast_message">"%d rekomendasi anggaran harian berhasil diterapkan"</string>

@@ -23,7 +23,7 @@ import com.tokopedia.top_ads_headline.Constants.OTHERS
 import com.tokopedia.top_ads_headline.Constants.TAB_POSITION
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
-import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
+import com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.di.HeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.fragment.AdContentFragment
@@ -111,12 +111,12 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
         finish()
     }
 
-    private fun getTopAdsManageHeadlineInput(stepperModel: HeadlineAdStepperModel): TopAdsManageHeadlineInput {
-        return TopAdsManageHeadlineInput().apply {
+    private fun getTopAdsManageHeadlineInput(stepperModel: HeadlineAdStepperModel): com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput {
+        return com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput().apply {
             source = HEADLINE_EDIT_SOURCE
-            operation = TopAdsManageHeadlineInput.Operation(
+            operation = com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput.Operation(
                     action = ACTION_EDIT,
-                    group = TopAdsManageHeadlineInput.Operation.Group(
+                    group = com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput.Operation.Group(
                             id = groupId,
                             shopID = userSession.shopId,
                             name = stepperModel.groupName,

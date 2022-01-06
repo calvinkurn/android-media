@@ -53,8 +53,8 @@ class TopAdsInsightShopKeywordRecommendationView(
 
     private fun keywordError(item: RecommendedKeywordDetail) {
         if (item.isError && item.errorMessage != null) {
-            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(com.tokopedia.top_ads_headline.R.dimen.dp_90)
-            Toaster.build(rootView, resources.getString(com.tokopedia.top_ads_headline.R.string.topads_headline_submit_ad_detail_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_90)
+            Toaster.build(rootView, resources.getString(R.string.topads_insight_keyword_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 

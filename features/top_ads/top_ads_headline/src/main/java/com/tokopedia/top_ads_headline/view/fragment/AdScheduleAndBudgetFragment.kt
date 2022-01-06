@@ -16,7 +16,7 @@ import com.tokopedia.top_ads_headline.Constants.ACTION_CREATE
 import com.tokopedia.top_ads_headline.Constants.HEADLINE_SOURCE
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
-import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
+import com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
 import com.tokopedia.top_ads_headline.view.sheet.HeadlinePreviewBottomSheet
@@ -180,7 +180,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
     }
 
-    private fun getTopAdsManageHeadlineInput(): TopAdsManageHeadlineInput {
+    private fun getTopAdsManageHeadlineInput(): com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput {
         val scheduleStart = if (adScheduleSwitch.isChecked) {
             selectedStartDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT2, localeID) ?: ""
         } else {
@@ -195,11 +195,11 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
             budgetCost.textFieldInput.text.toString().removeCommaRawString().toFloatOrZero()
         } else
             0.0F
-        return TopAdsManageHeadlineInput().apply {
+        return com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput().apply {
             source = HEADLINE_SOURCE
-            operation = TopAdsManageHeadlineInput.Operation(
+            operation = com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput.Operation(
                     action = ACTION_CREATE,
-                    group = TopAdsManageHeadlineInput.Operation.Group(
+                    group = com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput.Operation.Group(
                             id = "0",
                             shopID = userSession.shopId,
                             name = stepperModel?.groupName ?: "",

@@ -1,4 +1,4 @@
-package com.tokopedia.top_ads_headline.data
+package com.tokopedia.topads.dashboard.view.model
 
 
 import android.os.Parcelable
@@ -6,9 +6,9 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 data class TopAdsManageHeadlineInput2(
-        @SerializedName("operation")
+    @SerializedName("operation")
         var operation: Operation = Operation(),
-        @SerializedName("source")
+    @SerializedName("source")
         var source: String = ""
 ) {
     data class Operation(
@@ -18,15 +18,15 @@ data class TopAdsManageHeadlineInput2(
             var group: Group = Group()
     ) {
         data class Group(
-                @SerializedName("id")
+            @SerializedName("id")
                 var id: String = "",
-                @SerializedName("keywordOperations")
+            @SerializedName("keywordOperations")
                 var keywordOperations: List<KeywordOperation> = ArrayList(),
-                @SerializedName("name")
+            @SerializedName("name")
                 var name: String = "",
-                @SerializedName("shopID")
+            @SerializedName("shopID")
                 var shopID: String = "",
-                @SerializedName("status")
+            @SerializedName("status")
                 var status: String = ""
         ) {
             @Parcelize

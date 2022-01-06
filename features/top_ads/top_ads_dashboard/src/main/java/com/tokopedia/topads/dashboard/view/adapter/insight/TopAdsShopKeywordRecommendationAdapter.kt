@@ -5,14 +5,12 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput2
+import com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput2
 import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_CREATE
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordDetail
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsInsightShopKeywordViewHolder
-import kotlinx.android.synthetic.main.topads_insight_keyword_recomm_item.view.*
 
 class TopAdsShopKeywordRecommendationAdapter(
     private var list: MutableList<RecommendedKeywordDetail>,

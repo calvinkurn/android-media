@@ -37,7 +37,7 @@ import com.tokopedia.top_ads_headline.Constants.RESTORED_DATA
 import com.tokopedia.top_ads_headline.Constants.SELECTED_KEYWORD
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
-import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
+import com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.di.HeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.EditTopAdsHeadlineKeywordActivity
 import com.tokopedia.top_ads_headline.view.activity.SaveButtonState
@@ -488,8 +488,8 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
         adapter.setKeywordItems(keywordUiModels)
     }
 
-    fun getKeywordOperations(): List<TopAdsManageHeadlineInput.Operation.Group.KeywordOperation> {
-        val list = ArrayList<TopAdsManageHeadlineInput.Operation.Group.KeywordOperation>()
+    fun getKeywordOperations(): List<com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput.Operation.Group.KeywordOperation> {
+        val list = ArrayList<com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput.Operation.Group.KeywordOperation>()
         val commonItems = ArrayList<GetKeywordResponse.KeywordsItem>()
         val tempList = ArrayList<GetKeywordResponse.KeywordsItem>()
         tempList.addAll(selectedKeywordsList)
@@ -519,10 +519,10 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
         return list
     }
 
-    private fun getKeywordOperation(it: GetKeywordResponse.KeywordsItem, action: String): TopAdsManageHeadlineInput.Operation.Group.KeywordOperation {
-        return TopAdsManageHeadlineInput.Operation.Group.KeywordOperation(
+    private fun getKeywordOperation(it: GetKeywordResponse.KeywordsItem, action: String): com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput.Operation.Group.KeywordOperation {
+        return com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput.Operation.Group.KeywordOperation(
                 action = action,
-                keyword = TopAdsManageHeadlineInput.Operation.Group.KeywordOperation.Keyword().apply {
+                keyword = com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput.Operation.Group.KeywordOperation.Keyword().apply {
                     id = it.keywordId
                     priceBid = it.priceBid.toLong()
                     tag = it.tag

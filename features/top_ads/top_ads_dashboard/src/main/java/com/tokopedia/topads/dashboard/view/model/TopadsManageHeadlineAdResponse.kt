@@ -1,4 +1,4 @@
-package com.tokopedia.top_ads_headline.data
+package com.tokopedia.topads.dashboard.view.model
 
 
 import com.google.gson.annotations.SerializedName
@@ -13,9 +13,9 @@ data class TopadsManageHeadlineAdResponse(
             var topadsManageHeadlineAd: TopadsManageHeadlineAd
     ) {
         data class TopadsManageHeadlineAd(
-                @SerializedName("data")
+            @SerializedName("data")
                 var success: Success,
-                @SerializedName("errors")
+            @SerializedName("errors")
                 var errors: List<Error>
         ) {
             data class Success(

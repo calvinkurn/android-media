@@ -9,8 +9,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.top_ads_headline.Constants.ACTION_EDIT
-import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput2
+import com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput2
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants.BID_KEYWORD
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants.NEGATIVE_KEYWORD
@@ -102,7 +101,7 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
             val input = TopAdsManageHeadlineInput2(
                 source = "android.insight_center_headline_keyword_recom",
                 operation = TopAdsManageHeadlineInput2.Operation(
-                    action = ACTION_EDIT,
+                    action = "edit",
                     group = TopAdsManageHeadlineInput2.Operation.Group(
                         id = key.first.toString(),
                         name = key.second,
@@ -148,7 +147,7 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
                 resources.getString(R.string.apply_keyword_toast_message),
                 getExpandedView(expandedPosi).selectedItemsCount()
             ),
-            actionText = resources.getString(R.string.topads_headline_oke_button)
+            actionText = resources.getString(R.string.topads_insight_oke_button)
         ).show()
     }
 

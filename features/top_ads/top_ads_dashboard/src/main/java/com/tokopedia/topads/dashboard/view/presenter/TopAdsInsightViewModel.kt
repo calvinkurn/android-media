@@ -2,14 +2,12 @@ package com.tokopedia.topads.dashboard.view.presenter
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
-import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput2
-import com.tokopedia.top_ads_headline.usecase.CreateHeadlineAdsUseCase
+import com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput2
 import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordData
 import com.tokopedia.topads.dashboard.data.model.insightkey.TopAdsShopHeadlineKeyword
+import com.tokopedia.topads.dashboard.domain.interactor.CreateHeadlineAdsUseCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsShopKeywordSuggestionUseCase
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
