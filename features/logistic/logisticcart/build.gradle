@@ -41,6 +41,7 @@ dependencies {
         exclude group: "com.android.support"
     }
 
+    implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.rxAndroid
