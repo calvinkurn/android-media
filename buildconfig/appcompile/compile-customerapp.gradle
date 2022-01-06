@@ -198,6 +198,7 @@ includeIfEnabled("features:top_ads:top_ads_dashboard")
 includeIfEnabled("features:top_ads:top_ads_free_claim")
 includeIfEnabled("features:top_ads:top_ads_management_common")
 includeIfEnabled("features:top_ads:top_ads_management_sourcetagging")
+includeIfEnabled("features:top_ads:top_ads_headline")
 
 includeIfEnabled("features:transaction:atc_common")
 includeIfEnabled("features:transaction:buyerorder")
