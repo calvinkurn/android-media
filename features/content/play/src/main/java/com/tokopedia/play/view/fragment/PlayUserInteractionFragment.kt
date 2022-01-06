@@ -75,7 +75,6 @@ import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
-import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
@@ -632,7 +631,6 @@ class PlayUserInteractionFragment @Inject constructor(
         observeVideoMeta()
         observeVideoProperty()
         observeChannelInfo()
-        observeQuickReply()
         observeNewChat()
         observeChatList()
         observePinnedMessage()
@@ -688,7 +686,6 @@ class PlayUserInteractionFragment @Inject constructor(
             playButtonViewOnStateChanged(videoPlayer = meta.videoPlayer)
 
             pinnedViewOnStateChanged()
-            quickReplyViewOnStateChanged()
 
             changeLayoutBasedOnVideoType(meta.videoPlayer, playViewModel.channelType)
             if (meta.videoPlayer is PlayVideoPlayerUiModel.General.Complete) videoControlView.setPlayer(meta.videoPlayer.exoPlayer)
@@ -715,15 +712,8 @@ class PlayUserInteractionFragment @Inject constructor(
             videoControlViewOnStateChanged(channelType = it.channelType)
             sendChatViewOnStateChanged(channelType = it.channelType)
             chatListViewOnStateChanged(channelType = it.channelType)
-            quickReplyViewOnStateChanged(channelType = it.channelType)
 
             pinnedViewOnStateChanged()
-        })
-    }
-
-    private fun observeQuickReply() {
-        playViewModel.observableQuickReply.observe(viewLifecycleOwner, DistinctObserver {
-            quickReplyView?.setQuickReply(it)
         })
     }
 
@@ -745,11 +735,6 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observePinnedMessage() {
         playViewModel.observablePinnedMessage.observe(viewLifecycleOwner, DistinctObserver {
             pinnedViewOnStateChanged(pinnedModel = it, shouldTriggerChatHeightCalculation = true)
-
-            /**
-             * To trigger bottom bounds for product featured
-             */
-            quickReplyViewOnStateChanged()
         })
     }
 
@@ -778,7 +763,6 @@ class PlayUserInteractionFragment @Inject constructor(
             statsInfoViewOnStateChanged(bottomInsets = map)
             videoControlViewOnStateChanged(bottomInsets = map)
             sendChatViewOnStateChanged(bottomInsets = map)
-            quickReplyViewOnStateChanged(bottomInsets = map)
             chatListViewOnStateChanged(bottomInsets = map)
             pinnedViewOnStateChanged(bottomInsets = map)
             videoSettingsViewOnStateChanged(bottomInsets = map)
@@ -796,7 +780,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
                 renderInteractiveView(prevState?.interactiveView, state.interactiveView, state.partner)
                 renderWinnerBadgeView(state.winnerBadge)
-                renderToolbarView(state.title, state.share)
+                renderToolbarView(state.title)
+                renderShareView(state.channel, state.bottomInsets, state.status)
                 renderPartnerInfoView(prevState?.partner, state.partner)
                 renderLikeView(prevState?.like, state.like)
                 renderLikeBubbleView(state.like)
@@ -805,6 +790,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderViewAllProductView(state.tagItems, state.bottomInsets)
                 renderFeaturedProductView(prevState?.tagItems, state.tagItems, state.bottomInsets, state.status)
                 renderPinnedVoucherView(prevState?.tagItems, state.tagItems, state.bottomInsets, state.status)
+                renderQuickReplyView(prevState?.quickReply, state.quickReply, prevState?.bottomInsets, state.bottomInsets, state.channel)
 
                 handleStatus(state.status)
 
@@ -1101,7 +1087,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun pushParentPlayByKeyboardHeight(estimatedKeyboardHeight: Int) {
-        val hasQuickReply = !playViewModel.observableQuickReply.value?.quickReplyList.isNullOrEmpty()
+        val hasQuickReply = playViewModel.quickReply.quickReplyList.isNotEmpty()
 
         viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) {
             playFragment.onBottomInsetsViewShown(getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight, hasQuickReply))
@@ -1131,7 +1117,7 @@ class PlayUserInteractionFragment @Inject constructor(
     ) {
         if (!playViewModel.channelType.isLive) return
 
-        val hasQuickReply = !playViewModel.observableQuickReply.value?.quickReplyList.isNullOrEmpty()
+        val hasQuickReply = playViewModel.quickReply.quickReplyList.isNotEmpty()
 
         val hasProductFeatured = productFeaturedView?.isShown() == true
         val hasPinnedVoucher = pinnedVoucherView?.isShown() == true
@@ -1271,8 +1257,6 @@ class PlayUserInteractionFragment @Inject constructor(
         } else pinnedView?.hide()
 
         if (shouldTriggerChatHeightCalculation) viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) { invalidateChatListBounds(shouldForceInvalidate = true) }
-
-        changeQuickReplyConstraint()
     }
 
     private fun gradientBackgroundViewOnStateChanged(
@@ -1328,22 +1312,6 @@ class PlayUserInteractionFragment @Inject constructor(
         sendChatView?.focusChatForm(channelType.isLive && bottomInsets[BottomInsetsType.Keyboard] is BottomInsetsState.Shown)
     }
 
-    private fun quickReplyViewOnStateChanged(
-            channelType: PlayChannelType = playViewModel.channelType,
-            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
-    ) {
-        if (channelType.isLive &&
-                bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
-                bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false &&
-                bottomInsets[BottomInsetsType.CouponSheet]?.isShown == false &&
-                bottomInsets[BottomInsetsType.LeaderboardSheet]?.isShown == false &&
-                bottomInsets[BottomInsetsType.Keyboard]?.isShown == true) {
-            quickReplyView?.showIfNotEmpty()
-        } else quickReplyView?.hide()
-
-        changeQuickReplyConstraint()
-    }
-
     private fun immersiveBoxViewOnStateChanged(
             bottomInsets: Map<BottomInsetsType, BottomInsetsState>
     ) {
@@ -1377,7 +1345,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun renderInteractiveView(
         prevState: PlayInteractiveViewUiState?,
         state: PlayInteractiveViewUiState,
-        partner: PlayPartnerUiState,
+        partner: PlayPartnerInfo,
     ) {
         if (prevState?.interactive != state.interactive) {
             when (val interactive = state.interactive) {
@@ -1419,8 +1387,8 @@ class PlayUserInteractionFragment @Inject constructor(
         }
 
         interactiveView?.showFollowMode(
-            partner.followStatus is PlayPartnerFollowStatus.Followable &&
-                    !partner.followStatus.isFollowing
+            partner.status is PlayPartnerFollowStatus.Followable &&
+                    !partner.status.isFollowing
         )
 
         when (state.visibility) {
@@ -1435,15 +1403,26 @@ class PlayUserInteractionFragment @Inject constructor(
         else interactiveWinnerBadgeView?.hide()
     }
 
-    private fun renderToolbarView(
-        title: PlayTitleUiState,
-        share: PlayShareUiState
-    ) {
+    private fun renderToolbarView(title: PlayTitleUiState, ) {
         toolbarView.setTitle(title.title)
-        shareLinkView?.setIsShareable(share.shouldShow)
     }
 
-    private fun renderPartnerInfoView(prevState: PlayPartnerUiState?, state: PlayPartnerUiState) {
+    private fun renderShareView(
+        channel: PlayChannelDetailUiModel,
+        bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
+        status: PlayStatusUiModel,
+    ) {
+        shareLinkView?.setIsShareable(
+            channel.shareInfo.shouldShow &&
+                    !bottomInsets.isAnyShown &&
+                    status.channelStatus.statusType.isActive
+        )
+    }
+
+    private fun renderPartnerInfoView(
+        prevState: PlayPartnerInfo?,
+        state: PlayPartnerInfo
+    ) {
         if (prevState == state) return
         partnerInfoView?.setInfo(state)
     }
@@ -1542,6 +1521,27 @@ class PlayUserInteractionFragment @Inject constructor(
         else pinnedVoucherView?.hide()
     }
 
+    private fun renderQuickReplyView(
+        prevQuickReply: PlayQuickReplyInfoUiModel?,
+        quickReply: PlayQuickReplyInfoUiModel,
+        prevBottomInsets: Map<BottomInsetsType, BottomInsetsState>?,
+        bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
+        channelDetail: PlayChannelDetailUiModel,
+    ) {
+        if (prevQuickReply != quickReply) {
+            quickReplyView?.setQuickReply(quickReply)
+        }
+
+        if (bottomInsets.isKeyboardShown &&
+                channelDetail.channelInfo.channelType.isLive) {
+            quickReplyView?.showIfNotEmpty()
+        } else quickReplyView?.hide()
+
+        if (prevBottomInsets?.isKeyboardShown != bottomInsets.isKeyboardShown) {
+            changeQuickReplyConstraint(isShown = bottomInsets.isKeyboardShown)
+        }
+    }
+
     private fun castViewOnStateChanged(
         bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
     ) {
@@ -1603,11 +1603,7 @@ class PlayUserInteractionFragment @Inject constructor(
     /**
      * Change constraint
      */
-    private fun changeQuickReplyConstraint(
-            pinnedMessage: PinnedMessageUiModel? = playViewModel.observablePinnedMessage.value,
-            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
-            channelType: PlayChannelType = playViewModel.channelType
-    ) {
+    private fun changeQuickReplyConstraint(isShown: Boolean) {
         /**
          * This can be solved by a simple barrier, but the barrier only work on testapp, not customerapp
          * and I don't know why arghhh
@@ -1615,7 +1611,7 @@ class PlayUserInteractionFragment @Inject constructor(
         val quickReplyViewId = quickReplyView?.id ?: return
         val topmostLikeView = this.topmostLikeView ?: return
         view?.changeConstraint {
-            if(quickReplyView?.isShown() == true) {
+            if(isShown) {
                 sendChatView?.let {
                     connect(quickReplyViewId, ConstraintSet.BOTTOM, it.id, ConstraintSet.TOP, offset8)
                 }

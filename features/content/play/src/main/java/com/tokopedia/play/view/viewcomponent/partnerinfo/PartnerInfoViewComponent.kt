@@ -5,7 +5,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
-import com.tokopedia.play.view.uimodel.state.PlayPartnerUiState
+import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -31,14 +31,14 @@ class PartnerInfoViewComponent(
         }
     }
 
-    fun setInfo(info: PlayPartnerUiState) {
+    fun setInfo(info: PlayPartnerInfo) {
         ivIcon.setImageUrl(info.iconUrl)
         if (info.badgeUrl.isNotBlank()) {
             ivBadge.setImageUrl(info.badgeUrl)
             ivBadge.show()
         } else ivBadge.hide()
         tvPartnerName.text = info.name
-        setFollowStatus(info.followStatus, info.isLoadingFollow)
+        setFollowStatus(info.status, info.isLoadingFollow)
     }
 
     private fun setFollowStatus(
