@@ -14,7 +14,6 @@ import com.tokopedia.saldodetails.saldoDetail.SaldoDepositFragment
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.ui.BaseSaldoTransactionListFragment
 import com.tokopedia.saldodetails.saldoHoldInfo.SaldoHoldInfoActivity
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.ui.SaldoTransactionHistoryFragment
-import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.ui.SaldoTransactionListFragment
 import dagger.Component
 
 @SaldoDetailsScope
@@ -30,8 +29,6 @@ interface SaldoDetailsComponent {
 
     @SaldoDetailsScope
     fun context(): Context
-
-    fun inject(fragment: SaldoTransactionListFragment)
 
     fun inject(fragment: MerchantSaldoPriorityFragment)
 

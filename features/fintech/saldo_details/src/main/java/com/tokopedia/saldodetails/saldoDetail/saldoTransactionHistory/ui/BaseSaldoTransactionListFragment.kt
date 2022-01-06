@@ -27,7 +27,7 @@ import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.saldo_fragment_transaction_list.*
 import javax.inject.Inject
 
-class BaseSaldoTransactionListFragment : BaseDaggerFragment() {
+open class BaseSaldoTransactionListFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -35,7 +35,7 @@ class BaseSaldoTransactionListFragment : BaseDaggerFragment() {
     @Inject
     lateinit var saldoDetailsAnalytics: SaldoDetailsAnalytics
 
-    private val transactionHistoryViewModel: TransactionHistoryViewModel? by lazy(
+    protected val transactionHistoryViewModel: TransactionHistoryViewModel? by lazy(
         LazyThreadSafetyMode.NONE
     ) {
         parentFragment?.let {
@@ -48,7 +48,7 @@ class BaseSaldoTransactionListFragment : BaseDaggerFragment() {
 
     override fun getScreenName(): String? = null
 
-    private lateinit var transactionType: TransactionType
+    protected lateinit var transactionType: TransactionType
 
     private val adapter: SaldoTransactionAdapter by lazy {
         SaldoTransactionAdapter(getAdapterTypeFactory())
@@ -102,7 +102,7 @@ class BaseSaldoTransactionListFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun initObservers() {
+    protected fun initObservers() {
         transactionHistoryViewModel?.getLiveDataByTransactionType(transactionType)?.observe(
             viewLifecycleOwner
         ) {
@@ -181,7 +181,6 @@ class BaseSaldoTransactionListFragment : BaseDaggerFragment() {
     private fun retryInitialLoading() {
         transactionHistoryViewModel?.retryAllTabLoading()
     }
-
 
     companion object {
         const val PARAM_TRANSACTION_TYPE = "PARAM_TRANSACTION_TYPE"

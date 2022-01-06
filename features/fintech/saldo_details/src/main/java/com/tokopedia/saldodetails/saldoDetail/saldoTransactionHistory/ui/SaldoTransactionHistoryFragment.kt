@@ -117,8 +117,8 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         saldoTabItems.clear()
         //semua tab
         saldoTabItems.add(SaldoHistoryTabItem().apply {
-            title = TransactionTitle.ALL_TRANSACTION
-            fragment = SaldoTransactionListFragment.getInstance(TransactionTitle.ALL_TRANSACTION)
+            title = TransactionTitle.ALL_TAB
+            fragment = FilteredSaldoTransactionListFragment.getInstance(TransactionTitle.ALL_TRANSACTION)
         })
 
         //penjualan tab
@@ -126,20 +126,6 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
             title = TransactionTitle.SALDO_SALES
             fragment = BaseSaldoTransactionListFragment.getInstance(TransactionTitle.SALDO_SALES)
         })
-        /*
-        //Saldo Refund
-        saldoTabItems.add(SaldoHistoryTabItem().apply {
-            title = TransactionTitle.SALDO_REFUND
-            fragment = SaldoTransactionListFragment.getInstance(TransactionTitle.SALDO_REFUND)
-        })
-
-        //Saldo Penghasilan tab
-
-        saldoTabItems.add(SaldoHistoryTabItem().apply {
-            title = TransactionTitle.SALDO_INCOME
-            fragment = SaldoTransactionListFragment.getInstance(TransactionTitle.SALDO_INCOME)
-        })
-        */
 
         saldoTransactionTabsUnify.run {
             getUnifyTabLayout().removeAllTabs()
@@ -154,6 +140,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
             openCalender()
         }
         saldoTransactionTabsUnify.tabLayout.onTabSelected {
+            // @Todo do we need Semua Transkasi Hit
             transactionHistoryViewModel.getEventLabelForTab(it.getCustomText())
                 .also { actionLabel ->
                     analytics.sendTransactionHistoryEvents(actionLabel)
