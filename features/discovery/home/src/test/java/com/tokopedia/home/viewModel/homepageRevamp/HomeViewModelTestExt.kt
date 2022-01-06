@@ -23,10 +23,7 @@ import com.tokopedia.home.beranda.domain.model.recharge_recommendation.DeclineRe
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
@@ -397,6 +394,14 @@ fun InjectCouponTimeBasedUseCase.givenInjectCouponTimeBasedUseCaseReturn(setInje
 
 fun InjectCouponTimeBasedUseCase.givenInjectCouponTimeBasedUseCaseThrowReturn() {
     coEvery { executeOnBackground() } throws Exception()
+}
+
+fun HomePopularKeywordUseCase.givenOnPopularKeywordReturn(
+    refreshCount: Int,
+    currentPopularKeyword: PopularKeywordListDataModel,
+    resultPopularKeyword: PopularKeywordListDataModel
+) {
+    coEvery { onPopularKeywordRefresh(refreshCount, currentPopularKeyword) } returns resultPopularKeyword
 }
 
 fun areEqualKeyValues(first: Map<String, Any>, second: Map<String,Any>): Boolean{
