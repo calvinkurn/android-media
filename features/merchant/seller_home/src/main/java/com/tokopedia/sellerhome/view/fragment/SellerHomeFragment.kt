@@ -1685,28 +1685,28 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     @Suppress("UNCHECKED_CAST")
     private fun updateWidgets(newWidgets: List<BaseWidgetUiModel<BaseDataUiModel>>) {
-        val diffUtilCallback = SellerHomeDiffUtilCallback(
-            adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>,
-            newWidgets
-        )
-        val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
-        adapter.data.clear()
-        adapter.data.addAll(newWidgets)
-        diffUtilResult.dispatchUpdatesTo(adapter)
+        try {
+            val diffUtilCallback = SellerHomeDiffUtilCallback(
+                adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>,
+                newWidgets
+            )
+            val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
+            adapter.data.clear()
+            adapter.data.addAll(newWidgets)
+            diffUtilResult.dispatchUpdatesTo(adapter)
+        } catch (e: Exception) {
+            SellerHomeErrorHandler.logException(e, SellerHomeErrorHandler.UPDATE_WIDGET_ERROR)
+        }
     }
 
     @SuppressLint("AnnotateVersionCheck")
     private fun notifyWidgetWithSdkChecking(callback: () -> Unit) {
-        try {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            callback()
+        } else {
+            recyclerView?.post {
                 callback()
-            } else {
-                Handler(Looper.getMainLooper()).post {
-                    callback()
-                }
             }
-        } catch (e: Exception) {
-            SellerHomeErrorHandler.logException(e, SellerHomeErrorHandler.UPDATE_WIDGET_ERROR)
         }
     }
 
