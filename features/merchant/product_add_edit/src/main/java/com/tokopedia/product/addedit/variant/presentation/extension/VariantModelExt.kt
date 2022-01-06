@@ -12,13 +12,13 @@ fun MutableLiveData<ProductInputModel>.getValueOrDefault(
 fun MutableLiveData<ProductInputModel>.hasVariant() =
     value?.variantInputModel?.products?.isNotEmpty().orFalse()
 
-fun MutableLiveData<ProductInputModel>.removeVariantCombinations(position: Int, layoutPosition: Int) {
+fun MutableLiveData<ProductInputModel>.removeVariantCombinations(removedPosition: Int, layoutPosition: Int) {
     val removedCombination = getValueOrDefault().variantInputModel.products.filterNot {
-        it.combination[layoutPosition] == position
+        it.combination[layoutPosition] == removedPosition
     }
     removedCombination.forEach {
         val combination = it.combination.toMutableList()
-        if (combination[layoutPosition] > position) {
+        if (combination[layoutPosition] > removedPosition) {
             combination[layoutPosition] = combination[layoutPosition].dec()
             it.combination = combination
         }

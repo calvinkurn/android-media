@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.detail.domain.model.BlacklistKeyword
 import com.tokopedia.product.addedit.detail.domain.model.GetProductTitleValidation
@@ -13,8 +14,10 @@ import com.tokopedia.product.addedit.util.setPrivateProperty
 import com.tokopedia.product.addedit.variant.data.model.*
 import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.COLOUR_VARIANT_TYPE_ID
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.CUSTOM_VARIANT_TYPE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
+import com.tokopedia.product.addedit.variant.presentation.extension.hasVariant
 import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -746,6 +749,25 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
     }
 
     @Test
+    fun `removing product variant should remove custom variant type`() {
+        viewModel.productInputModel.value = ProductInputModel(
+            variantInputModel = VariantInputModel(
+                selections = listOf(
+                    SelectionInputModel(variantId = "0"),
+                    SelectionInputModel(variantId = "1"),
+                    SelectionInputModel(variantId = "2"),
+                )
+            )
+        )
+        viewModel.removeVariant()
+        assertFalse(
+            viewModel.productInputModel.value?.variantInputModel?.selections?.any {
+                it.variantId == CUSTOM_VARIANT_TYPE_ID.toString()
+            }.orFalse()
+        )
+    }
+
+    @Test
     fun `view model should be able to map variant photo into variant picture input model`() {
         val expectedFilePathUrlOriginal = "expected value"
         val expectedPicID = "expected value"
@@ -963,5 +985,31 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         assertEquals(testResultUsedName, VariantTitleValidationStatus.USED_NAME)
         assertEquals(testResultCustomVariantExist, VariantTitleValidationStatus.USED_NAME)
         assertEquals(testResultVariantDetailFull, VariantTitleValidationStatus.USED_NAME)
+    }
+
+    @Test
+    fun `removeCombinations should change variant combination`() {
+        viewModel.removeCombinations(0, 1)
+        assert(!viewModel.productInputModel.hasVariant())
+
+        viewModel.productInputModel.value = ProductInputModel(
+            variantInputModel = VariantInputModel(
+                products = listOf(
+                    ProductVariantInputModel(combination = listOf(0,0)),
+                    ProductVariantInputModel(combination = listOf(0,1)),
+                    ProductVariantInputModel(combination = listOf(1,0)),
+                    ProductVariantInputModel(combination = listOf(1,1))
+                )
+            )
+        )
+
+        viewModel.removeCombinations(0, 1)
+        viewModel.productInputModel.value?.variantInputModel?.let {
+            assertEquals(2, it.products.size)
+            assertEquals(0, it.products[0].combination[0])
+            assertEquals(0, it.products[0].combination[1])
+            assertEquals(1, it.products[1].combination[0])
+            assertEquals(0, it.products[1].combination[1])
+        }
     }
 }

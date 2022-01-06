@@ -56,8 +56,6 @@ abstract class AddEditProductVariantViewModelTestFixture {
         getPrivateField(viewModel, "variantDataMap") as HashMap<Int, VariantDetail>
     }
 
-    private val testCoroutineDispatcher = TestCoroutineDispatcher()
-
     val variantDetailTest1 = VariantDetail(
             variantID=1,
             identifier="",
