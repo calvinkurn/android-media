@@ -432,7 +432,7 @@ class CartShopViewHolder(private val binding: ItemShopBundleBinding,
                         layoutBoAffordability.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
                         layoutBoAffordability.setOnClickListener(null)
                     }
-                    CartShopBoAffordabilityState.SUCCESS -> {
+                    CartShopBoAffordabilityState.SUCCESS_NOT_AFFORD -> {
                         largeLoaderBoAffordability.gone()
                         smallLoaderBoAffordability.gone()
                         textBoAffordability.text = MethodChecker.fromHtml(boAffordability.tickerText)
@@ -441,13 +441,22 @@ class CartShopViewHolder(private val binding: ItemShopBundleBinding,
                         arrowBoAffordability.show()
                         layoutBoAffordability.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
                         layoutBoAffordability.setOnClickListener {
-                            actionListener.onCartBoAffordabilityClicked(cartShopHolderData.shopId, cartShopHolderData.isTokoNow)
+                            actionListener.onCartBoAffordabilityClicked(cartShopHolderData.shopId, true)
                         }
+                    }
+                    CartShopBoAffordabilityState.SUCCESS_AFFORD -> {
+                        largeLoaderBoAffordability.gone()
+                        smallLoaderBoAffordability.gone()
+                        arrowBoAffordability.gone()
+                        textBoAffordability.text = MethodChecker.fromHtml(boAffordability.tickerText)
+                        textBoAffordability.show()
+                        layoutBoAffordability.setBackgroundColor(MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_BN50))
+                        layoutBoAffordability.setOnClickListener(null)
                     }
                     CartShopBoAffordabilityState.FAILED -> {
                         largeLoaderBoAffordability.gone()
                         smallLoaderBoAffordability.gone()
-                        textBoAffordability.text = boAffordability.tickerText
+                        textBoAffordability.text = boAffordability.errorText
                         textBoAffordability.show()
                         arrowBoAffordability.setImage(IconUnify.RELOAD)
                         arrowBoAffordability.show()

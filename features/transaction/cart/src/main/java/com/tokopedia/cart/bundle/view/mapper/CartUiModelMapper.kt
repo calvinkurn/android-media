@@ -136,7 +136,10 @@ object CartUiModelMapper {
                 postalCode = availableGroup.shop.postalCode
                 longitude = availableGroup.shop.longitude
                 latitude = availableGroup.shop.latitude
-                boAffordability = CartShopBoAffordabilityData(enable = availableGroup.shipmentInformation.enableBoAffordability)
+                boAffordability = CartShopBoAffordabilityData(
+                        enable = availableGroup.shipmentInformation.enableBoAffordability,
+                        errorText = cartData.messages.errorBoAffordability
+                )
             }
             cartShopHolderDataList.add(shopUiModel)
         }

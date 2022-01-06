@@ -56,9 +56,10 @@ data class CartShopHolderData(
 class CartShopBoAffordabilityData(
         var enable: Boolean = true,
         var state: CartShopBoAffordabilityState = CartShopBoAffordabilityState.LOADING,
-        var tickerText: String = ""
+        var tickerText: String = "",
+        var errorText: String = ""
 )
 
 enum class CartShopBoAffordabilityState {
-    LOADING, SUCCESS, FAILED
+    LOADING, FAILED, SUCCESS_AFFORD, SUCCESS_NOT_AFFORD
 }

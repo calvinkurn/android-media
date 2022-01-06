@@ -1596,7 +1596,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                     return@launch
                 }
                 val calculatePriceMarketplaceProduct = calculatePriceMarketplaceProduct(shopProductList)
-                val subtotalPrice = calculatePriceMarketplaceProduct.second.second
+                val subtotalPrice = calculatePriceMarketplaceProduct.second.second.toLong()
                 val shipping = ShippingParam().apply {
                     destinationDistrictId = lca?.district_id
                     destinationLongitude = lca?.long
@@ -1607,7 +1607,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                     originLatitude = cartShopHolderData.latitude
                     originPostalCode = cartShopHolderData.postalCode
                     weightInKilograms = shopTotalWeight / 1000
-                    orderValue = subtotalPrice.toLong()
+                    orderValue = subtotalPrice
                     shopId = cartShopHolderData.shopId
                     uniqueId = cartShopHolderData.cartString
                     products = shopProductList.map { Product(it.productId.toLong(), it.isFreeShipping, it.isFreeShippingExtra) }
@@ -1616,7 +1616,12 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 Log.i("qwertyuiop", ratesParam.toString())
 
                 cartShopHolderData.boAffordability.tickerText = "asdfasd fas <s>dfas</s> df"
-                cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.SUCCESS
+                val minTransaction: Long = 40000
+                if (subtotalPrice >= minTransaction) {
+                    cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.SUCCESS_AFFORD
+                } else {
+                    cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.SUCCESS_NOT_AFFORD
+                }
                 withContext(dispatchers.main) {
                     view?.updateCartBoAffordability(cartShopHolderData)
                 }
