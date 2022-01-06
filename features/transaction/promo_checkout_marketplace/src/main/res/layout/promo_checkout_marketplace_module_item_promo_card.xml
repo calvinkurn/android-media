@@ -247,7 +247,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_check_green"
-                tools:ignore="ContentDescription" />
+                tools:ignore="ContentDescription"
+                tools:visibility="gone" />
 
             <View
                 android:id="@+id/imaginary_view"
@@ -308,8 +309,8 @@
         android:id="@+id/last_promo_divider_2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:visibility="invisible"
         android:layout_marginTop="10dp"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/last_promo_divider" />
 

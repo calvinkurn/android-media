@@ -87,6 +87,7 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
             cardPromoItem.setCardBackgroundColor(colorBackgroundSelected)
 
             imageSelectPromo.show()
+            updateImaginaryBorderViewVisibility(viewBinding)
             val imageSelectPromoLayoutParam = imageSelectPromo.layoutParams as ViewGroup.MarginLayoutParams
             if (element.uiData.remainingPromoCount > 1) {
                 if (getPromoInformationDetailsCount(element) <= 1) {
@@ -117,6 +118,7 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
             cardPromoItem.cardType = CardUnify.TYPE_BORDER
             cardPromoItem.setCardBackgroundColor(colorBackgroundEnabled)
             imageSelectPromo.gone()
+            updateImaginaryBorderViewVisibility(viewBinding)
         }
     }
 
@@ -137,6 +139,7 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
             cardPromoItem.cardType = CardUnify.TYPE_BORDER_DISABLED
             cardPromoItem.setCardBackgroundColor(colorBackgroundDisabled)
             imageSelectPromo.gone()
+            updateImaginaryBorderViewVisibility(viewBinding)
         }
     }
 
@@ -180,6 +183,7 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
             if (element.uiData.remainingPromoCount > 1) {
                 textPromoQuantity.text = "Sisa ${element.uiData.remainingPromoCount}"
                 textPromoQuantity.show()
+                updateImaginaryBorderViewVisibility(viewBinding)
                 promoQuantityIdentifierTop.show()
                 promoQuantityIdentifierBottom.show()
 
@@ -192,6 +196,7 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
                 }
             } else {
                 textPromoQuantity.gone()
+                updateImaginaryBorderViewVisibility(viewBinding)
                 promoQuantityIdentifierTop.gone()
                 promoQuantityIdentifierBottom.gone()
             }
@@ -360,6 +365,16 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
         }
 
         return promoInformationDetailsCount
+    }
+
+    private fun updateImaginaryBorderViewVisibility(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding) {
+        with(viewBinding) {
+            if (imageSelectPromo.visibility == View.VISIBLE ) {
+                imaginaryView.show()
+            } else {
+                imaginaryView.gone()
+            }
+        }
     }
 
 }
