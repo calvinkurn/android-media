@@ -12,9 +12,12 @@ import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeCopyWriting
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.DELIVERY_DURATION_COPY_RESOURCE_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_BOTTOM_SHEET_RESOURCE_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeRes
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowEducationalInformationBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -60,11 +63,18 @@ class TokoNowEducationalInfoBottomSheet :
             binding?.apply {
                 val boldColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).toString()
 
+                val serviceType = LocalCacheModel().service_type
                 tpTime.text = MethodChecker.fromHtml(
                     getString(
-                        R.string.tokopedianow_home_educational_information_duration_bottomsheet,
+                        getServiceTypeRes(
+                            key = EDU_BOTTOM_SHEET_RESOURCE_ID,
+                            serviceType = serviceType
+                        ).orZero(),
                         boldColor,
-                        getServiceTypeCopyWriting(serviceType = LocalCacheModel().service_type, context = context)
+                        getString(getServiceTypeRes(
+                            key = DELIVERY_DURATION_COPY_RESOURCE_ID,
+                            serviceType = serviceType
+                        ).orZero())
                     )
                 )
 

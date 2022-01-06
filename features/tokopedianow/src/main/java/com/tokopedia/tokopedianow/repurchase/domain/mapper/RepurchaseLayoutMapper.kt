@@ -15,7 +15,8 @@ import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.model.*
-import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeCopyWritingRes
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.REPURCHASE_EMPTY_RESOURCE_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeRes
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.SORT_FILTER
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseProductMapper.mapToProductListUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.factory.RepurchaseSortFilterFactory
@@ -116,10 +117,9 @@ object RepurchaseLayoutMapper {
         add(
             TokoNowEmptyStateNoResultUiModel(
                 defaultTitleResId = R.string.tokopedianow_repurchase_no_result_title,
-                defaultDescriptionResId = getServiceTypeCopyWritingRes(
-                    serviceType = serviceType,
-                    copyWriting15MRes = R.string.tokopedianow_repurchase_no_result_description_fifteen_minutes,
-                    copyWriting2HRes = R.string.tokopedianow_repurchase_no_result_description_two_hours
+                defaultDescriptionResId = getServiceTypeRes(
+                    key = REPURCHASE_EMPTY_RESOURCE_ID,
+                    serviceType = serviceType
                 ),
                 globalSearchBtnTextResId = R.string.tokopedianow_back_to_tokopedia
             )

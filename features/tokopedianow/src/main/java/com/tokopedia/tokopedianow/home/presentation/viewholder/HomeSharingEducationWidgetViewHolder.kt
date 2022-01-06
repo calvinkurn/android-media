@@ -6,9 +6,12 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeCopyWriting
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.DELIVERY_DURATION_COPY_RESOURCE_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.SHARING_WIDGET_RESOURCE_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeRes
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeSharingEducationWidgetBinding
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingEducationWidgetUiModel
@@ -46,8 +49,14 @@ class HomeSharingEducationWidgetViewHolder(
         binding?.apply {
             tpSharingEducation.text = MethodChecker.fromHtml(
                 getString(
-                    R.string.tokopedianow_home_sharing_education_title,
-                    getServiceTypeCopyWriting(serviceType = serviceType, context = root.context)
+                    getServiceTypeRes(
+                        key = SHARING_WIDGET_RESOURCE_ID,
+                        serviceType = serviceType)
+                    .orZero(),
+                    getString(getServiceTypeRes(
+                        key = DELIVERY_DURATION_COPY_RESOURCE_ID,
+                        serviceType = serviceType)
+                    .orZero())
                 )
             )
 
