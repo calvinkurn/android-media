@@ -322,10 +322,13 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
                 imageUserValidity.setImageUrl(bottomBanner.icon)
                 textUserValidity.text = HtmlLinkHelper(itemView.context, bottomBanner.title).spannedString
                 containerUserValidity.show()
+                val containerUserValidityLayoutParam = containerUserValidity.layoutParams as ViewGroup.MarginLayoutParams
                 if (element.uiState.isParentEnabled) {
-                    dividerUserValidity.invisible()
+                    dividerUserValidity.gone()
+                    containerUserValidityLayoutParam.topMargin = itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_4).toInt()
                 } else {
                     dividerUserValidity.show()
+                    containerUserValidityLayoutParam.topMargin = 0
                 }
             } else {
                 containerUserValidity.gone()
