@@ -365,7 +365,9 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun getFeedTabData() { launch { homeUseCase.get().getFeedTabData(homeDataModel) } }
+    fun getFeedTabData() {
+        launch { homeUseCase.get().getFeedTabData(homeDataModel) }
+    }
 
     fun getPopularKeywordOnRefresh() {
         findWidget<PopularKeywordListDataModel> { popularKeywordListDataModel, index ->

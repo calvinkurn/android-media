@@ -1,6 +1,7 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import android.content.Context
+import android.util.Log
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
@@ -44,10 +45,13 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import net.bytebuddy.implementation.bytecode.Throw
+import java.net.UnknownHostException
 import java.util.concurrent.TimeoutException
 
 /**
@@ -204,8 +208,19 @@ fun HomeDynamicChannelUseCase.givenUpdateHomeDataReturn(result: com.tokopedia.ho
 }
 
 fun HomeDynamicChannelUseCase.givenUpdateHomeDataError(t: Throwable = Throwable("Unit test simulate error")) {
+    mockkStatic(Log::class)
+    every { Log.getStackTraceString(t) } returns ""
     coEvery { updateHomeData() } returns flow{
         throw t
+    }
+}
+
+fun HomeDynamicChannelUseCase.givenUpdateHomeDataErrorNullMessage() {
+    val throwable = Throwable()
+    mockkStatic(Log::class)
+    every { Log.getStackTraceString(throwable) } returns ""
+    coEvery { updateHomeData() } returns flow{
+        throw throwable
     }
 }
 

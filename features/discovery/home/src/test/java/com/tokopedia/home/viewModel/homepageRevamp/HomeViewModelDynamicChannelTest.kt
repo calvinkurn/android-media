@@ -136,6 +136,20 @@ class HomeViewModelDynamicChannelTest{
 
     @ExperimentalCoroutinesApi
     @Test
+    fun `When catch error null message on updateHomeData then homeDataModel should contains DynamicChannelRetryModel with state not loading`(){
+        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(
+            DynamicChannelRetryModel(true)
+        )))
+        getHomeUseCase.givenUpdateHomeDataErrorNullMessage()
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel.refreshHomeData()
+        homeViewModel.updateNetworkLiveData.observeOnce {
+            Assert.assertTrue(it.error is Throwable)
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
     fun `When selected position = 0 on removeViewHolderAtPosition then homeDataModel should remove model on position 0`(){
         val selectedPosition = 0
         getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(
