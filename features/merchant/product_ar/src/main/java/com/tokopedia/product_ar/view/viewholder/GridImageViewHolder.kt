@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.ShapeAppearanceModel
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product_ar.R
-import com.tokopedia.product_ar.model.ModifaceImageUiModel
 import com.tokopedia.product_ar.util.ItemDividerGrid
 import com.tokopedia.product_ar.view.fragment.ComparissonHelperListener
 import com.tokopedia.unifycomponents.dpToPx
@@ -31,6 +31,6 @@ class GridImageViewHolder(itemView: View, val listener: ComparissonHelperListene
         imgFull?.shapeAppearanceModel = imgFull?.shapeAppearanceModel?.toBuilder()
                 ?.setAllCorners(CornerFamily.ROUNDED, radius)
                 ?.build() ?: ShapeAppearanceModel()
-        imgFull?.setImageBitmap(image)
+        imgFull?.loadImage(image)
     }
 }

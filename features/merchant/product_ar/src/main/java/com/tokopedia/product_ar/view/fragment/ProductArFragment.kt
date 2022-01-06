@@ -5,8 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -33,7 +31,6 @@ import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.model.state.AnimatedTextIconClickMode
 import com.tokopedia.product_ar.model.state.ModifaceViewMode
@@ -54,9 +51,9 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.image.ImageProcessingUtil.getBitmapFromPath
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.io.File
 import javax.inject.Inject
 
 
@@ -198,21 +195,6 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         }
     }
 
-    private fun getBitmapFromPath(path: String): Bitmap? {
-        return try {
-            val file = File(path)
-            if (file.exists()) {
-                return BitmapFactory.decodeFile(path)
-            } else {
-                view?.showToasterError("file not exist")
-            }
-            null
-        } catch (e: Throwable) {
-            view?.showToasterError("error try catch ${e.localizedMessage}")
-            null
-        }
-    }
-
     private fun setupUseImageCamera(drawablePath: String) {
         val selectedImageBitmap = getBitmapFromPath(drawablePath)
         viewModel?.imageDrawable = selectedImageBitmap
@@ -339,8 +321,6 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
 
     override fun onResume() {
         super.onResume()
-        getMakeUpEngine()?.onResume(context)
-        arViewLoader?.hide()
         getMakeUpEngine()?.setDetectionCallbackForCameraFeed(this)
     }
 
@@ -370,6 +350,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_CODE_IMAGE_PICKER -> {
+                arViewLoader?.hide()
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val result = ImagePickerResultExtractor.extract(data)
                     val imagePath = result.imageUrlOrPathList.firstOrNull()

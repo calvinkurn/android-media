@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.modiface.mfemakeupkit.MFEMakeupEngine
-import com.modiface.mfemakeupkit.data.MFEMakeupRenderingParameters
 import com.modiface.mfemakeupkit.effects.MFEMakeupProduct
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
@@ -27,6 +26,7 @@ import com.tokopedia.product_ar.model.state.GenerateMakeUpMode
 import com.tokopedia.product_ar.model.state.ImageMapMode
 import com.tokopedia.product_ar.util.ArGridImageDownloader
 import com.tokopedia.product_ar.util.ItemDividerGrid
+import com.tokopedia.product_ar.view.ProductArActivity
 import com.tokopedia.product_ar.view.ProductArListener
 import com.tokopedia.product_ar.view.adapter.PhotoComparisonAdapter
 import com.tokopedia.product_ar.view.partialview.PartialBottomArComparisonView
@@ -61,7 +61,6 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
     private var navToolbar: NavToolbar? = null
     private var layoutManager: GridLayoutManager? = null
     private val mainThreadHandler: Handler = Handler(Looper.getMainLooper())
-    private var makeUpEngineComparison: MFEMakeupEngine? = null
     private var loader: LoaderUnify? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -96,35 +95,18 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
         bottomComparissonView = PartialBottomArComparisonView.build(view, this)
         loader = view.findViewById(R.id.ar_grid_loader)
         loader?.show()
-        setupEngine()
         initView(view)
         setupNavToolbar()
         setupRv()
     }
 
-    private fun setupEngine() {
-        makeUpEngineComparison = MFEMakeupEngine(activity, MFEMakeupEngine.Region.US) { p0, p1, p2 ->
-            //noop
-        }
-        makeUpEngineComparison?.setMakeupRenderingParameters(MFEMakeupRenderingParameters(false))
-        makeUpEngineComparison?.loadResources(activity, null)
+    private fun getMakeUpEngine(): MFEMakeupEngine? {
+        return (activity as? ProductArActivity)?.getMakeUpEngine()
     }
 
     override fun onResume() {
         super.onResume()
         setEngineCallback(true)
-        makeUpEngineComparison?.onResume(context)
-    }
-
-    override fun onPause() {
-        makeUpEngineComparison?.onPause()
-        super.onPause()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        makeUpEngineComparison?.close()
-        makeUpEngineComparison = null
     }
 
     private fun observeData() {
@@ -165,7 +147,7 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
                      */
                     setEngineCallback()
                 }
-                makeUpEngineComparison?.setMakeupLook(it.mfeMakeupLook)
+                getMakeUpEngine()?.setMakeupLook(it.mfeMakeupLook)
             }
         }
     }
@@ -178,8 +160,8 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
 
     private fun observeInitialData() {
         sharedViewModel?.arListData?.observeOnce(viewLifecycleOwner) {
-            makeUpEngineComparison?.startRunningWithPhoto(it.second, false)
-            makeUpEngineComparison?.applyMakeupToPhotoInBackground(it.second, false,
+            getMakeUpEngine()?.startRunningWithPhoto(it.second, false)
+            getMakeUpEngine()?.applyMakeupToPhotoInBackground(it.second, false,
                     object : MFEMakeupEngine.ApplyMakeupToPhotoCompletionHandler {
                         override fun onMakeupAppliedToPhoto(p0: Bitmap?, p1: Bitmap?, p2: Throwable?) {
                             activity?.runOnUiThread(Runnable {
@@ -196,7 +178,7 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
     }
 
     private fun setEngineCallback(disabled: Boolean = false) {
-        makeUpEngineComparison?.setCallback(object : MFEMakeupEngine.u {
+        getMakeUpEngine()?.setCallback(object : MFEMakeupEngine.u {
             override fun a(p0: Bitmap?, p1: Bitmap?) {
                 if (!disabled) {
                     activity?.runOnUiThread {

@@ -39,8 +39,8 @@ class ProductArActivity : BaseSimpleActivity(), HasComponent<ProductArComponent>
         supportFragmentManager.beginTransaction().replace(parentViewResourceID,
                 ProductArComparisonFragment.newInstance(),
                 PRODUCT_AR_COMPARISON_FRAGMENT)
-                .addToBackStack(PRODUCT_AR_COMPARISON_FRAGMENT)
-                .commit()
+                .addToBackStack(null)
+                .commitAllowingStateLoss()
     }
 
     override fun getLayoutRes(): Int = R.layout.activity_product_ar
@@ -103,6 +103,16 @@ class ProductArActivity : BaseSimpleActivity(), HasComponent<ProductArComponent>
     override fun onDestroy() {
         super.onDestroy()
         mMakeupEngine?.close()
+    }
+
+    override fun onPause() {
+        getMakeUpEngine()?.onPause()
+        super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getMakeUpEngine()?.onResume(this)
     }
 
     override fun onMakeupEngineError(p0: MFEMakeupEngine.ErrorSeverity, p1: MFEMakeupEngine.ErrorType, p2: ArrayList<Throwable>) {
