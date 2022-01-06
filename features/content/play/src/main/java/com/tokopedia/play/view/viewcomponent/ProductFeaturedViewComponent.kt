@@ -58,6 +58,14 @@ class ProductFeaturedViewComponent(
     }
 
     fun setFeaturedProducts(products: List<PlayProductUiModel>, maxProducts: Int) {
+        if (products != adapter.getItems()) {
+            try {
+                rvProductFeatured.post {
+                    rvProductFeatured.invalidateItemDecorations()
+                }
+            } catch (ignored: IllegalStateException) {}
+        }
+
         val featuredItems = getFinalFeaturedItems(products, maxProducts)
         adapter.setItemsAndAnimateChanges(featuredItems)
 
