@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.custom
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
@@ -10,6 +11,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.listener.ReplyBoxTextListener
 import com.tokopedia.topchat.common.util.ViewUtil
@@ -22,6 +25,7 @@ class ComposeMessageAreaConstraintLayout : ConstraintLayout, LifecycleObserver {
 
     private var textWatcher: MessageTextWatcher? = null
     private var sendButtontextWatcher: ComposeTextWatcher? = null
+    private var bgComposeArea: Drawable? = null
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -64,6 +68,7 @@ class ComposeMessageAreaConstraintLayout : ConstraintLayout, LifecycleObserver {
     ) {
         initComposeMsgListener(typingListener, replyBoxTextListener)
         initComposeBackground()
+        setDefaultComposeBackground()
     }
 
     fun onSendMessage() {
@@ -74,8 +79,19 @@ class ComposeMessageAreaConstraintLayout : ConstraintLayout, LifecycleObserver {
         return composeArea?.text?.toString() ?: ""
     }
 
+    private fun setDefaultComposeBackground() {
+        val paddingStart =
+            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl7).toInt()
+        val paddingEnd =
+            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8).toInt()
+        val paddingTop = resources.getDimension(R.dimen.dp_topchat_11).toInt()
+        val paddingBottom = resources.getDimension(R.dimen.dp_topchat_10).toInt()
+        composeArea?.background = bgComposeArea
+        composeArea?.setPadding(paddingStart, paddingTop, paddingEnd, paddingBottom)
+    }
+
     private fun initComposeBackground() {
-        val bgComposeArea = ViewUtil.generateBackgroundWithShadow(
+        bgComposeArea = ViewUtil.generateBackgroundWithShadow(
             view = composeArea,
             backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
             topLeftRadius = R.dimen.dp_topchat_20,
@@ -87,14 +103,6 @@ class ComposeMessageAreaConstraintLayout : ConstraintLayout, LifecycleObserver {
             shadowRadius = R.dimen.dp_topchat_1,
             shadowGravity = Gravity.CENTER
         )
-        val paddingStart =
-            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl7).toInt()
-        val paddingEnd =
-            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8).toInt()
-        val paddingTop = resources.getDimension(R.dimen.dp_topchat_11).toInt()
-        val paddingBottom = resources.getDimension(R.dimen.dp_topchat_10).toInt()
-        composeArea?.background = bgComposeArea
-        composeArea?.setPadding(paddingStart, paddingTop, paddingEnd, paddingBottom)
     }
 
     private fun initComposeMsgListener(
@@ -106,7 +114,22 @@ class ComposeMessageAreaConstraintLayout : ConstraintLayout, LifecycleObserver {
             composeArea?.addTextChangedListener(textWatcher)
         }
         replyBoxTextListener?.let {
-            sendButtontextWatcher = ComposeTextWatcher(replyBoxTextListener)
+            sendButtontextWatcher = ComposeTextWatcher(
+                replyBoxTextListener,
+                object : ComposeTextWatcher.Listener {
+                    override fun onComposeTextLimitExceeded(offset: Int) {
+                        errorComposeMsg?.show()
+                        errorComposeMsg?.text = context?.getString(
+                            R.string.desc_topchat_max_char_exceeded, offset
+                        ) ?: ""
+                        composeArea?.setBackgroundResource(R.drawable.bg_topchat_error_too_long_msg)
+                    }
+
+                    override fun hideTextLimitError() {
+                        errorComposeMsg?.hide()
+                        setDefaultComposeBackground()
+                    }
+                })
             composeArea?.addTextChangedListener(sendButtontextWatcher)
         }
     }
