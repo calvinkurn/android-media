@@ -15,12 +15,14 @@ import com.tokopedia.home.beranda.domain.interactor.repository.*
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.*
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.DeclineRechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
@@ -31,6 +33,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.model.RechargePerso
@@ -153,11 +156,40 @@ fun HomeRoomDataSource.givenGetHomeRoomDataReturn(homeData: HomeData) {
     }
 }
 
+fun HomeSuggestedReviewUseCase.givenOnReviewDismissedReturn() {
+    coEvery { onReviewDismissed() } answers ({})
+}
+
 fun HomeDynamicChannelUseCase.givenGetHomeDataReturn(homeDynamicChannelModel: HomeDynamicChannelModel? = createDefaultHomeDataModel()) {
     coEvery { getHomeDataFlow() } returns flow{
         emit(homeDynamicChannelModel)
     }
 }
+
+fun HomePlayUseCase.givenOnUpdatePlayToggleReminderReturn(returnValue: Boolean = true) {
+    coEvery { onUpdatePlayWidgetToggleReminder(any(), any()) } returns returnValue
+}
+
+fun HomePlayUseCase.givenOnGetPlayWidgetUiModelReturn(playWidgetUiModel: PlayWidgetUiModel = PlayWidgetUiModel.Placeholder) {
+    coEvery { onGetPlayWidgetUiModel(any(), any(), any()) } returns playWidgetUiModel
+}
+
+fun HomePlayUseCase.givenOnUpdatePlayTotalViewReturn(carouselPlayWidgetDataModel: CarouselPlayWidgetDataModel = CarouselPlayWidgetDataModel(DynamicHomeChannel.Channels())) {
+    coEvery { onUpdatePlayTotalView(any(), any(), any()) } returns carouselPlayWidgetDataModel
+}
+
+fun HomePlayUseCase.givenOnUpdateActionReminderReturn(carouselPlayWidgetDataModel: CarouselPlayWidgetDataModel = CarouselPlayWidgetDataModel(DynamicHomeChannel.Channels())) {
+    coEvery { onUpdateActionReminder(any(), any(), any()) } returns carouselPlayWidgetDataModel
+}
+
+fun HomePlayUseCase.givenOnGetPlayWidgetWhenShouldRefreshReturn(playWidgetUiModel: PlayWidgetUiModel = PlayWidgetUiModel.Placeholder) {
+    coEvery { onGetPlayWidgetWhenShouldRefresh() } returns playWidgetUiModel
+}
+
+fun HomePlayUseCase.givenOnGetPlayWidgetWhenShouldRefreshError() {
+    coEvery { onGetPlayWidgetWhenShouldRefresh() } throws Exception()
+}
+
 
 fun HomeDynamicChannelUseCase.givenGetHomeDataError(t: Throwable = Throwable("Unit test simulate error")) {
     coEvery { getHomeDataFlow() } returns flow{

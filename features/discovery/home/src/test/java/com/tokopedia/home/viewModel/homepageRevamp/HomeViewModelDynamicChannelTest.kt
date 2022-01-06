@@ -133,4 +133,67 @@ class HomeViewModelDynamicChannelTest{
             Assert.assertTrue(it.error is Throwable)
         }
     }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `When selected position = 0 on removeViewHolderAtPosition then homeDataModel should remove model on position 0`(){
+        val selectedPosition = 0
+        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(
+                list = listOf(
+                        DynamicLegoBannerDataModel(channelModel = ChannelModel(id = "0", groupId = "")),
+                        DynamicLegoBannerDataModel(channelModel = ChannelModel(id = "1", groupId = "")),
+                        DynamicLegoBannerDataModel(channelModel = ChannelModel(id = "2", groupId = ""))
+                )
+        ))
+
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel.removeViewHolderAtPosition(selectedPosition)
+        homeViewModel.homeDataModel.findWidget<DynamicLegoBannerDataModel>(
+                predicate = {
+                            it?.channelModel?.id == selectedPosition.toString()
+                },
+                actionOnFound = { model, index ->
+                    Assert.assertTrue(false)
+                },
+                actionOnNotFound = {
+                    Assert.assertTrue(true)
+                }
+        )
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `When selected position = -1 on removeViewHolderAtPosition then homeDataModel should not changed`(){
+        val selectedPosition = -1
+        val mockList = listOf(
+                DynamicLegoBannerDataModel(channelModel = ChannelModel(id = "0", groupId = "")),
+                DynamicLegoBannerDataModel(channelModel = ChannelModel(id = "1", groupId = "")),
+                DynamicLegoBannerDataModel(channelModel = ChannelModel(id = "2", groupId = ""))
+        )
+        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(
+                list = mockList
+        ))
+
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel.removeViewHolderAtPosition(selectedPosition)
+        Assert.assertTrue(homeViewModel.homeDataModel.list.size == mockList.size)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `When selected position more than mockSizeList on removeViewHolderAtPosition then homeDataModel should not changed`(){
+        val selectedPosition = 4
+        val mockList = listOf(
+                DynamicLegoBannerDataModel(channelModel = ChannelModel(id = "0", groupId = "")),
+                DynamicLegoBannerDataModel(channelModel = ChannelModel(id = "1", groupId = "")),
+                DynamicLegoBannerDataModel(channelModel = ChannelModel(id = "2", groupId = ""))
+        )
+        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(
+                list = mockList
+        ))
+
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel.removeViewHolderAtPosition(selectedPosition)
+        Assert.assertTrue(homeViewModel.homeDataModel.list.size == mockList.size)
+    }
 }
