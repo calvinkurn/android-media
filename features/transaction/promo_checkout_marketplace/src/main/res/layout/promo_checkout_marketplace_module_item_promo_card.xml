@@ -161,7 +161,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:text="Lihat Detail"
+                    android:text="@string/label_promo_show_detail"
                     android:textColor="@color/Unify_GN500"
                     app:typographyType="body_3" />
 
@@ -169,17 +169,18 @@
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/divider_user_validity"
-                android:background="@color/Unify_N75"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="4dp"
+                android:background="@color/Unify_N75"
                 app:layout_constraintTop_toBottomOf="@+id/container_time_validity" />
 
-            <com.google.android.flexbox.FlexboxLayout
+            <LinearLayout
                 android:id="@+id/container_user_validity"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/Unify_GN100"
+                android:orientation="horizontal"
                 app:flexWrap="wrap"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -189,7 +190,8 @@
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/image_user_validity"
                     android:layout_width="13dp"
-                    android:layout_height="0dp"
+                    android:layout_height="13dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginStart="12dp"
                     android:scaleType="fitCenter"
                     app:unify_image_corner_radius="0"
@@ -208,24 +210,27 @@
                     app:typographyType="body_3"
                     tools:text="Khusus Pengguna Baru" />
 
-            </com.google.android.flexbox.FlexboxLayout>
+            </LinearLayout>
 
-            <com.google.android.flexbox.FlexboxLayout
+            <LinearLayout
                 android:id="@+id/container_clash_info"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/Unify_NN0"
+                android:gravity="top"
+                android:orientation="horizontal"
                 app:flexWrap="wrap"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/container_user_validity"
-                tools:visibility="gone">
+                tools:visibility="visible">
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/image_clash_info"
                     android:layout_width="13dp"
-                    android:layout_height="0dp"
+                    android:layout_height="13dp"
                     android:layout_marginStart="12dp"
+                    android:layout_marginTop="8dp"
                     android:scaleType="fitCenter"
                     app:unify_image_corner_radius="0"
                     app:unify_image_type="rect"
@@ -235,15 +240,16 @@
                     android:id="@+id/text_clash_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginStart="6dp"
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="6dp"
                     android:gravity="center_vertical"
                     android:textColor="@color/Unify_N700_68"
                     app:typographyType="body_3"
-                    tools:text="Tidak bisa digabung dengan kupon Samsung Mobile Indonesia yang dipilih." />
+                    tools:text="Tidak Indonesia Indonesia Indonesia Indonesia Indonesia Indonesia yang dipilih." />
 
-            </com.google.android.flexbox.FlexboxLayout>
+            </LinearLayout>
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/image_select_promo"
