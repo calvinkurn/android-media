@@ -1,9 +1,9 @@
 package com.tokopedia.tokopedianow.common.util
 
-import com.tokopedia.tokopedianow.common.domain.model.ServiceType
-
 object TokoNowServiceTypeUtil {
-    fun getDeliveryDurationCopy(serviceType: ServiceType, fifteenMinCopy: String, twoHrCopy: String) = if (serviceType == ServiceType.NOW_15M) fifteenMinCopy else twoHrCopy
+    private const val NOW_15M = "15m"
 
-    fun getDeliveryDurationCopyRes(serviceType: ServiceType, fifteenMinCopyRes: Int, twoHrCopyRes: Int) = if (serviceType == ServiceType.NOW_15M) fifteenMinCopyRes else twoHrCopyRes
+    fun getServiceTypeCopyWriting(serviceType: String, copyWriting15M: String, copyWriting2H: String) = if (serviceType == NOW_15M) copyWriting15M else copyWriting2H
+
+    fun getServiceTypeCopyWritingRes(serviceType: String, copyWriting15MRes: Int, copyWriting2HRes: Int) = if (serviceType == NOW_15M) copyWriting15MRes else copyWriting2HRes
 }

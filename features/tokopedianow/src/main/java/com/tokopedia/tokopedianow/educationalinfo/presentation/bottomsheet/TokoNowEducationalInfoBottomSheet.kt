@@ -12,9 +12,9 @@ import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.domain.model.ServiceType
-import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getDeliveryDurationCopy
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeCopyWriting
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowEducationalInformationBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -61,10 +61,10 @@ class TokoNowEducationalInfoBottomSheet :
                 val boldColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).toString()
 
                 tpTime.text = MethodChecker.fromHtml(
-                    getDeliveryDurationCopy(
-                        serviceType = ServiceType.NOW_15M,
-                        fifteenMinCopy = getString(R.string.tokopedianow_home_educational_information_bottomsheet_fifteen_minutes, boldColor, boldColor),
-                        twoHrCopy = getString(R.string.tokopedianow_home_educational_information_bottomsheet_two_hours, boldColor, boldColor)
+                    getServiceTypeCopyWriting(
+                        serviceType = LocalCacheModel().service_type,
+                        copyWriting15M = getString(R.string.tokopedianow_home_educational_information_bottomsheet_fifteen_minutes, boldColor, boldColor),
+                        copyWriting2H = getString(R.string.tokopedianow_home_educational_information_bottomsheet_two_hours, boldColor, boldColor)
                     )
                 )
 

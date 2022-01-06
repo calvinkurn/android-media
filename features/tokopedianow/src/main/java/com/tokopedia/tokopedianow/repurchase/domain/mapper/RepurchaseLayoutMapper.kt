@@ -16,7 +16,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.common.domain.model.ServiceType
 import com.tokopedia.tokopedianow.common.model.*
-import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getDeliveryDurationCopyRes
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeCopyWritingRes
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.SORT_FILTER
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseProductMapper.mapToProductListUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.factory.RepurchaseSortFilterFactory
@@ -113,14 +113,14 @@ object RepurchaseLayoutMapper {
         )
     }
 
-    fun MutableList<Visitable<*>>.addEmptyStateNoResult(serviceType: ServiceType) {
+    fun MutableList<Visitable<*>>.addEmptyStateNoResult(serviceType: String) {
         add(
             TokoNowEmptyStateNoResultUiModel(
                 defaultTitleResId = R.string.tokopedianow_repurchase_no_result_title,
-                defaultDescriptionResId = getDeliveryDurationCopyRes(
+                defaultDescriptionResId = getServiceTypeCopyWritingRes(
                     serviceType = serviceType,
-                    fifteenMinCopyRes = R.string.tokopedianow_repurchase_no_result_description_fifteen_minutes,
-                    twoHrCopyRes = R.string.tokopedianow_repurchase_no_result_description_two_hours
+                    copyWriting15MRes = R.string.tokopedianow_repurchase_no_result_description_fifteen_minutes,
+                    copyWriting2HRes = R.string.tokopedianow_repurchase_no_result_description_two_hours
                 ),
                 globalSearchBtnTextResId = R.string.tokopedianow_back_to_tokopedia
             )

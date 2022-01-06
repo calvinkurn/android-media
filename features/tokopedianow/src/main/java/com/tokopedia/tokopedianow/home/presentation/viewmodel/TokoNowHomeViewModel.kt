@@ -193,7 +193,8 @@ class TokoNowHomeViewModel @Inject constructor(
                 homeLayoutResponse,
                 hasTickerBeenRemoved,
                 hasSharingEducationBeenRemoved,
-                miniCartSimplifiedData
+                miniCartSimplifiedData,
+                localCacheModel.service_type
             ) { refreshPage(NOW_15M) }
 
             getLayoutComponentData(warehouseId)
@@ -237,7 +238,8 @@ class TokoNowHomeViewModel @Inject constructor(
                 homeLayoutItemList.addMoreHomeLayout(
                     homeLayoutResponse,
                     hasSharingEducationBeenRemoved,
-                    miniCartSimplifiedData
+                    miniCartSimplifiedData,
+                    localCacheModel.service_type
                 )
 
                 getLayoutComponentData(warehouseId)

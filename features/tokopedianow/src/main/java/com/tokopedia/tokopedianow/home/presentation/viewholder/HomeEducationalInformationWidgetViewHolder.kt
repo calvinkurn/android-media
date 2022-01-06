@@ -14,8 +14,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow.EDUCATION
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.domain.model.ServiceType
-import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeCopyWriting
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeEducationalInformationWidgetBinding
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEducationalInformationWidgetUiModel
@@ -40,20 +39,20 @@ class HomeEducationalInformationWidgetViewHolder(
 
     override fun bind(element: HomeEducationalInformationWidgetUiModel) {
         if (element.state == HomeLayoutItemState.LOADED) {
-            setupUi()
+            setupUi(element.serviceType)
             listener?.onEducationInformationWidgetImpressed()
         }
     }
 
-    private fun setupUi() {
+    private fun setupUi(serviceType: String) {
         binding?.apply {
             cvEducationalInfo.show()
 
             tpTime.text = MethodChecker.fromHtml(
-                TokoNowServiceTypeUtil.getDeliveryDurationCopy(
-                    serviceType = ServiceType.NOW_15M,
-                    fifteenMinCopy = getString(R.string.tokopedianow_home_educational_information_fifteen_minutes),
-                    twoHrCopy = getString(R.string.tokopedianow_home_educational_information_two_hours)
+                getServiceTypeCopyWriting(
+                    serviceType = serviceType,
+                    copyWriting15M = getString(R.string.tokopedianow_home_educational_information_fifteen_minutes),
+                    copyWriting2H = getString(R.string.tokopedianow_home_educational_information_two_hours)
                 )
             )
 
