@@ -71,8 +71,4 @@ abstract class ProductItemViewHolder(
             }
         }
     }
-
-    companion object{
-        private const val RATING_COUNT_CONVERTER_DIVISOR = 20f
-    }
 }
