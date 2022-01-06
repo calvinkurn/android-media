@@ -300,6 +300,13 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
                 buttonPromoDetail.setOnClickListener {
                     listener.onClickPromoItemDetail(element)
                 }
+
+                val buttonPromoDetailLayoutParam = buttonPromoDetail.layoutParams as ViewGroup.MarginLayoutParams
+                if (timeValidityInfo.title.isNotBlank() || imageTimeValidity.visibility == View.VISIBLE) {
+                    buttonPromoDetailLayoutParam.leftMargin = itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_4).toInt()
+                } else {
+                    buttonPromoDetailLayoutParam.leftMargin = itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_12).toInt()
+                }
                 containerTimeValidity.show()
             } else {
                 containerTimeValidity.gone()
@@ -315,8 +322,14 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
                 imageUserValidity.setImageUrl(bottomBanner.icon)
                 textUserValidity.text = HtmlLinkHelper(itemView.context, bottomBanner.title).spannedString
                 containerUserValidity.show()
+                if (element.uiState.isParentEnabled) {
+                    dividerUserValidity.invisible()
+                } else {
+                    dividerUserValidity.show()
+                }
             } else {
                 containerUserValidity.gone()
+                dividerUserValidity.gone()
             }
         }
     }
@@ -369,7 +382,7 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
 
     private fun updateImaginaryBorderViewVisibility(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding) {
         with(viewBinding) {
-            if (imageSelectPromo.visibility == View.VISIBLE ) {
+            if (imageSelectPromo.visibility == View.VISIBLE) {
                 imaginaryView.show()
             } else {
                 imaginaryView.gone()
