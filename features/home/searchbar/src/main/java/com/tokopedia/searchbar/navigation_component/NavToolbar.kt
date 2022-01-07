@@ -229,8 +229,8 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
 
         statusBarTheme?.let {
             when (it) {
-                StatusBar.STATUS_BAR_LIGHT -> statusBarUtil?.requestStatusBarLight()
-                StatusBar.STATUS_BAR_DARK -> statusBarUtil?.requestStatusBarDark()
+                StatusBar.STATUS_BAR_LIGHT -> statusBarUtil?.requestStatusBarDark()
+                StatusBar.STATUS_BAR_DARK -> statusBarUtil?.requestStatusBarLight()
                 else -> statusBarUtil?.requestStatusBarDark()
             }
         }

@@ -28,6 +28,7 @@ import com.tokopedia.shop.score.performance.presentation.model.HeaderShopPerform
 import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemFaqUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSellerUiModel
+import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
 import com.tokopedia.shop.score.uitest.stub.common.UserSessionStub
 import com.tokopedia.shop.score.uitest.stub.common.graphql.repository.GraphqlRepositoryStub
 import com.tokopedia.shop.score.uitest.stub.common.util.AndroidTestUtil
@@ -518,14 +519,12 @@ abstract class ShopScoreTest {
         }
     }
 
-    protected fun showFaqItemList(shopScoreResponseStub: ShopScoreResponseStub) {
+    protected fun showFaqItemList() {
         val recyclerViewMatcher = RecyclerViewMatcher(R.id.rv_faq_shop_score)
 
-        val itemFaqList = getFaqList(
-            shopScoreResponseStub.shopScoreLevel.result,
-            shopScoreResponseStub.goldGetPMShopInfoResponse,
-            shopScoreResponseStub.goldGetPMOSStatus.data.powerMerchant
-        )
+        val itemFaqList =
+            activityRule.activity.getShopPerformanceFragment().shopPerformanceAdapter.list.filterIsInstance<SectionFaqUiModel>()
+                .first().itemFaqUiModelList
 
         itemFaqList.forEachIndexed { index, itemFaqUiModel ->
             smoothScrollToFaq(index)
@@ -591,6 +590,7 @@ abstract class ShopScoreTest {
     }
 
     protected fun showCoachMarkShopScore() {
+        Thread.sleep(2000)
         val coachMark2 = CoachMark2(activityRule.activity)
         onContentDescPopup(context.getString(R.string.title_coachmark_shop_score_1)).isViewDisplayed()
         onContentDescPopup(context.getString(R.string.desc_coachmark_shop_score_1)).isViewDisplayed()
@@ -712,7 +712,8 @@ abstract class ShopScoreTest {
                         it,
                         scoreProtectedParameter.protectedParameterDaysDate
                     )
-                }).toString())
+                }).toString()
+        )
 
         closeBottomSheet()
     }

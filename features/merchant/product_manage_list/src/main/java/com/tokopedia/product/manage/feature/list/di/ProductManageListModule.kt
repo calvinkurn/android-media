@@ -49,7 +49,7 @@ class ProductManageListModule(private val context: Context) {
 
     @Provides
     @ProductManageListScope
-    fun provideGmCommonRepository(gmCommonDataSource: GMCommonDataSource?): GMCommonRepository {
+    fun provideGmCommonRepository(gmCommonDataSource: GMCommonDataSource): GMCommonRepository {
         return GMCommonRepositoryImpl(gmCommonDataSource)
     }
 
