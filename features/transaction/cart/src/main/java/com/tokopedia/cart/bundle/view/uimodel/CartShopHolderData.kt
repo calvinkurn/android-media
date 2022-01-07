@@ -2,6 +2,7 @@ package com.tokopedia.cart.bundle.view.uimodel
 
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.ShopTypeInfo
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 import java.util.*
 
 data class CartShopHolderData(
@@ -37,6 +38,7 @@ data class CartShopHolderData(
         var postalCode: String = "",
         var latitude: String = "",
         var longitude: String = "",
+        var boMetadata: BoMetadata = BoMetadata(),
         var boAffordability: CartShopBoAffordabilityData = CartShopBoAffordabilityData()
 ) {
     val shouldValidateWeight: Boolean

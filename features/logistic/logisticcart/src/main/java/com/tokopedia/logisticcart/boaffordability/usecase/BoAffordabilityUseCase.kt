@@ -3,16 +3,32 @@ package com.tokopedia.logisticcart.boaffordability.usecase
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.logisticcart.boaffordability.model.BoAffordabilityGqlResponse
 import com.tokopedia.logisticcart.boaffordability.model.BoAffordabilityResponse
 import com.tokopedia.logisticcart.boaffordability.model.BoAffordabilityTexts
+import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class BoAffordabilityUseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) : UseCase<BoAffordabilityResponse>() {
 
+    private var requestParam: RatesParam? = null
+
+    fun setParam(param: RatesParam): BoAffordabilityUseCase {
+        requestParam = param
+        return this
+    }
+
     @GqlQuery("BoAffordabilityQuery", QUERY)
     override suspend fun executeOnBackground(): BoAffordabilityResponse {
-//        return gqlRepository.response(listOf(GraphqlRequest(BoAffordabilityQuery(), BoAffordabilityGqlResponse::class.java)))
+        val param = this.requestParam?.toMap() ?: throw RuntimeException("Param must be initialized")
+        val request = GraphqlRequest(
+                BoAffordabilityQuery(),
+                BoAffordabilityGqlResponse::class.java,
+                mapOf("input" to param)
+        )
+//        return gqlRepository.response(listOf(request))
 //                .getData<BoAffordabilityGqlResponse>(BoAffordabilityGqlResponse::class.java).response
 
         return BoAffordabilityResponse(40_000, BoAffordabilityTexts(

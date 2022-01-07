@@ -1592,7 +1592,6 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                     // overweight
                     cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.FAILED
                     withContext(dispatchers.main) {
-                        view?.showToastMessageRed()
                         view?.updateCartBoAffordability(cartShopHolderData)
                     }
                     return@launch
@@ -1609,15 +1608,19 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                     originLatitude = cartShopHolderData.latitude
                     originPostalCode = cartShopHolderData.postalCode
                     weightInKilograms = shopTotalWeight / 1000
+                    weightActualInKilograms = shopTotalWeight / 1000
                     orderValue = subtotalPrice
                     shopId = cartShopHolderData.shopId
+                    shopTier = cartShopHolderData.shopTypeInfo.shopTier
                     uniqueId = cartShopHolderData.cartString
+                    isFulfillment = cartShopHolderData.isFulfillment
+                    boMetadata = cartShopHolderData.boMetadata
                     products = shopProductList.map { Product(it.productId.toLong(), it.isFreeShipping, it.isFreeShippingExtra) }
                 }
-                val ratesParam = RatesParam.Builder(shopShipments, shipping).build().toMap()
-                Log.i("qwertyuiop", ratesParam.toString())
+                val ratesParam = RatesParam.Builder(shopShipments, shipping).build()
+                Log.i("qwertyuiop", ratesParam.toMap().toString())
 
-                val response = boAffordabilityUseCase.executeOnBackground()
+                val response = boAffordabilityUseCase.setParam(ratesParam).executeOnBackground()
                 cartShopHolderData.boAffordability.tickerText = response.texts.tickerCart
                 if (subtotalPrice >= response.minTransaction) {
                     cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.SUCCESS_AFFORD
