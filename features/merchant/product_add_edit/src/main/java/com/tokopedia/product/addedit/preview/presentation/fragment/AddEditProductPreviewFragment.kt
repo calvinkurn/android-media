@@ -35,6 +35,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
@@ -311,7 +312,6 @@ class AddEditProductPreviewFragment :
             photoItemTouchHelper = ItemTouchHelper(photoItemTouchHelperCallback)
             photoItemTouchHelper?.attachToRecyclerView(it)
         }
-        productPhotosView?.show()
         addProductPhotoTipsLayout = view.findViewById(R.id.add_product_photo_tips_layout)
         addEditProductPhotoButton = view.findViewById(R.id.tv_start_add_edit_product_photo)
 
@@ -890,6 +890,19 @@ class AddEditProductPreviewFragment :
         showProductDetailPreview(productInputModel)
     }
 
+    private fun displayEditMode() {
+        toolbar?.headerTitle = getString(R.string.label_title_edit_product)
+        doneButton?.show()
+
+        enablePhotoEdit()
+        enableDetailEdit()
+        enableDescriptionEdit()
+        enableVariantEdit()
+        enableShipmentEdit()
+        enablePromotionEdit()
+        enableStatusEdit()
+    }
+
     private fun enablePhotoEdit() {
         addEditProductPhotoButton?.text = getString(R.string.action_add_product_photo)
         addProductPhotoTipsLayout?.hide()
@@ -960,8 +973,7 @@ class AddEditProductPreviewFragment :
         viewModel.isEditing.observe(viewLifecycleOwner, {
             setPageState(if (it || viewModel.isDuplicate) PageState.EDIT_MODE else PageState.ADD_MODE)
             if (it) {
-                toolbar?.headerTitle = getString(R.string.label_title_edit_product)
-                doneButton?.show()
+                displayEditMode()
             } else {
                 stopPerformanceMonitoring()
             }
@@ -1020,18 +1032,18 @@ class AddEditProductPreviewFragment :
     }
 
     private fun observeProductInputModel() {
-        viewModel.productInputModel.observe(viewLifecycleOwner, Observer {
-            enablePhotoEdit()
+        viewModel.productInputModel.observe(viewLifecycleOwner, {
             showProductPhotoPreview(it)
             showProductDetailPreview(it)
-            showEmptyVariantState(it.variantInputModel.products.isEmpty())
-            enableDescriptionEdit()
-            enableShipmentEdit()
-            enablePromotionEdit()
             updateProductStatusSwitch(it)
+            showEmptyVariantState(viewModel.productInputModel.value?.
+                                    variantInputModel?.products?.isEmpty().orFalse())
 
-            stopRenderPerformanceMonitoring()
-            stopPerformanceMonitoring()
+            if (viewModel.getDraftId() != Int.ZERO.toLong() ||
+                it.productId != Int.ZERO.toLong() ||
+                viewModel.getProductId().isNotBlank()) {
+                    displayEditMode()
+            }
 
             //check whether productInputModel has value from savedInstanceState
             if (productInputModel != null) {
@@ -1039,11 +1051,13 @@ class AddEditProductPreviewFragment :
                 checkEnableOrNot()
                 productInputModel = null
             }
+
+            stopRenderPerformanceMonitoring()
+            stopPerformanceMonitoring()
         })
     }
 
     private fun updateProductStatusSwitch(productInputModel: ProductInputModel) {
-        enableStatusEdit()
         productStatusSwitch?.isChecked = (productInputModel.detailInputModel.status == STATUS_ACTIVE)
     }
 
@@ -1244,12 +1258,10 @@ class AddEditProductPreviewFragment :
 
     private fun showProductDetailPreview(productInputModel: ProductInputModel) {
         val detailInputModel = productInputModel.detailInputModel
-        enableDetailEdit()
-        productDetailPreviewLayout?.animateExpand()
         productNameView?.text = detailInputModel.productName
         productPriceView?.text = "Rp " + InputPriceUtil.formatProductPriceInput(detailInputModel.price.toString())
         productStockView?.text = detailInputModel.stock.toString()
-        productDetailPreviewLayout?.show()
+        productDetailPreviewLayout?.animateExpand()
     }
 
     private fun showEmptyVariantState(isVariantEmpty: Boolean) {
@@ -1260,7 +1272,6 @@ class AddEditProductPreviewFragment :
             addEditProductVariantButton?.text = getString(R.string.action_change)
             addProductVariantTipsLayout?.animateCollapse()
         }
-        enableVariantEdit()
     }
 
     private fun showProductStatus(productData: Product) {
