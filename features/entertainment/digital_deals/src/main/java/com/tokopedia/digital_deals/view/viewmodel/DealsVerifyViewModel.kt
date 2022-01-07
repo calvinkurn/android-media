@@ -69,7 +69,7 @@ class DealsVerifyViewModel @Inject constructor(
                                         categoryId = dealsResponse.categoryId.toString(),
                                         startTime = getDateMilis(dealsResponse.minStartDate),
                                         endTime = getDateMilis(dealsResponse.maxEndDate),
-                                        price = dealsResponse.salesPrice,
+                                        price = dealsResponse.salesPrice.toDouble(),
                                         quantity = currentQuantity,
                                         totalPrice = currentQuantity * dealsResponse.salesPrice,
                                         scheduleTimestamp = dealsResponse.maxEndDate.toString(),

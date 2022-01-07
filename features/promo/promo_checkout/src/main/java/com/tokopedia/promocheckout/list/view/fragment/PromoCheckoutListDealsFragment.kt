@@ -116,7 +116,7 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
 
     override fun loadData(page: Int) {
         if (isCouponActive) {
-            promoCheckoutListPresenter.getListPromo(serviceId, 0, page, resources)
+            promoCheckoutListPresenter.getListPromo(serviceId, OMP_CATEGORY_ID, page, resources)
         }
         promoCheckoutListDealsPresenter.getListTravelCollectiveBanner(resources)
     }
@@ -131,19 +131,20 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
         val EXTRA_META_DATA = "EXTRA_META_DATA"
         val VOUCHER_CODE = "voucher_code"
         val VOUCHER_MESSAGE = "voucher_message"
+        val OMP_CATEGORY_ID = 0
         val PROMOCODE = "promocode"
 
         fun createInstance(isCouponActive: Boolean?, promoCode: String?, categoryId: Int?, categoryName: String?, grandTotal:Int?, metaData: String?, pageTracking: Int?, productId: String?): PromoCheckoutListDealsFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListDealsFragment()
             val bundle = Bundle()
             bundle.putBoolean(EXTRA_COUPON_ACTIVE, isCouponActive ?: true)
-            bundle.putString(EXTRA_PROMO_CODE, promoCode ?: "")
-            bundle.putString(EXTRA_CATEGORY_NAME, categoryName ?: "")
+            bundle.putString(EXTRA_PROMO_CODE, promoCode.orEmpty())
+            bundle.putString(EXTRA_CATEGORY_NAME, categoryName.orEmpty())
             bundle.putInt(EXTRA_CATEGORY_ID, categoryId ?: 1)
             bundle.putInt(EXTRA_GRAND_TOTAL, grandTotal ?: 0)
             bundle.putInt(PAGE_TRACKING, pageTracking ?: 1)
-            bundle.putString(EXTRA_PRODUCTID, productId ?: "")
-            bundle.putString(EXTRA_META_DATA, metaData ?: "")
+            bundle.putString(EXTRA_PRODUCTID, productId.orEmpty())
+            bundle.putString(EXTRA_META_DATA, metaData.orEmpty())
             promoCheckoutListMarketplaceFragment.arguments = bundle
             return promoCheckoutListMarketplaceFragment
         }

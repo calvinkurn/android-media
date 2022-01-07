@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -89,9 +90,10 @@ data class ItemMap(
         @SerializedName("end_time")
         @Expose
         var endTime : String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
-        var price : Int = 0,
+        var price : Double = 0.0,
         @SerializedName("quantity")
         @Expose
         var quantity : Int = 0,

@@ -111,9 +111,9 @@ class PromoCheckoutDetailDealsFragment : BasePromoCheckoutDetailFragment() {
             val bundle = Bundle()
             bundle.putString(EXTRA_KUPON_CODE, codeCoupon)
             bundle.putBoolean(EXTRA_IS_USE, isUse)
-            bundle.putString(EXTRA_CATEGORY_NAME, categoryName ?: "")
+            bundle.putString(EXTRA_CATEGORY_NAME, categoryName.orEmpty())
             bundle.putInt(EXTRA_GRAND_TOTAL, grandTotal ?: 0)
-            bundle.putString(EXTRA_META_DATA, metaData ?: "")
+            bundle.putString(EXTRA_META_DATA, metaData.orEmpty())
             promoCheckoutDetailDealsFragment.arguments = bundle
             return promoCheckoutDetailDealsFragment
         }

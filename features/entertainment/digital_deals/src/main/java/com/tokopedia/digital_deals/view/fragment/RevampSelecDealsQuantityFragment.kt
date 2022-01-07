@@ -1,6 +1,7 @@
 package com.tokopedia.digital_deals.view.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Paint
 import android.graphics.PorterDuff
@@ -191,17 +192,17 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
     private fun setButtons(){
         context?.let {
             if (currentQuantity > 1) {
-                iv_subtract.setColorFilter(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G400), PorterDuff.Mode.SRC_IN)
+                iv_subtract.setColorFilter(getGreenColor(it), PorterDuff.Mode.SRC_IN)
                 iv_subtract.setClickable(true)
             } else {
-                iv_subtract.setColorFilter(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N150), PorterDuff.Mode.SRC_IN)
+                iv_subtract.setColorFilter(getGrayColor(it), PorterDuff.Mode.SRC_IN)
                 iv_subtract.setClickable(false)
             }
             if (currentQuantity < maxQuantity) {
-                iv_add.setColorFilter(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G400), PorterDuff.Mode.SRC_IN)
+                iv_add.setColorFilter(getGreenColor(it), PorterDuff.Mode.SRC_IN)
                 iv_add.setClickable(true)
             } else {
-                iv_add.setColorFilter(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N150), PorterDuff.Mode.SRC_IN)
+                iv_add.setColorFilter(getGrayColor(it), PorterDuff.Mode.SRC_IN)
                 iv_add.setClickable(false)
             }
         }
@@ -221,6 +222,14 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
 
     private fun hideProgress(){
         progress_bar_layout?.hide()
+    }
+
+    private fun getGreenColor(context: Context): Int {
+        return ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
+    }
+
+    private fun getGrayColor(context: Context): Int {
+        return ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N150)
     }
 
     companion object{

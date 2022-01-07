@@ -16,15 +16,15 @@ class PromoCheckoutDetailDealsPresenter(private val getDetailCouponMarketplaceUs
 
     override fun getDetailPromo(slug: String) {
         view?.let {
-        view.showLoading()
+        it.showLoading()
 
         getDetailCouponMarketplaceUseCase.execute(getDetailCouponMarketplaceUseCase.createRequestParams(slug),
                 object : Subscriber<GraphqlResponse>() {
 
                     override fun onError(e: Throwable) {
                         if (isViewAttached) {
-                            view.hideLoading()
-                            view.onErroGetDetail(e)
+                            it.hideLoading()
+                            it.onErroGetDetail(e)
                         }
                     }
 
@@ -33,9 +33,9 @@ class PromoCheckoutDetailDealsPresenter(private val getDetailCouponMarketplaceUs
                     }
 
                     override fun onNext(response: GraphqlResponse?) {
-                        view.hideLoading()
+                        it.hideLoading()
                         val dataDetailCheckoutPromo = response?.getData<DataPromoCheckoutDetail>(DataPromoCheckoutDetail::class.java)
-                        view.onSuccessGetDetailPromo(dataDetailCheckoutPromo?.promoCheckoutDetailModel
+                        it.onSuccessGetDetailPromo(dataDetailCheckoutPromo?.promoCheckoutDetailModel
                                 ?: throw RuntimeException())
                     }
                 })
@@ -44,22 +44,22 @@ class PromoCheckoutDetailDealsPresenter(private val getDetailCouponMarketplaceUs
 
     override fun processCheckDealPromoCode(code: List<String>, categoryName: String, metaData: String, grandTotal: Int) {
         view?.let {
-            view.showProgressLoading()
+            it.showProgressLoading()
             dealsCheckVoucherUseCase.execute(dealsCheckVoucherUseCase.createRequestParams(code, categoryName, metaData, grandTotal), object : Subscriber<GraphqlResponse>() {
                 override fun onNext(objects: GraphqlResponse) {
-                    view.hideProgressLoading()
+                    it.hideProgressLoading()
                     val checkDealsData = objects.getSuccessData<DealsPromoCheckResponse>()
                     if (checkDealsData.eventValidateUsePromo.data.global_success) {
-                        view.onSuccessCheckPromo(DealsCheckoutMapper.mapDataNew(checkDealsData.eventValidateUsePromo.data))
+                        it.onSuccessCheckPromo(DealsCheckoutMapper.mapDataNew(checkDealsData.eventValidateUsePromo.data))
                     } else {
-                        view.onErrorCheckPromo(com.tokopedia.network.exception.MessageErrorException(checkDealsData.eventValidateUsePromo.data.usage_details.firstOrNull()?.message?.text))
+                        it.onErrorCheckPromo(com.tokopedia.network.exception.MessageErrorException(checkDealsData.eventValidateUsePromo.data.usage_details.firstOrNull()?.message?.text))
                     }
                 }
 
                 override fun onError(e: Throwable) {
                     if (isViewAttached) {
-                        view.hideProgressLoading()
-                        view.onErrorCheckPromo(e)
+                        it.hideProgressLoading()
+                        it.onErrorCheckPromo(e)
                     }
                 }
 

@@ -18,7 +18,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.voucher_item_card_deals.view.*
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 import java.util.concurrent.TimeUnit
 
 

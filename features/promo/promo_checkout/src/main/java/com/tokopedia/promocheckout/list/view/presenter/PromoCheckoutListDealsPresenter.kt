@@ -30,19 +30,19 @@ class PromoCheckoutListDealsPresenter(
             view.showProgressLoading()
             dealsCheckVoucherUseCase.execute(dealsCheckVoucherUseCase.createRequestParams(code, categoryName, metaData, grandTotal), object : Subscriber<GraphqlResponse>(){
                 override fun onNext(objects: GraphqlResponse) {
-                    view.hideProgressLoading()
+                    it.hideProgressLoading()
                     val checkDealsData = objects.getSuccessData<DealsPromoCheckResponse>()
                     if (checkDealsData.eventValidateUsePromo.data.global_success){
-                        view.onSuccessCheckPromo(DealsCheckoutMapper.mapDataNew(checkDealsData.eventValidateUsePromo.data))
+                        it.onSuccessCheckPromo(DealsCheckoutMapper.mapDataNew(checkDealsData.eventValidateUsePromo.data))
                     } else {
-                        view.onErrorCheckPromo(com.tokopedia.network.exception.MessageErrorException(checkDealsData.eventValidateUsePromo.data.usage_details.firstOrNull()?.message?.text))
+                        it.onErrorCheckPromo(com.tokopedia.network.exception.MessageErrorException(checkDealsData.eventValidateUsePromo.data.usage_details.firstOrNull()?.message?.text))
                     }
                 }
 
                 override fun onError(e: Throwable) {
                     if (isViewAttached){
-                        view.hideProgressLoading()
-                        view.onErrorCheckPromo(e)
+                        it.hideProgressLoading()
+                        it.onErrorCheckPromo(e)
                     }
                 }
 

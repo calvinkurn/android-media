@@ -1,7 +1,15 @@
 package com.tokopedia.promocheckout.common.domain.mapper
 
-import com.tokopedia.promocheckout.common.domain.model.deals.*
-import com.tokopedia.promocheckout.common.view.uimodel.*
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.promocheckout.common.domain.model.deals.DataDeals
+import com.tokopedia.promocheckout.common.domain.model.deals.DealsVerifyResponse
+import com.tokopedia.promocheckout.common.domain.model.deals.Details
+import com.tokopedia.promocheckout.common.domain.model.deals.Summaries
+import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel
+import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
+import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel
+import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
+import com.tokopedia.promocheckout.common.view.uimodel.DetailUiModel
 
 object DealsCheckoutMapper {
 
@@ -24,7 +32,7 @@ object DealsCheckoutMapper {
                 success = data.global_success,
                 message = mapMessageDeals(data.usage_details.firstOrNull()?.message?.text ?: ""),
                 codes = listOf(data.usage_details.firstOrNull()?.code ?: ""),
-                promoCodeId = data.promo_code_id.toInt(),
+                promoCodeId = data.promo_code_id.toIntOrZero(),
                 titleDescription = data.benefit_summary_info.final_benefit_text,
                 discountAmount = if (data.usage_details.firstOrNull()?.benefit_summary?.firstOrNull()?.
                         benefit_details?.firstOrNull()?.benefit_type?.equals(CASHBACK, true) ?: false)

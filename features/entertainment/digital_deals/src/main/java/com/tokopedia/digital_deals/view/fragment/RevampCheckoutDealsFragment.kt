@@ -29,7 +29,6 @@ import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics
 import com.tokopedia.digital_deals.view.utils.Utils
 import com.tokopedia.digital_deals.view.viewmodel.DealsCheckoutViewModel
-import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -38,6 +37,11 @@ import javax.inject.Inject
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.loadImage
 
 class RevampCheckoutDealsFragment : BaseDaggerFragment() {
 

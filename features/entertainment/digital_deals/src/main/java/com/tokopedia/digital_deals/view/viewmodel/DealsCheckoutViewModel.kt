@@ -62,9 +62,8 @@ class DealsCheckoutViewModel @Inject constructor(
 
       fun mapCheckoutDeals(dealsDetail: DealsDetailsResponse, verify: EventVerifyResponse, promoCodes: List<String>):
               DealCheckoutGeneral {
-            val gson = Gson()
             val checkoutGeneral = DealCheckoutGeneral()
-            val cartInfo = CartInfo(gson.toJson(mapToIntMetaData(verify.metadata)), dealsDetail?.checkoutDataType ?: DEFAULT_CHECKOUT_DATA_TYPE)
+            val cartInfo = CartInfo(Gson().toJson(mapToIntMetaData(verify.metadata)), dealsDetail?.checkoutDataType ?: DEFAULT_CHECKOUT_DATA_TYPE)
             checkoutGeneral.carts.businessType = dealsDetail?.checkoutBusinessType
             checkoutGeneral.carts.cartInfo.add(0, cartInfo)
             checkoutGeneral.carts.promoCodes = promoCodes
@@ -73,9 +72,8 @@ class DealsCheckoutViewModel @Inject constructor(
 
       fun mapCheckoutDealsInstant(dealsDetail: DealsDetailsResponse, verify: EventVerifyResponse, promoCodes: List<String>):
               DealCheckoutGeneralInstant {
-            val gson = Gson()
             val checkoutGeneral = DealCheckoutGeneralInstant()
-            val cartInfo = CartInfo(gson.toJson(mapToIntMetaData(verify.metadata)), dealsDetail?.checkoutDataType ?: DEFAULT_CHECKOUT_DATA_TYPE)
+            val cartInfo = CartInfo(Gson().toJson(mapToIntMetaData(verify.metadata)), dealsDetail?.checkoutDataType ?: DEFAULT_CHECKOUT_DATA_TYPE)
             checkoutGeneral.carts.businessType = dealsDetail?.checkoutBusinessType
             checkoutGeneral.carts.cartInfo.add(0, cartInfo)
             checkoutGeneral.carts.promoCodes = promoCodes
@@ -84,8 +82,7 @@ class DealsCheckoutViewModel @Inject constructor(
       }
 
       fun getMetaDataString(verify: EventVerifyResponse): String {
-            val gson = Gson()
-            return gson.toJson(mapToIntMetaData(verify.metadata))
+            return Gson().toJson(mapToIntMetaData(verify.metadata))
       }
 
       private fun mapToIntMetaData(metaDataResponse: MetaDataResponse): DealsMetaDataCheckout {
@@ -153,7 +150,7 @@ class DealsCheckoutViewModel @Inject constructor(
 
       private fun convertStringListtoIntList(listString: List<String>): List<Int> {
             return listString.map {
-                  it.toInt()
+                  it.toIntOrZero()
             }
       }
 
