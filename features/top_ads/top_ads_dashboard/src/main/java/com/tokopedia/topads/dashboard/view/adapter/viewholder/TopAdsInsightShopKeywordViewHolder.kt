@@ -1,9 +1,12 @@
 package com.tokopedia.topads.dashboard.view.adapter.viewholder
 
+import android.content.Context
+import android.os.Build
 import android.text.Html
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.dashboard.R
@@ -17,7 +20,8 @@ import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.topads_insight_keyword_recomm_item.view.*
 
-class TopAdsInsightShopKeywordViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+class TopAdsInsightShopKeywordViewHolder(private val context: Context, private val view: View) :
+    RecyclerView.ViewHolder(view) {
 
     val edtBid: TextFieldUnify = view.findViewById(R.id.edtBid)
     val checkBox: CheckboxUnify = view.findViewById(R.id.checkBox)
@@ -92,15 +96,15 @@ class TopAdsInsightShopKeywordViewHolder(private val view: View) : RecyclerView.
         text = message
         item.isError = isError
         if (isError) {
-            setTextColor(resources.getColor(R.color.Unify_R600, null))
+            setTextColor(ContextCompat.getColor(context,com.tokopedia.topads.dashboard.R.color.Unify_R600))
             item.errorMessage = message
         } else {
-            setTextColor(resources.getColor(R.color.Unify_N700_68, null))
+            setTextColor(ContextCompat.getColor(context,com.tokopedia.topads.dashboard.R.color.Unify_N700_68))
             item.errorMessage = null
         }
     }
 
-    fun closeEditTextFee(item: RecommendedKeywordDetail) {
+    private fun closeEditTextFee(item: RecommendedKeywordDetail) {
         if (edtBid.visibility == View.VISIBLE) {
             txtSubTitle2Value.show()
             btnEditFee.show()

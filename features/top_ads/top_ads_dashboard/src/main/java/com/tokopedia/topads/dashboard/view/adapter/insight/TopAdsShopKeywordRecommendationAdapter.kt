@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.adapter.insight
 
+import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordDe
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsInsightShopKeywordViewHolder
 
 class TopAdsShopKeywordRecommendationAdapter(
+    private val context: Context,
     private var list: MutableList<RecommendedKeywordDetail>,
     private val type: Int,
     private val lstnr: (Int) -> Unit,
@@ -26,7 +28,7 @@ class TopAdsShopKeywordRecommendationAdapter(
         viewType: Int
     ): TopAdsInsightShopKeywordViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
-        val holder = TopAdsInsightShopKeywordViewHolder(view)
+        val holder = TopAdsInsightShopKeywordViewHolder(context, view)
         holder.edtBid.textFieldInput.addTextChangedListener(object : TextWatcher {
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -116,11 +118,12 @@ class TopAdsShopKeywordRecommendationAdapter(
         private val layout = R.layout.topads_insight_keyword_recomm_item
 
         fun createInstance(
+            context: Context,
             list: MutableList<RecommendedKeywordDetail>,
             type: Int,
             lstnr: (Int) -> Unit,
             error: (RecommendedKeywordDetail) -> Unit
-        ) = TopAdsShopKeywordRecommendationAdapter(list, type, lstnr, error)
+        ) = TopAdsShopKeywordRecommendationAdapter(context, list, type, lstnr, error)
     }
 
 }

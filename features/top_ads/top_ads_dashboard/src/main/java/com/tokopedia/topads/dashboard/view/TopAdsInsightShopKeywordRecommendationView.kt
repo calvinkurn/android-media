@@ -24,6 +24,7 @@ class TopAdsInsightShopKeywordRecommendationView(
     private var recyclerViewKeyword: RecyclerView? = null
     private val mAdapter by lazy {
         TopAdsShopKeywordRecommendationAdapter.createInstance(
+            context,
             recommendedKeywordData.recommendedKeywordDetails!!,
             type, ::onKeywordSelected, ::keywordError
         )
@@ -53,8 +54,14 @@ class TopAdsInsightShopKeywordRecommendationView(
 
     private fun keywordError(item: RecommendedKeywordDetail) {
         if (item.isError && item.errorMessage != null) {
-            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_90)
-            Toaster.build(rootView, resources.getString(R.string.topads_insight_keyword_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            Toaster.toasterCustomBottomHeight =
+                resources.getDimensionPixelSize(com.tokopedia.topads.dashboard.R.dimen.dp_90)
+            Toaster.build(
+                rootView,
+                resources.getString(R.string.topads_insight_keyword_error),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            ).show()
         }
     }
 
