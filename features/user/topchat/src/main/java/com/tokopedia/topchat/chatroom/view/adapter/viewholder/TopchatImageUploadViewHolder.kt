@@ -22,7 +22,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 
 class TopchatImageUploadViewHolder(
     itemView: View?,
-    listener: ImageUploadListener,
+    private val listener: ImageUploadListener,
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener,
     private val commonListener: CommonViewHolderListener,
 ) : ImageUploadViewHolder(itemView, listener) {
@@ -100,6 +100,14 @@ class TopchatImageUploadViewHolder(
         }
     }
 
+    override fun bindClickListener(element: ImageUploadUiModel) {
+        attachmentUnify?.setOnClickListener { view ->
+            if (element.imageUrl != null && element.replyTime != null) {
+                listener.onImageUploadClicked(element.imageUrl!!, element.replyTime!!)
+            }
+        }
+    }
+
     override fun setChatLeft(chatBalloon: View?) {
         replyBubbleArea?.alignLeft()
         viewContainer?.gravity = Gravity.START
@@ -130,7 +138,7 @@ class TopchatImageUploadViewHolder(
     }
 
     private fun hideReadStatusIfRetry(element: ImageUploadUiModel) {
-        if(element.isRetry) {
+        if (element.isRetry) {
             chatReadStatus.hide()
         }
     }

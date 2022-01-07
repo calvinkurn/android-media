@@ -200,7 +200,7 @@ open class BaseChatUiModel constructor(
         }
 
         fun withMarkAsDeleted(): B {
-            withMsg("Pesan ini telah dihapus.")
+            withMsg(DEFAULT_DELETED_MSG)
             withBubbleStatus(STATUS_DELETED)
             return self()
         }
@@ -318,6 +318,7 @@ open class BaseChatUiModel constructor(
         companion object {
             const val DEFAULT_ATTACHMENT_ID = ""
             const val DEFAULT_ATTACHMENT_TYPE = ""
+            const val DEFAULT_DELETED_MSG = "Pesan ini telah dihapus."
 
             /**
              * replyTime needs to be on nano second format

@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.view.custom
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
@@ -155,6 +156,17 @@ class FlexBoxChatLayout : ViewGroup {
 
     fun setMessage(msg: CharSequence?) {
         message?.text = msg
+    }
+
+    fun setMessageTypeFace(chat: MessageUiModel) {
+        val typeface = if (chat.isDeleted()) {
+            Typeface.ITALIC
+        } else {
+            Typeface.NORMAL
+        }
+        message?.let {
+            it.setTypeface(null, typeface)
+        }
     }
 
     fun setHourTime(time: String) {

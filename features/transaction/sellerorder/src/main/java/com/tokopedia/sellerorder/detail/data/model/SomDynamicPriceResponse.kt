@@ -17,7 +17,10 @@ data class SomDynamicPriceResponse(
             val paymentMethod: List<PaymentMethod> = listOf(),
             @Expose
             @SerializedName("pricing_data")
-            val pricingData: List<PricingData> = listOf()
+            val pricingData: List<PricingData> = listOf(),
+            @Expose
+            @SerializedName("promo_shipping")
+            val promoShipping: PromoShipping? = null
     ) {
         data class PaymentMethod(
                 @Expose
@@ -44,6 +47,18 @@ data class SomDynamicPriceResponse(
                 @Expose
                 @SerializedName("value")
                 val value: String = ""
+        )
+
+        data class PromoShipping(
+            @Expose
+            @SerializedName("label")
+            val label: String? = "",
+            @Expose
+            @SerializedName("value")
+            val value: String? = "",
+            @Expose
+            @SerializedName("value_detail")
+            val valueDetail: String? = ""
         )
     }
 }
