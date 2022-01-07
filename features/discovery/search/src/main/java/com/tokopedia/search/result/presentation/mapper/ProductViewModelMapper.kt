@@ -50,15 +50,12 @@ class ProductViewModelMapper {
         isLocalSearch: Boolean,
         dimension90: String,
         keyword: String,
-        excludeTopAds: Boolean,
     ): ProductDataView {
         val (searchProductHeader, searchProductData) = searchProductModel.searchProduct
 
         val productDataView = ProductDataView()
 
-        if(!excludeTopAds) {
-            productDataView.adsModel = searchProductModel.topAdsModel
-        }
+        productDataView.adsModel = searchProductModel.topAdsModel
         productDataView.globalNavDataView = convertToViewModel(
             searchProductModel.globalSearchNavigation
         )

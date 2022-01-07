@@ -208,7 +208,6 @@ class ProductListPresenter @Inject constructor(
     private var threeDotsProductItem: ProductItemDataView? = null
     private var firstProductPositionWithBOELabel = -1
     private var isEnableChooseAddress = false
-    private var isABTestNegativeNoAds : Boolean  = false
     private var chooseAddressData: LocalCacheModel? = null
     private var bannerDataView: BannerDataView? = null
     private var categoryIdL2 = ""
@@ -221,8 +220,11 @@ class ProductListPresenter @Inject constructor(
         super.attachView(view)
 
         isEnableChooseAddress = view.isChooseAddressWidgetEnabled
-        isABTestNegativeNoAds = getABTestNegativeNoAds()
         if (isEnableChooseAddress) chooseAddressData = view.chooseAddressData
+    }
+
+    private val isABTestNegativeNoAds : Boolean  by lazy {
+        getABTestNegativeNoAds()
     }
 
     private fun getABTestNegativeNoAds() :Boolean {
@@ -245,7 +247,6 @@ class ProductListPresenter @Inject constructor(
 
     override val deviceId: String
         get() = userSession.deviceId
-
 
     override fun onPriceFilterTickerDismissed() {
         isTickerHasDismissed = true
@@ -459,12 +460,12 @@ class ProductListPresenter @Inject constructor(
         totalData = productDataView.totalData
     }
 
-    private fun isDisableAdsNegativeKeywords(searchProductModel: SearchProductModel) :Boolean {
-        return isABTestNegativeNoAds && searchProductModel.isAdvancedNegativeKeywordSearch()
+    private fun isDisableAdsNegativeKeywords(productDataView: ProductDataView) :Boolean {
+        return isABTestNegativeNoAds && productDataView.isAdvancedNegativeKeywordSearch()
     }
 
-    private fun isHideProductAds(searchProductModel: SearchProductModel) : Boolean {
-        return isLocalSearch() || isDisableAdsNegativeKeywords(searchProductModel)
+    private fun isHideProductAds(productDataView: ProductDataView) : Boolean {
+        return isLocalSearch() || isDisableAdsNegativeKeywords(productDataView)
     }
 
     private fun createProductDataView(
@@ -481,7 +482,6 @@ class ProductListPresenter @Inject constructor(
             isLocalSearch(),
             dimension90,
             keyword,
-            isHideProductAds(searchProductModel)
         )
 
         saveLastProductItemPositionToCache(lastProductItemPosition, productDataView.productList)
@@ -547,7 +547,7 @@ class ProductListPresenter @Inject constructor(
 
     private fun createProductItemVisitableList(productDataView: ProductDataView): MutableList<Visitable<*>> {
         val list: MutableList<Visitable<*>> = productDataView.productList.toMutableList()
-        if (isLocalSearch()) return list
+        if (isHideProductAds(productDataView)) return list
         val adsModel = productDataView.adsModel ?: return list
 
         var j = 0
