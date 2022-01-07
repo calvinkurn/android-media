@@ -102,6 +102,10 @@ data class ShopInfo(
         @Expose
         val branchLinkDomain: String = "",
 
+        @SerializedName("ticker")
+        @Expose
+        val ticker: Ticker = Ticker()
+
 ) {
     fun isShopInfoNotEmpty():Boolean {
         return shopCore.shopID.isNotEmpty()
@@ -300,4 +304,57 @@ data class ShopInfo(
             @Expose
             val totalShowcase: String = ""
     )
+
+    data class Ticker(
+        @SerializedName("tickerData")
+        @Expose
+        val tickerDatumResponses: List<TickerDataResponse> = listOf()
+    ) {
+
+        data class TickerDataResponse(
+            @SerializedName("title")
+            @Expose
+            val title: String = "",
+            @SerializedName("message")
+            @Expose
+            val message: String = "",
+            @SerializedName("color")
+            @Expose
+            val color: String = "",
+            @SerializedName("link")
+            @Expose
+            val link: String = "",
+            @SerializedName("action")
+            @Expose
+            val action: String = "",
+            @SerializedName("actionLink")
+            @Expose
+            val actionLink: String = "",
+            @SerializedName("tickerType")
+            @Expose
+            val tickerType: Int = 0,
+            @SerializedName("actionBottomSheet")
+            @Expose
+            val actionBottomSheet: TickerActionBs = TickerActionBs()
+        )
+
+        data class TickerActionBs(
+            @SerializedName("title")
+            @Expose
+            val title: String = "",
+            @SerializedName("message")
+            @Expose
+            val message: String = "",
+            @SerializedName("reason")
+            @Expose
+            val reason: String = "",
+            @SerializedName("buttonText")
+            @Expose
+            val buttonText: String = "",
+            @SerializedName("buttonLink")
+            @Expose
+            val buttonLink: String = ""
+        )
+    }
+
 }
