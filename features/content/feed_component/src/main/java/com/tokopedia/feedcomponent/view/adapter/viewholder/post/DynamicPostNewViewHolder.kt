@@ -64,10 +64,12 @@ open class DynamicPostNewViewHolder(
             PAYLOAD_COMMENT -> postDynamicView.setCommentCount(element.feedXCard.comments)
             PAYLOAD_FRAGMENT_VISIBLE -> postDynamicView.setVideo(true)
             PAYLOAD_FRAGMENT_GONE -> postDynamicView.setVideo(false)
-            PAYLOAD_POST_VISIBLE -> postDynamicView.bindImage(
-                element.feedXCard.tags,
-                element.feedXCard.media[0]
-            )
+            PAYLOAD_POST_VISIBLE -> if (element.feedXCard.media.isNotEmpty()){
+                postDynamicView.bindImage(
+                        element.feedXCard.tags,
+                        element.feedXCard.media[0]
+                )
+            }
         }
     }
 

@@ -1825,6 +1825,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         if (adapter.getlist()[positionInFeed] is DynamicPostUiModel) {
             val item = (adapter.getlist()[positionInFeed] as DynamicPostUiModel)
+            if (item.feedXCard.tags.isNotEmpty())
             feedAnalytics.eventClickBSitem(
                 if (item.feedXCard.typename == TYPE_FEED_X_CARD_PLAY) item.feedXCard.playChannelID else item.feedXCard.id,
                 item.feedXCard.tags,
@@ -1837,6 +1838,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         if (adapter.getlist()[positionInFeed] is TopadsHeadLineV2Model) {
             val item = (adapter.getlist()[positionInFeed] as TopadsHeadLineV2Model)
+            if (item.feedXCard.tags.isNotEmpty())
             feedAnalytics.eventClickBSitem(
                     item.feedXCard.id,
                     item.feedXCard.tags,
