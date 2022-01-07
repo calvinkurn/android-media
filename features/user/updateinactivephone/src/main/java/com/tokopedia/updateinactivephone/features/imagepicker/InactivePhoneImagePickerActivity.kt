@@ -1,5 +1,6 @@
 package com.tokopedia.updateinactivephone.features.imagepicker
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -23,9 +24,15 @@ class InactivePhoneImagePickerActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? {
-        return cameraViewMode?.let {
-            InactivePhoneCameraFragment.instance(it)
-        } as Fragment
+        return if (cameraViewMode != null) {
+            cameraViewMode?.let {
+                InactivePhoneCameraFragment.instance(it)
+            }
+        } else {
+            setResult(Activity.RESULT_CANCELED)
+            finish()
+            null
+        }
     }
 
     companion object {

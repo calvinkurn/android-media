@@ -49,7 +49,7 @@
             android:name="com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity"
             android:theme="@style/Theme.White"
             android:label="@string/product_manage_set_cashback"
-            android:screenOrientation="portrait"
+            android:screenOrientation="behind"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -63,11 +63,6 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.tokopedia.product.manage.feature.etalase.view.activity.EtalasePickerActivity"
-            android:label="@string/product_manage_etalase_picker_title"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".feature.campaignstock.ui.activity.CampaignStockActivity"
             android:label="@string/product_manage_campaign_stock_allocation"
