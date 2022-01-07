@@ -3,6 +3,7 @@ package com.tokopedia.localizationchooseaddress.domain.model
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.DEFAULT_LCA_VERSION
 
 data class LocalCacheModel (
         @Expose
@@ -47,7 +48,11 @@ data class LocalCacheModel (
 
         @Expose
         @SerializedName("service_type")
-        val service_type: String = ""
+        val service_type: String = "",
+
+        @Expose
+        @SerializedName("version")
+        val version: String = DEFAULT_LCA_VERSION
 ) {
 
     /**
