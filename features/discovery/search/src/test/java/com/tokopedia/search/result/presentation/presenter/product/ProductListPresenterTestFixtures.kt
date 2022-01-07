@@ -12,6 +12,7 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.topads.sdk.domain.model.Data
+import com.tokopedia.topads.sdk.utils.TopAdsHeadlineHelper
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -41,6 +42,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
     protected val searchCoachMarkLocalCache = mockk<CoachMarkLocalCache>(relaxed = true)
+    protected val topAdsHeadlineHelper = mockk<TopAdsHeadlineHelper>(relaxed = true)
     protected val testSchedulersProvider = object : SchedulersProvider {
         override fun io() = Schedulers.immediate()
 
@@ -65,6 +67,7 @@ internal open class ProductListPresenterTestFixtures {
             { saveLastFilterUseCase },
             topAdsUrlHitter,
             testSchedulersProvider,
+                topAdsHeadlineHelper
         )
         productListPresenter.attachView(productListView)
 
