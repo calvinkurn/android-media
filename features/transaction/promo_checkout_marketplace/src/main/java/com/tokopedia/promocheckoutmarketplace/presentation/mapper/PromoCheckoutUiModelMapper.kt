@@ -163,7 +163,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     isCausingOtherPromoClash = false
                     isHighlighted = couponItem.isHighlighted
                     val lastPromo = couponSubSection.coupons.lastOrNull()
-                    isLastPromoItem = lastPromo != null && lastPromo.code == couponItem.code
+                    isLastPromoItem = lastPromo != null && (lastPromo.code == couponItem.code || lastPromo.groupId == couponItem.groupId)
                 }
         )
         promoItem.uiState.isDisabled = !promoItem.uiState.isParentEnabled || promoItem.uiData.errorMessage.isNotBlank()
