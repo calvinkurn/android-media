@@ -20,13 +20,18 @@ class SetUserPreferenceUseCase @Inject constructor(graphqlRepository: GraphqlRep
 
     private val graphql by lazy { GraphqlUseCase<SetUserPreference>(graphqlRepository) }
 
-    suspend fun execute(localCacheModel: LocalCacheModel): SetUserPreferenceData {
+    suspend fun execute(localCacheModel: LocalCacheModel, serviceType: String): SetUserPreferenceData {
         graphql.apply {
+            val shopId = localCacheModel.shop_id.toInt()
+            val warehouses = localCacheModel.warehouses
+            val warehouse = warehouses.first { it.service_type == serviceType }
+            val warehouseId = warehouse.warehouse_id.toInt()
+
             val requestParams = RequestParams().apply {
-                putInt(PARAM_SHOP_ID, localCacheModel.shop_id.toInt())
-                putInt(PARAM_WAREHOUSE_ID, localCacheModel.warehouse_id.toInt())
-                putString(PARAM_SERVICE_TYPE, localCacheModel.service_type)
-                putObject(PARAM_WAREHOUSES, localCacheModel.warehouses)
+                putInt(PARAM_SHOP_ID, shopId)
+                putInt(PARAM_WAREHOUSE_ID, warehouseId)
+                putString(PARAM_SERVICE_TYPE, serviceType)
+                putObject(PARAM_WAREHOUSES, warehouses)
             }.parameters
 
             setGraphqlQuery(SetUserPreferenceQuery)
