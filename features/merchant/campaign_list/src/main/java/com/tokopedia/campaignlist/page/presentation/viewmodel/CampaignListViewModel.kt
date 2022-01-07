@@ -37,6 +37,8 @@ class CampaignListViewModel @Inject constructor(
         const val NPL_ICON_URL = "https://images.tokopedia.net/img/android/campaign_list/npl_icon.png"
         private const val ONGOING_STATUS_ID = "7"
         private const val NO_OVERLOAD_PRODUCT = 0
+        private const val NO_PRODUCT = 0
+        private const val DISPLAYED_PRODUCT_COUNT = 3
     }
 
     private var campaignName = ""
@@ -263,8 +265,7 @@ class CampaignListViewModel @Inject constructor(
     }
 
     fun calculateOverloadProductCount(totalProductCount: Int): Int {
-        val displayedProductCount = 3
-        val overloadProductCount = totalProductCount - displayedProductCount
+        val overloadProductCount = totalProductCount - DISPLAYED_PRODUCT_COUNT
         return if (overloadProductCount <= NO_OVERLOAD_PRODUCT) {
             NO_OVERLOAD_PRODUCT
         } else {
@@ -276,7 +277,7 @@ class CampaignListViewModel @Inject constructor(
         return try {
             unsafeProductCount.toInt()
         } catch (e: Exception) {
-            0
+            NO_PRODUCT
         }
     }
 }

@@ -3,7 +3,7 @@ package com.tokopedia.campaignlist.page.presentation.fragment
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.KeyEvent.*
+import android.view.KeyEvent.KEYCODE_ENTER
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -99,6 +99,7 @@ class CampaignListFragment : BaseDaggerFragment(),
         const val OFFICIAL_STORE = "Official Store"
         const val POWER_MERCHANT_PRO = "Power Merchant PRO"
         const val VALUE_SHARE_RS = "ShopRS" // Rilisan Spesial
+        private const val DEFAULT_SELECTED_CAMPAIGN_TYPE_ID = 0
     }
 
     override fun getScreenName(): String {
@@ -150,7 +151,7 @@ class CampaignListFragment : BaseDaggerFragment(),
     override fun onApplyCampaignTypeFilter(selectedCampaignType: CampaignTypeSelection) {
         campaignTypeFilter?.title = selectedCampaignType.campaignTypeName
         campaignTypeFilter?.type = ChipsUnify.TYPE_SELECTED
-        var campaignTypeId = 0
+        var campaignTypeId = DEFAULT_SELECTED_CAMPAIGN_TYPE_ID
         try {
             campaignTypeId = selectedCampaignType.campaignTypeId.toInt()
         } catch (e: java.lang.Exception) {
