@@ -40,7 +40,7 @@ const val DEFAULT_VALUE = false
 
 const val PROJECT_ID = 20
 
-const val WITHDRAWAL_APPLINK_STAGING = "tokopedia://webview?titlebar=false&url=https://1002-staging-feature.tokopedia.com/portal/withdrawal"
+const val WITHDRAWAL_APPLINK_STAGING = "tokopedia://webview?titlebar=false&url=https://1248-staging-feature.tokopedia.com/portal/withdrawal"
 
 const val WITHDRAWAL_APPLINK_PROD = "tokopedia://webview?titlebar=false&url=https://1329-beta-feature.tokopedia.com/portal/withdrawal"
 
