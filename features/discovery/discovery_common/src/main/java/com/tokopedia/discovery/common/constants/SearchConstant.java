@@ -158,8 +158,6 @@ public interface SearchConstant {
         String AB_TEST_SHOP_RATING_VARIANT_C = "Rating Only";
         String AB_TEST_KEY_THREE_DOTS_SEARCH = "3 Dots Search";
         String AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS = "Full Options";
-        String AB_TEST_KEYWORD_ADV_NEG = "keyword_adv_neg";
-        String AB_TEST_NEGATIVE_NO_ADS = "negative_no_ads";
     }
 
     interface ProductCardLabel {
