@@ -106,6 +106,7 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
                 imageSelectPromoLayoutParam.topMargin = 0
             }
 
+            textUserValidity.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             renderIconColorState(imageUserValidity, STATE_SELECTED)
         }
     }
