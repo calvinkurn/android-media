@@ -1,0 +1,132 @@
+package com.tokopedia.imagepicker.media_picker.widget
+
+import android.annotation.TargetApi
+import android.content.Context
+import android.os.Build
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
+import com.tokopedia.imagepicker.R
+import com.tokopedia.imagepicker.media_picker.adapter.MediaPickerThumbnailAdapter
+
+class MediaPickerPreviewWidget : FrameLayout {
+    private var mediaPickerThumbnailAdapter: MediaPickerThumbnailAdapter? = null
+    private var recyclerView: RecyclerView? = null
+    private var backgroundColorPlaceHolder: Int? = null
+    private var canReorder: Boolean = false
+    private var maxVideo: Int = 1
+
+    interface MediaPickerPreviewWidgetListener {
+        fun onLimitVideoListener()
+    }
+
+    constructor (context: Context) : super(context) {
+        init(null)
+    }
+
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+        init(attrs)
+    }
+
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+        init(attrs)
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    constructor(
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+        defStyleRes: Int
+    ) : super(context, attrs, defStyleAttr, defStyleRes){
+        init(attrs)
+    }
+
+    private fun init(attrs: AttributeSet?) {
+        LayoutInflater.from(getContext()).inflate(
+            R.layout.widget_image_picker_thumbnail_list,
+            this, true
+        )
+        mediaPickerThumbnailAdapter = MediaPickerThumbnailAdapter(
+            getContext(), arrayListOf(), arrayListOf()
+        )
+        if (attrs != null) {
+            setAttribute(attrs)
+        }
+        recyclerView = findViewById(R.id.recycler_view)
+        recyclerView!!.layoutManager =
+            LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
+        recyclerView!!.setHasFixedSize(true)
+        recyclerView!!.adapter = mediaPickerThumbnailAdapter
+        val animator = recyclerView!!.itemAnimator
+        if (animator is SimpleItemAnimator) {
+            animator.supportsChangeAnimations = false
+        }
+    }
+
+    private fun setAttribute(attrs: AttributeSet?) {
+        val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.MediaPickerPreviewWidget, 0 , 0)
+        val defaultColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        backgroundColorPlaceHolder = typedArray.getColor(R.styleable.MediaPickerPreviewWidget_backgroundColorPlaceHolder, defaultColor)
+        canReorder = typedArray.getBoolean(R.styleable.MediaPickerPreviewWidget_canReorder, false)
+        maxVideo = typedArray.getInteger(R.styleable.MediaPickerPreviewWidget_maxVideo, 1)
+        mediaPickerThumbnailAdapter?.backgroundColorPlaceHolder = backgroundColorPlaceHolder!!
+        mediaPickerThumbnailAdapter?.canReorder = canReorder
+    }
+
+    fun setCanReorder(canReorder: Boolean) {
+        mediaPickerThumbnailAdapter!!.canReorder = canReorder
+    }
+
+    fun setData(
+        imagePathList: List<String>, usePrimaryString: Boolean,
+        placeholderDrawableList: List<Int>
+    ) {
+        mediaPickerThumbnailAdapter!!.setData(
+            imagePathList.toMutableList(),
+            usePrimaryString,
+            placeholderDrawableList.toMutableList()
+        )
+    }
+
+    fun addData(imagePath: String?) {
+        mediaPickerThumbnailAdapter!!.addData(imagePath!!)
+        recyclerView!!.postDelayed({
+            val position = mediaPickerThumbnailAdapter!!.getImagePathList()!!.size
+            recyclerView!!.smoothScrollToPosition(
+                if (position >= mediaPickerThumbnailAdapter!!.itemCount) position - 1 else position
+            )
+        }, 1)
+    }
+
+    fun removeData(imagePath: String?): Int {
+        val position = mediaPickerThumbnailAdapter!!.removeData(imagePath!!)
+        recyclerView!!.postDelayed(
+            { recyclerView!!.smoothScrollToPosition(if (position > 0) position - 1 else position) },
+            1
+        )
+        return position
+    }
+
+    fun setMaxAdapterSize(size: Int) {
+        mediaPickerThumbnailAdapter!!.setMaxData(size)
+        mediaPickerThumbnailAdapter!!.notifyDataSetChanged()
+    }
+
+    fun setMaxVideo(max: Int) {
+        maxVideo = max
+        mediaPickerThumbnailAdapter?.maxVideo = max
+    }
+
+    fun setOnLimitListener(listener: MediaPickerPreviewWidget.MediaPickerPreviewWidgetListener) {
+       mediaPickerThumbnailAdapter?.setOnLimitListener(listener)
+    }
+
+    fun removeListener() {
+        mediaPickerThumbnailAdapter?.removeListener()
+    }
+}
