@@ -24,10 +24,10 @@ class OSFeaturedShopDCCallback(private val dcEventHandler: DynamicChannelEventHa
     }
 
     override fun onFeaturedShopItemImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-        dcEventHandler.onFeaturedShopDCImpressed(channelGrid, position)
+        dcEventHandler.onFeaturedShopDCImpressed(channelModel, channelGrid, position, parentPosition)
     }
 
     override fun onFeaturedShopItemClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-        dcEventHandler.onFeaturedShopDCClicked(channelGrid, position, channelGrid.applink)
+        dcEventHandler.onFeaturedShopDCClicked(channelModel, channelGrid, position, parentPosition)
     }
 }

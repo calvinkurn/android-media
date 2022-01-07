@@ -9,18 +9,19 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class DigitalCheckoutDataParameter(
-        var voucherCode: String = "",
-        var cartId: String = "",
-        var transactionAmount: Double = 0.0,
-        var ipAddress: String = "",
-        var userAgent: String = "",
-        var accessToken: String = "",
-        var walletRefreshToken: String = "",
-        var relationType: String = "",
-        var relationId: String = "",
-        var isNeedOtp: Boolean = false,
+    var voucherCode: String = "",
+    var cartId: String = "",
+    var transactionAmount: Double = 0.0,
+    var ipAddress: String = "",
+    var userAgent: String = "",
+    var accessToken: String = "",
+    var walletRefreshToken: String = "",
+    var relationType: String = "",
+    var relationId: String = "",
+    var isNeedOtp: Boolean = false,
+    var deviceId: Int = 5,
 
-        var isSubscriptionChecked: Boolean = false,
-        var fintechProducts: HashMap<String, FintechProduct> = hashMapOf(),
-        var userInputPriceValue: Long? = null
+    var isSubscriptionChecked: Boolean = false,
+    var fintechProducts: HashMap<String, FintechProduct> = hashMapOf(),
+    var userInputPriceValue: Long? = null
 ) : Parcelable

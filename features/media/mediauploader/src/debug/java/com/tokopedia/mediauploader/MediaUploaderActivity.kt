@@ -23,7 +23,7 @@ import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageRounded
-import com.tokopedia.mediauploader.MediaUploaderViewModel.Companion.UploadState
+import com.tokopedia.mediauploader.MediaUploaderStateManager.Companion.UploadState
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.mbToBytes
 import com.tokopedia.mediauploader.di.DaggerMediaUploaderTestComponent
@@ -53,7 +53,7 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
 
     private val viewModel by lazy {
         ViewModelProvider(this)
-            .get(MediaUploaderViewModel::class.java)
+            .get(MediaUploaderStateManager::class.java)
     }
 
     private var mediaFilePath = ""
