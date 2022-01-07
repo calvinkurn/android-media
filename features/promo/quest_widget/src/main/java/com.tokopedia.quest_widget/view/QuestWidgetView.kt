@@ -3,6 +3,7 @@ package com.tokopedia.quest_widget.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -116,6 +117,11 @@ class QuestWidgetView @JvmOverloads constructor(
                 }
                 LiveDataResult.STATUS.EMPTY_DATA ->{
                     hide()
+
+                    val params: ViewGroup.LayoutParams = this.layoutParams
+                    params.height = 0
+                    params.width = 0
+                    this.layoutParams = params
                     questWidgetCallbacks.deleteQuestWidget()
                 }
             }
