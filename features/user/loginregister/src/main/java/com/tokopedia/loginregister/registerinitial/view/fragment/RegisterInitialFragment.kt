@@ -62,7 +62,6 @@ import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.common.view.dialog.ProceedWithPhoneDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
-import com.tokopedia.loginregister.databinding.FragmentInitialRegisterBinding
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.pojo.ProviderData
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
@@ -108,7 +107,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.android.synthetic.main.fragment_initial_register.*
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -182,8 +181,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     private var isRegisterOvo = false
 
-    private val binding: FragmentInitialRegisterBinding? by viewBinding()
-
     override fun onStart() {
         super.onStart()
         activity?.let {
@@ -249,22 +246,19 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_initial_register, parent, false)
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setViewBinding()
+        val view = inflater.inflate(R.layout.fragment_initial_register, parent, false)
+        optionTitle = view.findViewById(R.id.register_option_title)
+        separator = view.findViewById(R.id.separator)
+        partialRegisterInputView = view.findViewById(R.id.register_input_view)
+        emailPhoneEditText = partialRegisterInputView.findViewById(R.id.input_email_phone)
+        registerButton = view.findViewById(R.id.register)
+        socmedButton = view.findViewById(R.id.socmed_btn)
+        textTermAndCondition = view.findViewById(R.id.text_term_privacy)
+        container = view.findViewById(R.id.container)
+        progressBar = view.findViewById(R.id.progress_bar)
+        tickerAnnouncement = view.findViewById(R.id.ticker_announcement)
+        bannerRegister = view.findViewById(R.id.banner_register)
         prepareView()
-        setSmartLogin()
-        fetchRemoteConfig()
-        initObserver()
-        initData()
-        setupToolbar()
-    }
-
-    private fun setSmartLogin() {
         if (isSmartLogin) {
             showProgressBar()
             activity?.let {
@@ -277,22 +271,16 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 }
             }
         }
+        return view
     }
 
-    private fun setViewBinding() {
-        binding?.let {
-            optionTitle = it.registerOptionTitle
-            separator =it.separator
-            partialRegisterInputView = it.registerInputView
-            emailPhoneEditText = partialRegisterInputView.etInputEmailPhone!!
-            registerButton = it.register
-            socmedButton = it.socmedBtn
-            textTermAndCondition = it.textTermPrivacy
-            container = it.container
-            progressBar = it.progressBar
-            tickerAnnouncement = it.tickerAnnouncement
-            bannerRegister = it.bannerRegister
-        }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        fetchRemoteConfig()
+        initObserver()
+        initData()
+        setupToolbar()
     }
 
     private fun setupToolbar() {
@@ -329,7 +317,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
         val emailExtensionList = mutableListOf<String>()
         emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
-        partialRegisterInputView.setEmailExtension(binding?.emailExtension, emailExtensionList)
+        partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView.initKeyboardListener(view)
 
         if (!GlobalConfig.isSellerApp()) {
@@ -1040,7 +1028,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 if (socmedButtonsContainer.getChildAt(lastPos) !is LoaderUnify) {
                     socmedButtonsContainer.addView(pb, socmedButtonsContainer.childCount)
                 }
-                binding?.emailExtension?.hide()
+                emailExtension?.hide()
             }
         }
     }

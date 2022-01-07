@@ -605,6 +605,7 @@ public class BranchWrapper implements WrapperInterface {
 
     private String mapDeeplinkToScreenName(){
         if(!TextUtils.isEmpty(getDefferedDeeplinkForSession())
+                && getDefferedDeeplinkForSession().startsWith(LinkerConstants.TOKOPEDIA_SCHEME)
                 && getDefferedDeeplinkForSession().contains(LinkerConstants.DISCOVERY_PATH)) {
             String[] deeplinkArray = getDefferedDeeplinkForSession().split(LinkerConstants.QUERY_PARAM_SEPARATOR);
             if (deeplinkArray.length > 0 && !TextUtils.isEmpty(deeplinkArray[0])) {

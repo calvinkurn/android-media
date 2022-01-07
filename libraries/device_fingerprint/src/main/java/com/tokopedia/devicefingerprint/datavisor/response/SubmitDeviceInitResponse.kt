@@ -7,5 +7,10 @@ data class SubmitDeviceInitResponse(
 )
 
 data class SubDvcIntlEvent(
-        @SerializedName("is_error") val isError: Boolean
+        @SerializedName("is_error") val isError: Boolean,
+        @SerializedName("data") val dvData: DVData
+)
+
+data class DVData(
+        @SerializedName("is_expire") val isExpire: Boolean
 )

@@ -108,10 +108,11 @@ internal fun createInspirationCarouselListener(): InspirationCarouselListener {
 
 internal fun createBroadMatchListener(): BroadMatchListener {
     return object: BroadMatchListener {
-        override fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
+        override fun onBroadMatchImpressed(broadMatchItemDataView: BroadMatchDataView) {}
         override fun onBroadMatchSeeMoreClicked(broadMatchDataView: BroadMatchDataView) {}
-        override fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
         override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {}
+        override fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
+        override fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
         override val carouselRecycledViewPool: RecyclerView.RecycledViewPool?
             get() = null
     }
