@@ -101,6 +101,7 @@ import com.tokopedia.product.detail.common.SingleClick
 import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.bottomsheet.OvoFlashDealsBottomSheet
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
+import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
@@ -1637,6 +1638,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     viewModel.variantData,
                     getComponentPositionBeforeUpdate(pdpUiUpdater?.productNewVariantDataModel))
         }
+
+        pdpUiUpdater?.updateArData(productId ?: "",
+                viewModel.p2Data.value?.arInfo ?: ProductArInfo())
+
         updateUi()
         doSomethingAfterVariantUpdated?.invoke()
     }

@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.data.model
 
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
 import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
@@ -55,7 +56,8 @@ data class ProductInfoP2UiData(
         var alternateCopy: List<AlternateCopy> = listOf(),
         var bundleInfoMap: Map<String, BundleInfo> = emptyMap(),
         var rating: ProductRatingCount = ProductRatingCount(),
-        var ticker: ProductTicker = ProductTicker()
+        var ticker: ProductTicker = ProductTicker(),
+        var arInfo: ProductArInfo = ProductArInfo()
 ) {
     fun getTickerByProductId(productId: String): List<TickerDataResponse>? {
         return ticker.tickerInfo.firstOrNull {

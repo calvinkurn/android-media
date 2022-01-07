@@ -19,6 +19,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.affiliate.AffiliateUIIDRequest
+import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
@@ -177,11 +178,14 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.CONTENT_WIDGET -> {
                     listOfComponent.add(
-                        ContentWidgetDataModel(
-                            type = component.type,
-                            name = component.componentName
-                        )
+                            ContentWidgetDataModel(
+                                    type = component.type,
+                                    name = component.componentName
+                            )
                     )
+                }
+                ProductDetailConstant.AR_BUTTON -> {
+                    listOfComponent.add(ArButtonDataModel(type = component.type, name = component.componentName))
                 }
             }
         }
@@ -391,7 +395,7 @@ object DynamicProductDetailMapper {
     fun generateAffiliateShareData(productInfo: DynamicProductInfoP1, shopInfo: ShopInfo?,
                                    variantData: ProductVariant?): AffiliatePDPInput {
         return AffiliatePDPInput(
-                pageType= "pdp",
+                pageType = "pdp",
                 product = Product(
                         productID = productInfo.basic.productID,
                         catLevel1 = productInfo.basic.category.detail.firstOrNull()?.id ?: "0",

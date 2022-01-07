@@ -8,6 +8,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
@@ -16,6 +17,7 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCat
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
+import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
@@ -149,6 +151,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     val contentWidgetData: ContentWidgetDataModel?
         get() = mapOfData[ProductDetailConstant.PLAY_CAROUSEL] as? ContentWidgetDataModel
+
+    val productArData: ArButtonDataModel?
+        get() = mapOfData[ProductDetailConstant.AR_BUTTON] as? ArButtonDataModel
 
     fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?, enableVideo: Boolean, loadInitialData: Boolean = false) {
         dataP1?.let {
@@ -429,7 +434,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     totalReviewCount = it.rating.totalReviewTextAndImage
                 }
             }
-            
+
             updateData(ProductDetailConstant.PRODUCT_BUNDLING) {
                 productBundlingData?.bundleInfo = it.bundleInfoMap[productId]
             }
@@ -439,10 +444,24 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             } else {
                 updateTicker(it.getTickerByProductId(productId))
             }
+
+            updateArData(productId, it.arInfo)
         }
     }
 
-    fun updateTicker(data : List<TickerDataResponse>?) {
+    fun updateArData(selectedProductId: String, arInfo: ProductArInfo) {
+        updateData(ProductDetailConstant.AR_BUTTON) {
+            if (arInfo.isProductIdContainsAr(selectedProductId)) {
+                productArData?.applink = arInfo.applink
+                productArData?.message = arInfo.message
+                productArData?.imageUrl = arInfo.imageUrl
+            } else {
+                productArData?.message = ""
+            }
+        }
+    }
+
+    fun updateTicker(data: List<TickerDataResponse>?) {
         updateData(ProductDetailConstant.TICKER_INFO) {
             tickerInfoMap?.run {
                 tickerDataResponse = if (data != null && data.isNotEmpty()) {

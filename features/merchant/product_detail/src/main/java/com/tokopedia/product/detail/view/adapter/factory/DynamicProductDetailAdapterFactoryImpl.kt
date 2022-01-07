@@ -7,6 +7,7 @@ import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.view.AtcVariantListener
+import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
@@ -41,6 +42,7 @@ import com.tokopedia.product.detail.view.viewholder.ContentWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.OneLinersViewHolder
 import com.tokopedia.product.detail.view.viewholder.PageErrorViewHolder
 import com.tokopedia.product.detail.view.viewholder.PdpComparisonWidgetViewHolder
+import com.tokopedia.product.detail.view.viewholder.ProductArViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductBundlingViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductCategoryCarouselViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductContentViewHolder
@@ -68,12 +70,11 @@ import com.tokopedia.product.detail.view.viewholder.ProductVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.TopAdsHeadlineViewHolder
 
 class DynamicProductDetailAdapterFactoryImpl(
-    private val listener: DynamicProductDetailListener,
-    private val variantListener: AtcVariantListener,
-    private val userId: String,
-    private val playWidgetCoordinator: PlayWidgetCoordinator
-)
-    : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
+        private val listener: DynamicProductDetailListener,
+        private val variantListener: AtcVariantListener,
+        private val userId: String,
+        private val playWidgetCoordinator: PlayWidgetCoordinator
+) : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
     override fun type(data: ProductRecommendationDataModel): Int {
         return ProductRecommendationViewHolder.LAYOUT
     }
@@ -190,6 +191,10 @@ class DynamicProductDetailAdapterFactoryImpl(
         return ContentWidgetViewHolder.LAYOUT
     }
 
+    override fun type(data: ArButtonDataModel): Int {
+        return ProductArViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(view, listener)
@@ -224,13 +229,14 @@ class DynamicProductDetailAdapterFactoryImpl(
                 val playWidgetView: View? = view.findViewById(R.id.pdp_play_widget_view)
                 if (playWidgetView != null) {
                     ContentWidgetViewHolder(
-                        view, listener, PlayWidgetViewHolder(
+                            view, listener, PlayWidgetViewHolder(
                             itemView = playWidgetView,
                             coordinator = playWidgetCoordinator
-                        )
+                    )
                     )
                 } else super.createViewHolder(view, type)
             }
+            ProductArViewHolder.LAYOUT -> ProductArViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
     }

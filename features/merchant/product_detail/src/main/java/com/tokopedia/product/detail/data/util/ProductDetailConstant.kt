@@ -94,6 +94,7 @@ object ProductDetailConstant {
     const val PRODUCT_BUNDLING = "product_bundling"
     const val CONTENT_WIDGET = "content_widget"
     const val PLAY_CAROUSEL = "play_carousel"
+    const val AR_BUTTON = "button_ar"
 
     //Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
