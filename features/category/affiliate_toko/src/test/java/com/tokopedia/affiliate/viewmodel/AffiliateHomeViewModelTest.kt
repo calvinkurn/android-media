@@ -118,8 +118,9 @@ class AffiliateHomeViewModelTest{
             PAGE_ZERO)
 
         affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO)
+        assertEquals(affiliateHomeViewModel.getAffiliateItemCount().value,0)
 
-//        assertEquals(affiliateHomeViewModel.getAffiliateDataItems().value,listResponse)
+
     }
 
     @Test
