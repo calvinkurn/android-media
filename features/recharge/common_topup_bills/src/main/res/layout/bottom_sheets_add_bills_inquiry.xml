@@ -22,7 +22,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:visibility="visible"
         app:unifyButtonSize="large"
-        android:text="@string/common_topup_enquiry_default_label"
+        android:text="@string/common_topup_enquiry_add_bills_label"
         />
 
 </LinearLayout>

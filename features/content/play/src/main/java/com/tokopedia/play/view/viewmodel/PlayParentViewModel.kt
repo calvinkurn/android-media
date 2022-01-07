@@ -115,7 +115,7 @@ class PlayParentViewModel constructor(
         }
     }
 
-    fun getLatestChannelStorageData(channelId: String): PlayChannelData = playChannelStateStorage.getData(channelId) ?: error("Channel not found")
+    fun getLatestChannelStorageData(channelId: String): PlayChannelData = playChannelStateStorage.getData(channelId) ?: error("Channel with ID $channelId not found")
 
     fun setLatestChannelStorageData(
             channelId: String,
@@ -158,10 +158,20 @@ class PlayParentViewModel constructor(
                 }
             }
 
-            _observableChannelIdsResult.value = PageResult(
+            startingChannelId?.let { channelId ->
+                _observableChannelIdsResult.value = PageResult(
+                    currentValue = playChannelStateStorage.getChannelList(),
+                    state = if(playChannelStateStorage.getData(channelId)?.upcomingInfo?.isUpcoming == true)
+                                PageResultState.Upcoming(channelId = channelId)
+                            else PageResultState.Success(pageInfo = PageInfo.Unknown)
+                )
+            } ?: run {
+                _observableChannelIdsResult.value = PageResult(
                     currentValue = playChannelStateStorage.getChannelList(),
                     state = PageResultState.Success(pageInfo = PageInfo.Unknown)
-            )
+                )
+            }
+
         }, onError = {
             _observableChannelIdsResult.value = PageResult(
                     currentValue = playChannelStateStorage.getChannelList(),

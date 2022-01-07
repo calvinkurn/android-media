@@ -149,24 +149,24 @@ class TopupBillsAutoCompleteAdapter(
 
         override fun performFiltering(constraint: CharSequence?): FilterResults {
             return if (constraint != null) {
-                suggestions.clear()
-                suggestions.addAll(
+                val filteredSuggestion: MutableList<TopupBillsAutoComplete> = mutableListOf()
+                filteredSuggestion.addAll(
                     itemsAll
                         .filterIsInstance<TopupBillsAutoCompleteContactDataView>()
                         .filter {
                             it.phoneNumber.startsWith(constraint.toString()) ||
                             it.name.contains(constraint.toString(), ignoreCase = true)
                         })
-                if (suggestions.isNotEmpty()) {
-                    suggestions.add(0, TopupBillsAutoCompleteHeaderDataView())
+                if (filteredSuggestion.isNotEmpty()) {
+                    filteredSuggestion.add(0, TopupBillsAutoCompleteHeaderDataView())
                 } else {
                     if (!constraint.matches(REGEX_IS_NUMERIC.toRegex()) && itemsAll.isNotEmpty())
-                        suggestions.add(TopupBillsAutoCompleteEmptyDataView())
+                        filteredSuggestion.add(TopupBillsAutoCompleteEmptyDataView())
                 }
 
                 FilterResults().apply {
-                    values = suggestions
-                    count = suggestions.size
+                    values = filteredSuggestion
+                    count = filteredSuggestion.size
                 }
             } else FilterResults().apply {
                 values = listOf<String>()
@@ -175,10 +175,14 @@ class TopupBillsAutoCompleteAdapter(
         }
 
         override fun publishResults(constraint: CharSequence?, results: FilterResults) {
-            if (results.count > 0) {
-                notifyDataSetChanged()
-            } else {
-                notifyDataSetInvalidated()
+            suggestions.clear()
+            (results.values as? MutableList<TopupBillsAutoComplete>)?.let {
+                if (it.size > 0) {
+                    suggestions.addAll(it)
+                    notifyDataSetChanged()
+                } else {
+                    notifyDataSetInvalidated()
+                }
             }
         }
     }

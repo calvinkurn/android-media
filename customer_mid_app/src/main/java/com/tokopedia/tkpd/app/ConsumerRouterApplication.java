@@ -49,6 +49,8 @@ import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
+import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
@@ -62,6 +64,7 @@ import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant;
+import com.tokopedia.notifications.worker.PushWorker;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
@@ -134,12 +137,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initialiseHansel();
         initFirebase();
         GraphqlClient.setContextData(getApplicationContext());
-        GraphqlClient.init(getApplicationContext());
+        GraphqlClient.init(getApplicationContext(), getAuthenticator());
         NetworkClient.init(getApplicationContext());
         warmUpGQLClient();
         initIris();
         performLibraryInitialisation();
         initResourceDownloadManager();
+    }
+
+    private TkpdAuthenticatorGql getAuthenticator() {
+        return new TkpdAuthenticatorGql(this, this, new UserSession(context), new RefreshTokenGql());
     }
 
     private void warmUpGQLClient() {
@@ -185,7 +192,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void initCMDependencies(){
-        GratifCmInitializer.INSTANCE.start(this);
+        WeaveInterface gratiWeave = () -> {
+            GratifCmInitializer.INSTANCE.start(ConsumerRouterApplication.this);
+            return true;
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(gratiWeave, RemoteConfigKey.ENABLE_ASYNC_GRATIFICATION_INIT, getApplicationContext(), false);
+
+
     }
 
     private void initialiseHansel() {
@@ -512,6 +525,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         excludeScreenList.add(CmInAppConstant.ScreenListConstants.DEEPLINK_HANDLER_ACTIVITY);
         CMInAppManager.getInstance().setExcludeScreenList(excludeScreenList);
         refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(ConsumerRouterApplication.this), false);
+        PushWorker.Companion.schedulePeriodicWorker(this);
     }
 
     @Override

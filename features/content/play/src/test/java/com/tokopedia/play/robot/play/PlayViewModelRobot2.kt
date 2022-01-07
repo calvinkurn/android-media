@@ -2,7 +2,6 @@ package com.tokopedia.play.robot.play
 
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.play.analytic.PlayNewAnalytic
-import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.helper.ClassBuilder
@@ -22,6 +21,7 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.PlayChannelSSE
 import com.tokopedia.play_common.util.PlayPreference
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
@@ -46,7 +46,6 @@ class PlayViewModelRobot2(
     getProductTagItemsUseCase: GetProductTagItemsUseCase,
     trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
     trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
-    playChannelReminderUseCase: PlayChannelReminderUseCase,
     playSocketToModelMapper: PlaySocketToModelMapper,
     playUiModelMapper: PlayUiModelMapper,
     private val userSession: UserSessionInterface,
@@ -54,8 +53,7 @@ class PlayViewModelRobot2(
     remoteConfig: RemoteConfig,
     playPreference: PlayPreference,
     videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
-    playChannelWebSocket: PlayChannelWebSocket,
-    playChannelSSE: PlayChannelSSE,
+    playChannelWebSocket: PlayWebSocket,
     repo: PlayViewerRepository,
     playAnalytic: PlayNewAnalytic,
     timerFactory: TimerFactory,
@@ -73,7 +71,6 @@ class PlayViewModelRobot2(
         getProductTagItemsUseCase,
         trackProductTagBroadcasterUseCase,
         trackVisitChannelBroadcasterUseCase,
-        playChannelReminderUseCase,
         playSocketToModelMapper,
         playUiModelMapper,
         userSession,
@@ -82,7 +79,6 @@ class PlayViewModelRobot2(
         playPreference,
         videoLatencyPerformanceMonitoring,
         playChannelWebSocket,
-        playChannelSSE,
         repo,
         playAnalytic,
         timerFactory,
@@ -183,15 +179,13 @@ fun createPlayViewModelRobot(
     getProductTagItemsUseCase: GetProductTagItemsUseCase = mockk(relaxed = true),
     trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase = mockk(relaxed = true),
     trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase = mockk(relaxed = true),
-    playChannelReminderUseCase: PlayChannelReminderUseCase = mockk(relaxed = true),
     playSocketToModelMapper: PlaySocketToModelMapper = mockk(relaxed = true),
     playUiModelMapper: PlayUiModelMapper = ClassBuilder().getPlayUiModelMapper(),
     userSession: UserSessionInterface = mockk(relaxed = true),
     remoteConfig: RemoteConfig = mockk(relaxed = true),
     playPreference: PlayPreference = mockk(relaxed = true),
     videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring = mockk(relaxed = true),
-    playChannelWebSocket: PlayChannelWebSocket = mockk(relaxed = true),
-    playChannelSSE: PlayChannelSSE = mockk(relaxed = true),
+    playChannelWebSocket: PlayWebSocket = mockk(relaxed = true),
     repo: PlayViewerRepository = mockk(relaxed = true),
     playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
     timerFactory: TimerFactory = mockk(relaxed = true),
@@ -209,7 +203,6 @@ fun createPlayViewModelRobot(
         getProductTagItemsUseCase = getProductTagItemsUseCase,
         trackProductTagBroadcasterUseCase = trackProductTagBroadcasterUseCase,
         trackVisitChannelBroadcasterUseCase = trackVisitChannelBroadcasterUseCase,
-        playChannelReminderUseCase = playChannelReminderUseCase,
         playSocketToModelMapper = playSocketToModelMapper,
         playUiModelMapper = playUiModelMapper,
         userSession = userSession,
@@ -218,7 +211,6 @@ fun createPlayViewModelRobot(
         playPreference = playPreference,
         videoLatencyPerformanceMonitoring = videoLatencyPerformanceMonitoring,
         playChannelWebSocket = playChannelWebSocket,
-        playChannelSSE = playChannelSSE,
         repo = repo,
         playAnalytic = playAnalytic,
         timerFactory = timerFactory,

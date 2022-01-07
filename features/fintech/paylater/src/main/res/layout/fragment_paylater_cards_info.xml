@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
 
     <com.tokopedia.unifyprinciples.Typography
@@ -140,7 +140,7 @@
                         android:layout_width="@dimen/unify_space_0"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/unify_space_8"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_N700_96"
                         app:layout_constraintLeft_toLeftOf="@id/simulasiHeading"
                         app:layout_constraintTop_toBottomOf="@id/simulasiHeading"
                         app:typographyType="body_3" />
@@ -166,7 +166,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/unify_space_8"
                         android:text="@string/pay_later_service_fee_selected_partner"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_N700_96"
                         app:layout_constraintLeft_toLeftOf="@id/simulasiHeading"
                         app:layout_constraintRight_toRightOf="@id/simulasiHeading"
                         app:layout_constraintTop_toBottomOf="@id/interestText"
@@ -205,8 +205,8 @@
                         android:paddingLeft="@dimen/unify_space_12"
                         android:paddingTop="@dimen/unify_space_12"
                         android:paddingBottom="@dimen/unify_space_12"
-                        android:text="@string/pay_later_one_month"
-                        android:textColor="@color/Unify_N700_68"
+                        tools:text="@string/pay_later_one_month"
+                        android:textColor="@color/Unify_N700_96"
                         android:textSize="@dimen/sp_13"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/serviceFeeInfoText"

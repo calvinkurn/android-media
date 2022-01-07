@@ -10,6 +10,7 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.CompoundButton
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.Toaster
@@ -31,12 +32,7 @@ object Utils {
             return SpannableStringBuilder("").toString()
         }
         val replacedText = text.replace("&amp;", "&")
-        val result: Spanned
-        result = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> Html.fromHtml(replacedText, Html.FROM_HTML_MODE_LEGACY)
-            else -> Html.fromHtml(replacedText)
-        }
-        return result.toString()
+        return MethodChecker.fromHtml(replacedText).toString()
     }
 
     @JvmStatic
@@ -71,21 +67,7 @@ object Utils {
     }
 }
 
-fun convertToString(stringList: List<String>?): String {
-    return if (stringList.isNullOrEmpty()) {
-        ""
-    } else {
-        stringList.joinToString()
-    }
-}
-
 fun isNullOrEmpty(string: String?): Boolean = string.isNullOrEmpty()
-
-fun <T : Any> List<T>.each(action: T.() -> Unit) {
-    for (item in this) {
-        item.action()
-    }
-}
 
 fun String.removeDecimalSuffix(): String = this.removeSuffix(".00")
 

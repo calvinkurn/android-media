@@ -23,9 +23,7 @@ import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import com.tokopedia.purchase_platform.common.utils.Utils.isNotNullOrEmptyOrZero
-import com.tokopedia.purchase_platform.common.utils.convertToString
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
-import com.tokopedia.purchase_platform.common.utils.isNullOrEmpty
 import java.util.*
 import javax.inject.Inject
 
@@ -55,7 +53,7 @@ class ShipmentMapper @Inject constructor() {
             isBlackbox = shipmentAddressFormDataResponse.isBlackbox == 1
             errorCode = shipmentAddressFormDataResponse.errorCode
             isError = shipmentAddressFormDataResponse.errors.isNotEmpty()
-            errorMessage = convertToString(shipmentAddressFormDataResponse.errors)
+            errorMessage = shipmentAddressFormDataResponse.errors.joinToString()
             isShowOnboarding = shipmentAddressFormDataResponse.isShowOnboarding
             isIneligiblePromoDialogEnabled = shipmentAddressFormDataResponse.isIneligiblePromoDialogEnabled
             isOpenPrerequisiteSite = shipmentAddressFormDataResponse.isOpenPrerequisiteSite
@@ -63,7 +61,7 @@ class ShipmentMapper @Inject constructor() {
             addressesData = mapAddressesData(shipmentAddressFormDataResponse)
             cod = mapCod(shipmentAddressFormDataResponse.cod)
             campaignTimerUi = mapCampaignTimer(shipmentAddressFormDataResponse.campaignTimer)
-            lastApplyData = mapPromoLastApply(shipmentAddressFormDataResponse.promoSAFResponse.lastApply?.data)
+            lastApplyData = mapPromoLastApply(shipmentAddressFormDataResponse.promoSAFResponse.lastApply.data)
             promoCheckoutErrorDefault = mapPromoCheckoutErrorDefault(shipmentAddressFormDataResponse.promoSAFResponse.errorDefault)
             errorTicker = shipmentAddressFormDataResponse.errorTicker
             groupAddress = mapGroupAddresses(shipmentAddressFormDataResponse, isDisablePPP)
@@ -99,7 +97,7 @@ class ShipmentMapper @Inject constructor() {
             groupAddressListResult.add(
                     GroupAddress().apply {
                         isError = !groupAddress.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
-                        errorMessage = convertToString(groupAddress.errors)
+                        errorMessage = groupAddress.errors.joinToString()
                         userAddress = mapUserAddress(groupAddress)
                         groupShop = mapGroupShops(groupAddress, shipmentAddressFormDataResponse, isDisablePPP)
                     }
@@ -116,9 +114,9 @@ class ShipmentMapper @Inject constructor() {
             groupShopListResult.add(
                     GroupShop().apply {
                         isError = !it.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
-                        errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else convertToString(it.errors)
+                        errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else it.errors.joinToString()
                         hasUnblockingError = !it.unblockingErrors.isNullOrEmpty()
-                        unblockingErrorMessage = convertToString(it.unblockingErrors)
+                        unblockingErrorMessage = it.unblockingErrors.joinToString()
                         shippingId = it.shippingId
                         spId = it.spId
                         dropshipperName = it.dropshiper.name
@@ -305,8 +303,8 @@ class ShipmentMapper @Inject constructor() {
             isFulfillment = groupShop.isFulfillment.toString()
             isDiscountedPrice = product.productOriginalPrice > 0
             campaignId = product.campaignId
-            promoSAFResponse.lastApply?.data?.trackingDetails?.forEach {
-                if (it?.productId != null && it.productId == product.productId) {
+            promoSAFResponse.lastApply.data.trackingDetails.forEach {
+                if (it.productId == product.productId) {
                     promoCode = it.promoCodesTracking
                     promoDetails = it.promoDetailsTracking
                 }
@@ -471,28 +469,24 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
-    private fun mapPromoLastApply(promoData: Data?): LastApplyUiModel {
+    private fun mapPromoLastApply(promoData: Data): LastApplyUiModel {
         return LastApplyUiModel().apply {
             codes = mapPromoGlobalCodes(promoData)
             voucherOrders = mapPromoVoucherOrders(promoData)
-            additionalInfo = mapLastApplyAdditionalInfoUiModel(promoData?.additionalInfo)
-            message = mapLastApplyMessageUiModel(promoData?.message)
+            additionalInfo = mapLastApplyAdditionalInfoUiModel(promoData.additionalInfo)
+            message = mapLastApplyMessageUiModel(promoData.message)
 //            listRedPromos = mapListRedPromos(promoData)
             listAllPromoCodes = mapListAllPromos(promoData)
         }
     }
 
-    private fun mapListAllPromos(promoData: Data?): List<String> {
+    private fun mapListAllPromos(promoData: Data): List<String> {
         val listAllPromoCodes = arrayListOf<String>()
-        promoData?.codes?.forEach {
-            it?.let { promoCode ->
-                listAllPromoCodes.add(promoCode)
-            }
+        promoData.codes.forEach { promoCode ->
+            listAllPromoCodes.add(promoCode)
         }
-        promoData?.voucherOrders?.forEach {
-            it?.code?.let { promoCode ->
-                listAllPromoCodes.add(promoCode)
-            }
+        promoData.voucherOrders.forEach {
+            listAllPromoCodes.add(it.code)
         }
         return listAllPromoCodes
     }
@@ -500,110 +494,92 @@ class ShipmentMapper @Inject constructor() {
     private fun mapListRedPromos(promoData: Data?): List<String> {
         val listRedStates = arrayListOf<String>()
         if (promoData?.message?.state.equals(CheckoutConstant.STATE_RED, ignoreCase = true)) {
-            promoData?.codes?.forEach {
-                it?.let { promoCode ->
-                    listRedStates.add(promoCode)
-                }
+            promoData?.codes?.forEach { promoCode ->
+                listRedStates.add(promoCode)
             }
         }
         promoData?.voucherOrders?.forEach {
-            it?.let {
-                if (it.message?.state.equals(CheckoutConstant.STATE_RED, ignoreCase = true)) {
-                    it.code?.let { promoCode ->
-                        listRedStates.add(promoCode)
-                    }
-                }
+            if (it.message.state.equals(CheckoutConstant.STATE_RED, ignoreCase = true)) {
+                listRedStates.add(it.code)
             }
         }
         return listRedStates
     }
 
-    private fun mapLastApplyAdditionalInfoUiModel(additionalInfo: AdditionalInfo?): LastApplyAdditionalInfoUiModel {
+    private fun mapLastApplyAdditionalInfoUiModel(additionalInfo: AdditionalInfo): LastApplyAdditionalInfoUiModel {
         return LastApplyAdditionalInfoUiModel().apply {
-            emptyCartInfo = mapLastApplyEmptyCartInfoUiModel(additionalInfo?.cartEmptyInfo)
-            errorDetail = mapLastApplyErrorDetailUiModel(additionalInfo?.errorDetail)
-            messageInfo = mapLastApplyMessageInfoUiModel(additionalInfo?.messageInfo)
+            emptyCartInfo = mapLastApplyEmptyCartInfoUiModel(additionalInfo.cartEmptyInfo)
+            errorDetail = mapLastApplyErrorDetailUiModel(additionalInfo.errorDetail)
+            messageInfo = mapLastApplyMessageInfoUiModel(additionalInfo.messageInfo)
             promoSpIds = mapPromoSpId(additionalInfo)
-            usageSummaries = mapLastApplyUsageSummariesUiModel(additionalInfo?.listUsageSummaries)
+            usageSummaries = mapLastApplyUsageSummariesUiModel(additionalInfo.listUsageSummaries)
         }
     }
 
-    private fun mapLastApplyUsageSummariesUiModel(listUsageSummaries: List<UsageSummaries>?): List<LastApplyUsageSummariesUiModel> {
-        val tmplistUsageSummaries = arrayListOf<LastApplyUsageSummariesUiModel>()
-        listUsageSummaries?.forEach {
-            tmplistUsageSummaries.add(
-                    LastApplyUsageSummariesUiModel().apply {
-                        description = it.desc ?: ""
-                        type = it.type ?: ""
-                        amountStr = it.amountStr ?: ""
-                        amount = it.amount ?: 0
-                        currencyDetailsStr = it.currencyDetailsStr
+    private fun mapLastApplyUsageSummariesUiModel(listUsageSummaries: List<UsageSummaries>): List<LastApplyUsageSummariesUiModel> {
+        return listUsageSummaries.map {
+            LastApplyUsageSummariesUiModel().apply {
+                description = it.desc
+                type = it.type
+                amountStr = it.amountStr
+                amount = it.amount
+                currencyDetailsStr = it.currencyDetailsStr
+            }
+        }
+    }
+
+    private fun mapLastApplyMessageInfoUiModel(messageInfo: MessageInfo): LastApplyMessageInfoUiModel {
+        return LastApplyMessageInfoUiModel().apply {
+            detail = messageInfo.detail
+            message = messageInfo.message
+        }
+    }
+
+    private fun mapLastApplyErrorDetailUiModel(errorDetail: ErrorDetail): LastApplyErrorDetailUiModel {
+        return LastApplyErrorDetailUiModel().apply {
+            message = errorDetail.message
+        }
+    }
+
+    private fun mapLastApplyEmptyCartInfoUiModel(cartEmptyInfo: CartEmptyInfo): LastApplyEmptyCartInfoUiModel {
+        return LastApplyEmptyCartInfoUiModel().apply {
+            detail = cartEmptyInfo.detail
+            imgUrl = cartEmptyInfo.imageUrl
+            message = cartEmptyInfo.message
+        }
+    }
+
+    private fun mapPromoVoucherOrders(promoData: Data): List<LastApplyVoucherOrdersItemUiModel> {
+        val listVoucherOrdersUiModel = arrayListOf<LastApplyVoucherOrdersItemUiModel>()
+        promoData.voucherOrders.forEach { voucherOrdersItem ->
+            listVoucherOrdersUiModel.add(
+                    LastApplyVoucherOrdersItemUiModel().apply {
+                        code = voucherOrdersItem.code
+                        uniqueId = voucherOrdersItem.uniqueId
+                        message = mapLastApplyMessageUiModel(voucherOrdersItem.message)
                     }
             )
-        }
-        return tmplistUsageSummaries
-    }
-
-    private fun mapLastApplyMessageInfoUiModel(messageInfo: MessageInfo?): LastApplyMessageInfoUiModel {
-        return LastApplyMessageInfoUiModel().apply {
-            detail = messageInfo?.detail ?: ""
-            message = messageInfo?.message ?: ""
-        }
-    }
-
-    private fun mapLastApplyErrorDetailUiModel(errorDetail: ErrorDetail?): LastApplyErrorDetailUiModel {
-        return LastApplyErrorDetailUiModel().apply {
-            message = errorDetail?.message ?: ""
-        }
-    }
-
-    private fun mapLastApplyEmptyCartInfoUiModel(cartEmptyInfo: CartEmptyInfo?): LastApplyEmptyCartInfoUiModel {
-        return LastApplyEmptyCartInfoUiModel().apply {
-            detail = cartEmptyInfo?.detail ?: ""
-            imgUrl = cartEmptyInfo?.imageUrl ?: ""
-            message = cartEmptyInfo?.message ?: ""
-        }
-    }
-
-    private fun mapPromoVoucherOrders(promoData: Data?): List<LastApplyVoucherOrdersItemUiModel> {
-        val listVoucherOrdersUiModel = arrayListOf<LastApplyVoucherOrdersItemUiModel>()
-        promoData?.voucherOrders?.forEach {
-            it?.let { voucherOrdersItem ->
-                listVoucherOrdersUiModel.add(
-                        LastApplyVoucherOrdersItemUiModel().apply {
-                            code = voucherOrdersItem.code ?: ""
-                            uniqueId = voucherOrdersItem.uniqueId ?: ""
-                            message = mapLastApplyMessageUiModel(voucherOrdersItem.message)
-                        }
-                )
-            }
         }
 
         return listVoucherOrdersUiModel
     }
 
-    private fun mapLastApplyMessageUiModel(message: Message?): LastApplyMessageUiModel {
+    private fun mapLastApplyMessageUiModel(message: Message): LastApplyMessageUiModel {
         return LastApplyMessageUiModel().apply {
-            color = message?.color ?: ""
-            state = message?.state ?: ""
-            text = message?.text ?: ""
+            color = message.color
+            state = message.state
+            text = message.text
         }
     }
 
-    private fun mapPromoGlobalCodes(promoData: Data?): MutableList<String> {
-        val tmpCodes = mutableListOf<String>()
-        promoData?.codes?.forEach {
-            it?.let {
-                tmpCodes.add(it)
-            }
-        }
-        return tmpCodes
+    private fun mapPromoGlobalCodes(promoData: Data): MutableList<String> {
+        return promoData.codes.toMutableList()
     }
 
-    private fun mapPromoCheckoutErrorDefault(errorDefault: ErrorDefault?): PromoCheckoutErrorDefault {
+    private fun mapPromoCheckoutErrorDefault(errorDefault: ErrorDefault): PromoCheckoutErrorDefault {
         return PromoCheckoutErrorDefault().apply {
-            title = errorDefault?.title ?: ""
-            desc = errorDefault?.description ?: ""
+            title = errorDefault.title
+            desc = errorDefault.description
         }
     }
 
@@ -811,10 +787,10 @@ class ShipmentMapper @Inject constructor() {
                 var defaultErrorMessage = ""
                 var allProductsHaveSameError = true
                 for ((isError, errorMessage) in groupShop.products) {
-                    if (isError || !isNullOrEmpty(errorMessage)) {
+                    if (isError || errorMessage.isNotEmpty()) {
                         hasError = true
                         totalProductError++
-                        if (isNullOrEmpty(defaultErrorMessage)) {
+                        if (defaultErrorMessage.isEmpty()) {
                             defaultErrorMessage = errorMessage
                         } else if (allProductsHaveSameError && defaultErrorMessage != errorMessage) {
                             allProductsHaveSameError = false

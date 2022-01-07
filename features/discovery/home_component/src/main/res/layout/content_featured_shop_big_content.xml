@@ -29,7 +29,7 @@
             android:id="@+id/container_featured_shop_product_logo_shop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_3"
+            android:padding="3dp"
             android:background="@drawable/featured_shop_border_image"
             app:layout_constraintBottom_toBottomOf="@+id/featured_shop_product_image"
             app:layout_constraintEnd_toEndOf="parent"
@@ -55,13 +55,13 @@
             app:layout_constraintBottom_toBottomOf="@+id/container_featured_shop_product_logo_shop"
             app:layout_constraintEnd_toEndOf="@+id/container_featured_shop_product_logo_shop"
             android:background="@drawable/featured_shop_border_image"
-            android:padding="@dimen/dp_3">
+            android:padding="3dp">
 
             <ImageView
                 android:contentDescription="@string/content_desc_shop_badge_image"
                 android:id="@+id/featured_shop_product_shop_badge"
-                android:layout_width="@dimen/dp_18"
-                android:layout_height="@dimen/dp_18"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -125,8 +125,8 @@
             <ImageView
                 android:contentDescription="@string/content_desc_shop_rating"
                 android:id="@+id/featured_shop_product_reviews_1"
-                android:layout_width="@dimen/dp_11"
-                android:layout_height="@dimen/dp_11"
+                android:layout_width="11dp"
+                android:layout_height="11dp"
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 android:scaleType="centerCrop"
@@ -135,8 +135,8 @@
             <ImageView
                 android:contentDescription="@string/content_desc_shop_rating"
                 android:id="@+id/featured_shop_product_reviews_2"
-                android:layout_width="@dimen/dp_11"
-                android:layout_height="@dimen/dp_11"
+                android:layout_width="11dp"
+                android:layout_height="11dp"
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 android:scaleType="centerCrop"
@@ -145,8 +145,8 @@
             <ImageView
                 android:contentDescription="@string/content_desc_shop_rating"
                 android:id="@+id/featured_shop_product_reviews_3"
-                android:layout_width="@dimen/dp_11"
-                android:layout_height="@dimen/dp_11"
+                android:layout_width="11dp"
+                android:layout_height="11dp"
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 android:scaleType="centerCrop"
@@ -155,8 +155,8 @@
             <ImageView
                 android:contentDescription="@string/content_desc_shop_rating"
                 android:id="@+id/featured_shop_product_reviews_4"
-                android:layout_width="@dimen/dp_11"
-                android:layout_height="@dimen/dp_11"
+                android:layout_width="11dp"
+                android:layout_height="11dp"
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 android:scaleType="centerCrop"
@@ -165,8 +165,8 @@
             <ImageView
                 android:contentDescription="@string/content_desc_shop_rating"
                 android:id="@+id/featured_shop_product_reviews_5"
-                android:layout_width="@dimen/dp_11"
-                android:layout_height="@dimen/dp_11"
+                android:layout_width="11dp"
+                android:layout_height="11dp"
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 android:scaleType="centerCrop"

@@ -5,6 +5,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
@@ -425,6 +426,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                     this.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
                         telcoClientNumberWidget.getInputNumber().startsWith(it.value)
                     }
+                operatorName = selectedOperator.operator.attributes.name
 
                 /* validate phone number */
                 val isInputValid = validatePhoneNumber(operatorData, telcoClientNumberWidget)
@@ -468,7 +470,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         actionTypeTrackingJob?.cancel()
         actionTypeTrackingJob = lifecycleScope.launch {
             delay(INPUT_ACTION_TRACKING_DELAY)
-            operatorName = selectedOperator.operator.attributes.name
             when (inputNumberActionType) {
                 InputNumberActionType.MANUAL -> {
                     topupAnalytics.eventInputNumberManual(categoryId, operatorName)
@@ -557,8 +558,17 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
         }
 
-        override fun onClickAutoComplete() {
+        override fun onClickAutoComplete(isFavoriteContact: Boolean) {
             inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
+            if (isFavoriteContact) {
+                topupAnalytics.clickFavoriteContactAutoComplete(
+                    categoryId, operatorName, userSession.userId
+                )
+            } else {
+                topupAnalytics.clickFavoriteNumberAutoComplete(
+                    categoryId, operatorName, userSession.userId
+                )
+            }
         }
     }
 
@@ -666,14 +676,19 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             TelcoCategoryType.CATEGORY_PAKET_DATA -> itemId = 1
             TelcoCategoryType.CATEGORY_ROAMING -> itemId = 2
         }
-        viewPager.setCurrentItem(itemId, true)
 
-        if (autoSelectTabProduct) {
-            tabLayout.getUnifyTabLayout().getTabAt(itemId)?.let {
-                it.select()
+        viewPager.viewTreeObserver.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                viewPager.setCurrentItem(itemId, false)
+                if (autoSelectTabProduct) {
+                    tabLayout.getUnifyTabLayout().getTabAt(itemId)?.let {
+                        it.select()
+                    }
+                    autoSelectTabProduct = false
+                }
+                viewPager.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
-            autoSelectTabProduct = false
-        }
+        })
     }
 
     private fun getLabelActiveCategory(): String {

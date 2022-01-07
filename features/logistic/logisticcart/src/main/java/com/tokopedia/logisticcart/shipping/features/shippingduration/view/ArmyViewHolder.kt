@@ -1,5 +1,6 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
+import android.text.Spanned
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -10,10 +11,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
-import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 
 class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -33,23 +33,23 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         const val ESTIMASI_TIDAK_TERSEDIA = "Estimasi tidak tersedia"
     }
 
-    fun bindData(data: LogisticPromoUiModel, listener: ShippingDurationAdapterListener?) {
-        if (data.isBebasOngkirExtra) {
-            tvTitleExtra.text = itemView.context.getString(R.string.bracket_container, CurrencyFormatUtil.convertPriceValueToIdrFormat(data.discountedRate, false).removeDecimalSuffix())
-            tvTitleExtra.visibility = View.VISIBLE
-            tvTitle.visibility = View.GONE
-        } else {
-            tvTitle.text = data.title
-            tvTitle.visibility = View.VISIBLE
-            tvTitleExtra.visibility = View.GONE
-        }
+    fun bindData(data: LogisticPromoUiModel, listener: ShippingDurationAdapterListener?, isOcc: Boolean = false) {
+        val formattedTitle = HtmlLinkHelper(itemView.context, data.freeShippingItemTitle).spannedString
+        
+        tvTitle.text = formattedTitle
+        tvTitle.visibility = View.VISIBLE
+        tvTitleExtra.visibility = View.GONE
 
-        if (data.etaData.errorCode == 0 && data.etaData.textEta.isNotEmpty()) {
-            tvEta.visibility = View.VISIBLE
-            tvEta.text = data.etaData.textEta
-        } else if (data.etaData.errorCode == 0 && data.etaData.textEta.isEmpty()) {
-            tvEta.visibility = View.VISIBLE
-            tvEta.text = ESTIMASI_TIDAK_TERSEDIA
+        if (!data.isBebasOngkirExtra || !isOcc) {
+            if (data.etaData.errorCode == 0 && data.etaData.textEta.isNotEmpty()) {
+                tvEta.visibility = View.VISIBLE
+                tvEta.text = data.etaData.textEta
+            } else if (data.etaData.errorCode == 0 && data.etaData.textEta.isEmpty()) {
+                tvEta.visibility = View.VISIBLE
+                tvEta.text = ESTIMASI_TIDAK_TERSEDIA
+            } else {
+                tvEta.visibility = View.GONE
+            }
         } else {
             tvEta.visibility = View.GONE
         }
@@ -63,8 +63,8 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             lblCodAvailableEta.visibility = View.GONE
         }
 
-        tvInfo.text = MethodChecker.fromHtml(data.description)
-        if (data.description.isEmpty()) tvInfo.visibility = View.GONE
+        tvInfo.text = MethodChecker.fromHtml(data.bottomSheetDescription)
+        if (data.bottomSheetDescription.isEmpty()) tvInfo.visibility = View.GONE
 
         imgLogo.contentDescription = itemView.context.getString(R.string.content_description_img_logo_rates_promo_prefix, data.title)
         ImageHandler.LoadImage(imgLogo, data.imageUrl)
@@ -80,8 +80,6 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
         }
 
-        tvTitle.setTextColor(boldFontColor)
-        tvTitleExtra.setTextColor(boldFontColor)
         tvInfo.setTextColor(fontColor)
         tvEta.setTextColor(fontColor)
 
@@ -91,6 +89,7 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             }
             flImageContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_enabled_item)
         } else {
+            tvTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
             flImageContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_disabled_item)
             itemView.setOnClickListener(null)
         }
