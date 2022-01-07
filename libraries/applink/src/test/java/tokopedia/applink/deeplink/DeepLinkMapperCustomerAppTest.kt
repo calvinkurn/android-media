@@ -376,11 +376,29 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check shop operational hourappLink then should return tokopedia internal shop operational hour in customerapp`() {
+    fun `check shop operational hour appLink then should return tokopedia internal shop operational hour in customerapp`() {
         val mockShopId = "12345"
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop/widget/operational-hour/$mockShopId/"
         val appLink = UriUtil.buildUri(ApplinkConst.SHOP_OPERATIONAL_HOUR, mockShopId)
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check shop mvc locked to product shop id then should return tokopedia internal mvc locked to product shop id in customerapp`() {
+        val mockShopId = "12345"
+        val mockVoucherId = "6789"
+        val expectedDeepLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_MVC_LOCKED_TO_PRODUCT_SHOP_ID, mockShopId, mockVoucherId)
+        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT_SHOP_ID, mockShopId, mockVoucherId)
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check shop mvc locked to product shop domain then should return tokopedia internal mvc locked to product shop domain in customerapp`() {
+        val mockShopDomain = "shop_domain"
+        val mockVoucherId = "6789"
+        val expectedDeepLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_MVC_LOCKED_TO_PRODUCT_SHOP_DOMAIN, mockShopDomain, mockVoucherId)
+        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT_SHOP_DOMAIN, mockShopDomain, mockVoucherId)
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 

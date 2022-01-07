@@ -46,7 +46,10 @@ public interface ApplinkConst {
     String SHOP_PENALTY_DETAIL = "tokopedia://shop-penalty-detail";
     String SHOP_FOLLOWER_LIST = "tokopedia://shop/{shop_id}/follower";
     String SHOP_SETTINGS_CUSTOMER_APP = "tokopedia://shop/{shop_id}/settings";
+    //shop widget
     String SHOP_OPERATIONAL_HOUR = "tokopedia://shop/{shop_id}/operational-hour";
+    String SHOP_MVC_LOCKED_TO_PRODUCT_SHOP_ID = "tokopedia://shop/{shop_id}/voucher/{voucher_id}";
+    String SHOP_MVC_LOCKED_TO_PRODUCT_SHOP_DOMAIN = "tokopedia://{shop_domain}/voucher/{voucher_id}";
 
     String SHOP_SETTINGS_NOTE = "tokopedia://setting/shop/note";
     String SHOP_SETTINGS_INFO = "tokopedia://setting/shop/info";
