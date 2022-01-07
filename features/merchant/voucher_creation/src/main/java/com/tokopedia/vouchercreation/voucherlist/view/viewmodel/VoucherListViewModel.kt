@@ -49,6 +49,7 @@ class VoucherListViewModel @Inject constructor(
     var isSubsidy: Boolean? = null
     var isVps: Boolean? = null
     var keyword: String? = null
+    var targetBuyer: String? = null
 
     // voucher sort properties
     @VoucherSort
@@ -147,7 +148,8 @@ class VoucherListViewModel @Inject constructor(
             keyword: String? = null,
             @VoucherTypeConst type: Int? = null,
             target: List<Int>? = null,
-            sourceRequestParams: Pair<Int, String>) {
+            sourceRequestParams: Pair<Int, String>,
+            targetBuyer: String? = null) {
         launchCatchError(block = {
             if (isFirstTime) {
                 _shopBasicLiveData.value = Success(withContext(dispatchers.io) {
@@ -160,7 +162,8 @@ class VoucherListViewModel @Inject constructor(
                     targetList = target,
                     includeSubsidy = sourceRequestParams.first,
                     isVps = sourceRequestParams.second,
-                    voucherName = keyword
+                    voucherName = keyword,
+                    targetBuyer = targetBuyer
             )
             val notStartedVoucherRequestParam = VoucherListParam.createParam(
                     status = VoucherStatus.NOT_STARTED,
@@ -168,7 +171,8 @@ class VoucherListViewModel @Inject constructor(
                     targetList = target,
                     includeSubsidy = sourceRequestParams.first,
                     isVps = sourceRequestParams.second,
-                    voucherName = keyword
+                    voucherName = keyword,
+                    targetBuyer = targetBuyer
             )
             _voucherList.value = Success(withContext(dispatchers.io) {
                 getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(ongoingVoucherRequestParam)
@@ -189,7 +193,8 @@ class VoucherListViewModel @Inject constructor(
                               @VoucherSort sort: String?,
                               page: Int,
                               isInverted: Boolean,
-                              sourceRequestParams: Pair<Int, String>) {
+                              sourceRequestParams: Pair<Int, String>,
+                              targetBuyer: String?) {
         launchCatchError(block = {
             getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(
                     VoucherListParam.createParam(
@@ -201,7 +206,8 @@ class VoucherListViewModel @Inject constructor(
                             page = page,
                             isInverted = isInverted,
                             includeSubsidy = sourceRequestParams.first,
-                            isVps = sourceRequestParams.second)
+                            isVps = sourceRequestParams.second,
+                            targetBuyer = targetBuyer)
             )
             withContext(dispatchers.io) {
                 val voucherList = getVoucherListUseCase.executeOnBackground()
@@ -239,14 +245,16 @@ class VoucherListViewModel @Inject constructor(
             voucherType: Int? = this.voucherType,
             voucherTarget: List<Int>? = this.voucherTarget,
             voucherSort: String = this.voucherSort,
-            sourceRequestParams: Pair<Int, String>) {
+            sourceRequestParams: Pair<Int, String>,
+            targetBuyer: String?) {
         if (isActiveVoucher) {
             getActiveVoucherList(
                     isFirstTime = false,
                     keyword = keyword,
                     type = voucherType,
                     target = voucherTarget,
-                    sourceRequestParams = sourceRequestParams)
+                    sourceRequestParams = sourceRequestParams,
+                    targetBuyer = targetBuyer)
         } else {
             getVoucherListHistory(
                     type = voucherType,
@@ -254,7 +262,7 @@ class VoucherListViewModel @Inject constructor(
                     sort = voucherSort,
                     page = currentPage,
                     isInverted = isInverted,
-                    sourceRequestParams = sourceRequestParams
+                    sourceRequestParams = sourceRequestParams, targetBuyer = targetBuyer
             )
         }
     }
@@ -327,7 +335,7 @@ class VoucherListViewModel @Inject constructor(
             }
             // vps only
             isSellerCreated == false && isVps == true && isSubsidy == false -> {
-                Pair(VoucherSubsidy.SELLER, VoucherVps.VPS)
+                Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.VPS)
             }
             // subsidy only
             isSellerCreated == false && isVps == false && isSubsidy == true -> {

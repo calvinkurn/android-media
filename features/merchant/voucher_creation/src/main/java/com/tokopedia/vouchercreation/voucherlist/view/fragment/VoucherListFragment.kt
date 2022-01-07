@@ -62,6 +62,7 @@ import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.detail.view.activity.VoucherDetailActivity
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherSort
+import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherTargetBuyer
 import com.tokopedia.vouchercreation.voucherlist.model.ui.*
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.HeaderChip
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.ResetChip
@@ -841,7 +842,8 @@ class VoucherListFragment :
                         mViewModel.searchVoucherByKeyword(
                                 isActiveVoucher = isActiveVoucher,
                                 keyword = mViewModel.keyword,
-                                sourceRequestParams = sourceRequestParams
+                                sourceRequestParams = sourceRequestParams,
+                                targetBuyer = mViewModel.targetBuyer
                         )
 
                     } else {
@@ -1007,6 +1009,9 @@ class VoucherListFragment :
         mViewModel.isSellerCreated = filterBottomSheet?.isSellerCreated() ?: false
         mViewModel.isSubsidy = filterBottomSheet?.isSubsidy() ?: false
         mViewModel.isVps = filterBottomSheet?.isVps() ?: false
+        if (mViewModel.isSubsidy == true || mViewModel.isVps == true) {
+            mViewModel.targetBuyer = VoucherTargetBuyer.ALL_BUYER + "," + VoucherTargetBuyer.NEW_BUYER
+        } else mViewModel.targetBuyer = null
         val counter = filterBottomSheet?.getFilterCounter() ?: 0
         if (counter.isMoreThanZero()) sf_voucher_list.indicatorCounter = counter
         else sf_voucher_list.resetAllFilters()
@@ -1269,7 +1274,8 @@ class VoucherListFragment :
                         keyword = mViewModel.keyword,
                         type = mViewModel.voucherType,
                         target = mViewModel.voucherTarget,
-                        sourceRequestParams = sourceRequestParams
+                        sourceRequestParams = sourceRequestParams,
+                        targetBuyer = mViewModel.targetBuyer
                 )
             } else {
                 mViewModel.getVoucherListHistory(
@@ -1279,7 +1285,8 @@ class VoucherListFragment :
                         sort = mViewModel.voucherSort,
                         page = mViewModel.currentPage,
                         isInverted = mViewModel.isInverted,
-                        sourceRequestParams = sourceRequestParams
+                        sourceRequestParams = sourceRequestParams,
+                        targetBuyer = mViewModel.targetBuyer
                 )
             }
         })

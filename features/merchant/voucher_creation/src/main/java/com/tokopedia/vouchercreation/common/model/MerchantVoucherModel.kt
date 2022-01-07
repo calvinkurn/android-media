@@ -78,5 +78,8 @@ data class MerchantVoucherModel(
         val packageName: String = "",
         @Expose
         @SerializedName("is_subsidy")
-        val isSubsidy: Int = 0
+        val isSubsidy: Int = 0,
+        @Expose
+        @SerializedName("tnc")
+        val tnc: String = "",
 )

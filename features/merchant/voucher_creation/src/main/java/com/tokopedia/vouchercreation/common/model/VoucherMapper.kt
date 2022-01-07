@@ -66,7 +66,8 @@ class VoucherMapper @Inject constructor() {
                     isPublic = it.isPublic == 1,
                     isVps = it.isVps == 1,
                     packageName = it.packageName,
-                    isSubsidy = it.isSubsidy == 1
+                    isSubsidy = it.isSubsidy == 1,
+                    tnc = it.tnc
             )
         }
 

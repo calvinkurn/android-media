@@ -36,7 +36,10 @@ data class VoucherListParam (
         val isVps: String,
         @SerializedName("voucher_name")
         @Expose
-        val voucherName: String?
+        val voucherName: String?,
+        @SerializedName("target_buyer")
+        @Expose
+        val targetBuyer: String?
 )
 {
 
@@ -50,7 +53,8 @@ data class VoucherListParam (
                         isInverted: Boolean = false,
                         @VoucherSubsidy includeSubsidy: Int = VoucherSubsidy.SELLER_AND_TOKOPEDIA,
                         @VoucherVps isVps: String = VoucherVps.ALL,
-                        voucherName: String? = null) : VoucherListParam {
+                        voucherName: String? = null,
+                        targetBuyer: String? = null) : VoucherListParam {
             return VoucherListParam(
                     voucherType = type,
                     voucherStatus = status,
@@ -60,7 +64,8 @@ data class VoucherListParam (
                     isInverted = isInverted,
                     includeSubsidy = includeSubsidy,
                     isVps = isVps,
-                    voucherName = voucherName
+                    voucherName = voucherName,
+                    targetBuyer = targetBuyer
             )
         }
     }
@@ -88,6 +93,18 @@ annotation class VoucherTarget {
     companion object {
         const val PUBLIC = "0"
         const val PRIVATE = "1"
+    }
+}
+
+@MustBeDocumented
+@Retention(AnnotationRetention.SOURCE)
+@StringDef(VoucherTargetBuyer.ALL_BUYER, VoucherTargetBuyer.NEW_FOLLOWER, VoucherTargetBuyer.NEW_BUYER, VoucherTargetBuyer.MEMBER)
+annotation class VoucherTargetBuyer {
+    companion object {
+        const val ALL_BUYER = "0"
+        const val NEW_FOLLOWER = "1"
+        const val NEW_BUYER = "2"
+        const val MEMBER = "3"
     }
 }
 

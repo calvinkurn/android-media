@@ -48,6 +48,7 @@ class VoucherDetailUseCase @Inject constructor(private val gqlRepository: Graphq
                       is_vps
                       package_name
                       is_subsidy
+                      tnc
                     }                    
                 }
             }
