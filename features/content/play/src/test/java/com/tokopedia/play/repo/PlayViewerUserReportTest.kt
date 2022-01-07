@@ -6,6 +6,7 @@ import com.tokopedia.play.data.repository.PlayViewerUserReportRepositoryImpl
 import com.tokopedia.play.domain.GetUserReportListUseCase
 import com.tokopedia.play.domain.PostUserReportUseCase
 import com.tokopedia.play.domain.repository.PlayViewerUserReportRepository
+import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.assertTrue
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
@@ -41,6 +42,8 @@ class PlayViewerUserReportTest {
     private val userSession: UserSessionInterface = mockk(relaxed = true)
 
     private val testDispatcher = CoroutineTestDispatchers
+
+    private val modelBuilder = ModelBuilder()
 
     @Before
     fun setUp(){
@@ -133,6 +136,7 @@ class PlayViewerUserReportTest {
                     detail = ""
                 ))
             )
+
             coEvery { getUserReportListUseCase.executeOnBackground() } returns response
 
             val result = userReportRepo.getReasoningList()

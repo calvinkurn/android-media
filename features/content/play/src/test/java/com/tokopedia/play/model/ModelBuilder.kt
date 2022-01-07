@@ -1160,6 +1160,8 @@ class ModelBuilder {
 
     fun buildProduct(): Product = gson.fromJson(product, Product::class.java)
 
+    fun buildUserReportReasoning(): UserReportOptions.Response = gson.fromJson(userReportReasonListJson, UserReportOptions.Response::class.java)
+
     fun buildAddToCartModelResponseSuccess() =  CartFeedbackResponseModel(isSuccess = true, errorMessage = "", cartId = "123")
     fun buildAddToCartModelResponseFail() = CartFeedbackResponseModel(isSuccess = false, errorMessage = "error message ", cartId = "")
 
@@ -1358,6 +1360,6 @@ class ModelBuilder {
         val userReportOpt = PlayUserReportReasoningUiModel.Reasoning(
             title = title, reasoningId = reasoningId, detail = detail, submissionData = submissionData
         )
-        return PlayUserReportUiModel.Loaded(listOf(userReportOpt))
+        return PlayUserReportUiModel.Loaded(listOf(userReportOpt, userReportOpt))
     }
 }
