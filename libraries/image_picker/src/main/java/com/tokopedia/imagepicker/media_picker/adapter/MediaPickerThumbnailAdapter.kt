@@ -1,5 +1,6 @@
 package com.tokopedia.imagepicker.media_picker.adapter
 
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipDescription
 import android.content.Context
@@ -293,8 +294,10 @@ class MediaPickerThumbnailAdapter(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setMaxData(size: Int) {
         maxSize = size
+        notifyDataSetChanged()
     }
 
     companion object {
