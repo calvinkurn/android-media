@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_BOTTOM_SHEET_RESOURCE_ID
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeFormattedCopy
@@ -65,7 +65,7 @@ class TokoNowEducationalInfoBottomSheet :
                     getServiceTypeFormattedCopy(
                         context = context,
                         key = EDU_BOTTOM_SHEET_RESOURCE_ID,
-                        serviceType = LocalCacheModel().service_type,
+                        serviceType = ChooseAddressUtils.getLocalizingAddressData(context).service_type,
                         colorRes = com.tokopedia.unifyprinciples.R.color.Unify_NN950
                     )
                 )
