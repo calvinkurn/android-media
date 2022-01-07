@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/partial_bottom_ar_container"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -16,6 +15,8 @@
         android:paddingStart="16dp"
         android:paddingTop="16dp"
         android:paddingBottom="8dp"
+        android:visibility="gone"
+        tools:visibility="visible"
         android:background="@color/Unify_NN50"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,6 +29,8 @@
         android:id="@+id/container_button_ar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
         android:background="@color/Unify_Background"
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent">

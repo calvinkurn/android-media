@@ -2,6 +2,7 @@ package com.tokopedia.product_ar.view.partialview
 
 import android.graphics.Paint
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.hide
@@ -28,11 +29,17 @@ class PartialBottomArView private constructor(val view: View, val listener: Prod
     private val txtSlashPrice = view.findViewById<Typography>(R.id.txt_slash_price_ar)
     private val lblDiscounted = view.findViewById<Label>(R.id.lbl_discounted_ar)
     private val rvVariant = view.findViewById<RecyclerView>(R.id.rv_ar)
+    private val buttonContainer = view.findViewById<ConstraintLayout>(R.id.container_button_ar)
 
     val adapter = VariantArAdapter(listener)
 
     init {
         rvVariant.adapter = adapter
+    }
+
+    fun showView() {
+        rvVariant?.show()
+        buttonContainer?.show()
     }
 
     fun renderRecyclerView(data: List<ModifaceUiModel>) {

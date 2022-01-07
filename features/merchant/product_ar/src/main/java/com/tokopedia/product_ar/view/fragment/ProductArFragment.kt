@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -79,6 +80,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     private var productArToolbar: NavToolbar? = null
     private var arViewLoader: LoaderUnify? = null
     private var icComparison: ImageUnify? = null
+    private var arShimmer: LinearLayoutCompat? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -125,6 +127,11 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         animatedTextIcon2 = view.findViewById(R.id.animated_txt_icon_2)
         animatedTextIcon1 = view.findViewById(R.id.animated_txt_icon_1)
         productArToolbar = view.findViewById(R.id.product_ar_toolbar)
+        arShimmer = view.findViewById(R.id.ar_shimmer)
+        arShimmer?.setOnClickListener {
+            it.hide()
+            partialBottomArView?.showView()
+        }
         partialBottomArView = PartialBottomArView.build(view, this)
     }
 
@@ -273,11 +280,22 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel?.loadingState?.collectLatest {
+            viewModel?.modifaceLoadingState?.collectLatest {
                 if (it) {
                     arViewLoader?.show()
                 } else {
                     arViewLoader?.hide()
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel?.bottomLoadingState?.collectLatest {
+                if (it) {
+                    arShimmer?.show()
+                } else {
+                    arShimmer?.hide()
+                    partialBottomArView?.showView()
                 }
             }
         }

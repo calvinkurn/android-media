@@ -57,8 +57,11 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     )
     val modifaceViewState: StateFlow<ModifaceViewState> = _modifaceViewState
 
-    private val _loadingState = MutableStateFlow(true)
-    val loadingState: StateFlow<Boolean> = _loadingState
+    private val _modifaceLoadingState = MutableStateFlow(true)
+    val modifaceLoadingState: StateFlow<Boolean> = _modifaceLoadingState
+
+    private val _bottomLoadingState=  MutableStateFlow(true)
+    val bottomLoadingState: StateFlow<Boolean> = _bottomLoadingState
 
     private val _selectedProductArData = MutableLiveData<Result<ProductAr>>()
     val selectedProductArData: LiveData<Result<ProductAr>>
@@ -75,9 +78,9 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     var imageDrawable: Bitmap? = null
 
     fun setLoadingState(isLoading: Boolean) {
-        if (_loadingState.value == isLoading) return
+        if (_modifaceLoadingState.value == isLoading) return
 
-        _loadingState.update {
+        _modifaceLoadingState.update {
             isLoading
         }
     }
@@ -99,7 +102,9 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             _productArList.postValue(Success(listUiModel))
             _selectedProductArData.postValue(Success(result.options[initialProductId]
                     ?: ProductAr()))
-
+            _bottomLoadingState.update {
+                false
+            }
 
         }, onError = {
             _selectedProductArData.postValue(Fail(it))

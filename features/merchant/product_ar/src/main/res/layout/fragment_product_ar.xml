@@ -10,7 +10,7 @@
         android:id="@+id/main_img"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/rv_ar"
+        app:layout_constraintBottom_toTopOf="@+id/barrier_1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -34,11 +34,11 @@
         android:id="@+id/ar_loader"
         android:layout_width="44dp"
         android:layout_height="44dp"
-        app:loader_type="circular"
         app:layout_constraintBottom_toBottomOf="@+id/main_img"
         app:layout_constraintEnd_toEndOf="@+id/main_img"
         app:layout_constraintStart_toStartOf="@+id/main_img"
-        app:layout_constraintTop_toTopOf="@+id/main_img" />
+        app:layout_constraintTop_toTopOf="@+id/main_img"
+        app:loader_type="circular" />
 
     <com.tokopedia.product_ar.util.AnimatedTextIcon
         android:id="@+id/animated_txt_icon_1"
@@ -73,6 +73,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_compare_icon" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="ar_shimmer,rv_ar" />
+
     <include layout="@layout/partial_bottom_ar_view" />
+
+    <include
+        android:id="@+id/ar_shimmer"
+        layout="@layout/product_ar_shimmer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
