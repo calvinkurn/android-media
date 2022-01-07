@@ -14,6 +14,7 @@ import com.tokopedia.checkout.old.view.converter.ShipmentDataConverter
 import com.tokopedia.checkout.old.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.old.view.uimodel.ShipmentButtonPaymentModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
+import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeature
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
@@ -378,6 +379,11 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         }
 
         every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(data)
+        coEvery {
+            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
+        } answers {
+            firstArg<(KeroAddrIsEligibleForAddressFeature)-> Unit>().invoke(KeroAddrIsEligibleForAddressFeature())
+        }
 
         // When
         presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
@@ -389,6 +395,39 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             view.clearTotalBenefitPromoStacking()
             view.hideLoading()
             view.renderCheckoutPageNoAddress(any(), any())
+            view.stopTrace()
+        }
+    }
+
+    @Test
+    fun `WHEN should navigate to add new address page failed THEN should show toaster`() {
+        // Given
+        val data = CartShipmentAddressFormData().apply {
+            errorCode = CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS
+            groupAddress = listOf(
+                    GroupAddress().apply {
+                        userAddress = UserAddress(state = UserAddress.STATE_NO_ADDRESS)
+                    }
+            )
+        }
+
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(data)
+        coEvery {
+            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
+        } answers {
+            secondArg<(Throwable)-> Unit>().invoke(Throwable())
+        }
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.resetPromoBenefit()
+            view.clearTotalBenefitPromoStacking()
+            view.hideLoading()
+            view.showToastError(any())
             view.stopTrace()
         }
     }
