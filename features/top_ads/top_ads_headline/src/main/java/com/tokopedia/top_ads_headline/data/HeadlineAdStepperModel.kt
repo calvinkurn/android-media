@@ -1,6 +1,7 @@
 package com.tokopedia.top_ads_headline.data
 
 import com.tokopedia.abstraction.base.view.model.StepperModel
+import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput
 import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.sdk.domain.model.CpmModel
@@ -20,8 +21,8 @@ open class HeadlineAdStepperModel(
     var minBid: String = "0",
     var maxBid: String = "0",
     var dailyBudget: Float = 0F,
-    var adOperations: MutableList<com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput.Operation.Group.AdOperation> = ArrayList(),
-    var keywordOperations: MutableList<com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput.Operation.Group.KeywordOperation> = ArrayList(),
+    var adOperations: MutableList<TopAdsManageHeadlineInput.Operation.Group.AdOperation> = ArrayList(),
+    var keywordOperations: MutableList<TopAdsManageHeadlineInput.Operation.Group.KeywordOperation> = ArrayList(),
     var startDate: String = "",
     var endDate: String = "",
     var adBidPrice: Double = 0.0,

@@ -16,11 +16,11 @@ import com.tokopedia.top_ads_headline.Constants.ACTION_CREATE
 import com.tokopedia.top_ads_headline.Constants.HEADLINE_SOURCE
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
-import com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
 import com.tokopedia.top_ads_headline.view.sheet.HeadlinePreviewBottomSheet
 import com.tokopedia.top_ads_headline.view.viewmodel.AdScheduleAndBudgetViewModel
+import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput
 import com.tokopedia.topads.common.activity.*
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.util.DateTimeUtils.getSpecifiedDateFromStartDate
@@ -180,7 +180,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
     }
 
-    private fun getTopAdsManageHeadlineInput(): com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput {
+    private fun getTopAdsManageHeadlineInput(): TopAdsManageHeadlineInput {
         val scheduleStart = if (adScheduleSwitch.isChecked) {
             selectedStartDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT2, localeID) ?: ""
         } else {
@@ -195,11 +195,11 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
             budgetCost.textFieldInput.text.toString().removeCommaRawString().toFloatOrZero()
         } else
             0.0F
-        return com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput().apply {
+        return TopAdsManageHeadlineInput().apply {
             source = HEADLINE_SOURCE
-            operation = com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput.Operation(
+            operation = TopAdsManageHeadlineInput.Operation(
                     action = ACTION_CREATE,
-                    group = com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput.Operation.Group(
+                    group = TopAdsManageHeadlineInput.Operation.Group(
                             id = "0",
                             shopID = userSession.shopId,
                             name = stepperModel?.groupName ?: "",

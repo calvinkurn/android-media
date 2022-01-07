@@ -33,7 +33,7 @@ import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightShopKeywordRecommendationFragment.Companion.NOT_EXPANDED
 import com.tokopedia.topads.dashboard.view.fragment.insightbottomsheet.TopAdsInsightAdsTypeBottomSheet
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
-import com.tokopedia.topads.dashboard.view.presenter.TopAdsInsightViewModel
+import com.tokopedia.topads.dashboard.viewmodel.TopAdsInsightViewModel
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineBaseFragment
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSessionInterface

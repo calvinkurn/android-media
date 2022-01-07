@@ -1,4 +1,4 @@
-package com.tokopedia.topads.dashboard.view.model
+package com.tokopedia.top_ads_headline_usecase.model
 
 
 import com.google.gson.annotations.SerializedName

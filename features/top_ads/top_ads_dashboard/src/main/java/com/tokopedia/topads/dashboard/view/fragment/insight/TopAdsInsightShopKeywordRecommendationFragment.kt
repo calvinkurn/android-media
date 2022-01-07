@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput2
+import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput2
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants.BID_KEYWORD
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants.NEGATIVE_KEYWORD
@@ -18,7 +18,7 @@ import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordDa
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.TopAdsInsightShopKeywordRecommendationView
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
-import com.tokopedia.topads.dashboard.view.presenter.TopAdsInsightViewModel
+import com.tokopedia.topads.dashboard.viewmodel.TopAdsInsightViewModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography

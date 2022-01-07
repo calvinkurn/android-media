@@ -1,13 +1,13 @@
-package com.tokopedia.topads.dashboard.domain.interactor
+package com.tokopedia.top_ads_headline_usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput
-import com.tokopedia.topads.dashboard.view.model.TopadsManageHeadlineAdResponse
-import com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput2
+import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput
+import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput2
+import com.tokopedia.top_ads_headline_usecase.model.TopadsManageHeadlineAdResponse
 import javax.inject.Inject
 
 const val INPUT = "input"

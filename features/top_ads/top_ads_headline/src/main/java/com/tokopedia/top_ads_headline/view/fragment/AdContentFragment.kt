@@ -18,12 +18,12 @@ import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.Category
 import com.tokopedia.top_ads_headline.data.CpmModelMapper
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
-import com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.*
 import com.tokopedia.top_ads_headline.view.adapter.SINGLE_SELECTION
 import com.tokopedia.top_ads_headline.view.sheet.PromotionalMessageBottomSheet
 import com.tokopedia.top_ads_headline.view.viewmodel.SharedEditHeadlineViewModel
+import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.view.TopAdsProductImagePreviewWidget
@@ -278,15 +278,15 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
         }
     }
 
-    private fun getAdOperations(): MutableList<com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput.Operation.Group.AdOperation> {
+    private fun getAdOperations(): MutableList<TopAdsManageHeadlineInput.Operation.Group.AdOperation> {
         return mutableListOf(
-            com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput.Operation.Group.AdOperation(
+            TopAdsManageHeadlineInput.Operation.Group.AdOperation(
                 action = if (stepperListener == null) {
                     ACTION_EDIT
                 } else {
                     ACTION_CREATE
                 },
-                ad = com.tokopedia.topads.dashboard.view.model.TopAdsManageHeadlineInput.Operation.Group.AdOperation.Ad(
+                ad = TopAdsManageHeadlineInput.Operation.Group.AdOperation.Ad(
                         id = "0",
                         title = stepperModel?.groupName ?: "",
                         slogan = stepperModel?.slogan
