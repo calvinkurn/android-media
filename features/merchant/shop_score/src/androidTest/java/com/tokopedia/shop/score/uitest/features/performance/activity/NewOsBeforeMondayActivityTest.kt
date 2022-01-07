@@ -20,6 +20,7 @@ class NewOsBeforeMondayActivityTest: ShopScoreTest() {
         super.setup()
         getShopInfoPeriodUseCaseStub.responseStub = shopInfoPeriodAfterMondayResponse
         getShopPerformanceUseCaseStub.responseStub = newOsBeforeMondayResponse
+        shopScorePrefManagerStub.setFinishCoachMark(true)
     }
 
     @Test
@@ -37,7 +38,6 @@ class NewOsBeforeMondayActivityTest: ShopScoreTest() {
 
     @Test
     fun show_header_performance_when_new_os_before_monday() {
-        shopScorePrefManagerStub.setFinishCoachMark(true)
         activityRule.launchActivity(getShopPerformancePageIntent())
         showHeaderPerformanceNewSellerOs(newOsBeforeMondayResponse, shopInfoPeriodAfterMondayResponse)
     }
@@ -66,6 +66,6 @@ class NewOsBeforeMondayActivityTest: ShopScoreTest() {
     fun show_faq_shop_score_new_os_before_monday() {
         activityRule.launchActivity(getShopPerformancePageIntent())
         activityRule.activity.scrollTo<SectionFaqUiModel>()
-        showFaqItemList(newOsBeforeMondayResponse)
+        showFaqItemList()
     }
 }

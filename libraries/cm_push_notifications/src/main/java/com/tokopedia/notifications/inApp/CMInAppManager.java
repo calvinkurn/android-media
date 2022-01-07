@@ -32,6 +32,7 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.C
 import com.tokopedia.notifications.inApp.usecase.InAppLocalDatabaseController;
 import com.tokopedia.notifications.inApp.applifecycle.CMActivityLifeCycle;
 import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
+import com.tokopedia.notifications.inApp.viewEngine.CMInAppProcessor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
 import com.tokopedia.notifications.inApp.viewEngine.ElementType;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -46,6 +47,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import static com.tokopedia.notifications.common.InAppRemoteConfigKey.ENABLE_NEW_INAPP_LOCAL_FETCH;
+import static com.tokopedia.notifications.common.InAppRemoteConfigKey.ENABLE_NEW_INAPP_LOCAL_SAVE;
 import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL;
@@ -135,17 +137,10 @@ public class CMInAppManager implements CmInAppListener,
     private void showInAppNotification(String name, int entityHashCode, boolean isActivity) {
         if (excludeScreenList != null && excludeScreenList.contains(name))
             return;
-        if(cmRemoteConfigUtils == null) {
+        if (isFetchInAppNewFlowEnabled()) {
+            fetchInAppVNew(name, entityHashCode, isActivity);
+        } else {
             fetchInAppVOld(name, entityHashCode, isActivity);
-        }else {
-            boolean isNewFetchEnabled =
-                    cmRemoteConfigUtils.getBooleanRemoteConfig(ENABLE_NEW_INAPP_LOCAL_FETCH,
-                            false);
-            if(isNewFetchEnabled){
-                fetchInAppVNew(name, entityHashCode, isActivity);
-            }else {
-                fetchInAppVOld(name, entityHashCode, isActivity);
-            }
         }
     }
 
@@ -158,7 +153,7 @@ public class CMInAppManager implements CmInAppListener,
                 isActivity);
     }
 
-    private void fetchInAppVNew(String name, int entityHashCode, boolean isActivity){
+    private void fetchInAppVNew(String name, int entityHashCode, boolean isActivity) {
         InAppLocalDatabaseController.Companion.getInstance(application, RepositoryManager.getInstance())
                 .clearExpiredInApp();
         InAppLocalDatabaseController.Companion.getInstance(application, RepositoryManager.getInstance())
@@ -168,7 +163,10 @@ public class CMInAppManager implements CmInAppListener,
                 );
     }
 
-
+    private Boolean isFetchInAppNewFlowEnabled() {
+        return cmRemoteConfigUtils != null && cmRemoteConfigUtils.getBooleanRemoteConfig(ENABLE_NEW_INAPP_LOCAL_FETCH,
+                false);
+    }
 
     @Override
     public void notificationsDataResult(List<CMInApp> inAppDataList, int entityHashCode, String screenName) {
@@ -275,14 +273,88 @@ public class CMInAppManager implements CmInAppListener,
         sendPushEvent(inAppData, IrisAnalyticsEvents.INAPP_RECEIVED, null);
     }
 
-    public void handlePushPayload(RemoteMessage remoteMessage) {
-        new CMInAppController(application, this)
-                .processAndSaveRemoteDataCMInApp(remoteMessage);
+    public void handleCMInAppPushPayload(RemoteMessage cmInAppRemoteMessage) {
+
+        if (isSaveInAppNewFlowEnabled()) {
+            handlePushPayloadVNew(cmInAppRemoteMessage);
+        } else {
+            handlePushPayloadVOld(cmInAppRemoteMessage);
+        }
     }
 
-    public void handleAmplificationInAppData(String dataString) {
-        new CMInAppController(application,this)
-                .processAndSaveAmplificationInAppData(dataString);
+    private void handlePushPayloadVOld(RemoteMessage cmInAppRemoteMessage) {
+        if (application != null) {
+            new CMInAppController(application.getApplicationContext(), this)
+                    .processAndSaveCMInAppRemotePayload(cmInAppRemoteMessage);
+        } else {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "application_null");
+            messageMap.put("data", "");
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
+        }
+    }
+
+    private void handlePushPayloadVNew(RemoteMessage cmInAppRemoteMessage) {
+        if (application != null) {
+            new CMInAppProcessor(application.getApplicationContext(), this::onNewInAppStored)
+                    .processAndSaveCMInAppRemotePayload(cmInAppRemoteMessage);
+        } else {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "application_null");
+            messageMap.put("data", "");
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
+        }
+    }
+
+    public void handleCMInAppAmplificationData(String cmInAppAmplificationDataString) {
+
+        if (isSaveInAppNewFlowEnabled()) {
+            handleCMInAppAmplificationDataVNew(cmInAppAmplificationDataString);
+        } else {
+            handleCMInAppAmplificationDataVOld(cmInAppAmplificationDataString);
+        }
+    }
+
+    private void handleCMInAppAmplificationDataVOld(String cmInAppAmplificationDataString) {
+        if (application != null) {
+            new CMInAppController(application.getApplicationContext(), this::onNewInAppStored)
+                    .processAndSaveCMInAppAmplificationData(cmInAppAmplificationDataString);
+        } else {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "application_null");
+            messageMap.put("data", "");
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
+        }
+    }
+
+    private void handleCMInAppAmplificationDataVNew(String cmInAppAmplificationDataString) {
+        if (application != null) {
+            new CMInAppProcessor(application.getApplicationContext(), this::onNewInAppStored)
+                    .processAndSaveCMInAppAmplificationData(cmInAppAmplificationDataString);
+        } else {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "application_null");
+            messageMap.put("data", "");
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
+        }
+    }
+
+    private Boolean isSaveInAppNewFlowEnabled() {
+        return cmRemoteConfigUtils != null && cmRemoteConfigUtils.getBooleanRemoteConfig(ENABLE_NEW_INAPP_LOCAL_SAVE,
+                false);
+    }
+
+    private void onNewInAppStored() {
+        if (isCmInAppManagerInitialized) {
+            Activity currentActivity = activityLifecycleHandler.getCurrentActivity();
+            if (currentActivity != null && !pushIntentHandler.isHandledByPush() && canShowDialog()) {
+                showInAppForScreen(currentActivity.getClass().getName(), currentActivity.hashCode(), true);
+            }
+        }
     }
 
     @Override
@@ -402,7 +474,7 @@ public class CMInAppManager implements CmInAppListener,
     }
 
     private Boolean getAmplificationRemoteConfig() {
-        if(cmRemoteConfigUtils == null)
+        if (cmRemoteConfigUtils == null)
             return false;
         return cmRemoteConfigUtils.getBooleanRemoteConfig(RemoteConfigKey.ENABLE_AMPLIFICATION,
                 false);
@@ -411,13 +483,14 @@ public class CMInAppManager implements CmInAppListener,
     @Override
     public void onFirstScreenOpen(@NonNull WeakReference<Activity> activity) {
         try {
-            if(activity.get() != null) {
+            if (activity.get() != null) {
                 IrisAnalyticsEvents.INSTANCE.sendFirstScreenEvent(application);
                 if (RulesManager.getInstance() != null)
                     RulesManager.getInstance().updateVisibleStateForAlreadyShown();
                 getAmplificationPushData(activity.get().getApplication());
             }
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
     }
 }
 
