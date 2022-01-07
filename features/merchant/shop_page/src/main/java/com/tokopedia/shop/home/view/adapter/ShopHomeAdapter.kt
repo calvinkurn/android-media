@@ -511,7 +511,9 @@ class ShopHomeAdapter(
     }
 
     fun isLoadProductGridListData(position: Int): Boolean {
-        return (visitables.getOrNull(position) as? ProductGridListPlaceholderUiModel)?.widgetState == WidgetState.PLACEHOLDER
+        val isProductGridListPlaceholderUiMode = (visitables.getOrNull(position) as? ProductGridListPlaceholderUiModel)?.widgetState == WidgetState.PLACEHOLDER
+        val isSortFilterDataUiModelEmpty = visitables.filterIsInstance(ShopProductSortFilterUiModel::class.java).isEmpty()
+        return isProductGridListPlaceholderUiMode && isSortFilterDataUiModelEmpty
     }
 
     fun updateProductGridListPlaceholderStateToLoadingState() {
@@ -528,6 +530,10 @@ class ShopHomeAdapter(
             }
         }
         submitList(newList)
+    }
+
+    fun isProductGridListPlaceholderExists(): Boolean {
+        return visitables.filterIsInstance<ProductGridListPlaceholderUiModel>().isNotEmpty()
     }
 
     fun isLoadFirstWidgetContentData(): Boolean {

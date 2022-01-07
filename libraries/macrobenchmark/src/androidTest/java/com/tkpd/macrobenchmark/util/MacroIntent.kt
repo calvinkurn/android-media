@@ -24,13 +24,13 @@ object MacroIntent {
         const val RV_RESOURCE_ID = "home_fragment_recycler_view"
 
         fun getHomeIntent(): Intent {
-            val intent = Intent()
+            val intent = Intent("com.tokopedia.internal.VIEW")
             intent.data = Uri.parse("tokopedia-android-internal://home/navigation")
             return intent
         }
 
         fun getHomeMacroSetupIntent(): Intent {
-            val intent = Intent()
+            val intent = Intent("com.tokopedia.internal.VIEW")
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.data = Uri.parse("tokopedia-android-internal://home-setting/opt/macrobenchmark")
             return intent
@@ -45,13 +45,13 @@ object MacroIntent {
         const val RV_RESOURCE_ID = "os_child_recycler_view"
 
         fun getOsIntent(): Intent {
-            val intent = Intent()
+            val intent = Intent("com.tokopedia.internal.VIEW")
             intent.data = Uri.parse("tokopedia-android-internal://home/navigation?TAB_POSITION=2")
             return intent
         }
 
         fun getOsMacroSetupIntent(): Intent {
-            val intent = Intent()
+            val intent = Intent("com.tokopedia.internal.VIEW")
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.data = Uri.parse("tokopedia-android-internal://home-setting/opt/macrobenchmark")
             return intent
@@ -69,7 +69,7 @@ object MacroIntent {
         const val PACKAGE_NAME = "$TKPD_PACKAGE_NAME.$DF_MODULE_NAME"
 
         fun getHomeIntent(): Intent {
-            val intent = Intent()
+            val intent = Intent("com.tokopedia.internal.VIEW")
             intent.data = Uri.parse("tokopedia-android-internal://now/home")
             return intent
         }

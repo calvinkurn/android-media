@@ -15,10 +15,12 @@ object WishlistV2Consts {
     const val TYPE_RECOMMENDATION_TITLE = "recommendation_title"
     const val TYPE_RECOMMENDATION_LIST = "recommendation_list"
     const val TYPE_RECOMMENDATION_CAROUSEL = "recommendation_carousel"
+    const val TYPE_RECOMMENDATION_TITLE_WITH_MARGIN = "recommendation_title_with_margin"
     const val TYPE_TOPADS = "topads"
     const val WISHLIST_PAGE_NAME = "wishlist"
     const val PARAMS = "params"
     const val PRODUCT_ID = "productID"
     const val PRODUCT_IDs = "productIDs"
     const val USER_ID = "userID"
+    const val RECOMMENDED_FOR_YOU = "Rekomendasi untukmu"
 }
