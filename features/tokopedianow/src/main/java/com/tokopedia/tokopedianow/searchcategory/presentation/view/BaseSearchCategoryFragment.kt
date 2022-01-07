@@ -60,6 +60,9 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
+import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
+import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
@@ -86,6 +89,9 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -124,6 +130,7 @@ abstract class BaseSearchCategoryFragment:
     protected var sortFilterBottomSheet: SortFilterBottomSheet? = null
     protected var categoryChooserBottomSheet: CategoryChooserBottomSheet? = null
     protected var trackingQueue: TrackingQueue? = null
+    protected var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
 
     protected var container: ConstraintLayout? = null
     protected var navToolbar: NavToolbar? = null
@@ -384,10 +391,10 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun configureRecyclerView() {
-        val staggeredGridLayoutManager = StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
-        staggeredGridLayoutManager.gapStrategy = GAP_HANDLING_NONE
+        staggeredGridLayoutManager = StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
+        staggeredGridLayoutManager?.gapStrategy = GAP_HANDLING_NONE
 
-        endlessScrollListener = createEndlessScrollListener(staggeredGridLayoutManager)
+        endlessScrollListener = createEndlessScrollListener(staggeredGridLayoutManager!!)
         searchCategoryAdapter = SearchCategoryAdapter(createTypeFactory())
 
         recyclerView?.adapter = searchCategoryAdapter
@@ -479,6 +486,7 @@ abstract class BaseSearchCategoryFragment:
             ::sendAddToCartRepurchaseProductTrackingEvent
         )
         getViewModel().oocOpenScreenTrackingEvent.observe(::sendOOCOpenScreenTracking)
+        getViewModel().setUserPreferenceLiveData.observe(::setUserPreferenceData)
     }
 
     protected open fun onShopIdUpdated(shopId: String) {
@@ -986,31 +994,36 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onClickSwitcherTo15M() {
-        // waiting until usecase ready
-        // will call use case
-        // the update will be put after gql response that has been got, then refresh the page,  check if there is 15min or not. If not then switch to 2hr.
-        ChooseAddressUtils.updateTokoNowData(
-            context = requireContext(),
-            warehouseId = "12131",
-            shopId = userSession.shopId,
-            serviceType = "15m",
-            warehouses = listOf()
-        )
-        Toast.makeText(context, "Click 15 Menit Loh", Toast.LENGTH_LONG).show()
+        getViewModel().setUserPreference(NOW_15M)
     }
 
     override fun onClickSwitcherTo2H() {
-        // waiting until usecase ready
-        // will call use case
-        // the update will be put after gql response that has been got, then refresh the page
-        ChooseAddressUtils.updateTokoNowData(
-            context = requireContext(),
-            warehouseId = "12131",
-            shopId = userSession.shopId,
-            serviceType = "2hr",
-            warehouses = listOf()
-        )
-        Toast.makeText(context, "Click 2 Jam Loh", Toast.LENGTH_LONG).show()
+        getViewModel().setUserPreference(NOW_2H)
+    }
+
+    private fun setUserPreferenceData(result: Result<SetUserPreference.SetUserPreferenceData>) {
+        when(result) {
+            is Success -> {
+                swipeRefreshLayout
+                context?.apply {
+                    //Set user preference data to local cache
+                    ChooseAddressUtils.updateTokoNowData(
+                        context = this,
+                        warehouseId = result.data.warehouseId.toString(),
+                        shopId = userSession.shopId,
+                        serviceType = result.data.serviceType,
+                        warehouses = result.data.warehouses
+                    )
+
+                    //Refresh the page
+                    staggeredGridLayoutManager?.scrollToPosition(DEFAULT_POSITION)
+                    resetMovingPosition()
+                    carouselScrollPosition.clear()
+                    getViewModel().onViewReloadPage()
+                }
+            }
+            is Fail -> { /* no op */ }
+        }
     }
 
     protected open fun goToLogin() {

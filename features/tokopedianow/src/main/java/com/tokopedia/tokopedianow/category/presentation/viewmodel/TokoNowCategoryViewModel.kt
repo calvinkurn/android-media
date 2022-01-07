@@ -26,6 +26,7 @@ import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L2
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
@@ -50,27 +51,28 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class TokoNowCategoryViewModel @Inject constructor (
-        baseDispatcher: CoroutineDispatchers,
-        @param:Named(TOKONOW_CATEGORY_L1)
+    baseDispatcher: CoroutineDispatchers,
+    @param:Named(TOKONOW_CATEGORY_L1)
         val categoryL1: String,
-        @param:Named(TOKONOW_CATEGORY_L2)
+    @param:Named(TOKONOW_CATEGORY_L2)
         val categoryL2: String,
-        @Named(TOKONOW_CATEGORY_QUERY_PARAM_MAP)
+    @Named(TOKONOW_CATEGORY_QUERY_PARAM_MAP)
         queryParamMap: Map<String, String>,
-        @param:Named(CATEGORY_FIRST_PAGE_USE_CASE)
+    @param:Named(CATEGORY_FIRST_PAGE_USE_CASE)
         private val getCategoryFirstPageUseCase: UseCase<CategoryModel>,
-        @param:Named(CATEGORY_LOAD_MORE_PAGE_USE_CASE)
+    @param:Named(CATEGORY_LOAD_MORE_PAGE_USE_CASE)
         private val getCategoryLoadMorePageUseCase: UseCase<CategoryModel>,
-        getFilterUseCase: UseCase<DynamicFilterModel>,
-        getProductCountUseCase: UseCase<String>,
-        getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
-        cartService: CartService,
-        getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
-        getRecommendationUseCase: GetRecommendationUseCase,
-        private val getCategoryListUseCase: GetCategoryListUseCase,
-        chooseAddressWrapper: ChooseAddressWrapper,
-        abTestPlatformWrapper: ABTestPlatformWrapper,
-        userSession: UserSessionInterface,
+    getFilterUseCase: UseCase<DynamicFilterModel>,
+    getProductCountUseCase: UseCase<String>,
+    getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
+    cartService: CartService,
+    getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
+    getRecommendationUseCase: GetRecommendationUseCase,
+    private val getCategoryListUseCase: GetCategoryListUseCase,
+    setUserPreferenceUseCase: SetUserPreferenceUseCase,
+    chooseAddressWrapper: ChooseAddressWrapper,
+    abTestPlatformWrapper: ABTestPlatformWrapper,
+    userSession: UserSessionInterface,
 ): BaseSearchCategoryViewModel(
         baseDispatcher,
         queryParamMap,
@@ -80,6 +82,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         cartService,
         getWarehouseUseCase,
         getRecommendationUseCase,
+        setUserPreferenceUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,
         userSession,
