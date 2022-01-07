@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals
-import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA
 import com.tokopedia.common.payment.PaymentConstant.PAYMENT_SUCCESS
@@ -302,34 +301,34 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
 
     private fun setupPromoTicker(state: TickerCheckoutView.State, title: String, desc: String){
         if (state == TickerCheckoutView.State.EMPTY){
-            ticker_promocode.title = title
-            ticker_promocode.state = TickerPromoStackingCheckoutView.State.EMPTY
+            ticker_promocode?.title = title
+            ticker_promocode?.state = TickerPromoStackingCheckoutView.State.EMPTY
         } else if (state == TickerCheckoutView.State.ACTIVE){
-            ticker_promocode.title = title
-            ticker_promocode.state = TickerPromoStackingCheckoutView.State.ACTIVE
-            ticker_promocode.desc = desc
+            ticker_promocode?.title = title
+            ticker_promocode?.state = TickerPromoStackingCheckoutView.State.ACTIVE
+            ticker_promocode?.desc = desc
         }
     }
 
     private fun showPromoSuccess(title: String, message: String, discountAmount: Long, isCancel: Boolean){
         if (isCancel){
             promoCode = ""
-            ticker_promocode.state = TickerPromoStackingCheckoutView.State.EMPTY
+            ticker_promocode?.state = TickerPromoStackingCheckoutView.State.EMPTY
             promoApplied = false
-            ticker_promocode.title = ""
-            ticker_promocode.desc = ""
+            ticker_promocode?.title = ""
+            ticker_promocode?.desc = ""
         } else {
-            ticker_promocode.state = TickerPromoStackingCheckoutView.State.ACTIVE
-            ticker_promocode.title = title
-            ticker_promocode.desc = message
+            ticker_promocode?.state = TickerPromoStackingCheckoutView.State.ACTIVE
+            ticker_promocode?.title = title
+            ticker_promocode?.desc = message
             promoApplied = true
         }
 
         if (discountAmount != 0L){
-            cl_promo.show()
-            tv_promo_discount.text = Utils.convertToCurrencyString(discountAmount)
+            cl_promo?.show()
+            tv_promo_discount?.text = Utils.convertToCurrencyString(discountAmount)
         } else {
-            cl_promo.gone()
+            cl_promo?.gone()
         }
 
         updateAmount(discountAmount)

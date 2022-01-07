@@ -96,44 +96,44 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
     }
 
     private fun showLayout(){
-        toolbar.apply {
+        toolbar?.apply {
             (activity as BaseSimpleActivity).setSupportActionBar(this)
             setNavigationIcon(ContextCompat.getDrawable(context, com.tokopedia.digital_deals.R.drawable.ic_close_deals))
             setTitle(resources.getString(com.tokopedia.digital_deals.R.string.select_number_of_voucher))
         }
 
-        iv_brand.loadImage(dealsDetail.imageWeb)
-        tv_brand_name.text = dealsDetail.brand.title
-        tv_deal_details.text = dealsDetail.displayName
+        iv_brand?.loadImage(dealsDetail.imageWeb)
+        tv_brand_name?.text = dealsDetail.brand.title
+        tv_deal_details?.text = dealsDetail.displayName
 
         minQuantity = if(dealsDetail.minQty > 0) dealsDetail.minQty else 1
         maxQuantity = if(dealsDetail.maxQty > 0) dealsDetail.maxQty else 1
         currentQuantity = minQuantity
 
         if (dealsDetail.mrp != 0 && dealsDetail.mrp != dealsDetail.salesPrice) {
-            tv_mrp.show()
-            tv_mrp.text = Utils.convertToCurrencyString(dealsDetail.mrp.toLong())
-            tv_mrp.paintFlags = tv_mrp.getPaintFlags() or Paint.STRIKE_THRU_TEXT_FLAG
+            tv_mrp?.show()
+            tv_mrp?.text = Utils.convertToCurrencyString(dealsDetail.mrp.toLong())
+            tv_mrp?.paintFlags = tv_mrp.getPaintFlags() or Paint.STRIKE_THRU_TEXT_FLAG
         } else {
-            tv_mrp.gone()
+            tv_mrp?.gone()
         }
 
-        tv_no_quantity.text = String.format(resources.getString(com.tokopedia.digital_deals.R.string.quantity_of_deals), currentQuantity)
-        tv_sales_price.text = Utils.convertToCurrencyString(dealsDetail.salesPrice.toLong())
-        tv_total_amount.text = Utils.convertToCurrencyString(dealsDetail.salesPrice.toLong())
+        tv_no_quantity?.text = String.format(resources.getString(com.tokopedia.digital_deals.R.string.quantity_of_deals), currentQuantity)
+        tv_sales_price?.text = Utils.convertToCurrencyString(dealsDetail.salesPrice.toLong())
+        tv_total_amount?.text = Utils.convertToCurrencyString(dealsDetail.salesPrice.toLong())
 
-        iv_subtract.setOnClickListener {
+        iv_subtract?.setOnClickListener {
             if (currentQuantity > minQuantity) {
                 currentQuantity--
                 context?.let {
-                    tv_no_quantity.setText(String.format(it.resources.getString(R.string.quantity_of_deals), currentQuantity))
+                    tv_no_quantity?.setText(String.format(it.resources.getString(R.string.quantity_of_deals), currentQuantity))
                 }
             }
             setTotalAmount()
             setButtons()
         }
 
-        iv_add.setOnClickListener {
+        iv_add?.setOnClickListener {
             if (currentQuantity < maxQuantity) {
                 currentQuantity++
                 context?.let {
@@ -143,7 +143,7 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
             setTotalAmount()
             setButtons()
         }
-        tv_continue.setOnClickListener {
+        tv_continue?.setOnClickListener {
             if (userSession.isLoggedIn) {
                 goToCheckoutPage()
             } else {
@@ -192,24 +192,24 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
     private fun setButtons(){
         context?.let {
             if (currentQuantity > 1) {
-                iv_subtract.setColorFilter(getGreenColor(it), PorterDuff.Mode.SRC_IN)
-                iv_subtract.setClickable(true)
+                iv_subtract?.setColorFilter(getGreenColor(it), PorterDuff.Mode.SRC_IN)
+                iv_subtract?.setClickable(true)
             } else {
-                iv_subtract.setColorFilter(getGrayColor(it), PorterDuff.Mode.SRC_IN)
-                iv_subtract.setClickable(false)
+                iv_subtract?.setColorFilter(getGrayColor(it), PorterDuff.Mode.SRC_IN)
+                iv_subtract?.setClickable(false)
             }
             if (currentQuantity < maxQuantity) {
-                iv_add.setColorFilter(getGreenColor(it), PorterDuff.Mode.SRC_IN)
-                iv_add.setClickable(true)
+                iv_add?.setColorFilter(getGreenColor(it), PorterDuff.Mode.SRC_IN)
+                iv_add?.setClickable(true)
             } else {
-                iv_add.setColorFilter(getGrayColor(it), PorterDuff.Mode.SRC_IN)
-                iv_add.setClickable(false)
+                iv_add?.setColorFilter(getGrayColor(it), PorterDuff.Mode.SRC_IN)
+                iv_add?.setClickable(false)
             }
         }
     }
 
     private fun setTotalAmount(){
-        tv_total_amount.text = Utils.convertToCurrencyString((dealsDetail.salesPrice * currentQuantity).toLong())
+        tv_total_amount?.text = Utils.convertToCurrencyString((dealsDetail.salesPrice * currentQuantity).toLong())
     }
 
     private fun verify(){

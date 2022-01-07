@@ -33,61 +33,61 @@ class DealsOMPViewHolder(private val setEventDetails: ItemsAdapter.SetEventDetai
         val metadata = Gson().fromJson(item.metaData, MetaDataInfo::class.java)
 
         itemView?.apply {
-            iv_deal.loadImage(
+            iv_deal?.loadImage(
                     if (metadata.productImage.isNullOrEmpty()) {
                         item.imageUrl
                     } else metadata.productImage
             )
 
-            tv_deal_intro.text = if (metadata.name.isNullOrEmpty()){
+            tv_deal_intro?.text = if (metadata.name.isNullOrEmpty()){
                 item.title
             } else metadata.name
 
-            tv_brand_name.text = metadata.productName
+            tv_brand_name?.text = metadata.productName
 
             setEventDetails.sendOpenScreenDeals(true)
 
             if (metadata.endTime.isNullOrEmpty()){
-                ll_valid.gone()
+                ll_valid?.gone()
             } else {
-                ll_valid.show()
-                tv_valid_till_date.text = getDateMilis(metadata.endTime)
+                ll_valid?.show()
+                tv_valid_till_date?.text = getDateMilis(metadata.endTime)
             }
 
             setEventDetails.setDealsBanner(item)
             setEventDetails.setDetailTitle(resources.getString(R.string.detail_label))
 
-            customView1.setOnClickListener {
+            customView1?.setOnClickListener {
                 RouteManager.route(context, metadata.productAppUrl)
             }
 
             if (item.actionButtons != null && item.actionButtons.size > 0){
-                voucerCodeLayout.show()
+                voucerCodeLayout?.show()
                 for (i in 0 until item.actionButtons.size) {
                     val actionButton: ActionButton = item.actionButtons.get(i)
                     if (actionButton.control.equals(KEY_VOUCHER_CODE)) {
                         val bookingCodeView = BookingCodeView(context, actionButton.body.body, i,
                                 actionButton.label, 0)
-                        bookingCodeView.background = null
-                        voucerCodeLayout.addView(bookingCodeView)
+                        bookingCodeView?.background = null
+                        voucerCodeLayout?.addView(bookingCodeView)
                     } else if (actionButton.control.equals(KEY_REDIRECT)){
                         val redeemVoucherView = RedeemVoucherView(context, i, actionButton, item,
                                 actionButton.body, presenter, positionHolder, setTapActionDeals,
                                 setEventDetails)
-                        voucerCodeLayout.addView(redeemVoucherView)
+                        voucerCodeLayout?.addView(redeemVoucherView)
                     } else if (actionButton.control.equals(KEY_POPUP)){
                         val actionTextButton = adapter.renderActionButtons(i, actionButton, item)
-                        voucerCodeLayout.addView(actionTextButton)
-                        actionTextButton.setOnClickListener {
+                        voucerCodeLayout?.addView(actionTextButton)
+                        actionTextButton?.setOnClickListener {
                             setEventDetails.openShowQRFragment(actionButton, item)
                         }
                     }
                 }
-                prog_bar.gone()
+                prog_bar?.gone()
             } else {
-                prog_bar.gone()
-                customView2.gone()
-                tapAction_deals.gone()
+                prog_bar?.gone()
+                customView2?.gone()
+                tapAction_deals?.gone()
             }
 
             if (orderDetails.actionButtons() != null && orderDetails.actionButtons().size > 0){
