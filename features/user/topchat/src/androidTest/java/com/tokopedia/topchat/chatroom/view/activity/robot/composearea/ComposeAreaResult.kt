@@ -5,6 +5,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.DrawableMatcher
+import org.hamcrest.CoreMatchers.not
 
 object ComposeAreaResult {
 
@@ -24,5 +25,11 @@ object ComposeAreaResult {
             .check(matches(isDisplayed()))
             .check(matches(withText(msg)))
     }
+
+    fun assertNoTooLongErrorMsg() {
+        onView(withId(errorComposeViewId))
+            .check(matches(not(isDisplayed())))
+    }
+
 
 }
