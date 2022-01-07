@@ -92,5 +92,20 @@ class ComposeMsgTest : TopchatRoomTest() {
         assertNoTooLongErrorMsg()
     }
 
-    // TODO: should not show error toaster when send btn clicked if msg exceed limit
+    @Test
+    fun should_not_show_error_toaster_when_send_btn_clicked_if_msg_exceed_limit() {
+        //Given
+        getChatUseCase.response = firstPageChatAsSeller
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        launchChatRoomActivity()
+        val offset = 10
+
+        //When
+        clickComposeArea()
+        setComposedText("a".repeat(MAX_CHAR + offset))
+        clickSendBtn()
+
+        //Then
+        assertNoSnackbarText(context.getString(R.string.topchat_desc_empty_text_box))
+    }
 }
