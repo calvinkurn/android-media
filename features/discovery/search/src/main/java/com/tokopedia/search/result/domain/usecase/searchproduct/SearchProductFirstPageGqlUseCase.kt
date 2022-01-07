@@ -295,6 +295,7 @@ class SearchProductFirstPageGqlUseCase(
                         type
                         position
                         layout
+                        tracking_option
                         options {
                             title
                             url
@@ -304,6 +305,7 @@ class SearchProductFirstPageGqlUseCase(
                             banner_applink_url
                             identifier
                             meta
+                            component_id
                             product {
                                 id
                                 name
@@ -316,6 +318,7 @@ class SearchProductFirstPageGqlUseCase(
                                 applink
                                 description
                                 rating_average
+                                component_id
                                 label_groups {
                                     title
                                     type

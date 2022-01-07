@@ -140,7 +140,7 @@
         android:background="@drawable/circle_blue_notification"
         android:gravity="center"
         android:includeFontPadding="false"
-        android:textColor="@color/Unify_N0"
+        android:textColor="@color/Unify_Background"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/time"
         app:layout_constraintTop_toBottomOf="@+id/time"

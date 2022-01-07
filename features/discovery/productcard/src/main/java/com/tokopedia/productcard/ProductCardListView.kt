@@ -79,6 +79,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         val isShowCampaignOrBestSeller = isShowCampaign || isShowBestSeller
         spaceCampaignBestSeller?.showWithCondition(isShowCampaignOrBestSeller)
 
+        outOfStockOverlay?.showWithCondition(productCardModel.isOutOfStock)
+
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)
@@ -133,6 +135,18 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
     fun setNotifyMeOnClickListener(notifyMeClickListener: (View) -> Unit) {
         buttonNotify?.setOnClickListener(notifyMeClickListener)
+    }
+
+    fun setThreeDotsWishlistOnClickListener(threeDotsClickListener: (View) -> Unit) {
+        buttonThreeDotsWishlist?.setOnClickListener(threeDotsClickListener)
+    }
+
+    fun setAddToCartWishlistOnClickListener(addToCartWishlistClickListener: (View) -> Unit) {
+        buttonAddToCartWishlist?.setOnClickListener(addToCartWishlistClickListener)
+    }
+
+    fun setSeeSimilarProductWishlistOnClickListener(seeSimilarProductWishlistClickListener: (View) -> Unit) {
+        buttonSeeSimilarProductWishlist?.setOnClickListener(seeSimilarProductWishlistClickListener)
     }
 
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f

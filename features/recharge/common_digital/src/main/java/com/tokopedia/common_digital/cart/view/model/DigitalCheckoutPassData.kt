@@ -30,6 +30,7 @@ class DigitalCheckoutPassData() : Parcelable {
     var needGetCart: Boolean = false
     var isFromPDP: Boolean = false
     var isSpecialProduct: Boolean = false
+    var deviceId: Int = 5
 
     constructor(parcel: Parcel) : this() {
         action = parcel.readString()
@@ -215,6 +216,7 @@ class DigitalCheckoutPassData() : Parcelable {
         val PARAM_CATEGORY_ID = "category_id"
         val PARAM_CLIENT_NUMBER = "client_number"
         val PARAM_ORDER_ID = "order_id"
+        val PARAM_DEVICE_ID = "device_id"
         val PARAM_ZONE_ID = "zone_id"
         val PARAM_PRODUCT_ID = "product_id"
         val PARAM_OPERATOR_ID = "operator_id"

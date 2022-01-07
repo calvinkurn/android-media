@@ -204,7 +204,7 @@ class SellerReviewDetailFragment :
         activity?.window?.decorView?.setBackgroundColor(
             ContextCompat.getColor(
                 requireContext(),
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
         )
         viewModelProductReviewDetail?.setChipFilterDateText(chipFilterBundle)
@@ -258,6 +258,15 @@ class SellerReviewDetailFragment :
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_option_review_product_detail, menu)
+
+        for (i in 0 until menu.size()) {
+            menu.getItem(i)?.let { menuItem ->
+                menuItem.actionView?.setOnClickListener {
+                    onOptionsItemSelected(menuItem)
+                }
+            }
+        }
+
         super.onCreateOptionsMenu(menu, inflater)
     }
 

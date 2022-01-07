@@ -140,6 +140,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.coach_mark
 
     // UI Test
+    androidTestImplementation projectOrAar(rootProject.ext.features.shopShowcase)
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
