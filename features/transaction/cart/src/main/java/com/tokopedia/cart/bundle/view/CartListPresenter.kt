@@ -30,6 +30,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.logisticcart.boaffordability.usecase.BoAffordabilityUseCase
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
@@ -82,6 +83,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                                             private val validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
                                             private val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
                                             private val followShopUseCase: FollowShopUseCase,
+                                            private val boAffordabilityUseCase: BoAffordabilityUseCase,
                                             private val schedulers: ExecutorSchedulers,
                                             private val dispatchers: CoroutineDispatchers) : ICartListPresenter, CoroutineScope {
 
@@ -1615,9 +1617,9 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 val ratesParam = RatesParam.Builder(shopShipments, shipping).build().toMap()
                 Log.i("qwertyuiop", ratesParam.toString())
 
-                cartShopHolderData.boAffordability.tickerText = "asdfasd fas <s>dfas</s> df"
-                val minTransaction: Long = 40000
-                if (subtotalPrice >= minTransaction) {
+                val response = boAffordabilityUseCase.executeOnBackground()
+                cartShopHolderData.boAffordability.tickerText = response.texts.tickerCart
+                if (subtotalPrice >= response.minTransaction) {
                     cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.SUCCESS_AFFORD
                 } else {
                     cartShopHolderData.boAffordability.state = CartShopBoAffordabilityState.SUCCESS_NOT_AFFORD
