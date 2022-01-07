@@ -9,15 +9,13 @@ import com.tokopedia.atc_common.data.model.request.ProductDetail
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
-import com.tokopedia.product_bundle.common.data.model.request.InventoryDetail
-import com.tokopedia.product_bundle.common.data.model.request.ProductData
-import com.tokopedia.product_bundle.common.data.model.request.RequestData
-import com.tokopedia.product_bundle.common.data.model.request.UserLocation
+import com.tokopedia.product_bundle.common.data.model.request.*
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfoResponse
@@ -48,7 +46,6 @@ class ProductBundleViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
-        private const val COMMA_DELIMITER = ","
         private const val ATC_BUNDLE_QUANTITY = 1
         private const val SINGLE_PRODUCT_BUNDLE_ITEM_SIZE = 1
         private const val PRODUCT_BUNDLE_STATUS_ACTIVE = "1"
@@ -179,7 +176,8 @@ class ProductBundleViewModel @Inject constructor(
                     ),
                     productData = ProductData(
                         productID = productId.toString()
-                    )
+                    ),
+                    bundleIdList = createBundleListParam(productId)
                 )
                 getBundleInfoUseCase.executeOnBackground()
             }
@@ -363,6 +361,15 @@ class ProductBundleViewModel @Inject constructor(
                 )
         }
         return isAddToCartInputValid
+    }
+
+    private fun createBundleListParam(productId: Long): List<Bundle> {
+        // if given product ID is 0, then use bundle ID to search bundle info
+        return if (productId == Int.ZERO.toLong()) {
+            listOf(Bundle(ID = selectedBundleId.toString()))
+        } else {
+            emptyList()
+        }
     }
 
     private fun variantProductNotChanged(productBundleDetails: List<ProductBundleDetail>) =
