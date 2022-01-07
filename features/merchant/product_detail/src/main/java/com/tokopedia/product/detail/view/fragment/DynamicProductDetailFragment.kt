@@ -829,6 +829,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         RouteManager.route(context, url)
     }
 
+    override fun goToArPage() {
+        val productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
+         RouteManager.route(requireContext(), ApplinkConst.PRODUCT_AR, productId)
+     }
+
     override fun onBbiInfoClick(url: String, title: String, componentTrackDataModel: ComponentTrackDataModel) {
         if (url.isNotEmpty()) {
             DynamicProductDetailTracking.Click.eventClickCustomInfo(title, viewModel.userId, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
@@ -1206,10 +1211,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun onMainImageClicked(componentTrackDataModel: ComponentTrackDataModel?, position: Int) {
-//        DynamicProductDetailTracking.Click.eventProductImageClicked(viewModel.getDynamicProductInfoP1, componentTrackDataModel
-//                ?: ComponentTrackDataModel())
-//        onImageClicked(position)
-        RouteManager.route(requireContext(), ApplinkConst.PRODUCT_AR, "1234")
+        DynamicProductDetailTracking.Click.eventProductImageClicked(viewModel.getDynamicProductInfoP1, componentTrackDataModel
+                ?: ComponentTrackDataModel())
+        onImageClicked(position)
     }
 
     override fun onImageClicked(position: Int) {

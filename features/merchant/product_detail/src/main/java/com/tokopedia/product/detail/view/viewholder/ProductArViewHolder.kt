@@ -3,9 +3,8 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
@@ -27,10 +26,14 @@ class ProductArViewHolder(
     override fun bind(element: ArButtonDataModel) {
         showOrHideElement(element.message)
 
+        itemView.setBackgroundColor(ContextCompat.getColor(view.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_GN100))
         imgCustom?.loadImage(element.imageUrl)
         txtMessage?.text = element.message
         itemView.setOnClickListener {
-            listener.goToApplink(element.applink)
+            //todo change
+//            listener.goToApplink(element.applink)
+            listener.goToArPage()
         }
     }
 
