@@ -226,7 +226,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
     private fun getOngoingVoucherMenu(): List<MoreMenuUiModel> =
             listOf(
                     EditQuota(context?.getString(R.string.mvc_edit_quota).orEmpty(), R.drawable.ic_mvc_edit_quota),
-                    ViewDetail(context?.getString(R.string.mvc_view_detail_and_edit_voucher).orEmpty(), R.drawable.ic_mvc_detail),
+                    ViewDetail(context?.getString(R.string.mvc_view_detail).orEmpty(), R.drawable.ic_mvc_detail),
                     ItemDivider,
                     BroadCast(context?.getString(R.string.mvc_broadcast_chat).orEmpty(), R.drawable.ic_mvc_broadcast),
                     ShareVoucher(context?.getString(R.string.mvc_share).orEmpty(), R.drawable.ic_mvc_share),

@@ -569,6 +569,11 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                 if (!voucherUiModel.isSubsidy && !voucherUiModel.isVps) {
                     getButtonUiModel(status, type)?.let { button -> add(button) }
                     getFooterUiModel(status)?.let { footer -> add(footer) }
+                } else {
+                    FooterUiModel(
+                            context?.getString(R.string.mvc_review_agreement).toBlankOrString(),
+                            context?.getString(R.string.mvc_review_terms).toBlankOrString()
+                    )
                 }
             }
 
