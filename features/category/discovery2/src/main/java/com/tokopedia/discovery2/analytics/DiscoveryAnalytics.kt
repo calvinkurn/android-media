@@ -10,6 +10,7 @@ import com.tokopedia.discovery2.data.Level
 import com.tokopedia.discovery2.data.quickcouponresponse.ClickCouponData
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.quest_widget.tracker.Tracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.track.TrackApp
@@ -1674,5 +1675,58 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[PAGE_TYPE] = pageType
         map[USER_ID] = userID
         getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
+    override fun clickQuestLihatButton(source: Int) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = QUEST_EVENT_CLICK
+        map[Tracker.Constants.EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE - $CATEGORY_QUEST_WIDGET"
+        map[Tracker.Constants.EVENT_ACTION] = CLICK_LIHAT_SEMUA
+        map[Tracker.Constants.EVENT_LABEL] = DISCO_SLUG
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[PAGE_TYPE] = pageType
+        getTracker().sendGeneralEvent(map)
+    }
+
+    override fun viewQuestWidget(source: Int, id: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = QUEST_EVENT_VIEW
+        map[Tracker.Constants.EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE - $CATEGORY_QUEST_WIDGET"
+        map[Tracker.Constants.EVENT_ACTION] = VIEW_QUEST_WIDGET
+        map[Tracker.Constants.EVENT_LABEL] = "${DISCO_SLUG}_$id"
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[PAGE_TYPE] = pageType
+        getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickQuestCard(source: Int, id: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = QUEST_EVENT_CLICK
+        map[Tracker.Constants.EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE - $CATEGORY_QUEST_WIDGET"
+        map[Tracker.Constants.EVENT_ACTION] = CLICK_QUEST_WIDGET
+        map[Tracker.Constants.EVENT_LABEL] = "${DISCO_SLUG}_$id"
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[PAGE_TYPE] = pageType
+        getTracker().sendGeneralEvent(map)
+    }
+
+    override fun slideQuestCard(source: Int, direction: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = QUEST_EVENT_CLICK
+        map[Tracker.Constants.EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE - $CATEGORY_QUEST_WIDGET"
+        map[Tracker.Constants.EVENT_ACTION] = SLIDE_QUEST_WIDGET
+        map[Tracker.Constants.EVENT_LABEL] = "${DISCO_SLUG}_$direction"
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[PAGE_TYPE] = pageType
+        getTracker().sendGeneralEvent(map)
+
     }
 }

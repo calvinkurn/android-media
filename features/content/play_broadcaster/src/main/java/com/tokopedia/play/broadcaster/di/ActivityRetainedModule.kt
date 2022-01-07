@@ -65,11 +65,18 @@ class ActivityRetainedModule {
 
     @ActivityRetainedScope
     @Provides
-    fun provideWebSocket(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers): PlayWebSocket {
+    fun provideWebSocket(
+        userSession: UserSessionInterface,
+        dispatchers: CoroutineDispatchers,
+        localCacheHandler: LocalCacheHandler,
+        @ApplicationContext context: Context
+    ): PlayWebSocket {
         return PlayWebSocketImpl(
             OkHttpClient.Builder(),
             userSession,
-            dispatchers
+            dispatchers,
+            context,
+            localCacheHandler,
         )
     }
 
