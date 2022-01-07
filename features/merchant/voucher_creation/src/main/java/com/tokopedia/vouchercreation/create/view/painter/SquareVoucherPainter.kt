@@ -16,6 +16,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.whenAlive
+import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.utils.getTextSizeFromDimens
 import com.tokopedia.vouchercreation.create.view.enums.PostImageTextType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.enums.getScaledValuePair
@@ -69,7 +71,7 @@ class SquareVoucherPainter(private val context: Context,
     private val shopNamePaint by lazy {
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.BLACK
-            textSize = 40f
+            textSize = getTextSizeFromDimens(context, R.dimen.mvc_square_voucher_shop_name_text_size)
             typeface = Typeface.DEFAULT_BOLD
         }
     }
@@ -77,7 +79,7 @@ class SquareVoucherPainter(private val context: Context,
     private val promoNamePaint by lazy {
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.BLACK
-            textSize = 40f
+            textSize = getTextSizeFromDimens(context, R.dimen.mvc_square_voucher_promo_name_text_size)
             typeface = Typeface.DEFAULT_BOLD
         }
     }
@@ -93,7 +95,7 @@ class SquareVoucherPainter(private val context: Context,
     private val promoCodePaint by lazy {
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.WHITE
-            textSize = 50f
+            textSize = getTextSizeFromDimens(context, R.dimen.mvc_square_voucher_promo_code_text_size)
             typeface = Typeface.DEFAULT_BOLD
         }
     }
@@ -101,7 +103,7 @@ class SquareVoucherPainter(private val context: Context,
     private val promoPeriodPaint by lazy {
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.WHITE
-            textSize = 45f
+            textSize = getTextSizeFromDimens(context, R.dimen.mvc_square_voucher_promo_period_text_size)
         }
     }
 
@@ -141,7 +143,8 @@ class SquareVoucherPainter(private val context: Context,
     private val bottomInfoX = bitmapWidth * BOTTOM_INFO_X
     private val promoCodeY = bitmapHeight * PROMO_CODE_Y
     private val promoPeriodY = bitmapHeight * PROMO_PERIOD_Y
-    private val valueMarginTop = (bitmapHeight * 0.035).toInt()
+    private val marginTopMultiplier = 0.035
+    private val valueMarginTop = (bitmapHeight * marginTopMultiplier).toInt()
 
     fun drawInfo(postVoucherUiModel: PostVoucherUiModel) {
         postVoucherUiModel.run {
@@ -317,7 +320,7 @@ class SquareVoucherPainter(private val context: Context,
                 visibility = View.VISIBLE
                 typeface = Typeface.DEFAULT_BOLD
                 text = value
-                textSize = type.textSize
+                textSize = getTextSizeFromDimens(context, type.textSize)
 
                 var textColor = Color.BLACK
                 if (type == PostImageTextType.SCALE) {
