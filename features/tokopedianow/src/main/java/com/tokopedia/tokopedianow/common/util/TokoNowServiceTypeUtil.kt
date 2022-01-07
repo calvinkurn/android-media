@@ -46,14 +46,14 @@ object TokoNowServiceTypeUtil {
 
     /*
     * There are two options of formatted copy :
-    * 1. Get string resource with param resourceId and delivery duration copy (15 min or 2 hr).
-    * 2. Get string resource with param resourceId, delivery duration copy (15 min or 2 hr) and color (need color resourceId).
+    * 1. Get string resource with params : resourceId and delivery duration copy (15 min or 2 hr).
+    * 2. Get string resource with params : resourceId, delivery duration copy (15 min or 2 hr) and color (need color resourceId).
     *
     * Current formatted on a string:
     * %1$s -> Delivery duration copy.
     * %2$s -> Color
     *
-    * If need more param, need to adjust the function or make another function.
+    * If need more params, need to adjust the function or make another function.
     */
     fun getServiceTypeFormattedCopy(context: Context, key: String, serviceType: String, @ColorRes colorRes: Int? = null): String {
         val deliveryDurationCopy = if(serviceType == NOW_15M) context.getString(R.string.tokopedianow_15m_copy) else context.getString(R.string.tokopedianow_2h_copy)
