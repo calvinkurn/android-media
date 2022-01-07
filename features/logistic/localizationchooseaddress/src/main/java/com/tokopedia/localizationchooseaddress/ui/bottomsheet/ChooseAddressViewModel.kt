@@ -75,13 +75,13 @@ class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: 
 
     fun checkUserEligibilityForAnaRevamp() {
         eligibleForAddressUseCase.eligibleForAddressFeature(
-                {
-                    _eligibleForAnaRevamp.value = Success(it.eligibleForRevampAna)
-                },
-                {
-                    _eligibleForAnaRevamp.value = Fail(it)
-                },
-                AddressConstant.ANA_REVAMP_FEATURE_ID
+            {
+                _eligibleForAnaRevamp.value = Success(it.eligibleForRevampAna)
+            },
+            {
+                _eligibleForAnaRevamp.value = Fail(it)
+            },
+            AddressConstant.ANA_REVAMP_FEATURE_ID
         )
     }
 

@@ -779,17 +779,15 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun checkUserEligibilityForAnaRevamp(token: Token? = null) {
-        launch(executorDispatchers.immediate) {
-            eligibleForAddressUseCase.eligibleForAddressFeature(
-                    {
-                        eligibleForAnaRevamp.value = OccState.Success(OrderEnableAddressFeature(it, token))
-                    },
-                    {
-                        eligibleForAnaRevamp.value = OccState.Failed(Failure(it))
-                    },
-                    AddressConstant.ANA_REVAMP_FEATURE_ID
-            )
-        }
+        eligibleForAddressUseCase.eligibleForAddressFeature(
+            {
+                eligibleForAnaRevamp.value = OccState.Success(OrderEnableAddressFeature(it, token))
+            },
+            {
+                eligibleForAnaRevamp.value = OccState.Failed(Failure(it))
+            },
+            AddressConstant.ANA_REVAMP_FEATURE_ID
+        )
     }
 
     override fun onCleared() {
