@@ -210,6 +210,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             Bundle().apply {
                                 putString(HomeHeadlineAdsRepository.WIDGET_PARAM, it.channelModel.widgetParam)
                             }
+                        },
+                        deleteWidgetWhen = {
+                            it?.isEmpty() == true
                         }
                 ) { visitableFound, data, position ->
                     visitableFound.copy(
@@ -223,8 +226,16 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
                 dynamicChannelPlainResponse.getWidgetDataIfExist<
                         HomeTopAdsBannerDataModel,
-                        ArrayList<TopAdsImageViewModel>>(widgetRepository = homeTopadsImageRepository) { visitableFound, data, position ->
-                    val newTopAdsModel = visitableFound.copy(topAdsImageViewModel = data[0])
+                        ArrayList<TopAdsImageViewModel>>(
+                        widgetRepository = homeTopadsImageRepository,
+                        deleteWidgetWhen = {
+                            it?.isEmpty() == true
+                        }
+                ) { visitableFound, data, position ->
+                    var newTopAdsModel = visitableFound.copy()
+                    if (data.isNotEmpty()) {
+                        newTopAdsModel = visitableFound.copy(topAdsImageViewModel = data[0])
+                    }
                     dynamicChannelPlainResponse.topadsNextPageToken = newTopAdsModel.topAdsImageViewModel?.nextPageToken?:""
                     newTopAdsModel
                 }
@@ -429,15 +440,23 @@ class HomeDynamicChannelUseCase @Inject constructor(
             bundleParam: (T) -> Bundle = { Bundle() },
             widgetRepository: HomeRepository<K>,
             predicate: (T?) -> Boolean = {true},
+            deleteWidgetWhen:(K?) -> Boolean = {false},
             mapToWidgetData: (T, K, Int) -> T
     ): HomeDynamicChannelModel {
         findWidget<T>(this, predicate) { visitableFound, visitablePosition ->
             val data = widgetRepository.getRemoteData(bundleParam.invoke(visitableFound))
-            this.updateWidgetModel(
-                    visitable = mapToWidgetData.invoke(visitableFound, data, visitablePosition),
-                    visitableToChange = visitableFound,
-                    position = visitablePosition
-            ) {}
+            if (!deleteWidgetWhen.invoke(data)) {
+                this.updateWidgetModel(
+                        visitable = mapToWidgetData.invoke(visitableFound, data, visitablePosition),
+                        visitableToChange = visitableFound,
+                        position = visitablePosition
+                ) {}
+            } else {
+                this.deleteWidgetModel(
+                        visitable = visitableFound,
+                        position = visitablePosition
+                ) {}
+            }
         }
         return this
     }
