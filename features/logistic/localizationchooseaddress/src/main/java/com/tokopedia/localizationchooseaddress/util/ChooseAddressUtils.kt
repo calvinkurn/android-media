@@ -18,6 +18,8 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.ui.preference.CoachMarkStateSharePref
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.DEFAULT_LCA_VERSION
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.LCA_VERSION
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
@@ -44,7 +46,8 @@ object ChooseAddressUtils {
                 localCache?.shop_id ?: "",
                 localCache?.warehouse_id ?: "",
                 localCache?.warehouses ?: listOf(),
-                localCache?.service_type ?: ""
+                localCache?.service_type ?: "",
+                localCache?.version ?: DEFAULT_LCA_VERSION
             )
         } else {
             if (isLoginUser(context)) {
@@ -97,6 +100,7 @@ object ChooseAddressUtils {
             if (latestChooseAddressData.warehouse_id != localizingAddressStateData.warehouse_id) validate = true
             if (latestChooseAddressData.warehouses != localizingAddressStateData.warehouses) validate = true
             if (latestChooseAddressData.service_type != localizingAddressStateData.service_type) validate = true
+            if (latestChooseAddressData.version != localizingAddressStateData.version) validate = true
         }
         return validate
     }
@@ -114,7 +118,8 @@ object ChooseAddressUtils {
                 shop_id = shopId,
                 warehouse_id = warehouseId,
                 warehouses = warehouses,
-                service_type = serviceType
+                service_type = serviceType,
+                version = LCA_VERSION
         )
     }
 
@@ -127,7 +132,7 @@ object ChooseAddressUtils {
 
     fun updateTokoNowData(context: Context, warehouseId: String, shopId: String, warehouses: List<LocalWarehouseModel>, serviceType: String) {
         val chooseAddressPref = ChooseAddressSharePref(context)
-        val newData = getLocalizingAddressData(context).copy(warehouse_id = warehouseId, shop_id = shopId, warehouses = warehouses, service_type = serviceType)
+        val newData = getLocalizingAddressData(context).copy(warehouse_id = warehouseId, shop_id = shopId, warehouses = warehouses, service_type = serviceType, version = LCA_VERSION)
         chooseAddressPref.setLocalCache(newData)
     }
 
