@@ -114,7 +114,6 @@ class MediaPickerPreviewWidget : FrameLayout {
 
     fun setMaxAdapterSize(size: Int) {
         mediaPickerThumbnailAdapter!!.setMaxData(size)
-        mediaPickerThumbnailAdapter!!.notifyDataSetChanged()
     }
 
     fun setMaxVideo(max: Int) {
