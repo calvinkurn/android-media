@@ -1,6 +1,5 @@
 package com.tokopedia.play.view.viewcomponent
 
-import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.productsheet.adapter.ProductLineAdapter
@@ -148,9 +146,7 @@ class ProductSheetViewComponent(
 
         if (model.voucherList.isEmpty()) {
             clProductVoucher.hide()
-            clProductContent.setMargin(left = 0, right = 0, top = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4), bottom = 0)
         } else {
-            clProductContent.setMargin(left = 0, right = 0, top = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2), bottom = 0)
             val vouchers = model.voucherList.filterIsInstance<MerchantVoucherUiModel>()
 
             clProductVoucher.setOnClickListener {
