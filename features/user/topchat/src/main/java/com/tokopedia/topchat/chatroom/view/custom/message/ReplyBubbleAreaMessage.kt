@@ -76,7 +76,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         uiModel: BaseChatUiModel
     ) {
         val parentReply = uiModel.parentReply
-        if (parentReply != null) {
+        if (parentReply != null && !uiModel.isDeleted()) {
             bindParentReply(parentReply)
             updateCloseButtonState(false)
             show()
