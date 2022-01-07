@@ -1019,10 +1019,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         val promoList = ArrayList<Visitable<*>>()
         promoListUiModel.value?.forEach {
             if (it is PromoListItemUiModel) {
-                // Reset promo on expanded item
                 it.uiState.isSelected = false
-                it.uiData.currentClashingPromo.clear()
-                it.uiData.errorMessage = ""
+                if (it.uiData.currentClashingPromo.isNotEmpty()) {
+                    it.uiData.currentClashingPromo.clear()
+                    it.uiData.errorMessage = ""
+                }
                 promoList.add(it)
             }
         }

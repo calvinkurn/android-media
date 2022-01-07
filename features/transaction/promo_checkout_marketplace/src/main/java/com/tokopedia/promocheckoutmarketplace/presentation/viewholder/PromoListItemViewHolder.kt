@@ -323,12 +323,12 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
                 textUserValidity.text = HtmlLinkHelper(itemView.context, bottomBanner.title).spannedString
                 containerUserValidity.show()
                 val containerUserValidityLayoutParam = containerUserValidity.layoutParams as ViewGroup.MarginLayoutParams
-                if (element.uiState.isParentEnabled) {
-                    dividerUserValidity.gone()
-                    containerUserValidityLayoutParam.topMargin = itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_4).toInt()
-                } else {
+                if (element.uiState.isDisabled) {
                     dividerUserValidity.show()
                     containerUserValidityLayoutParam.topMargin = 0
+                } else {
+                    dividerUserValidity.gone()
+                    containerUserValidityLayoutParam.topMargin = itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_4).toInt()
                 }
             } else {
                 containerUserValidity.gone()

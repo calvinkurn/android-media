@@ -112,7 +112,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                                 headerIdentifierId: Int,
                                 selectedPromo: List<String>,
                                 index: Int = 0): PromoListItemUiModel {
-        return PromoListItemUiModel(
+        val promoItem = PromoListItemUiModel(
                 id = index.toString(),
                 uiData = PromoListItemUiModel.UiData().apply {
                     uniqueId = couponItem.uniqueId
@@ -166,6 +166,9 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     isLastPromoItem = lastPromo != null && lastPromo.code == couponItem.code
                 }
         )
+        promoItem.uiState.isDisabled = !promoItem.uiState.isParentEnabled || promoItem.uiData.errorMessage.isNotBlank()
+
+        return promoItem
     }
 
     fun mapErrorState(errorPage: ErrorPage): PromoErrorStateUiModel {
