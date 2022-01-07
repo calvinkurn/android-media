@@ -149,17 +149,15 @@ class ManageAddressViewModel @Inject constructor(
     }
 
     fun checkUserEligibilityForAnaRevamp() {
-        viewModelScope.launch {
-            eligibleForAddressUseCase.eligibleForAddressFeature(
-                    {
-                        _eligibleForAnaRevamp.value = Success(it.eligibleForRevampAna)
-                    },
-                    {
-                        _eligibleForAnaRevamp.value = Fail(it)
-                    },
-                    AddressConstant.ANA_REVAMP_FEATURE_ID
-            )
-        }
+        eligibleForAddressUseCase.eligibleForAddressFeature(
+                {
+                    _eligibleForAnaRevamp.value = Success(it.eligibleForRevampAna)
+                },
+                {
+                    _eligibleForAnaRevamp.value = Fail(it)
+                },
+                AddressConstant.ANA_REVAMP_FEATURE_ID
+        )
     }
 
     private val onErrorGetStateChosenAddress = CoroutineExceptionHandler{ _, e ->
