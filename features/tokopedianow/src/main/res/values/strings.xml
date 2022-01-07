@@ -54,7 +54,7 @@
     <string name="tokopedianow_home_educational_information_duration">%1$s tiba</string>
     <string name="tokopedianow_home_educational_information_stock_available">Stok pasti tersedia</string>
     <string name="tokopedianow_home_educational_information_guaranteed_quality">Kualitas terjamin</string>
-    <string name="tokopedianow_home_educational_information_duration_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>%2$s tiba.</b></font> Terima belanjaan dalam %2$s setelah pembayaran berhasil & nikmati <font color=\'%1$s\'><b>gratis ongkir</b></font> juga!]]></string>
+    <string name="tokopedianow_home_educational_information_duration_bottomsheet"><![CDATA[<font color=\'%2$s\'><b>%1$s tiba.</b></font> Terima belanjaan dalam %1$s setelah pembayaran berhasil & nikmati <font color=\'%2$s\'><b>gratis ongkir</b></font> juga!]]></string>
     <string name="tokopedianow_home_educational_information_stock_available_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Stok pasti tersedia.</b></font> Ada ribuan pilihan produk. Tiap pesananmu siap dikirim sekaligus & dilayani langsung oleh Tokopedia.]]></string>
     <string name="tokopedianow_home_educational_information_guaranteed_quality_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Kualitas terjamin.</b></font> Kondisi produk dijamin aman & segar, dengan garansi uang kembali.]]></string>
     <string name="tokopedianow_home_educational_information_twenty_four_hours_bottomsheet" tools:ignore="TypographyDashes"><![CDATA[Nantikan layanan 24 jam yang akan tersedia setelah masa PPKM. <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/apa-itu-tokopedia-now">Pelajari</a></font>]]></string>

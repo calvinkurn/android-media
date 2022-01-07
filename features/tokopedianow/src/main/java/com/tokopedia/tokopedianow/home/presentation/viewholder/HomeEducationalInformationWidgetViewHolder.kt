@@ -12,12 +12,10 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.DELIVERY_DURATION_COPY_RESOURCE_ID
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_WIDGET_RESOURCE_ID
-import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeRes
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeFormattedCopy
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeEducationalInformationWidgetBinding
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEducationalInformationWidgetUiModel
@@ -52,15 +50,10 @@ class HomeEducationalInformationWidgetViewHolder(
             cvEducationalInfo.show()
 
             tpTime.text = MethodChecker.fromHtml(
-                getString(
-                    getServiceTypeRes(
-                        key = EDU_WIDGET_RESOURCE_ID,
-                        serviceType = serviceType
-                    ).orZero(),
-                    getString(getServiceTypeRes(
-                        key = DELIVERY_DURATION_COPY_RESOURCE_ID,
-                        serviceType = serviceType
-                    ).orZero())
+                getServiceTypeFormattedCopy(
+                    context = root.context,
+                    key = EDU_WIDGET_RESOURCE_ID,
+                    serviceType = serviceType
                 )
             )
             
