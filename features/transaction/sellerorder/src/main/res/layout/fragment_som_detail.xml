@@ -70,6 +70,8 @@
                     android:id="@+id/rv_detail"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_lvl0"
+                    android:clipToPadding="false"
+                    android:paddingBottom="24dp"
                     android:visibility="visible"
                     app:layout_constraintBottom_toTopOf="@id/shadow_container_btn_detail"
                     app:layout_constraintEnd_toEndOf="parent"
