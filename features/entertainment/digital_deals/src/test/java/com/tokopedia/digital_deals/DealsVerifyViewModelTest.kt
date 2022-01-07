@@ -68,7 +68,6 @@ class DealsVerifyViewModelTest {
         assertEquals(mockRequest.book, actual.book)
         assertEquals(mockRequest.checkout, actual.checkout)
         assertEquals(mockRequest.cartdata.metadata.itemMaps[0].categoryId, actual.cartdata.metadata.itemMaps[0].categoryId)
-        assertEquals(mockRequest.cartdata.metadata.itemMaps[0].startTime, actual.cartdata.metadata.itemMaps[0].startTime)
         assertEquals(mockRequest.cartdata.metadata.itemMaps[0].endTime, actual.cartdata.metadata.itemMaps[0].endTime)
         assertEquals(mockRequest.cartdata.metadata.itemMaps[0].flagID, actual.cartdata.metadata.itemMaps[0].flagID)
         assertEquals(mockRequest.cartdata.metadata.itemMaps[0].id, actual.cartdata.metadata.itemMaps[0].id)
