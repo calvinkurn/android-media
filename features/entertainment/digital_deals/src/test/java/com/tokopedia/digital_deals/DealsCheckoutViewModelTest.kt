@@ -36,6 +36,7 @@ class DealsCheckoutViewModelTest {
     private lateinit var mockDealsCheckoutGeneralInstantResponse: DealsCheckoutInstantResponse
     private lateinit var mockDealsDetailInstant: DealsDetailsResponse
     private lateinit var mockDealsDetailGeneral: DealsDetailsResponse
+    private val promoCodes = listOf("FNVTEST1")
 
 
     var graphqlRepository: GraphqlRepository = mockk()
@@ -91,7 +92,7 @@ class DealsCheckoutViewModelTest {
     @Test
     fun mapCheckoutData_successMapCheckoutInstantRequest(){
         //when
-        val actual = viewModel.mapCheckoutDealsInstant(mockDealsDetailInstant, mockDealsVerifyInstantResponse.eventVerify)
+        val actual = viewModel.mapCheckoutDealsInstant(mockDealsDetailInstant, mockDealsVerifyInstantResponse.eventVerify, promoCodes)
 
         //then
         assertEquals(mockDealsCheckoutGeneralInstantRequest, actual)
@@ -100,7 +101,7 @@ class DealsCheckoutViewModelTest {
     @Test
     fun mapCheckoutData_successMapCheckoutGeneralRequest(){
         //when
-        val actual = viewModel.mapCheckoutDeals(mockDealsDetailGeneral, mockDealsVerifyGeneralResponse.eventVerify)
+        val actual = viewModel.mapCheckoutDeals(mockDealsDetailGeneral, mockDealsVerifyGeneralResponse.eventVerify, promoCodes)
 
         //then
         assertEquals(mockDealsCheckoutGeneralRequest, actual)
@@ -110,7 +111,7 @@ class DealsCheckoutViewModelTest {
     fun mapCheckoutData_successMapCheckoutInstantRequest_DataTypeNull(){
         //when
         mockDealsDetailInstant.checkoutDataType = null
-        val actual = viewModel.mapCheckoutDealsInstant(mockDealsDetailInstant, mockDealsVerifyInstantResponse.eventVerify)
+        val actual = viewModel.mapCheckoutDealsInstant(mockDealsDetailInstant, mockDealsVerifyInstantResponse.eventVerify, promoCodes)
 
         //then
         assertEquals(mockDealsCheckoutGeneralInstantRequest, actual)
@@ -120,7 +121,7 @@ class DealsCheckoutViewModelTest {
     fun mapCheckoutData_successMapCheckoutGeneralRequest_DataTypeNull(){
         //when
         mockDealsDetailGeneral.checkoutDataType = null
-        val actual = viewModel.mapCheckoutDeals(mockDealsDetailGeneral, mockDealsVerifyGeneralResponse.eventVerify)
+        val actual = viewModel.mapCheckoutDeals(mockDealsDetailGeneral, mockDealsVerifyGeneralResponse.eventVerify, promoCodes)
 
         //then
         assertEquals(mockDealsCheckoutGeneralRequest, actual)

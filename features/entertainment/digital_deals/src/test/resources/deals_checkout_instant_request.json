@@ -1,6 +1,7 @@
 {
   "carts": {
     "business_type": 34,
+    "promo_codes":  ["FNVTEST1"],
     "cart_info": [
       {
         "data_type": "foodvchr",
