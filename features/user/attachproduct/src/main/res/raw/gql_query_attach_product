@@ -4,11 +4,13 @@ query ace_search_product($params: String!) {
                   products {
                     id
                     name
+                    childs
                     url
                     imageURL
                     price
                     stock
                     priceInt
+                    isPreorder
                     shop {
                       id
                       name

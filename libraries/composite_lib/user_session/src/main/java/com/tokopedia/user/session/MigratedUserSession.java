@@ -121,7 +121,6 @@ public class MigratedUserSession {
         String debug = "";
         boolean isGettingFromMap = false;
 
-
         Pair<String, String> key = new Pair<>(newPrefName, newKeyName);
         if (UserSessionMap.map.containsKey(key)) {
             try {
@@ -137,28 +136,32 @@ public class MigratedUserSession {
             }
         }
 
-        String oldValue = internalGetString(prefName, keyName, defValue);
+        try {
+            String oldValue = internalGetString(prefName, keyName, defValue);
 
-        if (oldValue != null && !oldValue.equals(defValue)) {
-            internalCleanKey(prefName, keyName);
-            internalSetString(newPrefName, newKeyName, EncoderDecoder.Encrypt(oldValue, UserSession.KEY_IV));
-            UserSessionMap.map.put(key, oldValue);
-            return oldValue;
-        }
-
-        SharedPreferences sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE);
-        String value = sharedPrefs.getString(newKeyName, defValue);
-
-        if (value != null) {
-            if(value.equals(defValue)) {// if value same with def value\
-                return value;
-            }else{
-                value = EncoderDecoder.Decrypt(value, UserSession.KEY_IV);// decrypt here
-                UserSessionMap.map.put(key, value);
-                return value;
+            if (oldValue != null && !oldValue.equals(defValue)) {
+                internalCleanKey(prefName, keyName);
+                internalSetString(newPrefName, newKeyName, EncoderDecoder.Encrypt(oldValue, UserSession.KEY_IV));
+                UserSessionMap.map.put(key, oldValue);
+                return oldValue;
             }
-        }else{
-            return value;
+
+            SharedPreferences sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE);
+            String value = sharedPrefs.getString(newKeyName, defValue);
+
+            if (value != null) {
+                if (value.equals(defValue)) {// if value same with def value\
+                    return value;
+                } else {
+                    value = EncoderDecoder.Decrypt(value, UserSession.KEY_IV);// decrypt here
+                    UserSessionMap.map.put(key, value);
+                    return value;
+                }
+            } else {
+                return defValue;
+            }
+        } catch (Exception e) {
+            return defValue;
         }
     }
 

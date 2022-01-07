@@ -33,4 +33,5 @@ interface RecomCarouselWidgetBasicListener {
 
     fun onChannelWidgetEmpty()
     fun onWidgetFail(pageName: String, e: Throwable)
+    fun onShowError(pageName: String, e: Throwable)
 }

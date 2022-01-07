@@ -60,7 +60,7 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginComponent> {
 
     private fun setWhiteStatusBarIfSellerApp() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && GlobalConfig.isSellerApp()) {
-            setStatusBarColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            setStatusBarColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
             setLightStatusBar(true)
         }
     }
