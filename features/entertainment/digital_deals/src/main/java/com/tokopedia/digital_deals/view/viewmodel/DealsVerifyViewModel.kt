@@ -91,7 +91,7 @@ class DealsVerifyViewModel @Inject constructor(
     companion object {
         const val eventVerify = "eventVerify"
         const val categoryName = "deal"
-        const val dateFormat = " dd MMM YYYY hh:mm"
+        const val dateFormat = " dd MMM yyyy hh:mm"
     }
 
 }
