@@ -1,6 +1,7 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import android.content.Context
+import android.util.Log
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
@@ -22,10 +23,7 @@ import com.tokopedia.home.beranda.domain.model.recharge_recommendation.DeclineRe
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
@@ -44,10 +42,13 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import net.bytebuddy.implementation.bytecode.Throw
+import java.net.UnknownHostException
 import java.util.concurrent.TimeoutException
 
 /**
@@ -204,8 +205,19 @@ fun HomeDynamicChannelUseCase.givenUpdateHomeDataReturn(result: com.tokopedia.ho
 }
 
 fun HomeDynamicChannelUseCase.givenUpdateHomeDataError(t: Throwable = Throwable("Unit test simulate error")) {
+    mockkStatic(Log::class)
+    every { Log.getStackTraceString(t) } returns ""
     coEvery { updateHomeData() } returns flow{
         throw t
+    }
+}
+
+fun HomeDynamicChannelUseCase.givenUpdateHomeDataErrorNullMessage() {
+    val throwable = Throwable()
+    mockkStatic(Log::class)
+    every { Log.getStackTraceString(throwable) } returns ""
+    coEvery { updateHomeData() } returns flow{
+        throw throwable
     }
 }
 
@@ -382,6 +394,14 @@ fun InjectCouponTimeBasedUseCase.givenInjectCouponTimeBasedUseCaseReturn(setInje
 
 fun InjectCouponTimeBasedUseCase.givenInjectCouponTimeBasedUseCaseThrowReturn() {
     coEvery { executeOnBackground() } throws Exception()
+}
+
+fun HomePopularKeywordUseCase.givenOnPopularKeywordReturn(
+    refreshCount: Int,
+    currentPopularKeyword: PopularKeywordListDataModel,
+    resultPopularKeyword: PopularKeywordListDataModel
+) {
+    coEvery { onPopularKeywordRefresh(refreshCount, currentPopularKeyword) } returns resultPopularKeyword
 }
 
 fun areEqualKeyValues(first: Map<String, Any>, second: Map<String,Any>): Boolean{
