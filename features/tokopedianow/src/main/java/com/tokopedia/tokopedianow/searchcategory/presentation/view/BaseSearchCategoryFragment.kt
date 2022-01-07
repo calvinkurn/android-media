@@ -351,10 +351,14 @@ abstract class BaseSearchCategoryFragment:
 
     private fun configureSwipeRefreshLayout() {
         swipeRefreshLayout?.setOnRefreshListener {
-            resetMovingPosition()
-            carouselScrollPosition.clear()
-            getViewModel().onViewReloadPage()
+            refreshLayout()
         }
+    }
+
+    private fun refreshLayout() {
+        resetMovingPosition()
+        carouselScrollPosition.clear()
+        getViewModel().onViewReloadPage()
     }
 
     private fun resetMovingPosition() {
@@ -1017,9 +1021,7 @@ abstract class BaseSearchCategoryFragment:
 
                     //Refresh the page
                     staggeredGridLayoutManager?.scrollToPosition(DEFAULT_POSITION)
-                    resetMovingPosition()
-                    carouselScrollPosition.clear()
-                    getViewModel().onViewReloadPage()
+                    refreshLayout()
                 }
             }
             is Fail -> { /* no op */ }
