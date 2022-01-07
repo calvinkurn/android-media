@@ -22,7 +22,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 
 class TopchatImageUploadViewHolder(
     itemView: View?,
-    listener: ImageUploadListener,
+    private val listener: ImageUploadListener,
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener,
     private val commonListener: CommonViewHolderListener,
 ) : ImageUploadViewHolder(itemView, listener) {
