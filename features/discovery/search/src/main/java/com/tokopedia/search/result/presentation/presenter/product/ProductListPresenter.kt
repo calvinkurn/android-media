@@ -604,6 +604,8 @@ class ProductListPresenter @Inject constructor(
         searchProductModel: SearchProductModel,
         list: MutableList<Visitable<*>>,
     ) {
+        if (!isHeadlineAdsAllowed()) return
+
         topAdsHeadlineHelper.processHeadlineAds(searchProductModel.cpmModel) { _, cpmDataList, isUseSeparator ->
             val cpmDataView = createCpmDataView(searchProductModel.cpmModel, cpmDataList)
             processHeadlineAdsAtPosition(list, productList.size, cpmDataView, isUseSeparator)
