@@ -82,8 +82,8 @@ class DealsVerifyViewModel @Inject constructor(
         )
     }
 
-    private fun getDateMilis(date: Int): String {
-         val dateFormat = SimpleDateFormat(dateFormat)
+    fun getDateMilis(date: Int): String {
+         val dateFormat = SimpleDateFormat(dateFormat, DEFAULT_LOCALE)
          val dateMilis = Date(TimeUnit.SECONDS.toMillis(date.toLong()))
          return dateFormat.format(dateMilis).toString()
     }
@@ -92,6 +92,7 @@ class DealsVerifyViewModel @Inject constructor(
         const val eventVerify = "eventVerify"
         const val categoryName = "deal"
         const val dateFormat = " dd MMM yyyy hh:mm"
+        val DEFAULT_LOCALE = Locale("in", "ID")
     }
 
 }

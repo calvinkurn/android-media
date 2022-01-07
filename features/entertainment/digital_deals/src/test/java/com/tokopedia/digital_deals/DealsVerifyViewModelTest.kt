@@ -63,12 +63,23 @@ class DealsVerifyViewModelTest {
 
         //when
         val actual = viewModel.mapVerifyRequest(quantity, mockDealsDetail)
+        val startDate = viewModel.getDateMilis(mockDealsDetail.minStartDate)
+        val endDate = viewModel.getDateMilis(mockDealsDetail.maxEndDate)
 
         //then
         assertEquals(mockRequest.book, actual.book)
         assertEquals(mockRequest.checkout, actual.checkout)
+        assertEquals(mockRequest.cartdata.error, actual.cartdata.error)
+        assertEquals(mockRequest.cartdata.errorDescription, actual.cartdata.errorDescription)
+        assertEquals(mockRequest.cartdata.status, actual.cartdata.status)
+        assertEquals(mockRequest.cartdata.metadata.categoryName, actual.cartdata.metadata.categoryName)
+        assertEquals(mockRequest.cartdata.metadata.productIds, actual.cartdata.metadata.productIds)
+        assertEquals(mockRequest.cartdata.metadata.productNames, actual.cartdata.metadata.productNames)
+        assertEquals(mockRequest.cartdata.metadata.providerIds, actual.cartdata.metadata.providerIds)
+        assertEquals(mockRequest.cartdata.metadata.totalPrice, actual.cartdata.metadata.totalPrice)
         assertEquals(mockRequest.cartdata.metadata.itemMaps[0].categoryId, actual.cartdata.metadata.itemMaps[0].categoryId)
-        assertEquals(mockRequest.cartdata.metadata.itemMaps[0].endTime, actual.cartdata.metadata.itemMaps[0].endTime)
+        assertEquals(startDate, actual.cartdata.metadata.itemMaps[0].startTime)
+        assertEquals(endDate, actual.cartdata.metadata.itemMaps[0].endTime)
         assertEquals(mockRequest.cartdata.metadata.itemMaps[0].flagID, actual.cartdata.metadata.itemMaps[0].flagID)
         assertEquals(mockRequest.cartdata.metadata.itemMaps[0].id, actual.cartdata.metadata.itemMaps[0].id)
         assertEquals(mockRequest.cartdata.metadata.itemMaps[0].locationDesc, actual.cartdata.metadata.itemMaps[0].locationDesc)
@@ -76,10 +87,14 @@ class DealsVerifyViewModelTest {
         assertEquals(mockRequest.cartdata.metadata.itemMaps[0].packageId, actual.cartdata.metadata.itemMaps[0].packageId)
         assertEquals(mockRequest.cartdata.metadata.itemMaps[0].packageName, actual.cartdata.metadata.itemMaps[0].packageName)
         assertEquals(mockRequest.cartdata.metadata.itemMaps[0].providerId, actual.cartdata.metadata.itemMaps[0].providerId)
+        assertEquals(mockRequest.cartdata.metadata.itemMaps[0].categoryId, actual.cartdata.metadata.itemMaps[0].categoryId)
+        assertEquals(mockRequest.cartdata.metadata.itemMaps[0].productName, actual.cartdata.metadata.itemMaps[0].productName)
         assertEquals(mockRequest.cartdata.metadata.itemMaps[0].price, actual.cartdata.metadata.itemMaps[0].price)
         assertEquals(mockRequest.cartdata.metadata.itemMaps[0].quantity, actual.cartdata.metadata.itemMaps[0].quantity)
         assertEquals(mockRequest.cartdata.metadata.itemMaps[0].totalPrice, actual.cartdata.metadata.itemMaps[0].totalPrice)
         assertEquals(mockRequest.cartdata.metadata.itemMaps[0].scheduleTimestamp, actual.cartdata.metadata.itemMaps[0].scheduleTimestamp)
+        assertEquals(mockRequest.cartdata.metadata.itemMaps[0].productImage, actual.cartdata.metadata.itemMaps[0].productImage)
+
     }
 
     @Test
