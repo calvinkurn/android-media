@@ -43,6 +43,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
@@ -207,6 +208,7 @@ class ProductListPresenter @Inject constructor(
     private var threeDotsProductItem: ProductItemDataView? = null
     private var firstProductPositionWithBOELabel = -1
     private var isEnableChooseAddress = false
+    private var isABTestNegativeNoAds : Boolean  = false
     private var chooseAddressData: LocalCacheModel? = null
     private var bannerDataView: BannerDataView? = null
     private var categoryIdL2 = ""
@@ -219,21 +221,21 @@ class ProductListPresenter @Inject constructor(
         super.attachView(view)
 
         isEnableChooseAddress = view.isChooseAddressWidgetEnabled
+        isABTestNegativeNoAds = getABTestNegativeNoAds()
         if (isEnableChooseAddress) chooseAddressData = view.chooseAddressData
     }
 
-    private val isABTestNegativeNoAds : Boolean
-        get() {
-            return try {
-                val abTestKeywordAdvNeg = view.abTestRemoteConfig?.getString(
-                    SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEYWORD_ADV_NEG,
-                    ""
-                )
-                SearchConstant.ABTestRemoteConfigKey.AB_TEST_NEGATIVE_NO_ADS == abTestKeywordAdvNeg
-            } catch (e: Exception) {
-                false
-            }
+    private fun getABTestNegativeNoAds() :Boolean {
+        return try {
+            val abTestKeywordAdvNeg = view.abTestRemoteConfig?.getString(
+                RollenceKey.SEARCH_ADVANCED_KEYWORD_ADV_NEG,
+                ""
+            )
+            RollenceKey.SEARCH_ADVANCED_NEGATIVE_NO_ADS == abTestKeywordAdvNeg
+        } catch (e: Exception) {
+            false
         }
+    }
 
     override val userId: String
         get() = if (userSession.isLoggedIn) userSession.userId else DEFAULT_USER_ID
@@ -243,6 +245,7 @@ class ProductListPresenter @Inject constructor(
 
     override val deviceId: String
         get() = userSession.deviceId
+
 
     override fun onPriceFilterTickerDismissed() {
         isTickerHasDismissed = true
@@ -456,10 +459,12 @@ class ProductListPresenter @Inject constructor(
         totalData = productDataView.totalData
     }
 
-    private fun SearchProductModel.isAdvancedNegativeKeywordSearch() : Boolean {
-        val keywordProcessed = searchProduct.header.keywordProcess
-        if(keywordProcessed.isEmpty()) return false
-        return keywordProcessed.toIntOrZero() in 16..31
+    private fun isDisableAdsNegativeKeywords(searchProductModel: SearchProductModel) :Boolean {
+        return isABTestNegativeNoAds && searchProductModel.isAdvancedNegativeKeywordSearch()
+    }
+
+    private fun isHideProductAds(searchProductModel: SearchProductModel) : Boolean {
+        return isLocalSearch() || isDisableAdsNegativeKeywords(searchProductModel)
     }
 
     private fun createProductDataView(
@@ -476,7 +481,7 @@ class ProductListPresenter @Inject constructor(
             isLocalSearch(),
             dimension90,
             keyword,
-            isABTestNegativeNoAds && searchProductModel.isAdvancedNegativeKeywordSearch()
+            isHideProductAds(searchProductModel)
         )
 
         saveLastProductItemPositionToCache(lastProductItemPosition, productDataView.productList)
@@ -529,9 +534,7 @@ class ProductListPresenter @Inject constructor(
         val searchProduct = searchProductModel.searchProduct
 
         processHeadlineAdsLoadMore(searchProductModel, list)
-        if (!isABTestNegativeNoAds || !searchProductModel.isAdvancedNegativeKeywordSearch()) {
-            processTopAdsImageViewModel(searchParameter, list)
-        }
+        processTopAdsImageViewModel(searchParameter, list)
         processInspirationCardPosition(searchParameter, list)
         processInspirationCarouselPosition(searchParameter, list)
         processBannerAndBroadmatchInSamePosition(searchProduct, list)
@@ -1063,9 +1066,7 @@ class ProductListPresenter @Inject constructor(
         productList = createProductItemVisitableList(productDataView)
         list.addAll(productList)
 
-//        if(!isABTestNegativeNoAds || !searchProductModel.isAdvancedNegativeKeywordSearch()) {
         processHeadlineAdsFirstPage(searchProductModel, list)
-//        }
 
         additionalParams = productDataView.additionalParams
 
@@ -1078,10 +1079,9 @@ class ProductListPresenter @Inject constructor(
         processBannerAndBroadmatchInSamePosition(searchProduct, list)
         processBanner(searchProduct, list)
         processBroadMatch(searchProduct, list)
-        if(!isABTestNegativeNoAds || !searchProductModel.isAdvancedNegativeKeywordSearch()) {
-            topAdsImageViewModelList = searchProductModel.getTopAdsImageViewModelList().toMutableList()
-            processTopAdsImageViewModel(searchParameter, list)
-        }
+
+        topAdsImageViewModelList = searchProductModel.getTopAdsImageViewModelList().toMutableList()
+        processTopAdsImageViewModel(searchParameter, list)
 
         addSearchInTokopedia(searchProduct, list)
         firstProductPositionWithBOELabel = getFirstProductPositionWithBOELabel(list)
