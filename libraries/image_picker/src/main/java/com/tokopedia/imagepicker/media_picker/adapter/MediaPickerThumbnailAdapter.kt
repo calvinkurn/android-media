@@ -124,7 +124,7 @@ class MediaPickerThumbnailAdapter(
         if (!isImage && totalVideo >= maxVideo) {
             limitListener?.onLimitVideoListener()
             return
-        } else {
+        } else if(!isImage && totalVideo < maxVideo) {
             totalVideo+=1
         }
         if (!mediaPathList.contains(imagePath)) {
