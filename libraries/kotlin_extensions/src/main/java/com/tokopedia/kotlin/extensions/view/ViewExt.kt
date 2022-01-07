@@ -59,6 +59,13 @@ fun View.shouldShowWithAction(shouldShow: Boolean, action: () -> Unit) {
     }
 }
 
+fun <T : View> T.showIfWithBlock(predicate: Boolean, block: T.() -> Unit) {
+    if (predicate) {
+        show()
+        block()
+    } else hide()
+}
+
 fun View.visible() {
     visibility = View.VISIBLE
 }
