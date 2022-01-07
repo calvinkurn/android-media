@@ -135,6 +135,7 @@ abstract class BaseSearchCategoryViewModel(
     protected var totalData = 0
     protected var totalFetchedData = 0
     protected var nextPage = 1
+    protected var chooseAddressData: LocalCacheModel? = null
     protected var currentProductPosition: Int = 1
     protected var recommendationPositionInVisitableList = -1
     protected val recommendationList = mutableListOf<RecommendationWidget>()
@@ -144,8 +145,6 @@ abstract class BaseSearchCategoryViewModel(
     var warehouseId = ""
         private set
     var autoCompleteApplink = ""
-        private set
-    var chooseAddressData: LocalCacheModel? = null
         private set
 
     protected val visitableListMutableLiveData = MutableLiveData<List<Visitable<*>>>(visitableList)
