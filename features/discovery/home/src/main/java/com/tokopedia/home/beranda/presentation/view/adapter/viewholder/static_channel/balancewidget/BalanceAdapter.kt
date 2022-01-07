@@ -262,17 +262,10 @@ class BalanceAdapter(
 
                             },
                             walletAppAction = {
-                                if (listener?.isEligibleForNewGopay() == true) {
-                                    OvoWidgetTracking.sendClickOnNewWalletAppBalanceWidgetTracker(
+                                OvoWidgetTracking.sendClickOnNewWalletAppBalanceWidgetTracker(
                                         subtitle = element.balanceSubTitleTextAttribute?.text?:"",
                                         userId = listener?.userId?:""
-                                    )
-                                } else {
-                                    OvoWidgetTracking.sendClickOnWalletAppBalanceWidgetTracker(
-                                        isLinked = it,
-                                        userId = listener?.userId?:""
-                                    )
-                                }
+                                )
                                 listener?.onSectionItemClicked(element.redirectUrl)
                             }
                     )
@@ -358,17 +351,10 @@ class BalanceAdapter(
                                 itemView.context.startActivity(intentBalanceWallet)
                             },
                             walletAppAction = {
-                                if (listener?.isEligibleForNewGopay() == true) {
-                                    OvoWidgetTracking.sendClickOnNewWalletAppBalanceWidgetTracker(
+                                OvoWidgetTracking.sendClickOnNewWalletAppBalanceWidgetTracker(
                                         subtitle = element.balanceSubTitleTextAttribute?.text?:"",
                                         userId = listener?.userId?:""
-                                    )
-                                } else {
-                                    OvoWidgetTracking.sendClickOnWalletAppBalanceWidgetTracker(
-                                        isLinked = it,
-                                        userId = listener?.userId?:""
-                                    )
-                                }
+                                )
                                 listener?.onSectionItemClicked(element.redirectUrl)
                             }
                     )

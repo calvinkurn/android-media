@@ -132,8 +132,6 @@ interface HomeCategoryListener {
 
     fun setRotateTokopointsDone(boolean: Boolean)
 
-    fun isEligibleForNewGopay(): Boolean
-
     fun onTokonowViewCaptured(view: View?, parentPosition: Int)
 
     fun dismissTokonowCoachmark(parentPosition: Int)

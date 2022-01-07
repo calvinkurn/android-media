@@ -66,8 +66,8 @@ class HomeViewModelBalanceWidgetUnitTest{
                 homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
         //On refresh
-        homeViewModel.refresh(true)
-        homeViewModel.refresh(true)
+        homeViewModel.refreshWithThreeMinsRules(true)
+        homeViewModel.refreshWithThreeMinsRules(true)
 
         val list = homeViewModel.homeLiveDynamicChannel.value?.list
         val homeHeaderDataModel = list?.filterIsInstance<HomeHeaderDataModel>()?.get(0)
@@ -92,7 +92,7 @@ class HomeViewModelBalanceWidgetUnitTest{
                 homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
         //On refresh
-        homeViewModel.refresh(false)
+        homeViewModel.refreshWithThreeMinsRules(false)
 
         val homeBalanceModel = getHomeBalanceModel()
         Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
@@ -116,7 +116,7 @@ class HomeViewModelBalanceWidgetUnitTest{
                 homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
         //On refresh
-        homeViewModel.refresh(false)
+        homeViewModel.refreshWithThreeMinsRules(false)
 
         val homeBalanceModel = getHomeBalanceModel()
         Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == false)

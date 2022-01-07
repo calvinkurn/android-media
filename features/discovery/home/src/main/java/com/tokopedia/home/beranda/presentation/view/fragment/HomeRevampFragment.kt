@@ -168,7 +168,6 @@ import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 import java.util.*
-import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -358,7 +357,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var coachmarkGopay: CoachMark2? = null
     private var coachmarkTokopoint: CoachMark2? = null
     private var coachmarkTokonow: CoachMark2? = null
-    private var isEligibleGopay: Boolean? = null
     private var tokonowIconRef: View? = null
     private var tokonowIconParentPosition: Int = -1
 
@@ -400,10 +398,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             e.printStackTrace()
             false
         }
-    }
-
-    override fun isEligibleForNewGopay(): Boolean {
-        return this.isEligibleGopay?: false
     }
 
     private fun isChooseAddressRollenceActive(): Boolean {
@@ -452,11 +446,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         startToTransitionOffset = 1f.toDpInt()
         getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_CREATE_HOME)
     }
-
-    fun callSubordinateTasks() {
-        injectCouponTimeBased()
-    }
-
 
     protected open fun initHomePageFlows(): Boolean {
         initInjectorHome()
@@ -659,41 +648,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun ArrayList<CoachMark2Item>.buildHomeCoachmark(skipBalanceWidget: Boolean) {
-        context?.let { currentContext ->
-
-            //add balance widget
-            //uncomment this to activate balance widget coachmark
-            if (isUsingWalletApp() && (isEligibleGopay != null && isEligibleGopay == false)) {
-                if (!skipBalanceWidget && !isWalletAppCoachmarkShown(currentContext)) {
-                    val gopayWidget = getGopayBalanceWidgetView()
-                    gopayWidget?.let {
-                        this.add(
-                            CoachMark2Item(
-                                gopayWidget,
-                                getString(R.string.home_gopay_coachmark_title),
-                                getString(R.string.home_gopay_coachmark_description)
-                            )
-                        )
-                    }
-                }
-
-                if (!skipBalanceWidget && !isWalletApp2CoachmarkShown(currentContext)) {
-                    val balanceWidget = getBalanceWidgetView()
-                    balanceWidget?.let {
-                        this.add(
-                            CoachMark2Item(
-                                balanceWidget,
-                                getString(R.string.home_gopay2_coachmark_title),
-                                getString(R.string.home_gopay2_coachmark_description)
-                            )
-                        )
-                    }
-                }
-            }
-        }
-    }
-
     private fun ArrayList<CoachMark2Item>.buildGopayNewCoachmark() {
         context?.let { currentContext ->
             if (isGopayActivated) {
@@ -763,7 +717,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (coachmark == null && !(coachmarkGopay?.isShowing == true || coachmarkTokopoint?.isShowing == true)) {
             context?.let { ctx ->
                 val coachMarkItem = ArrayList<CoachMark2Item>()
-                coachMarkItem.buildHomeCoachmark(skipBalanceWidget)
                 //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
                 //will be removed along the coachmark removal in the future
                 if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !coachMarkIsShowing) {
@@ -777,7 +730,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                             if (getUserSession().isLoggedIn) {
                                 showBalanceWidgetCoachmark(
                                         ctx,
-                                        containsNewGopayAndTokopoints,
                                         tokopointsBalanceCoachmark
                                 )
                             }
@@ -794,7 +746,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     if (getUserSession().isLoggedIn) {
                         showBalanceWidgetCoachmark(
                                 ctx,
-                                containsNewGopayAndTokopoints,
                                 tokopointsBalanceCoachmark
                         )
                     }
@@ -806,13 +757,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun showBalanceWidgetCoachmark(
         ctx: Context,
-        containsNewGopayAndTokopoints: Boolean,
         tokopointsBalanceCoachmark: BalanceCoachmark?
     ) {
         if (!isNewWalletAppCoachmarkShown(ctx)) {
-            showGopayEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
+            showGopayEligibleCoachmark(tokopointsBalanceCoachmark)
         } else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx) && tokopointsBalanceCoachmark != null) {
-            showTokopointsEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
+            showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark)
         } else if (isNewWalletAppCoachmarkShown(ctx) && (isNewTokopointCoachmarkShown(ctx) || tokopointsBalanceCoachmark == null)) {
             showTokonowCoachmark()
         }
@@ -820,12 +770,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     @Suppress("TooGenericExceptionCaught")
     private fun showGopayEligibleCoachmark(
-        containsNewGopayAndTokopoints: Boolean,
         tokopointsBalanceCoachmark: BalanceCoachmark? = null
     ) {
-        //if eligible
-        if (isEligibleGopay == null || isEligibleGopay == false || !containsNewGopayAndTokopoints || !userVisibleHint) return
-
         context?.let {
             val coachMarkItem = ArrayList<CoachMark2Item>()
             coachmarkGopay = CoachMark2(it)
@@ -835,7 +781,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !gopayCoachmarkIsShowing) {
                         gopayCoachmark.onDismissListener = {
                             if (!isNewTokopointCoachmarkShown(it) && tokopointsBalanceCoachmark != null) {
-                                showTokopointsEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
+                                showTokopointsEligibleCoachmark(tokopointsBalanceCoachmark)
                             } else {
                                 showTokonowCoachmark()
                             }
@@ -854,11 +800,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     @Suppress("TooGenericExceptionCaught")
     private fun showTokopointsEligibleCoachmark(
-        containsNewGopayAndTokopoints: Boolean,
         tokopointsBalanceCoachmark: BalanceCoachmark? = null) {
-        //if eligible
-        if (isEligibleGopay == null || isEligibleGopay == false || !containsNewGopayAndTokopoints || !userVisibleHint) return
-
         context?.let {
             tokopointsBalanceCoachmark?.let { tokopointsBalanceCoachmark ->
                 val coachMarkItem = ArrayList<CoachMark2Item>()
@@ -1005,12 +947,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
         return false
     }
-
-    private val afterInflationCallable: Callable<Any?>
-        get() = Callable {
-            observeSearchHint()
-            null
-        }
 
     private fun setupHomeRecyclerView() {
         homeRecyclerView?.setItemViewCacheSize(ITEM_VIEW_CACHE_SIZE)
@@ -1172,11 +1108,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             chooseAddressAbTestCondition(
                     ifChooseAddressActive = {
                         if (!validateChooseAddressWidget()) {
-                            getHomeViewModel().refresh(isFirstInstall = isFirstInstall())
+                            getHomeViewModel().refreshWithThreeMinsRules(isFirstInstall = isFirstInstall())
                         }
                     },
                     ifChooseAddressNotActive = {
-                        getHomeViewModel().refresh(isFirstInstall = isFirstInstall())
+                        getHomeViewModel().refreshWithThreeMinsRules(isFirstInstall = isFirstInstall())
                     }
             )
 
@@ -1264,11 +1200,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         observeHomeData()
         observeUpdateNetworkStatusData()
         observeOneClickCheckout()
-        observePopupIntroOvo()
         observeErrorEvent()
-        observeSendLocation()
         observeTrackingData()
-        observeViewModelInitialized()
         observeHomeRequestNetwork()
         observeIsNeedRefresh()
         observeSearchHint()
@@ -1276,7 +1209,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         observePlayWidgetReminderEvent()
         observeResetNestedScrolling()
         observeBeautyFestData()
-        observeGopayEligibility()
+        observeSearchHint()
     }
 
     private fun observeResetNestedScrolling() {
@@ -1305,18 +1238,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             } else if (getPageLoadTimeCallback() != null) {
                 getPageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
                 getPageLoadTimeCallback()?.startRenderPerformanceMonitoring()
-            }
-        })
-    }
-
-    private fun observeViewModelInitialized() {
-        getHomeViewModel().isViewModelInitialized.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
-            val isViewModelInitialized = data.peekContent()
-            if (isViewModelInitialized) {
-                callSubordinateTasks()
-                if (getPageLoadTimeCallback() != null) {
-                    getPageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
-                }
             }
         })
     }
@@ -1352,18 +1273,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 renderBeautyFestHeader()
             }
 
-        })
-    }
-
-    private fun observeGopayEligibility() {
-        getHomeViewModel().homeCoachmarkData.observe(viewLifecycleOwner, Observer { homeCoachmarkData ->
-            val homeCoachmarkDataValue = homeCoachmarkData.getContentIfNotHandled()
-            val newEligibleStatus = homeCoachmarkDataValue?.isGopayEligible?:false
-            if (isEligibleGopay != newEligibleStatus) {
-                renderTopBackground()
-            }
-            this.isEligibleGopay = newEligibleStatus
-            this.isGopayActivated = homeCoachmarkDataValue?.isGopayActive?:false
         })
     }
 
@@ -1443,22 +1352,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun observeSendLocation() {
-        getHomeViewModel().sendLocationLiveData.observe(viewLifecycleOwner, Observer { data: Event<Any?>? -> detectAndSendLocation() })
-    }
-
-    private fun observePopupIntroOvo() {
-        getHomeViewModel().popupIntroOvoLiveData.observe(viewLifecycleOwner, Observer { data: Event<String?> ->
-            if (RouteManager.isSupportApplink(activity, data.peekContent())) {
-                val intentBalanceWallet = RouteManager.getIntent(activity, data.peekContent())
-                activity?.run {
-                    startActivity(intentBalanceWallet)
-                    overridePendingTransition(R.anim.anim_slide_up_in, R.anim.anim_page_stay)
-                }
-            }
-        })
-    }
-
     private fun observePlayWidgetReminder() {
         getHomeViewModel().playWidgetReminderObservable.observe(viewLifecycleOwner, Observer {
             when (it.status) {
@@ -1518,7 +1411,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 BACKGROUND_LIGHT_1
             }
 
-            adjustHomeBackgroundHeight(currentContext)
+            adjustHomeBackgroundHeight()
 
             Glide.with(currentContext)
                 .load(backgroundUrl)
@@ -1530,7 +1423,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun renderTopBackgroundBeautyFest(isLoading: Boolean, isBeautyFest: Boolean) {
         context?.let { currentContext ->
-            adjustHomeBackgroundHeight(currentContext)
+            adjustHomeBackgroundHeight()
 
             if (isLoading) {
                 //displaying shimmer and hide header
@@ -1576,27 +1469,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun adjustHomeBackgroundHeight(currentContext: Context) {
-        val isChooseAddressShow = true
-        if (isChooseAddressShow && (isEligibleGopay != null && isEligibleGopay == true)) {
-            val layoutParams = backgroundViewImage.layoutParams
-            layoutParams.height =
+    private fun adjustHomeBackgroundHeight() {
+        val layoutParams = backgroundViewImage.layoutParams
+        layoutParams.height =
                 resources.getDimensionPixelSize(R.dimen.home_background_balance_small_with_choose_address)
-            backgroundViewImage.layoutParams = layoutParams
-            loaderHeaderImage.layoutParams = layoutParams
-        } else if (isChooseAddressShow && isEligibleGopay != null && isEligibleGopay == false) {
-            val layoutParams = backgroundViewImage.layoutParams
-            layoutParams.height =
-                resources.getDimensionPixelSize(R.dimen.home_background_with_choose_address)
-            backgroundViewImage.layoutParams = layoutParams
-            loaderHeaderImage.layoutParams = layoutParams
-        } else {
-            val layoutParams = backgroundViewImage.layoutParams
-            layoutParams.height =
-                resources.getDimensionPixelSize(R.dimen.home_background_no_choose_address)
-            backgroundViewImage.layoutParams = layoutParams
-            loaderHeaderImage.layoutParams = layoutParams
-        }
+        backgroundViewImage.layoutParams = layoutParams
+        loaderHeaderImage.layoutParams = layoutParams
     }
 
     private fun setData(data: List<Visitable<*>>, isCache: Boolean, isProcessingAtf: Boolean) {
@@ -2048,7 +1926,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     .setLocalCacheModel(localCacheModel)
             )
             chooseAddressWidgetInitialized = false
-            getHomeViewModel().refresh(forceRefresh = true, isFirstInstall = isFirstInstall())
+            getHomeViewModel().refreshWithThreeMinsRules(forceRefresh = true, isFirstInstall = isFirstInstall())
         }
     }
 
@@ -2095,10 +1973,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun showLoading() {
         refreshLayout.isRefreshing = true
-    }
-
-    private fun injectCouponTimeBased() {
-        if (getUserSession().isLoggedIn) getHomeViewModel().injectCouponTimeBased()
     }
 
     private fun hideLoading() {
@@ -2857,7 +2731,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (!this::viewModel.isInitialized) {
             initInjectorHome()
         }
-        return viewModel.get()
+        val viewmodel = viewModel.get()
+        if (getPageLoadTimeCallback() != null) {
+            getPageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
+        }
+        return viewmodel
     }
 
     private fun showToasterReviewSuccess() {
