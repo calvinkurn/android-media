@@ -5,10 +5,13 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Error
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorServiceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
+import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeature
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
+import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
+import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
@@ -1697,5 +1700,49 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         verify(inverse = true) { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()) }
+    }
+
+    @Test
+    fun `Get Eligible For Revamp Ana Success`() {
+        // Given
+        val response = KeroAddrIsEligibleForAddressFeature()
+        onCheckEligibility_thenReturn(response)
+
+        // When
+        orderSummaryPageViewModel.checkUserEligibilityForAnaRevamp()
+
+        // Then
+        val expected = OrderEnableAddressFeature(response)
+        assertEquals(OccState.Success(expected), orderSummaryPageViewModel.eligibleForAnaRevamp.value)
+    }
+
+    @Test
+    fun `Get Eligible For Revamp Ana Fail`() {
+        // Given
+        val error = Throwable()
+        onCheckEligibility_thenThrow(error)
+
+        // When
+        orderSummaryPageViewModel.checkUserEligibilityForAnaRevamp()
+
+        // Then
+        val expected = Failure(error)
+        assertEquals(OccState.Failed(expected), orderSummaryPageViewModel.eligibleForAnaRevamp.value)
+    }
+
+    private fun onCheckEligibility_thenReturn(keroAddrIsEligibleForAddressFeature: KeroAddrIsEligibleForAddressFeature) {
+        coEvery {
+            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
+        } answers {
+            firstArg<(KeroAddrIsEligibleForAddressFeature)-> Unit>().invoke(keroAddrIsEligibleForAddressFeature)
+        }
+    }
+
+    private fun onCheckEligibility_thenThrow(error: Throwable) {
+        coEvery {
+            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
+        } answers {
+            secondArg<(Throwable)-> Unit>().invoke(error)
+        }
     }
 }
