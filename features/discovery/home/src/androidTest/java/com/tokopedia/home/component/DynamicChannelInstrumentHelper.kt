@@ -52,6 +52,7 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_RECHARGE_CLOSE = "t
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM_CLOSE = "tracker/home/reminder_widget_salam_close.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_RECHARGE = "tracker/home/reminder_widget_recharge.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_REMINDER_WIDGET_SALAM = "tracker/home/reminder_widget_salam.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BANNER_CAROUSEL = "tracker/home/banner_carousel.json"
 
 private const val CHOOSE_ADDRESS_PREFERENCE_NAME = "coahmark_choose_address"
 private const val CHOOSE_ADDRESS_EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
@@ -212,6 +213,11 @@ fun clickOnTickerSection(viewHolder: RecyclerView.ViewHolder) {
 
 fun clickHPBSection(viewHolder: RecyclerView.ViewHolder) {
     clickHomeBannerItemAndViewAll(viewHolder)
+}
+
+fun actionOnBannerCarouselWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
+    clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_banner, 0)
 }
 
 fun checkRechargeBUWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int){
