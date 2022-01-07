@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.product.detail.common.generateTheme
 import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.model.ModifaceUiModel
 import com.tokopedia.product_ar.model.ProductAr
@@ -40,6 +41,11 @@ class PartialBottomArView private constructor(val view: View, val listener: Prod
 
     fun renderBottomInfoText(data: ProductAr) {
         atcButton.text = data.button.text
+        atcButton?.run {
+            text = data.button.text
+            generateTheme(data.button.color)
+        }
+
         txtStock.text = data.stockCopy
         renderCampaign(data)
     }

@@ -44,6 +44,8 @@ class GetProductArUseCase @Inject constructor(graphqlRepository: GraphqlReposito
                       stockCopy
                       button {
                         text
+                        color
+                        cart_type
                       }
                     }
                     optionBgImage

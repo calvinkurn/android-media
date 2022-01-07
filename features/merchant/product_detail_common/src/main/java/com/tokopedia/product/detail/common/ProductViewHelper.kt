@@ -13,6 +13,41 @@ import com.tokopedia.unifycomponents.toPx
  * Created by Yehezkiel on 17/05/21
  */
 
+fun UnifyButton.generateTheme(colorDescription: String) {
+    when (colorDescription) {
+        ProductDetailCommonConstant.KEY_BUTTON_PRIMARY -> {
+            this.buttonVariant = UnifyButton.Variant.FILLED
+            this.buttonType = UnifyButton.Type.TRANSACTION
+            this.isEnabled = true
+        }
+        ProductDetailCommonConstant.KEY_BUTTON_DISABLE -> {
+            this.buttonVariant = UnifyButton.Variant.FILLED
+            this.buttonType = UnifyButton.Type.MAIN
+            this.isEnabled = false
+        }
+        ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN -> {
+            this.buttonVariant = UnifyButton.Variant.FILLED
+            this.buttonType = UnifyButton.Type.MAIN
+            this.isEnabled = true
+        }
+        ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GREEN -> {
+            this.buttonVariant = UnifyButton.Variant.GHOST
+            this.buttonType = UnifyButton.Type.MAIN
+            this.isEnabled = true
+        }
+        ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GRAY -> {
+            this.buttonVariant = UnifyButton.Variant.GHOST
+            this.buttonType = UnifyButton.Type.ALTERNATE
+            this.isEnabled = true
+        }
+        else -> {
+            this.buttonVariant = UnifyButton.Variant.GHOST
+            this.buttonType = UnifyButton.Type.TRANSACTION
+            this.isEnabled = true
+        }
+    }
+}
+
 fun UnifyButton?.generateTopchatButtonPdp() {
     if (this == null) return
     val drawAsset = getIconUnifyDrawable(context, IconUnify.CHAT)

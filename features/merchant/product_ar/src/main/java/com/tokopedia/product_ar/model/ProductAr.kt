@@ -45,5 +45,13 @@ data class ProductAr(
 data class ProductArButton(
         @SerializedName("text")
         @Expose
-        val text: String = ""
+        val text: String = "",
+
+        @SerializedName("cart_type")
+        @Expose
+        val cartType: String = "",
+
+        @SerializedName("color")
+        @Expose
+        val color: String = ""
 )
