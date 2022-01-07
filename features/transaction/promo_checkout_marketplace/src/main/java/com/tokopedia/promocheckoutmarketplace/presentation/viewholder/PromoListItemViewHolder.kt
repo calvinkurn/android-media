@@ -21,12 +21,19 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
+import com.tokopedia.utils.resources.isDarkMode
+
+
 class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
                               private val listener: PromoCheckoutActionListener
 ) : AbstractViewHolder<PromoListItemUiModel>(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.promo_checkout_marketplace_module_item_promo_card
+
+        const val STATE_SELECTED = 1
+        const val STATE_ENABLED = 2
+        const val STATE_DISABLED = 3
     }
 
     private val colorTextEnabledDefault = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
@@ -98,6 +105,8 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
             } else {
                 imageSelectPromoLayoutParam.topMargin = 0
             }
+
+            renderIconColorState(imageUserValidity, STATE_SELECTED)
         }
     }
 
@@ -119,6 +128,8 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
             cardPromoItem.setCardBackgroundColor(colorBackgroundEnabled)
             imageSelectPromo.gone()
             updateImaginaryBorderViewVisibility(viewBinding)
+            renderIconColorState(imageUserValidity, STATE_ENABLED)
+            renderIconColorState(imageTimeValidity, STATE_ENABLED)
         }
     }
 
@@ -140,6 +151,40 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
             cardPromoItem.setCardBackgroundColor(colorBackgroundDisabled)
             imageSelectPromo.gone()
             updateImaginaryBorderViewVisibility(viewBinding)
+            renderIconColorState(imageUserValidity, STATE_DISABLED)
+            renderIconColorState(imageTimeValidity, STATE_DISABLED)
+        }
+    }
+
+    private fun renderIconColorState(imageUnify: ImageUnify, state: Int) {
+        when (state) {
+            STATE_SELECTED -> {
+                if (imageUnify.context.isDarkMode()) {
+                    val colorRes = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                    imageUnify.setColorFilter(colorRes)
+                } else {
+                    val colorRes = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                    imageUnify.setColorFilter(colorRes)
+                }
+            }
+            STATE_ENABLED -> {
+                if (imageUnify.context.isDarkMode()) {
+                    val colorRes = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+                    imageUnify.setColorFilter(colorRes)
+                } else {
+                    val colorRes = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+                    imageUnify.setColorFilter(colorRes)
+                }
+            }
+            STATE_DISABLED -> {
+                if (imageUnify.context.isDarkMode()) {
+                    val colorRes = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75_32)
+                    imageUnify.setColorFilter(colorRes)
+                } else {
+                    val colorRes = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75_32)
+                    imageUnify.setColorFilter(colorRes)
+                }
+            }
         }
     }
 
@@ -262,6 +307,11 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
                             as ConstraintLayout
                     val imagePromoInfo = promoInfoView.findViewById<ImageUnify>(R.id.image_promo_info)
                     imagePromoInfo.setImageUrl(it.icon)
+                    if (element.uiState.isDisabled) {
+                        renderIconColorState(imagePromoInfo, STATE_DISABLED)
+                    } else {
+                        renderIconColorState(imagePromoInfo, STATE_ENABLED)
+                    }
                     val textPromoInfo = promoInfoView.findViewById<Typography>(R.id.text_promo_info)
                     textPromoInfo.text = HtmlLinkHelper(itemView.context, it.title).spannedString
                     if (!element.uiState.isParentEnabled || element.uiState.isDisabled || element.uiData.errorMessage.isNotBlank()) {
