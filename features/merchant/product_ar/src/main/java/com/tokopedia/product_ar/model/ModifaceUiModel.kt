@@ -1,9 +1,9 @@
 package com.tokopedia.product_ar.model
 
-import com.modiface.mfemakeupkit.effects.MFEMakeupProduct
+import com.modiface.mfemakeupkit.effects.MFEMakeupLook
 
 data class ModifaceUiModel(
-        val modifaceProductData: MFEMakeupProduct = MFEMakeupProduct(),
+        val modifaceProductData: MFEMakeupLook = MFEMakeupLook(),
         val isSelected: Boolean = false,
         val backgroundUrl: String = "",
         val productName: String = "",

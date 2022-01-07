@@ -1,27 +1,15 @@
 package com.tokopedia.product_ar.model
 
+import android.graphics.Color
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.toIntSafely
+
+/**
+ * https://sdk.modiface.com/retailers/Android/mfemakeupkit/detailed_docs/2021-11-02_20:54:43/getmakeupdata-api-documentation-v8.md
+ */
 
 data class ModifaceProvider(
-        @SerializedName("gamma")
-        @Expose
-        val gamma: Float = 0.0F,
-        @SerializedName("glossDetail")
-        @Expose
-        val glossDetail: Float = 0.0F,
-        @SerializedName("sparkle_a")
-        @Expose
-        val sparkleA: Float = 0.0F,
-        @SerializedName("sparkle_r")
-        @Expose
-        val sparkleR: Float = 0.0F,
-        @SerializedName("sparkle_g")
-        @Expose
-        val sparkleG: Float = 0.0F,
-        @SerializedName("sparkle_b")
-        @Expose
-        val sparkleB: Float = 0.0F,
         @SerializedName("color_a")
         @Expose
         val colorA: Float = 0.0F,
@@ -34,15 +22,39 @@ data class ModifaceProvider(
         @SerializedName("color_b")
         @Expose
         val colorB: Float = 0.0F,
-        @SerializedName("placement")
+        @SerializedName("gamma")
         @Expose
-        val placement: String = "",
+        val gamma: Float = 0.0F,
+        @SerializedName("glossDetail")
+        @Expose
+        val glossDetail: Float = 0.0F,
+        @SerializedName("wetness")
+        @Expose
+        val wetness: Float = 0.0F,
+        @SerializedName("sparkle_a")
+        @Expose
+        val sparkleA: Float = 0.0F,
+        @SerializedName("sparkle_r")
+        @Expose
+        val sparkleR: Float = 0.0F,
+        @SerializedName("sparkle_g")
+        @Expose
+        val sparkleG: Float = 0.0F,
+        @SerializedName("sparkle_b")
+        @Expose
+        val sparkleB: Float = 0.0F,
+        @SerializedName("lipPlumping")
+        @Expose
+        val lipPlumping: Float = 0.0F,
+        @SerializedName("matteness")
+        @Expose
+        val matteness: Float = 0.0F,
         @SerializedName("sparkleDensity")
         @Expose
-        val sparkleDensity: Float = 0.0F,
+        val sparkleDensity: Float? = null,
         @SerializedName("sparkleSize")
         @Expose
-        val sparkleSize: Float = 0.0F,
+        val sparkleSize: Float? = null,
         @SerializedName("sparkleColorVariation")
         @Expose
         val sparkleColorVariation: Float = 0.0F,
@@ -51,17 +63,59 @@ data class ModifaceProvider(
         val sparkleSizeVariation: Float = 0.0F,
         @SerializedName("sparkleBaseReflectivity")
         @Expose
-        val sparkleBaseReflectivity: Float = 0.0F,
+        val sparkleBaseReflectivity: Float? = null,
+        @SerializedName("intensity")
+        @Expose
+        val intensity: Float? = null,
+        @SerializedName("envMappingIntensityintensity")
+        @Expose
+        val envMappingIntensity: Float = 0.0F,
+        @SerializedName("envMappingR")
+        @Expose
+        val envMappingR: Float = 0.0F,
+        @SerializedName("envMappingG")
+        @Expose
+        val envMappingG: Float = 0.0F,
+        @SerializedName("envMappingB")
+        @Expose
+        val envMappingB: Float = 0.0F,
+        @SerializedName("envMappingBumpIntensity")
+        @Expose
+        val envMappingBumpIntensity: Float? = null,
+        @SerializedName("envMappingCurve")
+        @Expose
+        val envMappingCurve: Float? = null,
+        @SerializedName("envMappingRotationY")
+        @Expose
+        val envMappingRotationY: Float = 0.0F,
         @SerializedName("metallicIntensity")
         @Expose
         val metallicIntensity: Float = 0.0F,
         @SerializedName("vinylIntensity")
         @Expose
-        val vinylIntensity: Float = 0.0F,
-        @SerializedName("finish")
-        @Expose
-        val finish: String = "",
-        @SerializedName("sub_category")
-        @Expose
-        val sub_category: String = ""
-)
+        val vinylIntensity: Float = 0.0F
+) {
+    fun getGlossFormula(): Float = gamma * 100
+    fun getGlossDetailFormula(): Float = glossDetail * 100
+    fun getWetnessFormula(): Float = wetness * 100
+    fun getSparkleAFormula(): Float = sparkleA * 100
+    fun getGlitterDensityFormula(): Float = sparkleDensity?.let { it * 100 } ?: 1F
+    fun getGlitterSizeFormula(): Int = sparkleSize?.let { it.toIntSafely() * 100 } ?: 1
+    fun getGlitterColorVariationFormula(): Float = sparkleColorVariation * 100
+    fun getGlitterSizeVariationFormula(): Float = sparkleSizeVariation * 100
+    fun getGlitterBaseReflectivityFormula(): Float = sparkleBaseReflectivity?.let { it * 100 }
+            ?: 0.3F
+
+    fun getAmountFormula(): Float = intensity?.let { it * 100 } ?: 1F
+    fun getEnvMappingtFormula(): Float = envMappingIntensity * 100
+    fun getEnvBumpDensityFormula(): Float = envMappingBumpIntensity?.let { it } ?: 0.6F
+    fun getEnvMappingCurveFormula(): Float = envMappingCurve?.let { it } ?: 2.3F
+
+    fun getGlitterColor(): Int = Color.rgb(sparkleR.toIntSafely(),
+            sparkleG.toIntSafely(),
+            sparkleB.toIntSafely())
+
+    fun getEnvMappingColor(): Int = Color.rgb(envMappingR.toIntSafely(),
+            envMappingG.toIntSafely(),
+            envMappingB.toIntSafely())
+}

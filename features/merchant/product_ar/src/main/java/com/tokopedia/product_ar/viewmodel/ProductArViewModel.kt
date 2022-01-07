@@ -89,19 +89,13 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             )
             productArUiModel = result
 
-
             val listUiModel = ProductArMapper.mapToModifaceUiModel(initialProductId, result)
 
-            val selectedProductMfeData = listUiModel.firstOrNull {
-                it.productId == initialProductId
-            }?.modifaceProductData ?: MFEMakeupProduct()
+            val selectedProductMfeData = ProductArMapper.getMfMakeUpLookByProductId(
+                    listUiModel,
+                    initialProductId)
 
-            MFEMakeupLook().apply {
-                lipLayers.add(MFEMakeupLayer(selectedProductMfeData))
-            }.let {
-                _mfeMakeUpLook.postValue(Success(it))
-            }
-
+            _mfeMakeUpLook.postValue(Success(selectedProductMfeData))
             _productArList.postValue(Success(listUiModel))
             _selectedProductArData.postValue(Success(result.options[initialProductId]
                     ?: ProductAr()))

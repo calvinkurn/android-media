@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.modiface.mfemakeupkit.effects.MFEMakeupProduct
+import com.modiface.mfemakeupkit.effects.MFEMakeupLook
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.model.ModifaceUiModel
@@ -98,9 +98,12 @@ class VariantArAdapter(private val listener: ProductArListener,
             itemView.setOnClickListener {
                 imgVariant?.run {
                     setSelected = data.isSelected
-                    listener.onVariantClicked(data.productId,
-                            data.isSelected,
-                            data.modifaceProductData)
+                    data.modifaceProductData.lipLayers?.firstOrNull()?.let {
+                        imgVariant.setColorFilter(it.product.color, PorterDuff.Mode.DST_ATOP)
+                        listener.onVariantClicked(data.productId,
+                                data.isSelected,
+                                it.product)
+                    }
                 }
             }
         }
@@ -119,9 +122,10 @@ class VariantArAdapter(private val listener: ProductArListener,
             }
         }
 
-        private fun setupImageColor(data: MFEMakeupProduct) {
+        private fun setupImageColor(data: MFEMakeupLook) {
             try {
-                imgVariant.setColorFilter(data.color, PorterDuff.Mode.DST_ATOP)
+                val lipProduct = data.lipLayers?.firstOrNull() ?: return
+                imgVariant.setColorFilter(lipProduct.product.color, PorterDuff.Mode.DST_ATOP)
             } catch (e: Throwable) {
                 //noop
             }

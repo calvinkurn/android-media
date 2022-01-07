@@ -2,9 +2,10 @@ package com.tokopedia.product_ar.util
 
 import android.graphics.Bitmap
 import android.graphics.Color
-import com.modiface.mfemakeupkit.effects.MFEMakeupLayer
+import com.modiface.mfemakeupkit.effects.MFEMakeupLipLayer
 import com.modiface.mfemakeupkit.effects.MFEMakeupLook
 import com.modiface.mfemakeupkit.effects.MFEMakeupProduct
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.product_ar.model.ModifaceProvider
 import com.tokopedia.product_ar.model.ModifaceUiModel
 import com.tokopedia.product_ar.model.ProductArUiModel
@@ -18,10 +19,8 @@ object ProductArMapper {
             count++
             val isSelected = initialProductId == it.value.productID
             ModifaceUiModel(
-                    modifaceProductData = convertToMfeMakeUpProduct(
-                            it.value.productID,
-                            it.value.providerDataCompiled,
-                            count) ?: MFEMakeupProduct(),
+                    modifaceProductData = convertToMfeMakeUpLook(
+                            it.value.providerDataCompiled) ?: MFEMakeupLook(),
                     isSelected = isSelected,
                     backgroundUrl = data.optionBgImage,
                     productName = it.value.name,
@@ -42,19 +41,15 @@ object ProductArMapper {
         }
     }
 
-    fun generateInitialMfMakeUpLook(data: List<ModifaceUiModel>): MFEMakeupLook {
+    fun getInitialMfMakeUpLook(data: List<ModifaceUiModel>): MFEMakeupLook {
         val selectedData = data.firstOrNull { it.isSelected }
-        return MFEMakeupLook().apply {
-            lipLayers.add(MFEMakeupLayer(selectedData?.modifaceProductData))
-        }
+        return selectedData?.modifaceProductData ?: MFEMakeupLook()
     }
 
-    fun generateSelectedMfMakeUpLook(data: List<ModifaceUiModel>,
-                                     selectedProductId: String): MFEMakeupLook {
+    fun getMfMakeUpLookByProductId(data: List<ModifaceUiModel>,
+                                   selectedProductId: String): MFEMakeupLook {
         val selectedData = data.firstOrNull { it.productId == selectedProductId }
-        return MFEMakeupLook().apply {
-            lipLayers.add(MFEMakeupLayer(selectedData?.modifaceProductData))
-        }
+        return selectedData?.modifaceProductData ?: MFEMakeupLook()
     }
 
     fun needToDisableSelection(selectedProductId: String,
@@ -151,35 +146,43 @@ object ProductArMapper {
             }
         }
     }
-    // [1,2,3,4,5]
 
-    private fun convertToMfeMakeUpProduct(productId: String,
-                                          data: ModifaceProvider?,
-                                          position: Int): MFEMakeupProduct? {
+    private fun convertToMfeMakeUpLook(data: ModifaceProvider?): MFEMakeupLook? {
         if (data == null) return null
-        val color = if (productId.toInt() % 2 == 0) {
-            Color.argb(255, 222, 119, 133)
-        } else {
-            Color.argb(255, 109, 37, 39)
+
+        val color = Color.argb(data.colorA.toIntSafely(),
+                data.colorR.toIntSafely(),
+                data.colorG.toIntSafely(),
+                data.colorB.toIntSafely())
+
+        val product = MFEMakeupProduct().also {
+            it.gloss = data.getGlossFormula()
+            it.glossDetail = data.getGlossDetailFormula()
+            it.wetness = data.getWetnessFormula()
+            it.glitter = data.getSparkleAFormula()
+            it.glitterColor = data.getGlitterColor()
+            it.color = color
+            it.matteness = data.matteness
+            it.glitterDensity = data.getGlitterDensityFormula()
+            it.glitterSize = data.getGlitterSizeFormula()
+            it.glitterColorVariation = data.getGlitterColorVariationFormula()
+            it.glitterSizeVariation = data.getGlitterSizeVariationFormula()
+            it.glitterBaseReflectivity = data.getGlitterBaseReflectivityFormula()
+            it.envMappingIntensity = data.getEnvMappingtFormula()
+            it.envMappingColor = data.getEnvMappingColor()
+            it.envMappingBumpIntensity = data.getEnvBumpDensityFormula()
+            it.envMappingCurve = data.getEnvMappingCurveFormula()
+            it.envMappingRotationY = data.envMappingRotationY
+            it.metallicIntensity = data.metallicIntensity
+            it.vinylIntensity = data.vinylIntensity
+            it.amount = data.getAmountFormula()
         }
 
-        val colorByPosition = when(position) {
-            0 -> Color.argb(255, 66, 14, 18)
-            1 -> Color.argb(255, 222, 119, 133)
-            else -> Color.argb(255, 159, 42, 48)
-        }
-        return MFEMakeupProduct().also {
-//            it.color = Color.argb(data.colorA.toInt(),
-//                    data.colorR.toInt(),
-//                    data.colorG.toInt(),
-//                    data.colorB.toInt())
-            it.color = colorByPosition
-//            it.vinylIntensity = data.vinylIntensity
-//            it.glossDetail = data.glossDetail
-//            it.metallicIntensity = data.metallicIntensity
-            it.gloss = 4.0f
-            it.wetness = 1.0f
-            it.amount = 1.0F
+        MFEMakeupLook().apply {
+            lipVolume = data.lipPlumping
+            lipLayers.add(MFEMakeupLipLayer(product))
+        }.let {
+            return it
         }
     }
 }

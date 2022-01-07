@@ -108,13 +108,13 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         super.onViewCreated(view, savedInstanceState)
         initView(view)
 
-        icComparison?.setOnClickListener {
-            goToArComparissonPage()
-        }
-
         getMakeUpEngine()?.setDetectionCallbackForCameraFeed(this)
         getMakeUpEngine()?.attachMakeupView(mMakeupView)
         setupLiveCamera()
+
+        icComparison?.setOnClickListener {
+            goToArComparissonPage()
+        }
         setupNavToolbar()
     }
 
@@ -197,7 +197,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         viewModel?.imageDrawable = selectedImageBitmap
         selectedImageBitmap?.let {
             getMakeUpEngine()?.clearMakeupLook()
-            getMakeUpEngine()?.startRunningWithPhoto(it, false,
+            getMakeUpEngine()?.startRunningWithPhoto(it, true,
                     object : MFEMakeupEngine.MFEMakeupEngineDetectionCallback {
                         override fun onMFEMakeupFinishedDetection(p0: MFETrackingData?) {
                             if (p0?.hasFacePoints() == false) {

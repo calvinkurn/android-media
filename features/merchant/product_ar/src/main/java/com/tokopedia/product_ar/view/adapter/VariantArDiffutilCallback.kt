@@ -27,7 +27,7 @@ class VariantArDiffutilCallback(
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
-        return oldItem.modifaceProductData == newItem.modifaceProductData &&
+        return oldItem.modifaceProductData.hashCode() == newItem.modifaceProductData.hashCode() &&
                 oldItem.backgroundUrl == newItem.backgroundUrl &&
                 oldItem.isSelected == newItem.isSelected &&
                 oldItem.counter == newItem.counter
