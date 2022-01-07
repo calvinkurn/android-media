@@ -1,13 +1,433 @@
 package com.tokopedia.recharge_component.widget
 
 import android.content.Context
+import android.text.Editable
+import android.text.InputType
+import android.text.TextWatcher
 import android.util.AttributeSet
-import android.widget.FrameLayout
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
+import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
+import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
+import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.recharge_component.R
+import com.tokopedia.recharge_component.databinding.WidgetRechargeClientNumberBinding
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.toPx
 import org.jetbrains.annotations.NotNull
 
 class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
                                                            defStyleAttr: Int = 0)
-    : FrameLayout(context, attrs, defStyleAttr) {
+    : BaseCustomView(context, attrs, defStyleAttr) {
 
+    private var binding: WidgetRechargeClientNumberBinding = WidgetRechargeClientNumberBinding.inflate(
+        LayoutInflater.from(context), this)
 
+    private var mInputFieldListener: ClientNumberInputFieldListener? = null
+    private var mAutoCompleteListener: ClientNumberAutoCompleteListener? = null
+    private var mFilterChipListener: ClientNumberFilterChipListener? = null
+
+    private var inputNumberValidator: ((String) -> Boolean)? = null
+
+    private var autoCompleteAdapter: TopupBillsAutoCompleteAdapter? = null
+
+    private var textFieldStaticLabel: String = ""
+
+    init {
+        initInputField()
+        initSortFilterChip()
+        initAutoComplete()
+    }
+
+    private fun initInputField() {
+        binding.clientNumberWidgetInputField.run {
+            clearIconView.setOnClickListener {
+                editText.setText("")
+                isInputError = false
+                textInputLayout.hint = textFieldStaticLabel
+                clearErrorState()
+            }
+        }
+    }
+
+    private fun initSortFilterChip() {
+        binding.clientNumberWidgetSortFilter.run {
+            sortFilterHorizontalScrollView.setPadding(
+                SORT_FILTER_PADDING_16.toPx(), 0 ,SORT_FILTER_PADDING_8.toPx() ,0)
+            sortFilterHorizontalScrollView.clipToPadding = false
+        }
+    }
+
+    // [Misael] di digital_topup_bills ada layout yg sama (dupe)
+    private fun initAutoComplete() {
+        binding.clientNumberWidgetInputField.run {
+            editText.run {
+                threshold = AUTOCOMPLETE_THRESHOLD
+                dropDownVerticalOffset = AUTOCOMPLETE_DROPDOWN_VERTICAL_OFFSET
+
+                addTextChangedListener(object : TextWatcher {
+                    override fun afterTextChanged(s: Editable?) {
+
+                    }
+
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+                    }
+
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                        if (s?.toString()?.isEmpty() == true) {
+                            clearErrorState()
+                        }
+
+                        hideClearIcon()
+                        mInputFieldListener?.onRenderOperator(true)
+                        executeValidator(s.toString())
+                    }
+                })
+
+                setOnEditorActionListener { _, actionId, _ ->
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        clearFocus()
+                        hideSoftKeyboard()
+                        hideCheckIcon()
+                        showClearIcon()
+                    }
+                    true
+                }
+
+                setOnItemClickListener { _, _, position, _ ->
+                    val item = autoCompleteAdapter?.getItem(position)
+                    if (item is TopupBillsAutoCompleteContactDataView) {
+                        setContactName(item.name)
+                        mAutoCompleteListener?.onClickAutoComplete(item.name.isNotEmpty())
+                    }
+                }
+            }
+        }
+
+        autoCompleteAdapter = TopupBillsAutoCompleteAdapter(
+            context,
+            R.layout.item_recharge_client_number_auto_complete,
+            mutableListOf(),
+            object : TopupBillsAutoCompleteAdapter.ContactArrayListener {
+                override fun getFilterText(): String {
+                    return binding.clientNumberWidgetInputField.editText.text.toString()
+                }
+            }
+        )
+
+        binding.clientNumberWidgetInputField.editText.run {
+            setAdapter(autoCompleteAdapter)
+        }
+    }
+
+    private fun setSortFilterChip(favnum: List<TopupBillsSeamlessFavNumberItem>) {
+        val sortFilter = arrayListOf<SortFilterItem>()
+
+        // create each chip
+        for (number in favnum.take(SORT_FILTER_LIMIT)) {
+            if (number.clientName.isEmpty()) {
+                mFilterChipListener?.onShowFilterChip(false)
+            } else {
+                mFilterChipListener?.onShowFilterChip(true)
+            }
+            val chipText = if (number.clientName.isEmpty())
+                number.clientNumber else number.clientName
+            val sortFilterItem = SortFilterItem(chipText, type = ChipsUnify.TYPE_ALTERNATE)
+            sortFilterItem.listener = {
+                if (number.clientName.isEmpty()) {
+                    setContactName("")
+                    mFilterChipListener?.onClickFilterChip(false)
+                } else {
+                    setContactName(number.clientName)
+                    mFilterChipListener?.onClickFilterChip(true)
+                }
+                setInputNumber(number.clientNumber)
+                clearFocusAutoComplete()
+            }
+            sortFilter.add(sortFilterItem)
+        }
+
+        // create extra chip for navigation
+        val isMoreThanLimit = favnum.size > SORT_FILTER_LIMIT
+        if (isMoreThanLimit) {
+            val sortFilterItem = SortFilterItem(
+                "",
+                type = ChipsUnify.TYPE_ALTERNATE
+            )
+            sortFilterItem.listener = {
+                mFilterChipListener?.onClickIcon()
+            }
+            sortFilter.add(sortFilterItem)
+        }
+
+        binding.clientNumberWidgetSortFilter.addItem(sortFilter)
+
+        // init navigation chip's icon & color
+        if (isMoreThanLimit) {
+            val chevronRight = IconUnify(
+                context, IconUnify.VIEW_LIST,
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+            chevronRight.layoutParams = ViewGroup.LayoutParams(
+                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3),
+                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+            )
+            binding.clientNumberWidgetSortFilter.chipItems?.
+                last()?.refChipUnify?.addCustomView(chevronRight)
+        }
+    }
+
+    fun setFavoriteNumber(favNumberItems: List<TopupBillsSeamlessFavNumberItem>) {
+        setSortFilterChip(favNumberItems)
+    }
+
+    fun setAutoCompleteList(suggestions: List<TopupBillsSeamlessFavNumberItem>) {
+        autoCompleteAdapter?.updateItems(
+            CommonTopupBillsDataMapper
+                .mapSeamlessFavNumberItemToContactDataView(suggestions).toMutableList())
+    }
+
+    fun setInputFieldType(type: InputFieldType) {
+        with(binding) {
+            clientNumberWidgetInputField.run {
+                editText.inputType = type.inputType
+                icon1.run {
+                    setImageDrawable(getIconUnifyDrawable(context, IconUnify.CHECK))
+                }
+                icon2.run {
+                    setImageDrawable(getIconUnifyDrawable(context, type.iconUnifyId))
+                    show()
+                }
+            }
+            clientNumberWidgetOperatorGroup.show()
+        }
+    }
+
+    fun setInputFieldStaticLabel(label: String) {
+        textFieldStaticLabel = label
+        binding.clientNumberWidgetInputField.textInputLayout.hint = textFieldStaticLabel
+    }
+
+    fun setInputNumber(inputNumber: String) {
+        binding.clientNumberWidgetInputField.editText.setText(formatPrefixClientNumber(inputNumber))
+    }
+
+    fun getInputNumber(): String {
+        return formatPrefixClientNumber(binding.clientNumberWidgetInputField.editText.text.toString())
+    }
+
+    fun setContactName(contactName: String, needValidation: Boolean = true) {
+        val label = if (needValidation) validateContactName(contactName) else contactName
+        binding.clientNumberWidgetInputField.textInputLayout.hint = label
+    }
+
+    fun setLoading(isLoading: Boolean) {
+        binding.clientNumberWidgetInputField.isLoading = isLoading
+    }
+
+    private fun setValidated(isValidated: Boolean) {
+        if (isValidated) {
+            showCheckIcon()
+        } else {
+            // [Misael] dummy error
+            setErrorInputField("dummy")
+        }
+    }
+
+    private fun showCheckIcon() {
+        binding.clientNumberWidgetInputField.icon1.show()
+    }
+
+    private fun hideCheckIcon() {
+        binding.clientNumberWidgetInputField.icon1.hide()
+    }
+
+    fun setErrorInputField(errorMessage: String) {
+        binding.clientNumberWidgetInputField.run {
+            val temp = textInputLayout.helperText.toString()
+            if (temp != errorMessage) {
+                setMessage(errorMessage)
+                isInputError = true
+            }
+        }
+    }
+
+    fun setFilterChipShimmer(show: Boolean, shouldHideChip: Boolean = false) {
+        binding.run {
+            if (show) {
+                clientNumberWidgetSortFilter.hide()
+                clientNumberWidgetSortFilterShimmer.show()
+            } else {
+                if (!shouldHideChip) clientNumberWidgetSortFilter.show()
+                clientNumberWidgetSortFilterShimmer.hide()
+            }
+        }
+    }
+
+    fun clearErrorState() {
+        binding.clientNumberWidgetInputField.run {
+            if (isInputError) {
+                setMessage("")
+                isInputError = false
+            }
+        }
+    }
+
+    fun setVisibleSimplifiedLayout(show: Boolean) {
+        with (binding) {
+            includeLayout.clientNumberSimplifiedLabel.text =
+                binding.clientNumberWidgetInputField.textInputLayout.hint
+            includeLayout.clientNumberSimplifiedPhoneNumber.text = getInputNumber()
+
+            if (show) {
+                includeLayout.clientNumberWidgetSimplifiedLayout.show()
+                clientNumberWidgetMainLayout.hide()
+                clientNumberWidgetOperatorGroup.hide()
+            } else {
+                includeLayout.clientNumberWidgetSimplifiedLayout.hide()
+                clientNumberWidgetMainLayout.show()
+                // [Misael] next step handle showing operator icon with condition
+                clientNumberWidgetOperatorGroup.show()
+            }
+        }
+    }
+
+    private fun showClearIcon() {
+        with (binding.clientNumberWidgetInputField.clearIconView) {
+            if (!isVisible) show()
+        }
+    }
+
+    private fun hideClearIcon() {
+        with (binding.clientNumberWidgetInputField.clearIconView) {
+            if (isVisible) hide()
+        }
+    }
+
+    private fun clearFocusAutoComplete() {
+        binding.clientNumberWidgetInputField.editText.clearFocus()
+    }
+
+    // [Misael] sama persis kayak di common_topup_bills, mgkn bisa dibuat common
+    private fun validateContactName(contactName: String): String {
+        return if (contactName.isAlphanumeric() && contactName.isNotEmpty()) {
+            if (contactName.length > LABEL_MAX_CHAR) {
+                contactName.substring(0, LABEL_MAX_CHAR).plus(ELLIPSIZE)
+            } else {
+                contactName
+            }
+        } else {
+            textFieldStaticLabel
+        }
+    }
+
+    // [Misael] sama persis kayak di common_topup_bills, mgkn bisa dibuat common
+    private fun validatePrefixClientNumber(phoneNumber: String): String {
+        var phoneNumber = phoneNumber
+        if (phoneNumber.startsWith("62")) {
+            phoneNumber = phoneNumber.replaceFirst("62".toRegex(), "0")
+        }
+        if (phoneNumber.startsWith("+62")) {
+            phoneNumber = phoneNumber.replace("+62", "0")
+        }
+        phoneNumber = phoneNumber.replace(".", "")
+
+        return phoneNumber.replace("[^0-9]+".toRegex(), "")
+    }
+
+    // [Misael] sama persis kayak di common_topup_bills, mgkn bisa dibuat common
+    private fun formatPrefixClientNumber(phoneNumber: String?): String {
+        phoneNumber?.run {
+            if ("".equals(phoneNumber.trim { it <= ' ' }, ignoreCase = true)) {
+                return phoneNumber
+            }
+            var phoneNumberWithPrefix = validatePrefixClientNumber(phoneNumber)
+            if (!phoneNumberWithPrefix.startsWith("0")) {
+                phoneNumberWithPrefix = "0$phoneNumber"
+            }
+            return phoneNumberWithPrefix
+        }
+        return ""
+    }
+
+    private fun executeValidator(s: String) {
+        if (s.isNumeric()) {
+            setValidated(inputNumberValidator?.invoke(formatPrefixClientNumber(s)) == true)
+        }
+    }
+
+    fun hideSoftKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(this.windowToken, 0)
+    }
+
+    fun setListener(
+        inputFieldListener: ClientNumberInputFieldListener?,
+        autoCompleteListener: ClientNumberAutoCompleteListener?,
+        filterChipListener: ClientNumberFilterChipListener?
+    ) {
+        mInputFieldListener = inputFieldListener
+        mAutoCompleteListener = autoCompleteListener
+        mFilterChipListener = filterChipListener
+    }
+
+    fun setInputNumberValidator(func: (inputNumber: String) -> Boolean) {
+        inputNumberValidator = func
+    }
+
+    interface ClientNumberInputFieldListener {
+        fun onRenderOperator(isDelayed: Boolean)
+    }
+
+    interface ClientNumberAutoCompleteListener {
+        fun onClickAutoComplete(isFavoriteContact: Boolean)
+    }
+
+    interface ClientNumberFilterChipListener {
+        fun onClickIcon()
+        fun onShowFilterChip(isLabeled: Boolean)
+        fun onClickFilterChip(isLabeled: Boolean)
+    }
+
+    enum class InputFieldType(
+        val inputType: Int,
+        val iconUnifyId: Int,
+        val hasOperatorIcon: Boolean
+    ) {
+        Telco(InputType.TYPE_CLASS_TEXT, IconUnify.CONTACT, true),
+        Listrik(InputType.TYPE_CLASS_TEXT, IconUnify.QR_CODE, false),
+        Emoney(InputType.TYPE_CLASS_NUMBER, IconUnify.CAMERA, false)
+    }
+
+    private fun String.isNumeric(): Boolean {
+        return this.matches(REGEX_IS_NUMERIC.toRegex())
+    }
+
+    private fun String.isAlphanumeric(): Boolean {
+        return this.matches(REGEX_IS_ALPHABET_AND_SPACE_ONLY.toRegex())
+    }
+
+    companion object {
+        private const val REGEX_IS_ALPHABET_AND_SPACE_ONLY = "^[a-zA-Z0-9\\s]*$"
+        private const val REGEX_IS_NUMERIC = "^[0-9\\s]*$"
+        private const val SORT_FILTER_PADDING_8 = 8
+        private const val SORT_FILTER_PADDING_16 = 16
+        private const val SORT_FILTER_LIMIT = 3
+        private const val LABEL_MAX_CHAR = 18
+        private const val ELLIPSIZE = "..."
+
+        private const val AUTOCOMPLETE_THRESHOLD = 1
+        private const val AUTOCOMPLETE_DROPDOWN_VERTICAL_OFFSET = 10
+    }
 }
