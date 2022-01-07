@@ -16,13 +16,12 @@ import timber.log.Timber
 data class HomeDynamicChannelModel(
         val homeFlag: HomeFlag = HomeFlag(),
         var list: List<Visitable<*>> = listOf(),
-        val isCache: Boolean = false,
+        var isCache: Boolean = false,
         val isFirstPage: Boolean = false,
-        val isProcessingAtf: Boolean = true,
-        val isProcessingDynamicChannle: Boolean = false,
         var homeChooseAddressData: HomeChooseAddressData = HomeChooseAddressData(),
         var homeBalanceModel: HomeBalanceModel = HomeBalanceModel(),
-        var topadsNextPageToken: String = ""
+        var topadsNextPageToken: String = "",
+        var flowCompleted: Boolean = false
 ) {
     private var _list: MutableList<Visitable<*>> = list.toMutableList()
 

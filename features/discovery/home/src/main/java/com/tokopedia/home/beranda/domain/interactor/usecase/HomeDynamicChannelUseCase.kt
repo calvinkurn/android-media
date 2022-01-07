@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.domain.interactor.usecase
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
@@ -43,6 +44,7 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSe
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -73,7 +75,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
         private val homeRechargeRecommendationRepository: HomeRechargeRecommendationRepository,
         private val homeSalamWidgetRepository: HomeSalamWidgetRepository,
         private val homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository,
-        private val homeChooseAddressRepository: HomeChooseAddressRepository
+        private val homeChooseAddressRepository: HomeChooseAddressRepository,
+        private val userSessionInterface: UserSessionInterface
 ): HomeRevampRepository {
 
     private var CHANNEL_LIMIT_FOR_PAGINATION = 1
@@ -101,32 +104,38 @@ class HomeDynamicChannelUseCase @Inject constructor(
     override fun getHomeDataFlow(): Flow<HomeDynamicChannelModel?> {
         var isCache = true
 
-        val homeAtfCacheFlow = getHomeRoomDataSource.getCachedAtfData().map {
-            val defaultFlag = HomeFlag()
-            defaultFlag.addFlag(HomeFlag.HAS_TOKOPOINTS_STRING, true)
-            val dynamicChannelPlainResponse = homeDataMapper.mapToHomeRevampViewModel(HomeData(
-                    atfData = HomeAtfData(
-                            dataList = it.map {
-                                AtfData(
-                                        id = it.id,
-                                        name = it.name,
-                                        component = it.component,
-                                        param = it.param,
-                                        isOptional = it.isOptional,
-                                        content = it.content,
-                                        status = it.status
-                                )
-                            },
-                            isProcessingAtf = true
-                    ),
-                    isProcessingDynamicChannel = true, homeFlag = defaultFlag),
-                    isCache = true,
-                    addShimmeringChannel = true,
-                    isLoadingAtf = true
-            )
-            dynamicChannelPlainResponse
-        }.transform {
-            emit(it)
+        val homeAtfCacheFlow = getHomeRoomDataSource.getCachedAtfData().flatMapConcat {
+            flow<HomeDynamicChannelModel> {
+                if (isCache) {
+                    val defaultFlag = HomeFlag()
+                    defaultFlag.addFlag(HomeFlag.HAS_TOKOPOINTS_STRING, true)
+                    val dynamicChannelPlainResponse = homeDataMapper.mapToHomeRevampViewModel(HomeData(
+                            atfData = HomeAtfData(
+                                    dataList = it.map {
+                                        AtfData(
+                                                id = it.id,
+                                                name = it.name,
+                                                component = it.component,
+                                                param = it.param,
+                                                isOptional = it.isOptional,
+                                                content = it.content,
+                                                status = it.status
+                                        )
+                                    },
+                                    isProcessingAtf = true
+                            ),
+                            isProcessingDynamicChannel = true, homeFlag = defaultFlag),
+                            isCache = true,
+                            addShimmeringChannel = true,
+                            isLoadingAtf = true
+                    )
+                    dynamicChannelPlainResponse.apply {
+                        Log.d("Each merge list size:", (""+this.list.size))
+                        this.isCache = isCache
+                    }
+                    emit(dynamicChannelPlainResponse)
+                }
+            }
         }
 
         val homeDynamicChannelFlow = getHomeRoomDataSource.getCachedHomeData().flatMapConcat {
@@ -153,13 +162,16 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                     .setLocalCacheModel(localCacheModel)
                     )
                 }
-                /**
-                 * Get header data
-                 */
-                val currentHeaderDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData(HomeHeaderDataModel())
-                updateHeaderData(currentHeaderDataModel, dynamicChannelPlainResponse)
 
-                emit(dynamicChannelPlainResponse)
+                if (userSessionInterface.isLoggedIn) {
+                    /**
+                     * Get header data
+                     */
+                    val currentHeaderDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData(HomeHeaderDataModel())
+                    updateHeaderData(currentHeaderDataModel, dynamicChannelPlainResponse)
+
+                    emit(dynamicChannelPlainResponse)
+                }
 
                 /**
                  * Get Dynamic channel external data
@@ -175,12 +187,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         ReviewDataModel,
                         SuggestedProductReview>(widgetRepository = homeReviewSuggestedRepository) { visitableFound, data, position ->
                     visitableFound.copy(suggestedProductReview = data)
-                }
-
-                dynamicChannelPlainResponse.getWidgetDataIfExist<
-                        PlayCardDataModel,
-                        PlayData>(widgetRepository = homePlayLiveDynamicRepository) { visitableFound, data, position ->
-                    visitableFound.copy(playCardHome = data.playChannels.first())
                 }
 
                 dynamicChannelPlainResponse.getWidgetDataIfExist<
@@ -274,22 +280,18 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         isCache = false
                 ))
 
-                if (!dynamicChannelPlainResponse.isProcessingDynamicChannle) {
-                    dynamicChannelPlainResponse.evaluateRecommendationSection(
-                            onNeedTabLoad = { getFeedTabData(dynamicChannelPlainResponse) }
-                    )
-                }
+                dynamicChannelPlainResponse.evaluateRecommendationSection(
+                        onNeedTabLoad = { getFeedTabData(dynamicChannelPlainResponse) }
+                )
 
                 emit(dynamicChannelPlainResponse.copy(
-                        isCache = false
+                        isCache = false,
+                        flowCompleted = true
                 ))
             }
         }
 
-        return combineTransform(homeAtfCacheFlow, homeDynamicChannelFlow) { atfDC, fullDc ->
-            emit(atfDC)
-            emit(fullDc)
-        }.onEach {
+        return merge(homeAtfCacheFlow, homeDynamicChannelFlow).onEach {
             isCache = false
         }
     }

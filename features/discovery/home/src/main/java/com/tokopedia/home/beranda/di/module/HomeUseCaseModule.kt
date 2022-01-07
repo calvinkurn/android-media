@@ -105,7 +105,8 @@ class HomeUseCaseModule {
             homeSalamWidgetRepository: HomeSalamWidgetRepository,
             homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase,
             homeChooseAddressRepository: HomeChooseAddressRepository,
-            homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository
+            homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository,
+            userSession: UserSessionInterface
     ) = HomeDynamicChannelUseCase(
             homeDataMapper = homeDataMapper,
             homeDynamicChannelsRepository = homeDynamicChannelsRepository,
@@ -132,7 +133,8 @@ class HomeUseCaseModule {
             homeSalamWidgetRepository = homeSalamWidgetRepository,
             homeBalanceWidgetUseCase = homeBalanceWidgetUseCase,
             homeChooseAddressRepository = homeChooseAddressRepository,
-            homeRecommendationFeedTabRepository = homeRecommendationFeedTabRepository
+            homeRecommendationFeedTabRepository = homeRecommendationFeedTabRepository,
+            userSessionInterface = userSession
     )
 
 

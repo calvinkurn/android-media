@@ -38,8 +38,6 @@ object HomeServerLogger {
     fun warning_empty_channel_update(homeNewDataModel: HomeDynamicChannelModel) {
         val error = "type:" + "revamp_empty_update; " +
                 "reason:" + "Visitable is empty; " +
-                "isProcessingDynamicChannel:" + homeNewDataModel.isProcessingDynamicChannle.toString() + ";" +
-                "isProcessingAtf:" + homeNewDataModel.isProcessingAtf.toString() + ";" +
                 "isFirstPage:" + homeNewDataModel.isFirstPage.toString() + ";" +
                 "isCache:" + homeNewDataModel.isCache.toString()
         logWarning(

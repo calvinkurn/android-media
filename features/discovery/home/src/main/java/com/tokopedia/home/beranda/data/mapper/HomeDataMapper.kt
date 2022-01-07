@@ -63,8 +63,6 @@ class HomeDataMapper(
                 list = mutableVisitableList,
                 isCache = isCache,
                 isFirstPage = firstPage,
-                isProcessingAtf = processingAtf,
-                isProcessingDynamicChannle = processingDynamicChannel,
                 homeChooseAddressData = HomeChooseAddressData(true)
         )
     }
