@@ -15,6 +15,7 @@ import com.tokopedia.checkout.old.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.old.view.uimodel.ShipmentButtonPaymentModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
@@ -90,6 +91,9 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     @MockK(relaxed = true)
     private lateinit var getShipmentAddressFormGqlUseCase: GetShipmentAddressFormGqlUseCase
 
+    @MockK(relaxed = true)
+    private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
     private var shipmentMapper = ShipmentMapper()
 
@@ -107,7 +111,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
                 ratesStatesConverter, shippingCourierConverter,
                 shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
                 checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
-                validateUsePromoRevampUseCase, gson, TestSchedulers)
+                validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
         presenter.attachView(view)
     }
 
@@ -384,7 +388,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             view.resetPromoBenefit()
             view.clearTotalBenefitPromoStacking()
             view.hideLoading()
-            view.renderCheckoutPageNoAddress(any())
+            view.renderCheckoutPageNoAddress(any(), any())
             view.stopTrace()
         }
     }
