@@ -625,17 +625,26 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         outState.putString(ARGS_DETAIL_ID, detailId)
     }
 
+    var impressionProductList : ArrayList<FeedXProduct>? = null
+
     private fun trackImpression(postTagItemList: List<FeedXProduct>) {
-
-
-        feedAnalytics.eventImpressionProductBottomSheet(
-                activityId,
-                postTagItemList.slice(0..lastScrollPosition),
-                shopId,
-                postType,
-                isFollowed,
-                true
-        )
+        if (impressionProductList == null) {
+            impressionProductList = ArrayList()
+            impressionProductList?.addAll(postTagItemList.slice(0..lastScrollPosition))
+        } else {
+            impressionProductList = ArrayList()
+        }
+        impressionProductList?.size
+        if (impressionProductList?.size!! > 0) {
+            feedAnalytics.eventImpressionProductBottomSheet(
+                    activityId,
+                    impressionProductList!!,
+                    shopId,
+                    postType,
+                    isFollowed,
+                    true
+            )
+        }
     }
 
     override fun onPause() {
