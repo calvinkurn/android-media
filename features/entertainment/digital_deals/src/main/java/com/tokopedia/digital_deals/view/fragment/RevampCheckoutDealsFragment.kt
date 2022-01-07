@@ -230,7 +230,7 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
         }
 
         tv_sales_price_per_quantity?.text = Utils.convertToCurrencyString(itemMap.price.toLong())
-        tv_sales_price_all_quantity?.text = Utils.convertToCurrencyString((itemMap.price * itemMap.quantity).toLong())
+        tv_sales_price_all_quantity?.text = Utils.convertToCurrencyString(itemMap.price.toLong() * itemMap.quantity.toLong())
 
         if (itemMap.commission == 0) {
             tv_service_fee?.gone()
@@ -239,7 +239,7 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
             tv_service_fee?.text = Utils.convertToCurrencyString(itemMap.commission.toLong())
         }
 
-        tv_total_amount?.text = Utils.convertToCurrencyString((itemMap.price * itemMap.quantity + itemMap.commission).toLong())
+        tv_total_amount?.text = Utils.convertToCurrencyString(itemMap.price.toLong() * itemMap.quantity.toLong() + itemMap.commission.toLong())
         tv_number_vouchers?.text = resources.getString(com.tokopedia.digital_deals.R.string.number_of_vouchers, itemMap.quantity)
 
         if (dealsDetail.outlets != null && dealsDetail.outlets.size > 0) {
@@ -366,7 +366,7 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
     }
 
     private fun updateAmount(discountAmount: Long){
-        tv_total_amount?.text = Utils.convertToCurrencyString((itemMap.price * itemMap.quantity + itemMap.commission - discountAmount).toLong())
+        tv_total_amount?.text = Utils.convertToCurrencyString(itemMap.price.toLong() * itemMap.quantity.toLong() + itemMap.commission.toLong() - discountAmount)
     }
 
     companion object {

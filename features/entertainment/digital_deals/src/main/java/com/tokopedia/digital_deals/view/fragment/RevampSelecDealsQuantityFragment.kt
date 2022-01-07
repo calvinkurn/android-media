@@ -209,7 +209,7 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
     }
 
     private fun setTotalAmount(){
-        tv_total_amount?.text = Utils.convertToCurrencyString((dealsDetail.salesPrice * currentQuantity).toLong())
+        tv_total_amount?.text = Utils.convertToCurrencyString(dealsDetail.salesPrice.toLong() * currentQuantity.toLong())
     }
 
     private fun verify(){
