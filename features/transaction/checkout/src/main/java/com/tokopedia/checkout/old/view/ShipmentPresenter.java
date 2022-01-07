@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.checkout.old.data.model.request.checkout.CheckoutRequestGqlData;
+import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase;
 import com.tokopedia.network.exception.MessageErrorException;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException;
@@ -145,6 +146,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final ShipmentDataConverter shipmentDataConverter;
     private final ReleaseBookingUseCase releaseBookingUseCase;
     private final OldValidateUsePromoRevampUseCase validateUsePromoRevampUseCase;
+    private final EligibleForAddressUseCase eligibleForAddressUseCase;
     private final ExecutorSchedulers executorSchedulers;
 
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
@@ -196,7 +198,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              ReleaseBookingUseCase releaseBookingUseCase,
                              OldValidateUsePromoRevampUseCase validateUsePromoRevampUseCase,
                              Gson gson,
-                             ExecutorSchedulers executorSchedulers) {
+                             ExecutorSchedulers executorSchedulers,
+                             EligibleForAddressUseCase eligibleForAddressUseCase) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutGqlUseCase = checkoutGqlUseCase;
         this.getShipmentAddressFormGqlUseCase = getShipmentAddressFormGqlUseCase;
@@ -217,6 +220,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.validateUsePromoRevampUseCase = validateUsePromoRevampUseCase;
         this.gson = gson;
         this.executorSchedulers = executorSchedulers;
+        this.eligibleForAddressUseCase = eligibleForAddressUseCase;
     }
 
     @Override
@@ -512,7 +516,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         compositeSubscription.add(
                 getShipmentAddressFormGqlUseCase.createObservable(requestParams)
                         .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
-                                isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment))
+                                isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment, eligibleForAddressUseCase))
         );
     }
 
