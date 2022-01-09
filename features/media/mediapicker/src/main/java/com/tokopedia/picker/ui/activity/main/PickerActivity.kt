@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.picker.R
 import com.tokopedia.picker.common.PickerFragmentType
@@ -17,8 +19,10 @@ import com.tokopedia.picker.ui.PickerFragmentFactoryImpl
 import com.tokopedia.picker.ui.PickerNavigator
 import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.fragment.permission.PermissionFragment
-import com.tokopedia.picker.utils.Permissions.hasPermissionGranted
+import com.tokopedia.picker.utils.G500
+import com.tokopedia.picker.utils.N600
 import com.tokopedia.picker.utils.addOnTabSelected
+import com.tokopedia.picker.utils.delegates.permissionGranted
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -63,10 +67,14 @@ import com.tokopedia.utils.view.binding.viewBinding
 class PickerActivity : BaseActivity(), PermissionFragment.Listener {
 
     private val binding: ActivityPickerBinding? by viewBinding()
+    private val hasPermissionGranted: Boolean by permissionGranted()
+
     private val selectedMedias: MutableList<Media> = mutableListOf()
 
     private val viewModel by lazy {
-        ViewModelProvider(this)[PickerViewModel::class.java]
+        ViewModelProvider(
+            this
+        )[PickerViewModel::class.java]
     }
 
     private val navigator: PickerNavigator? by lazy {
@@ -81,22 +89,15 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_picker)
-
-        // this queries builder should be call first
         setupQueryAndUIConfigBuilder()
 
-        setupInitialPage()
+        initView()
         initObservable()
         initToolbar()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        navigator?.cleanUp()
-    }
-
     override fun onPermissionGranted() {
-        setupPickerByPage()
+        navigateByPageType()
     }
 
     fun onUpdateSelectedMedia(medias: List<Media>) {
@@ -105,56 +106,58 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
 
     private fun setupQueryAndUIConfigBuilder() {
         val data = intent?.data ?: return
+
         PickerUiConfig.setupQueryPage(data)
         PickerUiConfig.setupQueryMode(data)
         PickerUiConfig.setupQuerySelectionType(data)
     }
 
+    private fun initView() {
+        if (hasPermissionGranted) {
+            permissionGrantedState()
+            navigateByPageType()
+            return
+        }
+
+        navigator?.start(PickerFragmentType.PERMISSION)
+        permissionDeniedState()
+    }
+
     private fun initObservable() {
-        viewModel.finishButtonState.observe(this, {
-            val color = if (it) {
-                com.tokopedia.unifyprinciples.R.color.Unify_G500
-            } else {
-                com.tokopedia.unifyprinciples.R.color.Unify_N600
-            }
+        viewModel.finishButtonState.observe(this) {
+            val color = if (it) G500 else N600
 
             binding?.toolbar?.btnDone?.setTextColor(
                 ContextCompat.getColor(applicationContext, color)
             )
-        })
+        }
 
-        viewModel.selectedMedia.observe(this, {
+        viewModel.selectedMedia.observe(this) {
             selectedMedias.clear()
             selectedMedias.addAll(it)
-        })
+        }
     }
 
     private fun initToolbar() {
         binding?.toolbar?.btnDone?.show()
         binding?.toolbar?.btnDone?.setOnClickListener {
-            println("MEDIAPICKER -> start")
             selectedMedias.forEach {
                 println("MEDIAPICKER -> ${it.path}")
             }
         }
     }
 
-    /**
-     * set the initial page of picker to display,
-     * if the user use android M and above, runtime permission
-     * should be required. so, the first thing is, we've to
-     * ensure that the permissions has granted.
-     */
-    private fun setupInitialPage() {
-        if (!hasPermissionGranted()) {
-            navigator?.start(PickerFragmentType.PERMISSION)
-            return
-        }
-
-        setupPickerByPage()
+    private fun permissionGrantedState() {
+        binding?.toolbarContainer?.show()
+        binding?.tabContainer?.show()
     }
 
-    private fun setupPickerByPage() {
+    private fun permissionDeniedState() {
+        binding?.toolbarContainer?.hide()
+        binding?.tabContainer?.hide()
+    }
+
+    private fun navigateByPageType() {
         when (PickerUiConfig.paramPage) {
             PickerPageType.CAMERA -> navigator?.start(PickerFragmentType.CAMERA)
             PickerPageType.GALLERY -> navigator?.start(PickerFragmentType.GALLERY)
@@ -169,8 +172,8 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
     }
 
     private fun setupTabView() {
-        binding?.tabContainer?.addNewTab(getString(com.tokopedia.picker.R.string.picker_title_camera))
-        binding?.tabContainer?.addNewTab(getString(com.tokopedia.picker.R.string.picker_title_gallery))
+        binding?.tabContainer?.addNewTab(getString(R.string.picker_title_camera))
+        binding?.tabContainer?.addNewTab(getString(R.string.picker_title_gallery))
         binding?.tabContainer?.show()
 
         binding?.tabContainer?.tabLayout?.addOnTabSelected { position ->
@@ -186,11 +189,8 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
         return PickerFragmentFactoryImpl()
     }
 
-    interface Listener {
-        fun onUpdateSelectedMedia(medias: List<Media>)
-    }
-
     companion object {
+        //TODO remove
         fun start(context: Context) {
             context.startActivity(Intent(context, PickerActivity::class.java))
         }

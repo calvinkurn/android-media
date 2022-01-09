@@ -18,6 +18,7 @@ class PermissionFragment : BaseDaggerFragment() {
 
     private val binding by viewBinding<FragmentPermissionBinding>()
     private val permissionHelper by lazy { PermissionCheckerHelper() }
+
     private val _permissions = mutableListOf<String>()
     private var listener: Listener? = null
 
@@ -45,6 +46,8 @@ class PermissionFragment : BaseDaggerFragment() {
     }
 
     private fun setPermission() {
+        _permissions.clear()
+
         when (PickerUiConfig.paramPage) {
             PickerPageType.COMMON -> {
                 _permissions.addAll(listOf(

@@ -3,6 +3,7 @@ package com.tokopedia.picker.ui.activity.album
 import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -22,13 +23,10 @@ class AlbumActivity : BaseActivity() {
     @Inject lateinit var factory: ViewModelProvider.Factory
 
     private val binding: ActivityAlbumBinding? by viewBinding()
-
-    private val param by lazy {
-        PickerUiConfig.getFileLoaderParam()
-    }
+    private val param = PickerUiConfig.getFileLoaderParam()
 
     private val adapter by lazy {
-        AlbumAdapter(listener = onDirectoryClickListener)
+        AlbumAdapter(listener = onAlbumClickListener)
     }
 
     private val viewModel by lazy {
@@ -44,18 +42,19 @@ class AlbumActivity : BaseActivity() {
         initInjector()
         initObservable()
         initView()
+
+        setupRecyclerView()
     }
 
     private fun initObservable() {
-        viewModel.albums.observe(this, {
+        viewModel.albums.observe(this) {
             if (it.isNotEmpty()) {
                 adapter.setData(it)
             }
-        })
+        }
     }
 
     private fun initView() {
-        setupRecyclerView()
         viewModel.fetch(param)
     }
 
@@ -64,7 +63,7 @@ class AlbumActivity : BaseActivity() {
         binding?.lstAlbum?.adapter = adapter
     }
 
-    private val onDirectoryClickListener = object : OnAlbumClickListener {
+    private val onAlbumClickListener = object : OnAlbumClickListener {
         override fun invoke(album: Album) {
             setResult(RESULT_OK, Intent().apply {
                 putExtra(INTENT_BUCKET_ID, album.id)

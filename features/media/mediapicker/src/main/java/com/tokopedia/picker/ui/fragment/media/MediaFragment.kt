@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -31,10 +32,7 @@ class MediaFragment : BaseDaggerFragment() {
     @Inject lateinit var factory: ViewModelProvider.Factory
 
     private val binding: FragmentGalleryBinding? by viewBinding()
-
-    private val param by lazy {
-        PickerUiConfig.getFileLoaderParam()
-    }
+    private val param = PickerUiConfig.getFileLoaderParam()
 
     private val adapter by lazy {
         MediaAdapter(emptyList()) {
@@ -82,13 +80,13 @@ class MediaFragment : BaseDaggerFragment() {
     }
 
     private fun initObservable() {
-        viewModel.files.observe(viewLifecycleOwner, {
+        viewModel.files.observe(viewLifecycleOwner) {
             adapter.setData(it)
-        })
+        }
 
-        viewModel.error.observe(viewLifecycleOwner, {
+        viewModel.error.observe(viewLifecycleOwner) {
             Toast.makeText(requireContext(), it.localizedMessage, Toast.LENGTH_SHORT).show()
-        })
+        }
     }
 
     private fun initView() {

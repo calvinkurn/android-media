@@ -62,9 +62,16 @@ class PickerNavigator constructor(
     }
 
     fun onPageSelected(@PickerFragmentType page: Int) {
-        if (isActivityResumed() && !isCurrentlyOnThePage(page)) {
+        if (isActivityResumed() && !isCurrentPageOf(page)) {
             showPage(page)
         }
+    }
+
+    private fun isCurrentPageOf(@PickerFragmentType page: Int): Boolean {
+        val fragment = getFragmentOf(page) ?: return false
+        val fragmentState = fragment.lifecycle.currentState
+
+        return page == currentSelectedPage && fragmentState.isAtLeast(Lifecycle.State.RESUMED)
     }
 
     private fun showPage(page: Int) {
@@ -92,13 +99,6 @@ class PickerNavigator constructor(
                 }
             }
         }
-    }
-
-    private fun isCurrentlyOnThePage(@PickerFragmentType page: Int): Boolean {
-        val fragment = getFragmentOf(page) ?: return false
-        val fragmentState = fragment.lifecycle.currentState
-
-        return page == currentSelectedPage && fragmentState.isAtLeast(Lifecycle.State.RESUMED)
     }
 
     private fun getFragmentOf(@PickerFragmentType type: Int): Fragment? {
