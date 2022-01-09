@@ -47,7 +47,9 @@ class AlbumRepositoryImpl constructor(
                     )
                 }
 
-                album?.medias?.add(media)
+                if (album != null) {
+                    album.count++
+                }
             } while (cursor.moveToNext())
         }
 
@@ -55,13 +57,13 @@ class AlbumRepositoryImpl constructor(
 
         return albumMap.values
             .map {
-                val totalInAlbum = it.medias.size + 1
+                val totalInAlbum = it.count + 1
 
                 // get total of media
                 recentMediaSize += totalInAlbum
 
                 // return the map
-                it.copy(count = totalInAlbum)
+                it
             }
             .toMutableList()
             .also {
