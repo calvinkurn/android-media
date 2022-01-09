@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:paddingHorizontal="16dp"
+    tools:paddingTop="16dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_manage_violation_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        tools:text="Produk diduga tidak layak jual karena:" />
+
+    <LinearLayout
+        android:id="@+id/layout_product_manage_violation_reason"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_product_manage_violation_reason"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_product_manage_violation_title">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_product_manage_violation_reason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="heading_5"
+            tools:text="Berupa pakaian dalam bekas" />
+
+    </LinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_manage_violation_step_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintTop_toBottomOf="@id/layout_product_manage_violation_reason"
+        app:typographyType="body_2"
+        tools:text="Lakukan langkah berikut untuk menyelesaikan:" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_product_manage_violation_step"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_product_manage_violation_step_title"
+        tools:itemCount="2"
+        tools:listitem="@layout/item_product_manage_violation" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_product_manage_violation_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rv_product_manage_violation_step"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="ghost"
+        tools:text="Bantuan" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmer_product_manage_violation_1"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        app:corners="8"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/shimmer_product_manage_violation_2"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_marginTop="14dp"
+        app:corners="8"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_product_manage_violation_1" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmer_product_manage_violation_3"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:layout_marginTop="14dp"
+        app:corners="8"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_product_manage_violation_2" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmer_product_manage_violation_4_left"
+        android:layout_width="32dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="14dp"
+        app:corners="8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_product_manage_violation_3" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmer_product_manage_violation_4_right"
+        android:layout_width="0dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="8dp"
+        app:corners="8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/shimmer_product_manage_violation_4_left"
+        app:layout_constraintTop_toTopOf="@id/shimmer_product_manage_violation_4_left"
+        app:layout_constraintBottom_toBottomOf="@id/shimmer_product_manage_violation_4_left"/>
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmer_product_manage_violation_5_left"
+        android:layout_width="32dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="14dp"
+        app:corners="8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_product_manage_violation_4_left" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmer_product_manage_violation_5_right"
+        android:layout_width="0dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="8dp"
+        app:corners="8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/shimmer_product_manage_violation_5_left"
+        app:layout_constraintTop_toTopOf="@id/shimmer_product_manage_violation_5_left"
+        app:layout_constraintBottom_toBottomOf="@id/shimmer_product_manage_violation_5_left"/>
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/shimmer_product_manage_violation_6"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginBottom="16dp"
+        app:corners="8"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_product_manage_violation_5_right" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/product_manage_violation_loading_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="shimmer_product_manage_violation_1,
+        shimmer_product_manage_violation_2,
+        shimmer_product_manage_violation_3, shimmer_product_manage_violation_4_left,
+        shimmer_product_manage_violation_4_right, shimmer_product_manage_violation_5_left,
+        shimmer_product_manage_violation_5_right, shimmer_product_manage_violation_6" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/product_manage_violation_success_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="layout_product_manage_violation_reason,
+        tv_product_manage_violation_step_title, rv_product_manage_violation_step,
+        btn_product_manage_violation_action" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

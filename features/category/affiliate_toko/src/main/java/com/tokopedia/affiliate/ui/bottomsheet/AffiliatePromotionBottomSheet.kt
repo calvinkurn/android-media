@@ -76,10 +76,14 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
         private const val KEY_PRODUCT_IDENTIFIER = "KEY_PRODUCT_IDENTIFIER"
         private const val KEY_ORIGIN = "KEY_ORIGIN"
         private const val KEY_LINK_GEN_ENABLED = "KEY_LINK_GEN_ENABLED"
+        private const val PERNAH_DIBELI = "pernah dibeli"
+        private const val PERNAH_DILIHAT = "pernah dilihat"
 
         const val ORIGIN_PROMOSIKAN = 1
         const val ORIGIN_HOME = 2
         const val ORIGIN_PORTFOLIO = 3
+        const val ORIGIN_PERNAH_DIBELI_PROMOSIKA = 4
+        const val ORIGIN_TERAKHIR_DILIHAT = 5
 
         fun newInstance(bottomSheetType : SheetType, bottomSheetInterface : AffiliatePromotionBottomSheetInterface?,
                         idArray : ArrayList<Int>?,
@@ -215,12 +219,33 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
             if(originScreen == ORIGIN_HOME){
                 eventCategory = AffiliateAnalytics.CategoryKeys.HOME_PORTAL_B_S
             }
+            else if(originScreen == ORIGIN_PERNAH_DIBELI_PROMOSIKA || originScreen == ORIGIN_TERAKHIR_DILIHAT){
+                eventCategory = AffiliateAnalytics.CategoryKeys.PROMOSIKAN_BOTTOM_SHEET
+            }
             it?.let { data ->
-                AffiliateAnalytics.sendEvent(
+                if(originScreen == ORIGIN_HOME || originScreen == ORIGIN_PROMOSIKAN) {
+                    AffiliateAnalytics.sendEvent(
                         AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
                         AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK,
                         eventCategory,
-                        "$productId-${data.linkID}-$currentServiceFormat",userSessionInterface.userId)
+                        "$productId-${data.linkID}-$currentServiceFormat",
+                        userSessionInterface.userId
+                    )
+                }
+                else if(originScreen == ORIGIN_PERNAH_DIBELI_PROMOSIKA || originScreen == ORIGIN_TERAKHIR_DILIHAT){
+                   val eventAction = if(originScreen == ORIGIN_PERNAH_DIBELI_PROMOSIKA){
+                        AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DIABEL
+                   } else {
+                        AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DILIHAT
+                   }
+                   AffiliateAnalytics.sendEvent(
+                        AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
+                        eventAction,
+                        eventCategory,
+                        "$productId-${data.linkID}-$currentServiceFormat",
+                        userSessionInterface.userId
+                   )
+                }
                 val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 clipboardManager.setPrimaryClip(ClipData.newPlainText(COPY_LABEL, data.url?.shortURL))
                 Toaster.build(contentView.rootView, getString(R.string.affiliate_link_generated_succesfully, currentName),
@@ -274,7 +299,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
                     AffiliateAnalytics.ActionKeys.IMPRESSION_HOME_PORTAL_B_S,
                     AffiliateAnalytics.CategoryKeys.HOME_PORTAL_B_S,
                     "",userSessionInterface.userId)
-        }else if(originScreen == ORIGIN_PROMOSIKAN){
+        }else if(originScreen == ORIGIN_PROMOSIKAN ){
             AffiliateAnalytics.sendEvent(
                     AffiliateAnalytics.EventKeys.EVENT_VALUE_VIEW,
                     AffiliateAnalytics.ActionKeys.IMPRESSION_PROMOSIKAN_SRP_B_S,
