@@ -1,4 +1,4 @@
-package com.tokopedia.picker.ui.fragment.media.recyclers.adapter
+package com.tokopedia.picker.ui.fragment.gallery.recyclers.adapter
 
 import android.annotation.SuppressLint
 import android.net.Uri
@@ -17,15 +17,15 @@ import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.databinding.ViewItemGalleryPickerBinding
 import com.tokopedia.picker.ui.fragment.OnMediaClickListener
 import com.tokopedia.picker.ui.fragment.OnMediaSelectedListener
-import com.tokopedia.picker.ui.fragment.media.recyclers.utils.MediaDiffUtil
+import com.tokopedia.picker.ui.fragment.gallery.recyclers.utils.MediaDiffUtil
 import com.tokopedia.picker.utils.getVideoDurationLabel
 import com.tokopedia.picker.utils.isVideoFormat
 import com.tokopedia.utils.view.binding.viewBinding
 
-class MediaAdapter(
+class GalleryAdapter(
     selectedMedias: List<Media>,
     private val shouldSelectListener: OnMediaClickListener
-) : RecyclerView.Adapter<MediaAdapter.GalleryPickerViewHolder>() {
+) : RecyclerView.Adapter<GalleryAdapter.GalleryPickerViewHolder>() {
 
     val selectedMedias: MutableList<Media> = mutableListOf()
 

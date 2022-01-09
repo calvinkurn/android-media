@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.picker.di.scope.PickerScope
 import com.tokopedia.picker.ui.activity.album.AlbumViewModel
-import com.tokopedia.picker.ui.fragment.media.MediaViewModel
+import com.tokopedia.picker.ui.fragment.gallery.GalleryViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -23,9 +23,9 @@ abstract class PickerViewModelModule {
     @Binds
     @IntoMap
     @PickerScope
-    @ViewModelKey(MediaViewModel::class)
+    @ViewModelKey(GalleryViewModel::class)
     internal abstract fun getGalleryViewModel(
-        viewModel: MediaViewModel
+        viewModel: GalleryViewModel
     ): ViewModel
 
     @Binds

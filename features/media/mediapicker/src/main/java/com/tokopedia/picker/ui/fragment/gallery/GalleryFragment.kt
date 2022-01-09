@@ -1,4 +1,4 @@
-package com.tokopedia.picker.ui.fragment.media
+package com.tokopedia.picker.ui.fragment.gallery
 
 import android.app.Activity
 import android.content.Intent
@@ -22,12 +22,12 @@ import com.tokopedia.picker.di.module.PickerModule
 import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.activity.album.AlbumActivity
 import com.tokopedia.picker.ui.activity.main.PickerActivity
-import com.tokopedia.picker.ui.fragment.media.recyclers.adapter.MediaAdapter
-import com.tokopedia.picker.ui.fragment.media.recyclers.utils.GridItemDecoration
+import com.tokopedia.picker.ui.fragment.gallery.recyclers.adapter.GalleryAdapter
+import com.tokopedia.picker.ui.fragment.gallery.recyclers.utils.GridItemDecoration
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-class MediaFragment : BaseDaggerFragment() {
+class GalleryFragment : BaseDaggerFragment() {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
 
@@ -35,7 +35,7 @@ class MediaFragment : BaseDaggerFragment() {
     private val param = PickerUiConfig.getFileLoaderParam()
 
     private val adapter by lazy {
-        MediaAdapter(emptyList()) {
+        GalleryAdapter(emptyList()) {
             selectMedia(it)
         }
     }
@@ -44,7 +44,7 @@ class MediaFragment : BaseDaggerFragment() {
         ViewModelProvider(
             this,
             factory
-        ).get(MediaViewModel::class.java)
+        ).get(GalleryViewModel::class.java)
     }
 
     override fun onCreateView(

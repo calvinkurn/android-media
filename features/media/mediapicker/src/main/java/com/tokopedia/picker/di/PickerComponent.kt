@@ -5,7 +5,7 @@ import com.tokopedia.picker.di.module.PickerModule
 import com.tokopedia.picker.di.module.PickerViewModelModule
 import com.tokopedia.picker.di.scope.PickerScope
 import com.tokopedia.picker.ui.activity.album.AlbumActivity
-import com.tokopedia.picker.ui.fragment.media.MediaFragment
+import com.tokopedia.picker.ui.fragment.gallery.GalleryFragment
 import dagger.Component
 
 @PickerScope
@@ -17,5 +17,5 @@ import dagger.Component
 ])
 interface PickerComponent {
     fun inject(activity: AlbumActivity)
-    fun inject(fragment: MediaFragment)
+    fun inject(fragment: GalleryFragment)
 }

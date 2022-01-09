@@ -1,4 +1,4 @@
-package com.tokopedia.picker.ui.fragment.media
+package com.tokopedia.picker.ui.fragment.gallery
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class MediaViewModel @Inject constructor(
+class GalleryViewModel @Inject constructor(
     private val repository: MediaRepository,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io) {

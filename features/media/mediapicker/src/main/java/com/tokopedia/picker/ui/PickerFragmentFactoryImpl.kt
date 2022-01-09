@@ -2,7 +2,7 @@ package com.tokopedia.picker.ui
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.picker.ui.fragment.camera.CameraFragment
-import com.tokopedia.picker.ui.fragment.media.MediaFragment
+import com.tokopedia.picker.ui.fragment.gallery.GalleryFragment
 import com.tokopedia.picker.ui.fragment.permission.PermissionFragment
 
 class PickerFragmentFactoryImpl : PickerFragmentFactory {
@@ -16,7 +16,7 @@ class PickerFragmentFactoryImpl : PickerFragmentFactory {
     }
 
     override fun galleryFragment(): Fragment {
-        return MediaFragment()
+        return GalleryFragment()
     }
 
 }
