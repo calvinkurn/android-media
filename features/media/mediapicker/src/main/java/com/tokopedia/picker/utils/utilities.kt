@@ -31,13 +31,13 @@ fun isGifFormat(path: String): Boolean {
     return extension.equals("gif", ignoreCase = true)
 }
 
-fun isVideoFormat(media: Media): Boolean {
-    val extension = getExtension(media.path)
+fun isVideoFormat(path: String): Boolean {
+    val extension = getExtension(path)
     val prefix = "video"
 
     val mimeType =
         if (TextUtils.isEmpty(extension)) {
-            URLConnection.guessContentTypeFromName(media.path)
+            URLConnection.guessContentTypeFromName(path)
         } else {
             MimeTypeMap
                 .getSingleton()

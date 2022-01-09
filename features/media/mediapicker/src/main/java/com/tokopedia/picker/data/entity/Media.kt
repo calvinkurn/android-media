@@ -12,7 +12,7 @@ import kotlinx.parcelize.Parcelize
 data class Media(
     val id: Long,
     val name: String,
-    val path: String,
+    val path: String
 ) : Parcelable {
 
     @IgnoredOnParcel
@@ -21,7 +21,7 @@ data class Media(
     val uri: Uri
         get() {
             return uriHolder ?: let {
-                val contentUri = if (isVideoFormat(this)) {
+                val contentUri = if (isVideoFormat(path)) {
                     MediaStore.Video.Media.EXTERNAL_CONTENT_URI
                 } else {
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI
