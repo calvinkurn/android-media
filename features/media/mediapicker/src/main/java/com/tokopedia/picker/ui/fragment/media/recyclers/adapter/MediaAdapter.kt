@@ -122,7 +122,7 @@ class MediaAdapter(
         }
 
         private fun videoDurationLabel(element: Media) {
-            if (isVideoFormat(element)) {
+            if (isVideoFormat(element.path)) {
                 val uri = Uri.withAppendedPath(
                     MediaStore.Files.getContentUri("external"), "" + element.id
                 )
