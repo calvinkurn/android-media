@@ -28,21 +28,6 @@ class SortViewHolder(
 
             iv_check.isVisible = element.isSelected
 
-//            radMvcSort.run{
-//                setOnCheckedChangeListener(null)
-//                isChecked = element.isSelected
-//                setOnCheckedChangeListener { _, isChecked ->
-//                    if (isChecked) {
-//                        onApplyClick(element)
-//                    }
-//                }
-//            }
-//            setOnClickListener {
-//                if (!radMvcSort.isChecked) {
-//                    radMvcSort.isChecked = true
-//                }
-//            }
-
             setOnClickListener {
                 if (!iv_check.isVisible) {
                     onApplyClick(element)
