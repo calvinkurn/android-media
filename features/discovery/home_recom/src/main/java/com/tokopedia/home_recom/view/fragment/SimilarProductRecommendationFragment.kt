@@ -128,6 +128,21 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
             requireActivity(),
             statusBarTheme = if (requireContext().isDarkMode()) TOOLBAR_LIGHT_TYPE else TOOLBAR_DARK_TYPE
         )
+        navToolbar?.apply {
+//            viewLifecycleOwner.lifecycle.addObserver(this)
+            setIcon(
+                IconBuilder()
+                    .addIcon(IconList.ID_SHARE) {
+//                        onClickShareProduct()
+                    }
+                    .addIcon(IconList.ID_CART) {}
+                    .addIcon(IconList.ID_NAV_GLOBAL) {}
+            )
+//            setNavToolbarSearchHint(" adsf")
+//            setupSearchbar(listOf(HintData("asdf")))
+//            setToolbarPageName(ProductTrackingConstant.Category.PDP)
+            show()
+        }
         sortFilterView = view.findViewById(R.id.filter_sort_recommendation)
         setupRecyclerView(view)
         setupBackToTop(view)
