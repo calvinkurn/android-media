@@ -928,8 +928,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             promptDialog.setDescription(prompt.getDescription());
             promptDialog.setPrimaryCTAText(prompt.getButton().getText());
             promptDialog.setPrimaryCTAClickListener(() -> {
-                Activity activity1 = getActivity();
-                if (activity1 != null) activity1.finish();
+                Activity mActivity = getActivity();
+                if (mActivity != null) {
+                    if (!TextUtils.isEmpty(prompt.getButton().getLink())) {
+                        RouteManager.route(mActivity, prompt.getButton().getLink());
+                    }
+                    mActivity.finish();
+                }
                 return Unit.INSTANCE;
             });
             promptDialog.setOverlayClose(false);
