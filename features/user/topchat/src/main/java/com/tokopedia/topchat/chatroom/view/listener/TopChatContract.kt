@@ -81,6 +81,7 @@ interface TopChatContract {
         fun showPreviewMsg(previewMsg: SendableUiModel)
         fun clearReferredMsg()
         fun notifyPreviewRemoved(model: SendablePreview)
+        fun onReceiveWsEventDeleteMsg(replyTimeNano: String)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {

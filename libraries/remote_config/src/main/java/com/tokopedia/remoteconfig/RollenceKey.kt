@@ -13,9 +13,6 @@ object RollenceKey {
     const val VARIANT_OLD_INBOX = "ReviewTab_OldInbox"
     const val VARIANT_NEW_INBOX = "ReviewTab_NewInbox"
 
-    // Merchant Voucher Creation
-    const val BROADCAST_VOUCHER_AB_TEST_KEY = "broadcast_voucher"
-
     const val BALANCE_EXP = "Balance Widget"
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
@@ -41,9 +38,6 @@ object RollenceKey {
     const val RECOM_PAGE_CPM_OLD = "ShopAdsIMControl"
     const val RECOM_PAGE_CPM_VARIANT = "ShopAdsIMVariant"
     // end of Recommendation page section
-
-    //TAPCASH
-    const val KEY_VARIANT_TAPCASH_GRADUAL = "BNI_Tap_cash_gradual"
 
     //Home account
     const val HOME_ACCOUNT_SHOW_VIEW_MORE_WALLET_TOGGLE = "akun_widget_button"

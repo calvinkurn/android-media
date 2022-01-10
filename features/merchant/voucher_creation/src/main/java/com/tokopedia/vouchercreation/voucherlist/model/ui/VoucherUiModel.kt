@@ -34,7 +34,11 @@ data class VoucherUiModel(
         val updatedTime: String,
         val isPublic: Boolean,
         var showNewBc: Boolean = false,
-        var isFreeIconVisible: Boolean = false
+        var isFreeIconVisible: Boolean = false,
+        var isVps: Boolean = false,
+        var packageName: String = "",
+        var isSubsidy: Boolean = false,
+        var tnc: String = ""
 ) : BaseVoucherListUiModel, Parcelable {
 
     override fun type(typeFactory: VoucherListAdapterFactory): Int {

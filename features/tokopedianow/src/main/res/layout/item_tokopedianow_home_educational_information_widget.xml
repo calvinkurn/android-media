@@ -109,7 +109,7 @@
             android:contentDescription="@string/tokopedianow_educational_information_chevron_entry_point_to_show_bottomsheet"
             android:background="@color/Unify_Static_White"
             app:srcCompat="@drawable/iconunify_chevron_down"
-            app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+            app:shapeAppearanceOverlay="@style/circleImageDisplay"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
