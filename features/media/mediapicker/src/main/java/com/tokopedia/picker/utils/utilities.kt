@@ -1,3 +1,4 @@
+@file:JvmName("PickerUtilities")
 package com.tokopedia.picker.utils
 
 import android.content.Context
@@ -12,7 +13,7 @@ const val DEFAULT_DURATION_LABEL = "00:00"
 
 private fun getExtension(path: String): String {
     val extension = MimeTypeMap.getFileExtensionFromUrl(path)
-    if (!TextUtils.isEmpty(extension)) {
+    if (!extension.isNullOrEmpty()) {
         return extension
     }
     return if (path.contains(".")) {
