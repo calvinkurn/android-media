@@ -105,6 +105,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerCalendarViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tdnbanner.DiscoveryTDNBannerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tdnbanner.DiscoveryTDNBannerViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topquest.TopQuestViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topquest.TopQuestViewModel
 
 class DiscoveryHomeFactory {
 
@@ -207,6 +209,7 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.CalendarWidgetGrid, ::CalendarWidgetGridViewHolder, ::CalendarWidgetGridViewModel)
             initializeComponent(ComponentsList.CalendarWidgetItem, ::CalendarWidgetItemViewHolder, ::CalendarWidgetItemViewModel)
             initializeComponent(ComponentsList.ShimmerCalendarWidget, ::ShimmerCalendarViewHolder, ::ShimmerViewModel)
+            initializeComponent(ComponentsList.TopQuestWidget, ::TopQuestViewHolder, ::TopQuestViewModel)
 
         }
 
