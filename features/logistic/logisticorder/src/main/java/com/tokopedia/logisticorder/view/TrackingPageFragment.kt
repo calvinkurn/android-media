@@ -22,6 +22,7 @@ import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.adapter.EmptyTrackingNotesAdapter
 import com.tokopedia.logisticorder.adapter.TrackingHistoryAdapter
+import com.tokopedia.logisticorder.adapter.TrackingHistoryAdapterCopy
 import com.tokopedia.logisticorder.databinding.FragmentTrackingPageBinding
 import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
@@ -57,7 +58,7 @@ import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImageClicked {
+class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapterCopy.OnImageClicked {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -368,7 +369,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         } else {
             binding?.trackingHistory?.visibility = View.VISIBLE
             binding?.trackingHistory?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            binding?.trackingHistory?.adapter = TrackingHistoryAdapter(model.trackHistory, dateUtil, mOrderId?.toLong(), this)
+            binding?.trackingHistory?.adapter = TrackingHistoryAdapterCopy(model.trackHistory, userSession, dateUtil, mOrderId?.toLong(), this)
         }
     }
 
