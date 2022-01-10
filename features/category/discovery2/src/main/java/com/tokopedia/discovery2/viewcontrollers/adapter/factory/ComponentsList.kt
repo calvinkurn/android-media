@@ -93,9 +93,9 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     CategoryBestSeller(R.layout.carousel_best_seller_recycler_view, ComponentNames.CategoryBestSeller.componentName),
 
     //Topads Headline View
-
     TopadsHeadlineView(R.layout.topads_headline_layout, ComponentNames.TopadsHeadlineView.componentName),
 
+    Section(R.layout.disco_section_component, ComponentNames.Section.componentName),
     //Calendar Widget
     CalendarWidgetCarousel(R.layout.discovery_calendar_widget_carousel_layout, ComponentNames.CalendarWidgetCarousel.componentName),
     CalendarWidgetGrid(R.layout.discovery_calendar_widget_grid_layout, ComponentNames.CalendarWidgetGrid.componentName),

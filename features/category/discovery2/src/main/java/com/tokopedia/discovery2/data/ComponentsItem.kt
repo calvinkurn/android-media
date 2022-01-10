@@ -28,6 +28,9 @@ data class ComponentsItem(
         @SerializedName("id")
         var id: String = "",
 
+        @SerializedName("section_id")
+        var sectionId: String = "",
+
         @SerializedName("title")
         val title: String? = "",
 
