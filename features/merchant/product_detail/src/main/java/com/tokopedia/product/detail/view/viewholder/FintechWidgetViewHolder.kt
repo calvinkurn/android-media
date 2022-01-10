@@ -20,7 +20,8 @@ class FintechWidgetViewHolder(val view: View,val  listener: DynamicProductDetail
 
     override fun bind(element: FintechWidgetDataModel?) {
         val fintechWidget = view.findViewById<PdpFintechWidget>(R.id.pdpBasicFintechWidget)
-     //   fintechWidget.updateBaseFragmentContext(listener.getpdpFragmentInstance(),listener.getLifecycleFragment())
+        fintechWidget.updateBaseFragmentContext(listener.getParentViewModelStoreOwner(),
+            listener.getParentLifeCyclerOwner())
         listener.getProductId()?.let { productId ->
             fintechWidget.updateProductId(productId,this)
         }

@@ -14,8 +14,7 @@ import android.util.SparseIntArray
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -763,6 +762,14 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     override fun getProductId(): String? {
         return productId
+    }
+
+    override fun getParentViewModelStoreOwner(): ViewModelStore {
+        return  viewModelStore
+    }
+
+    override fun getParentLifeCyclerOwner(): LifecycleOwner {
+        return  viewLifecycleOwner
     }
 
     override fun showWebView() {
