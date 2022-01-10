@@ -31,6 +31,10 @@ class DefaultTopChatWebSocket @Inject constructor(
         isDestroyed = true
     }
 
+    override fun sendPayload(wsPayload: String) {
+        webSocket?.send(wsPayload)
+    }
+
     private fun generateWsRequest(): Request {
         val requestBuilder = Request.Builder().url(webSocketUrl)
                 .header(HEADER_KEY_ORIGIN, TokopediaUrl.getInstance().WEB)

@@ -272,4 +272,12 @@ class ChatModule {
     fun provideWebSocketParser(): WebSocketParser {
         return DefaultWebSocketParser()
     }
+
+    @ChatScope
+    @Provides
+    fun provideWebsocketPayloadGenerator(
+        userSession: UserSessionInterface
+    ): WebsocketPayloadGenerator {
+        return DefaultWebsocketPayloadGenerator(userSession)
+    }
 }

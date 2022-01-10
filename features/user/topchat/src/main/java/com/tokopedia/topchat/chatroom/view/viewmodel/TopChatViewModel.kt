@@ -11,10 +11,8 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParam
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.chat_common.data.AttachmentType
-import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.ProductAttachmentUiModel
-import com.tokopedia.chat_common.data.WebsocketEvent
+import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
@@ -47,10 +45,7 @@ import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Pa
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
-import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket
-import com.tokopedia.topchat.common.websocket.TopchatWebSocket
-import com.tokopedia.topchat.common.websocket.WebSocketParser
-import com.tokopedia.topchat.common.websocket.WebSocketStateHandler
+import com.tokopedia.topchat.common.websocket.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -97,7 +92,8 @@ class TopChatViewModel @Inject constructor(
     private val chatWebSocket: TopchatWebSocket,
     private val webSocketStateHandler: WebSocketStateHandler,
     private val webSocketParser: WebSocketParser,
-    private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper
+    private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
+    private var payloadGenerator: WebsocketPayloadGenerator
 ) : BaseViewModel(dispatcher.main), LifecycleObserver {
 
     private val _messageId = MutableLiveData<Result<String>>()
@@ -793,6 +789,44 @@ class TopChatViewModel @Inject constructor(
         }, onError = {
             _deleteBubble.value = Fail(it)
         })
+    }
+
+    fun sendMsg(
+        message: String,
+        intention: String?,
+        referredMsg: ParentReply?
+    ) {
+        val previewMsg = payloadGenerator.generatePreviewMsg(
+            message = message,
+            intention = intention,
+            roomMetaData = roomMetaData,
+            referredMsg = referredMsg
+        )
+        // TODO: implement list of attachments
+        val wsPayload = payloadGenerator.generateWsPayload(
+            message = message,
+            intention = intention,
+            roomMetaData = roomMetaData,
+            previewMsg = previewMsg,
+            attachments = listOf(), // products ?: attachmentsPreview
+            userLocationInfo = userLocationInfo,
+            referredMsg = referredMsg
+        )
+        showPreviewMsg()
+        sendWsPayload(wsPayload)
+        sendWsStopTyping()
+    }
+
+    private fun showPreviewMsg() {
+        // TODO("Not yet implemented")
+    }
+
+    private fun sendWsStopTyping() {
+        // TODO("Not yet implemented")
+    }
+
+    private fun sendWsPayload(wsPayload: String) {
+        chatWebSocket.sendPayload(wsPayload)
     }
 
     companion object {

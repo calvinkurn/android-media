@@ -1083,7 +1083,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             delaySendMessage()
             viewModel.getExistingChat(messageId)
         } else {
-            sendMessage()
+            sendComposedMsg()
+//            sendMessage()
             onSendAndReceiveMessage()
         }
     }
@@ -1121,18 +1122,37 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    private fun sendMessage(message: String? = null) {
+    private fun sendComposedMsg() {
         textWatcher?.cancelJob()
-        val sendMessage: String = getComposedMessage(message)
+        val composedMsg = getComposedMessage()
+        sendMessage(composedMsg)
+//        val referredMsg = replyCompose?.referredMsg
+//        if (rvSrw?.isShowing() == true) {
+//            addSrwBubbleToChat()
+//        }
+        onSendingMessage().invoke()
+//        replyBubbleOnBoarding.dismiss()
+//        presenter.sendAttachmentsAndMessage(
+//            sendMessage, referredMsg
+//        )
+    }
+
+    private fun sendMessage(
+        message: String,
+        intention: String? = null
+    ) {
+//        textWatcher?.cancelJob()
+//        val sendMessage: String = getComposedMessage(message)
         val referredMsg = replyCompose?.referredMsg
         if (rvSrw?.isShowing() == true) {
             addSrwBubbleToChat()
         }
-        onSendingMessage().invoke()
+//        onSendingMessage().invoke()
         replyBubbleOnBoarding.dismiss()
-        presenter.sendAttachmentsAndMessage(
-            sendMessage, referredMsg
-        )
+        viewModel.sendMsg(message, intention, referredMsg)
+//        presenter.sendAttachmentsAndMessage(
+//            message, referredMsg
+//        )
     }
 
     private fun delaySendMessage() {
