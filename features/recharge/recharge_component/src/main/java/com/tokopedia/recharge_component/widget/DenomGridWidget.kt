@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.recharge_component.databinding.WidgetRechargeDenomGridBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
+import com.tokopedia.recharge_component.model.denom.DenomWidgetGridEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.presentation.adapter.DenomGridAdapter
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -26,6 +27,7 @@ class DenomGridWidget @JvmOverloads constructor(@NotNull context: Context, attrs
                 adapterDenomGrid.setDenomGridList(listDenomGrid)
                 adapterDenomGrid.listener = denomGridListener
                 adapterDenomGrid.selectedProductIndex = null
+                adapterDenomGrid.denomWidgetGridType = DenomWidgetGridEnum.GRID_TYPE
                 adapter = adapterDenomGrid
                 layoutManager = StaggeredGridLayoutManager(STAG_GRID_SIZE, RecyclerView.VERTICAL)
             }

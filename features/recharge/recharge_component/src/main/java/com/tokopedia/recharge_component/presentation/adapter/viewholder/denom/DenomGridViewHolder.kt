@@ -1,6 +1,7 @@
 package com.tokopedia.recharge_component.presentation.adapter.viewholder.denom
 
 import android.graphics.Paint
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
@@ -10,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.ViewRechargeDenomGridBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
+import com.tokopedia.recharge_component.model.denom.DenomWidgetGridEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -19,7 +21,9 @@ class DenomGridViewHolder (
     private val binding: ViewRechargeDenomGridBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(denomGrid: DenomWidgetModel, isSelectedItem: Boolean, position: Int){
+    fun bind(denomGrid: DenomWidgetModel, denomGridType: DenomWidgetGridEnum,
+             isSelectedItem: Boolean, position: Int){
+
         with(binding){
             tgDenomGridTitle.apply {
                 if (!denomGrid.title.isNullOrEmpty()){
@@ -95,7 +99,13 @@ class DenomGridViewHolder (
                 } else hide()
             }
 
-            cardDenomGrid.cardType = if (isSelectedItem) CardUnify.TYPE_BORDER_ACTIVE else CardUnify.TYPE_BORDER
+            cardDenomGrid.apply {
+                layoutParams.width = if (denomGridType == DenomWidgetGridEnum.GRID_TYPE){
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                } else resources.getDimension(R.dimen.widget_denom_grid_width).toInt()
+
+                cardType = if (isSelectedItem) CardUnify.TYPE_BORDER_ACTIVE else CardUnify.TYPE_BORDER
+            }
 
             root.setOnClickListener {
                 denomGridListener.onDenomGridClicked(denomGrid, position)
