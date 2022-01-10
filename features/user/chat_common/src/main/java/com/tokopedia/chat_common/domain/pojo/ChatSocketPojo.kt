@@ -65,7 +65,9 @@ data class ChatSocketPojo(
     @SerializedName("parent_reply")
     val parentReply: ParentReply? = null,
     @SerializedName("fraud_status")
-    val fraudStatus: Int = 0
+    val fraudStatus: Int = 0,
+    @SerializedName("reply_time_nano")
+    val replyTime: String = ""
 ) {
 
     fun generateLocalIdIfNotExist() {

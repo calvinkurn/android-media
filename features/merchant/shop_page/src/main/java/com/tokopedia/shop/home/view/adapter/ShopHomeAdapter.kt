@@ -38,6 +38,7 @@ class ShopHomeAdapter(
         StickySingleHeaderView.OnStickySingleHeaderAdapter {
 
     companion object {
+        private const val INVALID_INDEX = -1
         private const val ALL_PRODUCT_STRING = "Semua Produk"
     }
 
@@ -352,10 +353,42 @@ class ShopHomeAdapter(
         submitList(newList)
     }
 
+    fun updateRemindMeStatusCampaignFlashSaleWidgetData(
+        campaignId: String,
+        isRemindMe: Boolean? = null,
+        isClickRemindMe: Boolean = false
+    ) {
+        val newList = getNewVisitableItems()
+        newList.filterIsInstance<ShopHomeFlashSaleUiModel>().onEach{flashSaleCampaignUiModel ->
+            flashSaleCampaignUiModel.data?.firstOrNull { it.campaignId == campaignId }?.let {
+                isRemindMe?.let{ isRemindMe ->
+                    it.isRemindMe = isRemindMe
+                    if (isClickRemindMe) {
+                        if (isRemindMe)
+                            ++it.totalNotify
+                        else
+                            --it.totalNotify
+                    }
+                }
+                flashSaleCampaignUiModel.isNewData = true
+            }
+        }
+        submitList(newList)
+    }
+
     fun removeShopHomeCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel){
         val newList = getNewVisitableItems()
         val modelIndex = newList.indexOf(model)
         if(modelIndex != -1){
+            newList.remove(model)
+            submitList(newList)
+        }
+    }
+
+    fun removeShopHomeFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
+        val newList = getNewVisitableItems()
+        val modelIndex = newList.indexOf(model)
+        if(modelIndex != INVALID_INDEX){
             newList.remove(model)
             submitList(newList)
         }
@@ -374,6 +407,12 @@ class ShopHomeAdapter(
 
     fun getNplCampaignUiModel(campaignId: String): ShopHomeNewProductLaunchCampaignUiModel? {
         return visitables.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().firstOrNull {
+            it.data?.firstOrNull()?.campaignId == campaignId
+        }
+    }
+
+    fun getFlashSaleCampaignUiModel(campaignId: String): ShopHomeFlashSaleUiModel? {
+        return visitables.filterIsInstance<ShopHomeFlashSaleUiModel>().firstOrNull {
             it.data?.firstOrNull()?.campaignId == campaignId
         }
     }
@@ -472,7 +511,9 @@ class ShopHomeAdapter(
     }
 
     fun isLoadProductGridListData(position: Int): Boolean {
-        return (visitables.getOrNull(position) as? ProductGridListPlaceholderUiModel)?.widgetState == WidgetState.PLACEHOLDER
+        val isProductGridListPlaceholderUiMode = (visitables.getOrNull(position) as? ProductGridListPlaceholderUiModel)?.widgetState == WidgetState.PLACEHOLDER
+        val isSortFilterDataUiModelEmpty = visitables.filterIsInstance(ShopProductSortFilterUiModel::class.java).isEmpty()
+        return isProductGridListPlaceholderUiMode && isSortFilterDataUiModelEmpty
     }
 
     fun updateProductGridListPlaceholderStateToLoadingState() {
@@ -489,6 +530,10 @@ class ShopHomeAdapter(
             }
         }
         submitList(newList)
+    }
+
+    fun isProductGridListPlaceholderExists(): Boolean {
+        return visitables.filterIsInstance<ProductGridListPlaceholderUiModel>().isNotEmpty()
     }
 
     fun isLoadFirstWidgetContentData(): Boolean {

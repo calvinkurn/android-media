@@ -20,6 +20,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.cast.PlayCastNotificationAction
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
+import com.tokopedia.play.util.PlayCastHelper
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.PlaySensorOrientationManager
 import com.tokopedia.play.view.contract.PlayFullscreenManager
@@ -119,12 +120,12 @@ class PlayActivity : BaseActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         supportFragmentManager.fragmentFactory = fragmentFactory
-
-        CastContext.getSharedInstance(applicationContext)
         
         startPageMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play)
+
+        PlayCastHelper.getCastContext(this)
 
         removePip()
 

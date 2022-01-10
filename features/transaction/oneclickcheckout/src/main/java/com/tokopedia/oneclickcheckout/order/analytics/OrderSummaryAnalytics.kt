@@ -482,6 +482,30 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
         sendGeneralEvent(gtmData)
     }
 
+    fun eventViewTopUpGoPayButton() {
+        val gtmData = getGtmData(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_TOP_UP_GOPAY_BUTTON,
+                ""
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickTopUpGoPayButton() {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_TOP_UP_GOPAY_BUTTON,
+                ""
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
     companion object {
         private const val NOT_SUCCESS = "not success"
 

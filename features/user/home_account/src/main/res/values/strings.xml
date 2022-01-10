@@ -1,5 +1,12 @@
 <resources>
     <string name="home_account_title">Akun Saya</string>
+    <string name="label_menu_setting">Pengaturan</string>
+    <string name="title_app_advanced_setting">Pengaturan Tambahan</string>
+    <string name="screentitle_tkpd_pay_setting">Atur Pembayaran</string>
+    <string name="image_quality_setting_screen">Kualitas Gambar</string>
+    <string name="pref_safe_mode" translatable="false">notification_safe_mode</string>
+    <string name="clear_cache">clear cache</string>
+    <string name="title_about_us">Tentang Tokopedia</string>
 
     <string name="new_home_account_clear_cache_warning">Lanjut bersihkan cache?</string>
     <string name="new_home_account_clear_cache_message">Kami akan menutup aplikasimu biar cache-nya bersih semua. Nanti buka Tokopedia lagi, ya!</string>
@@ -24,7 +31,7 @@
 
     <string name="new_home_account_safe_mode_selected_dialog_title">Aktifkan Safe Mode</string>
     <string name="new_home_account_safe_mode_selected_dialog_msg">Fitur ini akan otomatis menyaring hasil pencarian sesuai kebijakan dan batasan usia pengguna</string>
-    <string name="new_home_account_safe_mode_unselected_dialog_msg">Hasil pencarian tidak disaring otomais sesuai kebijakan dan batasan usia pengguna</string>
+    <string name="new_home_account_safe_mode_unselected_dialog_msg">Hasil pencarian tidak disaring otomatis sesuai kebijakan dan batasan usia pengguna</string>
     <string name="new_home_account_safe_mode_unselected_dialog_title">Nonaktifkan Safe Mode</string>
     <string name="new_home_account_safe_mode_selected_dialog_positive_button">Aktifkan</string>
     <string name="new_home_account_safe_mode_unselected_dialog_positive_button">Nonaktifkan</string>
@@ -116,6 +123,13 @@
     <string name="label_link_acc_linked_date">Tersambung %1$s</string>
     <string name="label_link_acc_phone">+%1$s -\u0020</string>
 
+    <string name="title_saldo_setting">Saldo</string>
+    <string name="title_bank_account_setting">Akun Bank</string>
+    <string name="title_credit_card_setting">Kartu Kredit/Debit</string>
+    <string name="title_debit_instant_setting">Debit Instan</string>
+
+    <string name="title_gopay_setting">GoPay</string>
+
     <string name="label_link_acc_unknown_error">Hubungi</string>
 
     <string name="link_account_layout_description">Atur akun yang tersambung ke Tokopedia</string>
@@ -144,5 +158,69 @@
     <string name="home_account_balance_and_point_retry">Muat Ulang</string>
     <string name="home_account_balance_and_point_activate">Aktifkan</string>
     <string name="home_account_balance_and_point_add_point">Tambah Points</string>
+
+    <string name="account_home_add_phone_title">Tambah Nomor Ponsel</string>
+    <string name="account_home_add_phone_message">Tambah dan verifikasi nomor ponsel terlebih dahulu sebelum membuat PIN</string>
+
+    <string name="title_app_advanced_clear_cache">Bersihkan Cache</string>
+    <string name="title_app_advanced_screen_recorder">Perekam Layar</string>
+
+    <string name="account_home_clear_cache_warning">Peringatan</string>
+    <string name="account_home_clear_cache_message">Dengan membersihkan cache, berarti Anda juga setuju untuk <b>keluar</b> dan <b>menutup aplikasi</b>.</string>
+    <string name="account_home_label_clear_cache_ok">Lakukan</string>
+    <string name="account_home_label_clear_cache_cancel">Batal</string>
+    <string name="title_tkpd_pay_setting">Pembayaran</string>
+
+    <string name="application_version_fmt">Versi %1$s</string>
+    <string name="general_setting_title_account_setting_item">Akun</string>
+    <string name="subtitle_account_setting">Data Diri, Alamat, dan Keamanan Akun</string>
+    <string name="subtitle_tkpd_pay_setting">Kartu Kredit, dan Metode lainnya</string>
+
+    <string name="title_tkpd_template_setting">Template Pembelian</string>
+    <string name="title_notification_setting">Notifikasi</string>
+    <string name="title_touch_id_setting">Touch ID</string>
+    <string name="title_tnc_setting">Syarat dan Ketentuan</string>
+    <string name="title_privacy_setting">Kebijakan Privasi</string>
+    <string name="title_help_center_setting">Tokopedia Care</string>
+    <string name="image_quality_low_title">Rendah</string>
+    <string name="image_quality_low_subtitle">Dapat mempermudah proses muat gambar, berlaku di semua jaringan HP.</string>
+    <string name="image_quality_low_toast">Kualitas rendah berhasil dipilih.</string>
+
+    <string name="image_quality_high_title">Tinggi</string>
+    <string name="image_quality_high_subtitle">Dapat meningkatkan kejelasan gambar, berlaku di semua jaringan HP.</string>
+    <string name="image_quality_high_toast">Kualitas tinggi berhasil dipilih.</string>
+
+    <string name="image_quality_auto_title">Otomatis (direkomendasikan)</string>
+    <string name="image_quality_auto_subtitle">Kualitas gambar otomatis diturunkan jika jaringan HP kamu lebih rendah dari 4G.</string>
+    <string name="image_quality_auto_toast">Pengaturan otomatis berhasil dipilih.</string>
+
+    <string name="subtitle_template_setting">Nikmati Transaksi Mudah dan Cepat</string>
+    <string name="subtitle_notification_setting">Aplikasi, Chat, Diskusi, dan lainnya</string>
+
+    <string name="title_shake_setting">Shake Shake</string>
+    <string name="subtitle_shake_setting">Aktifkan untuk mendapatkan penawaran menarik</string>
+    <string name="title_geolocation_setting">Lokasi</string>
+    <string name="subtitle_geolocation_setting">Mendeteksi lokasi secara otomatis</string>
+    <string name="title_safe_mode_setting">Safe Mode</string>
+    <string name="subtitle_safe_mode_setting">Saring hasil pencarian sesuai usia</string>
+    <string name="image_quality_setting_title">Atur kualitas gambar yang kamu lihat</string>
+    <string name="title_dark_mode">Dark Mode</string>
+    <string name="subtitle_dark_mode">Aktifkan dark mode di Tokopedia</string>
+    <string name="menu_beta_feature">BETA</string>
+    <string name="title_app_review_setting">Review Aplikasi</string>
+    <string name="feedback_form">Feedback Form</string>
+    <string name="pref_receive_shake" translatable="false">notification_shake_shake</string>
+
+    <string name="title_personal_data_setting">Data Diri</string>
+    <string name="title_address_setting">Daftar Alamat</string>
+    <string name="title_sampai_project">Tokopedia Corner</string>
+    <string name="header_privacy_account_setting">Keamanan</string>
+    <string name="title_password_setting">Ubah Kata Sandi</string>
+    <string name="title_setting_pin">PIN Tokopedia</string>
+    <string name="title_kyc_setting">Verifikasi Data Diri</string>
+    <string name="title_signin_with_notification">Masuk Lewat Notifikasi</string>
+    <string name="image_quality_setting_subtitle">Pilihanmu akan menentukan kejelasan gambar yang kamu lihat di berbagai halaman Tokopedia.</string>
+    <string name="message_success_change_profile">Sukses mengubah profil</string>
+    <string name="message_success_change_password">Kata sandi berhasil diubah</string>
 
 </resources>

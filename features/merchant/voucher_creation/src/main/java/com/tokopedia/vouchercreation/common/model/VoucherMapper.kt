@@ -32,7 +32,10 @@ class VoucherMapper @Inject constructor() {
                     code = it.voucherCode,
                     createdTime = it.createTime,
                     updatedTime = it.updateTime,
-                    isPublic = it.isPublic == 1
+                    isPublic = it.isPublic == 1,
+                    isVps = it.isVps == 1,
+                    packageName = it.packageName,
+                    isSubsidy = it.isSubsidy == 1
             )
         }
     }
@@ -60,7 +63,11 @@ class VoucherMapper @Inject constructor() {
                     code = it.voucherCode,
                     createdTime = it.createTime,
                     updatedTime = it.updateTime,
-                    isPublic = it.isPublic == 1
+                    isPublic = it.isPublic == 1,
+                    isVps = it.isVps == 1,
+                    packageName = it.packageName,
+                    isSubsidy = it.isSubsidy == 1,
+                    tnc = it.tnc
             )
         }
 

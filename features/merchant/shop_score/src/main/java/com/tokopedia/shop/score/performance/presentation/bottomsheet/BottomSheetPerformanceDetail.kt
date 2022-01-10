@@ -9,7 +9,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
+import com.tokopedia.shop.score.common.presentation.bottomsheet.BaseBottomSheetShopScore
 import com.tokopedia.shop.score.common.setTextMakeHyperlink
 import com.tokopedia.shop.score.databinding.BottomsheetShopPerformanceDetailBinding
 import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponent

@@ -41,6 +41,8 @@ object SuggestionRequestUtils {
                 }
                 discount_percentage
                 original_price
+                tracking_option
+                component_id
                 child_items {
                   template
                   type

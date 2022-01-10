@@ -4,7 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -30,15 +36,31 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
-import com.tokopedia.review.common.util.*
+import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.common.util.ReviewUtil
+import com.tokopedia.review.common.util.getKeyByValue
+import com.tokopedia.review.common.util.setSelectedFilterOrSort
+import com.tokopedia.review.common.util.toggle
 import com.tokopedia.review.databinding.FragmentSellerReviewDetailBinding
 import com.tokopedia.review.databinding.ItemOverallReviewDetailBinding
 import com.tokopedia.review.feature.reviewdetail.analytics.ProductReviewDetailTracking
 import com.tokopedia.review.feature.reviewdetail.di.component.ReviewProductDetailComponent
+import com.tokopedia.review.feature.reviewdetail.util.SellerReviewDetailPreference
 import com.tokopedia.review.feature.reviewdetail.util.mapper.SellerReviewProductDetailMapper
-import com.tokopedia.review.feature.reviewdetail.view.adapter.*
+import com.tokopedia.review.feature.reviewdetail.view.adapter.OverallRatingDetailListener
+import com.tokopedia.review.feature.reviewdetail.view.adapter.ProductFeedbackDetailListener
+import com.tokopedia.review.feature.reviewdetail.view.adapter.SellerRatingAndTopicListener
+import com.tokopedia.review.feature.reviewdetail.view.adapter.SellerReviewDetailAdapter
+import com.tokopedia.review.feature.reviewdetail.view.adapter.SellerReviewDetailAdapterTypeFactory
+import com.tokopedia.review.feature.reviewdetail.view.adapter.SellerReviewDetailListener
 import com.tokopedia.review.feature.reviewdetail.view.bottomsheet.PopularTopicsBottomSheet
-import com.tokopedia.review.feature.reviewdetail.view.model.*
+import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
+import com.tokopedia.review.feature.reviewdetail.view.model.OverallRatingDetailUiModel
+import com.tokopedia.review.feature.reviewdetail.view.model.ProductFeedbackDetailUiModel
+import com.tokopedia.review.feature.reviewdetail.view.model.ProductReviewFilterUiModel
+import com.tokopedia.review.feature.reviewdetail.view.model.SortFilterItemWrapper
+import com.tokopedia.review.feature.reviewdetail.view.model.SortItemUiModel
+import com.tokopedia.review.feature.reviewdetail.view.model.TopicUiModel
 import com.tokopedia.review.feature.reviewdetail.view.viewmodel.ProductReviewDetailViewModel
 import com.tokopedia.review.feature.reviewlist.util.mapper.SellerReviewProductListMapper
 import com.tokopedia.review.feature.reviewreply.view.activity.SellerReviewReplyActivity
@@ -132,6 +154,8 @@ class SellerReviewDetailFragment :
     private var reviewSellerPerformanceMonitoringListener: ReviewSellerPerformanceMonitoringListener? =
         null
 
+    private var sharedPreference: SellerReviewDetailPreference? = null
+
     override fun getScreenName(): String =
         context?.getString(R.string.title_review_detail_page).orEmpty()
 
@@ -180,12 +204,13 @@ class SellerReviewDetailFragment :
         activity?.window?.decorView?.setBackgroundColor(
             ContextCompat.getColor(
                 requireContext(),
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
         )
         viewModelProductReviewDetail?.setChipFilterDateText(chipFilterBundle)
         initToolbar()
         initViewBottomSheet()
+        initSharedPrefs()
         startNetworkRequestPerformanceMonitoring()
         stopPreparePerformancePageMonitoring()
         observeLiveData()
@@ -233,6 +258,15 @@ class SellerReviewDetailFragment :
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_option_review_product_detail, menu)
+
+        for (i in 0 until menu.size()) {
+            menu.getItem(i)?.let { menuItem ->
+                menuItem.actionView?.setOnClickListener {
+                    onOptionsItemSelected(menuItem)
+                }
+            }
+        }
+
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -473,6 +507,14 @@ class SellerReviewDetailFragment :
         initBottomSheetFilterPeriod(view, title, filterDetailItemUnify)
     }
 
+    override fun shouldShowTickerForRatingDisclaimer(): Boolean {
+        return sharedPreference?.shouldShowTicker(productID) ?: true
+    }
+
+    override fun updateSharedPreference() {
+        sharedPreference?.updateSharedPrefs(productID)
+    }
+
     private fun initBottomSheetFilterPeriod(
         view: View,
         title: String,
@@ -547,17 +589,17 @@ class SellerReviewDetailFragment :
     }
 
     private fun initViewBottomSheet() {
-        val view = View.inflate(context, R.layout.bottom_sheet_period_filter_detail, null)
+        val view = View.inflate(context, com.tokopedia.review.R.layout.bottom_sheet_period_filter_detail, null)
         bottomSheetPeriodDetail = BottomSheetUnify()
         filterPeriodDetailUnify = view.findViewById(R.id.listFilterReviewDetail)
         bottomSheetPeriodDetail?.setChild(view)
 
-        val viewOption = View.inflate(context, R.layout.bottom_sheet_option_feedback, null)
+        val viewOption = View.inflate(context, com.tokopedia.review.R.layout.bottom_sheet_option_feedback, null)
         bottomSheetOptionFeedback = BottomSheetUnify()
         optionFeedbackDetailUnify = viewOption.findViewById(R.id.optionFeedbackList)
         bottomSheetOptionFeedback?.setChild(viewOption)
 
-        val viewMenu = View.inflate(context, R.layout.bottom_sheet_menu_option_product_detail, null)
+        val viewMenu = View.inflate(context, com.tokopedia.review.R.layout.bottom_sheet_menu_option_product_detail, null)
         bottomSheetMenuDetail = BottomSheetUnify()
         optionMenuDetailUnify = viewMenu.findViewById(R.id.optionMenuDetail)
         bottomSheetMenuDetail?.setChild(viewMenu)
@@ -778,6 +820,10 @@ class SellerReviewDetailFragment :
         endlessRecyclerViewScrollListener?.resetState()
         reviewSellerDetailAdapter.removeReviewNotFound()
         reviewSellerDetailAdapter.showLoading()
+    }
+
+    private fun initSharedPrefs() {
+        sharedPreference = SellerReviewDetailPreference(context)
     }
 
 }
