@@ -283,7 +283,7 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
 
     companion object {
         @JvmField
-        val ITEM_VIEW_RECIPIENT_ADDRESS = R.layout.view_item_shipment_recipient_address_bundle
+        val ITEM_VIEW_RECIPIENT_ADDRESS = R.layout.view_item_shipment_recipient_address
 
         const val KEY_ONBOARDING_CHECKOUT_ADDRESS = "KEY_ONBOARDING_CHECKOUT_ADDRESS"
         const val KEY_HAS_SHOWN_CHECKOUT_ADDRESS_ONBOARDING = "KEY_HAS_SHOWN_CHECKOUT_ADDRESS_ONBOARDING"
