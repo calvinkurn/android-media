@@ -15,7 +15,19 @@ class RechargeTickerWidget @JvmOverloads constructor(@NotNull context: Context, 
 
     private var rechargeTickerViewBinding = WidgetRechargeTickerBinding.inflate(LayoutInflater.from(context), this, true)
 
+    init {
+        initView()
+    }
+
+    private fun initView() {
+       rechargeTickerViewBinding.tickerWidgetIcon.setImageUrl(TOKOPEDIA_ICON_URL)
+    }
+
     fun setText(text: String) {
         rechargeTickerViewBinding.tickerWidgetText.text = MethodChecker.fromHtml(text)
+    }
+
+    companion object {
+        private const val TOKOPEDIA_ICON_URL = "https://images.tokopedia.net/img/android/recharge/recharge_component/recharge_component_icon-tokopedia.webp"
     }
 }
