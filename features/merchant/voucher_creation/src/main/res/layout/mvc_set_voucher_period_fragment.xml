@@ -11,7 +11,7 @@
         android:adjustViewBounds="true"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <com.tokopedia.vouchercreation.create.view.customview.VoucherCreateTitleView
+    <com.tokopedia.vouchercreation.shop.create.view.customview.VoucherCreateTitleView
         android:id="@+id/setPeriodTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
         app:layout_constraintTop_toBottomOf="@id/startDateTextField"
         app:text_field_append_drawable_icon_2="@drawable/ic_mvc_calendar"/>
 
-    <com.tokopedia.vouchercreation.create.view.customview.NextStepButton
+    <com.tokopedia.vouchercreation.shop.create.view.customview.NextStepButton
         android:id="@+id/setDateNextButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

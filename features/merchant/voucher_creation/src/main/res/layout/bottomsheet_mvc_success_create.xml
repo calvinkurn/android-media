@@ -56,7 +56,7 @@
             app:layout_constraintBottom_toTopOf="@id/successDate"
             app:layout_constraintStart_toEndOf="@id/successImage"/>
 
-        <com.tokopedia.vouchercreation.detail.view.component.StartEndVoucher
+        <com.tokopedia.vouchercreation.shop.detail.view.component.StartEndVoucher
             android:id="@+id/successDate"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"

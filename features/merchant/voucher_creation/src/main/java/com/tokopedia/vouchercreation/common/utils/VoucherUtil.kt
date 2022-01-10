@@ -20,10 +20,10 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
-import com.tokopedia.vouchercreation.detail.view.fragment.VoucherDetailFragment
-import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
-import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
-import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.SocmedType
+import com.tokopedia.vouchercreation.shop.detail.view.fragment.VoucherDetailFragment
+import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
+import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
+import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.SocmedType
 
 fun View.showErrorToaster(errorMessage: String) {
     Toaster.make(this,

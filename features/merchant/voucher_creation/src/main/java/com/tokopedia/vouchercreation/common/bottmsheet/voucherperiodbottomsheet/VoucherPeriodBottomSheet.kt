@@ -34,10 +34,10 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMaxStartDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinStartDate
 import com.tokopedia.vouchercreation.common.utils.convertUnsafeDateTime
-import com.tokopedia.vouchercreation.create.view.painter.SquareVoucherPainter
-import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.PostVoucherUiModel
-import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
-import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.ChangeVoucherPeriodViewModel
+import com.tokopedia.vouchercreation.shop.create.view.painter.SquareVoucherPainter
+import com.tokopedia.vouchercreation.shop.create.view.uimodel.voucherimage.PostVoucherUiModel
+import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
+import com.tokopedia.vouchercreation.shop.voucherlist.view.viewmodel.ChangeVoucherPeriodViewModel
 import kotlinx.android.synthetic.main.bottomsheet_mvc_voucher_edit_period.*
 import kotlinx.android.synthetic.main.bottomsheet_mvc_voucher_edit_period.view.*
 import timber.log.Timber

@@ -7,7 +7,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name=".voucherlist.view.activity.VoucherListActivity"
+            android:name="com.tokopedia.vouchercreation.shop.voucherlist.view.activity.VoucherListActivity"
             android:exported="false"
             android:label="@string/title_voucher_creation"
             android:launchMode="singleTask"
@@ -35,7 +35,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".create.view.activity.CreateMerchantVoucherStepsActivity"
+            android:name="com.tokopedia.vouchercreation.shop.create.view.activity.CreateMerchantVoucherStepsActivity"
             android:exported="false"
             android:label="@string/title_voucher_creation"
             android:launchMode="singleTask"
@@ -55,7 +55,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".detail.view.activity.VoucherDetailActivity"
+            android:name="com.tokopedia.vouchercreation.shop.detail.view.activity.VoucherDetailActivity"
             android:label="@string/title_voucher_creation"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

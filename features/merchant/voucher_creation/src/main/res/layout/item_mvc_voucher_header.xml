@@ -26,7 +26,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
 
-        <com.tokopedia.vouchercreation.detail.view.component.ButtonDownload
+        <com.tokopedia.vouchercreation.shop.detail.view.component.ButtonDownload
             android:id="@+id/btnMvcDownload"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
             tools:text="Sedang Berlangsung"
             tools:textColor="@color/Green_G500" />
 
-        <com.tokopedia.vouchercreation.detail.view.component.StartEndVoucher
+        <com.tokopedia.vouchercreation.shop.detail.view.component.StartEndVoucher
             android:id="@+id/startEndVoucher"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"

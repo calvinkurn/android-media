@@ -6,8 +6,8 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
 import com.tokopedia.vouchercreation.common.consts.InitiateAction
-import com.tokopedia.vouchercreation.create.domain.model.InitiateVoucherResponse
-import com.tokopedia.vouchercreation.create.view.uimodel.initiation.InitiateVoucherUiModel
+import com.tokopedia.vouchercreation.shop.create.domain.model.InitiateVoucherResponse
+import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
 import javax.inject.Inject
 
 class InitiateVoucherUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) : BaseGqlUseCase<InitiateVoucherUiModel>() {

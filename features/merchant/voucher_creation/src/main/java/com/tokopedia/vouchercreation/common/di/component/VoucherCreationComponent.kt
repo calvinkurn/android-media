@@ -6,18 +6,18 @@ import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.
 import com.tokopedia.vouchercreation.common.di.module.VoucherCreationModule
 import com.tokopedia.vouchercreation.common.di.module.VoucherCreationViewModelModule
 import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
-import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
-import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.CreatePromoCodeBottomSheetFragment
-import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.TipsAndTrickBottomSheetFragment
-import com.tokopedia.vouchercreation.create.view.fragment.step.MerchantVoucherTargetFragment
-import com.tokopedia.vouchercreation.create.view.fragment.step.PromotionBudgetAndTypeFragment
-import com.tokopedia.vouchercreation.create.view.fragment.step.ReviewVoucherFragment
-import com.tokopedia.vouchercreation.create.view.fragment.step.SetVoucherPeriodFragment
-import com.tokopedia.vouchercreation.create.view.fragment.vouchertype.CashbackVoucherCreateFragment
-import com.tokopedia.vouchercreation.create.view.fragment.vouchertype.FreeDeliveryVoucherCreateFragment
-import com.tokopedia.vouchercreation.detail.view.fragment.VoucherDetailFragment
-import com.tokopedia.vouchercreation.voucherlist.view.fragment.VoucherListFragment
-import com.tokopedia.vouchercreation.voucherlist.view.widget.EditQuotaBottomSheet
+import com.tokopedia.vouchercreation.shop.create.view.activity.CreateMerchantVoucherStepsActivity
+import com.tokopedia.vouchercreation.shop.create.view.fragment.bottomsheet.CreatePromoCodeBottomSheetFragment
+import com.tokopedia.vouchercreation.shop.create.view.fragment.bottomsheet.TipsAndTrickBottomSheetFragment
+import com.tokopedia.vouchercreation.shop.create.view.fragment.step.MerchantVoucherTargetFragment
+import com.tokopedia.vouchercreation.shop.create.view.fragment.step.PromotionBudgetAndTypeFragment
+import com.tokopedia.vouchercreation.shop.create.view.fragment.step.ReviewVoucherFragment
+import com.tokopedia.vouchercreation.shop.create.view.fragment.step.SetVoucherPeriodFragment
+import com.tokopedia.vouchercreation.shop.create.view.fragment.vouchertype.CashbackVoucherCreateFragment
+import com.tokopedia.vouchercreation.shop.create.view.fragment.vouchertype.FreeDeliveryVoucherCreateFragment
+import com.tokopedia.vouchercreation.shop.detail.view.fragment.VoucherDetailFragment
+import com.tokopedia.vouchercreation.shop.voucherlist.view.fragment.VoucherListFragment
+import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.EditQuotaBottomSheet
 import dagger.Component
 
 @VoucherCreationScope

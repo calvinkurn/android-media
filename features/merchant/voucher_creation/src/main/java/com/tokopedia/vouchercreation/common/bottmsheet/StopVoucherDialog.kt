@@ -5,7 +5,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
+import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 
 /**
  * Created By @ilhamsuaib on 27/04/20

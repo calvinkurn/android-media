@@ -5,11 +5,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
-import com.tokopedia.vouchercreation.create.view.viewmodel.*
-import com.tokopedia.vouchercreation.detail.view.viewmodel.VoucherDetailViewModel
-import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.ChangeVoucherPeriodViewModel
-import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.EditQuotaViewModel
-import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
+import com.tokopedia.vouchercreation.shop.create.view.viewmodel.*
+import com.tokopedia.vouchercreation.shop.detail.view.viewmodel.VoucherDetailViewModel
+import com.tokopedia.vouchercreation.shop.voucherlist.view.viewmodel.ChangeVoucherPeriodViewModel
+import com.tokopedia.vouchercreation.shop.voucherlist.view.viewmodel.EditQuotaViewModel
+import com.tokopedia.vouchercreation.shop.voucherlist.view.viewmodel.VoucherListViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

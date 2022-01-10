@@ -1,6 +1,6 @@
 package com.tokopedia.vouchercreation.common.model
 
-import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
+import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import javax.inject.Inject
 
 /**

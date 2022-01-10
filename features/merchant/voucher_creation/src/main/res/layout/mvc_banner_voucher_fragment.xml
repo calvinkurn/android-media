@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true" />
 
-        <com.tokopedia.vouchercreation.create.view.customview.BannerVoucherPreviewInfo
+        <com.tokopedia.vouchercreation.shop.create.view.customview.BannerVoucherPreviewInfo
             android:id="@+id/bannerInfo"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
