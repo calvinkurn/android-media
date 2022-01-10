@@ -1008,6 +1008,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun onViewReachBottomMostChat() {
         presenter.resetUnreadMessage()
+        viewModel.resetUnreadMessage()
         presenter.readMessage()
         hideUnreadMessage()
     }
@@ -2605,6 +2606,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         viewModel.msgRead.observe(viewLifecycleOwner, { replyTime ->
             onReceiveReadEvent()
+        })
+
+        viewModel.unreadMsg.observe(viewLifecycleOwner, { totalUnread ->
+            if (totalUnread > 0) {
+                showUnreadMessage(totalUnread)
+            }
         })
     }
 

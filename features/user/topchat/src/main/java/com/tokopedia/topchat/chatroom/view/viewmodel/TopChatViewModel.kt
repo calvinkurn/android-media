@@ -193,6 +193,10 @@ class TopChatViewModel @Inject constructor(
     val msgRead: LiveData<Unit>
         get() = _msgRead
 
+    private val _unreadMsg = MutableLiveData<Int>()
+    val unreadMsg: LiveData<Int>
+        get() = _unreadMsg
+
     var attachProductWarehouseId = "0"
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     var roomMetaData: RoomMetaData = RoomMetaData()
@@ -246,8 +250,12 @@ class TopChatViewModel @Inject constructor(
             WebsocketEvent.Event.EVENT_TOPCHAT_TYPING -> onReceiveTypingEvent()
             WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING -> onReceiveEndTypingEvent()
             WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE -> onReceiveReadMsgEvent()
-            WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE -> onReceiveReplyEvent()
-            WebsocketEvent.Event.EVENT_DELETE_MSG -> onReceiveDeleteMsgEvent(incomingChatEvent)
+            WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE -> onReceiveReplyEvent(
+                incomingChatEvent
+            )
+            WebsocketEvent.Event.EVENT_DELETE_MSG -> onReceiveDeleteMsgEvent(
+                incomingChatEvent
+            )
         }
     }
 
@@ -255,18 +263,22 @@ class TopChatViewModel @Inject constructor(
         _msgDeleted.postValue(chat.replyTime)
     }
 
-    private fun onReceiveReplyEvent() {
+    private fun onReceiveReplyEvent(chat: ChatSocketPojo) {
         if (!isInTheMiddleOfThePage()) {
 //            view?.onSendAndReceiveMessage()
 //            onReplyMessage(pojo)
-//            newUnreadMessage = 0
+            _unreadMsg.postValue(0)
 //            view?.hideUnreadMessage()
         } else {
-//            if (pojo.isOpposite) {
-//                newUnreadMessage++
-//                view?.showUnreadMessage(newUnreadMessage)
-//            }
+            if (chat.isOpposite) {
+                incrementUnreadMsg()
+            }
         }
+    }
+
+    private fun incrementUnreadMsg() {
+        val currentValue = _unreadMsg.value ?: 0
+        _unreadMsg.postValue(currentValue + 1)
     }
 
     private fun onReceiveReadMsgEvent() {
@@ -287,6 +299,10 @@ class TopChatViewModel @Inject constructor(
         if (code != DefaultTopChatWebSocket.CODE_NORMAL_CLOSURE) {
             retryConnectWebSocket()
         }
+    }
+
+    fun resetUnreadMessage() {
+        _unreadMsg.postValue(0)
     }
 
     private fun handleOnFailureWebSocket() {
