@@ -331,6 +331,10 @@ class PlayUserInteractionFragment @Inject constructor(
 //        analytic.clickCopyLink()
     }
 
+    override fun onShareSuccessSaveTemporaryImage(view: ShareExperienceViewComponent) {
+        playViewModel.submitAction(ShowShareExperienceAction)
+    }
+
     override fun onShareOptionClick(view: ShareExperienceViewComponent, shareModel: ShareModel) {
         playViewModel.submitAction(ClickSharingOptionAction(shareModel))
     }
@@ -348,6 +352,10 @@ class PlayUserInteractionFragment @Inject constructor(
         label: String
     ) {
         playViewModel.submitAction(SharePermissionAction(label))
+    }
+
+    override fun onHandleShareFallback(view: ShareExperienceViewComponent) {
+        playViewModel.submitAction(CopyLinkAction)
     }
 
     override fun onPartnerNameClicked(view: PartnerInfoViewComponent) {
@@ -976,6 +984,7 @@ class PlayUserInteractionFragment @Inject constructor(
                     }
                     RemindToLikeEvent -> likeView.playReminderAnimation()
                     is PreloadLikeBubbleIconEvent -> likeBubbleView.preloadIcons(event.urls)
+                    is SaveTemporarySharingImage -> shareExperienceView?.saveTemporaryImage(event.imageUrl)
                     is OpenSharingOptionEvent -> {
                         shareExperienceView?.showSharingOptions(event.title, event.coverUrl, event.userId, event.channelId)
                     }

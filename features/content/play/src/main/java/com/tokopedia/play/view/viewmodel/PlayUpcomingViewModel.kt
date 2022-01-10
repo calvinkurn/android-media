@@ -207,7 +207,9 @@ class PlayUpcomingViewModel @Inject constructor(
             ClickFollowUpcomingAction -> handleClickFollow(isFromLogin = false)
             ClickPartnerNameUpcomingAction -> handleClickPartnerName()
             is OpenUpcomingPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
-            ClickShareUpcomingAction -> handleOpenSharingOption(false)
+            CopyLinkUpcomingAction -> handleCopyLink()
+            ClickShareUpcomingAction -> handleClickShareIcon()
+            ShowShareExperienceUpcomingAction -> handleOpenSharingOption(false)
             ScreenshotTakenUpcomingAction -> handleOpenSharingOption(true)
             CloseSharingOptionUpcomingAction -> handleCloseSharingOption()
             is ClickSharingOptionUpcomingAction -> handleSharingOption(action.shareModel)
@@ -346,7 +348,7 @@ class PlayUpcomingViewModel @Inject constructor(
         return followAction
     }
 
-    private fun handleCopyLink() {
+    private fun copyLink() {
         val shareInfo = _channelDetail.value.shareInfo
 
         viewModelScope.launch {
@@ -362,12 +364,24 @@ class PlayUpcomingViewModel @Inject constructor(
         }
     }
 
+    private fun handleCopyLink() {
+        viewModelScope.launch { copyLink() }
+    }
+
+    private fun handleClickShareIcon() {
+        viewModelScope.launch {
+            playAnalytic.clickShareButton(mChannelId, channelType.value)
+
+            _uiEvent.emit(
+                PlayUpcomingUiEvent.SaveTemporarySharingImage(imageUrl = _channelDetail.value.channelInfo.coverUrl)
+            )
+        }
+    }
+
     private fun handleOpenSharingOption(isScreenshot: Boolean) {
         viewModelScope.launch {
             if(isScreenshot)
                 playAnalytic.takeScreenshotForSharing(mChannelId, channelType.value)
-            else
-                playAnalytic.clickShareButton(mChannelId, channelType.value)
 
             if(playShareExperience.isCustomSharingAllow()) {
                 playAnalytic.impressShareBottomSheet(mChannelId, channelType.value)
@@ -380,7 +394,7 @@ class PlayUpcomingViewModel @Inject constructor(
                 ))
             }
             else if(!isScreenshot) {
-                handleCopyLink()
+                copyLink()
             }
         }
     }

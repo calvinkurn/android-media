@@ -732,7 +732,9 @@ class PlayViewModel @Inject constructor(
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
             ClickLikeAction -> handleClickLike(isFromLogin = false)
             RefreshLeaderboard -> handleRefreshLeaderboard()
-            ClickShareAction -> handleOpenSharingOption(false)
+            CopyLinkAction -> handleCopyLink()
+            ClickShareAction -> handleClickShareIcon()
+            ShowShareExperienceAction -> handleOpenSharingOption(false)
             ScreenshotTakenAction -> handleOpenSharingOption(true)
             CloseSharingOptionAction -> handleCloseSharingOption()
             is ClickSharingOptionAction -> handleSharingOption(action.shareModel)
@@ -1811,7 +1813,7 @@ class PlayViewModel @Inject constructor(
         else handleClickLikeNonLive(isFromLogin, newStatusHandler)
     }
 
-    private suspend fun handleCopyLink() {
+    private suspend fun copyLink() {
         val shareInfo = _channelDetail.value.shareInfo
 
         _uiEvent.emit(
@@ -1834,12 +1836,25 @@ class PlayViewModel @Inject constructor(
         checkLeaderboard(channelId)
     }
 
+    private fun handleCopyLink() {
+        viewModelScope.launch { copyLink() }
+    }
+
+    private fun handleClickShareIcon() {
+        viewModelScope.launch {
+            playAnalytic.clickShareButton(channelId, channelType.value)
+
+            _uiEvent.emit(
+                SaveTemporarySharingImage(imageUrl = _channelDetail.value.channelInfo.coverUrl)
+            )
+        }
+
+    }
+
     private fun handleOpenSharingOption(isScreenshot: Boolean) {
         viewModelScope.launch {
             if(isScreenshot)
                 playAnalytic.takeScreenshotForSharing(channelId, channelType.value)
-            else
-                playAnalytic.clickShareButton(channelId, channelType.value)
 
             if(playShareExperience.isCustomSharingAllow()) {
                 playAnalytic.impressShareBottomSheet(channelId, channelType.value)
@@ -1852,7 +1867,7 @@ class PlayViewModel @Inject constructor(
                 ))
             }
             else if(!isScreenshot) {
-                handleCopyLink()
+                copyLink()
             }
         }
     }

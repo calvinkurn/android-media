@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.viewcomponent
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
@@ -10,6 +11,8 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageWithEmptyTarget
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.play.R
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
@@ -18,6 +21,9 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListe
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.utils.image.ImageProcessingUtil
+import java.io.File
+import java.lang.Exception
 
 /**
  * Created By : Jonathan Darwin on November 01, 2021
@@ -32,6 +38,7 @@ class ShareExperienceViewComponent(
 ) : ViewComponent(container, idRes) {
 
     private val ivShareLink = findViewById<IconUnify>(R.id.ic_play_share_experience)
+    private var imgSaveFilePath = ""
 
     private val universalShareBottomSheet: UniversalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
         init(object: ShareBottomsheetListener {
@@ -57,10 +64,47 @@ class ShareExperienceViewComponent(
         if (isShow) ivShareLink.show() else ivShareLink.hide()
     }
 
+    private fun deleteTemporaryImage() {
+        if(imgSaveFilePath.isNotEmpty()) {
+            File(imgSaveFilePath).apply {
+                if(exists()) delete()
+            }
+        }
+    }
+
+    fun saveTemporaryImage(imageUrl: String) {
+        try {
+            deleteTemporaryImage()
+
+            loadImageWithEmptyTarget(context, imageUrl, {
+                fitCenter()
+            }, MediaBitmapEmptyTarget(
+                onReady = {
+                    val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
+                        it, Bitmap.CompressFormat.PNG
+                    )
+
+                    if(savedFile != null) {
+                        imgSaveFilePath = savedFile.absolutePath
+                        listener.onShareSuccessSaveTemporaryImage(this)
+                    }
+                    else {
+                        listener.onHandleShareFallback(this)
+                    }
+                }
+            ))
+        }
+        catch (e: Exception) {
+            listener.onHandleShareFallback(this)
+        }
+    }
+
     fun showSharingOptions(title: String, coverUrl: String, userId: String, channelId: String) {
         universalShareBottomSheet.apply {
             setMetaData(tnTitle = title, tnImage = coverUrl)
             setUtmCampaignData("Play", userId, channelId, "share")
+            setOgImageUrl(coverUrl)
+            imageSaved(imgSaveFilePath)
             show(this@ShareExperienceViewComponent.fragmentManager, fragment, screenshotDetector)
         }
     }
@@ -93,15 +137,18 @@ class ShareExperienceViewComponent(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
+        deleteTemporaryImage()
         UniversalShareBottomSheet.clearState(screenshotDetector)
         screenshotDetector = null
     }
 
     interface Listener {
         fun onShareIconClick(view: ShareExperienceViewComponent)
+        fun onShareSuccessSaveTemporaryImage(view: ShareExperienceViewComponent)
         fun onShareOptionClick(view: ShareExperienceViewComponent, shareModel: ShareModel)
         fun onShareOptionClosed(view: ShareExperienceViewComponent)
         fun onScreenshotTaken(view: ShareExperienceViewComponent)
         fun onSharePermissionAction(view: ShareExperienceViewComponent, label: String)
+        fun onHandleShareFallback(view: ShareExperienceViewComponent)
     }
 }

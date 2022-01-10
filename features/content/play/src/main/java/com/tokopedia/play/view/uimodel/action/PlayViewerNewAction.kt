@@ -39,6 +39,7 @@ object ClickLikeAction : PlayViewerNewAction()
  * Share
  */
 object ClickShareAction : PlayViewerNewAction()
+object CopyLinkAction: PlayViewerNewAction()
 
 /**
  * Swipe
@@ -48,6 +49,7 @@ object SetChannelActiveAction : PlayViewerNewAction()
 /**
  * Sharing Experience
  */
+object ShowShareExperienceAction: PlayViewerNewAction()
 data class ClickSharingOptionAction(val shareModel: ShareModel): PlayViewerNewAction()
 object CloseSharingOptionAction: PlayViewerNewAction()
 object ScreenshotTakenAction: PlayViewerNewAction()

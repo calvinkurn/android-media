@@ -174,6 +174,7 @@ class PlayUpcomingFragment @Inject constructor(
                         ) { event.action() }
                     }
                     PlayUpcomingUiEvent.RefreshChannelEvent -> playParentViewModel.refreshChannel()
+                    is PlayUpcomingUiEvent.SaveTemporarySharingImage -> shareExperienceView.saveTemporaryImage(event.imageUrl)
                     is PlayUpcomingUiEvent.OpenSharingOptionEvent -> {
                         shareExperienceView.showSharingOptions(event.title, event.coverUrl, event.userId, event.channelId)
                     }
@@ -291,6 +292,10 @@ class PlayUpcomingFragment @Inject constructor(
         playUpcomingViewModel.submitAction(ClickShareUpcomingAction)
     }
 
+    override fun onShareSuccessSaveTemporaryImage(view: ShareExperienceViewComponent) {
+        playUpcomingViewModel.submitAction(ShowShareExperienceUpcomingAction)
+    }
+
     override fun onShareOptionClick(view: ShareExperienceViewComponent, shareModel: ShareModel) {
         playUpcomingViewModel.submitAction(ClickSharingOptionUpcomingAction(shareModel))
     }
@@ -305,6 +310,10 @@ class PlayUpcomingFragment @Inject constructor(
 
     override fun onSharePermissionAction(view: ShareExperienceViewComponent, label: String) {
         playUpcomingViewModel.submitAction(SharePermissionUpcomingAction(label))
+    }
+
+    override fun onHandleShareFallback(view: ShareExperienceViewComponent) {
+        playUpcomingViewModel.submitAction(CopyLinkUpcomingAction)
     }
 
     private fun copyToClipboard(content: String) {
