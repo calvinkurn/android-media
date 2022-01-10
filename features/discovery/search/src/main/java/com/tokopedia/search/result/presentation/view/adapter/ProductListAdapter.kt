@@ -26,7 +26,6 @@ class ProductListAdapter(
     private val loadingMoreModel = LoadingMoreModel()
 
     val itemList get() = list
-    val viewHoldersList = mutableListOf<AbstractViewHolder<*>>()
 
     fun changeSearchNavigationListView(position: Int) {
         if (position !in list.indices) return
@@ -104,7 +103,6 @@ class ProductListAdapter(
 
         @Suppress("UNCHECKED_CAST")
         (holder as AbstractViewHolder<Visitable<*>>).bind(list[position])
-        viewHoldersList.add(holder)
     }
 
     private fun setFullSpanForStaggeredGrid(holder: AbstractViewHolder<*>, viewType: Int) {
@@ -139,17 +137,17 @@ class ProductListAdapter(
     override fun onViewRecycled(holder: AbstractViewHolder<*>) {
         super.onViewRecycled(holder)
         holder.onViewRecycled()
-        viewHoldersList.remove(holder)
     }
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder<*>) {
-        holder.onViewRecycled()
-        viewHoldersList.remove(holder)
         super.onViewDetachedFromWindow(holder)
+        holder.onViewRecycled()
     }
 
     fun appendItems(list: List<Visitable<*>>) {
+        val start = itemCount
         this.list.addAll(list)
+        notifyItemRangeInserted(start, list.size)
     }
 
     fun updateWishlistStatus(productId: String, isWishlisted: Boolean) {
@@ -197,7 +195,9 @@ class ProductListAdapter(
     }
 
     fun addLoading() {
+        val loadingModelPosition = list.size
         list.add(loadingMoreModel)
+        notifyItemInserted(loadingModelPosition)
     }
 
     fun removeLoading() {
@@ -241,19 +241,6 @@ class ProductListAdapter(
     fun removeLastFilterWidget() {
         val lastFilterWidgetIndex = list.indexOfFirst { it is LastFilterDataView }
         removeItem(lastFilterWidgetIndex)
-    }
-
-    fun recycleVisibleViewHolders() {
-        viewHoldersList.forEach {
-            it.onViewRecycled()
-        }
-    }
-
-    fun rebindVisibleViewHolders() {
-        viewHoldersList.forEach {
-            @Suppress("UNCHECKED_CAST")
-            (it as AbstractViewHolder<Visitable<*>>).bind(list[it.adapterPosition])
-        }
     }
 
     private fun removeItem(index: Int) {

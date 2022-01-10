@@ -67,6 +67,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.IProductCardView
+import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -223,12 +224,14 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override val carouselRecycledViewPool = RecyclerView.RecycledViewPool()
+    override val productCardLifecycleObserver = ProductCardLifecycleObserver()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         loadDataFromArguments()
         initTrackingQueue()
+        lifecycle.addObserver(productCardLifecycleObserver)
     }
 
     private fun loadDataFromArguments() {
@@ -2107,13 +2110,5 @@ class ProductListFragment: BaseDaggerFragment(),
 
     private fun goToWishlistPage() {
         RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
-    }
-
-    fun recycleVisibleViewHolders() {
-        productListAdapter?.recycleVisibleViewHolders()
-    }
-
-    fun rebindVisibleViewHolders() {
-        productListAdapter?.rebindVisibleViewHolders()
     }
 }
