@@ -139,11 +139,6 @@ class ProductListAdapter(
         holder.onViewRecycled()
     }
 
-    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<*>) {
-        super.onViewDetachedFromWindow(holder)
-        holder.onViewRecycled()
-    }
-
     fun appendItems(list: List<Visitable<*>>) {
         val start = itemCount
         this.list.addAll(list)
