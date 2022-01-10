@@ -9,6 +9,7 @@ import androidx.lifecycle.observe
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.picker.R
 import com.tokopedia.picker.common.PickerFragmentType
 import com.tokopedia.picker.common.PickerPageType
@@ -18,12 +19,15 @@ import com.tokopedia.picker.ui.PickerFragmentFactory
 import com.tokopedia.picker.ui.PickerFragmentFactoryImpl
 import com.tokopedia.picker.ui.PickerNavigator
 import com.tokopedia.picker.ui.PickerUiConfig
+import com.tokopedia.picker.ui.fragment.gallery.GalleryFragment
 import com.tokopedia.picker.ui.fragment.permission.PermissionFragment
+import com.tokopedia.picker.ui.widget.bottomsheet.MediaPickerPreviewWidget
 import com.tokopedia.picker.utils.G500
 import com.tokopedia.picker.utils.N600
 import com.tokopedia.picker.utils.addOnTabSelected
 import com.tokopedia.picker.utils.delegates.permissionGranted
 import com.tokopedia.utils.view.binding.viewBinding
+import java.lang.Exception
 
 /**
  * main applink:
@@ -64,12 +68,13 @@ import com.tokopedia.utils.view.binding.viewBinding
  * if you want to set between single or multiple selection, just add this query:
  * ...&type=single/multiple
  */
-class PickerActivity : BaseActivity(), PermissionFragment.Listener {
+class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaPickerPreviewWidget.MediaPickerPreviewWidgetListener {
 
     private val binding: ActivityPickerBinding? by viewBinding()
     private val hasPermissionGranted: Boolean by permissionGranted()
 
     private val selectedMedias: MutableList<Media> = mutableListOf()
+    private var selectedTab: Int = 0
 
     private val viewModel by lazy {
         ViewModelProvider(
@@ -135,6 +140,7 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
         viewModel.selectedMedia.observe(this) {
             selectedMedias.clear()
             selectedMedias.addAll(it)
+            binding?.mediaPickerPreviewWidget?.setData(it)
         }
     }
 
@@ -180,8 +186,10 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
             if (position == 0) {
                 navigator?.onPageSelected(PickerFragmentType.CAMERA)
             } else if (position == 1) {
+                binding?.mediaPickerPreviewWidget?.visible()
                 navigator?.onPageSelected(PickerFragmentType.GALLERY)
             }
+            selectedTab = position
         }
     }
 
@@ -193,6 +201,12 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
         //TODO remove
         fun start(context: Context) {
             context.startActivity(Intent(context, PickerActivity::class.java))
+        }
+    }
+
+    override fun onDataSetChanged(data: List<Media>, error: Exception?) {
+        if (error == null) {
+            viewModel.setSelectedMedia(data)
         }
     }
 

@@ -6,6 +6,7 @@ import android.content.ClipDescription
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Build
 import android.view.DragEvent
 import android.view.LayoutInflater
@@ -13,45 +14,43 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.BitmapImageViewTarget
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.picker.R
+import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.utils.image.ImageProcessingUtil.shouldLoadFitCenter
 import java.io.File
-import java.util.ArrayList
 
-import com.tokopedia.imagepicker.R
-import com.tokopedia.imagepicker.media_picker.utils.MediaUtils
-import com.tokopedia.imagepicker.media_picker.utils.MediaUtils.convertMsToTimeFormat
-import com.tokopedia.imagepicker.media_picker.widget.MediaPickerPreviewWidget
+import com.tokopedia.picker.ui.widget.bottomsheet.MediaPickerPreviewWidget
+import com.tokopedia.picker.utils.getVideoDurationLabel
+import com.tokopedia.picker.utils.isVideoFormat
 import com.tokopedia.unifyprinciples.Typography
-import kotlin.time.ExperimentalTime
+import java.lang.Exception
 
 
 class MediaPickerThumbnailAdapter(
     private val context: Context,
-    private var mediaPathList: MutableList<String>,
-    private var placeholderDrawableResList: List<Int>?
+    private var mediaPathList: MutableList<Media>,
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var backgroundColorPlaceHolder: Int = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+    var backgroundColorPlaceHolder: Int = 0
     var canReorder = false
     var maxVideo = 1
+    var placeholderPreview: Int = 0
 
     private var maxSize = 10
-    private var usePrimaryString = false
-    private var limitListener: MediaPickerPreviewWidget.MediaPickerPreviewWidgetListener? = null
+    private var listener: MediaPickerPreviewWidget.MediaPickerPreviewWidgetListener? = null
     private var totalVideo = 0
 
     private val thumbnailSize: Int = context.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_72)
     private val roundedSize: Float = context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)
     private val listRect: MutableMap<Int,Rect> = mutableMapOf()
 
-    val getMediaPathList: List<String>
+    val getMediaPathList: List<Media>
         get() = mediaPathList
 
     inner class MediaPickerThumbnailViewHolder(itemView: View) :
@@ -83,11 +82,11 @@ class MediaPickerThumbnailAdapter(
                     imageView.setImageDrawable(circularBitmapDrawable)
                 }
             })
-            val isImage = MediaUtils.isImage(mediaPath)
-            if (!isImage) {
-                val durationVideo = MediaUtils.getDurationVideoInMillis(mediaPathList[position])
+            val isVideo = isVideoFormat(mediaPath)
+            if (isVideo) {
+                val durationVideo = getVideoDurationLabel(context, Uri.parse(mediaPathList[position].path))
                 tvDuration.visibility = View.VISIBLE
-                tvDuration.text = durationVideo.convertMsToTimeFormat()
+                tvDuration.text = durationVideo
             } else {
                 tvDuration.visibility = View.GONE
             }
@@ -110,48 +109,44 @@ class MediaPickerThumbnailAdapter(
     }
 
     fun setData(
-        imagePathList: MutableList<String>, usePrimaryString: Boolean,
-        placeholderDrawableList: List<Int>
+        medias: MutableList<Media>,
     ) {
-        this.mediaPathList = imagePathList
-        this.usePrimaryString = usePrimaryString
-        placeholderDrawableResList = placeholderDrawableList
+        this.mediaPathList = medias
+        listener?.onDataSetChanged(medias, null)
         notifyDataSetChanged()
     }
 
-    fun addData(imagePath: String) {
-        val isImage = MediaUtils.isImage(imagePath)
-        if (!isImage && totalVideo >= maxVideo) {
-            limitListener?.onLimitVideoListener()
+    fun addData(media: Media) {
+        val isVideo = isVideoFormat(media.path)
+        if (isVideo && totalVideo >= maxVideo) {
+            listener?.onDataSetChanged(mediaPathList, Exception("the video has exceeded the specified limit"))
             return
-        } else if(!isImage && totalVideo < maxVideo) {
+        } else if(isVideo && totalVideo < maxVideo) {
             totalVideo+=1
         }
-        if (!mediaPathList.contains(imagePath)) {
-            mediaPathList.add(imagePath)
+        if (!mediaPathList.contains(media)) {
+            mediaPathList.add(media)
             notifyItemChanged(mediaPathList.size - 1)
+            listener?.onDataSetChanged(mediaPathList, null)
         }
     }
 
-    fun removeData(imagePath: String): Int {
-        val index = mediaPathList.indexOf(imagePath)
+    fun removeData(media: Media): Int {
+        val index = mediaPathList.indexOf(media)
         removeData(index)
         return index
     }
 
     fun removeData(index: Int) {
         if (index > -1) {
-            if (!MediaUtils.isImage(mediaPathList[index])) {
+            if (isVideoFormat(mediaPathList[index].path)) {
                 totalVideo-=1
             }
             mediaPathList.removeAt(index)
+            listener?.onDataSetChanged(mediaPathList, null)
             notifyDataSetChanged()
             listRect.remove(index)
         }
-    }
-
-    fun getImagePathList(): MutableList<String> {
-        return mediaPathList
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -164,7 +159,7 @@ class MediaPickerThumbnailAdapter(
             }
             PLACEHOLDER_TYPE -> {
                 view = inflater.inflate(
-                    R.layout.image_picker_placeholder_thumbnail_item,
+                    R.layout.media_picker_placeholder_thumbnail_item,
                     parent,
                     false
                 )
@@ -172,7 +167,7 @@ class MediaPickerThumbnailAdapter(
             }
             else -> {
                 view = inflater.inflate(
-                    R.layout.image_picker_placeholder_thumbnail_item,
+                    R.layout.media_picker_placeholder_thumbnail_item,
                     parent,
                     false
                 )
@@ -188,19 +183,14 @@ class MediaPickerThumbnailAdapter(
                 setupLongClickListener(holder)
                 setupDragListener(holder, position)
             }
-            val imagePath = mediaPathList[position]
+            val media = mediaPathList[position].path
             (holder as MediaPickerThumbnailViewHolder).ivDelete.setOnClickListener {
                 removeData(position)
             }
-            holder.bind(imagePath, position)
+            holder.bind(media, position)
         } else {
             // else draw the empty preview
-            if (placeholderDrawableResList != null && placeholderDrawableResList!!.size > position) {
-                val drawableRes = placeholderDrawableResList!![position]
-                (holder as PlaceholderThumbnailViewHolderKt).bind(drawableRes, backgroundColorPlaceHolder)
-            } else {
-                (holder as PlaceholderThumbnailViewHolderKt).bind(R.drawable.ic_plus, backgroundColorPlaceHolder)
-            }
+            (holder as PlaceholderThumbnailViewHolderKt).bind(placeholderPreview, backgroundColorPlaceHolder)
         }
     }
 
@@ -278,12 +268,17 @@ class MediaPickerThumbnailAdapter(
         }
     }
 
-    fun setOnLimitListener(listener: MediaPickerPreviewWidget.MediaPickerPreviewWidgetListener) {
-        limitListener = listener
+    fun setOnDataChangedListener(listener: MediaPickerPreviewWidget.MediaPickerPreviewWidgetListener) {
+        this.listener = listener
     }
 
     fun removeListener() {
-        limitListener = null
+        listener = null
+    }
+
+    fun setPlaceholder(@DrawableRes drawable: Int) {
+        placeholderPreview = drawable
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int {
