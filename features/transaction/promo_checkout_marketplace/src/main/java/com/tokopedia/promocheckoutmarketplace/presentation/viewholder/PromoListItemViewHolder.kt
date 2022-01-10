@@ -212,6 +212,12 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
                     textPromoHighlightIdentifier.text = topBanner.title
                     textPromoHighlightIdentifier.show()
                     promoHighlightIdentifier.show()
+
+                    textPromoHighlightIdentifier.measure(0, 0)
+                    val padding = itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_14).toInt()
+                    val textPromoHighlightIdentifierWidth = textPromoHighlightIdentifier.measuredWidth
+                    promoHighlightIdentifier.layoutParams?.width = 2 * padding + textPromoHighlightIdentifierWidth
+                    promoHighlightIdentifier.requestLayout()
                 } else {
                     textPromoHighlightIdentifier.gone()
                     promoHighlightIdentifier.gone()
