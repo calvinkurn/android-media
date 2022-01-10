@@ -61,6 +61,12 @@ class MilestoneMapper @Inject constructor(
                     urlType = getUrlType(buttonMissionData?.urlType),
                     appLink = buttonMissionData?.applink.orEmpty(),
                     buttonStatus = getButtonStatus(buttonMissionData?.buttonStatus)
+                ),
+                missionProgress = MissionProgressUiModel(
+                    description = it.progress?.description.orEmpty(),
+                    percentage = it.progress?.percentage.orZero(),
+                    completed = it.progress?.completed.orEmpty(),
+                    target = it.progress?.target.orEmpty()
                 )
             )
         }

@@ -124,16 +124,16 @@ class MilestoneViewHolder(
 
     private fun setupSeeMoreCta(element: MilestoneWidgetUiModel) {
         with(successStateBinding) {
-            val applink = element.getSeeMoreCtaApplink()
+            val appLink = element.getSeeMoreCtaApplink()
             val ctaText = element.getSeeMoreCtaText()
 
-            val isCtaVisible = applink.isNotBlank() && ctaText.isNotBlank()
+            val isCtaVisible = appLink.isNotBlank() && ctaText.isNotBlank()
             tvShcMilestoneCta.isVisible = isCtaVisible
 
             if (isCtaVisible) {
                 tvShcMilestoneCta.text = ctaText
                 tvShcMilestoneCta.setOnClickListener {
-                    RouteManager.route(itemView.context, applink)
+                    RouteManager.route(itemView.context, appLink)
                     listener.sendMilestoneWidgetCtaClickEvent()
                 }
                 val iconColor = root.context.getResColor(

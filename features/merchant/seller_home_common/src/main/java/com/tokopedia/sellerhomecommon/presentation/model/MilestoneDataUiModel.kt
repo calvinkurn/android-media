@@ -74,8 +74,14 @@ data class MilestoneMissionUiModel(
     override val subTitle: String = "",
     override val missionCompletionStatus: Boolean = false,
     override val missionButton: MissionButtonUiModel = MissionButtonUiModel(),
-    override val impressHolder: ImpressHolder = ImpressHolder()
-) : BaseMilestoneMissionUiModel
+    override val impressHolder: ImpressHolder = ImpressHolder(),
+    val missionProgress: MissionProgressUiModel = MissionProgressUiModel()
+) : BaseMilestoneMissionUiModel {
+
+    fun isProgressAvailable(): Boolean {
+        return missionProgress.target.isNotBlank() && missionProgress.completed.isNotBlank()
+    }
+}
 
 data class MilestoneFinishMissionUiModel(
     override val itemMissionKey: String = BaseMilestoneMissionUiModel.FINISH_MISSION_KEY,
