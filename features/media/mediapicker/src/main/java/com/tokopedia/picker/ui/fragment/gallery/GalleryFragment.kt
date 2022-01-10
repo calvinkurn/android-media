@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -21,7 +20,6 @@ import com.tokopedia.picker.di.DaggerPickerComponent
 import com.tokopedia.picker.di.module.PickerModule
 import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.activity.album.AlbumActivity
-import com.tokopedia.picker.ui.activity.main.PickerActivity
 import com.tokopedia.picker.ui.fragment.gallery.recyclers.adapter.GalleryAdapter
 import com.tokopedia.picker.ui.fragment.gallery.recyclers.utils.GridItemDecoration
 import com.tokopedia.utils.view.binding.viewBinding
@@ -44,7 +42,7 @@ class GalleryFragment : BaseDaggerFragment() {
         ViewModelProvider(
             this,
             factory
-        ).get(GalleryViewModel::class.java)
+        )[GalleryViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -131,7 +129,7 @@ class GalleryFragment : BaseDaggerFragment() {
         })
 
         adapter.setListener {
-            (activity as PickerActivity).onUpdateSelectedMedia(it)
+            viewModel.publishMediaSelected(it)
         }
     }
 

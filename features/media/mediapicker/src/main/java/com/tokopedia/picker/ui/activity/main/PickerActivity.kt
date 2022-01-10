@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -14,6 +14,8 @@ import com.tokopedia.picker.common.PickerFragmentType
 import com.tokopedia.picker.common.PickerPageType
 import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.databinding.ActivityPickerBinding
+import com.tokopedia.picker.di.DaggerPickerComponent
+import com.tokopedia.picker.di.module.PickerModule
 import com.tokopedia.picker.ui.PickerFragmentFactory
 import com.tokopedia.picker.ui.PickerFragmentFactoryImpl
 import com.tokopedia.picker.ui.PickerNavigator
@@ -24,6 +26,7 @@ import com.tokopedia.picker.utils.N600
 import com.tokopedia.picker.utils.addOnTabSelected
 import com.tokopedia.picker.utils.delegates.permissionGranted
 import com.tokopedia.utils.view.binding.viewBinding
+import javax.inject.Inject
 
 /**
  * main applink:
@@ -66,6 +69,8 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class PickerActivity : BaseActivity(), PermissionFragment.Listener {
 
+    @Inject lateinit var factory: ViewModelProvider.Factory
+
     private val binding: ActivityPickerBinding? by viewBinding()
     private val hasPermissionGranted: Boolean by permissionGranted()
 
@@ -73,7 +78,8 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
 
     private val viewModel by lazy {
         ViewModelProvider(
-            this
+            this,
+            factory
         )[PickerViewModel::class.java]
     }
 
@@ -91,6 +97,7 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
         setContentView(R.layout.activity_picker)
         setupQueryAndUIConfigBuilder()
 
+        initInjector()
         initView()
         initObservable()
         initToolbar()
@@ -98,10 +105,6 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
 
     override fun onPermissionGranted() {
         navigateByPageType()
-    }
-
-    fun onUpdateSelectedMedia(medias: List<Media>) {
-        viewModel.setSelectedMedia(medias)
     }
 
     private fun setupQueryAndUIConfigBuilder() {
@@ -124,6 +127,8 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
     }
 
     private fun initObservable() {
+        lifecycle.addObserver(viewModel)
+
         viewModel.finishButtonState.observe(this) {
             val color = if (it) G500 else N600
 
@@ -187,6 +192,14 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
 
     private fun createFragmentFactory(): PickerFragmentFactory {
         return PickerFragmentFactoryImpl()
+    }
+
+    private fun initInjector() {
+        DaggerPickerComponent.builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .pickerModule(PickerModule())
+            .build()
+            .inject(this)
     }
 
     companion object {

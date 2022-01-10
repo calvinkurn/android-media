@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.data.repository.MediaRepository
 import com.tokopedia.picker.ui.PickerParam
+import com.tokopedia.picker.utils.EventBusFactory
+import com.tokopedia.picker.utils.EventState
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -31,6 +33,10 @@ class GalleryViewModel @Inject constructor(
                 _files.value = result
             }
         }
+    }
+
+    fun publishMediaSelected(data: List<Media>) {
+        EventBusFactory.send(EventState.MediaSelection(data))
     }
 
 }

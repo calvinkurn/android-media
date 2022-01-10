@@ -3,7 +3,6 @@ package com.tokopedia.picker.ui.activity.album
 import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -33,7 +32,7 @@ class AlbumActivity : BaseActivity() {
         ViewModelProvider(
             this,
             factory
-        ).get(AlbumViewModel::class.java)
+        )[AlbumViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
