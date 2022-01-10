@@ -17,6 +17,8 @@
         "url_tracker": "",
         "label": "",
         "label_type": "",
+        "component_id": "02.04.01.01",
+        "tracking_option": 3,
         "tracking": {
           "code": ""
         }
@@ -35,6 +37,8 @@
         "url_tracker": "",
         "label": "",
         "label_type": "",
+        "component_id": "02.04.01.02",
+        "tracking_option": 3,
         "tracking": {
           "code": "123"
         }
@@ -53,6 +57,8 @@
         "url_tracker": "",
         "label": "",
         "label_type": "",
+        "component_id": "02.04.01.03",
+        "tracking_option": 3,
         "tracking": {
           "code": ""
         }
@@ -71,6 +77,8 @@
         "url_tracker": "",
         "label": "",
         "label_type": "",
+        "component_id": "02.04.01.04",
+        "tracking_option": 3,
         "tracking": {
           "code": ""
         }
@@ -89,6 +97,8 @@
         "url_tracker": "",
         "label": "",
         "label_type": "",
+        "component_id": "",
+        "tracking_option": 0,
         "tracking": {
           "code": ""
         }
@@ -107,6 +117,8 @@
         "url_tracker": "https://ace.tokopedia.com/tracker/v1?id=2400899&user_id=0&device=&unique_id=d41d8cd98f00b204e9800998ecf8427e&type=shop",
         "label": "",
         "label_type": "",
+        "component_id": "02.04.01.05",
+        "tracking_option": 3,
         "tracking": {
           "code": ""
         }
@@ -125,6 +137,8 @@
         "url_tracker": "https://ace.tokopedia.com/tracker/v1?id=2386090&user_id=0&device=&unique_id=d41d8cd98f00b204e9800998ecf8427e&type=shop",
         "label": "",
         "label_type": "",
+        "component_id": "02.04.01.06",
+        "tracking_option": 3,
         "tracking": {
           "code": ""
         }
@@ -143,6 +157,8 @@
         "url_tracker": "",
         "label": "",
         "label_type": "",
+        "component_id": "02.04.01.07",
+        "tracking_option": 3,
         "tracking": {
           "code": ""
         }
@@ -161,6 +177,8 @@
         "url_tracker": "",
         "label": "",
         "label_type": "",
+        "component_id": "02.04.01.08",
+        "tracking_option": 3,
         "tracking": {
           "code": ""
         },

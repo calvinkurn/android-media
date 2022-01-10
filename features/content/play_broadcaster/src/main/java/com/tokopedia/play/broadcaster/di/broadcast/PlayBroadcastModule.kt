@@ -4,14 +4,18 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.broadcaster.LiveBroadcasterManager
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
-import com.tokopedia.play.broadcaster.pusher.PlayLivePusher
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherImpl
-import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediator
+import com.tokopedia.play.broadcaster.pusher.mediator.LiveBroadcasterMediator
+import com.tokopedia.play.broadcaster.pusher.mediator.PlayLivePusherMediator
+import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
+import com.tokopedia.play.broadcaster.pusher.mediator.rollence.AbTestBroadcaster
+import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherTimer
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
@@ -47,23 +51,24 @@ class PlayBroadcastModule(private val mContext: Context) {
         return LocalCacheHandler(mContext, KEY_GROUP_CHAT_PREFERENCES)
     }
 
-    @PlayBroadcastScope
     @Provides
-    fun providePlayLivePusher(): PlayLivePusher = PlayLivePusherImpl()
-
-    @PlayBroadcastScope
-    @Provides
-    fun providePlayLivePusherMediator(livePusher: PlayLivePusher, localCacheHandler: LocalCacheHandler): PlayLivePusherMediator {
-        return PlayLivePusherMediator(livePusher, localCacheHandler)
+    fun providePlayLivePusherMediator(localCacheHandler: LocalCacheHandler, playLivePusherTimer: PlayLivePusherTimer): PusherMediator {
+        return if (AbTestBroadcaster.isUseBroadcasterSdk()) {
+            LiveBroadcasterMediator(LiveBroadcasterManager(), localCacheHandler, playLivePusherTimer)
+        } else {
+            PlayLivePusherMediator(PlayLivePusherImpl(), localCacheHandler, playLivePusherTimer)
+        }
     }
 
     @PlayBroadcastScope
     @Provides
-    fun provideWebSocket(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers): PlayWebSocket {
+    fun provideWebSocket(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers, localCacheHandler: LocalCacheHandler): PlayWebSocket {
         return PlayWebSocketImpl(
             OkHttpClient.Builder(),
             userSession,
-            dispatchers
+            dispatchers,
+            mContext,
+            localCacheHandler,
         )
     }
 

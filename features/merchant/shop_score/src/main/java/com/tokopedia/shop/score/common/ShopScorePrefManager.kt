@@ -3,7 +3,7 @@ package com.tokopedia.shop.score.common
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 
-class ShopScorePrefManager(@ApplicationContext private val context: Context) {
+open class ShopScorePrefManager(@ApplicationContext private val context: Context) {
 
     companion object {
         private const val SHARED_PREF_NAME = "shop_score_coach_mark_pref"

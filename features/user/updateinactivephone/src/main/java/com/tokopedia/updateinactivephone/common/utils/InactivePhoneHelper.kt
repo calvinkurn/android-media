@@ -3,6 +3,7 @@ package com.tokopedia.updateinactivephone.common.utils
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import androidx.core.util.PatternsCompat.EMAIL_ADDRESS
 import androidx.exifinterface.media.ExifInterface
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -68,4 +69,25 @@ fun convertBitmapToImageFile(bitmap: Bitmap, quality: Int, filePath: String): Fi
     }
 
     return file
+}
+
+const val REGEX_PHONE_NUMBER = """[+()\-\s]"""
+const val REGEX_PHONE_NUMBER_REGION = "^(\\+\\d{1,2})"
+
+fun String.reformatPhoneNumber(): String {
+    val regionRegex = Regex(REGEX_PHONE_NUMBER_REGION)
+    val symbolRegex = Regex(REGEX_PHONE_NUMBER)
+    if (this.contains(regionRegex)) {
+        return this.replace(regionRegex, "0")
+    }
+
+    return this.replace(symbolRegex, "")
+}
+
+fun String.getValidEmail(): String? {
+    return when {
+        this.contains('*') -> ""
+        EMAIL_ADDRESS.matcher(this).matches() -> this
+        else -> null
+    }
 }

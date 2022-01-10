@@ -51,6 +51,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                     cover
                     ratio
                     isATC
+                    isShowEtalaseName
                   }
                   data {
                     ... on DisplayWidget {
@@ -64,6 +65,8 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                       videoUrl
                       appLink
                       webLink
+                      linkID
+                      Name
                     }
                     ... on ProductWidget {
                       productID

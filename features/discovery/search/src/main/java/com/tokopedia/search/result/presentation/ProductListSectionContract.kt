@@ -78,7 +78,8 @@ interface ProductListSectionContract {
         fun stopNetworkRequestPerformanceMonitoring()
         fun startRenderPerformanceMonitoring()
         fun sendProductImpressionTrackingEvent(item: ProductItemDataView, suggestedRelatedKeyword: String)
-        fun trackBroadMatchImpression(broadMatchItemDataView: BroadMatchItemDataView)
+        fun trackEventImpressionBroadMatchItem(broadMatchItemDataView: BroadMatchItemDataView)
+        fun trackEventImpressionBroadMatch(broadMatchDataView: BroadMatchDataView)
         fun onQuickFilterSelected(filter: Filter, option: Option)
         fun initFilterControllerForQuickFilter(quickFilterList: List<Filter>)
         fun hideQuickFilterShimmering()
@@ -104,10 +105,22 @@ interface ProductListSectionContract {
         fun getIsLocalizingAddressHasUpdated(currentChooseAddressData: LocalCacheModel): Boolean
         fun refreshItemAtIndex(index: Int)
         fun trackInspirationCarouselChipsClicked(option: InspirationCarouselDataView.Option)
-        fun trackDynamicProductCarouselImpression(dynamicProductCarousel: BroadMatchItemDataView, type: String)
-        fun trackDynamicProductCarouselClick(dynamicProductCarousel: BroadMatchItemDataView, type: String)
-        fun trackEventClickSeeMoreBroadMatch(broadMatchItemDataView: BroadMatchDataView)
-        fun trackEventClickSeeMoreDynamicProductCarousel(dynamicProductCarousel: BroadMatchDataView, type: String)
+        fun trackDynamicProductCarouselImpression(
+            dynamicProductCarousel: BroadMatchItemDataView,
+            type: String,
+            inspirationCarouselProduct: InspirationCarouselDataView.Option.Product,
+        )
+        fun trackDynamicProductCarouselClick(
+            dynamicProductCarousel: BroadMatchItemDataView,
+            type: String,
+            inspirationCarouselProduct: InspirationCarouselDataView.Option.Product,
+        )
+        fun trackEventClickSeeMoreBroadMatch(broadMatchDataView: BroadMatchDataView)
+        fun trackEventClickSeeMoreDynamicProductCarousel(
+            dynamicProductCarousel: BroadMatchDataView,
+            type: String,
+            inspirationCarouselOption: InspirationCarouselDataView.Option,
+        )
         fun modifyApplinkToSearchResult(applink: String): String
     }
 
@@ -137,6 +150,7 @@ interface ProductListSectionContract {
         fun onApplySortFilter(mapParameter: Map<String, Any>)
         fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView)
         fun onBroadMatchItemClick(broadMatchItemDataView: BroadMatchItemDataView)
+        fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView)
         fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView)
         fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int)
         fun handleChangeView(position: Int, currentLayoutType: SearchConstant.ViewType)
@@ -153,5 +167,6 @@ interface ProductListSectionContract {
             savedOptionList: List<SavedOption>,
         )
         fun closeLastFilter(searchParameter: Map<String, Any>)
+        fun shopAdsImpressionCount(impressionCount: Int)
     }
 }

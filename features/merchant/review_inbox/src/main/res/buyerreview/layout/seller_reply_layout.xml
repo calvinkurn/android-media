@@ -61,18 +61,18 @@
         android:layout_marginStart="@dimen/dp_10"
         android:paddingEnd="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_16"
-        android:visibility="gone"
-        >
+        android:visibility="gone">
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/reply_overflow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:layout_marginEnd="@dimen/dp_5"
             android:contentDescription="@null"
-            app:srcCompat="@drawable/ic_more_vert_black_24dp"/>
+            app:icon_name="MENU_KEBAB_VERTICAL"
+            app:icon_color_light_enable="@color/Unify_N700_96"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/seller_reply_name"

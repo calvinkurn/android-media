@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
+import com.tokopedia.home_component.databinding.GlobalDcMixTopBinding
 import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.MixTopComponentListener
@@ -48,9 +49,7 @@ import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.global_dc_mix_left.view.home_component_divider_footer
-import kotlinx.android.synthetic.main.global_dc_mix_left.view.home_component_divider_header
-import kotlinx.android.synthetic.main.global_dc_mix_left.view.home_component_header_view
+import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -61,12 +60,14 @@ class MixTopComponentViewHolder(
         val homeComponentListener: HomeComponentListener?,
         val mixTopComponentListener: MixTopComponentListener?
 ) : AbstractViewHolder<MixTopDataModel>(itemView), CoroutineScope, CommonProductCardCarouselListener {
+    private var binding: GlobalDcMixTopBinding? by viewBinding()
     private val bannerTitle = itemView.findViewById<Typography>(R.id.banner_title)
     private val bannerDescription = itemView.findViewById<Typography>(R.id.banner_description)
     private val bannerUnifyButton = itemView.findViewById<UnifyButton>(R.id.banner_button)
     private val recyclerView = itemView.findViewById<RecyclerView>(R.id.dc_banner_rv)
     private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START) }
     private val background = itemView.findViewById<View>(R.id.background)
+    private val containerInside = itemView.findViewById<ConstraintLayout>(R.id.container_inside)
     private var adapter: MixTopComponentAdapter? = null
     private var isCacheData = false
     companion object{
@@ -125,8 +126,8 @@ class MixTopComponentViewHolder(
     private fun setChannelDivider(element: MixTopDataModel) {
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channelModel,
-            dividerTop = itemView.home_component_divider_header,
-            dividerBottom = itemView.home_component_divider_footer
+            dividerTop = binding?.homeComponentDividerHeader,
+            dividerBottom = binding?.homeComponentDividerFooter
         )
     }
 
@@ -173,7 +174,7 @@ class MixTopComponentViewHolder(
             layoutParams.setMargins(0, 0, 0, 0)
             recyclerView.layoutParams = layoutParams
             recyclerView.translationY = itemView.context.resources.getDimensionPixelSize(R.dimen.home_padding_vertical_use_compat_padding_product_card).toFloat()
-            recyclerView.setPadding(0, 0, 0, 7f.toDpInt())
+            containerInside.setPadding(0, 0, 0, 5f.toDpInt())
         } else {
             background.visible()
             background.setGradientBackground(bannerItem.gradientColor)
@@ -188,6 +189,7 @@ class MixTopComponentViewHolder(
             )
             recyclerView.layoutParams = layoutParams
             recyclerView.translationY = 0f
+            containerInside.setPadding(0, 0, 0, 11f.toDpInt())
         }
         bannerTitle.setTextColor(textColor)
         bannerDescription.setTextColor(textColor)
@@ -329,7 +331,7 @@ class MixTopComponentViewHolder(
     }
 
     private fun setHeaderComponent(element: MixTopDataModel) {
-        itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
+        binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
                 mixTopComponentListener?.onSeeAllBannerClicked(element.channelModel, element.channelModel.channelHeader.applink)
             }

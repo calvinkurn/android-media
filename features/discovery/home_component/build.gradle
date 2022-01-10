@@ -20,6 +20,9 @@ buildscript {
 }
 
 android {
+    buildFeatures {
+        viewBinding true
+    }
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -42,6 +45,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     // Unify
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
@@ -60,6 +64,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.logger)
+
+    implementation projectOrAar(rootProject.ext.features.questWidget)
 
     implementation rootProject.ext.networkDependencies.glide
     implementation projectOrAar(rootProject.ext.features.productCard)

@@ -6,6 +6,8 @@ import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelRespon
 import com.tokopedia.play.broadcaster.domain.model.GetLiveFollowersResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
+import com.tokopedia.play.broadcaster.type.PriceUnknown
+import com.tokopedia.play.broadcaster.type.ProductPrice
 import com.tokopedia.play.broadcaster.type.ProductStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
@@ -50,8 +52,9 @@ class UiModelBuilder {
             name: String = "Product 1",
             imageUrl: String = "https://www.tokopedia.com",
             originalImageUrl: String = "https://www.tokopedia.com",
-            stock: ProductStock = StockAvailable(1)
-    ) = ProductData(id, name, imageUrl, originalImageUrl, stock)
+            stock: ProductStock = StockAvailable(1),
+            price: ProductPrice = PriceUnknown,
+    ) = ProductData(id, name, imageUrl, originalImageUrl, stock, price)
 
     private fun loadJsonToString(path: String): String {
         val file = File(this::class.java.classLoader!!.getResource(path).path)

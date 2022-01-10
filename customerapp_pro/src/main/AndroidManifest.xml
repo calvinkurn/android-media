@@ -662,12 +662,6 @@
         android:requestLegacyExternalStorage="true"
         tools:replace="name,android:label,android:hasCode,android:fullBackupContent,android:allowBackup,android:resizeableActivity,android:icon">
         <meta-data
-            android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
-            android:value="false" />
-        <meta-data
-            android:name="com.facebook.sdk.AutoInitEnabled"
-            android:value="false" />
-        <meta-data
             android:name="com.google.android.gms.ads.AD_MANAGER_APP"
             android:value="true" />
         <meta-data
@@ -694,7 +688,7 @@
             tools:replace="android:value" />
         <meta-data
             android:name="NOTIFICATION_LARGE_ICON"
-            android:value="@mipmap/ic_launcher_customerapp"
+            android:value="@mipmap/ic_launcher_customerapp_pro"
             tools:replace="android:value" />
         <meta-data
             android:name="HANSEL_APP_ID"
@@ -709,10 +703,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_goe_api_key_pro" />
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_id_pro" />
-
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />

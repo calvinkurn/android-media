@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.mapper
 
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.Banner
 import com.tokopedia.search.result.domain.model.SearchProductModel.GlobalNavItem
@@ -22,6 +23,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspira
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchProductData
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.BannerDataView
+import com.tokopedia.search.result.presentation.model.BroadMatch
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchProduct
@@ -63,6 +65,7 @@ class ProductViewModelMapper {
             searchProductData.related,
             isLocalSearch,
             dimension90,
+            keyword,
         )
         productDataView.productList = convertToProductItemDataViewList(
             lastProductItemPosition,
@@ -89,7 +92,8 @@ class ProductViewModelMapper {
         productDataView.pageComponentId = searchProductHeader.componentId
         productDataView.isQuerySafe = searchProductData.isQuerySafe
         productDataView.inspirationCarouselDataView = convertToInspirationCarouselViewModel(
-            searchProductModel.searchInspirationCarousel
+            searchProductModel.searchInspirationCarousel,
+            dimension90,
         )
         productDataView.inspirationCardDataView = convertToInspirationCardViewModel(
             searchProductModel.searchInspirationWidget
@@ -140,64 +144,88 @@ class ProductViewModelMapper {
         }
     }
 
-    private fun convertToRelatedViewModel(related: Related, isLocalSearch: Boolean, dimension90: String): RelatedDataView {
-        val broadMatchDataViewList: MutableList<BroadMatchDataView> = ArrayList()
-        for (otherRelated in related.otherRelatedList) {
-            broadMatchDataViewList.add(convertToBroadMatchViewModel(otherRelated, isLocalSearch, dimension90))
-        }
-        return RelatedDataView(
-                related.relatedKeyword,
-                related.position,
-                broadMatchDataViewList
+    private fun convertToRelatedViewModel(
+        related: Related,
+        isLocalSearch: Boolean,
+        dimension90: String,
+        actualKeyword: String,
+    ): RelatedDataView =
+        RelatedDataView(
+            related.relatedKeyword,
+            related.position,
+            related.otherRelatedList.map {
+                convertToBroadMatchViewModel(
+                    it,
+                    isLocalSearch,
+                    dimension90,
+                    related.trackingOption,
+                    actualKeyword,
+                )
+            }
         )
-    }
 
-    private fun convertToBroadMatchViewModel(otherRelated: OtherRelated, isLocalSearch: Boolean, dimension90: String): BroadMatchDataView {
+    private fun convertToBroadMatchViewModel(
+        otherRelated: OtherRelated,
+        isLocalSearch: Boolean,
+        dimension90: String,
+        trackingOption: Int,
+        actualKeyword: String,
+    ): BroadMatchDataView {
         val broadMatchItemDataViewList = otherRelated.productList.mapIndexed { index, otherRelatedProduct ->
             val position = index + 1
-            convertToBroadMatchItemViewModel(otherRelatedProduct, position, otherRelated.keyword, dimension90)
+            convertToBroadMatchItemViewModel(
+                otherRelatedProduct,
+                position,
+                otherRelated.keyword,
+                dimension90,
+            )
         }
 
         return BroadMatchDataView(
-                otherRelated.keyword,
-                otherRelated.url,
-                otherRelated.applink,
-                isLocalSearch,
-                broadMatchItemDataViewList,
-                dimension90,
+            keyword = otherRelated.keyword,
+            url = otherRelated.url,
+            applink = otherRelated.applink,
+            isAppendTitleInTokopedia = isLocalSearch,
+            broadMatchItemDataViewList = broadMatchItemDataViewList,
+            dimension90 = dimension90,
+            carouselOptionType = BroadMatch,
+            componentId = otherRelated.componentId,
+            trackingOption = trackingOption,
+            actualKeyword = actualKeyword,
         )
     }
 
     private fun convertToBroadMatchItemViewModel(
-            otherRelatedProduct: OtherRelatedProduct,
-            position: Int,
-            alternativeKeyword: String,
-            dimension90: String,
+        otherRelatedProduct: OtherRelatedProduct,
+        position: Int,
+        alternativeKeyword: String,
+        dimension90: String,
     ): BroadMatchItemDataView {
         val isOrganicAds = otherRelatedProduct.isOrganicAds()
 
         return BroadMatchItemDataView(
-                id = otherRelatedProduct.id,
-                name = otherRelatedProduct.name,
-                price = otherRelatedProduct.price,
-                imageUrl = otherRelatedProduct.imageUrl,
-                url = otherRelatedProduct.url,
-                applink = otherRelatedProduct.applink,
-                priceString = otherRelatedProduct.priceString,
-                shopLocation = otherRelatedProduct.shop.city,
-                badgeItemDataViewList = otherRelatedProduct.badgeList.mapToBadgeItemDataViewList(),
-                freeOngkirDataView = otherRelatedProduct.freeOngkir.mapToFreeOngkirDataView(),
-                isWishlisted = otherRelatedProduct.isWishlisted,
-                position = position,
-                alternativeKeyword = alternativeKeyword,
-                isOrganicAds = isOrganicAds,
-                topAdsViewUrl = otherRelatedProduct.ads.productViewUrl,
-                topAdsClickUrl = otherRelatedProduct.ads.productClickUrl,
-                topAdsWishlistUrl = otherRelatedProduct.ads.productWishlistUrl,
-                ratingAverage = otherRelatedProduct.ratingAverage,
-                labelGroupDataList = otherRelatedProduct.labelGroupList.mapToLabelGroupDataViewList(),
-                carouselProductType = BroadMatchProduct(),
-                dimension90 = dimension90,
+            id = otherRelatedProduct.id,
+            name = otherRelatedProduct.name,
+            price = otherRelatedProduct.price,
+            imageUrl = otherRelatedProduct.imageUrl,
+            url = otherRelatedProduct.url,
+            applink = otherRelatedProduct.applink,
+            priceString = otherRelatedProduct.priceString,
+            shopLocation = otherRelatedProduct.shop.city,
+            badgeItemDataViewList = otherRelatedProduct.badgeList.mapToBadgeItemDataViewList(),
+            freeOngkirDataView = otherRelatedProduct.freeOngkir.mapToFreeOngkirDataView(),
+            isWishlisted = otherRelatedProduct.isWishlisted,
+            position = position,
+            alternativeKeyword = alternativeKeyword,
+            isOrganicAds = isOrganicAds,
+            topAdsViewUrl = otherRelatedProduct.ads.productViewUrl,
+            topAdsClickUrl = otherRelatedProduct.ads.productClickUrl,
+            topAdsWishlistUrl = otherRelatedProduct.ads.productWishlistUrl,
+            ratingAverage = otherRelatedProduct.ratingAverage,
+            labelGroupDataList = otherRelatedProduct.labelGroupList.mapToLabelGroupDataViewList(),
+            carouselProductType = BroadMatchProduct(),
+            dimension90 = dimension90,
+            componentId = otherRelatedProduct.componentId,
         )
     }
 
@@ -339,7 +367,8 @@ class ProductViewModelMapper {
     }
 
     private fun convertToInspirationCarouselViewModel(
-            searchInspirationCarousel: SearchInspirationCarousel
+            searchInspirationCarousel: SearchInspirationCarousel,
+            dimension90: String,
     ): List<InspirationCarouselDataView> {
         return searchInspirationCarousel.data.map { data ->
             InspirationCarouselDataView(
@@ -347,13 +376,15 @@ class ProductViewModelMapper {
                     data.type,
                     data.position,
                     data.layout,
-                    convertToInspirationCarouselOptionViewModel(data),
+                    data.trackingOption.toIntOrZero(),
+                    convertToInspirationCarouselOptionViewModel(data, dimension90),
             )
         }
     }
 
     private fun convertToInspirationCarouselOptionViewModel(
-            data: InspirationCarouselData
+            data: InspirationCarouselData,
+            dimension90: String,
     ): List<InspirationCarouselDataView.Option> {
         val mapper = InspirationCarouselProductDataViewMapper()
 
@@ -369,12 +400,14 @@ class ProductViewModelMapper {
                     opt.bannerApplinkUrl,
                     opt.identifier,
                     mapper.convertToInspirationCarouselProductDataView(
-                            opt.inspirationCarouselProducts,
-                            position,
-                            data.type,
-                            data.layout,
-                            { it.mapToLabelGroupDataViewList() },
-                            opt.title
+                        opt.inspirationCarouselProducts,
+                        position,
+                        data.type,
+                        data.layout,
+                        { it.mapToLabelGroupDataViewList() },
+                        opt.title,
+                        data.title,
+                        dimension90,
                     ),
                     data.type,
                     data.layout,
@@ -384,6 +417,9 @@ class ProductViewModelMapper {
                     isChipsActive,
                     if (data.type == TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS) opt.meta else "",
                     if (data.type != TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS) opt.meta else "",
+                    opt.componentId,
+                    data.trackingOption.toIntOrZero(),
+                    dimension90,
             )
         }
     }

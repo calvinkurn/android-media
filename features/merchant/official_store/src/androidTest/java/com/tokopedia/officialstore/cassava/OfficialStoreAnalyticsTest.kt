@@ -18,6 +18,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
 import com.tokopedia.home_component.viewholders.FeaturedBrandViewHolder
+import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -27,11 +28,11 @@ import com.tokopedia.officialstore.extension.selectTabAtPosition
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.*
 import com.tokopedia.officialstore.util.OSRecyclerViewIdlingResource
-import com.tokopedia.officialstore.util.preloadRecomOnOSPage
 import com.tokopedia.officialstore.util.removeProgressBarOnOsPage
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher
+import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
@@ -68,6 +69,7 @@ class OfficialStoreAnalyticsTest {
             super.beforeActivityLaunched()
             InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
             setToLocation1()
+            setupGraphqlMockResponse(OfficialStoreMockResponseConfig())
         }
     }
 
@@ -76,7 +78,6 @@ class OfficialStoreAnalyticsTest {
 
     @Before
     fun setup() {
-        setupGraphqlMockResponse(OfficialStoreMockResponseConfig())
         osRecyclerViewIdlingResource = OSRecyclerViewIdlingResource(
                 activity = activityRule.activity,
                 limitCountToIdle = 3
@@ -199,6 +200,13 @@ class OfficialStoreAnalyticsTest {
                     0
                 )
             }
+            is FeaturedShopViewHolder -> {
+                CommonActions.clickOnEachItemRecyclerView(
+                        viewHolder.itemView,
+                        R.id.dc_banner_rv,
+                        0
+                )
+            }
             is OfficialProductRecommendationViewHolder -> {
                 activityRule.runOnUiThread {
                     viewHolder.itemView.performClick()
@@ -206,12 +214,13 @@ class OfficialStoreAnalyticsTest {
             }
             is FeaturedBrandViewHolder -> {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList,0)
+                onView(firstView(withId(R.id.see_all_button))).perform(ViewActions.click())
             }
         }
     }
     @Test
     fun checkOSAnalyticsWithCassava2() {
-        onView(CommonMatcher.firstView(withId(R.id.os_child_recycler_view))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(firstView(withId(R.id.os_child_recycler_view))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
         OSCassavaTest {
             initTest()
