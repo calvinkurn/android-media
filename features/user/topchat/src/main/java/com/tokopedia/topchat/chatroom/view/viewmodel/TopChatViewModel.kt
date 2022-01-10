@@ -13,6 +13,7 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.chat_common.data.WebsocketEvent
+import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -184,6 +185,10 @@ class TopChatViewModel @Inject constructor(
     val isTyping: LiveData<Boolean>
         get() = _isTyping
 
+    private val _msgDeleted = MutableLiveData<String>()
+    val msgDeleted: LiveData<String>
+        get() = _msgDeleted
+
     var attachProductWarehouseId = "0"
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     var roomMetaData: RoomMetaData = RoomMetaData()
@@ -238,13 +243,12 @@ class TopChatViewModel @Inject constructor(
             WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING -> onReceiveEndTypingEvent()
             WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE -> onReceiveReadMsgEvent()
             WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE -> onReceiveReplyEvent()
-            WebsocketEvent.Event.EVENT_DELETE_MSG -> onReceiveDeleteMsgEvent()
-
+            WebsocketEvent.Event.EVENT_DELETE_MSG -> onReceiveDeleteMsgEvent(incomingChatEvent)
         }
     }
 
-    private fun onReceiveDeleteMsgEvent() {
-//        view?.onReceiveWsEventDeleteMsg(pojo.replyTime)
+    private fun onReceiveDeleteMsgEvent(chat: ChatSocketPojo) {
+        _msgDeleted.postValue(chat.replyTime)
     }
 
     private fun onReceiveReplyEvent() {

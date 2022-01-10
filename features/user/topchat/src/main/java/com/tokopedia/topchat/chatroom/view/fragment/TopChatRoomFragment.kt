@@ -2598,6 +2598,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 onReceiveStopTypingEvent()
             }
         })
+
+        viewModel.msgDeleted.observe(viewLifecycleOwner, { replyTime ->
+            onReceiveWsEventDeleteMsg(replyTime)
+        })
     }
 
     private fun handleToggleBlock(item: WrapperChatSetting) {
