@@ -142,6 +142,11 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         getComponent(SilentVerificationComponent::class.java).inject(this)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.cancelEvUrl()
+    }
+
     private fun initObserver() {
         viewModel.requestSilentVerificationResponse.observe(viewLifecycleOwner, {
             when(it) {

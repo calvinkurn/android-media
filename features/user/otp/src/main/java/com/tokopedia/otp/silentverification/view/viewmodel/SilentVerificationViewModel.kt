@@ -105,6 +105,10 @@ class SilentVerificationViewModel @Inject constructor(
         })
     }
 
+    fun cancelEvUrl() {
+        getEvUrlUsecase.cancelEvUrl()
+    }
+
     companion object {
         const val PARAM_TIME_UNIX_VALIDATE = "time_unix"
     }
