@@ -11,12 +11,12 @@ data class ChipList (
 
     @SerializedName("price" ) var price : Double?             = null,
     @SerializedName("title" ) var title : String?          = null,
-    @SerializedName("chips" ) var chips : ArrayList<Chips> = arrayListOf()
+    @SerializedName("chips" ) var chips : ArrayList<ChipsData> = arrayListOf()
 
 )
 
 
-data class Chips(
+data class ChipsData(
     @SerializedName("gateway_id"         ) var gatewayId        : Int?     = null,
     @SerializedName("name"               ) var name             : String?  = null,
     @SerializedName("product_code"       ) var productCode      : String?  = null,
@@ -28,7 +28,7 @@ data class Chips(
     @SerializedName("subheader_color"    ) var subheaderColor   : String?  = null,
     @SerializedName("product_icon_light" ) var productIconLight : String?  = null,
     @SerializedName("product_icon_dark"  ) var productIconDark  : String?  = null,
-    @SerializedName("cta"                ) var cta              : Cta?     = Cta()
+    @SerializedName("cta"                ) var cta              : Cta?     = Cta(),
 )
 
 data class Cta(

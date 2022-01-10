@@ -31,7 +31,6 @@
         android:id="@+id/recycler_items"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/pdp_fintech_16_dp"
         android:layout_marginTop="@dimen/pdp_fintech_16_dp"
         android:layout_marginBottom="@dimen/pdp_fintech_12_dp"
         app:layout_constraintBottom_toBottomOf="parent"

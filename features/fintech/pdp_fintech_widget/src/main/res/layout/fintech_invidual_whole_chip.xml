@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
 
 
     <com.tokopedia.unifycomponents.CardUnify
@@ -31,35 +32,38 @@
 
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/typography4"
+                android:id="@+id/chipHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pdp_fintech_4_dp"
                 android:layout_marginTop="@dimen/pdp_fintech_7_dp"
+                app:layout_goneMarginLeft="@dimen/dp_24"
                 android:text="Rp1.250.000X12"
+                app:layout_goneMarginBottom="@dimen/dp_24"
                 android:textColor="@color/Unify_N700_96"
                 android:textStyle="normal"
-                android:layout_marginRight="@dimen/dp_40"
-                app:layout_constraintBottom_toTopOf="@+id/typography3"
+                android:paddingRight="@dimen/dp_10"
+                app:layout_constraintBottom_toTopOf="@+id/chipSubHeader"
                 app:layout_constraintLeft_toRightOf="@id/partnerIcon"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_3" />
 
             <com.tokopedia.unifyprinciples.Typography
 
-                android:id="@+id/typography3"
+                android:id="@+id/chipSubHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pdp_fintech_4_dp"
                 app:layout_goneMarginRight="@dimen/dp_40"
                 android:layout_marginRight="@dimen/pfp_fintech_10_dp"
+                app:layout_goneMarginLeft="@dimen/dp_24"
                 android:layout_marginBottom="@dimen/pdp_fintech_7_dp"
                 android:text="credit available: Rp 9.500"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintLeft_toRightOf="@id/partnerIcon"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/typography4"
+                app:layout_constraintTop_toBottomOf="@+id/chipHeader"
                 app:typographyType="small" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

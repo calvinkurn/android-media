@@ -2,11 +2,8 @@ package com.tokopedia.pdp.fintech.view
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import androidx.annotation.AttrRes
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
@@ -14,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter
+import com.tokopedia.pdp.fintech.di.components.DaggerFintechWidgetComponent
+import com.tokopedia.pdp.fintech.domain.datamodel.WidgetDetail
 import com.tokopedia.pdp.fintech.listner.ProductUpdateListner
 import com.tokopedia.pdp.fintech.listner.WidgetClickListner
 import com.tokopedia.pdp.fintech.viewmodel.FintechWidgetViewModel
@@ -60,13 +59,17 @@ class PdpFintechWidget @JvmOverloads constructor(
         fintechWidgetViewModel.widgetDetailLiveData.observe(parentLifeCycleOwner, {
             when (it) {
                 is Success -> {
-
+                    updateWidget(it.data)
                 }
                 is Fail -> {
 
                 }
             }
         })
+    }
+
+    private fun updateWidget(data: WidgetDetail) {
+       fintechWidgetAdapter.setData(data.list[0].chips)
     }
 
     private fun observeProductInfo(parentLifeCycleOwner: LifecycleOwner) {
