@@ -68,6 +68,56 @@ fun createHomeLayoutListForBannerOnly(): List<HomeLayoutResponse> {
     )
 }
 
+fun createHomeLayoutListForQuestOnly(): List<HomeLayoutResponse> {
+    return listOf(
+        HomeLayoutResponse(
+            id = "55678",
+            layout = "tokonow_main_quest",
+            header = Header(
+                name = "Main Quest",
+                serverTimeUnix = 0
+            ),
+            token = "==aff1ed" // Dummy token
+        )
+    )
+}
+
+fun createQuestWidgetListEmpty(code: String, reason: String = ""): GetQuestListResponse {
+    return GetQuestListResponse(
+        questWidgetList = QuestListResponse(
+            questWidgetList = listOf(),
+            resultStatus = ResultStatus(
+                code = code,
+                reason = reason
+            )
+        )
+    )
+}
+
+fun createQuestWidgetList(code: String, reason: String = ""): GetQuestListResponse {
+    return GetQuestListResponse(
+        questWidgetList = QuestListResponse(
+            questWidgetList = listOf(
+                QuestList(
+                    id = "1233",
+                    title = "dummy title",
+                    description = "dummy desc",
+                    config = "{}",
+                    questUser = QuestUser(
+                        id = "1111",
+                        status = "Idle"
+                    ),
+                    task = listOf()
+                )
+            ),
+            resultStatus = ResultStatus(
+                code = code,
+                reason = reason
+            )
+        )
+    )
+}
+
 fun createHomeLayoutData(): HomeLayoutResponse {
     return HomeLayoutResponse(
             id = "2222",

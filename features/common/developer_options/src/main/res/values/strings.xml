@@ -92,5 +92,6 @@
     <string name="play_websocket_and_sse_logging_title">Play - Web Socket and SSE Logging</string>
     <string name="view_sse_logging">View SSE Logging</string>
     <string name="list_ab_test_rollence_keys">List AB Test Rollence Keys</string>
+    <string name="view_websocket_logging">View Web Socket Logging</string>
 
 </resources>
