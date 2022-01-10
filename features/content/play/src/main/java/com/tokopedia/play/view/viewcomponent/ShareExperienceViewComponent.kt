@@ -65,17 +65,26 @@ class ShareExperienceViewComponent(
     }
 
     private fun deleteTemporaryImage() {
+        if(isTemporaryImageAvailable())
+            File(imgSaveFilePath).delete()
+    }
+
+    private fun isTemporaryImageAvailable(): Boolean {
         if(imgSaveFilePath.isNotEmpty()) {
-            File(imgSaveFilePath).apply {
-                if(exists()) delete()
-            }
+            return File(imgSaveFilePath).exists()
         }
+
+        return false
     }
 
     fun saveTemporaryImage(imageUrl: String) {
         try {
-            deleteTemporaryImage()
+            if(isTemporaryImageAvailable()) {
+                listener.onShareOpenBottomSheet(this)
+                return
+            }
 
+            deleteTemporaryImage()
             loadImageWithEmptyTarget(context, imageUrl, {
                 fitCenter()
             }, MediaBitmapEmptyTarget(
@@ -86,7 +95,7 @@ class ShareExperienceViewComponent(
 
                     if(savedFile != null) {
                         imgSaveFilePath = savedFile.absolutePath
-                        listener.onShareSuccessSaveTemporaryImage(this)
+                        listener.onShareOpenBottomSheet(this)
                     }
                     else {
                         listener.onHandleShareFallback(this)
@@ -137,14 +146,18 @@ class ShareExperienceViewComponent(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
-        deleteTemporaryImage()
         UniversalShareBottomSheet.clearState(screenshotDetector)
         screenshotDetector = null
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        deleteTemporaryImage()
+    }
+
     interface Listener {
         fun onShareIconClick(view: ShareExperienceViewComponent)
-        fun onShareSuccessSaveTemporaryImage(view: ShareExperienceViewComponent)
+        fun onShareOpenBottomSheet(view: ShareExperienceViewComponent)
         fun onShareOptionClick(view: ShareExperienceViewComponent, shareModel: ShareModel)
         fun onShareOptionClosed(view: ShareExperienceViewComponent)
         fun onScreenshotTaken(view: ShareExperienceViewComponent)

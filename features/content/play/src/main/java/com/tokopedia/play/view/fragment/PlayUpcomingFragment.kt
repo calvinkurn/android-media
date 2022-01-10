@@ -292,7 +292,7 @@ class PlayUpcomingFragment @Inject constructor(
         playUpcomingViewModel.submitAction(ClickShareUpcomingAction)
     }
 
-    override fun onShareSuccessSaveTemporaryImage(view: ShareExperienceViewComponent) {
+    override fun onShareOpenBottomSheet(view: ShareExperienceViewComponent) {
         playUpcomingViewModel.submitAction(ShowShareExperienceUpcomingAction)
     }
 

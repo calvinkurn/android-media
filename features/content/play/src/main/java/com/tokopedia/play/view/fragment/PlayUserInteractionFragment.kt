@@ -331,7 +331,7 @@ class PlayUserInteractionFragment @Inject constructor(
 //        analytic.clickCopyLink()
     }
 
-    override fun onShareSuccessSaveTemporaryImage(view: ShareExperienceViewComponent) {
+    override fun onShareOpenBottomSheet(view: ShareExperienceViewComponent) {
         playViewModel.submitAction(ShowShareExperienceAction)
     }
 
