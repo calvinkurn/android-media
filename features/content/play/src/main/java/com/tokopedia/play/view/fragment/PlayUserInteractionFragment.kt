@@ -1413,8 +1413,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.CouponSheet]?.isShown == false &&
-                bottomInsets[BottomInsetsType.LeaderboardSheet]?.isShown == false) {
-                bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false &&
+                bottomInsets[BottomInsetsType.LeaderboardSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.KebabMenuSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.UserReportSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.UserReportSubmissionSheet]?.isShown == false) {
@@ -1553,8 +1552,6 @@ class PlayUserInteractionFragment @Inject constructor(
             likeState: PlayLikeUiState,
     ) {
         if (prevState?.canLike != likeState.canLike) likeView.setEnabled(isEnabled = likeState.canLike)
-
-        likeView.setMode(likeState.likeMode)
 
         if (prevState?.isLiked != likeState.isLiked) {
             likeView.setIsLiked(likeState.isLiked)
