@@ -56,9 +56,8 @@ class KeywordSelectedAdapter(private val onChecked: ((position: Int) -> Unit)) :
 
         }
         if (items[holder.adapterPosition].competition.isEmpty()) {
-            holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_low))
-            holder.view.keywordCompetition.visibility = View.INVISIBLE
-
+            holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREY)
+            holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_unknown))
 
         } else {
             holder.view.keywordCompetition.visibility = View.VISIBLE

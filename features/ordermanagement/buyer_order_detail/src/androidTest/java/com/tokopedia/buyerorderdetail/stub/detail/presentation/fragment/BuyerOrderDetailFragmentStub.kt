@@ -16,7 +16,8 @@ class BuyerOrderDetailFragmentStub : BuyerOrderDetailFragment() {
             digitalRecommendationListener = this,
             courierInfoViewHolderListener = this,
             productViewListener = this,
-            navigator = navigator
+            navigator = navigator,
+            buyerOrderDetailBindRecomWidgetListener = this
         )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

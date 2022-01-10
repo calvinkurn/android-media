@@ -27,6 +27,7 @@ import com.tokopedia.product.manage.data.createProductVariant
 import com.tokopedia.product.manage.data.createProductVariantResponse
 import com.tokopedia.product.manage.data.createSelectionResponse
 import com.tokopedia.product.manage.data.createShopOwnerAccess
+import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.list.data.model.FeaturedProductResponseModel
 import com.tokopedia.product.manage.feature.list.data.model.GoldManageFeaturedProductV2
@@ -502,7 +503,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         val expectedSelectedFilter = FilterOptionWrapper(
             null,
             selectedFilter,
-            listOf(true, true, false, false)
+            listOf(true, true, false, false),
+            ProductManageFilterMapper.countSelectedFilter(selectedFilter)
         )
 
         viewModel.selectedFilterAndSort

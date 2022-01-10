@@ -65,6 +65,7 @@ import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel;
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant;
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
@@ -3207,18 +3208,22 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void updateLocalCacheAddressData(UserAddress userAddress) {
         Activity activity = getActivity();
         if (activity != null) {
-            ChooseAddressUtils.INSTANCE.updateLocalizingAddressDataFromOther(
-                    activity,
-                    userAddress.getAddressId(),
-                    userAddress.getCityId(),
-                    userAddress.getDistrictId(),
-                    userAddress.getLatitude(),
-                    userAddress.getLongitude(),
-                    String.format("%s %s", userAddress.getAddressName(), userAddress.getReceiverName()),
-                    userAddress.getPostalCode(),
-                    userAddress.getShopId(),
-                    userAddress.getWarehouseId()
-            );
+            LocalCacheModel localCache = ChooseAddressUtils.INSTANCE.getLocalizingAddressData(activity);
+            if (userAddress.getState() == UserAddress.STATE_ADDRESS_ID_NOT_MATCH
+                    || localCache == null || localCache.getAddress_id().isEmpty() || localCache.getAddress_id().equals("0")) {
+                ChooseAddressUtils.INSTANCE.updateLocalizingAddressDataFromOther(
+                        activity,
+                        userAddress.getAddressId(),
+                        userAddress.getCityId(),
+                        userAddress.getDistrictId(),
+                        userAddress.getLatitude(),
+                        userAddress.getLongitude(),
+                        String.format("%s %s", userAddress.getAddressName(), userAddress.getReceiverName()),
+                        userAddress.getPostalCode(),
+                        userAddress.getShopId(),
+                        userAddress.getWarehouseId()
+                );
+            }
         }
     }
 

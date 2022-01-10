@@ -3,7 +3,6 @@ package com.tokopedia.play.robot.play
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.ReportSummaries
-import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.helper.ClassBuilder
@@ -34,6 +33,7 @@ import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.PlayChannelSSE
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.extension.exhaustive
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
@@ -55,7 +55,6 @@ class PlayViewModelRobot(
         getChannelStatusUseCase: GetChannelStatusUseCase,
         getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val getReportSummariesUseCase: GetReportSummariesUseCase,
-        private val getCartCountUseCase: GetCartCountUseCase,
         getProductTagItemsUseCase: GetProductTagItemsUseCase,
         trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
         trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
@@ -66,7 +65,7 @@ class PlayViewModelRobot(
         remoteConfig: RemoteConfig,
         playPreference: PlayPreference,
         videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
-        playChannelWebSocket: PlayChannelWebSocket,
+        playChannelWebSocket: PlayWebSocket,
         private val repo: PlayViewerRepository,
         playAnalytic: PlayNewAnalytic,
         timerFactory: TimerFactory,
@@ -120,10 +119,6 @@ class PlayViewModelRobot(
         coEvery { repo.getIsLiked(any(), any()) } returns response
     }
 
-    fun setMockCartCountResponse(response: Int) {
-        coEvery { getCartCountUseCase.executeOnBackground() } returns response
-    }
-
     fun setMockUserId(userId: String) {
         every { userSession.userId } returns userId
     }
@@ -145,10 +140,6 @@ class PlayViewModelRobot(
             }
             PiPState.Stop -> viewModel.stopPiP()
         }.exhaustive
-    }
-
-    fun updateCartCountFromNetwork() {
-        viewModel.updateBadgeCart()
     }
 
     fun showKeyboard(keyboardHeight: Int = 50) {
@@ -230,7 +221,6 @@ fun givenPlayViewModelRobot(
         getChannelStatusUseCase: GetChannelStatusUseCase = mockk(relaxed = true),
         getSocketCredentialUseCase: GetSocketCredentialUseCase = mockk(relaxed = true),
         getReportSummariesUseCase: GetReportSummariesUseCase = mockk(relaxed = true),
-        getCartCountUseCase: GetCartCountUseCase = mockk(relaxed = true),
         getProductTagItemsUseCase: GetProductTagItemsUseCase = mockk(relaxed = true),
         trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase = mockk(relaxed = true),
         trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase = mockk(relaxed = true),
@@ -241,7 +231,7 @@ fun givenPlayViewModelRobot(
         remoteConfig: RemoteConfig = mockk(relaxed = true),
         playPreference: PlayPreference = mockk(relaxed = true),
         videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring = mockk(relaxed = true),
-        playChannelWebSocket: PlayChannelWebSocket = mockk(relaxed = true),
+        playChannelWebSocket: PlayWebSocket = mockk(relaxed = true),
         repo: PlayViewerRepository = mockk(relaxed = true),
         playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
         timerFactory: TimerFactory = mockk(relaxed = true),
@@ -256,7 +246,6 @@ fun givenPlayViewModelRobot(
         getChannelStatusUseCase = getChannelStatusUseCase,
         getSocketCredentialUseCase = getSocketCredentialUseCase,
         getReportSummariesUseCase = getReportSummariesUseCase,
-        getCartCountUseCase = getCartCountUseCase,
         getProductTagItemsUseCase = getProductTagItemsUseCase,
         trackProductTagBroadcasterUseCase = trackProductTagBroadcasterUseCase,
         trackVisitChannelBroadcasterUseCase = trackVisitChannelBroadcasterUseCase,

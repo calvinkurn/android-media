@@ -1,53 +1,26 @@
 package com.tokopedia.updateinactivephone.domain.usecase
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GqlParam
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.updateinactivephone.domain.data.InactivePhoneSubmitDataModel
 import javax.inject.Inject
 
-class SubmitDataUseCase @Inject constructor(
-        private val graphqlUseCase: GraphqlUseCase<InactivePhoneSubmitDataModel>
-) {
+open class SubmitDataUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+) : CoroutineUseCase<SubmitDataModel, InactivePhoneSubmitDataModel>(dispatcher.io) {
 
-    private lateinit var params: Map<String, Any>
-
-    fun execute(onSuccess: (InactivePhoneSubmitDataModel) -> Unit, onError: (Throwable) -> Unit) {
-        graphqlUseCase.apply {
-            setTypeClass(InactivePhoneSubmitDataModel::class.java)
-            setGraphqlQuery(query)
-            setRequestParams(params)
-            execute(onSuccess = {
-                onSuccess(it)
-            }, onError = {
-                onError(it)
-            })
-        }
+    override suspend fun execute(params: SubmitDataModel): InactivePhoneSubmitDataModel {
+        return repository.request(graphqlQuery(), params.toMapParam())
     }
 
-    fun setParam(email: String, oldPhone: String, newPhone: String, userIndex: Int, idCardObj: String, selfieObj: String) {
-        params = mapOf(
-                PARAM_EMAIL to email,
-                PARAM_OLD_PHONE to oldPhone,
-                PARAM_NEW_PHONE to newPhone,
-                PARAM_USER_INDEX to userIndex,
-                PARAM_ID_CARD_IAMEG to idCardObj,
-                PARAM_SELFIE_IMAGE to selfieObj
-        )
-    }
-
-    fun cancelJob() {
-        graphqlUseCase.cancelJobs()
-        graphqlUseCase.clearCache()
-    }
-
-    companion object {
-        private const val PARAM_EMAIL = "email"
-        private const val PARAM_OLD_PHONE = "oldMsisdn"
-        private const val PARAM_NEW_PHONE = "newMsisdn"
-        private const val PARAM_USER_INDEX = "index"
-        private const val PARAM_ID_CARD_IAMEG = "fileKtp"
-        private const val PARAM_SELFIE_IMAGE = "fileSelfie"
-
-        private val query = """
+    override fun graphqlQuery(): String {
+        return """
             mutation submitInactivePhoneUser (${'$'}email: String!, ${'$'}oldMsisdn: String!, ${'$'}newMsisdn: String!, ${'$'}index: Int!, ${'$'}fileKtp: String!, ${'$'}fileSelfie: String!) {
               submitInactivePhoneUser(email: ${'$'}email, oldMsisdn: ${'$'}oldMsisdn, newMsisdn: ${'$'}newMsisdn, index: ${'$'}index, fileKtp: ${'$'}fileKtp, fileSelfie: ${'$'}fileSelfie){
                 isSuccess
@@ -57,3 +30,18 @@ class SubmitDataUseCase @Inject constructor(
         """.trimIndent()
     }
 }
+
+data class SubmitDataModel(
+    @SerializedName("email")
+    var email: String = "",
+    @SerializedName("oldMsisdn")
+    var oldPhone: String = "",
+    @SerializedName("newMsisdn")
+    var newPhone: String = "",
+    @SerializedName("index")
+    var userIndex: Int = 0,
+    @SerializedName("fileKtp")
+    var idCardImage: String = "",
+    @SerializedName("fileSelfie")
+    var selfieImage: String = ""
+): GqlParam
