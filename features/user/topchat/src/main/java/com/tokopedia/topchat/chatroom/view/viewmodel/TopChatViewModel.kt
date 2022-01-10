@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatroom.view.viewmodel
 
 import androidx.collection.ArrayMap
 import androidx.lifecycle.*
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.AtcFromExternalSource
@@ -10,6 +11,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParam
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.chat_common.data.WebsocketEvent
@@ -197,6 +199,14 @@ class TopChatViewModel @Inject constructor(
     val unreadMsg: LiveData<Int>
         get() = _unreadMsg
 
+    private val _newMsg = MutableLiveData<Visitable<*>>()
+    val newMsg: LiveData<Visitable<*>>
+        get() = _newMsg
+
+    private val _removeSrwBubble = MutableLiveData<String?>()
+    val removeSrwBubble: LiveData<String?>
+        get() = _removeSrwBubble
+
     var attachProductWarehouseId = "0"
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     var roomMetaData: RoomMetaData = RoomMetaData()
@@ -265,12 +275,35 @@ class TopChatViewModel @Inject constructor(
 
     private fun onReceiveReplyEvent(chat: ChatSocketPojo) {
         if (!isInTheMiddleOfThePage()) {
-//            view?.onSendAndReceiveMessage()
-//            onReplyMessage(pojo)
+            renderChatItem(chat)
             _unreadMsg.postValue(0)
         } else {
             if (chat.isOpposite) {
                 incrementUnreadMsg()
+            }
+        }
+    }
+
+    private fun renderChatItem(chat: ChatSocketPojo) {
+        val chatUiModel = topChatRoomWebSocketMessageMapper.map(chat)
+        _newMsg.postValue(chatUiModel)
+        handleSrwBubbleState(chat, chatUiModel)
+//        if (!pojo.isOpposite) {
+//            checkDummyAndRemove(uiModel)
+//        } else {
+//            readMessage()
+//        }
+    }
+
+    private fun handleSrwBubbleState(pojo: ChatSocketPojo, uiModel: Visitable<*>) {
+        when (pojo.attachment?.type) {
+            AttachmentType.Companion.TYPE_INVOICE_SEND,
+            AttachmentType.Companion.TYPE_IMAGE_UPLOAD,
+            AttachmentType.Companion.TYPE_VOUCHER -> _removeSrwBubble.postValue(null)
+            AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT -> {
+                if (uiModel is ProductAttachmentUiModel) {
+                    _removeSrwBubble.postValue(uiModel.productId)
+                }
             }
         }
     }

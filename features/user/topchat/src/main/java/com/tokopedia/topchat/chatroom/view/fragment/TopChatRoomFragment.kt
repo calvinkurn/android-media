@@ -2615,6 +2615,19 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 hideUnreadMessage()
             }
         })
+
+        viewModel.newMsg.observe(viewLifecycleOwner, { uiModel ->
+            onSendAndReceiveMessage()
+            onReceiveMessageEvent(uiModel)
+        })
+
+        viewModel.removeSrwBubble.observe(viewLifecycleOwner, { productId ->
+            if (productId != null) {
+                removeSrwBubble(productId)
+            } else {
+                removeSrwBubble()
+            }
+        })
     }
 
     private fun handleToggleBlock(item: WrapperChatSetting) {
