@@ -106,7 +106,7 @@ data class ModifaceProvider(
     fun getGlitterBaseReflectivityFormula(): Float = sparkleBaseReflectivity?.let { it * 100 }
             ?: 0.3F
 
-    fun getAmountFormula(): Float = intensity?.let { it * 100 } ?: 1F
+    fun getAmountFormula(): Float = intensity?.let { it * 100 } ?: 100F
     fun getEnvMappingtFormula(): Float = envMappingIntensity * 100
     fun getEnvBumpDensityFormula(): Float = envMappingBumpIntensity?.let { it } ?: 0.6F
     fun getEnvMappingCurveFormula(): Float = envMappingCurve?.let { it } ?: 2.3F

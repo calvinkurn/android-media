@@ -23,6 +23,14 @@ buildscript {
     }
 }
 
+allprojects {
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
+    }
+}
+
 android {
     defaultConfig {
         multiDexEnabled true
@@ -40,7 +48,9 @@ android {
 }
 
 dependencies {
-    implementation rootProject.ext.miscDependencies.modifaceMakeUpKit
+//    implementation rootProject.ext.miscDependencies.modifaceMakeUpKit
+    implementation files('libs/mfemakeupkit-r15.0.0.aar')
+//    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)

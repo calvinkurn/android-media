@@ -156,26 +156,26 @@ object ProductArMapper {
                 data.colorB.toIntSafely())
 
         val product = MFEMakeupProduct().also {
-            it.gloss = data.getGlossFormula()
-            it.glossDetail = data.getGlossDetailFormula()
-            it.wetness = data.getWetnessFormula()
-            it.glitter = data.getSparkleAFormula()
+            it.gloss = data.getGlossFormula().toInt()
+            it.glossDetail = data.getGlossDetailFormula().toInt()
+            it.wetness = data.getWetnessFormula().toInt()
+            it.glitter = data.getSparkleAFormula().toInt()
             it.glitterColor = data.getGlitterColor()
             it.color = color
             it.matteness = data.matteness
-            it.glitterDensity = data.getGlitterDensityFormula()
+            it.glitterDensity = data.getGlitterDensityFormula().toInt()
             it.glitterSize = data.getGlitterSizeFormula()
-            it.glitterColorVariation = data.getGlitterColorVariationFormula()
-            it.glitterSizeVariation = data.getGlitterSizeVariationFormula()
-            it.glitterBaseReflectivity = data.getGlitterBaseReflectivityFormula()
-            it.envMappingIntensity = data.getEnvMappingtFormula()
+            it.glitterColorVariation = data.getGlitterColorVariationFormula().toInt()
+            it.glitterSizeVariation = data.getGlitterSizeVariationFormula().toInt()
+            it.glitterBaseReflectivity = data.getGlitterBaseReflectivityFormula().toInt()
+            it.envMappingIntensity = data.getEnvMappingtFormula().toInt()
             it.envMappingColor = data.getEnvMappingColor()
             it.envMappingBumpIntensity = data.getEnvBumpDensityFormula()
             it.envMappingCurve = data.getEnvMappingCurveFormula()
             it.envMappingRotationY = data.envMappingRotationY
             it.metallicIntensity = data.metallicIntensity
             it.vinylIntensity = data.vinylIntensity
-            it.amount = data.getAmountFormula()
+            it.amount = data.getAmountFormula().toInt()
         }
 
         MFEMakeupLook().apply {
