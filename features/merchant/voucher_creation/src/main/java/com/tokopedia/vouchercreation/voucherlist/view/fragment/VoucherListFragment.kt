@@ -1090,10 +1090,9 @@ class VoucherListFragment :
             (activity as? MvcPerformanceMonitoringListener)?.startRenderPerformanceMonitoring()
             when (it) {
                 is Success -> {
-                    val showNewBroadCastExperience = RollenceUtil.getBroadCastVoucherRollenceValue()
                     val voucherList = it.data
                     voucherList.forEach { voucherUiModel ->
-                        voucherUiModel.showNewBc = showNewBroadCastExperience
+                        voucherUiModel.showNewBc = true
                     }
                     setOnSuccessGetVoucherList(voucherList)
                     rvVoucherList?.setOnLayoutListenerReady()
@@ -1176,53 +1175,8 @@ class VoucherListFragment :
             when (result) {
                 is Success -> {
                     result.data.let { uiModel ->
-                        val showNewBroadCastExperience =
-                            RollenceUtil.getBroadCastVoucherRollenceValue()
-                        if (showNewBroadCastExperience) {
-                            uiModel.isFreeIconVisible = mViewModel.isFreeBroadCastIconVisible()
-                            showBroadCastVoucherBottomSheet(uiModel)
-                        } else {
-                            if (uiModel.isPublic) {
-                                view?.run {
-                                    Toaster.make(this,
-                                        context?.getString(R.string.mvc_success_toaster)
-                                            .toBlankOrString(),
-                                        Toaster.LENGTH_LONG,
-                                        Toaster.TYPE_NORMAL,
-                                        context?.getString(R.string.mvc_oke).toBlankOrString(),
-                                        View.OnClickListener {})
-                                }
-                            } else {
-                                SuccessCreateBottomSheet.createInstance(uiModel)
-                                    .setOnShareClickListener {
-                                        VoucherCreationTracking.sendCreateVoucherClickTracking(
-                                            step = VoucherCreationStep.REVIEW,
-                                            action = Click.VOUCHER_SUCCESS_SHARE_NOW,
-                                            userId = userSession.userId
-                                        )
-                                        showShareBottomSheet(uiModel)
-                                    }
-                                    .setOnDownloadClickListener {
-                                        VoucherCreationTracking.sendCreateVoucherClickTracking(
-                                            step = VoucherCreationStep.REVIEW,
-                                            action = Click.VOUCHER_SUCCESS_DOWNLOAD,
-                                            userId = userSession.userId
-                                        )
-                                        showDownloadBottomSheet(uiModel)
-                                    }
-                                    .apply {
-                                        setCloseClickListener {
-                                            VoucherCreationTracking.sendCreateVoucherClickTracking(
-                                                step = VoucherCreationStep.REVIEW,
-                                                action = Click.VOUCHER_SUCCESS_CLICK_BACK_BUTTON,
-                                                userId = userSession.userId
-                                            )
-                                            dismiss()
-                                        }
-                                    }
-                                    .show(childFragmentManager)
-                            }
-                        }
+                        uiModel.isFreeIconVisible = mViewModel.isFreeBroadCastIconVisible()
+                        showBroadCastVoucherBottomSheet(uiModel)
                         mViewModel.setIsSuccessDialogDisplayed(true)
                     }
                 }
