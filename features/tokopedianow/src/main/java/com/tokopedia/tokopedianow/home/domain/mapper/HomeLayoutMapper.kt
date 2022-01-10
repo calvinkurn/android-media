@@ -142,11 +142,12 @@ object HomeLayoutMapper {
 
     fun MutableList<HomeLayoutItemUiModel>.mapHomeCategoryGridData(
         item: TokoNowCategoryGridUiModel,
-        response: List<CategoryResponse>?
+        response: List<CategoryResponse>?,
+        warehouseId: String = ""
     ) {
         updateItemById(item.id) {
             if (!response.isNullOrEmpty()) {
-                val categoryList = mapToCategoryList(response)
+                val categoryList = mapToCategoryList(response, warehouseId)
                 val layout = item.copy(categoryList = categoryList, state = TokoNowLayoutState.SHOW)
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED)
             } else {
