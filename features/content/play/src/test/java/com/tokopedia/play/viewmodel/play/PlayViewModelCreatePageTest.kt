@@ -91,14 +91,6 @@ class PlayViewModelCreatePageTest {
 
             state.quickReply.isEqualTo(expectedModel)
         }
-
-//        givenPlayViewModelRobot(
-//        ) andWhen {
-//            createPage(channelData)
-//        } thenVerify {
-//            viewModel.observableQuickReply.getOrAwaitValue()
-//                    .isEqualTo(expectedModel)
-//        }
     }
 
     @Test

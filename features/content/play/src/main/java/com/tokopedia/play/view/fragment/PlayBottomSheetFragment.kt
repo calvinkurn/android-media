@@ -254,12 +254,9 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun setupObserve() {
         observeLoggedInInteractionEvent()
-//        observeProductSheetContent()
-//        observePinned()
         observeVariantSheetContent()
         observeBottomInsetsState()
         observeBuyEvent()
-//        observeStatusInfo()
 
         observeUiState()
     }
@@ -407,33 +404,6 @@ class PlayBottomSheetFragment @Inject constructor(
     /**
      * Observe
      */
-//    private fun observePinned() {
-//        playViewModel.observablePinnedProduct.observe(viewLifecycleOwner) {
-//            if (it.productTags is PlayProductTagsUiModel.Complete) {
-//                if (it.productTags.productList.isNotEmpty()) {
-//                    productSheetView.setProductSheet(it.productTags)
-//
-//                    trackImpressedProduct()
-//                    return@observe
-//                }
-//            }
-//
-//            productSheetView.showEmpty(it.productTags.basicInfo.partnerId)
-//        }
-//    }
-
-//    private fun observeProductSheetContent() {
-//        playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, DistinctObserver {
-//            when (it) {
-//                is PlayResult.Loading -> if (it.showPlaceholder) productSheetView.showPlaceholder()
-//                is PlayResult.Failure -> productSheetView.showError(
-//                        isConnectionError = it.error is ConnectException || it.error is UnknownHostException,
-//                        onError = it.onRetry
-//                )
-//            }
-//        })
-//    }
-
     private fun observeVariantSheetContent() {
         viewModel.observableProductVariant.observe(viewLifecycleOwner, DistinctObserver {
             when (it) {

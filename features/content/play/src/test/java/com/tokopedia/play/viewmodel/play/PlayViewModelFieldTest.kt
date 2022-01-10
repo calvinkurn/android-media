@@ -114,38 +114,6 @@ class PlayViewModelFieldTest {
         }
     }
 
-//    @Test
-//    fun `given status info is set, when page is created and isFreezeOrBanned is retrieved, it should return the correct value`() {
-//        val activeStatusInfo = uiModelBuilder.buildStatus(
-//            channelStatus = uiModelBuilder.buildChannelStatus(
-//                statusType = PlayStatusType.Active
-//            )
-//        )
-//
-//        val freezeStatusInfo = uiModelBuilder.buildStatus(
-//            channelStatus = uiModelBuilder.buildChannelStatus(
-//                statusType = PlayStatusType.Freeze
-//            )
-//        )
-//
-//        givenPlayViewModelRobot(
-//        ) andWhen {
-//            val channelData = channelDataBuilder.buildChannelData(
-//                    status = activeStatusInfo
-//            )
-//            createPage(channelData)
-//        } thenVerify {
-//            viewModel.isFreezeOrBanned.assertFalse()
-//        } andWhen {
-//            val channelData = channelDataBuilder.buildChannelData(
-//                    status = freezeStatusInfo
-//            )
-//            createPage(channelData)
-//        } thenVerify {
-//            viewModel.isFreezeOrBanned.assertTrue()
-//        }
-//    }
-
     @Test
     fun `given total view is set, when page is created and total view is retrieved, it should return correct value`() {
         val totalView = "5.91k"

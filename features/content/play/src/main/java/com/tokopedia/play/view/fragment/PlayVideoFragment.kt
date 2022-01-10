@@ -325,7 +325,6 @@ class PlayVideoFragment @Inject constructor(
         observeVideoMeta()
         observeVideoProperty()
         observeBottomInsetsState()
-//        observeStatusInfo()
         observePiPEvent()
         observeOnboarding()
         observeCastState()

@@ -66,7 +66,6 @@ import javax.inject.Inject
  */
 class PlayFragment @Inject constructor(
     viewModelFactory: PlayViewModel.Factory,
-//        private val viewModelFactory: ViewModelProvider.Factory,
     private val pageMonitoring: PlayPltPerformanceCallback,
     private val analytic: PlayAnalytic
 ) :
