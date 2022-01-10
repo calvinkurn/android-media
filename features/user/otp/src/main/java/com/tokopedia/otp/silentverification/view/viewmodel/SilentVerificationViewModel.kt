@@ -91,14 +91,14 @@ class SilentVerificationViewModel @Inject constructor(
     }
 
     fun verifyBoku(network: Network, url: String) {
-        viewModelScope.launch {
+        launch {
             try {
                 getEvUrlUsecase.apply {
                     setNetworkSocketFactory(network)
                     setUrl(url)
                 }
                 val result = getEvUrlUsecase(Unit)
-                _bokuVerificationResponse.postValue(Success(result))
+                _bokuVerificationResponse.value = Success(result)
             } catch (e: Throwable) {
                 e.printStackTrace()
                 _bokuVerificationResponse.postValue(Fail(e))
