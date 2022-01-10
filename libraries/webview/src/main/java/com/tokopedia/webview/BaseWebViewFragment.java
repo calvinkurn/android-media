@@ -141,7 +141,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private UserSession userSession;
     private PermissionCheckerHelper permissionCheckerHelper;
     private RemoteConfig remoteConfig;
-    private String kycRedirectionUrl;
 
     /**
      * return the url to load in the webview
@@ -301,7 +300,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == REQUEST_CODE_LIVENESS && resultCode == RESULT_OK) {
-            Toast.makeText(getContext(), kycRedirectionUrl, Toast.LENGTH_LONG).show();
+            String kycRedirectionUrl = intent.getStringExtra(LIVENESS_REDIRECTION_PATH);
             webView.loadUrl(kycRedirectionUrl);
             return;
         }
@@ -804,8 +803,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private void gotoAlaCarteKyc(Uri uri) {
         String projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
-        Intent intent  = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY, projectId);
-        kycRedirectionUrl = uri.getQueryParameter(LIVENESS_REDIRECTION_PATH);
+        String kycRedirectionUrl = uri.getQueryParameter(LIVENESS_REDIRECTION_PATH);
+        Intent intent  = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY, projectId, kycRedirectionUrl);
         startActivityForResult(intent, REQUEST_CODE_LIVENESS);
     }
 
