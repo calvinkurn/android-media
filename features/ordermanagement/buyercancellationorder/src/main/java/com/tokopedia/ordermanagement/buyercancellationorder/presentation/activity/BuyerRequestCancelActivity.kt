@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.ordermanagement.buyercancellationorder.common.constants.BuyerConsts
@@ -59,6 +60,11 @@ class BuyerRequestCancelActivity : BaseSimpleActivity(), HasComponent<BuyerCance
         return DaggerBuyerCancellationOrderComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
+    }
+
+    override fun onBackPressed() {
+        KeyboardHandler.hideSoftKeyboard(this)
+        super.onBackPressed()
     }
 
     private fun Bundle.putAllPayload(data: Map<String, Any>) {
