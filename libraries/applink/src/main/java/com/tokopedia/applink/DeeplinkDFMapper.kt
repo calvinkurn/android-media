@@ -128,6 +128,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.HOTEL_INTERNAL_O
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INSURANCE_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_BUYER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER_SNAPSHOT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_TRANSACTION_ORDERLIST
@@ -565,6 +566,9 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // snapshot
             add(DFP({ it.startsWith(INTERNAL_ORDER_SNAPSHOT) }, DF_BASE, R.string.title_snapshot))
+
+            //buyercancelllationorder
+            add(DFP({ it.startsWith(INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE) }, DF_BASE, R.string.title_buyer_request_cancel))
 
             // Order History
             add(DFP({ it.startsWith(TRACK) }, DF_BASE, R.string.title_order_management_history))
