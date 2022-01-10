@@ -43,16 +43,12 @@ import com.tokopedia.home_recom.view.viewholder.RecommendationEmptyViewHolder
 import com.tokopedia.home_recom.viewmodel.SimilarProductRecommendationViewModel
 import com.tokopedia.home_recom.viewmodel.SimilarProductRecommendationViewModel.Companion.DEFAULT_VALUE_SORT
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
-import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
-import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -114,8 +110,8 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_simillar_recommendation, container, false)
-        requireActivity().window.decorView.systemUiVisibility =
-            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//        requireActivity().window.decorView.systemUiVisibility =
+//            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         navToolbar = view.findViewById(R.id.navToolbar)
         return view
     }
@@ -124,25 +120,6 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         super.onViewCreated(view, savedInstanceState)
         context?.let { trackingQueue = TrackingQueue(it) }
         setupToolbar()
-        navToolbar?.setupToolbarWithStatusBar(
-            requireActivity(),
-            statusBarTheme = if (requireContext().isDarkMode()) TOOLBAR_LIGHT_TYPE else TOOLBAR_DARK_TYPE
-        )
-        navToolbar?.apply {
-//            viewLifecycleOwner.lifecycle.addObserver(this)
-            setIcon(
-                IconBuilder()
-                    .addIcon(IconList.ID_SHARE) {
-//                        onClickShareProduct()
-                    }
-                    .addIcon(IconList.ID_CART) {}
-                    .addIcon(IconList.ID_NAV_GLOBAL) {}
-            )
-//            setNavToolbarSearchHint(" adsf")
-//            setupSearchbar(listOf(HintData("asdf")))
-//            setToolbarPageName(ProductTrackingConstant.Category.PDP)
-            show()
-        }
         sortFilterView = view.findViewById(R.id.filter_sort_recommendation)
         setupRecyclerView(view)
         setupBackToTop(view)
@@ -228,8 +205,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
             activity?.let { actv ->
                 it.setupToolbarWithStatusBar(
                     activity = actv,
-                    applyPadding = false,
-                    applyPaddingNegative = true
+                    statusBarTheme = if (requireContext().isDarkMode()) TOOLBAR_LIGHT_TYPE else TOOLBAR_DARK_TYPE
                 )
             }
             it.setOnBackButtonClickListener { (activity as HomeRecommendationActivity).onBackPressed() }
