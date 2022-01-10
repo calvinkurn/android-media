@@ -113,9 +113,10 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
     }
 
     private fun sendTracking() {
+        val loginText = if(userSessionInterface.isLoggedIn)"login" else "non login"
         AffiliateAnalytics.sendOpenScreenEvent(
                 AffiliateAnalytics.EventKeys.OPEN_SCREEN,
-                "${AffiliateAnalytics.ScreenKeys.AFFILIATE_LOGIN_SCREEN_NAME}${userSessionInterface.isLoggedIn}",
+                "${AffiliateAnalytics.ScreenKeys.AFFILIATE_LOGIN_SCREEN_NAME}$loginText",
                 userSessionInterface.isLoggedIn,
                 userSessionInterface.userId
         )
@@ -178,11 +179,12 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
     }
 
     private fun sendTrackerDaftar() {
+        val loginText = if(userSessionInterface.isLoggedIn)"login" else "non login"
         AffiliateAnalytics.sendEvent(
                 AffiliateAnalytics.EventKeys.CLICK_REGISTER,
                 AffiliateAnalytics.ActionKeys.CLICK_DAFTAR_SEKARANG,
                 AffiliateAnalytics.CategoryKeys.REGISTRATION_PAGE,
-                userSessionInterface.isLoggedIn.toString(), userSessionInterface.userId)
+                loginText, userSessionInterface.userId)
     }
 
     private fun showDialogLogout() {
