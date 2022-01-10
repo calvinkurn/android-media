@@ -74,6 +74,7 @@ class TopChatViewModel @Inject constructor(
     private var addWishListUseCase: AddWishListUseCase,
     private var removeWishListUseCase: RemoveWishListUseCase,
     private var getChatUseCase: GetChatUseCase,
+    private var unsendReplyUseCase: UnsendReplyUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig,
     private val chatAttachmentMapper: ChatAttachmentMapper,
@@ -153,6 +154,10 @@ class TopChatViewModel @Inject constructor(
     val bottomChat: LiveData<Result<GetChatResult>>
         get() = _bottomChat
 
+    private val _deleteBubble = MutableLiveData<Result<String>>()
+    val deleteBubble: LiveData<Result<String>>
+        get() = _deleteBubble
+
     var attachProductWarehouseId = "0"
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     var roomMetaData: RoomMetaData = RoomMetaData()
@@ -170,7 +175,7 @@ class TopChatViewModel @Inject constructor(
         source: String,
     ) {
         launchCatchError( block = {
-            val existingMessageIdParam = ExistingMessageIdParam(
+            val existingMessageIdParam = GetExistingMessageIdUseCase.Param(
                 toUserId = toUserId,
                 toShopId = toShopId,
                 source = source
@@ -370,24 +375,24 @@ class TopChatViewModel @Inject constructor(
     private fun generateToggleBlockChatParam(
         messageId: String,
         blockActionType: ActionType
-    ): ToggleBlockChatParam {
-        return ToggleBlockChatParam().apply {
+    ): ChatToggleBlockChatUseCase.Param {
+        return ChatToggleBlockChatUseCase.Param().apply {
             this.msgId = messageId
             when (blockActionType) {
                 BlockActionType.BlockChat -> {
-                    this.blockType = BlockType.Personal.value
+                    this.blockType = ChatToggleBlockChatUseCase.BlockType.Personal.value
                     this.isBlocked = true
                 }
                 BlockActionType.UnblockChat -> {
-                    this.blockType = BlockType.Personal.value
+                    this.blockType = ChatToggleBlockChatUseCase.BlockType.Personal.value
                     this.isBlocked = false
                 }
                 BlockActionType.BlockPromo -> {
-                    this.blockType = BlockType.Promo.value
+                    this.blockType = ChatToggleBlockChatUseCase.BlockType.Promo.value
                     this.isBlocked = true
                 }
                 BlockActionType.UnblockPromo -> {
-                    this.blockType = BlockType.Promo.value
+                    this.blockType = ChatToggleBlockChatUseCase.BlockType.Promo.value
                     this.isBlocked = false
                 }
             }
@@ -440,7 +445,7 @@ class TopChatViewModel @Inject constructor(
     private fun generateAttachmentParams(
         msgId: Long,
         replyIDs: String
-    ): ChatAttachmentParam {
+    ): ChatAttachmentUseCase.Param {
         val addressId = userLocationInfo.address_id.toLongOrZero()
         val districtId = userLocationInfo.district_id.toLongOrZero()
         val postalCode = userLocationInfo.postal_code
@@ -449,7 +454,7 @@ class TopChatViewModel @Inject constructor(
         } else {
             "${userLocationInfo.lat},${userLocationInfo.long}"
         }
-        return ChatAttachmentParam(
+        return ChatAttachmentUseCase.Param(
             msgId = msgId,
             replyIDs = replyIDs,
             addressId = addressId,
@@ -471,7 +476,7 @@ class TopChatViewModel @Inject constructor(
 
     fun getSmartReplyWidget(msgId: String, productIds: String) {
         launchCatchError(block = {
-            val param = SmartReplyQuestionParam(
+            val param = GetSmartReplyQuestionUseCase.Param(
                 msgId = msgId,
                 productIds = productIds,
                 addressId = userLocationInfo.address_id.toLongOrZero(),
@@ -570,4 +575,21 @@ class TopChatViewModel @Inject constructor(
         getChatUseCase.reset()
     }
 
+
+    fun deleteMsg(msgId: String, replyTimeNano: String) {
+        launchCatchError(block = {
+            val existingMessageIdParam = UnsendReplyUseCase.Param(
+                msgID = msgId.toLongOrZero(),
+                replyTimes = replyTimeNano
+            )
+            val response = unsendReplyUseCase(existingMessageIdParam)
+            if (response.unsendReply.isSuccess) {
+                _deleteBubble.value = Success(replyTimeNano)
+            } else {
+                _deleteBubble.value = Fail(IllegalStateException())
+            }
+        }, onError = {
+            _deleteBubble.value = Fail(it)
+        })
+    }
 }

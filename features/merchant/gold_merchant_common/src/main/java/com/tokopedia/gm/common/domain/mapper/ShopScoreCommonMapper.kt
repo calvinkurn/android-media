@@ -5,7 +5,7 @@ import com.tokopedia.gm.common.data.source.cloud.model.ShopInfoPeriodWrapperResp
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import javax.inject.Inject
 
-class ShopScoreCommonMapper @Inject constructor() {
+open class ShopScoreCommonMapper @Inject constructor() {
 
     fun mapToGetShopInfo(shopInfoPeriodWrapperResponse: ShopInfoPeriodWrapperResponse): ShopInfoPeriodUiModel {
         val dateShopCreated = shopInfoPeriodWrapperResponse.shopInfoByIDResponse?.result

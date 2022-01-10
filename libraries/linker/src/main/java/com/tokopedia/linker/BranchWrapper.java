@@ -168,6 +168,9 @@ public class BranchWrapper implements WrapperInterface {
                             !TextUtils.isEmpty(deeplink)) {
                         deferredDeeplinkPath = LinkerConstants.APPLINKS + "://" + deeplink;
                     }
+                    else {
+                        deferredDeeplinkPath = deeplink;
+                    }
                     if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                         linkerDeeplinkRequest.getDefferedDeeplinkCallback().onDeeplinkSuccess(
                                 LinkerUtils.createDeeplinkData(deeplink, promoCode));
@@ -587,7 +590,7 @@ public class BranchWrapper implements WrapperInterface {
     private void convertToCampaign(Context context, String utmSource, String utmCampaign, String utmMedium, String utmTerm, String clickTime) {
         if (!(TextUtils.isEmpty(utmSource) || TextUtils.isEmpty(utmMedium))) {
             Map<String, Object> param = new HashMap<>();
-            param.put(LinkerConstants.SCREEN_NAME_KEY, LinkerConstants.SCREEN_NAME_VALUE);
+            param.put(LinkerConstants.SCREEN_NAME_KEY, mapDeeplinkToScreenName());
             param.put(LinkerConstants.UTM_SOURCE, utmSource);
             param.put(LinkerConstants.UTM_CAMPAIGN, utmCampaign);
             param.put(LinkerConstants.UTM_MEDIUM, utmMedium);
@@ -598,6 +601,18 @@ public class BranchWrapper implements WrapperInterface {
             sendCampaignToTrackApp(context, param);
             logValidCampaignUtmParams(context, utmSource, utmMedium, utmCampaign, clickTime);
         }
+    }
+
+    private String mapDeeplinkToScreenName(){
+        if(!TextUtils.isEmpty(getDefferedDeeplinkForSession())
+                && getDefferedDeeplinkForSession().startsWith(LinkerConstants.TOKOPEDIA_SCHEME)
+                && getDefferedDeeplinkForSession().contains(LinkerConstants.DISCOVERY_PATH)) {
+            String[] deeplinkArray = getDefferedDeeplinkForSession().split(LinkerConstants.QUERY_PARAM_SEPARATOR);
+            if (deeplinkArray.length > 0 && !TextUtils.isEmpty(deeplinkArray[0])) {
+                return LinkerConstants.DEEPLINK_VALUE + deeplinkArray[0].replace(LinkerConstants.TOKOPEDIA_SCHEME, "");
+            }
+        }
+        return LinkerConstants.SCREEN_NAME_VALUE;
     }
 
     private void sendCampaignToTrackApp(Context context, Map<String, Object> param) {

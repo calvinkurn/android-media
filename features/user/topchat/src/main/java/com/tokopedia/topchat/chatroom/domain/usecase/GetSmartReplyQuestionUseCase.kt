@@ -1,16 +1,11 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.graphql.domain.flow.FlowUseCase
-import com.tokopedia.topchat.chatroom.domain.pojo.param.SmartReplyQuestionParam
-import com.tokopedia.topchat.chatroom.domain.pojo.param.SmartReplyQuestionParam.Companion.PARAM_ADDRESS_ID
-import com.tokopedia.topchat.chatroom.domain.pojo.param.SmartReplyQuestionParam.Companion.PARAM_DISTRICT_ID
-import com.tokopedia.topchat.chatroom.domain.pojo.param.SmartReplyQuestionParam.Companion.PARAM_LAT_LONG
-import com.tokopedia.topchat.chatroom.domain.pojo.param.SmartReplyQuestionParam.Companion.PARAM_MSG_ID
-import com.tokopedia.topchat.chatroom.domain.pojo.param.SmartReplyQuestionParam.Companion.PARAM_POSTAL_CODE
-import com.tokopedia.topchat.chatroom.domain.pojo.param.SmartReplyQuestionParam.Companion.PARAM_PRODUCT_IDS
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.common.data.Resource
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +16,7 @@ import javax.inject.Inject
 open class GetSmartReplyQuestionUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers,
-): FlowUseCase<SmartReplyQuestionParam, Resource<ChatSmartReplyQuestionResponse>>(dispatcher.io) {
+): FlowUseCase<GetSmartReplyQuestionUseCase.Param, Resource<ChatSmartReplyQuestionResponse>>(dispatcher.io) {
 
     override fun graphqlQuery(): String = """
         query chatSmartReplyQuestion(
@@ -52,10 +47,10 @@ open class GetSmartReplyQuestionUseCase @Inject constructor(
     """.trimIndent()
 
     override suspend fun execute(
-        params: SmartReplyQuestionParam
+        params: Param
     ): Flow<Resource<ChatSmartReplyQuestionResponse>> {
         return flow {
-            val response = repository.request<SmartReplyQuestionParam,
+            val response = repository.request<Param,
                     ChatSmartReplyQuestionResponse>(graphqlQuery(), params)
             emit(Resource.success(response))
         }.onStart {
@@ -63,4 +58,32 @@ open class GetSmartReplyQuestionUseCase @Inject constructor(
         }
     }
 
+    data class Param (
+        @SerializedName(PARAM_MSG_ID)
+        var msgId: String,
+
+        @SerializedName(PARAM_PRODUCT_IDS)
+        var productIds: String,
+
+        @SerializedName(PARAM_ADDRESS_ID)
+        var addressId: Long,
+
+        @SerializedName(PARAM_DISTRICT_ID)
+        var districtId: Long,
+
+        @SerializedName(PARAM_POSTAL_CODE)
+        var postalCode: String,
+
+        @SerializedName(PARAM_LAT_LONG)
+        var latLon: String
+    ): GqlParam
+
+    companion object {
+        const val PARAM_MSG_ID = "msgID"
+        const val PARAM_PRODUCT_IDS = "productIDs"
+        const val PARAM_ADDRESS_ID = "addressID"
+        const val PARAM_DISTRICT_ID = "districtID"
+        const val PARAM_POSTAL_CODE = "postalCode"
+        const val PARAM_LAT_LONG = "latlon"
+    }
 }

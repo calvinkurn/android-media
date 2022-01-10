@@ -47,6 +47,7 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteraction
 import com.tokopedia.play.broadcaster.view.fragment.PlayPermissionFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.extension.awaitResume
@@ -196,6 +197,9 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     }
 
     private fun initViewModel() {
+        /** Must be created here to avoid this PlayBroadcastSummaryViewModel being injected
+         * with different instance of dependencies when configuration changes occur */
+        ViewModelProvider(this, viewModelFactory).get(PlayBroadcastSummaryViewModel::class.java)
         viewModel = ViewModelProvider(this, viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
@@ -474,6 +478,11 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
             pauseLiveDialog.show()
             analytic.viewDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.channelTitle)
         }
+    }
+
+    fun isDialogContinueLiveStreamOpen(): Boolean {
+        return if(!::pauseLiveDialog.isInitialized) false
+        else pauseLiveDialog.isShowing
     }
 
     private fun showTermsAndConditionBottomSheet(

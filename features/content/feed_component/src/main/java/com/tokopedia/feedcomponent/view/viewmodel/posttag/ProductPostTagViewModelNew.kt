@@ -23,7 +23,7 @@ data class ProductPostTagViewModelNew(
     var priceDiscountFmt: String = "",
     var totalSold: Int = 0,
     val rating: Int = 0,
-    var mods: List<Any>,
+    var mods: List<String>,
     var shopId: String = "0",
     var shopName: String = "",
     override var feedType: String = "",

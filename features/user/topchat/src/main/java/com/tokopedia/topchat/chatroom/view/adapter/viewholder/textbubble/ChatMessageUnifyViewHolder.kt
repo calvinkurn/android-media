@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.adapter.util.LongClickMenuItemGenerator.createLongClickMenuMsgBubble
 import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
@@ -78,6 +79,8 @@ class ChatMessageUnifyViewHolder(
         bindMargin(msg)
         bindClick()
         bindLongClick(msg)
+        bindIcon(msg)
+        bindTextColor(msg)
         if (msg.isSender) {
             // Right msg
             bindMsgGravity(Gravity.END)
@@ -99,14 +102,25 @@ class ChatMessageUnifyViewHolder(
         }
     }
 
+    private fun bindTextColor(msg: MessageUiModel) {
+        fxChat?.bindTextColor(msg)
+    }
+
+    private fun bindIcon(msg: MessageUiModel) {
+        fxChat?.bindIcon(msg)
+    }
+
     private fun bindLongClick(msg: MessageUiModel) {
-        if (!msg.isBanned()) {
+        if (!msg.isBanned() && !msg.isDeleted()) {
             fxChat?.setOnLongClickListener {
-                commonListener.showMsgMenu(msg, fxChat.message?.text ?: "")
+                val menus = createLongClickMenuMsgBubble()
+                commonListener.showMsgMenu(
+                    msg, fxChat.message?.text ?: "", menus
+                )
                 true
             }
         } else {
-            fxChat?.setOnClickListener(null)
+            fxChat?.setOnLongClickListener(null)
         }
     }
 

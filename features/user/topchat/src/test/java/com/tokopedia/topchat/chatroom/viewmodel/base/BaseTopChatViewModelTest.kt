@@ -17,6 +17,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.MockKAnnotations
+import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
 import org.junit.Rule
@@ -26,7 +27,7 @@ abstract class BaseTopChatViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     //UseCases
-    @RelaxedMockK
+    @MockK
     lateinit var getExistingMessageIdUseCase: GetExistingMessageIdUseCase
 
     @RelaxedMockK
@@ -47,7 +48,7 @@ abstract class BaseTopChatViewModelTest {
     @RelaxedMockK
     lateinit var orderProgressUseCase: OrderProgressUseCase
 
-    @RelaxedMockK
+    @MockK
     lateinit var reminderTickerUseCase: GetReminderTickerUseCase
 
     @RelaxedMockK
@@ -56,7 +57,7 @@ abstract class BaseTopChatViewModelTest {
     @RelaxedMockK
     lateinit var addToCartOccMultiUseCase: AddToCartOccMultiUseCase
 
-    @RelaxedMockK
+    @MockK
     lateinit var chatToggleBlockChatUseCase: ChatToggleBlockChatUseCase
 
     @RelaxedMockK
@@ -65,13 +66,13 @@ abstract class BaseTopChatViewModelTest {
     @RelaxedMockK
     lateinit var getChatBackgroundUseCase: GetChatBackgroundUseCase
 
-    @RelaxedMockK
+    @MockK
     lateinit var chatAttachmentUseCase: ChatAttachmentUseCase
 
     @RelaxedMockK
     lateinit var getChatListGroupStickerUseCase: GetChatListGroupStickerUseCase
 
-    @RelaxedMockK
+    @MockK
     lateinit var getSmartReplyQuestionUseCase: GetSmartReplyQuestionUseCase
 
     @RelaxedMockK
@@ -87,6 +88,9 @@ abstract class BaseTopChatViewModelTest {
     lateinit var getChatUseCase: GetChatUseCase
 
     //Misc
+    @RelaxedMockK
+    lateinit var unsendReplyUseCase: UnsendReplyUseCase
+
     @RelaxedMockK
     lateinit var remoteConfig: RemoteConfig
 
@@ -133,6 +137,7 @@ abstract class BaseTopChatViewModelTest {
             addWishListUseCase,
             removeWishListUseCase,
             getChatUseCase,
+            unsendReplyUseCase,
             dispatchers,
             remoteConfig,
             chatAttachmentMapper,
