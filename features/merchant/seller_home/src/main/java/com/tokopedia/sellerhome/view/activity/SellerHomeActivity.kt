@@ -52,6 +52,7 @@ import com.tokopedia.sellerhome.view.viewhelper.SellerHomeOnApplyInsetsListener
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.BottomMenu
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.IBottomClickListener
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
+import com.tokopedia.sellerhomecommon.utils.SellerOutageErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -487,10 +488,15 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
                 is Fail -> {
                     SellerHomeErrorHandler.logException(
                         it.throwable,
-                        SellerHomeErrorHandler.SHOP_INFO,
                         SellerHomeErrorHandler.SHOP_INFO
                     )
 
+                    SellerOutageErrorHandler.logExceptionToServer(
+                        it.throwable,
+                        SellerHomeErrorHandler.SHOP_INFO,
+                        SellerHomeErrorHandler.SHOP_INFO,
+                        SellerOutageErrorHandler.PageType.SELLER_HOME
+                    )
                     navigator?.run {
                         if (isHomePageSelected()) {
                             supportActionBar?.title = userSession.shopName

@@ -80,6 +80,7 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryI
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
+import com.tokopedia.sellerhomecommon.utils.SellerOutageErrorHandler
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -990,6 +991,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     SellerHomeErrorHandler.logException(
                         result.throwable, SellerHomeErrorHandler.SHOP_LOCATION
                     )
+                    SellerOutageErrorHandler.logExceptionToServer(
+                        result.throwable,
+                        SellerHomeErrorHandler.SHOP_LOCATION,
+                        SellerOutageErrorHandler.PageType.SELLER_HOME,
+                        userSession.deviceId.orEmpty()
+                    )
                 }
             }
             setProgressBarVisibility(false)
@@ -1210,8 +1217,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         SellerHomeErrorHandler.logException(
             throwable = throwable,
-            message = ERROR_LAYOUT,
-            errorType = SellerHomeErrorHandler.ErrorType.ERROR_LAYOUT,
+            message = ERROR_LAYOUT
+        )
+        SellerOutageErrorHandler.logExceptionToServer(
+            throwable = throwable,
+            errorType = SellerOutageErrorHandler.ErrorType.ERROR_LAYOUT,
+            pageType = SellerOutageErrorHandler.PageType.SELLER_HOME,
             deviceId = userSession.deviceId.orEmpty()
         )
     }
@@ -1328,7 +1339,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     SellerHomeErrorHandler.logException(
                         throwable = it.throwable,
                         message = ERROR_TICKER,
-                        errorType = SellerHomeErrorHandler.ErrorType.ERROR_TICKER,
+                    )
+                    SellerOutageErrorHandler.logExceptionToServer(
+                        throwable = it.throwable,
+                        errorType = SellerOutageErrorHandler.ErrorType.ERROR_TICKER,
+                        pageType = SellerOutageErrorHandler.PageType.SELLER_HOME,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                     binding?.relTicker?.gone()
@@ -1358,6 +1373,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     SellerHomeErrorHandler.logException(
                         it.throwable, SellerHomeErrorHandler.SHOP_SHARE_DATA
                     )
+                    SellerOutageErrorHandler.logExceptionToServer(
+                        it.throwable,
+                        errorType = SellerHomeErrorHandler.SHOP_SHARE_DATA,
+                        pageType = SellerOutageErrorHandler.PageType.SELLER_HOME,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }
@@ -1368,6 +1389,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             if (it is Fail) {
                 SellerHomeErrorHandler.logException(
                     it.throwable, SellerHomeErrorHandler.SHOP_SHARE_TRACKING
+                )
+                SellerOutageErrorHandler.logExceptionToServer(
+                    it.throwable,
+                    SellerHomeErrorHandler.SHOP_SHARE_TRACKING,
+                    SellerOutageErrorHandler.PageType.SELLER_HOME,
+                    userSession.deviceId.orEmpty()
                 )
             }
         }
@@ -1553,8 +1580,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         )
         SellerHomeErrorHandler.logException(
             throwable = this,
-            message = "$ERROR_WIDGET $widgetType",
-            errorType = SellerHomeErrorHandler.ErrorType.ERROR_WIDGET,
+            message = "$ERROR_WIDGET $widgetType"
+        )
+
+        SellerOutageErrorHandler.logExceptionToServer(
+            throwable = this,
+            errorType = SellerOutageErrorHandler.ErrorType.ERROR_WIDGET,
+            pageType = SellerOutageErrorHandler.PageType.SELLER_HOME,
             deviceId = userSession.deviceId.orEmpty(),
             extras = widgetErrorExtraMap
         )
