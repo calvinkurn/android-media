@@ -86,6 +86,22 @@ class TopChatRoomAdapter constructor(
         notifyItemChanged(chatBubblePosition, Payload.REBIND)
     }
 
+    fun deleteMsg(replyTimeNano: String) {
+        val chatBubblePosition = visitables.indexOfFirst {
+            it is BaseChatUiModel && it.replyTime == replyTimeNano
+        }
+        if (chatBubblePosition == RecyclerView.NO_POSITION) return
+        val msg = visitables[chatBubblePosition] as? BaseChatUiModel ?: return
+        val deletedBubbleUiModel = MessageUiModel.Builder()
+            .withBaseChatUiModel(msg)
+            .withSafelySendableUiModel(msg)
+            .withMarkAsDeleted()
+            .build()
+        visitables.removeAt(chatBubblePosition)
+        visitables.add(chatBubblePosition, deletedBubbleUiModel)
+        notifyItemChanged(chatBubblePosition)
+    }
+
     override fun getItemViewType(position: Int): Int {
         val default = super.getItemViewType(position)
         return adapterTypeFactory.getItemViewType(visitables, position, default)

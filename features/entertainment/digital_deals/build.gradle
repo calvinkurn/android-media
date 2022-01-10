@@ -26,6 +26,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.locationmanager)
     implementation projectOrAar(rootProject.ext.libraries.circularViewPager)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.features.commonPayment)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
     implementation rootProject.ext.unifyDependencies.principles
@@ -50,6 +52,15 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.playServicesDependencies.location
     implementation projectOrAar(rootProject.ext.features.promoCheckoutCommon)
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.assertJCore
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+
+    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
+
 }
 
 project.ext {
@@ -60,3 +71,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
