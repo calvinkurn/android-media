@@ -17,6 +17,8 @@ class MilestoneMapper @Inject constructor(
         private const val HIDDEN_BUTTON_STATUS = 0
         private const val ENABLED_BUTTON_STATUS = 1
         private const val DISABLED_BUTTON_STATUS = 2
+        private const val ZERO_MS = 0L
+        private const val ONE_SECOND_MILLIS = 1000L
     }
 
     fun mapMilestoneResponseToUiModel(
@@ -41,9 +43,17 @@ class MilestoneMapper @Inject constructor(
                 isError = it.error.orFalse(),
                 milestoneProgress = mapGetMilestoneProgressbar(it.progressBar),
                 milestoneMissions = missionMilestone,
-                milestoneCta = mapGetMilestoneCta(it.cta)
+                milestoneCta = mapGetMilestoneCta(it.cta),
+                deadlineMillis = convertSecondToMillisecond(it.deadlineMillis.orZero())
             )
         }
+    }
+
+    private fun convertSecondToMillisecond(seconds: Long): Long {
+        if (seconds == ZERO_MS) {
+            return seconds
+        }
+        return seconds.times(ONE_SECOND_MILLIS)
     }
 
     private fun mapGetMilestoneMission(missionData: List<MilestoneData.Mission>): List<MilestoneMissionUiModel> {

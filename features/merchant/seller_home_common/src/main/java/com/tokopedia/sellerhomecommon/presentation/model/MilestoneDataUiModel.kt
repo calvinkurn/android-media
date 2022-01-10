@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomecommon.presentation.model
 
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.model.ImpressHolder
+import java.util.*
 
 data class MilestoneDataUiModel(
     override var dataKey: String = "",
@@ -17,11 +18,17 @@ data class MilestoneDataUiModel(
     val isShowMission: Boolean = true,
     val milestoneProgress: MilestoneProgressbarUiModel = MilestoneProgressbarUiModel(),
     val milestoneMissions: List<BaseMilestoneMissionUiModel> = emptyList(),
-    val milestoneCta: MilestoneCtaUiModel = MilestoneCtaUiModel()
+    val milestoneCta: MilestoneCtaUiModel = MilestoneCtaUiModel(),
+    val deadlineMillis: Long = 0L
 ) : BaseDataUiModel {
 
     override fun shouldRemove(): Boolean {
-        return (!isFromCache && !showWidget) || milestoneMissions.isNullOrEmpty()
+        return (!isFromCache && !showWidget) || milestoneMissions.isNullOrEmpty() || isOverDue()
+    }
+
+    fun isOverDue(): Boolean {
+        val now = Date().time
+        return deadlineMillis < now
     }
 }
 

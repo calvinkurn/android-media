@@ -49,7 +49,7 @@ data class MilestoneData(
     val showNumber: Boolean? = false,
     @Expose
     @SerializedName("timeDeadline")
-    val deadlineMillis: Long = 0L,
+    val deadlineMillis: Long? = 0L,
     @Expose
     @SerializedName("showWidget")
     val showWidget: Boolean? = false,

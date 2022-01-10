@@ -19,9 +19,12 @@ import com.tokopedia.sellerhomecommon.presentation.model.BaseMilestoneMissionUiM
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneProgressbarUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.viewhelper.MilestoneMissionItemDecoration
+import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class MilestoneViewHolder(
     itemView: View,
@@ -36,6 +39,10 @@ class MilestoneViewHolder(
         private const val PROGRESS_BAR_MAX_VALUE = 100
         private const val FIRST_INDEX = 0
         private const val LAST_ONE = 1
+        private const val ONE_CONST = 1L
+        private const val FOUR_CONST = 4L
+        private const val NINE_CONST = 9L
+        private const val ONE_SEC_MILLIS = 1000L
     }
 
     private val binding by lazy { ShcMilestoneWidgetBinding.bind(itemView) }
@@ -51,6 +58,7 @@ class MilestoneViewHolder(
         val view = binding.stubShcMilestoneSuccess.inflate()
         ShcMilestoneWidgetSuccessBinding.bind(view)
     }
+    private var timer: Timer? = null
 
     override fun bind(element: MilestoneWidgetUiModel) {
         val data = element.data
@@ -95,9 +103,54 @@ class MilestoneViewHolder(
             setupTooltip(tvTitleMilestoneWidget, element)
             setupSeeMoreCta(element)
 
-            root.addOnImpressionListener(element.impressHolder) {
+            itemView.addOnImpressionListener(element.impressHolder) {
                 listener.sendMilestoneWidgetImpressionEvent(element)
                 setupMilestoneList(element)
+                setupCountDownTime(element)
+            }
+        }
+    }
+
+    private fun setupCountDownTime(element: MilestoneWidgetUiModel) {
+        val data = element.data ?: return
+        with(successStateBinding) {
+            val now = Date().time
+            val diffMillis = data.deadlineMillis.minus(now)
+            val nineDaysMillis = TimeUnit.DAYS.toMillis(NINE_CONST)
+            val fourDaysMillis = TimeUnit.DAYS.toMillis(FOUR_CONST)
+            val oneDaysMillis = TimeUnit.DAYS.toMillis(ONE_CONST)
+            when {
+                diffMillis < oneDaysMillis -> setupCountDownTimer(data.deadlineMillis)
+                diffMillis in oneDaysMillis until fourDaysMillis -> {
+
+                }
+                diffMillis in (fourDaysMillis.plus(LAST_ONE)) until nineDaysMillis -> {
+
+                }
+                diffMillis > nineDaysMillis -> {
+
+                }
+            }
+        }
+    }
+
+    private fun setupCountDownTimer(deadlineMillis: Long) {
+        with(successStateBinding) {
+            val now = Date().time
+            var timeMillis = deadlineMillis.minus(now)
+            if (timer == null) {
+                timer = Timer().apply {
+                    scheduleAtFixedRate(object : TimerTask() {
+                        override fun run() {
+                            timeMillis = timeMillis.minus(ONE_SEC_MILLIS)
+                            if (timeMillis < ONE_CONST) {
+                                cancel()
+                            }
+                            val timerFmt = DateTimeUtil.format(timeMillis, "hh:mm:ss")
+                            println("Timer : $timerFmt")
+                        }
+                    }, 0, ONE_SEC_MILLIS)
+                }
             }
         }
     }
