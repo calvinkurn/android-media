@@ -7,7 +7,6 @@ import android.util.SparseIntArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -39,6 +38,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -523,6 +523,11 @@ abstract class BaseSearchCategoryFragment:
         stickyView?.visible()
     }
 
+    private fun hideContent() {
+        loaderUnify?.show()
+        stickyView?.gone()
+    }
+
     protected open fun updateEndlessScrollListener(hasNextPage: Boolean) {
         endlessScrollListener?.updateStateAfterGetData()
         endlessScrollListener?.setHasNextPage(hasNextPage)
@@ -998,14 +1003,17 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onClickSwitcherTo15M() {
+        hideContent()
         getViewModel().setUserPreference(NOW_15M)
     }
 
     override fun onClickSwitcherTo2H() {
+        hideContent()
         getViewModel().setUserPreference(NOW_2H)
     }
 
     private fun setUserPreferenceData(result: Result<SetUserPreference.SetUserPreferenceData>) {
+        showContent()
         when(result) {
             is Success -> {
                 swipeRefreshLayout
