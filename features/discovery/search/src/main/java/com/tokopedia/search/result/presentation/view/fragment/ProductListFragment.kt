@@ -23,14 +23,12 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
 import com.tokopedia.discovery.common.constants.SearchConstant
@@ -1309,6 +1307,10 @@ class ProductListFragment: BaseDaggerFragment(),
         TopAdsGtmTracker.eventTopAdsHeadlineShopView(position, data, queryKey, getUserId())
     }
 
+    override fun onTopAdsCarouselItemImpressionListener(impressionCount: Int) {
+        presenter?.shopAdsImpressionCount(impressionCount)
+    }
+
     override fun getRegistrationId() = presenter?.deviceId ?: ""
 
     override fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselDataView.Option.Product) {
@@ -1448,21 +1450,34 @@ class ProductListFragment: BaseDaggerFragment(),
         }
     }
 
-    override fun onInspirationCarouselChipsProductClicked(product: InspirationCarouselDataView.Option.Product) {
+    override fun onInspirationCarouselChipsProductClicked(
+        product: InspirationCarouselDataView.Option.Product
+    ) {
         redirectionStartActivity(product.applink, product.url)
 
-        val filterSortParams = getSortFilterParamStringFromSearchParameter()
+        val data = createCarouselTrackingUnificationData(product)
 
-        val products: MutableList<Any> = ArrayList()
-        products.add(product.getInspirationCarouselChipsProductAsObjectDataLayer(filterSortParams))
+        inspirationCarouselTrackingUnification.trackCarouselClick(data) {
+            val productDataLayerList = createInspirationCarouselChipsProductDataLayer(product)
 
-        SearchTracking.trackEventClickInspirationCarouselChipsProduct(
+            SearchTracking.trackEventClickInspirationCarouselChipsProduct(
                 product.inspirationCarouselType,
                 queryKey,
                 product.optionTitle,
                 getUserId(),
-                products
-        )
+                productDataLayerList
+            )
+        }
+    }
+
+    private fun createInspirationCarouselChipsProductDataLayer(
+        product: InspirationCarouselDataView.Option.Product
+    ): List<Any> {
+        val filterSortParams = getSortFilterParamStringFromSearchParameter()
+        val productDataLayer =
+            product.getInspirationCarouselChipsProductAsObjectDataLayer(filterSortParams)
+
+        return listOf(productDataLayer)
     }
 
     private fun getSortFilterParamStringFromSearchParameter() =
@@ -1471,21 +1486,24 @@ class ProductListFragment: BaseDaggerFragment(),
                 getSortFilterParamsString(it.getSearchParameterMap() as Map<String?, String?>)
             } ?: ""
 
-    override fun onImpressedInspirationCarouselChipsProduct(product: InspirationCarouselDataView.Option.Product) {
+    override fun onImpressedInspirationCarouselChipsProduct(
+        product: InspirationCarouselDataView.Option.Product,
+    ) {
+        val data = createCarouselTrackingUnificationData(product)
         val trackingQueue = trackingQueue ?: return
-        val filterSortParams = getSortFilterParamStringFromSearchParameter()
 
-        val products: MutableList<Any> = ArrayList()
-        products.add(product.getInspirationCarouselChipsProductAsObjectDataLayer(filterSortParams))
+        inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data) {
+            val productDataLayerList = createInspirationCarouselChipsProductDataLayer(product)
 
-        SearchTracking.trackImpressionInspirationCarouselChips(
+            SearchTracking.trackImpressionInspirationCarouselChips(
                 trackingQueue,
                 product.inspirationCarouselType,
                 queryKey,
                 product.optionTitle,
                 getUserId(),
-                products
-        )
+                productDataLayerList
+            )
+        }
     }
 
     override fun onInspirationCarouselChipsSeeAllClicked(
@@ -1610,11 +1628,17 @@ class ProductListFragment: BaseDaggerFragment(),
         broadMatchItem.add(broadMatchItemDataView.asClickObjectDataLayer())
 
         SearchTracking.trackEventClickBroadMatchItem(
-                queryKey,
-                broadMatchItemDataView.alternativeKeyword,
-                getUserId(),
-                broadMatchItem,
+            queryKey,
+            broadMatchItemDataView.alternativeKeyword,
+            getUserId(),
+            broadMatchItemDataView.isOrganicAds,
+            broadMatchItemDataView.componentId,
+            broadMatchItem,
         )
+    }
+
+    override fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView) {
+        presenter?.onBroadMatchImpressed(broadMatchDataView)
     }
 
     override fun onBroadMatchSeeMoreClicked(broadMatchDataView: BroadMatchDataView) {
@@ -1641,7 +1665,7 @@ class ProductListFragment: BaseDaggerFragment(),
         return productCardOptionsModel
     }
 
-    override fun trackBroadMatchImpression(broadMatchItemDataView: BroadMatchItemDataView) {
+    override fun trackEventImpressionBroadMatchItem(broadMatchItemDataView: BroadMatchItemDataView) {
         val trackingQueue = trackingQueue ?: return
         val broadMatchItemAsObjectDataLayer: MutableList<Any> = ArrayList()
         broadMatchItemAsObjectDataLayer.add(broadMatchItemDataView.asImpressionObjectDataLayer())
@@ -2008,8 +2032,20 @@ class ProductListFragment: BaseDaggerFragment(),
         }
     }
 
+    override fun trackEventImpressionBroadMatch(broadMatchDataView: BroadMatchDataView) {
+        SearchTracking.trackEventImpressionBroadMatch(
+            iris,
+            broadMatchDataView,
+        )
+    }
+
     override fun trackEventClickSeeMoreBroadMatch(broadMatchDataView: BroadMatchDataView) {
-        SearchTracking.trackEventClickBroadMatchSeeMore(queryKey, broadMatchDataView.keyword, broadMatchDataView.dimension90)
+        SearchTracking.trackEventClickBroadMatchSeeMore(
+            broadMatchDataView,
+            queryKey,
+            broadMatchDataView.keyword,
+            broadMatchDataView.dimension90,
+        )
     }
 
     override fun trackEventClickSeeMoreDynamicProductCarousel(
@@ -2074,6 +2110,6 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun goToWishlistPage() {
-        RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
+        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 }

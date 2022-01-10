@@ -175,6 +175,7 @@ ext {
             officialStore                  : ":features:merchant:official_store",
             voucherCreation                 : ":features:merchant:voucher_creation",
             brandlist                       : ":features:merchant:brandlist",
+            campaignList                    : ":features:merchant:campaign_list",
             favorite                        : ":features:merchant:favorite",
             youtubeCommon                   : ":features:merchant:youtube_common",
             onboarding                      : ":features:user:onboarding",
@@ -202,6 +203,7 @@ ext {
             promoGamificationCommon         : ":features:promo:promo_gamification_common",
             promoUiCommon                   : ":features:promo:promo_ui_common",
             promoMvcWidget                  : ":features:promo:mvc_widget",
+            questWidget                     : ":features:promo:quest_widget",
 
             topAdsDashboard                 : ":features:top_ads:top_ads_dashboard",
             topAdsFreeClaim                 : ":features:top_ads:top_ads_free_claim",

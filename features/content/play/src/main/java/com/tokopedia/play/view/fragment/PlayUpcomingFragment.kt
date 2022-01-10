@@ -82,7 +82,10 @@ class PlayUpcomingFragment @Inject constructor(
             playParentViewModel = ViewModelProvider(currentActivity, currentActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
         }
 
-        playUpcomingViewModel.initPage(channelId, playParentViewModel.getLatestChannelStorageData(channelId))
+        try {
+            playUpcomingViewModel.initPage(channelId, playParentViewModel.getLatestChannelStorageData(channelId))
+        }
+        catch (e: Exception){}
     }
 
     override fun onCreateView(
@@ -108,9 +111,12 @@ class PlayUpcomingFragment @Inject constructor(
 
     override fun onPause() {
         super.onPause()
-        playParentViewModel.setLatestChannelStorageData(
-            channelId, playUpcomingViewModel.latestChannelData
-        )
+        try {
+            playParentViewModel.setLatestChannelStorageData(
+                channelId, playUpcomingViewModel.latestChannelData
+            )
+        }
+        catch (e: Exception) {}
     }
 
     override fun onRequestPermissionsResult(

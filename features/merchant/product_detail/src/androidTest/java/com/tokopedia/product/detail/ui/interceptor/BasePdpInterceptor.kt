@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.ui.interceptor
 
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody.Companion.toResponseBody
 import okio.Buffer
 
 /**
@@ -10,7 +12,7 @@ abstract class BasePdpInterceptor : Interceptor {
 
     fun readRequestString(copyRequest: Request): String {
         val buffer = Buffer()
-        copyRequest.body()?.writeTo(buffer)
+        copyRequest.body?.writeTo(buffer)
         return buffer.readUtf8()
     }
 
@@ -20,8 +22,9 @@ abstract class BasePdpInterceptor : Interceptor {
                 .code(200)
                 .protocol(Protocol.HTTP_2)
                 .message(responseString)
-                .body(ResponseBody.create(MediaType.parse("application/json"),
-                        responseString.toByteArray()))
+                .body(
+                    responseString.toByteArray().toResponseBody("application/json".toMediaTypeOrNull())
+                )
                 .addHeader("content-type", "application/json")
                 .build()
     }

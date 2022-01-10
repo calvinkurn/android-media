@@ -264,7 +264,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                     val errorMessage = it.data.rechargeSBMAddBill.errorMessage
                     val message = it.data.rechargeSBMAddBill.message
                     if (!errorMessage.isNullOrEmpty()) {
-                        commonTopupBillsAnalytics.clickViewErrorToasterTelcoAddBills(categoryName)
+                        commonTopupBillsAnalytics.clickViewErrorToasterTelcoAddBills(categoryName, errorMessage)
                         view?.let {
                             Toaster.build(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
@@ -281,7 +281,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
 
                 is Fail -> {
                     view?.let { v ->
-                        commonTopupBillsAnalytics.clickViewErrorToasterTelcoAddBills(categoryName)
+
                         val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
                             requireContext(),
                             it.throwable,
@@ -289,6 +289,9 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                                 .className(this::class.java.simpleName)
                                 .build()
                         )
+                        errorMessage?.let {
+                            commonTopupBillsAnalytics.clickViewErrorToasterTelcoAddBills(categoryName, errorMessage)
+                        }
                         Toaster.build(v, errorMessage.orEmpty(),
                                 Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
@@ -429,7 +432,9 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                             operatorCluster = input
                             // Remove selected operator
                             operator_select.setInputText("", false)
-                            rechargeGeneralAnalytics.eventChooseOperatorCluster(categoryName, operatorCluster)
+                            if (!isAddSBM) {
+                                rechargeGeneralAnalytics.eventChooseOperatorCluster(categoryName, operatorCluster)
+                            }
 
                             val isOperatorHidden = cluster.style == OPERATOR_TYPE_HIDDEN
                             groups.find { it.name == input }?.let {
@@ -439,7 +444,9 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                     }
 
                     override fun onCustomInputClick() {
-                        rechargeGeneralAnalytics.eventClickOperatorClusterDropdown(categoryName)
+                        if (!isAddSBM) {
+                            rechargeGeneralAnalytics.eventClickOperatorClusterDropdown(categoryName)
+                        }
 
                         val dropdownData = groups.map { TopupBillsInputDropdownData(it.name) }
                         showOperatorSelectDropdown(operator_cluster_select, dropdownData, cluster.text)
@@ -470,7 +477,9 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                             // Save operator id for enquiry
                             resetInputData()
                             operatorId = it.id.toInt()
-                            rechargeGeneralAnalytics.eventChooseOperator(categoryName, operatorName)
+                            if (!isAddSBM) {
+                                rechargeGeneralAnalytics.eventChooseOperator(categoryName, operatorName)
+                            }
 
                             adapter.showLoading()
                             getProductList(menuId, it.id)
@@ -479,7 +488,9 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                 }
 
                 override fun onCustomInputClick() {
-                    rechargeGeneralAnalytics.eventClickOperatorListDropdown(categoryName)
+                    if (!isAddSBM) {
+                        rechargeGeneralAnalytics.eventClickOperatorListDropdown(categoryName)
+                    }
 
                     val dropdownData = operatorGroup.operators.map {
                         TopupBillsInputDropdownData(it.attributes.name, it.attributes.imageUrl)
@@ -531,6 +542,9 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                     if (productData.isShowingProduct) {
                         val productSelectData = it
                         productSelectData?.apply {
+                            if (productId == 0){
+                                productId = rechargeGeneralProductItemData.dataCollections.firstOrNull()?.products?.firstOrNull()?.id.toIntOrZero()
+                            }
                             rechargeGeneralProductItemData.selectedProductId = productId.toString()
                             dataList.add(rechargeGeneralProductItemData)
                         }
@@ -607,7 +621,9 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     private fun showProductSelectDropdown(field: TopupBillsInputFieldWidget,
                                           data: List<RechargeGeneralProductSelectData>,
                                           title: String = "") {
-        rechargeGeneralAnalytics.eventClickProductListDropdown(categoryName, operatorName)
+        if (!isAddSBM) {
+            rechargeGeneralAnalytics.eventClickProductListDropdown(categoryName, operatorName)
+        }
         context?.let { context ->
             val dropdownBottomSheet = BottomSheetUnify()
             dropdownBottomSheet.setTitle(title)
@@ -628,7 +644,9 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                             // Show label & store id for enquiry
                             field.setInputText(item.title, false)
                             productId = item.id.toIntOrZero()
-                            rechargeGeneralAnalytics.eventClickProductCard(categoryName, operatorName, item.title.toLowerCase())
+                            if (!isAddSBM) {
+                                rechargeGeneralAnalytics.eventClickProductCard(categoryName, operatorName, item.title.toLowerCase())
+                            }
                             toggleEnquiryButton()
                         }
                     })
@@ -912,7 +930,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     }
 
     override fun onFinishInput(label: String, input: String, position: Int, isManual: Boolean) {
-        if (label.isNotEmpty() && input.isNotEmpty() && isManual) {
+        if (label.isNotEmpty() && input.isNotEmpty() && isManual && !isAddSBM) {
             rechargeGeneralAnalytics.eventInputManualNumber(categoryName, operatorName, position + 1)
         }
 
@@ -999,15 +1017,24 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
-        super.processMenuDetail(data)
+        if (!isAddSBM) {
+            super.processMenuDetail(data)
+        } else {
+            onLoadingMenuDetail(false)
+            isExpressCheckout = data.isExpressCheckout
+            categoryName = data.catalog.label
+        }
         with(data.catalog) {
             // if using isAddSBM then we use title from sbm
             (activity as? BaseSimpleActivity)?.updateTitle(
                     if (isAddSBM) getString(R.string.add_bills_title) else label)
-            rechargeAnalytics.eventOpenScreen(
+            if (!isAddSBM) {
+                rechargeAnalytics.eventOpenScreen(
                     userSession.userId,
                     categoryName,
-                    categoryId.toString())
+                    categoryId.toString()
+                )
+            }
         }
         renderTickers(data.tickers)
         // Set recommendation data if available
@@ -1071,6 +1098,12 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
             )
             Toaster.build(v, errorMessage.orEmpty(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+
+            if (isAddSBM){
+                errorMessage?.let {
+                    commonTopupBillsAnalytics.clickViewErrorToasterTelcoAddBills(categoryName, errorMessage)
+                }
+            }
         }
     }
 
@@ -1127,7 +1160,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                 commonTopupBillsAnalytics.clickOnCloseInquiry(categoryName)
             }
         })
-        inquiryBottomSheet.addSBMInquiry(data.attributes.mainInfoList)
+        inquiryBottomSheet.addSBMInquiry(data.attributes)
         fragmentManager?.let { fm ->
             inquiryBottomSheet.show(fm, "")
         }
@@ -1173,8 +1206,10 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     }
 
     override fun onClickCheckout(data: TopupBillsEnquiry) {
-        rechargeGeneralAnalytics.eventClickCheckBills(categoryName, operatorName, productName)
-        rechargeGeneralAnalytics.eventClickBuy(categoryName, operatorName, false, data)
+        if (!isAddSBM){
+            rechargeGeneralAnalytics.eventClickCheckBills(categoryName, operatorName, productName)
+            rechargeGeneralAnalytics.eventClickBuy(categoryName, operatorName, false, data)
+        }
 
         processCheckout()
     }

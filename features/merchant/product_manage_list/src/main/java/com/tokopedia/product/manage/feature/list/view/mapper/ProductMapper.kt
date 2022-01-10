@@ -68,9 +68,10 @@ object ProductMapper {
     }
 
     private fun mapProductStatus(product: Product): ProductStatus? {
-        return when(product.status) {
-            PENDING, MODERATED -> VIOLATION
-            else -> product.status
+        return if (product.status == MODERATED) {
+            VIOLATION
+        } else {
+            product.status
         }
     }
 

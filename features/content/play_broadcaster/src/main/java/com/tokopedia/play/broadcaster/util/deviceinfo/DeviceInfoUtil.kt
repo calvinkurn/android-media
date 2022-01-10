@@ -14,10 +14,7 @@ object DeviceInfoUtil {
     private val supportedAbi = arrayOf(ARMEABI_V7A, ARM64_V8A)
 
     private fun checkDeviceAbi(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            supportedAbi.contains(Build.SUPPORTED_ABIS[0])
-        }
-        else supportedAbi.contains(Build.CPU_ABI)
+        return supportedAbi.contains(Build.SUPPORTED_ABIS[0])
     }
 
     fun isDeviceSupported(): Boolean {
