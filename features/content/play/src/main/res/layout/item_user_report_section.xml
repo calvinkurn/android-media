@@ -11,9 +11,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:maxLines="2"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:ellipsize="end"
+        android:maxLines="2"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
         tools:text="@string/play_user_report_footer" />
 </androidx.constraintlayout.widget.ConstraintLayout>
