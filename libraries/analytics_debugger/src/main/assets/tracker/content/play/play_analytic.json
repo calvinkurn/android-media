@@ -366,18 +366,6 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "click on button share link",
-      "event": "clickGroupChat",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - (live|vod)",
-      "sessionIris": ".*",
-      "currentSite": "tokopediamarketplace",
-      "userId": ".*",
-      "businessUnit": "play",
-      "isLoggedInStatus": ".*",
-      "channel": ".*"
-    },
-    {
       "eventAction": "impression on merchant voucher",
       "event": "viewGroupChatIris",
       "eventCategory": "groupchat room",

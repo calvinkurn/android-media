@@ -327,8 +327,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onShareIconClick(view: ShareExperienceViewComponent) {
         playViewModel.submitAction(ClickShareAction)
-
-//        analytic.clickCopyLink()
     }
 
     override fun onShareOpenBottomSheet(view: ShareExperienceViewComponent) {
