@@ -22,7 +22,6 @@ import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.adapter.EmptyTrackingNotesAdapter
 import com.tokopedia.logisticorder.adapter.TrackingHistoryAdapter
-import com.tokopedia.logisticorder.adapter.TrackingHistoryAdapterCopy
 import com.tokopedia.logisticorder.databinding.FragmentTrackingPageBinding
 import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
@@ -58,7 +57,7 @@ import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapterCopy.OnImageClicked {
+class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImageClicked {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -369,7 +368,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapterCopy.OnI
         } else {
             binding?.trackingHistory?.visibility = View.VISIBLE
             binding?.trackingHistory?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            binding?.trackingHistory?.adapter = TrackingHistoryAdapterCopy(model.trackHistory, userSession, dateUtil, mOrderId?.toLong(), this)
+            binding?.trackingHistory?.adapter = TrackingHistoryAdapter(model.trackHistory, userSession, dateUtil, mOrderId?.toLong(), this)
         }
     }
 
@@ -471,32 +470,33 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapterCopy.OnI
         }
     }
 
-    override fun onImageItemClicked(imageId: String, orderId: Long) {
-        val url = getDeliveryImage(imageId, orderId, "large",
-                userSession.userId, 1, userSession.deviceId)
-        val authKey = String.format("%s %s", TrackingPageUtil.HEADER_VALUE_BEARER, userSession.accessToken)
-        val newUrl = GlideUrl(
-            url, LazyHeaders.Builder()
-                .addHeader(HEADER_KEY_AUTH, authKey)
-                .build()
-        )
+    override fun onImageItemClicked(imageId: String, orderId: Long?) {
+        if (orderId != null) {
+            val url = getDeliveryImage(imageId, orderId, "large",
+                    userSession.userId, 1, userSession.deviceId)
+            val authKey = String.format("%s %s", TrackingPageUtil.HEADER_VALUE_BEARER, userSession.accessToken)
+            val newUrl = GlideUrl(
+                    url, LazyHeaders.Builder()
+                    .addHeader(HEADER_KEY_AUTH, authKey)
+                    .build()
+            )
 
-        binding?.root?.let {
-            binding?.imgProof?.let { imgProof ->
-                Glide.with(it.context)
-                    .load(newUrl)
-                    .placeholder(it.context.getDrawable(R.drawable.ic_image_error))
-                    .error(it.context.getDrawable(R.drawable.ic_image_error))
-                    .dontAnimate()
-                    .into(imgProof)
+            binding?.root?.let {
+                binding?.imgProof?.let { imgProof ->
+                    Glide.with(it.context)
+                            .load(newUrl)
+                            .placeholder(it.context.getDrawable(R.drawable.ic_image_error))
+                            .error(it.context.getDrawable(R.drawable.ic_image_error))
+                            .dontAnimate()
+                            .into(imgProof)
+                }
+            }
+
+            binding?.imagePreviewLarge?.visibility = View.VISIBLE
+            binding?.iconClose?.setOnClickListener {
+                binding?.imagePreviewLarge?.visibility = View.GONE
             }
         }
-
-        binding?.imagePreviewLarge?.visibility = View.VISIBLE
-        binding?.iconClose?.setOnClickListener {
-            binding?.imagePreviewLarge?.visibility = View.GONE
-        }
-
     }
 
 }

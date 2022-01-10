@@ -18,13 +18,13 @@ import com.tokopedia.user.session.UserSessionInterface
 /**
  * Created by kris on 5/11/18. Tokopedia
  */
-class TrackingHistoryAdapterCopy(private val trackingHistoryData: List<TrackHistoryModel>,
-                                 private val userSession: UserSessionInterface,
-                                 private val dateUtil: DateUtil,
-                                 private val orderId: Long?,
-                                 private val listener: OnImageClicked) : RecyclerView.Adapter<TrackingHistoryAdapterCopy.TrackingHistoryViewHolder>() {
+class TrackingHistoryAdapter(private val trackingHistoryData: List<TrackHistoryModel>,
+                             private val userSession: UserSessionInterface,
+                             private val dateUtil: DateUtil,
+                             private val orderId: Long?,
+                             private val listener: OnImageClicked) : RecyclerView.Adapter<TrackingHistoryAdapter.TrackingHistoryViewHolder>() {
     interface OnImageClicked {
-        fun onImageItemClicked(imageId: String?, orderId: Long?)
+        fun onImageItemClicked(imageId: String, orderId: Long?)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackingHistoryViewHolder {
