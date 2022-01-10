@@ -64,6 +64,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.layanan)
     implementation projectOrAar(rootProject.ext.features.withdraw)
 
+    //Media
+    implementation projectOrAar(rootProject.ext.features.liveBroadcaster)
+
     //Content
     implementation projectOrAar(rootProject.ext.features.playBroadcaster)
 
@@ -119,5 +122,7 @@ dependencies {
     // Order Management
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)
 
+    //Media
+    implementation projectOrAar(rootProject.ext.features.mediaPicker)
     implementation projectOrAar(rootProject.ext.libraries.imagePicker)
 }

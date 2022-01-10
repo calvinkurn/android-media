@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.picker.ui.widget.SquareFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foregroundGravity="center">
+
+    <ImageView
+        android:id="@+id/img_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"/>
+
+    <View
+        android:id="@+id/view_alpha"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/view_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:background="@android:color/black"
+        android:paddingBottom="@dimen/unify_space_4"
+        android:paddingLeft="@dimen/unify_space_16"
+        android:paddingRight="@dimen/unify_space_16"
+        android:paddingTop="@dimen/unify_space_4"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/unify_font_12"
+        android:visibility="gone"
+        app:typographyWeight="reguler"
+        tools:text="Label"
+        tools:visibility="visible"/>
+
+</com.tokopedia.picker.ui.widget.SquareFrameLayout>

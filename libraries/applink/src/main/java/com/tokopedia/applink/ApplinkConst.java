@@ -684,6 +684,20 @@ public interface ApplinkConst {
         String PARAM_SHOW_BOTTOM_NAV = "show_bottom_nav";
     }
 
+    interface MediaPicker {
+        String PARAM_PAGE = "page";
+        String VALUE_PAGE_CAMERA = "camera";
+        String VALUE_PAGE_GALLERY = "gallery";
+
+        String PARAM_MODE = "mode";
+        String VALUE_MODE_IMAGE = "image";
+        String VALUE_MODE_VIDEO = "video";
+
+        String PARAM_SELECTION = "type";
+        String VALUE_TYPE_SINGLE = "single";
+        String VALUE_TYPE_MULTIPLE = "multiple";
+    }
+
     interface GeneralInfo {
         String GENERAL_INFO_FORCE_CLOSE_PAGE = "tokopedia://general-info-close";
     }

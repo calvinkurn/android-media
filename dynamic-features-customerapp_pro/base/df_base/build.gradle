@@ -150,8 +150,12 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.promoCheckoutMarketplace)
     implementation projectOrAar(rootProject.ext.features.buyerorder)
     implementation projectOrAar(rootProject.ext.features.unifyorderhistory)
+    implementation projectOrAar(rootProject.ext.features.wishlist)
 
     //Order Management
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)
     implementation projectOrAar(rootProject.ext.features.buyerorderdetail)
+
+    //Media
+    implementation projectOrAar(rootProject.ext.features.mediaPicker)
 }

@@ -170,6 +170,7 @@ import kotlinx.coroutines.*
 import timber.log.Timber
 import java.io.Serializable
 import java.net.URLDecoder
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -1097,14 +1098,20 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             uohSortFilter.run {
                 addItem(chips)
                 sortFilterPrefix.setOnClickListener {
-                    val limitDate = splitStringDateFormat.parse(orderList.dateLimit)
-                    val limitDateStr = monthStringDateFormat.format(limitDate)
-                    view?.let { view ->
-                        context?.let { context -> UohUtils.hideKeyBoard(context, view) }
+                    try {
+                        val limitDate = splitStringDateFormat.parse(orderList.dateLimit)
+                        limitDate?.let {
+                            val limitDateStr = monthStringDateFormat.format(limitDate)
+                            view?.let { view ->
+                                context?.let { context -> UohUtils.hideKeyBoard(context, view) }
+                            }
+                            val resetMsg = activity?.resources?.getString(R.string.uoh_reset_filter_msg)?.replace(
+                                    UohConsts.DATE_LIMIT, limitDateStr)
+                            resetMsg?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
+                        }
+                    } catch (exception: ParseException) {
+                        Timber.d(exception)
                     }
-                    val resetMsg = activity?.resources?.getString(R.string.uoh_reset_filter_msg)?.replace(
-                            UohConsts.DATE_LIMIT, limitDateStr)
-                    resetMsg?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
 
                     resetFilter()
                     refreshHandler?.startRefresh()
@@ -1737,14 +1744,11 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         val detailUrl = order.metadata.detailURL
         var intent: Intent? = null
         if (detailUrl.appTypeLink == WEB_LINK_TYPE) {
-            intent = RouteManager.getIntentNoFallback(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8)))
+            intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8)))
         } else if (detailUrl.appTypeLink == APP_LINK_TYPE) {
-            intent = RouteManager.getIntentNoFallback(context, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8))
+            intent = RouteManager.getIntent(context, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8))
         }
 
-        if (intent == null) {
-            return
-        }
         currIndexNeedUpdate = index
         orderIdNeedUpdated = order.orderUUID
 
