@@ -13,14 +13,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:padding="4dp">
 
         <FrameLayout
             android:id="@+id/productLayout"
             android:layout_width="@dimen/dp_96"
             android:layout_height="@dimen/dp_96"
+            android:padding="@dimen/dp_2"
             android:background="@drawable/bg_frame_rounded"
-            app:layout_constraintBottom_toBottomOf="@id/productNameSection"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/productNameSection">
 
@@ -40,6 +40,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="@dimen/unify_space_8"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/productLayout"
@@ -56,6 +57,7 @@
                 tools:text="Enfagrow A+ Susu Anak 1-3 Tahun - Vanilla Enak Sekali Diminum Setiap hari" />
 
             <LinearLayout
+                android:id="@+id/discount_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -148,8 +150,8 @@
             android:id="@+id/menu"
             android:layout_width="16dp"
             android:layout_height="16dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="6dp"
             app:icon_name="MENU_KEBAB_HORIZONTAL"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

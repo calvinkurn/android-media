@@ -21,41 +21,46 @@ class GetVoucherListUseCase @Inject constructor(
 ) : BaseGqlUseCase<List<VoucherUiModel>>() {
 
     companion object {
-        private const val QUERY = "query getAllMerchantPromotion(\$filter : MVFilter!) {\n" +
-                "              MerchantPromotionGetMVList(Filter: \$filter) {\n" +
-                "                data {\n" +
-                "                  paging {\n" +
-                "                    per_page\n" +
-                "                    page\n" +
-                "                    has_prev\n" +
-                "                    has_next\n" +
-                "                  }\n" +
-                "                  vouchers {\n" +
-                "                    voucher_id\n" +
-                "                    voucher_name\n" +
-                "                    voucher_type\n" +
-                "                    voucher_type_formatted\n" +
-                "                    voucher_image\n" +
-                "                    voucher_image_square\n" +
-                "                    voucher_status\n" +
-                "                    voucher_discount_type_formatted\n" +
-                "                    voucher_discount_amt\n" +
-                "                    voucher_discount_amt_formatted\n" +
-                "                    voucher_discount_amt_max\n" +
-                "                    voucher_minimum_amt\n" +
-                "                    voucher_quota\n" +
-                "                    confirmed_global_quota\n" +
-                "                    booked_global_quota\n" +
-                "                    voucher_start_time\n" +
-                "                    voucher_finish_time\n" +
-                "                    voucher_code\n" +
-                "                    create_time\n" +
-                "                    update_time\n" +
-                "                    is_public\n" +
-                "                  }\n" +
-                "                }\n" +
-                "              }\n" +
-                "            }"
+        private const val QUERY = """
+            query getAllMerchantPromotion(${'$'}filter : MVFilter!) {
+                MerchantPromotionGetMVList(Filter: ${'$'}filter) {
+                    data {
+                      paging {
+                        per_page
+                        page
+                        has_prev
+                        has_next
+                      }
+                      vouchers {
+                        voucher_id
+                        voucher_name
+                        voucher_type
+                        voucher_type_formatted
+                        voucher_image
+                        voucher_image_square
+                        voucher_status
+                        voucher_discount_type_formatted
+                        voucher_discount_amt
+                        voucher_discount_amt_formatted
+                        voucher_discount_amt_max
+                        voucher_minimum_amt
+                        voucher_quota
+                        confirmed_global_quota
+                        booked_global_quota
+                        voucher_start_time
+                        voucher_finish_time
+                        voucher_code
+                        create_time
+                        update_time
+                        is_public
+                        is_vps
+                        package_name
+                        is_subsidy
+                      }
+                    }
+                }
+            }
+        """
 
         private const val FILTER_KEY = "filter"
 
