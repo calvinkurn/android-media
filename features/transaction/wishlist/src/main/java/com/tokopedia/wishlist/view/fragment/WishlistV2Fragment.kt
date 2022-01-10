@@ -22,6 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
@@ -66,6 +67,8 @@ import com.tokopedia.wishlist.databinding.FragmentWishlistV2Binding
 import com.tokopedia.wishlist.di.DaggerWishlistV2Component
 import com.tokopedia.wishlist.di.WishlistV2Module
 import com.tokopedia.wishlist.util.WishlistV2Analytics
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST
 import com.tokopedia.wishlist.util.WishlistV2LayoutPreference
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 import com.tokopedia.wishlist.view.adapter.WishlistV2FilterBottomSheetAdapter
@@ -228,7 +231,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                             hideTotalLabel()
                             hideSortFilter(wishlistV2.sortFilters)
                         } else {
-                            removePaddingRv()
+                            setPaddingReferToTypeLayout()
                             updateTotalLabel(wishlistV2.totalData)
                         }
 
@@ -337,6 +340,14 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 rvWishlist.smoothScrollToPosition(0)
             }
             wishlistV2Fb.gone()
+            if (wishlistPref?.getTypeLayout() == TYPE_LIST) {
+                wishlistV2StickyCountManageLabel.wishlistTypeLayoutIcon.setImage(IconUnify.VIEW_GRID)
+            }
+            setTypeLayoutIcon()
+            wishlistV2StickyCountManageLabel.wishlistTypeLayoutIcon.setOnClickListener {
+                changeTypeLayout()
+                setTypeLayoutIcon()
+            }
         }
 
         wishlistV2Adapter = WishlistV2Adapter().apply {
@@ -350,6 +361,34 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             swipeRefreshLayout.isEnabled = true
             swipeRefreshLayout.setOnRefreshListener {
                 setRefreshing()
+            }
+        }
+    }
+
+    private fun changeTypeLayout() {
+        if (wishlistPref?.getTypeLayout() == TYPE_LIST) {
+            wishlistPref?.setTypeLayout(1)
+        } else {
+            wishlistPref?.setTypeLayout(0)
+        }
+        setPaddingReferToTypeLayout()
+        wishlistV2Adapter.changeTypeLayout(wishlistPref?.getTypeLayout())
+    }
+
+    private fun setPaddingReferToTypeLayout() {
+        if (wishlistPref?.getTypeLayout() == TYPE_LIST) {
+            removePaddingRv()
+        } else {
+            addPaddingRv()
+        }
+    }
+
+    private fun setTypeLayoutIcon() {
+        binding?.run {
+            if (wishlistPref?.getTypeLayout() == TYPE_LIST) {
+                wishlistV2StickyCountManageLabel.wishlistTypeLayoutIcon.setImage(IconUnify.VIEW_LIST)
+            } else if (wishlistPref?.getTypeLayout() == TYPE_GRID) {
+                wishlistV2StickyCountManageLabel.wishlistTypeLayoutIcon.setImage(IconUnify.VIEW_GRID)
             }
         }
     }

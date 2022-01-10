@@ -137,10 +137,10 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 holder.bind(element, isShowCheckbox)
             }
             is WishlistV2ListItemViewHolder-> {
-                holder.bind(element, position, isShowCheckbox)
+                holder.bind(element, holder.adapterPosition, isShowCheckbox)
             }
             is WishlistV2GridItemViewHolder -> {
-                holder.bind(element, holder.adapterPosition)
+                holder.bind(element, holder.adapterPosition, isShowCheckbox)
             }
             is WishlistV2EmptyStateViewHolder -> {
                 holder.bind(element)
@@ -232,5 +232,15 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         isShowCheckbox = false
         clearCheckbox()
         notifyDataSetChanged()
+    }
+
+    fun changeTypeLayout(prefLayout: String?) {
+        // 0 = LIST, 1 = GRID
+        if (listTypeData.isNotEmpty()) {
+            listTypeData.forEach {
+                it.typeLayout = prefLayout
+            }
+            notifyDataSetChanged()
+        }
     }
 }

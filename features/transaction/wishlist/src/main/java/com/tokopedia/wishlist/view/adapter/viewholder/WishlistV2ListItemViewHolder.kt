@@ -15,9 +15,9 @@ import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 
 class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBinding, private val actionListener: WishlistV2Adapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: WishlistV2TypeLayoutData, position: Int, isShowCheckbox: Boolean) {
-        binding.wishlistItem.setProductModel(item.dataObject as ProductCardModel)
+        binding.pcListItem.setProductModel(item.dataObject as ProductCardModel)
 
-        val footerLayout = binding.wishlistItem.findViewById<View>(RProductCard.id.productCardFooterLayout)
+        val footerLayout = binding.pcListItem.findViewById<View>(RProductCard.id.productCardFooterLayout)
         val buttonSecondary = footerLayout.findViewById<FrameLayout>(RProductCard.id.buttonThreeDotsWishlist)
         val rlPrimaryButton = footerLayout.findViewById<RelativeLayout>(RProductCard.id.rlPrimaryButtonWishlist)
         val buttonAtc = footerLayout.findViewById<UnifyButton>(RProductCard.id.buttonAddToCartWishlist)
@@ -36,7 +36,7 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
             renderButtonSeeSimilarProduct(buttonAtc, buttonSeeSimilarProduct, item)
         }
 
-        binding.wishlistItem.setThreeDotsWishlistOnClickListener { actionListener?.onThreeDotsMenuClicked(item.wishlistItem) }
+        binding.pcListItem.setThreeDotsWishlistOnClickListener { actionListener?.onThreeDotsMenuClicked(item.wishlistItem) }
         actionListener?.onViewProductCard(item.wishlistItem, position)
     }
 
@@ -50,7 +50,7 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
         }
         buttonSecondary.gone()
         rlPrimaryButton.gone()
-        binding.wishlistItem.setOnClickListener {
+        binding.pcListItem.setOnClickListener {
             binding.wishlistCheckbox.isChecked = !binding.wishlistCheckbox.isChecked
             actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
         }
@@ -64,7 +64,7 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
         binding.wishlistCheckbox.gone()
         buttonSecondary.visible()
         rlPrimaryButton.visible()
-        binding.wishlistItem.setOnClickListener {
+        binding.pcListItem.setOnClickListener {
             actionListener?.onProductItemClicked(item.wishlistItem, position)
         }
     }
@@ -72,13 +72,13 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
     private fun renderButtonPrimaryAtc(buttonAtc: UnifyButton, buttonSeeSimilarProduct: UnifyButton, item: WishlistV2TypeLayoutData) {
         buttonSeeSimilarProduct.gone()
         buttonAtc.visible()
-        binding.wishlistItem.setAddToCartWishlistOnClickListener { actionListener?.onAtc(item.wishlistItem, position) }
+        binding.pcListItem.setAddToCartWishlistOnClickListener { actionListener?.onAtc(item.wishlistItem, position) }
     }
 
     private fun renderButtonSeeSimilarProduct(buttonAtc: UnifyButton, buttonSeeSimilarProduct: UnifyButton, item: WishlistV2TypeLayoutData) {
         buttonAtc.gone()
         buttonSeeSimilarProduct.visible()
-        binding.wishlistItem.setSeeSimilarProductWishlistOnClickListener {
+        binding.pcListItem.setSeeSimilarProductWishlistOnClickListener {
             actionListener?.onCheckSimilarProduct(
                     item.wishlistItem.buttons.primaryButton.url
             )
