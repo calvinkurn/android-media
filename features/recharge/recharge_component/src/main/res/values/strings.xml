@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="content_desc_recharge_bu_parallax_image">Background Image</string>
+    <string name="label_recharge_client_number">Nama Kontak atau Nomor HP</string>
 </resources>

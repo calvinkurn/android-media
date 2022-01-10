@@ -2,16 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Unify_GN600"
+    android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Pulsa" />
 
+    <com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
+        android:id="@+id/recharge_pdp_pulsa_client_number_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"/>
+    
     <com.tokopedia.recharge_component.widget.RechargeTickerWidget
         android:id="@+id/ticker_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
 </LinearLayout>
