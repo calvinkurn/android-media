@@ -339,10 +339,15 @@ class PlayViewModelWebSocketTest {
 
         val mockSize = 3
         val mockTitle = "Diskon Testing"
+        val quota = 5
+        val expiredDate = "2018-12-07T23:30:00Z"
+
         val mockVoucher = productTagModelBuilder.buildCompleteData(
             voucherList = List(mockSize) {
                 productTagModelBuilder.buildMerchantVoucher(
-                    title = "$mockTitle ${it+1}%"
+                    title = "$mockTitle ${it+1}%",
+                    voucherStock = quota,
+                    expiredDate = expiredDate,
                 )
             }
         )
@@ -361,7 +366,14 @@ class PlayViewModelWebSocketTest {
             createPage(channelData)
             focusPage(channelData)
         } andThen {
-            fakePlayWebSocket.fakeReceivedMessage(PlayMerchantVoucherSocketResponse.generateResponse(size = 3, title = mockTitle))
+            fakePlayWebSocket.fakeReceivedMessage(
+                PlayMerchantVoucherSocketResponse.generateResponse(
+                    size = 3,
+                    title = mockTitle,
+                    quota = quota,
+                    expiredDate = expiredDate,
+                )
+            )
         } thenVerify {
             when(val merchantVoucher = viewModel.observablePinnedProduct.value?.productTags) {
                 is PlayProductTagsUiModel.Complete -> {

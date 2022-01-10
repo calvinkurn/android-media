@@ -372,7 +372,13 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
                 }
                 //found on list, not the first
                 index >= 0 -> {
-                    adapter.onNewIncomingChatMessage(index, newChat, readStatus, chatItemListViewModel.pinnedMsgId)
+                    adapter.onNewIncomingChatMessage(
+                        index = index,
+                        newChat = newChat,
+                        readStatus = readStatus,
+                        pinnedMsgId = chatItemListViewModel.pinnedMsgId,
+                        shouldUpdateReadStatus = true
+                    )
                 }
             }
         }
