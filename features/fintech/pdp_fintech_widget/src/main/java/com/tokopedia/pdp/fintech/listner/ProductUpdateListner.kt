@@ -4,4 +4,6 @@ interface ProductUpdateListner {
 
     fun removeWidget()
     fun showWidget()
+    fun showWebview()
+    fun showBottomSheet( ctaType: Int)
 }

@@ -78,6 +78,12 @@ interface DynamicProductDetailListener {
     fun goToTalkReply(questionId: String, componentTrackDataModel: ComponentTrackDataModel, numberOfThreadsShown: String)
 
     /**
+     * Fintech Widget ViewHolder
+     */
+    fun showWebView()
+    fun showBottomsheet(ctaType: Int)
+
+    /**
      * ProductReviewViewHolder
      */
     fun onSeeAllLastItemImageReview(componentTrackDataModel: ComponentTrackDataModel?)

@@ -12,7 +12,7 @@ import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 
 class FintechWidgetViewHolder(val view: View,val  listener: DynamicProductDetailListener):
-    AbstractViewHolder<FintechWidgetDataModel>(view), ProductUpdateListner {
+    AbstractViewHolder<FintechWidgetDataModel>(view), ProductUpdateListner{
 
     companion object {
         val LAYOUT = R.layout.fintech_widget_layout
@@ -39,5 +39,14 @@ class FintechWidgetViewHolder(val view: View,val  listener: DynamicProductDetail
         val lp = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         view.setLayoutParams(lp)
     }
+
+    override fun showWebview() {
+        listener.showWebView()
+    }
+
+    override fun showBottomSheet(ctaType: Int) {
+        listener.showBottomsheet(ctaType)
+    }
+
 
 }

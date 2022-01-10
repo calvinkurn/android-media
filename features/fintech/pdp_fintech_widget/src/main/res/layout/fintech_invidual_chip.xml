@@ -8,12 +8,14 @@
     <com.tokopedia.unifycomponents.CardUnify
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/card"
         app:card_type="shadow"
 
         >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
+            android:id="@+id/cardContent"
             android:layout_height="wrap_content">
 
             <com.tokopedia.unifycomponents.ImageUnify

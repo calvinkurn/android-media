@@ -1,4 +1,4 @@
-package com.tokopedia.pdpsimulation.common.di.qualifier
+package com.tokopedia.pdp.fintech.di.qualifier
 
 import javax.inject.Qualifier
 
