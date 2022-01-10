@@ -2,6 +2,7 @@ package com.tokopedia.pdp.fintech.view
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import androidx.annotation.AttrRes
 import androidx.fragment.app.Fragment
@@ -13,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter
-import com.tokopedia.pdp.fintech.di.components.DaggerFintechWidgetComponent
 import com.tokopedia.pdp.fintech.listner.ProductUpdateListner
 import com.tokopedia.pdp.fintech.listner.WidgetClickListner
 import com.tokopedia.pdp.fintech.viewmodel.FintechWidgetViewModel
@@ -51,20 +51,36 @@ class PdpFintechWidget @JvmOverloads constructor(
     {
          fintechWidgetViewModel  =
             ViewModelProvider(parentViewModelStore, viewModelFactory.get()).get(FintechWidgetViewModel::class.java)
+        observeProductInfo(parentLifeCycleOwner)
+        observeWidgetInfo(parentLifeCycleOwner)
 
-        fintechWidgetViewModel.productDetailLiveData.observe(parentLifeCycleOwner,{
-            when(it)
-            {
+    }
+
+    private fun observeWidgetInfo(parentLifeCycleOwner: LifecycleOwner) {
+        fintechWidgetViewModel.widgetDetailLiveData.observe(parentLifeCycleOwner, {
+            when (it) {
                 is Success -> {
-                    loader.visibility = View.GONE
+
+                }
+                is Fail -> {
+
+                }
+            }
+        })
+    }
+
+    private fun observeProductInfo(parentLifeCycleOwner: LifecycleOwner) {
+        fintechWidgetViewModel.productDetailLiveData.observe(parentLifeCycleOwner, {
+            when (it) {
+                is Success -> {
+                    loader.visibility = GONE
+                    fintechWidgetViewModel.getWidgetData()
                 }
                 is Fail -> {
                     instanceProductUpdateListner.removeWidget()
                 }
             }
         })
-
-
     }
 
     private fun initInjector() {
@@ -102,6 +118,7 @@ class PdpFintechWidget @JvmOverloads constructor(
          this.instanceProductUpdateListner = fintechWidgetViewHolder
          loader.visibility = View.VISIBLE
          fintechWidgetViewModel.getProductDetail(productID)
+
 
     }
 
