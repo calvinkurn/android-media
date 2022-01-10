@@ -301,8 +301,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == REQUEST_CODE_LIVENESS && resultCode == RESULT_OK) {
-            webView.loadAuthUrl(kycRedirectionUrl, userSession);
             Toast.makeText(getContext(), kycRedirectionUrl, Toast.LENGTH_LONG).show();
+            webView.loadUrl(kycRedirectionUrl);
             return;
         }
 
