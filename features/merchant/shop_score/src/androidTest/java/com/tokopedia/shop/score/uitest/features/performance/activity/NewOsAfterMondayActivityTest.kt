@@ -22,6 +22,7 @@ class NewOsAfterMondayActivityTest: ShopScoreTest() {
         super.setup()
         getShopInfoPeriodUseCaseStub.responseStub = shopInfoPeriodAfterMondayResponse
         getShopPerformanceUseCaseStub.responseStub = newOsAfterMondayResponse
+        shopScorePrefManagerStub.setFinishCoachMark(true)
     }
 
     @Test
@@ -82,7 +83,7 @@ class NewOsAfterMondayActivityTest: ShopScoreTest() {
     fun show_faq_shop_score_new_after_monday_os() {
         activityRule.launchActivity(getShopPerformancePageIntent())
         activityRule.activity.scrollTo<SectionFaqUiModel>()
-        showFaqItemList(newOsAfterMondayResponse)
+        showFaqItemList()
     }
 
     @Test
