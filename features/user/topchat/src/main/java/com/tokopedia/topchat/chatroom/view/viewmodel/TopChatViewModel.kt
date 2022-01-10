@@ -12,7 +12,9 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCas
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
+import com.tokopedia.chat_common.data.WebsocketEvent
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
+import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -91,7 +93,8 @@ class TopChatViewModel @Inject constructor(
     private val existingChatMapper: TopChatRoomGetExistingChatMapper,
     private val chatWebSocket: TopchatWebSocket,
     private val webSocketStateHandler: WebSocketStateHandler,
-    protected val webSocketParser: WebSocketParser
+    private val webSocketParser: WebSocketParser,
+    private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper
 ) : BaseViewModel(dispatcher.main), LifecycleObserver {
 
     private val _messageId = MutableLiveData<Result<String>>()
@@ -132,7 +135,7 @@ class TopChatViewModel @Inject constructor(
         get() = _occProduct
 
     private val _toggleBlock = MutableLiveData<WrapperChatSetting>()
-    val toggleBlock : LiveData<WrapperChatSetting>
+    val toggleBlock: LiveData<WrapperChatSetting>
         get() = _toggleBlock
 
     private val _chatDeleteStatus = MutableLiveData<Result<ChatDeleteStatus>>()
@@ -147,7 +150,8 @@ class TopChatViewModel @Inject constructor(
     val chatAttachments: MutableLiveData<ArrayMap<String, Attachment>>
         get() = _chatAttachments
 
-    private val _chatListGroupSticker = MutableLiveData<Result<Pair<ChatListGroupStickerResponse, List<StickerGroup>>>>()
+    private val _chatListGroupSticker =
+        MutableLiveData<Result<Pair<ChatListGroupStickerResponse, List<StickerGroup>>>>()
     val chatListGroupSticker: MutableLiveData<Result<Pair<ChatListGroupStickerResponse, List<StickerGroup>>>>
         get() = _chatListGroupSticker
 
@@ -176,6 +180,10 @@ class TopChatViewModel @Inject constructor(
     val isWebsocketError: LiveData<Boolean>
         get() = _isWebsocketError
 
+    private val _isTyping = MutableLiveData<Boolean>()
+    val isTyping: LiveData<Boolean>
+        get() = _isTyping
+
     var attachProductWarehouseId = "0"
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     var roomMetaData: RoomMetaData = RoomMetaData()
@@ -191,26 +199,27 @@ class TopChatViewModel @Inject constructor(
     fun connectWebSocket() {
         chatWebSocket.connectWebSocket(object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
-                Timber.d("${TAG} - onOpen")
+                Timber.d("$TAG - onOpen")
                 handleOnOpenWebSocket()
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
                 val response = webSocketParser.parseResponse(text)
                 handleOnMessageWebSocket(response)
+                Timber.d("$TAG - onMessage - ${response.code}")
             }
 
             override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-                Timber.d("${TAG} - onClosing - $code - $reason")
+                Timber.d("$TAG - onClosing - $code - $reason")
             }
 
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-                Timber.d("${TAG} - onClosed - $code - $reason")
+                Timber.d("$TAG - onClosed - $code - $reason")
                 handleOnClosedWebSocket(code)
             }
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                Timber.d("${TAG} - onFailure - ${t.message}")
+                Timber.d("$TAG - onFailure - ${t.message}")
                 handleOnFailureWebSocket()
             }
         })
@@ -222,7 +231,48 @@ class TopChatViewModel @Inject constructor(
     }
 
     private fun handleOnMessageWebSocket(response: WebSocketResponse) {
-        // TBD
+        val incomingChatEvent = topChatRoomWebSocketMessageMapper.parseResponse(response)
+        if (incomingChatEvent.msgId.toString() != roomMetaData.msgId) return
+        when (response.code) {
+            WebsocketEvent.Event.EVENT_TOPCHAT_TYPING -> onReceiveTypingEvent()
+            WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING -> onReceiveEndTypingEvent()
+            WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE -> onReceiveReadMsgEvent()
+            WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE -> onReceiveReplyEvent()
+            WebsocketEvent.Event.EVENT_DELETE_MSG -> onReceiveDeleteMsgEvent()
+
+        }
+    }
+
+    private fun onReceiveDeleteMsgEvent() {
+//        view?.onReceiveWsEventDeleteMsg(pojo.replyTime)
+    }
+
+    private fun onReceiveReplyEvent() {
+        if (!isInTheMiddleOfThePage()) {
+//            view?.onSendAndReceiveMessage()
+//            onReplyMessage(pojo)
+//            newUnreadMessage = 0
+//            view?.hideUnreadMessage()
+        } else {
+//            if (pojo.isOpposite) {
+//                newUnreadMessage++
+//                view?.showUnreadMessage(newUnreadMessage)
+//            }
+        }
+    }
+
+    private fun onReceiveReadMsgEvent() {
+        if (!isInTheMiddleOfThePage()) {
+//            view?.onReceiveReadEvent()
+        }
+    }
+
+    private fun onReceiveEndTypingEvent() {
+        _isTyping.postValue(false)
+    }
+
+    private fun onReceiveTypingEvent() {
+        _isTyping.postValue(true)
     }
 
     private fun handleOnClosedWebSocket(code: Int) {
@@ -266,7 +316,7 @@ class TopChatViewModel @Inject constructor(
         toShopId: String,
         source: String,
     ) {
-        launchCatchError( block = {
+        launchCatchError(block = {
             val existingMessageIdParam = GetExistingMessageIdUseCase.Param(
                 toUserId = toUserId,
                 toShopId = toShopId,
@@ -410,10 +460,10 @@ class TopChatViewModel @Inject constructor(
             val params = getAddToCartOccMultiRequestParams(userId, product)
             addToCartOccUseCase.setParams(params)
             val result = addToCartOccUseCase.executeOnBackground()
-            if(result.isStatusError()) {
+            if (result.isStatusError()) {
                 _occProduct.value = Fail(MessageErrorException(result.getAtcErrorMessage()))
             } else {
-                if(result.data.cart.isNotEmpty()) {
+                if (result.data.cart.isNotEmpty()) {
                     product.cartId = result.data.cart.first().cartId
                 }
                 _occProduct.value = Success(product)
@@ -430,14 +480,14 @@ class TopChatViewModel @Inject constructor(
         return AddToCartOccMultiRequestParams(
             carts = listOf(
                 AddToCartOccMultiCartParam(
-                productId = product.productId,
-                shopId = product.shopId.toString(),
-                quantity = product.minOrder.toString(),
-                //analytics data
-                productName = product.productName,
-                category = product.category,
-                price = product.productPrice
-            )
+                    productId = product.productId,
+                    shopId = product.shopId.toString(),
+                    quantity = product.minOrder.toString(),
+                    //analytics data
+                    productName = product.productName,
+                    category = product.category,
+                    price = product.productPrice
+                )
             ),
             userId = userId
         )
@@ -588,10 +638,10 @@ class TopChatViewModel @Inject constructor(
     fun adjustInterlocutorWarehouseId(msgId: String) {
         attachProductWarehouseId = "0"
         launchCatchError(block = {
-                tokoNowWHUsecase(msgId).collect {
-                    attachProductWarehouseId = it.chatTokoNowWarehouse.warehouseId
-                }
-            },
+            tokoNowWHUsecase(msgId).collect {
+                attachProductWarehouseId = it.chatTokoNowWarehouse.warehouseId
+            }
+        },
             onError = {
                 it.printStackTrace()
             })
@@ -685,6 +735,7 @@ class TopChatViewModel @Inject constructor(
             _deleteBubble.value = Fail(it)
         })
     }
+
     companion object {
         const val TAG = "TopchatWebSocketViewModel"
     }

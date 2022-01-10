@@ -2590,6 +2590,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         viewModel.isWebsocketError.observe(viewLifecycleOwner, {
             showErrorWebSocket(it)
         })
+
+        viewModel.isTyping.observe(viewLifecycleOwner, { isTyping ->
+            if (isTyping) {
+                onReceiveStartTypingEvent()
+            } else {
+                onReceiveStopTypingEvent()
+            }
+        })
     }
 
     private fun handleToggleBlock(item: WrapperChatSetting) {
