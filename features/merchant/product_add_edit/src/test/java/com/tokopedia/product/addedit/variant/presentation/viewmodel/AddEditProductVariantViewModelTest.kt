@@ -221,10 +221,8 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         )
 
         viewModel.isSingleVariantTypeIsSelected = false
-        viewModel.updateSelectedVariantUnitValuesLevel1(selectedUnitValuesLevel1)
-        viewModel.updateSelectedVariantUnitValuesLevel2(selectedUnitValuesLevel2)
-
-        assert(viewModel.isInputValid.getOrAwaitValue())
+        viewModel.updateSelectedVariantUnitValuesLevel2(mutableListOf())
+        assertFalse(viewModel.isInputValid.getOrAwaitValue())
     }
 
     @Test

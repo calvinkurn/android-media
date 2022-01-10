@@ -37,12 +37,12 @@ import com.tokopedia.top_ads_headline.Constants.RESTORED_DATA
 import com.tokopedia.top_ads_headline.Constants.SELECTED_KEYWORD
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
-import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.di.HeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.EditTopAdsHeadlineKeywordActivity
 import com.tokopedia.top_ads_headline.view.activity.SaveButtonState
 import com.tokopedia.top_ads_headline.view.viewmodel.HeadlineEditKeywordViewModel
 import com.tokopedia.top_ads_headline.view.viewmodel.SharedEditHeadlineViewModel
+import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_ID
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.data.response.KeywordDataItem

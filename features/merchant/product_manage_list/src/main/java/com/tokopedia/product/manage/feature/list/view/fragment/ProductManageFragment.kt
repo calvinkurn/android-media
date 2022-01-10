@@ -121,15 +121,12 @@ import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.Product
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
 import com.tokopedia.product.manage.feature.list.view.layoutmanager.ProductManageLayoutManager
 import com.tokopedia.product.manage.feature.list.view.listener.ProductManageListListener
+import com.tokopedia.product.manage.feature.list.view.model.*
 import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType.*
-import com.tokopedia.product.manage.feature.list.view.model.FilterTabUiModel
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
-import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.*
-import com.tokopedia.product.manage.feature.list.view.model.ProductMoreMenuModel
 import com.tokopedia.product.manage.feature.list.view.model.TopAdsPage.*
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageAddEditMenuBottomSheet
@@ -254,6 +251,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     private var tickerIsReady = false
     private var shouldScrollToTop = false
+    private var hasTickerClosed = false
 
     private var progressDialog: ProgressDialog? = null
     private var optionsMenu: Menu? = null
@@ -416,6 +414,15 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
         menu.clear()
         inflater.inflate(menuViewId, menu)
+
+        for (i in 0 until menu.size()) {
+            menu.getItem(i)?.let { menuItem ->
+                menuItem.actionView?.setOnClickListener {
+                    onOptionsItemSelected(menuItem)
+                }
+            }
+        }
+
         showHideOptionsMenu()
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -565,7 +572,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     override fun getEmptyDataViewModel(): EmptyModel {
-        return EmptyModel().apply {
+        val id = System.currentTimeMillis().toString()
+        return ProductManageEmptyModel(id).apply {
             if (showProductEmptyState()) {
                 contentRes = R.string.product_manage_list_empty_product
                 urlRes = ProductManageUrl.PRODUCT_MANAGE_LIST_EMPTY_STATE
@@ -822,6 +830,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
             searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     showLoadingProgress()
+                    isLoadingInitialData = true
                     getProductList()
                     clearFocus()
                     true
@@ -870,10 +879,18 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         checkBoxSelectAll?.setOnClickListener {
             val isChecked = checkBoxSelectAll?.isChecked == true
             recyclerView?.post {
-                adapter.data.forEachIndexed { index, _ ->
-                    onClickProductCheckBox(isChecked, index)
+                if (isChecked) {
+                    productManageListAdapter.checkAllProducts(itemsChecked) {
+                        itemsChecked = it
+                    }
+                } else {
+                    productManageListAdapter.unCheckMultipleProducts(null, itemsChecked) {
+                        itemsChecked = it
+                    }
                 }
-                productManageListAdapter.notifyDataSetChanged()
+
+                renderSelectAllCheckBox()
+                renderCheckedView()
             }
         }
     }
@@ -1012,16 +1029,15 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 if (isLoadingInitialData) {
                     productManageListAdapter.updateProduct(list)
                 } else {
-                    removeEmptyStateWhenLazyLoad()
-                    productManageListAdapter.updateProduct(productManageListAdapter.data.plus(list))
+                    productManageListAdapter.removeEmptyAndUpdateLayout(list)
                 }
             }
-        }
-        updateScrollListenerState(hasNextPage)
-        if (shouldScrollToTop) {
-            shouldScrollToTop = false
-            recyclerView?.addOneTimeGlobalLayoutListener {
-                recyclerView?.smoothScrollToPosition(RV_TOP_POSITION)
+            updateScrollListenerState(hasNextPage)
+            if (shouldScrollToTop) {
+                shouldScrollToTop = false
+                recyclerView?.addOneTimeGlobalLayoutListener {
+                    recyclerView?.smoothScrollToPosition(RV_TOP_POSITION)
+                }
             }
         }
         renderCheckedView()
@@ -1042,18 +1058,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         }
         if (sellerMigrationFeatureName == SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT) {
             goToCreateBroadcastFromSellerMigration(productStock, isProductActive, isProductVariant, productId)
-        }
-    }
-
-    private fun removeEmptyStateWhenLazyLoad() {
-        val lastIndex = adapter.data.size - 1
-        adapter.data.getOrNull(lastIndex)?.let { item ->
-            if (item is EmptyModel) {
-                recyclerView?.post {
-                    adapter.data.removeAt(lastIndex)
-                    adapter.notifyItemRemoved(lastIndex)
-                }
-            }
         }
     }
 
@@ -1414,13 +1418,12 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     private fun unCheckMultipleProducts(productIds: List<String>) {
         recyclerView?.post {
-            productIds.forEach { productId ->
-                val index = adapter.data.filterIsInstance<ProductUiModel>().indexOfFirst { it.id == productId }
-                if (index >= 0) {
-                    onClickProductCheckBox(false, index)
-                }
+            productManageListAdapter.unCheckMultipleProducts(productIds, itemsChecked) {
+                itemsChecked = it
             }
-            productManageListAdapter.notifyDataSetChanged()
+
+            renderSelectAllCheckBox()
+            renderCheckedView()
         }
     }
 
@@ -1904,6 +1907,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     override fun onResume() {
         super.onResume()
+        hasTickerClosed = false
         context?.let {
             val intentFilter = IntentFilter()
             intentFilter.addAction(BROADCAST_ADD_PRODUCT)
@@ -2235,7 +2239,9 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Success -> {
                     initHeaderView()
                     showProductList(it.data)
-                    renderMultiSelectProduct()
+                    recyclerView?.post {
+                        renderMultiSelectProduct()
+                    }
                 }
                 is Fail -> {
                     showGetListError(it.throwable)
@@ -2380,7 +2386,10 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                             context?.let { RouteManager.route(it, linkUrl.toString()) }
                         }
                     })
-                    onDismissListener = { viewModel.hideTicker() }
+                    onDismissListener = {
+                        viewModel.hideTicker()
+                        hasTickerClosed = true
+                    }
                 }
             }
             ticker?.let { tickerView ->
@@ -2393,10 +2402,12 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
             }
         }
         observe(viewModel.showTicker) { shouldShow ->
-            if (shouldShow)                 {
+            if (shouldShow) {
                 tickerIsReady = true
             }
-            animateProductTicker(shouldShow)
+            if (!hasTickerClosed) {
+                animateProductTicker(shouldShow)
+            }
         }
         observe(viewModel.refreshList) { shouldRefresh ->
             if (shouldRefresh) {
@@ -2462,7 +2473,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                     val access = it.data
 
                     if (access.productList) {
-                        getProductList()
+                        loadInitialData()
 
                         getTickerData()
                         getFiltersTab()

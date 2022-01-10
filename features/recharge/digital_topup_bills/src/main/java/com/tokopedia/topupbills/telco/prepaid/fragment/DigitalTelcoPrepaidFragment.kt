@@ -426,6 +426,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                     this.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
                         telcoClientNumberWidget.getInputNumber().startsWith(it.value)
                     }
+                operatorName = selectedOperator.operator.attributes.name
 
                 /* validate phone number */
                 val isInputValid = validatePhoneNumber(operatorData, telcoClientNumberWidget)
@@ -469,7 +470,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         actionTypeTrackingJob?.cancel()
         actionTypeTrackingJob = lifecycleScope.launch {
             delay(INPUT_ACTION_TRACKING_DELAY)
-            operatorName = selectedOperator.operator.attributes.name
             when (inputNumberActionType) {
                 InputNumberActionType.MANUAL -> {
                     topupAnalytics.eventInputNumberManual(categoryId, operatorName)
