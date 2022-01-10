@@ -18,7 +18,6 @@ import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.multiplelikes.UpdateMultipleLikeConfig
 import com.tokopedia.play.data.realtimenotif.RealTimeNotification
-import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.*
 import com.tokopedia.play.extensions.combine
@@ -92,7 +91,7 @@ class PlayViewModel @AssistedInject constructor(
     private val remoteConfig: RemoteConfig,
     private val playPreference: PlayPreference,
     private val videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
-    private val playChannelWebSocket: PlayChannelWebSocket,
+    private val playChannelWebSocket: PlayWebSocket,
     private val repo: PlayViewerRepository,
     private val playAnalytic: PlayNewAnalytic,
     private val timerFactory: TimerFactory,

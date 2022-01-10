@@ -2,13 +2,13 @@ package com.tokopedia.play.viewmodel.quickreply
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
-import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.util.assertEqualTo
 import com.tokopedia.play.websocket.response.PlayQuickReplySocketResponse
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -82,7 +82,7 @@ class PlayQuickReplyTest {
             WebSocketResponse::class.java
         )
 
-        val mockSocket: PlayChannelWebSocket = mockk(relaxed = true)
+        val mockSocket: PlayWebSocket = mockk(relaxed = true)
         val socketFlow = MutableSharedFlow<WebSocketAction>()
 
         every { mockSocket.listenAsFlow() } returns socketFlow
