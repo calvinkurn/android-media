@@ -224,6 +224,8 @@ class TopChatViewModel @Inject constructor(
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 Timber.d("$TAG - onOpen")
                 handleOnOpenWebSocket()
+                // TODO: add mark as read
+                // readMessage()
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
@@ -284,6 +286,7 @@ class TopChatViewModel @Inject constructor(
         }
     }
 
+    // TODO: check upload image
     private fun renderChatItem(chat: ChatSocketPojo) {
         val chatUiModel = topChatRoomWebSocketMessageMapper.map(chat)
         _newMsg.postValue(chatUiModel)

@@ -81,11 +81,11 @@ interface TopChatContract {
         fun showPreviewMsg(previewMsg: SendableUiModel)
         fun clearReferredMsg()
         fun notifyPreviewRemoved(model: SendablePreview)
-        fun onReceiveWsEventDeleteMsg(replyTimeNano: String)
+//        fun onReceiveWsEventDeleteMsg(replyTimeNano: String)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
-        fun connectWebSocket(messageId: String)
+//        fun connectWebSocket(messageId: String)
 
         fun startTyping()
 
@@ -117,7 +117,7 @@ interface TopChatContract {
 
         fun initProductPreviewFromAttachProduct(resultProducts: ArrayList<ResultProduct>)
 
-        fun isInTheMiddleOfThePage(): Boolean
+//        fun isInTheMiddleOfThePage(): Boolean
 
         fun resetUnreadMessage()
 

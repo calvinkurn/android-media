@@ -102,7 +102,7 @@ open class TopChatRoomPresenter @Inject constructor(
 
     private lateinit var webSocketUrl: String
     private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
-    private var mSubscription: CompositeSubscription
+//    private var mSubscription: CompositeSubscription
     private var compressImageSubscription: CompositeSubscription
     private var listInterceptor: ArrayList<Interceptor>
     private var dummyList: ArrayList<Visitable<*>>
@@ -117,7 +117,7 @@ open class TopChatRoomPresenter @Inject constructor(
     private var isInTheMiddleOfChat = false
 
     init {
-        mSubscription = CompositeSubscription()
+//        mSubscription = CompositeSubscription()
         compressImageSubscription = CompositeSubscription()
         listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
         dummyList = arrayListOf()
@@ -125,56 +125,56 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
-    override fun connectWebSocket(messageId: String) {
-        thisMessageId = messageId
-        roomMetaData.updateMessageId(messageId)
-        webSocketUrl = CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
-                "?os_type=1" +
-                "&device_id=" + userSession.deviceId +
-                "&user_id=" + userSession.userId
+//    override fun connectWebSocket(messageId: String) {
+//        thisMessageId = messageId
+//        roomMetaData.updateMessageId(messageId)
+//        webSocketUrl = CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
+//                "?os_type=1" +
+//                "&device_id=" + userSession.deviceId +
+//                "&user_id=" + userSession.userId
 
-        destroyWebSocket()
+//        destroyWebSocket()
 
-        if (mSubscription.isUnsubscribed) {
-            mSubscription = CompositeSubscription()
-        }
+//        if (mSubscription.isUnsubscribed) {
+//            mSubscription = CompositeSubscription()
+//        }
 
-        val subscriber = object : WebSocketSubscriber() {
-            override fun onOpen(webSocket: WebSocket) {
-                networkMode = MODE_WEBSOCKET
-                view?.showErrorWebSocket(false)
-                readMessage()
-            }
+//        val subscriber = object : WebSocketSubscriber() {
+//            override fun onOpen(webSocket: WebSocket) {
+//                networkMode = MODE_WEBSOCKET
+//                view?.showErrorWebSocket(false)
+//                readMessage()
+//            }
 
-            override fun onMessage(webSocketResponse: WebSocketResponse) {
-                mappingEvent(webSocketResponse, messageId)
-            }
+//            override fun onMessage(webSocketResponse: WebSocketResponse) {
+//                mappingEvent(webSocketResponse, messageId)
+//            }
 
-            override fun onReconnect() {
-                networkMode = MODE_API
-                view?.showErrorWebSocket(true)
-            }
+//            override fun onReconnect() {
+//                networkMode = MODE_API
+//                view?.showErrorWebSocket(true)
+//            }
 
-            override fun onClose() {
-                networkMode = MODE_API
-                destroyWebSocket()
-                view?.showErrorWebSocket(true)
-                if (autoRetryConnectWs) {
-                    connectWebSocket(messageId)
-                }
-            }
+//            override fun onClose() {
+//                networkMode = MODE_API
+//                destroyWebSocket()
+//                view?.showErrorWebSocket(true)
+//                if (autoRetryConnectWs) {
+//                    connectWebSocket(messageId)
+//                }
+//            }
 
-        }
+//        }
 
-        val rxWebSocket = webSocketUtil.getWebSocketInfo(webSocketUrl, userSession.accessToken)
-        val subscription = rxWebSocket?.subscribe(subscriber)
-
-        mSubscription?.add(subscription)
-    }
+//        val rxWebSocket = webSocketUtil.getWebSocketInfo(webSocketUrl, userSession.accessToken)
+//        val subscription = rxWebSocket?.subscribe(subscriber)
+//
+//        mSubscription?.add(subscription)
+//    }
 
     override fun destroyWebSocket() {
-        mSubscription.clear()
-        mSubscription.unsubscribe()
+//        mSubscription.clear()
+//        mSubscription.unsubscribe()
     }
 
     override fun initUserLocation(userLocation: LocalCacheModel?) {
@@ -192,69 +192,69 @@ open class TopChatRoomPresenter @Inject constructor(
         return attachmentsPreview
     }
 
-    override fun mappingEvent(webSocketResponse: WebSocketResponse, messageId: String) {
-        val pojo: ChatSocketPojo = topChatRoomWebSocketMessageMapper.parseResponse(
-            webSocketResponse
-        )
-        if (pojo.msgId.toString() != messageId) return
-        when (webSocketResponse.code) {
-            EVENT_TOPCHAT_TYPING -> {
-                if (!isInTheMiddleOfThePage()) {
-                    view?.onReceiveStartTypingEvent()
-                }
-            }
-            EVENT_TOPCHAT_END_TYPING -> {
-                if (!isInTheMiddleOfThePage()) {
-                    view?.onReceiveStopTypingEvent()
-                }
-            }
-            EVENT_TOPCHAT_READ_MESSAGE -> {
-                if (!isInTheMiddleOfThePage()) {
-                    view?.onReceiveReadEvent()
-                }
-            }
-            EVENT_TOPCHAT_REPLY_MESSAGE -> {
-                if (!isInTheMiddleOfThePage()) {
-                    view?.onSendAndReceiveMessage()
-                    onReplyMessage(pojo)
-                    newUnreadMessage = 0
-                    view?.hideUnreadMessage()
-                } else {
-                    if (pojo.isOpposite) {
-                        newUnreadMessage++
-                        view?.showUnreadMessage(newUnreadMessage)
-                    }
-                }
-            }
-            EVENT_DELETE_MSG -> {
-                view?.onReceiveWsEventDeleteMsg(pojo.replyTime)
-            }
-        }
-    }
+//    override fun mappingEvent(webSocketResponse: WebSocketResponse, messageId: String) {
+//        val pojo: ChatSocketPojo = topChatRoomWebSocketMessageMapper.parseResponse(
+//            webSocketResponse
+//        )
+//        if (pojo.msgId.toString() != messageId) return
+//        when (webSocketResponse.code) {
+//            EVENT_TOPCHAT_TYPING -> {
+//                if (!isInTheMiddleOfThePage()) {
+//                    view?.onReceiveStartTypingEvent()
+//                }
+//            }
+//            EVENT_TOPCHAT_END_TYPING -> {
+//                if (!isInTheMiddleOfThePage()) {
+//                    view?.onReceiveStopTypingEvent()
+//                }
+//            }
+//            EVENT_TOPCHAT_READ_MESSAGE -> {
+//                if (!isInTheMiddleOfThePage()) {
+//                    view?.onReceiveReadEvent()
+//                }
+//            }
+//            EVENT_TOPCHAT_REPLY_MESSAGE -> {
+//                if (!isInTheMiddleOfThePage()) {
+//                    view?.onSendAndReceiveMessage()
+//                    onReplyMessage(pojo)
+//                    newUnreadMessage = 0
+//                    view?.hideUnreadMessage()
+//                } else {
+//                    if (pojo.isOpposite) {
+//                        newUnreadMessage++
+//                        view?.showUnreadMessage(newUnreadMessage)
+//                    }
+//                }
+//            }
+//            EVENT_DELETE_MSG -> {
+//                view?.onReceiveWsEventDeleteMsg(pojo.replyTime)
+//            }
+//        }
+//    }
 
-    private fun onReplyMessage(pojo: ChatSocketPojo) {
-        val uiModel = mapToVisitable(pojo)
-        view?.onReceiveMessageEvent(uiModel)
-        handleSrwBubbleState(pojo, uiModel)
-        if (!pojo.isOpposite) {
-            checkDummyAndRemove(uiModel)
-        } else {
-            readMessage()
-        }
-    }
+//    private fun onReplyMessage(pojo: ChatSocketPojo) {
+//        val uiModel = mapToVisitable(pojo)
+//        view?.onReceiveMessageEvent(uiModel)
+//        handleSrwBubbleState(pojo, uiModel)
+//        if (!pojo.isOpposite) {
+//            checkDummyAndRemove(uiModel)
+//        } else {
+//            readMessage()
+//        }
+//    }
 
-    private fun handleSrwBubbleState(pojo: ChatSocketPojo, uiModel: Visitable<*>) {
-        when (pojo.attachment?.type) {
-            AttachmentType.Companion.TYPE_INVOICE_SEND,
-            AttachmentType.Companion.TYPE_IMAGE_UPLOAD,
-            AttachmentType.Companion.TYPE_VOUCHER -> view?.removeSrwBubble()
-            AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT -> {
-                if (uiModel is ProductAttachmentUiModel) {
-                    view?.removeSrwBubble(uiModel.productId)
-                }
-            }
-        }
-    }
+//    private fun handleSrwBubbleState(pojo: ChatSocketPojo, uiModel: Visitable<*>) {
+//        when (pojo.attachment?.type) {
+//            AttachmentType.Companion.TYPE_INVOICE_SEND,
+//            AttachmentType.Companion.TYPE_IMAGE_UPLOAD,
+//            AttachmentType.Companion.TYPE_VOUCHER -> view?.removeSrwBubble()
+//            AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT -> {
+//                if (uiModel is ProductAttachmentUiModel) {
+//                    view?.removeSrwBubble(uiModel.productId)
+//                }
+//            }
+//        }
+//    }
 
     private fun handleSrwBubbleState(previewToSent: SendablePreview) {
         when (previewToSent) {
@@ -407,9 +407,9 @@ open class TopChatRoomPresenter @Inject constructor(
         return null
     }
 
-    override fun mapToVisitable(pojo: ChatSocketPojo): Visitable<*> {
-        return topChatRoomWebSocketMessageMapper.map(pojo)
-    }
+//    override fun mapToVisitable(pojo: ChatSocketPojo): Visitable<*> {
+//        return topChatRoomWebSocketMessageMapper.map(pojo)
+//    }
 
     private fun sendByApi(requestParams: RequestParams, dummyMessage: Visitable<*>) {
         replyChatUseCase.execute(requestParams, object : Subscriber<ReplyChatViewModel>() {
@@ -704,14 +704,14 @@ open class TopChatRoomPresenter @Inject constructor(
         initAttachmentPreview()
     }
 
-    override fun isInTheMiddleOfThePage(): Boolean {
-        return isInTheMiddleOfChat
-    }
+//    override fun isInTheMiddleOfThePage(): Boolean {
+//        return isInTheMiddleOfChat
+//    }
 
     //Setup flag for temporary until all migrated to viewModel
-    fun setInTheMiddleOfChat(value: Boolean) {
-        isInTheMiddleOfChat = value
-    }
+//    fun setInTheMiddleOfChat(value: Boolean) {
+//        isInTheMiddleOfChat = value
+//    }
 
     override fun resetUnreadMessage() {
         newUnreadMessage = 0

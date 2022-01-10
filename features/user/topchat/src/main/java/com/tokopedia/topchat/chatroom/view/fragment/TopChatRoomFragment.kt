@@ -1092,7 +1092,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         rvScrollListener?.reset()
         adapter.reset()
         viewModel.resetChatUseCase()
-        presenter.setInTheMiddleOfChat(viewModel.isInTheMiddleOfThePage())
+//        presenter.setInTheMiddleOfChat(viewModel.isInTheMiddleOfThePage())
         showLoading()
         topchatViewState?.hideProductPreviewLayout()
         topchatViewState?.scrollToBottom()
@@ -2539,7 +2539,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         })
 
         viewModel.existingChat.observe(viewLifecycleOwner, {
-            presenter.setInTheMiddleOfChat(viewModel.isInTheMiddleOfThePage())
+//            presenter.setInTheMiddleOfChat(viewModel.isInTheMiddleOfThePage())
             presenter.updateRoomMetaData(viewModel.roomMetaData)
             val result = it.first
             val isInit = it.second
@@ -2571,7 +2571,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         })
 
         viewModel.bottomChat.observe(viewLifecycleOwner, {
-            presenter.setInTheMiddleOfChat(viewModel.isInTheMiddleOfThePage())
+//            presenter.setInTheMiddleOfChat(viewModel.isInTheMiddleOfThePage())
             when(it) {
                 is Success -> onSuccessGetBottomChat(it.data.chatroomViewModel, it.data.chatReplies)
                 is Fail -> onErrorGetBottomChat(it.throwable)
@@ -2754,7 +2754,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         viewModel.deleteMsg(presenter.roomMetaData.msgId, replyTimeNano)
     }
 
-    override fun onReceiveWsEventDeleteMsg(replyTimeNano: String) {
+    private fun onReceiveWsEventDeleteMsg(replyTimeNano: String) {
         adapter.deleteMsg(replyTimeNano)
     }
 
