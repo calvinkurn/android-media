@@ -268,7 +268,6 @@ class TopChatViewModel @Inject constructor(
 //            view?.onSendAndReceiveMessage()
 //            onReplyMessage(pojo)
             _unreadMsg.postValue(0)
-//            view?.hideUnreadMessage()
         } else {
             if (chat.isOpposite) {
                 incrementUnreadMsg()

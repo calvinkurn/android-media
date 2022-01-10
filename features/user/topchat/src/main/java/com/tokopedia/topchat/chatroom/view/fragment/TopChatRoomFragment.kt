@@ -2611,6 +2611,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         viewModel.unreadMsg.observe(viewLifecycleOwner, { totalUnread ->
             if (totalUnread > 0) {
                 showUnreadMessage(totalUnread)
+            } else {
+                hideUnreadMessage()
             }
         })
     }
