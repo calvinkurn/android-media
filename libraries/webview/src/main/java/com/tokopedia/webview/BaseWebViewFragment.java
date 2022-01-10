@@ -303,6 +303,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (requestCode == REQUEST_CODE_LIVENESS && resultCode == RESULT_OK) {
             webView.loadAuthUrl(kycRedirectionUrl, userSession);
             Toast.makeText(getContext(), kycRedirectionUrl, Toast.LENGTH_LONG).show();
+            return;
         }
 
         if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
