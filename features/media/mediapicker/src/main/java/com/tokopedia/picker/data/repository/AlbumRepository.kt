@@ -20,7 +20,6 @@ class AlbumRepositoryImpl constructor(
         val albumMap = mutableMapOf<String, Album>()
 
         var recentPreviewUri: Uri? = null
-        var recentMediaSize = 0
 
         if (cursor.moveToFirst()) {
             do {
@@ -38,33 +37,29 @@ class AlbumRepositoryImpl constructor(
 
                 val album = albumMap[bucket]
 
-                if (album == null) {
-                    albumMap[bucket] = Album(
-                        id = bucketId,
-                        name = bucket,
-                        preview = media.uri,
-                        count = 0
-                    )
-                }
-
-                if (album != null) {
-                    album.count++
-                }
+                if (album == null) albumMap[bucket] = Album(bucketId, bucket, media.uri)
+                if (album != null) album.count++
             } while (cursor.moveToNext())
         }
 
         cursor.close()
 
         return albumMap.values
-            .map {
-                val totalInAlbum = it.count + 1
+            .toList()
+            .addRecentAlbumAtFirst(recentPreviewUri)
+    }
 
-                // get total of media
-                recentMediaSize += totalInAlbum
+    private fun List<Album>.addRecentAlbumAtFirst(
+        firstMediaPreviewUri: Uri?
+    ): List<Album> {
+        var recentMediaSize = 0
 
-                // return the map
-                it
-            }
+        return this.map {
+            val totalInAlbum = it.count + 1
+            recentMediaSize += totalInAlbum
+
+            it
+        }
             .toMutableList()
             .also {
                 val firstItemIndex = 0
@@ -73,7 +68,7 @@ class AlbumRepositoryImpl constructor(
                 it.add(firstItemIndex, Album(
                     id = RECENT_ALBUM_ID,
                     name = RECENT_ALBUM_NAME,
-                    preview = recentPreviewUri,
+                    preview = firstMediaPreviewUri,
                     count = recentMediaSize
                 ))
             }
