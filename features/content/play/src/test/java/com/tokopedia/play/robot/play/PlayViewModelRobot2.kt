@@ -6,6 +6,7 @@ import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.helper.ClassBuilder
+import com.tokopedia.play.model.PlayMapperBuilder
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.timer.TimerFactory
@@ -173,7 +174,7 @@ fun createPlayViewModelRobot(
     getSocketCredentialUseCase: GetSocketCredentialUseCase = mockk(relaxed = true),
     getReportSummariesUseCase: GetReportSummariesUseCase = mockk(relaxed = true),
     trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase = mockk(relaxed = true),
-    playSocketToModelMapper: PlaySocketToModelMapper = mockk(relaxed = true),
+    playSocketToModelMapper: PlaySocketToModelMapper = PlayMapperBuilder().buildSocketMapper(),
     playUiModelMapper: PlayUiModelMapper = ClassBuilder().getPlayUiModelMapper(),
     userSession: UserSessionInterface = mockk(relaxed = true),
     remoteConfig: RemoteConfig = mockk(relaxed = true),
