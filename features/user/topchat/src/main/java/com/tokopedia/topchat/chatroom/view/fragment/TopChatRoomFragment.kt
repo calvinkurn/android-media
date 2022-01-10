@@ -955,7 +955,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 shopId = shopId.toString(),
                 shopName = "",
                 isSeller = isSeller(),
-                warehouseId = presenter.attachProductWarehouseId
+                warehouseId = viewModel.attachProductWarehouseId
             )
             startActivityForResult(intent, TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE)
         }
