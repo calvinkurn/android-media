@@ -3,6 +3,7 @@ package com.tokopedia.otp.silentverification.view.viewmodel
 import android.net.Network
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -14,7 +15,7 @@ import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -90,23 +91,19 @@ class SilentVerificationViewModel @Inject constructor(
     }
 
     fun verifyBoku(network: Network, url: String) {
-        launchCatchError(block = {
-            getEvUrlUsecase.apply {
-                setNetworkSocketFactory(network)
-                setUrl(url)
+        viewModelScope.launch {
+            try {
+                getEvUrlUsecase.apply {
+                    setNetworkSocketFactory(network)
+                    setUrl(url)
+                }
+                val result = getEvUrlUsecase(Unit)
+                _bokuVerificationResponse.postValue(Success(result))
+            } catch (e: Throwable) {
+                e.printStackTrace()
+                _bokuVerificationResponse.postValue(Fail(e))
             }
-            val result = withContext(dispatcher.io) {
-                getEvUrlUsecase.executeOnBackground()
-            }
-            _bokuVerificationResponse.postValue(Success(result))
-        }, onError = {
-            it.printStackTrace()
-            _bokuVerificationResponse.postValue(Fail(it))
-        })
-    }
-
-    fun cancelEvUrl() {
-        getEvUrlUsecase.cancelEvUrl()
+        }
     }
 
     companion object {
