@@ -13,7 +13,7 @@ class FintechWidgetAdapter(var widgetClickListner: WidgetClickListner) : Recycle
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder(
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.fintech_invidual_chip, parent, false)
+                .inflate(R.layout.fintech_invidual_whole_chip, parent, false)
         )
     }
 

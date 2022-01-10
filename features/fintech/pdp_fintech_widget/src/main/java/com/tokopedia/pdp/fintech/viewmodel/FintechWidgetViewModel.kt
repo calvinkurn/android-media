@@ -14,7 +14,8 @@ import javax.inject.Inject
 
 class FintechWidgetViewModel @Inject constructor
     (@CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
-     val productDetailUseCase:ProductDetailUseCase):
+     private val productDetailUseCase:ProductDetailUseCase
+     ):
     BaseViewModel(dispatcher) {
 
     private val _productDetailLiveData = MutableLiveData<Result<ProductDetailClass>>()
