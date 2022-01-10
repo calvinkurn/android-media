@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tp_two_hours"
+        android:id="@+id/tp_time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -34,7 +34,7 @@
         android:layout_marginTop="16dp"
         android:src="@drawable/tokopedianow_ic_educational_information_two_bottomsheet"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tp_two_hours" />
+        app:layout_constraintTop_toBottomOf="@+id/tp_time" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tp_stock_available"

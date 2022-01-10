@@ -89,6 +89,7 @@ object HomeLayoutMapper {
         hasTickerBeenRemoved: Boolean,
         hasSharingEducationBeenRemoved: Boolean,
         miniCartData: MiniCartSimplifiedData?,
+        serviceType: String,
         onClickSwitcher: () -> Unit
     ) {
         val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
@@ -101,7 +102,7 @@ object HomeLayoutMapper {
 
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach {
             if (!(hasSharingEducationBeenRemoved && it.layout == SHARING_EDUCATION)) {
-                mapToHomeUiModel(it, miniCartData = miniCartData)?.let { item ->
+                mapToHomeUiModel(it, miniCartData = miniCartData, serviceType = serviceType)?.let { item ->
                     add(item)
                 }
 
@@ -116,11 +117,12 @@ object HomeLayoutMapper {
     fun MutableList<HomeLayoutItemUiModel>.addMoreHomeLayout(
         response: List<HomeLayoutResponse>,
         hasSharingEducationBeenRemoved: Boolean,
-        miniCartData: MiniCartSimplifiedData?
+        miniCartData: MiniCartSimplifiedData?,
+        serviceType: String
     ) {
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach {
             if (!(hasSharingEducationBeenRemoved && it.layout == SHARING_EDUCATION)) {
-                mapToHomeUiModel(it, HomeLayoutItemState.LOADED, miniCartData)?.let { item ->
+                mapToHomeUiModel(it, HomeLayoutItemState.LOADED, miniCartData, serviceType)?.let { item ->
                     add(item)
                 }
             }
@@ -394,7 +396,8 @@ object HomeLayoutMapper {
     private fun mapToHomeUiModel(
         response: HomeLayoutResponse,
         state: HomeLayoutItemState = HomeLayoutItemState.NOT_LOADED,
-        miniCartData: MiniCartSimplifiedData? = null
+        miniCartData: MiniCartSimplifiedData? = null,
+        serviceType: String,
     ): HomeLayoutItemUiModel? {
         return when (response.layout) {
             CATEGORY -> mapToCategoryLayout(response, state)
@@ -402,8 +405,8 @@ object HomeLayoutMapper {
             BANNER_CAROUSEL -> mapSliderBannerModel(response, HomeLayoutItemState.LOADED)
             PRODUCT_RECOM -> mapProductRecomDataModel(response, HomeLayoutItemState.LOADED, miniCartData)
             REPURCHASE_PRODUCT -> mapRepurchaseUiModel(response, state)
-            EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, HomeLayoutItemState.LOADED)
-            SHARING_EDUCATION -> mapSharingEducationUiModel(response, state)
+            EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, HomeLayoutItemState.LOADED, serviceType)
+            SHARING_EDUCATION -> mapSharingEducationUiModel(response, state, serviceType)
             else -> null
         }
     }

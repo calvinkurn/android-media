@@ -3,7 +3,7 @@
     android:id="@+id/cv_educational_info"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:visibility="gone"
+    android:visibility="visible"
     android:layout_marginTop="16dp"
     android:layout_marginStart="16dp"
     android:layout_marginEnd="16dp"
@@ -18,44 +18,44 @@
         android:background="@color/tokopedianow_cardview_background_dms_color">
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/iu_two_hours"
+            android:id="@+id/iu_time"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginStart="11dp"
             android:layout_marginTop="11dp"
             android:layout_marginBottom="11dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tp_two_hours"
+            app:layout_constraintEnd_toStartOf="@+id/tp_time"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tp_two_hours"
+            android:id="@+id/tp_time"
             android:layout_width="36dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:gravity="center_vertical"
-            android:text="@string/tokopedianow_home_educational_information_two_hours"
-            app:layout_constraintBottom_toBottomOf="@+id/iu_two_hours"
+            app:layout_constraintBottom_toBottomOf="@+id/iu_time"
             app:layout_constraintEnd_toStartOf="@+id/iu_stock_available"
-            app:layout_constraintStart_toEndOf="@+id/iu_two_hours"
-            app:layout_constraintTop_toTopOf="@+id/iu_two_hours"
-            app:typographyType="heading_6" />
+            app:layout_constraintStart_toEndOf="@+id/iu_time"
+            app:layout_constraintTop_toTopOf="@+id/iu_time"
+            app:typographyType="heading_6"
+            tools:text="@string/tokopedianow_home_educational_information_two_hours" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iu_stock_available"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            app:layout_constraintBottom_toBottomOf="@+id/tp_two_hours"
+            app:layout_constraintBottom_toBottomOf="@+id/tp_time"
             app:layout_constraintEnd_toStartOf="@+id/tp_stock_available"
-            app:layout_constraintStart_toEndOf="@+id/tp_two_hours"
-            app:layout_constraintTop_toTopOf="@+id/tp_two_hours" />
+            app:layout_constraintStart_toEndOf="@+id/tp_time"
+            app:layout_constraintTop_toTopOf="@+id/tp_time" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tp_stock_available"
             android:layout_width="70dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:gravity="center_vertical"
             android:text="@string/tokopedianow_home_educational_information_stock_available"
@@ -77,7 +77,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tp_guaranteed_quality"
             android:layout_width="55dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:gravity="center_vertical"
             android:text="@string/tokopedianow_home_educational_information_guaranteed_quality"

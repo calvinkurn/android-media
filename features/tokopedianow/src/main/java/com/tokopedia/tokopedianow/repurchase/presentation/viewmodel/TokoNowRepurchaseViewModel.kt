@@ -588,7 +588,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
             else -> {
                 layoutList.clear()
                 layoutList.addChooseAddress()
-                layoutList.addEmptyStateNoResult()
+                layoutList.addEmptyStateNoResult(localCacheModel?.service_type.orEmpty())
                 getCategoryGridAsync().await()
                 layoutList.addRecomWidget(PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM)
             }

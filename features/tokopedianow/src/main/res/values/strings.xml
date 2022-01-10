@@ -49,12 +49,12 @@
     <string name="tokopedianow_lihat">Lihat</string>
     <string name="tokopedianow_all_products">Semua Produk</string>
 
-    <string name="tokopedianow_home_sharing_education_title"><![CDATA[<b>Ajak teman & tetanggamu</b>, biar ikut nikmati layanan <b>2 jam tiba</b> dan <b>gratis ongkir!</b>]]></string>
+    <string name="tokopedianow_home_sharing_education_title"><![CDATA[<b>Ajak teman & tetanggamu</b>, biar ikut nikmati layanan <b>%1$s tiba</b> dan <b>gratis ongkir!</b>]]></string>
     <string name="tokopedianow_home_sharing_education_button">Bagikan ke Temanmu</string>
-    <string name="tokopedianow_home_educational_information_two_hours">2 jam tiba</string>
+    <string name="tokopedianow_home_educational_information_duration">%1$s tiba</string>
     <string name="tokopedianow_home_educational_information_stock_available">Stok pasti tersedia</string>
     <string name="tokopedianow_home_educational_information_guaranteed_quality">Kualitas terjamin</string>
-    <string name="tokopedianow_home_educational_information_two_hours_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>2 jam tiba.</b></font> Terima belanjaan dalam 2 jam setelah pembayaran berhasil & nikmati <font color=\'%2$s\'><b>gratis ongkir</b></font> juga!]]></string>
+    <string name="tokopedianow_home_educational_information_duration_bottomsheet"><![CDATA[<font color=\'%2$s\'><b>%1$s tiba.</b></font> Terima belanjaan dalam %1$s setelah pembayaran berhasil & nikmati <font color=\'%2$s\'><b>gratis ongkir</b></font> juga!]]></string>
     <string name="tokopedianow_home_educational_information_stock_available_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Stok pasti tersedia.</b></font> Ada ribuan pilihan produk. Tiap pesananmu siap dikirim sekaligus & dilayani langsung oleh Tokopedia.]]></string>
     <string name="tokopedianow_home_educational_information_guaranteed_quality_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Kualitas terjamin.</b></font> Kondisi produk dijamin aman & segar, dengan garansi uang kembali.]]></string>
     <string name="tokopedianow_home_educational_information_twenty_four_hours_bottomsheet" tools:ignore="TypographyDashes"><![CDATA[Nantikan layanan 24 jam yang akan tersedia setelah masa PPKM. <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/apa-itu-tokopedia-now">Pelajari</a></font>]]></string>
@@ -69,7 +69,8 @@
     <string name="tokopedianow_repurchase_category_grid_title">Mau belanja apa?</string>
     <string name="tokopedianow_repurchase_title_page">Beli Lagi</string>
     <string name="tokopedianow_repurchase_no_result_title">Belum pernah belanja di Tokopedia NOW!</string>
-    <string name="tokopedianow_repurchase_no_result_description">Belanja sekarang, pesanan tiba dalam 2 jam!</string>
+    <string name="tokopedianow_repurchase_no_result_description_two_hours">Belanja sekarang, pesanan tiba dalam 2 jam!</string>
+    <string name="tokopedianow_repurchase_no_result_description_fifteen_minutes">Belanja sekarang, pesanan tiba dalam 15 menit!</string>
 
     <string name="tokopedianow_sort_filter_bottomsheet">Terapkan</string>
     <string name="tokopedianow_sort_filter_item_most_frequently_bought_bottomsheet">Sering Kamu Beli</string>
@@ -101,6 +102,9 @@
     <string name="tokopedianow_text_reset">Reset</string>
     <string name="tokopedianow_back_to_tokopedia">Kembali ke Tokopedia</string>
 
+    <string name="tokopedianow_2h_copy">2 jam</string>
+    <string name="tokopedianow_15m_copy">15 menit</string>
+    
     <string name="tokopedianow_15m_switcher_title">Butuh produk tiba lebih cepat?</string>
     <string name="tokopedianow_15m_switcher_subtitle">Ke Tokopedia NOW! 15 menit tiba</string>
     <string name="tokopedianow_2h_switcher_title">Butuh produk lebih lengkap?</string>
