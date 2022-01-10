@@ -1867,7 +1867,6 @@ class PlayViewModel @Inject constructor(
                 SaveTemporarySharingImage(imageUrl = _channelDetail.value.channelInfo.coverUrl)
             )
         }
-
     }
 
     private fun handleOpenSharingOption(isScreenshot: Boolean) {

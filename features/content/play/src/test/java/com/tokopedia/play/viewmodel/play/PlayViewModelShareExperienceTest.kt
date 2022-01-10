@@ -24,6 +24,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.notification.RunListener
 
 /**
  * Created By : Jonathan Darwin on December 16, 2021
@@ -62,11 +63,73 @@ class PlayViewModelShareExperienceTest {
     }
 
     @Test
-    fun `when user click share action & custom sharing is allowed, it should emit event to open universal bottom sheet`() {
+    fun `when user click share action, it should emit event to save temporary sharing image`() {
         /** Prepare */
         every { mockPlayNewAnalytic.clickShareButton(any(), any()) } returns Unit
         coEvery { mockPlayNewAnalytic.impressShareBottomSheet(any(), any()) } returns Unit
         coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true
+
+        val mockEvent = SaveTemporarySharingImage(imageUrl = channelInfo.coverUrl)
+
+        val robot = createPlayViewModelRobot(
+            dispatchers = testDispatcher,
+            playAnalytic = mockPlayNewAnalytic,
+            playShareExperience = mockPlayShareExperience,
+        ) {
+            createPage(channelData)
+            focusPage(channelData)
+        }
+
+        robot.use {
+            /** Test */
+            val event = it.recordEvent {
+                submitAction(ClickShareAction)
+            }
+
+            /** Verify */
+            verify { mockPlayNewAnalytic.clickShareButton(channelId, channelType) }
+
+            event.last().isEqualTo(mockEvent)
+        }
+    }
+
+    @Test
+    fun `when app failed to save temporary image, it should emit copy link event`() {
+        /** Prepare */
+        coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true
+
+        val mockCopyEvent = CopyToClipboardEvent(
+            shareInfo.content
+        )
+        val mockShowInfoEvent = ShowInfoEvent(
+            UiString.Resource(123)
+        )
+
+        val robot = createPlayViewModelRobot(
+            dispatchers = testDispatcher,
+            playAnalytic = mockPlayNewAnalytic,
+            playShareExperience = mockPlayShareExperience,
+        ) {
+            createPage(channelData)
+            focusPage(channelData)
+        }
+
+        robot.use {
+            /** Test */
+            val event = it.recordEvent {
+                submitAction(CopyLinkAction)
+            }
+
+            event[0].isEqualTo(mockCopyEvent)
+            event[1].isEqualToIgnoringFields(mockShowInfoEvent, ShowInfoEvent::message)
+        }
+    }
+
+    @Test
+    fun `when app wants to open sharing bottom sheet & custom sharing is allowed, it should emit show share bottom sheet event`() {
+        /** Prepare */
+        coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true
+        coEvery { mockPlayNewAnalytic.impressShareBottomSheet(any(), any()) } returns Unit
 
         val mockEvent = OpenSharingOptionEvent(
             title = channelInfo.title,
@@ -87,11 +150,10 @@ class PlayViewModelShareExperienceTest {
         robot.use {
             /** Test */
             val event = it.recordEvent {
-                submitAction(ClickShareAction)
+                submitAction(ShowShareExperienceAction)
             }
 
             /** Verify */
-            verify { mockPlayNewAnalytic.clickShareButton(channelId, channelType) }
             verify { mockPlayNewAnalytic.impressShareBottomSheet(channelId, channelType) }
 
             event.last().isEqualTo(mockEvent)
@@ -99,9 +161,8 @@ class PlayViewModelShareExperienceTest {
     }
 
     @Test
-    fun `when user click share action & custom sharing is not allowed, it should emit event to copy the link`() {
+    fun `when user wants to open sharing experience & custom sharing is not allowed, it should emit event to copy the link`() {
         /** Prepare */
-        every { mockPlayNewAnalytic.clickShareButton(any(), any()) } returns Unit
         coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns false
 
         val mockCopyEvent = CopyToClipboardEvent(
@@ -123,12 +184,10 @@ class PlayViewModelShareExperienceTest {
         robot.use {
             /** Test */
             val event = it.recordEvent {
-                submitAction(ClickShareAction)
+                submitAction(ShowShareExperienceAction)
             }
 
             /** Verify */
-            verify { mockPlayNewAnalytic.clickShareButton(channelId, channelType) }
-
             event[0].isEqualTo(mockCopyEvent)
             event[1].isEqualToIgnoringFields(mockShowInfoEvent, ShowInfoEvent::message)
         }
