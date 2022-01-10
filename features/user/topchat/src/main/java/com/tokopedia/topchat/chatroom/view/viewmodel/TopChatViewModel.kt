@@ -1,18 +1,17 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel
 
 import androidx.collection.ArrayMap
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
-import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
-import com.tokopedia.chat_common.data.ProductAttachmentUiModel
-import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -26,14 +25,14 @@ import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.GetChatResult
-import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ActionType
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.BlockActionType
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.WrapperChatSetting
+import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
-import com.tokopedia.topchat.chatroom.domain.pojo.param.*
+import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
@@ -43,14 +42,25 @@ import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Pa
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
+import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket
+import com.tokopedia.topchat.common.websocket.TopchatWebSocket
+import com.tokopedia.topchat.common.websocket.WebSocketParser
+import com.tokopedia.topchat.common.websocket.WebSocketStateHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
+import okhttp3.Response
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
+import timber.log.Timber
 import javax.inject.Inject
 
 class TopChatViewModel @Inject constructor(
@@ -78,8 +88,11 @@ class TopChatViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig,
     private val chatAttachmentMapper: ChatAttachmentMapper,
-    private val existingChatMapper: TopChatRoomGetExistingChatMapper
-) : BaseViewModel(dispatcher.main) {
+    private val existingChatMapper: TopChatRoomGetExistingChatMapper,
+    private val chatWebSocket: TopchatWebSocket,
+    private val webSocketStateHandler: WebSocketStateHandler,
+    protected val webSocketParser: WebSocketParser
+) : BaseViewModel(dispatcher.main), LifecycleObserver {
 
     private val _messageId = MutableLiveData<Result<String>>()
     val messageId: LiveData<Result<String>>
@@ -158,10 +171,89 @@ class TopChatViewModel @Inject constructor(
     val deleteBubble: LiveData<Result<String>>
         get() = _deleteBubble
 
+    private var autoRetryJob: Job? = null
+    private val _isWebsocketError = MutableLiveData<Boolean>()
+    val isWebsocketError: LiveData<Boolean>
+        get() = _isWebsocketError
+
     var attachProductWarehouseId = "0"
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     var roomMetaData: RoomMetaData = RoomMetaData()
     private var userLocationInfo = LocalCacheModel()
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        chatWebSocket.close()
+        chatWebSocket.destroy()
+        cancel()
+    }
+
+    fun connectWebSocket() {
+        chatWebSocket.connectWebSocket(object : WebSocketListener() {
+            override fun onOpen(webSocket: WebSocket, response: Response) {
+                Timber.d("${TAG} - onOpen")
+                handleOnOpenWebSocket()
+            }
+
+            override fun onMessage(webSocket: WebSocket, text: String) {
+                val response = webSocketParser.parseResponse(text)
+                handleOnMessageWebSocket(response)
+            }
+
+            override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
+                Timber.d("${TAG} - onClosing - $code - $reason")
+            }
+
+            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+                Timber.d("${TAG} - onClosed - $code - $reason")
+                handleOnClosedWebSocket(code)
+            }
+
+            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+                Timber.d("${TAG} - onFailure - ${t.message}")
+                handleOnFailureWebSocket()
+            }
+        })
+    }
+
+    private fun handleOnOpenWebSocket() {
+        _isWebsocketError.postValue(false)
+        webSocketStateHandler.retrySucceed()
+    }
+
+    private fun handleOnMessageWebSocket(response: WebSocketResponse) {
+        // TBD
+    }
+
+    private fun handleOnClosedWebSocket(code: Int) {
+        if (code != DefaultTopChatWebSocket.CODE_NORMAL_CLOSURE) {
+            retryConnectWebSocket()
+        }
+    }
+
+    private fun handleOnFailureWebSocket() {
+        retryConnectWebSocket()
+    }
+
+    private fun retryConnectWebSocket() {
+        chatWebSocket.close()
+        _isWebsocketError.postValue(true)
+        autoRetryJob = launchCatchError(
+            dispatcher.io,
+            {
+                Timber.d("$TAG - scheduleForRetry")
+                webSocketStateHandler.scheduleForRetry {
+                    withContext(dispatcher.main) {
+                        Timber.d("$TAG - reconnecting websocket")
+                        connectWebSocket()
+                    }
+                }
+            },
+            {
+                Timber.d("$TAG - ${it.message}")
+            }
+        )
+    }
 
     fun initUserLocation(userLocation: LocalCacheModel?) {
         userLocation ?: return
@@ -182,6 +274,7 @@ class TopChatViewModel @Inject constructor(
             )
             val result = getExistingMessageIdUseCase(existingMessageIdParam)
             _messageId.value = Success(result.chatExistingChat.messageId)
+            roomMetaData.updateMessageId(result.chatExistingChat.messageId)
         }, onError = {
             _messageId.value = Fail(it)
         })
@@ -591,5 +684,8 @@ class TopChatViewModel @Inject constructor(
         }, onError = {
             _deleteBubble.value = Fail(it)
         })
+    }
+    companion object {
+        const val TAG = "TopchatWebSocketViewModel"
     }
 }

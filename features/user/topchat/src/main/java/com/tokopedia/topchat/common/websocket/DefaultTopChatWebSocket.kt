@@ -15,14 +15,20 @@ class DefaultTopChatWebSocket @Inject constructor(
 ) : TopchatWebSocket {
 
     var webSocket: WebSocket? = null
+    private var isDestroyed = false
 
     override fun connectWebSocket(listener: WebSocketListener) {
+        if (isDestroyed) return
         val request = generateWsRequest()
         webSocket = okHttpClient.newWebSocket(request, listener)
     }
 
     override fun close() {
         webSocket?.close(CODE_NORMAL_CLOSURE, "Bye!")
+    }
+
+    override fun destroy() {
+        isDestroyed = true
     }
 
     private fun generateWsRequest(): Request {

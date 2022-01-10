@@ -38,6 +38,7 @@ import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
+import com.tokopedia.topchat.common.websocket.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocketUtil
@@ -245,5 +246,30 @@ class ChatModule {
     @Provides
     fun provideAbTestPlatform() : AbTestPlatform {
         return RemoteConfigInstance.getInstance().abTestPlatform
+    }
+
+    @ChatScope
+    @Provides
+    fun provideWebSocketStateHandler(): WebSocketStateHandler {
+        return DefaultWebSocketStateHandler()
+    }
+
+    @ChatScope
+    @Provides
+    fun provideTopChatWebSocket(
+        userSession: UserSessionInterface,
+        client: OkHttpClient
+    ): TopchatWebSocket {
+        val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
+                "?os_type=1" +
+                "&device_id=" + userSession.deviceId +
+                "&user_id=" + userSession.userId
+        return DefaultTopChatWebSocket(client, webSocketUrl, userSession.accessToken)
+    }
+
+    @ChatScope
+    @Provides
+    fun provideWebSocketParser(): WebSocketParser {
+        return DefaultWebSocketParser()
     }
 }

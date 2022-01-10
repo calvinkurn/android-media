@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.common.websocket
 
-import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModel
 import kotlinx.coroutines.delay
 import timber.log.Timber
 
@@ -24,7 +23,7 @@ class DefaultWebSocketStateHandler: WebSocketStateHandler {
     }
 
     private suspend fun startWaiting() {
-        Timber.d("${WebSocketViewModel.TAG} - waiting ws retry for ${waitingTime}")
+        Timber.d("${TAG} - waiting ws retry for ${waitingTime}")
         isWaiting = true
         delay(waitingTime)
     }
@@ -50,5 +49,7 @@ class DefaultWebSocketStateHandler: WebSocketStateHandler {
     companion object {
         private const val INCREMENTAL_RETRY_TIME = 1_000L
         private const val MAX_RETRY_TIME = 5_000L
+
+        private const val TAG = "DefaultWebSocketStateHandler"
     }
 }

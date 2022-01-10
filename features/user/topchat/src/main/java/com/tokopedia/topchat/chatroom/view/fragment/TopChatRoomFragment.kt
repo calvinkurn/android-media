@@ -482,6 +482,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         initKeyboardListener(view)
         removeAttachmentIfNecessary(savedInstanceState)
         setupObservers()
+        setupLifecycleObserver()
+    }
+
+    private fun setupLifecycleObserver() {
+        viewLifecycleOwner.lifecycle.addObserver(viewModel)
     }
 
     private fun setupBackground() {
@@ -615,7 +620,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         showLoading()
         if (messageId.isNotEmpty()) {
             viewModel.getExistingChat(messageId, true)
-            presenter.connectWebSocket(messageId)
+            viewModel.connectWebSocket()
             viewModel.getOrderProgress(messageId)
         } else {
             viewModel.getMessageId(toUserId, toShopId, source)
@@ -2580,6 +2585,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 }
                 is Fail -> showToasterError(R.string.topchat_error_delete_msg_bubble)
             }
+        })
+
+        viewModel.isWebsocketError.observe(viewLifecycleOwner, {
+            showErrorWebSocket(it)
         })
     }
 

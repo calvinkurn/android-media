@@ -12,4 +12,8 @@ class FakeTopchatWebSocket @Inject constructor() : TopchatWebSocket {
     override fun close() {
 
     }
+
+    override fun destroy() {
+
+    }
 }
