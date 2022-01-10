@@ -118,8 +118,8 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupToolbar()
         context?.let { trackingQueue = TrackingQueue(it) }
+        setupToolbar()
         navToolbar?.setupToolbarWithStatusBar(requireActivity(), statusBarTheme = if(requireContext().isDarkMode()) TOOLBAR_LIGHT_TYPE else TOOLBAR_DARK_TYPE)
         sortFilterView = view.findViewById(R.id.filter_sort_recommendation)
         setupRecyclerView(view)
