@@ -22,9 +22,6 @@ class GalleryViewModel @Inject constructor(
     private var _files = MutableLiveData<List<Media>>()
     val files: LiveData<List<Media>> get() = _files
 
-    private var _error = MutableLiveData<Throwable>()
-    val error: LiveData<Throwable> get() = _error
-
     fun fetch(bucketId: Long, param: PickerParam) {
         viewModelScope.launch {
             val result = repository(bucketId, param)

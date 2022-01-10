@@ -67,7 +67,7 @@ import javax.inject.Inject
  * if you want to set between single or multiple selection, just add this query:
  * ...&type=single/multiple
  */
-class PickerActivity : BaseActivity(), PermissionFragment.Listener {
+open class PickerActivity : BaseActivity(), PermissionFragment.Listener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
 
@@ -190,11 +190,11 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
         }
     }
 
-    private fun createFragmentFactory(): PickerFragmentFactory {
+    protected open fun createFragmentFactory(): PickerFragmentFactory {
         return PickerFragmentFactoryImpl()
     }
 
-    private fun initInjector() {
+    protected open fun initInjector() {
         DaggerPickerComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .pickerModule(PickerModule())

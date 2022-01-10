@@ -25,7 +25,7 @@ import com.tokopedia.picker.ui.fragment.gallery.recyclers.utils.GridItemDecorati
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-class GalleryFragment : BaseDaggerFragment() {
+open class GalleryFragment : BaseDaggerFragment() {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
 
@@ -80,10 +80,6 @@ class GalleryFragment : BaseDaggerFragment() {
     private fun initObservable() {
         viewModel.files.observe(viewLifecycleOwner) {
             adapter.setData(it)
-        }
-
-        viewModel.error.observe(viewLifecycleOwner) {
-            Toast.makeText(requireContext(), it.localizedMessage, Toast.LENGTH_SHORT).show()
         }
     }
 
