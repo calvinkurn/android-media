@@ -19,11 +19,6 @@ abstract class PlayViewModelModule {
     @PlayScope
     abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
-//    @Binds
-//    @IntoMap
-//    @ViewModelKey(PlayViewModel::class)
-//    abstract fun getPlayViewModel(viewModel: PlayViewModel): ViewModel
-
     @Binds
     @IntoMap
     @ViewModelKey(PlayInteractionViewModel::class)
