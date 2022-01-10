@@ -12,5 +12,6 @@ data class DenomWidgetModel(
     val flashSalePercentage: Int = 0,
     val flashSaleLabel: String = "",
     val price: String = "",
+    val pricePlain: Int = 0,
     val appLink: String = "",
 )

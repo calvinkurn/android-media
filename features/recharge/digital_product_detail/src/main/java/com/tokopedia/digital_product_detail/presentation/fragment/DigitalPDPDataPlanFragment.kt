@@ -51,14 +51,46 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding?.let {
-            it.widgetRecommendationCard.renderRecommendationLayout(recommendationListener = object : RechargeRecommendationCardListener{
-                override fun onProductRecommendationCardClicked(applinkUrl: String) {
-                    context?.let {
-                        RouteManager.route(it, applink)
-                    }
+            it.widgetDenomGrid.renderDenomGridLayout(denomGridListener = object: RechargeDenomGridListener{
+                override fun onDenomGridClicked(denomGrid: DenomWidgetModel, position: Int) {
+                    //todo
                 }
-            },
-                "", listOf()
+            }, "Diskon Rp15.000 buat pengguna baru, nih!",
+                listOf(
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                        expiredDate = "December 2021",
+                        flashSaleLabel = "Segera Habis",
+                        flashSalePercentage = 80
+                    ),
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                        expiredDate = "December 2021",
+                        flashSaleLabel = "Segera Habis",
+                        flashSalePercentage = 80
+                    )
+                )
+            )
+
+
+//            it.widgetRecommendationCard.renderRecommendationLayout(recommendationListener = object : RechargeRecommendationCardListener{
+//                override fun onProductRecommendationCardClicked(applinkUrl: String) {
+//                    context?.let {
+//                        RouteManager.route(it, applinkUrl)
+//                    }
+//                }
+//            },
+             //   "", listOf()
                 //use data dummy,
 //                "Paling sering kamu beli",
 //                listOf(

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/widget_denom_grid_width"
     android:layout_height="wrap_content"
+    android:id="@+id/card_denom_grid"
+    app:card_type="border"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,19 +25,26 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/label_denom_grid_special"
             app:layout_constraintVertical_chainStyle="packed"
+            android:visibility="gone"
+            tools:visibility="visible"
             />
 
-        <com.tokopedia.unifycomponents.Label
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_denom_grid_special"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            app:labelType="highlight_light_orange"
+            android:textColor="@color/Unify_YN500"
+            tools:text="Special Campaign"
+            app:typographyType="small"
+            app:typographyWeight="bold"
             app:layout_constraintTop_toBottomOf="@+id/tg_denom_grid_title"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginTop="@dimen/spacing_lvl2"
             app:layout_constraintBottom_toTopOf="@+id/tg_denom_grid_periode"
             app:layout_constraintVertical_chainStyle="packed"
+            android:visibility="gone"
+            tools:visibility="visible"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -53,6 +62,8 @@
             android:ellipsize="end"
             app:typographyType="body_2"
             app:typographyWeight="bold"
+            android:visibility="gone"
+            tools:visibility="visible"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -70,6 +81,8 @@
             android:ellipsize="end"
             app:typographyType="body_2"
             app:typographyWeight="bold"
+            android:visibility="gone"
+            tools:visibility="visible"
             />
 
         <com.tokopedia.unifycomponents.Label
@@ -83,6 +96,8 @@
             app:layout_constraintVertical_chainStyle="packed"
             android:layout_marginTop="@dimen/spacing_lvl2"
             app:labelType="general_light_red"
+            android:visibility="gone"
+            tools:visibility="visible"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -96,6 +111,8 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             tools:text="Rp16.000"
             android:textColor="@color/Neutral_N400"
+            android:visibility="gone"
+            tools:visibility="visible"
             />
 
         <com.tokopedia.unifycomponents.ProgressBarUnify
@@ -108,6 +125,8 @@
             app:layout_constraintTop_toBottomOf="@id/label_denom_grid_discount"
             app:layout_constraintBottom_toTopOf="@+id/tg_denom_grid_sold_percentage_label"
             app:layout_constraintVertical_chainStyle="packed"
+            android:visibility="gone"
+            tools:visibility="visible"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -121,7 +140,10 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/pg_denom_grid_flash_salse"
             app:typographyType="small"
-            tools:text="Segera Habis" />
+            tools:text="Segera Habis"
+            android:visibility="gone"
+            tools:visibility="visible"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+</com.tokopedia.unifycomponents.CardUnify>

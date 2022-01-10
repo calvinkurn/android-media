@@ -19,11 +19,13 @@ class DenomGridWidget @JvmOverloads constructor(@NotNull context: Context, attrs
     private var rechargeDenomGridViewBinding = WidgetRechargeDenomGridBinding.inflate(LayoutInflater.from(context), this, true)
 
     fun renderDenomGridLayout(denomGridListener: RechargeDenomGridListener, titleDenomGrid: String, listDenomGrid: List<DenomWidgetModel>){
-        val adapterDenomGrid = DenomGridAdapter(denomGridListener)
+        val adapterDenomGrid = DenomGridAdapter()
         with(rechargeDenomGridViewBinding){
             tgDenomGridWidgetTitle.text = titleDenomGrid
             rvDenomGridCardTitle.apply {
                 adapterDenomGrid.setDenomGridList(listDenomGrid)
+                adapterDenomGrid.listener = denomGridListener
+                adapterDenomGrid.selectedProductIndex = null
                 adapter = adapterDenomGrid
                 layoutManager = StaggeredGridLayoutManager(STAG_GRID_SIZE, RecyclerView.VERTICAL)
             }
