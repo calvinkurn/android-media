@@ -2602,6 +2602,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         viewModel.msgDeleted.observe(viewLifecycleOwner, { replyTime ->
             onReceiveWsEventDeleteMsg(replyTime)
         })
+
+        viewModel.msgRead.observe(viewLifecycleOwner, { replyTime ->
+            onReceiveReadEvent()
+        })
     }
 
     private fun handleToggleBlock(item: WrapperChatSetting) {

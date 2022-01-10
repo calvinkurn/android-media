@@ -189,6 +189,10 @@ class TopChatViewModel @Inject constructor(
     val msgDeleted: LiveData<String>
         get() = _msgDeleted
 
+    private val _msgRead = MutableLiveData<Unit>()
+    val msgRead: LiveData<Unit>
+        get() = _msgRead
+
     var attachProductWarehouseId = "0"
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     var roomMetaData: RoomMetaData = RoomMetaData()
@@ -267,7 +271,7 @@ class TopChatViewModel @Inject constructor(
 
     private fun onReceiveReadMsgEvent() {
         if (!isInTheMiddleOfThePage()) {
-//            view?.onReceiveReadEvent()
+            _msgRead.postValue(Unit)
         }
     }
 
