@@ -6,7 +6,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,8 +18,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.network.constant.TkpdBaseURL
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.ProductAnalyticHelper
@@ -83,6 +83,8 @@ class PlayBottomSheetFragment @Inject constructor(
         private const val PERCENT_FULL_SHEET_HEIGHT = 0.8
 
         private const val TO_SECONDS_DIVIDER = 1000L
+
+        private const val MEDIA_URL_PATH = "play/channel/"
     }
 
     private val productSheetView by viewComponent { ProductSheetViewComponent(it, this) }
@@ -272,20 +274,14 @@ class PlayBottomSheetFragment @Inject constructor(
         viewModel.submitUserReport(
             channelId = channelData.id.toLongOrZero(),
             shopId = channelData.partnerInfo.id,
-            mediaUrl = convertStringToUrl(channelData.channelDetail.shareInfo.content),
+            mediaUrl = getMediaUrl(channelData.id),
             timestamp = getTimestampVideo(channelData.channelDetail.channelInfo.startTime),
             reportDesc = description,
             reasonId = reasonId
         )
     }
 
-    private fun convertStringToUrl(url: String) : String{
-        val webUrl = Patterns.WEB_URL.matcher(url)
-        while (webUrl.find()){
-            return webUrl.group()
-        }
-        return ""
-    }
+    private fun getMediaUrl(channelId: String) : String = TkpdBaseURL.WEB_DOMAIN + MEDIA_URL_PATH + channelId
 
     private fun getTimestampVideo(startTime: String): Long{
         return if(playViewModel.channelType.isLive){
