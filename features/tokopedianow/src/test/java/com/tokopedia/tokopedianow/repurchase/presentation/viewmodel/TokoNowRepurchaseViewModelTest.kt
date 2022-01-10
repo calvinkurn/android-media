@@ -156,7 +156,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
         viewModel.showEmptyState(EMPTY_STATE_NO_RESULT)
 
         val layout = RepurchaseLayoutUiModel(
-            layoutList = createCategoryGridLayout(),
+            layoutList = createCategoryGridLayout("1"),
             state = TokoNowLayoutState.SHOW
         )
 
