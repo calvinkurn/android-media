@@ -22,7 +22,7 @@ val Map<BottomInsetsType, BottomInsetsState>.isAnyBottomSheetsShown: Boolean
             this[BottomInsetsType.LeaderboardSheet]?.isShown == true ||
             this[BottomInsetsType.KebabMenuSheet]?.isShown == true ||
             this[BottomInsetsType.UserReportSheet]?.isShown == true ||
-            this[BottomInsetsType.UserReportSubmissionSheet]?.isShown == true
+            this[BottomInsetsType.UserReportSubmissionSheet]?.isShown == true ||
             this[BottomInsetsType.CouponSheet]?.isShown == true
 
 val Map<BottomInsetsType, BottomInsetsState>.isProductSheetsShown: Boolean
