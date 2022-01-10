@@ -414,6 +414,15 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
         menu.clear()
         inflater.inflate(menuViewId, menu)
+
+        for (i in 0 until menu.size()) {
+            menu.getItem(i)?.let { menuItem ->
+                menuItem.actionView?.setOnClickListener {
+                    onOptionsItemSelected(menuItem)
+                }
+            }
+        }
+
         showHideOptionsMenu()
         super.onCreateOptionsMenu(menu, inflater)
     }

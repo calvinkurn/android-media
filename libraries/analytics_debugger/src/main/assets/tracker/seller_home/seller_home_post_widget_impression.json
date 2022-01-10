@@ -5,12 +5,11 @@
     {
       "event": "viewHomepageIris",
       "eventCategory": "seller app - home",
-      "eventAction": "impression widget post - .{1,}",
-      "eventLabel": "(empty|not empty)",
-      "sessionIris": ".{1,}",
-      "businessUnit": "physical goods",
+      "eventAction": "impression widget post",
+      "eventLabel": ".{1,}",
       "currentSite": "tokopediaseller",
-      "userId": ".{1,}"
+      "businessUnit": "physical goods",
+      "sessionIris": ".{1,}"
     }
   ]
 }
