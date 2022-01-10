@@ -36,6 +36,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.*
@@ -579,7 +580,76 @@ class NotificationViewModelTest {
 
     @Test
     fun `addWishList test if is not topAds and should return called addWishListNormal`() {
-        testAddWishList(false, "addWishListNormal")
+        // given
+        val viewModelSpyk = spyk(viewModel, recordPrivateCalls = true)
+        val recommItem = RecommendationItem(isTopAds = false)
+        val callback: (Boolean, Throwable?) -> Unit = { _, _ -> }
+
+        // when
+        viewModelSpyk.addWishlist(recommItem, callback)
+
+        // then
+        verify(exactly = 1) {
+            viewModelSpyk.addWishListNormal(recommItem.productId.toString(), any())
+        }
+    }
+
+    @Test
+    fun normal_wishlist_should_call_onSuccessAddWishlist_when_success() {
+        // given
+        val expectedResultId = "123"
+        var result: String? = null
+        val wishListActionListener = object : WishListActionListener {
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
+            override fun onSuccessAddWishlist(productId: String?) {
+                result = productId
+            }
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
+            override fun onSuccessRemoveWishlist(productId: String?) {}
+        }
+
+        every {
+            addWishListUseCase.createObservable(any(), any(), any())
+        } answers {
+            wishListActionListener.onSuccessAddWishlist(expectedResultId)
+        }
+
+        // when
+        viewModel.addWishListNormal("123", wishListActionListener)
+
+        // then
+        assertEquals(expectedResultId, result)
+    }
+
+    @Test
+    fun normal_wishlist_should_call_onErrorAddWishList_when_error() {
+        // given
+        val expectedResultId = "123"
+        val expectedResult = "Oops!"
+        var result: String? = null
+        var resultId: String? = null
+        val wishListActionListener = object : WishListActionListener {
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                result = errorMessage
+                resultId = productId
+            }
+            override fun onSuccessAddWishlist(productId: String?) {}
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
+            override fun onSuccessRemoveWishlist(productId: String?) {}
+        }
+
+        every {
+            addWishListUseCase.createObservable(any(), any(), any())
+        } answers {
+            wishListActionListener.onErrorAddWishList(expectedResult, expectedResultId)
+        }
+
+        // when
+        viewModel.addWishListNormal("123", wishListActionListener)
+
+        // then
+        assertEquals(expectedResultId, resultId)
+        assertEquals(expectedResult, result)
     }
 
     @Test

@@ -68,7 +68,7 @@ class AttachProductViewModelTest {
         verifyOrder {
             productsObserver.onChanged(Success(expectedValue))
             assertThat(expectedCacheValue, equalTo(vm.cacheList))
-
+            assertThat(vm.cacheHasNext, equalTo(true))
         }
     }
 
@@ -90,6 +90,7 @@ class AttachProductViewModelTest {
         verifyOrder {
             productsObserver.onChanged(Success(expectedValue))
             assertThat(expectedValue.size, equalTo(0))
+            assertThat(vm.cacheHasNext, equalTo(false))
         }
     }
 
@@ -113,7 +114,7 @@ class AttachProductViewModelTest {
     }
 
     @Test
-    fun `update checked list and previous checked list is empty`() {
+    fun `update checked list`() {
         //GIVEN
         val aceSearchProductResponse: AceSearchProductResponse =
                 FileUtil.parse("/success_ace_search_product.json", AceSearchProductResponse::class.java)
@@ -125,24 +126,6 @@ class AttachProductViewModelTest {
         //THEN
         verify(exactly = 1) {
             checkedListObserver.onChanged(expectedValue)
-        }
-    }
-
-    @Test
-    fun `update checked list and previous checked list is not empty` () {
-        //GIVEN
-        val aceSearchProductResponseOne = AceSearchProductResponse()
-        val aceSearchProductResponseTwo = AceSearchProductResponse()
-        val expectedValueOne = aceSearchProductResponseOne.mapToListProduct().toDomainModelMapper()
-        val expectedValueTwo = aceSearchProductResponseTwo.mapToListProduct().toDomainModelMapper()
-
-        //WHEN
-        vm.updateCheckedList(expectedValueOne)
-        vm.updateCheckedList(expectedValueTwo)
-
-        //THEN
-        verify (exactly = 2) {
-            checkedListObserver.onChanged(expectedValueTwo)
         }
     }
 
@@ -174,8 +157,6 @@ class AttachProductViewModelTest {
         //GIVEN
         val aceSearchProductResponse: AceSearchProductResponse =
                 FileUtil.parse("/success_ace_search_product.json", AceSearchProductResponse::class.java)
-        val expectedValue = aceSearchProductResponse.mapToListProduct().toDomainModelMapper()
-        val expectedCacheValue = expectedValue.subList(0, expectedValue.size - 1)
 
         coEvery {
             useCase(any())
@@ -187,5 +168,26 @@ class AttachProductViewModelTest {
         //THEN
         coVerify(exactly = 1) { useCase(any()) }
         assertThat(vm.cacheHasNext, equalTo(true))
+    }
+
+    @Test
+    fun `success load data and hasn't next`() {
+        //GIVEN
+        val aceSearchProductResponse: AceSearchProductResponse =
+            FileUtil.parse("/success_ace_search_product.json", AceSearchProductResponse::class.java)
+
+        val responseWithThreeData = aceSearchProductResponse.apply {
+            this.aceSearchProductResponse.data.products = this.aceSearchProductResponse.data.products.subList(0, 3)
+        }
+        coEvery {
+            useCase(any())
+        } returns responseWithThreeData
+
+        //WHEN
+        vm.loadProductData("", mockShopId, mockPage, mockWarehouseId)
+
+        //THEN
+        coVerify(exactly = 1) { useCase(any()) }
+        assertThat(vm.cacheHasNext, equalTo(false))
     }
 }

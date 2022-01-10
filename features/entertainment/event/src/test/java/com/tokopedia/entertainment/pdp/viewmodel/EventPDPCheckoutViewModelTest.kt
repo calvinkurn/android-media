@@ -74,11 +74,13 @@ class EventPDPCheckoutViewModelTest {
 
         //when
         eventCheckoutViewModel.getDataProductDetail("", "", "")
-
+        val eventCheckoutTNC = eventCheckoutViewModel.getTNCfromContent(contentMock)
 
         //then
         Assert.assertNotNull(eventCheckoutViewModel.eventProductDetail.value)
         Assert.assertEquals(eventCheckoutViewModel.eventProductDetail.value, pdpMock)
+        Assert.assertNotNull(eventCheckoutViewModel.eventTNCPDP.value)
+        Assert.assertEquals(eventCheckoutViewModel.eventTNCPDP.value, eventCheckoutTNC)
     }
 
     @Test
@@ -95,6 +97,7 @@ class EventPDPCheckoutViewModelTest {
         //then
         Assert.assertNotNull(eventCheckoutViewModel.isError.value)
         Assert.assertNull(eventCheckoutViewModel.eventProductDetail.value)
+        Assert.assertNull(eventCheckoutViewModel.eventTNCPDP.value)
         Assert.assertEquals((eventCheckoutViewModel.isError.value as EventPDPErrorEntity).throwable.message, error.message)
     }
 
@@ -162,5 +165,83 @@ class EventPDPCheckoutViewModelTest {
         assert(actual?.message.equals(error.message))
 
     }
+
+    @Test
+    fun `GetTNCCheckout_NullSection_ShouldEmptyTNC`(){
+        //given
+        val contentMock = Gson().fromJson(getJson("content_null_data_mock.json"), EventContentByIdEntity::class.java)
+
+        //when
+        val emptyTNC = eventCheckoutViewModel.getTNCfromContent(contentMock)
+
+        //then
+        assertEmptyTNC(emptyTNC)
+    }
+
+    @Test
+    fun `GetTNCCheckout_EmptySection_ShouldEmptyTNC`(){
+        //given
+        val contentMock = Gson().fromJson(getJson("content_null_mock.json"), EventContentByIdEntity::class.java)
+
+        //when
+        val emptyTNC = eventCheckoutViewModel.getTNCfromContent(contentMock)
+
+        //then
+        assertEmptyTNC(emptyTNC)
+    }
+
+    @Test
+    fun `GetTNCCheckout_EmptyContent_ShouldEmptyTNC`(){
+        //given
+        val contentMock = Gson().fromJson(getJson("content_mock_empty_content.json"), EventContentByIdEntity::class.java)
+
+        //when
+        val emptyTNC = eventCheckoutViewModel.getTNCfromContent(contentMock)
+
+        //then
+        assertEmptyTNC(emptyTNC)
+    }
+
+    @Test
+    fun `GetTNCCheckout_EmptyAccordion_ShouldEmptyTNC`(){
+        //given
+        val contentMock = Gson().fromJson(getJson("content_mock_empty_accordion.json"), EventContentByIdEntity::class.java)
+
+        //when
+        val emptyTNC = eventCheckoutViewModel.getTNCfromContent(contentMock)
+
+        //then
+        assertEmptyTNC(emptyTNC)
+    }
+
+    @Test
+    fun `GetTNCCheckout_EmptyAccordionContent_ShouldEmptyTNC`(){
+        //given
+        val contentMock = Gson().fromJson(getJson("content_mock_empty_accordion_content.json"), EventContentByIdEntity::class.java)
+
+        //when
+        val emptyTNC = eventCheckoutViewModel.getTNCfromContent(contentMock)
+
+        //then
+        assertEmptyTNC(emptyTNC)
+    }
+
+    @Test
+    fun `GetTNCCheckout_EmptySectionNotFound_ShouldEmptyTNC`(){
+        //given
+        val contentMock = Gson().fromJson(getJson("content_mock_section_not_found.json"), EventContentByIdEntity::class.java)
+
+        //when
+        val emptyTNC = eventCheckoutViewModel.getTNCfromContent(contentMock)
+
+        //then
+        assertEmptyTNC(emptyTNC)
+    }
+
+    private fun assertEmptyTNC(emptyTNC: String) {
+        assertEquals(emptyTNC, "")
+    }
+
+
 
 }

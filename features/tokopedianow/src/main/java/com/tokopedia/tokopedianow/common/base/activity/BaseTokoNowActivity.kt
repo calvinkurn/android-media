@@ -53,7 +53,7 @@ abstract class BaseTokoNowActivity : BaseActivity() {
 
     private fun setBackgroundColor() {
         val bgColor = ContextCompat.getColor(this,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            com.tokopedia.unifyprinciples.R.color.Unify_Background)
         window?.decorView?.setBackgroundColor(bgColor)
     }
 

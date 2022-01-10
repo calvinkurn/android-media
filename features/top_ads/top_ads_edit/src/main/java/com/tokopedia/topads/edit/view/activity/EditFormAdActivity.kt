@@ -42,6 +42,7 @@ private const val CLICK_KATA_KUNCI_TAB = "click - tab kata kunci"
 private const val CLICK_ATUR_TAB = "click - tab atur"
 private const val CLICK_SIMPAN_BUTTON = "click - simpan"
 private const val CLICK_SIMPAN_BUTTON_EDIT = "click - simpan edit form"
+private const val VIEW_EDIT_FORM = "view - edit form"
 
 class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, SaveButtonStateCallBack {
 
@@ -56,6 +57,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.topads_base_edit_activity_layout)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendViewFormEvent(VIEW_EDIT_FORM, "")
         renderTabAndViewPager()
         setupToolBar()
         backArrow.setImageDrawable(AppCompatResources.getDrawable(this, com.tokopedia.topads.common.R.drawable.toolbar_back_black))

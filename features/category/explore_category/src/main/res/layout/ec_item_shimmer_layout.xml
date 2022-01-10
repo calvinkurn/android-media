@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="20dp"
-        android:background="@color/divider_color"
+        android:background="@color/Unify_N75"
         app:layout_constraintTop_toBottomOf="@id/ec_grid_layout2" />
 
     <include
@@ -46,7 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="20dp"
-        android:background="@color/divider_color"
+        android:background="@color/Unify_N75"
         app:layout_constraintTop_toBottomOf="@id/ec_accordion2" />
 
     <include
@@ -61,7 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="20dp"
-        android:background="@color/divider_color"
+        android:background="@color/Unify_N75"
         app:layout_constraintTop_toBottomOf="@id/ec_accordion3" />
 
     <include
@@ -76,7 +76,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="20dp"
-        android:background="@color/divider_color"
+        android:background="@color/Unify_N75"
         app:layout_constraintTop_toBottomOf="@id/ec_accordion4" />
 
     <include
@@ -91,7 +91,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="20dp"
-        android:background="@color/divider_color"
+        android:background="@color/Unify_N75"
         app:layout_constraintTop_toBottomOf="@id/ec_accordion5" />
 
     <include

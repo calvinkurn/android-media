@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -155,6 +156,14 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
             setBtnToConfirmShipping()
         }
         view?.setOnTouchListener(hideKeyboardTouchListener)
+        setupHeader()
+    }
+
+    private fun setupHeader() {
+        (activity as? AppCompatActivity)?.run {
+            supportActionBar?.hide()
+            setSupportActionBar(binding?.headerSomConfirmShipping)
+        }
     }
 
     private fun setupListeners() {
