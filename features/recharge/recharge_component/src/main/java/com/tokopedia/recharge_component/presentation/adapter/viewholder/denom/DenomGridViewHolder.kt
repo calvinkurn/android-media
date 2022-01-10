@@ -90,12 +90,27 @@ class DenomGridViewHolder (
                     show()
                     text = denomGrid.slashPrice
                     paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                    if(denomGrid.discountLabel.isNullOrEmpty())
-                        setMargin(resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt(),
-                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toInt(),
-                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt(),
-                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
+                    if(denomGrid.discountLabel.isNullOrEmpty()) {
+                        setMargin(
+                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                                .toInt(),
+                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
+                                .toInt(),
+                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                                .toInt(),
+                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                                .toInt()
                         )
+                    } else setMargin(
+                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
+                            .toInt(),
+                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+                            .toInt(),
+                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            .toInt(),
+                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            .toInt()
+                    )
                 } else hide()
             }
 
