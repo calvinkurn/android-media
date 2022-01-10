@@ -9,6 +9,7 @@ import com.tokopedia.cart.bundle.view.ICartListView
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.logisticcart.boaffordability.usecase.BoAffordabilityUseCase
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
@@ -16,16 +17,19 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearprom
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
+@ExperimentalCoroutinesApi
 object CartListPresenterClearPromoTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
@@ -50,6 +54,7 @@ object CartListPresenterClearPromoTest : Spek({
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
     val followShopUseCase: FollowShopUseCase = mockk()
+    val boAffordabilityUseCase: BoAffordabilityUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
     Feature("clear promo action") {
@@ -63,7 +68,7 @@ object CartListPresenterClearPromoTest : Spek({
                     getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
                     addToCartExternalUseCase, seamlessLoginUsecase, updateCartCounterUseCase,
                     updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase,
-                    followShopUseCase, TestSchedulers
+                    followShopUseCase, boAffordabilityUseCase, TestSchedulers, CoroutineTestDispatchers
             )
         }
 

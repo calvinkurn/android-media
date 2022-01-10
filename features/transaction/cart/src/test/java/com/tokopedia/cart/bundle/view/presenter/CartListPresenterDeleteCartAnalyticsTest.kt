@@ -10,6 +10,7 @@ import com.tokopedia.cart.bundle.view.uimodel.CartItemHolderData
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.logisticcart.boaffordability.usecase.BoAffordabilityUseCase
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
@@ -17,16 +18,19 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldVa
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.subscriptions.CompositeSubscription
 
+@ExperimentalCoroutinesApi
 object CartListPresenterDeleteCartAnalyticsTest : Spek({
 
     val getCartRevampV3UseCase: GetCartRevampV3UseCase = mockk()
@@ -51,6 +55,7 @@ object CartListPresenterDeleteCartAnalyticsTest : Spek({
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
     val followShopUseCase: FollowShopUseCase = mockk()
+    val boAffordabilityUseCase: BoAffordabilityUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
     Feature("generate delete cart data analytics") {
@@ -64,7 +69,7 @@ object CartListPresenterDeleteCartAnalyticsTest : Spek({
                     getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
                     addToCartExternalUseCase, seamlessLoginUsecase, updateCartCounterUseCase,
                     updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase,
-                    followShopUseCase, TestSchedulers
+                    followShopUseCase, boAffordabilityUseCase, TestSchedulers, CoroutineTestDispatchers
             )
         }
 

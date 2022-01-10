@@ -111,6 +111,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.wishlistCommon)
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testImplementation rootProject.ext.testDependencies.junitJupiterEngine
     testImplementation rootProject.ext.testDependencies.mockk
