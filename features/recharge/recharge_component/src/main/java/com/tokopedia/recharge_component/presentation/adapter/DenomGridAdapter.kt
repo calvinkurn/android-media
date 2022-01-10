@@ -11,7 +11,7 @@ import com.tokopedia.recharge_component.presentation.adapter.viewholder.denom.De
 
 class DenomGridAdapter: RecyclerView.Adapter<DenomGridViewHolder>(), RechargeDenomGridListener {
 
-    private var listDenom = emptyList<DenomWidgetModel>()
+    private var listDenom = mutableListOf<DenomWidgetModel>()
 
     var selectedProductIndex: Int? = null
 
@@ -50,7 +50,11 @@ class DenomGridAdapter: RecyclerView.Adapter<DenomGridViewHolder>(), RechargeDen
     }
 
     fun setDenomGridList(listDenom: List<DenomWidgetModel>) {
-        this.listDenom = listDenom
+        this.listDenom = listDenom.toMutableList()
         notifyDataSetChanged()
+    }
+
+    fun clearDenomGridData(){
+        this.listDenom.clear()
     }
 }

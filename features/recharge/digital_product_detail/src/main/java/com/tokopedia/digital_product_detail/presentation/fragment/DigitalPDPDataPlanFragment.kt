@@ -49,7 +49,24 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        showInitalView()
+        observeData()
+        viewModel.getDelayedResponse()
+    }
 
+    private fun observeData() {
+        viewModel.dummy.observe(viewLifecycleOwner, {
+            showDenomData()
+        })
+    }
+
+    private fun showInitalView(){
+        binding?.let {
+            it.widgetDenomGrid.renderDenomGridPulsaShimmering("Diskon Rp15.000 buat pengguna baru, nih!")
+        }
+    }
+
+    private fun showDenomData(){
         binding?.let {
             it.widgetDenomGrid.renderDenomGridLayout(denomGridListener = object: RechargeDenomGridListener{
                 override fun onDenomGridClicked(denomGrid: DenomWidgetModel, position: Int) {
@@ -81,6 +98,48 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
                     )
                 )
             )
+        }
+    }
+
+    companion object {
+        fun newInstance(): DigitalPDPDataPlanFragment {
+            val fragment = DigitalPDPDataPlanFragment()
+            return fragment
+        }
+    }
+
+    //        binding?.let {
+//            it.widgetDenomGrid.renderDenomGridPulsaShimmering("Diskon Rp15.000 buat pengguna baru, nih!")
+////            it.widgetDenomGrid.renderDenomGridLayout(denomGridListener = object: RechargeDenomGridListener{
+//                override fun onDenomGridClicked(denomGrid: DenomWidgetModel, position: Int) {
+//                    //todo
+//                }
+//            }, "Diskon Rp15.000 buat pengguna baru, nih!",
+//                listOf(
+//                    DenomWidgetModel(
+//                        title="15 ribu",
+//                        specialLabel = "Any campaign label",
+//                        price = "Rp500",
+//                        discountLabel = "10%",
+//                        slashPrice = "Rp16.500",
+//                        appLink = "tokopedia://deals",
+//                        expiredDate = "December 2021",
+//                        flashSaleLabel = "Segera Habis",
+//                        flashSalePercentage = 80
+//                    ),
+//                    DenomWidgetModel(
+//                        title="15 ribu",
+//                        //specialLabel = "Any campaign label",
+//                        price = "Rp500",
+////                        discountLabel = "10%",
+//                        slashPrice = "Rp16.500",
+////                        appLink = "tokopedia://deals",
+////                        expiredDate = "December 2021",
+////                        flashSaleLabel = "Segera Habis",
+////                        flashSalePercentage = 80
+//                    )
+//                )
+//            )
 
 
 //            it.widgetRecommendationCard.renderRecommendationLayout(recommendationListener = object : RechargeRecommendationCardListener{
@@ -90,8 +149,8 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
 //                    }
 //                }
 //            },
-             //   "", listOf()
-                //use data dummy,
+    //   "", listOf()
+    //use data dummy,
 //                "Paling sering kamu beli",
 //                listOf(
 //                    RecommendationCardWidgetModel(
@@ -149,13 +208,5 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
 //
 //                )
 //            )
-        }
-    }
-
-    companion object {
-        fun newInstance(): DigitalPDPDataPlanFragment {
-            val fragment = DigitalPDPDataPlanFragment()
-            return fragment
-        }
-    }
+//        }
 }

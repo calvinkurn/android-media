@@ -5,6 +5,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.databinding.WidgetRechargeDenomGridBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.model.denom.DenomWidgetGridEnum
@@ -22,8 +24,11 @@ class DenomGridWidget @JvmOverloads constructor(@NotNull context: Context, attrs
     fun renderDenomGridLayout(denomGridListener: RechargeDenomGridListener, titleDenomGrid: String, listDenomGrid: List<DenomWidgetModel>){
         val adapterDenomGrid = DenomGridAdapter()
         with(rechargeDenomGridViewBinding){
+            denomGridShimmering.root.hide()
             tgDenomGridWidgetTitle.text = titleDenomGrid
             rvDenomGridCardTitle.apply {
+                show()
+                adapterDenomGrid.clearDenomGridData()
                 adapterDenomGrid.setDenomGridList(listDenomGrid)
                 adapterDenomGrid.listener = denomGridListener
                 adapterDenomGrid.selectedProductIndex = null
@@ -31,6 +36,14 @@ class DenomGridWidget @JvmOverloads constructor(@NotNull context: Context, attrs
                 adapter = adapterDenomGrid
                 layoutManager = StaggeredGridLayoutManager(STAG_GRID_SIZE, RecyclerView.VERTICAL)
             }
+        }
+    }
+
+    fun renderDenomGridPulsaShimmering(titleDenomGrid: String){
+        with(rechargeDenomGridViewBinding){
+            tgDenomGridWidgetTitle.text = titleDenomGrid
+            denomGridShimmering.root.show()
+            rvDenomGridCardTitle.hide()
         }
     }
 
