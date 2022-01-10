@@ -688,7 +688,7 @@
             tools:replace="android:value" />
         <meta-data
             android:name="NOTIFICATION_LARGE_ICON"
-            android:value="@mipmap/ic_launcher_customerapp"
+            android:value="@mipmap/ic_launcher_customerapp_pro"
             tools:replace="android:value" />
         <meta-data
             android:name="HANSEL_APP_ID"

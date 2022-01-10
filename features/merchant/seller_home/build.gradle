@@ -59,6 +59,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
     implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.webview)
 
     //internal arr libs
     implementation rootProject.ext.unifyDependencies.coach_mark

@@ -7,19 +7,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.view.*
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.addedit.R
@@ -246,7 +246,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         val updatedFieldPosition = viewModel.updatePrimaryVariant(combination)
 
         // update switch status if primary variant changed (index bigger than -1)
-        if (updatedFieldPosition > -1) {
+        if (updatedFieldPosition.isMoreThanZero() || updatedFieldPosition.isZero() ) {
             val updatedInputModel = viewModel.updateSwitchStatus(true, updatedFieldPosition)
             variantDetailFieldsAdapter?.updateDetailInputField(updatedFieldPosition, updatedInputModel)
         }
