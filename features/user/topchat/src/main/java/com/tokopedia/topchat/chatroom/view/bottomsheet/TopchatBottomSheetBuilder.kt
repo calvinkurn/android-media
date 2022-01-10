@@ -42,7 +42,7 @@ object TopchatBottomSheetBuilder {
         ctx: Context?,
         msg: BaseChatUiModel,
         menus: List<Int>,
-        onClick: (Int, BaseChatUiModel) -> Unit
+        onClick: (TopchatItemMenu, BaseChatUiModel) -> Unit
     ): BottomSheetUnify {
         val longClickMenu = LongClickMenu()
         val title = ctx?.getString(R.string.title_topchat_bubble_long_click_menu) ?: ""
@@ -50,7 +50,7 @@ object TopchatBottomSheetBuilder {
             setTitle(title)
             setItemMenuList(createBubbleLongClickMenu(ctx, menus))
             setOnItemMenuClickListener { itemMenus, _ ->
-                onClick(itemMenus.id, msg)
+                onClick(itemMenus, msg)
                 dismiss()
             }
         }
