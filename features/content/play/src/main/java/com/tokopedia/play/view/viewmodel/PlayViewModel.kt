@@ -725,6 +725,7 @@ class PlayViewModel @Inject constructor(
         val defaultProductSheetState = currentBottomInsetsMap?.get(BottomInsetsType.ProductSheet)?.isHidden ?: true
         val defaultVariantSheetState = currentBottomInsetsMap?.get(BottomInsetsType.VariantSheet)?.isHidden ?: true
         val defaultLeaderboardSheetState = currentBottomInsetsMap?.get(BottomInsetsType.LeaderboardSheet)?.isHidden ?: true
+        val defaultCouponSheetState = currentBottomInsetsMap?.get(BottomInsetsType.CouponSheet)?.isHidden ?: true
         val defaultKebabMenuSheet = currentBottomInsetsMap?.get(BottomInsetsType.KebabMenuSheet)?.isHidden ?: true
         val defautUserReportListSheet = currentBottomInsetsMap?.get(BottomInsetsType.UserReportSheet)?.isHidden ?: true
         val defaultUserReportSubmissionSHeet = currentBottomInsetsMap?.get(BottomInsetsType.UserReportSubmissionSheet)?.isHidden ?: true
@@ -733,6 +734,7 @@ class PlayViewModel @Inject constructor(
                 BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(defaultProductSheetState),
                 BottomInsetsType.VariantSheet to BottomInsetsState.Hidden(defaultVariantSheetState),
                 BottomInsetsType.LeaderboardSheet to BottomInsetsState.Hidden(defaultLeaderboardSheetState),
+                BottomInsetsType.CouponSheet to BottomInsetsState.Hidden(defaultCouponSheetState),
                 BottomInsetsType.KebabMenuSheet to BottomInsetsState.Hidden(defaultKebabMenuSheet),
                 BottomInsetsType.UserReportSheet to BottomInsetsState.Hidden(defautUserReportListSheet),
                 BottomInsetsType.UserReportSubmissionSheet to BottomInsetsState.Hidden(defaultUserReportSubmissionSHeet)
@@ -993,6 +995,7 @@ class PlayViewModel @Inject constructor(
             BottomInsetsType.KebabMenuSheet -> hideKebabMenuSheet()
             BottomInsetsType.UserReportSheet -> hideUserReportSheet()
             BottomInsetsType.UserReportSubmissionSheet -> hideUserReportSubmissionSheet()
+            BottomInsetsType.CouponSheet -> hideCouponSheet()
         }
         return shownBottomSheets.isNotEmpty()
     }

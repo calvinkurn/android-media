@@ -12,4 +12,5 @@ enum class BottomInsetsType {
     KebabMenuSheet,
     UserReportSheet,
     UserReportSubmissionSheet
+    CouponSheet
 }

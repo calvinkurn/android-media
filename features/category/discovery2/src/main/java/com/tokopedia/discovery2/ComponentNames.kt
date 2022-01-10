@@ -99,4 +99,6 @@ enum class ComponentNames(val componentName: String) {
     CalendarWidgetItem("calendar_item"),
     ShimmerCalendarWidget("shimmer_calendar_widget"),
 
+    TopQuestWidget("top_quest")
+
 }

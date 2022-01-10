@@ -956,190 +956,6 @@ class ModelBuilder {
               }
         }""".trimIndent()
 
-    private val userReportReasonListJson = """
-        {
-    "data": {
-      "visionGetReportVideoReason": [
-        {
-          "category_id": 1,
-          "detail": "Konten yang mengandung unsur SARA, kebencian atau pelecehan terhadap individu atau kelompok tertentu.",
-          "value": "SARA, Pelecehan dan Kebencian",
-          "additional_fields": [
-            {
-              "key": "report_reason",
-              "max": 255,
-              "min": 10,
-              "type": "textarea",
-              "label": "Detail laporan(Wajib diisi)"
-            }
-          ],
-          "child": []
-        },
-        {
-          "category_id": 2,
-          "detail": "Konten yang mengandung kekerasan atau pengancaman dalam bentuk fisik maupun verbal.",
-          "value": "Kekerasan atau Pengancaman",
-          "additional_fields": [
-            {
-              "key": "report_reason",
-              "max": 255,
-              "min": 10,
-              "type": "textarea",
-              "label": "Detail laporan(Wajib diisi)"
-            }
-          ],
-          "child": []
-        },
-        {
-          "category_id": 3,
-          "detail": "Konten yang mendukung unsur terorisme atau mengandung aliran sesat.",
-          "value": "Konten Terorisme atau Aliran Sesat",
-          "additional_fields": [
-            {
-              "key": "report_reason",
-              "max": 255,
-              "min": 10,
-              "type": "textarea",
-              "label": "Detail laporan(Wajib diisi)"
-            }
-          ],
-          "child": []
-        },
-        {
-          "category_id": 4,
-          "detail": "Konten berupa ajakan, dukungan atau kampanye terhadap partai atau individu tertentu.",
-          "value": "Konten Politik",
-          "additional_fields": [
-            {
-              "key": "report_reason",
-              "max": 255,
-              "min": 10,
-              "type": "textarea",
-              "label": "Detail laporan(Wajib diisi)"
-            }
-          ],
-          "child": []
-        },
-        {
-          "category_id": 5,
-          "detail": "Konten pornografi yang mengandung unsur seksual, ketelanjangan, atau jenis konten dewasa lainnya.",
-          "value": "Pornografi",
-          "additional_fields": [
-            {
-              "key": "report_reason",
-              "max": 255,
-              "min": 10,
-              "type": "textarea",
-              "label": "Detail laporan(Wajib diisi)"
-            }
-          ],
-          "child": []
-        },
-        {
-          "category_id": 6,
-          "detail": "Konten yang mempromosikan platform lain atau mengajak bertransaksi di luar Tokopedia.",
-          "value": "Promosi Platform Lain",
-          "additional_fields": [
-            {
-              "key": "report_reason",
-              "max": 255,
-              "min": 10,
-              "type": "textarea",
-              "label": "Detail laporan(Wajib diisi)"
-            }
-          ],
-          "child": []
-        },
-        {
-          "category_id": 7,
-          "detail": "Konten mempromosikan produk yang melanggar syarat dan ketentuan Tokopedia.",
-          "value": "Produk yang dipromosikan melanggar syarat dan ketentuan Tokopedia",
-          "additional_fields": [
-            {
-              "key": "report_reason",
-              "max": 255,
-              "min": 10,
-              "type": "textarea",
-              "label": "Detail laporan(Wajib diisi)"
-            }
-          ],
-          "child": []
-        },
-        {
-          "category_id": 8,
-          "detail": "Konten tidak menunjukan kegiatan promosi.",
-          "value": "Konten Spam",
-          "additional_fields": [
-            {
-              "key": "report_reason",
-              "max": 255,
-              "min": 10,
-              "type": "textarea",
-              "label": "Detail laporan(Wajib diisi)"
-            }
-          ],
-          "child": []
-        },
-        {
-          "category_id": 9,
-          "detail": "Melakukan streaming ke lebih dari satu akun secara bersamaan.",
-          "value": "Konten Duplikat",
-          "additional_fields": [
-            {
-              "key": "report_reason",
-              "max": 255,
-              "min": 10,
-              "type": "textarea",
-              "label": "Detail laporan(Wajib diisi)"
-            }
-          ],
-          "child": []
-        },
-        {
-          "category_id": 10,
-          "detail": "Konten berisikan kegiatan yang berbahaya seperti, namun tidak terbatas pada kegiatan merokok atau penggunaan obat terlarang.",
-          "value": "Tidakan Berbahaya",
-          "additional_fields": [
-            {
-              "key": "report_reason",
-              "max": 255,
-              "min": 10,
-              "type": "textarea",
-              "label": "Detail laporan(Wajib diisi)"
-            }
-          ],
-          "child": []
-        },
-        {
-          "category_id": 11,
-          "detail": "Konten melanggar lainnya yang tidak termasuk dalam kategori yang tersedia.",
-          "value": "Pelanggaran lainnya",
-          "additional_fields": [
-            {
-              "key": "report_reason",
-              "max": 255,
-              "min": 10,
-              "type": "textarea",
-              "label": "Detail laporan(Wajib diisi)"
-            }
-          ],
-          "child": []
-        }
-      ]
-    }
-  }
-    """.trimIndent()
-
-    private val submitReportJson = """
-        {
-            "data": {
-              "visionPostReportVideoPlay": {
-                "status": "success"
-              }
-            }
-  }
-    """.trimIndent()
-
     fun buildChannel(): ChannelDetailsWithRecomResponse = gson.fromJson(channelJsonWithRecom, ChannelDetailsWithRecomResponse::class.java)
 
     fun buildSocketCredential(): SocketCredential = gson.fromJson(socketCredential, SocketCredential::class.java)
@@ -1160,6 +976,16 @@ class ModelBuilder {
 
     fun buildProduct(): Product = gson.fromJson(product, Product::class.java)
 
+    fun buildAddToCartModelResponseSuccess() =  CartFeedbackResponseModel(
+        isSuccess = true,
+        errorMessage = IllegalStateException(""),
+        cartId = "123"
+    )
+    fun buildAddToCartModelResponseFail() = CartFeedbackResponseModel(
+        isSuccess = false,
+        errorMessage = IllegalStateException("error message "),
+        cartId = ""
+    )
     fun buildUserReportReasoning(): UserReportOptions.Response = gson.fromJson(userReportReasonListJson, UserReportOptions.Response::class.java)
 
     fun buildAddToCartModelResponseSuccess() =  CartFeedbackResponseModel(isSuccess = true, errorMessage = "", cartId = "123")
@@ -1170,7 +996,7 @@ class ModelBuilder {
             action: ProductAction,
             bottomInsetsType: BottomInsetsType,
             isSuccess: Boolean = true,
-            errorMessage: String = "",
+            errorMessage: Throwable = IllegalStateException(""),
             cartId: String = "123"
     ) = CartFeedbackUiModel(
             isSuccess = isSuccess,

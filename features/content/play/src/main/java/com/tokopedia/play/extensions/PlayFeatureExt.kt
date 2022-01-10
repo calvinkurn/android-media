@@ -23,12 +23,16 @@ val Map<BottomInsetsType, BottomInsetsState>.isAnyBottomSheetsShown: Boolean
             this[BottomInsetsType.KebabMenuSheet]?.isShown == true ||
             this[BottomInsetsType.UserReportSheet]?.isShown == true ||
             this[BottomInsetsType.UserReportSubmissionSheet]?.isShown == true
+            this[BottomInsetsType.CouponSheet]?.isShown == true
 
 val Map<BottomInsetsType, BottomInsetsState>.isProductSheetsShown: Boolean
     get() = this[BottomInsetsType.ProductSheet]?.isShown == true
 
 val Map<BottomInsetsType, BottomInsetsState>.isLeaderboardSheetShown: Boolean
     get() = this[BottomInsetsType.LeaderboardSheet]?.isShown == true
+
+val Map<BottomInsetsType, BottomInsetsState>.isCouponSheetsShown: Boolean
+    get() = this[BottomInsetsType.CouponSheet]?.isShown == true
 
 val Map<BottomInsetsType, BottomInsetsState>.isKebabMenuSheetShown: Boolean
     get() = this[BottomInsetsType.UserReportSheet]?.isShown == true

@@ -20,6 +20,10 @@
         />
 
     <include
+        layout="@layout/view_shop_coupon_sheet"
+        />
+
+    <include
         layout="@layout/view_kebab_menu_sheet"
         />
 

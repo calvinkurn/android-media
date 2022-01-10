@@ -91,7 +91,7 @@ class PlayViewerCartRepositoryTest {
 
             /** Verify */
             response.isSuccess.assertTrue()
-            response.errorMessage.isEqualTo(mockErrorMessage)
+            response.errorMessage.message.isEqualTo(mockErrorMessage)
             response.cartId.isEqualTo(mockCartId)
         }
     }
@@ -101,9 +101,9 @@ class PlayViewerCartRepositoryTest {
         runBlockingTest {
 
             /** Prepare */
-            val mockErrorMessage = "Error 1 , Error 2 "
+            val mockErrorMessage = "Error 1"
             val mockResponse = AddToCartDataModel(
-                errorMessage = arrayListOf("Error 1", "Error 2"),
+                errorMessage = arrayListOf("Error 1"),
                 data = DataModel(
                     success = 0
                 )
@@ -121,7 +121,7 @@ class PlayViewerCartRepositoryTest {
 
             /** Verify */
             response.isSuccess.assertFalse()
-            response.errorMessage.isEqualTo(mockErrorMessage)
+            response.errorMessage.message.isEqualTo(mockErrorMessage)
             response.cartId.isEqualTo("")
         }
     }
