@@ -40,7 +40,7 @@ class RedirectActivateBottomSheet:BottomSheetUnify() {
                 if (RouteManager.isSupportApplink(context, "www.tokopedia.com")) {
                     RouteManager.route(context, "www.tokopedia.com")
                 } else {
-                    "www.tokopedia.com".goToWebView(context);
+                    "www.tokopedia.com".goToWebView(context)
                 }
 
             }

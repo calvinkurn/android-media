@@ -1,7 +1,9 @@
 package com.tokopedia.product.detail.view.listener
 
 import android.app.Application
+import android.content.Context
 import android.util.SparseIntArray
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView

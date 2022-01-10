@@ -2,10 +2,12 @@ package com.tokopedia.pdp.fintech.view
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import androidx.annotation.AttrRes
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -13,8 +15,10 @@ import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter
 import com.tokopedia.pdp.fintech.di.components.DaggerFintechWidgetComponent
 import com.tokopedia.pdp.fintech.listner.ProductUpdateListner
 import com.tokopedia.pdp.fintech.listner.WidgetClickListner
+import com.tokopedia.pdp.fintech.viewmodel.FintechWidgetViewModel
 import com.tokopedia.pdp_fintech.R
 import com.tokopedia.unifycomponents.BaseCustomView
+import javax.inject.Inject
 
 class PdpFintechWidget @JvmOverloads constructor(
     context: Context,
@@ -22,10 +26,15 @@ class PdpFintechWidget @JvmOverloads constructor(
     @AttrRes defStyleAttr: Int = 0,
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
+
+    @Inject
+    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+    private lateinit var  contextPdpFragment: Fragment
     private lateinit var baseView: View
     private lateinit var fintechWidgetAdapter : FintechWidgetAdapter
-    var i =0;
     private lateinit var instanceProductUpdateListner: ProductUpdateListner
+    private lateinit var fintechWidgetViewModel: FintechWidgetViewModel
+    private lateinit var pdpFragmentLifecycle: Lifecycle
 
 
     init {
@@ -33,6 +42,17 @@ class PdpFintechWidget @JvmOverloads constructor(
         initView()
         initRecycler()
     }
+
+
+//    fun updateBaseFragmentContext(contextBaseFragment: Fragment, lifecycleFragment: Lifecycle)
+//    {
+//        contextPdpFragment = contextBaseFragment
+//         fintechWidgetViewModel  =
+//            ViewModelProvider(contextPdpFragment, viewModelFactory.get()).get(FintechWidgetViewModel::class.java)
+//
+//        pdpFragmentLifecycle = lifecycleFragment
+//
+//    }
 
     private fun initInjector() {
         DaggerFintechWidgetComponent.builder()
@@ -59,28 +79,13 @@ class PdpFintechWidget @JvmOverloads constructor(
 
     private fun initView() {
         baseView = inflate(context, R.layout.pdp_fintech_widget_layout, this)
+
     }
 
      fun updateProductId(
          productID: String,
-         fintechWidgetViewHolder: ProductUpdateListner
-     ) {
+         fintechWidgetViewHolder: ProductUpdateListner) {
          this.instanceProductUpdateListner = fintechWidgetViewHolder
-        if(i == 2)
-        {
-            fintechWidgetViewHolder.removeWidget()
-            i++
-        }
-         else
-        {
-            fintechWidgetViewHolder.showWidget()
-//            i++
-            fintechWidgetAdapter.notifyDataSetChanged()
-        }
-    }
-
-    fun sendLifeCycle(pdpLifeCycle:Lifecycle)
-    {
 
     }
 
