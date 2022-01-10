@@ -108,8 +108,8 @@ import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrappe
 import com.tokopedia.sellerorder.detail.presentation.model.MVCUsageUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.NonProductBundleUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
-import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
+import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.unifycomponents.Toaster
@@ -284,7 +284,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
 
     override fun onResume() {
         super.onResume()
-        updateShopActive()
+        doOnResume()
     }
 
     override fun onDestroy() {
@@ -1417,5 +1417,9 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 toasterError.build(v, message, LENGTH_SHORT, type, action).show()
             }
         }
+    }
+
+    protected open fun doOnResume() {
+        updateShopActive()
     }
 }
