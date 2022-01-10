@@ -44,12 +44,6 @@ class TopAdsInsightShopKeywordRecommendationView(
             it.layoutManager = LinearLayoutManager(context)
             it.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
-
-        recyclerViewKeyword?.apply {
-            adapter = mAdapter
-            layoutManager = LinearLayoutManager(context)
-            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
-        }
     }
 
     private fun keywordError(item: RecommendedKeywordDetail) {
