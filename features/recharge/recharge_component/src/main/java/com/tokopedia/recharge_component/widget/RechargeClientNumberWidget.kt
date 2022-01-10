@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
+import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
 import com.tokopedia.iconunify.IconUnify
@@ -220,11 +221,12 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     }
 
     fun setInputNumber(inputNumber: String) {
-        binding.clientNumberWidgetInputField.editText.setText(formatPrefixClientNumber(inputNumber))
+        binding.clientNumberWidgetInputField.editText.setText(
+            CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber))
     }
 
     fun getInputNumber(): String {
-        return formatPrefixClientNumber(binding.clientNumberWidgetInputField.editText.text.toString())
+        return CommonTopupBillsUtil.formatPrefixClientNumber(binding.clientNumberWidgetInputField.editText.text.toString())
     }
 
     fun setContactName(contactName: String, needValidation: Boolean = true) {
@@ -319,7 +321,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         binding.clientNumberWidgetInputField.editText.clearFocus()
     }
 
-    // [Misael] sama persis kayak di common_topup_bills, mgkn bisa dibuat common
     private fun validateContactName(contactName: String): String {
         return if (contactName.isAlphanumeric() && contactName.isNotEmpty()) {
             if (contactName.length > LABEL_MAX_CHAR) {
@@ -332,38 +333,10 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         }
     }
 
-    // [Misael] sama persis kayak di common_topup_bills, mgkn bisa dibuat common
-    private fun validatePrefixClientNumber(phoneNumber: String): String {
-        var phoneNumber = phoneNumber
-        if (phoneNumber.startsWith("62")) {
-            phoneNumber = phoneNumber.replaceFirst("62".toRegex(), "0")
-        }
-        if (phoneNumber.startsWith("+62")) {
-            phoneNumber = phoneNumber.replace("+62", "0")
-        }
-        phoneNumber = phoneNumber.replace(".", "")
-
-        return phoneNumber.replace("[^0-9]+".toRegex(), "")
-    }
-
-    // [Misael] sama persis kayak di common_topup_bills, mgkn bisa dibuat common
-    private fun formatPrefixClientNumber(phoneNumber: String?): String {
-        phoneNumber?.run {
-            if ("".equals(phoneNumber.trim { it <= ' ' }, ignoreCase = true)) {
-                return phoneNumber
-            }
-            var phoneNumberWithPrefix = validatePrefixClientNumber(phoneNumber)
-            if (!phoneNumberWithPrefix.startsWith("0")) {
-                phoneNumberWithPrefix = "0$phoneNumber"
-            }
-            return phoneNumberWithPrefix
-        }
-        return ""
-    }
-
     private fun executeValidator(s: String) {
         if (s.isNumeric()) {
-            setValidated(inputNumberValidator?.invoke(formatPrefixClientNumber(s)) == true)
+            setValidated(inputNumberValidator?.invoke(
+                CommonTopupBillsUtil.formatPrefixClientNumber(s)) == true)
         }
     }
 
