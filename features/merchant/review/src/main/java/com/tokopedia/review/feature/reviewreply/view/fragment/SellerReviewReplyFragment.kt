@@ -3,7 +3,13 @@ package com.tokopedia.review.feature.reviewreply.view.fragment
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -125,7 +131,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
         activity?.window?.decorView?.setBackgroundColor(
             ContextCompat.getColor(
                 requireContext(),
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
         )
         initToolbar()
@@ -144,6 +150,15 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_option_review_product_detail, menu)
+
+        for (i in 0 until menu.size()) {
+            menu.getItem(i)?.let { menuItem ->
+                menuItem.actionView?.setOnClickListener {
+                    onOptionsItemSelected(menuItem)
+                }
+            }
+        }
+
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -538,7 +553,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
     }
 
     private fun initViewBottomSheet() {
-        val viewMenu = View.inflate(context, R.layout.bottom_sheet_menu_option_review_reply, null)
+        val viewMenu = View.inflate(context, com.tokopedia.review.R.layout.bottom_sheet_menu_option_review_reply, null)
         bottomSheetReplyReview = BottomSheetUnify()
         optionMenuReplyReview = viewMenu.findViewById(R.id.optionMenuReply)
         bottomSheetReplyReview?.setChild(viewMenu)

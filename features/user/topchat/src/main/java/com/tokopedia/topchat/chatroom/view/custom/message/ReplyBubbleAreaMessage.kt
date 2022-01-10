@@ -16,6 +16,8 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.Repl
 import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout.Companion.DEFAULT_MSG_ORIENTATION
 import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout.Companion.LEFT_MSG_ORIENTATION
 import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout.Companion.RIGHT_MSG_ORIENTATION
+import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.unifycomponents.Toaster
 
 class ReplyBubbleAreaMessage : ConstraintLayout {
@@ -56,6 +58,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     interface Listener {
         fun getUserName(senderId: String): String
         fun goToBubble(parentReply: ParentReply)
+        fun getAnalytic(): TopChatAnalytics
     }
 
     private fun initLayout() {
@@ -76,8 +79,8 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         uiModel: BaseChatUiModel
     ) {
         val parentReply = uiModel.parentReply
-        if (parentReply != null) {
-            bindParentReply(parentReply)
+        if (parentReply != null && !uiModel.isDeleted()) {
+            bindParentReply(parentReply, uiModel.replyId)
             updateCloseButtonState(false)
             show()
         } else {
@@ -85,16 +88,22 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         }
     }
 
-    private fun bindParentReply(parentReply: ParentReply) {
+    private fun bindParentReply(
+        parentReply: ParentReply,
+        childReplyId: String?
+    ) {
         referTo(parentReply)
         setTitle(parentReply.senderId)
         setReplyMsg(parentReply.mainText)
-        bindClick(parentReply)
+        bindClick(parentReply, childReplyId)
     }
 
-    private fun bindClick(parentReply: ParentReply) {
+    private fun bindClick(parentReply: ParentReply, childReplyId: String?) {
         setOnClickListener {
             if (!parentReply.isExpired) {
+                childReplyId?.let {
+                    TopChatAnalyticsKt.eventCLickReplyBubble(it, parentReply.replyId)
+                }
                 listener?.goToBubble(parentReply)
             } else {
                 val msg = context.getString(R.string.title_topchat_reply_bubble_expired)
@@ -123,9 +132,10 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
             subText = "",
             imageUrl = referredMsg.getReferredImageUrl(),
             localId = referredMsg.localId,
-            source = "chat"
+            source = "chat",
+            replyId = referredMsg.replyId
         )
-        bindParentReply(parentReply)
+        bindParentReply(parentReply, null)
         updateCloseButtonState(enableCloseButton)
         show()
     }
@@ -147,6 +157,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         if (enableCloseButton) {
             closeBtn?.show()
             closeBtn?.setOnClickListener {
+                TopChatAnalyticsKt.eventClickCloseReplyBubblePreview(referredMsg?.replyId ?: "")
                 clearReferTo()
                 hide()
             }

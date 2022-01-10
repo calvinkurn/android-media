@@ -8,7 +8,7 @@
     android:paddingRight="16dp"
     android:paddingBottom="8dp"
     android:paddingTop="8dp"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:gravity="center">
 
     <com.tokopedia.unifyprinciples.Typography

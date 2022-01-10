@@ -14,6 +14,6 @@
     <string name="vg_operator_info_desc">Nomor User ID dan Server ID Dapat dilihat di halaman ini.</string>
 
     <string name="vg_product_view_detail">Lihat Detail</string>
-    <string name="vg_product_detail_title">Keterangan</string>
+    <string name="vg_product_detail_title">Detail Produk</string>
     <string name="vg_product_detail_url">Info lebih lanjut</string>
 </resources>

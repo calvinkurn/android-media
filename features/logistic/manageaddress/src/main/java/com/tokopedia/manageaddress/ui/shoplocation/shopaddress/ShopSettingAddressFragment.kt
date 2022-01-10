@@ -59,11 +59,6 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationOldUiModel, Shop
         setHasOptionsMenu(true)
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        context?.let { GraphqlClient.init(it) }
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_shop_setting_address_list, container, false)
     }

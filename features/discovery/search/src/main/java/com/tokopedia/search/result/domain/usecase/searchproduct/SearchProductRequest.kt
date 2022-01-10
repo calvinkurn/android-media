@@ -85,6 +85,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                 errorMessage
                 additionalParams
                 keywordProcess
+                componentId
             }
             data {
                 isQuerySafe
@@ -96,6 +97,8 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     text
                     query
                     typeId
+                    componentId
+                    trackingOption
                 }
                 banner {
                     position
@@ -106,10 +109,12 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                 related {
                     relatedKeyword
                     position
+                    trackingOption
                     otherRelated {
                         keyword
                         url
                         applink
+                        componentId
                         product {
                             id
                             name
@@ -120,6 +125,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                             priceStr
                             wishlist
                             ratingAverage
+                            componentId
                             labelGroups {
                                 title
                                 position
@@ -150,6 +156,8 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     suggestion
                     query
                     text
+                    componentId
+                    trackingOption
                 }
                 products {
                     id

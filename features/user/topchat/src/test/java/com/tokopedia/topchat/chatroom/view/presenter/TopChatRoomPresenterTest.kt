@@ -1,38 +1,19 @@
 package com.tokopedia.topchat.chatroom.view.presenter
 
-import androidx.collection.ArrayMap
-import androidx.lifecycle.Observer
 import com.google.gson.JsonObject
-import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.common.network.util.CommonUtil
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
-import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
-import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
-import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
-import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
-import com.tokopedia.topchat.chatroom.domain.pojo.tokonow.ChatTokoNowWarehouse
-import com.tokopedia.topchat.chatroom.domain.pojo.tokonow.ChatTokoNowWarehouseResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.TopChatWebSocketParam
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exMessageId
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exProductId
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exResultProduct
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exSendMessage
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exSticker
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exUrl
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exUserId
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.generateSendAbleInvoicePreview
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.generateSendAbleProductPreview
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.successGetChatListGroupSticker
-import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.websocket.RxWebSocket
-import com.tokopedia.wishlist.common.listener.WishListActionListener
 import io.mockk.*
 import junit.framework.Assert.assertTrue
-import kotlinx.coroutines.flow.flow
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.hasItem
 import org.hamcrest.MatcherAssert.assertThat
@@ -45,7 +26,7 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         // Given
         val stickerReq = slot<String>()
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { presenter.isInTheMiddleOfThePage() } returns false
         every { RxWebSocket.send(capture(stickerReq), listInterceptor) } just Runs
 
         // When
@@ -64,7 +45,7 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         // Given
         val srwQuestion = QuestionUiModel()
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { presenter.isInTheMiddleOfThePage() } returns false
 
         // When
         presenter.connectWebSocket(exMessageId)
@@ -82,7 +63,7 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
         val paramSendMessage = "paramSendMessage"
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { presenter.isInTheMiddleOfThePage() } returns false
         every {
             TopChatWebSocketParam.generateParamSendMessage(
                 any(), any(), any(), any(), any(), any(), any()
@@ -105,11 +86,8 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         // Then
         verify {
             presenter.destroyWebSocket()
-            getChatUseCase.unsubscribe()
             getTemplateChatRoomUseCase.unsubscribe()
             replyChatUseCase.unsubscribe()
-            groupStickerUseCase.safeCancel()
-            chatAttachmentUseCase.safeCancel()
         }
     }
 
@@ -118,7 +96,7 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         //Given
         val typingParam = TopChatWebSocketParam.generateParamStartTyping(exMessageId)
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { presenter.isInTheMiddleOfThePage() } returns false
 
         // When
         presenter.connectWebSocket(exMessageId)
@@ -133,7 +111,7 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         //Given
         val stopTypingParam = TopChatWebSocketParam.generateParamStopTyping(exMessageId)
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { presenter.isInTheMiddleOfThePage() } returns false
 
         // When
         presenter.connectWebSocket(exMessageId)
@@ -229,280 +207,12 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
     }
 
     @Test
-    fun `on toggle add and remove WishList`() {
-        // Given
-        val wishlistActionListener: WishListActionListener = mockk(relaxed = true)
-
-        // When
-        presenter.addToWishList(exProductId, exUserId, wishlistActionListener)
-        presenter.removeFromWishList(exProductId, exUserId, wishlistActionListener)
-
-        // Then
-        verify(exactly = 1) {
-            addWishListUseCase.createObservable(exProductId, exUserId, wishlistActionListener)
-            removeWishListUseCase.createObservable(exProductId, exUserId, wishlistActionListener)
-        }
-    }
-
-    @Test
-    fun `on success get sticker group list`() {
-        // Given
-        val roomModel = ChatroomViewModel()
-        val needTopUpdateCache = emptyList<StickerGroup>()
-        val onLoadingSlot = slot<(ChatListGroupStickerResponse) -> Unit>()
-        val onSuccessSlot = slot<(ChatListGroupStickerResponse, List<StickerGroup>) -> Unit>()
-        every {
-            groupStickerUseCase.getStickerGroup(
-                roomModel.isSeller(),
-                capture(onLoadingSlot),
-                capture(onSuccessSlot),
-                any()
-            )
-        } answers {
-            val onLoading = onLoadingSlot.captured
-            onLoading.invoke(successGetChatListGroupSticker)
-            val onSuccess = onSuccessSlot.captured
-            onSuccess.invoke(successGetChatListGroupSticker, needTopUpdateCache)
-        }
-
-        // When
-        presenter.getStickerGroupList(roomModel)
-
-        // Then
-        verify(exactly = 2) {
-            view.getChatMenuView()
-        }
-    }
-
-    @Test
-    fun `on success loadAttachmentData`() {
-        // Given
-        val roomModel = ChatroomViewModel(replyIDs = "3213, 3123")
-        val mapSuccessAttachment = ArrayMap<String, Attachment>().apply {
-            put("test_attachment", Attachment())
-        }
-        every {
-            chatAttachmentUseCase.getAttachments(
-                exMessageId.toLongOrZero(), roomModel.replyIDs,
-                any(), captureLambda(), any()
-            )
-        } answers {
-            val onSuccess = lambda<(ArrayMap<String, Attachment>) -> Unit>()
-            onSuccess.invoke(mapSuccessAttachment)
-        }
-
-        // When
-        presenter.initUserLocation(null)
-        presenter.initUserLocation(LocalCacheModel())
-        presenter.loadAttachmentData(exMessageId.toLongOrZero(), roomModel)
-
-        // Then
-        val attachments = presenter.attachments
-        verify(exactly = 1) { view.updateAttachmentsView(attachments) }
-        assertTrue(presenter.attachments.size == 1)
-    }
-
-    @Test
-    fun `on error loadAttachmentData`() {
-        // Given
-        val roomModel = ChatroomViewModel(replyIDs = "3213, 3123")
-        val mapErrorAttachment = ArrayMap<String, Attachment>().apply {
-            put("test_error_attachment", Attachment())
-        }
-        val throwable = Throwable()
-        every {
-            chatAttachmentUseCase.getAttachments(
-                exMessageId.toLongOrZero(), roomModel.replyIDs, any(),
-                any(), captureLambda()
-            )
-        } answers {
-            val onError = lambda<(Throwable, ArrayMap<String, Attachment>) -> Unit>()
-            onError.invoke(throwable, mapErrorAttachment)
-        }
-
-        // When
-        presenter.loadAttachmentData(exMessageId.toLongOrZero(), roomModel)
-
-        // Then
-        val attachments = presenter.attachments
-        verify(exactly = 1) { view.updateAttachmentsView(attachments) }
-        assertTrue(presenter.attachments.size == 1)
-    }
-
-    @Test
-    fun `check setBeforeReplyTime`() {
-        //Given
-        val exCreateTime = "1234532"
-
-        // When
-        presenter.setBeforeReplyTime(exCreateTime)
-
-        // Then
-        verify(exactly = 1) { getChatUseCase.minReplyTime = exCreateTime }
-    }
-
-    @Test
-    fun `check resetChatUseCase`() {
-        // When
-        presenter.resetChatUseCase()
-
-        // Then
-        verify(exactly = 1) { getChatUseCase.reset() }
-    }
-
-    @Test
     fun `check resetUnreadMessage`() {
         // When
         presenter.resetUnreadMessage()
 
         // Then
         assertTrue(presenter.newUnreadMessage == 0)
-    }
-
-    @Test
-    fun `check requestBlockPromo`() {
-        // Given
-        val onSuccess: (ChatSettingsResponse) -> Unit = mockk()
-        val onError: (Throwable) -> Unit = mockk()
-
-        // When
-        presenter.requestBlockPromo(exMessageId, onSuccess, onError)
-
-        // Then
-        verify(exactly = 1) {
-            chatToggleBlockChat.blockPromo(exMessageId, onSuccess, onError)
-        }
-    }
-
-    @Test
-    fun `check requestAllowPromo`() {
-        // Given
-        val onSuccess: (ChatSettingsResponse) -> Unit = mockk()
-        val onError: (Throwable) -> Unit = mockk()
-
-        // When
-        presenter.requestAllowPromo(exMessageId, onSuccess, onError)
-
-        // Then
-        verify(exactly = 1) {
-            chatToggleBlockChat.allowPromo(exMessageId, onSuccess, onError)
-        }
-    }
-
-    @Test
-    fun `check blockChat`() {
-        // Given
-        val onSuccess: (ChatSettingsResponse) -> Unit = mockk()
-        val onError: (Throwable) -> Unit = mockk()
-
-        // When
-        presenter.blockChat(exMessageId, onSuccess, onError)
-
-        // Then
-        verify(exactly = 1) {
-            chatToggleBlockChat.blockChat(exMessageId, onSuccess, onError)
-        }
-    }
-
-    @Test
-    fun `check unBlockChat`() {
-        // Given
-        val onSuccess: (ChatSettingsResponse) -> Unit = mockk()
-        val onError: (Throwable) -> Unit = mockk()
-
-        // When
-        presenter.unBlockChat(exMessageId, onSuccess, onError)
-
-        // Then
-        verify(exactly = 1) {
-            chatToggleBlockChat.unBlockChat(exMessageId, onSuccess, onError)
-        }
-    }
-
-    @Test
-    fun `on load background from cache`() {
-        // Given
-        every {
-            chatBackgroundUseCase.getBackground(
-                captureLambda(), any(), any()
-            )
-        } answers {
-            val onCache = lambda<(String) -> Unit>()
-            onCache.invoke(exUrl)
-        }
-
-        // When
-        presenter.getBackground()
-
-        // Then
-        verify(exactly = 1) {
-            view.renderBackground(exUrl)
-        }
-    }
-
-    @Test
-    fun `on load background from success response and need to update`() {
-        // Given
-        every {
-            chatBackgroundUseCase.getBackground(
-                any(), captureLambda(), any()
-            )
-        } answers {
-            val onSuccess = lambda<(String, Boolean) -> Unit>()
-            onSuccess.invoke(exUrl, true)
-        }
-
-        // When
-        presenter.getBackground()
-
-        // Then
-        verify(exactly = 1) {
-            view.renderBackground(exUrl)
-        }
-    }
-
-    @Test
-    fun `success load srw`() {
-        // Given
-        val observer: Observer<Resource<ChatSmartReplyQuestionResponse>> = mockk()
-        val expectedValue: Resource<ChatSmartReplyQuestionResponse> = Resource.success(
-            ChatSmartReplyQuestionResponse()
-        )
-        val successFlow = flow { emit(expectedValue) }
-        every {
-            chatSrwUseCase.getSrwList(exMessageId)
-        } returns successFlow
-
-        // When
-        presenter.srw.observeForever(observer)
-        presenter.getSmartReplyWidget(exMessageId)
-
-        // Then
-        verify(exactly = 1) {
-            observer.onChanged(expectedValue)
-        }
-    }
-
-    @Test
-    fun `error load srw`() {
-        // Given
-        val observer: Observer<Resource<ChatSmartReplyQuestionResponse>> = mockk()
-        val throwable = IllegalStateException()
-        val expectedValue: Resource<ChatSmartReplyQuestionResponse> = Resource.error(
-            throwable, null
-        )
-        every {
-            chatSrwUseCase.getSrwList(exMessageId)
-        } throws throwable
-
-        // When
-        presenter.srw.observeForever(observer)
-        presenter.getSmartReplyWidget(exMessageId)
-
-        // Then
-        verify(exactly = 1) {
-            observer.onChanged(expectedValue)
-        }
     }
 
     @Test
@@ -535,26 +245,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         assertThat(productIds.size, `is`(1))
         assertThat(attachmentPreviews.size, `is`(2))
         assertThat(productIds, hasItem("12398764"))
-    }
-
-    @Test
-    fun `get interlocutor warehouse id`() {
-        // Given
-        val warehouseId = "123"
-        val response = ChatTokoNowWarehouseResponse(
-            ChatTokoNowWarehouse(warehouseId = warehouseId)
-        )
-        val expectedValue = Resource.success(response)
-        val successFlow = flow { emit(expectedValue) }
-        every {
-            tokoNowWHUsecase.getWarehouseId(exMessageId)
-        } returns successFlow
-
-        // When
-        presenter.adjustInterlocutorWarehouseId(exMessageId)
-
-        // Then
-        assertThat(presenter.attachProductWarehouseId, `is`(warehouseId))
     }
 
 }

@@ -13,8 +13,9 @@ import com.tokopedia.utils.view.binding.internal.getRootView
 import com.tokopedia.utils.view.binding.internal.requireViewByIdCompat
 
 private class FragmentViewBindingProperty<in F : Fragment, T : ViewBinding?>(
-        viewBinder: (F) -> T?
-) : LifecycleViewBindingProperty<F, T>(viewBinder) {
+        viewBinder: (F) -> T?,
+        onClear: T?.() -> Unit? = {}
+) : LifecycleViewBindingProperty<F, T>(viewBinder, onClear) {
 
     override fun getLifecycleOwner(thisRef: F): LifecycleOwner {
         try {
@@ -28,36 +29,46 @@ private class FragmentViewBindingProperty<in F : Fragment, T : ViewBinding?>(
 @Suppress("UNCHECKED_CAST")
 @JvmName("viewBindingFragment")
 fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
-        viewBinder: (F) -> T
+        viewBinder: (F) -> T,
+        onClear: T?.() -> Unit? = {}
 ): ViewBindingProperty<F, T> {
     // TODO: for DialogFragment, use DialogFragmentViewBindingProperty instead
-    return FragmentViewBindingProperty(viewBinder)
+    return FragmentViewBindingProperty(viewBinder, onClear)
 }
 
 @JvmName("viewBindingFragment")
 inline fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
         crossinline viewBindingFactory: (View) -> T,
-        crossinline viewProvider: (F) -> View = Fragment::requireView
+        crossinline viewProvider: (F) -> View = Fragment::requireView,
+        noinline onClear: T?.() -> Unit? = {}
 ): ViewBindingProperty<F, T> {
-    return viewBinding { fragment: F -> viewBindingFactory(viewProvider(fragment)) }
+    return viewBinding(
+        { fragment: F -> viewBindingFactory(viewProvider(fragment)) },
+        onClear
+    )
 }
 
 @Suppress("UNCHECKED_CAST")
 @JvmName("viewBindingFragment")
 inline fun <F : Fragment, T : ViewBinding> Fragment.viewBinding(
         crossinline viewBindingFactory: (View) -> T,
-        @IdRes viewBindingRootId: Int
+        @IdRes viewBindingRootId: Int,
+        noinline onClear: T?.() -> Unit? = {}
 ): ViewBindingProperty<F, T> {
     return when (this) {
         is DialogFragment -> {
-            viewBinding<DialogFragment, T>(viewBindingFactory) { fragment ->
-                fragment.getRootView(viewBindingRootId)
-            } as ViewBindingProperty<F, T>
+            viewBinding<DialogFragment, T>(
+                viewBindingFactory,
+                { fragment -> fragment.getRootView(viewBindingRootId) },
+                onClear
+            ) as ViewBindingProperty<F, T>
         }
         else -> {
-            viewBinding(viewBindingFactory) { fragment: F ->
-                fragment.requireView().requireViewByIdCompat(viewBindingRootId)
-            }
+            viewBinding(
+                viewBindingFactory,
+                { fragment: F -> fragment.requireView().requireViewByIdCompat(viewBindingRootId) },
+                onClear
+            )
         }
     }
 }

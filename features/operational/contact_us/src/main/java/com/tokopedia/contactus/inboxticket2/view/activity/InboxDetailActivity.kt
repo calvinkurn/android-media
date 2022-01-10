@@ -450,7 +450,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     }
 
     override fun exitSearchMode() {
-        detailAdapter.exitSearchMode()
+        if (::detailAdapter.isInitialized) detailAdapter.exitSearchMode()
     }
 
     override fun showImagePreview(position: Int, imagesURL: ArrayList<String>) {

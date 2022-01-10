@@ -64,6 +64,8 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                       videoUrl
                       appLink
                       webLink
+                      linkID
+                      Name
                     }
                     ... on ProductWidget {
                       productID
@@ -132,6 +134,8 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                       timeCounter
                       totalNotify
                       totalNotifyWording
+                      totalProduct
+                      totalProductWording
                       dynamicRule {
                         dynamicRoleData {
                           ruleName
@@ -171,6 +175,10 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                           title
                           url
                         }
+                      }
+                      backgroundGradientColor {
+                        firstColor
+                        secondColor
                       }
                     }
                   }
