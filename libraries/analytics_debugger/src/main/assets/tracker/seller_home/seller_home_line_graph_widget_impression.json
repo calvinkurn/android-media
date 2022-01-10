@@ -3,10 +3,12 @@
   "mode": "exact",
   "query": [
     {
-      "event": "viewSellerWidget",
+      "event": "viewHomepageIris",
       "eventCategory": "seller app - home",
-      "eventAction": "impression widget trend line - .{1,}",
+      "eventAction": "impression widget trendline",
       "eventLabel": ".{1,}",
+      "currentSite": "tokopediaseller",
+      "businessUnit": "physical goods",
       "sessionIris": ".{1,}"
     }
   ]

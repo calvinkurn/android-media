@@ -23,6 +23,7 @@ class ReactivatedAfterMondayPmActivityTest: ShopScoreTest() {
         super.setup()
         getShopInfoPeriodUseCaseStub.responseStub = shopInfoPeriodResponse
         getShopPerformanceUseCaseStub.responseStub = reactivatedAfterMondayPmResponse
+        shopScorePrefManagerStub.setFinishCoachMark(true)
     }
 
     @Test
@@ -61,7 +62,6 @@ class ReactivatedAfterMondayPmActivityTest: ShopScoreTest() {
 
     @Test
     fun show_header_performance_when_reactivated_after_monday_pm() {
-        shopScorePrefManagerStub.setFinishCoachMark(true)
         activityRule.launchActivity(getShopPerformancePageIntent())
         showHeaderPerformanceExistingPm(reactivatedAfterMondayPmResponse, shopInfoPeriodResponse)
     }

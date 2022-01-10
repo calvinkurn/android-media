@@ -523,8 +523,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         }
     }
 
-    public abstract void generateConsumerAppNetworkKeys();
-
     private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
         if (deepLinkUri != null) {
 

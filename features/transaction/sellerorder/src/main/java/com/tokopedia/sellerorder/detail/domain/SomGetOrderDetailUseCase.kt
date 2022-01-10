@@ -289,6 +289,11 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   label
                   value
                 }
+                promo_shipping {
+                  label
+                  value
+                  value_detail
+                }
             }
         }
         """.trimIndent()

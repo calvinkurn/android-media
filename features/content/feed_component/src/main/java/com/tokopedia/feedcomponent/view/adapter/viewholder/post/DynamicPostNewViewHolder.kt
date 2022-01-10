@@ -64,12 +64,11 @@ open class DynamicPostNewViewHolder(
             PAYLOAD_COMMENT -> postDynamicView.setCommentCount(element.feedXCard.comments)
             PAYLOAD_FRAGMENT_VISIBLE -> postDynamicView.setVideo(true)
             PAYLOAD_FRAGMENT_GONE -> postDynamicView.setVideo(false)
-            PAYLOAD_POST_VISIBLE -> if (element.feedXCard.media.isNotEmpty()){
-                postDynamicView.bindImage(
-                        element.feedXCard.tags,
-                        element.feedXCard.media[0]
-                )
-            }
+            PAYLOAD_POST_VISIBLE -> postDynamicView.bindImage(
+                    element.feedXCard.tags,
+                    element.feedXCard.media[element.feedXCard.lastCarouselIndex],
+                    element.feedXCard
+            )
         }
     }
 
@@ -118,7 +117,7 @@ open class DynamicPostNewViewHolder(
         }
     }
 
-    fun onItemAttach(context: Context?) {
+    fun onItemAttach(context: Context?, visitable: Visitable<*>) {
         val intentFilter = IntentFilter()
         intentFilter.addAction(BROADCAST_VISIBLITY)
         intentFilter.addAction(BROADCAST_FEED)
@@ -126,6 +125,10 @@ open class DynamicPostNewViewHolder(
             LocalBroadcastManager
                 .getInstance(context.applicationContext)
                 .registerReceiver(receiver,intentFilter)
+        }
+        try {
+            postDynamicView?.attach( visitable as DynamicPostUiModel)
+        } catch (e: Exception) {
         }
     }
 }

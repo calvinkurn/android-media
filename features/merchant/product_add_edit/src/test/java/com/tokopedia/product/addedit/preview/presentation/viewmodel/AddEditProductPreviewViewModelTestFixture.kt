@@ -12,6 +12,7 @@ import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameU
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ShopOpenRevampSaveShipmentLocationUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.productlimitation.domain.usecase.ProductLimitationUseCase
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -72,6 +73,9 @@ abstract class AddEditProductPreviewViewModelTestFixture {
     @RelaxedMockK
     lateinit var getProductResultObserver: Observer<in Result<Product>>
 
+    @RelaxedMockK
+    lateinit var productInputModelObserver: Observer<ProductInputModel>
+
     lateinit var viewModel: AddEditProductPreviewViewModel
 
     @Before
@@ -95,6 +99,7 @@ abstract class AddEditProductPreviewViewModelTestFixture {
                 CoroutineTestDispatchersProvider)
 
         viewModel.getProductResult.observeForever(getProductResultObserver)
+        viewModel.productInputModel.observeForever(productInputModelObserver)
     }
 
     @AfterEach
@@ -102,5 +107,6 @@ abstract class AddEditProductPreviewViewModelTestFixture {
         clearAllMocks()
 
         viewModel.getProductResult.removeObserver(getProductResultObserver)
+        viewModel.productInputModel.removeObserver(productInputModelObserver)
     }
 }
