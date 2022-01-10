@@ -70,14 +70,14 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
                     ),
                     DenomWidgetModel(
                         title="15 ribu",
-                        specialLabel = "Any campaign label",
+                        //specialLabel = "Any campaign label",
                         price = "Rp500",
-                        discountLabel = "10%",
+//                        discountLabel = "10%",
                         slashPrice = "Rp16.500",
-                        appLink = "tokopedia://deals",
-                        expiredDate = "December 2021",
-                        flashSaleLabel = "Segera Habis",
-                        flashSalePercentage = 80
+//                        appLink = "tokopedia://deals",
+//                        expiredDate = "December 2021",
+//                        flashSaleLabel = "Segera Habis",
+//                        flashSalePercentage = 80
                     )
                 )
             )

@@ -5,13 +5,12 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.ViewRechargeDenomGridBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
-import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
 
@@ -87,10 +86,16 @@ class DenomGridViewHolder (
                     show()
                     text = denomGrid.slashPrice
                     paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    if(denomGrid.discountLabel.isNullOrEmpty())
+                        setMargin(resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt(),
+                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toInt(),
+                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt(),
+                            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
+                        )
                 } else hide()
             }
 
-            cardDenomGrid.cardType = if (isSelectedItem) CardUnify.TYPE_BORDER_ACTIVE else CardUnify.TYPE_SHADOW
+            cardDenomGrid.cardType = if (isSelectedItem) CardUnify.TYPE_BORDER_ACTIVE else CardUnify.TYPE_BORDER
 
             root.setOnClickListener {
                 denomGridListener.onDenomGridClicked(denomGrid, position)
