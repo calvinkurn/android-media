@@ -5,9 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -15,6 +17,7 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -362,11 +365,32 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
             setChild(bottomSheetBinding.root)
             setOnDismissListener {
                 activity?.let {
+                    textFieldAddShowcaseBottomSheet?.clearFocus()
                     KeyboardHandler.hideSoftKeyboard(it)
                 }
             }
+            setShowListener {
+                bottomSheet.addBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback(){
+                    override fun onStateChanged(bottomSheet: View, newState: Int) {
+                        if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                            alignBottomSheetToBottom(this@apply.view)
+                        }
+                    }
+
+                    override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                    }
+
+                })
+            }
             isKeyboardOverlap = false
         }
+    }
+
+    private fun alignBottomSheetToBottom(view: View?) {
+        val bottomSheetLayout = view as? LinearLayout
+        bottomSheetLayout?.setMargin(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
+        (bottomSheetLayout?.layoutParams as FrameLayout.LayoutParams).gravity = Gravity.BOTTOM
+        bottomSheetLayout.requestLayout()
     }
 
     private fun showAddShowcaseBottomSheet(showcaseNameHint: String = "") {
@@ -390,9 +414,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
             }
             fragmentManager?.let {
                 addShowcaseBottomSheet?.show(it, "")
-                activity?.let { activity ->
-                    KeyboardHandler.showSoftKeyboard(activity)
-                }
+                textFieldAddShowcaseBottomSheet?.requestFocus()
             }
         }
     }
