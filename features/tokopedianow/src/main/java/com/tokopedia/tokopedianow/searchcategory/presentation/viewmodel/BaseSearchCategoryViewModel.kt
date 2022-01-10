@@ -750,7 +750,6 @@ abstract class BaseSearchCategoryViewModel(
             if (chooseAddressData?.warehouses?.find { it.service_type == NOW_15M }?.warehouse_id.orZero() != 0L) {
                 add(SwitcherWidgetDataView())
             }
-            add(SwitcherWidgetDataView())
             addAll(createFooterVisitableList())
         } else {
             add(loadingMoreModel)
