@@ -1,5 +1,6 @@
 package com.tokopedia.gm.common.data.source.cloud.model
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -7,6 +8,7 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class DeactivationPowerMerchantResponse(
+        @Expose
         @SerializedName("goldTurnOffSubscription")
         val goldTurnOffSubscription: GoldTurnOffSubscriptionModel? = null,
 ) {
@@ -16,18 +18,22 @@ data class DeactivationPowerMerchantResponse(
 }
 
 data class GoldTurnOffSubscriptionModel(
+        @Expose
         @SerializedName("header")
         val header: TurnOffSubscriptionHeaderModel? = null,
+        @Expose
         @SerializedName("data")
         val data: TurnOffSubscriptionDataModel? = null
 )
 
 data class TurnOffSubscriptionHeaderModel(
+        @Expose
         @SerializedName("error_code")
         val errorCode: String
 )
 
 data class TurnOffSubscriptionDataModel(
+        @Expose
         @SerializedName("expiredTime")
         val expiredTime: String
 )
