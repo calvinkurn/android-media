@@ -42,9 +42,6 @@ import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
-import com.tokopedia.play.view.viewcomponent.ProductSheetViewComponent
-import com.tokopedia.play.view.viewcomponent.ShopCouponSheetViewComponent
-import com.tokopedia.play.view.viewcomponent.VariantSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -116,6 +113,8 @@ class PlayBottomSheetFragment @Inject constructor(
     private lateinit var loadingDialog: PlayLoadingDialogFragment
 
     private lateinit var productAnalyticHelper: ProductAnalyticHelper
+
+    private var userReportTimeMillis: Long = 0L
 
     override fun getScreenName(): String = "Play Bottom Sheet"
 

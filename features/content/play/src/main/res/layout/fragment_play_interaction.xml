@@ -20,6 +20,17 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
+    <include
+        android:id="@+id/view_gradient_background"
+        layout="@layout/view_gradient_background"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
     <View
         android:id="@+id/v_immersive_box"
         android:layout_width="@dimen/layout_lvl0"
@@ -157,12 +168,6 @@
         app:layout_constraintStart_toStartOf="@id/view_size"
         tools:visibility="visible"
         >
-
-        <include
-            android:id="@+id/view_gradient_background"
-            layout="@layout/view_gradient_background"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="@dimen/layout_lvl0" />
     </com.tokopedia.play.view.custom.PlayChatListView>
 
     <FrameLayout

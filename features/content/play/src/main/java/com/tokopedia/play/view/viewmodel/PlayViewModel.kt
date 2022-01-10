@@ -653,6 +653,29 @@ class PlayViewModel @Inject constructor(
         _observableBottomInsetsState.value = insetsMap
     }
 
+    fun showCouponSheet(estimatedHeight: Int) {
+        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+
+        insetsMap[BottomInsetsType.CouponSheet] =
+            BottomInsetsState.Shown(
+                estimatedInsetsHeight = estimatedHeight,
+                isPreviousStateSame = insetsMap[BottomInsetsType.CouponSheet]?.isShown == true
+            )
+
+        _observableBottomInsetsState.value = insetsMap
+    }
+
+    fun hideCouponSheet() {
+        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+
+        insetsMap[BottomInsetsType.CouponSheet] =
+            BottomInsetsState.Hidden(
+                isPreviousStateSame = insetsMap[BottomInsetsType.CouponSheet]?.isHidden == true
+            )
+
+        _observableBottomInsetsState.value = insetsMap
+    }
+
     fun onShowUserReportSheet(estimatedSheetHeight: Int) {
         val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
 
