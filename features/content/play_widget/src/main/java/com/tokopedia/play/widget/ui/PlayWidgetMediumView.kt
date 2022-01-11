@@ -88,20 +88,21 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
 
         override fun onChannelImpressed(view: View, item: PlayWidgetMediumChannelUiModel, position: Int) {
             mAnalyticListener?.onImpressChannelCard(
-                    view = this@PlayWidgetMediumView,
-                    item = item,
-                    channelPositionInList = position,
-                    isAutoPlay = mIsAutoPlay
+                view = this@PlayWidgetMediumView,
+                item = item,
+                channelPositionInList = position,
+                isAutoPlay = mIsAutoPlay
             )
         }
 
         override fun onChannelClicked(view: View, item: PlayWidgetMediumChannelUiModel, position: Int) {
             mAnalyticListener?.onClickChannelCard(
-                    view = this@PlayWidgetMediumView,
-                    item = item,
-                    channelPositionInList = position,
-                    isAutoPlay = mIsAutoPlay
+                view = this@PlayWidgetMediumView,
+                item = item,
+                channelPositionInList = position,
+                isAutoPlay = mIsAutoPlay
             )
+
             if (mWidgetListener != null
                     && (item.channelType == PlayWidgetChannelType.Live
                             || item.channelType == PlayWidgetChannelType.Vod

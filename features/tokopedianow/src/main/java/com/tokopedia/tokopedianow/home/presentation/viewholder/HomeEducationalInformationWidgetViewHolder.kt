@@ -8,19 +8,18 @@ import androidx.core.graphics.BlendModeCompat
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeEducationalInformationWidgetBinding
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
-import com.tokopedia.tokopedianow.home.presentation.bottomsheet.TokoNowHomeEducationalInformationBottomSheet
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEducationalInformationWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeEducationalInformationWidgetViewHolder(
     itemView: View,
-    private val tokoNowView: TokoNowView? = null,
     private val listener: HomeEducationalInformationListener? = null
 ) : AbstractViewHolder<HomeEducationalInformationWidgetUiModel>(itemView) {
 
@@ -91,10 +90,7 @@ class HomeEducationalInformationWidgetViewHolder(
 
     private fun showBottomSheet() {
         setupBasicButton()
-        val bottomSheet = TokoNowHomeEducationalInformationBottomSheet.newInstance()
-        tokoNowView?.getFragmentManagerPage()?.let { fragmentManager ->
-            bottomSheet.show(fragmentManager)
-        }
+        RouteManager.route(itemView.context, EDUCATIONAL_INFO)
     }
 
     interface HomeEducationalInformationListener {

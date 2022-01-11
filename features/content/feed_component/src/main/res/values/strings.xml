@@ -15,9 +15,13 @@
 
     <!--Post Time new-->
     <string name="post_time_just_now_new">1 menit</string>
+    <string name="post_time_few_moments_ago">Beberapa detik yang lalu</string>
     <string name="post_time_minutes_ago_new">menit</string>
+    <string name="post_comment_time_minute_ago_new">menit yang lalu</string>
     <string name="post_time_hours_ago_new">jam </string>
+    <string name="post_comment_time_hours_ago_new">jam yang lalu </string>
     <string name="post_time_days_ago">hari</string>
+    <string name="post_comment_time_days_ago">hari yang lalu</string>
     <string name="post_time_hour_new">\u0020pukul\u0020</string>
     <string name="post_time_yesterday_at_new">Kemarin pukul\u0020</string>
 
@@ -145,6 +149,7 @@
 
     <!--DYNAMIC POST ASSETS-->
     <string name="feed_component_liked_count_text"> Disukai oleh <![CDATA["<font color='#212121'><b> %s orang</b></font> ]]></string>
+    <string name="feed_component_viewed_count_text"> Ditonton oleh <![CDATA["<font color='#212121'><b> %s orang</b></font> ]]></string>
     <string name="feed_component_liked_count_text_only_me">Disukai olehmu</string>
     <string name="feed_component_liked_by_text">Disukai oleh %s dan  <![CDATA["<font color='#212121'><b>%s lainnya</b></font> ]]></string>
     <string name="feed_component_liked_by_text_me">Disukai olehmu dan <![CDATA["<font color='#212121'><b>%s lainnya</b></font> ]]></string>
@@ -173,6 +178,12 @@
     <!--POST-->
     <string name="feed_post_tag_text">Lihat Produk</string>
 
+    <!--VOD-->
+    <string name="feed_post_lanjut_menonton">Lanjut Menonton</string>
+    <string name="feed_post_content_desc_full_screen">VOD full screen</string>
+    <string name="feed_post_content_desc_volume_btn">VOD volume button</string>
+    <string name="feed_post_content_desc_play_btn">VOD play button</string>
+
     <!--PRODUCT TAGGING VIEW-->
     <string name="feed_product_tag_dot">Product Tag Pointer Dot</string>
     <string name="feed_product_tag_up">Product Tag Pointer Up</string>
@@ -180,5 +191,8 @@
 
     <string name="feeds_sek_sekarang">Cek Sekarang</string>
     <string name="feeds_ads_text">Ad</string>
+    <string name="feeds_asgc_new_product_text">Produk Terbaru</string>
+    <string name="feeds_asgc_restock_text">Restock</string>
+
 
 </resources>

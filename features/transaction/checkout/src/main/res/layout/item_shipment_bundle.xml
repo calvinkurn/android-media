@@ -5,7 +5,7 @@
     android:id="@+id/ll_invoice_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:orientation="vertical">
 
     <include
@@ -25,15 +25,19 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_R100">
+            android:background="@drawable/pp_ticker_error_background">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:cropToPadding="true"
-                android:src="@drawable/ic_system_status_error_normal_40"
-                android:translationX="-8dp"
-                android:translationY="-8dp"
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/checkout_custom_ticker_icon"
+                android:layout_width="@dimen/unify_ticker_icon_size"
+                android:layout_height="@dimen/unify_ticker_icon_size"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:icon_color_light_enable="@color/tickerunify_error_icon_color"
+                app:icon_color_night_enable="@color/tickerunify_error_icon_color"
+                app:icon_name="ERROR"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="ContentDescription" />
@@ -42,13 +46,13 @@
                 android:id="@+id/checkout_custom_ticker_description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="@dimen/spacing_lvl3"
                 android:layout_marginBottom="@dimen/spacing_lvl3"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/tickerunify_content_text_color"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/checkout_custom_ticker_action"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/checkout_custom_ticker_icon"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_3"
                 app:typographyWeight="reguler" />

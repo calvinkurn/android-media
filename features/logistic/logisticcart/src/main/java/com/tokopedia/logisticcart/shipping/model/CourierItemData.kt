@@ -60,4 +60,5 @@ class CourierItemData(
         var shipperName: String? = null,
         var merchantVoucherProductModel: MerchantVoucherProductModel? = null,
         var preOrderModel: PreOrderModel? = null,
+        var freeShippingChosenCourierTitle: String = ""
 ) : Parcelable, ShipmentOptionData

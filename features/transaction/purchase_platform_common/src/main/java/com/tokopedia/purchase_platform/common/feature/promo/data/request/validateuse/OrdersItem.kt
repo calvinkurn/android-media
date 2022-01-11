@@ -21,5 +21,5 @@ data class OrdersItem(
         @SerializedName("sp_id")
         var spId: Int = 0,
         @SerializedName("product_details")
-        var productDetails: List<ProductDetailsItem?> = listOf()
+        var productDetails: List<ProductDetailsItem> = listOf()
 ) : Parcelable

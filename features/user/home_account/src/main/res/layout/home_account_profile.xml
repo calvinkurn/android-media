@@ -90,7 +90,7 @@
         app:drawableLeftCompat="@drawable/ic_gojek_outline"
         android:id="@+id/link_account_profile_btn"
         android:background="@drawable/link_account_label_rounded"
-        android:textColor="#ffffff"
+        android:textColor="@color/Unify_Static_White"
         app:typographyType="heading_6"
         android:drawablePadding="5dp"
         android:text="@string/link_account_label"

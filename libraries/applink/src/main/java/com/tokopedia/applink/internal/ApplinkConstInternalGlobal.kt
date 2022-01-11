@@ -140,7 +140,8 @@ object ApplinkConstInternalGlobal {
     // UserIdentificationInfoSimpleActivity
     // tokopedia-android-internal://global/user-identification-only
     @JvmField
-    val USER_IDENTIFICATION_INFO_SIMPLE = "$INTERNAL_GLOBAL/user-identification-only?projectId={projectId}"
+    val USER_IDENTIFICATION_INFO_SIMPLE = "$INTERNAL_GLOBAL/user-identification-only?projectId={projectId}&layout={layout}"
+    const val PARAM_LAYOUT = "layout"
 
     // InboxTalkActivity
     // tokopedia-android-internal://global/inbox-talk
@@ -232,6 +233,10 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/cotp
     const val COTP = "$INTERNAL_GLOBAL/cotp"
 
+    // SilentVerificationActivity
+    // tokopedia-android-internal://global/silent-verification
+    const val SILENT_VERIFICAITON = "$INTERNAL_GLOBAL/silent-verification"
+
     // ReceiverNotifActivity
     // tokopedia-android-internal://global/otp-push-notif-receiver
     const val OTP_PUSH_NOTIF_RECEIVER = "$INTERNAL_GLOBAL/otp-push-notif-receiver"
@@ -261,10 +266,6 @@ object ApplinkConstInternalGlobal {
     // ChangePhoneNumberWarningActivity
     // tokopedia-android-internal://global/change-phone-number
     const val CHANGE_PHONE_NUMBER = "$INTERNAL_GLOBAL/change-phone-number"
-
-    // ChangePasswordActivity
-    // tokopedia-android-internal://global/change-password
-    const val CHANGE_PASSWORD = "$INTERNAL_GLOBAL/change-password"
 
     // LinkAccountActivity
     // tokopedia-android-internal://global/link-account

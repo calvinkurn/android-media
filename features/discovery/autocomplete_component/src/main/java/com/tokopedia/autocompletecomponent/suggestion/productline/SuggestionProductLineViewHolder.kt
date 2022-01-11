@@ -1,16 +1,18 @@
 package com.tokopedia.autocompletecomponent.suggestion.productline
 
 import android.graphics.Paint
+import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
-import android.text.style.TextAppearanceSpan
+import android.text.style.StyleSpan
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocompletecomponent.R
+import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionListener
 import com.tokopedia.autocompletecomponent.util.safeSetSpan
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
@@ -32,17 +34,17 @@ class SuggestionProductLineViewHolder(
     private var searchQueryStartIndexInKeyword = -1
 
     override fun bind(item: SuggestionProductLineDataDataView) {
-        setComponentHeight(item)
-        setImage(item)
-        setSearchQueryStartIndexInKeyword(item)
-        setTitle(item)
-        setLabelDiscountPercentage(item)
-        setOriginalPrice(item)
-        setPrice(item)
-        setListener(item)
+        setComponentHeight(item.data)
+        setImage(item.data)
+        setSearchQueryStartIndexInKeyword(item.data)
+        setTitle(item.data)
+        setLabelDiscountPercentage(item.data)
+        setOriginalPrice(item.data)
+        setPrice(item.data)
+        setListener(item.data)
     }
 
-    private fun setComponentHeight(item: SuggestionProductLineDataDataView) {
+    private fun setComponentHeight(item: BaseSuggestionDataView) {
         val layoutParams = itemView.autocompleteProductItem.layoutParams
 
         if (item.hasSlashedPrice()) layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.autocomplete_product_triple_line_height)
@@ -51,7 +53,7 @@ class SuggestionProductLineViewHolder(
         itemView.autocompleteProductItem.layoutParams = layoutParams
     }
 
-    private fun setImage(item: SuggestionProductLineDataDataView) {
+    private fun setImage(item: BaseSuggestionDataView) {
         setImageHeight()
         bindImage(item)
     }
@@ -66,14 +68,14 @@ class SuggestionProductLineViewHolder(
         itemView.autocompleteProductImage.layoutParams = layoutParams
     }
 
-    private fun bindImage(item: SuggestionProductLineDataDataView) {
+    private fun bindImage(item: BaseSuggestionDataView) {
         val context = itemView.context
         itemView.autocompleteProductImage?.let {
             ImageHandler.loadImageRounded(context, it, item.imageUrl, context.resources.getDimension(R.dimen.autocomplete_product_suggestion_image_radius))
         }
     }
 
-    private fun setSearchQueryStartIndexInKeyword(item: SuggestionProductLineDataDataView) {
+    private fun setSearchQueryStartIndexInKeyword(item: BaseSuggestionDataView) {
         val displayName = item.title
         val searchTerm = item.searchTerm
 
@@ -82,7 +84,7 @@ class SuggestionProductLineViewHolder(
         } else -1
     }
 
-    private fun setTitle(item: SuggestionProductLineDataDataView) {
+    private fun setTitle(item: BaseSuggestionDataView) {
         itemView.autocompleteProductTitle?.setType(Typography.BODY_2)
         itemView.autocompleteProductTitle?.setWeight(Typography.REGULAR)
 
@@ -90,7 +92,7 @@ class SuggestionProductLineViewHolder(
         else itemView.autocompleteProductTitle?.text = getHighlightedTitle(item)
     }
 
-    private fun getHighlightedTitle(item: SuggestionProductLineDataDataView): SpannableString {
+    private fun getHighlightedTitle(item: BaseSuggestionDataView): SpannableString {
         val highlightedTitle = SpannableString(MethodChecker.fromHtml(item.title))
 
         highlightTitleBeforeKeyword(highlightedTitle)
@@ -102,42 +104,49 @@ class SuggestionProductLineViewHolder(
 
     private fun highlightTitleBeforeKeyword(highlightedTitle: SpannableString) {
         highlightedTitle.safeSetSpan(
-                TextAppearanceSpan(itemView.context, R.style.searchTextHiglight),
-                0, searchQueryStartIndexInKeyword, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            StyleSpan(Typeface.BOLD),
+            0,
+            searchQueryStartIndexInKeyword,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
     }
 
-    private fun highlightTitleAfterKeyword(highlightedTitle: SpannableString, item: SuggestionProductLineDataDataView) {
+    private fun highlightTitleAfterKeyword(
+        highlightedTitle: SpannableString,
+        item: BaseSuggestionDataView
+    ) {
         val highlightAfterKeywordStartIndex = searchQueryStartIndexInKeyword + (item.searchTerm.length)
         val highlightAfterKeywordEndIndex = item.title.length
 
         highlightedTitle.safeSetSpan(
-                TextAppearanceSpan(itemView.context, R.style.searchTextHiglight),
-                highlightAfterKeywordStartIndex, highlightAfterKeywordEndIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            StyleSpan(Typeface.BOLD),
+            highlightAfterKeywordStartIndex,
+            highlightAfterKeywordEndIndex,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
     }
 
-    private fun setLabelDiscountPercentage(item: SuggestionProductLineDataDataView) {
+    private fun setLabelDiscountPercentage(item: BaseSuggestionDataView) {
         itemView.autocompleteProductLabelDiscountPercentage?.shouldShowWithAction(item.hasSlashedPrice()) {
             itemView.autocompleteProductLabelDiscountPercentage?.text = item.discountPercentage
         }
     }
 
-    private fun setOriginalPrice(item: SuggestionProductLineDataDataView) {
+    private fun setOriginalPrice(item: BaseSuggestionDataView) {
         itemView.autocompleteProductOriginalPrice?.shouldShowWithAction(item.hasSlashedPrice()) {
             itemView.autocompleteProductOriginalPrice?.setTextAndCheckShow(item.originalPrice)
             itemView.autocompleteProductOriginalPrice?.paintFlags = itemView.autocompleteProductOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
     }
 
-    private fun setPrice(item: SuggestionProductLineDataDataView) {
+    private fun setPrice(item: BaseSuggestionDataView) {
         itemView.autocompleteProductPrice?.setType(Typography.BODY_3)
         itemView.autocompleteProductPrice?.setWeight(Typography.BOLD)
 
         itemView.autocompleteProductPrice?.setTextAndCheckShow(item.subtitle)
     }
 
-    private fun setListener(item: SuggestionProductLineDataDataView) {
+    private fun setListener(item: BaseSuggestionDataView) {
         itemView.autocompleteProductItem?.setOnClickListener {
             listener.onItemClicked(item)
         }

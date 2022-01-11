@@ -72,7 +72,6 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.wishlist.common.request.WishlistAdditionalParamRequest
 import com.tokopedia.wishlist.common.toEmptyStringIfZero
 import kotlinx.android.synthetic.main.fragment_new_home_wishlist.*
-import java.lang.IndexOutOfBoundsException
 import javax.inject.Inject
 
 

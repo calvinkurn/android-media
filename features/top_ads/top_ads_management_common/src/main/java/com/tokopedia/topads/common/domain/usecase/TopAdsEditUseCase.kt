@@ -14,6 +14,7 @@ import com.tokopedia.topads.common.data.internal.ParamObject.INPUT
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_DAILY_BUDGET
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_EDIT_OPTION
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_GROUP_Id
+import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_GROUP_TYPE
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_PRICE_BID
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_RECOM_EDIT_SOURCE
 import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT
@@ -67,6 +68,7 @@ class TopAdsEditUseCase @Inject constructor(val userSession: UserSessionInterfac
         val priceBidGroup = dataGroup?.get(PARAM_PRICE_BID) as? Int
         val dailyBudgetGroup = dataGroup?.get(PARAM_DAILY_BUDGET) as? Double
         val groupId = dataGroup?.get(PARAM_GROUP_Id) as String
+        val groupType = dataGroup?.get(PARAM_GROUP_TYPE) as String
         return TopadsManagePromoGroupProductInput().apply {
             shopID = userSession.shopId
             keywordOperation = null
@@ -76,6 +78,7 @@ class TopAdsEditUseCase @Inject constructor(val userSession: UserSessionInterfac
                     action = PARAM_EDIT_OPTION,
                     group = GroupEditInput.Group(
                             adOperations = dataProduct,
+                            type = groupType,
                             name = null,
                             dailyBudget = dailyBudgetGroup,
                     )

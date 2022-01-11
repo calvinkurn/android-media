@@ -27,7 +27,7 @@
 /features/home/navigation/                          	@tokopedia/android-miniondave-dev
 /features/home/navigation-common/                   	@tokopedia/android-miniondave-dev
 /features/home/searchbar/                           	@tokopedia/android-miniondave-dev
-/features/content/interest_pick_common                  @tokopedia/android-minionskywalker-dev
+/features/content/interest_pick_common                  @tokopedia/android-minionsolo-dev
 /features/discovery/discovery_common                    @tokopedia/android-miniondave-dev
 /features/discovery/recommendation_widget_common        @tokopedia/android-miniondave-dev
 /features/discovery/carousel_productcard                @tokopedia/android-miniondave-dev
@@ -53,10 +53,8 @@
 /features/merchant/product_manage_list/                 @tokopedia/android-minionstuart-dev
 /features/merchant/product_share/                       @tokopedia/android-minionstuart-dev
 /features/merchant/report/                              @tokopedia/android-minionstuart-dev
-/features/merchant/review_product/                      @tokopedia/android-minionstuart-dev
 /features/merchant/reputation_common/                   @tokopedia/android-minionstuart-dev
 /features/merchant/review/                              @tokopedia/android-minionstuart-dev
-/features/merchant/review_shop/                         @tokopedia/android-minionken-dev
 /features/merchant/review_inbox/                        @tokopedia/android-minionstuart-dev
 /features/merchant/seller_migration_common/             @tokopedia/android-minionstuart-dev
 /features/merchant/seller_active_common/                @tokopedia/android-minionstuart-dev
@@ -81,18 +79,20 @@
 /features/merchant/voucher_creation/                    @tokopedia/android-minionken-dev
 /features/tokopedianow/                                 @tokopedia/android-minionken-dev
 /features/merchant/product_bundle/                      @tokopedia/android-minionken-dev
+/features/merchant/shop_widget/                         @tokopedia/android-minionken-dev
+/features/merchant/campaign_list/                       @tokopedia/android-minionken-dev
 
-/features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionskywalker-dev
-/features/top_ads/top_ads_free_claim/                   @tokopedia/android-minionskywalker-dev
-/features/top_ads/top_ads_management/                   @tokopedia/android-minionskywalker-dev
-/features/top_ads/top_ads_management_common/            @tokopedia/android-minionskywalker-dev
-/features/top_ads/top_ads_management_sourcetagging/     @tokopedia/android-minionskywalker-dev
-/features/top_ads/top_ads_autoads/                      @tokopedia/android-minionskywalker-dev
-/features/top_ads/top_ads_create/                       @tokopedia/android-minionskywalker-dev
-/features/top_ads/top_ads_detail_sheet/                 @tokopedia/android-minionskywalker-dev
-/features/top_ads/top_ads_widget/                       @tokopedia/android-minionskywalker-dev
-/features/top_ads/top_ads_headline/                     @tokopedia/android-minionskywalker-dev
-/features/top_ads/top_ads_edit/                         @tokopedia/android-minionskywalker-dev
+/features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_free_claim/                   @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_management/                   @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_management_common/            @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_management_sourcetagging/     @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_autoads/                      @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_create/                       @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_detail_sheet/                 @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_widget/                       @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_headline/                     @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_edit/                         @tokopedia/android-minionsolo-dev
 
 /features/merchant/talk/                            	@tokopedia/android-minionstuart-dev
 /features/merchant/variant_common/                      @tokopedia/android-minionstuart-dev
@@ -151,6 +151,7 @@
 /features/payment/payment/                      		@tokopedia/android-minionbob-dev
 /features/transaction/atc_common/               		@tokopedia/android-minionbob-dev
 /features/transaction/unifyorderhistory/                @tokopedia/android-minionbob-dev
+/features/transaction/wishlist/                         @tokopedia/android-minionbob-dev
 /features/transaction/purchase_platform_common/ 		@tokopedia/android-minionbob-dev
 /features/transaction/cart/        		                @tokopedia/android-minionbob-dev
 /features/transaction/cart_common/        		        @tokopedia/android-minionbob-dev
@@ -176,7 +177,7 @@
 /features/media/medialoader/                            @tokopedia/android-minionkevin-dev
 /features/media/live-broadcaster/                       @tokopedia/android-minionkevin-dev
 
-/features/user/chatbot/                         		@tokopedia/android-minionskywalker-dev
+/features/user/chatbot/                         		@tokopedia/android-minionsolo-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev
 /features/user/chat_common/                     		@tokopedia/android-minionkevin-dev
 /features/user/topchat/                         		@tokopedia/android-minionkevin-dev
@@ -213,7 +214,6 @@
 /features/user/attachcommon/                            @tokopedia/android-minionkevin-dev
 /features/user/stickylogin/                             @tokopedia/android-minionkevin-dev
 /features/user/campaign_shake_landing/                  @tokopedia/android-minionkevin-dev
-/features/home/account-home/                        	@tokopedia/android-minionkevin-dev
 /features/user/home_account/                        	@tokopedia/android-minionkevin-dev
 /features/user/loginfingerprint/                        @tokopedia/android-minionkevin-dev
 /features/user/liveness/                                @tokopedia/android-minionkevin-dev
@@ -221,8 +221,8 @@
 /features/user/home_account/                            @tokopedia/android-minionkevin-dev
 /features/user/telephony_masking/                       @tokopedia/android-minionkevin-dev
 
-/features/operational/contact_us        				@tokopedia/android-minionskywalker-dev
-/features/operational/csat_rating        				@tokopedia/android-minionskywalker-dev
+/features/operational/contact_us        				@tokopedia/android-minionsolo-dev
+/features/operational/csat_rating        				@tokopedia/android-minionsolo-dev
 
 /features/fintech/common_wallet         				@tokopedia/android-minionyoda-dev
 /features/fintech/instant_loan          				@tokopedia/android-minionyoda-dev
@@ -248,7 +248,6 @@
 /features/im/install_referral                           @tokopedia/android-core-dev
 /features/im/common_promo                               @tokopedia/android-core-dev
 /features/im/referral                   				@tokopedia/android-minionyoda-dev
-/features/im/moengage_wrapper                   		@tokopedia/android-minionyoda-dev
 /features/ovop2p                                        @tokopedia/android-minionyoda-dev
 /features/payment/common_payment                        @tokopedia/android-minionyoda-dev
 /features/digital/instant_debit_bca                     @tokopedia/android-minionyoda-dev
@@ -258,6 +257,7 @@
 
 /features/payment/payment_setting/              		@tokopedia/android-minionyoda-dev
 /features/payment/pms/                          		@tokopedia/android-minionyoda-dev
+/features/payment/gopay.kyc/                          	@tokopedia/android-minionyoda-dev
 
 /libraries/adapter_delegate/							@tokopedia/android-core-dev
 /libraries/akamai_bot_lib/							    @tokopedia/android-core-dev
@@ -358,6 +358,7 @@
 /testapp/                                               @tokopedia/android-core-dev
 
 /testing/joint/pdp_checkout/                            @tokopedia/android-minionbob-dev @tokopedia/android-minionstuart-dev
+/testing/joint/dg_transaction/                          @tokopedia/android-minionmark-dev @tokopedia/android-minionyoda-dev
 
 /features/transaction/buyerorder/                      @tokopedia/android-minionstuart-dev @tokopedia/android-minionmark-dev
 

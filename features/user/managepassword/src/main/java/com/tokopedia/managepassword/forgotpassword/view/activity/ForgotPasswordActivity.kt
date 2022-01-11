@@ -18,7 +18,6 @@ import com.tokopedia.managepassword.common.ManagePasswordConstant.PARAM_AUTO_FIL
 import com.tokopedia.managepassword.di.DaggerManagePasswordComponent
 import com.tokopedia.managepassword.di.ManagePasswordComponent
 import com.tokopedia.managepassword.di.module.ManagePasswordModule
-import com.tokopedia.managepassword.forgotpassword.view.fragment.ForgotPasswordFragment
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.KEY_URL
@@ -55,13 +54,7 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
                 .build()
     }
 
-    override fun getNewFragment(): Fragment {
-        val bundle = Bundle()
-        if (intent?.extras != null) {
-            bundle.putAll(intent.extras)
-        }
-        return ForgotPasswordFragment.createInstance(bundle)
-    }
+    override fun getNewFragment(): Fragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

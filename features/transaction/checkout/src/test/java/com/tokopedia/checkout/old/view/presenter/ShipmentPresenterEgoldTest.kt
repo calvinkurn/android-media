@@ -14,30 +14,22 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.Shippin
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
-import com.tokopedia.promocheckout.common.view.model.clearpromo.SuccessDataUiModel
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
-import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
+import io.mockk.verify
 import org.junit.Before
 import org.junit.Test
-import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
 class ShipmentPresenterEgoldTest {
 
     @MockK
-    private lateinit var validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase
+    private lateinit var validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase
 
     @MockK(relaxed = true)
     private lateinit var compositeSubscription: CompositeSubscription
@@ -61,10 +53,7 @@ class ShipmentPresenterEgoldTest {
     private lateinit var getRatesApiUseCase: GetRatesApiUseCase
 
     @MockK
-    private lateinit var clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase
-
-    @MockK
-    private lateinit var submitHelpTicketUseCase: SubmitHelpTicketUseCase
+    private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
 
     @MockK
     private lateinit var ratesStatesConverter: RatesResponseStateConverter
@@ -106,7 +95,7 @@ class ShipmentPresenterEgoldTest {
                 compositeSubscription, checkoutUseCase, getShipmentAddressFormGqlUseCase,
                 editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
                 getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-                submitHelpTicketUseCase, ratesStatesConverter, shippingCourierConverter,
+                ratesStatesConverter, shippingCourierConverter,
                 shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
                 checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
                 validateUsePromoRevampUseCase, gson, TestSchedulers)

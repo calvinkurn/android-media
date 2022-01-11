@@ -970,7 +970,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         activity?.window?.decorView?.setBackgroundColor(
             ContextCompat.getColor(
                 requireContext(),
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
         )
         showWaitingPaymentOrderListMenuShimmer()
@@ -3019,9 +3019,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             (this as? AppCompatActivity)?.run {
                 supportActionBar?.hide()
                 binding?.somListToolbar?.run {
-                    setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
                     inflateMenu(R.menu.menu_som_list)
-                    title = getString(R.string.title_som_list)
+                    title = getString(getSomListResTitle())
                     isShowBackButton = showBackButton()
                     setOnMenuItemClickListener(this@SomListFragment)
                     setNavigationOnClickListener {
@@ -3031,6 +3030,14 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 updateToolbarMenu()
                 tryReshowCoachMark()
             }
+        }
+    }
+
+    private fun getSomListResTitle(): Int {
+        return if (GlobalConfig.isSellerApp()) {
+            R.string.title_som_list_sa
+        } else {
+            R.string.title_som_list
         }
     }
 

@@ -84,6 +84,7 @@ interface CommonConstant {
             const val TOPADS = "topads"
             const val TOPHEADER = "topheader"
             const val RECOMM = "recomm"
+            const val QUEST = "quest_widget"
 
         }
     }

@@ -132,6 +132,119 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         publishedAt
         mods
       }
+       ... on FeedXCardPlay {
+        id
+        playChannelID
+        author {
+          id
+          type
+          name
+          description
+          badgeURL
+          logoURL
+          webLink
+          appLink
+        }
+        title
+        subTitle
+        text
+        appLink
+        webLink
+        actionButtonLabel
+        actionButtonOperationWeb
+        actionButtonOperationApp
+        media {
+          id
+          type
+          coverURL
+          mediaURL
+          appLink
+          webLink
+          tagging {
+            tagIndex
+            posX
+            posY
+          }
+          mods
+        }
+        mediaRatio {
+          width
+          height
+        }
+        tags {
+          id
+          name
+          coverURL
+          webLink
+          appLink
+          star
+          price
+          priceFmt
+          isDiscount
+          discount
+          discountFmt
+          priceOriginal
+          priceOriginalFmt
+          priceDiscount
+          priceDiscountFmt
+          totalSold
+          isBebasOngkir
+          bebasOngkirStatus
+          bebasOngkirURL
+          mods
+        }
+        hashtagAppLinkFmt
+        hashtagWebLinkFmt
+        views {
+          label
+          count
+          countFmt
+          mods
+        }
+        like {
+          label
+          count
+          countFmt
+          likedBy
+          isLiked
+          mods
+        }
+        comm: comments {
+          label
+          count
+          countFmt
+          items {
+            id
+            author {
+              id
+              type
+              name
+              description
+              badgeURL
+              logoURL
+              webLink
+              appLink
+            }
+            text
+            mods
+          }
+          mods
+        }
+        sh: share {
+          label
+          operation
+          mods
+        }
+        fol: followers {
+          label
+          isFollowed
+          count
+          countFmt
+          mods
+        }
+        publishedAt
+        mods
+      }
       ... on FeedXCardTopAds {
         a: id
         author {
@@ -176,6 +289,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
       }
       ... on FeedXCardProductsHighlight {
         id
+        type
         author {
           id
           type
@@ -190,6 +304,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         subTitle
         text
         appLink
+        totalProducts
         products {
           id
           name

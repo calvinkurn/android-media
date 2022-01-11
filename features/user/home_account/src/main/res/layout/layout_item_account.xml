@@ -29,7 +29,7 @@
         tools:text="Test nama" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         android:id="@+id/item_account_status"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
@@ -43,7 +43,7 @@
         android:id="@+id/item_account_linked_date"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:textColor="@color/Neutral_N700_44"
+        android:textColor="@color/Unify_N700_44"
         app:layout_constraintBottom_toBottomOf="@+id/item_account_status"
         app:layout_constraintStart_toEndOf="@+id/item_account_status"
         app:layout_constraintTop_toTopOf="@+id/item_account_status"
@@ -55,7 +55,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Sambungin Akun"
-        android:textColor="@color/unify_G500"
+        android:textColor="@color/Unify_G500"
         app:layout_constraintBottom_toBottomOf="@+id/item_account_status"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/item_account_partner_name"

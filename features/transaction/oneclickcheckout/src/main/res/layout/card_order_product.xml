@@ -166,7 +166,7 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="iv_product_image, tv_product_alert_message" />
 
-    <com.tokopedia.unifycomponents.TextFieldUnify
+    <com.tokopedia.unifycomponents.TextFieldUnify2
         android:id="@+id/tf_note"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -177,9 +177,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/barrier_product_info"
-        app:text_field_counter="144"
-        app:text_field_input_type="text"
-        app:text_field_label="@string/occ_lbl_notes_label" />
+        app:unify_text_field_counter="144"
+        app:unify_text_field_label="@string/occ_lbl_notes_label" />
 
     <com.tokopedia.unifycomponents.QuantityEditorUnify
         android:id="@+id/qty_editor_product"

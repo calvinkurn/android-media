@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.view.model
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel.Header
 
@@ -15,6 +16,7 @@ data class ShopHomeCarousellProductUiModel(
         override val header: Header = Header(),
         val productList: List<ShopHomeProductUiModel> = listOf()
 ) : BaseShopHomeWidgetUiModel() {
+    val impressHolder = ImpressHolder()
 
     companion object{
         const val IS_ATC = 1

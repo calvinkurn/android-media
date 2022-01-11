@@ -134,7 +134,8 @@ class GridPostAdapter(private val contentPosition: Int,
                     type,
                     isFollowed,
                     shopId,
-                    gridPostViewModel.itemListFeedXProduct[item.index])
+                    gridPostViewModel.itemListFeedXProduct,
+                        item.index)
                 if (item.trackingList.isNotEmpty()) {
                     listener.onAffiliateTrackClicked(item.trackingList, true)
                 }
@@ -180,19 +181,21 @@ class GridPostAdapter(private val contentPosition: Int,
 
             itemView.priceText.hide()
 
-            itemView.setOnClickListener {
+            val function: (v: View) -> Unit = {
                 listener.onGridItemClick(
-                    positionInFeed,
-                    postId,
-                    "0",
-                    if (!TextUtils.isEmpty(actionLink)) actionLink
-                    else ApplinkConst.FEED_DETAILS.replace(EXTRA_DETAIL_ID, postId.toString()),
-                    type,
-                    isFollowed,
-                    shopId,
-                    gridPostViewModel.itemListFeedXProduct[0]
+                        positionInFeed,
+                        postId,
+                        "0",
+                        if (!TextUtils.isEmpty(actionLink)) actionLink
+                        else ApplinkConst.FEED_DETAILS.replace(EXTRA_DETAIL_ID, postId.toString()),
+                        type,
+                        isFollowed,
+                        shopId,
+                        gridPostViewModel.itemListFeedXProduct,
+                        0
                 )
             }
+            itemView.setOnClickListener(function)
         }
 
         private fun setImageMargins(listSize: Int) {
@@ -213,9 +216,13 @@ class GridPostAdapter(private val contentPosition: Int,
             positionInFeed: Int, activityId: Int, productId: String,
             redirectLink: String, type: String, isFollowed: Boolean,
             shopId: String,
-            feedXProduct: FeedXProduct
+            feedXProducts: List<FeedXProduct>,
+            index : Int
         )
 
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
+    }
+    companion object {
+        var isMute = true
     }
 }

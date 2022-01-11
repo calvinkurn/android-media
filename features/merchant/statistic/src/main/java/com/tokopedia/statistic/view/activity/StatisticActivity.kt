@@ -72,7 +72,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     }
     private var pages: List<StatisticPageUiModel> = emptyList()
     private var viewPagerAdapter: StatisticViewPagerAdapter? = null
-    private val performanceMonitoring: StatisticPerformanceMonitoringInterface by lazy {
+    val performanceMonitoring: StatisticPerformanceMonitoringInterface by lazy {
         StatisticPerformanceMonitoring()
     }
     var pltListener: StatisticIdlingResourceListener? = null
@@ -101,6 +101,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
         observeWhiteListStatus()
         observeUserRole()
+        fetchPMStatus()
     }
 
     override fun getComponent(): StatisticComponent {
@@ -232,6 +233,10 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
             }
         })
         viewModel.getUserRole()
+    }
+
+    private fun fetchPMStatus() {
+        viewModel.fetchPMStatus()
     }
 
     private fun setupTabs() = binding?.run {

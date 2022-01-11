@@ -25,8 +25,11 @@ class OSFrameTimingBenchmark: BaseFrameTimingBenchmark() {
         MacroDevOps.setupEnvironment(MacroIntent.OfficialStore.getOsMacroSetupIntent())
     }
 
-    override fun pageInteractionTest() {
-        MacroInteration.basicRecyclerviewInteraction(MacroIntent.OfficialStore.RV_RESOURCE_ID)
+    override fun pageInteractionTest(currentIteration: Int) {
+        MacroInteration.basicRecyclerviewInteraction(
+                MacroIntent.TKPD_PACKAGE_NAME,
+                MacroIntent.OfficialStore.RV_RESOURCE_ID
+        )
     }
 
     override fun getIntent() = MacroIntent.OfficialStore.getOsIntent()

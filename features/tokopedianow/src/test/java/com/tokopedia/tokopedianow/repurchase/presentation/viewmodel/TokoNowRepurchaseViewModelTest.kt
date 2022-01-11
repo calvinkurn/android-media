@@ -156,7 +156,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
         viewModel.showEmptyState(EMPTY_STATE_NO_RESULT)
 
         val layout = RepurchaseLayoutUiModel(
-            layoutList = createCategoryGridLayout(),
+            layoutList = createCategoryGridLayout("1"),
             state = TokoNowLayoutState.SHOW
         )
 
@@ -337,7 +337,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
     fun `when getMiniCart error should set miniCart value FAIL`() {
         val error = NullPointerException()
 
-        onGetMiniCart_thenReturn(error)
+        onGetMiniCart_throwException(error)
         onGetUserLoggedIn_thenReturn(isLoggedIn = true)
 
         viewModel.getMiniCart(listOf("1"), "1")
@@ -1050,7 +1050,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             shop_id = "1001"
         )
 
-        onGetMiniCart_thenReturn(error)
+        onGetMiniCart_throwException(error)
         onGetUserLoggedIn_thenReturn(isLoggedIn = true)
 
         viewModel.setLocalCacheModel(localCacheModel)

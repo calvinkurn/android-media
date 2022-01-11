@@ -35,11 +35,8 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
-import com.tokopedia.officialstore.OSPerformanceConstant
+import com.tokopedia.officialstore.*
 import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_PREPARING_OS_HOME
-import com.tokopedia.officialstore.OfficialStoreInstance
-import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OSMixLeftTracking
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
@@ -47,7 +44,6 @@ import com.tokopedia.officialstore.category.presentation.data.OSChooseAddressDat
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
-import com.tokopedia.officialstore.official.data.model.Banner
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
@@ -628,6 +624,14 @@ class OfficialHomeFragment :
         return userSession.isLoggedIn
     }
 
+    override fun getUserId(): String {
+        return userSession.userId
+    }
+
+    override fun getTrackingObject(): OfficialStoreTracking? {
+        return tracking
+    }
+
     override fun onSeeAllBannerClickedComponent(channel: ChannelModel, applink: String) {
         tracking?.seeAllBannerFlashSaleClickedComponent(
                 viewModel.currentSlugDC,
@@ -651,7 +655,7 @@ class OfficialHomeFragment :
     }
 
     override fun onShopImpression(categoryName: String, position: Int, shopData: Shop) {
-        tracking?.eventImpressionFeatureBrand(
+        tracking?.eventImpressionShop(
                 categoryName = categoryName,
                 shopPosition = position,
                 shopName = shopData.name.orEmpty(),
@@ -664,7 +668,7 @@ class OfficialHomeFragment :
     }
 
     override fun onShopClick(categoryName: String, position: Int, shopData: Shop) {
-        tracking?.eventClickFeaturedBrand(
+        tracking?.eventClickShop(
                 categoryName = categoryName,
                 shopPosition = position,
                 shopName = shopData.name.orEmpty(),
@@ -678,11 +682,29 @@ class OfficialHomeFragment :
         RouteManager.route(context, shopData.url)
     }
 
-    override fun onFeaturedShopDCClicked(grid: ChannelGrid, position: Int, applink: String) {
-        goToApplink(applink)
+    override fun onFeaturedShopDCClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
+        tracking?.trackingQueueObj?.putEETracking(
+                OSFeaturedShopTracking.getEventClickShopWidget(
+                        channel = channelModel,
+                        grid = channelGrid,
+                        categoryName = category?.title?:"",
+                        bannerPosition = position,
+                        userId = userSession.userId
+                ) as HashMap<String, Any>
+        )
+        goToApplink(channelGrid.applink)
     }
 
-    override fun onFeaturedShopDCImpressed(grid: ChannelGrid, position: Int) {
+    override fun onFeaturedShopDCImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
+        tracking?.trackerObj?.sendEnhanceEcommerceEvent(
+                OSFeaturedShopTracking.getEventImpressionShopWidget(
+                        channel = channelModel,
+                        grid = channelGrid,
+                        categoryName = category?.title?:"",
+                        bannerPosition = position,
+                        userId = userSession.userId
+                ) as HashMap<String, Any>
+        )
     }
 
     override fun onSeeAllFeaturedShopDCClicked(channel: ChannelModel, position: Int, applink: String) {
@@ -906,6 +928,7 @@ class OfficialHomeFragment :
         swipeRefreshLayout?.setOnRefreshListener {
             counterTitleShouldBeRendered = 0
             officialHomeMapper.removeRecommendation(adapter)
+            officialHomeMapper.removeRecomWidget(adapter)
             loadData(true)
         }
 
