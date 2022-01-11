@@ -111,8 +111,6 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_simillar_recommendation, container, false)
-//        requireActivity().window.decorView.systemUiVisibility =
-//            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         navToolbar = view.findViewById(R.id.navToolbar)
         return view
     }
@@ -197,9 +195,8 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     }
     private fun setupToolbar() {
         activity?.let {
-//            (it as? HomeRecommendationActivity)?.findViewById<Toolbar>(R.id.recom_toolbar)?.gone()
-            (it as? HomeRecommendationActivity)?.supportActionBar?.hide()
-            (it as? HomeRecommendationActivity)?.findViewById<Toolbar>(R.id.recom_toolbar)?.setMargin(0, NavToolbarExt.getFullToolbarHeight(it), 0 , 0)
+            (it as? HomeRecommendationActivity)?.findViewById<Toolbar>(R.id.recom_toolbar)?.gone()
+            (it as? AppCompatActivity)?.supportActionBar?.hide()
         }
         navToolbar?.let {
             it.setShowShadowEnabled(true)
