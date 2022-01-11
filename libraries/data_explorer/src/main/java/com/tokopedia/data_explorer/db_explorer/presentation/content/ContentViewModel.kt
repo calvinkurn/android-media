@@ -1,5 +1,6 @@
 package com.tokopedia.data_explorer.db_explorer.presentation.content
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.data_explorer.db_explorer.data.Data
@@ -27,7 +28,8 @@ internal class ContentViewModel @Inject constructor(
     val contentLiveData = MutableLiveData<List<Cell>>()
     val errorLiveData = MutableLiveData<Throwable>()
     val resultRowLiveData = MutableLiveData<Boolean>()
-    private var columnHeaderList = listOf<Cell>()
+    @VisibleForTesting
+    var columnHeaderList = listOf<Cell>()
 
     var totalResults: Int = 0
     var currentPage: Int = 1

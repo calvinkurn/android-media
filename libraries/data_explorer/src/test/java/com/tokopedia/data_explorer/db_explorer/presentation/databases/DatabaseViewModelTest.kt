@@ -68,7 +68,7 @@ class DatabaseViewModelTest {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
         viewModel.removeDatabase(testDb)
-        assert(viewModel.actionPerformedLiveData.value is Throwable)
+        assert(viewModel.actionPerformedLiveData.value is Fail)
     }
 
     @Test
@@ -82,7 +82,7 @@ class DatabaseViewModelTest {
         } coAnswers {
             firstArg<(List<DatabaseDescriptor>) -> Unit>().invoke(list)
         }
-        viewModel.browseDatabases()
+        viewModel.removeDatabase(testDb)
         assert(viewModel.actionPerformedLiveData.value is Success)
     }
 
