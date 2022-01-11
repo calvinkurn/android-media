@@ -38,6 +38,7 @@ interface WebsocketPayloadGenerator {
     ): String
 
     fun generateWsPayloadStopTyping(msgId: String): String
+    fun generateWsPayloadStartTyping(msgId: String): String
     fun generateMarkAsReadPayload(roomMetaData: RoomMetaData): String
     fun generateStickerPreview(
         roomMetaData: RoomMetaData,
@@ -52,4 +53,5 @@ interface WebsocketPayloadGenerator {
         localId: String,
         referredMsg: ParentReply?
     ): String
+
 }

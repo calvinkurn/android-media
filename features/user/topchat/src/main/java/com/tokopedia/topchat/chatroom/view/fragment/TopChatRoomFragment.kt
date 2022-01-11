@@ -1258,11 +1258,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onStartTyping() {
-        presenter.startTyping()
+//        presenter.startTyping()
+        viewModel.sendWsStartTyping()
     }
 
     override fun onStopTyping() {
-        presenter.stopTyping()
+//        presenter.stopTyping()
+        viewModel.sendWsStopTyping()
     }
 
     override fun addTemplateString(message: String?) {

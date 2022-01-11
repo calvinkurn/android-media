@@ -91,6 +91,10 @@ class DefaultWebsocketPayloadGenerator @Inject constructor(
         return TopChatWebSocketParam.generateParamStopTyping(msgId)
     }
 
+    override fun generateWsPayloadStartTyping(msgId: String): String {
+        return TopChatWebSocketParam.generateParamStartTyping(msgId)
+    }
+
     override fun generateMarkAsReadPayload(roomMetaData: RoomMetaData): String {
         return TopChatWebSocketParam.generateParamRead(roomMetaData.msgId)
     }

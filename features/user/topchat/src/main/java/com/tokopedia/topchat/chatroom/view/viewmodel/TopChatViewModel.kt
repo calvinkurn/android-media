@@ -900,7 +900,14 @@ class TopChatViewModel @Inject constructor(
         _previewMsg.value = previewMsg
     }
 
-    private fun sendWsStopTyping() {
+    fun sendWsStartTyping() {
+        val wsPayload = payloadGenerator.generateWsPayloadStartTyping(
+            roomMetaData.msgId
+        )
+        sendWsPayload(wsPayload)
+    }
+
+    fun sendWsStopTyping() {
         val wsPayload = payloadGenerator.generateWsPayloadStopTyping(
             roomMetaData.msgId
         )

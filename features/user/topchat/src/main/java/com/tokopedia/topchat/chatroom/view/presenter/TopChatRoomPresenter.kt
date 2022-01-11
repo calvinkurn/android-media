@@ -635,14 +635,14 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun sendWebSocketAttachmentPayload(wsMsgPayload: Any) {
-        when (wsMsgPayload) {
-            is String -> sendMessageWebSocket(wsMsgPayload)
+//        when (wsMsgPayload) {
+//            is String -> sendMessageWebSocket(wsMsgPayload)
 //            is JsonObject -> sendMessageJsonObjWebSocket(wsMsgPayload)
-        }
+//        }
     }
 
     override fun detachView() {
-        destroyWebSocket()
+//        destroyWebSocket()
         getTemplateChatRoomUseCase.unsubscribe()
         replyChatUseCase.unsubscribe()
         compressImageSubscription.unsubscribe()
@@ -650,11 +650,11 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun startTyping() {
-        sendMessageWebSocket(TopChatWebSocketParam.generateParamStartTyping(thisMessageId))
+//        sendMessageWebSocket(TopChatWebSocketParam.generateParamStartTyping(thisMessageId))
     }
 
     override fun stopTyping() {
-        sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(thisMessageId))
+//        sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(thisMessageId))
     }
 
     override fun addAttachmentPreview(sendablePreview: SendablePreview) {
