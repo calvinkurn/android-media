@@ -50,7 +50,7 @@ class TrackingHistoryAdapter(private val trackingHistoryData: List<TrackHistoryM
                     text = DateUtil.formatDate("yyyy-MM-dd", "dd MMM yyyy",data.date)
                     setTextColor(MethodChecker.getColor(itemView.context, if (position == 0) com.tokopedia.unifyprinciples.R.color.Unify_G400 else com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                 }
-                date.text = DateUtil.formatDate("yyyy-MM-dd", "dd MMM yyyy",data.time)
+                date.text = DateUtil.formatDate("HH:mm:ss", "HH:mm",data.time)
                 description.text = if (data.status.isNotEmpty()) MethodChecker.fromHtml(data.status) else ""
                 if (data.partnerName.isNotEmpty()) {
                     courierNameHistory.text = root.context.getString(R.string.label_kurir_rekomendasi, data.partnerName)
