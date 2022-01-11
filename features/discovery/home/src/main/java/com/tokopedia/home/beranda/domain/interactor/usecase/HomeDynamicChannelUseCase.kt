@@ -22,7 +22,6 @@ import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
-import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -34,7 +33,6 @@ import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntit
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.network.exception.MessageErrorException
@@ -489,10 +487,10 @@ class HomeDynamicChannelUseCase @Inject constructor(
             homeDataModel: HomeDynamicChannelModel,
             predicate: (T?) -> Boolean = {true},
             actionOnFound: (T, Int) -> Unit) {
-        homeDataModel.list.withIndex().find { it.value is T && predicate.invoke(it.value as? T) }.let {
-            it?.let {
-                if (it.value is T) {
-                    actionOnFound.invoke(it.value as T, it. index)
+        homeDataModel.list.withIndex().filter { it.value is T && predicate.invoke(it.value as? T) }.let {
+            for(visitable in it) {
+                if (visitable.value is T) {
+                    actionOnFound.invoke(visitable.value as T, visitable.index)
                 }
             }
         }
