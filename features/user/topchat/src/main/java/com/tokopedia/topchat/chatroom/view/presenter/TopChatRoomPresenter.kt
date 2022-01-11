@@ -94,14 +94,14 @@ open class TopChatRoomPresenter @Inject constructor(
 //        private set
     var thisMessageId: String = ""
         private set
-    val attachments: ArrayMap<String, Attachment> = ArrayMap()
+//    val attachments: ArrayMap<String, Attachment> = ArrayMap()
     val onGoingStockUpdate: ArrayMap<String, UpdateProductStockResult> = ArrayMap()
-    var attachProductWarehouseId = "0"
-        private set
-    private var userLocationInfo = LocalCacheModel()
+//    var attachProductWarehouseId = "0"
+//        private set
+//    private var userLocationInfo = LocalCacheModel()
 
 //    private lateinit var webSocketUrl: String
-    private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
+//    private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
 //    private var mSubscription: CompositeSubscription
     private var compressImageSubscription: CompositeSubscription
     private var listInterceptor: ArrayList<Interceptor>
@@ -178,9 +178,9 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun initUserLocation(userLocation: LocalCacheModel?) {
-        userLocation ?: return
-        this.userLocationInfo = userLocation
-        this.attachProductWarehouseId = userLocation.warehouse_id
+//        userLocation ?: return
+//        this.userLocationInfo = userLocation
+//        this.attachProductWarehouseId = userLocation.warehouse_id
     }
 
     override fun getProductIdPreview(): List<String> {
