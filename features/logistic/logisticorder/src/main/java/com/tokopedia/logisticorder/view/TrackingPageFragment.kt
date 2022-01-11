@@ -29,7 +29,6 @@ import com.tokopedia.logisticorder.uimodel.EtaModel
 import com.tokopedia.logisticorder.uimodel.PageModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
-import com.tokopedia.logisticorder.utils.DateUtil
 import com.tokopedia.logisticorder.utils.TippingConstant.OPEN
 import com.tokopedia.logisticorder.utils.TippingConstant.REFUND_TIP
 import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_PAYMENT
@@ -47,6 +46,7 @@ import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import rx.Observable
 import rx.Subscriber
@@ -59,9 +59,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject
-    lateinit var dateUtil: DateUtil
-
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -166,7 +163,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         val model = trackingDataModel.trackOrder
         binding?.referenceNumber?.text = model.shippingRefNum
         if (model.detail.serviceCode.isEmpty()) binding?.descriptionLayout?.visibility = View.GONE
-        if (model.detail.sendDate.isNotEmpty()) binding?.deliveryDate?.text = dateUtil.getFormattedDate(model.detail.sendDate)
+        if (model.detail.sendDate.isNotEmpty()) binding?.deliveryDate?.text = DateUtil.formatDate("yyyy-MM-dd", "dd MMM yyyy", model.detail.sendDate)
         binding?.storeName?.text = model.detail.shipperName
         binding?.storeAddress?.text = model.detail.shipperCity
         binding?.serviceCode?.text = model.detail.serviceCode
@@ -370,7 +367,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         } else {
             binding?.trackingHistory?.visibility = View.VISIBLE
             binding?.trackingHistory?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            binding?.trackingHistory?.adapter = TrackingHistoryAdapter(model.trackHistory, userSession, dateUtil, mOrderId?.toLong(), this)
+            binding?.trackingHistory?.adapter = TrackingHistoryAdapter(model.trackHistory, userSession, mOrderId?.toLong(), this)
         }
     }
 

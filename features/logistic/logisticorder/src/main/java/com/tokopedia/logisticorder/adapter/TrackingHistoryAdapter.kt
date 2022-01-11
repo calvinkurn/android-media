@@ -11,16 +11,15 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.databinding.AdapterTrackingHistoryViewHolderBinding
 import com.tokopedia.logisticorder.uimodel.TrackHistoryModel
-import com.tokopedia.logisticorder.utils.DateUtil
 import com.tokopedia.logisticorder.utils.TrackingPageUtil
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.DateUtil
 
 /**
  * Created by kris on 5/11/18. Tokopedia
  */
 class TrackingHistoryAdapter(private val trackingHistoryData: List<TrackHistoryModel>,
                              private val userSession: UserSessionInterface,
-                             private val dateUtil: DateUtil,
                              private val orderId: Long?,
                              private val listener: OnImageClicked) : RecyclerView.Adapter<TrackingHistoryAdapter.TrackingHistoryViewHolder>() {
     interface OnImageClicked {
@@ -29,7 +28,7 @@ class TrackingHistoryAdapter(private val trackingHistoryData: List<TrackHistoryM
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackingHistoryViewHolder {
         val binding = AdapterTrackingHistoryViewHolderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return TrackingHistoryViewHolder(binding, userSession, dateUtil, orderId, listener)
+        return TrackingHistoryViewHolder(binding, userSession, orderId, listener)
     }
 
     override fun onBindViewHolder(holder: TrackingHistoryViewHolder, position: Int) {
@@ -43,16 +42,15 @@ class TrackingHistoryAdapter(private val trackingHistoryData: List<TrackHistoryM
 
     inner class TrackingHistoryViewHolder(private val binding: AdapterTrackingHistoryViewHolderBinding,
                                           private val userSession: UserSessionInterface,
-                                          private val dateUtil: DateUtil,
                                           private val orderId: Long?,
                                           private val listener: OnImageClicked) : RecyclerView.ViewHolder(binding.root) {
         fun bind(data: TrackHistoryModel, position: Int) {
             binding.run {
                 title.run {
-                    setText(dateUtil.getFormattedDate(data.date))
+                    text = DateUtil.formatDate("yyyy-MM-dd", "dd MMM yyyy",data.date)
                     setTextColor(MethodChecker.getColor(itemView.context, if (position == 0) com.tokopedia.unifyprinciples.R.color.Unify_G400 else com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                 }
-                date.setText(dateUtil.getFormattedTime(data.time))
+                date.text = DateUtil.formatDate("yyyy-MM-dd", "dd MMM yyyy",data.time)
                 description.text = if (data.status.isNotEmpty()) MethodChecker.fromHtml(data.status) else ""
                 if (data.partnerName.isNotEmpty()) {
                     courierNameHistory.text = root.context.getString(R.string.label_kurir_rekomendasi, data.partnerName)
