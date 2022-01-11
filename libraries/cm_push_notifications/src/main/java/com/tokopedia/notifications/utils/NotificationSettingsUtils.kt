@@ -3,7 +3,6 @@ package com.tokopedia.notifications.utils
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import com.tokopedia.notifications.common.CMConstant
 
