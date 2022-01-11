@@ -16,29 +16,31 @@ import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 class WishlistV2GridItemViewHolder(private val binding: WishlistV2GridItemBinding,
                                    private val actionListener: WishlistV2Adapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: WishlistV2TypeLayoutData, position: Int, isShowCheckbox: Boolean) {
-        binding.pcGridItem.setProductModel(item.dataObject as ProductCardModel)
+        if (item.dataObject is ProductCardModel) {
+            binding.pcGridItem.setProductModel(item.dataObject)
 
-        val footerLayout = binding.pcGridItem.findViewById<View>(R.id.productCardFooterLayout)
-        val buttonSecondary = footerLayout.findViewById<FrameLayout>(R.id.buttonThreeDotsWishlist)
-        val rlPrimaryButton = footerLayout.findViewById<RelativeLayout>(R.id.rlPrimaryButtonWishlist)
-        val buttonAtc = footerLayout.findViewById<UnifyButton>(R.id.buttonAddToCartWishlist)
-        val buttonSeeSimilarProduct = footerLayout.findViewById<UnifyButton>(R.id.buttonSeeSimilarProductWishlist)
+            val footerLayout = binding.pcGridItem.findViewById<View>(R.id.productCardFooterLayout)
+            val buttonSecondary = footerLayout.findViewById<FrameLayout>(R.id.buttonThreeDotsWishlist)
+            val rlPrimaryButton = footerLayout.findViewById<RelativeLayout>(R.id.rlPrimaryButtonWishlist)
+            val buttonAtc = footerLayout.findViewById<UnifyButton>(R.id.buttonAddToCartWishlist)
+            val buttonSeeSimilarProduct = footerLayout.findViewById<UnifyButton>(R.id.buttonSeeSimilarProductWishlist)
 
-        if (isShowCheckbox) {
-            renderBulkDelete(item, buttonSecondary, rlPrimaryButton)
+            if (isShowCheckbox) {
+                renderBulkDelete(item, buttonSecondary, rlPrimaryButton)
 
-        } else {
-            renderRegularWishlist(item, buttonSecondary, rlPrimaryButton)
+            } else {
+                renderRegularWishlist(item, buttonSecondary, rlPrimaryButton)
+            }
+
+            if (item.dataObject.hasAddToCartWishlist) {
+                renderButtonPrimaryAtc(buttonAtc, buttonSeeSimilarProduct, item)
+            } else {
+                renderButtonSeeSimilarProduct(buttonAtc, buttonSeeSimilarProduct, item)
+            }
+
+            binding.pcGridItem.setThreeDotsWishlistOnClickListener { actionListener?.onThreeDotsMenuClicked(item.wishlistItem) }
+            actionListener?.onViewProductCard(item.wishlistItem, position)
         }
-
-        if (item.dataObject.hasAddToCartWishlist) {
-            renderButtonPrimaryAtc(buttonAtc, buttonSeeSimilarProduct, item)
-        } else {
-            renderButtonSeeSimilarProduct(buttonAtc, buttonSeeSimilarProduct, item)
-        }
-
-        binding.pcGridItem.setThreeDotsWishlistOnClickListener { actionListener?.onThreeDotsMenuClicked(item.wishlistItem) }
-        actionListener?.onViewProductCard(item.wishlistItem, position)
     }
 
     private fun renderBulkDelete(item: WishlistV2TypeLayoutData, buttonSecondary: FrameLayout, rlPrimaryButton: RelativeLayout) {
