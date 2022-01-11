@@ -242,43 +242,83 @@
       "eventLabel": ".*"
     },
     {
-      "eventCategory": ".*",
-      "item_list": ".*",
-      "event": "select_content",
-      "eventAction": "flash sale - product click",
+      "eventCategory": "os microsite",
+      "event": "view_item",
+      "eventAction": "impression banner - dynamic channel shop",
       "sessionIris" : ".*",
-      "campaignCode" : ".*",
-      "items": [{
-        "item_id": ".*",
-        "price": "\\d*.\\d*|\\d.\\d+E\\d",
-        "dimension40": ".*",
-        "attribution": ".*",
-        "index": "\\d*.\\d*",
-        "item_name": ".*",
-        "item_brand": ".*",
-        "item_variant": ".*",
-        "item_category": ".*"
+      "promotions": [{
+        "item_id": ".*_.*",
+        "creative_slot": ".*",
+        "creative_name": ".*",
+        "creative_url": ".*",
+        "item_name": "/official-store/.* - dynamic channel shop - .* - Android Featured Shop"
       }],
-      "eventLabel": ".*"
+      "eventLabel": "dynamic channel shop - .* - Android Featured Shop - .*",
+      "businessUnit" : "home & browse",
+      "userId" : ".*",
+      "currentSite" : "tokopediamarketplace"
     },
     {
-      "eventCategory": ".*",
-      "item_list": ".*",
-      "event": "view_item_list",
-      "eventAction": "flash sale - product impression",
+      "eventCategory": "os microsite",
+      "event": "select_content",
+      "eventAction": "click banner - dynamic channel shop",
       "sessionIris" : ".*",
-      "items": [{
-        "item_id": ".*",
-        "price": "\\d*.\\d*|\\d.\\d+E\\d",
-        "dimension40": ".*",
-        "attribution": ".*",
-        "index": "\\d*.\\d*",
-        "item_name": ".*",
-        "item_brand": ".*",
-        "item_variant": ".*",
-        "item_category": ".*"
+      "promotions": [{
+        "item_id": ".*_.*",
+        "creative_slot": ".*",
+        "creative_name": ".*",
+        "creative_url": ".*",
+        "item_name": "/official-store/.* - dynamic channel shop - .* - Android Featured Shop"
       }],
-      "eventLabel": ".*"
+      "eventLabel": "dynamic channel shop - .* - Android Featured Shop - .*",
+      "businessUnit" : "home & browse",
+      "userId" : ".*",
+      "currentSite" : "tokopediamarketplace"
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*_.*",
+          "item_name": "/official-store/.* - popular brands - .*"
+        }
+      ],
+      "businessUnit": "home & browse",
+      "eventCategory": "os microsite",
+      "currentSite": "tokopediamarketplace",
+      "event": "view_item",
+      "userId": ".*",
+      "eventAction": "impression banner - popular brands",
+      "sessionIris": ".*",
+      "eventLabel": "popular brands - .* - .*"
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": ".* reference: row 18",
+          "creative_slot": ".*",
+          "item_id": ".*_.*",
+          "item_name": "/official-store/.* - popular brands - .*"
+        }
+      ],
+      "businessUnit": "home & browse",
+      "eventCategory": "os microsite",
+      "currentSite": "tokopediamarketplace",
+      "event": "select_content",
+      "userId": ".*",
+      "eventAction": "click banner - popular brands",
+      "sessionIris": ".*",
+      "eventLabel": "popular brands - .* - .*"
+    },
+    {
+      "businessUnit": "home & browse",
+      "eventCategory": "os microsite",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickOSMicrosite",
+      "eventAction": "all brands - click",
+      "sessionIris": ".*",
+      "eventLabel": "click view all - .*"
     }
   ]
 }

@@ -6,7 +6,7 @@
     android:id="@+id/layout_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:clickable="true"
     android:focusable="true"
     android:padding="@dimen/spacing_lvl4">

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="product_card_carousel_item_width">144dp</dimen>
+    <dimen name="product_card_carousel_item_width">140dp</dimen>
     <dimen name="product_card_carousel_see_more_width">128dp</dimen>
-    <dimen name="product_card_flashsale_width">136dp</dimen>
 
     <dimen name="comparison_summary_text_height">12dp</dimen>
     <dimen name="comparison_summary_text_height_sp">12sp</dimen>

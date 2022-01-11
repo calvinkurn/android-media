@@ -71,8 +71,8 @@ object RepurchaseLayoutMapper {
         removeAll { it is RepurchaseProductUiModel }
     }
 
-    fun MutableList<Visitable<*>>.addCategoryGrid(response: List<CategoryResponse>?) {
-        val categoryList = RepurchaseCategoryMapper.mapToCategoryList(response)
+    fun MutableList<Visitable<*>>.addCategoryGrid(response: List<CategoryResponse>?, warehouseId: String) {
+        val categoryList = RepurchaseCategoryMapper.mapToCategoryList(response, warehouseId)
         add(TokoNowCategoryGridUiModel(
                 id = "",
                 title = "",

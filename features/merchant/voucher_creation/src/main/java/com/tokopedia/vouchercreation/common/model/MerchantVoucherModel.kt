@@ -69,5 +69,17 @@ data class MerchantVoucherModel(
         val voucherType: Int = 0,
         @Expose
         @SerializedName("voucher_type_formatted")
-        val voucherTypeFormatted: String = ""
+        val voucherTypeFormatted: String = "",
+        @Expose
+        @SerializedName("is_vps")
+        val isVps: Int = 0,
+        @Expose
+        @SerializedName("package_name")
+        val packageName: String = "",
+        @Expose
+        @SerializedName("is_subsidy")
+        val isSubsidy: Int = 0,
+        @Expose
+        @SerializedName("tnc")
+        val tnc: String = "",
 )

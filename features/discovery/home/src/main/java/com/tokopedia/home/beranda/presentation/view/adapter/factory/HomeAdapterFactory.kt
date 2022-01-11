@@ -28,6 +28,7 @@ import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.recharge_component.RechargeComponentTypeFactory
 import com.tokopedia.recharge_component.listener.RechargeBUWidgetListener
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
@@ -63,7 +64,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val bannerComponentListener: BannerComponentListener?,
                          private val dynamicIconComponentListener: DynamicIconComponentListener,
                          private val legoSixAutoListener: Lego6AutoBannerListener,
-                         private val campaignWidgetComponentListener: CampaignWidgetComponentListener
+                         private val campaignWidgetComponentListener: CampaignWidgetComponentListener,
+                         private val questWidgetCallbacks: QuestWidgetCallbacks
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
@@ -269,6 +271,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return 0
     }
 
+    override fun type(questWidgetModel: QuestWidgetModel): Int {
+        return QuestWidgetViewHolder.LAYOUT
+    }
+
     override fun type(campaignWidgetDataModel: CampaignWidgetDataModel): Int {
         return CampaignWidgetViewHolder.LAYOUT
     }
@@ -300,13 +306,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
              * used by category widget v2
              */
             DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET_V2 -> CategoryWidgetV2ViewHolder.LAYOUT
-
-            /**
-             * refer to sprint product item layout {@link com.tokopedia.home.R.layout#layout_sprint_product_item}
-             * no further development for this viewholder
-             * backend possibly return this layout for android version  >= 2.19
-             */
-            DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL -> SprintSaleCarouselViewHolder.LAYOUT
 
             /**
              * refer to gif banner layout com.tokopedia.home.R.layout#banner_image
@@ -346,7 +345,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             DynamicIconTwoRowsSectionViewHolder.LAYOUT -> viewHolder = DynamicIconTwoRowsSectionViewHolder(view, listener)
             OvoViewHolder.LAYOUT, OvoViewHolder.NON_LOGIN_LAYOUT -> viewHolder = OvoViewHolder(view, listener)
             RetryViewHolder.LAYOUT -> viewHolder = RetryViewHolder(view, homeFeedsListener)
-            SprintSaleCarouselViewHolder.LAYOUT -> viewHolder = SprintSaleCarouselViewHolder(view, listener)
             SpotlightViewHolder.LAYOUT -> viewHolder = SpotlightViewHolder(view, listener)
             EmptyBlankViewHolder.LAYOUT -> viewHolder = EmptyBlankViewHolder(view)
             InspirationHeaderViewHolder.LAYOUT -> viewHolder = InspirationHeaderViewHolder(view)
@@ -438,12 +436,13 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             ShimmeringIconViewHolder.LAYOUT -> viewHolder = ShimmeringIconViewHolder(view, listener)
             HomeAtfErrorViewHolder.LAYOUT -> viewHolder = HomeAtfErrorViewHolder(view, listener)
             DynamicLegoBannerSixAutoViewHolder.LAYOUT -> viewHolder =
-                DynamicLegoBannerSixAutoViewHolder(
-                    view,
-                    legoSixAutoListener,
-                    homeComponentListener,
-                    parentRecycledViewPool
-                )
+                    DynamicLegoBannerSixAutoViewHolder(
+                            view,
+                            legoSixAutoListener,
+                            homeComponentListener,
+                            parentRecycledViewPool)
+            QuestWidgetViewHolder.LAYOUT -> viewHolder =
+                QuestWidgetViewHolder(view, questWidgetCallbacks)
             CampaignWidgetViewHolder.LAYOUT -> viewHolder = CampaignWidgetViewHolder(
                 view,
                 homeComponentListener,
@@ -451,6 +450,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                 parentRecycledViewPool
             )
             else -> viewHolder = super.createViewHolder(view, type)
+
         }
 
         return viewHolder

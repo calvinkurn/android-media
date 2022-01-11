@@ -16,10 +16,10 @@ data class ProductrevWaitForFeedbackResponse (
         @SerializedName("hasNext")
         @Expose
         val hasNext: Boolean = false,
-        @SerializedName("userStats")
-        @Expose
-        val credibilityWidget: ProductrevWaitForFeedbackLabelAndImage = ProductrevWaitForFeedbackLabelAndImage(),
         @SerializedName("state")
         @Expose
-        val emptyState: ProductrevWaitForFeedbackLabelAndImage = ProductrevWaitForFeedbackLabelAndImage()
+        val emptyState: ProductrevWaitForFeedbackLabelAndImage = ProductrevWaitForFeedbackLabelAndImage(),
+        @SerializedName("banners")
+        @Expose
+        val banners: List<ProductrevWaitForFeedbackLabelAndImage> = emptyList()
 )

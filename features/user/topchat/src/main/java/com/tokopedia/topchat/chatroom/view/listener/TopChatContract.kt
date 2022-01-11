@@ -9,7 +9,6 @@ import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
-import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
@@ -81,6 +80,8 @@ interface TopChatContract {
         fun expandSrwBubble()
         fun showPreviewMsg(previewMsg: SendableUiModel)
         fun clearReferredMsg()
+        fun notifyPreviewRemoved(model: SendablePreview)
+        fun onReceiveWsEventDeleteMsg(replyTimeNano: String)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -90,37 +91,13 @@ interface TopChatContract {
 
         fun stopTyping()
 
-        fun getExistingChat(
-            messageId: String,
-            onError: (Throwable) -> Unit,
-            onSuccessGetExistingMessage: (ChatroomViewModel, ChatReplies) -> Unit
-        )
-
         fun readMessage()
 
         fun startCompressImages(it: ImageUploadUiModel)
 
         fun startUploadImages(image: ImageUploadUiModel)
 
-        fun loadTopChat(
-            messageId: String,
-            onError: (Throwable) -> Unit,
-            onSuccessGetPreviousChat: (ChatroomViewModel, ChatReplies) -> Unit
-        )
-
-        fun loadBottomChat(
-            messageId: String,
-            onError: (Throwable) -> Unit,
-            onsuccess: (ChatroomViewModel, ChatReplies) -> Unit
-        )
-
         fun isUploading(): Boolean
-
-        fun deleteChat(
-            messageId: String,
-            onError: (Throwable) -> Unit,
-            onSuccessDeleteConversation: () -> Unit
-        )
 
         fun sendAttachmentsAndMessage(
             sendMessage: String, referredMsg: ParentReply? = null
@@ -140,55 +117,9 @@ interface TopChatContract {
 
         fun initProductPreviewFromAttachProduct(resultProducts: ArrayList<ResultProduct>)
 
-        fun addToWishList(
-            productId: String,
-            userId: String,
-            wishlistActionListener: WishListActionListener
-        )
-
-        fun removeFromWishList(
-            productId: String,
-            userId: String,
-            wishListActionListener: WishListActionListener
-        )
-
-        fun getStickerGroupList(chatRoom: ChatroomViewModel)
-
-        fun loadAttachmentData(msgId: Long, chatRoom: ChatroomViewModel)
-
-        fun setBeforeReplyTime(createTime: String)
-
         fun isInTheMiddleOfThePage(): Boolean
 
-        fun resetChatUseCase()
-
         fun resetUnreadMessage()
-
-        fun requestBlockPromo(
-            messageId: String,
-            onSuccess: (ChatSettingsResponse) -> Unit,
-            onError: (Throwable) -> Unit
-        )
-
-        fun requestAllowPromo(
-            messageId: String,
-            onSuccess: (ChatSettingsResponse) -> Unit,
-            onError: (Throwable) -> Unit
-        )
-
-        fun blockChat(
-            messageId: String,
-            onSuccess: (ChatSettingsResponse) -> Unit,
-            onError: (Throwable) -> Unit
-        )
-
-        fun unBlockChat(
-            messageId: String,
-            onSuccess: (ChatSettingsResponse) -> Unit,
-            onError: (Throwable) -> Unit
-        )
-
-        fun getBackground()
 
         fun addAttachmentPreview(sendablePreview: SendablePreview)
 
@@ -200,14 +131,12 @@ interface TopChatContract {
             parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
         )
 
-        fun getSmartReplyWidget(msgId: String)
         fun initUserLocation(userLocation: LocalCacheModel?)
         fun getProductIdPreview(): List<String>
         fun getAttachmentsPreview(): List<SendablePreview>
         fun sendSrwBubble(
             question: QuestionUiModel, products: List<SendablePreview>
         )
-        fun adjustInterlocutorWarehouseId(msgId: String)
         fun sendSrwFrom(attachment: HeaderCtaButtonAttachment)
     }
 }
