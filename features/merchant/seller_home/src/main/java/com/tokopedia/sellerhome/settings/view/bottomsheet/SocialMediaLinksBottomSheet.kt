@@ -17,7 +17,9 @@ class SocialMediaLinksBottomSheet: BottomSheetUnify() {
     companion object {
         @JvmStatic
         fun createInstance(): SocialMediaLinksBottomSheet {
-            return SocialMediaLinksBottomSheet()
+            return SocialMediaLinksBottomSheet().apply {
+                clearContentPadding = true
+            }
         }
 
         private const val TAG = "social_media_links"

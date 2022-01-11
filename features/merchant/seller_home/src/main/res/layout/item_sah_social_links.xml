@@ -5,7 +5,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:paddingTop="14dp"
-    android:paddingBottom="11dp"
     android:paddingStart="16dp"
     android:paddingEnd="0dp">
 
@@ -38,10 +37,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="12dp"
         android:textColor="@color/Unify_NN600"
-        android:maxLines="5"
-        android:textAlignment="textStart"
         app:layout_constraintTop_toBottomOf="@id/tv_sah_item_social_title"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/tv_sah_item_social_title"
         app:layout_constraintEnd_toStartOf="@id/btn_sah_item_social"
         app:layout_constraintHorizontal_bias="0"
@@ -60,5 +56,15 @@
         app:unifyButtonType="main"
         app:unifyButtonSize="small"
         android:text="@string/sah_social_cta"/>
+    
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_sah_item_social"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="11dp"
+        app:layout_constraintStart_toStartOf="@id/tv_sah_item_social_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_sah_item_social_desc"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
