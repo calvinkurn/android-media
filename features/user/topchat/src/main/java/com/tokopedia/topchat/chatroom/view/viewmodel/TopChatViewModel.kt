@@ -28,6 +28,8 @@ import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
+import com.tokopedia.topchat.chatroom.data.ImageUploadServiceModel
+import com.tokopedia.topchat.chatroom.data.UploadImageDummy
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.GetChatResult
@@ -48,10 +50,12 @@ import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStic
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Param.Companion.SRW_TICKER
+import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
+import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.util.AddressUtil
 import com.tokopedia.topchat.common.websocket.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -233,6 +237,10 @@ class TopChatViewModel @Inject constructor(
     private val _errorSnackbar = MutableLiveData<Throwable>()
     val errorSnackbar: LiveData<Throwable>
         get() = _errorSnackbar
+
+    private val _uploadImageService = MutableLiveData<ImageUploadServiceModel>()
+    val uploadImageService: LiveData<ImageUploadServiceModel>
+        get() = _uploadImageService
 
     var attachProductWarehouseId = "0"
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
@@ -907,8 +915,9 @@ class TopChatViewModel @Inject constructor(
     fun startUploadImages(image: ImageUploadUiModel) {
         _removeSrwBubble.value = null
         if (isEnableUploadImageService()) {
-//            addDummyToService(image)
-//            startUploadImageWithService(image)
+            showPreviewMsg(image)
+            addDummyToService(image)
+            startUploadImageWithService(image)
         } else {
             showPreviewMsg(image)
             uploadImageUseCase.upload(
@@ -916,6 +925,21 @@ class TopChatViewModel @Inject constructor(
                 onSuccess = ::onSuccessUploadImage,
                 onError = ::onErrorUploadImage
             )
+        }
+    }
+
+    private fun startUploadImageWithService(image: ImageUploadUiModel) {
+        _uploadImageService.value = ImageUploadMapper.mapToImageUploadServer(image)
+    }
+
+    private fun addDummyToService(image: ImageUploadUiModel) {
+        val dummyPosition = UploadImageChatService.findDummy(image)
+        if (dummyPosition == null) {
+            val uploadImageDummy = UploadImageDummy(
+                messageId = roomMetaData.msgId,
+                visitable = image
+            )
+            UploadImageChatService.dummyMap.add(uploadImageDummy)
         }
     }
 

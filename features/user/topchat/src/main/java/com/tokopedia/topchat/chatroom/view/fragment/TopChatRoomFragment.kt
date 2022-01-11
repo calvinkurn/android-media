@@ -721,7 +721,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         for (dummy in UploadImageChatService.dummyMap) {
             if (dummy.messageId == messageId) {
                 dummy.visitable?.let {
-                    addDummyMessage(it)
+//                    addDummyMessage(it)
+                    showPreviewMsg(it as SendableUiModel)
                     if (dummy.isFail) {
                         topchatViewState?.showRetryUploadImages(it as ImageUploadUiModel, true)
                     }
@@ -904,6 +905,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 },
                 onDeleteClicked = {
                     adapter.removePreviewMsg(element.localId)
+                    UploadImageChatService.removeDummyOnList(element)
 //                    removeDummy(element)
                 }
             )
@@ -932,7 +934,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val chatBubble = visitable as? BaseChatUiModel
         val hasPreviewOnList = adapter.hasPreviewOnList(chatBubble?.localId)
         if (chatBubble != null && hasPreviewOnList) {
-            adapter.updatePreviewFromWs(visitable, chatBubble.localId)
+            adapter.updatePreviewUiModel(visitable, chatBubble.localId)
         } else {
             viewState?.removeDummyIfExist(visitable)
             viewState?.onReceiveMessageEvent(visitable)
@@ -1074,8 +1076,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun addDummyMessage(visitable: Visitable<*>) {
-        topchatViewState?.addMessage(visitable)
-        topchatViewState?.scrollDownWhenInBottom()
+//        topchatViewState?.addMessage(visitable)
+//        topchatViewState?.scrollDownWhenInBottom()
     }
 
     override fun removeDummy(visitable: Visitable<*>) {
@@ -2274,10 +2276,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onSuccessUploadImageWithService(intent: Intent) {
         if (messageId == getResultMessageId(intent)) {
-            val image =
-                intent.getParcelableExtra<ImageUploadServiceModel>(UploadImageChatService.IMAGE)
+            val image = intent.getParcelableExtra<ImageUploadServiceModel>(
+                UploadImageChatService.IMAGE
+            )
             image?.let {
-                removeDummy(ImageUploadMapper.mapToImageUploadViewModel(it))
+                adapter.removePreviewMsg(it.localId)
+//                removeDummy(ImageUploadMapper.mapToImageUploadUiModel(it))
             }
         }
     }
@@ -2744,6 +2748,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         viewModel.errorSnackbar.observe(viewLifecycleOwner, { error ->
             showSnackbarError(error)
         })
+
+        viewModel.uploadImageService.observe(viewLifecycleOwner, { image ->
+            uploadImage(image)
+        })
+    }
+
+    private fun uploadImage(image: ImageUploadServiceModel) {
+        context?.applicationContext?.let {
+            UploadImageChatService.enqueueWork(
+                it, image, viewModel.roomMetaData.msgId
+            )
+        }
     }
 
     private fun handleToggleBlock(item: WrapperChatSetting) {

@@ -350,7 +350,7 @@ open class TopChatRoomPresenter @Inject constructor(
             val uploadImageDummy = UploadImageDummy(messageId = thisMessageId, visitable = image)
             UploadImageChatService.dummyMap.add(uploadImageDummy)
         }
-        view?.addDummyMessage(image)
+//        view?.addDummyMessage(image)
 
     }
 

@@ -83,7 +83,7 @@ class TopChatRoomAdapter constructor(
         replyMap.remove(localId)
     }
 
-    fun updatePreviewFromWs(
+    fun updatePreviewUiModel(
         visitable: Visitable<*>,
         localId: String
     ) {
