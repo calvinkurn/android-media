@@ -119,7 +119,7 @@ interface TopChatContract {
 
 //        fun isInTheMiddleOfThePage(): Boolean
 
-        fun resetUnreadMessage()
+//        fun resetUnreadMessage()
 
         fun addAttachmentPreview(sendablePreview: SendablePreview)
 

@@ -89,9 +89,9 @@ open class TopChatRoomPresenter @Inject constructor(
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
     TopChatContract.Presenter, CoroutineScope {
 
-    var autoRetryConnectWs = true
-    var newUnreadMessage = 0
-        private set
+//    var autoRetryConnectWs = true
+//    var newUnreadMessage = 0
+//        private set
     var thisMessageId: String = ""
         private set
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
@@ -109,12 +109,12 @@ open class TopChatRoomPresenter @Inject constructor(
     var roomMetaData: RoomMetaData = RoomMetaData()
         private set
 
-    private val _srw = MutableLiveData<Resource<ChatSmartReplyQuestionResponse>>()
-    val srw: LiveData<Resource<ChatSmartReplyQuestionResponse>>
-        get() = _srw
+//    private val _srw = MutableLiveData<Resource<ChatSmartReplyQuestionResponse>>()
+//    val srw: LiveData<Resource<ChatSmartReplyQuestionResponse>>
+//        get() = _srw
 
     //Variable temp for flag middle chat from viewModel
-    private var isInTheMiddleOfChat = false
+//    private var isInTheMiddleOfChat = false
 
     init {
 //        mSubscription = CompositeSubscription()
@@ -456,10 +456,10 @@ open class TopChatRoomPresenter @Inject constructor(
     ) {
         if (isValidReply(sendMessage)) {
             sendAttachments(sendMessage)
-            topchatSendMessageWithWebsocket(
-                sendMessage = sendMessage,
-                referredMsg = referredMsg
-            )
+//            topchatSendMessageWithWebsocket(
+//                sendMessage = sendMessage,
+//                referredMsg = referredMsg
+//            )
             view?.clearAttachmentPreviews()
             view?.clearReferredMsg()
         }
@@ -713,9 +713,9 @@ open class TopChatRoomPresenter @Inject constructor(
 //        isInTheMiddleOfChat = value
 //    }
 
-    override fun resetUnreadMessage() {
-        newUnreadMessage = 0
-    }
+//    override fun resetUnreadMessage() {
+//        newUnreadMessage = 0
+//    }
 
     override fun addOngoingUpdateProductStock(
         productId: String,

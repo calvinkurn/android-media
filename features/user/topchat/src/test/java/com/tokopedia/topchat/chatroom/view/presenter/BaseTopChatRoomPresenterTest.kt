@@ -220,7 +220,7 @@ abstract class BaseTopChatRoomPresenterTest {
             )
         )
         presenter.attachView(view)
-        presenter.autoRetryConnectWs = false
+//        presenter.autoRetryConnectWs = false
         listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
         wsReconnect = WebSocketInfo.createReconnect("Some Error Comes Up")
         wsOpen = WebSocketInfo(webSocket, true)
