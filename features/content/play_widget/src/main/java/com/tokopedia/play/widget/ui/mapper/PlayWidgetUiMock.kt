@@ -17,6 +17,8 @@ object PlayWidgetUiMock {
 
     fun getPlayWidgetSmall(): PlayWidgetUiModel = getSamplePlaySmallWidget()
 
+    fun getPlayWidgetLarge(): PlayWidgetUiModel = getSamplePlayLargeWidget()
+
     private fun getSamplePlaySmallWidget(): PlayWidgetUiModel = PlayWidgetUiModel.Small(
             title = "Yuk Nonton Sekarang!",
             actionTitle = "Lihat semua",
@@ -35,6 +37,15 @@ object PlayWidgetUiMock {
             background = getPlayWidgetBackgroundUiModel(),
             config = getPlayWidgetConfigUiModel(),
             items = getSampleMediumCardData()
+    )
+
+    private fun getSamplePlayLargeWidget(): PlayWidgetUiModel = PlayWidgetUiModel.Large(
+        title = "Ini Widget Large!",
+        actionTitle = "Lihat semua",
+        actionAppLink = "tokopedia://webview?titlebar=false\\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
+        isActionVisible = true,
+        config = getPlayWidgetConfigUiModel(),
+        items = getSampleLargeCardData()
     )
 
     private fun getSampleSmallCardData(): List<PlayWidgetSmallItemUiModel> {
@@ -70,10 +81,31 @@ object PlayWidgetUiMock {
         }
     }
 
+    private fun getSampleLargeCardData(): List<PlayWidgetLargeItemUiModel> {
+        return List(5) {
+            if (it == 0) getSampleLargeCardBanner()
+            else {
+                val channelType = when (cardItemTypeRandom.nextInt(0, 4)) {
+                    0 -> PlayWidgetChannelType.Upcoming
+                    1 -> PlayWidgetChannelType.Vod
+                    else -> PlayWidgetChannelType.Live
+                }
+                getSampleLargeChannelCardBanner(channelType)
+            }
+        }
+    }
+
     private fun getSampleSmallCardBanner() = PlayWidgetSmallBannerUiModel(
             imageUrl = "https://cdn.jpegmini.com/user/images/slider_puffin_before_mobile.jpg",
             appLink = "",
             webLink = ""
+    )
+
+    private fun getSampleLargeCardBanner() = PlayWidgetLargeBannerUiModel(
+            imageUrl = "https://cdn.jpegmini.com/user/images/slider_puffin_before_mobile.jpg",
+            appLink = "",
+            webLink = "",
+            partner = PlayWidgetPartnerUiModel("123", "Google")
     )
 
     private fun getSampleSmallChannelCardBanner(channelType: PlayWidgetChannelType) = PlayWidgetSmallChannelUiModel(
@@ -90,6 +122,31 @@ object PlayWidgetUiMock {
             hasGiveaway = true,
             poolType = "",
             recommendationType = "",
+    )
+
+    private fun getSampleLargeChannelCardBanner(channelType: PlayWidgetChannelType) = PlayWidgetLargeChannelUiModel(
+        channelId = "123",
+        title = "Google Assistant review with me",
+        channelType = channelType,
+        appLink = "",
+        webLink = "",
+        startTime = "",
+        totalView = "10,0 rb",
+        totalViewVisible = true,
+        promoType = PlayWidgetPromoType.Default("Diskon 100%"),
+        reminderType = PlayWidgetReminderType.Reminded,
+        partner = PlayWidgetPartnerUiModel("123", "Google"),
+        video = getVideoUiModel(channelType),
+        hasAction = true,
+        channelTypeTransition = PlayWidgetChannelTypeTransition(null, channelType),
+        share = PlayWidgetShareUiModel(
+            "TEST CHANNEL covert vod transcoding \nYuk, nonton siaran dari testtokoucup di Tokopedia PLAY! Bakal seru banget lho!\n https://tokopedia.link/hwql0mV2Wab",
+            isShow = true
+        ),
+        performanceSummaryLink = "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fshop%2Fituajakak%2Fstatistic%2F10734",
+        hasGiveaway = true,
+        poolType = "",
+        recommendationType = "",
     )
 
     private fun getSampleMediumCardOverlayBanner() = PlayWidgetMediumOverlayUiModel(

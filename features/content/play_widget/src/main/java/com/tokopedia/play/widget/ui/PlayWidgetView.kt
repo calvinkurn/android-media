@@ -11,8 +11,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
-import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
+import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
@@ -23,10 +23,19 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
+    constructor(
+        context: Context?,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+        defStyleRes: Int
+    ) : super(context, attrs, defStyleAttr, defStyleRes)
 
     private var mAnalyticListener: PlayWidgetAnalyticListener? = null
     private var mWidgetListener: PlayWidgetListener? = null
@@ -45,6 +54,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         when (val child = getFirstChild()) {
             is PlayWidgetSmallView -> child.setWidgetInternalListener(listener)
             is PlayWidgetMediumView -> child.setWidgetInternalListener(listener)
+            is PlayWidgetLargeView -> child.setWidgetInternalListener(listener)
         }
     }
 
@@ -57,6 +67,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         when (model) {
             is PlayWidgetUiModel.Small -> addSmallView(model)
             is PlayWidgetUiModel.Medium -> addMediumView(model)
+            is PlayWidgetUiModel.Large -> addLargeView(model)
             PlayWidgetUiModel.Placeholder -> addPlaceholderView()
         }
     }
@@ -74,6 +85,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         when (val child = getFirstChild()) {
             is PlayWidgetSmallView -> child.setWidgetListener(listener)
             is PlayWidgetMediumView -> child.setWidgetListener(listener)
+            is PlayWidgetLargeView -> child.setWidgetListener(listener)
         }
     }
 
@@ -107,13 +119,25 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         }
     }
 
+    private fun addLargeView(model: PlayWidgetUiModel.Large) {
+        val widgetView = addWidgetView { PlayWidgetLargeView(context) }
+        if (model.items.isEmpty()) {
+            widgetView.hide()
+        } else {
+            widgetView.show()
+            widgetView.setData(model)
+            widgetView.setWidgetListener(mWidgetListener)
+            widgetView.setWidgetInternalListener(mWidgetInternalListener)
+        }
+    }
+
     private fun addPlaceholderView() {
         val widgetView = addWidgetView { PlayWidgetPlaceholderView(context) }
 
         widgetView.setData()
     }
 
-    private inline fun <reified T: View> addWidgetView(creator: () -> T): T {
+    private inline fun <reified T : View> addWidgetView(creator: () -> T): T {
         val firstChild = getFirstChild()
         return if (firstChild !is T) {
             removeCurrentView()
@@ -132,5 +156,6 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         if (childCount > 0) removeViewAt(0)
     }
 
-    private fun getChildLayoutParams() = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+    private fun getChildLayoutParams() =
+        LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
 }

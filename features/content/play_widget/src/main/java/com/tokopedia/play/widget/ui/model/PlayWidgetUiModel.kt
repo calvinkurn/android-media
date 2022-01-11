@@ -34,5 +34,17 @@ sealed class PlayWidgetUiModel {
         override val impressHolder = ImpressHolder()
     }
 
+    data class Large(
+        val title: String,
+        val actionTitle: String,
+        val actionAppLink: String,
+        val isActionVisible: Boolean,
+        override val config: PlayWidgetConfigUiModel,
+        val items: List<PlayWidgetLargeItemUiModel>,
+    ) : PlayWidgetUiModel(), PlayWidgetConfigProvider, ImpressionableModel {
+
+        override val impressHolder = ImpressHolder()
+    }
+
     object Placeholder : PlayWidgetUiModel()
 }

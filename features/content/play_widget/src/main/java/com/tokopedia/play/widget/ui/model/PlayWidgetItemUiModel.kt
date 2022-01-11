@@ -91,3 +91,41 @@ data class PlayWidgetMediumChannelUiModel(
     val hasPromo: Boolean
         get() = promoType != PlayWidgetPromoType.NoPromo && promoType != PlayWidgetPromoType.Unknown
 }
+
+/**
+ * Large
+ * */
+
+sealed class PlayWidgetLargeItemUiModel: PlayWidgetItemUiModel()
+
+data class PlayWidgetLargeBannerUiModel(
+        val imageUrl: String,
+        val appLink: String,
+        val webLink: String,
+        val partner: PlayWidgetPartnerUiModel
+) : PlayWidgetLargeItemUiModel()
+
+data class PlayWidgetLargeChannelUiModel(
+        val channelId: String,
+        val title: String,
+        val appLink: String,
+        val webLink: String,
+        val startTime: String,
+        val totalView: String,
+        val totalViewVisible: Boolean,
+        val promoType: PlayWidgetPromoType,
+        val reminderType: PlayWidgetReminderType,
+        val partner: PlayWidgetPartnerUiModel,
+        val video: PlayWidgetVideoUiModel,
+        val channelType: PlayWidgetChannelType,
+        val hasAction: Boolean,
+        val channelTypeTransition: PlayWidgetChannelTypeTransition,
+        val share: PlayWidgetShareUiModel,
+        val performanceSummaryLink: String,
+        val hasGiveaway: Boolean,
+        val poolType: String,
+        val recommendationType: String,
+) : PlayWidgetLargeItemUiModel(), ImpressionableModel {
+
+        override val impressHolder = ImpressHolder()
+}
