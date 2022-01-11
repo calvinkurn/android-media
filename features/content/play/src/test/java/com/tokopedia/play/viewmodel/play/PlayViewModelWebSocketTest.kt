@@ -397,7 +397,6 @@ class PlayViewModelWebSocketTest {
             dispatchers = testDispatcher,
             userSession = mockUserSession,
             remoteConfig = mockRemoteConfig,
-            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         )
 
         robot.use {
@@ -435,7 +434,6 @@ class PlayViewModelWebSocketTest {
             dispatchers = testDispatcher,
             userSession = mockUserSession,
             remoteConfig = mockRemoteConfig,
-            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         )
 
         robot.use {
@@ -478,7 +476,6 @@ class PlayViewModelWebSocketTest {
             dispatchers = testDispatcher,
             userSession = mockUserSession,
             remoteConfig = mockRemoteConfig,
-            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         )
 
         robot.use {
@@ -521,7 +518,6 @@ class PlayViewModelWebSocketTest {
             dispatchers = testDispatcher,
             userSession = mockUserSession,
             remoteConfig = mockRemoteConfig,
-            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         )
 
         robot.use {
@@ -558,7 +554,6 @@ class PlayViewModelWebSocketTest {
             dispatchers = testDispatcher,
             userSession = mockUserSession,
             remoteConfig = mockRemoteConfig,
-            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         )
 
         robot.use {
@@ -596,7 +591,6 @@ class PlayViewModelWebSocketTest {
             dispatchers = testDispatcher,
             userSession = mockUserSession,
             remoteConfig = mockRemoteConfig,
-            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         )
 
         robot.use {

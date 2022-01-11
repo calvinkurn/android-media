@@ -1,17 +1,25 @@
 package com.tokopedia.play.viewmodel.tagitem
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.gson.Gson
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.util.assertEqualTo
 import com.tokopedia.play.util.assertNotEqualTo
+import com.tokopedia.play.util.assertTrue
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.websocket.response.PlayProductTagSocketResponse
+import com.tokopedia.play.websocket.response.PlayQuickReplySocketResponse
+import com.tokopedia.play_common.websocket.PlayWebSocket
+import com.tokopedia.play_common.websocket.WebSocketAction
+import com.tokopedia.play_common.websocket.WebSocketResponse
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableSharedFlow
 import org.junit.Rule
 import org.junit.Test
 
@@ -24,6 +32,8 @@ class PlayProductTest {
 
     private val channelDataBuilder = PlayChannelDataModelBuilder()
     private val modelBuilder = UiModelBuilder.get()
+
+    private val gson = Gson()
 
     @Test
     fun `given empty product, when on init, then it should return empty product`() {
@@ -151,6 +161,59 @@ class PlayProductTest {
                 .assertEqualTo(initialProductList)
             state.tagItems.product.productList
                 .assertNotEqualTo(mockProductList)
+        }
+    }
+
+    @Test
+    fun `when received new products from socket, then it should update the products`() {
+        val productSize = 2
+        val productBaseTitle = "Barang Test"
+        val productTagSocketJson = PlayProductTagSocketResponse.generateResponse(
+            size = productSize,
+            title = productBaseTitle,
+        )
+
+        val mockProductsSocketResponse = gson.fromJson(
+            productTagSocketJson,
+            WebSocketResponse::class.java
+        )
+
+        val mockSocket: PlayWebSocket = mockk(relaxed = true)
+        val socketFlow = MutableSharedFlow<WebSocketAction>()
+
+        every { mockSocket.listenAsFlow() } returns socketFlow
+
+        val mockRepo: PlayViewerRepository = mockk(relaxed = true)
+        every { mockRepo.getChannelData(any()) } returns channelDataBuilder.buildChannelData(
+            tagItems = modelBuilder.buildTagItem(
+                product = modelBuilder.buildProductModel(emptyList(), false)
+            )
+        )
+
+        val robot = createPlayViewModelRobot(
+            dispatchers = testDispatcher,
+            repo = mockRepo,
+            playChannelWebSocket = mockSocket,
+        )
+
+        robot.use {
+            val state = it.recordState {
+                focusPage(mockk(relaxed = true))
+                socketFlow.emit(
+                    WebSocketAction.NewMessage(mockProductsSocketResponse)
+                )
+            }
+            state.tagItems.product.productList
+                .size
+                .assertEqualTo(productSize)
+
+            state.tagItems.product.productList
+                .forEachIndexed { index, product ->
+                    product.title.assertEqualTo("$productBaseTitle ${index+1}")
+                }
+
+            state.tagItems.product.canShow
+                .assertTrue()
         }
     }
 }
