@@ -25,35 +25,35 @@ class DenomGridViewHolder (
              isSelectedItem: Boolean, position: Int){
 
         with(binding){
-            tgDenomGridTitle.apply {
+            tgDenomGridTitle.run {
                 if (!denomGrid.title.isNullOrEmpty()){
                     show()
                     text = denomGrid.title
                 } else hide()
             }
 
-            labelDenomGridSpecial.apply {
+            labelDenomGridSpecial.run {
                 if (!denomGrid.specialLabel.isNullOrEmpty()){
                     show()
                     text = denomGrid.specialLabel
                 } else hide()
             }
 
-            tgDenomGridPeriode.apply {
+            tgDenomGridPeriode.run {
                 if (!denomGrid.expiredDate.isNullOrEmpty()){
                     show()
                     text = denomGrid.expiredDate
                 } else hide()
             }
 
-            tgDenomGridPrice.apply {
+            tgDenomGridPrice.run {
                 if (!denomGrid.price.isNullOrEmpty()){
                     show()
                     text = denomGrid.price
                 } else hide()
             }
 
-            labelDenomGridDiscount.apply {
+            labelDenomGridDiscount.run {
                 if (!denomGrid.discountLabel.isNullOrEmpty()){
                     show()
                     text = denomGrid.discountLabel
@@ -61,13 +61,14 @@ class DenomGridViewHolder (
             }
 
 
-            tgDenomGridSoldPercentageLabel.apply {
+            tgDenomGridSoldPercentageLabel.run {
                 if (!denomGrid.flashSaleLabel.isNullOrEmpty()){
                     show()
                     text = denomGrid.flashSaleLabel
                 } else hide()
             }
-            pgDenomGridFlashSalse.apply {
+
+            pgDenomGridFlashSale.run {
                 if (denomGrid.flashSalePercentage.isMoreThanZero()) {
                     show()
                     setProgressIcon(
@@ -85,7 +86,7 @@ class DenomGridViewHolder (
                 } else hide()
             }
 
-            tgDenomGridSlashPrice.apply {
+            tgDenomGridSlashPrice.run {
                 if (!denomGrid.slashPrice.isNullOrEmpty()) {
                     show()
                     text = denomGrid.slashPrice
@@ -114,7 +115,7 @@ class DenomGridViewHolder (
                 } else hide()
             }
 
-            cardDenomGrid.apply {
+            cardDenomGrid.run {
                 layoutParams.width = if (denomGridType == DenomWidgetGridEnum.GRID_TYPE){
                     ViewGroup.LayoutParams.MATCH_PARENT
                 } else resources.getDimension(R.dimen.widget_denom_grid_width).toInt()

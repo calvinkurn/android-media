@@ -3,8 +3,7 @@ package com.tokopedia.recharge_component.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.databinding.WidgetRechargeDenomGridBinding
@@ -26,7 +25,7 @@ class DenomGridWidget @JvmOverloads constructor(@NotNull context: Context, attrs
         with(rechargeDenomGridViewBinding){
             denomGridShimmering.root.hide()
             tgDenomGridWidgetTitle.text = titleDenomGrid
-            rvDenomGridCardTitle.apply {
+            rvDenomGridCardTitle.run {
                 show()
                 adapterDenomGrid.clearDenomGridData()
                 adapterDenomGrid.setDenomGridList(listDenomGrid)
@@ -34,7 +33,7 @@ class DenomGridWidget @JvmOverloads constructor(@NotNull context: Context, attrs
                 adapterDenomGrid.selectedProductIndex = null
                 adapterDenomGrid.denomWidgetGridType = DenomWidgetGridEnum.GRID_TYPE
                 adapter = adapterDenomGrid
-                layoutManager = StaggeredGridLayoutManager(STAG_GRID_SIZE, RecyclerView.VERTICAL)
+                layoutManager = GridLayoutManager(context, GRID_SIZE)
             }
         }
     }
@@ -48,7 +47,7 @@ class DenomGridWidget @JvmOverloads constructor(@NotNull context: Context, attrs
     }
 
     companion object{
-        const val STAG_GRID_SIZE = 2
+        const val GRID_SIZE = 2
     }
 
 }
