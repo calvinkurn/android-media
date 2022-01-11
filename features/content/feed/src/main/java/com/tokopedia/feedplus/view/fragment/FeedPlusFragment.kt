@@ -270,6 +270,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val SHOULD_TRACK = "should_track"
         private const val SOURCE_TYPE = "source_type"
         private const val VOD_POST = "VOD_POST"
+        private const val TYPE_FEED_X_CARD_LONG_VIDEO: String = "content-long-video"
+        private const val TYPE_FEED_X_CARD_VOD_VIDEO: String = "play-channel-vod"
 
 
         private val TAG = FeedPlusFragment::class.java.simpleName
@@ -1868,8 +1870,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     .appendQueryParameter(SOURCE_TYPE, VOD_POST)
                     .build().toString()
         }
-
-        onGoToLink(finalApplink)
+//        if (feedXCard.type == TYPE_FEED_X_CARD_LONG_VIDEO)
+//            onVideoPlayerClicked(positionInFeed,0,feedXCard.id,feedXCard.media[0].mediaUrl,feedXCard.author.id,"",feedXCard.followers.isFollowed)
+//        else
+            onGoToLink(finalApplink)
     }
 
     override fun addVODView(feedXCard: FeedXCard, playChannelId: String, rowNumber: Int, time: Long, hitTrackerApi: Boolean) {

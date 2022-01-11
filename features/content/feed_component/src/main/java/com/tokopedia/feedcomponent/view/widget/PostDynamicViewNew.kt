@@ -69,9 +69,12 @@ import kotlinx.coroutines.launch
 import java.net.URLEncoder
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.round
 
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
 private const val TYPE_FEED_X_CARD_VOD: String = "FeedXCardPlay"
+private const val TYPE_FEED_X_CARD_LONG_VIDEO: String = "content-long-video"
+private const val TYPE_FEED_X_CARD_VOD_VIDEO: String = "play-channel-vod"
 private const val SPAN_SIZE_FULL = 6
 private const val SPAN_SIZE_HALF = 3
 private const val SPAN_SIZE_SINGLE = 2
@@ -115,6 +118,8 @@ private const val MARGIN_ZERO = 0
 private const val LIHAT_PRODUK_EXPANDED_WIDTH_INDP = 100
 private const val LIHAT_PRODUK_EXPANDED_WIDTH_MIN_INDP = 90
 private const val LIHAT_PRODUK_CONTRACTED_WIDTH_INDP = 24
+const val PORTRAIT = 1
+const val LANDSCAPE = 2
 
 class PostDynamicViewNew @JvmOverloads constructor(
     context: Context,
@@ -831,6 +836,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             feedXCard.listProduct
                     )
                 }
+                val orientation = getOrientation(feedXCard.mediaRatio)
+                var ratio = if (orientation == PORTRAIT)
+                    getRatioIfPortrait(feedXCard.mediaRatio)
+                else
+                    getRatioIfLandscape(feedXCard.mediaRatio)
 
                 media.forEach { feedMedia ->
                     val tags = feedMedia.tagging
@@ -854,6 +864,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             postImage.setImageUrl(feedMedia.mediaUrl)
                             val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
                             val layoutLihatProdukParent = findViewById<TextView>(R.id.tv_lihat_product)
+                            val constraintSetForMedia = ConstraintSet()
+                            constraintSetForMedia.clone(layout)
+                            constraintSetForMedia.setDimensionRatio(postImage.id, ratio)
+                            constraintSetForMedia.applyTo(layout)
 
                             like_anim.setImageDrawable(
                                 MethodChecker.getDrawable(
@@ -1327,7 +1341,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             vod_lihat_product?.setOnClickListener {
                 listener?.let { listener ->
                     listener.onTagClicked(
-                            feedXCard?.playChannelID.toInt(),
+                            feedXCard.playChannelID.toInt(),
                             products,
                             listener,
                             id,
@@ -1947,6 +1961,31 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private fun sendHeaderTopadsEvent(positionInFeed: Int, appLink: String, cpmData: CpmData, isNewVariant: Boolean) {
         topAdsListener?.onTopAdsHeadlineAdsClick(positionInFeed, appLink, cpmData, isNewVariant)
+    }
+    fun getOrientation(mediaRatio: FeedXMediaRatio): Int {
+        if (mediaRatio.width > mediaRatio.height)
+            return LANDSCAPE
+        return PORTRAIT
+    }
+    fun getRatioIfPortrait(mediaRatio: FeedXMediaRatio):String{
+        val ratio = round((mediaRatio.width.toFloat() / mediaRatio.height) * 10) / 10
+        return if (ratio <= 0.8)
+            "4:5"
+        else if (ratio > 0.8 && ratio < 1)
+            ratio.toString()
+        else
+            "1:1"
+
+    }
+    fun getRatioIfLandscape(mediaRatio: FeedXMediaRatio):String{
+
+        val ratio = round((mediaRatio.width.toFloat() / mediaRatio.height) * 10) / 10
+        return if (ratio >= 1.91)
+            "1.91:1"
+        else if (ratio > 1 && ratio < 1.91)
+            ratio.toString()
+        else
+            "1:1"
     }
 
 }

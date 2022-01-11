@@ -124,6 +124,8 @@ open class SubmitPostUseCaseNew @Inject constructor(
         input.authorID = requestParams.getString(PARAM_AUTHOR_ID, "")
         input.authorType = requestParams.getString(PARAM_AUTHOR_TYPE, "")
         input.caption = requestParams.getString(PARAM_CAPTION, "")
+        input.mediaRatioW = requestParams.getInt(PARAM_MEDIA_WIDTH, 0)
+        input.mediaRatioH = requestParams.getInt(PARAM_MEDIA_HEIGHT, 0)
         input.media = mediumList
         input.activityId = requestParams.getString(PARAM_ID, null)
 
@@ -144,6 +146,8 @@ open class SubmitPostUseCaseNew @Inject constructor(
         private const val CONTENT_SHOP = "content-shop"
         private const val AUTHOR_TYPE_VALUE = "content"
         private const val PARAM_MEDIA = "media"
+        private const val PARAM_MEDIA_WIDTH = "media_width"
+        private const val PARAM_MEDIA_HEIGHT = "media_height"
 
 
 
@@ -169,7 +173,9 @@ open class SubmitPostUseCaseNew @Inject constructor(
             caption: String,
             media: List<Pair<String, String>>,
             relatedIdList: List<String>,
-            mediaList: List<MediaModel>
+            mediaList: List<MediaModel>,
+            mediaWidth:Int,
+            mediaHeight:Int
         ): RequestParams {
 
             val requestParams = RequestParams.create()
@@ -179,6 +185,8 @@ open class SubmitPostUseCaseNew @Inject constructor(
             requestParams.putString(PARAM_AUTHOR_TYPE, CONTENT_SHOP)
             requestParams.putString(PARAM_CAPTION, caption)
             requestParams.putObject(PARAM_MEDIA_MODEL_LIST, mediaList)
+            requestParams.putInt(PARAM_MEDIA_WIDTH, mediaWidth)
+            requestParams.putInt(PARAM_MEDIA_HEIGHT, mediaHeight)
 
             if (!id.isNullOrEmpty()) {
                 requestParams.putString(PARAM_ID, id)

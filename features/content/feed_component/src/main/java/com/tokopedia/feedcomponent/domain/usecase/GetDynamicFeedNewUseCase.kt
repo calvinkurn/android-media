@@ -64,6 +64,10 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           }
           mods
         }
+        mediaRatio {
+          width
+          height
+        }
         tags {
           id
           name
@@ -134,6 +138,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
       }
        ... on FeedXCardPlay {
         id
+        type
         playChannelID
         author {
           id

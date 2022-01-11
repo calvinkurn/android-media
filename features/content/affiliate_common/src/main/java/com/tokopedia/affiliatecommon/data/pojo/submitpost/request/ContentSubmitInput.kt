@@ -40,6 +40,14 @@ data class ContentSubmitInput(
         @Expose
         var token: String? = null,
 
+        @SerializedName("mediaRatioH")
+        @Expose
+        var mediaRatioH: Int? = null,
+
+        @SerializedName("mediaRatioW")
+        @Expose
+        var mediaRatioW: Int? = null,
+
         @SerializedName("media")
         @Expose
         var media: List<SubmitPostMedium>? = null
