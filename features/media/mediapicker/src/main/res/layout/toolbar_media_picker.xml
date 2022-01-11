@@ -14,7 +14,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyWeight="reguler"
-        android:text="Image Editor"/>
+        android:text="@string/picker_toolbar_main_title"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_done"

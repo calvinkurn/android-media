@@ -6,10 +6,21 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.text.TextUtils
 import android.webkit.MimeTypeMap
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.picker.data.entity.Media
 import java.net.URLConnection
 
 const val DEFAULT_DURATION_LABEL = "00:00"
+
+fun exceptionHandler(invoke: () -> Unit) {
+    try {
+        invoke()
+    } catch (e: Exception) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            e.printStackTrace()
+        }
+    }
+}
 
 private fun getExtension(path: String): String {
     val extension = MimeTypeMap.getFileExtensionFromUrl(path)

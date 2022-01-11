@@ -2,13 +2,92 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/black">
 
-    <com.tokopedia.unifyprinciples.Typography
+    <com.otaliastudios.cameraview.CameraView
+        android:id="@+id/cameraView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lst_camera_mode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Camera"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginBottom="8dp"
+        android:clipToPadding="false"
+        app:layout_constraintBottom_toTopOf="@+id/frameLayout" />
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="@dimen/unify_space_64"
+        android:layout_height="@dimen/unify_space_64"
+        android:layout_marginBottom="?attr/actionBarSize"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_picker_camera_take_border" />
+
+        <View
+            android:id="@+id/btn_take_camera"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/unify_space_8"
+            android:background="@drawable/bg_picker_camera_take" />
+
+    </FrameLayout>
+
+    <View
+        android:id="@+id/container_blink"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_NN900"
+        android:alpha="0.4"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_marginBottom="?attr/actionBarSize"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/frameLayout"
+        app:layout_constraintTop_toTopOf="@+id/frameLayout">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/btn_flash"
+            android:layout_width="@dimen/unify_space_40"
+            android:layout_height="@dimen/unify_space_40"
+            android:layout_marginEnd="@dimen/unify_space_8" />
+
+        <ImageView
+            android:id="@+id/btn_flip"
+            android:layout_width="@dimen/unify_space_40"
+            android:layout_height="@dimen/unify_space_40"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:padding="@dimen/unify_space_4"
+            android:src="@drawable/ic_picker_camera_flip" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/img_preview"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/frameLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/frameLayout"
+        tools:src="@tools:sample/avatars" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

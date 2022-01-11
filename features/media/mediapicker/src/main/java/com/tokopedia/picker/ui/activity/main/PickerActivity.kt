@@ -2,6 +2,7 @@ package com.tokopedia.picker.ui.activity.main
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -178,6 +179,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener {
     }
 
     private fun setupTabView() {
+        binding?.tabContainer?.tabLayout?.setBackgroundColor(Color.TRANSPARENT)
         binding?.tabContainer?.addNewTab(getString(R.string.picker_title_camera))
         binding?.tabContainer?.addNewTab(getString(R.string.picker_title_gallery))
         binding?.tabContainer?.show()
