@@ -2648,6 +2648,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 removeSrwBubble()
             }
         })
+
+        viewModel.previewMsg.observe(viewLifecycleOwner, { preview ->
+            showPreviewMsg(preview)
+        })
     }
 
     private fun handleToggleBlock(item: WrapperChatSetting) {

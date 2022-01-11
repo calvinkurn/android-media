@@ -203,6 +203,10 @@ class TopChatViewModel @Inject constructor(
     val removeSrwBubble: LiveData<String?>
         get() = _removeSrwBubble
 
+    private val _previewMsg = MutableLiveData<SendableUiModel>()
+    val previewMsg: LiveData<SendableUiModel>
+        get() = _previewMsg
+
     var attachProductWarehouseId = "0"
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     var roomMetaData: RoomMetaData = RoomMetaData()
@@ -812,13 +816,13 @@ class TopChatViewModel @Inject constructor(
             userLocationInfo = userLocationInfo,
             referredMsg = referredMsg
         )
-        showPreviewMsg()
+        showPreviewMsg(previewMsg)
         sendWsPayload(wsPayload)
         sendWsStopTyping()
     }
 
-    private fun showPreviewMsg() {
-        // TODO("Not yet implemented")
+    private fun showPreviewMsg(previewMsg: SendableUiModel) {
+        _previewMsg.postValue(previewMsg)
     }
 
     private fun sendWsStopTyping() {
