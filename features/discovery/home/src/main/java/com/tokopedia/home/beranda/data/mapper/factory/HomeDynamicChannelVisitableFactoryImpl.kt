@@ -15,8 +15,8 @@ import com.tokopedia.home.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.quest_widget.data.QuestData
-import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
@@ -120,9 +120,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> {
                     createRecommendationListCarouselComponent(channel, position, isCache)
                 }
-                DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {
-                    createMixLeftComponent(channel, position, isCache)
-                }
+//                DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {
+//                    createMixLeftComponent(channel, position, isCache)
+//                }
                 DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
                     createProductHighlightComponent(channel, position, isCache)
                 }
@@ -187,7 +187,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL_V2 -> {
                     createBannerChannel(channel, position)
                 }
-                DynamicHomeChannel.Channels.LAYOUT_QUESTWIDGET -> {
+                DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {
                     createQuestChannel(channel, position , questData = QuestData())
                 }
             }
