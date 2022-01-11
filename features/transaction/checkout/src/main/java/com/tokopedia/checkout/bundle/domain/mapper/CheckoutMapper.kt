@@ -58,7 +58,7 @@ class CheckoutMapper @Inject constructor(private val gson: Gson) {
 
     private fun mapPrompt(promptResponse: PromptResponse): Prompt {
         return Prompt().apply {
-            eligible = promptResponse.title.isNotBlank()
+            eligible = promptResponse.title.isNotBlank() && promptResponse.description.isNotBlank()
             title = promptResponse.title
             description = promptResponse.description
             button = PromptButton().apply {
