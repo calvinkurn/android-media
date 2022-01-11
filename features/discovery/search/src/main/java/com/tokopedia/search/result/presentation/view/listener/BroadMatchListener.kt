@@ -18,5 +18,5 @@ interface BroadMatchListener {
 
     val carouselRecycledViewPool: RecyclerView.RecycledViewPool?
 
-    val productCardLifecycleObserver: ProductCardLifecycleObserver
+    val productCardLifecycleObserver: ProductCardLifecycleObserver?
 }

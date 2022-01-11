@@ -72,6 +72,7 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_MPC_LIFECYCLE_OBSERVER
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.InspirationCarouselTrackingUnification
@@ -175,7 +176,6 @@ class ProductListFragment: BaseDaggerFragment(),
         private const val SHOP = "shop"
         private const val DEFAULT_SPAN_COUNT = 2
         private const val ON_BOARDING_DELAY_MS: Long = 200
-        private const val ENABLE_REVAMP_WISHLIST_V2 = "android_revamp_wishlist_v2"
 
         fun newInstance(searchParameter: SearchParameter?): ProductListFragment {
             val args = Bundle().apply {
@@ -196,6 +196,9 @@ class ProductListFragment: BaseDaggerFragment(),
 
     @Inject
     lateinit var inspirationCarouselTrackingUnification: InspirationCarouselTrackingUnification
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var refreshLayout: SwipeRefreshLayout? = null
@@ -224,14 +227,15 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override val carouselRecycledViewPool = RecyclerView.RecycledViewPool()
-    override val productCardLifecycleObserver = ProductCardLifecycleObserver()
+    override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
+        private set
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         loadDataFromArguments()
         initTrackingQueue()
-        lifecycle.addObserver(productCardLifecycleObserver)
+        initProductCardLifecycleObserver()
     }
 
     private fun loadDataFromArguments() {
@@ -249,6 +253,15 @@ class ProductListFragment: BaseDaggerFragment(),
     private fun initTrackingQueue() {
         context?.let {
             trackingQueue = TrackingQueue(it)
+        }
+    }
+
+    private fun initProductCardLifecycleObserver() {
+        if (!remoteConfig.getBoolean(ENABLE_MPC_LIFECYCLE_OBSERVER)) return
+
+        ProductCardLifecycleObserver().also {
+            productCardLifecycleObserver = it
+            lifecycle.addObserver(it)
         }
     }
 

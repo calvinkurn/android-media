@@ -7,5 +7,5 @@ interface ProductListener {
     fun onItemClicked(item: ProductItemDataView?, adapterPosition: Int)
     fun onThreeDotsClick(item: ProductItemDataView?, adapterPosition: Int)
     fun onProductImpressed(item: ProductItemDataView?, adapterPosition: Int)
-    val productCardLifecycleObserver: ProductCardLifecycleObserver
+    val productCardLifecycleObserver: ProductCardLifecycleObserver?
 }

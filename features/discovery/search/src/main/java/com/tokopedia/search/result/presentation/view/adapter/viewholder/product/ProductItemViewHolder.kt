@@ -71,13 +71,13 @@ abstract class ProductItemViewHolder(
     fun registerLifecycleObserver(productCardModel: ProductCardModel) {
         val productCardView = productCardView ?: return
 
-        productListener.productCardLifecycleObserver.register(productCardView, productCardModel)
+        productListener.productCardLifecycleObserver?.register(productCardView, productCardModel)
     }
 
     override fun onViewRecycled() {
         val productCardView = this.productCardView ?: return
 
         productCardView.recycle()
-        productListener.productCardLifecycleObserver.unregister(productCardView)
+        productListener.productCardLifecycleObserver?.unregister(productCardView)
     }
 }

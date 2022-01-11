@@ -61,8 +61,9 @@ class BroadMatchViewHolder(
 
     private fun setupRecyclerView(dataData: BroadMatchDataView){
         val products = dataData.broadMatchItemDataViewList
-        binding?.searchBroadMatchList?.productCardLifecycleObserver =
-            broadMatchListener.productCardLifecycleObserver
+        broadMatchListener.productCardLifecycleObserver?.let {
+            binding?.searchBroadMatchList?.productCardLifecycleObserver = it
+        }
 
         binding?.searchBroadMatchList?.bindCarouselProductCardViewGrid(
             recyclerViewPool = broadMatchListener.carouselRecycledViewPool,
