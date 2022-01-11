@@ -264,7 +264,9 @@ class ChatModule {
                 "?os_type=1" +
                 "&device_id=" + userSession.deviceId +
                 "&user_id=" + userSession.userId
-        return DefaultTopChatWebSocket(client, webSocketUrl, userSession.accessToken)
+        return DefaultTopChatWebSocket(
+            client, webSocketUrl, userSession.accessToken, "topchat"
+        )
     }
 
     @ChatScope

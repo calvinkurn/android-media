@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.common.websocket
 
 import com.tokopedia.chat_common.data.BaseChatUiModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
@@ -123,5 +124,15 @@ class DefaultWebsocketPayloadGenerator @Inject constructor(
             referredMsg = referredMsg
         )
         return CommonUtil.toJson(contract)
+    }
+
+    override fun generateImageWsPayload(
+        roomMetaData: RoomMetaData,
+        uploadId: String,
+        imageUploadUiModel: ImageUploadUiModel
+    ): String {
+        return TopChatWebSocketParam.generateParamSendImage(
+            roomMetaData.msgId, uploadId, imageUploadUiModel
+        )
     }
 }

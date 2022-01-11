@@ -11,7 +11,8 @@ import javax.inject.Inject
 class DefaultTopChatWebSocket @Inject constructor(
         private val okHttpClient: OkHttpClient,
         private val webSocketUrl: String,
-        private val token: String
+        private val token: String,
+        private val page: String
 ) : TopchatWebSocket {
 
     var webSocket: WebSocket? = null
@@ -40,7 +41,7 @@ class DefaultTopChatWebSocket @Inject constructor(
                 .header(HEADER_KEY_ORIGIN, TokopediaUrl.getInstance().WEB)
                 .header(HEADER_KEY_AUTH, "$HEADER_VALUE_BEARER $token")
         if (BuildConfig.DEBUG) {
-            requestBuilder.header(HEADER_KEY_PAGE, HEADER_VALUE_CHATLIST)
+            requestBuilder.header(HEADER_KEY_PAGE, page)
         }
         return requestBuilder.build()
     }
@@ -51,7 +52,6 @@ class DefaultTopChatWebSocket @Inject constructor(
         private const val HEADER_KEY_PAGE = "page"
 
         private const val HEADER_VALUE_BEARER = "Bearer"
-        private const val HEADER_VALUE_CHATLIST = "chatlist"
 
         const val CODE_NORMAL_CLOSURE = 1000
     }

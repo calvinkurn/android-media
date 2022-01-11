@@ -40,10 +40,11 @@ import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
-import com.tokopedia.chat_common.data.SendableUiModel.Companion.SENDING_TEXT
+import com.tokopedia.chat_common.data.BaseChatUiModel.Builder.Companion.generateCurrentReplyTime
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.*
+import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel
@@ -370,9 +371,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun showPreviewMsg(previewMsg: SendableUiModel) {
-        adapter.addHeaderDateIfDifferent(previewMsg)
-        adapter.addNewMessage(previewMsg)
-        topchatViewState?.scrollToBottom()
+        if (!adapter.hasPreviewOnList(previewMsg.localId)) {
+            adapter.addHeaderDateIfDifferent(previewMsg)
+            adapter.addNewMessage(previewMsg)
+            topchatViewState?.scrollToBottom()
+        }
     }
 
     override fun clearReferredMsg() {
@@ -896,11 +899,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         context?.let {
             val bs = TopchatBottomSheetBuilder.getErrorUploadImageBs(it,
                 onRetryClicked = {
-                    removeDummy(element)
+//                    removeDummy(element)
                     resendImage(element)
                 },
                 onDeleteClicked = {
-                    removeDummy(element)
+                    adapter.removePreviewMsg(element.localId)
+//                    removeDummy(element)
                 }
             )
             bs.show(childFragmentManager, "Retry Image Upload")
@@ -910,7 +914,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun resendImage(element: ImageUploadUiModel) {
         //change the retry value
         element.isRetry = false
-        presenter.startUploadImages(element)
+        adapter.updatePreviewState(element.localId)
+        viewModel.startUploadImages(element)
+//        presenter.startUploadImages(element)
     }
 
     override fun onProductClicked(element: ProductAttachmentUiModel) {
@@ -1448,7 +1454,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             remoteConfig?.getBoolean(RemoteConfigKey.TOPCHAT_COMPRESS).let {
                 if (it == null || it == false) {
                     onSendAndReceiveMessage()
-                    presenter.startUploadImages(model)
+//                    presenter.startUploadImages(model)
+                    viewModel.startUploadImages(model)
                     topchatViewState?.scrollToBottom()
                 } else {
                     presenter.startCompressImages(model)
@@ -1528,11 +1535,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return ImageUploadUiModel.Builder()
             .withRoomMetaData(presenter.roomMetaData)
             .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
-            .withReplyTime(SENDING_TEXT)
+            .withReplyTime(generateCurrentReplyTime())
             .withStartTime(SendableUiModel.generateStartTime())
             .withIsDummy(true)
             .withImageUrl(imageUrl)
             .withParentReply(replyCompose?.referredMsg)
+            .withLocalId(IdentifierUtil.generateLocalId())
             .build()
     }
 
@@ -1760,7 +1768,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onBackPressed(): Boolean {
         if (super.onBackPressed()) return true
-        if (::presenter.isInitialized && presenter.isUploading()) {
+        if (::presenter.isInitialized && viewModel.isUploading()) {
             showDialogConfirmToAbortUpload()
         } else {
             finishActivity()
@@ -2727,6 +2735,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         viewModel.attachmentSent.observe(viewLifecycleOwner, { attachment ->
             sendAnalyticAttachmentSent(attachment)
+        })
+
+        viewModel.failUploadImage.observe(viewLifecycleOwner, { image ->
+            topchatViewState?.showRetryUploadImages(image, true)
+        })
+
+        viewModel.errorSnackbar.observe(viewLifecycleOwner, { error ->
+            showSnackbarError(error)
         })
     }
 

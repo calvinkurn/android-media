@@ -335,12 +335,12 @@ open class TopChatRoomPresenter @Inject constructor(
             addDummyToService(image)
             startUploadImageWithService(image)
         } else {
-            processDummyMessage(image)
-            uploadImageUseCase.upload(
-                image = image,
-                onSuccess = ::onSuccessUploadImage,
-                onError = ::onErrorUploadImage
-            )
+//            processDummyMessage(image)
+//            uploadImageUseCase.upload(
+//                image = image,
+//                onSuccess = ::onSuccessUploadImage,
+//                onError = ::onErrorUploadImage
+//            )
         }
     }
 
@@ -363,48 +363,49 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun onSuccessUploadImage(uploadId: String, image: ImageUploadUiModel) {
-        when (networkMode) {
-            MODE_WEBSOCKET -> sendImageByWebSocket(uploadId, image)
-            MODE_API -> sendImageByApi(uploadId, image)
-        }
+//        when (networkMode) {
+//            MODE_WEBSOCKET -> sendImageByWebSocket(uploadId, image)
+//            MODE_API -> sendImageByApi(uploadId, image)
+//        }
     }
 
     private fun onErrorUploadImage(throwable: Throwable, image: ImageUploadUiModel) {
-        view?.onErrorUploadImage(ErrorHandler.getErrorMessage(view?.context, throwable), image)
+//        view?.onErrorUploadImage(ErrorHandler.getErrorMessage(view?.context, throwable), image)
     }
 
     private fun sendImageByWebSocket(uploadId: String, image: ImageUploadUiModel) {
-        val requestParams = TopChatWebSocketParam.generateParamSendImage(
-            thisMessageId, uploadId, image
-        )
-        sendMessageWebSocket(requestParams)
+//        val requestParams = TopChatWebSocketParam.generateParamSendImage(
+//            thisMessageId, uploadId, image
+//        )
+//        sendMessageWebSocket(requestParams)
     }
 
     private fun sendImageByApi(uploadId: String, image: ImageUploadUiModel) {
-        val requestParams = ReplyChatUseCase.generateParamAttachImage(thisMessageId, uploadId)
-        sendByApi(requestParams, image)
+//        val requestParams = ReplyChatUseCase.generateParamAttachImage(thisMessageId, uploadId)
+//        sendByApi(requestParams, image)
     }
 
     override fun isUploading(): Boolean {
-        return uploadImageUseCase.isUploading
+        return false
+//        return uploadImageUseCase.isUploading
     }
 
     private fun processDummyMessage(it: Visitable<*>) {
-        view?.addDummyMessage(it)
-        dummyList.add(it)
+//        view?.addDummyMessage(it)
+//        dummyList.add(it)
     }
 
     private fun getDummyOnList(visitable: Visitable<*>): Visitable<*>? {
-        dummyList.isNotEmpty().let {
-            for (i in 0 until dummyList.size) {
-                val temp = (dummyList[i] as SendableUiModel)
-                if (temp.startTime == (visitable as SendableUiModel).startTime
-                    && temp.messageId == (visitable as SendableUiModel).messageId
-                ) {
-                    return dummyList[i]
-                }
-            }
-        }
+//        dummyList.isNotEmpty().let {
+//            for (i in 0 until dummyList.size) {
+//                val temp = (dummyList[i] as SendableUiModel)
+//                if (temp.startTime == (visitable as SendableUiModel).startTime
+//                    && temp.messageId == (visitable as SendableUiModel).messageId
+//                ) {
+//                    return dummyList[i]
+//                }
+//            }
+//        }
 
         return null
     }
@@ -414,29 +415,29 @@ open class TopChatRoomPresenter @Inject constructor(
 //    }
 
     private fun sendByApi(requestParams: RequestParams, dummyMessage: Visitable<*>) {
-        replyChatUseCase.execute(requestParams, object : Subscriber<ReplyChatViewModel>() {
-            override fun onNext(response: ReplyChatViewModel) {
-                if (response.isSuccessReplyChat) {
-                    view?.onReceiveMessageEvent(response.chat)
-                    checkDummyAndRemove(dummyMessage);
-                }
-            }
-
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable?) {
-                view?.showSnackbarError(ErrorHandler.getErrorMessage(view?.context, e))
-            }
-
-        })
+//        replyChatUseCase.execute(requestParams, object : Subscriber<ReplyChatViewModel>() {
+//            override fun onNext(response: ReplyChatViewModel) {
+//                if (response.isSuccessReplyChat) {
+//                    view?.onReceiveMessageEvent(response.chat)
+//                    checkDummyAndRemove(dummyMessage);
+//                }
+//            }
+//
+//            override fun onCompleted() {
+//
+//            }
+//
+//            override fun onError(e: Throwable?) {
+//                view?.showSnackbarError(ErrorHandler.getErrorMessage(view?.context, e))
+//            }
+//
+//        })
     }
 
     private fun checkDummyAndRemove(dummyMessage: Visitable<*>) {
-        getDummyOnList(dummyMessage)?.let {
-            view?.removeDummy(it)
-        }
+//        getDummyOnList(dummyMessage)?.let {
+//            view?.removeDummy(it)
+//        }
     }
 
     override fun showErrorSnackbar(@StringRes stringId: Int) {
@@ -446,7 +447,7 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     protected open fun sendMessageWebSocket(messageText: String) {
-        RxWebSocket.send(messageText, listInterceptor)
+//        RxWebSocket.send(messageText, listInterceptor)
     }
 
     protected open fun sendMessageJsonObjWebSocket(msgObj: JsonObject) {
@@ -592,9 +593,9 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String) {
-        val dummyMessage = mapToDummyMessage(thisMessageId, sendMessage, startTime)
-        processDummyMessage(dummyMessage)
-        sendByApi(ReplyChatUseCase.generateParam(messageId, sendMessage), dummyMessage)
+//        val dummyMessage = mapToDummyMessage(thisMessageId, sendMessage, startTime)
+//        processDummyMessage(dummyMessage)
+//        sendByApi(ReplyChatUseCase.generateParam(messageId, sendMessage), dummyMessage)
     }
 
     private fun sendSticker(
@@ -731,15 +732,17 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     protected open fun isEnableUploadImageService(): Boolean {
-        return try {
-            remoteConfig.getBoolean(ENABLE_UPLOAD_IMAGE_SERVICE, false) && !isProblematicDevice()
-        } catch (ex: Exception) {
-            false
-        }
+        return false
+//        return try {
+//            remoteConfig.getBoolean(ENABLE_UPLOAD_IMAGE_SERVICE, false) && !isProblematicDevice()
+//        } catch (ex: Exception) {
+//            false
+//        }
     }
 
     private fun isProblematicDevice(): Boolean {
-        return PROBLEMATIC_DEVICE.contains(DeviceInfo.getModelName().toLowerCase())
+        return false
+//        return PROBLEMATIC_DEVICE.contains(DeviceInfo.getModelName().toLowerCase())
     }
 
     override fun clearText() {}

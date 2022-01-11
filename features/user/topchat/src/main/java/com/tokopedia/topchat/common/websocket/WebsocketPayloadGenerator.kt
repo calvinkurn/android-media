@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.common.websocket
 
+import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
@@ -52,6 +53,12 @@ interface WebsocketPayloadGenerator {
         attachments: ArrayList<SendablePreview>,
         localId: String,
         referredMsg: ParentReply?
+    ): String
+
+    fun generateImageWsPayload(
+        roomMetaData: RoomMetaData,
+        uploadId: String,
+        imageUploadUiModel: ImageUploadUiModel
     ): String
 
 }

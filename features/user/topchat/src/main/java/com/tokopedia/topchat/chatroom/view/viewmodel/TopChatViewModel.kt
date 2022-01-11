@@ -18,6 +18,7 @@ import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
+import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -47,6 +48,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStic
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Param.Companion.SRW_TICKER
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
@@ -67,7 +69,9 @@ import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class TopChatViewModel @Inject constructor(
     private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
@@ -99,7 +103,8 @@ class TopChatViewModel @Inject constructor(
     private val webSocketStateHandler: WebSocketStateHandler,
     private val webSocketParser: WebSocketParser,
     private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
-    private var payloadGenerator: WebsocketPayloadGenerator
+    private var payloadGenerator: WebsocketPayloadGenerator,
+    private var uploadImageUseCase: TopchatUploadImageUseCase
 ) : BaseViewModel(dispatcher.main), LifecycleObserver {
 
     private val _messageId = MutableLiveData<Result<String>>()
@@ -220,6 +225,14 @@ class TopChatViewModel @Inject constructor(
     private val _attachmentSent = MutableLiveData<SendablePreview>()
     val attachmentSent: LiveData<SendablePreview>
         get() = _attachmentSent
+
+    private val _failUploadImage = MutableLiveData<ImageUploadUiModel>()
+    val failUploadImage: LiveData<ImageUploadUiModel>
+        get() = _failUploadImage
+
+    private val _errorSnackbar = MutableLiveData<Throwable>()
+    val errorSnackbar: LiveData<Throwable>
+        get() = _errorSnackbar
 
     var attachProductWarehouseId = "0"
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
@@ -891,6 +904,37 @@ class TopChatViewModel @Inject constructor(
         sendWsStopTyping()
     }
 
+    fun startUploadImages(image: ImageUploadUiModel) {
+        _removeSrwBubble.value = null
+        if (isEnableUploadImageService()) {
+//            addDummyToService(image)
+//            startUploadImageWithService(image)
+        } else {
+            showPreviewMsg(image)
+            uploadImageUseCase.upload(
+                image = image,
+                onSuccess = ::onSuccessUploadImage,
+                onError = ::onErrorUploadImage
+            )
+        }
+    }
+
+    private fun onSuccessUploadImage(
+        uploadId: String, imageUploadUiModel: ImageUploadUiModel
+    ) {
+        val wsPayload = payloadGenerator.generateImageWsPayload(
+            roomMetaData, uploadId, imageUploadUiModel
+        )
+        sendWsPayload(wsPayload)
+    }
+
+    private fun onErrorUploadImage(
+        throwable: Throwable, imageUploadUiModel: ImageUploadUiModel
+    ) {
+        _errorSnackbar.value = throwable
+        _failUploadImage.value = imageUploadUiModel
+    }
+
     fun markAsRead() {
         val wsPayload = payloadGenerator.generateMarkAsReadPayload(roomMetaData)
         sendWsPayload(wsPayload)
@@ -977,7 +1021,29 @@ class TopChatViewModel @Inject constructor(
         return QuestionUiModel(srwMessage, ctaButton.extras.intent)
     }
 
+    private fun isEnableUploadImageService(): Boolean {
+        return try {
+            remoteConfig.getBoolean(
+                TopChatRoomPresenter.ENABLE_UPLOAD_IMAGE_SERVICE, false
+            ) && !isProblematicDevice()
+        } catch (ex: Exception) {
+            false
+        }
+    }
+
+    private fun isProblematicDevice(): Boolean {
+        return PROBLEMATIC_DEVICE.contains(
+            DeviceInfo.getModelName().lowercase(Locale.getDefault())
+        )
+    }
+
+    fun isUploading(): Boolean {
+        return uploadImageUseCase.isUploading
+    }
+
     companion object {
         const val TAG = "TopchatWebSocketViewModel"
+        const val ENABLE_UPLOAD_IMAGE_SERVICE = "android_enable_topchat_upload_image_service"
+        private val PROBLEMATIC_DEVICE = listOf("iris88", "iris88_lite", "lenovo k9")
     }
 }
