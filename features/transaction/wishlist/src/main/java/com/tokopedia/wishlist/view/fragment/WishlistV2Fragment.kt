@@ -24,6 +24,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -153,8 +154,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         private const val FILTER_STOCK_LABEL = "Stok"
         private const val FILTER_CATEGORIES_LABEL = "Kategori"
         private const val PADDING_RV = 10
-        private const val TYPE_LIST = "list"
-        private const val TYPE_GRID = "grid"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -1130,17 +1129,20 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             wishlistV2Adapter.showCheckbox()
             binding?.run {
                 clWishlistHeader.gone()
+                wishlistV2StickyCountManageLabel.wishlistDivider.gone()
+                wishlistV2StickyCountManageLabel.wishlistTypeLayoutIcon.gone()
                 containerDelete.visible()
                 deleteButton.isEnabled = false
                 deleteButton.text = getString(R.string.wishlist_v2_delete_text)
             }
-
         } else {
             setSwipeRefreshLayout()
             wishlistV2Adapter.hideCheckbox()
             binding?.run {
                 containerDelete.gone()
                 clWishlistHeader.visible()
+                wishlistV2StickyCountManageLabel.wishlistDivider.show()
+                wishlistV2StickyCountManageLabel.wishlistTypeLayoutIcon.show()
             }
         }
         WishlistV2Analytics.clickAturOnWishlist()
