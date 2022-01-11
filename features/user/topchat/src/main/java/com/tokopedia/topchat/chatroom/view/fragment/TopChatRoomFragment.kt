@@ -1204,15 +1204,26 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun sendSticker(sticker: Sticker?) {
         if (sticker == null) return
+//        onSendAndReceiveMessage()
+//        val referredMsg = replyCompose?.referredMsg
+//        if (rvSrw?.isShowing() == true) {
+//            addSrwBubbleToChat()
+//        }
+//        onSendingMessage().invoke()
+//        presenter.sendAttachmentsAndSticker(
+//            sticker, referredMsg
+//        )
+
         onSendAndReceiveMessage()
         val referredMsg = replyCompose?.referredMsg
         if (rvSrw?.isShowing() == true) {
             addSrwBubbleToChat()
         }
         onSendingMessage().invoke()
-        presenter.sendAttachmentsAndSticker(
-            sticker, referredMsg
-        )
+        sendAttachmentPreviews(sticker.intention)
+        viewModel.sendSticker(sticker, referredMsg)
+        clearAttachmentPreviews()
+        clearReferredMsg()
     }
 
     private fun onSendingMessage(clearMessage: Boolean = true): () -> Unit {
@@ -2210,7 +2221,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val voucherPreview =
             CommonUtil.fromJson<VoucherPreview>(stringVoucherPreview, VoucherPreview::class.java)
         val sendableVoucher = SendableVoucherPreview(voucherPreview)
-        if (!presenter.hasEmptyAttachmentPreview()) {
+        if (!viewModel.hasEmptyAttachmentPreview()) {
             presenter.clearAttachmentPreview()
             viewModel.clearAttachmentPreview()
         }

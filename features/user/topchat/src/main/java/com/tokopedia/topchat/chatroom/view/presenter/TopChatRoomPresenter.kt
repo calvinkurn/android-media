@@ -450,7 +450,7 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     protected open fun sendMessageJsonObjWebSocket(msgObj: JsonObject) {
-        RxWebSocket.send(msgObj, listInterceptor)
+//        RxWebSocket.send(msgObj, listInterceptor)
     }
 
     override fun sendAttachmentsAndMessage(
@@ -470,10 +470,10 @@ open class TopChatRoomPresenter @Inject constructor(
     override fun sendAttachmentsAndSticker(
         sticker: Sticker, referredMsg: ParentReply?
     ) {
-        sendAttachments(sticker.intention)
-        sendSticker(sticker, referredMsg)
-        view?.clearAttachmentPreviews()
-        view?.clearReferredMsg()
+//        sendAttachments(sticker.intention)
+//        sendSticker(sticker, referredMsg)
+//        view?.clearAttachmentPreviews()
+//        view?.clearReferredMsg()
     }
 
     override fun sendAttachmentsAndSrw(
@@ -547,18 +547,18 @@ open class TopChatRoomPresenter @Inject constructor(
         request: String,
         preview: SendableUiModel
     ) {
-        processPreviewMessage(preview)
-        sendMessageWebSocket(request)
-        sendWsStopTyping()
+//        processPreviewMessage(preview)
+//        sendMessageWebSocket(request)
+//        sendWsStopTyping()
     }
 
     private fun sendWsStopTyping() {
-        val request = TopChatWebSocketParam.generateParamStopTyping(roomMetaData.msgId)
-        sendMessageWebSocket(request)
+//        val request = TopChatWebSocketParam.generateParamStopTyping(roomMetaData.msgId)
+//        sendMessageWebSocket(request)
     }
 
     private fun processPreviewMessage(previewMsg: SendableUiModel) {
-        view?.showPreviewMsg(previewMsg)
+//        view?.showPreviewMsg(previewMsg)
     }
 
     private fun generatePreviewMessage(
@@ -601,43 +601,43 @@ open class TopChatRoomPresenter @Inject constructor(
         sticker: Sticker,
         referredMsg: ParentReply?
     ) {
-        val startTime = SendableUiModel.generateStartTime()
-        val previewSticker = StickerUiModel.generatePreviewMessage(
-            roomMetaData = roomMetaData,
-            sticker = sticker,
-            referredMsg = referredMsg
-        )
-        val stickerContract = sticker.generateWebSocketPayload(
-            messageId = roomMetaData.msgId,
-            startTime = startTime,
-            attachments = attachmentsPreview,
-            localId = previewSticker.localId,
-            referredMsg = referredMsg
-        )
-        val request = CommonUtil.toJson(stickerContract)
-        sendWs(request, previewSticker)
+//        val startTime = SendableUiModel.generateStartTime()
+//        val previewSticker = StickerUiModel.generatePreviewMessage(
+//            roomMetaData = roomMetaData,
+//            sticker = sticker,
+//            referredMsg = referredMsg
+//        )
+//        val stickerContract = sticker.generateWebSocketPayload(
+//            messageId = roomMetaData.msgId,
+//            startTime = startTime,
+//            attachments = attachmentsPreview,
+//            localId = previewSticker.localId,
+//            referredMsg = referredMsg
+//        )
+//        val request = CommonUtil.toJson(stickerContract)
+//        sendWs(request, previewSticker)
     }
 
     private fun sendAttachments(message: String) {
-        if (hasEmptyAttachmentPreview()) return
-        attachmentsPreview.forEach { attachment ->
-            handleSrwBubbleState(attachment)
-            val previewMsg = attachment.generatePreviewMessage(
-                roomMetaData, message
-            )
-            val wsMsgPayload = attachment.generateMsgObj(
-                roomMetaData, message, userLocationInfo, previewMsg.localId
-            )
-            processPreviewMessage(previewMsg)
-            sendWebSocketAttachmentPayload(wsMsgPayload)
-            view?.sendAnalyticAttachmentSent(attachment)
-        }
+//        if (hasEmptyAttachmentPreview()) return
+//        attachmentsPreview.forEach { attachment ->
+//            handleSrwBubbleState(attachment)
+//            val previewMsg = attachment.generatePreviewMessage(
+//                roomMetaData, message
+//            )
+//            val wsMsgPayload = attachment.generateMsgObj(
+//                roomMetaData, message, userLocationInfo, previewMsg.localId
+//            )
+//            processPreviewMessage(previewMsg)
+//            sendWebSocketAttachmentPayload(wsMsgPayload)
+//            view?.sendAnalyticAttachmentSent(attachment)
+//        }
     }
 
     private fun sendWebSocketAttachmentPayload(wsMsgPayload: Any) {
         when (wsMsgPayload) {
             is String -> sendMessageWebSocket(wsMsgPayload)
-            is JsonObject -> sendMessageJsonObjWebSocket(wsMsgPayload)
+//            is JsonObject -> sendMessageJsonObjWebSocket(wsMsgPayload)
         }
     }
 
@@ -662,7 +662,8 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun hasEmptyAttachmentPreview(): Boolean {
-        return attachmentsPreview.isEmpty()
+        return true
+//        return attachmentsPreview.isEmpty()
     }
 
     override fun initAttachmentPreview() {

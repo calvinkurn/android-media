@@ -42,6 +42,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
+import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.usecase.*
@@ -822,12 +823,12 @@ class TopChatViewModel @Inject constructor(
         if (hasEmptyAttachmentPreview()) return
         attachmentsPreview.forEach { attachment ->
             handleSrwBubbleState(attachment)
-            val previewMsg = payloadGenerator.generatePreviewMessage(
+            val previewMsg = payloadGenerator.generateAttachmentPreviewMsg(
                 sendablePreview = attachment,
                 roomMetaData = roomMetaData,
                 message = message
             )
-            val wsPayload = payloadGenerator.generateWsPayload(
+            val wsPayload = payloadGenerator.generateAttachmentWsPayload(
                 sendablePreview = attachment,
                 roomMetaData = roomMetaData,
                 message = message,
@@ -862,6 +863,27 @@ class TopChatViewModel @Inject constructor(
             previewMsg = previewMsg,
             attachments = products ?: attachmentsPreview,
             userLocationInfo = userLocationInfo,
+            referredMsg = referredMsg
+        )
+        showPreviewMsg(previewMsg)
+        sendWsPayload(wsPayload)
+        sendWsStopTyping()
+    }
+
+    fun sendSticker(
+        sticker: Sticker,
+        referredMsg: ParentReply?
+    ) {
+        val previewMsg = payloadGenerator.generateStickerPreview(
+            roomMetaData = roomMetaData,
+            sticker = sticker,
+            referredMsg = referredMsg
+        )
+        val wsPayload = payloadGenerator.generateStickerWsPayload(
+            sticker = sticker,
+            roomMetaData = roomMetaData,
+            attachments = attachmentsPreview,
+            localId = previewMsg.localId,
             referredMsg = referredMsg
         )
         showPreviewMsg(previewMsg)

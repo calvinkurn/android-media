@@ -6,10 +6,14 @@ import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.chat_common.util.IdentifierUtil
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.usecase.TopChatWebSocketParam
+import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.ArrayList
 import javax.inject.Inject
 
 class DefaultWebsocketPayloadGenerator @Inject constructor(
@@ -61,7 +65,7 @@ class DefaultWebsocketPayloadGenerator @Inject constructor(
         )
     }
 
-    override fun generateWsPayload(
+    override fun generateAttachmentWsPayload(
         sendablePreview: SendablePreview,
         roomMetaData: RoomMetaData,
         message: String,
@@ -73,7 +77,7 @@ class DefaultWebsocketPayloadGenerator @Inject constructor(
         ).toString()
     }
 
-    override fun generatePreviewMessage(
+    override fun generateAttachmentPreviewMsg(
         sendablePreview: SendablePreview,
         roomMetaData: RoomMetaData,
         message: String
@@ -89,5 +93,31 @@ class DefaultWebsocketPayloadGenerator @Inject constructor(
 
     override fun generateMarkAsReadPayload(roomMetaData: RoomMetaData): String {
         return TopChatWebSocketParam.generateParamRead(roomMetaData.msgId)
+    }
+
+    override fun generateStickerPreview(
+        roomMetaData: RoomMetaData,
+        sticker: Sticker,
+        referredMsg: ParentReply?
+    ): SendableUiModel {
+        return StickerUiModel.generatePreviewMessage(roomMetaData, sticker, referredMsg)
+    }
+
+    override fun generateStickerWsPayload(
+        sticker: Sticker,
+        roomMetaData: RoomMetaData,
+        attachments: ArrayList<SendablePreview>,
+        localId: String,
+        referredMsg: ParentReply?
+    ): String {
+        val startTime = SendableUiModel.generateStartTime()
+        val contract = sticker.generateWebSocketPayload(
+            messageId = roomMetaData.msgId,
+            startTime = startTime,
+            attachments = attachments,
+            localId = localId,
+            referredMsg = referredMsg
+        )
+        return CommonUtil.toJson(contract)
     }
 }
