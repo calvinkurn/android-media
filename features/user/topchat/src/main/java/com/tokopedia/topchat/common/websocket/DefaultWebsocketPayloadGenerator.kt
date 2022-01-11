@@ -60,4 +60,8 @@ class DefaultWebsocketPayloadGenerator @Inject constructor(
             referredMsg = referredMsg
         )
     }
+
+    override fun generateWsPayloadStopTyping(msgId: String): String {
+        return TopChatWebSocketParam.generateParamStopTyping(msgId)
+    }
 }

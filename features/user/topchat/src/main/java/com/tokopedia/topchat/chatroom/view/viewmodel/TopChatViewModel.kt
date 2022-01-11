@@ -826,7 +826,10 @@ class TopChatViewModel @Inject constructor(
     }
 
     private fun sendWsStopTyping() {
-        // TODO("Not yet implemented")
+        val wsPayload = payloadGenerator.generateWsPayloadStopTyping(
+            roomMetaData.msgId
+        )
+        sendWsPayload(wsPayload)
     }
 
     private fun sendWsPayload(wsPayload: String) {

@@ -22,4 +22,6 @@ interface WebsocketPayloadGenerator {
         userLocationInfo: LocalCacheModel? = null,
         referredMsg: ParentReply? = null
     ): String
+
+    fun generateWsPayloadStopTyping(msgId: String): String
 }
