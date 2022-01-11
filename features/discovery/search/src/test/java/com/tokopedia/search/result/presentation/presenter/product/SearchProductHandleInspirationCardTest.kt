@@ -387,13 +387,14 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         visitableList.size shouldBe 19
         var i = 0
 
+        val inspirationCardViewModelIndex = arrayOf(5, 6, 11, 14)
         visitableList.forEachIndexed { index, visitable ->
             if (index == 0) {
                 visitable.shouldBeInstanceOf<SearchProductCountDataView>(
                         "visitable list at index $index should be SearchProductCountViewModel"
                 )
             }
-            else if (index == 5 || index == 6 || index == 11 || index == 14) {
+            else if (inspirationCardViewModelIndex.contains(index)) {
                 visitable.shouldBeInstanceOf<InspirationCardDataView>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )

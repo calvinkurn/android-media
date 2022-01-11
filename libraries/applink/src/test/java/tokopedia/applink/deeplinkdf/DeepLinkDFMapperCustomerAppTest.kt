@@ -847,6 +847,12 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
+    fun `check buyer cancellation order appLink then should return DF_BASE in customerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_INTERNAL}://buyer/cancellationrequest"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
+    }
+
+    @Test
     fun `check topchat idless appLink then should return DF_BASE in customerapp`() {
         val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://topchat"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
