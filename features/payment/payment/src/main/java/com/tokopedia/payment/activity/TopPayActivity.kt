@@ -105,7 +105,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     private var isInterceptOtp = true
     private var mJsHciCallbackFuncName: String? = null
-    private var kycRedirectionUrl: String = ""
 
     private var webChromeWebviewClient: CommonWebViewClient? = null
 
@@ -425,7 +424,9 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         if (requestCode == CommonWebViewClient.ATTACH_FILE_REQUEST && webChromeWebviewClient != null) {
             webChromeWebviewClient?.onActivityResult(requestCode, resultCode, intent)
         } else if (requestCode == REQUEST_CODE_LIVENESS && resultCode == Activity.RESULT_OK) {
-            scroogeWebView?.loadUrl(kycRedirectionUrl)
+            val redirectionUrl = intent?.getStringExtra(LIVENESS_REDIRECTION_PATH) ?: ""
+            if (redirectionUrl.isNotEmpty())
+                scroogeWebView?.loadUrl(redirectionUrl)
         } else if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val imagePath = intent?.getStringExtra(HCI_KTP_IMAGE_PATH)
             sendKycImagePathToLite(imagePath)
@@ -526,8 +527,9 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         
         fun goToAlaCarteKyc(uri: Uri) {
             val projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID) ?: ""
-            val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConst.KYC_FORM_ONLY, projectId)
-            kycRedirectionUrl = uri.getQueryParameter(LIVENESS_REDIRECTION_PATH) ?: ""
+            val kycRedirectionUrl = uri.getQueryParameter(LIVENESS_REDIRECTION_PATH) ?: ""
+
+            val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConst.KYC_FORM_ONLY, projectId, kycRedirectionUrl)
             startActivityForResult(intent, REQUEST_CODE_LIVENESS)
         }
 
