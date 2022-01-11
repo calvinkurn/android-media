@@ -688,6 +688,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         initProductPreview(savedInstanceState)
         initInvoicePreview(savedInstanceState)
         presenter.initAttachmentPreview()
+        viewModel.initAttachmentPreview()
     }
 
     private fun onSuccessGetMessageId(messageId: String) {
@@ -756,7 +757,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         ) {
             val productIdCommaSeparated = presenter.getProductIdPreview()
                 .joinToString(separator = ",")
-            viewModel.getSmartReplyWidget(messageId, productIdCommaSeparated)
+            val productIdCommaSeparated2 = viewModel.getProductIdPreview()
+                .joinToString(separator = ",")
+            viewModel.getSmartReplyWidget(messageId, productIdCommaSeparated2)
         }
     }
 
@@ -1455,12 +1458,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (data == null || resultCode != RESULT_OK) return
         initInvoicePreview(data.extras)
         presenter.initAttachmentPreview()
+        viewModel.initAttachmentPreview()
     }
 
     private fun onAttachVoucherSelected(data: Intent?, resultCode: Int) {
         if (data == null || resultCode != RESULT_OK) return
         initVoucherPreview(data.extras)
         presenter.initAttachmentPreview()
+        viewModel.initAttachmentPreview()
     }
 
     private fun onReturnFromShopPage(resultCode: Int, data: Intent?) {
@@ -1477,6 +1482,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         )
         resultProducts?.let {
             presenter.initProductPreviewFromAttachProduct(it)
+            viewModel.initProductPreviewFromAttachProduct(it)
             removeSrwBubble()
         }
     }
@@ -1820,6 +1826,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onEmptyProductPreview() {
         presenter.clearAttachmentPreview()
+        viewModel.clearAttachmentPreview()
     }
 
     override fun clearAttachmentPreviews() {
@@ -2144,6 +2151,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             if (productPreview.notEnoughRequiredData()) continue
             val sendAbleProductPreview = SendableProductPreview(productPreview)
             presenter.addAttachmentPreview(sendAbleProductPreview)
+            viewModel.addAttachmentPreview(sendAbleProductPreview)
         }
     }
 
@@ -2171,7 +2179,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         )
         if (invoiceViewModel.enoughRequiredData()) {
             presenter.clearAttachmentPreview()
+            viewModel.clearAttachmentPreview()
             presenter.addAttachmentPreview(invoiceViewModel)
+            viewModel.addAttachmentPreview(invoiceViewModel)
         }
     }
 
@@ -2193,8 +2203,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val sendableVoucher = SendableVoucherPreview(voucherPreview)
         if (!presenter.hasEmptyAttachmentPreview()) {
             presenter.clearAttachmentPreview()
+            viewModel.clearAttachmentPreview()
         }
         presenter.addAttachmentPreview(sendableVoucher)
+        viewModel.addAttachmentPreview(sendableVoucher)
     }
 
     override fun startReview(starCount: Int, review: ReviewUiModel, lastKnownPosition: Int) {
@@ -2281,7 +2293,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun trackClickSrwQuestion(question: QuestionUiModel) {
         val productIds = presenter.getProductIdPreview()
-        val trackProductIds = productIds.joinToString(separator = ", ")
+        val productIds2 = viewModel.getProductIdPreview()
+        val trackProductIds = productIds2.joinToString(separator = ", ")
         analytics.eventClickSrw(shopId, session.userId, trackProductIds, question)
     }
 
@@ -2322,7 +2335,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun addSrwBubble() {
         val srwState = rvSrw?.getStateInfo()
-        adapter.addSrwBubbleUiModel(srwState, presenter.getAttachmentsPreview().toList())
+        val previews = presenter.getAttachmentsPreview().toList()
+        val previews2 = viewModel.getAttachmentsPreview().toList()
+        adapter.addSrwBubbleUiModel(srwState, previews2)
     }
 
     private fun sendSrwQuestion(
@@ -2563,14 +2578,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             presenter.updateRoomMetaData(viewModel.roomMetaData)
             val result = it.first
             val isInit = it.second
-            when(result) {
+            when (result) {
                 is Success -> {
                     if (isInit) {
                         onSuccessGetExistingChatFirstTime(
-                            result.data.chatroomViewModel, result.data.chatReplies)
+                            result.data.chatroomViewModel, result.data.chatReplies
+                        )
                     } else {
                         onSuccessResetChatToFirstPage(
-                            result.data.chatroomViewModel, result.data.chatReplies)
+                            result.data.chatroomViewModel, result.data.chatReplies
+                        )
                     }
                 }
                 is Fail -> {
@@ -2584,7 +2601,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         })
 
         viewModel.topChat.observe(viewLifecycleOwner, {
-            when(it) {
+            when (it) {
                 is Success -> onSuccessGetTopChat(it.data.chatroomViewModel, it.data.chatReplies)
                 is Fail -> onErrorGetTopChat(it.throwable)
             }
@@ -2592,7 +2609,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         viewModel.bottomChat.observe(viewLifecycleOwner, {
 //            presenter.setInTheMiddleOfChat(viewModel.isInTheMiddleOfThePage())
-            when(it) {
+            when (it) {
                 is Success -> onSuccessGetBottomChat(it.data.chatroomViewModel, it.data.chatReplies)
                 is Fail -> onErrorGetBottomChat(it.throwable)
             }
@@ -2652,6 +2669,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         viewModel.previewMsg.observe(viewLifecycleOwner, { preview ->
             showPreviewMsg(preview)
         })
+
+        viewModel.showableAttachmentPreviews.observe(viewLifecycleOwner, { attachPreview ->
+            if (attachPreview.isNotEmpty()) {
+                showAttachmentPreview(attachPreview)
+                updateSrwPreviewState()
+                if (hasProductPreviewShown()) {
+                    focusOnReply()
+                }
+            } else {
+                // TODO: clear attachments
+            }
+        })
     }
 
     private fun handleToggleBlock(item: WrapperChatSetting) {
@@ -2659,14 +2688,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             BlockActionType.BlockChat -> {
                 when (item.response) {
                     is Success -> onSuccessToggleBlockChat(
-                        true, R.string.title_success_block_chat)
+                        true, R.string.title_success_block_chat
+                    )
                     is Fail -> onErrorToggleBlockChat((item.response as Fail).throwable)
                 }
             }
             BlockActionType.UnblockChat -> {
                 when (item.response) {
                     is Success -> onSuccessToggleBlockChat(
-                        false, R.string.title_success_unblock_chat)
+                        false, R.string.title_success_unblock_chat
+                    )
                     is Fail -> onErrorToggleBlockChat((item.response as Fail).throwable)
                 }
             }

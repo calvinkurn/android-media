@@ -11,6 +11,8 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParam
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.attachcommon.data.ResultProduct
+import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
@@ -207,10 +209,15 @@ class TopChatViewModel @Inject constructor(
     val previewMsg: LiveData<SendableUiModel>
         get() = _previewMsg
 
+    private val _showableAttachmentPreviews = MutableLiveData<ArrayList<SendablePreview>>()
+    val showableAttachmentPreviews: LiveData<ArrayList<SendablePreview>>
+        get() = _showableAttachmentPreviews
+
     var attachProductWarehouseId = "0"
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     var roomMetaData: RoomMetaData = RoomMetaData()
     private var userLocationInfo = LocalCacheModel()
+    private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
@@ -834,6 +841,57 @@ class TopChatViewModel @Inject constructor(
 
     private fun sendWsPayload(wsPayload: String) {
         chatWebSocket.sendPayload(wsPayload)
+    }
+
+    fun addAttachmentPreview(sendablePreview: SendablePreview) {
+        attachmentsPreview.add(sendablePreview)
+    }
+
+    fun initProductPreviewFromAttachProduct(resultProducts: ArrayList<ResultProduct>) {
+        if (resultProducts.isNotEmpty()) clearAttachmentPreview()
+        for (resultProduct in resultProducts) {
+            val productPreview = ProductPreview(
+                id = resultProduct.productId,
+                imageUrl = resultProduct.productImageThumbnail,
+                name = resultProduct.name,
+                price = resultProduct.price,
+                url = resultProduct.productUrl,
+                priceBefore = resultProduct.priceBefore,
+                dropPercentage = resultProduct.dropPercentage,
+                productFsIsActive = resultProduct.isFreeOngkirActive,
+                productFsImageUrl = resultProduct.imgUrlFreeOngkir,
+                remainingStock = resultProduct.stock,
+                isSupportVariant = resultProduct.isSupportVariant,
+                campaignId = resultProduct.campaignId,
+                isPreorder = resultProduct.isPreorder,
+                priceInt = resultProduct.priceInt,
+                categoryId = resultProduct.categoryId
+            )
+            if (productPreview.notEnoughRequiredData()) continue
+            val sendAbleProductPreview = SendableProductPreview(productPreview)
+            addAttachmentPreview(sendAbleProductPreview)
+        }
+        initAttachmentPreview()
+    }
+
+    fun clearAttachmentPreview() {
+        attachmentsPreview.clear()
+    }
+    fun initAttachmentPreview() {
+        _showableAttachmentPreviews.value = attachmentsPreview
+    }
+
+    fun getProductIdPreview(): List<String> {
+        return attachmentsPreview.filterIsInstance<SendableProductPreview>()
+            .map { it.productId }
+    }
+
+    fun getAttachmentsPreview(): List<SendablePreview> {
+        return attachmentsPreview
+    }
+
+    fun hasEmptyAttachmentPreview(): Boolean {
+        return attachmentsPreview.isEmpty()
     }
 
     companion object {

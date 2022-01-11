@@ -184,12 +184,14 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun getProductIdPreview(): List<String> {
-        return attachmentsPreview.filterIsInstance<SendableProductPreview>()
-            .map { it.productId }
+//        return attachmentsPreview.filterIsInstance<SendableProductPreview>()
+//            .map { it.productId }
+        return listOf()
     }
 
     override fun getAttachmentsPreview(): List<SendablePreview> {
-        return attachmentsPreview
+//        return attachmentsPreview
+        return listOf()
     }
 
 //    override fun mappingEvent(webSocketResponse: WebSocketResponse, messageId: String) {
@@ -616,7 +618,7 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun sendAttachments(message: String) {
-        if (attachmentsPreview.isEmpty()) return
+        if (hasEmptyAttachmentPreview()) return
         attachmentsPreview.forEach { attachment ->
             handleSrwBubbleState(attachment)
             val previewMsg = attachment.generatePreviewMessage(
@@ -655,7 +657,7 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun addAttachmentPreview(sendablePreview: SendablePreview) {
-        attachmentsPreview.add(sendablePreview)
+//        attachmentsPreview.add(sendablePreview)
     }
 
     override fun hasEmptyAttachmentPreview(): Boolean {
@@ -663,45 +665,45 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun initAttachmentPreview() {
-        if (attachmentsPreview.isEmpty()) return
-        view?.let {
-            it.showAttachmentPreview(attachmentsPreview)
-            it.updateSrwPreviewState()
-            if (!it.hasProductPreviewShown()) {
-                it.focusOnReply()
-            }
-        }
+//        if (attachmentsPreview.isEmpty()) return
+//        view?.let {
+//            it.showAttachmentPreview(attachmentsPreview)
+//            it.updateSrwPreviewState()
+//            if (!it.hasProductPreviewShown()) {
+//                it.focusOnReply()
+//            }
+//        }
     }
 
     override fun clearAttachmentPreview() {
-        attachmentsPreview.clear()
+//        attachmentsPreview.clear()
     }
 
     override fun initProductPreviewFromAttachProduct(resultProducts: ArrayList<ResultProduct>) {
-        if (resultProducts.isNotEmpty()) clearAttachmentPreview()
-        for (resultProduct in resultProducts) {
-            val productPreview = ProductPreview(
-                id = resultProduct.productId,
-                imageUrl = resultProduct.productImageThumbnail,
-                name = resultProduct.name,
-                price = resultProduct.price,
-                url = resultProduct.productUrl,
-                priceBefore = resultProduct.priceBefore,
-                dropPercentage = resultProduct.dropPercentage,
-                productFsIsActive = resultProduct.isFreeOngkirActive,
-                productFsImageUrl = resultProduct.imgUrlFreeOngkir,
-                remainingStock = resultProduct.stock,
-                isSupportVariant = resultProduct.isSupportVariant,
-                campaignId = resultProduct.campaignId,
-                isPreorder = resultProduct.isPreorder,
-                priceInt = resultProduct.priceInt,
-                categoryId = resultProduct.categoryId
-            )
-            if (productPreview.notEnoughRequiredData()) continue
-            val sendAbleProductPreview = SendableProductPreview(productPreview)
-            attachmentsPreview.add(sendAbleProductPreview)
-        }
-        initAttachmentPreview()
+//        if (resultProducts.isNotEmpty()) clearAttachmentPreview()
+//        for (resultProduct in resultProducts) {
+//            val productPreview = ProductPreview(
+//                id = resultProduct.productId,
+//                imageUrl = resultProduct.productImageThumbnail,
+//                name = resultProduct.name,
+//                price = resultProduct.price,
+//                url = resultProduct.productUrl,
+//                priceBefore = resultProduct.priceBefore,
+//                dropPercentage = resultProduct.dropPercentage,
+//                productFsIsActive = resultProduct.isFreeOngkirActive,
+//                productFsImageUrl = resultProduct.imgUrlFreeOngkir,
+//                remainingStock = resultProduct.stock,
+//                isSupportVariant = resultProduct.isSupportVariant,
+//                campaignId = resultProduct.campaignId,
+//                isPreorder = resultProduct.isPreorder,
+//                priceInt = resultProduct.priceInt,
+//                categoryId = resultProduct.categoryId
+//            )
+//            if (productPreview.notEnoughRequiredData()) continue
+//            val sendAbleProductPreview = SendableProductPreview(productPreview)
+//            addAttachmentPreview(sendAbleProductPreview)
+//        }
+//        initAttachmentPreview()
     }
 
 //    override fun isInTheMiddleOfThePage(): Boolean {
