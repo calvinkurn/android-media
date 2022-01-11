@@ -153,6 +153,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         private const val FILTER_STOCK_LABEL = "Stok"
         private const val FILTER_CATEGORIES_LABEL = "Kategori"
         private const val PADDING_RV = 10
+        private const val TYPE_LIST = "list"
+        private const val TYPE_GRID = "grid"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -368,8 +370,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private fun changeTypeLayout() {
         if (wishlistPref?.getTypeLayout() == TYPE_LIST) {
             wishlistPref?.setTypeLayout(1)
+            WishlistV2Analytics.clickLayoutSettings(TYPE_GRID)
         } else {
             wishlistPref?.setTypeLayout(0)
+            WishlistV2Analytics.clickLayoutSettings(TYPE_LIST)
         }
         setPaddingReferToTypeLayout()
         wishlistV2Adapter.changeTypeLayout(wishlistPref?.getTypeLayout())
