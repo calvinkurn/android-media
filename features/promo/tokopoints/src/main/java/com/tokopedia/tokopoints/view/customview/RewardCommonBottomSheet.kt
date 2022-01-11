@@ -47,12 +47,13 @@ class RewardCommonBottomSheet : BottomSheetUnify() {
     }
 
     fun setBottomSheet(bottomSheetModel: BottomSheetModel){
+        setTitle(bottomSheetModel?.bottomSheetTitle?:"")
         textTitle?.text = bottomSheetModel.contentTitle
         textDesc?.text = bottomSheetModel.contentDescription
         button?.text = bottomSheetModel.buttonText
-        image?.mRemoteFileName = "phone_verification.png"
-        image?.dpiSupportType = ImageDensityType.SUPPORT_SINGLE_DPI
-       // image?.loadRemoteImageDrawable("phone_verification.png", ImageDensityType.SUPPORT_SINGLE_DPI)
+//        image?.mRemoteFileName = "phone_verification.png"
+//        image?.dpiSupportType = ImageDensityType.SUPPORT_SINGLE_DPI
+        image?.loadRemoteImageDrawable("https://images.tokopedia.net/img/android/res/singleDpi/levelup_gold.png", ImageDensityType.SUPPORT_SINGLE_DPI)
       //  image?.dpiSupportType = ImageDensityType.SUPPORT_SINGLE_DPI
      //   image?.mCompleteUrl = "https://images.tokopedia.net/img/android/res/singleDpi/levelup_gold.png"
     }

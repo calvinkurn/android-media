@@ -8,8 +8,8 @@
 
     <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/iv_bs_membership"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_180"
+        android:layout_height="@dimen/dp_180"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="@dimen/spacing_lvl8"
