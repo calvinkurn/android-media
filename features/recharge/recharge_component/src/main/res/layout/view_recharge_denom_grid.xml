@@ -139,6 +139,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/pg_denom_grid_flash_sale"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:typographyType="small"
             tools:text="Segera Habis"
             android:visibility="gone"

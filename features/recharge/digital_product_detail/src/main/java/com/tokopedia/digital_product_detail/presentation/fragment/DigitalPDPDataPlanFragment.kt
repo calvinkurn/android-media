@@ -78,6 +78,12 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
                         title="15 ribu",
                         specialLabel = "Any campaign label",
                         price = "Rp500",
+                        slashPrice = "Rp16.500",
+                    ),
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
                         discountLabel = "10%",
                         slashPrice = "Rp16.500",
                         appLink = "tokopedia://deals",
@@ -86,15 +92,47 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
                         flashSalePercentage = 80
                     ),
                     DenomWidgetModel(
+                        title="50 ribu",
+                        price = "Rp35.500",
+                    ),
+                    DenomWidgetModel(
+                        title="50 ribu",
+                        price = "Rp35.500",
+                        slashPrice = "75.000"
+                    ),
+                    DenomWidgetModel(
+                        title="100 ribu",
+                        price = "Rp85.500",
+                        slashPrice = "105.000"
+                    ),
+                    DenomWidgetModel(
+                        title="50 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp35.500",
+                    ),
+                    DenomWidgetModel(
+                        title="50 ribu",
+                        price = "Rp35.500",
+                    ),
+                    DenomWidgetModel(
+                        title="50 ribu",
+                        price = "Rp35.500",
+                    ),
+                    DenomWidgetModel(
                         title="15 ribu",
-                        //specialLabel = "Any campaign label",
+                        specialLabel = "Any campaign label",
                         price = "Rp500",
-//                        discountLabel = "10%",
+                        discountLabel = "10%",
                         slashPrice = "Rp16.500",
-//                        appLink = "tokopedia://deals",
-//                        expiredDate = "December 2021",
-//                        flashSaleLabel = "Segera Habis",
-//                        flashSalePercentage = 80
+                        appLink = "tokopedia://deals",
+                        expiredDate = "December 2021",
+                        flashSaleLabel = "Segera Habis",
+                        flashSalePercentage = 80
+                    ),
+                    DenomWidgetModel(
+                        title="50 ribu",
+                        price = "Rp35.500",
+                        slashPrice = "Rp16.500",
                     )
                 )
             )
