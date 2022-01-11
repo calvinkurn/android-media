@@ -457,7 +457,6 @@ class SearchActivity : BaseActivity(),
 
     override fun onResume() {
         super.onResume()
-
         setSearchNavigationCartButton()
     }
 
