@@ -38,6 +38,11 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
         viewModel = viewModelProvider.get(DigitalPDPPulsaViewModel::class.java)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding?.tickerWidget?.setText("<b>Haha</b> Hihi Huhu hehe Hoho")
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentDigitalPdpPulsaBinding.inflate(inflater, container, false)
         return binding?.root
