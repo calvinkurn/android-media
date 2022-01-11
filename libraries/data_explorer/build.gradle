@@ -17,21 +17,6 @@ buildscript {
     }
 }
 
-android {
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    // For Kotlin projects
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-    defaultConfig {
-        multiDexEnabled true
-        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
-    }
-}
-
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
@@ -74,9 +59,6 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.miscDependencies.coroutineCore
-
-    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
-    androidTestImplementation rootProject.ext.testDependencies.androidxTest
 }
 
 project.ext {
