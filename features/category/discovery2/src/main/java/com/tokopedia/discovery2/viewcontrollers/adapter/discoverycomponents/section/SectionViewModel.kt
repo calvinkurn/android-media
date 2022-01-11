@@ -12,7 +12,7 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class SectionViewModel (
+class SectionViewModel(
     val application: Application,
     val components: ComponentsItem,
     val position: Int
@@ -31,9 +31,10 @@ class SectionViewModel (
 
     private fun fetchChildComponents() {
         launchCatchError(block = {
-            sectionUseCase.getChildComponents(components.id,components.pageEndPoint)
-        },onError = {
-            it
+                syncData.value = sectionUseCase.getChildComponents(components.id, components.pageEndPoint)
+
+        }, onError = {
+//            Todo:: Error Handling
         })
     }
 

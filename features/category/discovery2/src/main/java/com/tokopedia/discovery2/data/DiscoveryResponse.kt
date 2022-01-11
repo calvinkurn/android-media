@@ -5,7 +5,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 
 data class DiscoveryResponse(
 
-        @SerializedName("components")
+        @SerializedName("components",alternate = ["component_data"])
         var components: MutableList<ComponentsItem>,
 
         @SerializedName("component")
