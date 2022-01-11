@@ -43,7 +43,8 @@ class ContentViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = ContentViewModel(getTableInfoUseCase, getTableContentUseCase,dropTableContentUseCase)
+        viewModel = ContentViewModel(getTableInfoUseCase, getTableContentUseCase, dropTableContentUseCase)
+        viewModel.databasePath = "/testpath"
     }
 
     @Test
@@ -106,8 +107,8 @@ class ContentViewModelTest {
 
     @Test
     fun `getTableContent case - empty table invalidPageRequest`() {
-        every { viewModel.totalResults } answers { 6 }
-        every {  viewModel.currentPage } answers { 3 }
+        viewModel.totalResults = 6
+        viewModel.currentPage = 3
         viewModel.getTableContent("test.db", orderBy = "", Order.ASCENDING)
         assert(viewModel.errorLiveData.value is InvalidPageRequestException)
         assert(viewModel.errorLiveData.value?.message == Constants.ErrorMessages.INVALID_PAGE_REQUEST)
@@ -115,7 +116,9 @@ class ContentViewModelTest {
 
     @Test
     fun `getTableContent case - result fetch - exception`() {
-        every { viewModel.totalResults } answers { 6 }
+        viewModel.totalResults = 6
+        viewModel.currentPage = 1
+
         coEvery { getTableContentUseCase.getTable(any(), any(), any()) } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
@@ -126,7 +129,8 @@ class ContentViewModelTest {
     @Test
     fun `getTableContent case - result fetch content success`() {
         val page = Page(cells = arrayListOf(Cell("cell1"), Cell("cell2")))
-        every { viewModel.totalResults } answers { 6 }
+        viewModel.totalResults = 6
+        viewModel.currentPage = 1
 
         coEvery { getTableContentUseCase.getTable(any(), any(), any()) } coAnswers {
             firstArg<(Page) -> Unit>().invoke(page)
@@ -159,7 +163,7 @@ class ContentViewModelTest {
     @Test
     fun updateHeader() {
         val cell = Cell(text = "test")
-        every { viewModel.columnHeaderList } answers { arrayListOf(cell) }
+        viewModel.columnHeaderList = arrayListOf(cell)
         viewModel.updateHeader(cell)
         assert(viewModel.columnHeaderList[0].active)
     }
