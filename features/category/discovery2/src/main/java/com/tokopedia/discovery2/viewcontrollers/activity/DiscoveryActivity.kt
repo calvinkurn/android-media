@@ -5,8 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.window.WindowLayoutInfo
+import androidx.window.windowInfoRepository
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.FoldableSupportManager
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
@@ -40,7 +43,7 @@ const val DISCOVERY_PLT_NETWORK_METRICS = "discovery_plt_network_metrics"
 const val DISCOVERY_PLT_RENDER_METRICS = "discovery_plt_render_metrics"
 private const val LOGIN_REQUEST_CODE = 35769
 
-open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
+open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>(), FoldableSupportManager.Callback {
 
     protected lateinit var discoveryViewModel: DiscoveryViewModel
 
@@ -77,6 +80,13 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         initDaggerInject()
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
+        FoldableSupportManager(windowInfoRepository(), this)?.let {
+            this.lifecycle.addObserver(it)
+        }
+    }
+
+    override fun onChangeLayout(newLayoutInfo: WindowLayoutInfo) {
+        newLayoutInfo
     }
 
     override fun sendScreenAnalytics() {
