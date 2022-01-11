@@ -1,14 +1,16 @@
 package com.tokopedia.tokopedianow.datefilter.presentation.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.date_filter.DateFilterUnify
-import com.tokopedia.datepicker.LocaleUtils
+import com.example.date_filter.DateFilterUnifyDateItem
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
@@ -93,30 +95,34 @@ class TokoNowDateFilterFragment: Fragment() {
             )
             val endDate = selectedCustomDate(
                 selectedDate = selectedFilter?.endDate.orEmpty(),
-                defaultDate = LocaleUtils.getCurrentLocale(this).toString()
+                defaultDate = getCurrentLocale(this).toString()
             )
-            val startDatePicker = DateTimePickerUnify(
-                context = this,
+            val startDatePicker = DateFilterUnifyDateItem(
                 minDate = getGregorianCalendar(DEFAULT_MIN_DATE),
                 defaultDate = startDate,
                 maxDate = endDate,
-                onDateChangedListener = null,
-                type = DateTimePickerUnify.TYPE_DATEPICKER
+                datePickerType = DateTimePickerUnify.TYPE_DATEPICKER
             )
-            val endDatePicker = DateTimePickerUnify(
-                context = this,
+            val endDatePicker = DateFilterUnifyDateItem(
                 minDate = startDate,
                 defaultDate = endDate,
-                maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(this)),
-                onDateChangedListener = null,
-                type = DateTimePickerUnify.TYPE_DATEPICKER
+                maxDate = GregorianCalendar(getCurrentLocale(this)),
+                datePickerType = DateTimePickerUnify.TYPE_DATEPICKER
             )
             dateFilterBottomSheet?.setCustomDatePicker(
-                text = getString(R.string.tokopedianow_date_filter_custom_date_item_bottomsheet_title),
-                startDatePicker = startDatePicker,
-                endDatePicker = endDatePicker,
+                startDateData = startDatePicker,
+                endDateData= endDatePicker,
                 isSelected = selectedFilter?.position == CUSTOM_DATE_POSITION
             )
+
+            dateFilterBottomSheet?.onCustomDateChanged = { newDate, isStartDate ->
+                // if start date is change
+                if(isStartDate){
+                    endDatePicker.minDate = newDate
+                } else { // if end date is changes
+                    startDatePicker.maxDate = newDate
+                }
+            }
         }
     }
 
@@ -157,5 +163,13 @@ class TokoNowDateFilterFragment: Fragment() {
 
     private fun convertCalendarToStringWithFormat(date: Calendar?): String {
         return date?.let { DateUtil.calendarToStringFormat(it, DATE_FORMAT) }.toString()
+    }
+
+    private fun getCurrentLocale(context: Context): Locale {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            context.resources.configuration.locales.get(0)
+        } else {
+            context.resources.configuration.locale
+        }
     }
 }
