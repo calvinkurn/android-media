@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationManagerCompat
+import com.tokopedia.notifications.common.CMConstant
 
 
 class NotificationSettingsUtils(private val context: Context) {
@@ -23,7 +24,11 @@ class NotificationSettingsUtils(private val context: Context) {
     fun checkNotificationsModeForSpecificChannel(channel: String?): NotificationMode {
         return if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val notificationChannel = notificationManager.getNotificationChannel(channel)
+                val notificationChannel = if (channel.isNullOrBlank()) {
+                    notificationManager.getNotificationChannel(CMConstant.NotificationChannel.CHANNEL_ID)
+                } else {
+                    notificationManager.getNotificationChannel(channel)
+                }
                 return if (notificationChannel != null && notificationChannel.importance == NotificationManager.IMPORTANCE_NONE) {
                     NotificationMode.CHANNEL_DISABLED
                 } else {
