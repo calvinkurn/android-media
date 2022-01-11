@@ -543,10 +543,10 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         summaryTransactionUiModel?.sellerCashbackValue = subtotalCashback.toLong()
     }
 
-    private fun getAvailableCartItemDataListAndShopTotalWeight(cartShopHolderData: CartShopHolderData): Pair<ArrayList<CartItemHolderData>, Double> {
+    fun getAvailableCartItemDataListAndShopTotalWeight(cartShopHolderData: CartShopHolderData): Pair<ArrayList<CartItemHolderData>, Double> {
         val allCartItemDataList = ArrayList<CartItemHolderData>()
         var shopWeight = 0.0
-        if (!cartShopHolderData.isError && (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected)) {
+        if (!cartShopHolderData.isError && cartShopHolderData.hasSelectedProduct) {
             cartShopHolderData.productUiModelList.forEach { cartItemHolderData ->
                 if (!cartItemHolderData.isError && cartItemHolderData.isSelected) {
                     allCartItemDataList.add(cartItemHolderData)

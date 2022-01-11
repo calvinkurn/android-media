@@ -84,20 +84,92 @@ object CartListPresenterBoAffordabilityTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("get bo affordability success not afford") {
+        Scenario("get bo affordability failed due to overweight") {
 
             val cartString = "123-123-123"
             val cartShopHolderData = CartShopHolderData(
-                    cartString = cartString
+                cartString = cartString,
+                maximumShippingWeight = 1.0,
+                maximumWeightWording = "overweight",
+                isAllSelected = true,
+                productUiModelList = arrayListOf(
+                    CartItemHolderData(
+                        isSelected = true,
+                        quantity = 10,
+                        productWeight = 1000000
+                    )
+                )
+            )
+
+            When("process get bo affordability") {
+                cartListPresenter.checkBoAffordability(cartShopHolderData)
+                coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
+            }
+
+            Then("should show failed") {
+                verify {
+                    cartShopHolderData.boAffordability = CartShopBoAffordabilityData(
+                        state = CartShopBoAffordabilityState.FAILED
+                    )
+                    view.updateCartBoAffordability(cartShopHolderData)
+                }
+            }
+
+            Then("should not get bo affordability") {
+                coVerify(inverse = true) {
+                    boAffordabilityUseCase.setParam(any()).executeOnBackground()
+                }
+            }
+        }
+
+        Scenario("get bo affordability debounce") {
+
+            val cartString = "123-123-123"
+            val cartShopHolderData = CartShopHolderData(
+                cartString = cartString
             )
             val ticker = "+ Rp10.000 lagi untuk dapat bebas ongkir"
 
             Given("success response") {
                 coEvery {
                     boAffordabilityUseCase.setParam(any()).executeOnBackground()
-                } returns BoAffordabilityResponse(1_000, BoAffordabilityTexts(
+                } returns BoAffordabilityResponse(
+                    1_000, BoAffordabilityTexts(
                         tickerCart = ticker
-                ))
+                    )
+                )
+            }
+
+            When("process get bo affordability") {
+                cartListPresenter.checkBoAffordability(cartShopHolderData)
+                coroutineTestDispatchers.coroutineDispatcher.advanceTimeBy(1)
+                cartListPresenter.checkBoAffordability(cartShopHolderData)
+                coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
+            }
+
+            Then("should get bo affordability exactly once") {
+                coVerify(exactly = 1) {
+                    boAffordabilityUseCase.setParam(any()).executeOnBackground()
+                }
+            }
+        }
+
+        Scenario("get bo affordability success not afford") {
+
+            val cartString = "123-123-123"
+            val cartShopHolderData = CartShopHolderData(
+                cartString = cartString
+            )
+            val ticker = "+ Rp10.000 lagi untuk dapat bebas ongkir"
+
+            Given("success response") {
+                coEvery {
+                    boAffordabilityUseCase.setParam(any()).executeOnBackground()
+                } returns BoAffordabilityResponse(
+                    1_000, BoAffordabilityTexts(
+                        tickerCart = ticker
+                    )
+                )
             }
 
             When("process get bo affordability") {
@@ -108,8 +180,8 @@ object CartListPresenterBoAffordabilityTest : Spek({
             Then("should show success not afford") {
                 verify {
                     cartShopHolderData.boAffordability = CartShopBoAffordabilityData(
-                            state = CartShopBoAffordabilityState.SUCCESS_NOT_AFFORD,
-                            tickerText = ticker
+                        state = CartShopBoAffordabilityState.SUCCESS_NOT_AFFORD,
+                        tickerText = ticker
                     )
                     view.updateCartBoAffordability(cartShopHolderData)
                 }
@@ -120,16 +192,18 @@ object CartListPresenterBoAffordabilityTest : Spek({
 
             val cartString = "123-123-123"
             val cartShopHolderData = CartShopHolderData(
-                    cartString = cartString
+                cartString = cartString
             )
             val ticker = "dapat bebas ongkir"
 
             Given("success response") {
                 coEvery {
                     boAffordabilityUseCase.setParam(any()).executeOnBackground()
-                } returns BoAffordabilityResponse(0, BoAffordabilityTexts(
+                } returns BoAffordabilityResponse(
+                    0, BoAffordabilityTexts(
                         tickerCart = ticker
-                ))
+                    )
+                )
             }
 
             When("process get bo affordability") {
@@ -140,8 +214,8 @@ object CartListPresenterBoAffordabilityTest : Spek({
             Then("should show success afford") {
                 verify {
                     cartShopHolderData.boAffordability = CartShopBoAffordabilityData(
-                            state = CartShopBoAffordabilityState.SUCCESS_AFFORD,
-                            tickerText = ticker
+                        state = CartShopBoAffordabilityState.SUCCESS_AFFORD,
+                        tickerText = ticker
                     )
                     view.updateCartBoAffordability(cartShopHolderData)
                 }
@@ -152,7 +226,7 @@ object CartListPresenterBoAffordabilityTest : Spek({
 
             val cartString = "123-123-123"
             val cartShopHolderData = CartShopHolderData(
-                    cartString = cartString
+                cartString = cartString
             )
 
             Given("success response") {
@@ -169,45 +243,9 @@ object CartListPresenterBoAffordabilityTest : Spek({
             Then("should show failed") {
                 verify {
                     cartShopHolderData.boAffordability = CartShopBoAffordabilityData(
-                            state = CartShopBoAffordabilityState.FAILED
+                        state = CartShopBoAffordabilityState.FAILED
                     )
                     view.updateCartBoAffordability(cartShopHolderData)
-                }
-            }
-        }
-
-        Scenario("get bo affordability failed due to overweight") {
-
-            val cartString = "123-123-123"
-            val cartShopHolderData = CartShopHolderData(
-                    cartString = cartString,
-                    maximumShippingWeight = 1.0,
-                    maximumWeightWording = "overweight",
-                    productUiModelList = arrayListOf(
-                            CartItemHolderData(
-                                    quantity = 10,
-                                    productWeight = 1000
-                            )
-                    )
-            )
-
-            When("process get bo affordability") {
-                cartListPresenter.checkBoAffordability(cartShopHolderData)
-                coroutineTestDispatchers.coroutineDispatcher.advanceUntilIdle()
-            }
-
-            Then("should show failed") {
-                verify {
-                    cartShopHolderData.boAffordability = CartShopBoAffordabilityData(
-                            state = CartShopBoAffordabilityState.FAILED
-                    )
-                    view.updateCartBoAffordability(cartShopHolderData)
-                }
-            }
-
-            Then("should not get bo affordability") {
-                coVerify(inverse = true) {
-                    boAffordabilityUseCase.setParam(any()).executeOnBackground()
                 }
             }
         }
