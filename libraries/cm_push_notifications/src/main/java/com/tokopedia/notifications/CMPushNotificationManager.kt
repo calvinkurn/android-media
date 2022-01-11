@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import androidx.work.ListenableWorker
 import com.google.firebase.messaging.RemoteMessage
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql
@@ -22,6 +23,7 @@ import com.tokopedia.notifications.common.PayloadConverter.convertMapToBundle
 import com.tokopedia.notifications.data.AmplificationDataSource
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.model.NotificationMode
+import com.tokopedia.notifications.utils.NotificationSettingsUtils
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
@@ -235,7 +237,31 @@ class CMPushNotificationManager : CoroutineScope {
 
         val baseNotificationModel = PayloadConverter.convertToBaseModel(notification)
         if (baseNotificationModel.notificationMode != NotificationMode.OFFLINE) {
-            IrisAnalyticsEvents.sendPushEvent(applicationContext, IrisAnalyticsEvents.PUSH_RECEIVED, baseNotificationModel)
+            if (baseNotificationModel.type == CMConstant.NotificationType.SILENT_PUSH) {
+                IrisAnalyticsEvents.sendPushEvent(
+                    applicationContext,
+                    IrisAnalyticsEvents.PUSH_RECEIVED,
+                    baseNotificationModel
+                )
+            } else {
+                when (NotificationSettingsUtils(applicationContext).checkNotificationsModeForSpecificChannel(
+                    baseNotificationModel.channelName
+                )) {
+                    NotificationSettingsUtils.NotificationMode.ENABLED -> {
+                        IrisAnalyticsEvents.sendPushEvent(
+                            applicationContext,
+                            IrisAnalyticsEvents.PUSH_RECEIVED,
+                            baseNotificationModel
+                        )
+                    }
+                    NotificationSettingsUtils.NotificationMode.DISABLED -> {
+                        //disabled
+                    }
+                    NotificationSettingsUtils.NotificationMode.CHANNEL_DISABLED -> {
+                        //channel disabled
+                    }
+                }
+            }
         }
         // aidlApiBundle : the data comes from AIDL service (including userSession data from another app)
         aidlApiBundle?.let { aidlBundle ->
