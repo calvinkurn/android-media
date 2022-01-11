@@ -2296,7 +2296,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onClickSrwBubbleQuestion(
         products: List<SendablePreview>, question: QuestionUiModel
     ) {
-        sendSrwQuestion(products, question)
+        sendSrwQuestionBubble(products, question)
     }
 
     override fun trackClickSrwQuestion(question: QuestionUiModel) {
@@ -2356,14 +2356,20 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         adapter.addSrwBubbleUiModel(srwState, previews2)
     }
 
-    private fun sendSrwQuestion(
+    private fun sendSrwQuestionBubble(
         products: List<SendablePreview>,
         question: QuestionUiModel
     ) {
         onSendAndReceiveMessage()
-        presenter.sendSrwBubble(
-            question, products
+        viewModel.sendMsg(
+            message = question.content,
+            intention = question.intent,
+            products = products,
+            referredMsg = null
         )
+//        presenter.sendSrwBubble(
+//            question, products
+//        )
     }
 
     private fun String.ellipsize(maxChar: Int): String {

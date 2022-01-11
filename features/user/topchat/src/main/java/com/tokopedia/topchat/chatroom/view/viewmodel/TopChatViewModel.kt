@@ -840,7 +840,8 @@ class TopChatViewModel @Inject constructor(
     fun sendMsg(
         message: String,
         intention: String?,
-        referredMsg: ParentReply?
+        referredMsg: ParentReply?,
+        products: List<SendablePreview>? = null
     ) {
         val previewMsg = payloadGenerator.generatePreviewMsg(
             message = message,
@@ -848,13 +849,12 @@ class TopChatViewModel @Inject constructor(
             roomMetaData = roomMetaData,
             referredMsg = referredMsg
         )
-        // TODO: implement list of products from SRW
         val wsPayload = payloadGenerator.generateWsPayload(
             message = message,
             intention = intention,
             roomMetaData = roomMetaData,
             previewMsg = previewMsg,
-            attachments = attachmentsPreview,
+            attachments = products ?: attachmentsPreview,
             userLocationInfo = userLocationInfo,
             referredMsg = referredMsg
         )
