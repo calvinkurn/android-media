@@ -338,17 +338,18 @@ class PlayViewModel @AssistedInject constructor(
             val pinnedMessage = _observablePinnedMessage.value ?: channelData.pinnedInfo.pinnedMessage
 
             return channelData.copy(
-                    partnerInfo = channelData.partnerInfo,
-                    likeInfo = _likeInfo.value,
-                    channelReportInfo = _channelReport.value,
-                    pinnedInfo = PlayPinnedInfoUiModel(
-                            pinnedMessage = pinnedMessage,
-                    ),
-                    quickReplyInfo = _quickReply.value,
-                    videoMetaInfo = newVideoMeta,
-                    status = _status.value,
-                    leaderboardInfo = _leaderboardInfo.value,
-                    upcomingInfo = channelData.upcomingInfo
+                partnerInfo = channelData.partnerInfo,
+                likeInfo = _likeInfo.value,
+                channelReportInfo = _channelReport.value,
+                pinnedInfo = PlayPinnedInfoUiModel(
+                    pinnedMessage = pinnedMessage,
+                ),
+                quickReplyInfo = _quickReply.value,
+                videoMetaInfo = newVideoMeta,
+                status = _status.value,
+                leaderboardInfo = _leaderboardInfo.value,
+                tagItems = _tagItems.value,
+                upcomingInfo = channelData.upcomingInfo
             )
         }
 
