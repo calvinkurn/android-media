@@ -105,13 +105,13 @@ class ChatModuleStub {
         return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
     }
 
-    @ChatScope
-    @Provides
-    fun provideRxWebSocketUtil(
-            rxWebSocketUtilStub: RxWebSocketUtilStub
-    ): RxWebSocketUtil {
-        return rxWebSocketUtilStub
-    }
+//    @ChatScope
+//    @Provides
+//    fun provideRxWebSocketUtil(
+//            rxWebSocketUtilStub: RxWebSocketUtilStub
+//    ): RxWebSocketUtil {
+//        return rxWebSocketUtilStub
+//    }
 
     @ChatScope
     @Provides

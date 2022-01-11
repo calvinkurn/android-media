@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel
 
+import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -27,6 +28,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
+import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatroom.data.ImageUploadServiceModel
 import com.tokopedia.topchat.chatroom.data.UploadImageDummy
@@ -57,6 +59,7 @@ import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.util.AddressUtil
+import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.topchat.common.websocket.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -72,6 +75,8 @@ import kotlinx.coroutines.withContext
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
+import rx.Subscriber
+import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -108,7 +113,8 @@ class TopChatViewModel @Inject constructor(
     private val webSocketParser: WebSocketParser,
     private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
     private var payloadGenerator: WebsocketPayloadGenerator,
-    private var uploadImageUseCase: TopchatUploadImageUseCase
+    private var uploadImageUseCase: TopchatUploadImageUseCase,
+    private var compressImageUseCase: CompressImageUseCase
 ) : BaseViewModel(dispatcher.main), LifecycleObserver {
 
     private val _messageId = MutableLiveData<Result<String>>()
@@ -238,6 +244,10 @@ class TopChatViewModel @Inject constructor(
     val errorSnackbar: LiveData<Throwable>
         get() = _errorSnackbar
 
+    private val _errorSnackbarStringRes = MutableLiveData<Int>()
+    val errorSnackbarStringRes: LiveData<Int>
+        get() = _errorSnackbarStringRes
+
     private val _uploadImageService = MutableLiveData<ImageUploadServiceModel>()
     val uploadImageService: LiveData<ImageUploadServiceModel>
         get() = _uploadImageService
@@ -247,6 +257,7 @@ class TopChatViewModel @Inject constructor(
     var roomMetaData: RoomMetaData = RoomMetaData()
     private var userLocationInfo = LocalCacheModel()
     private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
+    private val compressImageSubscription = CompositeSubscription()
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
@@ -1063,6 +1074,44 @@ class TopChatViewModel @Inject constructor(
 
     fun isUploading(): Boolean {
         return uploadImageUseCase.isUploading
+    }
+
+    fun startCompressImages(it: ImageUploadUiModel) {
+        val isValidImage = ImageUtil.validateImageAttachment(it.imageUrl)
+        if (isValidImage.first) {
+            it.imageUrl?.let { it1 ->
+                val subscription = compressImageUseCase.compressImage(it1)
+                    .subscribe(object : Subscriber<String>() {
+                        override fun onNext(compressedImageUrl: String?) {
+                            it.imageUrl = compressedImageUrl
+                            startUploadImages(it)
+                        }
+
+                        override fun onCompleted() {
+                        }
+
+                        override fun onError(e: Throwable?) {
+                            showErrorSnackbar(R.string.error_compress_image)
+                        }
+                    })
+                compressImageSubscription.clear()
+                compressImageSubscription.add(subscription)
+            }
+        } else {
+            when (isValidImage.second) {
+                ImageUtil.IMAGE_UNDERSIZE -> showErrorSnackbar(R.string.undersize_image)
+                ImageUtil.IMAGE_EXCEED_SIZE_LIMIT -> showErrorSnackbar(R.string.oversize_image)
+            }
+        }
+    }
+
+    override fun onCleared() {
+        compressImageSubscription.unsubscribe()
+        super.onCleared()
+    }
+
+    private fun showErrorSnackbar(@StringRes stringId: Int) {
+        _errorSnackbarStringRes.value = stringId
     }
 
     companion object {

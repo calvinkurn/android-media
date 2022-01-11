@@ -75,25 +75,25 @@ import kotlin.coroutines.CoroutineContext
  */
 
 open class TopChatRoomPresenter @Inject constructor(
-    tkpdAuthInterceptor: TkpdAuthInterceptor,
-    fingerprintInterceptor: FingerprintInterceptor,
+//    tkpdAuthInterceptor: TkpdAuthInterceptor,
+//    fingerprintInterceptor: FingerprintInterceptor,
     userSession: UserSessionInterface,
-    protected val webSocketUtil: RxWebSocketUtil,
+//    protected val webSocketUtil: RxWebSocketUtil,
     private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
     private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
     private var replyChatUseCase: ReplyChatUseCase,
-    private var compressImageUseCase: CompressImageUseCase,
-    private var uploadImageUseCase: TopchatUploadImageUseCase,
-    private val dispatchers: CoroutineDispatchers,
-    private val remoteConfig: RemoteConfig
+//    private var compressImageUseCase: CompressImageUseCase,
+//    private var uploadImageUseCase: TopchatUploadImageUseCase,
+    private val dispatchers: CoroutineDispatchers
+//    private val remoteConfig: RemoteConfig
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
     TopChatContract.Presenter, CoroutineScope {
 
 //    var autoRetryConnectWs = true
 //    var newUnreadMessage = 0
 //        private set
-    var thisMessageId: String = ""
-        private set
+//    var thisMessageId: String = ""
+//        private set
 //    val attachments: ArrayMap<String, Attachment> = ArrayMap()
     val onGoingStockUpdate: ArrayMap<String, UpdateProductStockResult> = ArrayMap()
 //    var attachProductWarehouseId = "0"
@@ -103,11 +103,11 @@ open class TopChatRoomPresenter @Inject constructor(
 //    private lateinit var webSocketUrl: String
 //    private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
 //    private var mSubscription: CompositeSubscription
-    private var compressImageSubscription: CompositeSubscription
-    private var listInterceptor: ArrayList<Interceptor>
-    private var dummyList: ArrayList<Visitable<*>>
-    var roomMetaData: RoomMetaData = RoomMetaData()
-        private set
+//    private var compressImageSubscription: CompositeSubscription
+//    private var listInterceptor: ArrayList<Interceptor>
+//    private var dummyList: ArrayList<Visitable<*>>
+//    var roomMetaData: RoomMetaData = RoomMetaData()
+//        private set
 
 //    private val _srw = MutableLiveData<Resource<ChatSmartReplyQuestionResponse>>()
 //    val srw: LiveData<Resource<ChatSmartReplyQuestionResponse>>
@@ -118,9 +118,9 @@ open class TopChatRoomPresenter @Inject constructor(
 
     init {
 //        mSubscription = CompositeSubscription()
-        compressImageSubscription = CompositeSubscription()
-        listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
-        dummyList = arrayListOf()
+//        compressImageSubscription = CompositeSubscription()
+//        listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
+//        dummyList = arrayListOf()
     }
 
     override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
@@ -265,7 +265,7 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     fun updateRoomMetaData(roomMetaData: RoomMetaData) {
-        this.roomMetaData = roomMetaData
+//        this.roomMetaData = roomMetaData
     }
 
     fun getTemplate(isSeller: Boolean) {
@@ -301,32 +301,32 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun startCompressImages(it: ImageUploadUiModel) {
-        val isValidImage = ImageUtil.validateImageAttachment(it.imageUrl)
-        if (isValidImage.first) {
-            it.imageUrl?.let { it1 ->
-                val subscription = compressImageUseCase.compressImage(it1)
-                    .subscribe(object : Subscriber<String>() {
-                        override fun onNext(compressedImageUrl: String?) {
-                            it.imageUrl = compressedImageUrl
-                            startUploadImages(it)
-                        }
-
-                        override fun onCompleted() {
-                        }
-
-                        override fun onError(e: Throwable?) {
-                            showErrorSnackbar(R.string.error_compress_image)
-                        }
-                    })
-                compressImageSubscription?.clear()
-                compressImageSubscription?.add(subscription)
-            }
-        } else {
-            when (isValidImage.second) {
-                ImageUtil.IMAGE_UNDERSIZE -> showErrorSnackbar(R.string.undersize_image)
-                ImageUtil.IMAGE_EXCEED_SIZE_LIMIT -> showErrorSnackbar(R.string.oversize_image)
-            }
-        }
+//        val isValidImage = ImageUtil.validateImageAttachment(it.imageUrl)
+//        if (isValidImage.first) {
+//            it.imageUrl?.let { it1 ->
+//                val subscription = compressImageUseCase.compressImage(it1)
+//                    .subscribe(object : Subscriber<String>() {
+//                        override fun onNext(compressedImageUrl: String?) {
+//                            it.imageUrl = compressedImageUrl
+//                            startUploadImages(it)
+//                        }
+//
+//                        override fun onCompleted() {
+//                        }
+//
+//                        override fun onError(e: Throwable?) {
+//                            showErrorSnackbar(R.string.error_compress_image)
+//                        }
+//                    })
+//                compressImageSubscription?.clear()
+//                compressImageSubscription?.add(subscription)
+//            }
+//        } else {
+//            when (isValidImage.second) {
+//                ImageUtil.IMAGE_UNDERSIZE -> showErrorSnackbar(R.string.undersize_image)
+//                ImageUtil.IMAGE_EXCEED_SIZE_LIMIT -> showErrorSnackbar(R.string.oversize_image)
+//            }
+//        }
     }
 
     override fun startUploadImages(image: ImageUploadUiModel) {
@@ -441,9 +441,9 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun showErrorSnackbar(@StringRes stringId: Int) {
-        view?.let {
-            it.showSnackbarError(it.getStringResource(stringId))
-        }
+//        view?.let {
+//            it.showSnackbarError(it.getStringResource(stringId))
+//        }
     }
 
     protected open fun sendMessageWebSocket(messageText: String) {
@@ -647,7 +647,7 @@ open class TopChatRoomPresenter @Inject constructor(
 //        destroyWebSocket()
         getTemplateChatRoomUseCase.unsubscribe()
         replyChatUseCase.unsubscribe()
-        compressImageSubscription.unsubscribe()
+//        compressImageSubscription.unsubscribe()
         super.detachView()
     }
 

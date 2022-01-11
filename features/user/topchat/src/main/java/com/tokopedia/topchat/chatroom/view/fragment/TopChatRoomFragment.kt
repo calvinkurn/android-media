@@ -690,7 +690,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
         initProductPreview(savedInstanceState)
         initInvoicePreview(savedInstanceState)
-        presenter.initAttachmentPreview()
+//        presenter.initAttachmentPreview()
         viewModel.initAttachmentPreview()
     }
 
@@ -1460,7 +1460,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     viewModel.startUploadImages(model)
                     topchatViewState?.scrollToBottom()
                 } else {
-                    presenter.startCompressImages(model)
+//                    presenter.startCompressImages(model)
+                    viewModel.startCompressImages(model)
                 }
                 sellerReviewHelper.hasRepliedChat = true
             }
@@ -1488,14 +1489,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun onAttachInvoiceSelected(data: Intent?, resultCode: Int) {
         if (data == null || resultCode != RESULT_OK) return
         initInvoicePreview(data.extras)
-        presenter.initAttachmentPreview()
+//        presenter.initAttachmentPreview()
         viewModel.initAttachmentPreview()
     }
 
     private fun onAttachVoucherSelected(data: Intent?, resultCode: Int) {
         if (data == null || resultCode != RESULT_OK) return
         initVoucherPreview(data.extras)
-        presenter.initAttachmentPreview()
+//        presenter.initAttachmentPreview()
         viewModel.initAttachmentPreview()
     }
 
@@ -1512,7 +1513,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY
         )
         resultProducts?.let {
-            presenter.initProductPreviewFromAttachProduct(it)
+//            presenter.initProductPreviewFromAttachProduct(it)
             viewModel.initProductPreviewFromAttachProduct(it)
             removeSrwBubble()
         }
@@ -1535,7 +1536,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun generateChatViewModelWithImage(imageUrl: String): ImageUploadUiModel {
         return ImageUploadUiModel.Builder()
-            .withRoomMetaData(presenter.roomMetaData)
+            .withRoomMetaData(viewModel.roomMetaData)
             .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
             .withReplyTime(generateCurrentReplyTime())
             .withStartTime(SendableUiModel.generateStartTime())
@@ -1857,7 +1858,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onEmptyProductPreview() {
-        presenter.clearAttachmentPreview()
+//        presenter.clearAttachmentPreview()
         viewModel.clearAttachmentPreview()
     }
 
@@ -2182,7 +2183,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         for (productPreview in productPreviews) {
             if (productPreview.notEnoughRequiredData()) continue
             val sendAbleProductPreview = SendableProductPreview(productPreview)
-            presenter.addAttachmentPreview(sendAbleProductPreview)
+//            presenter.addAttachmentPreview(sendAbleProductPreview)
             viewModel.addAttachmentPreview(sendAbleProductPreview)
         }
     }
@@ -2210,9 +2211,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             totalPriceAmount
         )
         if (invoiceViewModel.enoughRequiredData()) {
-            presenter.clearAttachmentPreview()
+//            presenter.clearAttachmentPreview()
             viewModel.clearAttachmentPreview()
-            presenter.addAttachmentPreview(invoiceViewModel)
+//            presenter.addAttachmentPreview(invoiceViewModel)
             viewModel.addAttachmentPreview(invoiceViewModel)
         }
     }
@@ -2234,10 +2235,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             CommonUtil.fromJson<VoucherPreview>(stringVoucherPreview, VoucherPreview::class.java)
         val sendableVoucher = SendableVoucherPreview(voucherPreview)
         if (!viewModel.hasEmptyAttachmentPreview()) {
-            presenter.clearAttachmentPreview()
+//            presenter.clearAttachmentPreview()
             viewModel.clearAttachmentPreview()
         }
-        presenter.addAttachmentPreview(sendableVoucher)
+//        presenter.addAttachmentPreview(sendableVoucher)
         viewModel.addAttachmentPreview(sendableVoucher)
     }
 
@@ -2630,7 +2631,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         viewModel.existingChat.observe(viewLifecycleOwner, {
 //            presenter.setInTheMiddleOfChat(viewModel.isInTheMiddleOfThePage())
-            presenter.updateRoomMetaData(viewModel.roomMetaData)
+//            presenter.updateRoomMetaData(viewModel.roomMetaData)
             val result = it.first
             val isInit = it.second
             when (result) {
@@ -2747,6 +2748,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         viewModel.errorSnackbar.observe(viewLifecycleOwner, { error ->
             showSnackbarError(error)
+        })
+
+        viewModel.errorSnackbarStringRes.observe(viewLifecycleOwner, { stringRes ->
+            showSnackbarError(getStringResource(stringRes))
         })
 
         viewModel.uploadImageService.observe(viewLifecycleOwner, { image ->
@@ -2885,7 +2890,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun deleteBubble(msg: BaseChatUiModel) {
         val replyTimeNano = msg.replyTime ?: return
-        viewModel.deleteMsg(presenter.roomMetaData.msgId, replyTimeNano)
+        viewModel.deleteMsg(viewModel.roomMetaData.msgId, replyTimeNano)
     }
 
     private fun onReceiveWsEventDeleteMsg(replyTimeNano: String) {
@@ -2905,7 +2910,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun getUserName(senderId: String): String {
-        return presenter.roomMetaData.userIdMap[senderId]?.name ?: ""
+        return viewModel.roomMetaData.userIdMap[senderId]?.name ?: ""
     }
 
     override fun goToBubble(parentReply: ParentReply) {

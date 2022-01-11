@@ -127,15 +127,15 @@ class ChatModule {
         return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
     }
 
-    @ChatScope
-    @Provides
-    fun provideRxWebSocketUtil(
-            tkpdAuthInterceptor: TkpdAuthInterceptor,
-            fingerprintInterceptor: FingerprintInterceptor
-    ): RxWebSocketUtil {
-        val interceptors = listOf(tkpdAuthInterceptor, fingerprintInterceptor)
-        return RxWebSocketUtil.getInstance(interceptors)
-    }
+//    @ChatScope
+//    @Provides
+//    fun provideRxWebSocketUtil(
+//            tkpdAuthInterceptor: TkpdAuthInterceptor,
+//            fingerprintInterceptor: FingerprintInterceptor
+//    ): RxWebSocketUtil {
+//        val interceptors = listOf(tkpdAuthInterceptor, fingerprintInterceptor)
+//        return RxWebSocketUtil.getInstance(interceptors)
+//    }
 
     @ChatScope
     @Provides

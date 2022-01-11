@@ -43,11 +43,11 @@ class TopChatRoomPresenterStub @Inject constructor(
 ) {
 
     override fun sendMessageWebSocket(messageText: String) {
-        webSocketUtil.send(messageText)
+//        webSocketUtil.send(messageText)
     }
 
     override fun sendMessageJsonObjWebSocket(msgObj: JsonObject) {
-        webSocketUtil.send(msgObj.toString())
+//        webSocketUtil.send(msgObj.toString())
     }
 
     override fun isEnableUploadImageService(): Boolean {
@@ -55,11 +55,11 @@ class TopChatRoomPresenterStub @Inject constructor(
     }
 
     override fun startUploadImageWithService(image: ImageUploadUiModel) {
-        UploadImageChatServiceStub.enqueueWork(
-            InstrumentationRegistry.getInstrumentation().context,
-            ImageUploadMapper.mapToImageUploadServer(image),
-            thisMessageId
-        )
+//        UploadImageChatServiceStub.enqueueWork(
+//            InstrumentationRegistry.getInstrumentation().context,
+//            ImageUploadMapper.mapToImageUploadServer(image),
+//            thisMessageId
+//        )
     }
 
     companion object {
