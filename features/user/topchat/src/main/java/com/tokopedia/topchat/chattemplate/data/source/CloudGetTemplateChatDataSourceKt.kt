@@ -8,10 +8,10 @@ import javax.inject.Inject
 class CloudGetTemplateChatDataSourceKt @Inject constructor(private val chatApiKt: ChatApiKt) {
 
     suspend fun getTemplateSuspend(parameters: Map<String, Boolean>): TemplateData {
-        return chatApiKt.getTemplateSuspend(parameters).templateData
+        return chatApiKt.getTemplateSuspend(parameters).data
     }
 
     suspend fun setTemplate(parameters: JsonObject, isSeller: Boolean): TemplateData {
-        return chatApiKt.setTemplate(parameters, isSeller).templateData
+        return chatApiKt.setTemplate(parameters, isSeller).data
     }
 }

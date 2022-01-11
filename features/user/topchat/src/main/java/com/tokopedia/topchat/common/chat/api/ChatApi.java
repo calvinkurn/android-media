@@ -29,19 +29,4 @@ public interface ChatApi {
     @POST(TkpdBaseURL.Chat.DELETE)
     Observable<Response<DataResponse<DeleteChatListUiModel>>> deleteMessage(@Body JsonObject
                                                                                     parameters);
-    @FormUrlEncoded
-    @PUT(TkpdBaseURL.Chat.UPDATE_TEMPLATE)
-    Observable<Response<DataResponse<TemplateData>>> editTemplate(@Path("index") int index,
-                                                                  @FieldMap Map<String, Object> jsonObject,
-                                                                  @Query("is_seller") boolean isSeller);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Chat.CREATE_TEMPLATE)
-    Observable<Response<DataResponse<TemplateData>>> createTemplate(@FieldMap Map<String, Object>
-                                                                            parameters);
-
-    @HTTP(method = "DELETE", path = TkpdBaseURL.Chat.DELETE_TEMPLATE + "/{is_seller}", hasBody = true)
-    Observable<Response<DataResponse<TemplateData>>> deleteTemplate(@Path("index") int index
-            , @Path("is_seller") boolean isSeller
-            , @Body JsonObject object);
 }

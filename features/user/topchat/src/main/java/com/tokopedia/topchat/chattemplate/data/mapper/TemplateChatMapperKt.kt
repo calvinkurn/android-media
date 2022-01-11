@@ -1,9 +1,13 @@
 package com.tokopedia.topchat.chattemplate.data.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
+import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateUiModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel
+import retrofit2.Response
+import java.lang.RuntimeException
 
 object TemplateChatMapperKt {
     fun TemplateData.mapToTemplateUiModel(): GetTemplateUiModel {
@@ -22,5 +26,12 @@ object TemplateChatMapperKt {
         result.isEnabled = this.isIsEnable
         result.listTemplate = list
         return result
+    }
+
+    fun TemplateData.mapToEditTemplateUiModel(): EditTemplateUiModel {
+        val model = EditTemplateUiModel()
+        model.isSuccess = this.isSuccess
+        model.isEnabled = this.isIsEnable
+        return model
     }
 }

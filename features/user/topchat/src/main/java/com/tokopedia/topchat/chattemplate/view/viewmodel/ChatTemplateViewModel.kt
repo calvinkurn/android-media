@@ -10,6 +10,7 @@ import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCase
 import com.tokopedia.topchat.chattemplate.domain.usecase.SetAvailabilityTemplateUseCase
 import com.tokopedia.topchat.chattemplate.domain.usecase.SetAvailabilityTemplateUseCase.Companion.getAvailabilityJson
 import com.tokopedia.topchat.chattemplate.domain.usecase.SetAvailabilityTemplateUseCase.Companion.toJsonArray
+import com.tokopedia.topchat.chattemplate.view.uimodel.ArrangeResultModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

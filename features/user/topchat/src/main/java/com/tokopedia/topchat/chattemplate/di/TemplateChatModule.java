@@ -16,11 +16,8 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.utils.OkHttpRetryPolicy;
 import com.tokopedia.topchat.chatlist.data.TopChatUrl;
-import com.tokopedia.topchat.chattemplate.data.factory.EditTemplateChatFactory;
-import com.tokopedia.topchat.chattemplate.data.mapper.EditTemplateChatMapper;
-import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper;
-import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepository;
-import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepositoryImpl;
+import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepositoryImplKt;
+import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepositoryKt;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImplKt;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryKt;
 import com.tokopedia.topchat.common.chat.api.ChatApi;
@@ -162,20 +159,6 @@ public class TemplateChatModule {
 
     @TemplateChatScope
     @Provides
-    EditTemplateChatFactory provideEditTemplateChatFactory(
-            ChatApi chatApi,
-            EditTemplateChatMapper templateChatMapper) {
-        return new EditTemplateChatFactory(templateChatMapper, chatApi);
-    }
-
-    @TemplateChatScope
-    @Provides
-    EditTemplateRepository provideEditTemplateRepository(EditTemplateChatFactory templateChatFactory) {
-        return new EditTemplateRepositoryImpl(templateChatFactory);
-    }
-
-    @TemplateChatScope
-    @Provides
     ChatApiKt provideChatApiKt(@InboxQualifier Retrofit retrofit) {
         return retrofit.create(ChatApiKt.class);
     }
@@ -184,6 +167,12 @@ public class TemplateChatModule {
     @Provides
     TemplateRepositoryKt provideTemplateRepositoryKt(TemplateRepositoryImplKt templateRepositoryImplKt) {
         return templateRepositoryImplKt;
+    }
+
+    @TemplateChatScope
+    @Provides
+    EditTemplateRepositoryKt provideEditTemplateRepositoryKt(EditTemplateRepositoryImplKt editTemplateRepositoryImplKt) {
+        return editTemplateRepositoryImplKt;
     }
 
 }

@@ -1,9 +1,6 @@
 package com.tokopedia.topchat.chattemplate.view.presenter
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.topchat.chattemplate.domain.usecase.CreateTemplateUseCase
-import com.tokopedia.topchat.chattemplate.domain.usecase.DeleteTemplateUseCase
-import com.tokopedia.topchat.chattemplate.domain.usecase.EditTemplateUseCase
 import com.tokopedia.topchat.chattemplate.view.listener.EditTemplateChatContract
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateUiModel
 import io.mockk.*

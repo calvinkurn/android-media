@@ -1,307 +1,290 @@
-package com.tokopedia.topchat.chattemplate.view.fragment;
+package com.tokopedia.topchat.chattemplate.view.fragment
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.TextView;
-
-import androidx.annotation.Nullable;
-
-import com.google.android.material.snackbar.Snackbar;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.topchat.R;
-import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
-import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent;
-import com.tokopedia.topchat.chattemplate.di.TemplateChatModule;
-import com.tokopedia.topchat.chattemplate.view.listener.EditTemplateChatContract;
-import com.tokopedia.topchat.chattemplate.view.presenter.EditTemplateChatPresenter;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateUiModel;
-import com.tokopedia.topchat.common.InboxMessageConstant;
-import com.tokopedia.topchat.common.util.Events;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
-
-import static com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity.PARAM_IS_SELLER;
+import android.app.Activity
+import android.app.AlertDialog
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.topchat.chattemplate.view.listener.EditTemplateChatContract
+import android.widget.TextView
+import android.widget.EditText
+import javax.inject.Inject
+import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics
+import android.os.Bundle
+import com.tokopedia.topchat.common.InboxMessageConstant
+import rx.functions.Action1
+import android.graphics.PorterDuff
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent
+import com.tokopedia.topchat.chattemplate.di.TemplateChatModule
+import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateUiModel
+import android.content.Intent
+import android.view.*
+import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
+import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel
+import com.tokopedia.topchat.common.util.Events
+import rx.Observable
 
 /**
  * Created by stevenfredian on 12/22/17.
  */
-
-public class EditTemplateChatFragment extends BaseDaggerFragment
-        implements EditTemplateChatContract.View {
-
-    private static final int MAX_CHAR = 200;
-    private static final int DISABLE_DELETE = 130;
-    private static final int ENABLE_DELETE = 255;
-
-    private TextView counter;
-    private TextView error;
-    private TextView submit;
-    private EditText editText;
-
-    private List list;
-    private String message;
-    private Observable<Integer> counterObservable;
-    private int allowDelete;
-    private Boolean isSeller;
-
-    public static EditTemplateChatFragment createInstance(Bundle extras) {
-        EditTemplateChatFragment fragment = new EditTemplateChatFragment();
-        fragment.setArguments(extras);
-        fragment.isSeller = extras.getBoolean(PARAM_IS_SELLER);
-        return fragment;
-    }
+class EditTemplateChatFragment : BaseDaggerFragment(), EditTemplateChatContract.View {
+    private var counter: TextView? = null
+    private var error: TextView? = null
+    private var submit: TextView? = null
+    private var editText: EditText? = null
+    private var list: ArrayList<String> = arrayListOf()
+    private var message: String? = null
+    private var counterObservable: Observable<Int>? = null
+    private var allowDelete = 0
+    private var isSeller: Boolean = false
 
     @Inject
-    EditTemplateChatPresenter presenter;
+    lateinit var analytics: ChatTemplateAnalytics
 
     @Inject
-    ChatTemplateAnalytics analytics;
+    lateinit var viewModel: EditTemplateViewModel
 
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-        if (getArguments().getInt(InboxMessageConstant.PARAM_MODE) == TemplateChatFragment.CREATE) {
-            setHasOptionsMenu(false);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+        arguments?.let {
+            if (it.getInt(InboxMessageConstant.PARAM_MODE) == TemplateChatFragment.CREATE) {
+                setHasOptionsMenu(false)
+            }
         }
     }
 
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.delete_template, menu);
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.delete_template, menu)
     }
 
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        MenuItem item = menu.findItem(R.id.action_organize);
-        if (getArguments().getInt(InboxMessageConstant.PARAM_NAV) == 1) {
-            allowDelete = DISABLE_DELETE;
-            item.getIcon().setAlpha(DISABLE_DELETE);
-        } else {
-            allowDelete = ENABLE_DELETE;
-            item.getIcon().setAlpha(ENABLE_DELETE);
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        val item = menu.findItem(R.id.action_organize)
+        arguments?.let {
+            if (it.getInt(InboxMessageConstant.PARAM_NAV) == 1) {
+                allowDelete = DISABLE_DELETE
+                item.icon.alpha = DISABLE_DELETE
+            } else {
+                allowDelete = ENABLE_DELETE
+                item.icon.alpha = ENABLE_DELETE
+            }
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int i = item.getItemId();
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val i = item.itemId
         if (i == R.id.action_organize) {
             if (allowDelete == ENABLE_DELETE) {
-                analytics.trackDeleteTemplateChat();
-                showDialogDelete();
+                analytics.trackDeleteTemplateChat()
+                showDialogDelete()
             } else {
-                showError(new MessageErrorException(getActivity().getString(R.string
-                        .minimum_template_chat_warning)));
+                showError(MessageErrorException(getString(R.string.minimum_template_chat_warning)))
             }
-
-            return true;
+            return true
         }
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item)
     }
 
-
-    private void showDialogDelete() {
-        new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.delete_chat_template)
-                .setMessage(R.string.forever_deleted_template)
-                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        analytics.trackConfirmDeleteTemplateChat();
-                        presenter.deleteTemplate(getArguments().getInt(InboxMessageConstant.PARAM_POSITION));
-                        dialog.dismiss();
-                    }
-
-                })
-                .setNegativeButton(com.tokopedia.resources.common.R.string.general_label_cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .create().show();
-    }
-
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_edit_template_chat, container, false);
-
-        counter = rootView.findViewById(R.id.counter);
-        error = rootView.findViewById(R.id.error);
-        submit = rootView.findViewById(R.id.submit);
-        editText = rootView.findViewById(R.id.edittext);
-
-        presenter.attachView(this);
-        presenter.setMode(isSeller);
-        return rootView;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        message = getArguments().getString(InboxMessageConstant.PARAM_MESSAGE);
-        list = getArguments().getStringArrayList(InboxMessageConstant.PARAM_ALL);
-
-
-        editText.setText(message);
-        if (message != null) {
-            editText.setSelection(message.length());
-        }
-
-        counterObservable = Events.text(editText).map(new Func1<String, Integer>() {
-            @Override
-            public Integer call(String s) {
-                return s.length();
-            }
-        });
-
-        Action1<Integer> onNextAction = integer -> getActivity().runOnUiThread(() -> {
-            showErrorAndProceed(integer, submit);
-            counter.setText(String.format("%d/%d", integer, MAX_CHAR));
-        });
-
-        Action1<Throwable> onError = throwable -> throwable.printStackTrace();
-
-        counterObservable.subscribe(onNextAction, onError);
-
-
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int mode = getMode();
-                switch (mode) {
-                    case TemplateChatFragment.CREATE:
-                        analytics.trackCreateSaveTemplateChat();
-                        break;
-                    case TemplateChatFragment.EDIT:
-                        analytics.trackEditSaveTemplateChat();
-                        break;
+    private fun showDialogDelete() {
+        AlertDialog.Builder(activity)
+            .setTitle(R.string.delete_chat_template)
+            .setMessage(R.string.forever_deleted_template)
+            .setPositiveButton(R.string.delete) { dialog, _ ->
+                analytics.trackConfirmDeleteTemplateChat()
+                arguments?.getInt(InboxMessageConstant.PARAM_POSITION)?.let {
+                    viewModel.deleteTemplate(it, isSeller)
                 }
-                presenter.submitText(editText.getText().toString(), message, list);
+                dialog.dismiss()
             }
-        });
+            .setNegativeButton(com.tokopedia.resources.common.R.string.general_label_cancel) { dialog, _ -> dialog.dismiss() }
+            .create().show()
     }
 
-    private int getMode() {
-        if (getArguments() == null) return -2;
-        return getArguments().getInt(InboxMessageConstant.PARAM_MODE, -2);
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val rootView = inflater.inflate(R.layout.fragment_edit_template_chat, container, false)
+        counter = rootView.findViewById(R.id.counter)
+        error = rootView.findViewById(R.id.error)
+        submit = rootView.findViewById(R.id.submit)
+        editText = rootView.findViewById(R.id.edittext)
+        return rootView
     }
 
-    private void showErrorAndProceed(Integer integer, TextView proceed) {
-        if (integer == 0) {
-            canProceed(false, proceed);
-        } else if (integer > 0 && integer < 5) {
-            error.setText(getActivity().getString(R.string.minimal_char_template));
-            error.setVisibility(View.VISIBLE);
-            canProceed(false, proceed);
-        } else if (integer > MAX_CHAR) {
-            error.setText(getActivity().getString(R.string.maximal_char_template, MAX_CHAR));
-            error.setVisibility(View.VISIBLE);
-            canProceed(false, proceed);
-        } else {
-            error.setVisibility(View.GONE);
-            canProceed(true, proceed);
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupObservers()
+        arguments?.let {
+            message = it.getString(InboxMessageConstant.PARAM_MESSAGE)
+            list = it.getStringArrayList(InboxMessageConstant.PARAM_ALL)?: arrayListOf()
+        }
+        editText?.setText(message)
+        message?.let {
+            editText?.setSelection(it.length)
+        }
+        counterObservable = Events.text(editText).map { s -> s.length }
+        val onNextAction = Action1 { integer: Int ->
+            activity?.runOnUiThread {
+                showErrorAndProceed(integer, submit)
+                counter?.text = String.format("%d/%d", integer, MAX_CHAR)
+            }
+        }
+        val onError = Action1 { throwable: Throwable -> throwable.printStackTrace() }
+        counterObservable?.subscribe(onNextAction, onError)
+        submit?.setOnClickListener {
+            when (mode) {
+                TemplateChatFragment.CREATE -> analytics.trackCreateSaveTemplateChat()
+                TemplateChatFragment.EDIT -> analytics.trackEditSaveTemplateChat()
+            }
+            viewModel.submitText(editText?.text.toString(), message?: "", list, isSeller)
         }
     }
 
-    public void canProceed(boolean can, TextView proceed) {
-        proceed.setEnabled(can);
+    private val mode: Int
+        get() = arguments?.getInt(InboxMessageConstant.PARAM_MODE, -2) ?: -2
+
+    private fun showErrorAndProceed(integer: Int, proceed: TextView?) {
+        when {
+            integer == 0 -> {
+                canProceed(false, proceed)
+            }
+            integer in 1..4 -> {
+                error?.text = getString(R.string.minimal_char_template)
+                error?.visibility = View.VISIBLE
+                canProceed(false, proceed)
+            }
+            integer > MAX_CHAR -> {
+                error?.text = getString(
+                    R.string.maximal_char_template,
+                    MAX_CHAR
+                )
+                error?.visibility = View.VISIBLE
+                canProceed(false, proceed)
+            }
+            else -> {
+                error?.visibility = View.GONE
+                canProceed(true, proceed)
+            }
+        }
+    }
+
+    private fun canProceed(can: Boolean, proceed: TextView?) {
+        proceed?.isEnabled = can
         if (can) {
-            proceed.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_G400), PorterDuff.Mode.SRC_IN);
-            proceed.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N0));
+            proceed?.background?.setColorFilter(
+                MethodChecker.getColor(
+                    activity, com.tokopedia.unifyprinciples.R.color.Unify_G400
+                ), PorterDuff.Mode.SRC_IN
+            )
+            proceed?.setTextColor(
+                MethodChecker.getColor(
+                    activity, com.tokopedia.unifyprinciples.R.color.Unify_N0
+                )
+            )
         } else {
-            proceed.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N100), PorterDuff.Mode.SRC_IN);
-            proceed.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N200));
+            proceed?.background?.setColorFilter(
+                MethodChecker.getColor(
+                    activity, com.tokopedia.unifyprinciples.R.color.Unify_N100
+                ), PorterDuff.Mode.SRC_IN
+            )
+            proceed?.setTextColor(
+                MethodChecker.getColor(
+                    activity, com.tokopedia.unifyprinciples.R.color.Unify_N200
+                )
+            )
         }
     }
 
-    @Override
-    protected String getScreenName() {
-        return null;
+    override fun getScreenName(): String {
+        return EditTemplateChatFragment::class.java.simpleName
     }
 
-    @Override
-    protected void initInjector() {
-        if (getActivity() != null && getActivity().getApplication() != null) {
-            BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication())
-                    .getBaseAppComponent();
-            DaggerTemplateChatComponent daggerTemplateChatComponent =
-                    (DaggerTemplateChatComponent) DaggerTemplateChatComponent.builder()
-                            .baseAppComponent(appComponent)
-                            .templateChatModule(new TemplateChatModule(getContext()))
-                            .build();
-            daggerTemplateChatComponent.inject(this);
+    override fun initInjector() {
+        if (activity != null && activity?.application != null) {
+            val appComponent = (activity?.application as BaseMainApplication)
+                .baseAppComponent
+            val daggerTemplateChatComponent = DaggerTemplateChatComponent.builder()
+                .baseAppComponent(appComponent)
+                .templateChatModule(TemplateChatModule(context))
+                .build() as DaggerTemplateChatComponent
+            daggerTemplateChatComponent.inject(this)
         }
     }
 
-    @Override
-    public void onResult(EditTemplateUiModel editTemplateViewModel, int index, String s) {
-        analytics.eventClickTemplate();
-        Intent intent = new Intent();
-        intent.putExtra(TemplateChatFragment.INDEX_RESULT, index);
-        intent.putExtra(TemplateChatFragment.LIST_RESULT, s);
-        intent.putExtra("enabled", editTemplateViewModel.isEnabled());
-        intent.putExtra(TemplateChatFragment.MODE_RESULT, getArguments().getInt(InboxMessageConstant.PARAM_MODE));
-        getActivity().setResult(Activity.RESULT_OK, intent);
+    override fun onResult(editTemplateViewModel: EditTemplateUiModel, index: Int, s: String) {
+        analytics.eventClickTemplate()
+        val intent = Intent()
+        intent.putExtra(TemplateChatFragment.INDEX_RESULT, index)
+        intent.putExtra(TemplateChatFragment.LIST_RESULT, s)
+        intent.putExtra("enabled", editTemplateViewModel.isEnabled)
+        intent.putExtra(
+            TemplateChatFragment.MODE_RESULT,
+            arguments?.getInt(InboxMessageConstant.PARAM_MODE)
+        )
+        activity?.setResult(Activity.RESULT_OK, intent)
     }
 
-    @Override
-    public void onResult(EditTemplateUiModel editTemplateViewModel, int index) {
-        Intent intent = new Intent();
-        intent.putExtra(TemplateChatFragment.INDEX_RESULT, index);
-        intent.putExtra(TemplateChatFragment.MODE_RESULT, TemplateChatFragment.DELETE);
-        getActivity().setResult(Activity.RESULT_OK, intent);
+    override fun onResult(editTemplateViewModel: EditTemplateUiModel, index: Int) {
+        val intent = Intent()
+        intent.putExtra(TemplateChatFragment.INDEX_RESULT, index)
+        intent.putExtra(TemplateChatFragment.MODE_RESULT, TemplateChatFragment.DELETE)
+        activity?.setResult(Activity.RESULT_OK, intent)
     }
 
-    @Override
-    public void finish() {
-        getActivity().finish();
+    override fun finish() {
+        activity?.finish()
     }
 
-    @Override
-    public void dropKeyboard() {
-        KeyboardHandler.DropKeyboard(getActivity(), getView());
+    override fun dropKeyboard() {
+        KeyboardHandler.DropKeyboard(activity, view)
     }
 
-    @Override
-    public void showError(Throwable error) {
-        SnackbarManager.make(getActivity(), ErrorHandler.getErrorMessage(getContext(), error), Snackbar.LENGTH_LONG).show();
+    override fun showError(error: Throwable) {
+        SnackbarManager.make(
+            activity, ErrorHandler.getErrorMessage(
+                context, error
+            ), Snackbar.LENGTH_LONG
+        ).show()
     }
 
-    @Override
-    public void onDestroy() {
-        presenter.detachView();
-        super.onDestroy();
+    private fun setupObservers() {
+        viewModel.createEditTemplate.observe(viewLifecycleOwner, {
+            onResult(it.editTemplateUiModel, it.index, it.text)
+            finish()
+        })
+
+        viewModel.deleteTemplate.observe(viewLifecycleOwner, {
+            val editTemplateUiModel = it.first
+            val index = it.second
+            onResult(editTemplateUiModel, index)
+            finish()
+        })
+
+        viewModel.errorAction.observe(viewLifecycleOwner, {
+            showError(it)
+        })
+    }
+
+    companion object {
+        private const val MAX_CHAR = 200
+        private const val DISABLE_DELETE = 130
+        private const val ENABLE_DELETE = 255
+        @JvmStatic
+        fun createInstance(extras: Bundle): EditTemplateChatFragment {
+            val fragment = EditTemplateChatFragment()
+            fragment.arguments = extras
+            fragment.isSeller = extras.getBoolean(TemplateChatActivity.PARAM_IS_SELLER, false)
+            return fragment
+        }
     }
 }
