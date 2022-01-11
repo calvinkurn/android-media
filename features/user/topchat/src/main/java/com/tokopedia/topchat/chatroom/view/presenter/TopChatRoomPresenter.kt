@@ -100,7 +100,7 @@ open class TopChatRoomPresenter @Inject constructor(
         private set
     private var userLocationInfo = LocalCacheModel()
 
-    private lateinit var webSocketUrl: String
+//    private lateinit var webSocketUrl: String
     private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
 //    private var mSubscription: CompositeSubscription
     private var compressImageSubscription: CompositeSubscription
