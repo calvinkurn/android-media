@@ -188,8 +188,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                 pojo.message.timeStampUnixNano,
                 list,
                 pojo.message.censoredReply,
-                pojo.source,
-                RENDER_INVOICE_LIST_AND_BUTTON_ACTION
+                pojo.source
         )
 
     }
