@@ -22,6 +22,7 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -98,13 +99,23 @@ class ProductShopCredibilityViewHolder(
     }
 
     private fun setupTicker(
-        tickerDataResponse: List<ShopInfo.Ticker.TickerDataResponse>,
+        tickerDataResponse: List<ShopInfo.TickerDataResponse>,
         binding: ViewShopCredibilityBinding
     ) {
         binding.shopCredibilityInfoTicker.showIfWithBlock(tickerDataResponse.isNotEmpty()) {
             val data = tickerDataResponse.first()
             setHtmlDescription(generateHtml(data.message, data.link))
             tickerTitle = data.title
+            setDescriptionClickEvent(object : TickerCallback{
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    listener.onShopTickerClicked(data.action, data.actionLink, data.actionBottomSheet)
+                }
+
+                override fun onDismiss() {
+                    // no op
+                }
+
+            })
         }
     }
 

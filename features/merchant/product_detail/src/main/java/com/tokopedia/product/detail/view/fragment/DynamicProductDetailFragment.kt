@@ -192,6 +192,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.shop.common.constant.ShopStatusDef
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.stickylogin.common.StickyLoginConstant
@@ -1141,6 +1142,16 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             shopStatusBs.show(tickerActionBs.title, tickerActionBs.message, tickerActionBs.reason,
                     tickerActionBs.buttonText, tickerActionBs.buttonLink,
                     it.supportFragmentManager)
+        }
+    }
+
+    private fun goToBottomSheetShopTicker(tickerActionBs: ShopInfo.TickerDataResponse.TickerActionBs) {
+        activity?.let {
+            //Make sure dont put your parameter inside constructor, it will cause crash when dont keep activity
+            val shopStatusBs = ShopStatusInfoBottomSheet()
+            shopStatusBs.show(tickerActionBs.title, tickerActionBs.message, tickerActionBs.reason,
+                tickerActionBs.buttonText, tickerActionBs.buttonLink,
+                it.supportFragmentManager)
         }
     }
 
@@ -3173,6 +3184,22 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             startActivityForResult(RouteManager.getIntent(it,
                     ApplinkConst.SHOP, shopId),
                     ProductDetailConstant.REQUEST_CODE_SHOP_INFO)
+        }
+    }
+
+    override fun onShopTickerClicked(action: String, applink: String, tickerActionBs: ShopInfo.TickerDataResponse.TickerActionBs?) {
+        // TODO vindo - update the tracker
+//        trackOnTickerClicked(tickerTitle, tickerType, componentTrackDataModel, tickerDescription)
+        if (action == "applink") {
+            if (activity != null && RouteManager.isSupportApplink(activity, applink)) {
+                goToApplink(applink)
+            } else {
+                openWebViewUrl(applink)
+            }
+        } else {
+            if (tickerActionBs != null) {
+                goToBottomSheetShopTicker(tickerActionBs)
+            }
         }
     }
 

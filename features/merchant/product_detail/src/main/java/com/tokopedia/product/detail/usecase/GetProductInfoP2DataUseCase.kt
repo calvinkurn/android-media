@@ -162,7 +162,22 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               shopType
               badgeURL
               shopTier
-              ticker
+              tickerData {
+                title
+                message
+                color
+                link
+                action
+                actionLink
+                tickerType
+                actionBottomSheet {
+                  title
+                  message
+                  reason
+                  buttonText
+                  buttonLink
+                }
+              }
             }
             nearestWarehouse {
               product_id

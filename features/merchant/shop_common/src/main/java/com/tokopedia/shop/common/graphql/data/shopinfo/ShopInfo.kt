@@ -102,9 +102,9 @@ data class ShopInfo(
         @Expose
         val branchLinkDomain: String = "",
 
-        @SerializedName("ticker")
+        @SerializedName("tickerData")
         @Expose
-        val ticker: Ticker = Ticker()
+        val tickerData: List<TickerDataResponse> = emptyList()
 
 ) {
     fun isShopInfoNotEmpty():Boolean {
@@ -305,39 +305,32 @@ data class ShopInfo(
             val totalShowcase: String = ""
     )
 
-    data class Ticker(
-        @SerializedName("tickerData")
+    data class TickerDataResponse(
+        @SerializedName("title")
         @Expose
-        val tickerDatumResponses: List<TickerDataResponse> = listOf()
+        val title: String = "",
+        @SerializedName("message")
+        @Expose
+        val message: String = "",
+        @SerializedName("color")
+        @Expose
+        val color: String = "",
+        @SerializedName("link")
+        @Expose
+        val link: String = "",
+        @SerializedName("action")
+        @Expose
+        val action: String = "",
+        @SerializedName("actionLink")
+        @Expose
+        val actionLink: String = "",
+        @SerializedName("tickerType")
+        @Expose
+        val tickerType: Int = 0,
+        @SerializedName("actionBottomSheet")
+        @Expose
+        val actionBottomSheet: TickerActionBs = TickerActionBs()
     ) {
-
-        data class TickerDataResponse(
-            @SerializedName("title")
-            @Expose
-            val title: String = "",
-            @SerializedName("message")
-            @Expose
-            val message: String = "",
-            @SerializedName("color")
-            @Expose
-            val color: String = "",
-            @SerializedName("link")
-            @Expose
-            val link: String = "",
-            @SerializedName("action")
-            @Expose
-            val action: String = "",
-            @SerializedName("actionLink")
-            @Expose
-            val actionLink: String = "",
-            @SerializedName("tickerType")
-            @Expose
-            val tickerType: Int = 0,
-            @SerializedName("actionBottomSheet")
-            @Expose
-            val actionBottomSheet: TickerActionBs = TickerActionBs()
-        )
-
         data class TickerActionBs(
             @SerializedName("title")
             @Expose

@@ -11,7 +11,7 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 import com.tokopedia.product.detail.view.util.getIdLocale
 import com.tokopedia.product.detail.view.util.getRelativeDateByHours
 import com.tokopedia.product.detail.view.util.getRelativeDateByMinute
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo.Ticker.TickerDataResponse
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo.TickerDataResponse
 import java.text.SimpleDateFormat
 
 /**
