@@ -4,7 +4,7 @@ import com.google.gson.Gson
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 
-object SellerOutageErrorHandler {
+object SellerZeroOutageErrorHandler {
 
     // Scalyr/New Relic Error Keys
     private const val PAGE_TYPE_KEY = "page_type"
@@ -51,13 +51,17 @@ object SellerOutageErrorHandler {
         extras: Map<String, Any>
     ): Map<String, String> {
         val stringExtras = Gson().toJson(extras)
-        return mutableMapOf(
-            ERROR_TYPE_KEY to errorType,
-            DEVICE_ID_KEY to deviceId,
-            MESSAGE_KEY to throwable.localizedMessage.orEmpty(),
-            PAGE_TYPE_KEY to pageType,
-            EXTRAS_KEY to stringExtras,
-            STACKTRACE_KEY to throwable.stackTraceToString()
-        )
+        val mutableMap = mutableMapOf<String, String>()
+        with(mutableMap) {
+            put(ERROR_TYPE_KEY, errorType)
+            put(DEVICE_ID_KEY, deviceId)
+            put(MESSAGE_KEY, throwable.localizedMessage.orEmpty())
+            put(PAGE_TYPE_KEY, pageType)
+            if (stringExtras.isNotBlank()) {
+                put(EXTRAS_KEY, stringExtras)
+            }
+            put(STACKTRACE_KEY, throwable.stackTraceToString())
+        }
+        return mutableMap
     }
 }

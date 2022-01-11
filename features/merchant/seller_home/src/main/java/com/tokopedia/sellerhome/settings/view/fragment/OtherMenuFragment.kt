@@ -62,7 +62,7 @@ import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
 import com.tokopedia.sellerhome.view.FragmentChangeCallback
 import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
-import com.tokopedia.sellerhomecommon.utils.SellerOutageErrorHandler
+import com.tokopedia.sellerhomecommon.utils.SellerZeroOutageErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -741,12 +741,12 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                 errorType
             ).orEmpty()
         )
-        SellerOutageErrorHandler.logExceptionToServer(
+        SellerZeroOutageErrorHandler.logExceptionToServer(
             throwable = throwable,
             errorType = context?.getString(R.string.setting_header_error_message,
                 errorType
             ).orEmpty(),
-            pageType = SellerOutageErrorHandler.PageType.OTHER_MENU,
+            pageType = SellerZeroOutageErrorHandler.PageType.OTHER_MENU,
             deviceId = userSession.deviceId.orEmpty()
         )
     }
