@@ -101,7 +101,7 @@ class SilentVerificationViewModel @Inject constructor(
                 _bokuVerificationResponse.value = Success(result)
             } catch (e: Throwable) {
                 e.printStackTrace()
-                _bokuVerificationResponse.postValue(Fail(e))
+                _bokuVerificationResponse.value = Fail(e)
             }
         }
     }
