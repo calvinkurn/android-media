@@ -66,6 +66,9 @@ class PlayUpcomingViewModel @Inject constructor(
     val isReminderSet: Boolean
         get() = _upcomingInfo.value.isReminderSet
 
+    val partnerId: Long?
+        get() = mChannelData?.partnerInfo?.id
+
     private val _uiEvent = MutableSharedFlow<PlayUpcomingUiEvent>(extraBufferCapacity = 50)
 
     private val _channelDetail = MutableStateFlow(PlayChannelDetailUiModel())
@@ -370,7 +373,7 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private fun handleClickShareIcon() {
         viewModelScope.launch {
-            playAnalytic.clickShareButton(mChannelId, channelType.value)
+            playAnalytic.clickShareButton(mChannelId, partnerId, channelType.value)
 
             _uiEvent.emit(
                 PlayUpcomingUiEvent.SaveTemporarySharingImage(imageUrl = _channelDetail.value.channelInfo.coverUrl)
@@ -381,10 +384,10 @@ class PlayUpcomingViewModel @Inject constructor(
     private fun handleOpenSharingOption(isScreenshot: Boolean) {
         viewModelScope.launch {
             if(isScreenshot)
-                playAnalytic.takeScreenshotForSharing(mChannelId, channelType.value)
+                playAnalytic.takeScreenshotForSharing(mChannelId, partnerId, channelType.value)
 
             if(playShareExperience.isCustomSharingAllow()) {
-                playAnalytic.impressShareBottomSheet(mChannelId, channelType.value)
+                playAnalytic.impressShareBottomSheet(mChannelId, partnerId, channelType.value)
 
                 _uiEvent.emit(PlayUpcomingUiEvent.OpenSharingOptionEvent(
                     title = _channelDetail.value.channelInfo.title,
@@ -400,12 +403,12 @@ class PlayUpcomingViewModel @Inject constructor(
     }
 
     private fun handleCloseSharingOption() {
-        playAnalytic.closeShareBottomSheet(mChannelId, channelType.value, playShareExperience.isScreenshotBottomSheet())
+        playAnalytic.closeShareBottomSheet(mChannelId, partnerId, channelType.value, playShareExperience.isScreenshotBottomSheet())
     }
 
     private fun handleSharingOption(shareModel: ShareModel) {
         viewModelScope.launch {
-            playAnalytic.clickSharingOption(mChannelId, channelType.value, shareModel.socialMediaName, playShareExperience.isScreenshotBottomSheet())
+            playAnalytic.clickSharingOption(mChannelId, partnerId, channelType.value, shareModel.socialMediaName, playShareExperience.isScreenshotBottomSheet())
 
             val playShareExperienceData = getPlayShareExperienceData()
 
@@ -442,7 +445,7 @@ class PlayUpcomingViewModel @Inject constructor(
     }
 
     private fun handleSharePermission(label: String) {
-        playAnalytic.clickSharePermission(mChannelId, channelType.value, label)
+        playAnalytic.clickSharePermission(mChannelId, partnerId, channelType.value, label)
     }
 
     /**

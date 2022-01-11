@@ -18,7 +18,7 @@ class PlayShareExperienceAnalyticImpl @Inject constructor(
     private fun sendGeneralClickEvent(action: String, label: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_EVENT to KEY_TRACK_CLICK_COMMUNICATION,
                 KEY_EVENT_ACTION to "click - $action",
                 KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                 KEY_EVENT_LABEL to label,
@@ -33,7 +33,7 @@ class PlayShareExperienceAnalyticImpl @Inject constructor(
     private fun sendGeneralViewEvent(action: String, label: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT,
+                KEY_EVENT to KEY_TRACK_VIEW_COMMUNICATION_IRIS,
                 KEY_EVENT_ACTION to action,
                 KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                 KEY_EVENT_LABEL to label,
@@ -59,27 +59,31 @@ class PlayShareExperienceAnalyticImpl @Inject constructor(
         } ?: ""
     }
 
-    override fun clickShareButton(channelId: String, channelType: String) {
+    private fun getShopId(shopId: Long?) = shopId?.toString() ?: "0"
+
+    override fun clickShareButton(channelId: String, shopId: Long?, channelType: String) {
         sendGeneralClickEvent(
             "share button",
-            "$channelId - $channelType"
+            "$channelId - ${getShopId(shopId)} - $channelType"
         )
     }
 
     override fun closeShareBottomSheet(
         channelId: String,
+        shopId: Long?,
         channelType: String,
         isScreenshot: Boolean
     ) {
         val action = if(isScreenshot) "close screenshot share bottom sheet" else "close share bottom sheet"
         sendGeneralClickEvent(
             action,
-            "$channelId - $channelType"
+            "$channelId - ${getShopId(shopId)} - $channelType"
         )
     }
 
     override fun clickSharingOption(
         channelId: String,
+        shopId: Long?,
         channelType: String,
         sharingOption: String?,
         isScreenshot: Boolean
@@ -87,28 +91,28 @@ class PlayShareExperienceAnalyticImpl @Inject constructor(
         val action = if(isScreenshot) "channel share bottom sheet - screenshot" else "sharing channel"
         sendGeneralClickEvent(
             action,
-            "$channelId - $channelType - ${mapSharingOption(sharingOption)}"
+            "${mapSharingOption(sharingOption)} - $channelId - ${getShopId(shopId)} - $channelType"
         )
     }
 
-    override fun impressShareBottomSheet(channelId: String, channelType: String) {
+    override fun impressShareBottomSheet(channelId: String, shopId: Long?, channelType: String) {
         sendGeneralViewEvent(
             "view on sharing channel",
-            "$channelId - $channelType"
+            "$channelId - ${getShopId(shopId)} - $channelType"
         )
     }
 
-    override fun clickSharePermission(channelId: String, channelType: String, label: String) {
+    override fun clickSharePermission(channelId: String, shopId: Long?, channelType: String, label: String) {
         sendGeneralClickEvent(
             "access photo media and files",
-            "$channelId - $channelType - $label"
+            "$label - $channelId - ${getShopId(shopId)} - $channelType"
         )
     }
 
-    override fun takeScreenshotForSharing(channelId: String, channelType: String) {
+    override fun takeScreenshotForSharing(channelId: String, shopId: Long?, channelType: String) {
         sendGeneralViewEvent(
             "view - screenshot share bottom sheet",
-            "$channelId - $channelType"
+            "$channelId - ${getShopId(shopId)} - $channelType"
         )
     }
 }

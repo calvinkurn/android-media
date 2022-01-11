@@ -1861,7 +1861,7 @@ class PlayViewModel @Inject constructor(
 
     private fun handleClickShareIcon() {
         viewModelScope.launch {
-            playAnalytic.clickShareButton(channelId, channelType.value)
+            playAnalytic.clickShareButton(channelId, partnerId, channelType.value)
 
             _uiEvent.emit(
                 SaveTemporarySharingImage(imageUrl = _channelDetail.value.channelInfo.coverUrl)
@@ -1872,10 +1872,10 @@ class PlayViewModel @Inject constructor(
     private fun handleOpenSharingOption(isScreenshot: Boolean) {
         viewModelScope.launch {
             if(isScreenshot)
-                playAnalytic.takeScreenshotForSharing(channelId, channelType.value)
+                playAnalytic.takeScreenshotForSharing(channelId, partnerId, channelType.value)
 
             if(playShareExperience.isCustomSharingAllow()) {
-                playAnalytic.impressShareBottomSheet(channelId, channelType.value)
+                playAnalytic.impressShareBottomSheet(channelId, partnerId, channelType.value)
 
                 _uiEvent.emit(OpenSharingOptionEvent(
                     title = _channelDetail.value.channelInfo.title,
@@ -1891,12 +1891,12 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleCloseSharingOption() {
-        playAnalytic.closeShareBottomSheet(channelId, channelType.value, playShareExperience.isScreenshotBottomSheet())
+        playAnalytic.closeShareBottomSheet(channelId, partnerId, channelType.value, playShareExperience.isScreenshotBottomSheet())
     }
 
     private fun handleSharingOption(shareModel: ShareModel) {
         viewModelScope.launch {
-            playAnalytic.clickSharingOption(channelId, channelType.value, shareModel.socialMediaName, playShareExperience.isScreenshotBottomSheet())
+            playAnalytic.clickSharingOption(channelId, partnerId, channelType.value, shareModel.socialMediaName, playShareExperience.isScreenshotBottomSheet())
 
             val playShareExperienceData = getPlayShareExperienceData()
 
@@ -1933,7 +1933,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleSharePermission(label: String) {
-        playAnalytic.clickSharePermission(channelId, channelType.value, label)
+        playAnalytic.clickSharePermission(channelId, partnerId, channelType.value, label)
     }
 
     /**

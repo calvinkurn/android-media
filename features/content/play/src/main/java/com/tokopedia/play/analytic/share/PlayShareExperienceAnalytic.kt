@@ -5,15 +5,15 @@ package com.tokopedia.play.analytic.share
  */
 interface PlayShareExperienceAnalytic {
 
-    fun clickShareButton(channelId: String, channelType: String)
+    fun clickShareButton(channelId: String, shopId: Long?, channelType: String)
 
-    fun closeShareBottomSheet(channelId: String, channelType: String, isScreenshot: Boolean)
+    fun closeShareBottomSheet(channelId: String, shopId: Long?, channelType: String, isScreenshot: Boolean)
 
-    fun clickSharingOption(channelId: String, channelType: String, sharingOption: String?, isScreenshot: Boolean)
+    fun clickSharingOption(channelId: String, shopId: Long?, channelType: String, sharingOption: String?, isScreenshot: Boolean)
 
-    fun impressShareBottomSheet(channelId: String, channelType: String)
+    fun impressShareBottomSheet(channelId: String, shopId: Long?, channelType: String)
 
-    fun clickSharePermission(channelId: String, channelType: String, label: String)
+    fun clickSharePermission(channelId: String, shopId: Long?, channelType: String, label: String)
 
-    fun takeScreenshotForSharing(channelId: String, channelType: String)
+    fun takeScreenshotForSharing(channelId: String, shopId: Long?, channelType: String)
 }
