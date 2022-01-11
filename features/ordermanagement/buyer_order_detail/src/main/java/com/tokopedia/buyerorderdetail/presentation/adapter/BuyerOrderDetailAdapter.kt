@@ -22,8 +22,8 @@ import com.tokopedia.buyerorderdetail.presentation.model.ThinDividerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 
 @Suppress("UNCHECKED_CAST")
-class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFactory) :
-    BaseAdapter<BuyerOrderDetailTypeFactory>(typeFactory) {
+open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFactory) :
+        BaseAdapter<BuyerOrderDetailTypeFactory>(typeFactory) {
 
     private fun setupNewItems(
         context: Context?,
@@ -39,7 +39,7 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
         }
     }
 
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setUpPhysicalRecommendationSection(
+    protected open fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setUpPhysicalRecommendationSection(
         pgRecommendationWidgetUiModel: PGRecommendationWidgetUiModel
     ) {
         add(ThickDividerUiModel())
@@ -98,12 +98,12 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
         addTickerSection(context, paymentInfoUiModel.ticker)
     }
 
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupDigitalRecommendationSection() {
+    protected open fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupDigitalRecommendationSection() {
         add(ThickDividerUiModel())
         add(DigitalRecommendationUiModel())
     }
 
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPlainHeaderSection(
+    protected open fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPlainHeaderSection(
         context: Context?,
         headerUiModel: PlainHeaderUiModel
     ) {
