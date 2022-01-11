@@ -31,9 +31,21 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/layout_lvl1"
         android:layout_marginRight="@dimen/layout_lvl1"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/tvMvcSort"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvMvcSort" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/layout_lvl1"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/tvMvcSort"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvMvcSort"
+        app:srcCompat="@drawable/ic_mvc_check" />
 
     <View
         android:id="@+id/vMvcHorLine"

@@ -168,6 +168,9 @@ abstract class TopchatRoomTest {
     protected lateinit var existingChatMapper: TopChatRoomGetExistingChatMapper
 
     @Inject
+    protected lateinit var unsendReplyUseCase: UnsendReplyUseCaseStub
+
+    @Inject
     protected lateinit var cacheManager: TopchatCacheManager
 
     @Inject
