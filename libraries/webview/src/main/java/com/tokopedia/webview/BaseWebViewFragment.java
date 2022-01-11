@@ -109,7 +109,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final int REQUEST_CODE_LOGOUT = 1234;
     private static final int REQUEST_CODE_LIVENESS = 1235;
     private static final int LOGIN_GPLUS = 458;
-    private static final String LIVENESS_REDIRECTION_PATH = "redirectUrl";
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private static final String KOL_URL = "tokopedia.com/content";
     private static final String PRINT_AWB_URL = "tokopedia.com/shipping-label";
@@ -300,7 +299,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == REQUEST_CODE_LIVENESS && resultCode == RESULT_OK) {
-            String kycRedirectionUrl = intent.getStringExtra(LIVENESS_REDIRECTION_PATH);
+            String kycRedirectionUrl = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
             webView.loadUrl(kycRedirectionUrl);
             return;
         }
@@ -803,8 +802,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private void gotoAlaCarteKyc(Uri uri) {
         String projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
-        String kycRedirectionUrl = uri.getQueryParameter(LIVENESS_REDIRECTION_PATH);
-        Intent intent  = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY, projectId, kycRedirectionUrl);
+        String kycRedirectionUrl = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
+        String layout = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_LAYOUT);
+        Intent intent  = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY, projectId, layout, kycRedirectionUrl);
         startActivityForResult(intent, REQUEST_CODE_LIVENESS);
     }
 

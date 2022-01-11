@@ -348,7 +348,7 @@ public interface ApplinkConst {
     String KYC_FORM_NO_PARAM = "tokopedia://kyc-form";
     String KYC_FORM = "tokopedia://kyc-form?projectId={projectId}";
     String KYC_FORM_ONLY_NO_PARAM = "tokopedia://user-identification-only";
-    String KYC_FORM_ONLY = "tokopedia://user-identification-only?projectId={projectId}&redirectUrl={redirectUrl}&layout={layout}";
+    String KYC_FORM_ONLY = "tokopedia://user-identification-only?projectId={projectId}&layout={layout}&redirectUrl={redirectUrl}";
 
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
 

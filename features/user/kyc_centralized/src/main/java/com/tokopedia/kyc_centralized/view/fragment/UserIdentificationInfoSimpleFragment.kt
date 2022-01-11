@@ -51,12 +51,10 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
             ApplinkConstInternalGlobal.PARAM_LAYOUT).toBoolean()
         redirectUrl = activity?.intent?.data?.getQueryParameter(
             ApplinkConstInternalGlobal.PARAM_REDIRECT_URL).toEmptyStringIfNull()
-        if (savedInstanceState == null) {
-            initViews(view)
-        }
+        initViews(view, savedInstanceState)
     }
 
-    private fun initViews(view: View) {
+    private fun initViews(view: View, savedInstanceState: Bundle?) {
         mainView = view.findViewById(R.id.uii_simple_main_view)
         val mainImage: ImageUnify? = view.findViewById(R.id.uii_simple_main_image)
         val button: UnifyButton? = view.findViewById(R.id.uii_simple_button)
@@ -74,7 +72,10 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
             setupKycBenefitView(view)
         } else {
             loader?.show()
-            startKyc()
+            //If savedInstanceState is null, then first time open (solve problem in ONE UI 3.1)
+            if (savedInstanceState == null) {
+                startKyc()
+            }
         }
     }
 
