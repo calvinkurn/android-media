@@ -5,7 +5,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:paddingTop="14dp"
-    android:paddingBottom="11dp">
+    android:paddingBottom="11dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="0dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_sah_item_social"
@@ -51,6 +53,7 @@
         android:id="@+id/btn_sah_item_social"
         android:layout_width="64dp"
         android:layout_height="24dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:unifyButtonVariant="ghost"
