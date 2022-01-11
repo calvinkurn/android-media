@@ -117,7 +117,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 pojo.replyTime,
                 pojo.msg,
                 convertToChatActionBubbleViewModelList(pojoAttribute),
-                status = RENDER_INVOICE_LIST_AND_BUTTON_ACTION
+                status = pojo.status
         )
     }
 
