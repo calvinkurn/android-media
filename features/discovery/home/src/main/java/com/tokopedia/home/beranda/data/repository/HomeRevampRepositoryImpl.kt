@@ -57,6 +57,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
     private var CHANNEL_LIMIT_FOR_PAGINATION = 1
     companion object{
         private const val TYPE_ATF_1 = "atf-1"
+        private const val MINIMUM_BANNER_TO_SHOW = 1
     }
     var isCacheExist = false
     val gson = Gson()
@@ -197,9 +198,11 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                 try {
                                     val dynamicChannel = homeRemoteDataSource.getHomePageBannerData()
                                     dynamicChannel.let {
-                                        val channelFromResponse = it?.banner
-                                        atfData.content = gson.toJson(channelFromResponse)
-                                        atfData.status = AtfKey.STATUS_SUCCESS
+                                        if (it?.banner?.slides?.size?:0 > MINIMUM_BANNER_TO_SHOW) {
+                                            val channelFromResponse = it?.banner
+                                            atfData.content = gson.toJson(channelFromResponse)
+                                            atfData.status = AtfKey.STATUS_SUCCESS
+                                        }
                                     }
                                     homeData.atfData?.isProcessingAtf = false
                                 } catch (e: Exception) {

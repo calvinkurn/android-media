@@ -25,7 +25,7 @@ class HomeDataMapper(
 
     fun mapToHomeRevampViewModel(homeData: HomeData?, isCache: Boolean, addShimmeringChannel: Boolean = false, isLoadingAtf: Boolean = false, haveCachedData: Boolean = false): HomeDynamicChannelModel{
         BenchmarkHelper.beginSystraceSection(TRACE_MAP_TO_HOME_VIEWMODEL_REVAMP)
-        if (homeData == null) return HomeDynamicChannelModel(isCache = isCache)
+        if (homeData == null) return HomeDynamicChannelModel(isCache = isCache, flowCompleted = true)
         var processingAtf = homeData.atfData?.isProcessingAtf?: false
         var processingDynamicChannel = homeData.isProcessingDynamicChannel
 

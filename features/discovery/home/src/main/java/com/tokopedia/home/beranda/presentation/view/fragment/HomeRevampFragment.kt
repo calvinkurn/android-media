@@ -1083,10 +1083,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     @FlowPreview
     private fun conditionalViewModelRefresh() {
-        if (!fragmentCreatedForFirstTime) {
-            if (!validateChooseAddressWidget()) {
-                getHomeViewModel().refreshWithThreeMinsRules(isFirstInstall = isFirstInstall())
-            }
+        if (!validateChooseAddressWidget()) {
+            getHomeViewModel().refreshWithThreeMinsRules(isFirstInstall = isFirstInstall())
         }
     }
 
@@ -1958,10 +1956,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         homeRecyclerView?.addOneTimeGlobalLayoutListener {
             homePerformanceMonitoringListener?.stopHomePerformanceMonitoring(isCache)
             homePerformanceMonitoringListener = null
-            if (fragmentCreatedForFirstTime) {
-                fragmentCreatedForFirstTime = false
-                conditionalViewModelRefresh()
-            }
             onPageLoadTimeEnd()
         }
     }

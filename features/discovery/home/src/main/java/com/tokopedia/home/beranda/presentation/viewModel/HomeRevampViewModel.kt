@@ -136,6 +136,7 @@ open class HomeRevampViewModel @Inject constructor(
         _isRequestNetworkLiveData.value = Event(true)
         initFlow()
         injectCouponTimeBased()
+        homeRateLimit.reset(HOME_LIMITER_KEY)
     }
 
     private inline fun <reified T> findWidget(predicate: (T) -> Boolean = {true}, actionOnFound: (T, Int) -> Unit) {

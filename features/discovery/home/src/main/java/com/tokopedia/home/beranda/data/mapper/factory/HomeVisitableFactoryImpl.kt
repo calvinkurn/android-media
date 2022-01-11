@@ -278,6 +278,12 @@ class HomeVisitableFactoryImpl(
 
                         TYPE_BANNER -> {
                             data.atfStatusCondition (
+                                    onLoading = {
+                                        visitableList.add(ShimmeringChannelDataModel(data.id.toString()))
+                                    },
+                                    onError = {
+
+                                    },
                                     onSuccess = {
                                         addHomePageBannerData(data.getAtfContent<com.tokopedia.home.beranda.domain.model.banner.BannerDataModel>())
                                     }

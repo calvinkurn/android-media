@@ -12,6 +12,7 @@ import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper
 import com.tokopedia.home.beranda.data.model.*
 import com.tokopedia.home.beranda.data.repository.HomeRevampRepository
+import com.tokopedia.home.beranda.data.repository.HomeRevampRepositoryImpl
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.interactor.repository.*
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -82,6 +83,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
     private var CHANNEL_LIMIT_FOR_PAGINATION = 1
     companion object{
         private const val TYPE_ATF_1 = "atf-1"
+        private const val MINIMUM_BANNER_TO_SHOW = 1
     }
     val gson = Gson()
     var cachedHomeData: HomeData? = null
@@ -132,6 +134,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     dynamicChannelPlainResponse.apply {
                         Log.d("Each merge list size:", (""+this.list.size))
                         this.isCache = isCache
+                        this.flowCompleted = true
                     }
                     emit(dynamicChannelPlainResponse)
                 }
@@ -568,7 +571,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                                     applicationContext?.let {
                                                         ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: "") }
                                     )
-                                    ticker?.let {
+                                    ticker.let {
                                         atfData.content = gson.toJson(ticker.ticker)
                                         atfData.status = AtfKey.STATUS_SUCCESS
                                     }
@@ -590,9 +593,13 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 try {
                                     val dynamicChannel = homePageBannerRepository.getRemoteData()
                                     dynamicChannel.let {
-                                        val channelFromResponse = it.banner
-                                        atfData.content = gson.toJson(channelFromResponse)
-                                        atfData.status = AtfKey.STATUS_SUCCESS
+                                        if (it.banner.slides?.size?:0 > MINIMUM_BANNER_TO_SHOW) {
+                                            val channelFromResponse = it.banner
+                                            atfData.content = gson.toJson(channelFromResponse)
+                                            atfData.status = AtfKey.STATUS_SUCCESS
+                                        } else {
+                                            atfData.status = AtfKey.STATUS_ERROR
+                                        }
                                     }
                                     homeData.atfData?.isProcessingAtf = false
                                 } catch (e: Exception) {
@@ -795,9 +802,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
         if (saveAtf) {
             homeData?.atfData?.let {
                 getHomeRoomDataSource.saveCachedAtf(
-                        it.dataList.filter {
-                            it.component != "channel"
-                        }.map {atfData ->
+                        it.dataList.map {atfData ->
                             AtfCacheEntity(
                                     id = atfData.id,
                                     name = atfData.name,
