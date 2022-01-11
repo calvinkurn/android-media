@@ -3,6 +3,7 @@ package com.tokopedia.wishlist.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.wishlist.R
@@ -245,7 +246,9 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         // 0 = LIST, 1 = GRID
         if (listTypeData.isNotEmpty()) {
             listTypeData.forEach {
-                it.typeLayout = prefLayout
+                if (it.dataObject is ProductCardModel) {
+                    it.typeLayout = prefLayout
+                }
             }
             notifyDataSetChanged()
         }

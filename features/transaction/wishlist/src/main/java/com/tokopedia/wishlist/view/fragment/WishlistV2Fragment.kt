@@ -420,8 +420,15 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         glm.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when (wishlistV2Adapter.getItemViewType(position)) {
-                    WishlistV2Adapter.LAYOUT_LIST, WishlistV2Adapter.LAYOUT_LOADER_LIST -> 2
-                    WishlistV2Adapter.LAYOUT_GRID, WishlistV2Adapter.LAYOUT_LOADER_GRID, WishlistV2Adapter.LAYOUT_RECOMMENDATION_LIST -> 1
+                    WishlistV2Adapter.LAYOUT_LIST,
+                    WishlistV2Adapter.LAYOUT_LOADER_LIST,
+                    WishlistV2Adapter.LAYOUT_TOPADS,
+                    WishlistV2Adapter.LAYOUT_RECOMMENDATION_TITLE_WITH_MARGIN,
+                    WishlistV2Adapter.LAYOUT_RECOMMENDATION_TITLE -> 2
+
+                    WishlistV2Adapter.LAYOUT_GRID,
+                    WishlistV2Adapter.LAYOUT_LOADER_GRID,
+                    WishlistV2Adapter.LAYOUT_RECOMMENDATION_LIST -> 1
                     else -> 2
                 }
             }
@@ -1104,7 +1111,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         if (!isBulkDeleteShow) {
             isBulkDeleteShow = true
             binding?.run {
-
                 wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(R.string.wishlist_cancel_manage_label)
             }
             onManageClicked(showCheckbox = true)
