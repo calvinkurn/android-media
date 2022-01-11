@@ -103,10 +103,11 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     }
 
     private boolean checkForceLightMode() {
-        boolean forceLightRollence = false;
+        AbTestPlatform abTest = getAbTestPlatform();
 
-        if (getAbTestPlatform() != null) {
-            forceLightRollence = getAbTestPlatform()
+        boolean forceLightRollence = false;
+        if (abTest != null) {
+            forceLightRollence = abTest
                     .getString(RollenceKey.USER_DARK_MODE_TOGGLE, "")
                     .isEmpty();
         }
