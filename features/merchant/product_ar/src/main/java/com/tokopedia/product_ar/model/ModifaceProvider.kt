@@ -100,13 +100,13 @@ data class ModifaceProvider(
     fun getWetnessFormula(): Float = wetness * 100
     fun getSparkleAFormula(): Float = sparkleA * 100
     fun getGlitterDensityFormula(): Float = sparkleDensity?.let { it * 100 } ?: 1F
-    fun getGlitterSizeFormula(): Int = sparkleSize?.let { it.toIntSafely() * 100 } ?: 1
+    fun getGlitterSizeFormula(): Float = sparkleSize?.let { it * 100 } ?: 1F
     fun getGlitterColorVariationFormula(): Float = sparkleColorVariation * 100
     fun getGlitterSizeVariationFormula(): Float = sparkleSizeVariation * 100
     fun getGlitterBaseReflectivityFormula(): Float = sparkleBaseReflectivity?.let { it * 100 }
             ?: 0.3F
 
-    fun getAmountFormula(): Float = intensity?.let { it * 100 } ?: 100F
+    fun getAmountFormula(): Float = intensity?.let { it * 100 } ?: 1F
     fun getEnvMappingtFormula(): Float = envMappingIntensity * 100
     fun getEnvBumpDensityFormula(): Float = envMappingBumpIntensity?.let { it } ?: 0.6F
     fun getEnvMappingCurveFormula(): Float = envMappingCurve?.let { it } ?: 2.3F

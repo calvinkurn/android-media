@@ -10,7 +10,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -18,19 +17,20 @@ import androidx.lifecycle.lifecycleScope
 import com.modiface.mfemakeupkit.MFEMakeupEngine
 import com.modiface.mfemakeupkit.data.MFETrackingData
 import com.modiface.mfemakeupkit.effects.MFEMakeupProduct
-import com.modiface.mfemakeupkit.widgets.MFEMakeupView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerPageSource
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.ImagePickerTab
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product_ar.R
+import com.tokopedia.product_ar.databinding.FragmentProductArBinding
 import com.tokopedia.product_ar.model.state.AnimatedTextIconClickMode
 import com.tokopedia.product_ar.model.state.ModifaceViewMode
 import com.tokopedia.product_ar.util.AnimatedTextIcon
@@ -45,12 +45,11 @@ import com.tokopedia.product_ar.viewmodel.ProductArViewModel
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageProcessingUtil.getBitmapFromPath
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -72,20 +71,14 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     private var viewModel: ProductArViewModel? = null
     private var sharedViewModel: ProductArSharedViewModel? = null
 
-    private var mMakeupView: MFEMakeupView? = null
-
+    private var binding by autoClearedNullable<FragmentProductArBinding>()
     private var partialBottomArView: PartialBottomArView? = null
-    private var animatedTextIcon1: AnimatedTextIcon? = null
-    private var animatedTextIcon2: AnimatedTextIcon? = null
-    private var productArToolbar: NavToolbar? = null
-    private var arViewLoader: LoaderUnify? = null
-    private var icComparison: ImageUnify? = null
-    private var arShimmer: LinearLayoutCompat? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_product_ar, container, false)
+        binding = FragmentProductArBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onAttach(context: Context) {
@@ -95,7 +88,6 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         context?.let {
             activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
             activity?.let { activity ->
@@ -108,57 +100,41 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(view)
+        initView()
 
-        getMakeUpEngine()?.setDetectionCallbackForCameraFeed(this)
-        getMakeUpEngine()?.attachMakeupView(mMakeupView)
-        setupLiveCamera()
+        binding?.mainImg?.let {
+            getMakeUpEngine()?.setDetectionCallbackForCameraFeed(this)
+            getMakeUpEngine()?.attachMakeupView(it)
+            setupLiveCamera()
+        }
 
-        icComparison?.setOnClickListener {
+        binding?.icCompareAr?.setOnClickListener {
+            binding?.arLoader?.show()
             goToArComparissonPage()
         }
         setupNavToolbar()
     }
 
-    private fun initView(view: View) {
-        icComparison = view.findViewById(R.id.ic_compare_ar)
-        mMakeupView = view.findViewById(R.id.main_img)
-        arViewLoader = view.findViewById(R.id.ar_loader)
-        animatedTextIcon2 = view.findViewById(R.id.animated_txt_icon_2)
-        animatedTextIcon1 = view.findViewById(R.id.animated_txt_icon_1)
-        productArToolbar = view.findViewById(R.id.product_ar_toolbar)
-        arShimmer = view.findViewById(R.id.ar_shimmer)
-        arShimmer?.setOnClickListener {
-            it.hide()
-            partialBottomArView?.showView()
+    private fun initView() {
+        binding?.root?.let {
+            partialBottomArView = PartialBottomArView.build(it, this)
         }
-        partialBottomArView = PartialBottomArView.build(view, this)
     }
 
     private fun goToArComparissonPage() {
-        val cameraMode = viewModel?.modifaceViewState?.value?.mode ?: ModifaceViewMode.LIVE
-
-        if (cameraMode == ModifaceViewMode.LIVE) {
-            captureLiveCameraToComparisson()
-        } else {
-            captureImageToComparisson()
-        }
+        captureImageAndSetupData()
     }
 
-    private fun captureImageToComparisson() {
-        viewModel?.imageDrawable?.let {
-            sharedViewModel?.setArListData((viewModel?.productArList?.value as? Success)?.data
-                    ?: listOf(), it)
-            getArActivity()?.goToArComparisonFragment()
-        }
-    }
-
-    private fun captureLiveCameraToComparisson() {
+    private fun captureImageAndSetupData() {
         getMakeUpEngine()?.captureOutputWithCompletionHandler { before, after ->
             activity?.runOnUiThread {
                 before?.let {
-                    sharedViewModel?.setArListData((viewModel?.productArList?.value as? Success)?.data
-                            ?: listOf(), it)
+                    sharedViewModel?.setArListData(
+                            listOfArData = (viewModel?.productArList?.value as? Success)?.data
+                                    ?: listOf(),
+                            processedPhoto = after,
+                            originalPhoto = before)
+                    binding?.arLoader?.hide()
                     getArActivity()?.goToArComparisonFragment()
                 }
             }
@@ -167,11 +143,11 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
 
     private fun setupNavToolbar() {
         activity?.let { activity ->
-            productArToolbar?.let {
-                productArToolbar?.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
-                productArToolbar?.setToolbarTitle("")
-                productArToolbar?.setupToolbarWithStatusBar(activity, NavToolbar.Companion.StatusBar.STATUS_BAR_DARK)
-                productArToolbar?.setIcon(
+            binding?.productArToolbar?.run {
+                setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
+                setToolbarTitle("")
+                setupToolbarWithStatusBar(activity, NavToolbar.Companion.StatusBar.STATUS_BAR_DARK)
+                setIcon(
                         IconBuilder()
                                 .addIcon(IconUnify.INFORMATION) {
                                     context?.let { ctx ->
@@ -181,9 +157,15 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
                                 }
                                 .addIcon(IconList.ID_CART) {}
                 )
-                viewLifecycleOwner.lifecycle.addObserver(it)
+                viewLifecycleOwner.lifecycle.addObserver(this)
             }
         }
+    }
+
+    override fun onDestroyView() {
+        binding = null
+        partialBottomArView = null
+        super.onDestroyView()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -201,7 +183,6 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
 
     private fun setupUseImageCamera(drawablePath: String) {
         val selectedImageBitmap = getBitmapFromPath(drawablePath)
-        viewModel?.imageDrawable = selectedImageBitmap
         selectedImageBitmap?.let {
             getMakeUpEngine()?.clearMakeupLook()
             getMakeUpEngine()?.startRunningWithPhoto(it, true,
@@ -253,16 +234,16 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     private fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel?.animatedTextIconState?.collectLatest {
-                animatedTextIcon1?.run {
+                binding?.animatedTxtIcon1?.run {
                     shouldShowWithAction(it.view1ClickMode != null) {
-                        animatedTextIcon1?.renderText(requireContext().getString(it.view1ClickMode!!.textId), it.view1ClickMode.iconUnify)
+                        renderText(requireContext().getString(it.view1ClickMode!!.textId), it.view1ClickMode.iconUnify)
                         setupTextClickMode(this, it.view1ClickMode)
                     }
                 }
 
-                animatedTextIcon2?.run {
+                binding?.animatedTxtIcon2?.run {
                     shouldShowWithAction(it.view2ClickMode != null) {
-                        animatedTextIcon2?.renderText(requireContext().getString(it.view2ClickMode!!.textId), it.view2ClickMode.iconUnify)
+                        renderText(requireContext().getString(it.view2ClickMode!!.textId), it.view2ClickMode.iconUnify)
                         setupTextClickMode(this, it.view2ClickMode)
                     }
                 }
@@ -282,9 +263,9 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel?.modifaceLoadingState?.collectLatest {
                 if (it) {
-                    arViewLoader?.show()
+                    binding?.arLoader?.show()
                 } else {
-                    arViewLoader?.hide()
+                    binding?.arLoader?.hide()
                 }
             }
         }
@@ -292,9 +273,9 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel?.bottomLoadingState?.collectLatest {
                 if (it) {
-                    arShimmer?.show()
+                    binding?.arShimmer?.root?.show()
                 } else {
-                    arShimmer?.hide()
+                    binding?.arShimmer?.root?.hide()
                     partialBottomArView?.showView()
                 }
             }
@@ -393,6 +374,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
             val builder = ImagePickerBuilder.getSquareImageBuilder(it)
                     .apply {
                         title = it.getString(R.string.txt_image_picker_title)
+                        imagePickerTab = arrayOf(ImagePickerTab.TYPE_GALLERY)
                     }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
             intent.putImagePickerBuilder(builder)
@@ -411,7 +393,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         }
 
         activity?.runOnUiThread {
-            if (arViewLoader?.isShown == true) viewModel?.setLoadingState(false)
+            if (binding?.arLoader?.isShown == true) viewModel?.setLoadingState(false)
         }
     }
 }

@@ -4,9 +4,8 @@ import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.modiface.mfemakeupkit.effects.MFEMakeupLook
 import com.tokopedia.product_ar.model.ModifaceUiModel
-import com.tokopedia.product_ar.model.state.GenerateMakeUpLookState
-import com.tokopedia.product_ar.model.state.GenerateMakeUpMode
 import com.tokopedia.product_ar.model.state.ImageMapMode
 import com.tokopedia.product_ar.model.state.ModifaceImageGridState
 import com.tokopedia.product_ar.util.ProductArMapper
@@ -26,8 +25,8 @@ class ProductArComparisonViewModel @Inject constructor() : ViewModel() {
     val addRemoveImageGrid: StateFlow<ModifaceImageGridState>
         get() = _addRemoveImageGrid
 
-    private val _generateMakeUpBackground = MutableStateFlow(GenerateMakeUpLookState())
-    val generateMakeUpBackground: StateFlow<GenerateMakeUpLookState>
+    private val _generateMakeUpBackground = MutableLiveData(MFEMakeupLook())
+    val generateMakeUpBackground: LiveData<MFEMakeupLook>
         get() = _generateMakeUpBackground
 
     fun addGridImages(processedImage: Bitmap,
@@ -46,11 +45,6 @@ class ProductArComparisonViewModel @Inject constructor() : ViewModel() {
         counter++
         val updatedData = ProductArMapper.updateInitialListWithCounter(data)
         _processedVariantData.value = updatedData
-
-        val selectedMfMakeUpLook = ProductArMapper.getInitialMfMakeUpLook(data)
-        _generateMakeUpBackground.value = _generateMakeUpBackground.value.copy(
-                mfeMakeupLook = selectedMfMakeUpLook
-        )
     }
 
     fun setSelectedVariant(data: List<ModifaceUiModel>,
@@ -98,10 +92,7 @@ class ProductArComparisonViewModel @Inject constructor() : ViewModel() {
                 updatedVariants,
                 selectedProductId
         )
-        _generateMakeUpBackground.value = _generateMakeUpBackground.value.copy(
-                mode = GenerateMakeUpMode.SELECTION,
-                mfeMakeupLook = selectedMfLookData
-        )
+        _generateMakeUpBackground.value = selectedMfLookData
     }
 
     private fun removeImageAtPosition(isSelected: Boolean,

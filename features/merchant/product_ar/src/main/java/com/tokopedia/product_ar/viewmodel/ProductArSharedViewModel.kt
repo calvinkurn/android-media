@@ -5,15 +5,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.product_ar.model.ModifaceUiModel
+import com.tokopedia.product_ar.model.ProductArComparissonFragmentModel
 
 class ProductArSharedViewModel : ViewModel() {
 
-    private val _arListData = MutableLiveData<Pair<List<ModifaceUiModel>, Bitmap>>()
-    val arListData: LiveData<Pair<List<ModifaceUiModel>, Bitmap>>
+    private val _arListData = MutableLiveData<ProductArComparissonFragmentModel>()
+    val arListData: LiveData<ProductArComparissonFragmentModel>
         get() = _arListData
 
 
-    fun setArListData(listOfArData: List<ModifaceUiModel>, bitmap: Bitmap) {
-        _arListData.value = listOfArData to bitmap
+    fun setArListData(listOfArData: List<ModifaceUiModel>, processedPhoto: Bitmap, originalPhoto: Bitmap) {
+        _arListData.value = ProductArComparissonFragmentModel(
+                processedPhoto = processedPhoto,
+                originalPhoto = originalPhoto,
+                modifaceUiModel = listOfArData
+        )
     }
 }

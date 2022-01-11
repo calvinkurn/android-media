@@ -22,7 +22,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.di.ProductArComponent
-import com.tokopedia.product_ar.model.state.GenerateMakeUpMode
 import com.tokopedia.product_ar.model.state.ImageMapMode
 import com.tokopedia.product_ar.util.ArGridImageDownloader
 import com.tokopedia.product_ar.util.ItemDividerGrid
@@ -39,7 +38,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListener, ProductArListener, MFEMakeupEngine.u {
+class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListener, ProductArListener {
 
     companion object {
         const val PRODUCT_AR_COMPARISON_FRAGMENT = "product_ar_fragment"
@@ -78,7 +77,6 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         observeData()
     }
 
@@ -144,17 +142,9 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
     }
 
     private fun observeGenerateMakeUpLook() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel?.generateMakeUpBackground?.collectLatest {
-                if (it.mode == GenerateMakeUpMode.SELECTION) {
-                    /**
-                     * prevent register callback when first time open the page,
-                     * cause it will call multiple times
-                     */
-                    setEngineCallback()
-                }
-                getMakeUpEngine()?.setMakeupLook(it.mfeMakeupLook)
-            }
+        viewModel?.generateMakeUpBackground?.observe(viewLifecycleOwner) {
+            setEngineCallback()
+            getMakeUpEngine()?.setMakeupLook(it)
         }
     }
 
@@ -166,25 +156,19 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
 
     private fun observeInitialData() {
         sharedViewModel?.arListData?.observeOnce(viewLifecycleOwner) {
-            getMakeUpEngine()?.startRunningWithPhoto(it.second, false)
-            getMakeUpEngine()?.applyMakeupToPhotoInBackground(it.second, false,
-                    object : MFEMakeupEngine.ApplyMakeupToPhotoCompletionHandler {
-                        override fun onMakeupAppliedToPhoto(p0: Bitmap?, p1: Bitmap?, p2: Throwable?) {
-                            activity?.runOnUiThread(Runnable {
-                                p1?.let {
-                                    loader?.hide()
-                                    viewModel?.addGridImages(it, comparisonAdapter.listBitmap)
-                                }
-                            })
-                        }
-                    })
+            getMakeUpEngine()?.startRunningWithPhoto(it.originalPhoto, true)
 
-            viewModel?.renderInitialData(it.first)
+            it.processedPhoto?.let { processedPhoto ->
+                comparisonAdapter.setData(listOf(processedPhoto))
+                loader?.hide()
+            }
+
+            viewModel?.renderInitialData(it.modifaceUiModel)
         }
     }
 
     private fun setEngineCallback(disabled: Boolean = false) {
-        getMakeUpEngine()?.setCallback(object : MFEMakeupEngine.u {
+        getMakeUpEngine()?.setCallback(object : MFEMakeupEngine.v {
             override fun a(p0: Bitmap?, p1: Bitmap?) {
                 if (!disabled) {
                     activity?.runOnUiThread {
@@ -245,14 +229,6 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
                         ?: ""
                 view?.showToasterSuccess(messageSuccess)
             }, 500)
-        }
-    }
-
-    override fun a(p0: Bitmap?, p1: Bitmap?) {
-        activity?.runOnUiThread {
-            p1?.let {
-                viewModel?.addGridImages(it, comparisonAdapter.listBitmap)
-            }
         }
     }
 }
