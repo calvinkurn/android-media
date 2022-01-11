@@ -456,7 +456,7 @@ open class TopChatRoomPresenter @Inject constructor(
     override fun sendAttachmentsAndMessage(
         sendMessage: String, referredMsg: ParentReply?
     ) {
-        if (isValidReply(sendMessage)) {
+//        if (isValidReply(sendMessage)) {
 //            sendAttachments(sendMessage)
 //            topchatSendMessageWithWebsocket(
 //                sendMessage = sendMessage,
@@ -464,7 +464,7 @@ open class TopChatRoomPresenter @Inject constructor(
 //            )
 //            view?.clearAttachmentPreviews()
 //            view?.clearReferredMsg()
-        }
+//        }
     }
 
     override fun sendAttachmentsAndSticker(
@@ -492,17 +492,17 @@ open class TopChatRoomPresenter @Inject constructor(
     override fun sendSrwFrom(
         attachment: HeaderCtaButtonAttachment
     ) {
-        val addressMasking = AddressUtil.getAddressMasking(userLocationInfo.label)
-        val ctaButton = attachment.ctaButton
-        val productName = ctaButton.productName
-        val srwMessage = "Ubah alamat pengiriman \"$productName\" ke $addressMasking"
-        val question = QuestionUiModel(srwMessage, ctaButton.extras.intent)
-        val products = ctaButton.generateSendableProductPreview()
-        topchatSendMessageWithWebsocket(
-            sendMessage = question.content,
-            intention = question.intent,
-            products = products
-        )
+//        val addressMasking = AddressUtil.getAddressMasking(userLocationInfo.label)
+//        val ctaButton = attachment.ctaButton
+//        val productName = ctaButton.productName
+//        val srwMessage = "Ubah alamat pengiriman \"$productName\" ke $addressMasking"
+//        val question = QuestionUiModel(srwMessage, ctaButton.extras.intent)
+//        val products = ctaButton.generateSendableProductPreview()
+//        topchatSendMessageWithWebsocket(
+//            sendMessage = question.content,
+//            intention = question.intent,
+//            products = products
+//        )
     }
 
     override fun sendSrwBubble(
@@ -524,23 +524,23 @@ open class TopChatRoomPresenter @Inject constructor(
         products: List<SendablePreview>? = null,
         referredMsg: ParentReply? = null
     ) {
-        val startTime = SendableUiModel.generateStartTime()
-        val previewMsg = generatePreviewMessage(
-            messageText = sendMessage,
-            startTime = startTime,
-            referredMsg = referredMsg
-        )
-        val requestParams = TopChatWebSocketParam.generateParamSendMessage(
-            roomeMetaData = roomMetaData,
-            messageText = sendMessage,
-            startTime = startTime,
-            attachments = products ?: attachmentsPreview,
-            localId = previewMsg.localId,
-            intention = intention,
-            userLocationInfo = userLocationInfo,
-            referredMsg = referredMsg
-        )
-        sendWs(requestParams, previewMsg)
+//        val startTime = SendableUiModel.generateStartTime()
+//        val previewMsg = generatePreviewMessage(
+//            messageText = sendMessage,
+//            startTime = startTime,
+//            referredMsg = referredMsg
+//        )
+//        val requestParams = TopChatWebSocketParam.generateParamSendMessage(
+//            roomeMetaData = roomMetaData,
+//            messageText = sendMessage,
+//            startTime = startTime,
+//            attachments = products ?: attachmentsPreview,
+//            localId = previewMsg.localId,
+//            intention = intention,
+//            userLocationInfo = userLocationInfo,
+//            referredMsg = referredMsg
+//        )
+//        sendWs(requestParams, previewMsg)
     }
 
     private fun sendWs(
@@ -566,20 +566,21 @@ open class TopChatRoomPresenter @Inject constructor(
         startTime: String,
         referredMsg: ParentReply?
     ): SendableUiModel {
-        val localId = IdentifierUtil.generateLocalId()
-        return MessageUiModel.Builder()
-            .withMsgId(roomMetaData.msgId)
-            .withFromUid(userSession.userId)
-            .withFrom(userSession.name)
-            .withReplyTime(generateCurrentReplyTime())
-            .withStartTime(startTime)
-            .withMsg(messageText)
-            .withLocalId(localId)
-            .withParentReply(referredMsg)
-            .withIsDummy(true)
-            .withIsSender(true)
-            .withIsRead(false)
-            .build()
+        return MessageUiModel.Builder().build()
+//        val localId = IdentifierUtil.generateLocalId()
+//        return MessageUiModel.Builder()
+//            .withMsgId(roomMetaData.msgId)
+//            .withFromUid(userSession.userId)
+//            .withFrom(userSession.name)
+//            .withReplyTime(generateCurrentReplyTime())
+//            .withStartTime(startTime)
+//            .withMsg(messageText)
+//            .withLocalId(localId)
+//            .withParentReply(referredMsg)
+//            .withIsDummy(true)
+//            .withIsSender(true)
+//            .withIsRead(false)
+//            .build()
     }
 
     private fun mapToDummyMessage(

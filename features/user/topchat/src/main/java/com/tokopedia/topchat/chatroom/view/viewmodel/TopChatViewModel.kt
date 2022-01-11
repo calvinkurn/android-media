@@ -36,10 +36,12 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ActionType
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.BlockActionType
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.WrapperChatSetting
 import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
+import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.usecase.*
@@ -47,6 +49,7 @@ import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Pa
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
+import com.tokopedia.topchat.common.util.AddressUtil
 import com.tokopedia.topchat.common.websocket.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -935,6 +938,14 @@ class TopChatViewModel @Inject constructor(
 
     fun hasEmptyAttachmentPreview(): Boolean {
         return attachmentsPreview.isEmpty()
+    }
+
+    fun generateSrwQuestionUiModel(attachment: HeaderCtaButtonAttachment): QuestionUiModel {
+        val addressMasking = AddressUtil.getAddressMasking(userLocationInfo.label)
+        val ctaButton = attachment.ctaButton
+        val productName = ctaButton.productName
+        val srwMessage = "Ubah alamat pengiriman \"$productName\" ke $addressMasking"
+        return QuestionUiModel(srwMessage, ctaButton.extras.intent)
     }
 
     companion object {

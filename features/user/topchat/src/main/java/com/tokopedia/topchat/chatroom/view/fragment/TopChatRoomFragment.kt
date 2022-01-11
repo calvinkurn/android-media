@@ -2340,8 +2340,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun sendSrwQuestion(attachment: HeaderCtaButtonAttachment) {
         onSendAndReceiveMessage()
-        presenter.sendSrwFrom(attachment)
         onSendingMessage(false).invoke()
+        val question = viewModel.generateSrwQuestionUiModel(attachment)
+        viewModel.sendMsg(
+            message = question.content,
+            intention = question.intent,
+            referredMsg = null,
+            products = attachment.ctaButton.generateSendableProductPreview()
+        )
+//        presenter.sendSrwFrom(attachment)
     }
 
     private fun addSrwBubbleToChat() {
