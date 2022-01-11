@@ -30,7 +30,6 @@ import kotlin.coroutines.resume
  */
 class RealTimeNotificationViewComponent(
         container: ViewGroup,
-        private val listener: Listener,
 ) : ViewComponent(container, R.id.view_real_time_notification) {
 
     private val offset16 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
@@ -53,12 +52,6 @@ class RealTimeNotificationViewComponent(
 
     private val showListener = object : DefaultAnimatorListener() {
         override fun onAnimationStart(animation: Animator) {
-            if (isShown()) {
-                listener.onShowNotification(
-                        this@RealTimeNotificationViewComponent,
-                        rtnBubbleView.measuredHeight.toFloat()
-                )
-            }
         }
 
         override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
@@ -68,7 +61,6 @@ class RealTimeNotificationViewComponent(
 
     private val hideListener = object : DefaultAnimatorListener() {
         override fun onAnimationStart(animation: Animator?, isReverse: Boolean) {
-            listener.onHideNotification(this@RealTimeNotificationViewComponent)
         }
 
         override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
@@ -127,7 +119,6 @@ class RealTimeNotificationViewComponent(
     private suspend fun runAnimation() = suspendCancellableCoroutine<Unit> { cont ->
         val animatorListener = object : DefaultAnimatorListener() {
             override fun onAnimationCancel(animation: Animator) {
-                listener.onHideNotification(this@RealTimeNotificationViewComponent)
             }
 
             override fun onAnimationEnd(animation: Animator) {
@@ -206,11 +197,5 @@ class RealTimeNotificationViewComponent(
 
         private const val DEFAULT_LIFESPAN_IN_MS = 1000L
         private const val SLIDE_DURATION_IN_MS = 300L
-    }
-
-    interface Listener {
-
-        fun onShowNotification(view: RealTimeNotificationViewComponent, height: Float)
-        fun onHideNotification(view: RealTimeNotificationViewComponent)
     }
 }

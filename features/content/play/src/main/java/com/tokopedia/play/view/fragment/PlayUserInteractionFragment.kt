@@ -120,7 +120,6 @@ class PlayUserInteractionFragment @Inject constructor(
         ProductFeaturedViewComponent.Listener,
         InteractiveViewComponent.Listener,
         InteractiveWinnerBadgeViewComponent.Listener,
-        RealTimeNotificationViewComponent.Listener,
         CastViewComponent.Listener,
         ProductSeeMoreViewComponent.Listener,
         KebabMenuViewComponent.Listener
@@ -146,7 +145,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
     private val castView by viewComponentOrNull(isEagerInit = true) { CastViewComponent(it, this) }
     private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
-    private val rtnView by viewComponentOrNull { RealTimeNotificationViewComponent(it, this) }
+    private val rtnView by viewComponentOrNull { RealTimeNotificationViewComponent(it) }
     private val likeBubbleView by viewComponent { LikeBubbleViewComponent(
         it, R.id.view_like_bubble, viewLifecycleOwner.lifecycleScope, multipleLikesIconCacheStorage) }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
@@ -494,17 +493,6 @@ class PlayUserInteractionFragment @Inject constructor(
      */
     override fun onBadgeClicked(view: InteractiveWinnerBadgeViewComponent) {
         playViewModel.submitAction(InteractiveWinnerBadgeClickedAction(bottomSheetMaxHeight))
-    }
-
-    /**
-     * RealTimeNotification View Component Listener
-     */
-    override fun onShowNotification(view: RealTimeNotificationViewComponent, height: Float) {
-        chatListView?.setMask(height + offset8, true)
-    }
-
-    override fun onHideNotification(view: RealTimeNotificationViewComponent) {
-        chatListView?.setMask(MASK_NO_CUT_HEIGHT, true)
     }
 
     /**
