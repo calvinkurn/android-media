@@ -119,7 +119,8 @@ fun createHomeDynamicChannelUseCase(
         homeRechargeRecommendationRepository: HomeRechargeRecommendationRepository = mockk(relaxed = true),
         homeSalamWidgetRepository: HomeSalamWidgetRepository = mockk(relaxed = true),
         homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository = mockk(relaxed = true),
-        homeChooseAddressRepository: HomeChooseAddressRepository = mockk(relaxed = true)
+        homeChooseAddressRepository: HomeChooseAddressRepository = mockk(relaxed = true),
+        homeUserSessionInterface: UserSessionInterface = mockk(relaxed = true)
 ): HomeDynamicChannelUseCase {
     return HomeDynamicChannelUseCase(
             homeBalanceWidgetUseCase = homeBalanceWidgetUseCase,
@@ -147,7 +148,8 @@ fun createHomeDynamicChannelUseCase(
             homeRechargeRecommendationRepository = homeRechargeRecommendationRepository,
             homeSalamWidgetRepository = homeSalamWidgetRepository,
             homeRecommendationFeedTabRepository = homeRecommendationFeedTabRepository,
-            homeChooseAddressRepository = homeChooseAddressRepository
+            homeChooseAddressRepository = homeChooseAddressRepository,
+            userSessionInterface = homeUserSessionInterface
     )
 }
 

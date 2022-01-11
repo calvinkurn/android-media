@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.viewModel
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -116,6 +117,7 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
 
     private var fetchFirstData = false
+    private var homeFlowStarted = false
     private var homeFlowDataCancelled = false
     private var onRefreshState = true
     private var popularKeywordRefreshCount = 1
@@ -133,8 +135,8 @@ open class HomeRevampViewModel @Inject constructor(
     init {
         _isRequestNetworkLiveData.value = Event(true)
         initFlow()
-        refreshHomeData()
         injectCouponTimeBased()
+        homeRateLimit.reset(HOME_LIMITER_KEY)
     }
 
     private inline fun <reified T> findWidget(predicate: (T) -> Boolean = {true}, actionOnFound: (T, Int) -> Unit) {
@@ -226,6 +228,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     @FlowPreview
     private fun initFlow() {
+        homeFlowStarted = true
         launchCatchError(coroutineContext, block = {
             homeFlowDynamicChannel.collect { homeNewDataModel ->
                 if (homeNewDataModel?.isCache == false) {
@@ -236,7 +239,12 @@ open class HomeRevampViewModel @Inject constructor(
                         HomeServerLogger.warning_empty_channel_update(homeNewDataModel)
                     }
                     updateHomeData(homeNewDataModel)
+                    Log.d("DevaraFikryTest", "[Non Cache] Captured list:"+homeNewDataModel.list.size)
                     _trackingLiveData.postValue(Event(homeNewDataModel.list.filterIsInstance<HomeVisitable>()))
+                } else if (homeNewDataModel?.list?.size?:0 > 0) {
+                    homeNewDataModel?.let { updateHomeData(it)
+                        Log.d("DevaraFikryTest", "[Cache] Captured list:"+homeNewDataModel.list.size)
+                    }
                 }
             }
         }) {
@@ -252,9 +260,10 @@ open class HomeRevampViewModel @Inject constructor(
     @FlowPreview
     fun refreshHomeData() {
         if (getHomeDataJob?.isActive == true) return
+        if (homeDataModel.flowCompleted == false) return
         onRefreshState = true
 
-        if (homeFlowDataCancelled) {
+        if (homeFlowDataCancelled || !homeFlowStarted) {
             initFlow()
             homeFlowDataCancelled = false
         }
@@ -521,7 +530,6 @@ open class HomeRevampViewModel @Inject constructor(
         return homeDataModel.homeChooseAddressData
     }
 
-    //adjust unit test
     fun removeChooseAddressWidget() {
         findWidget<HomeHeaderDataModel> { homeHeaderModel, index ->
             homeHeaderModel.needToShowChooseAddress = false

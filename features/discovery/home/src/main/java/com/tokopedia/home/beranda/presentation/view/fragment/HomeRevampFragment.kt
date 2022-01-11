@@ -163,6 +163,7 @@ import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import dagger.Lazy
+import kotlinx.coroutines.FlowPreview
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
@@ -400,21 +401,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun isChooseAddressRollenceActive(): Boolean {
-        return true
-    }
-
-    private fun chooseAddressAbTestCondition(
-            ifChooseAddressActive: () -> Unit = {},
-            ifChooseAddressNotActive: () -> Unit = {}) {
-        val isActive = isChooseAddressRollenceActive()
-        if (isActive) {
-            ifChooseAddressActive.invoke()
-        } else {
-            ifChooseAddressNotActive.invoke()
-        }
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         createDaggerComponent()
@@ -610,15 +596,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
             it.setIcon(icons)
         }
-
-        chooseAddressAbTestCondition(
-                ifChooseAddressActive = {
-                    onChooseAddressUpdated()
-                },
-                ifChooseAddressNotActive = {
-                    getHomeViewModel().getAddressData().isActive = false
-                }
-        )
+        onChooseAddressUpdated()
 
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout)
         stickyLoginView = view.findViewById(R.id.sticky_login_text)
@@ -1103,19 +1081,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    @FlowPreview
     private fun conditionalViewModelRefresh() {
-        if (!fragmentCreatedForFirstTime) {
-            chooseAddressAbTestCondition(
-                    ifChooseAddressActive = {
-                        if (!validateChooseAddressWidget()) {
-                            getHomeViewModel().refreshWithThreeMinsRules(isFirstInstall = isFirstInstall())
-                        }
-                    },
-                    ifChooseAddressNotActive = {
-                        getHomeViewModel().refreshWithThreeMinsRules(isFirstInstall = isFirstInstall())
-                    }
-            )
-
+        if (!validateChooseAddressWidget()) {
+            getHomeViewModel().refreshWithThreeMinsRules(isFirstInstall = isFirstInstall())
         }
     }
 
@@ -1253,7 +1222,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             dynamicChannel?.let {
                 if (dynamicChannel.list.isNotEmpty()) {
                     configureHomeFlag(dynamicChannel.homeFlag)
-                    setData(dynamicChannel.list, dynamicChannel.isCache, dynamicChannel.isProcessingAtf)
+                    setData(dynamicChannel.list, dynamicChannel.isCache)
                     setBeautyFest(dynamicChannel)
                 }
             }
@@ -1477,9 +1446,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         loaderHeaderImage.layoutParams = layoutParams
     }
 
-    private fun setData(data: List<Visitable<*>>, isCache: Boolean, isProcessingAtf: Boolean) {
+    private fun setData(data: List<Visitable<*>>, isCache: Boolean) {
         if (data.isNotEmpty()) {
-            if (needToPerformanceMonitoring(isProcessingAtf) && getPageLoadTimeCallback() != null) {
+            if (needToPerformanceMonitoring(data) && getPageLoadTimeCallback() != null) {
                 setOnRecyclerViewLayoutReady(isCache)
             }
             adapter?.submitList(data)
@@ -1926,7 +1895,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     .setLocalCacheModel(localCacheModel)
             )
             chooseAddressWidgetInitialized = false
-            getHomeViewModel().refreshWithThreeMinsRules(forceRefresh = true, isFirstInstall = isFirstInstall())
+            if (getHomeViewModel().homeDataModel.list.isNotEmpty()) {
+                getHomeViewModel().refreshWithThreeMinsRules(forceRefresh = true, isFirstInstall = isFirstInstall())
+            }
         }
     }
 
@@ -1985,10 +1956,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         homeRecyclerView?.addOneTimeGlobalLayoutListener {
             homePerformanceMonitoringListener?.stopHomePerformanceMonitoring(isCache)
             homePerformanceMonitoringListener = null
-            if (fragmentCreatedForFirstTime) {
-                fragmentCreatedForFirstTime = false
-                conditionalViewModelRefresh()
-            }
             onPageLoadTimeEnd()
         }
     }
@@ -2640,8 +2607,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM, options.toBundle())
     }
 
-    private fun needToPerformanceMonitoring(isProcessingAtf: Boolean): Boolean {
-        return homePerformanceMonitoringListener != null && !isOnRecyclerViewLayoutAdded && !isProcessingAtf
+    private fun needToPerformanceMonitoring(data: List<Visitable<*>>): Boolean {
+        return homePerformanceMonitoringListener != null && !isOnRecyclerViewLayoutAdded && data.size > 1
     }
 
     private fun showToaster(message: String, typeToaster: Int) {

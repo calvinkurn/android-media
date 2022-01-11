@@ -25,6 +25,36 @@ object HomeServerLogger {
     const val TYPE_RECOM_SET_ADAPTER_ERROR = "recom_set_adapter_error"
     const val TYPE_ERROR_SUBMIT_WALLET = "wallet_app_error_submit"
     const val TYPE_ERROR_ON_LAYOUT_CHILDREN_BALANCE = "error_on_layout_children_balance_adapter"
+    const val TYPE_HOME_REPOSITORY_ERROR = "home_repository_error"
+    const val TYPE_ERROR_DECLINE_RECHARGE_RECOMMENDATION = "home_decline_recharge_recommendation_error"
+    const val TYPE_ERROR_DECLINE_SALAM_RECOMMENDATION = "home_decline_salam_recommendation_error"
+
+    fun warning_error_decline_salam_recommendation(throwable: Throwable?) {
+        logWarning(
+                type = TYPE_ERROR_DECLINE_SALAM_RECOMMENDATION,
+                throwable = throwable,
+                reason = (throwable?.message ?: "").take(ConstantKey.HomeTimber.MAX_LIMIT),
+                data = Log.getStackTraceString(throwable).take(ConstantKey.HomeTimber.MAX_LIMIT)
+        )
+    }
+
+    fun warning_error_decline_recharge_recommendation(throwable: Throwable?) {
+        logWarning(
+                type = TYPE_ERROR_DECLINE_RECHARGE_RECOMMENDATION,
+                throwable = throwable,
+                reason = (throwable?.message ?: "").take(ConstantKey.HomeTimber.MAX_LIMIT),
+                data = Log.getStackTraceString(throwable).take(ConstantKey.HomeTimber.MAX_LIMIT)
+        )
+    }
+
+    fun warning_home_repository_error(throwable: Throwable?, modelName: String, repositoryName: String) {
+        logWarning(
+                type = TYPE_HOME_REPOSITORY_ERROR,
+                throwable = throwable,
+                reason = ("Error in model: "+ modelName + ", repository: " + repositoryName + ", msg:" +throwable?.message).take(ConstantKey.HomeTimber.MAX_LIMIT),
+                data = Log.getStackTraceString(throwable).take(ConstantKey.HomeTimber.MAX_LIMIT)
+        )
+    }
 
     fun warning_error_refresh(throwable: Throwable?) {
         logWarning(
@@ -38,8 +68,6 @@ object HomeServerLogger {
     fun warning_empty_channel_update(homeNewDataModel: HomeDynamicChannelModel) {
         val error = "type:" + "revamp_empty_update; " +
                 "reason:" + "Visitable is empty; " +
-                "isProcessingDynamicChannel:" + homeNewDataModel.isProcessingDynamicChannle.toString() + ";" +
-                "isProcessingAtf:" + homeNewDataModel.isProcessingAtf.toString() + ";" +
                 "isFirstPage:" + homeNewDataModel.isFirstPage.toString() + ";" +
                 "isCache:" + homeNewDataModel.isCache.toString()
         logWarning(
