@@ -18,7 +18,7 @@ import dagger.Binds
 import dagger.Module
 
 @Module
-abstract class ActivityRetainedBindModule {
+abstract class PlayBroadcastBindModule {
 
     /**
      * Pref

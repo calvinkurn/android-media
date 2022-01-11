@@ -31,7 +31,7 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 
 @Module
-class ActivityRetainedModule {
+class PlayBroadcastModule {
 
     @Provides
     fun provideGraphQLRepository(): GraphqlRepository {

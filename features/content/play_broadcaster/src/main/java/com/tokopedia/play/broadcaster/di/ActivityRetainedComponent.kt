@@ -27,8 +27,8 @@ import dagger.Component
         PlayBroadcastConfigStoreModule::class,
         PlayBroadcastDataStoreModule::class,
         PlayBroadcastRepositoryModule::class,
-        ActivityRetainedBindModule::class,
-        ActivityRetainedModule::class
+        PlayBroadcastBindModule::class,
+        PlayBroadcastModule::class
     ]
 )
 @ActivityRetainedScope
