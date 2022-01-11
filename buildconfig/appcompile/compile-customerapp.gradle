@@ -169,6 +169,7 @@ includeIfEnabled("features:ovop2p")
 includeIfEnabled("features:ordermanagement:snapshot")
 includeIfEnabled("features:ordermanagement:orderhistory")
 includeIfEnabled("features:ordermanagement:buyer_order_detail")
+includeIfEnabled("features:ordermanagement:buyercancellationorder")
 
 includeIfEnabled("features:payment:common_payment")
 includeIfEnabled("features:payment:payment")

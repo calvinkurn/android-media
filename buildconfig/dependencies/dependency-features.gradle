@@ -236,6 +236,7 @@ ext {
             snapshot                        : ":features:ordermanagement:snapshot",
             ordermanagementhistory          : ":features:ordermanagement:orderhistory",
             buyerorderdetail                : ":features:ordermanagement:buyer_order_detail",
+            buyercancellationorder          : ":features:ordermanagement:buyercancellationorder",
 
             pushNotificationCommon          : ":features:communication:push-notification-common",
 
