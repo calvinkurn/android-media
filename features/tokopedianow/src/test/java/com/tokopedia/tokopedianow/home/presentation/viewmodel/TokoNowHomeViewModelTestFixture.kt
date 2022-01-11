@@ -24,7 +24,8 @@ import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
-import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.*
+import com.tokopedia.tokopedianow.home.domain.model.GetQuestListResponse
+import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.domain.model.KeywordSearchData
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
@@ -33,10 +34,12 @@ import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutDataUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.GetQuestWidgetListUseCase
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.util.TestUtils.getPrivateField
 import com.tokopedia.tokopedianow.util.TestUtils.getPrivateMethod
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
@@ -83,6 +86,9 @@ abstract class TokoNowHomeViewModelTestFixture {
     @RelaxedMockK
     lateinit var getRepurchaseWidgetUseCase: GetRepurchaseWidgetUseCase
     @RelaxedMockK
+    lateinit var getQuestWidgetListUseCase: GetQuestWidgetListUseCase
+
+    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     @get:Rule
@@ -109,6 +115,7 @@ abstract class TokoNowHomeViewModelTestFixture {
                 getRecommendationUseCase,
                 getChooseAddressWarehouseLocUseCase,
                 getRepurchaseWidgetUseCase,
+                getQuestWidgetListUseCase,
                 userSession,
                 CoroutineTestDispatchersProvider
         )
@@ -153,6 +160,12 @@ abstract class TokoNowHomeViewModelTestFixture {
     protected fun verifyGetBannerResponseSuccess(expectedResponse: Visitable<*>) {
         val homeLayoutList = viewModel.homeLayoutList.value
         val actualResponse = (homeLayoutList as Success).data.items.find { it is BannerDataModel }
+        Assert.assertEquals(expectedResponse, actualResponse)
+    }
+
+    protected fun verifyGetQuestListResponseSuccess(expectedResponse: Visitable<*>?) {
+        val homeLayoutList = viewModel.homeLayoutList.value
+        val actualResponse = (homeLayoutList as Success).data.items.find { it is HomeQuestSequenceWidgetUiModel }
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
@@ -226,6 +239,10 @@ abstract class TokoNowHomeViewModelTestFixture {
         verify { updateCartUseCase.execute(any(), any()) }
     }
 
+    protected fun verifyGetQuestWidgetListUseCaseCalled() {
+        coVerify { getQuestWidgetListUseCase.execute(any()) }
+    }
+
     protected fun onGetTicker_thenReturn(tickerResponse: TickerResponse) {
         coEvery { getTickerUseCase.execute(any()) } returns tickerResponse
     }
@@ -270,6 +287,14 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     protected fun onGetCategoryList_thenReturn(categoryListResponse: CategoryListResponse) {
         coEvery { getCategoryListUseCase.execute("1", 1) } returns categoryListResponse
+    }
+
+    protected fun onGetQuestWidgetList_thenReturn(questListResponse: GetQuestListResponse) {
+        coEvery { getQuestWidgetListUseCase.execute(any()) } returns questListResponse
+    }
+
+    protected fun onGetQuestWidgetList_thenReturn(errorThrowable: Throwable) {
+        coEvery { getQuestWidgetListUseCase.execute(any()) } throws  errorThrowable
     }
 
     protected fun onGetChooseAddress_thenReturn(errorThrowable: Throwable) {

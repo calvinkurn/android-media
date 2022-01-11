@@ -27,6 +27,7 @@ import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home.util.ViewVisibilityIdlingResource
 import com.tokopedia.home_component.viewholders.*
+import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
@@ -326,6 +327,19 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         } validateAnalytics {
             addDebugEnd()
             hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LIST_CAROUSEL)
+        }
+    }
+
+    @Test
+    fun testBannerComponentWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = BannerDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnBannerCarouselWidget(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BANNER_CAROUSEL)
         }
     }
 

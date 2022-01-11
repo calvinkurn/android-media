@@ -581,7 +581,7 @@ object CreateReviewTracking {
             .appendCurrentSite(CreateReviewTrackingConstants.CURRENT_SITE)
             .appendPromotionsEE(title)
             .appendUserId(userId)
-            .sendEnhancedEcommerce(ReviewTrackingConstant.VIEW_REVIEW)
+            .sendEnhancedEcommerce(ReviewTrackingConstant.KEY_VIEW_ITEM)
     }
 
     fun eventViewBadRatingReason(
