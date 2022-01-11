@@ -57,7 +57,7 @@ class ImageUploaderManager @Inject constructor(
                 file.isMaxFileSize(maxFileSize) -> {
                     UploadResult.Error(maxFileSizeMessage(maxFileSize))
                 }
-                !extensions.contains(filePath.fileExtension()) -> {
+                !extensions.contains(filePath.fileExtension().lowercase()) -> {
                     UploadResult.Error(formatNotAllowedMessage(sourcePolicy.imagePolicy.extension))
                 }
                 filePath.isMaxBitmapResolution(maxRes.width, maxRes.height) -> {
