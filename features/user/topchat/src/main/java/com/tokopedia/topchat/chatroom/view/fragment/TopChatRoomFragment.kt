@@ -1128,8 +1128,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    private fun sendAttachmentPreviews() {
-        val composedMsg = getComposedMessage()
+    private fun sendAttachmentPreviews(message: String? = null) {
+        val composedMsg = getComposedMessage(message)
         viewModel.sendAttachments(composedMsg)
     }
 
@@ -1179,7 +1179,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             sendSticker(it)
         }
         delaySendSrw?.let {
-            sendSrwQuestion(it)
+            sendSrwQuestionPreview(it)
         }
         setupFirstPage(chatRoom, chat)
         delaySendMessage = ""
@@ -2289,7 +2289,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             delaySendSrwQuestion(question)
             viewModel.getExistingChat(messageId)
         } else {
-            sendSrwQuestion(question)
+            sendSrwQuestionPreview(question)
         }
     }
 
@@ -2320,13 +2320,21 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         delaySendSrw = question
     }
 
-    private fun sendSrwQuestion(question: QuestionUiModel) {
+    private fun sendSrwQuestionPreview(question: QuestionUiModel) {
         val referredMsg = replyCompose?.referredMsg
+//        onSendAndReceiveMessage()
+//        addSrwBubbleToChat()
+//        onSendingMessage(false).invoke()
+//        replyBubbleOnBoarding.dismiss()
+//        presenter.sendAttachmentsAndSrw(question, referredMsg)
         onSendAndReceiveMessage()
         addSrwBubbleToChat()
         onSendingMessage(false).invoke()
         replyBubbleOnBoarding.dismiss()
-        presenter.sendAttachmentsAndSrw(question, referredMsg)
+        sendAttachmentPreviews(question.content)
+        viewModel.sendMsg(question.content, question.intent, referredMsg)
+        clearAttachmentPreviews()
+        clearReferredMsg()
     }
 
     private fun sendSrwQuestion(attachment: HeaderCtaButtonAttachment) {
