@@ -259,9 +259,9 @@ open class TopChatRoomPresenter @Inject constructor(
 //    }
 
     private fun handleSrwBubbleState(previewToSent: SendablePreview) {
-        when (previewToSent) {
-            is InvoicePreviewUiModel -> view?.removeSrwBubble()
-        }
+//        when (previewToSent) {
+//            is InvoicePreviewUiModel -> view?.removeSrwBubble()
+//        }
     }
 
     fun updateRoomMetaData(roomMetaData: RoomMetaData) {
@@ -457,13 +457,13 @@ open class TopChatRoomPresenter @Inject constructor(
         sendMessage: String, referredMsg: ParentReply?
     ) {
         if (isValidReply(sendMessage)) {
-            sendAttachments(sendMessage)
+//            sendAttachments(sendMessage)
 //            topchatSendMessageWithWebsocket(
 //                sendMessage = sendMessage,
 //                referredMsg = referredMsg
 //            )
-            view?.clearAttachmentPreviews()
-            view?.clearReferredMsg()
+//            view?.clearAttachmentPreviews()
+//            view?.clearReferredMsg()
         }
     }
 

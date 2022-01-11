@@ -213,6 +213,10 @@ class TopChatViewModel @Inject constructor(
     val showableAttachmentPreviews: LiveData<ArrayList<SendablePreview>>
         get() = _showableAttachmentPreviews
 
+    private val _attachmentSent = MutableLiveData<SendablePreview>()
+    val attachmentSent: LiveData<SendablePreview>
+        get() = _attachmentSent
+
     var attachProductWarehouseId = "0"
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     var roomMetaData: RoomMetaData = RoomMetaData()
@@ -315,6 +319,12 @@ class TopChatViewModel @Inject constructor(
                     _removeSrwBubble.postValue(uiModel.productId)
                 }
             }
+        }
+    }
+
+    private fun handleSrwBubbleState(previewToSent: SendablePreview) {
+        when (previewToSent) {
+            is InvoicePreviewUiModel -> _removeSrwBubble.value = null
         }
     }
 
@@ -802,6 +812,31 @@ class TopChatViewModel @Inject constructor(
         })
     }
 
+    fun sendAttachments(message: String) {
+        if (hasEmptyAttachmentPreview()) return
+        attachmentsPreview.forEach { attachment ->
+            handleSrwBubbleState(attachment)
+            val previewMsg = payloadGenerator.generatePreviewMessage(
+                sendablePreview = attachment,
+                roomMetaData = roomMetaData,
+                message = message
+            )
+            val wsPayload = payloadGenerator.generateWsPayload(
+                sendablePreview = attachment,
+                roomMetaData = roomMetaData,
+                message = message,
+                userLocationInfo = userLocationInfo,
+                localId = previewMsg.localId
+            )
+            showPreviewMsg(previewMsg)
+            sendWsPayload(wsPayload)
+            _attachmentSent.value = attachment
+//            processPreviewMessage(previewMsg)
+//            sendWebSocketAttachmentPayload(wsMsgPayload)
+//            view?.sendAnalyticAttachmentSent(attachment)
+        }
+    }
+
     fun sendMsg(
         message: String,
         intention: String?,
@@ -813,13 +848,13 @@ class TopChatViewModel @Inject constructor(
             roomMetaData = roomMetaData,
             referredMsg = referredMsg
         )
-        // TODO: implement list of attachments
+        // TODO: implement list of products from SRW
         val wsPayload = payloadGenerator.generateWsPayload(
             message = message,
             intention = intention,
             roomMetaData = roomMetaData,
             previewMsg = previewMsg,
-            attachments = listOf(), // products ?: attachmentsPreview
+            attachments = attachmentsPreview,
             userLocationInfo = userLocationInfo,
             referredMsg = referredMsg
         )
@@ -829,7 +864,7 @@ class TopChatViewModel @Inject constructor(
     }
 
     private fun showPreviewMsg(previewMsg: SendableUiModel) {
-        _previewMsg.postValue(previewMsg)
+        _previewMsg.value = previewMsg
     }
 
     private fun sendWsStopTyping() {

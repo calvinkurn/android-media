@@ -1086,9 +1086,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             delaySendMessage()
             viewModel.getExistingChat(messageId)
         } else {
+            sendAttachmentPreviews()
             sendComposedMsg()
 //            sendMessage()
             onSendAndReceiveMessage()
+            clearAttachmentPreviews()
+            clearReferredMsg()
         }
     }
 
@@ -1123,6 +1126,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         } else {
             composeArea?.text?.toString() ?: ""
         }
+    }
+
+    private fun sendAttachmentPreviews() {
+        val composedMsg = getComposedMessage()
+        viewModel.sendAttachments(composedMsg)
     }
 
     private fun sendComposedMsg() {
@@ -2680,6 +2688,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             } else {
                 // TODO: clear attachments
             }
+        })
+
+        viewModel.attachmentSent.observe(viewLifecycleOwner, { attachment ->
+            sendAnalyticAttachmentSent(attachment)
         })
     }
 

@@ -22,6 +22,18 @@ interface WebsocketPayloadGenerator {
         userLocationInfo: LocalCacheModel? = null,
         referredMsg: ParentReply? = null
     ): String
+    fun generatePreviewMessage(
+        sendablePreview: SendablePreview,
+        roomMetaData: RoomMetaData,
+        message: String
+    ): SendableUiModel
+    fun generateWsPayload(
+        sendablePreview: SendablePreview,
+        roomMetaData: RoomMetaData,
+        message: String,
+        userLocationInfo: LocalCacheModel,
+        localId: String
+    ): String
 
     fun generateWsPayloadStopTyping(msgId: String): String
 }

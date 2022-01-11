@@ -61,6 +61,28 @@ class DefaultWebsocketPayloadGenerator @Inject constructor(
         )
     }
 
+    override fun generateWsPayload(
+        sendablePreview: SendablePreview,
+        roomMetaData: RoomMetaData,
+        message: String,
+        userLocationInfo: LocalCacheModel,
+        localId: String
+    ): String {
+        return sendablePreview.generateMsgObj(
+            roomMetaData, message, userLocationInfo, localId
+        ).toString()
+    }
+
+    override fun generatePreviewMessage(
+        sendablePreview: SendablePreview,
+        roomMetaData: RoomMetaData,
+        message: String
+    ): SendableUiModel {
+        return sendablePreview.generatePreviewMessage(
+            roomMetaData, message
+        )
+    }
+
     override fun generateWsPayloadStopTyping(msgId: String): String {
         return TopChatWebSocketParam.generateParamStopTyping(msgId)
     }
