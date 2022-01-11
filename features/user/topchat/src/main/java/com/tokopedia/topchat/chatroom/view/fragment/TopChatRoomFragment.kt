@@ -2686,7 +2686,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     focusOnReply()
                 }
             } else {
-                // TODO: clear attachments
+                clearAttachmentPreviews()
             }
         })
 
