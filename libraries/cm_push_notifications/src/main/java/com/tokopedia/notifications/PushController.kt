@@ -176,8 +176,10 @@ class PushController(val context: Context) : CoroutineScope {
                 )
             }
             NotificationSettingsUtils.NotificationMode.DISABLED -> {
+                //send disabled event
             }
             NotificationSettingsUtils.NotificationMode.CHANNEL_DISABLED -> {
+                //send channel disabled event
             }
         }
         createAndPostNotification(baseNotificationModel)

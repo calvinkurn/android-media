@@ -255,10 +255,10 @@ class CMPushNotificationManager : CoroutineScope {
                         )
                     }
                     NotificationSettingsUtils.NotificationMode.DISABLED -> {
-                        //disabled
+                        //send disabled event
                     }
                     NotificationSettingsUtils.NotificationMode.CHANNEL_DISABLED -> {
-                        //channel disabled
+                        //send channel disabled event
                     }
                 }
             }
