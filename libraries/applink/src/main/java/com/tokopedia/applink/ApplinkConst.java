@@ -349,7 +349,7 @@ public interface ApplinkConst {
     String KYC_FORM_NO_PARAM = "tokopedia://kyc-form";
     String KYC_FORM = "tokopedia://kyc-form?projectId={projectId}";
     String KYC_FORM_ONLY_NO_PARAM = "tokopedia://user-identification-only";
-    String KYC_FORM_ONLY = "tokopedia://user-identification-only?projectId={projectId}";
+    String KYC_FORM_ONLY = "tokopedia://user-identification-only?projectId={projectId}&layout={layout}";
 
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
 
@@ -496,6 +496,7 @@ public interface ApplinkConst {
         String VOUCHER_ACTIVE = "sellerapp://voucher-list/active";
         String VOUCHER_HISTORY = "sellerapp://voucher-list/history";
         String VOUCHER_DETAIL = "sellerapp://voucher-detail";
+        String CAMPAIGN_LIST = "sellerapp://campaign-list";
         String CREATE_VOUCHER = "sellerapp://create-voucher";
         String SELLER_SEARCH = "sellerapp://seller-search";
         String PLAY_BROADCASTER = "sellerapp://play-broadcaster";

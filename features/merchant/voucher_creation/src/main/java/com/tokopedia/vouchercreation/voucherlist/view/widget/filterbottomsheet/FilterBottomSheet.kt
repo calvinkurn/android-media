@@ -13,10 +13,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
+import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseFilterUiModel
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseFilterUiModel.*
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.FilterAdapter
+import kotlinx.android.synthetic.main.bottomsheet_mvc_filter.*
 import kotlinx.android.synthetic.main.bottomsheet_mvc_filter.view.*
 
 /**
@@ -53,6 +57,13 @@ class FilterBottomSheet : BottomSheetUnify() {
     private val filterAdapter by lazy { FilterAdapter(this::onItemFilterClick) }
     private var tmpFilterList = emptyList<BaseFilterUiModel>()
 
+    private var selectedVoucherType: Int? = null
+    private var selectedVoucherTarget: List<Int> = listOf()
+    private var isSellerCreated = false
+    private var isSubsidy = false
+    private var isVps = false
+    private var chipsFilter:List<ChipsUnify> = listOf()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initBottomSheet()
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -60,6 +71,7 @@ class FilterBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        chipsFilter = listOf<ChipsUnify>(chip_cashback, chip_public, chip_special, chip_seller_created, chip_subsidy, chip_vps)
         setupView(view)
     }
 
@@ -73,11 +85,13 @@ class FilterBottomSheet : BottomSheetUnify() {
     private fun initBottomSheet() {
         context?.run {
             setTitle(getString(R.string.mvc_filter))
-
             val childView = View.inflate(this, R.layout.bottomsheet_mvc_filter, null)
             setChild(childView)
+            showKnob = true
+            setAction(getString(R.string.mvc_reset)) {
+                resetFilters()
+            }
         }
-
     }
 
     private fun setupView(view: View) = with(view) {
@@ -85,11 +99,112 @@ class FilterBottomSheet : BottomSheetUnify() {
         rvMcvFilter.adapter = filterAdapter
         rvMcvFilter.addItemDecoration(getFilterItemDecoration())
 
+        selectedVoucherType?.run { chip_cashback.chipType = ChipsUnify.TYPE_SELECTED }
+        if (selectedVoucherTarget.isNotEmpty() && selectedVoucherTarget.first() == VoucherTargetType.PUBLIC) chip_public.chipType = ChipsUnify.TYPE_SELECTED
+        if (selectedVoucherTarget.isNotEmpty() && selectedVoucherTarget.first() == VoucherTargetType.PRIVATE) chip_special.chipType = ChipsUnify.TYPE_SELECTED
+        if (isSellerCreated) chip_seller_created.chipType = ChipsUnify.TYPE_SELECTED
+        if (isSubsidy) chip_subsidy.chipType = ChipsUnify.TYPE_SELECTED
+        if (isVps) chip_vps.chipType = ChipsUnify.TYPE_SELECTED
+
+        chip_cashback.setOnClickListener {
+            chip_cashback.chipType = if(chip_cashback.chipType == ChipsUnify.TYPE_NORMAL) {
+                selectedVoucherType = VoucherTypeConst.CASHBACK
+                chip_free_shipping.chipType = ChipsUnify.TYPE_NORMAL
+                ChipsUnify.TYPE_SELECTED
+            } else {
+                selectedVoucherType = null
+                ChipsUnify.TYPE_NORMAL
+            }
+        }
+
+        chip_free_shipping.setOnClickListener {
+            chip_free_shipping.chipType = if(chip_free_shipping.chipType == ChipsUnify.TYPE_NORMAL) {
+                selectedVoucherType = VoucherTypeConst.FREE_ONGKIR
+                chip_cashback.chipType = ChipsUnify.TYPE_NORMAL
+                ChipsUnify.TYPE_SELECTED
+            } else {
+                selectedVoucherType = null
+                ChipsUnify.TYPE_NORMAL
+            }
+        }
+
+        chip_public.setOnClickListener {
+            chip_public.chipType = if(chip_public.chipType == ChipsUnify.TYPE_NORMAL) {
+                selectedVoucherTarget = listOf(VoucherTargetType.PUBLIC)
+                chip_special.chipType = ChipsUnify.TYPE_NORMAL
+                ChipsUnify.TYPE_SELECTED
+            } else {
+                selectedVoucherTarget = listOf()
+                ChipsUnify.TYPE_NORMAL
+            }
+        }
+
+        chip_special.setOnClickListener {
+            chip_special.chipType = if(chip_special.chipType == ChipsUnify.TYPE_NORMAL) {
+                selectedVoucherTarget = listOf(VoucherTargetType.PRIVATE)
+                chip_public.chipType = ChipsUnify.TYPE_NORMAL
+                ChipsUnify.TYPE_SELECTED
+            } else {
+                selectedVoucherTarget = listOf()
+                ChipsUnify.TYPE_NORMAL
+            }
+        }
+
+        chip_seller_created.setOnClickListener {
+            chip_seller_created.chipType = if(chip_seller_created.chipType == ChipsUnify.TYPE_NORMAL) {
+                isSellerCreated = true
+                ChipsUnify.TYPE_SELECTED
+            } else {
+                isSellerCreated = false
+                ChipsUnify.TYPE_NORMAL
+            }
+        }
+
+        chip_subsidy.setOnClickListener {
+            chip_subsidy.chipType = if(chip_subsidy.chipType == ChipsUnify.TYPE_NORMAL) {
+                isSubsidy = true
+                ChipsUnify.TYPE_SELECTED
+            } else {
+                isSubsidy = false
+                isSellerCreated = false
+                ChipsUnify.TYPE_NORMAL
+            }
+        }
+
+        chip_vps.setOnClickListener {
+            chip_vps.chipType = if(chip_vps.chipType == ChipsUnify.TYPE_NORMAL) {
+                isVps = true
+                ChipsUnify.TYPE_SELECTED
+            } else {
+                isVps = false
+                isSellerCreated = false
+                ChipsUnify.TYPE_NORMAL
+            }
+        }
+
         btnMvcApplyFilter.setOnClickListener {
             applyFilter = true
             onApplyClick()
             dismissAllowingStateLoss()
         }
+    }
+
+    private fun resetFilters() {
+
+        // reset state
+        selectedVoucherType= null
+        selectedVoucherTarget = listOf()
+        isSellerCreated = false
+        isSubsidy = false
+        isVps = false
+
+        // reset ui
+        chip_cashback.chipType = ChipsUnify.TYPE_NORMAL
+        chip_public.chipType = ChipsUnify.TYPE_NORMAL
+        chip_special.chipType = ChipsUnify.TYPE_NORMAL
+        chip_seller_created.chipType = ChipsUnify.TYPE_NORMAL
+        chip_subsidy.chipType = ChipsUnify.TYPE_NORMAL
+        chip_vps.chipType = ChipsUnify.TYPE_NORMAL
     }
 
     private fun getFilterItemDecoration() = object : RecyclerView.ItemDecoration() {
@@ -161,5 +276,31 @@ class FilterBottomSheet : BottomSheetUnify() {
         filterAdapter.addElement(items)
 
         show(fm, TAG)
+    }
+
+    fun getSelectedVoucherType(): Int? {
+        return selectedVoucherType
+    }
+
+    fun getSelectedVoucherTarget(): List<Int> {
+        return selectedVoucherTarget
+    }
+
+    fun isSellerCreated(): Boolean {
+        return isSellerCreated
+    }
+
+    fun isSubsidy(): Boolean {
+        return isSubsidy
+    }
+
+    fun isVps(): Boolean {
+        return isVps
+    }
+
+    fun getFilterCounter(): Int {
+        return chipsFilter.filter { chipsUnify ->
+            chipsUnify.chipType == ChipsUnify.TYPE_SELECTED
+        }.count()
     }
 }

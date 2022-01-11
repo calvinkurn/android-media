@@ -37,6 +37,7 @@ class RxWebSocketUtilStub constructor(
 ) {
 
     val defaultImageResponsePath = "ws/image_response.json"
+    val deleteImageResponsePath = "ws/delete_image.json"
 
     val changeAddressResponse: WebSocketResponse
         get() {
@@ -45,6 +46,9 @@ class RxWebSocketUtilStub constructor(
                 WebSocketResponse::class.java
             )
         }
+
+    val deleteImageResponse: WebSocketResponse
+        get() = alterResponseOf(deleteImageResponsePath) {}
 
     private val websocketInfoObservable = PublishSubject.create<WebSocketInfo>()
     private val websocket: WebSocket = WebSocketStub()
