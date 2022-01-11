@@ -31,42 +31,42 @@ abstract class PickerTest {
 
     private val applicationContext: Context
         get() = InstrumentationRegistry
-            .getInstrumentation().context.applicationContext
+            .getInstrumentation()
+            .context
+            .applicationContext
 
-    @Before
-    open fun setUp() {
+    abstract fun createAndAppendUri(builder: Uri.Builder)
+
+    @Before open fun setUp() {
         setupBaseDaggerComponent()
         setupPickerDaggerComponent()
     }
 
-    @After
-    open fun tearDown() {
+    @After open fun tearDown() {
         baseComponent = null
         pickerComponent = null
-    }
-
-    abstract fun buildUri(builder: Uri.Builder)
-
-    protected fun buildIntent(): Uri.Builder {
-        val builder = Uri.parse(
-            ApplinkConst.MEDIA_PICKER
-        ).buildUpon()
-
-        buildUri(builder)
-
-        return builder
     }
 
     protected fun startPickerActivity(
         modifier: (Intent) -> Unit = {}
     ) {
-        val uri = buildIntent().build()
+        val uri = createIntent().build()
         val intent = Intent().apply {
             data = uri
         }
         modifier(intent)
         activityTestRule.launchActivity(intent)
         mActivity = activityTestRule.activity
+    }
+
+    private fun createIntent(): Uri.Builder {
+        val builder = Uri.parse(
+            ApplinkConst.MEDIA_PICKER
+        ).buildUpon()
+
+        createAndAppendUri(builder)
+
+        return builder
     }
 
     private fun setupBaseDaggerComponent() {

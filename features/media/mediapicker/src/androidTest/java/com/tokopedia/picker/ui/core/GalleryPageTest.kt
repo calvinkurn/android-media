@@ -21,7 +21,7 @@ import org.hamcrest.Matcher
 
 open class GalleryPageTest : PickerTest() {
 
-    override fun buildUri(builder: Uri.Builder) {
+    override fun createAndAppendUri(builder: Uri.Builder) {
         builder.appendQueryParameter(
             ApplinkConst.MediaPicker.PARAM_PAGE,
             ApplinkConst.MediaPicker.VALUE_PAGE_GALLERY
