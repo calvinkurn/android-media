@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.view.MotionEvent
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -21,6 +22,7 @@ import com.tokopedia.picker.ui.PickerFragmentFactory
 import com.tokopedia.picker.ui.PickerFragmentFactoryImpl
 import com.tokopedia.picker.ui.PickerNavigator
 import com.tokopedia.picker.ui.PickerUiConfig
+import com.tokopedia.picker.ui.fragment.camera.CameraFragment
 import com.tokopedia.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.picker.utils.G500
 import com.tokopedia.picker.utils.N600
@@ -107,6 +109,13 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener {
 
     override fun onPermissionGranted() {
         navigateByPageType()
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        navigator?.cameraFragment?.let {
+            (it as CameraFragment).gestureDetector.onTouchEvent(ev)
+        }
+        return super.dispatchTouchEvent(ev)
     }
 
     private fun setupQueryAndUIConfigBuilder() {

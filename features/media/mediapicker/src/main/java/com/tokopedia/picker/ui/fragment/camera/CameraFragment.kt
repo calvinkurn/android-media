@@ -3,10 +3,10 @@ package com.tokopedia.picker.ui.fragment.camera
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraOptions
 import com.otaliastudios.cameraview.PictureResult
@@ -28,13 +28,18 @@ import com.tokopedia.picker.ui.fragment.camera.recyclers.managers.SliderLayoutMa
 import com.tokopedia.picker.utils.exceptionHandler
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlin.math.abs
 
-open class CameraFragment : BaseDaggerFragment() {
+open class CameraFragment : BaseDaggerFragment(), GestureDetector.OnGestureListener {
 
     private val param = PickerUiConfig.getFileLoaderParam()
 
     private val binding: FragmentCameraBinding? by viewBinding()
     private val cameraView by lazy { binding?.cameraView }
+
+    val gestureDetector by lazy {
+        GestureDetector(requireContext(), this)
+    }
 
     private var flashList = arrayListOf<Flash>()
     private var flashIndex = 0
@@ -65,6 +70,46 @@ open class CameraFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         initView()
     }
+
+    override fun onDown(e: MotionEvent?) = true
+
+    override fun onFling(
+        start: MotionEvent,
+        finish: MotionEvent,
+        velocityX: Float,
+        velocityY: Float
+    ): Boolean {
+        if (abs(start.y - finish.y) > 250) return false
+
+        if ((start.x - finish.x) > 120 && abs(velocityX) > 200) {
+            swipeLeftToRight()
+        } else if ((finish.x - start.x) > 120 && abs(velocityX) > 200) {
+            swipeRightToLeft()
+        }
+
+        return true
+    }
+
+    private fun swipeLeftToRight() {
+        binding?.lstCameraMode?.smoothScrollToPosition(1)
+    }
+
+    private fun swipeRightToLeft() {
+        binding?.lstCameraMode?.smoothScrollToPosition(0)
+    }
+
+    override fun onScroll(
+        e1: MotionEvent?,
+        e2: MotionEvent?,
+        distanceX: Float,
+        distanceY: Float
+    ): Boolean = false
+
+    override fun onLongPress(e: MotionEvent?) {}
+
+    override fun onShowPress(e: MotionEvent?) {}
+
+    override fun onSingleTapUp(e: MotionEvent?) = true
 
     override fun onResume() {
         super.onResume()
@@ -103,12 +148,19 @@ open class CameraFragment : BaseDaggerFragment() {
             binding?.containerBlink?.show()
             Handler(Looper.getMainLooper()).postDelayed({
                 binding?.containerBlink?.hide()
-            }, 500)
+            }, 200)
         }
     }
 
     private fun horizontalPicker() {
-        binding?.lstCameraMode?.showWithCondition(param.isIncludeVideo)
+        if (!param.isIncludeVideo) return
+
+        binding?.lstCameraMode?.show()
+
+        binding?.lstCameraMode?.viewTreeObserver?.addOnScrollChangedListener {
+            val activePosition = (binding?.lstCameraMode?.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
+            Toast.makeText(requireContext(), "your position is: $activePosition", Toast.LENGTH_SHORT).show()
+        }
 
         binding?.lstCameraMode?.also { recyclerView ->
             // Camera mode element

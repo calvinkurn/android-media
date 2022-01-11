@@ -19,6 +19,11 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:clipToPadding="false"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="horizontal"
+        tools:listitem="@layout/view_item_camera_mode_slider"
         app:layout_constraintBottom_toTopOf="@+id/frameLayout" />
 
     <FrameLayout

@@ -18,8 +18,10 @@ class PickerNavigator constructor(
 ) {
 
     private var permissionFragment: Fragment? = null
-    private var cameraFragment: Fragment? = null
     private var galleryFragment: Fragment? = null
+
+    var cameraFragment: Fragment? = null
+        private set
 
     @PickerFragmentType
     var currentSelectedPage = PickerFragmentType.NONE
