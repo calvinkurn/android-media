@@ -55,3 +55,11 @@ const val APP_LINK_PARAMS_KYC = "projectId=$PROJECT_ID"
 val APP_LINK_KYC = "${ApplinkConst.KYC_NO_PARAM}?$APP_LINK_PARAMS_KYC&${ApplinkConstInternalGlobal.PARAM_CALL_BACK}=$uri"
 
 const val AFFILIATE_MICRO_SITE_LINK = "https://affiliate.tokopedia.com/"
+
+const val AFFILIATE_INSTAGRAM_REGEX = "(?:(?:http|https):\\/\\/)?(www.)?(instagram.com|instagr.am|instagr.com)\\/[\\w-]+"
+
+const val AFFILIATE_YT_REGEX = "((?:http|https):\\/\\/)?(www\\.)?youtube\\.com\\/(channel|user)\\/[\\w-]+"
+
+const val AFFILIATE_TIKTOK_REGEX = "(?:(?:http|https):\\/\\/)?(vt\\.tiktok\\.com)\\/[\\w-]+"
+
+const val AFFILIATE_TWITTER_REGEX = "(?:(?:http|https):\\/\\/)?(www.)?(twitter.com)\\/[\\w-]+"
