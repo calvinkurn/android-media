@@ -31,9 +31,9 @@ class SectionViewModel (
 
     private fun fetchChildComponents() {
         launchCatchError(block = {
-
+            sectionUseCase.getChildComponents(components.id,components.pageEndPoint)
         },onError = {
-
+            it
         })
     }
 

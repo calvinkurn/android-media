@@ -25,6 +25,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsprintsalecarousel.ProductCardSprintSaleCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon.QuickCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.SectionViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topadsheadline.TopAdsHeadlineViewModel
@@ -61,5 +62,6 @@ interface UIWidgetComponent {
     fun inject(calendarWidgetGridViewModel: CalendarWidgetGridViewModel)
     fun inject(calendarWidgetItemViewModel: CalendarWidgetItemViewModel)
     fun inject(calendarWidgetCarouselViewModel: CalendarWidgetCarouselViewModel)
+    fun inject(sectionViewModel: SectionViewModel)
 
 }

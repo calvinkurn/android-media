@@ -11,6 +11,7 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
         if (component?.noOfPagesLoaded == 1) return false
         component?.let {
             sectionRepository.getComponents(pageEndPoint,it.sectionId,getQueryParameterMap())
+            it.noOfPagesLoaded = 1
             return true
         }
         return false
