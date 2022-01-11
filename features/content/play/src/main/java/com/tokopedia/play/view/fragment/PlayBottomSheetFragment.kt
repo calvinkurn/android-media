@@ -80,7 +80,7 @@ class PlayBottomSheetFragment @Inject constructor(
         private const val REQUEST_CODE_LOGIN = 191
 
         private const val PERCENT_VARIANT_SHEET_HEIGHT = 0.6
-        private const val PERCENT_FULL_SHEET_HEIGHT = 0.8
+        private const val PERCENT_FULL_SHEET_HEIGHT = 0.9
 
         private const val TO_SECONDS_DIVIDER = 1000L
 
