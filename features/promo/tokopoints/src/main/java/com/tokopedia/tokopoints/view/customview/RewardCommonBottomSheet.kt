@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tkpd.remoteresourcerequest.view.ImageDensityType
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.BottomSheetModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -46,16 +45,11 @@ class RewardCommonBottomSheet : BottomSheetUnify() {
         setBottomSheet(arguments?.getParcelable<BottomSheetModel>("bsm") as BottomSheetModel)
     }
 
-    fun setBottomSheet(bottomSheetModel: BottomSheetModel){
-        setTitle(bottomSheetModel?.bottomSheetTitle?:"")
+    private fun setBottomSheet(bottomSheetModel: BottomSheetModel){
+        setTitle(bottomSheetModel.bottomSheetTitle?:"")
         textTitle?.text = bottomSheetModel.contentTitle
         textDesc?.text = bottomSheetModel.contentDescription
         button?.text = bottomSheetModel.buttonText
-//        image?.mRemoteFileName = "phone_verification.png"
-//        image?.dpiSupportType = ImageDensityType.SUPPORT_SINGLE_DPI
-        image?.loadRemoteImageDrawable("https://images.tokopedia.net/img/android/res/singleDpi/levelup_gold.png", ImageDensityType.SUPPORT_SINGLE_DPI)
-      //  image?.dpiSupportType = ImageDensityType.SUPPORT_SINGLE_DPI
-     //   image?.mCompleteUrl = "https://images.tokopedia.net/img/android/res/singleDpi/levelup_gold.png"
+        image?.loadRemoteImageDrawable(bottomSheetModel.remoteImage?.first?:"",bottomSheetModel.remoteImage?.second?:"")
     }
-
 }

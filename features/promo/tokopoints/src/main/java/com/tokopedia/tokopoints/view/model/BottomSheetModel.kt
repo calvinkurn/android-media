@@ -10,6 +10,6 @@ data class BottomSheetModel(
     var contentTitle: String? = "",
     var contentDescription: String? = "",
     var buttonText: String? = "",
-    var remoteImage: String? = "",
+    var remoteImage: Pair<String,String>? = null,
     var imageUrl: String? = ""
 ) : Parcelable

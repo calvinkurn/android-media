@@ -36,8 +36,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
-import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContext
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.customview.*
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.BBO
@@ -51,10 +49,7 @@ import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSe
 import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.MetadataItem
 import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.TickerListItem
 import com.tokopedia.tokopoints.view.model.usersaving.UserSaving
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
-import com.tokopedia.tokopoints.view.util.CommonConstant
-import com.tokopedia.tokopoints.view.util.convertSecondsToHrMmSs
-import com.tokopedia.tokopoints.view.util.isDarkMode
+import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.NotificationUnify
@@ -89,16 +84,15 @@ class TopSectionVH(
     private var confettiAnim: LottieAnimationView? = null
     private var timerTextView: Typography? = null
     private var statusMatchingTimer: TimerUnifySingle? = null
-    private var parentStatusMatching : ConstraintLayout ? =null
+    private var parentStatusMatching: ConstraintLayout? = null
     private var ivStatusBackground: AppCompatImageView? = null
     private var progressBar: ProgressBarUnify? = null
-    private var digittextView: DigitTextView? = null
-    private var digitTextView1:DigitTextView?=null
-    private var tierIconProgress: ImageUnify?=null
-    private var frameLayout:FrameLayout?=null
+    private var tierIconProgress: ImageUnify? = null
     private val MEMBER_STATUS_BG_RADII = 16F
+    private val ANIMATION_DURATION = 800L
+    private val finalProgress = 100
     private val TP_CONFETTI_STATUS_MATCHING = "tp_confetti_entry_point.zip"
-    private var linearLayout:LinearLayout?=null
+    private var digitContainer: LinearLayout? = null
 
     fun bind(model: TopSectionResponse) {
 
@@ -121,7 +115,7 @@ class TopSectionVH(
         ivStatusBackground = itemView.findViewById(R.id.iv_gojek)
         progressBar = itemView.findViewById(R.id.progressbar_membership)
         tierIconProgress = itemView.findViewById(R.id.tier_icon_progressbar)
-        linearLayout = itemView.findViewById(R.id.containerss)
+        digitContainer = itemView.findViewById(R.id.digitContainer)
 
         renderToolbarWithHeader(model.tokopediaRewardTopSection)
         model.userSavingResponse?.userSaving?.let {
@@ -145,27 +139,23 @@ class TopSectionVH(
 
        tierIconProgress?.loadImage(data?.progressInfoList?.get(0)?.iconImageURL?:"")
         var getdigitvalue:String = data?.progressInfoList?.get(0)?.currentAmount.toString()
-        getdigitvalue = "35.8979.0"
         val x = getdigitvalue.toCharArray()
         for (i in x){
             if(i.isDigit()){
                 val digitTextView = DigitTextView(itemView.context)
                 digitTextView.setValue(i.digitToInt())
-                linearLayout?.addView(digitTextView)
+                digitContainer?.addView(digitTextView)
             }
             else{
                 val dotviewv =Typography(itemView.context)
                 dotviewv.text="."
                 dotviewv.setWeight(Typography.BOLD)
-                linearLayout?.gravity = Gravity.BOTTOM
+                digitContainer?.gravity = Gravity.BOTTOM
                 dotviewv.setTextColor(Color.WHITE)
-                linearLayout?.addView(dotviewv)
+                digitContainer?.addView(dotviewv)
             }
         }
         val container = progressBar?.progressBarContainer
-        val lpTarget  = container?.layoutParams
-        lpTarget?.height = 800
-        container?.layoutParams = lpTarget
         progressBar?.progressBarHeight = ProgressBarUnify.SIZE_MEDIUM
         (progressBar?.progressBarWrapper?.parent as ViewGroup).clipChildren = false
         (progressBar?.progressBarWrapper)?.clipChildren = false
@@ -176,9 +166,9 @@ class TopSectionVH(
 
         if(container?.childCount?.minus(1) ?:0  >= 0){
             val target = container?.getChildAt(container.childCount - 1)
-            val moveXX = ObjectAnimator.ofFloat(target, "scaleX", 2f).setDuration(800)
+            val moveXX = ObjectAnimator.ofFloat(target, "scaleX", 2f).setDuration(ANIMATION_DURATION)
             val animatorContainerX =
-                ObjectAnimator.ofFloat(target, "scaleY", 2f).setDuration(800)
+                ObjectAnimator.ofFloat(target, "scaleY", 2f).setDuration(ANIMATION_DURATION)
             val animSet = AnimatorSet()
 
         animSet.addListener(object :Animator.AnimatorListener{
@@ -196,21 +186,33 @@ class TopSectionVH(
             }
 
         })
-
-
             animSet.playTogether(animatorContainerX,moveXX)
             animSet.start()
 
-
+        }
+        var tierUrls:Pair<String,String>? = null
+        when(data?.tier?.nameDesc) {
+            itemView.context.getString(R.string.tp_silver_loyalty) -> {
+                tierUrls = Pair(Imageurls.GOLD_LEVELUP_NAME,Imageurls.GOLD_LEVELUP_URL)
+            }
+            itemView.context.getString(R.string.tp_gold_loyalty) -> {
+                tierUrls = Pair(Imageurls.DIAMOND_LEVELUP_NAME,Imageurls.DIAMOND_LEVELUP_URL)
+            }
+            itemView.context.getString(R.string.tp_diamond_loyalty) -> {
+                tierUrls = Pair(Imageurls.PLATINUM_LEVELUP_NAME,Imageurls.PLATINUM_LEVELUP_URL)
+            }
+            itemView.context.getString(R.string.tp_platinum_loyalty) -> {
+                tierUrls = Pair(Imageurls.PLATINUM_LEVELUP_NAME,Imageurls.PLATINUM_LEVELUP_URL)
+            }
         }
 
         progressBar?.apply {
             onValueChangeListener = { oldValue: Int, newValue: Int ->
-                if (newValue == 100) {
-                    showBottomSheetMembership(this.context)
+                if (newValue == finalProgress) {
+                    showBottomSheetMembership(this.context,tierUrls,data?.tier?.nameDesc)
                 }
             }
-            setValue(100,true)
+            setValue(finalProgress,true)
             progressBarColorType = ProgressBarUnify.COLOR_GREEN
         }
 
@@ -249,14 +251,18 @@ class TopSectionVH(
         renderDynamicActionList(data?.dynamicActionList)
     }
 
-    private fun showBottomSheetMembership(context: Context){
+    private fun showBottomSheetMembership(
+        context: Context,
+        loyaltyType: Pair<String, String>?,
+        nameDesc: String?
+    ){
+
         val bottomSheetModel = BottomSheetModel(
-            contentTitle = "Selamat, kini kamu jadi \n" +
-                    "Member Silver!",
-            contentDescription = "Yuk, mulai belanja & nikmati keuntungannya! ",
-            bottomSheetTitle = "Member Silver",
-            remoteImage = "phone_verification.png",
-            buttonText = "Lihat Membership"
+            contentTitle = context.getString(R.string.tp_levelup_title),
+            contentDescription = context.getString(R.string.tp_levelup_desc),
+            bottomSheetTitle = nameDesc,
+            remoteImage =  loyaltyType,
+            buttonText = context.getString(R.string.tp_levelup_button)
         )
         val bundle = Bundle()
         bundle.putParcelable("bsm",bottomSheetModel)
@@ -534,4 +540,5 @@ class TopSectionVH(
     interface RefreshOnTierUpgrade {
         fun refreshReward()
     }
+
 }

@@ -121,4 +121,13 @@
     <string name="tp_recom_subtitle">Nggak perlu mikir 2x, cus beli produknya!</string>
     <string name="tp_masuk_tukar_point">Masuk untuk tukar Points</string>
     <string name="tp_recom_title">Produk Incaranmu lagi promo </string>
+    <string name="tp_levelup_title">Selamat, kini kamu jadi Member Silver!</string>
+    <string name="tp_levelup_desc">Yuk, mulai belanja &amp; nikmati keuntungannya!</string>
+    <string name="tp_silver_loyalty">Member Silver</string>
+    <string name="tp_gold_loyalty">Member Gold</string>
+    <string name="tp_platinum_loyalty">Member Platinum</string>
+    <string name="tp_diamond_loyalty">Member Diamond</string>
+    <string name="tp_levelup_button">Lihat Membership</string>
+    <string name="tp_transaksi">Transaksi</string>
+
 </resources>

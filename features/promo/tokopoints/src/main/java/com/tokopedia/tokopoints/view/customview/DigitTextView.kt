@@ -12,11 +12,12 @@ import android.view.View
 
 import android.widget.FrameLayout
 import com.tokopedia.tokopoints.R
+import com.tokopedia.unifyprinciples.Typography
 
 
 class DigitTextView : FrameLayout {
-    var currentTextView: TextView? = null
-    var nextTextView: TextView? = null
+    var currentTextView: Typography? = null
+    var nextTextView: Typography? = null
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         init(context)
@@ -28,8 +29,8 @@ class DigitTextView : FrameLayout {
 
     private fun init(context: Context) {
         LayoutInflater.from(context).inflate(R.layout.tp_digit_textview, this)
-        currentTextView = rootView.findViewById<View>(R.id.currentTextView) as TextView
-        nextTextView = rootView.findViewById<View>(R.id.nextTextView) as TextView
+        currentTextView = rootView.findViewById<View>(R.id.currentTextView) as Typography
+        nextTextView = rootView.findViewById<View>(R.id.nextTextView) as Typography
         nextTextView?.translationY = height.toFloat()
         setValue(0)
     }

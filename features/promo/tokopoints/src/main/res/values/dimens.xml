@@ -66,4 +66,8 @@
     <dimen name="dp_280">280dp</dimen>
     <dimen name="dp_6">6dp</dimen>
     <dimen name="dp_5">5dp</dimen>
+    <dimen name="tp_dp_20">20dp</dimen>
+    <dimen name="tp_dp_30">30dp</dimen>
+    <dimen name="tp_dp_18">18dp</dimen>
+
 </resources>
