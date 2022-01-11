@@ -1,13 +1,15 @@
 package com.tokopedia.inactivephone_otp.testing.common
 
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody.Companion.toResponseBody
 import okio.Buffer
 
 abstract class BaseInactivePhoneOtpInterceptor : Interceptor {
 
     fun readRequestString(copyRequest: Request): String {
         val buffer = Buffer()
-        copyRequest.body()?.writeTo(buffer)
+        copyRequest.body?.writeTo(buffer)
         return buffer.readUtf8()
     }
 
@@ -18,9 +20,10 @@ abstract class BaseInactivePhoneOtpInterceptor : Interceptor {
             .protocol(Protocol.HTTP_2)
             .message(responseString)
             .body(
-                ResponseBody.create(
-                    MediaType.parse("application/json"),
-                responseString.toByteArray()))
+                responseString
+                    .toByteArray()
+                    .toResponseBody("application/json".toMediaTypeOrNull())
+            )
             .addHeader("content-type", "application/json")
             .build()
     }
