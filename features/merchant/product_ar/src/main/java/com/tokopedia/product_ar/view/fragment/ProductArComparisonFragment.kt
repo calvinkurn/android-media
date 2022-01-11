@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.product.detail.common.SingleClick
 import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.di.ProductArComponent
@@ -214,10 +215,12 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
     }
 
     override fun onVariantClicked(productId: String, isSelected: Boolean, selectedMfeProduct: MFEMakeupProduct) {
-        viewModel?.setSelectedVariant(
-                data = bottomComparissonView?.adapter?.getCurrentArImageDatas() ?: listOf(),
-                selectedProductId = productId,
-                isSelected = isSelected)
+        SingleClick.doSomethingBeforeTime(delayInterval = 100) {
+            viewModel?.onVariantClicked(
+                    data = bottomComparissonView?.adapter?.getCurrentArImageDatas() ?: listOf(),
+                    selectedProductId = productId,
+                    isSelected = isSelected)
+        }
     }
 
     override fun onButtonClicked(productId: String) {

@@ -32,13 +32,15 @@ class ProductArComparisonViewModel @Inject constructor() : ViewModel() {
     fun addGridImages(processedImage: Bitmap,
                       currentList: List<Bitmap>) {
         val updatedData = currentList.toMutableList()
-        updatedData.add(processedImage)
+        if (updatedData.size < 4) {
+            updatedData.add(processedImage)
 
-        _addRemoveImageGrid.value = _addRemoveImageGrid.value.copy(
-                mode = ImageMapMode.APPEND,
-                imagesBitmap = updatedData,
-                spanSize = if (updatedData.size == 1) 1 else 2
-        )
+            _addRemoveImageGrid.value = _addRemoveImageGrid.value.copy(
+                    mode = ImageMapMode.APPEND,
+                    imagesBitmap = updatedData,
+                    spanSize = if (updatedData.size == 1) 1 else 2
+            )
+        }
     }
 
     fun renderInitialData(data: List<ModifaceUiModel>) {
@@ -47,9 +49,9 @@ class ProductArComparisonViewModel @Inject constructor() : ViewModel() {
         _processedVariantData.value = updatedData
     }
 
-    fun setSelectedVariant(data: List<ModifaceUiModel>,
-                           selectedProductId: String,
-                           isSelected: Boolean) {
+    fun onVariantClicked(data: List<ModifaceUiModel>,
+                         selectedProductId: String,
+                         isSelected: Boolean) {
         val needToDisableSelection = ProductArMapper.needToDisableSelection(
                 selectedProductId = selectedProductId,
                 data = data,
@@ -105,17 +107,19 @@ class ProductArComparisonViewModel @Inject constructor() : ViewModel() {
 
         if (removedPosition >= 0) {
             val currentBitmaps = _addRemoveImageGrid.value.imagesBitmap.toMutableList()
-            currentBitmaps.removeAt(removedPosition)
-
-            _addRemoveImageGrid.value = _addRemoveImageGrid.value.copy(
-                    mode = ImageMapMode.REMOVE,
-                    imagesBitmap = currentBitmaps,
-                    spanSize = ProductArMapper.decideSpanSize(
-                            listImages = currentBitmaps,
-                            mode = ImageMapMode.REMOVE
-                    ),
-                    removePosition = removedPosition
-            )
+            try {
+                currentBitmaps.removeAt(removedPosition)
+                _addRemoveImageGrid.value = _addRemoveImageGrid.value.copy(
+                        mode = ImageMapMode.REMOVE,
+                        imagesBitmap = currentBitmaps,
+                        spanSize = ProductArMapper.decideSpanSize(
+                                listImages = currentBitmaps,
+                                mode = ImageMapMode.REMOVE
+                        ),
+                        removePosition = removedPosition
+                )
+            } catch (e: Throwable) {
+            }
         }
     }
 }

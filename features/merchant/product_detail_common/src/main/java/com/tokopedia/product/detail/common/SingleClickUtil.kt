@@ -9,8 +9,8 @@ object SingleClick{
 
     private var lastClickTime = 0L
 
-    fun doSomethingBeforeTime(block: () -> Unit) {
-        if (SystemClock.elapsedRealtime() - lastClickTime < 700) {
+    fun doSomethingBeforeTime(delayInterval: Int = 700, block: () -> Unit) {
+        if (SystemClock.elapsedRealtime() - lastClickTime < delayInterval) {
             return
         }
 
