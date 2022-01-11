@@ -330,36 +330,36 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun startUploadImages(image: ImageUploadUiModel) {
-        view?.removeSrwBubble()
-        if (isEnableUploadImageService()) {
-            addDummyToService(image)
-            startUploadImageWithService(image)
-        } else {
+//        view?.removeSrwBubble()
+//        if (isEnableUploadImageService()) {
+//            addDummyToService(image)
+//            startUploadImageWithService(image)
+//        } else {
 //            processDummyMessage(image)
 //            uploadImageUseCase.upload(
 //                image = image,
 //                onSuccess = ::onSuccessUploadImage,
 //                onError = ::onErrorUploadImage
 //            )
-        }
+//        }
     }
 
     protected open fun addDummyToService(image: ImageUploadUiModel) {
-        val dummyPosition = UploadImageChatService.findDummy(image)
-        if (dummyPosition == null) {
-            val uploadImageDummy = UploadImageDummy(messageId = thisMessageId, visitable = image)
-            UploadImageChatService.dummyMap.add(uploadImageDummy)
-        }
+//        val dummyPosition = UploadImageChatService.findDummy(image)
+//        if (dummyPosition == null) {
+//            val uploadImageDummy = UploadImageDummy(messageId = thisMessageId, visitable = image)
+//            UploadImageChatService.dummyMap.add(uploadImageDummy)
+//        }
 //        view?.addDummyMessage(image)
 
     }
 
     protected open fun startUploadImageWithService(image: ImageUploadUiModel) {
-        UploadImageChatService.enqueueWork(
-            view.context,
-            ImageUploadMapper.mapToImageUploadServer(image),
-            thisMessageId
-        )
+//        UploadImageChatService.enqueueWork(
+//            view.context,
+//            ImageUploadMapper.mapToImageUploadServer(image),
+//            thisMessageId
+//        )
     }
 
     private fun onSuccessUploadImage(uploadId: String, image: ImageUploadUiModel) {
@@ -587,9 +587,10 @@ open class TopChatRoomPresenter @Inject constructor(
     private fun mapToDummyMessage(
         messageId: String, messageText: String, startTime: String
     ): Visitable<*> {
-        return topChatRoomWebSocketMessageMapper.mapToDummyMessage(
-            messageId, userSession.userId, userSession.name, startTime, messageText
-        )
+        return MessageUiModel.Builder().build()
+//        return topChatRoomWebSocketMessageMapper.mapToDummyMessage(
+//            messageId, userSession.userId, userSession.name, startTime, messageText
+//        )
     }
 
     override fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String) {
