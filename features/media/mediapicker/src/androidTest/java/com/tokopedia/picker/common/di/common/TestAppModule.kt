@@ -1,4 +1,4 @@
-package com.tokopedia.picker.fake.di.common
+package com.tokopedia.picker.common.di.common
 
 import android.content.Context
 import com.tokopedia.abstraction.AbstractionRouter

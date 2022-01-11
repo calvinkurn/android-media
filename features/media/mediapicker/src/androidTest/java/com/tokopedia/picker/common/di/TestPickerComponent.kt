@@ -1,11 +1,10 @@
-package com.tokopedia.picker.fake.di
+package com.tokopedia.picker.common.di
 
+import com.tokopedia.picker.common.di.common.TestBaseAppComponent
+import com.tokopedia.picker.common.di.module.TestPickerModule
 import com.tokopedia.picker.di.PickerComponent
 import com.tokopedia.picker.di.module.PickerViewModelModule
 import com.tokopedia.picker.di.scope.PickerScope
-import com.tokopedia.picker.fake.di.common.TestBaseAppComponent
-import com.tokopedia.picker.fake.di.module.TestPickerModule
-import com.tokopedia.picker.ui.PickerTest
 import dagger.Component
 
 @PickerScope
@@ -19,5 +18,5 @@ import dagger.Component
     ]
 )
 interface TestPickerComponent : PickerComponent {
-    fun inject(test: PickerTest)
+    fun inject(test: TestPickerInterceptor)
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.picker.fake.di.common
+package com.tokopedia.picker.common.di.common
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.Dispatchers

@@ -6,12 +6,12 @@ import android.net.Uri
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.picker.fake.di.DaggerTestPickerComponent
-import com.tokopedia.picker.fake.di.TestPickerComponent
-import com.tokopedia.picker.fake.di.common.DaggerTestBaseAppComponent
-import com.tokopedia.picker.fake.di.common.TestAppModule
-import com.tokopedia.picker.fake.di.common.TestBaseAppComponent
-import com.tokopedia.picker.fake.ui.activity.TestPickerActivity
+import com.tokopedia.picker.common.di.DaggerTestPickerComponent
+import com.tokopedia.picker.common.di.TestPickerComponent
+import com.tokopedia.picker.common.di.common.DaggerTestBaseAppComponent
+import com.tokopedia.picker.common.di.common.TestAppModule
+import com.tokopedia.picker.common.di.common.TestBaseAppComponent
+import com.tokopedia.picker.common.ui.activity.TestPickerActivity
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -23,18 +23,18 @@ abstract class PickerTest {
         TestPickerActivity::class.java, false, false
     )
 
-    protected lateinit var activity: TestPickerActivity
+    lateinit var mActivity: TestPickerActivity
 
-    protected val context: Context = InstrumentationRegistry
+    val context: Context = InstrumentationRegistry
         .getInstrumentation()
         .targetContext
 
-    protected val applicationContext: Context
+    private val applicationContext: Context
         get() = InstrumentationRegistry
             .getInstrumentation().context.applicationContext
 
     @Before
-    open fun before() {
+    open fun setUp() {
         setupBaseDaggerComponent()
         setupPickerDaggerComponent()
     }
@@ -66,7 +66,7 @@ abstract class PickerTest {
         }
         modifier(intent)
         activityTestRule.launchActivity(intent)
-        activity = activityTestRule.activity
+        mActivity = activityTestRule.activity
     }
 
     private fun setupBaseDaggerComponent() {

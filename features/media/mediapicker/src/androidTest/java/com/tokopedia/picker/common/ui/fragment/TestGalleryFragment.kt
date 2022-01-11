@@ -1,4 +1,4 @@
-package com.tokopedia.picker.fake.ui.fragment
+package com.tokopedia.picker.common.ui.fragment
 
 import com.tokopedia.picker.ui.PickerTest
 import com.tokopedia.picker.ui.fragment.gallery.GalleryFragment

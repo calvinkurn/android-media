@@ -1,7 +1,7 @@
-package com.tokopedia.picker.fake.ui.activity
+package com.tokopedia.picker.common.ui.activity
 
 import android.os.Bundle
-import com.tokopedia.picker.fake.ui.TestPickerFragmentFactory
+import com.tokopedia.picker.common.ui.TestPickerFragmentFactory
 import com.tokopedia.picker.ui.PickerFragmentFactory
 import com.tokopedia.picker.ui.PickerTest
 import com.tokopedia.picker.ui.PickerUiConfig

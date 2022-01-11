@@ -74,7 +74,8 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener {
     private val binding: ActivityPickerBinding? by viewBinding()
     private val hasPermissionGranted: Boolean by permissionGranted()
 
-    private val selectedMedias: MutableList<Media> = mutableListOf()
+    private val _selectedMedias: MutableList<Media> = mutableListOf()
+    val selectedMedias: List<Media> get() = _selectedMedias
 
     private val viewModel by lazy {
         ViewModelProvider(
@@ -138,15 +139,15 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener {
         }
 
         viewModel.selectedMedia.observe(this) {
-            selectedMedias.clear()
-            selectedMedias.addAll(it)
+            _selectedMedias.clear()
+            _selectedMedias.addAll(it)
         }
     }
 
     private fun initToolbar() {
         binding?.toolbar?.btnDone?.show()
         binding?.toolbar?.btnDone?.setOnClickListener {
-            selectedMedias.forEach {
+            _selectedMedias.forEach {
                 println("MEDIAPICKER -> ${it.path}")
             }
         }
