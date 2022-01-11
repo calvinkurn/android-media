@@ -25,10 +25,8 @@ import com.tokopedia.logisticorder.adapter.TrackingHistoryAdapter
 import com.tokopedia.logisticorder.databinding.FragmentTrackingPageBinding
 import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
-import com.tokopedia.logisticorder.domain.response.TrackingData
 import com.tokopedia.logisticorder.uimodel.EtaModel
 import com.tokopedia.logisticorder.uimodel.PageModel
-import com.tokopedia.logisticorder.uimodel.TippingModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.utils.DateUtil
@@ -63,8 +61,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var dateUtil: DateUtil
-    @Inject
-    lateinit var mAnalytics: OrderAnalyticsOrderTracking
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -271,11 +267,15 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             binding?.retryPickupButton?.isEnabled = true
             binding?.retryPickupButton?.setOnClickListener {
                 binding?.retryPickupButton?.isEnabled = false
-                mOrderId?.let { it -> viewModel.retryBooking(it) }
-                mAnalytics.eventClickButtonCariDriver(mOrderId)
+                mOrderId?.let { it ->
+                    viewModel.retryBooking(it)
+                    OrderAnalyticsOrderTracking.eventClickButtonCariDriver(it)
+                }
             }
             binding?.tvRetryStatus?.visibility = View.GONE
-            mAnalytics.eventViewButtonCariDriver(mOrderId)
+            mOrderId?.let {
+                OrderAnalyticsOrderTracking.eventViewButtonCariDriver(it)
+            }
         } else {
             binding?.retryPickupButton?.visibility = View.GONE
             if (deadline > 0) {
@@ -315,8 +315,10 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         if (remainingSeconds <= 0) return
         val timeInMillis = remainingSeconds * 1000
         val strFormat = if (context != null) context?.getString(R.string.retry_dateline_info) else ""
-        mAnalytics.eventViewLabelTungguRetry(
-                DateUtils.formatElapsedTime(timeInMillis / 1000), mOrderId)
+        mOrderId?.let {
+            OrderAnalyticsOrderTracking.eventViewLabelTungguRetry(
+                    DateUtils.formatElapsedTime(timeInMillis / 1000), it)
+        }
         mCountDownTimer = object : CountDownTimer(timeInMillis, PER_SECOND.toLong()) {
             override fun onTick(millsUntilFinished: Long) {
                 if (context != null) {
