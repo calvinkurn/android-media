@@ -59,31 +59,31 @@ class PlayShareExperienceAnalyticImpl @Inject constructor(
         } ?: ""
     }
 
-    private fun getShopId(shopId: Long?) = shopId?.toString() ?: "0"
+    private fun getPartnerId(partnerId: Long?) = partnerId?.toString() ?: "0"
 
-    override fun clickShareButton(channelId: String, shopId: Long?, channelType: String) {
+    override fun clickShareButton(channelId: String, partnerId: Long?, channelType: String) {
         sendGeneralClickEvent(
             "share button",
-            "$channelId - ${getShopId(shopId)} - $channelType"
+            "$channelId - ${getPartnerId(partnerId)} - $channelType"
         )
     }
 
     override fun closeShareBottomSheet(
         channelId: String,
-        shopId: Long?,
+        partnerId: Long?,
         channelType: String,
         isScreenshot: Boolean
     ) {
         val action = if(isScreenshot) "close screenshot share bottom sheet" else "close share bottom sheet"
         sendGeneralClickEvent(
             action,
-            "$channelId - ${getShopId(shopId)} - $channelType"
+            "$channelId - ${getPartnerId(partnerId)} - $channelType"
         )
     }
 
     override fun clickSharingOption(
         channelId: String,
-        shopId: Long?,
+        partnerId: Long?,
         channelType: String,
         sharingOption: String?,
         isScreenshot: Boolean
@@ -91,28 +91,28 @@ class PlayShareExperienceAnalyticImpl @Inject constructor(
         val action = if(isScreenshot) "channel share bottom sheet - screenshot" else "sharing channel"
         sendGeneralClickEvent(
             action,
-            "${mapSharingOption(sharingOption)} - $channelId - ${getShopId(shopId)} - $channelType"
+            "${mapSharingOption(sharingOption)} - $channelId - ${getPartnerId(partnerId)} - $channelType"
         )
     }
 
-    override fun impressShareBottomSheet(channelId: String, shopId: Long?, channelType: String) {
+    override fun impressShareBottomSheet(channelId: String, partnerId: Long?, channelType: String) {
         sendGeneralViewEvent(
             "view on sharing channel",
-            "$channelId - ${getShopId(shopId)} - $channelType"
+            "$channelId - ${getPartnerId(partnerId)} - $channelType"
         )
     }
 
-    override fun clickSharePermission(channelId: String, shopId: Long?, channelType: String, label: String) {
+    override fun clickSharePermission(channelId: String, partnerId: Long?, channelType: String, label: String) {
         sendGeneralClickEvent(
             "access photo media and files",
-            "$label - $channelId - ${getShopId(shopId)} - $channelType"
+            "$label - $channelId - ${getPartnerId(partnerId)} - $channelType"
         )
     }
 
-    override fun takeScreenshotForSharing(channelId: String, shopId: Long?, channelType: String) {
+    override fun takeScreenshotForSharing(channelId: String, partnerId: Long?, channelType: String) {
         sendGeneralViewEvent(
             "view - screenshot share bottom sheet",
-            "$channelId - ${getShopId(shopId)} - $channelType"
+            "$channelId - ${getPartnerId(partnerId)} - $channelType"
         )
     }
 }

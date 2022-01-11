@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.fake.FakePlayShareExperience
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
+import com.tokopedia.play.model.PlayPartnerInfoModelBuilder
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.util.isEqualTo
 import com.tokopedia.play.util.isEqualToIgnoringFields
@@ -35,12 +36,18 @@ class PlayViewModelShareExperienceTest {
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val channelDataModelBuilder = PlayChannelDataModelBuilder()
-    private val channelData = channelDataModelBuilder.buildChannelData()
+    private val partnerInfoBuilder = PlayPartnerInfoModelBuilder()
+
+    private val partnerInfo = partnerInfoBuilder.buildPlayPartnerInfo()
+    private val channelData = channelDataModelBuilder.buildChannelData(
+        partnerInfo = partnerInfo
+    )
 
     private val channelId = channelData.id
     private val channelType = channelData.channelDetail.channelInfo.channelType.value
     private val channelInfo = channelData.channelDetail.channelInfo
     private val shareInfo = channelData.channelDetail.shareInfo
+    private val partnerId = partnerInfo.id
 
     private val mockRemoteConfig: RemoteConfig = mockk(relaxed = true)
     private val mockPlayNewAnalytic: PlayNewAnalytic = mockk(relaxed = true)
@@ -65,8 +72,7 @@ class PlayViewModelShareExperienceTest {
     @Test
     fun `when user click share action, it should emit event to save temporary sharing image`() {
         /** Prepare */
-        every { mockPlayNewAnalytic.clickShareButton(any(), any()) } returns Unit
-        coEvery { mockPlayNewAnalytic.impressShareBottomSheet(any(), any()) } returns Unit
+        every { mockPlayNewAnalytic.clickShareButton(any(), any(), any()) } returns Unit
         coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true
 
         val mockEvent = SaveTemporarySharingImage(imageUrl = channelInfo.coverUrl)
@@ -87,7 +93,7 @@ class PlayViewModelShareExperienceTest {
             }
 
             /** Verify */
-            verify { mockPlayNewAnalytic.clickShareButton(channelId, channelType) }
+            verify { mockPlayNewAnalytic.clickShareButton(channelId, partnerId, channelType) }
 
             event.last().isEqualTo(mockEvent)
         }
@@ -129,7 +135,7 @@ class PlayViewModelShareExperienceTest {
     fun `when app wants to open sharing bottom sheet & custom sharing is allowed, it should emit show share bottom sheet event`() {
         /** Prepare */
         coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true
-        coEvery { mockPlayNewAnalytic.impressShareBottomSheet(any(), any()) } returns Unit
+        coEvery { mockPlayNewAnalytic.impressShareBottomSheet(any(), any(), any()) } returns Unit
 
         val mockEvent = OpenSharingOptionEvent(
             title = channelInfo.title,
@@ -154,7 +160,7 @@ class PlayViewModelShareExperienceTest {
             }
 
             /** Verify */
-            verify { mockPlayNewAnalytic.impressShareBottomSheet(channelId, channelType) }
+            verify { mockPlayNewAnalytic.impressShareBottomSheet(channelId, partnerId, channelType) }
 
             event.last().isEqualTo(mockEvent)
         }
@@ -196,7 +202,7 @@ class PlayViewModelShareExperienceTest {
     @Test
     fun `when user close sharing bottom sheet, it should send analytics close bottom sheet`() {
         /** Prepare */
-        every { mockPlayNewAnalytic.closeShareBottomSheet(any(), any(), any()) } returns Unit
+        every { mockPlayNewAnalytic.closeShareBottomSheet(any(), any(), any(), any()) } returns Unit
         every { mockPlayShareExperience.isScreenshotBottomSheet() } returns false
 
         val robot = createPlayViewModelRobot(
@@ -215,15 +221,15 @@ class PlayViewModelShareExperienceTest {
             }
 
             /** Verify */
-            verify { mockPlayNewAnalytic.closeShareBottomSheet(channelId, channelType, false) }
+            verify { mockPlayNewAnalytic.closeShareBottomSheet(channelId, partnerId, channelType, false) }
         }
     }
 
     @Test
     fun `when user take screenshot & custom share is allowed, it should emit event to open bottom sheet`() {
         /** Prepare */
-        every { mockPlayNewAnalytic.takeScreenshotForSharing(any(), any()) } returns Unit
-        coEvery { mockPlayNewAnalytic.impressShareBottomSheet(any(), any()) } returns Unit
+        every { mockPlayNewAnalytic.takeScreenshotForSharing(any(), any(), any()) } returns Unit
+        coEvery { mockPlayNewAnalytic.impressShareBottomSheet(any(), any(), any()) } returns Unit
         coEvery { mockPlayShareExperience.isCustomSharingAllow() } returns true
 
         val mockEvent = OpenSharingOptionEvent(
@@ -249,8 +255,8 @@ class PlayViewModelShareExperienceTest {
             }
 
             /** Verify */
-            verify { mockPlayNewAnalytic.takeScreenshotForSharing(channelId, channelType) }
-            verify { mockPlayNewAnalytic.impressShareBottomSheet(channelId, channelType) }
+            verify { mockPlayNewAnalytic.takeScreenshotForSharing(channelId, partnerId, channelType) }
+            verify { mockPlayNewAnalytic.impressShareBottomSheet(channelId, partnerId, channelType) }
 
             event.last().isEqualTo(mockEvent)
         }
@@ -259,7 +265,7 @@ class PlayViewModelShareExperienceTest {
     @Test
     fun `when user click share option, it should emit event to redirect to selected media`() {
         /** Prepare */
-        every { mockPlayNewAnalytic.clickSharingOption(any(), any(), any(),any()) } returns Unit
+        every { mockPlayNewAnalytic.clickSharingOption(any(), any(), any(), any(),any()) } returns Unit
         fakePlayShareExperience.setScreenshotBottomSheet(false)
 
         val shareModel = ShareModel.Whatsapp()
@@ -288,7 +294,7 @@ class PlayViewModelShareExperienceTest {
             }
 
             /** Verify */
-            verify { mockPlayNewAnalytic.clickSharingOption(channelId, channelType, shareModel.socialMediaName, false) }
+            verify { mockPlayNewAnalytic.clickSharingOption(channelId, partnerId, channelType, shareModel.socialMediaName, false) }
 
             event[0].isEqualTo(mockCloseBottomSheet)
             event[1].isEqualTo(mockEvent)
@@ -298,7 +304,7 @@ class PlayViewModelShareExperienceTest {
     @Test
     fun `when user click share option and error occur, it should emit event to copy link`() {
         /** Prepare */
-        every { mockPlayNewAnalytic.clickSharingOption(any(), any(), any(),any()) } returns Unit
+        every { mockPlayNewAnalytic.clickSharingOption(any(), any(), any(), any(),any()) } returns Unit
         fakePlayShareExperience.setScreenshotBottomSheet(false)
         fakePlayShareExperience.setThrowException(true)
 
@@ -324,7 +330,7 @@ class PlayViewModelShareExperienceTest {
             }
 
             /** Verify */
-            verify { mockPlayNewAnalytic.clickSharingOption(channelId, channelType, shareModel.socialMediaName, false) }
+            verify { mockPlayNewAnalytic.clickSharingOption(channelId, partnerId, channelType, shareModel.socialMediaName, false) }
 
             event[0].isEqualTo(mockCloseBottomSheet)
             event[1].isEqualTo(mockErrorGenerateLink)
@@ -334,7 +340,7 @@ class PlayViewModelShareExperienceTest {
     @Test
     fun `when user choose permission regarding universal bottom sheet, it should send analytics choose permission`() {
         /** Prepare */
-        every { mockPlayNewAnalytic.clickSharePermission(any(), any(), any()) } returns Unit
+        every { mockPlayNewAnalytic.clickSharePermission(any(), any(), any(), any()) } returns Unit
 
         val label = "allow"
 
@@ -353,7 +359,7 @@ class PlayViewModelShareExperienceTest {
             }
 
             /** Verify */
-            verify { mockPlayNewAnalytic.clickSharePermission(channelId, channelType, label) }
+            verify { mockPlayNewAnalytic.clickSharePermission(channelId, partnerId, channelType, label) }
         }
     }
 }
