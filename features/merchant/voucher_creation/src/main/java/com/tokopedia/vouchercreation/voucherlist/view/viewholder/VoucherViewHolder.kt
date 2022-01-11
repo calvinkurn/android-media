@@ -25,8 +25,6 @@ class VoucherViewHolder(
     private val listener: Listener
 ) : AbstractViewHolder<VoucherUiModel>(itemView) {
 
-    private var shareButton: ImageUnify? = null
-    private var broadcastButton: ImageUnify? = null
     private var moreButton: ImageUnify? = null
     private var btnMvcMore: ImageView? = null
     private var ctaButton: UnifyButton? = null
@@ -37,8 +35,6 @@ class VoucherViewHolder(
     }
 
     init {
-        shareButton = itemView?.findViewById(R.id.iu_share_button)
-        broadcastButton = itemView?.findViewById(R.id.iu_bc_button)
         moreButton = itemView?.findViewById(R.id.iu_more_button)
         btnMvcMore = itemView?.findViewById(R.id.btnMvcMore)
         ctaButton = itemView?.findViewById(R.id.btnMvcVoucherCta)
@@ -51,8 +47,24 @@ class VoucherViewHolder(
             val description = "${element.typeFormatted} ${element.discountAmtFormatted}"
             tvMvcVoucherDescription.text = description
 
-            val usedVoucher = "<b>${element.confirmedQuota}</b>/${element.quota}"
-            tvMvcVoucherUsed.text = usedVoucher.parseAsHtml()
+            if (element.isVps) {
+                label_vps.show()
+                label_subsidy.gone()
+                tpg_package_name.text = element.packageName
+                tpg_package_name.show()
+            } else {
+                label_vps.gone()
+                tpg_package_name.gone()
+            }
+
+            if (element.isSubsidy && !element.isVps) {
+                label_subsidy.show()
+                label_vps.gone()
+            } else label_subsidy.gone()
+
+            val remainingAmount = element.quota - element.confirmedQuota
+            val remainingVoucherText = "<b>${remainingAmount}</b>/${element.quota}"
+            tvMvcRemainingVoucher.text = remainingVoucherText.parseAsHtml()
 
             setImageVoucher(element.isPublic, element.type)
             setVoucherStatus(element)
@@ -64,12 +76,6 @@ class VoucherViewHolder(
             imgMvcVoucherType?.setOnClickListener {
                 listener.onVoucherIconClickListener(element.status)
                 listener.onVoucherClickListener(element.id)
-            }
-            broadcastButton?.setOnClickListener {
-                listener.onBroadCastClickListener(element.id)
-            }
-            shareButton?.setOnClickListener {
-                listener.onShareClickListener(element)
             }
             moreButton?.setOnClickListener {
                 listener.onMoreMenuClickListener(element)
@@ -126,7 +132,7 @@ class VoucherViewHolder(
                     showNewBroadCastVoucherExperience(element.showNewBc, VoucherStatusConst.NOT_STARTED)
                 }
                 else -> {
-                    if (element.type != VoucherTypeConst.FREE_ONGKIR) {
+                    if (element.type != VoucherTypeConst.FREE_ONGKIR && !element.isSubsidy && !element.isVps) {
                         btnMvcVoucherCta?.visible()
                     } else {
                         btnMvcVoucherCta?.invisible()
@@ -135,8 +141,6 @@ class VoucherViewHolder(
                     buttonVariant = UnifyButton.Variant.GHOST
                     stringRes = R.string.mvc_duplicate
                     clickAction = listener::onDuplicateClickListener
-                    shareButton?.gone()
-                    broadcastButton?.gone()
                     moreButton?.gone()
                 }
             }
@@ -171,9 +175,9 @@ class VoucherViewHolder(
     private fun showPromoCode(isPublicVoucher: Boolean, voucherCode: String) {
         with(itemView) {
             val isVisible = !isPublicVoucher
-            viewMvcVoucherCodeBg.isVisible = isVisible
-            tvLblCode.isVisible = isVisible
-            tvVoucherCode.isVisible = isVisible
+            if (isVisible) viewMvcVoucherCodeBg.visible() else viewMvcVoucherCodeBg.invisible()
+            if (isVisible) tvLblCode.visible() else tvLblCode.invisible()
+            if (isVisible) tvVoucherCode.visible() else tvVoucherCode.invisible()
             tvVoucherCode.text = String.format(" %s", voucherCode)
         }
     }
@@ -222,24 +226,12 @@ class VoucherViewHolder(
         @VoucherStatusConst voucherType: Int
     ) {
         if (showNewBc) {
-            when (voucherType) {
-                VoucherStatusConst.ONGOING -> {
-                    shareButton?.visible()
-                    broadcastButton?.visible()
-                }
-                VoucherStatusConst.NOT_STARTED -> {
-                    shareButton?.gone()
-                    broadcastButton?.visible()
-                }
-            }
             ctaButton?.gone()
             btnMvcMore?.gone()
             moreButton?.visible()
         } else {
             ctaButton?.visible()
             btnMvcMore?.visible()
-            shareButton?.gone()
-            broadcastButton?.gone()
             moreButton?.gone()
         }
     }
@@ -249,8 +241,6 @@ class VoucherViewHolder(
         fun onVoucherClickListener(voucherId: Int)
 
         fun onMoreMenuClickListener(voucher: VoucherUiModel)
-
-        fun onBroadCastClickListener(voucherId: Int)
 
         fun onShareClickListener(voucher: VoucherUiModel)
 
