@@ -29,30 +29,30 @@ class ChatRoomFakePresenterModule {
     @Provides
     @ChatScope
     fun provideTopChatRoomPresenter(
-            tkpdAuthInterceptor: TkpdAuthInterceptor,
-            fingerprintInterceptor: FingerprintInterceptor,
+//            tkpdAuthInterceptor: TkpdAuthInterceptor,
+//            fingerprintInterceptor: FingerprintInterceptor,
             userSession: UserSessionInterface,
-            webSocketUtil: RxWebSocketUtil,
+//            webSocketUtil: RxWebSocketUtil,
             topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
             getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
             replyChatUseCase: ReplyChatUseCase,
-            compressImageUseCase: CompressImageUseCase,
-            uploadImageUseCase: TopchatUploadImageUseCase,
-            dispatchers: CoroutineDispatchers,
-            remoteConfig: RemoteConfig
+//            compressImageUseCase: CompressImageUseCase,
+//            uploadImageUseCase: TopchatUploadImageUseCase,
+            dispatchers: CoroutineDispatchers
+//            remoteConfig: RemoteConfig
     ): TopChatRoomPresenter {
         return TopChatRoomPresenterStub(
-                        tkpdAuthInterceptor,
-                        fingerprintInterceptor,
+//                        tkpdAuthInterceptor,
+//                        fingerprintInterceptor,
                         userSession,
-                        webSocketUtil,
+//                        webSocketUtil,
                         topChatRoomWebSocketMessageMapper,
                         getTemplateChatRoomUseCase,
                         replyChatUseCase,
-                        compressImageUseCase,
-                        uploadImageUseCase,
-                        dispatchers,
-                        remoteConfig
+//                        compressImageUseCase,
+//                        uploadImageUseCase,
+                        dispatchers
+//                        remoteConfig
                 )
     }
 

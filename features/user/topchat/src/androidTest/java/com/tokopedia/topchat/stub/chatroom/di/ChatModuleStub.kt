@@ -29,6 +29,7 @@ import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
+import com.tokopedia.topchat.common.websocket.*
 import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
 import com.tokopedia.topchat.stub.common.UserSessionStub
 import com.tokopedia.user.session.UserSessionInterface
@@ -105,13 +106,14 @@ class ChatModuleStub {
         return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
     }
 
-//    @ChatScope
-//    @Provides
-//    fun provideRxWebSocketUtil(
-//            rxWebSocketUtilStub: RxWebSocketUtilStub
-//    ): RxWebSocketUtil {
-//        return rxWebSocketUtilStub
-//    }
+    // TODO: remove this
+    @ChatScope
+    @Provides
+    fun provideRxWebSocketUtil(
+            rxWebSocketUtilStub: RxWebSocketUtilStub
+    ): RxWebSocketUtil {
+        return rxWebSocketUtilStub
+    }
 
     @ChatScope
     @Provides
@@ -212,5 +214,35 @@ class ChatModuleStub {
     fun provideChatImageServerUseCase(graphqlRepository: GraphqlRepository)
             : com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ChatImageServerResponse> {
         return com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository)
+    }
+
+
+    @ChatScope
+    @Provides
+    fun provideWebSocketStateHandler(): WebSocketStateHandler {
+        return DefaultWebSocketStateHandler()
+    }
+
+    @ChatScope
+    @Provides
+    fun provideTopChatWebSocket(
+        userSession: UserSessionInterface,
+        client: OkHttpClient
+    ): TopchatWebSocket {
+        return FakeTopchatWebSocket()
+    }
+
+    @ChatScope
+    @Provides
+    fun provideWebSocketParser(): WebSocketParser {
+        return DefaultWebSocketParser()
+    }
+
+    @ChatScope
+    @Provides
+    fun provideWebsocketPayloadGenerator(
+        userSession: UserSessionInterface
+    ): WebsocketPayloadGenerator {
+        return DefaultWebsocketPayloadGenerator(userSession)
     }
 }
