@@ -7,6 +7,6 @@ import com.tokopedia.wishlist.databinding.WishlistV2LoaderListItemBinding
 
 class WishlistV2ListLoaderViewHolder(private val binding: WishlistV2LoaderListItemBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: WishlistV2TypeLayoutData) {
-        binding.clLoader.visibility = View.VISIBLE
+        binding.clLoaderListItem.visibility = View.VISIBLE
     }
 }

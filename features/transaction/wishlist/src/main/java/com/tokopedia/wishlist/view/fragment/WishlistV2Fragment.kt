@@ -420,8 +420,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         glm.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when (wishlistV2Adapter.getItemViewType(position)) {
-                    WishlistV2Adapter.LAYOUT_LIST -> 2
-                    WishlistV2Adapter.LAYOUT_GRID, WishlistV2Adapter.LAYOUT_RECOMMENDATION_LIST -> 1
+                    WishlistV2Adapter.LAYOUT_LIST, WishlistV2Adapter.LAYOUT_LOADER_LIST -> 2
+                    WishlistV2Adapter.LAYOUT_GRID, WishlistV2Adapter.LAYOUT_LOADER_GRID, WishlistV2Adapter.LAYOUT_RECOMMENDATION_LIST -> 1
                     else -> 2
                 }
             }
@@ -632,7 +632,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun showLoader() {
-        wishlistV2Adapter.showLoader()
+        wishlistV2Adapter.showLoader(wishlistPref?.getTypeLayout())
         binding?.run {
             wishlistSortFilter.gone()
             wishlistV2StickyCountManageLabel.root.gone()

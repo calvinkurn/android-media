@@ -78,9 +78,8 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 WishlistV2ListLoaderViewHolder(binding)
             }
             LAYOUT_LOADER_GRID -> {
-                // TODO : create loader grid
-                val binding = WishlistV2LoaderListItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
-                WishlistV2ListLoaderViewHolder(binding)
+                val binding = WishlistV2LoaderGridItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                WishlistV2GridLoaderViewHolder(binding)
             }
             LAYOUT_LIST -> {
                 val binding = WishlistV2ListItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
@@ -215,11 +214,19 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         this.actionListener = v2Fragment
     }
 
-    fun showLoader() {
+    fun showLoader(typeLayout: String?) {
         listTypeData.clear()
-        for (x in 0 until 5) {
-            listTypeData.add(WishlistV2TypeLayoutData("", TYPE_LOADER_LIST))
+
+        if (typeLayout == TYPE_LIST) {
+            for (x in 0 until 5) {
+                listTypeData.add(WishlistV2TypeLayoutData("", TYPE_LOADER_LIST))
+            }
+        } else {
+            for (x in 0 until 5) {
+                listTypeData.add(WishlistV2TypeLayoutData("", TYPE_LOADER_GRID))
+            }
         }
+
         notifyDataSetChanged()
     }
 
