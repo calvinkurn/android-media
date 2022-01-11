@@ -1,9 +1,11 @@
 package com.tokopedia.localizationchooseaddress.domain.model
 
 import android.annotation.SuppressLint
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.DEFAULT_LCA_VERSION
+import kotlinx.parcelize.Parcelize
 
 data class LocalCacheModel (
         @Expose
@@ -69,6 +71,7 @@ data class LocalCacheModel (
         }
 }
 
+@Parcelize
 data class LocalWarehouseModel(
         @Expose
         @SuppressLint("Invalid Data Type")
@@ -78,4 +81,4 @@ data class LocalWarehouseModel(
         @Expose
         @SerializedName("service_type")
         val service_type: String = ""
-)
+): Parcelable

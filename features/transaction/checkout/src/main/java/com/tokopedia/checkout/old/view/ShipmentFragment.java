@@ -67,6 +67,7 @@ import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress;
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow;
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel;
@@ -2854,7 +2855,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         locationDataModel.getAddrId(),
                         locationDataModel.getDistrict(),
                         locationDataModel.getPostalCode(),
-                        (!TextUtils.isEmpty(locationDataModel.getLatitude()) && !TextUtils.isEmpty(locationDataModel.getLongitude())) ? locationDataModel.getLatitude() + "," + locationDataModel.getLongitude() : ""
+                        (!TextUtils.isEmpty(locationDataModel.getLatitude()) && !TextUtils.isEmpty(locationDataModel.getLongitude())) ? locationDataModel.getLatitude() + "," + locationDataModel.getLongitude() : "",
+                        new ChosenAddressTokonow()
                 );
             } else {
                 chosenAddress = new ChosenAddress(
@@ -2862,7 +2864,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         recipientAddressModel.getId(),
                         recipientAddressModel.getDestinationDistrictId(),
                         recipientAddressModel.getPostalCode(),
-                        (!TextUtils.isEmpty(recipientAddressModel.getLatitude()) && !TextUtils.isEmpty(recipientAddressModel.getLongitude())) ? recipientAddressModel.getLatitude() + "," + recipientAddressModel.getLongitude() : ""
+                        (!TextUtils.isEmpty(recipientAddressModel.getLatitude()) && !TextUtils.isEmpty(recipientAddressModel.getLongitude())) ? recipientAddressModel.getLatitude() + "," + recipientAddressModel.getLongitude() : "",
+                        new ChosenAddressTokonow()
                 );
             }
             intent.putExtra(ARGS_CHOSEN_ADDRESS, chosenAddress);
