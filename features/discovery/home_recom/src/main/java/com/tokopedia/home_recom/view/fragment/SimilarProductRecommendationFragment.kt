@@ -49,6 +49,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
+import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -196,8 +197,9 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     }
     private fun setupToolbar() {
         activity?.let {
-            (it as? HomeRecommendationActivity)?.findViewById<Toolbar>(R.id.recom_toolbar)?.gone()
-            (it as? AppCompatActivity)?.supportActionBar?.hide()
+//            (it as? HomeRecommendationActivity)?.findViewById<Toolbar>(R.id.recom_toolbar)?.gone()
+            (it as? HomeRecommendationActivity)?.supportActionBar?.hide()
+            (it as? HomeRecommendationActivity)?.findViewById<Toolbar>(R.id.recom_toolbar)?.setMargin(0, NavToolbarExt.getFullToolbarHeight(it), 0 , 0)
         }
         navToolbar?.let {
             it.setShowShadowEnabled(true)
