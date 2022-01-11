@@ -59,6 +59,11 @@ class PlayShareExperienceAnalyticImpl @Inject constructor(
         } ?: ""
     }
 
+    private fun mapPermissionLabel(label: String): String = when(label) {
+        "allow", "deny" -> label.replaceFirstChar(Char::titlecase)
+        else -> label
+    }
+
     private fun getPartnerId(partnerId: Long?) = partnerId?.toString() ?: "0"
 
     override fun clickShareButton(channelId: String, partnerId: Long?, channelType: String) {
@@ -105,7 +110,7 @@ class PlayShareExperienceAnalyticImpl @Inject constructor(
     override fun clickSharePermission(channelId: String, partnerId: Long?, channelType: String, label: String) {
         sendGeneralClickEvent(
             "access photo media and files",
-            "$label - $channelId - ${getPartnerId(partnerId)} - $channelType"
+            "${mapPermissionLabel(label)} - $channelId - ${getPartnerId(partnerId)} - $channelType"
         )
     }
 
