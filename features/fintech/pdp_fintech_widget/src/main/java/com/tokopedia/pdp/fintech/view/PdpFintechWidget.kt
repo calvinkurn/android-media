@@ -34,7 +34,7 @@ class PdpFintechWidget @JvmOverloads constructor(
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
     private lateinit var baseView: View
     private lateinit var loader: LoaderUnify
-    private lateinit var fintechWidgetAdapter : FintechWidgetAdapter
+    private lateinit var fintechWidgetAdapter: FintechWidgetAdapter
     private lateinit var instanceProductUpdateListner: ProductUpdateListner
     private lateinit var fintechWidgetViewModel: FintechWidgetViewModel
 
@@ -46,10 +46,14 @@ class PdpFintechWidget @JvmOverloads constructor(
     }
 
 
-    fun updateBaseFragmentContext(  parentViewModelStore: ViewModelStore, parentLifeCycleOwner: LifecycleOwner)
-    {
-         fintechWidgetViewModel  =
-            ViewModelProvider(parentViewModelStore, viewModelFactory.get()).get(FintechWidgetViewModel::class.java)
+    fun updateBaseFragmentContext(
+        parentViewModelStore: ViewModelStore,
+        parentLifeCycleOwner: LifecycleOwner
+    ) {
+        fintechWidgetViewModel =
+            ViewModelProvider(parentViewModelStore, viewModelFactory.get()).get(
+                FintechWidgetViewModel::class.java
+            )
         observeProductInfo(parentLifeCycleOwner)
         observeWidgetInfo(parentLifeCycleOwner)
 
@@ -59,7 +63,7 @@ class PdpFintechWidget @JvmOverloads constructor(
         fintechWidgetViewModel.widgetDetailLiveData.observe(parentLifeCycleOwner, {
             when (it) {
                 is Success -> {
-                    updateWidget(it.data)
+                    fintechWidgetAdapter.setData(clearData(it.data).list[0].chips)
                 }
                 is Fail -> {
 
@@ -68,8 +72,14 @@ class PdpFintechWidget @JvmOverloads constructor(
         })
     }
 
-    private fun updateWidget(data: WidgetDetail) {
-       fintechWidgetAdapter.setData(data.list[0].chips)
+    /**
+     * This method sets the view type
+     * @param data : All Widget data
+     */
+
+    private fun clearData(data: WidgetDetail): WidgetDetail {
+
+        return data
     }
 
     private fun observeProductInfo(parentLifeCycleOwner: LifecycleOwner) {
@@ -95,14 +105,13 @@ class PdpFintechWidget @JvmOverloads constructor(
     private fun initRecycler() {
         val recyclerView = baseView.findViewById<RecyclerView>(R.id.recycler_items)
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-        fintechWidgetAdapter = FintechWidgetAdapter(object :WidgetClickListner{
+        fintechWidgetAdapter = FintechWidgetAdapter(object : WidgetClickListner {
             override fun clickedWidget(position: Int) {
-                if(position == 0)
+                if (position == 0)
                     instanceProductUpdateListner.showWebview()
                 else
                     instanceProductUpdateListner.showBottomSheet(position)
             }
-
 
 
         })
@@ -114,18 +123,16 @@ class PdpFintechWidget @JvmOverloads constructor(
         loader = baseView.findViewById(R.id.widgetShimmer)
     }
 
-     fun updateProductId(
-         productID: String,
-         fintechWidgetViewHolder: ProductUpdateListner
-     ) {
-         this.instanceProductUpdateListner = fintechWidgetViewHolder
-         loader.visibility = View.VISIBLE
-         fintechWidgetViewModel.getProductDetail(productID)
+    fun updateProductId(
+        productID: String,
+        fintechWidgetViewHolder: ProductUpdateListner
+    ) {
+        this.instanceProductUpdateListner = fintechWidgetViewHolder
+        loader.visibility = View.VISIBLE
+        fintechWidgetViewModel.getProductDetail(productID)
 
 
     }
-
-
 
 
 }

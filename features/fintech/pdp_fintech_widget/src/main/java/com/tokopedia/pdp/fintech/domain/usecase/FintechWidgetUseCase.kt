@@ -7,16 +7,13 @@ import javax.inject.Inject
 class FintechWidgetUseCase @Inject constructor() {
 
 
-    fun setWidget():WidgetDetail
-    {
+    fun setWidget(): WidgetDetail {
         val gson = Gson()
-        return  gson.fromJson(jsonValue,WidgetDetail::class.java)
+        return gson.fromJson(jsonValue, WidgetDetail::class.java)
     }
 
 
-
-
-    val jsonValue =" {\n" +
+    val jsonValue = " {\n" +
             "    \"list\": [\n" +
             "      {\n" +
             "        \"price\": 15000000,\n" +

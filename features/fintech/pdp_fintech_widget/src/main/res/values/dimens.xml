@@ -9,4 +9,5 @@
     <dimen name="pdp_fintech_7_dp">7dp</dimen>
     <dimen name="pdp_fintech_4_dp">4dp</dimen>
     <dimen name="pdp_fintech_14_sp">14sp</dimen>
+    <dimen name="pdp_fintech_24_dp">24dp</dimen>
 </resources>

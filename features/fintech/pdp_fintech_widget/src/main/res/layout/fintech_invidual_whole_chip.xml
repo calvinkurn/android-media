@@ -2,13 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
 
     <com.tokopedia.unifycomponents.CardUnify
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/card"
         app:card_type="shadow"
 
@@ -17,7 +17,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:id="@+id/cardContent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/partnerIcon"
@@ -36,13 +36,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pdp_fintech_4_dp"
-                android:layout_marginTop="@dimen/pdp_fintech_7_dp"
-                app:layout_goneMarginLeft="@dimen/dp_24"
-                android:text="Rp1.250.000X12"
-                app:layout_goneMarginBottom="@dimen/dp_24"
+                android:layout_marginTop="@dimen/pfp_fintech_10_dp"
+                app:layout_goneMarginLeft="@dimen/pfp_fintech_10_dp"
+                tools:text="Rp1.dsf250*10."
                 android:textColor="@color/Unify_N700_96"
                 android:textStyle="normal"
-                android:paddingRight="@dimen/dp_10"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:paddingRight="@dimen/pfp_fintech_10_dp"
+                app:layout_goneMarginBottom="@dimen/dp_10"
                 app:layout_constraintBottom_toTopOf="@+id/chipSubHeader"
                 app:layout_constraintLeft_toRightOf="@id/partnerIcon"
                 app:layout_constraintTop_toTopOf="parent"
@@ -54,17 +55,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/pdp_fintech_4_dp"
-                app:layout_goneMarginRight="@dimen/dp_40"
-                android:layout_marginRight="@dimen/pfp_fintech_10_dp"
-                app:layout_goneMarginLeft="@dimen/dp_24"
                 android:layout_marginBottom="@dimen/pdp_fintech_7_dp"
-                android:text="credit available: Rp 9.500"
+                android:paddingRight="@dimen/pfp_fintech_10_dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintLeft_toRightOf="@id/partnerIcon"
-                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/chipHeader"
-                app:typographyType="small" />
+                app:layout_goneMarginLeft="@dimen/pfp_fintech_10_dp"
+                app:layout_goneMarginRight="@dimen/dp_40"
+                app:typographyType="small"
+                tools:text="credit available: Rp 9.500" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

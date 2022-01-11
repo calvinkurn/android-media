@@ -15,10 +15,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class FintechWidgetViewModel @Inject constructor
-    (@CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
-     private val productDetailUseCase:ProductDetailUseCase,
-     private val fintchWidgetUseCase: FintechWidgetUseCase
-     ):
+    (
+    @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
+    private val productDetailUseCase: ProductDetailUseCase,
+    private val fintchWidgetUseCase: FintechWidgetUseCase
+) :
     BaseViewModel(dispatcher) {
 
     private val _productDetailLiveData = MutableLiveData<Result<ProductDetailClass>>()
@@ -30,10 +31,13 @@ class FintechWidgetViewModel @Inject constructor
         _widgetDetailLiveData
 
 
-    fun getProductDetail(productId:String)
-        {
-            productDetailUseCase.getProductDetail(::onSuccessProductInfo,::onFailProductInfo,productId)
-        }
+    fun getProductDetail(productId: String) {
+        productDetailUseCase.getProductDetail(
+            ::onSuccessProductInfo,
+            ::onFailProductInfo,
+            productId
+        )
+    }
 
     private fun onFailProductInfo(throwable: Throwable) {
         _productDetailLiveData.value = Fail(throwable)
@@ -44,8 +48,7 @@ class FintechWidgetViewModel @Inject constructor
     }
 
 
-    fun getWidgetData()
-    {
+    fun getWidgetData() {
         _widgetDetailLiveData.value = Success(fintchWidgetUseCase.setWidget())
     }
 
