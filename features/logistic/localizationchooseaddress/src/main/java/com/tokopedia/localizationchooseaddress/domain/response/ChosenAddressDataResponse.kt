@@ -67,7 +67,7 @@ data class Tokonow(
         var warehouses: List<Warehouse> = listOf(),
 
         @Expose
-        @SerializedName("service_name")
+        @SerializedName("service_type")
         var serviceType: String = ""
 )
 
@@ -88,6 +88,6 @@ data class Warehouse(
         var warehouseId: Long = 0,
 
         @Expose
-        @SerializedName("service_name")
+        @SerializedName("service_type")
         var serviceType: String = ""
 )
