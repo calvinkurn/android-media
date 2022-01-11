@@ -759,8 +759,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (!isSeller() && messageId.isNotBlank() &&
             topchatViewState?.hasProductPreviewShown() == true
         ) {
-            val productIdCommaSeparated = presenter.getProductIdPreview()
-                .joinToString(separator = ",")
+//            val productIdCommaSeparated = presenter.getProductIdPreview()
+//                .joinToString(separator = ",")
             val productIdCommaSeparated2 = viewModel.getProductIdPreview()
                 .joinToString(separator = ",")
             viewModel.getSmartReplyWidget(messageId, productIdCommaSeparated2)
@@ -2327,7 +2327,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun trackClickSrwQuestion(question: QuestionUiModel) {
-        val productIds = presenter.getProductIdPreview()
+//        val productIds = presenter.getProductIdPreview()
         val productIds2 = viewModel.getProductIdPreview()
         val trackProductIds = productIds2.joinToString(separator = ", ")
         analytics.eventClickSrw(shopId, session.userId, trackProductIds, question)
@@ -2385,7 +2385,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun addSrwBubble() {
         val srwState = rvSrw?.getStateInfo()
-        val previews = presenter.getAttachmentsPreview().toList()
+//        val previews = presenter.getAttachmentsPreview().toList()
         val previews2 = viewModel.getAttachmentsPreview().toList()
         adapter.addSrwBubbleUiModel(srwState, previews2)
     }
