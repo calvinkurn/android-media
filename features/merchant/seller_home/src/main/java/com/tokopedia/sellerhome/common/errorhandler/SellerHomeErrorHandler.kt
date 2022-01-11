@@ -1,9 +1,6 @@
 package com.tokopedia.sellerhome.common.errorhandler
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.gson.Gson
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import com.tokopedia.sellerhome.BuildConfig
 import com.tokopedia.sellerhome.common.exception.SellerHomeException
 

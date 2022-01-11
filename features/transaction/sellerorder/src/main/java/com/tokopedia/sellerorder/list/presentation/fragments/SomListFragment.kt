@@ -47,6 +47,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
 import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
+import com.tokopedia.sellerhomecommon.utils.SellerZeroOutageErrorHandler
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -1011,7 +1012,16 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                         binding?.rvSomList?.show()
                     }
                 }
-                is Fail -> showToasterError(view)
+                is Fail -> {
+                    showToasterError(view)
+                    SellerZeroOutageErrorHandler.logExceptionToServer(
+                        throwable = result.throwable,
+                        errorType =
+                        SellerZeroOutageErrorHandler.SomMessage.GET_TOP_ADS_CATEGORY_ERROR,
+                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
+                }
             }
         })
     }
@@ -1023,6 +1033,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 is Fail -> {
                     binding?.tickerSomList?.gone()
                     showToasterError(view)
+                    SellerZeroOutageErrorHandler.logExceptionToServer(
+                        throwable = result.throwable,
+                        errorType =
+                        SellerZeroOutageErrorHandler.SomMessage.GET_TICKERS_ERROR,
+                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -1039,7 +1056,16 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                             realtimeDataChangeCount =
                                 onSuccessGetFilter(result, realtimeDataChangeCount)
                         }
-                        is Fail -> showGlobalError(result.throwable)
+                        is Fail -> {
+                            showGlobalError(result.throwable)
+                            SellerZeroOutageErrorHandler.logExceptionToServer(
+                                throwable = result.throwable,
+                                errorType =
+                                SellerZeroOutageErrorHandler.SomMessage.FILTER_DATA_ON_ORDER_LIST_ERROR,
+                                pageType = SellerZeroOutageErrorHandler.PageType.SOM,
+                                deviceId = userSession.deviceId.orEmpty()
+                            )
+                        }
                         else -> showGlobalError(Throwable())
                     }
                     binding?.shimmerViews?.gone()
@@ -1052,6 +1078,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             when (result) {
                 is Fail -> {
                     showToasterError(view)
+                    SellerZeroOutageErrorHandler.logExceptionToServer(
+                        throwable = result.throwable,
+                        errorType =
+                        SellerZeroOutageErrorHandler.SomMessage.GET_WAITING_PAYMENT_COUNTER_ERROR,
+                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
             updateToolbarMenu()
@@ -1067,7 +1100,16 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             }
             when (result) {
                 is Success -> renderOrderList(result.data)
-                is Fail -> showGlobalError(result.throwable)
+                is Fail -> {
+                    showGlobalError(result.throwable)
+                    SellerZeroOutageErrorHandler.logExceptionToServer(
+                        throwable = result.throwable,
+                        errorType =
+                        SellerZeroOutageErrorHandler.SomMessage.GET_ORDER_LIST_ERROR,
+                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
+                }
             }
         })
     }
@@ -1085,11 +1127,20 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         viewModel.acceptOrderResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> onAcceptOrderSuccess(result.data.acceptOrder, false)
-                is Fail -> showToasterError(
-                    view,
-                    getString(R.string.som_list_failed_accept_order),
-                    canRetry = false
-                )
+                is Fail -> {
+                    showToasterError(
+                        view,
+                        getString(R.string.som_list_failed_accept_order),
+                        canRetry = false
+                    )
+                    SellerZeroOutageErrorHandler.logExceptionToServer(
+                        throwable = result.throwable,
+                        errorType =
+                        SellerZeroOutageErrorHandler.SomMessage.ACCEPT_ORDER_ERROR,
+                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
+                }
             }
         })
     }
@@ -1111,6 +1162,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 }
                 is Fail -> {
                     it.throwable.showErrorToaster()
+                    SellerZeroOutageErrorHandler.logExceptionToServer(
+                        throwable = it.throwable,
+                        errorType =
+                        SellerZeroOutageErrorHandler.SomMessage.REJECT_ORDER_ERROR,
+                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -1145,6 +1203,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     } else {
                         it.throwable.showErrorToaster()
                     }
+                    SellerZeroOutageErrorHandler.logExceptionToServer(
+                        throwable = it.throwable,
+                        errorType =
+                        SellerZeroOutageErrorHandler.SomMessage.CHANGE_AWB_ERROR,
+                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -1161,6 +1226,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     SomErrorHandler.logExceptionToCrashlytics(
                         result.throwable,
                         SomConsts.ERROR_REJECT_CANCEL_ORDER
+                    )
+                    SellerZeroOutageErrorHandler.logExceptionToServer(
+                        throwable = result.throwable,
+                        errorType =
+                        SellerZeroOutageErrorHandler.SomMessage.REJECT_CANCEL_REQUEST_ERROR,
+                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
+                        deviceId = userSession.deviceId.orEmpty()
                     )
                     result.throwable.showErrorToaster()
                 }
@@ -1184,6 +1256,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     } else {
                         result.throwable.showErrorToaster()
                     }
+                    SellerZeroOutageErrorHandler.logExceptionToServer(
+                        throwable = result.throwable,
+                        errorType =
+                        SellerZeroOutageErrorHandler.SomMessage.BULK_ACCEPT_ORDER_ERROR,
+                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -1251,6 +1330,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 }
                 is Fail -> {
                     newShowFailedAcceptAllOrderDialog(getSelectedOrderIds().size, getSelectedOrderIds().size)
+                    SellerZeroOutageErrorHandler.logExceptionToServer(
+                        throwable = result.throwable,
+                        errorType =
+                        SellerZeroOutageErrorHandler.SomMessage.GET_BULK_ACCEPT_ORDER_STATUS_ERROR,
+                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -1417,6 +1503,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 }
                 is Fail -> {
                     showErrorBulkRequestPickup()
+                    SellerZeroOutageErrorHandler.logExceptionToServer(
+                        throwable = it.throwable,
+                        errorType =
+                        SellerZeroOutageErrorHandler.SomMessage.BULK_REQUEST_PICKUP_ERROR,
+                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }
@@ -1663,7 +1756,16 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             getSwipeRefreshLayout(view)?.isRefreshing = viewModel.isRefreshingOrder()
             when (result) {
                 is Success -> onSuccessValidateOrder(result.data)
-                is Fail -> onFailedValidateOrder()
+                is Fail -> {
+                    onFailedValidateOrder()
+                    SellerZeroOutageErrorHandler.logExceptionToServer(
+                        throwable = result.throwable,
+                        errorType =
+                        SellerZeroOutageErrorHandler.SomMessage.VALIDATE_ORDER_ERROR,
+                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
+                }
             }
         })
     }
@@ -1685,6 +1787,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 }
                 is Fail -> {
                     showGlobalError(result.throwable)
+                    SellerZeroOutageErrorHandler.logExceptionToServer(
+                        throwable = result.throwable,
+                        errorType =
+                        SellerZeroOutageErrorHandler.SomMessage.GET_ADMIN_PERMISSION_ERROR,
+                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })

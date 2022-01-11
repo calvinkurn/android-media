@@ -25,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.sellerhomecommon.utils.SellerZeroOutageErrorHandler
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCheckAndSetStockButton
@@ -284,6 +285,13 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
                     if (isLoadingInitialData) {
                         animateCheckAndSetStockButtonLeave()
                     }
+                    SellerZeroOutageErrorHandler.logExceptionToServer(
+                        throwable = result.throwable,
+                        errorType =
+                        SellerZeroOutageErrorHandler.SomMessage.GET_WAITING_PAYMENT_ORDER_LIST_ERROR,
+                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
             binding?.swipeRefreshLayoutWaitingPaymentOrder?.isRefreshing = false

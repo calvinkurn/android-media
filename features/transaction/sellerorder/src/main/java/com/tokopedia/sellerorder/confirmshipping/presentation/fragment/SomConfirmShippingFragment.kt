@@ -19,6 +19,7 @@ import com.journeyapps.barcodescanner.CaptureActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.sellerhomecommon.utils.SellerZeroOutageErrorHandler
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
@@ -41,6 +42,7 @@ import com.tokopedia.sellerorder.databinding.FragmentSomConfirmShippingBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import javax.inject.Inject
 
@@ -50,6 +52,9 @@ import javax.inject.Inject
 class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierListAdapter.ActionListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var currOrderId = ""
     private var currShipmentId = 0L
@@ -258,6 +263,13 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                     context?.run {
                         Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
                     }
+                    SellerZeroOutageErrorHandler.logExceptionToServer(
+                        throwable = it.throwable,
+                        errorType =
+                        SellerZeroOutageErrorHandler.SomMessage.CONFIRM_SHIPPING_ERROR,
+                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -295,6 +307,13 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_COURIER_LIST)
                     Utils.showToasterError(getString(R.string.global_error), view)
+                    SellerZeroOutageErrorHandler.logExceptionToServer(
+                        throwable = it.throwable,
+                        errorType =
+                        SellerZeroOutageErrorHandler.SomMessage.GET_COURIER_LIST_ERROR,
+                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -317,6 +336,13 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                     context?.run {
                         Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
                     }
+                    SellerZeroOutageErrorHandler.logExceptionToServer(
+                        throwable = it.throwable,
+                        errorType =
+                        SellerZeroOutageErrorHandler.SomMessage.CHANGE_COURIER_ERROR,
+                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })

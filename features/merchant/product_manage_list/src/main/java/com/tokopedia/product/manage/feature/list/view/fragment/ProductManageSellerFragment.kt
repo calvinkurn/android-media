@@ -24,6 +24,7 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_DRAFT_PRODUCT
 import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductDraftListCountViewModel
+import com.tokopedia.sellerhomecommon.utils.SellerZeroOutageErrorHandler
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterMapper
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.unifyprinciples.Typography
@@ -196,6 +197,13 @@ class ProductManageSellerFragment : ProductManageFragment() {
                 is Fail -> {
                     onDraftCountLoadError()
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    SellerZeroOutageErrorHandler.logExceptionToServer(
+                        throwable = it.throwable,
+                        errorType =
+                        SellerZeroOutageErrorHandler.ProductManageMessage.GET_ALL_DRAFT_COUNT_ERROR,
+                        pageType = SellerZeroOutageErrorHandler.PageType.PRODUCT_MANAGE,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }

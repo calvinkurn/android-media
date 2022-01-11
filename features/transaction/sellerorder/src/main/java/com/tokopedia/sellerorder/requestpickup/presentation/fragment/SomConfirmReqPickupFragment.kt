@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.sellerhomecommon.utils.SellerZeroOutageErrorHandler
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
@@ -40,6 +41,7 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import javax.inject.Inject
 
@@ -49,6 +51,9 @@ import javax.inject.Inject
 class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePickupAdapter.SomConfirmSchedulePickupAdapterListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var currOrderId = ""
     private var currSchedulePickupKey = ""
@@ -143,6 +148,13 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                         it.throwable,
                         ERROR_GET_CONFIRM_REQUEST_PICKUP_DATA
                     )
+                    SellerZeroOutageErrorHandler.logExceptionToServer(
+                        throwable = it.throwable,
+                        errorType =
+                        SellerZeroOutageErrorHandler.SomMessage.GET_REQUEST_PICKUP_DATA_ERROR,
+                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                     context?.run {
                         Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
                     }
@@ -166,6 +178,13 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                     SomErrorHandler.logExceptionToCrashlytics(
                         it.throwable,
                         ERROR_PROCESSING_REQUEST_PICKUP
+                    )
+                    SellerZeroOutageErrorHandler.logExceptionToServer(
+                        throwable = it.throwable,
+                        errorType =
+                        SellerZeroOutageErrorHandler.SomMessage.REQUEST_PICKUP_ERROR,
+                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
+                        deviceId = userSession.deviceId.orEmpty()
                     )
                     context?.run {
                         Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)

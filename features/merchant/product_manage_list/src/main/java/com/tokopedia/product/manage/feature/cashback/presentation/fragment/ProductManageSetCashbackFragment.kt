@@ -31,9 +31,11 @@ import com.tokopedia.product.manage.feature.cashback.presentation.viewmodel.Prod
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_RESULT_STATUS
+import com.tokopedia.sellerhomecommon.utils.SellerZeroOutageErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -85,6 +87,9 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
 
     @Inject
     lateinit var viewModel: ProductManageSetCashbackViewModel
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var adapter: SetCashbackAdapter? = null
     private var productId = ""
@@ -244,6 +249,13 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
                 is Fail -> {
                     onErrorSetCashback(it.throwable as SetCashbackResult)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    SellerZeroOutageErrorHandler.logExceptionToServer(
+                        throwable = it.throwable,
+                        errorType =
+                        SellerZeroOutageErrorHandler.ProductManageMessage.SET_CASHBACK_ERROR,
+                        pageType = SellerZeroOutageErrorHandler.PageType.PRODUCT_MANAGE,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }

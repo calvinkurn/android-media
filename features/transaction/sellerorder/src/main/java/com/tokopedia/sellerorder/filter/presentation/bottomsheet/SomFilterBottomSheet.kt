@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.sellerhomecommon.utils.SellerZeroOutageErrorHandler
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -40,6 +41,7 @@ import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class SomFilterBottomSheet : BottomSheetUnify(),
@@ -48,6 +50,9 @@ class SomFilterBottomSheet : BottomSheetUnify(),
 
     @Inject
     lateinit var somFilterViewModel: SomFilterViewModel
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var rvSomFilter: RecyclerView? = null
     private var btnShowOrder: UnifyButton? = null
@@ -337,6 +342,13 @@ class SomFilterBottomSheet : BottomSheetUnify(),
                 }
             }
             is Fail -> {
+                SellerZeroOutageErrorHandler.logExceptionToServer(
+                    throwable = it.throwable,
+                    errorType =
+                    SellerZeroOutageErrorHandler.SomMessage.GET_FILTER_DATA_ERROR,
+                    pageType = SellerZeroOutageErrorHandler.PageType.SOM,
+                    deviceId = userSession.deviceId.orEmpty()
+                )
             }
         }
     }
