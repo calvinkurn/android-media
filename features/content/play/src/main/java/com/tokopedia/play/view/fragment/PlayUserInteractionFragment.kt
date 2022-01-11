@@ -13,7 +13,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
@@ -338,7 +337,7 @@ class PlayUserInteractionFragment @Inject constructor(
     /**
      * Like View Component Listener
      */
-    override fun onLikeClicked(view: LikeViewComponent, shouldLike: Boolean) {
+    override fun onLikeClicked(view: LikeViewComponent) {
         playViewModel.submitAction(ClickLikeAction)
     }
 
@@ -563,6 +562,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
         if (playViewModel.isPiPAllowed) pipView?.show()
         else pipView?.hide()
+
+        setupFeaturedProductsFadingEdge(view)
     }
 
     private fun setupInsets(view: View) {
@@ -930,7 +931,7 @@ class PlayUserInteractionFragment @Inject constructor(
                         rtnView?.queueNotification(event.notification)
                     }
                     is AnimateLikeEvent -> {
-                        likeView.playLikeAnimation(event.fromIsLiked)
+                        likeView.playLikeAnimation()
                     }
                     is ShowLikeBubbleEvent -> {
                         if (event is ShowLikeBubbleEvent.Burst) {
@@ -955,6 +956,14 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
     //endregion
+
+    private fun setupFeaturedProductsFadingEdge(view: View) {
+        view.doOnLayout {
+            productFeaturedView?.setFadingEndBounds(
+                (FADING_EDGE_PRODUCT_FEATURED_WIDTH_MULTIPLIER * it.width).toInt()
+            )
+        }
+    }
 
     private fun sendCastAnalytic(cast: PlayCastUiModel) {
         when {
@@ -1397,7 +1406,9 @@ class PlayUserInteractionFragment @Inject constructor(
     ) {
         if (channelType.isLive &&
                 bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
-                bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false) {
+                bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false &&
+                bottomInsets[BottomInsetsType.CouponSheet]?.isShown == false &&
+                bottomInsets[BottomInsetsType.LeaderboardSheet]?.isShown == false) {
             sendChatView?.show()
         } else sendChatView?.invisible()
 
@@ -1411,6 +1422,8 @@ class PlayUserInteractionFragment @Inject constructor(
         if (channelType.isLive &&
                 bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false &&
+                bottomInsets[BottomInsetsType.CouponSheet]?.isShown == false &&
+                bottomInsets[BottomInsetsType.LeaderboardSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.Keyboard]?.isShown == true) {
             quickReplyView?.showIfNotEmpty()
         } else quickReplyView?.hide()
@@ -1528,8 +1541,6 @@ class PlayUserInteractionFragment @Inject constructor(
     ) {
         if (prevState?.canLike != likeState.canLike) likeView.setEnabled(isEnabled = likeState.canLike)
 
-        likeView.setMode(likeState.likeMode)
-
         if (prevState?.isLiked != likeState.isLiked) {
             likeView.setIsLiked(likeState.isLiked)
         }
@@ -1644,5 +1655,7 @@ class PlayUserInteractionFragment @Inject constructor(
         private const val AUTO_SWIPE_DELAY = 500L
 
         private const val MASK_NO_CUT_HEIGHT = 0f
+
+        private const val FADING_EDGE_PRODUCT_FEATURED_WIDTH_MULTIPLIER = 0.125f
     }
 }

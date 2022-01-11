@@ -342,4 +342,7 @@
     <string name="bottomsheet_order_extension_request_comment_not_empty_regex">^\s*$</string>
     <string name="bottomsheet_order_extension_request_comment_not_less_than_fifteen_characters_regex">^.{0,14}$</string>
     <string name="bottomsheet_order_extension_request_comment_not_allowed_characters_regex">[^,.?!\n A-Za-z0-9]+</string>
+
+    <!--  MVC Usage  -->
+    <string name="som_detail_mvc_usage_label">Promo Penjual</string>
 </resources>

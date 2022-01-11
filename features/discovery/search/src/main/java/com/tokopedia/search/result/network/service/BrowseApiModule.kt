@@ -42,6 +42,7 @@ class BrowseApiModule {
         return retrofitBuilder.baseUrl(SearchConstant.BaseUrl.ACE_DOMAIN).client(okHttpClient).build()
     }
 
+    @Suppress("LongParameterList")
     @SearchScope
     @Provides
     @AceQualifier
