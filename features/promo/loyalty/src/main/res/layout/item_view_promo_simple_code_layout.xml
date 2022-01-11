@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:textColor="@color/Unify_R500"
+                android:textColor="@color/Unify_Y500"
                 tools:text="BRIG6P" />
 
         </RelativeLayout>
