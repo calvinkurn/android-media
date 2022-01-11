@@ -28,6 +28,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynami
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.constant.AtfKey
+import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
@@ -88,6 +89,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
     val gson = Gson()
     var cachedHomeData: HomeData? = null
 
+    var localHomeRecommendationFeedDataModel: HomeRecommendationFeedDataModel? = null
     private val jobList = mutableListOf<Deferred<AtfData>>()
 
     fun updateHeaderData(homeHeaderDataModel: HomeHeaderDataModel, homeDataModel: HomeDynamicChannelModel): Visitable<*>? {
@@ -283,9 +285,10 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         isCache = false
                 ))
 
-                dynamicChannelPlainResponse.evaluateRecommendationSection(
-                        onNeedTabLoad = { getFeedTabData(dynamicChannelPlainResponse) }
-                )
+                val needToGetRecom = dynamicChannelPlainResponse.evaluateRecommendationSection(currentHomeRecom = localHomeRecommendationFeedDataModel)
+                if (needToGetRecom) {
+                    getFeedTabData(dynamicChannelPlainResponse)
+                }
 
                 emit(dynamicChannelPlainResponse.copy(
                         isCache = false,
@@ -333,22 +336,26 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 it?.let {
                     when {
                         findLoadingModel != null -> {
+                            val newRecomModel = HomeRecommendationFeedDataModel(
+                                    recommendationTabDataModel = homeRecommendationTabs,
+                                    homeChooseAddressData = homeDataModel.homeChooseAddressData.copy()
+                            )
                             homeDataModel.updateWidgetModel(
-                                    visitable = HomeRecommendationFeedDataModel(
-                                            recommendationTabDataModel = homeRecommendationTabs,
-                                            homeChooseAddressData = homeDataModel.homeChooseAddressData.copy()
-                                    ),
+                                    visitable = newRecomModel,
                                     visitableToChange = findLoadingModel.value,
                                     position = it.index) {}
+                            this.localHomeRecommendationFeedDataModel = newRecomModel
                         }
                         findRetryModel != null -> {
+                            val newRecomModel = HomeRecommendationFeedDataModel(
+                                    recommendationTabDataModel = homeRecommendationTabs,
+                                    homeChooseAddressData = homeDataModel.homeChooseAddressData.copy()
+                            )
                             homeDataModel.updateWidgetModel(
-                                    visitable = HomeRecommendationFeedDataModel(
-                                            recommendationTabDataModel = homeRecommendationTabs,
-                                            homeChooseAddressData = homeDataModel.homeChooseAddressData.copy()
-                                    ),
+                                    visitable = newRecomModel,
                                     visitableToChange = findRetryModel.value,
                                     position = it.index) {}
+                            this.localHomeRecommendationFeedDataModel = newRecomModel
                         }
                         else -> {
                             (it.value as? HomeRecommendationFeedDataModel)?.let { recomModel ->
@@ -358,6 +365,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 )
                                 newModel.recommendationTabDataModel = homeRecommendationTabs
                                 newModel.isNewData = true
+                                this.localHomeRecommendationFeedDataModel = newModel
                                 homeDataModel.updateWidgetModel(visitable = recomModel, visitableToChange = newModel, position = it.index) {}
                             }
                         }
@@ -448,20 +456,31 @@ class HomeDynamicChannelUseCase @Inject constructor(
             deleteWidgetWhen:(K?) -> Boolean = {false},
             mapToWidgetData: (T, K, Int) -> T
     ): HomeDynamicChannelModel {
-        findWidget<T>(this, predicate) { visitableFound, visitablePosition ->
-            val data = widgetRepository.getRemoteData(bundleParam.invoke(visitableFound))
-            if (!deleteWidgetWhen.invoke(data)) {
-                this.updateWidgetModel(
-                        visitable = mapToWidgetData.invoke(visitableFound, data, visitablePosition),
-                        visitableToChange = visitableFound,
-                        position = visitablePosition
-                ) {}
-            } else {
+        try {
+            findWidget<T>(this, predicate) { visitableFound, visitablePosition ->
+                val data = widgetRepository.getRemoteData(bundleParam.invoke(visitableFound))
+                if (!deleteWidgetWhen.invoke(data)) {
+                    this.updateWidgetModel(
+                            visitable = mapToWidgetData.invoke(visitableFound, data, visitablePosition),
+                            visitableToChange = visitableFound,
+                            position = visitablePosition
+                    ) {}
+                } else {
+                    this.deleteWidgetModel(
+                            visitable = visitableFound,
+                            position = visitablePosition
+                    ) {}
+                }
+            }
+            return this
+        } catch (e: Exception){
+            findWidget<T>(this, predicate) { visitableFound, visitablePosition ->
                 this.deleteWidgetModel(
                         visitable = visitableFound,
                         position = visitablePosition
                 ) {}
             }
+            HomeServerLogger.warning_home_repository_error(e, T::class.java.simpleName, K::class.java.simpleName)
         }
         return this
     }

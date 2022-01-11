@@ -125,7 +125,7 @@ data class HomeDynamicChannelModel(
         }
     }
 
-    suspend fun initRecom(onNeedTabLoad: suspend () -> Unit) {
+    fun initRecom(onNeedTabLoad: () -> Unit) {
         val mutableIterator = _list.iterator()
         for (e in mutableIterator) {
             if (e is HomeRetryModel) {
@@ -154,21 +154,25 @@ data class HomeDynamicChannelModel(
         this.homeBalanceModel = homeBalanceModel
     }
 
-    suspend fun evaluateRecommendationSection(onNeedTabLoad: suspend () -> Unit) {
+    fun evaluateRecommendationSection(currentHomeRecom: HomeRecommendationFeedDataModel?): Boolean {
         if(_list.find { it::class.java == HomeLoadingMoreModel::class.java } != null)
-            return
+            return false
 
         //reuse the recommendation viewmodel
-        val detectHomeRecom = _list.find { visitable -> visitable is HomeRecommendationFeedDataModel }
+        var detectHomeRecom = _list.find { visitable -> visitable is HomeRecommendationFeedDataModel }
+        if (detectHomeRecom == null) {
+            detectHomeRecom = currentHomeRecom
+        }
         if (detectHomeRecom != null) {
             val isAddressChanged =
                     (detectHomeRecom as? HomeRecommendationFeedDataModel)?.homeChooseAddressData != homeChooseAddressData
             if (isAddressChanged) {
-                initRecom(onNeedTabLoad)
+                return true
             }
         } else {
-            initRecom(onNeedTabLoad)
+            return true
         }
+        return false
     }
 
     private fun copyWidget(
