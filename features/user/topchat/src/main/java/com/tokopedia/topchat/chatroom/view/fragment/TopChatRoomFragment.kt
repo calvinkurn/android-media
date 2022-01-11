@@ -1012,7 +1012,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun onViewReachBottomMostChat() {
 //        presenter.resetUnreadMessage()
         viewModel.resetUnreadMessage()
-        presenter.readMessage()
+//        presenter.readMessage()
+        viewModel.markAsRead()
         hideUnreadMessage()
     }
 

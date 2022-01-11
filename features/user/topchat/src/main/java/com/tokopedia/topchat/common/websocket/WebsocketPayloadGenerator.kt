@@ -36,4 +36,5 @@ interface WebsocketPayloadGenerator {
     ): String
 
     fun generateWsPayloadStopTyping(msgId: String): String
+    fun generateMarkAsReadPayload(roomMetaData: RoomMetaData): String
 }

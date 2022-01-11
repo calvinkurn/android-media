@@ -236,7 +236,7 @@ class TopChatViewModel @Inject constructor(
                 Timber.d("$TAG - onOpen")
                 handleOnOpenWebSocket()
                 // TODO: add mark as read
-                // readMessage()
+                 markAsRead()
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
@@ -302,6 +302,9 @@ class TopChatViewModel @Inject constructor(
         val chatUiModel = topChatRoomWebSocketMessageMapper.map(chat)
         _newMsg.postValue(chatUiModel)
         handleSrwBubbleState(chat, chatUiModel)
+        if (chat.isOpposite) {
+            markAsRead()
+        }
 //        if (!pojo.isOpposite) {
 //            checkDummyAndRemove(uiModel)
 //        } else {
@@ -861,6 +864,11 @@ class TopChatViewModel @Inject constructor(
         showPreviewMsg(previewMsg)
         sendWsPayload(wsPayload)
         sendWsStopTyping()
+    }
+
+    fun markAsRead() {
+        val wsPayload = payloadGenerator.generateMarkAsReadPayload(roomMetaData)
+        sendWsPayload(wsPayload)
     }
 
     private fun showPreviewMsg(previewMsg: SendableUiModel) {

@@ -297,7 +297,7 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun readMessage() {
-        sendMessageWebSocket(TopChatWebSocketParam.generateParamRead(thisMessageId))
+//        sendMessageWebSocket(TopChatWebSocketParam.generateParamRead(thisMessageId))
     }
 
     override fun startCompressImages(it: ImageUploadUiModel) {
