@@ -21,6 +21,15 @@ open class CameraFragment : BaseDaggerFragment() {
         )
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initView()
+    }
+
+    private fun initView() {
+
+    }
+
     override fun initInjector() {}
 
     override fun getScreenName() = "Camera"
