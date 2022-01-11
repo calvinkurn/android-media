@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
+import android.os.Bundle
 import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
@@ -209,7 +210,7 @@ class TopSectionVH(
                     showBottomSheetMembership(this.context)
                 }
             }
-            setValue(96,true)
+            setValue(100,true)
             progressBarColorType = ProgressBarUnify.COLOR_GREEN
         }
 
@@ -249,7 +250,6 @@ class TopSectionVH(
     }
 
     private fun showBottomSheetMembership(context: Context){
-        val bs = RewardCommonBottomSheet()
         val bottomSheetModel = BottomSheetModel(
             contentTitle = "Selamat, kini kamu jadi \n" +
                     "Member Silver!",
@@ -258,7 +258,10 @@ class TopSectionVH(
             remoteImage = "phone_verification.png",
             buttonText = "Lihat Membership"
         )
-        bs.setBottomSheet(bottomSheetModel)
+        val bundle = Bundle()
+        bundle.putParcelable("bsm",bottomSheetModel)
+        val bs = RewardCommonBottomSheet.newInstance(bundle)
+
         bs.show(fragmentManager,"")
     }
 

@@ -42,29 +42,42 @@
         app:typographyWeight="bold"
         tools:text="Classic Member" />
 
-  <!--  <com.tokopedia.unifyprinciples.Typography
+   <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_transaksi_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/img_egg"
         android:layout_alignStart="@id/img_egg"
         android:layout_marginTop="@dimen/unify_space_12"
-        android:layout_marginBottom="4dp"
-        android:ellipsize="end"
         android:maxLines="1"
+       android:layout_marginRight="@dimen/dp_2"
         android:textColor="@color/Unify_N0"
-        app:typographyType="heading_3"
-        app:typographyWeight="bold"
-        tools:text="Classic Member" />-->
+        app:typographyType="body_3"
+       android:text="Transaksi" />
 
     <LinearLayout
         android:id="@+id/containerss"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/img_egg"
-        android:layout_alignStart="@id/img_egg"
+        android:gravity="center_vertical"
+        android:layout_toEndOf="@id/text_transaksi_desc"
+        android:layout_marginTop="@dimen/dp_10"
         android:orientation="horizontal">
     </LinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_transaksi_lagi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/img_egg"
+        android:layout_toEndOf="@id/containerss"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:maxLines="1"
+        android:layout_marginStart="@dimen/dp_2"
+        android:textColor="@color/Unify_N0"
+        app:typographyType="body_3"
+        android:text="Lagi" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_transaksi_value"
@@ -77,7 +90,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/Unify_N0"
-        app:typographyType="heading_3"
+        app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Gold" />
 
@@ -86,10 +99,9 @@
         android:layout_width="wrap_content"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:layout_marginEnd="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_4"
         android:layout_below="@id/containerss"
-        android:layout_alignStart="@id/containerss"
+        android:layout_alignStart="@id/text_transaksi_desc"
         android:layout_alignEnd="@id/text_transaksi_value"
         android:layout_height="wrap_content">
 
@@ -98,13 +110,14 @@
             android:layout_gravity="center_vertical|end"
             android:layout_width="20dp"
             android:layout_marginTop="@dimen/dp_8"
-            android:translationZ="@dimen/dp_10"
+            android:layout_marginRight="-2dp"
+            android:elevation="@dimen/dp_2"
             android:layout_height="20dp" />
 
         <com.tokopedia.unifycomponents.ProgressBarUnify
             android:id="@+id/progressbar_membership"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_50"
+            android:layout_height="@dimen/dp_30"
             android:clipToPadding="false"
             android:clipChildren="false"
             android:layout_gravity="center_vertical"
@@ -112,14 +125,13 @@
             app:unify_progress_bar_from_color="@color/green_50"
             app:unify_progress_bar_height="10" />
 
-
-
     </FrameLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_target"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_18"
         android:layout_below="@id/container_progressbar"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="@dimen/tp_margin_medium">
