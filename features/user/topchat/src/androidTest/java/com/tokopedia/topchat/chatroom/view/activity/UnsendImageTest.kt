@@ -68,7 +68,7 @@ class UnsendImageTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        websocket.simulateResponse(websocket.deleteImageResponse)
+        websocket2.simulateResponse(websocket.deleteImageResponse)
 
         // Then
         MsgBubbleResult.assertMsgIsDeletedAt(0)
