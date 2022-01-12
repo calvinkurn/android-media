@@ -248,8 +248,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
         // update switch status if primary variant changed (index bigger than -1)
         if (updatedFieldPosition.isMoreThanZero() || updatedFieldPosition.isZero() ) {
-            val updatedInputModel = viewModel.updateSwitchStatus(true, updatedFieldPosition)
-            variantDetailFieldsAdapter?.updateDetailInputField(updatedFieldPosition, updatedInputModel)
+            viewModel.updateSwitchStatus(true, updatedFieldPosition)
+            variantDetailFieldsAdapter?.activateVariantStatus(combination)
         }
 
         // tracking
