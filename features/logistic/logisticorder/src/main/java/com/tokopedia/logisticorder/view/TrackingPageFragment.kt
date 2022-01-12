@@ -163,7 +163,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         val model = trackingDataModel.trackOrder
         binding?.referenceNumber?.text = model.shippingRefNum
         if (model.detail.serviceCode.isEmpty()) binding?.descriptionLayout?.visibility = View.GONE
-        if (model.detail.sendDate.isNotEmpty()) binding?.deliveryDate?.text = DateUtil.formatDate("yyyy-MM-dd", "dd MMM yyyy", model.detail.sendDate)
+        if (model.detail.sendDate.isNotEmpty()) binding?.deliveryDate?.text = DateUtil.formatDate("yyyy-MM-dd", "dd MMMM yyyy", model.detail.sendDate)
         binding?.storeName?.text = model.detail.shipperName
         binding?.storeAddress?.text = model.detail.shipperCity
         binding?.serviceCode?.text = model.detail.serviceCode
@@ -185,10 +185,10 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         if (tippingData.status == OPEN || tippingData.status == WAITING_PAYMENT || tippingData.status == SUCCESS_PAYMENT || tippingData.status ==  SUCCESS_TO_GOJEK || tippingData.status == REFUND_TIP) {
             setTippingData(data)
             binding?.tippingGojekLayout?.root?.visibility = View.VISIBLE
-            binding?.dividerTippingGojek?.visibility = View.VISIBLE
+//            binding?.dividerTippingGojek?.visibility = View.VISIBLE
         } else {
             binding?.tippingGojekLayout?.root?.visibility = View.GONE
-            binding?.dividerTippingGojek?.visibility = View.GONE
+//            binding?.dividerTippingGojek?.visibility = View.GONE
         }
     }
 

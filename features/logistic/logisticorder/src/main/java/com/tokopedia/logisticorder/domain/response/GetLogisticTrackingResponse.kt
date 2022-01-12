@@ -53,7 +53,7 @@ data class Detail(
         val receiverCity: String = "",
         @SerializedName("send_date_time")
         val sendDateTime: String = "",
-        @SerializedName("send_data")
+        @SerializedName("send_date")
         val sendDate: String = "",
         @SerializedName("send_time")
         val sendTime: String = "",
