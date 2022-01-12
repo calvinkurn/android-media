@@ -403,10 +403,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponse(wsMineResponseText)
-        websocket.simulateResponse(wsMineResponseText)
-        websocket.simulateResponse(wsInterlocutorResponseText)
-        websocket.simulateResponse(wsInterlocutorResponseText)
+        websocket2.simulateResponse(wsMineResponseText)
+        websocket2.simulateResponse(wsMineResponseText)
+        websocket2.simulateResponse(wsInterlocutorResponseText)
+        websocket2.simulateResponse(wsInterlocutorResponseText)
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
@@ -425,8 +425,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
-        websocket.simulateResponse(
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponse(
             wsMineResponseText.changeTimeStampTo(today())
         )
 
@@ -448,7 +448,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickPlusIconMenu()
         clickAttachInvoiceMenu()
         clickComposeArea()
@@ -516,8 +516,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
-        websocket.simulateResponse(wsSellerImageResponse.changeTimeStampTo(today()))
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponse(wsSellerImageResponse.changeTimeStampTo(today()))
 
         // Then
         assertSrwBubbleDoesNotExist()
@@ -561,7 +561,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickPlusIconMenu()
         clickAttachProductMenu()
 
@@ -584,7 +584,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
@@ -756,7 +756,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickStickerIconMenu()
 
         // Then
@@ -778,7 +778,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickStickerIconMenu()
         pressBack()
 
@@ -801,7 +801,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickPlusIconMenu()
 
         // Then
@@ -823,7 +823,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickPlusIconMenu()
         clickPlusIconMenu()
 
@@ -845,7 +845,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickPlusIconMenu()
         clickSrwBubbleExpandCollapse(0)
 
@@ -867,7 +867,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickStickerIconMenu()
         clickSrwBubbleExpandCollapse(0)
 
@@ -889,7 +889,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickComposeArea()
 
         // Then
@@ -909,7 +909,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickComposeArea()
         pressBack()
 
@@ -930,7 +930,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickStickerIconMenu()
         clickStickerIconMenu()
 
@@ -951,7 +951,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickComposeArea()
         clickStickerIconMenu()
 
@@ -973,7 +973,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickPlusIconMenu()
         clickAttachInvoiceMenu()
 
@@ -995,7 +995,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickPlusIconMenu()
         clickAttachInvoiceMenu()
         clickCloseAttachmentPreview(0)
@@ -1018,7 +1018,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickPlusIconMenu()
         clickAttachInvoiceMenu()
         clickPlusIconMenu()
@@ -1041,7 +1041,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickPlusIconMenu()
         clickAttachInvoiceMenu()
         clickPlusIconMenu()
@@ -1064,7 +1064,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickSrwBubbleExpandCollapse(0)
         scrollChatToPosition(10)
         scrollChatToPosition(0)
@@ -1172,13 +1172,13 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
-        websocket.simulateResponse(
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponse(
             wsSellerProductResponse
                 .changeTimeStampTo(today())
                 .matchProductWith(productPreview)
         )
-        websocket.simulateResponse(wsSellerResponseText.changeTimeStampTo(today()))
+        websocket2.simulateResponse(wsSellerResponseText.changeTimeStampTo(today()))
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
@@ -1199,7 +1199,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickPlusIconMenu()
         clickAttachImageMenu()
 
@@ -1225,7 +1225,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         typeMessage(typedMsg)
         clickSrwPreviewExpandCollapse()
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)

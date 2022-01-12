@@ -126,7 +126,7 @@ class ReplyBubbleTest : TopchatRoomTest() {
         clickComposeArea()
         typeMessage("reply this")
         clickSendBtn()
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
         ReplyBubbleRobot.clickReplyBubbleAt(0)
 
         // Then
@@ -145,7 +145,7 @@ class ReplyBubbleTest : TopchatRoomTest() {
         clickComposeArea()
         typeMessage("reply this")
         clickSendBtn()
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
 
         // Then
         ReplyBubbleResult.hasVisibleReplyBubbleAt(0)
@@ -172,7 +172,7 @@ class ReplyBubbleTest : TopchatRoomTest() {
         ReplyBubbleRobot.clickReplyItemMenu()
         clickStickerIconMenu()
         clickStickerAtPosition(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
 
         // Then
         ReplyBubbleResult.hasVisibleReplyBubbleStickerAt(0)
@@ -204,7 +204,7 @@ class ReplyBubbleTest : TopchatRoomTest() {
         clickComposeArea()
         typeMessage("reply this")
         clickSendBtn()
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
 
         // Then
         ReplyBubbleResult.hasVisibleReplyBubbleAt(0)
