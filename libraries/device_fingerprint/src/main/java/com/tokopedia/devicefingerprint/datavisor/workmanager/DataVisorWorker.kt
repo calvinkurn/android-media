@@ -169,12 +169,10 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
         }
 
         fun setToken(context: Context, token: String) {
-            if (lastToken != token) {
-                val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
-                lastToken = token
-                sp.edit().putString(KEY_TOKEN, token).apply()
-                FingerprintModelGenerator.expireFingerprint()
-            }
+            val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
+            lastToken = token
+            sp.edit().putString(KEY_TOKEN, token).apply()
+            FingerprintModelGenerator.expireFingerprint()
         }
 
         private fun setTsWorker(context: Context) {

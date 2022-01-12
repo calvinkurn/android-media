@@ -591,7 +591,7 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                         add(shareButtonUiModel)
                     }
                     val tncFooterUiModel = FooterUiModel(
-                            context?.getString(R.string.mvc_review_agreement).toBlankOrString(),
+                            context?.getString(R.string.mvc_check_tnc).toBlankOrString(),
                             context?.getString(R.string.mvc_review_terms).toBlankOrString()
                     )
                     add(tncFooterUiModel)
