@@ -30,9 +30,10 @@
       "sub_title": "",
       "promo_recommendation": {
         "codes": [
-          "FSLOC17CN6MK0ANWUEF"
+          "AN12QZJEI1",
+          "CPGSH5CR19XW05JBV3E"
         ],
-        "message": "Kamu bisa hemat Rp50.000"
+        "message": "Kamu bisa hemat Rp200.000"
       },
       "coupon_sections": [
         {
@@ -42,310 +43,214 @@
           "is_enabled": true,
           "is_collapsed": false,
           "tags": [],
-          "coupons": [],
           "id": "",
           "coupon_groups": [],
+          "coupons": [],
           "sub_sections": [
             {
               "title": "Kupon saya",
               "sub_title": "Promo dipilih",
-              "icon_url": "https://ecs7.tokopedia.net/img/blog/promo/2020/03/color%403x.png",
+              "icon_url": "https://ecs7.tokopedia.net/img/blog/promo/2021/12/My-Coupons.png",
               "is_enabled": true,
               "is_collapsed": false,
               "tags": [],
               "id": "my_coupons",
               "coupon_groups": [
                 {
-                  "id": 1,
-                  "count": 2
-                },
-                {
-                  "id": 2,
-                  "count": 2
-                },
-                {
-                  "id": 3,
+                  "id": 9598,
                   "count": 1
+                },
+                {
+                  "id": 9324,
+                  "count": 6
+                },
+                {
+                  "id": 9325,
+                  "count": 4
+                },
+                {
+                  "id": 9329,
+                  "count": 4
+                },
+                {
+                  "id": 9324,
+                  "count": 6
+                },
+                {
+                  "id": 9324,
+                  "count": 6
+                },
+                {
+                  "id": 9324,
+                  "count": 6
+                },
+                {
+                  "id": 9324,
+                  "count": 6
+                },
+                {
+                  "id": 9324,
+                  "count": 6
+                },
+                {
+                  "id": 9325,
+                  "count": 4
+                },
+                {
+                  "id": 9325,
+                  "count": 4
+                },
+                {
+                  "id": 9325,
+                  "count": 4
+                },
+                {
+                  "id": 9329,
+                  "count": 4
+                },
+                {
+                  "id": 9329,
+                  "count": 4
+                },
+                {
+                  "id": 9329,
+                  "count": 4
+                },
+                {
+                  "id": 9603,
+                  "count": 1
+                },
+                {
+                  "id": 9327,
+                  "count": 4
+                },
+                {
+                  "id": 9327,
+                  "count": 4
+                },
+                {
+                  "id": 9327,
+                  "count": 4
+                },
+                {
+                  "id": 9327,
+                  "count": 4
+                },
+                {
+                  "id": 9568,
+                  "count": 1
+                },
+                {
+                  "id": 9331,
+                  "count": 5
+                },
+                {
+                  "id": 9331,
+                  "count": 5
+                },
+                {
+                  "id": 9331,
+                  "count": 5
+                },
+                {
+                  "id": 9331,
+                  "count": 5
+                },
+                {
+                  "id": 9331,
+                  "count": 5
+                },
+                {
+                  "id": 9761,
+                  "count": 6
+                },
+                {
+                  "id": 9761,
+                  "count": 6
+                },
+                {
+                  "id": 9761,
+                  "count": 6
+                },
+                {
+                  "id": 9761,
+                  "count": 6
+                },
+                {
+                  "id": 9761,
+                  "count": 6
+                },
+                {
+                  "id": 9761,
+                  "count": 6
                 }
               ],
               "coupons": [
                 {
-                  "code": "QQQ17CN6MKC80RDQQRE",
-                  "title": "Cashback Rp12.150",
+                  "code": "CPBTS5CR19443MG6576",
+                  "title": "Bonus BTS Photocard",
                   "message": "",
-                  "expiry_info": "Berakhir 1 jam lagi!",
-                  "expiry_count_down": 1637341199,
+                  "expiry_info": "Berakhir 14 hari lagi!",
+                  "expiry_count_down": 1642697999,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
                   "tag_image_urls": [
-                    "https://ecs7.tokopedia.net/img/blog/promo/2021/09/os-icon-84x84.png"
+                    "https://dummyimage.com/84x84/f9b0c3/fff&text=CPBTS"
                   ],
-                  "benefit_amount": 12150,
+                  "benefit_amount": 0,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
                   "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
-                      "code": "NPNVTU0Z",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo <b>AJDYSBJSBJBJD</b> yang sedang dipilih"
-                    },
-                    {
-                      "code": "NMNVTL01",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo <b>AJDYSBJSBJBJD</b> yang sedang dipilih"
-                    },
-                    {
-                      "code": "LMNVE0Z9",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo <b>AJDYSBJSBJBJD</b> yang sedang dipilih"
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
                     }
                   ],
-                  "currency_details_str": "(12.150 GoPay Coins)",
+                  "currency_details_str": "",
                   "coachmark": {
                     "is_shown": false,
                     "title": "",
                     "content": ""
                   },
-                  "is_highlighted": true,
-                  "group_id": 1,
+                  "is_highlighted": false,
+                  "group_id": 9598,
                   "is_group_header": true,
                   "promo_infos": [
-                    {
-                      "type": "coupon_info",
-                      "title": "ini kupon info <b>ini kupon info</b>",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "type": "top_banner",
-                      "title": "Jangan lewatkan",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
                     {
                       "type": "promo_validity",
-                      "title": "Berlaku <b>hingga 1 jam lagi</b> yah",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "type": "bottom_banner",
-                      "title": "Khusus <b>pengguna baru</b>",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "title": "Berakhir 14 hari lagi!",
+                      "icon": "CLOCK"
                     }
                   ]
                 },
                 {
-                  "code": "QQQ17CN6MKC80RDQQRE",
-                  "title": "Cashback Rp12.150",
+                  "code": "CPGSH5CR19XW05JBV3E",
+                  "title": "Gratis Ongkir hingga Rp100.000",
                   "message": "",
-                  "expiry_info": "Berakhir 1 jam lagi!",
-                  "expiry_count_down": 1637341199,
+                  "expiry_info": "Berakhir 7 hari lagi!",
+                  "expiry_count_down": 1642093199,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
                   "tag_image_urls": [
-                    "https://ecs7.tokopedia.net/img/blog/promo/2021/09/os-icon-84x84.png"
+                    "https://dummyimage.com/84x84/000/fff&text=CPGSH"
                   ],
-                  "benefit_amount": 12150,
-                  "is_recommended": false,
-                  "is_selected": false,
-                  "is_attempted": false,
-                  "radio_check_state": "enabled",
-                  "clashing_infos": [
-                    {
-                      "code": "NPNVTU0Z",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "code": "NMNVTL01",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "code": "LMNVE0Z9",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    }
-                  ],
-                  "currency_details_str": "(12.150 GoPay Coins)",
-                  "coachmark": {
-                    "is_shown": false,
-                    "title": "",
-                    "content": ""
-                  },
-                  "is_highlighted": true,
-                  "group_id": 1,
-                  "is_group_header": false,
-                  "promo_infos": [
-                    {
-                      "type": "coupon_info",
-                      "title": "ini kupon info",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "type": "top_banner",
-                      "title": "Jangan lewatkan",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "type": "bottom_banner",
-                      "title": "Khusus pengguna baru",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    }
-                  ]
-                },
-                {
-                  "code": "DD30OSPM2CN6MKQ55AN",
-                  "title": "Diskon Rp30.000",
-                  "message": "",
-                  "expiry_info": "Berakhir 1 jam lagi!",
-                  "expiry_count_down": 1637341199,
-                  "coupon_url": "",
-                  "coupon_app_link": "",
-                  "unique_id": "",
-                  "shop_id": 0,
-                  "tag_image_urls": [],
-                  "benefit_amount": 30000,
-                  "is_recommended": false,
-                  "is_selected": false,
-                  "is_attempted": false,
-                  "radio_check_state": "enabled",
-                  "clashing_infos": [
-                    {
-                      "code": "NPNVTU0Z",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "code": "NMNVTL01",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "code": "LMNVE0Z9",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    }
-                  ],
-                  "currency_details_str": "",
-                  "coachmark": {
-                    "is_shown": false,
-                    "title": "",
-                    "content": ""
-                  },
-                  "is_highlighted": false,
-                  "group_id": 2,
-                  "is_group_header": true,
-                  "promo_infos": [
-                    {
-                      "type": "coupon_info",
-                      "title": "ini kupon info",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "type": "top_banner",
-                      "title": "Jangan lewatkan",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "type": "bottom_banner",
-                      "title": "Khusus pengguna baru",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    }
-                  ]
-                },
-                {
-                  "code": "DD30OSPM2CN6MKQ55AN",
-                  "title": "Diskon Rp30.000",
-                  "message": "",
-                  "expiry_info": "Berakhir 1 jam lagi!",
-                  "expiry_count_down": 1637341199,
-                  "coupon_url": "",
-                  "coupon_app_link": "",
-                  "unique_id": "",
-                  "shop_id": 0,
-                  "tag_image_urls": [],
-                  "benefit_amount": 30000,
-                  "is_recommended": false,
-                  "is_selected": false,
-                  "is_attempted": false,
-                  "radio_check_state": "enabled",
-                  "clashing_infos": [
-                    {
-                      "code": "NPNVTU0Z",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "code": "NMNVTL01",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "code": "LMNVE0Z9",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    }
-                  ],
-                  "currency_details_str": "",
-                  "coachmark": {
-                    "is_shown": false,
-                    "title": "",
-                    "content": ""
-                  },
-                  "is_highlighted": false,
-                  "group_id": 2,
-                  "is_group_header": false,
-                  "promo_infos": [
-                    {
-                      "type": "coupon_info",
-                      "title": "ini kupon info",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "type": "top_banner",
-                      "title": "Jangan lewatkan",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "type": "bottom_banner",
-                      "title": "Khusus pengguna baru",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    }
-                  ]
-                },
-                {
-                  "code": "FSLOC17CN6MK0ANWUEF",
-                  "title": "Gratis Ongkir hingga Rp50.000",
-                  "message": "",
-                  "expiry_info": "Berakhir 11 hari lagi!",
-                  "expiry_count_down": 1638291599,
-                  "coupon_url": "",
-                  "coupon_app_link": "",
-                  "unique_id": "",
-                  "shop_id": 0,
-                  "tag_image_urls": [],
-                  "benefit_amount": 50000,
+                  "benefit_amount": 100000,
                   "is_recommended": true,
                   "is_selected": false,
                   "is_attempted": false,
                   "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
-                      "code": "NPNVTU0Z",
+                      "code": "AN12WDVN3Y",
                       "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "code": "NMNVTL01",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "code": "LMNVE0Z9",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "icon": "INFORMATION"
                     }
                   ],
                   "currency_details_str": "",
@@ -355,54 +260,34 @@
                     "content": ""
                   },
                   "is_highlighted": false,
-                  "group_id": 3,
+                  "group_id": 9324,
                   "is_group_header": true,
                   "promo_infos": [
                     {
-                      "type": "coupon_info",
-                      "title": "ini kupon info",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "type": "promo_info",
+                      "title": "Khusus pengiriman <b>Go-Send Instant</b>",
+                      "icon": "COURIER"
                     },
                     {
-                      "type": "top_banner",
-                      "title": "Jangan lewatkan",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "type": "bottom_banner",
-                      "title": "Khusus pengguna baru",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "type": "promo_validity",
+                      "title": "Berakhir 7 hari lagi!",
+                      "icon": "CLOCK"
                     }
                   ]
-                }
-              ]
-            },
-            {
-              "title": "Fitwear Official 1",
-              "sub_title": "Promo dipilih",
-              "icon_url": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
-              "is_enabled": true,
-              "is_collapsed": false,
-              "tags": [],
-              "id": "merchant_vouchers",
-              "coupon_groups": [
+                },
                 {
-                  "id": 1,
-                  "count": 2
-                }
-              ],
-              "coupons": [
-                {
-                  "code": "NPNVTU0Z",
-                  "title": "Cashback Rp30.000",
+                  "code": "CPGSM5CR19PPNH33GDR",
+                  "title": "Gratis Ongkir hingga Rp30.000",
                   "message": "",
-                  "expiry_info": "Berakhir 29 menit lagi!",
-                  "expiry_count_down": 1637336346,
-                  "coupon_url": "HCKCSCP5696005-",
-                  "coupon_app_link": "HCKCSCP5696005-",
-                  "unique_id": "5696005-0-5974780",
-                  "shop_id": 5696005,
-                  "tag_image_urls": [],
+                  "expiry_info": "Berakhir 8 hari lagi!",
+                  "expiry_count_down": 1642179599,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/055/fff&text=CPGSM"
+                  ],
                   "benefit_amount": 30000,
                   "is_recommended": false,
                   "is_selected": false,
@@ -410,24 +295,62 @@
                   "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
-                      "code": "QQQ17CN6MKC80RDQQRE",
+                      "code": "AN12WDVN3Y",
                       "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9325,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pengiriman <b>Go Send</b>",
+                      "icon": "COURIER"
                     },
                     {
-                      "code": "DD30OSPM2CN6MKQ55AN",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "type": "top_banner",
+                      "title": "Jangan Lewatkan!",
+                      "icon": ""
                     },
                     {
-                      "code": "FSLOC17CN6MK0ANWUEF",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
+                      "type": "promo_validity",
+                      "title": "Berakhir 8 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPPY25CR19DB25LGKB8",
+                  "title": "Cashback Rp30.000",
+                  "message": "",
+                  "expiry_info": "Berakhir 8 hari lagi!",
+                  "expiry_count_down": 1642179599,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/C4A484/fff&text=GOPAY",
+                    "https://dummyimage.com/84x84/C4A484/fff&text=GPC"
+                  ],
+                  "benefit_amount": 30000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
                     {
-                      "code": "NU8030T8CN6MK3WLNXN",
+                      "code": "AN12WDVN3Y",
                       "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "icon": "INFORMATION"
                     }
                   ],
                   "currency_details_str": "(30.000 GoPay Coins)",
@@ -436,82 +359,1300 @@
                     "title": "",
                     "content": ""
                   },
-                  "is_highlighted": true,
-                  "group_id": 1,
+                  "is_highlighted": false,
+                  "group_id": 9329,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran <b>GoPay, Gopay Coins, Kartu Kredit BCA, Kartu Kredit BNI, Kartu Kredit Mandiri, Kartu Kredit BRI & Saldo Tokopedia</b>",
+                      "icon": "FINANCE"
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 8 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPGSH5CR192BBWU6CNA",
+                  "title": "Gratis Ongkir hingga Rp100.000",
+                  "message": "",
+                  "expiry_info": "Berakhir 7 hari lagi!",
+                  "expiry_count_down": 1642093199,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/000/fff&text=CPGSH"
+                  ],
+                  "benefit_amount": 100000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9324,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pengiriman <b>Go-Send Instant</b>",
+                      "icon": "COURIER"
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 7 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPGSH5CR192Q3QGBMK5",
+                  "title": "Gratis Ongkir hingga Rp100.000",
+                  "message": "",
+                  "expiry_info": "Berakhir 8 hari lagi!",
+                  "expiry_count_down": 1642179599,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/000/fff&text=CPGSH"
+                  ],
+                  "benefit_amount": 100000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9324,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pengiriman <b>Go-Send Instant</b>",
+                      "icon": "COURIER"
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 8 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPGSH5CR19DLV3XRFTL",
+                  "title": "Gratis Ongkir hingga Rp100.000",
+                  "message": "",
+                  "expiry_info": "Berakhir 13 hari lagi!",
+                  "expiry_count_down": 1642611599,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/000/fff&text=CPGSH"
+                  ],
+                  "benefit_amount": 100000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9324,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pengiriman <b>Go-Send Instant</b>",
+                      "icon": "COURIER"
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPGSH5CR19F6QU8XRPR",
+                  "title": "Gratis Ongkir hingga Rp100.000",
+                  "message": "",
+                  "expiry_info": "Berakhir 29 hari lagi!",
+                  "expiry_count_down": 1643993999,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/000/fff&text=CPGSH"
+                  ],
+                  "benefit_amount": 100000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9324,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pengiriman <b>Go-Send Instant</b>",
+                      "icon": "COURIER"
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 29 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPGSH5CR1974DTL64CJ",
+                  "title": "Gratis Ongkir hingga Rp100.000",
+                  "message": "",
+                  "expiry_info": "Berakhir 29 hari lagi!",
+                  "expiry_count_down": 1643993999,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/000/fff&text=CPGSH"
+                  ],
+                  "benefit_amount": 100000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9324,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pengiriman <b>Go-Send Instant</b>",
+                      "icon": "COURIER"
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 29 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPGSM5CR1970N6FK8UP",
+                  "title": "Gratis Ongkir hingga Rp30.000",
+                  "message": "",
+                  "expiry_info": "Berakhir 13 hari lagi!",
+                  "expiry_count_down": 1642611599,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/055/fff&text=CPGSM"
+                  ],
+                  "benefit_amount": 30000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9325,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pengiriman <b>Go Send</b>",
+                      "icon": "COURIER"
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPGSM5CR19RCGJVAK1V",
+                  "title": "Gratis Ongkir hingga Rp30.000",
+                  "message": "",
+                  "expiry_info": "Berakhir 28 hari lagi!",
+                  "expiry_count_down": 1643907599,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/055/fff&text=CPGSM"
+                  ],
+                  "benefit_amount": 30000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9325,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pengiriman <b>Go Send</b>",
+                      "icon": "COURIER"
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 28 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPGSM5CR19J25P3ABGH",
+                  "title": "Gratis Ongkir hingga Rp30.000",
+                  "message": "",
+                  "expiry_info": "Berakhir 28 hari lagi!",
+                  "expiry_count_down": 1643907599,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/055/fff&text=CPGSM"
+                  ],
+                  "benefit_amount": 30000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9325,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pengiriman <b>Go Send</b>",
+                      "icon": "COURIER"
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 28 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPPY25CR19V140EDRJ7",
+                  "title": "Cashback Rp30.000",
+                  "message": "",
+                  "expiry_info": "Berakhir 13 hari lagi!",
+                  "expiry_count_down": 1642611599,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/C4A484/fff&text=GOPAY",
+                    "https://dummyimage.com/84x84/C4A484/fff&text=GPC"
+                  ],
+                  "benefit_amount": 30000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "(30.000 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9329,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran <b>GoPay, Gopay Coins, & Saldo Tokopedia</b>",
+                      "icon": "FINANCE"
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPPY25CR19XK17PBGG4",
+                  "title": "Cashback Rp30.000",
+                  "message": "",
+                  "expiry_info": "Berakhir 28 hari lagi!",
+                  "expiry_count_down": 1643907599,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/C4A484/fff&text=GOPAY",
+                    "https://dummyimage.com/84x84/C4A484/fff&text=GPC"
+                  ],
+                  "benefit_amount": 30000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "(30.000 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9329,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran <b>GoPay, Gopay Coins, & Saldo Tokopedia</b>",
+                      "icon": "FINANCE"
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 28 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPPY25CR19DV93VB27X",
+                  "title": "Cashback Rp30.000",
+                  "message": "",
+                  "expiry_info": "Berakhir 28 hari lagi!",
+                  "expiry_count_down": 1643907599,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/C4A484/fff&text=GOPAY",
+                    "https://dummyimage.com/84x84/C4A484/fff&text=GPC"
+                  ],
+                  "benefit_amount": 30000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "(30.000 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9329,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran <b>GoPay, Gopay Coins, & Saldo Tokopedia</b>",
+                      "icon": "FINANCE"
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 28 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPANT5CR19HF2JQ2AJU",
+                  "title": "Gratis Ongkir hingga Rp20.000",
+                  "message": "",
+                  "expiry_info": "Berakhir 14 hari lagi!",
+                  "expiry_count_down": 1642697999,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/c7b9c3/fff&text=SD",
+                    "https://dummyimage.com/84x84/c7b9c3/fff&text=ND",
+                    "https://dummyimage.com/84x84/c7b9c3/fff&text=REG"
+                  ],
+                  "benefit_amount": 20000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9603,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pengiriman <b>AnterAja SameDay, AnterAja Next Day, & AnterAja Regular</b>",
+                      "icon": "COURIER"
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 14 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPGSS5CR19AWU5Q4P9E",
+                  "title": "Gratis Ongkir hingga Rp5.000",
+                  "message": "",
+                  "expiry_info": "Berakhir 8 hari lagi!",
+                  "expiry_count_down": 1642179599,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/6R5/fff&text=CPGSS"
+                  ],
+                  "benefit_amount": 5000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9327,
                   "is_group_header": true,
                   "promo_infos": [
                     {
                       "type": "promo_validity",
-                      "title": "Berakhir sampai Besok",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "title": "Berakhir 8 hari lagi!",
+                      "icon": "CLOCK"
                     }
                   ]
                 },
                 {
-                  "code": "NMNVTL01",
-                  "title": "Cashback Rp30.000",
+                  "code": "CPGSS5CR194XLN96H3W",
+                  "title": "Gratis Ongkir hingga Rp5.000",
                   "message": "",
-                  "expiry_info": "Berakhir 29 menit lagi!",
-                  "expiry_count_down": 1637336346,
-                  "coupon_url": "HCKCSCP5696005-",
-                  "coupon_app_link": "HCKCSCP5696005-",
-                  "unique_id": "5696005-0-5974780",
-                  "shop_id": 5696005,
-                  "tag_image_urls": [],
-                  "benefit_amount": 30000,
+                  "expiry_info": "Berakhir 13 hari lagi!",
+                  "expiry_count_down": 1642611599,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/6R5/fff&text=CPGSS"
+                  ],
+                  "benefit_amount": 5000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
                   "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
-                      "code": "QQQ17CN6MKC80RDQQRE",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
-                    },
-                    {
-                      "code": "DD30OSPM2CN6MKQ55AN",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
-                    },
-                    {
-                      "code": "FSLOC17CN6MK0ANWUEF",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
-                    },
-                    {
-                      "code": "NU8030T8CN6MK3WLNXN",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
                     }
                   ],
-                  "currency_details_str": "(30.000 GoPay Coins)",
+                  "currency_details_str": "",
                   "coachmark": {
                     "is_shown": false,
                     "title": "",
                     "content": ""
                   },
                   "is_highlighted": false,
-                  "group_id": 1,
+                  "group_id": 9327,
                   "is_group_header": false,
                   "promo_infos": [
                     {
-                      "type": "coupon_info",
-                      "title": "ini kupon info",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPGSS5CR19TM6PX3BLA",
+                  "title": "Gratis Ongkir hingga Rp5.000",
+                  "message": "",
+                  "expiry_info": "Berakhir 28 hari lagi!",
+                  "expiry_count_down": 1643907599,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/6R5/fff&text=CPGSS"
+                  ],
+                  "benefit_amount": 5000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
                     {
-                      "type": "top_banner",
-                      "title": "Jangan lewatkan",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9327,
+                  "is_group_header": false,
+                  "promo_infos": [
                     {
-                      "type": "bottom_banner",
-                      "title": "Khusus pengguna baru",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "type": "promo_validity",
+                      "title": "Berakhir 28 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPGSS5CR19EW12DE8K6",
+                  "title": "Gratis Ongkir hingga Rp5.000",
+                  "message": "",
+                  "expiry_info": "Berakhir 28 hari lagi!",
+                  "expiry_count_down": 1643907599,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/6R5/fff&text=CPGSS"
+                  ],
+                  "benefit_amount": 5000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9327,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 28 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPDC15CR19V2Q1CUM2X",
+                  "title": "Diskon Rp5.000",
+                  "message": "",
+                  "expiry_info": "Berakhir 13 hari lagi!",
+                  "expiry_count_down": 1642611599,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/FFA500/fff&text=CPDC1"
+                  ],
+                  "benefit_amount": 5000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9568,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPPY45CR19FU6U148DW",
+                  "title": "Cashback Rp5.000",
+                  "message": "",
+                  "expiry_info": "Berakhir 29 hari lagi!",
+                  "expiry_count_down": 1643993999,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA1",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA2",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA3",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA4"
+                  ],
+                  "benefit_amount": 5000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "(5.000 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9331,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 29 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPPY45CR19XP4NW8FA7",
+                  "title": "Cashback Rp5.000",
+                  "message": "",
+                  "expiry_info": "Berakhir 29 hari lagi!",
+                  "expiry_count_down": 1643993999,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA1",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA2",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA3",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA4"
+                  ],
+                  "benefit_amount": 5000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "(5.000 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9331,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 29 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPPY45CR19FF1DGR39W",
+                  "title": "Cashback Rp5.000",
+                  "message": "",
+                  "expiry_info": "Berakhir 29 hari lagi!",
+                  "expiry_count_down": 1643993999,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA1",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA2",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA3",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA4"
+                  ],
+                  "benefit_amount": 5000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "(5.000 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9331,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 29 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPPY45CR19R99896U42",
+                  "title": "Cashback Rp5.000",
+                  "message": "",
+                  "expiry_info": "",
+                  "expiry_count_down": -1,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA1",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA2",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA3",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA4"
+                  ],
+                  "benefit_amount": 5000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "(5.000 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9331,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPPY45CR190FEAGTLQF",
+                  "title": "Cashback Rp5.000",
+                  "message": "",
+                  "expiry_info": "",
+                  "expiry_count_down": -1,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA1",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA2",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA3",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA4"
+                  ],
+                  "benefit_amount": 5000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "(5.000 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9331,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPHG5CR1941AWUTE8EN",
+                  "title": "Cashback Rp10",
+                  "message": "",
+                  "expiry_info": "Berakhir 29 hari lagi!",
+                  "expiry_count_down": 1643993999,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA1",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA2",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA3",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA4"
+                  ],
+                  "benefit_amount": 10,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "(10 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9761,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 29 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPHG5CR19HNNMFQJ5PC",
+                  "title": "Cashback Rp10",
+                  "message": "",
+                  "expiry_info": "Berakhir 29 hari lagi!",
+                  "expiry_count_down": 1643993999,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA1",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA2",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA3",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA4"
+                  ],
+                  "benefit_amount": 10,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "(10 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9761,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 29 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPHG5CR19E2PEG5P93X",
+                  "title": "Cashback Rp10",
+                  "message": "",
+                  "expiry_info": "Berakhir 29 hari lagi!",
+                  "expiry_count_down": 1643993999,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA1",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA2",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA3",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA4"
+                  ],
+                  "benefit_amount": 10,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "(10 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9761,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 29 hari lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPHG5CR19XXRE51M7TA",
+                  "title": "Cashback Rp10",
+                  "message": "",
+                  "expiry_info": "",
+                  "expiry_count_down": -1,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA1",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA2",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA3",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA4"
+                  ],
+                  "benefit_amount": 10,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "(10 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9761,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPHG5CR1905B583BU5X",
+                  "title": "Cashback Rp10",
+                  "message": "",
+                  "expiry_info": "",
+                  "expiry_count_down": -1,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA1",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA2",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA3",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA4"
+                  ],
+                  "benefit_amount": 10,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "(10 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9761,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "CPHG5CR19QJ5L2W5DAV",
+                  "title": "Cashback Rp10",
+                  "message": "",
+                  "expiry_info": "",
+                  "expiry_count_down": -1,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA1",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA2",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA3",
+                    "https://dummyimage.com/84x84/cb4154/fff&text=VA4"
+                  ],
+                  "benefit_amount": 10,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "AN12WDVN3Y",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "(10 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9761,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "",
+                      "icon": "CLOCK"
                     }
                   ]
                 }
               ]
             },
             {
-              "title": "Fitwear Official 2",
+              "title": "tokotokoan123456",
               "sub_title": "Promo dipilih",
               "icon_url": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
               "is_enabled": true,
@@ -520,134 +1661,376 @@
               "id": "merchant_vouchers",
               "coupon_groups": [
                 {
-                  "id": 1,
+                  "id": 9279,
                   "count": 1
                 },
                 {
-                  "id": 2,
+                  "id": 9274,
+                  "count": 1
+                },
+                {
+                  "id": 9276,
+                  "count": 1
+                },
+                {
+                  "id": 7723,
+                  "count": 1
+                },
+                {
+                  "id": 9282,
                   "count": 1
                 }
               ],
               "coupons": [
                 {
-                  "code": "NPNVTnjU0Z",
-                  "title": "Cashback Rp30.000",
+                  "code": "AN12QZJEI1",
+                  "title": "Cashback Rp100.000",
                   "message": "",
-                  "expiry_info": "Berakhir 1 menit lagi!",
-                  "expiry_count_down": 1637336346,
-                  "coupon_url": "HCKCSCP5696005-",
-                  "coupon_app_link": "HCKCSCP5696005-",
-                  "unique_id": "5696005-0-5974780",
-                  "shop_id": 5696005,
+                  "expiry_info": "Berakhir 28 menit lagi!",
+                  "expiry_count_down": 1641454081,
+                  "coupon_url": "HCKCSCP479006-",
+                  "coupon_app_link": "HCKCSCP479006-",
+                  "unique_id": "479006-0-22266",
+                  "shop_id": 479006,
                   "tag_image_urls": [],
-                  "benefit_amount": 30000,
-                  "is_recommended": false,
+                  "benefit_amount": 100000,
+                  "is_recommended": true,
                   "is_selected": false,
                   "is_attempted": false,
                   "radio_check_state": "enabled",
-                  "clashing_infos": [
-                    {
-                      "code": "QQQ17CN6MKC80RDQQRE",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
-                    },
-                    {
-                      "code": "DD30OSPM2CN6MKQ55AN",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
-                    },
-                    {
-                      "code": "FSLOC17CN6MK0ANWUEF",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
-                    },
-                    {
-                      "code": "NU8030T8CN6MK3WLNXN",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
-                    }
-                  ],
-                  "currency_details_str": "(130.000 GoPay Coins)",
+                  "clashing_infos": [],
+                  "currency_details_str": "(100.000 GoPay Coins)",
                   "coachmark": {
                     "is_shown": false,
                     "title": "",
                     "content": ""
                   },
                   "is_highlighted": false,
-                  "group_id": 1,
+                  "group_id": 9279,
                   "is_group_header": true,
                   "promo_infos": [
                     {
-                      "type": "coupon_info",
-                      "title": "ini kupon info",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "type": "top_banner",
-                      "title": "Jangan lewatkan",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "type": "bottom_banner",
-                      "title": "Khusus pengguna baru",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "type": "promo_validity",
+                      "title": "Berakhir 28 menit lagi!",
+                      "icon": "CLOCK"
                     }
                   ]
                 },
                 {
-                  "code": "NMNklkVTL01",
-                  "title": "Cashback Rp30.000",
+                  "code": "AN12TDLRVL",
+                  "title": "Cashback Rp34.500",
                   "message": "",
-                  "expiry_info": "Berakhir 2 menit lagi!",
-                  "expiry_count_down": 1637336346,
-                  "coupon_url": "HCKCSCP5696005-",
-                  "coupon_app_link": "HCKCSCP5696005-",
-                  "unique_id": "5696005-0-5974780",
-                  "shop_id": 5696005,
-                  "tag_image_urls": [],
-                  "benefit_amount": 30000,
+                  "expiry_info": "Berakhir 28 menit lagi!",
+                  "expiry_count_down": 1641454081,
+                  "coupon_url": "HCKCSCP479006-",
+                  "coupon_app_link": "HCKCSCP479006-",
+                  "unique_id": "479006-0-22266",
+                  "shop_id": 479006,
+                  "tag_image_urls": [
+                    "https://images.tokopedia.net/img/tokopoints/MVC/TokoMember/tm.png"
+                  ],
+                  "benefit_amount": 34500,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
                   "radio_check_state": "enabled",
-                  "clashing_infos": [
-                    {
-                      "code": "QQQ17CN6MKC80RDQQRE",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
-                    },
-                    {
-                      "code": "DD30OSPM2CN6MKQ55AN",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
-                    },
-                    {
-                      "code": "FSLOC17CN6MK0ANWUEF",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
-                    },
-                    {
-                      "code": "NU8030T8CN6MK3WLNXN",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
-                    }
-                  ],
-                  "currency_details_str": "(30.000 GoPay Coins)",
+                  "clashing_infos": [],
+                  "currency_details_str": "(34.500 GoPay Coins)",
                   "coachmark": {
                     "is_shown": false,
                     "title": "",
                     "content": ""
                   },
                   "is_highlighted": false,
-                  "group_id": 2,
+                  "group_id": 9274,
                   "is_group_header": true,
                   "promo_infos": [
                     {
-                      "type": "coupon_info",
-                      "title": "ini kupon info",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "type": "bottom_banner",
+                      "title": "Khusus TokoMember",
+                      "icon": "TOKOMEMBER"
                     },
                     {
-                      "type": "top_banner",
-                      "title": "Jangan lewatkan",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
+                      "type": "promo_validity",
+                      "title": "Berakhir 28 menit lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "AN12SXQ66D",
+                  "title": "Cashback Rp34.500",
+                  "message": "",
+                  "expiry_info": "Berakhir 28 menit lagi!",
+                  "expiry_count_down": 1641454081,
+                  "coupon_url": "HCKCSCP479006-",
+                  "coupon_app_link": "HCKCSCP479006-",
+                  "unique_id": "479006-0-22266",
+                  "shop_id": 479006,
+                  "tag_image_urls": [
+                    "https://images.tokopedia.net/img/tokopoints/MVC/TokoMember/tm.png"
+                  ],
+                  "benefit_amount": 34500,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [],
+                  "currency_details_str": "(34.500 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9276,
+                  "is_group_header": true,
+                  "promo_infos": [
                     {
                       "type": "bottom_banner",
-                      "title": "Khusus pengguna baru",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "title": "Khusus TokoMember",
+                      "icon": "TOKOMEMBER"
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 28 menit lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "AN12WDVN3Y",
+                  "title": "Cashback Rp20.000",
+                  "message": "",
+                  "expiry_info": "Berakhir 28 menit lagi!",
+                  "expiry_count_down": 1641454081,
+                  "coupon_url": "HCKCSCP479006-",
+                  "coupon_app_link": "HCKCSCP479006-",
+                  "unique_id": "479006-0-22266",
+                  "shop_id": 479006,
+                  "tag_image_urls": [
+                    "https://images.tokopedia.net/img/tokopoints/MVC/TokoMember/tm.png"
+                  ],
+                  "benefit_amount": 20000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "CPPY45CR19FU6U148DW",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPPY45CR19XP4NW8FA7",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPPY45CR19FF1DGR39W",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPPY45CR19R99896U42",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPPY45CR190FEAGTLQF",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPANT5CR19HF2JQ2AJU",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPDC15CR19V2Q1CUM2X",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPGSM5CR19PPNH33GDR",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPGSM5CR1970N6FK8UP",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPGSM5CR19RCGJVAK1V",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPGSM5CR19J25P3ABGH",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPHG5CR1941AWUTE8EN",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPHG5CR19HNNMFQJ5PC",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPHG5CR19E2PEG5P93X",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPHG5CR19XXRE51M7TA",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPHG5CR1905B583BU5X",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPHG5CR19QJ5L2W5DAV",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPGSH5CR19XW05JBV3E",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPGSH5CR192BBWU6CNA",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPGSH5CR192Q3QGBMK5",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPGSH5CR19DLV3XRFTL",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPGSH5CR19F6QU8XRPR",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPGSH5CR1974DTL64CJ",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPPY25CR19DB25LGKB8",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPPY25CR19V140EDRJ7",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPPY25CR19XK17PBGG4",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPPY25CR19DV93VB27X",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPGSS5CR19AWU5Q4P9E",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPGSS5CR194XLN96H3W",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPGSS5CR19TM6PX3BLA",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPGSS5CR19EW12DE8K6",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    },
+                    {
+                      "code": "CPBTS5CR19443MG6576",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "INFORMATION"
+                    }
+                  ],
+                  "currency_details_str": "(20.000 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 7723,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus TokoMember",
+                      "icon": "TOKOMEMBER"
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 28 menit lagi!",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "AN12CULW7S",
+                  "title": "Cashback Rp10.000",
+                  "message": "",
+                  "expiry_info": "Berakhir 28 menit lagi!",
+                  "expiry_count_down": 1641454081,
+                  "coupon_url": "HCKCSCP479006-",
+                  "coupon_app_link": "HCKCSCP479006-",
+                  "unique_id": "479006-0-22266",
+                  "shop_id": 479006,
+                  "tag_image_urls": [],
+                  "benefit_amount": 10000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [],
+                  "currency_details_str": "(10.000 GoPay Coins)",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 9282,
+                  "is_group_header": true,
+                  "promo_infos": [
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 28 menit lagi!",
+                      "icon": "CLOCK"
                     }
                   ]
                 }
@@ -662,36 +2045,70 @@
           "is_enabled": false,
           "is_collapsed": true,
           "tags": [],
-          "coupons": [],
-          "id": "ineligible_couponse",
+          "id": "",
           "coupon_groups": [],
+          "coupons": [],
           "sub_sections": [
             {
               "title": "Kupon saya",
               "sub_title": "Promo dipilih",
-              "icon_url": "https://ecs7.tokopedia.net/img/blog/promo/2020/03/color%403x.png",
+              "icon_url": "https://ecs7.tokopedia.net/img/blog/promo/2021/12/My-Coupons.png",
               "is_enabled": false,
               "is_collapsed": false,
               "tags": [],
-              "id": "",
+              "id": "ineligible_coupons",
               "coupon_groups": [
                 {
-                  "id": 2,
-                  "count": 1
+                  "id": 9328,
+                  "count": 4
+                },
+                {
+                  "id": 9741,
+                  "count": 2
+                },
+                {
+                  "id": 9328,
+                  "count": 4
+                },
+                {
+                  "id": 9328,
+                  "count": 4
+                },
+                {
+                  "id": 9328,
+                  "count": 4
+                },
+                {
+                  "id": 9741,
+                  "count": 2
+                },
+                {
+                  "id": 7069,
+                  "count": 3
+                },
+                {
+                  "id": 7069,
+                  "count": 3
+                },
+                {
+                  "id": 7069,
+                  "count": 3
                 }
               ],
               "coupons": [
                 {
-                  "code": "EL2COTD20CN6MKVKKJK",
-                  "title": "Cashback GoPay Coins hingga Rp20.000",
-                  "message": "Promo ini hanya berlaku untuk Produk Kamera, Komputer dan Laptop, dan Elektronik.",
-                  "expiry_info": "Berakhir 1 jam lagi!",
-                  "expiry_count_down": 1637341199,
+                  "code": "CPPY15CR19J55PL4HEU",
+                  "title": "Testing CPPY1",
+                  "message": "Tambah Rp621.634 untuk pakai promo",
+                  "expiry_info": "Berakhir 8 hari lagi!",
+                  "expiry_count_down": 1642179599,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [],
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/3EB489/fff&text=GOPAY"
+                  ],
                   "benefit_amount": 0,
                   "is_recommended": false,
                   "is_selected": false,
@@ -704,38 +2121,35 @@
                     "title": "",
                     "content": ""
                   },
-                  "is_highlighted": true,
-                  "group_id": 2,
+                  "is_highlighted": false,
+                  "group_id": 9328,
                   "is_group_header": true,
                   "promo_infos": [
                     {
-                      "type": "coupon_info",
-                      "title": "ini kupon info",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran <b>GoPay</b>",
+                      "icon": "FINANCE"
                     },
                     {
-                      "type": "top_banner",
-                      "title": "Jangan lewatkan",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "type": "bottom_banner",
-                      "title": "Khusus pengguna baru",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "type": "promo_validity",
+                      "title": "Berakhir 8 hari lagi!",
+                      "icon": "CLOCK"
                     }
                   ]
                 },
                 {
-                  "code": "EL2COTD20CN6MKVsKKJK",
-                  "title": "Cashback GoPay Coins hingga Rp20.000",
-                  "message": "Promo ini hanya berlaku untuk Produk Kamera, Komputer dan Laptop, dan Elektronik.",
-                  "expiry_info": "Berakhir 1 jam lagi!",
-                  "expiry_count_down": 1637341199,
+                  "code": "CPGVS5CR19GDA7PW77T",
+                  "title": "Testing CPGVS",
+                  "message": "Promo hanya berlaku untuk transaksi pertamamu di Marketplace.",
+                  "expiry_info": "Berakhir 28 hari lagi!",
+                  "expiry_count_down": 1643907599,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [],
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/6R500/fff&text=CPGVS"
+                  ],
                   "benefit_amount": 0,
                   "is_recommended": false,
                   "is_selected": false,
@@ -748,38 +2162,35 @@
                     "title": "",
                     "content": ""
                   },
-                  "is_highlighted": true,
-                  "group_id": 22,
+                  "is_highlighted": false,
+                  "group_id": 9741,
                   "is_group_header": true,
                   "promo_infos": [
                     {
-                      "type": "coupon_info",
-                      "title": "ini kupon info",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "type": "top_banner",
-                      "title": "Jangan lewatkan",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
                       "type": "bottom_banner",
-                      "title": "Khusus pengguna baru",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "title": "Khusus Pengguna Baru",
+                      "icon": "USER"
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 28 hari lagi!",
+                      "icon": "CLOCK"
                     }
                   ]
                 },
                 {
-                  "code": "EL2COdTD20CN6MKVKKJK",
-                  "title": "Cashback GoPay Coins hingga Rp20.000",
-                  "message": "Promo ini hanya berlaku untuk Produk Kamera, Komputer dan Laptop, dan Elektronik.",
-                  "expiry_info": "Berakhir 1 jam lagi!",
-                  "expiry_count_down": 1637341199,
+                  "code": "CPPY15CR193RND1029L",
+                  "title": "Testing CPPY1",
+                  "message": "Tambah Rp621.634 untuk pakai promo",
+                  "expiry_info": "Berakhir 13 hari lagi!",
+                  "expiry_count_down": 1642611599,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [],
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/3EB489/fff&text=GOPAY"
+                  ],
                   "benefit_amount": 0,
                   "is_recommended": false,
                   "is_selected": false,
@@ -792,38 +2203,35 @@
                     "title": "",
                     "content": ""
                   },
-                  "is_highlighted": true,
-                  "group_id": 23,
-                  "is_group_header": true,
+                  "is_highlighted": false,
+                  "group_id": 9328,
+                  "is_group_header": false,
                   "promo_infos": [
                     {
-                      "type": "coupon_info",
-                      "title": "ini kupon info",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran <b>GoPay</b>",
+                      "icon": "FINANCE"
                     },
                     {
-                      "type": "top_banner",
-                      "title": "Jangan lewatkan",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "type": "bottom_banner",
-                      "title": "Khusus pengguna baru",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "type": "promo_validity",
+                      "title": "Berakhir 13 hari lagi!",
+                      "icon": "CLOCK"
                     }
                   ]
                 },
                 {
-                  "code": "EL2COTD20CN6MKfVKKJK",
-                  "title": "Cashback GoPay Coins hingga Rp20.000",
-                  "message": "Promo ini hanya berlaku untuk Produk Kamera, Komputer dan Laptop, dan Elektronik.",
-                  "expiry_info": "Berakhir 1 jam lagi!",
-                  "expiry_count_down": 1637341199,
+                  "code": "CPPY15CR19757JE44U3",
+                  "title": "Testing CPPY1",
+                  "message": "Tambah Rp621.634 untuk pakai promo",
+                  "expiry_info": "Berakhir 28 hari lagi!",
+                  "expiry_count_down": 1643907599,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [],
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/3EB489/fff&text=GOPAY"
+                  ],
                   "benefit_amount": 0,
                   "is_recommended": false,
                   "is_selected": false,
@@ -836,38 +2244,35 @@
                     "title": "",
                     "content": ""
                   },
-                  "is_highlighted": true,
-                  "group_id": 24,
-                  "is_group_header": true,
+                  "is_highlighted": false,
+                  "group_id": 9328,
+                  "is_group_header": false,
                   "promo_infos": [
                     {
-                      "type": "coupon_info",
-                      "title": "ini kupon info",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran <b>GoPay</b>",
+                      "icon": "FINANCE"
                     },
                     {
-                      "type": "top_banner",
-                      "title": "Jangan lewatkan",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "type": "bottom_banner",
-                      "title": "Khusus pengguna baru",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "type": "promo_validity",
+                      "title": "Berakhir 28 hari lagi!",
+                      "icon": "CLOCK"
                     }
                   ]
                 },
                 {
-                  "code": "EL2CssOTD20CN6MKVKKJK",
-                  "title": "Cashback GoPay Coins hingga Rp20.000",
-                  "message": "Promo ini hanya berlaku untuk Produk Kamera, Komputer dan Laptop, dan Elektronik.",
-                  "expiry_info": "Berakhir 1 jam lagi!",
-                  "expiry_count_down": 1637341199,
+                  "code": "CPPY15CR19FAWK4XNHJ",
+                  "title": "Testing CPPY1",
+                  "message": "Tambah Rp621.634 untuk pakai promo",
+                  "expiry_info": "Berakhir 28 hari lagi!",
+                  "expiry_count_down": 1643907599,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [],
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/3EB489/fff&text=GOPAY"
+                  ],
                   "benefit_amount": 0,
                   "is_recommended": false,
                   "is_selected": false,
@@ -880,38 +2285,35 @@
                     "title": "",
                     "content": ""
                   },
-                  "is_highlighted": true,
-                  "group_id": 25,
-                  "is_group_header": true,
+                  "is_highlighted": false,
+                  "group_id": 9328,
+                  "is_group_header": false,
                   "promo_infos": [
                     {
-                      "type": "coupon_info",
-                      "title": "ini kupon info",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran <b>GoPay</b>",
+                      "icon": "FINANCE"
                     },
                     {
-                      "type": "top_banner",
-                      "title": "Jangan lewatkan",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "type": "bottom_banner",
-                      "title": "Khusus pengguna baru",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "type": "promo_validity",
+                      "title": "Berakhir 28 hari lagi!",
+                      "icon": "CLOCK"
                     }
                   ]
                 },
                 {
-                  "code": "EL2COTD20CN6MKVqdKKJK",
-                  "title": "Cashback GoPay Coins hingga Rp20.000",
-                  "message": "Promo ini hanya berlaku untuk Produk Kamera, Komputer dan Laptop, dan Elektronik.",
-                  "expiry_info": "Berakhir 1 jam lagi!",
-                  "expiry_count_down": 1637341199,
+                  "code": "CPGVS5CR1924JP3NELU",
+                  "title": "Testing CPGVS",
+                  "message": "Promo hanya berlaku untuk transaksi pertamamu di Marketplace.",
+                  "expiry_info": "Berakhir 28 hari lagi!",
+                  "expiry_count_down": 1643907599,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [],
+                  "tag_image_urls": [
+                    "https://dummyimage.com/84x84/6R500/fff&text=CPGVS"
+                  ],
                   "benefit_amount": 0,
                   "is_recommended": false,
                   "is_selected": false,
@@ -924,186 +2326,32 @@
                     "title": "",
                     "content": ""
                   },
-                  "is_highlighted": true,
-                  "group_id": 26,
-                  "is_group_header": true,
+                  "is_highlighted": false,
+                  "group_id": 9741,
+                  "is_group_header": false,
                   "promo_infos": [
                     {
-                      "type": "coupon_info",
-                      "title": "ini kupon info",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "type": "top_banner",
-                      "title": "Jangan lewatkan",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
                       "type": "bottom_banner",
-                      "title": "Khusus pengguna baru",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "title": "Khusus Pengguna Baru",
+                      "icon": "USER"
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "Berakhir 28 hari lagi!",
+                      "icon": "CLOCK"
                     }
                   ]
                 },
                 {
-                  "code": "EL2COTD20CNDE6MKVKKJK",
-                  "title": "Cashback GoPay Coins hingga Rp20.000",
-                  "message": "Promo ini hanya berlaku untuk Produk Kamera, Komputer dan Laptop, dan Elektronik.",
-                  "expiry_info": "Berakhir 1 jam lagi!",
-                  "expiry_count_down": 1637341199,
+                  "code": "NURT100S5CR198W74B6",
+                  "title": "Nurturing : Tebus Murah Rp100",
+                  "message": "Promo ini hanya dapat digunakan untuk produk 15349716.",
+                  "expiry_info": "",
+                  "expiry_count_down": -1,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [],
-                  "benefit_amount": 0,
-                  "is_recommended": false,
-                  "is_selected": false,
-                  "is_attempted": false,
-                  "radio_check_state": "disabled",
-                  "clashing_infos": [],
-                  "currency_details_str": "",
-                  "coachmark": {
-                    "is_shown": false,
-                    "title": "",
-                    "content": ""
-                  },
-                  "is_highlighted": true,
-                  "group_id": 27,
-                  "is_group_header": true,
-                  "promo_infos": [
-                    {
-                      "type": "coupon_info",
-                      "title": "ini kupon info",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "type": "top_banner",
-                      "title": "Jangan lewatkan",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "type": "bottom_banner",
-                      "title": "Khusus pengguna baru",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    }
-                  ]
-                },
-                {
-                  "code": "EL2sgCOTD20CN6MKVKKJK",
-                  "title": "Cashback GoPay Coins hingga Rp20.000",
-                  "message": "Promo ini hanya berlaku untuk Produk Kamera, Komputer dan Laptop, dan Elektronik.",
-                  "expiry_info": "Berakhir 1 jam lagi!",
-                  "expiry_count_down": 1637341199,
-                  "coupon_url": "",
-                  "coupon_app_link": "",
-                  "unique_id": "",
-                  "shop_id": 0,
-                  "tag_image_urls": [],
-                  "benefit_amount": 0,
-                  "is_recommended": false,
-                  "is_selected": false,
-                  "is_attempted": false,
-                  "radio_check_state": "disabled",
-                  "clashing_infos": [],
-                  "currency_details_str": "",
-                  "coachmark": {
-                    "is_shown": false,
-                    "title": "",
-                    "content": ""
-                  },
-                  "is_highlighted": true,
-                  "group_id": 28,
-                  "is_group_header": true,
-                  "promo_infos": [
-                    {
-                      "type": "coupon_info",
-                      "title": "ini kupon info",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "type": "top_banner",
-                      "title": "Jangan lewatkan",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "type": "bottom_banner",
-                      "title": "Khusus pengguna baru",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    }
-                  ]
-                },
-                {
-                  "code": "EL2COTD20CddasN6MKVKKJK",
-                  "title": "Cashback GoPay Coins hingga Rp20.000",
-                  "message": "Promo ini hanya berlaku untuk Produk Kamera, Komputer dan Laptop, dan Elektronik.",
-                  "expiry_info": "Berakhir 1 jam lagi!",
-                  "expiry_count_down": 1637341199,
-                  "coupon_url": "",
-                  "coupon_app_link": "",
-                  "unique_id": "",
-                  "shop_id": 0,
-                  "tag_image_urls": [],
-                  "benefit_amount": 0,
-                  "is_recommended": false,
-                  "is_selected": false,
-                  "is_attempted": false,
-                  "radio_check_state": "disabled",
-                  "clashing_infos": [],
-                  "currency_details_str": "",
-                  "coachmark": {
-                    "is_shown": false,
-                    "title": "",
-                    "content": ""
-                  },
-                  "is_highlighted": true,
-                  "group_id": 29,
-                  "is_group_header": true,
-                  "promo_infos": [
-                    {
-                      "type": "coupon_info",
-                      "title": "ini kupon info",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "type": "top_banner",
-                      "title": "Jangan lewatkan",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    },
-                    {
-                      "type": "bottom_banner",
-                      "title": "Khusus pengguna baru",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "title": "Fitwear Official",
-              "sub_title": "Promo dipilih",
-              "icon_url": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
-              "is_enabled": false,
-              "is_collapsed": false,
-              "tags": [],
-              "id": "",
-              "coupon_groups": [
-                {
-                  "id": 2,
-                  "count": 1
-                }
-              ],
-              "coupons": [
-                {
-                  "code": "HMNVEQVR",
-                  "title": "Promo Cashback HMNVEQVR",
-                  "message": "Tambah Rp142.000 untuk pakai promo",
-                  "expiry_info": "Berakhir 29 menit lagi!",
-                  "expiry_count_down": 1637336346,
-                  "coupon_url": "HCKCSCP5696005-",
-                  "coupon_app_link": "HCKCSCP5696005-",
-                  "unique_id": "",
-                  "shop_id": 5696005,
                   "tag_image_urls": [],
                   "benefit_amount": 0,
                   "is_recommended": false,
@@ -1118,23 +2366,96 @@
                     "content": ""
                   },
                   "is_highlighted": false,
-                  "group_id": 2,
+                  "group_id": 7069,
                   "is_group_header": true,
                   "promo_infos": [
                     {
-                      "type": "coupon_info",
-                      "title": "ini kupon info",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran <b>Indodana</b>",
+                      "icon": "FINANCE"
                     },
                     {
-                      "type": "top_banner",
-                      "title": "Jangan lewatkan",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "type": "promo_validity",
+                      "title": "",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "NURT100S5CR1989R072",
+                  "title": "Nurturing : Tebus Murah Rp100",
+                  "message": "Promo ini hanya dapat digunakan untuk produk 15349716.",
+                  "expiry_info": "",
+                  "expiry_count_down": -1,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [],
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "disabled",
+                  "clashing_infos": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 7069,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran <b>Indodana</b>",
+                      "icon": "FINANCE"
                     },
                     {
-                      "type": "bottom_banner",
-                      "title": "Khusus pengguna baru",
-                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                      "type": "promo_validity",
+                      "title": "",
+                      "icon": "CLOCK"
+                    }
+                  ]
+                },
+                {
+                  "code": "NURT100S5CR19D38MLB",
+                  "title": "Nurturing : Tebus Murah Rp100",
+                  "message": "Promo ini hanya dapat digunakan untuk produk 15349716.",
+                  "expiry_info": "",
+                  "expiry_count_down": -1,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [],
+                  "benefit_amount": 0,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "disabled",
+                  "clashing_infos": [],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 7069,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "promo_info",
+                      "title": "Khusus pembayaran <b>Indodana</b>",
+                      "icon": "FINANCE"
+                    },
+                    {
+                      "type": "promo_validity",
+                      "title": "",
+                      "icon": "CLOCK"
                     }
                   ]
                 }
@@ -1158,15 +2479,15 @@
       "section_tabs": [
         {
           "id": "my_coupons",
-          "title": "Kupon saya"
+          "title": "Kupon Saya"
         },
         {
           "id": "merchant_vouchers",
           "title": "Kupon Toko"
         },
         {
-          "id": "ineligible_couponse",
-          "title": "Promo belum bisa dipakai"
+          "id": "ineligible_coupons",
+          "title": "Belum Bisa Dipakai"
         }
       ]
     }

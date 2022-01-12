@@ -225,6 +225,13 @@ data class PromoInfo(
         const val TYPE_PROMO_INFO = "promo_info"
         const val TYPE_BOTTOM_BANNER = "bottom_banner"
         const val TYPE_PROMO_VALIDITY = "promo_validity"
+
+        const val ICON_USER = "USER"
+        const val ICON_INFORMATION = "INFORMATION"
+        const val ICON_FINANCE = "FINANCE"
+        const val ICON_CLOCK = "CLOCK"
+        const val ICON_COURIER = "COURIER"
+        const val ICON_TOKO_MEMBER = "TOKOMEMBER"
     }
 }
 

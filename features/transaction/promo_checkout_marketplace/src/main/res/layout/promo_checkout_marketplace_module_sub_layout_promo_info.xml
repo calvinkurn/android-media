@@ -5,17 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/image_promo_info"
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_promo_info"
         android:layout_width="13dp"
         android:layout_height="13dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="2dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/text_promo_info"
-        app:unify_image_corner_radius="0"
-        app:unify_image_type="rect"
-        tools:srcCompat="@drawable/ic_action_x" />
+        app:layout_constraintTop_toTopOf="@+id/text_promo_info" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_promo_info"
@@ -25,7 +22,7 @@
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/image_promo_info"
+        app:layout_constraintStart_toEndOf="@+id/icon_promo_info"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
         tools:text="Khusus Pengiriman Grab Instant, Grab SameDay, JNE YES, JNE Reguler, JNE OKE" />
