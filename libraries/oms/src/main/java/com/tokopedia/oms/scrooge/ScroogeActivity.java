@@ -50,7 +50,6 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
     private static final String EXTRA_KEY_URL = "URL";
     private static final String EXTRA_IS_POST_REQUEST = "EXTRA_IS_POST_REQUEST";
     private static final String EXTRA_TITLE = "EXTRA_TITLE";
-    private static final String LIVENESS_REDIRECTION_PATH = "redirectUrl";
 
     private static final String HCI_CAMERA_KTP = "android-js-call://ktp";
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
@@ -268,7 +267,7 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
 
     private void gotoAlaCarteKyc(Uri uri) {
         String projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
-        String kycRedirectionUrl = uri.getQueryParameter(LIVENESS_REDIRECTION_PATH);
+        String kycRedirectionUrl = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
 
         Intent intent  = RouteManager.getIntent(ScroogeActivity.this, ApplinkConst.KYC_FORM_ONLY, projectId, kycRedirectionUrl);
         startActivityForResult(intent, REQUEST_CODE_LIVENESS);
@@ -280,7 +279,7 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
         if (requestCode == CommonWebViewClient.ATTACH_FILE_REQUEST && webChromeWebviewClient != null) {
             webChromeWebviewClient.onActivityResult(requestCode, resultCode, intent);
         } else if (requestCode == REQUEST_CODE_LIVENESS && resultCode == RESULT_OK) {
-            String kycRedirectionUrl = intent.getStringExtra(LIVENESS_REDIRECTION_PATH);
+            String kycRedirectionUrl = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
             mWebView.loadUrl(kycRedirectionUrl);
         } else if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);

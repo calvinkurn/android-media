@@ -424,7 +424,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         if (requestCode == CommonWebViewClient.ATTACH_FILE_REQUEST && webChromeWebviewClient != null) {
             webChromeWebviewClient?.onActivityResult(requestCode, resultCode, intent)
         } else if (requestCode == REQUEST_CODE_LIVENESS && resultCode == Activity.RESULT_OK) {
-            val redirectionUrl = intent?.getStringExtra(LIVENESS_REDIRECTION_PATH) ?: ""
+            val redirectionUrl = intent?.getStringExtra(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL) ?: ""
             if (redirectionUrl.isNotEmpty())
                 scroogeWebView?.loadUrl(redirectionUrl)
         } else if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
@@ -527,7 +527,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         
         fun goToAlaCarteKyc(uri: Uri) {
             val projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID) ?: ""
-            val kycRedirectionUrl = uri.getQueryParameter(LIVENESS_REDIRECTION_PATH) ?: ""
+            val kycRedirectionUrl = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL) ?: ""
 
             val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConst.KYC_FORM_ONLY, projectId, kycRedirectionUrl)
             startActivityForResult(intent, REQUEST_CODE_LIVENESS)
@@ -853,7 +853,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         const val HCI_CAMERA_REQUEST_CODE = 978
         private const val REQUEST_CODE_LIVENESS = 1235;
         const val FORCE_TIMEOUT = 90000L
-        private const val LIVENESS_REDIRECTION_PATH = "redirectUrl"
 
         const val LOG_TIMEOUT = 1000
 
