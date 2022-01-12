@@ -63,7 +63,7 @@ open class HomeRevampViewModel @Inject constructor(
         private val homeBeautyFestUseCase: Lazy<HomeBeautyFestUseCase>) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
-        private const val HOME_LIMITER_KEY = "HOME_LIMITER_KEY"
+        const val HOME_LIMITER_KEY = "HOME_LIMITER_KEY"
         const val ATC = "atc"
         const val CHANNEL = "channel"
         const val GRID = "grid"
@@ -114,7 +114,7 @@ open class HomeRevampViewModel @Inject constructor(
     private val _resetNestedScrolling = MutableLiveData<Event<Boolean>>()
     val resetNestedScrolling: LiveData<Event<Boolean>> get() = _resetNestedScrolling
 
-    private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
+    val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
 
     private var fetchFirstData = false
     private var homeFlowStarted = false
@@ -123,7 +123,6 @@ open class HomeRevampViewModel @Inject constructor(
     private var popularKeywordRefreshCount = 1
 
     var homeDataModel = HomeDynamicChannelModel()
-    var currentHeaderDataModel = HomeHeaderDataModel()
     var currentTopAdsBannerToken: String = ""
     var isFirstLoad = true
 
@@ -163,7 +162,6 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun updateHomeData(homeNewDynamicChannelModel: HomeDynamicChannelModel) {
         this.homeDataModel = homeNewDynamicChannelModel
-        this.homeDataModel.homeBalanceModel = currentHeaderDataModel.headerDataModel?.homeBalanceModel?:HomeBalanceModel()
         _homeLiveDynamicChannel.postValue(homeDataModel)
         _resetNestedScrolling.postValue(Event(true))
     }
@@ -189,20 +187,30 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    private fun getBalanceWidgetLoadingState() {
+        if (!userSession.get().isLoggedIn) return
+        findWidget<HomeHeaderDataModel> { headerModel, index ->
+            launch {
+                val visitable = updateHeaderData(homeBalanceWidgetUseCase.get().onGetBalanceWidgetLoadingState(headerModel))
+                visitable?.let { updateWidget(visitable, index) }
+            }
+        }
+    }
+
     private fun getBalanceWidgetData() {
         if (!userSession.get().isLoggedIn) return
         findWidget<HomeHeaderDataModel> { headerModel, index ->
             launch {
-                val homeBalanceModel = currentHeaderDataModel.headerDataModel?.homeBalanceModel.apply {
+                val homeBalanceModel = headerModel.headerDataModel?.homeBalanceModel.apply {
                     this?.initBalanceModelByType()
                 } ?: HomeBalanceModel()
-                val headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
+                val headerDataModel = headerModel.headerDataModel?.copy(
                         homeBalanceModel = homeBalanceModel
                 )
-                val initialHeaderModel = currentHeaderDataModel.copy(
+                val initialHeaderModel = headerModel.copy(
                         headerDataModel = headerDataModel)
                 updateHeaderData(initialHeaderModel, index)
-                currentHeaderDataModel = homeBalanceWidgetUseCase.get().onGetBalanceWidgetData(currentHeaderDataModel)
+                val currentHeaderDataModel = homeBalanceWidgetUseCase.get().onGetBalanceWidgetData(headerModel)
                 updateHeaderData(currentHeaderDataModel, index)
                 val visitable = updateHeaderData(currentHeaderDataModel, index)
                 visitable?.let {
@@ -214,15 +222,8 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    private fun updateHeaderData(visitable: Visitable<*>?, index: Int): Visitable<*>? {
-        visitable.let {
-            homeDataModel.updateWidgetModel(visitableToChange = visitable, visitable = currentHeaderDataModel, position = index) {
-                updateHomeData(homeDataModel)
-                if (it is HomeHeaderDataModel) {
-                    this.currentHeaderDataModel = it
-                }
-            }
-        }
+    private fun updateHeaderData(visitable: Visitable<*>?, index: Int = 0): Visitable<*>? {
+        visitable?.let { findWidget<HomeHeaderDataModel> { model, index -> updateWidget(it, index) } }
         return visitable
     }
 
@@ -262,6 +263,7 @@ open class HomeRevampViewModel @Inject constructor(
         if (getHomeDataJob?.isActive == true) return
         if (homeDataModel.flowCompleted == false) return
         onRefreshState = true
+        getBalanceWidgetLoadingState()
 
         if (homeFlowDataCancelled || !homeFlowStarted) {
             initFlow()
@@ -356,11 +358,22 @@ open class HomeRevampViewModel @Inject constructor(
         findWidget<TickerDataModel> { tickerModel, index -> deleteWidget(tickerModel, index) }
     }
 
-    fun onRefreshTokoPoint() {
+    fun onRefreshMembership() {
         if (!userSession.get().isLoggedIn) return
         findWidget<HomeHeaderDataModel> { headerModel, index ->
             launch {
-                currentHeaderDataModel = homeBalanceWidgetUseCase.get().onGetTokopointData(currentHeaderDataModel)
+                val currentHeaderDataModel = homeBalanceWidgetUseCase.get().onGetTokopointData(headerModel)
+                val visitable = updateHeaderData(currentHeaderDataModel, index)
+                visitable?.let { updateWidget(visitable, index) }
+            }
+        }
+    }
+
+    fun onRefreshWalletApp() {
+        if (!userSession.get().isLoggedIn) return
+        findWidget<HomeHeaderDataModel> { headerModel, index ->
+            launch {
+                val currentHeaderDataModel = homeBalanceWidgetUseCase.get().onGetWalletAppData(headerModel)
                 val visitable = updateHeaderData(currentHeaderDataModel, index)
                 visitable?.let { updateWidget(visitable, index) }
             }
@@ -522,7 +535,7 @@ open class HomeRevampViewModel @Inject constructor(
     fun updateChooseAddressData(homeChooseAddressData: HomeChooseAddressData) {
         this.homeDataModel.setAndEvaluateHomeChooseAddressData(homeChooseAddressData)
         findWidget<HomeHeaderDataModel> { headerModel, index ->
-            updateHomeData(homeDataModel)
+            updateHeaderData(headerModel, index)
         }
     }
 

@@ -33,6 +33,8 @@ import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntit
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.network.exception.MessageErrorException
@@ -83,22 +85,19 @@ class HomeDynamicChannelUseCase @Inject constructor(
     companion object{
         private const val TYPE_ATF_1 = "atf-1"
         private const val MINIMUM_BANNER_TO_SHOW = 1
+        private const val MINIMUM_DC_TO_SHOW_RECOM = 3
     }
     val gson = Gson()
     var cachedHomeData: HomeData? = null
 
     var localHomeRecommendationFeedDataModel: HomeRecommendationFeedDataModel? = null
+
     private val jobList = mutableListOf<Deferred<AtfData>>()
 
-    fun updateHeaderData(homeHeaderDataModel: HomeHeaderDataModel, homeDataModel: HomeDynamicChannelModel): Visitable<*>? {
-        val homeHeaderOvoDataModel = (homeDataModel.list.find { visitable-> visitable is HomeHeaderDataModel } as HomeHeaderDataModel?)
-        homeHeaderOvoDataModel?.let {
-            val currentPosition = -1
-            val index = homeDataModel.list.withIndex().find { (_, model) ->  model is HomeHeaderDataModel }?.index ?: -1
-            val visitable = homeDataModel.list.get(index)
-            return visitable
+    fun updateHeaderData(homeHeaderDataModel: HomeHeaderDataModel, homeDataModel: HomeDynamicChannelModel) {
+        findWidget<HomeHeaderDataModel>(homeDataModel) { model, index ->
+            homeDataModel.updateWidgetModel(visitable = homeHeaderDataModel, position = index) {}
         }
-        return null
     }
 
     @FlowPreview
@@ -142,7 +141,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
 
         val homeDynamicChannelFlow = getHomeRoomDataSource.getCachedHomeData().flatMapConcat {
-            flow {
+            flow<HomeDynamicChannelModel> {
                 val dynamicChannelPlainResponse = homeDataMapper.mapToHomeRevampViewModel(
                         homeData = it,
                         isCache = isCache
@@ -161,8 +160,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 applicationContext?.let {
                     val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(applicationContext)
                     dynamicChannelPlainResponse.setAndEvaluateHomeChooseAddressData(
-                            HomeChooseAddressData(isActive = true)
-                                    .setLocalCacheModel(localCacheModel)
+                        HomeChooseAddressData(isActive = true)
+                            .setLocalCacheModel(localCacheModel)
                     )
                 }
 
@@ -284,7 +283,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 ))
 
                 val needToGetRecom = dynamicChannelPlainResponse.evaluateRecommendationSection(currentHomeRecom = localHomeRecommendationFeedDataModel)
-                if (needToGetRecom) {
+                if (needToGetRecom && dynamicChannelPlainResponse.list.size > MINIMUM_DC_TO_SHOW_RECOM) {
                     getFeedTabData(dynamicChannelPlainResponse)
                 }
 
@@ -610,7 +609,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 try {
                                     val dynamicChannel = homePageBannerRepository.getRemoteData()
                                     dynamicChannel.let {
-                                        if (it.banner.slides?.size?:0 > MINIMUM_BANNER_TO_SHOW) {
+                                        if (it.banner.slides?.size?:0 >= MINIMUM_BANNER_TO_SHOW) {
                                             val channelFromResponse = it.banner
                                             atfData.content = gson.toJson(channelFromResponse)
                                             atfData.status = AtfKey.STATUS_SUCCESS

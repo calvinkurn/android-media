@@ -37,7 +37,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         if (!userSession.isLoggedIn) return currentHeaderDataModel
 
         try {
-            var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel)
+            var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel, HomeBalanceModel.BALANCE_POSITION_FIRST, HomeBalanceModel.BALANCE_POSITION_SECOND)
             homeBalanceModel = getDataUsingWalletApp(homeBalanceModel)
 
             homeBalanceModel = getTokopointData(homeBalanceModel)
@@ -52,33 +52,21 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         }
     }
 
-    private suspend fun getHomeBalanceModel(currentHeaderDataModel: HomeHeaderDataModel): HomeBalanceModel {
+    private suspend fun getHomeBalanceModel(currentHeaderDataModel: HomeHeaderDataModel, vararg positionToReset: Int): HomeBalanceModel {
         return HomeBalanceModel().apply {
             val currentHomeBalanceModel = currentHeaderDataModel.headerDataModel?.homeBalanceModel
                     ?: HomeBalanceModel()
             balanceDrawerItemModels = currentHomeBalanceModel.balanceDrawerItemModels
-            balanceType = when(homeFlagRepository.getCachedData().homeFlag.getFlagValue(HomeFlag.TYPE.HAS_TOKOPOINTS)) {
-                1 -> {
-                    HomeBalanceModel.TYPE_STATE_1
-                }
-                2 -> {
-                    HomeBalanceModel.TYPE_STATE_2
-                }
-                3 -> {
-                    HomeBalanceModel.TYPE_STATE_3
-                }
-                else -> {
-                    HomeBalanceModel.TYPE_STATE_4
-                }
+            positionToReset.forEach {
+                resetDrawerItem(it)
             }
-            initBalanceModelByType()
         }
     }
 
     suspend fun onGetTokopointData(currentHeaderDataModel: HomeHeaderDataModel): HomeHeaderDataModel {
         if (!userSession.isLoggedIn) return currentHeaderDataModel
 
-        var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel)
+        var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel, HomeBalanceModel.BALANCE_POSITION_SECOND)
         homeBalanceModel = getTokopointData(homeBalanceModel)
         return currentHeaderDataModel.copy(
                 headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
@@ -89,7 +77,35 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         )
     }
 
+    suspend fun onGetWalletAppData(currentHeaderDataModel: HomeHeaderDataModel): HomeHeaderDataModel {
+        if (!userSession.isLoggedIn) return currentHeaderDataModel
 
+        var homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel, HomeBalanceModel.BALANCE_POSITION_FIRST)
+        homeBalanceModel = getDataUsingWalletApp(homeBalanceModel)
+        return currentHeaderDataModel.copy(
+            headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
+                homeBalanceModel = homeBalanceModel,
+                isUserLogin = userSession.isLoggedIn
+            ),
+            needToShowUserWallet = homeFlagRepository.getCachedData().homeFlag.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
+        )
+    }
+
+    suspend fun onGetBalanceWidgetLoadingState(currentHeaderDataModel: HomeHeaderDataModel): HomeHeaderDataModel {
+        if (!userSession.isLoggedIn) return currentHeaderDataModel
+
+        try {
+            val homeBalanceModel = getHomeBalanceModel(currentHeaderDataModel).apply { initBalanceModelByType() }
+            return currentHeaderDataModel.copy(headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
+                homeBalanceModel = homeBalanceModel,
+                isUserLogin = userSession.isLoggedIn
+            ),
+                needToShowUserWallet = homeFlagRepository.getCachedData().homeFlag.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
+            )
+        } catch (e: Exception) {
+            return currentHeaderDataModel
+        }
+    }
 
     private suspend fun getTokopointData(homeBalanceModel: HomeBalanceModel): HomeBalanceModel {
         try {

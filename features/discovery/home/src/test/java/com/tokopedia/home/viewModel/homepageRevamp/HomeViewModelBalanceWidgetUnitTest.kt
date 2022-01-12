@@ -65,6 +65,7 @@ class HomeViewModelBalanceWidgetUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
+        homeViewModel.homeRateLimit.shouldFetch(HomeRevampViewModel.HOME_LIMITER_KEY)
         //On refresh
         homeViewModel.refreshWithThreeMinsRules(true)
         homeViewModel.refreshWithThreeMinsRules(true)
@@ -92,8 +93,8 @@ class HomeViewModelBalanceWidgetUnitTest{
                 homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
         //On refresh
+        homeViewModel.homeRateLimit.shouldFetch(HomeRevampViewModel.HOME_LIMITER_KEY)
         homeViewModel.refreshWithThreeMinsRules(false)
-
         val homeBalanceModel = getHomeBalanceModel()
         Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
     }
@@ -140,7 +141,7 @@ class HomeViewModelBalanceWidgetUnitTest{
                 homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
         //On refresh
-        homeViewModel.onRefreshTokoPoint()
+        homeViewModel.onRefreshMembership()
 
         val homeBalanceModel = getHomeBalanceModel()
         Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == false)
@@ -163,7 +164,54 @@ class HomeViewModelBalanceWidgetUnitTest{
                 homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
         //On refresh
-        homeViewModel.onRefreshTokoPoint()
+        homeViewModel.onRefreshMembership()
+
+        val homeBalanceModel = getHomeBalanceModel()
+        Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `When userSession is not loggedIn onRefreshWalletApp then homeDataModel should not contains balance item data`() {
+        every { userSessionInterface.isLoggedIn } returns false
+
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(list = listOf(mockInitialHomeHeaderDataModel))
+        )
+
+        getHomeBalanceWidgetUseCase.givenGetHomeBalanceWidgetReturn(
+            homeHeaderDataModel = mockSuccessHomeHeaderDataModel
+        )
+        homeViewModel = createHomeViewModel(
+            userSessionInterface = userSessionInterface,
+            getHomeUseCase = getHomeUseCase,
+            homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
+        )
+        //On refresh
+        homeViewModel.onRefreshWalletApp()
+
+        val homeBalanceModel = getHomeBalanceModel()
+        Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == false)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `When onGetBalanceData is not empty onRefreshWalletApp then homeDataModel contains balance item data`() {
+        every { userSessionInterface.isLoggedIn } returns true
+
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(list = listOf(mockInitialHomeHeaderDataModel), flowCompleted = true)
+        )
+        getHomeBalanceWidgetUseCase.givenGetBalanceWidgetDataReturn(
+            homeHeaderDataModel = mockSuccessHomeHeaderDataModel
+        )
+        homeViewModel = createHomeViewModel(
+            userSessionInterface = userSessionInterface,
+            getHomeUseCase = getHomeUseCase,
+            homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
+        )
+        //On refresh
+        homeViewModel.onRefreshWalletApp()
 
         val homeBalanceModel = getHomeBalanceModel()
         Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)

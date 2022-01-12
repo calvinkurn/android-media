@@ -6,7 +6,6 @@ import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
 import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
@@ -19,9 +18,8 @@ data class HomeDynamicChannelModel(
         var isCache: Boolean = false,
         val isFirstPage: Boolean = false,
         var homeChooseAddressData: HomeChooseAddressData = HomeChooseAddressData(),
-        var homeBalanceModel: HomeBalanceModel = HomeBalanceModel(),
         var topadsNextPageToken: String = "",
-        var flowCompleted: Boolean = false
+        var flowCompleted: Boolean = true
 ) {
     private var _list: MutableList<Visitable<*>> = list.toMutableList()
 
@@ -138,22 +136,6 @@ data class HomeDynamicChannelModel(
         }
     }
 
-    fun copyStaticWidgetDataFrom(homeDynamicChannelModel: HomeDynamicChannelModel) {
-        copyWidget(homeDynamicChannelModel = homeDynamicChannelModel, validation = { it is PlayCardDataModel })
-        copyWidget(homeDynamicChannelModel = homeDynamicChannelModel, validation = { it is NewBusinessUnitWidgetDataModel })
-        copyWidget(homeDynamicChannelModel = homeDynamicChannelModel, validation = { it is HomeRecommendationFeedDataModel })
-        copyWidget(homeDynamicChannelModel = homeDynamicChannelModel, validation = { it is HomeLoadingMoreModel })
-        copyWidget(homeDynamicChannelModel = homeDynamicChannelModel, validation = { it is HomeHeaderDataModel })
-
-        setAndEvaluateHomeBalanceWidget(homeDynamicChannelModel.homeBalanceModel)
-        setAndEvaluateHomeChooseAddressData(homeDynamicChannelModel.homeChooseAddressData)
-        this.list = _list.toList()
-    }
-
-    fun setAndEvaluateHomeBalanceWidget(homeBalanceModel: HomeBalanceModel) {
-        this.homeBalanceModel = homeBalanceModel
-    }
-
     fun evaluateRecommendationSection(currentHomeRecom: HomeRecommendationFeedDataModel?): Boolean {
         if(_list.find { it::class.java == HomeLoadingMoreModel::class.java } != null)
             return false
@@ -172,6 +154,7 @@ data class HomeDynamicChannelModel(
         } else {
             return true
         }
+        currentHomeRecom?.let { addWidgetModel(it) {} }
         return false
     }
 

@@ -23,7 +23,7 @@ import com.tokopedia.network.exception.MessageErrorException
 
 data class HomeBalanceModel(
     var balanceDrawerItemModels: MutableMap<Int, BalanceDrawerItemModel> = mutableMapOf(),
-    var balanceType: Int? = null,
+    var balanceType: Int? = TYPE_STATE_2,
     var isTokopointsOrOvoFailed: Boolean = false
 ) {
     companion object {
@@ -76,32 +76,14 @@ data class HomeBalanceModel(
 
     //call to init balance widget data
     fun initBalanceModelByType() {
-        when (balanceType) {
-            TYPE_STATE_1 -> {
-                balanceDrawerItemModels.remove(BALANCE_POSITION_FOURTH)
+        balanceDrawerItemModels.remove(BALANCE_POSITION_THIRD)
+        balanceDrawerItemModels.remove(BALANCE_POSITION_FOURTH)
 
-                balanceDrawerItemModels[BALANCE_POSITION_FIRST] = resetDrawerItem(BALANCE_POSITION_FIRST)
-                balanceDrawerItemModels[BALANCE_POSITION_SECOND] = resetDrawerItem(BALANCE_POSITION_SECOND)
-                balanceDrawerItemModels[BALANCE_POSITION_THIRD] = resetDrawerItem(BALANCE_POSITION_THIRD)
-            }
-            TYPE_STATE_2 -> {
-                balanceDrawerItemModels.remove(BALANCE_POSITION_THIRD)
-                balanceDrawerItemModels.remove(BALANCE_POSITION_FOURTH)
-
-                balanceDrawerItemModels[BALANCE_POSITION_FIRST] = resetDrawerItem(BALANCE_POSITION_FIRST)
-                balanceDrawerItemModels[BALANCE_POSITION_SECOND] = resetDrawerItem(BALANCE_POSITION_SECOND)
-            }
-            TYPE_STATE_3 -> {
-                balanceDrawerItemModels.remove(BALANCE_POSITION_FOURTH)
-
-                balanceDrawerItemModels[BALANCE_POSITION_FIRST] = resetDrawerItem(BALANCE_POSITION_FIRST)
-                balanceDrawerItemModels[BALANCE_POSITION_SECOND] = resetDrawerItem(BALANCE_POSITION_SECOND)
-                balanceDrawerItemModels[BALANCE_POSITION_THIRD] = resetDrawerItem(BALANCE_POSITION_THIRD)
-            }
-        }
+        balanceDrawerItemModels[BALANCE_POSITION_FIRST] = resetDrawerItem(BALANCE_POSITION_FIRST)
+        balanceDrawerItemModels[BALANCE_POSITION_SECOND] = resetDrawerItem(BALANCE_POSITION_SECOND)
     }
 
-    private fun resetDrawerItem(position: Int): BalanceDrawerItemModel {
+    fun resetDrawerItem(position: Int): BalanceDrawerItemModel {
         val balance =  balanceDrawerItemModels.getOrElse(
             position
         ) { BalanceDrawerItemModel() }.copy()
@@ -239,6 +221,12 @@ data class HomeBalanceModel(
                 balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.state == STATE_SUCCESS
         val isContainsNewTokopoint = balanceDrawerItemModels[BALANCE_POSITION_SECOND]?.state == STATE_SUCCESS
         return isContainsNewGopay && isContainsNewTokopoint
+    }
+
+    fun isGopayActive(): Boolean {
+        val isGopayActive = (balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.drawerItemType == TYPE_WALLET_APP_LINKED &&
+                balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.state == STATE_SUCCESS)
+        return isGopayActive
     }
 
     fun containsGopay(): Boolean {

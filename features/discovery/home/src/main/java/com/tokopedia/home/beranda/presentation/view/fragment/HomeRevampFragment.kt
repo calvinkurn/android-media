@@ -76,6 +76,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUti
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceCoachmark
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
@@ -688,10 +690,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     @Suppress("TooGenericExceptionCaught")
     private fun showCoachMark(
-        skipBalanceWidget: Boolean = false,
-        containsNewGopayAndTokopoints: Boolean = false,
+        isGopayActivated: Boolean = false,
         tokopointsBalanceCoachmark: BalanceCoachmark? = null
     ) {
+        this.isGopayActivated = isGopayActivated
         if (coachmark == null && !(coachmarkGopay?.isShowing == true || coachmarkTokopoint?.isShowing == true)) {
             context?.let { ctx ->
                 val coachMarkItem = ArrayList<CoachMark2Item>()
@@ -1476,22 +1478,17 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty()
                     ?: false
             if (isBalanceWidgetNotEmpty) {
-                val isTokopointsOrOvoFailed =
-                    it.headerDataModel?.homeBalanceModel?.isTokopointsOrOvoFailed ?: false
-                if (!isTokopointsOrOvoFailed) {
+                val isContainsNewGopayAndTokopoints =
+                    it.headerDataModel?.homeBalanceModel?.containsNewGopayAndTokopoints() ?: false
+                val isGopayActivated = it.headerDataModel?.homeBalanceModel?.isGopayActive()?:false
+                if (isContainsNewGopayAndTokopoints) {
                     showCoachMark(
-                        containsNewGopayAndTokopoints = it.headerDataModel?.homeBalanceModel?.containsNewGopayAndTokopoints()?:false,
-                        tokopointsBalanceCoachmark = it.headerDataModel?.homeBalanceModel?.getTokopointsBalanceCoachmark()
-                    )
-                } else {
-                    showCoachMark(
-                        skipBalanceWidget = true,
-                        containsNewGopayAndTokopoints = it.headerDataModel?.homeBalanceModel?.containsNewGopayAndTokopoints()?:false,
+                        isGopayActivated = isGopayActivated,
                         tokopointsBalanceCoachmark = it.headerDataModel?.homeBalanceModel?.getTokopointsBalanceCoachmark()
                     )
                 }
             } else {
-                showCoachMark(skipBalanceWidget = true)
+                showCoachMark()
             }
         }
     }
@@ -2231,11 +2228,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getHomeViewModel().getBusinessUnitData(tabId, position, tabName)
     }
 
-    override fun onRefreshTokoPointButtonClicked() {
-        getHomeViewModel().onRefreshTokoPoint()
+    override fun onRetryMembership() {
+        getHomeViewModel().onRefreshMembership()
     }
 
-    override fun onRefreshTokoCashButtonClicked() {
+    override fun onRetryWalletApp() {
+        getHomeViewModel().onRefreshWalletApp()
     }
 
     override fun onLegoBannerClicked(actionLink: String, trackingAttribution: String) {
@@ -2470,7 +2468,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun showFeedSectionViewHolderShadow(show: Boolean) {
         val feedViewHolder = homeRecyclerView?.findViewHolderForAdapterPosition(
-                homeRecyclerView?.adapter?.itemCount?:0
+            ((homeRecyclerView?.adapter?.itemCount?:0) - 1)
         )
         if (feedViewHolder is HomeRecommendationFeedViewHolder) {
             feedViewHolder.showFeedTabShadow(show)

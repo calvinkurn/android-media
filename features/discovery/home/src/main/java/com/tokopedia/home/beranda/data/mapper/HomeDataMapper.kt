@@ -63,7 +63,8 @@ class HomeDataMapper(
                 list = mutableVisitableList,
                 isCache = isCache,
                 isFirstPage = firstPage,
-                homeChooseAddressData = HomeChooseAddressData(true)
+                homeChooseAddressData = HomeChooseAddressData(true),
+            flowCompleted = false
         )
     }
 }

@@ -47,6 +47,12 @@ internal open class HomeAtfContentErrorResponseConfig : HomeMockResponseConfig()
                 FIND_BY_CONTAINS
         )
 
+        addMockResponse(
+            KEY_CONTAINS_SLIDE,
+            getRawString(context, R.raw.response_error_mock_data_slider_banner),
+            FIND_BY_CONTAINS
+        )
+
         /**
          * End of error response for ATF content
          */
