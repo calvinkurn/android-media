@@ -3,9 +3,11 @@ package com.tokopedia.picker.ui.gallery
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.picker.common.di.TestPickerInterceptor
 import com.tokopedia.picker.data.entity.Media
+import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.core.GalleryPageTest
 import com.tokopedia.picker.utils.G500
 import com.tokopedia.test.application.annotations.UiTest
+import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
 
@@ -27,7 +29,28 @@ class GalleryPageUITest : GalleryPageTest() {
     }
 
     @Test
-    fun should_show_media_list() {
+    fun should_show_real_media_list() {
+        runBlocking {
+            // Given
+            interceptor.realMedia(
+                context,
+                -1,
+                PickerUiConfig.getFileLoaderParam()
+            )
+
+            // When
+            startPickerActivity()
+
+            // Then
+            Assertion.assertRecyclerViewDisplayed()
+            Assertion.assertItemListSize(
+                interceptor.mediaRepository.data.size
+            )
+        }
+    }
+
+    @Test
+    fun should_show_mock_media_list() {
         // Given
         val data = DataProvider.imageAndVideo
 
