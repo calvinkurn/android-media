@@ -11,6 +11,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.player.PlayVideoPlayer
@@ -88,7 +90,7 @@ class PlayWidgetCardChannelLargeView : ConstraintLayout, PlayVideoPlayerReceiver
 
     private val playerListener = object : PlayVideoPlayer.VideoPlayerListener {
         override fun onIsPlayingChanged(isPlaying: Boolean) {
-            if (isPlaying) pvVideo.visible() else pvVideo.gone()
+            pvVideo.showWithCondition(isPlaying)
         }
     }
 
@@ -109,16 +111,19 @@ class PlayWidgetCardChannelLargeView : ConstraintLayout, PlayVideoPlayerReceiver
 
         setPromoType(model.promoType)
 
-        tvTitle.visibility = if (model.title.isNotEmpty()) View.VISIBLE else View.GONE
-        tvAuthor.visibility = if (model.partner.name.isNotEmpty()) View.VISIBLE else View.GONE
-        tvStartTime.visibility =
-            if (model.startTime.isNotEmpty() && model.channelType == PlayWidgetChannelType.Upcoming) View.VISIBLE else View.GONE
+        tvTitle.showWithCondition(model.title.isNotEmpty())
+        tvAuthor.showWithCondition(model.partner.name.isNotEmpty())
+
+        val startTimeIsShown = model.startTime.isNotEmpty() && model.channelType == PlayWidgetChannelType.Upcoming
+
+        tvStartTime.shouldShowWithAction(startTimeIsShown){
+            tvStartTime.text = model.startTime
+        }
 
         tvAuthor.text = model.partner.name
         tvTitle.text = model.title
-        tvStartTime.text = model.startTime
         tvTotalView.text = model.totalView
-        ivGiveaway.visibility = if (model.hasGiveaway) View.VISIBLE else View.GONE
+        ivGiveaway.showWithCondition(model.hasGiveaway)
 
         setIconToggleReminder(model.reminderType)
         reminderBadge.setOnClickListener {
@@ -131,26 +136,26 @@ class PlayWidgetCardChannelLargeView : ConstraintLayout, PlayVideoPlayerReceiver
     }
 
     private fun setActiveModel(model: PlayWidgetLargeChannelUiModel) {
-        liveBadge.visibility =
-            if (model.video.isLive && model.channelType == PlayWidgetChannelType.Live) View.VISIBLE else View.GONE
-        reminderBadge.visibility = View.GONE
-        totalViewBadge.visibility = if (model.totalViewVisible) View.VISIBLE else View.GONE
-        llLoadingContainer.visibility = View.GONE
+        val isLiveBadgeShown = model.video.isLive && model.channelType == PlayWidgetChannelType.Live
+        liveBadge.showWithCondition(isLiveBadgeShown)
+        reminderBadge.gone()
+        totalViewBadge.showWithCondition(model.totalViewVisible)
+        llLoadingContainer.gone()
     }
 
     private fun setUpcomingModel() {
-        liveBadge.visibility = View.GONE
-        reminderBadge.visibility = View.VISIBLE
-        totalViewBadge.visibility = View.GONE
-        llLoadingContainer.visibility = View.GONE
+        liveBadge.gone()
+        reminderBadge.visible()
+        totalViewBadge.gone()
+        llLoadingContainer.gone()
     }
 
     private fun setDeletingModel(model: PlayWidgetLargeChannelUiModel) {
-        liveBadge.visibility =
-            if (model.video.isLive && model.channelType == PlayWidgetChannelType.Live) View.VISIBLE else View.GONE
-        reminderBadge.visibility = View.GONE
-        totalViewBadge.visibility = if (model.totalViewVisible) View.VISIBLE else View.GONE
-        llLoadingContainer.visibility = View.VISIBLE
+        val isLiveBadgeShown = model.video.isLive && model.channelType == PlayWidgetChannelType.Live
+        liveBadge.showWithCondition(isLiveBadgeShown)
+        reminderBadge.gone()
+        totalViewBadge.showWithCondition(model.totalViewVisible)
+        llLoadingContainer.visible()
     }
 
     private fun setIconToggleReminder(reminderType: PlayWidgetReminderType) {
@@ -164,20 +169,20 @@ class PlayWidgetCardChannelLargeView : ConstraintLayout, PlayVideoPlayerReceiver
     private fun setPromoType(promoType: PlayWidgetPromoType) {
         when (promoType) {
             PlayWidgetPromoType.NoPromo, PlayWidgetPromoType.Unknown -> {
-                llPromoDetail.visibility = View.GONE
-                tvOnlyLive.visibility = View.GONE
+                llPromoDetail.gone()
+                tvOnlyLive.gone()
             }
             is PlayWidgetPromoType.Default -> {
-                tvOnlyLive.visibility = View.GONE
+                tvOnlyLive.gone()
+                llPromoDetail.visible()
 
                 tvPromoDetail.text = promoType.promoText
-                llPromoDetail.visibility = View.VISIBLE
             }
             is PlayWidgetPromoType.LiveOnly -> {
-                tvOnlyLive.visibility = View.VISIBLE
+                tvOnlyLive.visible()
+                llPromoDetail.visible()
 
                 tvPromoDetail.text = promoType.promoText
-                llPromoDetail.visibility = View.VISIBLE
             }
         }.exhaustive
     }

@@ -8,8 +8,7 @@
     app:cardCornerRadius="@dimen/spacing_lvl3"
     app:cardElevation="@dimen/spacing_lvl1"
     app:cardPreventCornerOverlap="false"
-    app:cardUseCompatPadding="true"
-    >
+    app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -43,13 +42,13 @@
         <FrameLayout
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl0"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/bg_play_widget_large_top_gradient"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.2"
-            app:layout_constraintVertical_bias="0"
-            />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0" />
 
         <include
             android:id="@+id/view_reminder"
@@ -61,8 +60,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="gone"
-            />
+            tools:visibility="visible" />
 
         <include
             android:id="@+id/play_widget_badge_live"
@@ -73,8 +71,7 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible"
-            />
+            tools:visibility="visible" />
 
         <include
             android:id="@+id/play_widget_badge_total_view"
@@ -85,28 +82,25 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintStart_toEndOf="@+id/play_widget_badge_live"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_goneMarginStart="@dimen/spacing_lvl3"
-            />
-
-        <include
-            android:id="@+id/play_widget_badge_promo"
-            layout="@layout/layout_promo_badge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginBottom="@dimen/spacing_lvl3"
-            app:layout_constraintBottom_toTopOf="@+id/play_widget_info_container"
-            app:layout_constraintStart_toStartOf="parent"
-            />
+            app:layout_goneMarginStart="@dimen/spacing_lvl3" />
 
         <LinearLayout
             android:id="@+id/play_widget_info_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="@dimen/spacing_lvl3"
+            android:paddingTop="@dimen/play_widget_dp_12"
+            android:paddingBottom="@dimen/spacing_lvl3"
             app:layout_constraintBottom_toBottomOf="parent"
-            >
+            android:background="@drawable/bg_play_widget_large_bottom_gradient">
+
+            <include
+                android:id="@+id/play_widget_badge_promo"
+                layout="@layout/layout_promo_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginBottom="@dimen/spacing_lvl3" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/play_widget_channel_date"
@@ -116,11 +110,10 @@
                 android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/play_widget_dms_medium_upcoming_date_text"
+                android:textColor="@color/Unify_YN300"
                 android:visibility="visible"
                 app:typographyType="small"
-                tools:text="10 January 2020 - 17.00"
-                />
+                tools:text="10 January 2020 - 17.00" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/play_widget_channel_title"
@@ -131,11 +124,11 @@
                 android:layout_marginBottom="@dimen/spacing_lvl1"
                 android:ellipsize="end"
                 android:lines="2"
+                android:maxLines="2"
                 android:textColor="@color/Unify_N0"
                 android:textIsSelectable="false"
                 app:typographyType="body_3"
-                tools:text="Google Assistant Google Assistant"
-                />
+                tools:text="Google Assistant Google Assistant" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/play_widget_channel_name"
@@ -152,8 +145,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:typographyType="small"
-                tools:text="Google"
-                />
+                tools:text="Google" />
 
         </LinearLayout>
 
@@ -167,15 +159,13 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            >
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/loader_loading"
                 android:layout_width="@dimen/play_widget_unify_loader_size"
                 android:layout_height="@dimen/play_widget_unify_loader_size"
-                app:loader_type="circular_white"
-                />
+                app:loader_type="circular_white" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
@@ -186,8 +176,7 @@
                 android:text="@string/play_widget_delete_loading_text"
                 android:textColor="@color/Unify_N0"
                 app:typographyType="body_3"
-                app:typographyWeight="bold"
-                />
+                app:typographyWeight="bold" />
 
         </LinearLayout>
 

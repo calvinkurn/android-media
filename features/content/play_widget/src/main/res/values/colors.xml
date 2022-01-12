@@ -16,6 +16,11 @@
     <color name="play_widget_dms_small_overlay_gradient_center">#4D000000</color>
     <color name="play_widget_dms_small_overlay_gradient_bottom">#CC000000</color>
 
+    <color name="play_widget_dms_large_overlay_gradient_top">#3D212121</color>
+    <color name="play_widget_dms_large_overlay_gradient_center">#29212121</color>
+    <color name="play_widget_dms_large_overlay_gradient_bottom">#00212121</color>
+    <color name="play_widget_dms_large_overlay_gradient_light">#CC212121</color>
+
     <color name="play_widget_dms_medium_upcoming_date_text">#FA591D</color>
     <color name="play_widget_dms_medium_title_text">#F531353B</color>
     <color name="play_widget_dms_medium_shop_name_text">#AD31353B</color>
