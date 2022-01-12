@@ -52,7 +52,7 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        websocket.simulateResponse(wsSellerResponseText)
+        websocket2.simulateResponse(wsSellerResponseText)
 
         // Then
         val label = wsSellerResponseText.jsonObject
