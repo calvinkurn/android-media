@@ -28,6 +28,6 @@
 
     <include
         android:id="@+id/denom_grid_shimmering"
-        layout="@layout/view_recharge_denom_grid_all_shimmering"/>
+        layout="@layout/view_recharge_denom_grid_list_shimmering"/>
 
 </LinearLayout>

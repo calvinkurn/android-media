@@ -11,7 +11,7 @@ import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.recharge_component.databinding.WidgetRechargeMccmBinding
+import com.tokopedia.recharge_component.databinding.WidgetRechargeMccmGridBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.model.denom.DenomWidgetGridEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
@@ -25,7 +25,7 @@ class MCCMFlashSaleGridWidget@JvmOverloads constructor(@NotNull context: Context
                                                        defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
-    private val widgetRechargeMCCMFlashSaleGridWidget = WidgetRechargeMccmBinding.inflate(
+    private val widgetRechargeMCCMFlashSaleGridWidget = WidgetRechargeMccmGridBinding.inflate(
         LayoutInflater.from(context), this, true)
 
     fun renderMCCMGrid(denomGridListener: RechargeDenomGridListener, titleDenomGrid: String, listDenomGrid: List<DenomWidgetModel>){
