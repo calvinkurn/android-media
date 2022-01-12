@@ -225,11 +225,16 @@ class ChatModuleStub {
 
     @ChatScope
     @Provides
-    fun provideTopChatWebSocket(
-        userSession: UserSessionInterface,
-        client: OkHttpClient
-    ): TopchatWebSocket {
+    fun provideFakeTopChatWebSocket(): FakeTopchatWebSocket {
         return FakeTopchatWebSocket()
+    }
+
+    @ChatScope
+    @Provides
+    fun provideTopChatWebSocket(
+        ws: FakeTopchatWebSocket
+    ): TopchatWebSocket {
+        return ws
     }
 
     @ChatScope

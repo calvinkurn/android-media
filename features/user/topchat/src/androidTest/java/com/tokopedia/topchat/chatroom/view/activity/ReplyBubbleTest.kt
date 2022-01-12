@@ -256,8 +256,8 @@ class ReplyBubbleTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        val incomingEventWs = websocket.generateUploadImageResposne(roomMetaData)
-        websocket.simulateResponse(incomingEventWs)
+        val incomingEventWs = websocket2.generateUploadImageResposne(roomMetaData)
+        websocket2.simulateResponse(incomingEventWs)
 
         // Then
         ReplyBubbleResult.hasVisibleReplyBubbleImageAt(0)
