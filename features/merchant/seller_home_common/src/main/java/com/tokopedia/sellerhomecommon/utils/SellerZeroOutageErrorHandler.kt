@@ -7,7 +7,6 @@ import com.tokopedia.logger.utils.Priority
 object SellerZeroOutageErrorHandler {
 
     // Scalyr/New Relic Error Keys
-    private const val PAGE_TYPE_KEY = "page_type"
     private const val ERROR_TYPE_KEY = "error_type"
     private const val DEVICE_ID_KEY = "device_id"
     private const val MESSAGE_KEY = "message"
@@ -44,7 +43,6 @@ object SellerZeroOutageErrorHandler {
         const val BULK_ACCEPT_ORDER_ERROR = "som bulk accept order error"
         const val GET_BULK_ACCEPT_ORDER_STATUS_ERROR = "som get bulk accept order status error"
         const val BULK_REQUEST_PICKUP_ERROR = "som bulk request pickup error"
-        const val GET_BULK_REQUEST_PICKUP_STATUS_ERROR = "som get bulk request pickup status error"
         const val GET_ADMIN_PERMISSION_ERROR = "som get admin permission error"
         const val GET_TOP_ADS_CATEGORY_ERROR = "som get top ads category error"
         const val GET_TICKERS_ERROR = "som get tickers error"
