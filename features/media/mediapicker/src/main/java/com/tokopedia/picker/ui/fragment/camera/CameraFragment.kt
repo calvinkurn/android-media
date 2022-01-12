@@ -37,14 +37,14 @@ open class CameraFragment : BaseDaggerFragment(), GestureDetector.OnGestureListe
     private val binding: FragmentCameraBinding? by viewBinding()
     private val cameraView by lazy { binding?.cameraView }
 
-    val gestureDetector by lazy {
-        GestureDetector(requireContext(), this)
-    }
-
     private var flashList = arrayListOf<Flash>()
     private var flashIndex = 0
 
     private var isPhotoMode = true
+
+    val gestureDetector by lazy {
+        GestureDetector(requireContext(), this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,11 +79,15 @@ open class CameraFragment : BaseDaggerFragment(), GestureDetector.OnGestureListe
         velocityX: Float,
         velocityY: Float
     ): Boolean {
-        if (abs(start.y - finish.y) > 250) return false
+        val swipeMaxOff = 250
+        val swipeMinDistance = 120
+        val swipeThresholdVelocity = 200
 
-        if ((start.x - finish.x) > 120 && abs(velocityX) > 200) {
+        if (abs(start.y - finish.y) > swipeMaxOff) return false
+
+        if ((start.x - finish.x) > swipeMinDistance && abs(velocityX) > swipeThresholdVelocity) {
             swipeLeftToRight()
-        } else if ((finish.x - start.x) > 120 && abs(velocityX) > 200) {
+        } else if ((finish.x - start.x) > swipeMinDistance && abs(velocityX) > swipeThresholdVelocity) {
             swipeRightToLeft()
         }
 
@@ -159,6 +163,8 @@ open class CameraFragment : BaseDaggerFragment(), GestureDetector.OnGestureListe
 
         binding?.lstCameraMode?.viewTreeObserver?.addOnScrollChangedListener {
             val activePosition = (binding?.lstCameraMode?.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
+            if (activePosition == -1) return@addOnScrollChangedListener
+
             Toast.makeText(requireContext(), "your position is: $activePosition", Toast.LENGTH_SHORT).show()
         }
 
