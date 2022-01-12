@@ -38,6 +38,7 @@ class ShareExperienceViewComponent(
 ) : ViewComponent(container, idRes) {
 
     private val ivShareLink = findViewById<IconUnify>(R.id.ic_play_share_experience)
+
     private var imgSaveFilePath = ""
 
     private val universalShareBottomSheet: UniversalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
@@ -65,26 +66,20 @@ class ShareExperienceViewComponent(
     }
 
     private fun deleteTemporaryImage() {
-        if(isTemporaryImageAvailable())
-            File(imgSaveFilePath).delete()
-    }
-
-    private fun isTemporaryImageAvailable(): Boolean {
         if(imgSaveFilePath.isNotEmpty()) {
-            return File(imgSaveFilePath).exists()
+            File(imgSaveFilePath).apply {
+                if(exists()) delete()
+            }
         }
-
-        return false
     }
 
     fun saveTemporaryImage(imageUrl: String) {
         try {
-            if(isTemporaryImageAvailable()) {
-                listener.onShareOpenBottomSheet(this)
+            if(imgSaveFilePath.isNotEmpty()) {
+                listener.onShareOpenBottomSheet(this@ShareExperienceViewComponent)
                 return
             }
 
-            deleteTemporaryImage()
             loadImageWithEmptyTarget(context, imageUrl, {
                 fitCenter()
             }, MediaBitmapEmptyTarget(
@@ -95,16 +90,20 @@ class ShareExperienceViewComponent(
 
                     if(savedFile != null) {
                         imgSaveFilePath = savedFile.absolutePath
-                        listener.onShareOpenBottomSheet(this)
+                        universalShareBottomSheet.apply {
+                            setOgImageUrl(imageUrl)
+                            imageSaved(imgSaveFilePath)
+                        }
+                        listener.onShareOpenBottomSheet(this@ShareExperienceViewComponent)
                     }
                     else {
-                        listener.onHandleShareFallback(this)
+                        listener.onHandleShareFallback(this@ShareExperienceViewComponent)
                     }
                 }
             ))
         }
         catch (e: Exception) {
-            listener.onHandleShareFallback(this)
+            listener.onHandleShareFallback(this@ShareExperienceViewComponent)
         }
     }
 
@@ -112,8 +111,6 @@ class ShareExperienceViewComponent(
         universalShareBottomSheet.apply {
             setMetaData(tnTitle = title, tnImage = coverUrl)
             setUtmCampaignData("Play", userId, channelId, "share")
-            setOgImageUrl(coverUrl)
-            imageSaved(imgSaveFilePath)
             show(this@ShareExperienceViewComponent.fragmentManager, fragment, screenshotDetector)
         }
     }

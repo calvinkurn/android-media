@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
@@ -48,6 +49,7 @@ import javax.inject.Inject
  */
 class PlayUpcomingFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
+    private val dispatchers: CoroutineDispatchers,
 ): TkpdBaseV4Fragment(),
     ToolbarViewComponent.Listener,
     UpcomingActionButtonViewComponent.Listener,
