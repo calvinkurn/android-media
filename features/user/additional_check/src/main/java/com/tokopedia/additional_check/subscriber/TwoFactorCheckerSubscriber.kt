@@ -2,7 +2,6 @@ package com.tokopedia.additional_check.subscriber
 
 import android.app.Activity
 import android.app.Application
-import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.additional_check.data.ShowInterruptData
@@ -15,7 +14,6 @@ import com.tokopedia.additional_check.internal.AdditionalCheckConstants.REMOTE_C
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.REMOTE_CONFIG_2FA_SELLER_APP
 import com.tokopedia.additional_check.view.TwoFactorFragment
 import com.tokopedia.additional_check.view.TwoFactorViewModel
-import com.tokopedia.additional_check.view.activity.LinkAccountReminderActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
@@ -121,11 +119,13 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
                 popupType = showInterruptData.popupType
             )
 
-            if (result.popupType == POPUP_TYPE_NONE && showInterruptData.accountLinkReminderData.showReminder) {
-                gotoLinkAccountReminder(activity)
+            if (result.popupType == POPUP_TYPE_NONE &&
+                showInterruptData.accountLinkReminderData.showReminder &&
+                !GlobalConfig.isSellerApp()) {
+                    gotoLinkAccountReminder(activity)
             } else if (result.popupType == AdditionalCheckConstants.POPUP_TYPE_PHONE ||
-                result.popupType == AdditionalCheckConstants.POPUP_TYPE_PIN ||
-                result.popupType == AdditionalCheckConstants.POPUP_TYPE_BOTH
+                    result.popupType == AdditionalCheckConstants.POPUP_TYPE_PIN ||
+                    result.popupType == AdditionalCheckConstants.POPUP_TYPE_BOTH
             ) {
                 goTo2FAPage(activity, result)
             }
