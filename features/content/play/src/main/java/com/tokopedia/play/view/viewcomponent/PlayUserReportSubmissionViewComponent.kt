@@ -92,6 +92,7 @@ class PlayUserReportSubmissionViewComponent(
         etSubmission.setCounter(item.submissionData.max)
         etSubmission.setLabel(item.submissionData.label)
         etSubmission.setMessage(getFieldMessage(false))
+        etSubmission.editText.text.clear()
 
         btnSubmit.setOnClickListener {
             val desc = etSubmission.editText.text.toString()
