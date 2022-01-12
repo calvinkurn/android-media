@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
-import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
+import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
+import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardEnum
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -47,73 +47,237 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        showInitalView()
+        observeData()
+        viewModel.getDelayedResponse()
+    }
 
+    private fun observeData() {
+        viewModel.dummy.observe(viewLifecycleOwner, {
+            showDenomGrid()
+            showMCCM()
+            showFlashSale()
+        })
+    }
+
+    private fun showInitalView(){
         binding?.let {
-            it.widgetRecommendationCard.renderRecommendationLayout(recommendationListener = object : RechargeRecommendationCardListener{
-                override fun onProductRecommendationCardClicked(applinkUrl: String) {
-                    context?.let {
-                        RouteManager.route(it, applinkUrl)
-                    }
+        }
+    }
+
+
+
+    private fun showDenomGrid(){
+        binding?.let {
+            it.widgetDenomGrid.renderDenomGridLayout(denomGridListener = object: RechargeDenomGridListener{
+                override fun onDenomGridClicked(denomGrid: DenomWidgetModel, position: Int) {
+                    //todo
                 }
-            },
-                "", listOf()
-                //use data dummy,
-//                "Paling sering kamu beli",
-//                listOf(
-//                    RecommendationCardWidgetModel(
-//                        RecommendationCardEnum.SMALL,
-//                        "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png",
-//                        "Token Listrik 100ribu",
-//                        "Rp101.500",
-//                        "tokopedia://deals"
-//                    ),
-//                    RecommendationCardWidgetModel(
-//                        RecommendationCardEnum.SMALL,
-//                        "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png",
-//                        "Token Listrik 20 ribu",
-//                        "Rp20.500",
-//                        "tokopedia://deals"
-//                    ),
-//                    RecommendationCardWidgetModel(
-//                        RecommendationCardEnum.SMALL,
-//                        "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png",
-//                        "Token Listrik 30 ribu",
-//                        "Rp30.500",
-//                        "tokopedia://deals"
-//                    )
-//                )
-//                listOf(
-//                    RecommendationCardWidgetModel(
-//                        RecommendationCardEnum.BIG,
-//                        "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png",
-//                        "Token Listrik 100ribu",
-//                        "Rp101.500",
-//                        "tokopedia://deals",
-//                        "30 GB",
-//                        "30 Days"
-//                    ),
-//
-//                    RecommendationCardWidgetModel(
-//                        RecommendationCardEnum.BIG,
-//                        "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png",
-//                        "Token Listrik 100ribu",
-//                        "Rp201.500",
-//                        "tokopedia://deals",
-//                        "3 GB",
-//                        "20 Days"
-//                    ),
-//
-//                    RecommendationCardWidgetModel(
-//                        RecommendationCardEnum.BIG,
-//                        "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png",
-//                        "Token Listrik 100ribu",
-//                        "Rp1.500",
-//                        "tokopedia://deals",
-//                        "3 - 5 GB",
-//                        "10 Days"
-//                    ),
-//
-//                )
+            }, "Diskon Rp15.000 buat pengguna baru, nih!",
+                listOf(
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        slashPrice = "Rp16.500",
+                    ),
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                        expiredDate = "December 2021",
+                        flashSaleLabel = "Segera Habis",
+                        flashSalePercentage = 80
+                    ),
+                    DenomWidgetModel(
+                        title="50 ribu",
+                        price = "Rp35.500",
+                    ),
+                    DenomWidgetModel(
+                        title="50 ribu",
+                        price = "Rp35.500",
+                        slashPrice = "75.000"
+                    ),
+                    DenomWidgetModel(
+                        title="100 ribu",
+                        price = "Rp85.500",
+                        slashPrice = "105.000"
+                    ),
+                    DenomWidgetModel(
+                        title="50 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp35.500",
+                    ),
+                    DenomWidgetModel(
+                        title="50 ribu",
+                        price = "Rp35.500",
+                    ),
+                    DenomWidgetModel(
+                        title="50 ribu",
+                        price = "Rp35.500",
+                    ),
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        //specialLabel = "Any campaign label",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+//                        discountLabel = "10%",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                        expiredDate = "December 2021",
+                        flashSaleLabel = "Segera Habis",
+                        flashSalePercentage = 80
+                    ),
+                    DenomWidgetModel(
+                        title="50 ribu",
+                        price = "Rp35.500",
+                        slashPrice = "Rp16.500",
+//                        appLink = "tokopedia://deals",
+//                        expiredDate = "December 2021",
+//                        flashSaleLabel = "Segera Habis",
+//                        flashSalePercentage = 80
+                    )
+                )
+            )
+        }
+    }
+
+    fun showMCCM(){
+        binding?.let {
+            it.widgetMccmGrid.renderMCCMGrid(
+                denomGridListener = object: RechargeDenomGridListener{
+                override fun onDenomGridClicked(denomGrid: DenomWidgetModel, position: Int) {
+                    //todo
+                }
+            }, "Diskon Rp15.000 buat pengguna baru, nih!",
+                listOf(
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                    ),
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                    ),
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                    ),
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                    ),
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                    ),
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                    )
+                )
+            )
+        }
+    }
+
+    fun showFlashSale(){
+        binding?.let {
+            it.widgetFlashSaleGrid.renderFlashSaleGrid(
+                denomGridListener = object: RechargeDenomGridListener{
+                    override fun onDenomGridClicked(denomGrid: DenomWidgetModel, position: Int) {
+                        //todo
+                    }
+                }, "Diskon Rp15.000 buat pengguna baru, nih!", "Selesai dalam",
+                listOf(
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                        flashSalePercentage = 80,
+                        flashSaleLabel = "Mau habis"
+                    ),
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                        flashSalePercentage = 80,
+                        flashSaleLabel = "Mau habis"
+                    ),
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                        flashSalePercentage = 80,
+                        flashSaleLabel = "Mau habis"
+                    ),
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                        flashSalePercentage = 80,
+                        flashSaleLabel = "Mau habis"
+                    ),
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                        flashSalePercentage = 80,
+                        flashSaleLabel = "Mau habis"
+                    ),
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                        flashSalePercentage = 80,
+                        flashSaleLabel = "Mau habis"
+                    )
+                )
             )
         }
     }
