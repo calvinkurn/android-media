@@ -2,12 +2,14 @@ package com.tokopedia.play.view.viewcomponent
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -22,6 +24,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListe
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.utils.image.ImageProcessingUtil
+import kotlinx.coroutines.*
 import java.io.File
 import java.lang.Exception
 
@@ -35,11 +38,14 @@ class ShareExperienceViewComponent(
     private val fragment: Fragment,
     private val listener: Listener,
     private val context: Context,
+    private val dispatchers: CoroutineDispatchers,
 ) : ViewComponent(container, idRes) {
 
     private val ivShareLink = findViewById<IconUnify>(R.id.ic_play_share_experience)
 
     private var imgSaveFilePath = ""
+    private var bitmap: Bitmap? = null
+    private val scope = CoroutineScope(dispatchers.computation)
 
     private val universalShareBottomSheet: UniversalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
         init(object: ShareBottomsheetListener {
@@ -55,8 +61,11 @@ class ShareExperienceViewComponent(
 
     private var screenshotDetector: ScreenshotDetector? = null
 
+    private var startTime: Long = 0L
+
     init {
         ivShareLink.setOnClickListener {
+            startTime = System.currentTimeMillis()
             listener.onShareIconClick(this)
         }
     }
@@ -79,10 +88,35 @@ class ShareExperienceViewComponent(
         }
     }
 
+    fun saveBitmap() {
+        bitmap?.let {
+            scope.launch {
+                val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
+                    it, Bitmap.CompressFormat.PNG
+                )
+
+                if(savedFile != null) {
+                    imgSaveFilePath = savedFile.absolutePath
+                    universalShareBottomSheet.apply {
+                        imageSaved(imgSaveFilePath)
+                    }
+                    withContext(Dispatchers.Main) {
+                        listener.onShareOpenBottomSheet(this@ShareExperienceViewComponent)
+                    }
+                }
+                else {
+                    withContext(Dispatchers.Main) {
+                        listener.onHandleShareFallback(this@ShareExperienceViewComponent)
+                    }
+                }
+            }
+        }
+    }
+
     fun saveTemporaryImage(imageUrl: String) {
         try {
-            if(isTemporaryImageAvailable()) {
-                listener.onShareOpenBottomSheet(this@ShareExperienceViewComponent)
+            if(bitmap != null) {
+                saveBitmap()
                 return
             }
 
@@ -90,21 +124,8 @@ class ShareExperienceViewComponent(
                 fitCenter()
             }, MediaBitmapEmptyTarget(
                 onReady = {
-                    val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
-                        it, Bitmap.CompressFormat.PNG
-                    )
-
-                    if(savedFile != null) {
-                        imgSaveFilePath = savedFile.absolutePath
-                        universalShareBottomSheet.apply {
-                            setOgImageUrl(imageUrl)
-                            imageSaved(imgSaveFilePath)
-                        }
-                        listener.onShareOpenBottomSheet(this@ShareExperienceViewComponent)
-                    }
-                    else {
-                        listener.onHandleShareFallback(this@ShareExperienceViewComponent)
-                    }
+                    bitmap = it
+                    saveBitmap()
                 }
             ))
         }
@@ -117,6 +138,7 @@ class ShareExperienceViewComponent(
         universalShareBottomSheet.apply {
             setMetaData(tnTitle = title, tnImage = coverUrl)
             setUtmCampaignData("Play", userId, channelId, "share")
+            setOgImageUrl(coverUrl)
             show(this@ShareExperienceViewComponent.fragmentManager, fragment, screenshotDetector)
         }
     }
@@ -156,6 +178,7 @@ class ShareExperienceViewComponent(
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         deleteTemporaryImage()
+        scope.cancel()
     }
 
     interface Listener {

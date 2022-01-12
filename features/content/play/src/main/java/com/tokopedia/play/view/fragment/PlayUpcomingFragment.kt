@@ -60,7 +60,7 @@ class PlayUpcomingFragment @Inject constructor(
     private val toolbarView by viewComponent { ToolbarViewComponent(it, R.id.view_toolbar, this) }
     private val upcomingTimer by viewComponent { UpcomingTimerViewComponent(it, R.id.view_upcoming_timer, this) }
     private val actionButton by viewComponent { UpcomingActionButtonViewComponent(it, R.id.btn_action, this) }
-    private val shareExperienceView by viewComponent { ShareExperienceViewComponent(it, R.id.view_upcoming_share_experience, childFragmentManager, this, this, requireContext()) }
+    private val shareExperienceView by viewComponent { ShareExperienceViewComponent(it, R.id.view_upcoming_share_experience, childFragmentManager, this, this, requireContext(), dispatchers) }
 
     private lateinit var ivUpcomingCover: ImageUnify
     private lateinit var tvUpcomingTitle: Typography
