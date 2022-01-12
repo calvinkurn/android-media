@@ -154,6 +154,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
                 this))
         recyclerViewVariantDetailFields?.adapter = variantDetailFieldsAdapter
         recyclerViewVariantDetailFields?.layoutManager = LinearLayoutManager(context)
+        recyclerViewVariantDetailFields?.itemAnimator = null
 
         switchUnifySku?.setOnClickListener {
             val isChecked = switchUnifySku?.isChecked.orFalse()
