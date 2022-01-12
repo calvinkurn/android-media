@@ -179,6 +179,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     override fun onOpenSocialMediaLinks() {
+
         openSocialMediaLinksBottomSheet()
     }
 

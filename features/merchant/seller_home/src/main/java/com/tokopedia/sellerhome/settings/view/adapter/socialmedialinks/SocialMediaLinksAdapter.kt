@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.settings.analytics.SocialMediaLinksTracker
 import com.tokopedia.sellerhome.settings.view.uimodel.socialmedialinks.SocialMediaLinkUiModel
 
 class SocialMediaLinksAdapter(private var context: Context) :
@@ -22,25 +23,29 @@ class SocialMediaLinksAdapter(private var context: Context) :
                     R.drawable.ic_sah_social_ig,
                     R.string.sah_social_ig_title,
                     R.string.sah_social_ig_desc,
-                    YT_LINK
+                    IG_LINK,
+                    SocialMediaLinksTracker.EventAction.CLICK_IG
                 ),
                 SocialMediaLinkUiModel(
                     R.drawable.ic_sah_social_yt,
                     R.string.sah_social_youtube_fb_title,
                     R.string.sah_social_youtube_desc,
-                    IG_LINK
+                    YT_LINK,
+                    SocialMediaLinksTracker.EventAction.CLICK_YT
                 ),
                 SocialMediaLinkUiModel(
                     R.drawable.ic_sah_social_fb,
                     R.string.sah_social_youtube_fb_title,
                     R.string.sah_social_fb_desc,
-                    FB_LINK
+                    FB_LINK,
+                    SocialMediaLinksTracker.EventAction.CLICK_FB
                 ),
                 SocialMediaLinkUiModel(
                     R.drawable.ic_sah_social_fb,
-                    R.string.sah_social_fb_keluarga_title,
-                    R.string.sah_social_fb_keluarga_desc,
-                    FB_FAMILY_LINK
+                    R.string.sah_social_fb_com_title,
+                    R.string.sah_social_fb_com_desc,
+                    FB_FAMILY_LINK,
+                    SocialMediaLinksTracker.EventAction.CLICK_COM_FB
                 )
             )
     }

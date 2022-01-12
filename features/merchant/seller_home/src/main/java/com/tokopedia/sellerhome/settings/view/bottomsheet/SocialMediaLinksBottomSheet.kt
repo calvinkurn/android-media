@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.databinding.BottomSheetSahSocialMediaBinding
+import com.tokopedia.sellerhome.settings.analytics.SocialMediaLinksTracker
 import com.tokopedia.sellerhome.settings.view.adapter.socialmedialinks.SocialMediaLinksAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -19,6 +20,9 @@ class SocialMediaLinksBottomSheet: BottomSheetUnify() {
         fun createInstance(): SocialMediaLinksBottomSheet {
             return SocialMediaLinksBottomSheet().apply {
                 clearContentPadding = true
+                setShowListener {
+                    SocialMediaLinksTracker.sendBottomSheetImpressionEvent()
+                }
             }
         }
 

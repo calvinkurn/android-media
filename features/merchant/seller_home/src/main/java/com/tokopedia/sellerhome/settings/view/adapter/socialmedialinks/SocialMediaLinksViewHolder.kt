@@ -9,6 +9,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.databinding.ItemSahSocialLinksBinding
+import com.tokopedia.sellerhome.settings.analytics.SocialMediaLinksTracker
 import com.tokopedia.sellerhome.settings.view.uimodel.socialmedialinks.SocialMediaLinkUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -23,7 +24,7 @@ class SocialMediaLinksViewHolder(itemView: View): RecyclerView.ViewHolder(itemVi
 
     fun bind(uiModel: SocialMediaLinkUiModel) {
         setupLayout(uiModel)
-        setCtaClick(uiModel.ctaLink)
+        setCtaClick(uiModel.eventAction, uiModel.ctaLink)
     }
 
     private fun setupLayout(uiModel: SocialMediaLinkUiModel) {
@@ -36,9 +37,11 @@ class SocialMediaLinksViewHolder(itemView: View): RecyclerView.ViewHolder(itemVi
         }
     }
 
-    private fun setCtaClick(link: String) {
+    private fun setCtaClick(eventAction: String,
+                            link: String) {
         binding?.btnSahItemSocial?.run {
             setOnClickListener {
+                SocialMediaLinksTracker.sendClickEvent(eventAction)
                 val uri = Uri.parse(link)
                 goToDefaultIntent(itemView.context, uri)
             }

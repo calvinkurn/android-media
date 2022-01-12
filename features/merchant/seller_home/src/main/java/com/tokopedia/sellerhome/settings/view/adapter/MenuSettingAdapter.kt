@@ -15,6 +15,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.SellerHomeConst
+import com.tokopedia.sellerhome.settings.analytics.SocialMediaLinksTracker
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.MenuSettingAccess
 import java.util.*
 
@@ -71,7 +72,13 @@ class MenuSettingAdapter(private val context: Context?,
                 title = context?.getString(R.string.sah_social_menu_title).orEmpty(),
                 settingTypeInfix = SettingTrackingConstant.APP_SETTING,
                 tag = getSocialTag()
-            ) { listener.onOpenSocialMediaLinks() },
+            ) {
+                listener.onOpenSocialMediaLinks()
+            }.apply {
+                clickSendTracker = {
+                    SocialMediaLinksTracker.sendClickEvent()
+                }
+            },
             DividerUiModel(DividerType.THIN_INDENTED)
     )
 
