@@ -281,9 +281,9 @@ class HomeVisitableFactoryImpl(
                                     onLoading = {
                                         visitableList.add(ShimmeringChannelDataModel(data.id.toString()))
                                     },
-                                    onError = {
-
-                                    },
+//                                    onError = {
+//
+//                                    },
                                     onSuccess = {
                                         addHomePageBannerData(data.getAtfContent<com.tokopedia.home.beranda.domain.model.banner.BannerDataModel>())
                                     },
