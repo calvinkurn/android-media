@@ -139,7 +139,7 @@ class PlayUserReportSheetViewComponent(
 
     fun showPlaceholder(){
         clContent.show()
-        setReportSheet(getPlaceholderModel())
+        categoryAdapter.setItemsAndAnimateChanges(getPlaceholderModel().reasoningList)
     }
 
     private fun getPlaceholderModel() = PlayUserReportUiModel.Loaded(

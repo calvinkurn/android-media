@@ -13,10 +13,10 @@ import com.tokopedia.play.R
  * @author by astidhiyaa on 10/12/21
  */
 class ReasoningListItemDecoration(context: Context): RecyclerView.ItemDecoration() {
-    private val dividerHeight = context.resources.getDimensionPixelOffset(R.dimen.play_product_line_divider_height)
+    private val dividerHeight = context.resources.getDimensionPixelOffset(R.dimen.play_user_report_list_divider_height)
 
     private val mPaint = Paint().apply {
-        color = MethodChecker.getColor(context, R.color.play_dms_product_sheet_divider)
+        color = MethodChecker.getColor(context, R.color.play_dms_user_report_sheet_divider)
     }
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
