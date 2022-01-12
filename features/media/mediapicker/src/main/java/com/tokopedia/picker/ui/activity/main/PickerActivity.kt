@@ -112,9 +112,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener {
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        navigator?.cameraFragment?.let {
-            (it as CameraFragment).gestureDetector.onTouchEvent(ev)
-        }
+        navigator?.cameraFragment()?.gestureDetector?.onTouchEvent(ev)
         return super.dispatchTouchEvent(ev)
     }
 
