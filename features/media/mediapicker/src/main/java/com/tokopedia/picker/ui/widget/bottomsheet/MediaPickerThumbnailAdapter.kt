@@ -33,10 +33,11 @@ import java.lang.Exception
 
 class MediaPickerThumbnailAdapter(
     private val context: Context,
-    private var mediaPathList: MutableList<Media>,
+    private val mediaPathList: List<Media>,
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    val _mediaPathList: MutableList<Media> = mediaPathList.toMutableList()
     var backgroundColorPlaceHolder: Int = 0
     var canReorder = false
     var maxVideo = 1
@@ -51,7 +52,7 @@ class MediaPickerThumbnailAdapter(
     private val listRect: MutableMap<Int,Rect> = mutableMapOf()
 
     val getMediaPathList: List<Media>
-        get() = mediaPathList
+        get() = _mediaPathList
 
     inner class MediaPickerThumbnailViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
@@ -84,7 +85,7 @@ class MediaPickerThumbnailAdapter(
             })
             val isVideo = isVideoFormat(mediaPath)
             if (isVideo) {
-                val durationVideo = getVideoDurationLabel(context, Uri.parse(mediaPathList[position].path))
+                val durationVideo = getVideoDurationLabel(context, Uri.parse(_mediaPathList[position].path))
                 tvDuration.visibility = View.VISIBLE
                 tvDuration.text = durationVideo
             } else {
@@ -108,10 +109,12 @@ class MediaPickerThumbnailAdapter(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setData(
         medias: MutableList<Media>,
     ) {
-        this.mediaPathList = medias
+        _mediaPathList.clear()
+        _mediaPathList.addAll(medias)
         listener?.onDataSetChanged(medias, null)
         notifyDataSetChanged()
     }
@@ -119,32 +122,32 @@ class MediaPickerThumbnailAdapter(
     fun addData(media: Media) {
         val isVideo = isVideoFormat(media.path)
         if (isVideo && totalVideo >= maxVideo) {
-            listener?.onDataSetChanged(mediaPathList, Exception("the video has exceeded the specified limit"))
+            listener?.onDataSetChanged(_mediaPathList, Exception("the video has exceeded the specified limit"))
             return
         } else if(isVideo && totalVideo < maxVideo) {
             totalVideo+=1
         }
-        if (!mediaPathList.contains(media)) {
-            mediaPathList.add(media)
-            notifyItemChanged(mediaPathList.size - 1)
-            listener?.onDataSetChanged(mediaPathList, null)
+        if (!_mediaPathList.contains(media)) {
+            _mediaPathList.add(media)
+            notifyItemChanged(_mediaPathList.size - 1)
+            listener?.onDataSetChanged(_mediaPathList, null)
         }
     }
 
     fun removeData(media: Media): Int {
-        val index = mediaPathList.indexOf(media)
+        val index = _mediaPathList.indexOf(media)
         removeData(index)
         return index
     }
 
     fun removeData(index: Int) {
         if (index > -1) {
-            if (isVideoFormat(mediaPathList[index].path)) {
+            if (isVideoFormat(_mediaPathList[index].path)) {
                 totalVideo-=1
             }
-            mediaPathList.removeAt(index)
-            listener?.onDataSetChanged(mediaPathList, null)
-            notifyDataSetChanged()
+            _mediaPathList.removeAt(index)
+            listener?.onDataSetChanged(_mediaPathList, null)
+            notifyItemChanged(index)
             listRect.remove(index)
         }
     }
@@ -183,7 +186,7 @@ class MediaPickerThumbnailAdapter(
                 setupLongClickListener(holder)
                 setupDragListener(holder, position)
             }
-            val media = mediaPathList[position].path
+            val media = _mediaPathList[position].path
             (holder as MediaPickerThumbnailViewHolder).ivDelete.setOnClickListener {
                 removeData(position)
             }
@@ -195,7 +198,7 @@ class MediaPickerThumbnailAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position < mediaPathList.size) {
+        return if (position < _mediaPathList.size) {
             ITEM_TYPE
         } else PLACEHOLDER_TYPE
     }
@@ -232,6 +235,7 @@ class MediaPickerThumbnailAdapter(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun setupDragListener(holder: RecyclerView.ViewHolder, position: Int) {
         holder.itemView.setOnDragListener { _, dragEvent ->
             when(dragEvent.action) {
@@ -251,10 +255,10 @@ class MediaPickerThumbnailAdapter(
                 DragEvent.ACTION_DROP -> {
                     val item: ClipData.Item = dragEvent.clipData.getItemAt(0)
                     val dragPosition = Integer.parseInt(item.text.toString())
-                    val draggedImagePath = mediaPathList!![dragPosition]
-                    val targetImagePath = mediaPathList!![position]
-                    mediaPathList[dragPosition] = targetImagePath
-                    mediaPathList[position] = draggedImagePath
+                    val draggedImagePath = _mediaPathList[dragPosition]
+                    val targetImagePath = _mediaPathList[position]
+                    _mediaPathList[dragPosition] = targetImagePath
+                    _mediaPathList[position] = draggedImagePath
                     notifyDataSetChanged()
                     true
                 }
@@ -285,7 +289,7 @@ class MediaPickerThumbnailAdapter(
         return if (maxSize > 0) {
             maxSize
         } else {
-            mediaPathList.size
+            _mediaPathList.size
         }
     }
 
