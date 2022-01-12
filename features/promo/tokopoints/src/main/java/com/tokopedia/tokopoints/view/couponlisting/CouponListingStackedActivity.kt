@@ -128,15 +128,15 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (data != null) {
-            if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
-                mPresenter.getFilter()
-            } else if ((requestCode == REQUEST_CODE_STACKED_IN_ADAPTER || requestCode == REQUEST_CODE_STACKED_ADAPTER) && resultCode == Activity.RESULT_OK) {
-                val fragemnt = mAdapter?.getRegisteredFragment(view_pager_sort_type.currentItem)
-                fragemnt?.onActivityResult(requestCode, resultCode, data)
-            } else {
-                finish()
+        if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
+            mPresenter.getFilter()
+        } else if ((requestCode == REQUEST_CODE_STACKED_IN_ADAPTER || requestCode == REQUEST_CODE_STACKED_ADAPTER) && resultCode == Activity.RESULT_OK) {
+            val fragemnt = mAdapter?.getRegisteredFragment(view_pager_sort_type.currentItem)
+            data?.let {
+                fragemnt?.onActivityResult(requestCode, resultCode, it)
             }
+        } else {
+            finish()
         }
     }
 
