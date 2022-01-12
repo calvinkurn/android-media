@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
-import com.tokopedia.product.manage.common.feature.list.view.adapter.factory.ProductManageAdapterFactory
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.common.view.adapter.base.BaseProductManageAdapter
 import com.tokopedia.product.manage.feature.list.extension.findIndex
@@ -23,15 +22,58 @@ class ProductManageListAdapter(
         submitList(itemList)
     }
 
-    fun updateEmptyState(emptyModel: EmptyModel) {
-        if (visitables.getOrNull(lastIndex) !is EmptyModel) {
-            val dataCount = visitables.filter { it !is EmptyModel }.count().orZero()
-            if (dataCount > 0) {
-                visitables.removeAll { it !is EmptyModel }
-                notifyItemRangeRemoved(visitables.size, dataCount)
+    fun removeEmptyAndUpdateLayout(itemList: List<Visitable<*>>) {
+        val items = data.filter { it !is EmptyModel }.toMutableList().apply {
+            addAll(itemList)
+        }
+        submitList(items)
+    }
+
+    fun checkAllProducts(itemsChecked: MutableList<ProductUiModel>,
+                         onSetItemsChecked: (MutableList<ProductUiModel>) -> Unit) {
+        val items = data.filterIsInstance<ProductUiModel>().toMutableList()
+        val newItems = items.map { product ->
+            val checkedProduct = itemsChecked.firstOrNull { it.id == product.id }
+            if (checkedProduct == null) {
+                itemsChecked.add(product)
             }
-            visitables.add(emptyModel)
-            notifyItemInserted(lastIndex)
+            product.copy(isChecked = true)
+        }
+        submitList(newItems)
+        onSetItemsChecked(itemsChecked)
+    }
+
+    fun unCheckMultipleProducts(productIds: List<String>? = null,
+                                itemsChecked: MutableList<ProductUiModel>,
+                                onSetItemsUnchecked: (MutableList<ProductUiModel>) -> Unit) {
+        val items = data.filterIsInstance<ProductUiModel>().toMutableList()
+        val productIdList =
+            productIds ?: items.map {
+                it.id
+            }
+        val newItems = items.map { product ->
+            if (productIdList.contains(product.id)) {
+                itemsChecked.firstOrNull { it.id == product.id }?.let { checkedProduct ->
+                    itemsChecked.remove(checkedProduct)
+                }
+                product.copy(isChecked = false)
+            } else {
+                product
+            }
+        }
+        submitList(newItems)
+        onSetItemsUnchecked(itemsChecked)
+    }
+
+    fun updateEmptyState(emptyModel: EmptyModel) {
+        if (data.getOrNull(lastIndex) !is EmptyModel) {
+            val list = data.toMutableList()
+            val dataCount = data.filter { it !is EmptyModel }.count().orZero()
+            if (dataCount > 0) {
+                list.removeAll { it !is EmptyModel }
+            }
+            list.add(emptyModel)
+            submitList(list)
         }
     }
 

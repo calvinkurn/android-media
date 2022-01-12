@@ -2,6 +2,7 @@ package com.tokopedia.logisticaddaddress.features.district_recommendation
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -57,6 +58,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     private var staticDimen8dp: Int? = 0
     private var page: Int = 1
     private val mLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+    private val searchHandler = Handler()
     private val mEndlessListener = object : EndlessRecyclerViewScrollListener(mLayoutManager) {
         override fun onLoadMore(page: Int, totalItemsCount: Int) {
             presenter.loadData(input, page + 1)
@@ -186,7 +188,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
                     } else {
                         input = viewBinding?.searchPageInput?.searchBarTextField?.text.toString()
                         mIsInitialLoading = true
-                        handler.postDelayed({
+                        searchHandler.postDelayed({
                             presenter.loadData(input, page)
                         }, DELAY_MILIS)
                     }

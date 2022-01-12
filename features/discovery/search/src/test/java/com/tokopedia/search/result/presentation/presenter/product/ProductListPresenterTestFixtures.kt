@@ -11,12 +11,15 @@ import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.SchedulersProvider
+import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.Data
+import com.tokopedia.topads.sdk.utils.TopAdsHeadlineHelper
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.CapturingSlot
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.After
@@ -41,6 +44,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
     protected val searchCoachMarkLocalCache = mockk<CoachMarkLocalCache>(relaxed = true)
+    protected val topAdsHeadlineHelper = mockk<TopAdsHeadlineHelper>(relaxed = true)
     protected val testSchedulersProvider = object : SchedulersProvider {
         override fun io() = Schedulers.immediate()
 
@@ -65,6 +69,7 @@ internal open class ProductListPresenterTestFixtures {
             { saveLastFilterUseCase },
             topAdsUrlHitter,
             testSchedulersProvider,
+            topAdsHeadlineHelper
         )
         productListPresenter.attachView(productListView)
 
@@ -160,6 +165,31 @@ internal open class ProductListPresenterTestFixtures {
     @Suppress("UNCHECKED_CAST")
     internal fun RequestParams.getSearchProductParams(): Map<String, Any>
             = parameters[SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS] as Map<String, Any>
+
+    /**
+     * Mock behavior for TopAdsHeadlineHelper.processHeadlineAds:
+     * 1. Page 1 will take 2 Headline Ads
+     * 2. Page 2 and above will take 1 Headline Ads
+     * 3. isUseSeparator is only FALSE for the FIRST Headline Ads of the FIRST page
+     */
+    protected fun `Given top ads headline helper will process headline ads`(
+        searchProductModel: SearchProductModel,
+        page: Int = 1,
+    ) {
+        val headlineAdsCount = if (page <= 1) 2 else 1
+
+        every { topAdsHeadlineHelper.processHeadlineAds(any(), any(), any()) } answers {
+            searchProductModel.cpmModel.data.take(headlineAdsCount).forEachIndexed { index, data ->
+                val isUseSeparator = index > 0 || page > 1
+
+                thirdArg<(Int, ArrayList<CpmData>, Boolean) -> Unit>().invoke(
+                    index,
+                    arrayListOf(data),
+                    isUseSeparator,
+                )
+            }
+        }
+    }
 
     @After
     open fun tearDown() {
