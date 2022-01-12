@@ -9,7 +9,6 @@ import com.tokopedia.play.domain.repository.PlayViewerUserReportRepository
 import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.assertTrue
-import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUserReportReasoningMapper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -24,7 +23,6 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import java.lang.Exception
 
 /**
  * @author by astidhiyaa on 04/01/22

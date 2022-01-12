@@ -986,11 +986,6 @@ class ModelBuilder {
         errorMessage = IllegalStateException("error message "),
         cartId = ""
     )
-    fun buildUserReportReasoning(): UserReportOptions.Response = gson.fromJson(userReportReasonListJson, UserReportOptions.Response::class.java)
-
-    fun buildAddToCartModelResponseSuccess() =  CartFeedbackResponseModel(isSuccess = true, errorMessage = "", cartId = "123")
-    fun buildAddToCartModelResponseFail() = CartFeedbackResponseModel(isSuccess = false, errorMessage = "error message ", cartId = "")
-
     fun buildCartUiModel(
             product: PlayProductUiModel.Product,
             action: ProductAction,

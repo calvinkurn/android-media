@@ -25,7 +25,6 @@ class PostUserReportUseCase @Inject constructor(
         reporterId: Long,
         channelId: Long,
         mediaUrl: String,
-        ownerChannelUserId: Long = 0L,
         reasonId: Int,
         timestamp: Long,
         reportDesc: String,
@@ -35,7 +34,6 @@ class PostUserReportUseCase @Inject constructor(
             REPORTER_ID_PARAM to reporterId,
             CHANNEL_ID_PARAM to channelId,
             MEDIA_URL_PARAM to mediaUrl,
-            USER_ID_PARAM to ownerChannelUserId,
             REASON_ID_PARAM to reasonId,
             TIMESTAMP_PARAM to timestamp,
             DESCRIPTION_PARAM to reportDesc,
@@ -70,7 +68,6 @@ class PostUserReportUseCase @Inject constructor(
         private const val REPORTER_ID_PARAM = "reporter_id"
         private const val CHANNEL_ID_PARAM = "channel_id"
         private const val MEDIA_URL_PARAM = "media_url"
-        private const val USER_ID_PARAM = "user_id"
         private const val REASON_ID_PARAM = "reason_id"
         private const val TIMESTAMP_PARAM = "timestamp"
         private const val DESCRIPTION_PARAM = "description"
