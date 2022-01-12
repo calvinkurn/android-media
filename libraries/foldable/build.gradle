@@ -21,6 +21,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModel
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 }
 
 project.ext {

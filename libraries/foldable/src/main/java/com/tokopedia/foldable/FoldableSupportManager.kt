@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.base.view.activity
+package com.tokopedia.foldable
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -25,7 +25,7 @@ class FoldableSupportManager(val windowInfoRepo: WindowInfoRepo, val callback: C
         layoutUpdatesJob = CoroutineScope(Dispatchers.Main).launch {
             windowInfoRepo.windowLayoutInfo()
                 .collect { newLayoutInfo ->
-                    callback.onChangeLayout(newLayoutInfo)
+                    callback.onChangeLayout(FoldableInfo(newLayoutInfo))
                 }
         }
     }
@@ -51,6 +51,6 @@ class FoldableSupportManager(val windowInfoRepo: WindowInfoRepo, val callback: C
     }
 
     interface Callback {
-        fun onChangeLayout(newLayoutInfo: WindowLayoutInfo)
+        fun onChangeLayout(foldableInfo: FoldableInfo)
     }
 }

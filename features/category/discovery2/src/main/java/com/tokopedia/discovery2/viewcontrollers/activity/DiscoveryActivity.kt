@@ -3,13 +3,12 @@ package com.tokopedia.discovery2.viewcontrollers.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.window.WindowLayoutInfo
 import androidx.window.windowInfoRepository
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.FoldableSupportManager
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
@@ -32,6 +31,8 @@ import com.tokopedia.discovery2.di.DiscoveryModule
 import com.tokopedia.discovery2.di.DiscoveryRepoProvider
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
+import com.tokopedia.foldable.FoldableInfo
+import com.tokopedia.foldable.FoldableSupportManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.tokopoints_item_layout.*
@@ -80,13 +81,19 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>(), Fold
         initDaggerInject()
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
-        FoldableSupportManager(windowInfoRepository(), this)?.let {
+        FoldableSupportManager(windowInfoRepository(), this).let {
             this.lifecycle.addObserver(it)
         }
     }
 
-    override fun onChangeLayout(newLayoutInfo: WindowLayoutInfo) {
-        newLayoutInfo
+    override fun onChangeLayout(foldableInfo: FoldableInfo) {
+        Log.e("TEST_TAG","windowLayoutInfo - ${(foldableInfo.windowLayoutInfo)!=null}")
+        Log.e("TEST_TAG","foldingFeature - ${(foldableInfo.foldingFeature)!=null}")
+        Log.e("TEST_TAG","isFoldableDevice - ${foldableInfo.isFoldableDevice()}")
+        Log.e("TEST_TAG","isHalfOpen - ${foldableInfo.isHalfOpen()}")
+        Log.e("TEST_TAG","isTableTopMode - ${foldableInfo.isTableTopMode()}")
+        Log.e("TEST_TAG","isBookMode - ${foldableInfo.isBookMode()}")
+//        Log.e("TEST_TAG","isBookMode - ${foldableInfo.getDisplayFeatureBounds(findViewById(android.R.id.content).getRootView()),false}")
     }
 
     override fun sendScreenAnalytics() {
