@@ -69,20 +69,21 @@ class RxWebSocketUtilStub constructor(
     }
 
     fun generateUploadImageResposne(roomMetaData: RoomMetaData): WebSocketResponse {
-        return alterResponseOf(defaultImageResponsePath) {
-            val data = it.getAsJsonObject(data)
-            data.addProperty(msg_id, roomMetaData.msgId)
-            data.addProperty(from_uid, roomMetaData.receiver.uid)
-            data.addProperty(to_uid, roomMetaData.sender.uid)
-            data.addProperty(is_opposite, true)
-        }
+        return WebSocketResponse()
+//        return alterResponseOf(defaultImageResponsePath) {
+//            val data = it.getAsJsonObject(data)
+//            data.addProperty(msg_id, roomMetaData.msgId)
+//            data.addProperty(from_uid, roomMetaData.receiver.uid)
+//            data.addProperty(to_uid, roomMetaData.sender.uid)
+//            data.addProperty(is_opposite, true)
+//        }
     }
 
-    private val data = "data"
-    private val msg_id = "msg_id"
-    private val from_uid = "from_uid"
-    private val to_uid = "to_uid"
-    private val is_opposite = "is_opposite"
+//    private val data = "data"
+//    private val msg_id = "msg_id"
+//    private val from_uid = "from_uid"
+//    private val to_uid = "to_uid"
+//    private val is_opposite = "is_opposite"
 
     fun simulateResponse(wsResponseText: WebSocketResponse) {
         val responseString = CommonUtil.toJson(wsResponseText)

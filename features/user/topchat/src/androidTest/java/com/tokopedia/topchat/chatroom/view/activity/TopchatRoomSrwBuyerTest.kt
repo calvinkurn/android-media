@@ -1148,9 +1148,9 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
-        websocket.simulateResponse(wsSellerProductResponse.changeTimeStampTo(today()))
-        websocket.simulateResponse(wsSellerResponseText.changeTimeStampTo(today()))
+        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket2.simulateResponse(wsSellerProductResponse.changeTimeStampTo(today()))
+        websocket2.simulateResponse(wsSellerResponseText.changeTimeStampTo(today()))
 
         // Then
         assertSrwBubbleDoesNotExist()

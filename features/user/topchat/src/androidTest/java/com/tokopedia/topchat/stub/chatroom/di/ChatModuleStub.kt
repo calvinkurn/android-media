@@ -225,8 +225,11 @@ class ChatModuleStub {
 
     @ChatScope
     @Provides
-    fun provideFakeTopChatWebSocket(): FakeTopchatWebSocket {
-        return FakeTopchatWebSocket()
+    fun provideFakeTopChatWebSocket(
+        mapper: TopChatRoomGetExistingChatMapper,
+        session: UserSessionInterface
+    ): FakeTopchatWebSocket {
+        return FakeTopchatWebSocket(mapper, session)
     }
 
     @ChatScope
