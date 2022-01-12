@@ -94,6 +94,25 @@ class ComposeMsgTest : TopchatRoomTest() {
     }
 
     @Test
+    fun should_show_error_msg_with_the_right_offset_format_when_offset_exceed_limit() {
+        //Given
+        getChatUseCase.response = firstPageChatAsSeller
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        launchChatRoomActivity()
+        val offset = 10_001
+
+        //When
+        clickComposeArea()
+        setComposedText("a".repeat(MAX_CHAR + offset))
+
+        //Then
+        assertSendBtnDisabled()
+        assertTooLongErrorMsg(
+            context.getString(R.string.desc_topchat_max_char_exceeded, "10.000+")
+        )
+    }
+
+    @Test
     fun should_hide_error_msg_if_composed_msg_is_not_empty_and_equal_or_less_than_limit() {
         //Given
         getChatUseCase.response = firstPageChatAsSeller
