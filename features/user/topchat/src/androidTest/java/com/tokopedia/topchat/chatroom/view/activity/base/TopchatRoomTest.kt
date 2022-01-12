@@ -244,6 +244,7 @@ abstract class TopchatRoomTest {
         chatComponentStub = null
         keyboardStateIdling = null
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
+        disableUploadImageByService()
     }
 
     protected open fun setupResponse() {
