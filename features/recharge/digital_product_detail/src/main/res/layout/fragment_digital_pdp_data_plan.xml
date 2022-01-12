@@ -5,6 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.tokopedia.recharge_component.widget.DenomGridWidget
+        android:id="@+id/widget_denom_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
     <com.tokopedia.recharge_component.widget.MCCMFlashSaleGridWidget
         android:id="@+id/widget_mccm_grid"
         android:layout_width="match_parent"
