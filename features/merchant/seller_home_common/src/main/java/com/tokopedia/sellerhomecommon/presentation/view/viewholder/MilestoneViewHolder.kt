@@ -78,7 +78,6 @@ class MilestoneViewHolder(
             containerShcMilestoneSuccess.visible()
             tvTitleMilestoneWidget.text = data.title
             tvDescMilestoneWidget.text = data.subTitle
-            tvProgressTitleMilestoneWidget.text = data.milestoneProgress.description
             setTagNotification(element.tag)
 
             val milestoneValueFmt = data.milestoneProgress.percentageFormatted.parseAsHtml()
@@ -87,9 +86,11 @@ class MilestoneViewHolder(
             iconShcToggleMission.setOnClickListener {
                 if (rvShcMissionMilestone.isVisible) {
                     rvShcMissionMilestone.gone()
+                    progressBarShcMilestone.visible()
                     iconShcToggleMission.setImage(IconUnify.CHEVRON_UP)
                 } else {
                     rvShcMissionMilestone.visible()
+                    progressBarShcMilestone.gone()
                     iconShcToggleMission.setImage(IconUnify.CHEVRON_DOWN)
                 }
                 if (!element.isAlreadyMinimized) {
