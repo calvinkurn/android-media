@@ -8,11 +8,11 @@ import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiMod
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ProtectedParameterSectionUiModel
 import com.tokopedia.shop.score.uitest.features.performance.base.ShopScoreTest
-import com.tokopedia.shop.score.uitest.stub.common.util.isViewDisplayed
-import com.tokopedia.shop.score.uitest.stub.common.util.onClick
-import com.tokopedia.shop.score.uitest.stub.common.util.onIdView
-import com.tokopedia.shop.score.uitest.stub.common.util.scrollTo
-import com.tokopedia.shop.score.uitest.stub.common.util.withTextStr
+import com.tokopedia.shop.score.stub.common.util.isViewDisplayed
+import com.tokopedia.shop.score.stub.common.util.onClick
+import com.tokopedia.shop.score.stub.common.util.onIdView
+import com.tokopedia.shop.score.stub.common.util.scrollTo
+import com.tokopedia.shop.score.stub.common.util.withTextStr
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 

@@ -4,9 +4,9 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.uitest.features.performance.base.ShopScoreTest
-import com.tokopedia.shop.score.uitest.stub.common.util.onClick
-import com.tokopedia.shop.score.uitest.stub.common.util.onIdView
-import com.tokopedia.shop.score.uitest.stub.common.util.scrollTo
+import com.tokopedia.shop.score.stub.common.util.onClick
+import com.tokopedia.shop.score.stub.common.util.onIdView
+import com.tokopedia.shop.score.stub.common.util.scrollTo
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 
