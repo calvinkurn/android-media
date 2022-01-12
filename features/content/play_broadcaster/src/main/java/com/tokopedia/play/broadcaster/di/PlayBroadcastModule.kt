@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.di.broadcast
+package com.tokopedia.play.broadcaster.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -30,47 +30,8 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 
-/**
- * Created by jegul on 20/05/20
- */
 @Module
-class PlayBroadcastModule(private val mContext: Context) {
-
-    @Provides
-    fun provideContext(): Context {
-        return mContext
-    }
-
-    @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context)
-    }
-
-    @Provides
-    fun provideLocalCacheHandler(): LocalCacheHandler {
-        return LocalCacheHandler(mContext, KEY_GROUP_CHAT_PREFERENCES)
-    }
-
-    @Provides
-    fun providePlayLivePusherMediator(localCacheHandler: LocalCacheHandler, playLivePusherTimer: PlayLivePusherTimer): PusherMediator {
-        return if (AbTestBroadcaster.isUseBroadcasterSdk()) {
-            LiveBroadcasterMediator(LiveBroadcasterManager(), localCacheHandler, playLivePusherTimer)
-        } else {
-            PlayLivePusherMediator(PlayLivePusherImpl(), localCacheHandler, playLivePusherTimer)
-        }
-    }
-
-    @PlayBroadcastScope
-    @Provides
-    fun provideWebSocket(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers, localCacheHandler: LocalCacheHandler): PlayWebSocket {
-        return PlayWebSocketImpl(
-            OkHttpClient.Builder(),
-            userSession,
-            dispatchers,
-            mContext,
-            localCacheHandler,
-        )
-    }
+class PlayBroadcastModule {
 
     @Provides
     fun provideGraphQLRepository(): GraphqlRepository {
@@ -82,7 +43,44 @@ class PlayBroadcastModule(private val mContext: Context) {
         return UpdateChannelUseCase(graphqlRepository)
     }
 
-    @PlayBroadcastScope
+    @Provides
+    fun providePlayLivePusherMediator(localCacheHandler: LocalCacheHandler, playLivePusherTimer: PlayLivePusherTimer): PusherMediator {
+        return if (AbTestBroadcaster.isUseBroadcasterSdk()) {
+            LiveBroadcasterMediator(LiveBroadcasterManager(), localCacheHandler, playLivePusherTimer)
+        } else {
+            PlayLivePusherMediator(PlayLivePusherImpl(), localCacheHandler, playLivePusherTimer)
+        }
+    }
+
+    @Provides
+    fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler {
+        return LocalCacheHandler(context, KEY_GROUP_CHAT_PREFERENCES)
+    }
+
+    @ActivityRetainedScope
+    @Provides
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
+    }
+
+    @ActivityRetainedScope
+    @Provides
+    fun provideWebSocket(
+        userSession: UserSessionInterface,
+        dispatchers: CoroutineDispatchers,
+        localCacheHandler: LocalCacheHandler,
+        @ApplicationContext context: Context
+    ): PlayWebSocket {
+        return PlayWebSocketImpl(
+            OkHttpClient.Builder(),
+            userSession,
+            dispatchers,
+            context,
+            localCacheHandler,
+        )
+    }
+
+    @ActivityRetainedScope
     @Provides
     fun providePlayBroadcastAnalytic(
         userSession: UserSessionInterface,
@@ -92,13 +90,13 @@ class PlayBroadcastModule(private val mContext: Context) {
         return PlayBroadcastAnalytic(userSession, contentTaggingAnalytic, interactiveAnalytic)
     }
 
-    @PlayBroadcastScope
+    @ActivityRetainedScope
     @Provides
     fun provideHtmlTextTransformer(): HtmlTextTransformer {
         return DefaultHtmlTextTransformer()
     }
 
-    @PlayBroadcastScope
+    @ActivityRetainedScope
     @Provides
     fun providePlayBroadcastMapper(htmlTextTransformer: HtmlTextTransformer): PlayBroadcastMapper {
         return PlayBroadcastUiMapper(htmlTextTransformer)
