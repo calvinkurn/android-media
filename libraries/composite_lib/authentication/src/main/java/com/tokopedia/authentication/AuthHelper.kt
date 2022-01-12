@@ -3,7 +3,6 @@ package com.tokopedia.authentication
 import android.os.Build
 import android.util.Base64
 import androidx.collection.ArrayMap
-import com.google.gson.Gson
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.user.session.UserSessionInterface
 import java.security.InvalidKeyException
@@ -226,6 +225,14 @@ class AuthHelper {
                 e.printStackTrace()
 
                 return ""
+            } catch (e: NullPointerException) {
+                /*
+                    To Prevent Fatal Exception: java.lang.RuntimeException
+                    Attempt to invoke virtual method 'boolean java.lang.String.equals(java.lang.Object)' on a null object reference
+                */
+                e.printStackTrace()
+
+                return ""
             }
         }
 
@@ -236,9 +243,16 @@ class AuthHelper {
 
         @JvmStatic
         fun generateDate(dateFormat: String): String {
-            val simpleDateFormat = SimpleDateFormat(dateFormat, Locale.ENGLISH)
-
-            return simpleDateFormat.format(Date())
+            return try {
+                val simpleDateFormat = SimpleDateFormat(dateFormat, Locale.ENGLISH)
+                simpleDateFormat.format(Date())
+            }catch (e: RuntimeException) {
+            /*
+                To Prevent Fatal Exception: java.lang.RuntimeException
+                DateTimePatternGenerator::createInstance failed: U_ILLEGAL_CHARACTER
+            */
+                ""
+            }
         }
 
         @JvmStatic
