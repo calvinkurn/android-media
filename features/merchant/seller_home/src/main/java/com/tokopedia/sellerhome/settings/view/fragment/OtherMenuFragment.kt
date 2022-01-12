@@ -742,11 +742,11 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             ).orEmpty()
         )
         SellerZeroOutageErrorHandler.logExceptionToServer(
+            errorTag = SellerZeroOutageErrorHandler.OTHER_MENU,
             throwable = throwable,
             errorType = context?.getString(R.string.setting_header_error_message,
                 errorType
             ).orEmpty(),
-            pageType = SellerZeroOutageErrorHandler.PageType.OTHER_MENU,
             deviceId = userSession.deviceId.orEmpty()
         )
     }

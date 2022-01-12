@@ -1015,10 +1015,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 is Fail -> {
                     showToasterError(view)
                     SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
                         throwable = result.throwable,
                         errorType =
                         SellerZeroOutageErrorHandler.SomMessage.GET_TOP_ADS_CATEGORY_ERROR,
-                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -1034,10 +1034,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     binding?.tickerSomList?.gone()
                     showToasterError(view)
                     SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
                         throwable = result.throwable,
                         errorType =
                         SellerZeroOutageErrorHandler.SomMessage.GET_TICKERS_ERROR,
-                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -1059,10 +1059,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                         is Fail -> {
                             showGlobalError(result.throwable)
                             SellerZeroOutageErrorHandler.logExceptionToServer(
+                                errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
                                 throwable = result.throwable,
                                 errorType =
                                 SellerZeroOutageErrorHandler.SomMessage.FILTER_DATA_ON_ORDER_LIST_ERROR,
-                                pageType = SellerZeroOutageErrorHandler.PageType.SOM,
                                 deviceId = userSession.deviceId.orEmpty()
                             )
                         }
@@ -1079,10 +1079,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 is Fail -> {
                     showToasterError(view)
                     SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
                         throwable = result.throwable,
                         errorType =
                         SellerZeroOutageErrorHandler.SomMessage.GET_WAITING_PAYMENT_COUNTER_ERROR,
-                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -1103,10 +1103,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 is Fail -> {
                     showGlobalError(result.throwable)
                     SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
                         throwable = result.throwable,
                         errorType =
                         SellerZeroOutageErrorHandler.SomMessage.GET_ORDER_LIST_ERROR,
-                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -1134,10 +1134,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                         canRetry = false
                     )
                     SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
                         throwable = result.throwable,
                         errorType =
                         SellerZeroOutageErrorHandler.SomMessage.ACCEPT_ORDER_ERROR,
-                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -1163,10 +1163,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 is Fail -> {
                     it.throwable.showErrorToaster()
                     SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
                         throwable = it.throwable,
                         errorType =
                         SellerZeroOutageErrorHandler.SomMessage.REJECT_ORDER_ERROR,
-                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -1204,10 +1204,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                         it.throwable.showErrorToaster()
                     }
                     SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
                         throwable = it.throwable,
                         errorType =
                         SellerZeroOutageErrorHandler.SomMessage.CHANGE_AWB_ERROR,
-                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -1228,10 +1228,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                         SomConsts.ERROR_REJECT_CANCEL_ORDER
                     )
                     SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
                         throwable = result.throwable,
                         errorType =
                         SellerZeroOutageErrorHandler.SomMessage.REJECT_CANCEL_REQUEST_ERROR,
-                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                     result.throwable.showErrorToaster()
@@ -1257,10 +1257,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                         result.throwable.showErrorToaster()
                     }
                     SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
                         throwable = result.throwable,
                         errorType =
                         SellerZeroOutageErrorHandler.SomMessage.BULK_ACCEPT_ORDER_ERROR,
-                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -1331,10 +1331,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 is Fail -> {
                     newShowFailedAcceptAllOrderDialog(getSelectedOrderIds().size, getSelectedOrderIds().size)
                     SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
                         throwable = result.throwable,
                         errorType =
                         SellerZeroOutageErrorHandler.SomMessage.GET_BULK_ACCEPT_ORDER_STATUS_ERROR,
-                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -1504,10 +1504,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 is Fail -> {
                     showErrorBulkRequestPickup()
                     SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
                         throwable = it.throwable,
                         errorType =
                         SellerZeroOutageErrorHandler.SomMessage.BULK_REQUEST_PICKUP_ERROR,
-                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -1759,10 +1759,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 is Fail -> {
                     onFailedValidateOrder()
                     SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
                         throwable = result.throwable,
                         errorType =
                         SellerZeroOutageErrorHandler.SomMessage.VALIDATE_ORDER_ERROR,
-                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -1788,10 +1788,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 is Fail -> {
                     showGlobalError(result.throwable)
                     SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
                         throwable = result.throwable,
                         errorType =
                         SellerZeroOutageErrorHandler.SomMessage.GET_ADMIN_PERMISSION_ERROR,
-                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }

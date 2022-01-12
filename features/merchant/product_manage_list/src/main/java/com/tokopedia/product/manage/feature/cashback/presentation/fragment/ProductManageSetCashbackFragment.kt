@@ -250,10 +250,10 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
                     onErrorSetCashback(it.throwable as SetCashbackResult)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
                     SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.PRODUCT_MANAGE_TAG,
                         throwable = it.throwable,
                         errorType =
                         SellerZeroOutageErrorHandler.ProductManageMessage.SET_CASHBACK_ERROR,
-                        pageType = SellerZeroOutageErrorHandler.PageType.PRODUCT_MANAGE,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }

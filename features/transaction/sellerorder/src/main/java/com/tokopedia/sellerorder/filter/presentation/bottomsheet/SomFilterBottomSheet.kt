@@ -343,10 +343,10 @@ class SomFilterBottomSheet : BottomSheetUnify(),
             }
             is Fail -> {
                 SellerZeroOutageErrorHandler.logExceptionToServer(
+                    errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
                     throwable = it.throwable,
                     errorType =
                     SellerZeroOutageErrorHandler.SomMessage.GET_FILTER_DATA_ERROR,
-                    pageType = SellerZeroOutageErrorHandler.PageType.SOM,
                     deviceId = userSession.deviceId.orEmpty()
                 )
             }

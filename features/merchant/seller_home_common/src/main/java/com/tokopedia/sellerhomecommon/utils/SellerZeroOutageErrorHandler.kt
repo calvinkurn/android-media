@@ -14,14 +14,10 @@ object SellerZeroOutageErrorHandler {
     private const val STACKTRACE_KEY = "stacktrace"
     private const val EXTRAS_KEY = "extras"
 
-    private const val ERROR_TAG = "SELLER_HOME_ERROR"
-
-    object PageType {
-        const val SELLER_HOME = "sellerHomePage"
-        const val PRODUCT_MANAGE = "productManagePage"
-        const val SOM = "SomPage"
-        const val OTHER_MENU = "otherMenuPage"
-    }
+    const val SELLER_HOME_TAG = "SELLER_HOME_ERROR"
+    const val PRODUCT_MANAGE_TAG = "PRODUCT_MANAGE_ERROR"
+    const val SOM_TAG = "SOM_ERROR"
+    const val OTHER_MENU = "OTHER_MENU_ERROR"
 
     object ProductManageMessage {
         const val FILTER_OPTIONS_ERROR = "product manage filter options response error"
@@ -89,23 +85,22 @@ object SellerZeroOutageErrorHandler {
     }
 
     fun logExceptionToServer(
+        errorTag: String,
         throwable: Throwable,
         errorType: String,
-        pageType: String,
         deviceId: String,
         extras: Map<String, Any> = mapOf()
     ) {
         ServerLogger.log(
             Priority.P2,
-            ERROR_TAG,
-            getSellerOutageErrorMessageMap(throwable, errorType, pageType, deviceId, extras)
+            errorTag,
+            getSellerOutageErrorMessageMap(throwable, errorType, deviceId, extras)
         )
     }
 
     private fun getSellerOutageErrorMessageMap(
         throwable: Throwable,
         errorType: String,
-        pageType: String,
         deviceId: String,
         extras: Map<String, Any>
     ): Map<String, String> {
@@ -115,7 +110,6 @@ object SellerZeroOutageErrorHandler {
             put(ERROR_TYPE_KEY, errorType)
             put(DEVICE_ID_KEY, deviceId)
             put(MESSAGE_KEY, throwable.localizedMessage.orEmpty())
-            put(PAGE_TYPE_KEY, pageType)
             if (stringExtras.isNotBlank()) {
                 put(EXTRAS_KEY, stringExtras)
             }

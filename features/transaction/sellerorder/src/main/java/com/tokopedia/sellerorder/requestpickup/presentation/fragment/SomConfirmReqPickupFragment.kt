@@ -149,10 +149,10 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                         ERROR_GET_CONFIRM_REQUEST_PICKUP_DATA
                     )
                     SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
                         throwable = it.throwable,
                         errorType =
                         SellerZeroOutageErrorHandler.SomMessage.GET_REQUEST_PICKUP_DATA_ERROR,
-                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                     context?.run {
@@ -180,10 +180,10 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                         ERROR_PROCESSING_REQUEST_PICKUP
                     )
                     SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
                         throwable = it.throwable,
                         errorType =
                         SellerZeroOutageErrorHandler.SomMessage.REQUEST_PICKUP_ERROR,
-                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                     context?.run {

@@ -286,10 +286,10 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
                         animateCheckAndSetStockButtonLeave()
                     }
                     SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
                         throwable = result.throwable,
                         errorType =
                         SellerZeroOutageErrorHandler.SomMessage.GET_WAITING_PAYMENT_ORDER_LIST_ERROR,
-                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }

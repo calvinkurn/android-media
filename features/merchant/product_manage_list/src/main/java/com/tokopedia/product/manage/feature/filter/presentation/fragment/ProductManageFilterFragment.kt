@@ -267,10 +267,10 @@ class ProductManageFilterFragment(
                     this.dismiss()
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
                     SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.PRODUCT_MANAGE_TAG,
                         throwable = it.throwable,
                         errorType =
                         SellerZeroOutageErrorHandler.ProductManageMessage.FILTER_OPTIONS_ERROR,
-                        pageType = SellerZeroOutageErrorHandler.PageType.PRODUCT_MANAGE,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }

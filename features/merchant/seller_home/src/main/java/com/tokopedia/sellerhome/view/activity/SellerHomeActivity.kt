@@ -497,10 +497,10 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                     )
 
                     SellerZeroOutageErrorHandler.logExceptionToServer(
+                        SellerZeroOutageErrorHandler.SELLER_HOME_TAG,
                         it.throwable,
                         SellerHomeErrorHandler.SHOP_INFO,
                         SellerHomeErrorHandler.SHOP_INFO,
-                        SellerZeroOutageErrorHandler.PageType.SELLER_HOME
                     )
                     navigator?.run {
                         if (isHomePageSelected()) {

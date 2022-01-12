@@ -264,10 +264,10 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                         Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
                     }
                     SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
                         throwable = it.throwable,
                         errorType =
                         SellerZeroOutageErrorHandler.SomMessage.CONFIRM_SHIPPING_ERROR,
-                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -308,10 +308,10 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_COURIER_LIST)
                     Utils.showToasterError(getString(R.string.global_error), view)
                     SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
                         throwable = it.throwable,
                         errorType =
                         SellerZeroOutageErrorHandler.SomMessage.GET_COURIER_LIST_ERROR,
-                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -337,10 +337,10 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                         Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
                     }
                     SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
                         throwable = it.throwable,
                         errorType =
                         SellerZeroOutageErrorHandler.SomMessage.CHANGE_COURIER_ERROR,
-                        pageType = SellerZeroOutageErrorHandler.PageType.SOM,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }

@@ -284,10 +284,10 @@ class StockReminderFragment: BaseDaggerFragment() {
                 }
                 ProductManageListErrorHandler.logExceptionToCrashlytics(stockReminderData.throwable)
                 SellerZeroOutageErrorHandler.logExceptionToServer(
+                    errorTag = SellerZeroOutageErrorHandler.PRODUCT_MANAGE_TAG,
                     throwable = stockReminderData.throwable,
                     errorType =
                     SellerZeroOutageErrorHandler.ProductManageMessage.GET_STOCK_REMINDER_ERROR,
-                    pageType = SellerZeroOutageErrorHandler.PageType.PRODUCT_MANAGE,
                     deviceId = userSession.deviceId.orEmpty()
                 )
             }
@@ -311,10 +311,10 @@ class StockReminderFragment: BaseDaggerFragment() {
                 Toaster.onCTAClick = View.OnClickListener { createStockReminder() }
                 ProductManageListErrorHandler.logExceptionToCrashlytics(stockReminderData.throwable)
                 SellerZeroOutageErrorHandler.logExceptionToServer(
+                    errorTag = SellerZeroOutageErrorHandler.PRODUCT_MANAGE_TAG,
                     throwable = stockReminderData.throwable,
                     errorType =
                     SellerZeroOutageErrorHandler.ProductManageMessage.CREATE_STOCK_REMINDER_ERROR,
-                    pageType = SellerZeroOutageErrorHandler.PageType.PRODUCT_MANAGE,
                     deviceId = userSession.deviceId.orEmpty()
                 )
             }
@@ -337,10 +337,10 @@ class StockReminderFragment: BaseDaggerFragment() {
                     Toaster.onCTAClick = View.OnClickListener { updateStockReminder() }
                     ProductManageListErrorHandler.logExceptionToCrashlytics(stockReminderData.throwable)
                     SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.PRODUCT_MANAGE_TAG,
                         throwable = stockReminderData.throwable,
                         errorType =
                         SellerZeroOutageErrorHandler.ProductManageMessage.UPDATE_STOCK_REMINDER_ERROR,
-                        pageType = SellerZeroOutageErrorHandler.PageType.PRODUCT_MANAGE,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
