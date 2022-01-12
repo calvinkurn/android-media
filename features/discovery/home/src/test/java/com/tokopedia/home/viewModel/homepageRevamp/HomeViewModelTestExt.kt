@@ -73,6 +73,7 @@ fun createHomeViewModel(
         homeBusinessUnitUseCase: HomeBusinessUnitUseCase = mockk(relaxed = true),
         homeBeautyFestUseCase: HomeBeautyFestUseCase = mockk(relaxed = true)
 ): HomeRevampViewModel{
+    homeBalanceWidgetUseCase.givenGetLoadingStateReturn()
     return HomeRevampViewModel(
             homeDispatcher = Lazy{ dispatchers },
             homeUseCase = Lazy{ getHomeUseCase },
@@ -206,6 +207,10 @@ fun HomeDynamicChannelUseCase.givenUpdateHomeDataReturn(result: com.tokopedia.ho
     }
 }
 
+fun HomeBalanceWidgetUseCase.givenGetLoadingStateReturn() {
+    coEvery { onGetBalanceWidgetLoadingState(any()) } returns HomeHeaderDataModel()
+}
+
 fun HomeDynamicChannelUseCase.givenUpdateHomeDataError(t: Throwable = Throwable("Unit test simulate error")) {
     mockkStatic(Log::class)
     every { Log.getStackTraceString(t) } returns ""
@@ -272,16 +277,16 @@ fun HomeRechargeBuWidgetUseCase.givenOnGetRechargeBuWidgetFromHolderError() {
     coEvery { onGetRechargeBuWidgetFromHolder(any(), any()) } throws Exception()
 }
 
-fun HomeDynamicChannelUseCase.givenUpdateHeaderData(homeHeaderDataModel: HomeHeaderDataModel) {
-    coEvery { updateHeaderData(any(), any()) } returns homeHeaderDataModel
-}
-
 fun HomeBalanceWidgetUseCase.givenGetHomeBalanceWidgetReturn(homeHeaderDataModel: HomeHeaderDataModel) {
     coEvery { onGetBalanceWidgetData(any()) } returns homeHeaderDataModel
 }
 
 fun HomeBalanceWidgetUseCase.givenGetTokopointDataReturn(homeHeaderDataModel: HomeHeaderDataModel) {
     coEvery { onGetTokopointData(any()) } returns homeHeaderDataModel
+}
+
+fun HomeBalanceWidgetUseCase.givenGetBalanceWidgetDataReturn(homeHeaderDataModel: HomeHeaderDataModel) {
+    coEvery { onGetWalletAppData(any()) } returns homeHeaderDataModel
 }
 
 fun HomeDynamicChannelUseCase.givenGetHomeDataReturn(homeDynamicChannelModel: HomeDynamicChannelModel, newHomeDynamicChannelModel: HomeDynamicChannelModel) {

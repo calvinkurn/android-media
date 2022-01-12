@@ -2231,11 +2231,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getHomeViewModel().getBusinessUnitData(tabId, position, tabName)
     }
 
-    override fun onRefreshTokoPointButtonClicked() {
-        getHomeViewModel().onRefreshTokoPoint()
+    override fun onRetryMembership() {
+        getHomeViewModel().onRefreshMembership()
     }
 
-    override fun onRefreshTokoCashButtonClicked() {
+    override fun onRetryWalletApp() {
+        getHomeViewModel().onRefreshWalletApp()
     }
 
     override fun onLegoBannerClicked(actionLink: String, trackingAttribution: String) {

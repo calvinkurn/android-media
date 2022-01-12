@@ -64,9 +64,9 @@ interface HomeCategoryListener {
 
     fun onDynamicChannelClicked(applink: String)
 
-    fun onRefreshTokoPointButtonClicked()
+    fun onRetryMembership()
 
-    fun onRefreshTokoCashButtonClicked()
+    fun onRetryWalletApp()
 
     fun onLegoBannerClicked(actionLink: String, trackingAttribution: String)
 

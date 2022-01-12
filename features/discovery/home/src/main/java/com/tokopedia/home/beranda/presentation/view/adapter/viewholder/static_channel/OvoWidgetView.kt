@@ -264,7 +264,7 @@ class OvoWidgetView: FrameLayout {
             // error state tokokpoint -> use case tokopoint error
             tokoPointHolder.setOnClickListener {
                 tokopointProgressBarLayout.visibility = View.VISIBLE
-                listener?.onRefreshTokoPointButtonClicked()
+                listener?.onRetryMembership()
             }
             tvActionTokopoint.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             tvActionTokopoint.visibility = View.VISIBLE
@@ -356,7 +356,7 @@ class OvoWidgetView: FrameLayout {
         if (element.tokopointsDrawerBBOHomeData == null && element.isTokoPointDataError) {
             bebasOngkirContainer.setOnClickListener {
                 tokopointProgressBarLayout.visibility = View.VISIBLE
-                listener?.onRefreshTokoPointButtonClicked()
+                listener?.onRetryMembership()
             }
             tvActionTokopoint.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             tvActionTokopoint.visibility = View.VISIBLE
