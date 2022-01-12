@@ -18,13 +18,17 @@ import com.tokopedia.data_explorer.db_explorer.domain.shared.models.DataBaseCont
 import com.tokopedia.data_explorer.db_explorer.extensions.InvalidPageRequestException
 import com.tokopedia.data_explorer.db_explorer.extensions.setupGrid
 import com.tokopedia.data_explorer.db_explorer.presentation.Constants
+import com.tokopedia.data_explorer.db_explorer.presentation.Searchable
+import com.tokopedia.data_explorer.db_explorer.presentation.content.bottomsheet.ColumnPickerBottomSheet
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.data_explorer_fragment_content_layout.*
+import kotlinx.android.synthetic.main.data_explorer_fragment_content_layout.searchInputView
+import kotlinx.android.synthetic.main.fragment_database_list_layout.*
 import javax.inject.Inject
 
-class ContentFragment : BaseDaggerFragment() {
+class ContentFragment : BaseDaggerFragment(), Searchable {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -67,7 +71,10 @@ class ContentFragment : BaseDaggerFragment() {
     }
 
     private fun initListeners() {
-        contentAdapter.onClick = { cell -> onCellClicked(cell)}
+        searchInputView.clearListener = { search(null) }
+        searchBtn.setOnClickListener { openColumnPicker(viewModel.columnHeaderList) }
+
+        contentAdapter.onClick = { cell -> onCellClicked(cell) }
         contentAdapter.headerItemClick = { header ->
             queryContent(header.text, header.order)
             viewModel.updateHeader(header)
@@ -92,6 +99,19 @@ class ContentFragment : BaseDaggerFragment() {
             setSubstractListener {
                 viewModel.currentPage = getValue()
                 queryContent()
+            }
+        }
+    }
+
+    private fun openColumnPicker(columnList: List<Cell>) {
+        val columnNameList: List<String> = columnList.filterNot {
+            it.text.isNullOrEmpty()
+        }.map { it.text ?: "" }
+        if (columnNameList.isEmpty()) {
+            // show toast
+        } else {
+            activity?.let {
+                ColumnPickerBottomSheet.showBottomSheet(searchQuery(), childFragmentManager)
             }
         }
     }
@@ -134,8 +154,8 @@ class ContentFragment : BaseDaggerFragment() {
                     showToast(it.message, Toaster.TYPE_NORMAL)
 
                 }
-                is IllegalStateException-> showToast(it.message, Toaster.TYPE_ERROR)
-                else -> showDatabaseError(it.message?: "Invalid Request")
+                is IllegalStateException -> showToast(it.message, Toaster.TYPE_ERROR)
+                else -> showDatabaseError(it.message ?: "Invalid Request")
 
             }
         })
@@ -182,4 +202,8 @@ class ContentFragment : BaseDaggerFragment() {
             return fragment
         }
     }
+
+    override fun search(query: String?) {}
+
+    override fun searchQuery() = searchInputView.searchBarTextField.text.toString()
 }

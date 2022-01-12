@@ -2,6 +2,7 @@ package com.tokopedia.data_explorer.db_explorer.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.data_explorer.db_explorer.di.modules.*
+import com.tokopedia.data_explorer.db_explorer.presentation.content.bottomsheet.ColumnPickerBottomSheet
 import com.tokopedia.data_explorer.db_explorer.presentation.content.ContentFragment
 import com.tokopedia.data_explorer.db_explorer.presentation.databases.DatabaseListFragment
 import com.tokopedia.data_explorer.db_explorer.presentation.schema.SchemaFragment
@@ -21,5 +22,6 @@ interface DataExplorerComponent {
     fun inject(databaseListFragment: DatabaseListFragment)
     fun inject(schemaFragment: SchemaFragment)
     fun inject(contentFragment: ContentFragment)
+    fun inject(columnPickerBottomSheet: ColumnPickerBottomSheet)
 
 }

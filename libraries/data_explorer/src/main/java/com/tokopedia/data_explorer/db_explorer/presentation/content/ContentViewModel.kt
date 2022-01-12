@@ -78,6 +78,10 @@ internal class ContentViewModel @Inject constructor(
         }
     }
 
+    fun search(query: String, columnName: String) {
+
+    }
+
     private fun validatePageRequest(page: Int?): Boolean {
         val requestedResults = (page ?: 1) * Data.Constants.Limits.PAGE_SIZE
         return totalResults - requestedResults > -Data.Constants.Limits.PAGE_SIZE
