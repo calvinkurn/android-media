@@ -30,7 +30,6 @@ import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.websocket.*
-import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
 import com.tokopedia.topchat.stub.common.UserSessionStub
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocketUtil
@@ -104,24 +103,6 @@ class ChatModuleStub {
                                    userSessionInterface: UserSessionInterface):
             TkpdAuthInterceptor {
         return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
-    }
-
-    // TODO: remove this
-    @ChatScope
-    @Provides
-    fun provideRxWebSocketUtil(
-            rxWebSocketUtilStub: RxWebSocketUtilStub
-    ): RxWebSocketUtil {
-        return rxWebSocketUtilStub
-    }
-
-    @ChatScope
-    @Provides
-    fun provideRxWebSocketUtilStub(
-        mapper: TopChatRoomGetExistingChatMapper,
-        session: UserSessionInterface,
-    ): RxWebSocketUtilStub {
-        return RxWebSocketUtilStub(mapper, session)
     }
 
     @ChatScope

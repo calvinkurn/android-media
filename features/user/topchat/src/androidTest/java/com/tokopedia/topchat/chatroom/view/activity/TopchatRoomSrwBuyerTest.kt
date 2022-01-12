@@ -23,7 +23,7 @@ import com.tokopedia.topchat.chatroom.view.activity.base.changeTimeStampTo
 import com.tokopedia.topchat.chatroom.view.activity.base.hasQuestion
 import com.tokopedia.topchat.chatroom.view.activity.base.matchProductWith
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
-import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
+import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
 import com.tokopedia.utils.time.RfcDateTimeParser
 import org.hamcrest.Matchers.not
 import org.junit.Before
@@ -1350,7 +1350,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     private fun today(): Long {
         val stringDate = SendableUiModel.generateStartTime()
         return RfcDateTimeParser.parseDateString(
-            stringDate, arrayOf(RxWebSocketUtilStub.START_TIME_FORMAT)
+            stringDate, arrayOf(FakeTopchatWebSocket.START_TIME_FORMAT)
         ).time
     }
 

@@ -17,7 +17,6 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerProfile
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.common.alterResponseOf
-import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
 import com.tokopedia.topchat.stub.chatroom.websocket.WebSocketStub
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.time.RfcDateTimeParser
@@ -144,7 +143,7 @@ class FakeTopchatWebSocket @Inject constructor(
         val parentReply = generateParentReplyFrom(request)
         val uiModel = mapper.map(room)
         val timestamp = RfcDateTimeParser.parseDateString(
-            requestStartTime, arrayOf(RxWebSocketUtilStub.START_TIME_FORMAT)
+            requestStartTime, arrayOf(START_TIME_FORMAT)
         ).time
         val message = MessagePojo(
             censoredReply = requestMsg,
@@ -249,6 +248,7 @@ class FakeTopchatWebSocket @Inject constructor(
     }
 
     companion object {
+        const val START_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
         private val data = "data"
         private val msg_id = "msg_id"
         private val from_uid = "from_uid"
