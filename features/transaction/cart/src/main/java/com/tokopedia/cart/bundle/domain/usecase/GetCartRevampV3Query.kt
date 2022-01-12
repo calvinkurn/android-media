@@ -96,7 +96,7 @@ fun getQueryCartRevampV3(): String {
                 ErrorProductAvailableStockDetail
                 ErrorProductMaxQuantity
                 ErrorProductMinQuantity
-                # ErrorBOAffordability
+                ErrorBOAffordability
               }
               fulfillment_message
               toko_cabang {
@@ -126,7 +126,7 @@ fun getQueryCartRevampV3(): String {
                       is_preorder
                       duration
                     }
-                    # enable_bo_affordability
+                    enable_bo_affordability
                   }
                   pinned {
                     is_pinned
