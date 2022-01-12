@@ -175,11 +175,13 @@ class PushController(val context: Context) : CoroutineScope {
                     baseNotificationModel
                 )
             }
-            NotificationSettingsUtils.NotificationMode.DISABLED -> {
-                //send disabled event
-            }
+            NotificationSettingsUtils.NotificationMode.DISABLED,
             NotificationSettingsUtils.NotificationMode.CHANNEL_DISABLED -> {
-                //send channel disabled event
+                IrisAnalyticsEvents.sendPushEvent(
+                    context,
+                    IrisAnalyticsEvents.DEVICE_NOTIFICATION_OFF,
+                    baseNotificationModel
+                )
             }
         }
         createAndPostNotification(baseNotificationModel)

@@ -234,7 +234,7 @@ class CMPushNotificationManager : CoroutineScope {
 
     private fun validateAndRenderNotification(notification: Bundle) {
 
-        checkAndSendReceivedEvent(notification)
+        checkAndSendEvent(notification)
         // aidlApiBundle : the data comes from AIDL service (including userSession data from another app)
         aidlApiBundle?.let { aidlBundle ->
 
@@ -257,7 +257,7 @@ class CMPushNotificationManager : CoroutineScope {
         }?: renderPushNotification(notification) // render as usual if there's no data from AIDL service
     }
 
-    private fun checkAndSendReceivedEvent(notification: Bundle) {
+    private fun checkAndSendEvent(notification: Bundle) {
         val baseNotificationModel = PayloadConverter.convertToBaseModel(notification)
         if (baseNotificationModel.notificationMode != NotificationMode.OFFLINE) {
             if (baseNotificationModel.type == CMConstant.NotificationType.SILENT_PUSH) {
@@ -277,11 +277,13 @@ class CMPushNotificationManager : CoroutineScope {
                             baseNotificationModel
                         )
                     }
-                    NotificationSettingsUtils.NotificationMode.DISABLED -> {
-                        //send disabled event
-                    }
+                    NotificationSettingsUtils.NotificationMode.DISABLED,
                     NotificationSettingsUtils.NotificationMode.CHANNEL_DISABLED -> {
-                        //send channel disabled event
+                        IrisAnalyticsEvents.sendPushEvent(
+                            applicationContext,
+                            IrisAnalyticsEvents.DEVICE_NOTIFICATION_OFF,
+                            baseNotificationModel
+                        )
                     }
                 }
             }
