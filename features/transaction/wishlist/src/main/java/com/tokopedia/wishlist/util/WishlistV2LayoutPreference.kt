@@ -8,23 +8,23 @@ import javax.inject.Inject
 
 class WishlistV2LayoutPreference  @Inject constructor(val context: Context) {
     companion object {
-        const val USER_LAYOUT_WISHLIST = "user_layout_wishlist"
-        const val USER_LAYOUT_WISHLIST_TYPE = "user_layout_wishlist_type"
+        const val USER_LAYOUT_WISHLIST_V2 = "user_layout_wishlist_v2"
+        const val USER_LAYOUT_WISHLIST_V2_TYPE = "user_layout_wishlist_v2_type"
     }
 
     private var sharedPrefs: SharedPreferences? = null
 
     init {
-        sharedPrefs = context.getSharedPreferences(USER_LAYOUT_WISHLIST, Context.MODE_PRIVATE)
+        sharedPrefs = context.getSharedPreferences(USER_LAYOUT_WISHLIST_V2, Context.MODE_PRIVATE)
     }
 
     // 0 = LIST, 1 = GRID
     fun setTypeLayout(type: Int) {
-        sharedPrefs?.edit()?.putInt(USER_LAYOUT_WISHLIST_TYPE, type)?.apply()
+        sharedPrefs?.edit()?.putInt(USER_LAYOUT_WISHLIST_V2_TYPE, type)?.apply()
     }
 
     fun getTypeLayout(): String {
-        val typeLayout = sharedPrefs?.getInt(USER_LAYOUT_WISHLIST_TYPE, 0)
+        val typeLayout = sharedPrefs?.getInt(USER_LAYOUT_WISHLIST_V2_TYPE, 0)
         return if (typeLayout == 0) {
             TYPE_LIST
         } else {
