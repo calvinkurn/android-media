@@ -23,6 +23,7 @@ import com.tokopedia.picker.ui.PickerNavigator
 import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.picker.ui.widget.bottomsheet.MediaPickerPreviewWidget
+import com.tokopedia.picker.utils.ActionType
 import com.tokopedia.picker.utils.G500
 import com.tokopedia.picker.utils.N600
 import com.tokopedia.picker.utils.addOnTabSelected
@@ -107,6 +108,16 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaPi
         initToolbar()
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding?.mediaPickerPreviewWidget?.setListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding?.mediaPickerPreviewWidget?.removeListener()
+    }
+
     override fun onPermissionGranted() {
         navigateByPageType()
     }
@@ -144,7 +155,6 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaPi
         viewModel.selectedMedia.observe(this) {
             _selectedMedias.clear()
             _selectedMedias.addAll(it)
-            binding?.mediaPickerPreviewWidget?.setData(it)
         }
     }
 
@@ -215,10 +225,28 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaPi
         }
     }
 
-    override fun onDataSetChanged(data: List<Media>, error: Exception?) {
-        if (error == null) {
-            setData(data)
-            viewModel.publishMediaSelectedChanged(data)
+    fun addData(data: List<Media>) {
+        binding?.mediaPickerPreviewWidget?.setData(data)
+    }
+
+    //listener to notify when data on bottomsheet changed
+    override fun onDataSetChanged(action: ActionType) {
+        when (action) {
+            //do something if add data from bottomsheet
+            is ActionType.Add -> {
+                if (action.error != null) {
+
+                }
+            }
+            //do somethig if remove data from bottomsheet
+            is ActionType.Remove -> {
+                viewModel.publishMediaSelectedChanged(action.data)
+
+            }
+            //do something if reoder position data
+            is ActionType.Reorder -> {
+                viewModel.publishMediaSelectedChanged(action.data)
+            }
         }
     }
 

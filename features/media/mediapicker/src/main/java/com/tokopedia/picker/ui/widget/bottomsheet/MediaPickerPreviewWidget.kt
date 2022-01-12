@@ -14,19 +14,23 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.imagepicker.media_picker.adapter.MediaPickerThumbnailAdapter
 import com.tokopedia.picker.R
 import com.tokopedia.picker.data.entity.Media
+import com.tokopedia.picker.databinding.MediaPickerPlaceholderThumbnailItemBinding
+import com.tokopedia.picker.databinding.WidgetMediaPickerThumbnailListBinding
+import com.tokopedia.picker.utils.ActionType
+import com.tokopedia.picker.utils.EventBusFactory
+import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import java.lang.Exception
 
 class MediaPickerPreviewWidget : FrameLayout {
     private var mediaPickerThumbnailAdapter: MediaPickerThumbnailAdapter? = null
-    private var recyclerView: RecyclerView? = null
     private var backgroundColorPlaceHolder: Int? = null
     private var canReorder: Boolean = false
     private var maxVideo: Int = 1
     private var placeholderPreview: Int? = null
-
+    private lateinit var binding: WidgetMediaPickerThumbnailListBinding
 
     interface MediaPickerPreviewWidgetListener {
-        fun onDataSetChanged(data: List<Media>, error: Exception?)
+        fun onDataSetChanged(action: ActionType)
     }
 
     constructor (context: Context) : super(context) {
@@ -52,22 +56,19 @@ class MediaPickerPreviewWidget : FrameLayout {
     }
 
     private fun init(attrs: AttributeSet?) {
-        LayoutInflater.from(context).inflate(
-            R.layout.widget_media_picker_thumbnail_list,
-            this, true
-        )
+        binding = WidgetMediaPickerThumbnailListBinding.inflate(LayoutInflater.from(context))
+        addView(binding.root)
         mediaPickerThumbnailAdapter = MediaPickerThumbnailAdapter(
             context, arrayListOf()
         )
         if (attrs != null) {
             setAttribute(attrs)
         }
-        recyclerView = findViewById(R.id.rv_thumbnail)
-        recyclerView!!.layoutManager =
+        binding.rvThumbnail.layoutManager =
             LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
-        recyclerView!!.setHasFixedSize(true)
-        recyclerView!!.adapter = mediaPickerThumbnailAdapter
-        val animator = recyclerView!!.itemAnimator
+        binding.rvThumbnail.setHasFixedSize(true)
+        binding.rvThumbnail.adapter = mediaPickerThumbnailAdapter
+        val animator = binding.rvThumbnail.itemAnimator
         if (animator is SimpleItemAnimator) {
             animator.supportsChangeAnimations = false
         }
@@ -100,21 +101,12 @@ class MediaPickerPreviewWidget : FrameLayout {
 
     fun addData(media: Media) {
         mediaPickerThumbnailAdapter!!.addData(media)
-        recyclerView!!.postDelayed({
+        binding.rvThumbnail.postDelayed({
             val position = mediaPickerThumbnailAdapter!!.getMediaPathList.size
-            recyclerView!!.smoothScrollToPosition(
+            binding.rvThumbnail.smoothScrollToPosition(
                 if (position >= mediaPickerThumbnailAdapter!!.itemCount) position - 1 else position
             )
         }, 1)
-    }
-
-    fun removeData(media: Media): Int {
-        val position = mediaPickerThumbnailAdapter!!.removeData(media!!)
-        recyclerView!!.postDelayed(
-            { recyclerView!!.smoothScrollToPosition(if (position > 0) position - 1 else position) },
-            1
-        )
-        return position
     }
 
     fun setMaxAdapterSize(size: Int) {
@@ -126,7 +118,7 @@ class MediaPickerPreviewWidget : FrameLayout {
         mediaPickerThumbnailAdapter?.maxVideo = max
     }
 
-    fun setOnLimitListener(listener: MediaPickerPreviewWidgetListener) {
+    fun setListener(listener: MediaPickerPreviewWidgetListener) {
        mediaPickerThumbnailAdapter?.setOnDataChangedListener(listener)
     }
 

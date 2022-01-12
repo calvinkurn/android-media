@@ -21,13 +21,17 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.picker.R
 import com.tokopedia.picker.data.entity.Media
+import com.tokopedia.picker.databinding.MediaPickerPlaceholderThumbnailItemBinding
+import com.tokopedia.picker.databinding.MediaPickerThumbnailItemBinding
 import com.tokopedia.utils.image.ImageProcessingUtil.shouldLoadFitCenter
 import java.io.File
 
 import com.tokopedia.picker.ui.widget.bottomsheet.MediaPickerPreviewWidget
+import com.tokopedia.picker.utils.ActionType
 import com.tokopedia.picker.utils.getVideoDurationLabel
 import com.tokopedia.picker.utils.isVideoFormat
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 import java.lang.Exception
 
 
@@ -56,9 +60,8 @@ class MediaPickerThumbnailAdapter(
 
     inner class MediaPickerThumbnailViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
-        val imageView: ImageView = itemView.findViewById(R.id.image_view)
-        val ivDelete: ImageView = itemView.findViewById(R.id.iv_delete)
-        val tvDuration: Typography = itemView.findViewById(R.id.tv_duration)
+
+        val binding: MediaPickerThumbnailItemBinding? by viewBinding()
 
         fun bind(mediaPath: String, position: Int) {
             val file = File(mediaPath)
@@ -75,34 +78,38 @@ class MediaPickerThumbnailAdapter(
             } else {
                 requestBuilder.centerCrop()
             }
-            requestBuilder.into(object : BitmapImageViewTarget(imageView) {
+            requestBuilder.into(object : BitmapImageViewTarget(binding?.imageView) {
                 override fun setResource(resource: Bitmap?) {
-                    val circularBitmapDrawable =
-                        RoundedBitmapDrawableFactory.create(imageView.context.resources, resource)
-                    circularBitmapDrawable.cornerRadius = roundedSize
-                    imageView.setImageDrawable(circularBitmapDrawable)
+                    binding?.let {
+                        val circularBitmapDrawable =
+                            RoundedBitmapDrawableFactory.create(it.imageView.context.resources, resource)
+                        circularBitmapDrawable.cornerRadius = roundedSize
+                        it.imageView.setImageDrawable(circularBitmapDrawable)
+                    }
+
                 }
             })
             val isVideo = isVideoFormat(mediaPath)
             if (isVideo) {
                 val durationVideo = getVideoDurationLabel(context, Uri.parse(_mediaPathList[position].path))
-                tvDuration.visibility = View.VISIBLE
-                tvDuration.text = durationVideo
+                binding?.tvDuration?.visibility = View.VISIBLE
+                binding?.tvDuration?.text = durationVideo
             } else {
-                tvDuration.visibility = View.GONE
+                binding?.tvDuration?.visibility = View.GONE
             }
         }
     }
 
     class PlaceholderThumbnailViewHolderKt(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
-        var ivPlaceholder: ImageView = itemView.findViewById(R.id.image_view_placeholder)
-        var vFrameImage: ImageView = itemView.findViewById(R.id.image_view)
+
+        val binding: MediaPickerPlaceholderThumbnailItemBinding? by viewBinding()
+
         fun bind(@DrawableRes drawableRes: Int, backgroundColor: Int) {
-            vFrameImage.setBackgroundColor(backgroundColor)
-            ivPlaceholder.setImageDrawable(
+            binding?.imageView?.setBackgroundColor(backgroundColor)
+            binding?.imageViewPlaceholder?.setImageDrawable(
                 MethodChecker.getDrawable(
-                    ivPlaceholder.context,
+                    binding?.imageViewPlaceholder?.context,
                     drawableRes
                 )
             )
@@ -115,14 +122,13 @@ class MediaPickerThumbnailAdapter(
     ) {
         _mediaPathList.clear()
         _mediaPathList.addAll(medias)
-        listener?.onDataSetChanged(medias, null)
         notifyDataSetChanged()
     }
 
     fun addData(media: Media) {
         val isVideo = isVideoFormat(media.path)
         if (isVideo && totalVideo >= maxVideo) {
-            listener?.onDataSetChanged(_mediaPathList, Exception("the video has exceeded the specified limit"))
+            listener?.onDataSetChanged(ActionType.Add(_mediaPathList, context.getString(R.string.error_reached_limit)))
             return
         } else if(isVideo && totalVideo < maxVideo) {
             totalVideo+=1
@@ -130,7 +136,7 @@ class MediaPickerThumbnailAdapter(
         if (!_mediaPathList.contains(media)) {
             _mediaPathList.add(media)
             notifyItemChanged(_mediaPathList.size - 1)
-            listener?.onDataSetChanged(_mediaPathList, null)
+            listener?.onDataSetChanged(ActionType.Add(_mediaPathList, null))
         }
     }
 
@@ -146,7 +152,7 @@ class MediaPickerThumbnailAdapter(
                 totalVideo-=1
             }
             _mediaPathList.removeAt(index)
-            listener?.onDataSetChanged(_mediaPathList, null)
+            listener?.onDataSetChanged(ActionType.Remove(_mediaPathList, null))
             notifyItemChanged(index)
             listRect.remove(index)
         }
@@ -180,20 +186,22 @@ class MediaPickerThumbnailAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (isItemType(position)) {
-            if (canReorder) {
-                setupAreaRect(holder)
-                setupLongClickListener(holder)
-                setupDragListener(holder, position)
+        when (getItemViewType(position)) {
+            ITEM_TYPE -> {
+                if (canReorder) {
+                    setupAreaRect(holder)
+                    setupLongClickListener(holder)
+                    setupDragListener(holder, position)
+                }
+                val media = _mediaPathList[position].path
+                (holder as MediaPickerThumbnailViewHolder).binding?.ivDelete?.setOnClickListener {
+                    removeData(position)
+                }
+                holder.bind(media, position)
             }
-            val media = _mediaPathList[position].path
-            (holder as MediaPickerThumbnailViewHolder).ivDelete.setOnClickListener {
-                removeData(position)
+            else -> {
+                (holder as PlaceholderThumbnailViewHolderKt).bind(placeholderPreview, backgroundColorPlaceHolder)
             }
-            holder.bind(media, position)
-        } else {
-            // else draw the empty preview
-            (holder as PlaceholderThumbnailViewHolderKt).bind(placeholderPreview, backgroundColorPlaceHolder)
         }
     }
 
@@ -260,6 +268,7 @@ class MediaPickerThumbnailAdapter(
                     _mediaPathList[dragPosition] = targetImagePath
                     _mediaPathList[position] = draggedImagePath
                     notifyDataSetChanged()
+                    listener?.onDataSetChanged(ActionType.Reorder(_mediaPathList, null))
                     true
                 }
                 DragEvent.ACTION_DRAG_ENDED -> {
