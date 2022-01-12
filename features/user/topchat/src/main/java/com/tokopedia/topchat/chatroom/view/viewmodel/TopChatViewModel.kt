@@ -271,8 +271,7 @@ class TopChatViewModel @Inject constructor(
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 Timber.d("$TAG - onOpen")
                 handleOnOpenWebSocket()
-                // TODO: add mark as read
-                 markAsRead()
+                markAsRead()
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
