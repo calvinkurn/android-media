@@ -335,4 +335,24 @@
     <string name="mvc_detail_ticker_public_clickable">Pelajari Selengkapnya</string>
     <string name="mvc_detail_expenses_info">Biaya promosi akan terhitung setelah pembeli menggunakan voucher toko dalam pembelian.&lt;br>&lt;br>Pengeluaran akan otomatis dipotong dari hasil penjualanmu.</string>
     <string name="mvc_detail_remaining_time">%s hari : %sj : %sm : %sd</string>
+    <string name="coupon_information">Informasi Kupon</string>
+    <string name="bullet">\u2022</string>
+    <string name="coupon_target">Target Kupon</string>
+    <string name="coupon_name">Nama Kupon</string>
+    <string name="coupon_code">Kode Kupon</string>
+    <string name="coupon_period">Periode Kupon</string>
+    <string name="learn_more">Mau tau lebih lanjut?</string>
+    <string name="read_article">Baca artikel</string>
+    <string name="coupon_product_usage_information">Pembeli dapat menukarkan kupon ini di halaman toko dan halaman produk-produk kamu.</string>
+    <string name="coupon_product_about">Seputar Kupon Produk</string>
+    <string name="coupon_setting">Pengaturan Kupon</string>
+    <string name="coupon_type">Tipe Kupon</string>
+    <string name="change">Ubah</string>
+    <string name="completed">Sudah lengkap</string>
+    <string name="incomplete">Belum Lengkap</string>
+    <string name="add_product">Tambah produk</string>
+    <string name="no_products">Belum ada produk</string>
+    <string name="create_coupon">Buat Kupon</string>
+    <string name="check_coupon_appearance">Cek Tampilan Kupon</string>
+    <string name="coupon_product_terms_and_condition">Dengan klik Buat Kupon, saya menyetujui <a href="https://learntodroid.com">syarat dan ketentuan</a> yang berlaku.</string>
 </resources>
