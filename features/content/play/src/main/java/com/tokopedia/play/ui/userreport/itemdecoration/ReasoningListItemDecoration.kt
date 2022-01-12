@@ -8,7 +8,6 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.R
-import com.tokopedia.play.ui.userreport.viewholder.UserReportReasoningViewHolder
 
 /**
  * @author by astidhiyaa on 10/12/21
@@ -31,9 +30,8 @@ class ReasoningListItemDecoration(context: Context): RecyclerView.ItemDecoration
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         for (index in 0 until parent.childCount) {
             val child = parent.getChildAt(index)
-            val viewHolder = parent.getChildViewHolder(child)
 
-            if (index != 1 && viewHolder is UserReportReasoningViewHolder) {
+            if (index > 1) {
                 c.drawRect(
                     Rect(child.left, child.top - dividerHeight, parent.width, child.top),
                     mPaint
