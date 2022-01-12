@@ -15,6 +15,7 @@ import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.constant.AtfKey
+import com.tokopedia.home.constant.AtfKey.TYPE_BANNER
 import com.tokopedia.home.constant.AtfKey.TYPE_CHANNEL
 import com.tokopedia.home.constant.AtfKey.TYPE_ICON
 import com.tokopedia.home.constant.AtfKey.TYPE_TICKER
@@ -189,6 +190,29 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                         saveToDatabase(homeData)
                                     })
                                 }
+                                atfData
+                            }
+                            jobList.add(job)
+                        }
+                        TYPE_BANNER -> {
+                            val job = async {
+                                try {
+                                    val dynamicChannel = homeRemoteDataSource.getHomePageBannerData()
+                                    dynamicChannel.let {
+                                        val channelFromResponse = it?.banner
+                                        atfData.content = gson.toJson(channelFromResponse)
+                                        atfData.status = AtfKey.STATUS_SUCCESS
+                                    }
+                                    homeData.atfData?.isProcessingAtf = false
+                                } catch (e: Exception) {
+                                    atfData.status = AtfKey.STATUS_ERROR
+                                    atfData.content = null
+                                    atfData.errorString = ErrorHandler.getErrorMessage(applicationContext, MessageErrorException(e.localizedMessage))
+                                }
+                                cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
+                                    saveToDatabase(homeData)
+                                })
+                                nonTickerResponseFinished = true
                                 atfData
                             }
                             jobList.add(job)

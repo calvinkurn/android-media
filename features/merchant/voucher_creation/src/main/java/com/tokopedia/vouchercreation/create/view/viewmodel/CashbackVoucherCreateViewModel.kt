@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -246,6 +247,23 @@ class CashbackVoucherCreateViewModel @Inject constructor(
                 mPercentageVoucherQuotaLiveData.value = value.toZeroIfNull()
             }
         }
+    }
+
+    fun <T> getMinimumPurchase(promotionType: T) : Int {
+        if (promotionType is PromotionType.Cashback.Rupiah.MinimumPurchase) {
+            return mRupiahMinimumPurchaseLiveData.value.orZero()
+        }
+
+        return mPercentageMinimumPurchaseLiveData.value.orZero()
+
+    }
+
+    fun <T> getVoucherQuota(promotionType: T) : Int {
+        if (promotionType is PromotionType.Cashback.Rupiah.VoucherQuota) {
+            return mRupiahVoucherQuotaLiveData.value.orZero()
+        }
+
+        return mPercentageVoucherQuotaLiveData.value.orZero()
     }
 
     fun getStaticRecommendationData(): VoucherRecommendationData {

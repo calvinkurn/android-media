@@ -798,6 +798,14 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }
     }
 
+//  can be called like this  setUtmCampaignData(listOf("a", "b"), "c", "d", "e")
+//  seller specific example  setUtmCampaignData(listOf("ShopRS", "$[User ID]", "$[Shop ID]", "$[Campaign Type ID]"), "$userId", "$pageId", "$feature")
+    fun setUtmCampaignData(pageName: String, userId: String, pageIdConstituents: List<String>, feature: String){
+        val pageIdCombined = TextUtils.join("-", pageIdConstituents)
+        setUtmCampaignData(pageName, userId, pageIdCombined, feature)
+    }
+
+
     fun setOgImageUrl(imgUrl: String){
         ogImageUrl = imgUrl
     }
@@ -823,6 +831,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun executeMediaImageSharingFlow(shareModel: ShareModel, mediaImageUrl: String){
+        loaderUnify?.visibility = View.GONE
         preserveImage = true
         shareModel.ogImgUrl = mediaImageUrl
         shareModel.savedImageFilePath = savedImagePath
@@ -830,6 +839,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun executeSharingFlow(shareModel:ShareModel){
+        loaderUnify?.visibility = View.GONE
         preserveImage = true
         shareModel.ogImgUrl = ogImageUrl
         shareModel.savedImageFilePath = savedImagePath
@@ -926,6 +936,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private fun executeImageGeneratorUseCase(sourceId: String, args: ArrayList<ImageGeneratorRequestData>,
                                              shareModel: ShareModel){
+        loaderUnify?.visibility = View.VISIBLE
         gqlJob = CoroutineScope(Dispatchers.IO).launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 imageGeneratorUseCase = ImageGeneratorUseCase(GraphqlInteractor.getInstance().graphqlRepository)
@@ -945,6 +956,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     fun getImageFromMedia(getImageFromMediaFlag: Boolean){
         getImageFromMedia = getImageFromMediaFlag
+        savedImagePath = "{media_image}"
     }
 
     fun setMediaPageSourceId(pageSourceId: String){

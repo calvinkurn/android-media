@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="bu_widget_progress_fire_icon_width">12dp</dimen>
+    <dimen name="bu_widget_progress_fire_icon_height">13dp</dimen>
+</resources>

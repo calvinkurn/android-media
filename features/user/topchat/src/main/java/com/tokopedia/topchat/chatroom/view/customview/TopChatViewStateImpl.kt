@@ -643,6 +643,7 @@ open class TopChatViewStateImpl constructor(
                 }
                 setPrimaryCTAClickListener {
                     headerMenuListener.onDeleteConversation()
+                    dismiss()
                 }
             }.show()
         }

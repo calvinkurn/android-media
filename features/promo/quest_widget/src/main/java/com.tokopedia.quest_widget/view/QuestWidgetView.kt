@@ -3,6 +3,7 @@ package com.tokopedia.quest_widget.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -21,6 +22,7 @@ import com.tokopedia.quest_widget.di.DaggerQuestComponent
 import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.quest_widget.tracker.QuestSource
 import com.tokopedia.quest_widget.tracker.QuestTracker
+import com.tokopedia.quest_widget.tracker.QuestTrackerImpl
 import com.tokopedia.quest_widget.util.ConnectionLiveData
 import com.tokopedia.quest_widget.util.LiveDataResult
 import com.tokopedia.unifyprinciples.Typography
@@ -115,6 +117,11 @@ class QuestWidgetView @JvmOverloads constructor(
                 }
                 LiveDataResult.STATUS.EMPTY_DATA ->{
                     hide()
+
+                    val params: ViewGroup.LayoutParams = this.layoutParams
+                    params.height = 0
+                    params.width = 0
+                    this.layoutParams = params
                     questWidgetCallbacks.deleteQuestWidget()
                 }
             }
@@ -266,5 +273,9 @@ class QuestWidgetView @JvmOverloads constructor(
         constraintLayoutQuestWidget.hide()
         shimmerQuestWidget.show()
         getQuestList(0, "", this.page, this.source)
+    }
+
+    fun setTrackerImpl(questTrackerImpl: QuestTrackerImpl){
+        questTracker.trackerImpl = questTrackerImpl
     }
 }
