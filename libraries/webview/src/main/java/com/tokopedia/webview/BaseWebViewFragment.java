@@ -803,7 +803,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private void gotoAlaCarteKyc(Uri uri) {
         String projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
         String kycRedirectionUrl = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
-        String layout = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_LAYOUT);
+        String layout = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_SHOW_INTRO);
         Intent intent  = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY, projectId, layout, kycRedirectionUrl);
         startActivityForResult(intent, REQUEST_CODE_LIVENESS);
     }

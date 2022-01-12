@@ -140,8 +140,8 @@ object ApplinkConstInternalGlobal {
     // UserIdentificationInfoSimpleActivity
     // tokopedia-android-internal://global/user-identification-only
     @JvmField
-    val USER_IDENTIFICATION_INFO_SIMPLE = "$INTERNAL_GLOBAL/user-identification-only?projectId={projectId}&layout={layout}&redirectUrl={redirectUrl}"
-    const val PARAM_LAYOUT = "layout"
+    val USER_IDENTIFICATION_INFO_SIMPLE = "$INTERNAL_GLOBAL/user-identification-only?projectId={projectId}&showIntro={showIntro}&redirectUrl={redirectUrl}"
+    const val PARAM_SHOW_INTRO = "showIntro"
     const val PARAM_REDIRECT_URL = "redirectUrl"
 
     // InboxTalkActivity

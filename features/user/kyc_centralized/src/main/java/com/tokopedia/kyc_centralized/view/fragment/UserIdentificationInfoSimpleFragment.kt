@@ -48,7 +48,7 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
         projectId = activity?.intent?.data?.getQueryParameter(
                 ApplinkConstInternalGlobal.PARAM_PROJECT_ID).toIntOrZero()
         showWrapperLayout = activity?.intent?.data?.getQueryParameter(
-            ApplinkConstInternalGlobal.PARAM_LAYOUT).toBoolean()
+            ApplinkConstInternalGlobal.PARAM_SHOW_INTRO).toBoolean()
         redirectUrl = activity?.intent?.data?.getQueryParameter(
             ApplinkConstInternalGlobal.PARAM_REDIRECT_URL).toEmptyStringIfNull()
         initViews(view, savedInstanceState)
