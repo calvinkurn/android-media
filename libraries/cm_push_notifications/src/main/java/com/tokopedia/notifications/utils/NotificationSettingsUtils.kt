@@ -31,7 +31,6 @@ class NotificationSettingsUtils(private val context: Context) {
         } else {
             NotificationMode.DISABLED
         }
-        //device_notification_off
     }
 
     enum class NotificationMode {
