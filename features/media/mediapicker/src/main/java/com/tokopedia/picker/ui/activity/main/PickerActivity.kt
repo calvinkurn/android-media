@@ -21,7 +21,6 @@ import com.tokopedia.picker.ui.PickerFragmentFactory
 import com.tokopedia.picker.ui.PickerFragmentFactoryImpl
 import com.tokopedia.picker.ui.PickerNavigator
 import com.tokopedia.picker.ui.PickerUiConfig
-import com.tokopedia.picker.ui.fragment.gallery.GalleryFragment
 import com.tokopedia.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.picker.ui.widget.bottomsheet.MediaPickerPreviewWidget
 import com.tokopedia.picker.utils.G500
@@ -194,7 +193,6 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaPi
                 binding?.mediaPickerPreviewWidget?.visible()
                 navigator?.onPageSelected(PickerFragmentType.GALLERY)
             }
-            selectedTab = position
         }
     }
 
@@ -219,8 +217,14 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaPi
 
     override fun onDataSetChanged(data: List<Media>, error: Exception?) {
         if (error == null) {
-            viewModel.setSelectedMedia(data)
+            setData(data)
+            viewModel.publishMediaSelectedChanged(data)
         }
+    }
+
+    private fun setData(data: List<Media>) {
+        _selectedMedias.clear()
+        _selectedMedias.addAll(data)
     }
 
 }

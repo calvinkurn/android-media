@@ -35,6 +35,10 @@ class PickerViewModel @Inject constructor(
         }
     }
 
+    fun publishMediaSelectedChanged(data: List<Media>) {
+        EventBusFactory.send(EventState.MediaSelection(data))
+    }
+
     private fun finishButtonState(value: Boolean) {
         _finishButtonState.value = value
     }

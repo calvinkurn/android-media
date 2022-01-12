@@ -52,17 +52,17 @@ class MediaPickerPreviewWidget : FrameLayout {
     }
 
     private fun init(attrs: AttributeSet?) {
-        LayoutInflater.from(getContext()).inflate(
+        LayoutInflater.from(context).inflate(
             R.layout.widget_media_picker_thumbnail_list,
             this, true
         )
         mediaPickerThumbnailAdapter = MediaPickerThumbnailAdapter(
-            getContext(), arrayListOf()
+            context, arrayListOf()
         )
         if (attrs != null) {
             setAttribute(attrs)
         }
-        recyclerView = findViewById(R.id.recycler_view)
+        recyclerView = findViewById(R.id.rv_thumbnail)
         recyclerView!!.layoutManager =
             LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
         recyclerView!!.setHasFixedSize(true)
