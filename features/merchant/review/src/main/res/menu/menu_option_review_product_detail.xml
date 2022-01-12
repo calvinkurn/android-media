@@ -5,6 +5,6 @@
     <item
         android:id="@+id/menu_option_product_detail"
         android:title="@string/option_review_product_detail_label"
-        android:icon="@drawable/ic_option"
+        app:actionLayout="@layout/layout_review_more_menu"
         app:showAsAction="always" />
 </menu>

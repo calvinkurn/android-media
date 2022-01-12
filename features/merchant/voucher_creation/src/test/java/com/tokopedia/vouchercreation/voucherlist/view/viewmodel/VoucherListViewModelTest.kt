@@ -11,6 +11,8 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.detail.domain.usecase.VoucherDetailUseCase
 import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
+import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherSubsidy
+import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherVps
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetBroadCastMetaDataUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ShopBasicDataUseCase
@@ -91,7 +93,6 @@ class VoucherListViewModelTest {
             successVoucherLiveData.observeForever(successVoucherObserver)
             stopVoucherResponseLiveData.observeForever(stopVoucherResponseObserver)
             cancelVoucherResponseLiveData.observeForever(cancelVoucherResponseObserver)
-            localVoucherListLiveData.observeForever(localVoucherListObserver)
         }
     }
 
@@ -101,7 +102,6 @@ class VoucherListViewModelTest {
             successVoucherLiveData.removeObserver(successVoucherObserver)
             stopVoucherResponseLiveData.removeObserver(stopVoucherResponseObserver)
             cancelVoucherResponseLiveData.observeForever(cancelVoucherResponseObserver)
-            localVoucherListLiveData.removeObserver(localVoucherListObserver)
         }
     }
 
@@ -120,7 +120,8 @@ class VoucherListViewModelTest {
                 getNotStartedVoucherListUseCase.executeOnBackground()
             } returns listOf(voucherUiModel)
 
-            getActiveVoucherList(true)
+            val sourceRequestParams = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.ALL)
+            getActiveVoucherList(true, sourceRequestParams = sourceRequestParams)
 
             coVerify {
                 shopBasicDataUseCase.executeOnBackground()
@@ -148,7 +149,8 @@ class VoucherListViewModelTest {
                 getNotStartedVoucherListUseCase.executeOnBackground()
             } throws dummyThrowable
 
-            getActiveVoucherList(true)
+            val sourceRequestParams = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.ALL)
+            getActiveVoucherList(true, sourceRequestParams = sourceRequestParams)
 
             coroutineContext[Job]?.children?.forEach { it.join() }
 
@@ -176,7 +178,8 @@ class VoucherListViewModelTest {
                 getNotStartedVoucherListUseCase.executeOnBackground()
             } returns  listOf(voucherUiModel)
 
-            getActiveVoucherList(true)
+            val sourceRequestParams = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.ALL)
+            getActiveVoucherList(true, sourceRequestParams = sourceRequestParams)
 
             coVerify {
                 shopBasicDataUseCase.executeOnBackground()
@@ -196,7 +199,8 @@ class VoucherListViewModelTest {
                 getNotStartedVoucherListUseCase.executeOnBackground()
             } returns listOf(voucherUiModel)
 
-            getActiveVoucherList(false)
+            val sourceRequestParams = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.ALL)
+            getActiveVoucherList(false, sourceRequestParams = sourceRequestParams)
 
             coVerify {
                 shopBasicDataUseCase wasNot Called
@@ -219,7 +223,8 @@ class VoucherListViewModelTest {
                 getNotStartedVoucherListUseCase.executeOnBackground()
             } throws dummyThrowable
 
-            getActiveVoucherList(false)
+            val sourceRequestParams = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.ALL)
+            getActiveVoucherList(false, sourceRequestParams = sourceRequestParams)
 
             coVerify {
                 shopBasicDataUseCase wasNot Called
@@ -236,7 +241,8 @@ class VoucherListViewModelTest {
                 getVoucherListUseCase.executeOnBackground()
             } returns listOf(voucherUiModel)
 
-            getVoucherListHistory(anyInt(), listOf(anyInt()), anyString(), anyInt(), anyBoolean())
+            val sourceRequestParams = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.ALL)
+            getVoucherListHistory(anyInt(), anyString(), listOf(anyInt()), anyString(), anyInt(), anyBoolean(), sourceRequestParams, anyString())
 
             coVerify {
                 getVoucherListUseCase.executeOnBackground()
@@ -255,47 +261,14 @@ class VoucherListViewModelTest {
                 getVoucherListUseCase.executeOnBackground()
             } throws dummyThrowable
 
-            getVoucherListHistory(anyInt(), listOf(anyInt()), anyString(), anyInt(), anyBoolean())
+            val sourceRequestParams = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.ALL)
+            getVoucherListHistory(anyInt(), anyString(), listOf(anyInt()), anyString(), anyInt(), anyBoolean(), sourceRequestParams, anyString())
 
             coVerify {
                 getVoucherListUseCase.executeOnBackground()
             }
 
             assert(voucherList.value is Fail)
-        }
-    }
-
-    @Test
-    fun `setting search keyword will change local voucher list`() = runBlocking {
-        with(mViewModel) {
-            setSearchKeyword(anyString())
-
-            assert(localVoucherListLiveData.value != null)
-        }
-    }
-
-    @Test
-    fun `setting search keyword will return list of voucher that contains that keyword if already loaded voucher history before`() = runBlocking {
-        with(mViewModel) {
-            val dummyKeyword = "voucher"
-            val dummySuccessVoucherHistory = listOf(voucherUiModel, voucherUiModel)
-
-            coEvery {
-                getVoucherListUseCase.executeOnBackground()
-            } returns dummySuccessVoucherHistory
-            every {
-                voucherUiModel.name
-            } returns dummyKeyword
-
-            getVoucherListHistory(anyInt(), listOf(anyInt()), anyString(), anyInt(), anyBoolean())
-
-            coVerify {
-                getVoucherListUseCase.executeOnBackground()
-            }
-
-            setSearchKeyword(dummyKeyword)
-
-            assert(localVoucherListLiveData.value  == dummySuccessVoucherHistory)
         }
     }
 

@@ -4,6 +4,8 @@ import com.tokopedia.network.BuildConfig
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_CONTAINS
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_QUERY_NAME
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody.Companion.toResponseBody
 import okio.Buffer
 import org.json.JSONArray
 import org.json.JSONObject
@@ -20,7 +22,7 @@ class MockInterceptor(val responseConfig: MockModelConfig) : Interceptor {
             try {
                 val requestBody = chain.request()
                 val buffer = Buffer()
-                requestBody.body()?.writeTo(buffer)
+                requestBody.body?.writeTo(buffer)
                 val requestString = buffer.readUtf8()
 
                 var responseString = ""
@@ -35,11 +37,11 @@ class MockInterceptor(val responseConfig: MockModelConfig) : Interceptor {
                         val requestObject: JSONObject = requestArray.getJSONObject(0)
                         val queryString = requestObject.getString("query")
                         val queryStringCopy = queryString.removePrefix("query ")
-                                .removePrefix("{\n ")
-                                .removePrefix(" ")
+                            .removePrefix("{\n ")
+                            .removePrefix(" ")
                         val firstWord =
-                                queryStringCopy.substringBefore(" ", "")
-                                        .substringBefore("\n", "")
+                            queryStringCopy.substringBefore(" ", "")
+                                .substringBefore("\n", "")
                         if (firstWord == it.key) {
                             responseString = it.value.value
                             return mockResponse(requestBody.newBuilder().build(), responseString)
@@ -64,8 +66,10 @@ class MockInterceptor(val responseConfig: MockModelConfig) : Interceptor {
                 .code(200)
                 .protocol(Protocol.HTTP_2)
                 .message(responseString)
-                .body(ResponseBody.create(MediaType.parse("application/json"),
-                        responseString.toByteArray()))
+                .body(
+                    responseString.toByteArray()
+                        .toResponseBody("application/json".toMediaTypeOrNull())
+                )
                 .addHeader("content-type", "application/json")
                 .build()
     }

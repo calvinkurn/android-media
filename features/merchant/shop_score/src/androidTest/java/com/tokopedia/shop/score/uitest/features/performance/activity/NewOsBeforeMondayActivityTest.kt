@@ -10,14 +10,17 @@ import com.tokopedia.shop.score.uitest.features.performance.base.ShopScoreTest
 import com.tokopedia.shop.score.uitest.stub.common.util.onClick
 import com.tokopedia.shop.score.uitest.stub.common.util.onIdView
 import com.tokopedia.shop.score.uitest.stub.common.util.scrollTo
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 
+@UiTest
 class NewOsBeforeMondayActivityTest: ShopScoreTest() {
 
     override fun setup() {
         super.setup()
         getShopInfoPeriodUseCaseStub.responseStub = shopInfoPeriodAfterMondayResponse
         getShopPerformanceUseCaseStub.responseStub = newOsBeforeMondayResponse
+        shopScorePrefManagerStub.setFinishCoachMark(true)
     }
 
     @Test
@@ -35,7 +38,6 @@ class NewOsBeforeMondayActivityTest: ShopScoreTest() {
 
     @Test
     fun show_header_performance_when_new_os_before_monday() {
-        shopScorePrefManagerStub.setFinishCoachMark(true)
         activityRule.launchActivity(getShopPerformancePageIntent())
         showHeaderPerformanceNewSellerOs(newOsBeforeMondayResponse, shopInfoPeriodAfterMondayResponse)
     }
@@ -64,6 +66,6 @@ class NewOsBeforeMondayActivityTest: ShopScoreTest() {
     fun show_faq_shop_score_new_os_before_monday() {
         activityRule.launchActivity(getShopPerformancePageIntent())
         activityRule.activity.scrollTo<SectionFaqUiModel>()
-        showFaqItemList(newOsBeforeMondayResponse)
+        showFaqItemList()
     }
 }

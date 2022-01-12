@@ -212,6 +212,14 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
         inflater.inflate(R.menu.menu_stc_action_calendar, menu)
 
+        for (i in 0 until menu.size()) {
+            menu.getItem(i)?.let { menuItem ->
+                menuItem.actionView?.setOnClickListener {
+                    onOptionsItemSelected(menuItem)
+                }
+            }
+        }
+
         setMenuItemVisibility(menu)
         sendActionBarMenuImpressionEvent(menu)
     }

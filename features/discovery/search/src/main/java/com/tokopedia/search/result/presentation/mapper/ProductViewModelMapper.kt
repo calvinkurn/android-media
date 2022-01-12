@@ -44,6 +44,7 @@ import java.util.*
 
 class ProductViewModelMapper {
 
+    @Suppress("LongParameterList")
     fun convertToProductViewModel(
         lastProductItemPosition: Int,
         searchProductModel: SearchProductModel,
