@@ -2,6 +2,8 @@ package com.tokopedia.autocompletecomponent.suggestion
 
 import com.tokopedia.autocompletecomponent.suggestion.domain.model.SuggestionChildItem
 import com.tokopedia.autocompletecomponent.suggestion.domain.model.SuggestionItem
+import com.tokopedia.autocompletecomponent.suggestion.doubleline.ShopAdsDataView
+import com.tokopedia.topads.sdk.domain.model.CpmData
 
 fun SuggestionItem.convertToBaseSuggestion(
     searchTerm: String,
@@ -49,3 +51,28 @@ private fun List<SuggestionChildItem>.convertToChildItems(
             position = index + 1
         )
     }
+
+fun SuggestionItem.convertToBaseSuggestionShopAds(
+    searchTerm: String,
+    position: Int,
+    dimension90: String,
+    cpmData: CpmData,
+): BaseSuggestionDataView =
+    BaseSuggestionDataView(
+        template = template,
+        type = TYPE_SHOP,
+        applink = cpmData.applinks,
+        title = cpmData.cpm.name,
+        iconTitle = cpmData.cpm.badges.firstOrNull()?.imageUrl ?: "",
+        imageUrl = cpmData.cpm.cpmImage.fullEcs,
+        position = position,
+        dimension90 = dimension90,
+        searchTerm = searchTerm,
+        componentId = componentId,
+        trackingOption = trackingOption,
+        shopAdsDataView = ShopAdsDataView(
+            clickUrl = cpmData.adClickUrl,
+            impressionUrl = cpmData.cpm.cpmImage.fullUrl,
+            imageUrl = cpmData.cpm.cpmImage.fullEcs,
+        )
+    )
