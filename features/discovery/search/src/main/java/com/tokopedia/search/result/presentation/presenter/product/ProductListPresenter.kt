@@ -41,6 +41,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
@@ -111,6 +112,7 @@ import rx.Observable
 import rx.Subscriber
 import rx.functions.Action1
 import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -118,6 +120,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.math.max
 
+@Suppress("LongParameterList")
 class ProductListPresenter @Inject constructor(
         @param:Named(SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
         private val searchProductFirstPageUseCase: UseCase<SearchProductModel>,
@@ -223,6 +226,22 @@ class ProductListPresenter @Inject constructor(
 
         isEnableChooseAddress = view.isChooseAddressWidgetEnabled
         if (isEnableChooseAddress) chooseAddressData = view.chooseAddressData
+    }
+
+    private val isABTestNegativeNoAds : Boolean  by lazy {
+        getABTestNegativeNoAds()
+    }
+
+    private fun getABTestNegativeNoAds() :Boolean {
+        return try {
+            val abTestKeywordAdvNeg = view.abTestRemoteConfig?.getString(
+                RollenceKey.SEARCH_ADVANCED_KEYWORD_ADV_NEG,
+                ""
+            )
+            RollenceKey.SEARCH_ADVANCED_NEGATIVE_NO_ADS == abTestKeywordAdvNeg
+        } catch (e: Exception) {
+            false
+        }
     }
 
     override val userId: String
@@ -358,7 +377,7 @@ class ProductListPresenter @Inject constructor(
             val defaultValueStart = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS.toInt()
             startFrom / defaultValueStart + 1
         } catch (e: NumberFormatException) {
-            e.printStackTrace()
+            Timber.w(e)
             0
         }
     }
@@ -447,6 +466,14 @@ class ProductListPresenter @Inject constructor(
         totalData = productDataView.totalData
     }
 
+    private fun isDisableAdsNegativeKeywords(productDataView: ProductDataView) :Boolean {
+        return isABTestNegativeNoAds && productDataView.isAdvancedNegativeKeywordSearch()
+    }
+
+    private fun isHideProductAds(productDataView: ProductDataView) : Boolean {
+        return isLocalSearch() || isDisableAdsNegativeKeywords(productDataView)
+    }
+
     private fun createProductDataView(
         searchProductModel: SearchProductModel,
         pageTitleEventLabel: String = "",
@@ -526,15 +553,16 @@ class ProductListPresenter @Inject constructor(
 
     private fun createProductItemVisitableList(productDataView: ProductDataView): MutableList<Visitable<*>> {
         val list: MutableList<Visitable<*>> = productDataView.productList.toMutableList()
-        if (isLocalSearch()) return list
+        if (isHideProductAds(productDataView)) return list
+        val adsModel = productDataView.adsModel ?: return list
 
         var j = 0
         for (i in 0 until productDataView.getTotalItem()) {
             try {
                 // Already surrounded by try catch per looping, safe to force nullable
-                if (productDataView.adsModel!!.templates.size <= 0) continue
-                if (productDataView.adsModel!!.templates[i].isIsAd) {
-                    val topAds = productDataView.adsModel!!.data[j]
+                if (adsModel.templates.size <= 0) continue
+                if (adsModel.templates[i].isIsAd) {
+                    val topAds = adsModel.data[j]
                     val item = ProductItemDataView()
                     item.productID = topAds.product.id
                     item.isTopAds = true
@@ -573,7 +601,7 @@ class ProductListPresenter @Inject constructor(
                     topAdsCount++
                 }
             } catch (e: java.lang.Exception) {
-                e.printStackTrace()
+                Timber.w(e)
             }
         }
 
@@ -1060,6 +1088,7 @@ class ProductListPresenter @Inject constructor(
         processBannerAndBroadmatchInSamePosition(searchProduct, list)
         processBanner(searchProduct, list)
         processBroadMatch(searchProduct, list)
+
         topAdsImageViewModelList = searchProductModel.getTopAdsImageViewModelList().toMutableList()
         processTopAdsImageViewModel(searchParameter, list)
 
@@ -1086,8 +1115,6 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun getFirstProductPositionWithBOELabel(list: List<Visitable<*>>): Int {
-        if (productList.isEmpty()) return -1
-
         val product = productList.firstOrNull {
             (it as ProductItemDataView).hasLabelGroupFulfillment
         }
@@ -1218,7 +1245,7 @@ class ProductListPresenter @Inject constructor(
                     list.add(list.indexOf(product) + 1, data)
                     inspirationCardViewModelIterator.remove()
                 } catch (exception: Throwable) {
-                    exception.printStackTrace()
+                    Timber.w(exception)
                     view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), exception)
                 }
             }
@@ -1246,7 +1273,7 @@ class ProductListPresenter @Inject constructor(
                     list.addAll(list.indexOf(product) + 1, inspirationCarouselVisitableList)
                     inspirationCarouselViewModelIterator.remove()
                 } catch (exception: java.lang.Exception) {
-                    exception.printStackTrace()
+                    Timber.w(exception)
                     view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), exception)
                 }
             }
@@ -1387,7 +1414,7 @@ class ProductListPresenter @Inject constructor(
             else if (bannerDataView.position == 0) processBannerAtTop(list)
             else processBannerAtPosition(list)
         } catch (throwable: Throwable) {
-            throwable.printStackTrace()
+            Timber.w(throwable)
         }
     }
 
@@ -1412,7 +1439,7 @@ class ProductListPresenter @Inject constructor(
             else if (broadMatchPosition == 1) processBroadMatchAtTop(list)
             else if (broadMatchPosition > 1) processBroadMatchAtPosition(list, broadMatchPosition)
         } catch (exception: Throwable) {
-            exception.printStackTrace()
+            Timber.w(exception)
         }
     }
 
@@ -1467,7 +1494,7 @@ class ProductListPresenter @Inject constructor(
                     processTopAdsImageViewModelInPosition(list, data)
                     topAdsImageViewModelIterator.remove()
                 } catch (exception: java.lang.Exception) {
-                    exception.printStackTrace()
+                    Timber.w(exception)
                     view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), exception)
                 }
             }
