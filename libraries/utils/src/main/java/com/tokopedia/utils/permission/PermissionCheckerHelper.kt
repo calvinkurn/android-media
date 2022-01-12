@@ -53,7 +53,7 @@ class PermissionCheckerHelper {
     private val TEXT_PERMISSION_DENIED: Int = R.string.permission_denied
     private val TEXT_NEVER_ASK_AGAIN: Int = R.string.permission_never_ask_again
 
-    private lateinit var listener: PermissionCheckListener
+    private var listener: PermissionCheckListener? = null
 
     object Companion {
         const val PERMISSION_CAMERA = Manifest.permission.CAMERA
@@ -291,7 +291,7 @@ class PermissionCheckerHelper {
             requestPermissions(activity, permissions, REQUEST_PERMISSION_CODE)
         }
         dialog.setSecondaryCTAClickListener {
-            listener.onPermissionDenied(permissionText)
+            listener?.onPermissionDenied(permissionText)
             dialog.dismiss()
         }
         dialog.show()
@@ -314,7 +314,7 @@ class PermissionCheckerHelper {
             requestPermissions(fragment, permissions, REQUEST_PERMISSION_CODE)
         }
         dialog.setSecondaryCTAClickListener {
-            listener.onPermissionDenied(permissionText)
+            listener?.onPermissionDenied(permissionText)
             dialog.dismiss()
         }
         dialog.show()
@@ -363,12 +363,12 @@ class PermissionCheckerHelper {
             if (permissions.isNotEmpty()
                     && permissionsDenied.isEmpty()
                     && permissionsDeniedNeedToShowRationale.isEmpty()) {
-                listener.onPermissionGranted()
+                listener?.onPermissionGranted()
             } else if (permissionsDenied.size > 1
                     && permissionsDenied.size > permissionsDeniedNeedToShowRationale.size) {
-                listener.onNeverAskAgain(getJoinedText(permissionsDenied))
+                listener?.onNeverAskAgain(getJoinedText(permissionsDenied))
             } else {
-                listener.onPermissionDenied(getJoinedText
+                listener?.onPermissionDenied(getJoinedText
                 (permissionsDeniedNeedToShowRationale))
             }
         }
