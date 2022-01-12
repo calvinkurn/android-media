@@ -151,7 +151,6 @@ class PlayChatListView : ConstraintLayout {
                 rvChatList.scrollBy(0, Integer.MAX_VALUE)
             }
         } catch (ignored: Throwable) {}
-
     }
 
     private fun isChatPositionBeyondOffset(recyclerView: RecyclerView): Boolean {
