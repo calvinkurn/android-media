@@ -12,14 +12,6 @@ class NotificationSettingsUtils(private val context: Context) {
     private var notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-    fun checkNotificationsModeWithoutChannel(): NotificationMode {
-        return if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
-            NotificationMode.ENABLED
-        } else {
-            NotificationMode.DISABLED
-        }
-    }
-
     fun checkNotificationsModeForSpecificChannel(channel: String?): NotificationMode {
         return if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

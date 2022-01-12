@@ -234,6 +234,30 @@ class CMPushNotificationManager : CoroutineScope {
 
     private fun validateAndRenderNotification(notification: Bundle) {
 
+        checkAndSendReceivedEvent(notification)
+        // aidlApiBundle : the data comes from AIDL service (including userSession data from another app)
+        aidlApiBundle?.let { aidlBundle ->
+
+            /*
+            * getting the smart push notification data from payload such as:
+            * mainAppPriority
+            * sellerAppPriority
+            * advanceTarget
+            * */
+            val targeting = advanceTargetNotification(notification)
+
+            // the smart push notification validators
+            NotificationValidationManager(applicationContext, targeting).validate(aidlBundle, {
+                renderPushNotification(notification)
+            }, {
+                // set cancelled notification if isn't notified
+                PushController(applicationContext).cancelPushNotification(notification)
+            })
+
+        }?: renderPushNotification(notification) // render as usual if there's no data from AIDL service
+    }
+
+    private fun checkAndSendReceivedEvent(notification: Bundle) {
         val baseNotificationModel = PayloadConverter.convertToBaseModel(notification)
         if (baseNotificationModel.notificationMode != NotificationMode.OFFLINE) {
             if (baseNotificationModel.type == CMConstant.NotificationType.SILENT_PUSH) {
@@ -262,26 +286,6 @@ class CMPushNotificationManager : CoroutineScope {
                 }
             }
         }
-        // aidlApiBundle : the data comes from AIDL service (including userSession data from another app)
-        aidlApiBundle?.let { aidlBundle ->
-
-            /*
-            * getting the smart push notification data from payload such as:
-            * mainAppPriority
-            * sellerAppPriority
-            * advanceTarget
-            * */
-            val targeting = advanceTargetNotification(notification)
-
-            // the smart push notification validators
-            NotificationValidationManager(applicationContext, targeting).validate(aidlBundle, {
-                renderPushNotification(notification)
-            }, {
-                // set cancelled notification if isn't notified
-                PushController(applicationContext).cancelPushNotification(notification)
-            })
-
-        }?: renderPushNotification(notification) // render as usual if there's no data from AIDL service
     }
 
     private fun renderPushNotification(bundle: Bundle) {
