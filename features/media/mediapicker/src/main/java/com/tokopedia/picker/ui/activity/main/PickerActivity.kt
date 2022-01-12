@@ -30,7 +30,6 @@ import com.tokopedia.picker.utils.addOnTabSelected
 import com.tokopedia.picker.utils.delegates.permissionGranted
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
-import java.lang.Exception
 
 /**
  * main applink:

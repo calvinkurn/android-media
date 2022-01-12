@@ -9,17 +9,12 @@ import android.widget.FrameLayout
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.imagepicker.media_picker.adapter.MediaPickerThumbnailAdapter
 import com.tokopedia.picker.R
 import com.tokopedia.picker.data.entity.Media
-import com.tokopedia.picker.databinding.MediaPickerPlaceholderThumbnailItemBinding
 import com.tokopedia.picker.databinding.WidgetMediaPickerThumbnailListBinding
 import com.tokopedia.picker.utils.ActionType
-import com.tokopedia.picker.utils.EventBusFactory
-import com.tokopedia.utils.view.binding.noreflection.viewBinding
-import java.lang.Exception
 
 class MediaPickerPreviewWidget : FrameLayout {
     private var mediaPickerThumbnailAdapter: MediaPickerThumbnailAdapter? = null

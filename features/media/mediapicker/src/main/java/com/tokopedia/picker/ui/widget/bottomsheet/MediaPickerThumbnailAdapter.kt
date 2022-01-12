@@ -12,7 +12,6 @@ import android.view.DragEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.recyclerview.widget.RecyclerView
@@ -30,9 +29,7 @@ import com.tokopedia.picker.ui.widget.bottomsheet.MediaPickerPreviewWidget
 import com.tokopedia.picker.utils.ActionType
 import com.tokopedia.picker.utils.getVideoDurationLabel
 import com.tokopedia.picker.utils.isVideoFormat
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
-import java.lang.Exception
 
 
 class MediaPickerThumbnailAdapter(
