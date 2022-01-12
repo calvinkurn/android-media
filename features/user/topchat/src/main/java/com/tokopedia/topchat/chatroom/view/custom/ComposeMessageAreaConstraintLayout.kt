@@ -17,6 +17,8 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.listener.ReplyBoxTextListener
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifyprinciples.Typography
+import java.text.NumberFormat
+import java.util.*
 
 class ComposeMessageAreaConstraintLayout : ConstraintLayout, LifecycleObserver {
 
@@ -26,6 +28,8 @@ class ComposeMessageAreaConstraintLayout : ConstraintLayout, LifecycleObserver {
     private var textWatcher: MessageTextWatcher? = null
     private var sendButtontextWatcher: ComposeTextWatcher? = null
     private var bgComposeArea: Drawable? = null
+
+    private val numberFormat = NumberFormat.getInstance(Locale("in", "ID"))
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -118,9 +122,10 @@ class ComposeMessageAreaConstraintLayout : ConstraintLayout, LifecycleObserver {
                 replyBoxTextListener,
                 object : ComposeTextWatcher.Listener {
                     override fun onComposeTextLimitExceeded(offset: Int) {
+                        val formattedOffset = getFormattedOffset(offset)
                         errorComposeMsg?.show()
                         errorComposeMsg?.text = context?.getString(
-                            R.string.desc_topchat_max_char_exceeded, offset
+                            R.string.desc_topchat_max_char_exceeded, formattedOffset
                         ) ?: ""
                         composeArea?.setBackgroundResource(R.drawable.bg_topchat_error_too_long_msg)
                     }
@@ -134,7 +139,16 @@ class ComposeMessageAreaConstraintLayout : ConstraintLayout, LifecycleObserver {
         }
     }
 
+    private fun getFormattedOffset(offset: Int): String {
+        return if (offset > MAX_DISPLAYED_OFFSET) {
+            "10.000+"
+        } else {
+            numberFormat.format(offset)
+        }
+    }
+
     companion object {
         val LAYOUT = R.layout.partial_compose_message_area
+        private const val MAX_DISPLAYED_OFFSET = 10_000
     }
 }
