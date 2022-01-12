@@ -502,7 +502,14 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(result.throwable, SomConsts.ERROR_REJECT_CANCEL_ORDER)
-                    result.throwable.showErrorToaster(binding?.containerBtnDetail)
+                    SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SellerZeroOutageErrorHandler.SomMessage.REJECT_CANCEL_REQUEST_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
+                    result.throwable.showErrorToaster()
                 }
             }
         })
@@ -1104,7 +1111,14 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 is Success -> onSuccessRejectOrder(it.data.rejectOrder)
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_REJECT_ORDER)
-                    it.throwable.showErrorToaster(binding?.containerBtnDetail)
+                    SellerZeroOutageErrorHandler.logExceptionToServer(
+                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SellerZeroOutageErrorHandler.SomMessage.REJECT_ORDER_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
+                    it.throwable.showErrorToaster()
                 }
             }
         })
