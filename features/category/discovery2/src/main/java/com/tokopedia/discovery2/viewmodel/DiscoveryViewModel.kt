@@ -216,9 +216,9 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     fun getDiscoveryData(queryParameterMap: MutableMap<String, String?>, userAddressData: LocalCacheModel?) {
+        pageLoadTimePerformanceInterface?.stopPreparePagePerformanceMonitoring()
         launchCatchError(
                 block = {
-                    pageLoadTimePerformanceInterface?.stopPreparePagePerformanceMonitoring()
                     pageLoadTimePerformanceInterface?.startNetworkRequestPerformanceMonitoring()
                     val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier, queryParameterMap, userAddressData)
                     pageLoadTimePerformanceInterface?.stopNetworkRequestPerformanceMonitoring()
