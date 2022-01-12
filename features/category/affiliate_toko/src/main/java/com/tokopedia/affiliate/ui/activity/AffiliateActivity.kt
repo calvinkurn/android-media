@@ -229,11 +229,16 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun showFraudTicker() {
-        val currentFragment =
+        var currentFragment =
             supportFragmentManager.findFragmentByTag(AffiliateLoginFragment::class.java.simpleName)
-        if (currentFragment != null) {
-            (currentFragment as? AffiliateLoginFragment)?.showFraudTicker()
+        if (currentFragment == null) {
+            showLoginPortal()
+            currentFragment = supportFragmentManager.findFragmentByTag(AffiliateLoginFragment::class.java.simpleName)
         }
+        currentFragment?.let { fragment ->
+            (fragment as? AffiliateLoginFragment)?.showFraudTicker()
+        }
+
     }
 
     override fun onRegistrationSuccessful() {
