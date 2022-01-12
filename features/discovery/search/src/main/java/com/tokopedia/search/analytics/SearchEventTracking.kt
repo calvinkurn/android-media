@@ -117,6 +117,7 @@ interface SearchEventTracking {
             const val PRODUCTS = "products"
             const val IMPRESSIONS = "impressions"
             const val CLICK = "click"
+            const val LIST = "list"
         }
     }
 

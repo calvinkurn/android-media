@@ -7,13 +7,13 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.addpin.data.*
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.CoreMatchers
 import org.junit.Assert
 import org.junit.Before
@@ -34,7 +34,6 @@ class AddChangePinViewModelTest {
     val getStatusPinUseCase = mockk<GraphqlUseCase<StatusPinPojo>>(relaxed = true)
     val validatePinUseCase = mockk<GraphqlUseCase<ValidatePinPojo>>(relaxed = true)
     val skipOtpPinUseCase = mockk<GraphqlUseCase<SkipOtpPinPojo>>(relaxed = true)
-    private val testDispatcher = TestCoroutineDispatcher()
     lateinit var viewModel: AddChangePinViewModel
 
     private val rawQueries = mapOf(
@@ -60,7 +59,7 @@ class AddChangePinViewModelTest {
             validatePinUseCase,
             skipOtpPinUseCase,
             rawQueries,
-            testDispatcher
+            CoroutineTestDispatchersProvider
         )
         viewModel.addPinResponse.observeForever(addPinObserver)
         viewModel.checkPinResponse.observeForever(checkPinObserver)

@@ -8,6 +8,7 @@ import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 
+@Suppress("LongParameterList")
 class TickerDataView(
     val text: String = "",
     val query: String = "",
@@ -20,6 +21,7 @@ class TickerDataView(
     Parcelable,
     Visitable<ProductListTypeFactory?>,
     SearchComponentTracking by searchComponentTracking(
+        trackingOption = trackingOption,
         keyword = keyword,
         componentId = componentId,
         applink = query,

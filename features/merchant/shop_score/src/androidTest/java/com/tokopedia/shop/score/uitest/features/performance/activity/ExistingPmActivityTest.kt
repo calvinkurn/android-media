@@ -7,8 +7,10 @@ import com.tokopedia.shop.score.uitest.features.performance.base.ShopScoreTest
 import com.tokopedia.shop.score.uitest.stub.common.util.onClick
 import com.tokopedia.shop.score.uitest.stub.common.util.onIdView
 import com.tokopedia.shop.score.uitest.stub.common.util.scrollTo
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 
+@UiTest
 class ExistingPmActivityTest : ShopScoreTest() {
 
     override fun setup() {
@@ -34,6 +36,7 @@ class ExistingPmActivityTest : ShopScoreTest() {
 
     @Test
     fun show_bottom_sheet_tooltip_level_existing_pm() {
+        shopScorePrefManagerStub.setFinishCoachMark(true)
         activityRule.launchActivity(getShopPerformancePageIntent())
         onIdView(R.id.ic_performance_level_information).onClick()
         showBottomSheetTooltipLevelPm(existingSellerPmResponse)
@@ -41,6 +44,7 @@ class ExistingPmActivityTest : ShopScoreTest() {
 
     @Test
     fun show_bottom_sheet_tooltip_score_existing_pm() {
+        shopScorePrefManagerStub.setFinishCoachMark(true)
         activityRule.launchActivity(getShopPerformancePageIntent())
         onIdView(R.id.ic_shop_score_performance).onClick()
         showBottomSheetTooltipScoreExisting()
@@ -48,6 +52,7 @@ class ExistingPmActivityTest : ShopScoreTest() {
 
     @Test
     fun show_section_period_detail_existing_pm() {
+        shopScorePrefManagerStub.setFinishCoachMark(true)
         activityRule.launchActivity(getShopPerformancePageIntent())
         activityRule.activity.scrollTo<PeriodDetailPerformanceUiModel>()
         showSectionPeriodDetailExisting(existingSellerPmResponse)
@@ -55,12 +60,14 @@ class ExistingPmActivityTest : ShopScoreTest() {
 
     @Test
     fun show_item_detail_performance_and_show_bottomsheet_pm() {
+        shopScorePrefManagerStub.setFinishCoachMark(true)
         activityRule.launchActivity(getShopPerformancePageIntent())
         showDetailPerformanceExisting()
     }
 
     @Test
     fun show_power_merchant_section() {
+        shopScorePrefManagerStub.setFinishCoachMark(true)
         activityRule.launchActivity(getShopPerformancePageIntent())
         activityRule.activity.scrollTo<ItemStatusPMUiModel>()
         showPowerMerchantSection()

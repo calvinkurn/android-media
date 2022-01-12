@@ -5,6 +5,7 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.longClick
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.activity.robot.longclickbubblemenu.LongClickBubbleMenuRobot.clickLongClickMenuItemAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleMatcher.matchReplyBoxChildWithId
 import com.tokopedia.topchat.matchers.withRecyclerView
 
@@ -38,14 +39,6 @@ object ReplyBubbleRobot {
 
     fun clickReplyBubbleAt(position: Int) {
         doActionOnReplyBubbleAt(position, R.id.cl_reply_container, click())
-    }
-
-    fun clickLongClickMenuItemAt(position: Int) {
-        onView(
-            withRecyclerView(R.id.rvMenu).atPositionOnView(
-                position, R.id.ll_long_click_menu_item
-            )
-        ).perform(click())
     }
 
     private fun doActionOnReplyBubbleAt(

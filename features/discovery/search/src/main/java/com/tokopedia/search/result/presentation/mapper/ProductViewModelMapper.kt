@@ -44,6 +44,7 @@ import java.util.*
 
 class ProductViewModelMapper {
 
+    @Suppress("LongParameterList")
     fun convertToProductViewModel(
         lastProductItemPosition: Int,
         searchProductModel: SearchProductModel,
@@ -65,6 +66,7 @@ class ProductViewModelMapper {
             searchProductData.related,
             isLocalSearch,
             dimension90,
+            keyword,
         )
         productDataView.productList = convertToProductItemDataViewList(
             lastProductItemPosition,
@@ -143,65 +145,88 @@ class ProductViewModelMapper {
         }
     }
 
-    private fun convertToRelatedViewModel(related: Related, isLocalSearch: Boolean, dimension90: String): RelatedDataView {
-        val broadMatchDataViewList: MutableList<BroadMatchDataView> = ArrayList()
-        for (otherRelated in related.otherRelatedList) {
-            broadMatchDataViewList.add(convertToBroadMatchViewModel(otherRelated, isLocalSearch, dimension90))
-        }
-        return RelatedDataView(
-                related.relatedKeyword,
-                related.position,
-                broadMatchDataViewList
+    private fun convertToRelatedViewModel(
+        related: Related,
+        isLocalSearch: Boolean,
+        dimension90: String,
+        actualKeyword: String,
+    ): RelatedDataView =
+        RelatedDataView(
+            related.relatedKeyword,
+            related.position,
+            related.otherRelatedList.map {
+                convertToBroadMatchViewModel(
+                    it,
+                    isLocalSearch,
+                    dimension90,
+                    related.trackingOption,
+                    actualKeyword,
+                )
+            }
         )
-    }
 
-    private fun convertToBroadMatchViewModel(otherRelated: OtherRelated, isLocalSearch: Boolean, dimension90: String): BroadMatchDataView {
+    private fun convertToBroadMatchViewModel(
+        otherRelated: OtherRelated,
+        isLocalSearch: Boolean,
+        dimension90: String,
+        trackingOption: Int,
+        actualKeyword: String,
+    ): BroadMatchDataView {
         val broadMatchItemDataViewList = otherRelated.productList.mapIndexed { index, otherRelatedProduct ->
             val position = index + 1
-            convertToBroadMatchItemViewModel(otherRelatedProduct, position, otherRelated.keyword, dimension90)
+            convertToBroadMatchItemViewModel(
+                otherRelatedProduct,
+                position,
+                otherRelated.keyword,
+                dimension90,
+            )
         }
 
         return BroadMatchDataView(
-                otherRelated.keyword,
-                otherRelated.url,
-                otherRelated.applink,
-                isLocalSearch,
-                broadMatchItemDataViewList,
-                dimension90,
-                BroadMatch,
+            keyword = otherRelated.keyword,
+            url = otherRelated.url,
+            applink = otherRelated.applink,
+            isAppendTitleInTokopedia = isLocalSearch,
+            broadMatchItemDataViewList = broadMatchItemDataViewList,
+            dimension90 = dimension90,
+            carouselOptionType = BroadMatch,
+            componentId = otherRelated.componentId,
+            trackingOption = trackingOption,
+            actualKeyword = actualKeyword,
         )
     }
 
     private fun convertToBroadMatchItemViewModel(
-            otherRelatedProduct: OtherRelatedProduct,
-            position: Int,
-            alternativeKeyword: String,
-            dimension90: String,
+        otherRelatedProduct: OtherRelatedProduct,
+        position: Int,
+        alternativeKeyword: String,
+        dimension90: String,
     ): BroadMatchItemDataView {
         val isOrganicAds = otherRelatedProduct.isOrganicAds()
 
         return BroadMatchItemDataView(
-                id = otherRelatedProduct.id,
-                name = otherRelatedProduct.name,
-                price = otherRelatedProduct.price,
-                imageUrl = otherRelatedProduct.imageUrl,
-                url = otherRelatedProduct.url,
-                applink = otherRelatedProduct.applink,
-                priceString = otherRelatedProduct.priceString,
-                shopLocation = otherRelatedProduct.shop.city,
-                badgeItemDataViewList = otherRelatedProduct.badgeList.mapToBadgeItemDataViewList(),
-                freeOngkirDataView = otherRelatedProduct.freeOngkir.mapToFreeOngkirDataView(),
-                isWishlisted = otherRelatedProduct.isWishlisted,
-                position = position,
-                alternativeKeyword = alternativeKeyword,
-                isOrganicAds = isOrganicAds,
-                topAdsViewUrl = otherRelatedProduct.ads.productViewUrl,
-                topAdsClickUrl = otherRelatedProduct.ads.productClickUrl,
-                topAdsWishlistUrl = otherRelatedProduct.ads.productWishlistUrl,
-                ratingAverage = otherRelatedProduct.ratingAverage,
-                labelGroupDataList = otherRelatedProduct.labelGroupList.mapToLabelGroupDataViewList(),
-                carouselProductType = BroadMatchProduct(),
-                dimension90 = dimension90,
+            id = otherRelatedProduct.id,
+            name = otherRelatedProduct.name,
+            price = otherRelatedProduct.price,
+            imageUrl = otherRelatedProduct.imageUrl,
+            url = otherRelatedProduct.url,
+            applink = otherRelatedProduct.applink,
+            priceString = otherRelatedProduct.priceString,
+            shopLocation = otherRelatedProduct.shop.city,
+            badgeItemDataViewList = otherRelatedProduct.badgeList.mapToBadgeItemDataViewList(),
+            freeOngkirDataView = otherRelatedProduct.freeOngkir.mapToFreeOngkirDataView(),
+            isWishlisted = otherRelatedProduct.isWishlisted,
+            position = position,
+            alternativeKeyword = alternativeKeyword,
+            isOrganicAds = isOrganicAds,
+            topAdsViewUrl = otherRelatedProduct.ads.productViewUrl,
+            topAdsClickUrl = otherRelatedProduct.ads.productClickUrl,
+            topAdsWishlistUrl = otherRelatedProduct.ads.productWishlistUrl,
+            ratingAverage = otherRelatedProduct.ratingAverage,
+            labelGroupDataList = otherRelatedProduct.labelGroupList.mapToLabelGroupDataViewList(),
+            carouselProductType = BroadMatchProduct(),
+            dimension90 = dimension90,
+            componentId = otherRelatedProduct.componentId,
         )
     }
 

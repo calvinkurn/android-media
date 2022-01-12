@@ -14,7 +14,6 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.idling.CountingIdlingResource
-import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
@@ -41,8 +40,8 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.action.ClickChildViewWithIdAction
 import com.tokopedia.topchat.action.RecyclerViewAction
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
+import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.FavoriteData.Companion.IS_FOLLOW
-import com.tokopedia.topchat.chatroom.domain.pojo.GetExistingMessageIdPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.background.ChatBackgroundResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
@@ -69,9 +68,9 @@ import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
 import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub.Companion.START_TIME_FORMAT
 import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
 import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
+import com.tokopedia.topchat.stub.common.usecase.MutationMoveChatToTrashUseCaseStub
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matcher
@@ -130,10 +129,10 @@ abstract class TopchatRoomTest {
     protected lateinit var replyChatGQLUseCase: ReplyChatGQLUseCaseStub
 
     @Inject
-    protected lateinit var chatSrwUseCase: SmartReplyQuestionUseCaseStub
+    protected lateinit var chatSrwUseCase: GetSmartReplyQuestionUseCaseStub
 
     @Inject
-    protected lateinit var chatBackgroundUseCase: ChatBackgroundUseCaseStub
+    protected lateinit var chatBackgroundUseCase: GetChatBackgroundUseCaseStub
 
     @Inject
     protected lateinit var websocket: RxWebSocketUtilStub
@@ -161,6 +160,15 @@ abstract class TopchatRoomTest {
 
     @Inject
     protected lateinit var addToCartUseCase: AddToCartUseCaseStub
+
+    @Inject
+    protected lateinit var moveChatToTrashUseCase: MutationMoveChatToTrashUseCaseStub
+
+    @Inject
+    protected lateinit var existingChatMapper: TopChatRoomGetExistingChatMapper
+
+    @Inject
+    protected lateinit var unsendReplyUseCase: UnsendReplyUseCaseStub
 
     @Inject
     protected lateinit var cacheManager: TopchatCacheManager

@@ -1,13 +1,17 @@
 package com.tokopedia.play_common.ui.chat.viewholder
 
+import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play_common.R
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.play_common.util.extension.append
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -23,20 +27,33 @@ class PlayChatViewHolder(
     }
 
     fun bind(chat: PlayChatUiModel) {
-        val userName = SpannableString(chat.name)
-        userName.setSpan(
-                ForegroundColorSpan(
-                        MethodChecker.getColor(itemView.context, R.color.Unify_N150)
-                ),
-                0,
-                chat.name.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        val chatText = constructChatText(
+            userName = chat.name,
+            message = chat.message
         )
 
-        tvChat.text = ""
-        tvChat.append(userName)
-        tvChat.append(" ")
-        tvChat.append(chat.message)
+        tvChat.text = chatText
+    }
+
+    private fun constructChatText(
+        userName: String,
+        message: String,
+    ): CharSequence {
+        val spanBuilder = SpannableStringBuilder()
+        spanBuilder.append(
+            text = userName,
+            flags = Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
+            StyleSpan(Typeface.BOLD),
+            ForegroundColorSpan(
+                MethodChecker.getColor(
+                    itemView.context,
+                    R.color.play_dms_chat_user_color
+                )
+            ),
+        )
+        spanBuilder.append(" $message")
+
+        return spanBuilder
     }
 
     companion object {
