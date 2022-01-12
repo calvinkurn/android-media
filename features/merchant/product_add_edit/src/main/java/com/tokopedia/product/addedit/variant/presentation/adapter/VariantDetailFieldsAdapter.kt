@@ -1,9 +1,9 @@
 package com.tokopedia.product.addedit.variant.presentation.adapter
 
-import android.os.Handler
-import android.os.Looper
+import android.annotation.SuppressLint
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailFieldsUiModel
 import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailHeaderUiModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
@@ -68,12 +68,14 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun notifyElement(adapterPosition: Int, element: Visitable<*>) {
-        visitables[adapterPosition] = element
-        Handler(Looper.getMainLooper()).post {
-            try {
-                notifyItemChanged(adapterPosition)
-            } catch (e: Exception) {}
+        try {
+            visitables[adapterPosition] = element
+            notifyItemChanged(adapterPosition)
+        } catch (e: Exception) {
+            notifyDataSetChanged()
+            AddEditProductErrorHandler.logExceptionToCrashlytics(e)
         }
     }
 }
