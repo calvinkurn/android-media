@@ -65,17 +65,23 @@ class ShareExperienceViewComponent(
         if (isShow) ivShareLink.show() else ivShareLink.hide()
     }
 
-    private fun deleteTemporaryImage() {
+    private fun isTemporaryImageAvailable(): Boolean {
         if(imgSaveFilePath.isNotEmpty()) {
-            File(imgSaveFilePath).apply {
-                if(exists()) delete()
-            }
+            return File(imgSaveFilePath).exists()
+        }
+
+        return false
+    }
+
+    private fun deleteTemporaryImage() {
+        if(isTemporaryImageAvailable()) {
+            File(imgSaveFilePath).delete()
         }
     }
 
     fun saveTemporaryImage(imageUrl: String) {
         try {
-            if(imgSaveFilePath.isNotEmpty()) {
+            if(isTemporaryImageAvailable()) {
                 listener.onShareOpenBottomSheet(this@ShareExperienceViewComponent)
                 return
             }
