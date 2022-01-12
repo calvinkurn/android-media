@@ -18,7 +18,7 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginStart="@dimen/unify_space_12"
             android:layout_marginBottom="@dimen/spacing_lvl3"
-            android:src="@drawable/ic_tokopedia"
+            android:src="@drawable/iconunify_placeholder_filled"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
