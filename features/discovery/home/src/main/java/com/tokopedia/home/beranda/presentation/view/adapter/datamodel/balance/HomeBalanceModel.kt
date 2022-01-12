@@ -223,6 +223,12 @@ data class HomeBalanceModel(
         return isContainsNewGopay && isContainsNewTokopoint
     }
 
+    fun isGopayActive(): Boolean {
+        val isGopayActive = (balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.drawerItemType == TYPE_WALLET_APP_LINKED &&
+                balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.state == STATE_SUCCESS)
+        return isGopayActive
+    }
+
     fun containsGopay(): Boolean {
         val isContainsNewGopay = (balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.drawerItemType == TYPE_WALLET_APP_LINKED
                 || balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.drawerItemType == TYPE_WALLET_APP_NOT_LINKED) &&

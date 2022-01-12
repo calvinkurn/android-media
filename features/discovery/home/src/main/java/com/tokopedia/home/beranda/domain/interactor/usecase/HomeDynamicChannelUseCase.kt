@@ -85,6 +85,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
     companion object{
         private const val TYPE_ATF_1 = "atf-1"
         private const val MINIMUM_BANNER_TO_SHOW = 1
+        private const val MINIMUM_DC_TO_SHOW_RECOM = 3
     }
     val gson = Gson()
     var cachedHomeData: HomeData? = null
@@ -282,7 +283,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 ))
 
                 val needToGetRecom = dynamicChannelPlainResponse.evaluateRecommendationSection(currentHomeRecom = localHomeRecommendationFeedDataModel)
-                if (needToGetRecom) {
+                if (needToGetRecom && dynamicChannelPlainResponse.list.size > MINIMUM_DC_TO_SHOW_RECOM) {
                     getFeedTabData(dynamicChannelPlainResponse)
                 }
 
@@ -608,7 +609,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 try {
                                     val dynamicChannel = homePageBannerRepository.getRemoteData()
                                     dynamicChannel.let {
-                                        if (it.banner.slides?.size?:0 > MINIMUM_BANNER_TO_SHOW) {
+                                        if (it.banner.slides?.size?:0 >= MINIMUM_BANNER_TO_SHOW) {
                                             val channelFromResponse = it.banner
                                             atfData.content = gson.toJson(channelFromResponse)
                                             atfData.status = AtfKey.STATUS_SUCCESS
