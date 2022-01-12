@@ -55,6 +55,7 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
     private fun observeData() {
         viewModel.dummy.observe(viewLifecycleOwner, {
             showMCCM()
+            showFlashSale()
         })
     }
 
@@ -110,7 +111,6 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
                         discountLabel = "10%",
                         slashPrice = "Rp16.500",
                         appLink = "tokopedia://deals",
-                        expiredDate = "December 2021",
                     ),
                     DenomWidgetModel(
                         title="15 ribu",
@@ -119,7 +119,6 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
                         discountLabel = "10%",
                         slashPrice = "Rp16.500",
                         appLink = "tokopedia://deals",
-                        expiredDate = "December 2021",
                     ),
                     DenomWidgetModel(
                         title="15 ribu",
@@ -128,7 +127,6 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
                         discountLabel = "10%",
                         slashPrice = "Rp16.500",
                         appLink = "tokopedia://deals",
-                        expiredDate = "December 2021",
                     ),
                     DenomWidgetModel(
                         title="15 ribu",
@@ -137,7 +135,6 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
                         discountLabel = "10%",
                         slashPrice = "Rp16.500",
                         appLink = "tokopedia://deals",
-                        expiredDate = "December 2021",
                     ),
                     DenomWidgetModel(
                         title="15 ribu",
@@ -146,7 +143,6 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
                         discountLabel = "10%",
                         slashPrice = "Rp16.500",
                         appLink = "tokopedia://deals",
-                        expiredDate = "December 2021",
                     ),
                     DenomWidgetModel(
                         title="15 ribu",
@@ -155,7 +151,80 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
                         discountLabel = "10%",
                         slashPrice = "Rp16.500",
                         appLink = "tokopedia://deals",
-                        expiredDate = "December 2021",
+                    )
+                )
+            )
+        }
+    }
+
+    fun showFlashSale(){
+        binding?.let {
+            it.widgetFlashSaleGrid.renderFlashSaleGrid(
+                denomGridListener = object: RechargeDenomGridListener{
+                    override fun onDenomGridClicked(denomGrid: DenomWidgetModel, position: Int) {
+                        //todo
+                    }
+                }, "Diskon Rp15.000 buat pengguna baru, nih!", "Selesai dalam",
+                listOf(
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                        flashSalePercentage = 80,
+                        flashSaleLabel = "Mau habis"
+                    ),
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                        flashSalePercentage = 80,
+                        flashSaleLabel = "Mau habis"
+                    ),
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                        flashSalePercentage = 80,
+                        flashSaleLabel = "Mau habis"
+                    ),
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                        flashSalePercentage = 80,
+                        flashSaleLabel = "Mau habis"
+                    ),
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                        flashSalePercentage = 80,
+                        flashSaleLabel = "Mau habis"
+                    ),
+                    DenomWidgetModel(
+                        title="15 ribu",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                        flashSalePercentage = 80,
+                        flashSaleLabel = "Mau habis"
                     )
                 )
             )

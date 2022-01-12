@@ -11,5 +11,11 @@
         android:layout_height="wrap_content"
         />
 
+    <com.tokopedia.recharge_component.widget.MCCMFlashSaleGridWidget
+        android:id="@+id/widget_flash_sale_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
 
 </LinearLayout>
