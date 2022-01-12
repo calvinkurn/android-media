@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -416,7 +417,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun addEndlessScrollListener() {
-        val glm = GridLayoutManager(activity, 2)
+        val staggeredGlm = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+
+        /*val glm = GridLayoutManager(activity, 2)
         glm.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when (wishlistV2Adapter.getItemViewType(position)) {
@@ -432,9 +435,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     else -> 2
                 }
             }
-        }
+        }*/
 
-        rvScrollListener = object : EndlessRecyclerViewScrollListener(glm) {
+        rvScrollListener = object : EndlessRecyclerViewScrollListener(staggeredGlm) {
 
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 currentPage += 1
@@ -463,19 +466,24 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     }
                 }
 
-                val firstVisibleItemPosition = (layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
-                if (firstVisibleItemPosition == 0) {
+                var firstVisibleItems: IntArray? = null
+                firstVisibleItems = (layoutManager as StaggeredGridLayoutManager).findFirstVisibleItemPositions(firstVisibleItems)
+                if (firstVisibleItems != null && firstVisibleItems.isNotEmpty()) {
+                    println("++ firstVisibleItems[0] = ${firstVisibleItems[0]}")
+                }
+
+                /*if (firstVisibleItemPosition == 0) {
                     binding?.run {
                         topLayoutShadow.gone()
                         wishlistV2Fb.gone()
                     }
-                }
+                }*/
             }
         }
 
         binding?.run {
             rvWishlist.apply {
-                layoutManager = glm
+                layoutManager = staggeredGlm
                 adapter = wishlistV2Adapter
                 addOnScrollListener(rvScrollListener)
             }
