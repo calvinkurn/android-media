@@ -79,9 +79,6 @@ class LikeViewComponent(
             it.repeatMode = ValueAnimator.REVERSE
         }
 
-        clickAnimator.playTogether(clickRotateAnimation, clickScaleXAnimation, clickScaleYAnimation)
-        remindAnimator.playTogether(remindRotateAnimation, remindScaleXAnimation, remindScaleYAnimation)
-
         clickAnimator.addListener(animationListener)
         remindAnimator.addListener(animationListener)
 
