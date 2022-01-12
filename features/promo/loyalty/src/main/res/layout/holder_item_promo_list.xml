@@ -102,9 +102,9 @@
                 android:layout_below="@+id/tv_label_code_promo"
                 android:layout_toEndOf="@id/iv_code_promo"
                 android:layout_toRightOf="@id/iv_code_promo"
-                android:textColor="@color/Unify_R400"
+                android:textColor="@color/Unify_Y500"
                 android:textSize="14sp"
-                tools:text="ANGGAGANTENG"/>
+                tools:text="ANGGAGANTENG" />
 
             <TextView
                 android:id="@+id/btn_copy_code_promo"
