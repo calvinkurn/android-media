@@ -185,10 +185,8 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         if (tippingData.status == OPEN || tippingData.status == WAITING_PAYMENT || tippingData.status == SUCCESS_PAYMENT || tippingData.status ==  SUCCESS_TO_GOJEK || tippingData.status == REFUND_TIP) {
             setTippingData(data)
             binding?.tippingGojekLayout?.root?.visibility = View.VISIBLE
-//            binding?.dividerTippingGojek?.visibility = View.VISIBLE
         } else {
             binding?.tippingGojekLayout?.root?.visibility = View.GONE
-//            binding?.dividerTippingGojek?.visibility = View.GONE
         }
     }
 

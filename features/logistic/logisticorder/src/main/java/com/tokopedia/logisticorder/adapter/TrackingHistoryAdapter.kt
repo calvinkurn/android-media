@@ -47,7 +47,7 @@ class TrackingHistoryAdapter(private val trackingHistoryData: List<TrackHistoryM
         fun bind(data: TrackHistoryModel, position: Int) {
             binding.run {
                 title.run {
-                    text = DateUtil.formatDate("yyyy-MM-dd", "EEEE, dd MMMM yyyy",data.date)
+                    text = DateUtil.formatDate("yyyy-MM-dd", "EEEE, dd MMM yyyy",data.date)
                     setTextColor(MethodChecker.getColor(itemView.context, if (position == 0) com.tokopedia.unifyprinciples.R.color.Unify_G400 else com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                 }
                 date.text = "${DateUtil.formatDate("HH:mm:ss", "HH:mm",data.time)} WIB"
@@ -60,14 +60,14 @@ class TrackingHistoryAdapter(private val trackingHistoryData: List<TrackHistoryM
                 if (position == 0) {
                     dotImage.setColorFilter(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
                     dotTrail.visibility = View.VISIBLE
-                    dotTrail.setBackgroundColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                    dotTrail.setBackgroundColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
                 } else if (position == trackingHistoryData.size - 1) {
-                    dotImage.setColorFilter(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N200))
+                    dotImage.setColorFilter(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
                     dotTrail.visibility = View.GONE
                 } else {
-                    dotImage.setColorFilter(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N200))
+                    dotImage.setColorFilter(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
                     dotTrail.visibility = View.VISIBLE
-                    dotTrail.setBackgroundColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N200))
+                    dotTrail.setBackgroundColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
                 }
                 if (data.proof.imageId.isEmpty()) {
                     imgProof.visibility = View.GONE
