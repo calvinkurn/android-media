@@ -8,7 +8,7 @@ import com.tokopedia.picker.ui.PickerFragmentFactory
 
 class TestPickerFragmentFactory : PickerFragmentFactory {
 
-    override fun permissionBoardingFragment(): Fragment {
+    override fun permissionFragment(): Fragment {
         return TestPermissionFragment()
     }
 
