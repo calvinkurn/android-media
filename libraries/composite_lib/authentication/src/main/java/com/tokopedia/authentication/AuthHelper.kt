@@ -2,11 +2,12 @@ package com.tokopedia.authentication
 
 import android.os.Build
 import android.util.Base64
+import android.util.Log
 import androidx.collection.ArrayMap
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.user.session.UserSessionInterface
-import java.security.InvalidKeyException
-import java.security.NoSuchAlgorithmException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
@@ -45,7 +46,7 @@ class AuthHelper {
             val date = generateDate(dateFormat)
             val contentMD5 = getMD5Hash(strParam)
             val authString = "${method}\n${contentMD5}\n${contentType}\n${date}\n${path}"
-            val signature = calculateRFC2104HMAC(authString, authKey)
+            val signature = ""
 
             val headerMap = ArrayMap<String, String>()
             headerMap[HEADER_CONTENT_TYPE] = contentType
@@ -198,7 +199,6 @@ class AuthHelper {
         ): MutableMap<String, String> {
             val hash = getMD5Hash("${userId}~${deviceId}")
 
-
             params[PARAM_USER_ID] = userId
             params[PARAM_DEVICE_ID] = deviceId
             params[PARAM_HASH] = hash
@@ -210,30 +210,24 @@ class AuthHelper {
 
         @JvmStatic
         fun calculateRFC2104HMAC(authString: String, authKey: String): String {
-            try {
+            return try {
                 val signingKey = SecretKeySpec(authKey.toByteArray(), MAC_ALGORITHM)
                 val mac = Mac.getInstance(MAC_ALGORITHM)
                 mac.init(signingKey)
                 val rawHmac = mac.doFinal(authString.toByteArray())
-
-                return AuthHelperJava.base64Encoder(rawHmac, Base64.DEFAULT)
-            } catch (e: NoSuchAlgorithmException) {
-                e.printStackTrace()
-
-                return ""
-            } catch (e: InvalidKeyException) {
-                e.printStackTrace()
-
-                return ""
-            } catch (e: NullPointerException) {
-                /*
-                    To Prevent Fatal Exception: java.lang.RuntimeException
-                    Attempt to invoke virtual method 'boolean java.lang.String.equals(java.lang.Object)' on a null object reference
-                */
-                e.printStackTrace()
-
-                return ""
+                AuthHelperJava.base64Encoder(rawHmac, Base64.DEFAULT)
+            } catch (e: Exception) {
+                logException(e)
+                ""
             }
+        }
+
+        private fun logException(e: Exception) {
+            val messageMap: MutableMap<String, String> = HashMap()
+            messageMap["type"] = "exception"
+            messageMap["exception"] = e.javaClass.name
+            messageMap["stack_trace"] = Log.getStackTraceString(e).take(1000)
+            ServerLogger.log(Priority.P2, "AUTH_HELPER", messageMap)
         }
 
         @JvmStatic
@@ -246,11 +240,8 @@ class AuthHelper {
             return try {
                 val simpleDateFormat = SimpleDateFormat(dateFormat, Locale.ENGLISH)
                 simpleDateFormat.format(Date())
-            }catch (e: RuntimeException) {
-            /*
-                To Prevent Fatal Exception: java.lang.RuntimeException
-                DateTimePatternGenerator::createInstance failed: U_ILLEGAL_CHARACTER
-            */
+            }catch (e: Exception) {
+                logException(e)
                 ""
             }
         }
