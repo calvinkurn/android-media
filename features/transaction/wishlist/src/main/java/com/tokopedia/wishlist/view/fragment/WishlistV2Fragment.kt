@@ -504,7 +504,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 var firstVisibleItems: IntArray? = null
                 firstVisibleItems = (layoutManager as StaggeredGridLayoutManager).findFirstVisibleItemPositions(firstVisibleItems)
                 if (firstVisibleItems != null && firstVisibleItems.isNotEmpty()) {
-                    println("++ firstVisibleItems[0] = ${firstVisibleItems[0]}")
                     if (firstVisibleItems[0] == 0) {
                         binding?.run {
                             topLayoutShadow.gone()

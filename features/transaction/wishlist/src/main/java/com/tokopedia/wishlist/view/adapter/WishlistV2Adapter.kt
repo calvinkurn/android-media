@@ -128,50 +128,6 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    /*override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder.itemView.layoutParams is StaggeredGridLayoutManager.LayoutParams) {
-            val layout = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
-            val element = listTypeData[position]
-            when (holder) {
-                is WishlistV2CountManageRowItemViewHolder-> {
-                    if (isRefreshing) {
-                        isRefreshing = false
-                        holder.setManageLabel(holder.itemView.context.getString(R.string.wishlist_manage_label))
-                    }
-                    holder.bind(element, isShowCheckbox)
-                }
-                is WishlistV2ListItemViewHolder-> {
-                    layout.isFullSpan = true
-                    holder.bind(element, holder.adapterPosition, isShowCheckbox)
-                }
-                is WishlistV2GridItemViewHolder -> {
-                    holder.bind(element, holder.adapterPosition, isShowCheckbox)
-                }
-                is WishlistV2EmptyStateViewHolder -> {
-                    holder.bind(element)
-                }
-                is WishlistV2EmptyStateCarouselViewHolder -> {
-                    holder.bind(element)
-                }
-                is WishlistV2EmptyStateNotFoundViewHolder -> {
-                    holder.bind(element)
-                }
-                is WishlistV2RecommendationTitleViewHolder -> {
-                    holder.bind(element, isShowCheckbox)
-                }
-                is WishlistV2RecommendationItemViewHolder -> {
-                    holder.bind(element, holder.adapterPosition)
-                }
-                is WishlistV2TdnViewHolder -> {
-                    holder.bind(element, holder.adapterPosition, isShowCheckbox)
-                }
-                is WishlistV2RecommendationCarouselViewHolder -> {
-                    holder.bind(element, holder.adapterPosition, isShowCheckbox)
-                }
-            }
-        }
-    }*/
-
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder.itemView.layoutParams is StaggeredGridLayoutManager.LayoutParams) {
             val element = listTypeData[position]
