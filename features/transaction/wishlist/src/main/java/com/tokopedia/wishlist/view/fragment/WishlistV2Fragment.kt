@@ -301,16 +301,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 emptyStateGlobalWishlistV2.gone()
                 globalErrorWishlistV2.visible()
                 globalErrorWishlistV2.setType(errorType)
-                globalErrorWishlistV2.setActionClickListener { goToHome() }
+                globalErrorWishlistV2.setActionClickListener { doRefresh() }
             }
-        }
-    }
-
-    private fun goToHome() {
-        activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConst.HOME)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            it.startActivity(intent)
         }
     }
 

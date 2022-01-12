@@ -24,7 +24,7 @@ class WishlistV2LayoutPreference  @Inject constructor(val context: Context) {
     }
 
     fun getTypeLayout(): String {
-        val typeLayout = sharedPrefs?.getInt(USER_LAYOUT_WISHLIST_V2_TYPE, 0)
+        val typeLayout = sharedPrefs?.getInt(USER_LAYOUT_WISHLIST_V2_TYPE, 1)
         return if (typeLayout == 0) {
             TYPE_LIST
         } else {
