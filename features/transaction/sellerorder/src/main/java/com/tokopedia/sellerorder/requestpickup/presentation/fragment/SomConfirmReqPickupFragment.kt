@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
-import com.tokopedia.sellerhomecommon.utils.SellerZeroOutageErrorHandler
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
@@ -148,11 +147,11 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                         it.throwable,
                         ERROR_GET_CONFIRM_REQUEST_PICKUP_DATA
                     )
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.SomMessage.GET_REQUEST_PICKUP_DATA_ERROR,
+                        SomErrorHandler.SomMessage.GET_REQUEST_PICKUP_DATA_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                     context?.run {
@@ -179,11 +178,11 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                         it.throwable,
                         ERROR_PROCESSING_REQUEST_PICKUP
                     )
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.SomMessage.REQUEST_PICKUP_ERROR,
+                        SomErrorHandler.SomMessage.REQUEST_PICKUP_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                     context?.run {

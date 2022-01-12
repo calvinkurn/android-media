@@ -31,7 +31,6 @@ import com.tokopedia.product.manage.feature.cashback.presentation.viewmodel.Prod
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_RESULT_STATUS
-import com.tokopedia.sellerhomecommon.utils.SellerZeroOutageErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -249,11 +248,11 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
                 is Fail -> {
                     onErrorSetCashback(it.throwable as SetCashbackResult)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.PRODUCT_MANAGE_TAG,
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.ProductManageMessage.SET_CASHBACK_ERROR,
+                        ProductManageListErrorHandler.ProductManageMessage.SET_CASHBACK_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }

@@ -19,7 +19,6 @@ import com.journeyapps.barcodescanner.CaptureActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.sellerhomecommon.utils.SellerZeroOutageErrorHandler
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
@@ -263,11 +262,11 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                     context?.run {
                         Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
                     }
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.SomMessage.CONFIRM_SHIPPING_ERROR,
+                        SomErrorHandler.SomMessage.CONFIRM_SHIPPING_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -307,11 +306,11 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_COURIER_LIST)
                     Utils.showToasterError(getString(R.string.global_error), view)
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.SomMessage.GET_COURIER_LIST_ERROR,
+                        SomErrorHandler.SomMessage.GET_COURIER_LIST_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -336,11 +335,11 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                     context?.run {
                         Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
                     }
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.SomMessage.CHANGE_COURIER_ERROR,
+                        SomErrorHandler.SomMessage.CHANGE_COURIER_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }

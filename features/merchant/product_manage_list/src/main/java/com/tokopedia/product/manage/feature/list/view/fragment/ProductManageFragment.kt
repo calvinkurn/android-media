@@ -149,7 +149,6 @@ import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
-import com.tokopedia.sellerhomecommon.utils.SellerZeroOutageErrorHandler
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShowcasePickerType
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
@@ -2130,11 +2129,11 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     onFailedChangeFeaturedProduct(it.throwable)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.PRODUCT_MANAGE_TAG,
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.ProductManageMessage.SET_FEATURED_PRODUCT_ERROR,
+                        ProductManageListErrorHandler.ProductManageMessage.SET_FEATURED_PRODUCT_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -2149,11 +2148,11 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     onErrorGetPopUp()
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.PRODUCT_MANAGE_TAG,
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.ProductManageMessage.GET_POP_UP_INFO_ERROR,
+                        ProductManageListErrorHandler.ProductManageMessage.GET_POP_UP_INFO_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -2168,11 +2167,11 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     onErrorEditPrice(it.throwable as EditPriceResult)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.PRODUCT_MANAGE_TAG,
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.ProductManageMessage.EDIT_PRICE_ERROR,
+                        ProductManageListErrorHandler.ProductManageMessage.EDIT_PRICE_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -2191,11 +2190,11 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     onErrorEditStock(it.throwable as EditStockResult)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.PRODUCT_MANAGE_TAG,
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.ProductManageMessage.EDIT_STOCK_ERROR,
+                        ProductManageListErrorHandler.ProductManageMessage.EDIT_STOCK_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -2210,11 +2209,11 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     showErrorToast()
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.PRODUCT_MANAGE_TAG,
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.ProductManageMessage.MULTI_EDIT_PRODUCT_ERROR,
+                        ProductManageListErrorHandler.ProductManageMessage.MULTI_EDIT_PRODUCT_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -2281,11 +2280,11 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     showGetListError(it.throwable)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.PRODUCT_MANAGE_TAG,
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.ProductManageMessage.PRODUCT_LIST_RESULT_ERROR,
+                        ProductManageListErrorHandler.ProductManageMessage.PRODUCT_LIST_RESULT_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -2385,11 +2384,11 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     onErrorDeleteProduct(it.throwable as DeleteProductResult)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.PRODUCT_MANAGE_TAG,
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.ProductManageMessage.DELETE_PRODUCT_ERROR,
+                        ProductManageListErrorHandler.ProductManageMessage.DELETE_PRODUCT_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -2481,11 +2480,11 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     showErrorMessageToast(it)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.PRODUCT_MANAGE_TAG,
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.ProductManageMessage.EDIT_VARIANT_PRICE_ERROR,
+                        ProductManageListErrorHandler.ProductManageMessage.EDIT_VARIANT_PRICE_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -2507,11 +2506,11 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Fail -> {
                     showErrorMessageToast(it)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.PRODUCT_MANAGE_TAG,
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.ProductManageMessage.EDIT_VARIANT_STOCK_ERROR,
+                        ProductManageListErrorHandler.ProductManageMessage.EDIT_VARIANT_STOCK_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }

@@ -14,10 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.sellerhomecommon.utils.SellerZeroOutageErrorHandler
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
+import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_LABEL
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_SORT
@@ -342,11 +342,11 @@ class SomFilterBottomSheet : BottomSheetUnify(),
                 }
             }
             is Fail -> {
-                SellerZeroOutageErrorHandler.logExceptionToServer(
-                    errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
+                SomErrorHandler.logExceptionToServer(
+                    errorTag = SomErrorHandler.SOM_TAG,
                     throwable = it.throwable,
                     errorType =
-                    SellerZeroOutageErrorHandler.SomMessage.GET_FILTER_DATA_ERROR,
+                    SomErrorHandler.SomMessage.GET_FILTER_DATA_ERROR,
                     deviceId = userSession.deviceId.orEmpty()
                 )
             }

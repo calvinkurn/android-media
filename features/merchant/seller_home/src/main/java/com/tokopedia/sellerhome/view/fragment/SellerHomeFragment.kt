@@ -79,7 +79,6 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryI
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
-import com.tokopedia.sellerhomecommon.utils.SellerZeroOutageErrorHandler
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -997,8 +996,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     SellerHomeErrorHandler.logException(
                         result.throwable, SellerHomeErrorHandler.SHOP_LOCATION
                     )
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        SellerZeroOutageErrorHandler.SELLER_HOME_TAG,
+                    SellerHomeErrorHandler.logExceptionToServer(
+                        SellerHomeErrorHandler.SELLER_HOME_TAG,
                         result.throwable,
                         SellerHomeErrorHandler.SHOP_LOCATION,
                         userSession.deviceId.orEmpty()
@@ -1225,10 +1224,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             throwable = throwable,
             message = ERROR_LAYOUT
         )
-        SellerZeroOutageErrorHandler.logExceptionToServer(
-            errorTag = SellerZeroOutageErrorHandler.SELLER_HOME_TAG,
+        SellerHomeErrorHandler.logExceptionToServer(
+            errorTag = SellerHomeErrorHandler.SELLER_HOME_TAG,
             throwable = throwable,
-            errorType = SellerZeroOutageErrorHandler.ErrorType.ERROR_LAYOUT,
+            errorType = SellerHomeErrorHandler.ErrorType.ERROR_LAYOUT,
             deviceId = userSession.deviceId.orEmpty()
         )
     }
@@ -1346,10 +1345,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         throwable = it.throwable,
                         message = ERROR_TICKER,
                     )
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.SELLER_HOME_TAG,
+                    SellerHomeErrorHandler.logExceptionToServer(
+                        errorTag = SellerHomeErrorHandler.SELLER_HOME_TAG,
                         throwable = it.throwable,
-                        errorType = SellerZeroOutageErrorHandler.ErrorType.ERROR_TICKER,
+                        errorType = SellerHomeErrorHandler.ErrorType.ERROR_TICKER,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                     binding?.relTicker?.gone()
@@ -1379,8 +1378,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     SellerHomeErrorHandler.logException(
                         it.throwable, SellerHomeErrorHandler.SHOP_SHARE_DATA
                     )
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.SELLER_HOME_TAG,
+                    SellerHomeErrorHandler.logExceptionToServer(
+                        errorTag = SellerHomeErrorHandler.SELLER_HOME_TAG,
                         throwable = it.throwable,
                         errorType = SellerHomeErrorHandler.SHOP_SHARE_DATA,
                         deviceId = userSession.deviceId.orEmpty()
@@ -1396,8 +1395,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 SellerHomeErrorHandler.logException(
                     it.throwable, SellerHomeErrorHandler.SHOP_SHARE_TRACKING
                 )
-                SellerZeroOutageErrorHandler.logExceptionToServer(
-                    SellerZeroOutageErrorHandler.SELLER_HOME_TAG,
+                SellerHomeErrorHandler.logExceptionToServer(
+                    SellerHomeErrorHandler.SELLER_HOME_TAG,
                     it.throwable,
                     SellerHomeErrorHandler.SHOP_SHARE_TRACKING,
                     userSession.deviceId.orEmpty()
@@ -1589,10 +1588,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             message = "$ERROR_WIDGET $widgetType"
         )
 
-        SellerZeroOutageErrorHandler.logExceptionToServer(
-            errorTag = SellerZeroOutageErrorHandler.SELLER_HOME_TAG,
+        SellerHomeErrorHandler.logExceptionToServer(
+            errorTag = SellerHomeErrorHandler.SELLER_HOME_TAG,
             throwable = this,
-            errorType = SellerZeroOutageErrorHandler.ErrorType.ERROR_WIDGET,
+            errorType = SellerHomeErrorHandler.ErrorType.ERROR_WIDGET,
             deviceId = userSession.deviceId.orEmpty(),
             extras = widgetErrorExtraMap
         )

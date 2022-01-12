@@ -39,7 +39,6 @@ import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.resp
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.GetStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.di.DaggerStockReminderComponent
 import com.tokopedia.product.manage.feature.stockreminder.view.viewmodel.StockReminderViewModel
-import com.tokopedia.sellerhomecommon.utils.SellerZeroOutageErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -283,11 +282,11 @@ class StockReminderFragment: BaseDaggerFragment() {
                     getStockReminder()
                 }
                 ProductManageListErrorHandler.logExceptionToCrashlytics(stockReminderData.throwable)
-                SellerZeroOutageErrorHandler.logExceptionToServer(
-                    errorTag = SellerZeroOutageErrorHandler.PRODUCT_MANAGE_TAG,
+                ProductManageListErrorHandler.logExceptionToServer(
+                    errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
                     throwable = stockReminderData.throwable,
                     errorType =
-                    SellerZeroOutageErrorHandler.ProductManageMessage.GET_STOCK_REMINDER_ERROR,
+                    ProductManageListErrorHandler.ProductManageMessage.GET_STOCK_REMINDER_ERROR,
                     deviceId = userSession.deviceId.orEmpty()
                 )
             }
@@ -310,11 +309,11 @@ class StockReminderFragment: BaseDaggerFragment() {
                 }
                 Toaster.onCTAClick = View.OnClickListener { createStockReminder() }
                 ProductManageListErrorHandler.logExceptionToCrashlytics(stockReminderData.throwable)
-                SellerZeroOutageErrorHandler.logExceptionToServer(
-                    errorTag = SellerZeroOutageErrorHandler.PRODUCT_MANAGE_TAG,
+                ProductManageListErrorHandler.logExceptionToServer(
+                    errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
                     throwable = stockReminderData.throwable,
                     errorType =
-                    SellerZeroOutageErrorHandler.ProductManageMessage.CREATE_STOCK_REMINDER_ERROR,
+                    ProductManageListErrorHandler.ProductManageMessage.CREATE_STOCK_REMINDER_ERROR,
                     deviceId = userSession.deviceId.orEmpty()
                 )
             }
@@ -336,11 +335,11 @@ class StockReminderFragment: BaseDaggerFragment() {
                     ).show()
                     Toaster.onCTAClick = View.OnClickListener { updateStockReminder() }
                     ProductManageListErrorHandler.logExceptionToCrashlytics(stockReminderData.throwable)
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.PRODUCT_MANAGE_TAG,
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
                         throwable = stockReminderData.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.ProductManageMessage.UPDATE_STOCK_REMINDER_ERROR,
+                        ProductManageListErrorHandler.ProductManageMessage.UPDATE_STOCK_REMINDER_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }

@@ -37,7 +37,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.sellerhomecommon.utils.SellerZeroOutageErrorHandler
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCtaActionInOrderDetail
@@ -389,11 +388,11 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 is Fail -> {
                     it.throwable.showGlobalError()
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_DETAIL)
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.SomMessage.GET_ORDER_DETAIL_ERROR,
+                        SomErrorHandler.SomMessage.GET_ORDER_DETAIL_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                     stopLoadTimeMonitoring()
@@ -417,11 +416,11 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_ACCEPTING_ORDER)
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.SomMessage.ACCEPT_ORDER_ERROR,
+                        SomErrorHandler.SomMessage.ACCEPT_ORDER_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                     SomAnalytics.eventClickAcceptOrderPopup(false)
@@ -438,11 +437,11 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_REJECT_REASONS)
                     it.throwable.showErrorToaster()
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.SomMessage.GET_REJECT_REASON_ERROR,
+                        SomErrorHandler.SomMessage.GET_REJECT_REASON_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -502,11 +501,11 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(result.throwable, SomConsts.ERROR_REJECT_CANCEL_ORDER)
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
                         throwable = result.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.SomMessage.REJECT_CANCEL_REQUEST_ERROR,
+                        SomErrorHandler.SomMessage.REJECT_CANCEL_REQUEST_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                     result.throwable.showErrorToaster()
@@ -1008,11 +1007,11 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     } else {
                         it.throwable.showErrorToaster()
                     }
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.SomMessage.CHANGE_AWB_ERROR,
+                        SomErrorHandler.SomMessage.CHANGE_AWB_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
@@ -1111,11 +1110,11 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 is Success -> onSuccessRejectOrder(it.data.rejectOrder)
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_REJECT_ORDER)
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.SomMessage.REJECT_ORDER_ERROR,
+                        SomErrorHandler.SomMessage.REJECT_ORDER_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                     it.throwable.showErrorToaster()
@@ -1342,11 +1341,11 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 is Success -> onSuccessValidateOrder(result.data)
                 is Fail -> {
                     onFailedValidateOrder()
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.SOM_TAG,
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
                         throwable = result.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.SomMessage.VALIDATE_ORDER_ERROR,
+                        SomErrorHandler.SomMessage.VALIDATE_ORDER_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }

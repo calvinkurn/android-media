@@ -32,7 +32,6 @@ import com.tokopedia.product.manage.feature.filter.presentation.widget.SeeAllLis
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ShowChipsListener
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.databinding.FragmentProductManageFilterNewBinding
-import com.tokopedia.sellerhomecommon.utils.SellerZeroOutageErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
@@ -266,11 +265,11 @@ class ProductManageFilterFragment(
                 is Fail -> {
                     this.dismiss()
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
-                    SellerZeroOutageErrorHandler.logExceptionToServer(
-                        errorTag = SellerZeroOutageErrorHandler.PRODUCT_MANAGE_TAG,
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
                         throwable = it.throwable,
                         errorType =
-                        SellerZeroOutageErrorHandler.ProductManageMessage.FILTER_OPTIONS_ERROR,
+                        ProductManageListErrorHandler.ProductManageMessage.FILTER_OPTIONS_ERROR,
                         deviceId = userSession.deviceId.orEmpty()
                     )
                 }
