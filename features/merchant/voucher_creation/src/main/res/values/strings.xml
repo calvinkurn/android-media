@@ -355,4 +355,14 @@
     <string name="create_coupon">Buat Kupon</string>
     <string name="check_coupon_appearance">Cek Tampilan Kupon</string>
     <string name="coupon_product_terms_and_condition">Dengan klik Buat Kupon, saya menyetujui <a href="https://learntodroid.com">syarat dan ketentuan</a> yang berlaku.</string>
+    <string name="quota">Kuota</string>
+    <string name="product_list">Daftar Produk</string>
+    <string name="listed_product">Produk terdaftar</string>
+    <string name="max_product">Maks. 100 Produk</string>
+    <string name="minimum_purchase">Minimum Pembelian</string>
+    <string name="minimum_purchase_type">Tipe Minimum Pembelian</string>
+    <string name="discount_amount">Nominal Diskon</string>
+    <string name="discount_type">Tipe Diskon</string>
+    <string name="copy_to_clipboard">Copy to clipboard</string>
+    <string name="hyphen">-</string>
 </resources>
