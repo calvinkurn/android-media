@@ -217,7 +217,7 @@
                     "title": "",
                     "content": ""
                   },
-                  "is_highlighted": false,
+                  "is_highlighted": true,
                   "group_id": 9598,
                   "is_group_header": true,
                   "promo_infos": [
@@ -225,6 +225,10 @@
                       "type": "promo_validity",
                       "title": "Berakhir 14 hari lagi!",
                       "icon": "CLOCK"
+                    }, {
+                      "type": "top_banner",
+                      "title": "Jangan Lewatkan",
+                      "icon": ""
                     }
                   ]
                 },
@@ -2465,8 +2469,8 @@
         }
       ],
       "attempted_promo_code_error": {
-        "code": "",
-        "message": ""
+        "code": "TEST",
+        "message": "Kode promo yang kamu masukkan salah 1. Kode promo yang kamu masukkan salah 2. Kode promo yang kamu masukkan salah 3. Kode promo yang kamu masukkan salah 4. Kode promo yang kamu masukkan salah 5."
       },
       "additional_message": "Kamu bisa hemat",
       "reward_points_info": {

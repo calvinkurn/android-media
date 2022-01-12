@@ -45,7 +45,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
-                android:textColor="@color/Unify_NN0"
+                android:textColor="@color/Unify_Static_White"
                 android:translationY="-3dp"
                 app:layout_constraintBottom_toBottomOf="@+id/promo_highlight_identifier"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -187,8 +187,8 @@
                     android:id="@+id/icon_user_validity"
                     android:layout_width="13dp"
                     android:layout_height="13dp"
-                    android:layout_marginTop="9dp"
                     android:layout_marginStart="12dp"
+                    android:layout_marginTop="9dp"
                     tools:srcCompat="@drawable/ic_action_x" />
 
                 <com.tokopedia.unifyprinciples.Typography

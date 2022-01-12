@@ -131,7 +131,6 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
     private fun renderPromoEnabled(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
         with(viewBinding) {
             promoHighlightIdentifier.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_highlighted_identifier_enabled)
-            textPromoHighlightIdentifier.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
             promoQuantityIdentifierTop.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_top_enabled)
             promoQuantityIdentifierBottom.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_bottom_enabled)
             textPromoQuantity.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
@@ -152,7 +151,6 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
     private fun renderPromoDisabled(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
         with(viewBinding) {
             promoHighlightIdentifier.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_highlighted_identifier_disabled)
-            textPromoHighlightIdentifier.setTextColor(colorTextDisabled)
             promoQuantityIdentifierTop.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_top_disabled)
             promoQuantityIdentifierBottom.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_bottom_disabled)
             textPromoQuantity.setTextColor(colorTextDisabled)
