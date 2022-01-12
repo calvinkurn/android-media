@@ -126,7 +126,7 @@ class ReplyBubbleTest : TopchatRoomTest() {
         clickComposeArea()
         typeMessage("reply this")
         clickSendBtn()
-        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         ReplyBubbleRobot.clickReplyBubbleAt(0)
 
         // Then
@@ -145,7 +145,7 @@ class ReplyBubbleTest : TopchatRoomTest() {
         clickComposeArea()
         typeMessage("reply this")
         clickSendBtn()
-        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
 
         // Then
         ReplyBubbleResult.hasVisibleReplyBubbleAt(0)
@@ -172,7 +172,7 @@ class ReplyBubbleTest : TopchatRoomTest() {
         ReplyBubbleRobot.clickReplyItemMenu()
         clickStickerIconMenu()
         clickStickerAtPosition(0)
-        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
 
         // Then
         ReplyBubbleResult.hasVisibleReplyBubbleStickerAt(0)
@@ -204,7 +204,7 @@ class ReplyBubbleTest : TopchatRoomTest() {
         clickComposeArea()
         typeMessage("reply this")
         clickSendBtn()
-        websocket2.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
 
         // Then
         ReplyBubbleResult.hasVisibleReplyBubbleAt(0)
@@ -256,8 +256,8 @@ class ReplyBubbleTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        val incomingEventWs = websocket2.generateUploadImageResposne(roomMetaData)
-        websocket2.simulateResponse(incomingEventWs)
+        val incomingEventWs = websocket.generateUploadImageResposne(roomMetaData)
+        websocket.simulateResponse(incomingEventWs)
 
         // Then
         ReplyBubbleResult.hasVisibleReplyBubbleImageAt(0)

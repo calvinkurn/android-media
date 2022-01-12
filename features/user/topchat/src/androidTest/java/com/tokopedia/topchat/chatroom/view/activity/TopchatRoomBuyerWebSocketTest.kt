@@ -33,7 +33,7 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
                 .perform(typeText(myMsg))
         onView(withId(R.id.send_but))
                 .perform(click())
-        websocket2.simulateResponse(wsMineResponseText)
+        websocket.simulateResponse(wsMineResponseText)
 
         // Then
         onView(withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
@@ -52,7 +52,7 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        websocket2.simulateResponse(wsSellerResponseText)
+        websocket.simulateResponse(wsSellerResponseText)
 
         // Then
         val label = wsSellerResponseText.jsonObject
@@ -73,7 +73,7 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        websocket2.simulateResponse(wsSellerResponseText.setLabel(""))
+        websocket.simulateResponse(wsSellerResponseText.setLabel(""))
 
         // Then
         onView(withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(

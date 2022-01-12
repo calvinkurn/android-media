@@ -136,7 +136,7 @@ abstract class TopchatRoomTest {
     protected lateinit var chatBackgroundUseCase: GetChatBackgroundUseCaseStub
 
     @Inject
-    protected lateinit var websocket2: FakeTopchatWebSocket
+    protected lateinit var websocket: FakeTopchatWebSocket
 
     @Inject
     protected lateinit var addWishListUseCase: AddWishListUseCaseStub
