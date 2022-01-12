@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.app.Instrumentation
 import android.content.Intent
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
@@ -15,6 +16,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -55,6 +57,7 @@ import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import org.hamcrest.CoreMatchers.anything
 import org.hamcrest.CoreMatchers.startsWith
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
@@ -240,7 +243,7 @@ class SellerReviewDetailActivityTest {
                 CommonActions.clickChildViewWithId(com.tokopedia.sortfilter.R.id.sort_filter_prefix)
             )
         )
-        waitUntilBottomSheetShowingAndSettled()
+        waitUntilViewVisible(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header))
         onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(
             ViewActions.swipeUp()
         )
@@ -366,6 +369,21 @@ class SellerReviewDetailActivityTest {
             ProductFeedbackFilterResponse::class.java,
             Utils.parseFromJson<ProductFeedbackFilterResponse>("mockresponse/reviewdetail/getproductreviewinitialusecase/product_feedback_filter.json")
         )
+    }
+
+    private fun isViewVisible(matcher: Matcher<View>): Boolean {
+        return try {
+            onView(matcher).check(matches(ViewMatchers.isDisplayingAtLeast(90)))
+            true
+        } catch (t: Throwable) {
+            false
+        }
+    }
+
+    private fun waitUntilViewVisible(matcher: Matcher<View>) {
+        Utils.waitForCondition {
+            isViewVisible(matcher)
+        }
     }
 
     private fun waitUntilBottomSheetShowingAndSettled() {
