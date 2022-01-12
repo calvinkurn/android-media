@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -21,14 +20,12 @@ import com.tokopedia.picker.di.DaggerPickerComponent
 import com.tokopedia.picker.di.module.PickerModule
 import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.activity.album.AlbumActivity
-import com.tokopedia.picker.ui.activity.main.PickerActivity
-import com.tokopedia.picker.ui.activity.main.PickerViewModel
 import com.tokopedia.picker.ui.fragment.gallery.recyclers.adapter.GalleryAdapter
 import com.tokopedia.picker.ui.fragment.gallery.recyclers.utils.GridItemDecoration
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-class GalleryFragment : BaseDaggerFragment() {
+open class GalleryFragment : BaseDaggerFragment() {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
 
@@ -45,11 +42,7 @@ class GalleryFragment : BaseDaggerFragment() {
         ViewModelProvider(
             this,
             factory
-        ).get(GalleryViewModel::class.java)
-    }
-
-    private val pickerViewModel by lazy {
-        ViewModelProvider(requireActivity(), factory).get(PickerViewModel::class.java)
+        )[GalleryViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -88,16 +81,6 @@ class GalleryFragment : BaseDaggerFragment() {
         viewModel.files.observe(viewLifecycleOwner) {
             adapter.setData(it)
         }
-
-        viewModel.error.observe(viewLifecycleOwner) {
-            Toast.makeText(requireContext(), it.localizedMessage, Toast.LENGTH_SHORT).show()
-        }
-
-//        pickerViewModel.selectedMedia.observe(viewLifecycleOwner) {
-//            println("picker view model $it")
-//            adapter.selectedMedias.clear()
-//            adapter.selectedMedias.addAll(it)
-//        }
     }
 
     private fun initView() {
@@ -142,7 +125,7 @@ class GalleryFragment : BaseDaggerFragment() {
         })
 
         adapter.setListener {
-            (activity as PickerActivity).onUpdateSelectedMedia(it)
+            viewModel.publishMediaSelected(it)
         }
     }
 

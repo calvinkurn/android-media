@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -15,6 +15,8 @@ import com.tokopedia.picker.common.PickerFragmentType
 import com.tokopedia.picker.common.PickerPageType
 import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.databinding.ActivityPickerBinding
+import com.tokopedia.picker.di.DaggerPickerComponent
+import com.tokopedia.picker.di.module.PickerModule
 import com.tokopedia.picker.ui.PickerFragmentFactory
 import com.tokopedia.picker.ui.PickerFragmentFactoryImpl
 import com.tokopedia.picker.ui.PickerNavigator
@@ -27,6 +29,7 @@ import com.tokopedia.picker.utils.N600
 import com.tokopedia.picker.utils.addOnTabSelected
 import com.tokopedia.picker.utils.delegates.permissionGranted
 import com.tokopedia.utils.view.binding.viewBinding
+import javax.inject.Inject
 import java.lang.Exception
 
 /**
@@ -68,17 +71,20 @@ import java.lang.Exception
  * if you want to set between single or multiple selection, just add this query:
  * ...&type=single/multiple
  */
-class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaPickerPreviewWidget.MediaPickerPreviewWidgetListener {
+open class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaPickerPreviewWidget.MediaPickerPreviewWidgetListener {
+
+    @Inject lateinit var factory: ViewModelProvider.Factory
 
     private val binding: ActivityPickerBinding? by viewBinding()
     private val hasPermissionGranted: Boolean by permissionGranted()
 
-    private val selectedMedias: MutableList<Media> = mutableListOf()
-    private var selectedTab: Int = 0
+    private val _selectedMedias: MutableList<Media> = mutableListOf()
+    val selectedMedias: List<Media> get() = _selectedMedias
 
     private val viewModel by lazy {
         ViewModelProvider(
-            this
+            this,
+            factory
         )[PickerViewModel::class.java]
     }
 
@@ -96,6 +102,7 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaPickerP
         setContentView(R.layout.activity_picker)
         setupQueryAndUIConfigBuilder()
 
+        initInjector()
         initView()
         initObservable()
         initToolbar()
@@ -103,10 +110,6 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaPickerP
 
     override fun onPermissionGranted() {
         navigateByPageType()
-    }
-
-    fun onUpdateSelectedMedia(medias: List<Media>) {
-        viewModel.setSelectedMedia(medias)
     }
 
     private fun setupQueryAndUIConfigBuilder() {
@@ -129,6 +132,8 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaPickerP
     }
 
     private fun initObservable() {
+        lifecycle.addObserver(viewModel)
+
         viewModel.finishButtonState.observe(this) {
             val color = if (it) G500 else N600
 
@@ -138,8 +143,8 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaPickerP
         }
 
         viewModel.selectedMedia.observe(this) {
-            selectedMedias.clear()
-            selectedMedias.addAll(it)
+            _selectedMedias.clear()
+            _selectedMedias.addAll(it)
             binding?.mediaPickerPreviewWidget?.setData(it)
         }
     }
@@ -147,7 +152,7 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaPickerP
     private fun initToolbar() {
         binding?.toolbar?.btnDone?.show()
         binding?.toolbar?.btnDone?.setOnClickListener {
-            selectedMedias.forEach {
+            _selectedMedias.forEach {
                 println("MEDIAPICKER -> ${it.path}")
             }
         }
@@ -193,8 +198,16 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaPickerP
         }
     }
 
-    private fun createFragmentFactory(): PickerFragmentFactory {
+    protected open fun createFragmentFactory(): PickerFragmentFactory {
         return PickerFragmentFactoryImpl()
+    }
+
+    protected open fun initInjector() {
+        DaggerPickerComponent.builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .pickerModule(PickerModule())
+            .build()
+            .inject(this)
     }
 
     companion object {

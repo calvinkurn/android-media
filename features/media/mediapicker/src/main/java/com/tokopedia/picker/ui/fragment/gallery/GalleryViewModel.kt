@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.data.repository.MediaRepository
 import com.tokopedia.picker.ui.PickerParam
+import com.tokopedia.picker.utils.EventBusFactory
+import com.tokopedia.picker.utils.EventState
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -20,9 +22,6 @@ class GalleryViewModel @Inject constructor(
     private var _files = MutableLiveData<List<Media>>()
     val files: LiveData<List<Media>> get() = _files
 
-    private var _error = MutableLiveData<Throwable>()
-    val error: LiveData<Throwable> get() = _error
-
     fun fetch(bucketId: Long, param: PickerParam) {
         viewModelScope.launch {
             val result = repository(bucketId, param)
@@ -31,6 +30,10 @@ class GalleryViewModel @Inject constructor(
                 _files.value = result
             }
         }
+    }
+
+    fun publishMediaSelected(data: List<Media>) {
+        EventBusFactory.send(EventState.MediaSelection(data))
     }
 
 }

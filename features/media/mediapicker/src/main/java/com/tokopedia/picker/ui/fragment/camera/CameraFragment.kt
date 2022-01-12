@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.picker.R
 
-class CameraFragment : BaseDaggerFragment() {
+open class CameraFragment : BaseDaggerFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,

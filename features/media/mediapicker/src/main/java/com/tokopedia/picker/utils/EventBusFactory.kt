@@ -1,0 +1,36 @@
+package com.tokopedia.picker.utils
+
+import com.tokopedia.picker.data.entity.Media
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
+
+sealed class EventState {
+    object Idle: EventState()
+    class MediaSelection(val data: List<Media>): EventState()
+}
+
+object EventBusFactory {
+
+    private val state = MutableStateFlow<EventState>(EventState.Idle)
+    private const val DEBOUNCE_TIME_IN_MILLIS = 500L
+
+    fun send(stateEvent: EventState) {
+        state.tryEmit(stateEvent)
+    }
+
+    suspend fun consumer(
+        coroutineContext: CoroutineContext,
+        stateCallback: (EventState) -> Unit
+    ) {
+        state.debounce(DEBOUNCE_TIME_IN_MILLIS)
+            .flowOn(coroutineContext)
+            .collectLatest {
+                withContext(Dispatchers.Main) {
+                    stateCallback(it)
+                }
+            }
+    }
+
+}

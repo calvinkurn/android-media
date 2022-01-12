@@ -14,7 +14,7 @@ import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.view.binding.viewBinding
 
-class PermissionFragment : BaseDaggerFragment() {
+open class PermissionFragment : BaseDaggerFragment() {
 
     private val binding by viewBinding<FragmentPermissionBinding>()
     private val permissionHelper by lazy { PermissionCheckerHelper() }
