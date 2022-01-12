@@ -34,6 +34,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imagepicker.common.PICKER_RESULT_PATHS
 import com.tokopedia.imagepicker.common.RESULT_IMAGES_FED_INTO_IMAGE_PICKER
 import com.tokopedia.imagepicker.common.RESULT_PREVIOUS_IMAGE
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
@@ -53,6 +54,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStic
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.network.TopchatCacheManager
@@ -184,6 +186,9 @@ abstract class TopchatRoomTest {
     @Inject
     lateinit var abTestPlatform: AbTestPlatform
 
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
+
     protected open lateinit var activity: TopChatRoomActivityStub
 
     protected var firstPageChatAsBuyer = GetExistingChatPojo()
@@ -218,6 +223,19 @@ abstract class TopchatRoomTest {
         setupDefaultResponseWhenFirstOpenChatRoom()
         setupDummyImageChatService()
         setupKeyboardIdlingResource()
+        disableUploadImageByService()
+    }
+
+    protected open fun enableUploadImageByService() {
+        remoteConfig.setString(
+            TopChatRoomPresenter.ENABLE_UPLOAD_IMAGE_SERVICE, "true"
+        )
+    }
+
+    protected open fun disableUploadImageByService() {
+        remoteConfig.setString(
+            TopChatRoomPresenter.ENABLE_UPLOAD_IMAGE_SERVICE, "false"
+        )
     }
 
     @After

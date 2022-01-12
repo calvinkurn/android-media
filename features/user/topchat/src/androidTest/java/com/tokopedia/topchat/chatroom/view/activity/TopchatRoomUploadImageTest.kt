@@ -73,6 +73,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
     fun should_have_1_failed_image_attachment_when_user_come_back_to_chatroom() {
         // Given
         uploadImageUseCase.isError = true
+        enableUploadImageByService()
         openChatRoom()
 
         // When
