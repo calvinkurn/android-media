@@ -107,8 +107,8 @@ import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrappe
 import com.tokopedia.sellerorder.detail.presentation.model.MVCUsageUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.NonProductBundleUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
-import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
+import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.unifycomponents.Toaster
@@ -410,7 +410,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_ACCEPTING_ORDER)
                     SomAnalytics.eventClickAcceptOrderPopup(false)
-                    it.throwable.showErrorToaster(binding?.containerBtnDetail)
+                    it.throwable.showErrorToaster()
                 }
             }
         })
@@ -422,7 +422,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 is Success -> onSuccessRejectReason(it.data)
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_REJECT_REASONS)
-                    it.throwable.showErrorToaster(binding?.containerBtnDetail)
+                    it.throwable.showErrorToaster()
                 }
             }
         })
@@ -439,7 +439,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 is Success -> onSuccessSetDelivered(it.data.setDelivered)
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_WHEN_SET_DELIVERED)
-                    it.throwable.showErrorToaster(binding?.containerBtnDetail)
+                    it.throwable.showErrorToaster()
                     bottomSheetManager?.getSomBottomSheetSetDelivered()?.onFailedSetDelivered()
                 }
             }
@@ -462,7 +462,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(result.throwable, String.format(SomConsts.ERROR_GET_USER_ROLES, PAGE_NAME))
-                    result.throwable.showErrorToaster(binding?.containerBtnDetail)
+                    result.throwable.showErrorToaster()
                     result.throwable.showGlobalError()
                 }
             }
@@ -480,7 +480,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(result.throwable, SomConsts.ERROR_REJECT_CANCEL_ORDER)
-                    result.throwable.showErrorToaster(binding?.containerBtnDetail)
+                    result.throwable.showErrorToaster()
                 }
             }
         })
@@ -977,7 +977,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     if (failEditAwbResponse.message.isNotEmpty()) {
                         showToaster(failEditAwbResponse.message, view, TYPE_ERROR)
                     } else {
-                        it.throwable.showErrorToaster(binding?.containerBtnDetail)
+                        it.throwable.showErrorToaster()
                     }
                 }
             }
@@ -1075,7 +1075,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 is Success -> onSuccessRejectOrder(it.data.rejectOrder)
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_REJECT_ORDER)
-                    it.throwable.showErrorToaster(binding?.containerBtnDetail)
+                    it.throwable.showErrorToaster()
                 }
             }
         })
@@ -1150,7 +1150,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         showErrorState(type)
     }
 
-    private fun Throwable.showErrorToaster(anchorView: View?) {
+    protected fun Throwable.showErrorToaster() {
         if (this is UnknownHostException || this is SocketTimeoutException) {
             showNoInternetConnectionToaster()
         } else {
@@ -1304,12 +1304,15 @@ open class SomDetailFragment : BaseDaggerFragment(),
 
     protected open fun observeOrderExtensionRequestInfo() {
         orderExtensionViewModel.orderExtensionRequestInfo.observe(viewLifecycleOwner) { result ->
-            if (result.message.isNotBlank()) {
+            if (result.message.isNotBlank() || result.throwable != null) {
                 if (result.success) {
                     showCommonToaster(result.message)
-                }
-                else {
-                    showErrorToaster(result.message)
+                } else {
+                    if (result.throwable == null) {
+                        showErrorToaster(result.message)
+                    } else {
+                        result.throwable?.showErrorToaster()
+                    }
                 }
             }
             if (result.completed && result.refreshOnDismiss) {

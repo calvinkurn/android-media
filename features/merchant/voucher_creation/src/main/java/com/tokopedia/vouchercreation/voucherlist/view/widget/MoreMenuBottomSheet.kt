@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.voucherlist.model.ui.MoreMenuUiModel
 import com.tokopedia.vouchercreation.voucherlist.model.ui.MoreMenuUiModel.*
@@ -77,21 +78,65 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
                         }
                         else -> {
                             if (isActiveVoucher) {
+                                // ONGOING
                                 if (voucher?.isOngoingPromo() == true) {
-                                    getOngoingVoucherMenu()
-                                } else {
-                                    getPendingVoucherMenu()
+                                    // return vps voucher menu
+                                    if (voucher?.isVps == true) {
+                                        getOngoingVpsVoucherMenu()
+                                    }
+                                    // return subsidy voucher menu
+                                    else if (voucher?.isVps == false && voucher?.isSubsidy == true) {
+                                        getOngoingSubsidyVoucherMenu()
+                                    }
+                                    // return seller created voucher menu
+                                    else getOngoingVoucherMenu()
                                 }
-                            } else {
-                                getVoucherHistoryMoreMenu()
+                                // UPCOMING
+                                else {
+                                    // return vps voucher menu
+                                    if (voucher?.isVps == true) {
+                                        getUpcomingVpsVoucherMenu()
+                                    }
+                                    // return subsidy voucher menu
+                                    else if (voucher?.isVps == false && voucher?.isSubsidy == true) {
+                                        getUpcomingSubsidyVoucherMenu()
+                                    }
+                                    // return seller created voucher menu
+                                    else getUpcomingVoucherMenu()
+                                }
+                            }
+                            // STOPPED AND ENDED
+                            else {
+                                when (voucher?.status) {
+                                    // ended
+                                    VoucherStatusConst.ENDED -> {
+                                        if (voucher?.isVps == true) {
+                                            getVpsVoucherHistoryMenu()
+                                        }
+                                        else if (voucher?.isVps == false && voucher?.isSubsidy == true) {
+                                            getSubsidyVoucherHistoryMenu()
+                                        }
+                                        else getVoucherHistoryMoreMenu()
+                                    }
+                                    // stoppped
+                                    VoucherStatusConst.STOPPED -> {
+                                        if (voucher?.isVps == true) {
+                                            getVpsVoucherHistoryMenu()
+                                        }
+                                        else if (voucher?.isVps == false && voucher?.isSubsidy == true) {
+                                            getSubsidyVoucherHistoryMenu()
+                                        }
+                                        else listOf()
+                                    }
+                                    else -> getVoucherHistoryMoreMenu()
+                                }
                             }
                         }
                     }
-
             menuAdapter?.clearAllElements()
             menuAdapter?.addElement(getMenuItem)
-
         }
+
         rvMvcBottomSheetMenu?.run {
             layoutManager = LinearLayoutManager(context)
             adapter = menuAdapter
@@ -121,10 +166,20 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
 
     private fun getVoucherHistoryMoreMenu(): List<MoreMenuUiModel> {
         return listOf(
-                Duplicate(context?.getString(R.string.mvc_duplicate).orEmpty(), R.drawable.ic_mvc_duplicate),
-                ViewDetail(context?.getString(R.string.mvc_view_detail).orEmpty(), R.drawable.ic_mvc_detail)
+                ViewDetail(context?.getString(R.string.mvc_view_detail).orEmpty(), R.drawable.ic_mvc_detail),
+                Duplicate(context?.getString(R.string.mvc_duplicate).orEmpty(), R.drawable.ic_mvc_duplicate)
         )
     }
+
+    private fun getVpsVoucherHistoryMenu(): List<MoreMenuUiModel> =
+            listOf(
+                    ViewDetail(context?.getString(R.string.mvc_view_detail).orEmpty(), R.drawable.ic_mvc_detail)
+            )
+
+    private fun getSubsidyVoucherHistoryMenu(): List<MoreMenuUiModel> =
+            listOf(
+                    ViewDetail(context?.getString(R.string.mvc_view_detail).orEmpty(), R.drawable.ic_mvc_detail)
+            )
 
     private fun getPendingVoucherMenu(): List<MoreMenuUiModel> {
         val menuItems = mutableListOf<MoreMenuUiModel>()
@@ -139,18 +194,63 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
         return menuItems
     }
 
-    private fun getOngoingVoucherMenu(): List<MoreMenuUiModel> {
-        val menuItems = mutableListOf<MoreMenuUiModel>()
-        menuItems.add(EditQuota(context?.getString(R.string.mvc_edit_quota).orEmpty(), R.drawable.ic_mvc_edit_quota))
-        menuItems.add(ViewDetail(context?.getString(R.string.mvc_view_detail).orEmpty(), R.drawable.ic_mvc_detail))
-        menuItems.add(ItemDivider)
-        menuItems.add(ShareVoucher(context?.getString(R.string.mvc_share).orEmpty(), R.drawable.ic_mvc_share))
-        menuItems.add(Duplicate(context?.getString(R.string.mvc_duplicate).orEmpty(), R.drawable.ic_mvc_duplicate))
-        menuItems.add(DownloadVoucher(context?.getString(R.string.mvc_download).orEmpty(), R.drawable.ic_mvc_download))
-        menuItems.add(ItemDivider)
-        menuItems.add(StopVoucher(context?.getString(R.string.mvc_stop).orEmpty(), R.drawable.ic_mvc_cancel))
-        return menuItems
-    }
+    private fun getUpcomingVoucherMenu(): List<MoreMenuUiModel> =
+            listOf(
+                    EditQuota(context?.getString(R.string.mvc_edit_quota).orEmpty(), R.drawable.ic_mvc_edit_quota),
+                    EditPeriod(context?.getString(R.string.mvc_edit_shown_period).orEmpty(), R.drawable.ic_mvc_calendar),
+                    ViewDetail(context?.getString(R.string.mvc_view_detail_and_edit_voucher).orEmpty(), R.drawable.ic_mvc_detail),
+                    ItemDivider,
+                    BroadCast(context?.getString(R.string.mvc_broadcast_chat).orEmpty(), R.drawable.ic_mvc_broadcast),
+                    DownloadVoucher(context?.getString(R.string.mvc_download).orEmpty(), R.drawable.ic_mvc_download),
+                    Duplicate(context?.getString(R.string.mvc_duplicate).orEmpty(), R.drawable.ic_mvc_duplicate),
+                    ItemDivider,
+                    CancelVoucher(context?.getString(R.string.mvc_cancel).orEmpty(), R.drawable.ic_mvc_cancel)
+            )
+
+    private fun getUpcomingVpsVoucherMenu(): List<MoreMenuUiModel> =
+            listOf(
+                    ViewDetail(context?.getString(R.string.mvc_view_detail).orEmpty(), R.drawable.ic_mvc_detail),
+                    ItemDivider,
+                    BroadCast(context?.getString(R.string.mvc_broadcast_chat).orEmpty(), R.drawable.ic_mvc_broadcast),
+                    DownloadVoucher(context?.getString(R.string.mvc_download).orEmpty(), R.drawable.ic_mvc_download)
+            )
+
+    private fun getUpcomingSubsidyVoucherMenu(): List<MoreMenuUiModel> =
+            listOf(
+                    ViewDetail(context?.getString(R.string.mvc_view_detail).orEmpty(), R.drawable.ic_mvc_detail),
+                    ItemDivider,
+                    BroadCast(context?.getString(R.string.mvc_broadcast_chat).orEmpty(), R.drawable.ic_mvc_broadcast),
+                    DownloadVoucher(context?.getString(R.string.mvc_download).orEmpty(), R.drawable.ic_mvc_download)
+            )
+
+    private fun getOngoingVoucherMenu(): List<MoreMenuUiModel> =
+            listOf(
+                    EditQuota(context?.getString(R.string.mvc_edit_quota).orEmpty(), R.drawable.ic_mvc_edit_quota),
+                    ViewDetail(context?.getString(R.string.mvc_view_detail).orEmpty(), R.drawable.ic_mvc_detail),
+                    ItemDivider,
+                    BroadCast(context?.getString(R.string.mvc_broadcast_chat).orEmpty(), R.drawable.ic_mvc_broadcast),
+                    ShareVoucher(context?.getString(R.string.mvc_share).orEmpty(), R.drawable.ic_mvc_share),
+                    DownloadVoucher(context?.getString(R.string.mvc_download).orEmpty(), R.drawable.ic_mvc_download),
+                    StopVoucher(context?.getString(R.string.mvc_stop).orEmpty(), R.drawable.ic_mvc_cancel)
+            )
+
+    private fun getOngoingVpsVoucherMenu(): List<MoreMenuUiModel> =
+            listOf(
+                    ViewDetail(context?.getString(R.string.mvc_view_detail).orEmpty(), R.drawable.ic_mvc_detail),
+                    ItemDivider,
+                    BroadCast(context?.getString(R.string.mvc_broadcast_chat).orEmpty(), R.drawable.ic_mvc_broadcast),
+                    ShareVoucher(context?.getString(R.string.mvc_share).orEmpty(), R.drawable.ic_mvc_share),
+                    DownloadVoucher(context?.getString(R.string.mvc_download).orEmpty(), R.drawable.ic_mvc_download)
+            )
+
+    private fun getOngoingSubsidyVoucherMenu(): List<MoreMenuUiModel> =
+            listOf(
+                    ViewDetail(context?.getString(R.string.mvc_view_detail).orEmpty(), R.drawable.ic_mvc_detail),
+                    ItemDivider,
+                    BroadCast(context?.getString(R.string.mvc_broadcast_chat).orEmpty(), R.drawable.ic_mvc_broadcast),
+                    ShareVoucher(context?.getString(R.string.mvc_share).orEmpty(), R.drawable.ic_mvc_share),
+                    DownloadVoucher(context?.getString(R.string.mvc_download).orEmpty(), R.drawable.ic_mvc_download)
+            )
 
     private fun getFreeShippingHistoryMenu(): List<MoreMenuUiModel> =
             listOf(

@@ -13,6 +13,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.adapter.util.LongClickMenuItemGenerator
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWidthSenderDimenRes
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.common.util.ViewUtil
@@ -20,8 +22,9 @@ import com.tokopedia.unifycomponents.ImageUnify
 
 class TopchatImageUploadViewHolder(
     itemView: View?,
-    listener: ImageUploadListener,
-    private val replyBubbleListener: ReplyBubbleAreaMessage.Listener
+    private val listener: ImageUploadListener,
+    private val replyBubbleListener: ReplyBubbleAreaMessage.Listener,
+    private val commonListener: CommonViewHolderListener,
 ) : ImageUploadViewHolder(itemView, listener) {
 
     private val viewContainer: LinearLayout? = itemView?.findViewById(R.id.ll_image_container)
@@ -82,6 +85,27 @@ class TopchatImageUploadViewHolder(
         bindReplyBubbleListener()
         bindReplyReference(element)
         bindMsgOffsetLine(element)
+        bindLongClick(element)
+    }
+
+    private fun bindLongClick(element: ImageUploadUiModel) {
+        attachmentUnify?.setOnLongClickListener {
+            if (element.isSender) {
+                val menus = LongClickMenuItemGenerator.createLongClickMenuUploadImageBubble()
+                commonListener.showMsgMenu(
+                    element, "", menus
+                )
+            }
+            true
+        }
+    }
+
+    override fun bindClickListener(element: ImageUploadUiModel) {
+        attachmentUnify?.setOnClickListener { view ->
+            if (element.imageUrl != null && element.replyTime != null) {
+                listener.onImageUploadClicked(element.imageUrl!!, element.replyTime!!)
+            }
+        }
     }
 
     override fun setChatLeft(chatBalloon: View?) {
@@ -114,7 +138,7 @@ class TopchatImageUploadViewHolder(
     }
 
     private fun hideReadStatusIfRetry(element: ImageUploadUiModel) {
-        if(element.isRetry) {
+        if (element.isRetry) {
             chatReadStatus.hide()
         }
     }

@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.view.custom
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
@@ -15,15 +16,16 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.chat_common.data.MessageUiModel
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageAttachment
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
+import kotlin.math.abs
 
 
 class FlexBoxChatLayout : ViewGroup {
@@ -44,6 +46,8 @@ class FlexBoxChatLayout : ViewGroup {
     var info: TextView? = null
         private set
     var header: LinearLayout? = null
+        private set
+    var icon: IconUnify? = null
         private set
 
     /**
@@ -129,6 +133,7 @@ class FlexBoxChatLayout : ViewGroup {
             hourTime = it.findViewById(R.id.tvTime)
             info = it.findViewById(R.id.txt_info)
             header = it.findViewById(R.id.ll_msg_header)
+            icon = it.findViewById(R.id.iu_msg_icon)
             headerTitle = it.findViewById(R.id.tp_header_title)
             headerCta = it.findViewById(R.id.tp_header_cta)
             headerDivider = it.findViewById(R.id.v_header_divider)
@@ -151,6 +156,17 @@ class FlexBoxChatLayout : ViewGroup {
 
     fun setMessage(msg: CharSequence?) {
         message?.text = msg
+    }
+
+    fun setMessageTypeFace(chat: MessageUiModel) {
+        val typeface = if (chat.isDeleted()) {
+            Typeface.ITALIC
+        } else {
+            Typeface.NORMAL
+        }
+        message?.let {
+            it.setTypeface(null, typeface)
+        }
     }
 
     fun setHourTime(time: String) {
@@ -262,6 +278,29 @@ class FlexBoxChatLayout : ViewGroup {
         headerCta?.isEnabled = attachment.ctaButton.isClickable()
     }
 
+    fun bindIcon(msg: MessageUiModel) {
+        icon?.shouldShowWithAction(msg.isDeleted()) {
+            val unifyIcon = getIconUnifyDrawable(
+                    context,
+                    IconUnify.BLOCK,
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN500
+                    )
+                )
+            icon?.setImageDrawable(unifyIcon)
+        }
+    }
+
+    fun bindTextColor(msg: MessageUiModel) {
+        val textColor = if (msg.isDeleted()) {
+            com.tokopedia.unifyprinciples.R.color.Unify_NN600
+        } else {
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+        }
+        message?.setTextColor(MethodChecker.getColor(context, textColor))
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         if (message == null || status == null || info == null) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)
@@ -270,9 +309,8 @@ class FlexBoxChatLayout : ViewGroup {
 
         val widthSpecSize = MeasureSpec.getSize(widthMeasureSpec)
         val maxAvailableWidth = widthSpecSize - paddingLeft - paddingRight
-        var widthFilled = 0
-        var totalWidth = paddingLeft + paddingRight
-        var totalHeight = paddingTop + paddingBottom
+        var totalWidth = 0
+        var totalHeight = 0
 
         /**
          * get measurement and layout params of direct child
@@ -289,102 +327,98 @@ class FlexBoxChatLayout : ViewGroup {
         measureChildWithMargins(
             header, widthMeasureSpec, 0, heightMeasureSpec, 0
         )
-        val messageLp = message?.layoutParams as MarginLayoutParams
-        val infoLp = info?.layoutParams as MarginLayoutParams
-        val statusLp = status?.layoutParams as MarginLayoutParams
-        val headerLp = header?.layoutParams as MarginLayoutParams
+        measureChildWithMargins(
+            icon, widthMeasureSpec, 0, heightMeasureSpec, 0
+        )
 
         /**
          * calculate each direct child width & height
          */
         // Message
-        val messageWidth = message!!.measuredWidth + messageLp.leftMargin +
-                messageLp.rightMargin
-        val messageHeight = message!!.measuredHeight + messageLp.topMargin +
-                messageLp.bottomMargin
+        val messageWidth = getTotalVisibleWidth(message)
+        var messageHeight = getTotalVisibleHeight(message)
         // Info
-        val infoWidth = info!!.measuredWidth + infoLp.leftMargin + infoLp.rightMargin
-        val infoHeight = info!!.measuredHeight + infoLp.topMargin + infoLp.bottomMargin
+        val infoWidth = getTotalVisibleWidth(info)
+        var infoHeight = getTotalVisibleHeight(info)
         // Status
-        val statusWidth = status!!.measuredWidth + statusLp.leftMargin +
-                statusLp.rightMargin
-        val statusHeight = status!!.measuredHeight + statusLp.topMargin +
-                statusLp.bottomMargin
+        val statusWidth = getTotalVisibleWidth(status)
+        val statusHeight = getTotalVisibleHeight(status)
         // Header
-        val headerWidth = header!!.measuredWidth + headerLp.leftMargin +
-                headerLp.rightMargin
-        val headerHeight = header!!.measuredHeight + headerLp.topMargin +
-                headerLp.bottomMargin
+        val headerWidth = getTotalVisibleWidth(header)
+        val headerHeight = getTotalVisibleHeight(header)
+        // msg icon
+        val iconWidth = getTotalVisibleWidth(icon)
+        val iconHeight = getTotalVisibleHeight(icon)
 
         /**
-         * Measure header dimension
+         * Measure first row dimension
          */
-        if (header!!.isVisible) {
-            totalWidth += headerWidth
-            totalHeight += headerHeight
-            widthFilled = headerWidth
+        totalWidth += headerWidth
+        totalHeight += headerHeight
+
+        /**
+         * Measure second row dimension
+         */
+        val secondRowWidth = iconWidth + messageWidth + statusWidth
+        val secondRowWidthDiff = totalWidth - secondRowWidth
+        if (secondRowWidthDiff < 0) {
+            totalWidth += abs(secondRowWidthDiff)
         }
-
-        /**
-         * Measure message dimension
-         */
-        val msgAndHeaderWidthDiff = messageWidth - widthFilled
-        if (msgAndHeaderWidthDiff > 0) {
-            totalWidth += msgAndHeaderWidthDiff
-            widthFilled = messageWidth
+        val secondRowHeight = maxOf(messageHeight, statusHeight, iconHeight)
+        totalHeight += secondRowHeight
+        // check if icon and message is overlap
+        val messageMaxWidth = maxAvailableWidth - iconWidth
+        if (messageWidth > messageMaxWidth) {
+            totalHeight -= messageHeight
+            val messageWidthSpec = MeasureSpec.makeMeasureSpec(
+                messageMaxWidth, MeasureSpec.EXACTLY
+            )
+            message!!.measure(messageWidthSpec, heightMeasureSpec)
+            messageHeight = getTotalVisibleHeight(message)
+            totalHeight += messageHeight
         }
-        totalHeight += messageHeight
-
-        /**
-         * Measure info layout
-         */
-        if (info!!.isVisible) {
-            val infoAndMsgWidthDiff = infoWidth - widthFilled
-            if (infoAndMsgWidthDiff > 0) {
-                totalWidth += infoAndMsgWidthDiff
-                widthFilled = infoWidth
-            }
-            totalHeight += infoHeight
-
-            // Set info width if overlap with [status] layout
-            val infoMaxWidth = maxAvailableWidth - statusWidth
-            if (infoWidth > infoMaxWidth) {
-                val infoWidthSpec = MeasureSpec.makeMeasureSpec(
-                    infoMaxWidth, MeasureSpec.EXACTLY
-                )
-                info!!.measure(infoWidthSpec, heightMeasureSpec)
-            }
-        }
-
-        /**
-         * measure status dimension
-         */
-        if (info!!.isVisible) {
-            val footerWidth = infoWidth + statusWidth
-            val footerAndMessageWidthDiff = footerWidth - widthFilled
-            if (footerAndMessageWidthDiff > 0) {
-                totalWidth += footerAndMessageWidthDiff
-                widthFilled = footerWidth
-            }
-            val statusAndInfoHeightDiff = statusHeight - infoHeight
-            if (statusAndInfoHeightDiff > 0) {
-                totalHeight += statusAndInfoHeightDiff
-            }
+        // Measure msg last line dimension
+        var isOverlapped = false
+        val msgLineCount = message!!.lineCount
+        val msgLastLineWidth: Float = if (msgLineCount > 0) {
+            message!!.layout.getLineWidth(msgLineCount - 1)
         } else {
-            val msgLineCount = message!!.lineCount
-            val msgLastLineWidth: Float = if (msgLineCount > 0) {
-                message!!.layout.getLineWidth(msgLineCount - 1)
-            } else {
-                0f
-            }
-            val lastLineAndStatusWidth = msgLastLineWidth + statusWidth
-            val offset = 5
-            if (lastLineAndStatusWidth < maxAvailableWidth + offset) {
-                totalWidth += statusWidth
-            } else {
-                totalHeight += statusHeight
-            }
+            0f
         }
+        val lastLineWidth = msgLastLineWidth + iconWidth + statusWidth - REPLY_WIDTH_OFFSET
+        if (lastLineWidth > maxAvailableWidth) {
+            totalHeight += statusHeight
+            isOverlapped = true
+        }
+
+        /**
+         * Measure third row dimension
+         */
+        val thirdRowWidth = infoWidth + statusWidth
+        val thirdRowWidthDiff = totalWidth - thirdRowWidth
+        if (thirdRowWidthDiff < 0) {
+            totalWidth += abs(thirdRowWidthDiff)
+        }
+        val thirdRowHeight = if (isOverlapped && info!!.isVisible) {
+            abs(infoHeight - statusHeight)
+        } else {
+            infoHeight
+        }
+        totalHeight += thirdRowHeight
+        // Set info width if overlap with [status] layout
+        val infoMaxWidth = maxAvailableWidth - statusWidth
+        if (infoWidth > infoMaxWidth) {
+            totalHeight -= infoHeight
+            val infoWidthSpec = MeasureSpec.makeMeasureSpec(
+                infoMaxWidth, MeasureSpec.EXACTLY
+            )
+            info!!.measure(infoWidthSpec, heightMeasureSpec)
+            infoHeight = getTotalVisibleHeight(info)
+            totalHeight += infoHeight
+        }
+
+        totalWidth += (paddingLeft + paddingRight)
+        totalHeight += (paddingTop + paddingBottom)
 
         setMeasuredDimension(
             resolveSize(totalWidth, widthMeasureSpec),
@@ -413,19 +447,33 @@ class FlexBoxChatLayout : ViewGroup {
         }
 
         /**
+         * Layout icon
+         */
+        val leftIcon = paddingStart
+        val topIcon = topOffset
+        val rightIcon = leftIcon + getVisibleMeasuredWidth(icon)
+        val bottomIcon = topIcon + getVisibleMeasuredHeight(icon)
+        icon?.layout(
+            leftIcon,
+            topIcon,
+            rightIcon,
+            bottomIcon
+        )
+
+        /**
          * Layout msg
          */
-        val leftMsg = paddingStart
+        val leftMsg = rightIcon + getVisibleEndMargin(icon)
         val topMsg = topOffset
-        val rightMsg = paddingStart + message!!.measuredWidth
-        val bottomMsg = topMsg + message!!.measuredHeight
+        val rightMsg = leftMsg + getVisibleMeasuredWidth(message)
+        val bottomMsg = topMsg + getVisibleMeasuredHeight(message)
         message?.layout(
             leftMsg,
             topMsg,
             rightMsg,
             bottomMsg
         )
-        topOffset = bottomMsg
+        topOffset = maxOf(bottomIcon, bottomMsg)
 
         /**
          * Layout info
@@ -460,6 +508,40 @@ class FlexBoxChatLayout : ViewGroup {
 
     }
 
+    private fun getTotalVisibleWidth(view: View?): Int {
+        val viewLp = view?.layoutParams as? MarginLayoutParams ?: return 0
+        if (!view.isVisible) return 0
+        return view.measuredWidth + viewLp.leftMargin + viewLp.rightMargin
+    }
+
+    private fun getVisibleMeasuredWidth(view: View?): Int {
+        if (view?.isVisible == false) return 0
+        return view?.measuredWidth ?: 0
+    }
+
+    private fun getTotalVisibleHeight(view: View?): Int {
+        val viewLp = view?.layoutParams as? MarginLayoutParams ?: return 0
+        if (!view.isVisible) return 0
+        return view.measuredHeight + viewLp.topMargin + viewLp.bottomMargin
+    }
+
+    private fun getVisibleMeasuredHeight(view: View?): Int {
+        if (view?.isVisible == false) return 0
+        return view?.measuredHeight ?: 0
+    }
+
+    private fun getVisibleEndMargin(view: View?): Int {
+        val viewLp = view?.layoutParams as? MarginLayoutParams ?: return 0
+        if (!view.isVisible) return 0
+        return viewLp.rightMargin
+    }
+
+    private fun getVisibleStartMargin(view: View?): Int {
+        val viewLp = view?.layoutParams as? MarginLayoutParams ?: return 0
+        if (!view.isVisible) return 0
+        return viewLp.leftMargin
+    }
+
     override fun checkLayoutParams(p: ViewGroup.LayoutParams?): Boolean {
         return p is LayoutParams
     }
@@ -489,6 +571,7 @@ class FlexBoxChatLayout : ViewGroup {
     companion object {
         const val DEFAULT_USE_MAX_WIDTH = false
         const val DEFAULT_SHOW_CHECK_MARK = true
+        const val REPLY_WIDTH_OFFSET = 5
         val LAYOUT = R.layout.flexbox_chat_message
     }
 }
