@@ -165,6 +165,13 @@ class PushController(val context: Context) : CoroutineScope {
     }
 
     suspend fun postOfflineNotification(baseNotificationModel: BaseNotificationModel) {
+        checkAndSendEvent(baseNotificationModel)
+        createAndPostNotification(baseNotificationModel)
+        baseNotificationModel.status = NotificationStatus.ACTIVE
+        PushRepository.getInstance(context).updateNotificationModel(baseNotificationModel)
+    }
+
+    private fun checkAndSendEvent(baseNotificationModel: BaseNotificationModel) {
         when (NotificationSettingsUtils(context).checkNotificationsModeForSpecificChannel(
             baseNotificationModel.channelName
         )) {
@@ -184,9 +191,6 @@ class PushController(val context: Context) : CoroutineScope {
                 )
             }
         }
-        createAndPostNotification(baseNotificationModel)
-        baseNotificationModel.status = NotificationStatus.ACTIVE
-        PushRepository.getInstance(context).updateNotificationModel(baseNotificationModel)
     }
 
     suspend fun cancelOfflineNotification(baseNotificationModel: BaseNotificationModel) {
