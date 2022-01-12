@@ -58,6 +58,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
     @Test
     fun upload_image_and_leave_chatroom_then_comeback() {
         // Given
+        enableUploadImageByService()
         openChatRoom()
 
         // When
