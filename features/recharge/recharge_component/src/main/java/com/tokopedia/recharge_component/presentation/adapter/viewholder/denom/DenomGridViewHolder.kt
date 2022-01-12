@@ -120,7 +120,11 @@ class DenomGridViewHolder (
                     ViewGroup.LayoutParams.MATCH_PARENT
                 } else resources.getDimension(R.dimen.widget_denom_grid_width).toInt()
 
-                cardType = if (isSelectedItem) CardUnify.TYPE_BORDER_ACTIVE else CardUnify.TYPE_BORDER
+                setBackgroundColor(ContextCompat.getColor(rootView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+
+                cardType = if (isSelectedItem) CardUnify.TYPE_BORDER_ACTIVE else
+                    if (denomGridType == DenomWidgetGridEnum.MCCM_TYPE) CardUnify.TYPE_SHADOW
+                    else CardUnify.TYPE_BORDER
             }
 
             root.setOnClickListener {
