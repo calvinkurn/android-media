@@ -365,4 +365,6 @@
     <string name="discount_type">Tipe Diskon</string>
     <string name="copy_to_clipboard">Copy to clipboard</string>
     <string name="hyphen">-</string>
+    <string name="maximum_expense_estimation">Estimasi Maks. Pengeluaran</string>
+    <string name="expense_description">Dipotong dari transaksi selesai.</string>
 </resources>
