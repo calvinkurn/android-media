@@ -24,7 +24,7 @@ class TwoFactorViewModel @Inject constructor (@Named(SessionModule.SESSION_MODUL
         if(additionalCheckPreference.isNeedCheck() && userSession.isLoggedIn) {
             launchCatchError(block = {
                 val params = mapOf(
-                    PARAM_MODULE to "account_linking"
+                    PARAM_MODULE to ShowInterruptUseCase.MODULE_ACCOUNT_LINKING
                 )
                 val result = showInterruptUseCase(params).data
                 if(result.popupType == AdditionalCheckConstants.POPUP_TYPE_NONE) {

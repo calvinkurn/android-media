@@ -15,7 +15,8 @@ import javax.inject.Inject
 
 class ShowInterruptUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
-    dispatcher: CoroutineDispatcher): CoroutineUseCase<Map<String, Any>, ShowInterruptResponse>(dispatcher) {
+    dispatcher: CoroutineDispatcher
+): CoroutineUseCase<Map<String, Any>, ShowInterruptResponse>(dispatcher) {
 
     override suspend fun execute(params: Map<String, Any>): ShowInterruptResponse {
         return repository.request(graphqlQuery(), params)
@@ -38,5 +39,6 @@ class ShowInterruptUseCase @Inject constructor(
 
     companion object {
         const val PARAM_MODULE = "module"
+        const val MODULE_ACCOUNT_LINKING = "account_linking"
     }
 }
