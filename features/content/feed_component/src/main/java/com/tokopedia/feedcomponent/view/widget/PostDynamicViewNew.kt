@@ -678,7 +678,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         spannableString.setSpan(
                             cs,
                             0,
-                            caption.author.name.length ,
+                            caption.author.name.length - 1,
                             Spannable.SPAN_INCLUSIVE_INCLUSIVE
                         )
                         captionText.text = spannableString
@@ -708,7 +708,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             spannableString.setSpan(
                 cs,
                 0,
-                caption.author.name.length ,
+                caption.author.name.length - 1,
                 Spannable.SPAN_INCLUSIVE_INCLUSIVE
             )
             captionText.text = spannableString
@@ -2003,6 +2003,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 SpannableString(avatarDate)
             }
         timestampText.text = spannableString
+        timestampText.show()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
