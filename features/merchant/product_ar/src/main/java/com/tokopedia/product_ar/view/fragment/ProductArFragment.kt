@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,7 +52,6 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 
 class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMakeupEngineDetectionCallback {
 
@@ -112,6 +110,8 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
             binding?.arLoader?.show()
             goToArComparissonPage()
         }
+
+        binding?.imgShadowBackground?.setImageResource(R.drawable.ic_gradient_ar)
         setupNavToolbar()
     }
 
@@ -145,6 +145,9 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         activity?.let { activity ->
             binding?.productArToolbar?.run {
                 setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
+                setCustomBackButton(color = ContextCompat.getColor(context,
+                                com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+
                 setToolbarTitle("")
                 setupToolbarWithStatusBar(activity, NavToolbar.Companion.StatusBar.STATUS_BAR_DARK)
                 setIcon(
@@ -184,15 +187,10 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     private fun setupUseImageCamera(drawablePath: String) {
         val selectedImageBitmap = getBitmapFromPath(drawablePath)
         selectedImageBitmap?.let {
-            getMakeUpEngine()?.clearMakeupLook()
             getMakeUpEngine()?.startRunningWithPhoto(it, true,
                     object : MFEMakeupEngine.MFEMakeupEngineDetectionCallback {
                         override fun onMFEMakeupFinishedDetection(p0: MFETrackingData?) {
-                            if (p0?.hasFacePoints() == false) {
-                                // Looks like the image did not contain a face
-                                // Ask your user to upload another
-                                Log.e("asd", "no face bro")
-                            }
+                            faceDetection(p0)
                         }
 
                     },
@@ -200,11 +198,8 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
                         override fun onMFEMakeupFinishedProcessingImage(p0: MFETrackingData?) {
                             // Rendering on the image is complete, you can use this
                             // to do things like clear your loader
-                            Log.e("asd", "beres bro")
                         }
-
                     })
-            getMakeUpEngine()?.setMakeupLook((viewModel?.mfeMakeUpLook?.value as? Success)?.data)
         }
     }
 
@@ -387,11 +382,18 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
 
     private fun getArActivity(): ProductArActivity? = (activity as? ProductArActivity)
 
-    override fun onMFEMakeupFinishedDetection(p0: MFETrackingData?) {
-        if (p0?.hasFacePoints() == false) {
-            Log.e("asd", "no live face bro")
+    private fun faceDetection(p0: MFETrackingData?) {
+        activity?.runOnUiThread {
+            if (p0?.hasFacePoints() == false) {
+                binding?.txtNoDetection?.showAnimated()
+            } else {
+                binding?.txtNoDetection?.hideAnimated()
+            }
         }
+    }
 
+    override fun onMFEMakeupFinishedDetection(p0: MFETrackingData?) {
+        faceDetection(p0)
         activity?.runOnUiThread {
             if (binding?.arLoader?.isShown == true) viewModel?.setLoadingState(false)
         }

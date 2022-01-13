@@ -14,7 +14,13 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.getResourceIdOrThrow
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.iconunify.IconUnify
@@ -45,9 +51,13 @@ import com.tokopedia.searchbar.navigation_component.util.getActivityFromContext
 import com.tokopedia.searchbar.navigation_component.viewModel.NavigationViewModel
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.nav_main_toolbar.view.*
+import kotlinx.android.synthetic.main.nav_main_toolbar.view.divider
+import kotlinx.android.synthetic.main.nav_main_toolbar.view.layout_custom_view
 import kotlinx.android.synthetic.main.nav_main_toolbar.view.layout_search
 import kotlinx.android.synthetic.main.nav_main_toolbar.view.navToolbar
+import kotlinx.android.synthetic.main.nav_main_toolbar.view.nav_icon_back
+import kotlinx.android.synthetic.main.nav_main_toolbar.view.rv_icon_list
+import kotlinx.android.synthetic.main.nav_main_toolbar.view.toolbar_title
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
@@ -640,6 +650,14 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             DrawableCompat.setTint(wrappedDrawable, color)
             nav_icon_back.setImageDrawable(it)
         }
+    }
+
+    fun setCustomBackButton(icon: Int = IconUnify.ARROW_BACK, color: Int) {
+        nav_icon_back.setImage(newIconId = icon,
+                newLightEnable = color,
+                newLightDisable = color,
+                newDarkDisable = color,
+                newDarkEnable = color)
     }
 
     private fun setBackButtonColorBasedOnTheme() {

@@ -15,6 +15,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/img_shadow_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:paddingBottom="10dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="@+id/product_ar_toolbar"
+        app:layout_constraintEnd_toEndOf="@+id/product_ar_toolbar"
+        app:layout_constraintStart_toStartOf="@+id/product_ar_toolbar"
+        app:layout_constraintTop_toTopOf="@+id/product_ar_toolbar" />
+
     <com.tokopedia.searchbar.navigation_component.NavToolbar
         android:id="@+id/product_ar_toolbar"
         android:layout_width="match_parent"
@@ -82,6 +93,17 @@
 
     <include layout="@layout/partial_bottom_ar_view" />
 
+    <com.tokopedia.product_ar.util.AnimatedTransparentDialogView
+        android:id="@+id/txt_no_detection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/product_ar_toolbar"
+        tools:visibility="visible" />
+
     <include
         android:id="@+id/ar_shimmer"
         layout="@layout/product_ar_shimmer"
@@ -89,6 +111,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

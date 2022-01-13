@@ -13,4 +13,5 @@
 
     <string name="txt_btn_save_photo">Simpan Foto ke Galeri</string>
     <string name="message_success_save_photo_to_gallery">Foto berhasil disimpan di galeri HP-mu.</string>
+    <string name="message_face_not_detected">Oops, wajahmu nggak terdeteksi. Coba\n lagi pastikan wajahmu terlihat jelas, ya.</string>
 </resources>
