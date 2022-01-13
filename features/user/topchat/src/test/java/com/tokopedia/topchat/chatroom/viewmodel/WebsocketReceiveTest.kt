@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.viewmodel
 
+import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.topchat.chatroom.responses.WebsocketResponses
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket
@@ -192,5 +193,26 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
 
         // Then
         assertEquals(viewModel.msgDeleted.value, chat.replyTime)
+    }
+
+    @Test
+    fun should_render_msg_when_receive_reply_event() {
+        // Given
+        val responseText = WebsocketResponses.generateReplyMsg()
+        val chat = generateChatPojoFromWsResponse(responseText)
+        val chatUiModel = topChatRoomWebSocketMessageMapper.map(chat)
+        onConnectWebsocket {
+            it.onMessage(websocket, responseText)
+        }
+
+        // When
+        viewModel.connectWebSocket()
+
+        // Then
+        assertEquals(viewModel.unreadMsg.value, 0)
+        assertEquals(
+            (viewModel.newMsg.value as MessageUiModel).localId,
+            (chatUiModel as MessageUiModel).localId
+        )
     }
 }
