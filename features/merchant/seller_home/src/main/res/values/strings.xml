@@ -80,6 +80,8 @@
     <string name="centralized_promo_promo_creation_broadcast_chat_description">Tingkatkan penjualan dengan kirim pesan promosi ke pembeli</string>
     <string name="centralized_promo_promo_creation_merchant_voucher_cashback_title">Voucher Cashback</string>
     <string name="centralized_promo_promo_creation_merchant_voucher_description">Tambah minat pembeli untuk berbelanja lebih di tokomu dengan cashback</string>
+    <string name="centralized_promo_promo_creation_voucher_product_title">Kupon Produk</string>
+    <string name="centralized_promo_promo_creation_voucher_product_description">Atur diskon khusus ke produk-produk tertentu agar semakin cepat laku.</string>
 
     <!-- First merchant voucher -->
     <string name="centralized_promo_bottomsheet_title">Yuk, buat Voucher Cashback!</string>

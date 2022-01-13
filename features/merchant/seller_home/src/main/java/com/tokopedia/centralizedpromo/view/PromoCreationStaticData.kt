@@ -62,6 +62,16 @@ object PromoCreationStaticData {
             )
         }
 
+        promoItems.add(
+            PromoCreationUiModel(
+                R.drawable.ic_sah_voucher_product,
+                resourceProvider.getPromoCreationTitleVoucherProduct(),
+                resourceProvider.getPromoCreationDescriptionVoucherProduct(),
+                "",
+                ""
+            )
+        )
+
         return PromoCreationListUiModel(
             items = promoItems,
             errorMessage = ""
