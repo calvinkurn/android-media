@@ -44,11 +44,18 @@ class PlayChatListView : ConstraintLayout {
 
     private var maskAnimator: ValueAnimator? = null
 
+    private val chatListOnLayoutChangeListener: View.OnLayoutChangeListener
+
     init {
         val view = View.inflate(context, R.layout.view_chat_list, this)
 
         rvChatList = view.findViewById(R.id.rv_chat_list)
         csDownView = view.findViewById(R.id.csdown_view)
+
+        chatListOnLayoutChangeListener =
+            OnLayoutChangeListener { _, _, top, _, bottom, _, oldTop, _, oldBottom ->
+                if ((bottom - top) != (oldBottom - oldTop)) scrollToLatest()
+            }
 
         adapterObserver = object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
@@ -138,6 +145,7 @@ class PlayChatListView : ConstraintLayout {
             adapter = chatAdapter
             addOnScrollListener(scrollListener)
             addItemDecoration(ChatListItemDecoration(context))
+            addOnLayoutChangeListener(chatListOnLayoutChangeListener)
         }
 
         csDownView.setOnClickListener {
