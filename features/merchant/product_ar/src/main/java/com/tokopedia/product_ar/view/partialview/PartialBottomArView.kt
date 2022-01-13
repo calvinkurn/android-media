@@ -54,18 +54,31 @@ class PartialBottomArView private constructor(val view: View, val listener: Prod
             txtUnavailableProduct.text = data.unavailableCopy
         } else {
             txtUnavailableProduct.hide()
-            atcButton.text = data.button.text
-            atcButton?.run {
-                text = data.button.text
-                generateTheme(data.button.color)
-            }
-
             txtStock.run {
                 text = data.stockCopy
                 show()
             }
             renderCampaign(data)
         }
+        atcButton.text = data.button.text
+        atcButton?.run {
+            text = data.button.text
+            generateTheme(data.button.color)
+            setOnClickListener {
+                setLoadingButton()
+                listener.onButtonClicked("")
+            }
+        }
+    }
+
+    private fun setLoadingButton() = with(atcButton) {
+        isLoading = true
+        isClickable = false
+    }
+
+    fun stopLoadingButton() =with(atcButton) {
+        isLoading = false
+        isClickable = true
     }
 
     private fun hideNormalFlow() {

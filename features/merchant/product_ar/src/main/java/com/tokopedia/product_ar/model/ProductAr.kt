@@ -43,7 +43,11 @@ data class ProductAr(
         val unavailableCopy: String = "",
         @Transient
         val providerDataCompiled: ModifaceProvider? = null
-)
+) {
+    fun getFinalPrice(): Double {
+        return if (campaignInfo.isActive) campaignInfo.discountedPrice else price
+    }
+}
 
 data class ProductArButton(
         @SerializedName("text")

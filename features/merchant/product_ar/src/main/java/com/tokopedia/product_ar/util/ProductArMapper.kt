@@ -5,13 +5,36 @@ import android.graphics.Color
 import com.modiface.mfemakeupkit.effects.MFEMakeupLipLayer
 import com.modiface.mfemakeupkit.effects.MFEMakeupLook
 import com.modiface.mfemakeupkit.effects.MFEMakeupProduct
+import com.tokopedia.atc_common.AtcFromExternalSource
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product_ar.model.ModifaceProvider
 import com.tokopedia.product_ar.model.ModifaceUiModel
+import com.tokopedia.product_ar.model.ProductAr
 import com.tokopedia.product_ar.model.ProductArUiModel
 import com.tokopedia.product_ar.model.state.ImageMapMode
 
 object ProductArMapper {
+
+    fun generateAtcRequestParam(productAr: ProductAr?,
+                                shopId: String,
+                                userId: String): AddToCartRequestParams {
+        return AddToCartRequestParams().apply {
+            productId = productAr?.productID.toLongOrZero()
+            quantity = 1 //todo
+            notes = ""
+            attribution = ""
+            listTracker = ""
+            atcFromExternalSource = AtcFromExternalSource.ATC_FROM_AR
+            productName = productAr?.name ?: ""
+            category = "" //todo
+            price = productAr?.getFinalPrice().toString()
+            this.shopId = shopId.toIntOrZero()
+            this.userId = userId
+        }
+    }
 
     fun mapToModifaceUiModel(initialProductId: String, data: ProductArUiModel): List<ModifaceUiModel> {
         var count = -1

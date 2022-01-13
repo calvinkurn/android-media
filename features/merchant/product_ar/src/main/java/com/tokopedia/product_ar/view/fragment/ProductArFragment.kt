@@ -29,6 +29,12 @@ import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.detail.common.ProductCartHelper
+import com.tokopedia.product.detail.common.showToasterError
+import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.databinding.FragmentProductArBinding
 import com.tokopedia.product_ar.model.state.AnimatedTextIconClickMode
@@ -106,9 +112,17 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         super.onViewCreated(view, savedInstanceState)
         initView()
 
-        binding?.icCompareAr?.setOnClickListener {
-            binding?.arLoader?.show()
-            goToArComparissonPage()
+        binding?.mainImg?.let {
+            getMakeUpEngine()?.setDetectionCallbackForCameraFeed(this)
+            getMakeUpEngine()?.attachMakeupView(it)
+        }
+
+        binding?.icCompareAr?.run {
+            show()
+            setOnClickListener {
+                binding?.arLoader?.show()
+                goToArComparissonPage()
+            }
         }
 
         binding?.imgShadowBackground?.setImageResource(R.drawable.ic_gradient_ar)
@@ -216,6 +230,111 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     }
 
     private fun observeData() {
+        observeLoadingState()
+        observeBottomShimmerState()
+        observeAnimatedTextIcon()
+        observeModifaceMode()
+        observeBottomData()
+        observeBackendData()
+        observeMakeUpLook()
+        observeAtc()
+    }
+
+    private fun observeAtc() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel?.addToCartLiveData?.collectLatest { data ->
+                partialBottomArView?.stopLoadingButton()
+                when (data) {
+                    is Success -> {
+                        onSuccessAtc(data.data.errorMessage.firstOrNull())
+                    }
+                    is Fail -> {
+                        onFailAtc(data.throwable)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun observeMakeUpLook() {
+        viewModel?.mfeMakeUpLook?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    getMakeUpEngine()?.setMakeupLook(it.data)
+                }
+                is Fail -> {
+                }
+            }
+        }
+    }
+
+    private fun observeBackendData() {
+        viewModel?.productArList?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    shouldPause = true
+                    binding?.globalErrorProductAr?.hide()
+                    setupNavBarIconPage()
+                    partialBottomArView?.renderRecyclerView(it.data)
+                }
+                is Fail -> {
+                    shouldPause = false
+                    showGlobalError(it.throwable)
+                }
+            }
+        }
+    }
+
+    private fun observeBottomData() {
+        viewModel?.selectedProductArData?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    partialBottomArView?.renderBottomInfoText(it.data)
+                }
+                is Fail -> {
+                }
+            }
+        }
+    }
+
+    private fun observeBottomShimmerState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel?.bottomLoadingState?.collectLatest {
+                if (it) {
+                    binding?.arShimmer?.root?.show()
+                } else {
+                    binding?.arShimmer?.root?.hide()
+                    partialBottomArView?.showView()
+                }
+            }
+        }
+    }
+
+    private fun observeLoadingState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel?.modifaceLoadingState?.collectLatest {
+                if (it) {
+                    binding?.arLoader?.show()
+                } else {
+                    binding?.arLoader?.hide()
+                }
+            }
+        }
+    }
+
+    private fun observeModifaceMode() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel?.modifaceViewState?.collectLatest {
+                if (it.mode == ModifaceViewMode.LIVE) {
+                    setupLiveCamera()
+                } else {
+                    setupUseImageCamera(it.imageDrawablePath)
+                }
+            }
+        }
+    }
+
+    private fun observeAnimatedTextIcon() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel?.animatedTextIconState?.collectLatest {
                 binding?.animatedTxtIcon1?.run {
@@ -233,78 +352,50 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
                 }
             }
         }
+    }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel?.modifaceViewState?.collectLatest {
-                if (it.mode == ModifaceViewMode.LIVE) {
-                    setupLiveCamera()
-                } else {
-                    setupUseImageCamera(it.imageDrawablePath)
+    private fun onSuccessAtc(successMessage:String?) {
+        context?.let {
+            val message = if (successMessage == null || successMessage.isEmpty())
+                it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default)
+            else
+                successMessage
+
+            view?.showToasterSuccess(message, ctaText = getString(R.string.product_ar_see)) {
+                ProductCartHelper.goToCartCheckout(requireActivity(), "")
+            }
+        }
+    }
+
+    private fun onFailAtc(throwable: Throwable) {
+        throwable.run {
+            if (this is AkamaiErrorException && message != null) {
+                view?.showToasterError(
+                        message ?: "",
+                        ctaText = getString(R.string.product_ar_oke_label)) {
+
+                }
+            } else {
+                view?.showToasterError(getErrorMessage(this),
+                        ctaText = getString(R.string.product_ar_oke_label)) {
+
                 }
             }
         }
+    }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel?.modifaceLoadingState?.collectLatest {
-                if (it) {
-                    binding?.arLoader?.show()
-                } else {
-                    binding?.arLoader?.hide()
-                }
+    private fun getErrorMessage(throwable: Throwable): String {
+        return if (throwable is ResponseErrorException) {
+            throwable.message
+                    ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
+        } else if (throwable is AkamaiErrorException && throwable.message != null) {
+            throwable.message
+                    ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
+        } else {
+            context?.let {
+                ErrorHandler.getErrorMessage(it, throwable)
             }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel?.bottomLoadingState?.collectLatest {
-                if (it) {
-                    binding?.arShimmer?.root?.show()
-                } else {
-                    binding?.arShimmer?.root?.hide()
-                    partialBottomArView?.showView()
-                }
-            }
-        }
-
-        viewModel?.selectedProductArData?.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    partialBottomArView?.renderBottomInfoText(it.data)
-                }
-                is Fail -> {
-                }
-            }
-        }
-
-        viewModel?.productArList?.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    shouldPause = true
-                    binding?.mainImg?.let {
-                        getMakeUpEngine()?.setDetectionCallbackForCameraFeed(this)
-                        getMakeUpEngine()?.attachMakeupView(it)
-                    }
-
-                    binding?.globalErrorProductAr?.hide()
-                    setupNavBarIconPage()
-                    partialBottomArView?.renderRecyclerView(it.data)
-                }
-                is Fail -> {
-                    shouldPause = false
-                    showGlobalError(it.throwable)
-                }
-            }
-        }
-
-        viewModel?.mfeMakeUpLook?.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    getMakeUpEngine()?.clearMakeupLook()
-                    getMakeUpEngine()?.setMakeupLook(it.data)
-                }
-                is Fail -> {
-                    // still noop
-                }
-            }
+                    ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
         }
     }
 
@@ -397,7 +488,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     }
 
     override fun onButtonClicked(productId: String) {
-
+        viewModel?.doAtc()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

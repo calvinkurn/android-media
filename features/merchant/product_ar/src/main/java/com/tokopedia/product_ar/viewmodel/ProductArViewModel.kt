@@ -8,7 +8,10 @@ import com.modiface.mfemakeupkit.effects.MFEMakeupLook
 import com.modiface.mfemakeupkit.effects.MFEMakeupProduct
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product_ar.di.PRODUCT_ID_PROVIDED
 import com.tokopedia.product_ar.di.SHOP_ID_PROVIDED
 import com.tokopedia.product_ar.model.ModifaceUiModel
@@ -24,18 +27,23 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import javax.inject.Named
 
 
-class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
+class ProductArViewModel @Inject constructor(private val dispatchers: CoroutineDispatchers,
                                              @Named(PRODUCT_ID_PROVIDED) private val initialProductId: String,
                                              @Named(SHOP_ID_PROVIDED) private val shopId: String,
+                                             private val addToCartUseCase: AddToCartUseCase,
                                              private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
-                                             private val getProductArUseCase: GetProductArUseCase)
+                                             private val getProductArUseCase: GetProductArUseCase,
+                                             private val userSessionInterface: UserSessionInterface)
     : BaseViewModel(dispatchers.io) {
 
     init {
@@ -46,9 +54,7 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
 
     fun getProductArUiModel(): ProductArUiModel = productArUiModel
 
-    private val _animatedTextIconState = MutableStateFlow(AnimatedTextIconState(
-            view2ClickMode = AnimatedTextIconClickMode.CHOOSE_FROM_GALLERY)
-    )
+    private val _animatedTextIconState = MutableStateFlow(AnimatedTextIconState())
     val animatedTextIconState: StateFlow<AnimatedTextIconState> = _animatedTextIconState
 
     private val _modifaceViewState = MutableStateFlow(ModifaceViewState(
@@ -59,7 +65,7 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private val _modifaceLoadingState = MutableStateFlow(true)
     val modifaceLoadingState: StateFlow<Boolean> = _modifaceLoadingState
 
-    private val _bottomLoadingState=  MutableStateFlow(true)
+    private val _bottomLoadingState = MutableStateFlow(true)
     val bottomLoadingState: StateFlow<Boolean> = _bottomLoadingState
 
     private val _selectedProductArData = MutableLiveData<Result<ProductAr>>()
@@ -73,6 +79,11 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private val _mfeMakeUpLook = MutableLiveData<Result<MFEMakeupLook>>()
     val mfeMakeUpLook: LiveData<Result<MFEMakeupLook>>
         get() = _mfeMakeUpLook
+
+    //Use shared flow to only trigger observe once, after fragment transaction
+    private val _addToCartLiveData = MutableSharedFlow<Result<AddToCartDataModel>>(replay = 0)
+    val addToCartLiveData: SharedFlow<Result<AddToCartDataModel>>
+        get() = _addToCartLiveData
 
     fun setLoadingState(isLoading: Boolean) {
         if (_modifaceLoadingState.value == isLoading) return
@@ -101,6 +112,9 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                     ?: ProductAr()))
             _bottomLoadingState.update {
                 false
+            }
+            _animatedTextIconState.update {
+                it.copy(view2ClickMode = AnimatedTextIconClickMode.CHOOSE_FROM_GALLERY)
             }
 
         }, onError = {
@@ -145,6 +159,29 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                 it.copy(view1ClickMode = AnimatedTextIconClickMode.USE_CAMERA,
                         view2ClickMode = AnimatedTextIconClickMode.CHANGE_PHOTO)
             }
+        }
+    }
+
+    fun doAtc() {
+        viewModelScope.launchCatchError(block = {
+            val requestParam = ProductArMapper.generateAtcRequestParam(
+                    (selectedProductArData.value as? Success)?.data,
+                    shopId,
+                    userSessionInterface.userId)
+
+            addToCartUseCase.setParams(requestParam)
+            val result = addToCartUseCase.executeOnBackground()
+
+            if (result.isDataError()) {
+                val errorMessage = result.errorMessage.firstOrNull() ?: ""
+                _addToCartLiveData.emit(Fail(MessageErrorException(errorMessage)))
+            } else {
+                _addToCartLiveData.emit(Success(result))
+            }
+        }) {
+            it.cause?.let { cause ->
+                _addToCartLiveData.emit(Fail(cause))
+            } ?: _addToCartLiveData.emit(Fail(it))
         }
     }
 }
