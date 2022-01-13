@@ -27,12 +27,12 @@ internal fun applyQuickFilterElevation(context: Context?, sortFilter: SortFilter
     }
 }
 
-internal fun createSearchProductDefaultFilter() = Gson().fromJson(createSearchProductDefaultFilterJSON(), DynamicFilterModel::class.java)
-internal fun createSearchProductDefaultQuickFilter() = Gson().fromJson(createSearchProductDefaultQuickFilterJSON(), DataValue::class.java)
+internal fun createSearchProductDefaultFilter() = Gson().fromJson(SEARCH_PRODUCT_DEFAULT_FILTER_JSON, DynamicFilterModel::class.java)
+internal fun createSearchProductDefaultQuickFilter() = Gson().fromJson(SEARCH_PRODUCT_DEFAULT_QUICK_FILTER_JSON, DataValue::class.java)
 
-internal fun createSearchShopDefaultQuickFilter() = Gson().fromJson(createSearchShopDefaultQuickFilterJSON(), DataValue::class.java)
+internal fun createSearchShopDefaultQuickFilter() = Gson().fromJson(SEARCH_SHOP_DEFAULT_QUICK_FILTER_JSON, DataValue::class.java)
 
-private fun createSearchProductDefaultFilterJSON() =
+private const val SEARCH_PRODUCT_DEFAULT_FILTER_JSON =
         """
             {
               "data": {
@@ -279,7 +279,7 @@ private fun createSearchProductDefaultFilterJSON() =
             }
         """
 
-private fun createSearchProductDefaultQuickFilterJSON() =
+private const val SEARCH_PRODUCT_DEFAULT_QUICK_FILTER_JSON =
         """
         {
             "filter": [
@@ -363,7 +363,7 @@ private fun createSearchProductDefaultQuickFilterJSON() =
         }
         """
 
-private fun createSearchShopDefaultQuickFilterJSON() =
+private const val SEARCH_SHOP_DEFAULT_QUICK_FILTER_JSON =
         """
     {
         "filter": [

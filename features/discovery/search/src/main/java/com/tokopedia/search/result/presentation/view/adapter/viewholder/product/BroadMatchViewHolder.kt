@@ -61,44 +61,48 @@ class BroadMatchViewHolder(
 
     private fun setupRecyclerView(dataData: BroadMatchDataView){
         val products = dataData.broadMatchItemDataViewList
-        binding?.searchBroadMatchList?.bindCarouselProductCardViewGrid(
-                recyclerViewPool = broadMatchListener.carouselRecycledViewPool,
-                productCardModelList = products.map {
-                    ProductCardModel(
-                            productName = it.name,
-                            formattedPrice = it.priceString,
-                            productImageUrl = it.imageUrl,
-                            countSoldRating = it.ratingAverage,
-                            labelGroupList = it.labelGroupDataList.toProductCardLabelGroup(),
-                            shopLocation = if (it.shopLocation.isNotEmpty()) it.shopLocation else it.shopName,
-                            shopBadgeList = it.badgeItemDataViewList.toProductCardModelShopBadges(),
-                            freeOngkir = it.freeOngkirDataView.toProductCardModelFreeOngkir(),
-                            isTopAds = it.isOrganicAds,
-                            hasThreeDots = it.carouselProductType.hasThreeDots
-                    )
-                },
-                carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
-                    override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                        val product = products.getOrNull(carouselProductCardPosition) ?: return
-                        broadMatchListener.onBroadMatchItemClicked(product)
-                    }
-                },
-                carouselProductCardOnItemThreeDotsClickListener = object: CarouselProductCardListener.OnItemThreeDotsClickListener {
-                    override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                        val product = products.getOrNull(carouselProductCardPosition) ?: return
-                        broadMatchListener.onBroadMatchThreeDotsClicked(product)
-                    }
-                },
-                carouselProductCardOnItemImpressedListener = object: CarouselProductCardListener.OnItemImpressedListener {
-                    override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                        val product = products.getOrNull(carouselProductCardPosition) ?: return
-                        broadMatchListener.onBroadMatchItemImpressed(product)
-                    }
+        broadMatchListener.productCardLifecycleObserver?.let {
+            binding?.searchBroadMatchList?.productCardLifecycleObserver = it
+        }
 
-                    override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
-                        return products.getOrNull(carouselProductCardPosition)
-                    }
+        binding?.searchBroadMatchList?.bindCarouselProductCardViewGrid(
+            recyclerViewPool = broadMatchListener.carouselRecycledViewPool,
+            productCardModelList = products.map {
+                ProductCardModel(
+                    productName = it.name,
+                    formattedPrice = it.priceString,
+                    productImageUrl = it.imageUrl,
+                    countSoldRating = it.ratingAverage,
+                    labelGroupList = it.labelGroupDataList.toProductCardLabelGroup(),
+                    shopLocation = if (it.shopLocation.isNotEmpty()) it.shopLocation else it.shopName,
+                    shopBadgeList = it.badgeItemDataViewList.toProductCardModelShopBadges(),
+                    freeOngkir = it.freeOngkirDataView.toProductCardModelFreeOngkir(),
+                    isTopAds = it.isOrganicAds,
+                    hasThreeDots = it.carouselProductType.hasThreeDots,
+                )
+            },
+            carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
+                override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                    val product = products.getOrNull(carouselProductCardPosition) ?: return
+                    broadMatchListener.onBroadMatchItemClicked(product)
                 }
+            },
+            carouselProductCardOnItemThreeDotsClickListener = object: CarouselProductCardListener.OnItemThreeDotsClickListener {
+                override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                    val product = products.getOrNull(carouselProductCardPosition) ?: return
+                    broadMatchListener.onBroadMatchThreeDotsClicked(product)
+                }
+            },
+            carouselProductCardOnItemImpressedListener = object: CarouselProductCardListener.OnItemImpressedListener {
+                override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                    val product = products.getOrNull(carouselProductCardPosition) ?: return
+                    broadMatchListener.onBroadMatchItemImpressed(product)
+                }
+
+                override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
+                    return products.getOrNull(carouselProductCardPosition)
+                }
+            }
         )
     }
 

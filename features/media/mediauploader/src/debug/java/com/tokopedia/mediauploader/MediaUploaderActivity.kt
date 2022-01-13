@@ -66,13 +66,12 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob() + Dispatchers.IO
 
-    val sourceId: String by lazy {
-        if (isUploadImage) {
+    val sourceId: String
+        get() = if (isUploadImage) {
             "tuOYCg" // sourceId for image upload
         } else {
             "VsrJDL" // sourceId for video upload (simple and large)
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -363,11 +362,13 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
         val intent = RouteManager.getIntent(applicationContext, ApplinkConstInternalGlobal.IMAGE_PICKER)
         intent.putImagePickerBuilder(builder)
         startActivityForResult(intent, REQUEST_IMAGE_PICKER)
+        isUploadImage = true
     }
 
     private fun pickVideoToUpload() {
         val intent = RouteManager.getIntent(applicationContext, ApplinkConstInternalGlobal.VIDEO_PICKER)
         startActivityForResult(intent, REQUEST_VIDEO_PICKER)
+        isUploadImage = false
     }
 
     private fun initViewComponent() {

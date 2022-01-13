@@ -46,6 +46,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/topupbills_text_product_name"
         android:lines="1"
+        android:ellipsize="end"
         app:typographyType="body_3"
         tools:text="Rp 1.000.000"
         android:layout_height="wrap_content"
