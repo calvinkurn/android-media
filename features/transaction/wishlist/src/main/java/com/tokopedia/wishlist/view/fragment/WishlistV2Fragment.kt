@@ -519,6 +519,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 layoutManager = staggeredGlm
                 adapter = wishlistV2Adapter
                 addOnScrollListener(rvScrollListener)
+                itemAnimator = null
             }
         }
     }
