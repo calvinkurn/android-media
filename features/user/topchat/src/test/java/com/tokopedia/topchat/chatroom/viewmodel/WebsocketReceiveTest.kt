@@ -6,6 +6,7 @@ import io.mockk.coVerify
 import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.lang.IllegalStateException
 
 class WebsocketReceiveTest : BaseTopChatViewModelTest() {
 
@@ -80,6 +81,24 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
 
         // Then
         coVerify(exactly = 0) {
+            chatWebSocket.close()
+            webSocketStateHandler.scheduleForRetry(any())
+        }
+    }
+
+    @Test
+    fun should_retry_connect_websocket_when_ws_failed() {
+        // Given
+        onConnectWebsocket {
+            it.onFailure(websocket, IllegalStateException(), websocketResponse)
+        }
+
+        // When
+        viewModel.connectWebSocket()
+
+        // Then
+        assertEquals(viewModel.isWebsocketError.value, true)
+        coVerify {
             chatWebSocket.close()
             webSocketStateHandler.scheduleForRetry(any())
         }
