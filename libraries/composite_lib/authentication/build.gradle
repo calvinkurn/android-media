@@ -10,7 +10,7 @@ android {
 project.ext {
     artifactId = 'authentication'
     groupId = 'com.tokopedia.authentication'
-    versionName = "1.0.23"
+    versionName = "1.0.24"
     artifactName = "authentication-release"
 }
 
