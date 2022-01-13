@@ -47,8 +47,14 @@ fun getQueryShipmentAddressFormV3(): String {
                   state
                   state_detail
                   tokonow {
+                    #is_modified
                     shop_id
                     warehouse_id
+                    #warehouses {
+                      #warehouse_id
+                      #service_type
+                    #}
+                    #service_type
                   }
                 }
                 group_shop {
