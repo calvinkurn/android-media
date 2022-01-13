@@ -101,7 +101,8 @@ open class TopAdsHeadlineV2ViewHolder(
         when (payloads.firstOrNull() as Int) {
             PAYLOAD_POST_VISIBLE -> topadsPostDynamic.bindImage(
                     element.feedXCard.tags,
-                    element.feedXCard.media[0]
+                    element.feedXCard.media[element.feedXCard.lastCarouselIndex],
+                    element.feedXCard
             )
             PAYLOAD_ANIMATE_FOLLOW -> topadsPostDynamic.bindFollow(element.feedXCard)
         }
@@ -170,6 +171,12 @@ open class TopAdsHeadlineV2ViewHolder(
     fun onItemDetach(context: Context, visitable: Visitable<*>) {
         try {
             topadsPostDynamic.detach(false, visitable)
+        } catch (e: Exception) {
+        }
+    }
+    fun onItemAttach(context: Context, visitable: Visitable<*>) {
+        try {
+            topadsPostDynamic.attach( visitable)
         } catch (e: Exception) {
         }
     }

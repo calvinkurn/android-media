@@ -140,6 +140,7 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
         val searchProductModelWithCPM = tdnWithHeadlineAdsPosition14JSON.jsonToObject<SearchProductModel>()
         searchProductModelWithCPM.setTopAdsImageViewModelList(listOf(tdn1, tdn14))
 
+        `Given top ads headline helper will process headline ads`(searchProductModelWithCPM)
         `Given Search Product API will return SearchProductModel`(searchProductModelWithCPM)
         `Given product list will be captured`()
 

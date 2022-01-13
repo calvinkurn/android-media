@@ -16,7 +16,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.*
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -59,7 +58,7 @@ import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.databinding.FragmentSahBinding
-import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.di.component.HomeDashboardComponent
 import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.newrelic.SellerHomeNewRelic
@@ -150,12 +149,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private val sellerHomeViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SellerHomeViewModel::class.java)
     }
-    private val recyclerView: RecyclerView?
-        get() = try {
-            super.getRecyclerView(view)
-        } catch (ex: Exception) {
-            null
-        }
 
     private val deviceDisplayHeight: Float
         get() = try {
@@ -198,16 +191,20 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var shopImageFilePath: String = ""
     private var binding by autoClearedNullable<FragmentSahBinding>()
 
+    private val recyclerView: RecyclerView?
+        get() = try {
+            super.getRecyclerView(view)
+        } catch (ex: Exception) {
+            null
+        }
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
 
     override fun getScreenName(): String = TrackingConstant.SCREEN_NAME_SELLER_HOME
 
     override fun initInjector() {
-        DaggerSellerHomeComponent.builder()
-            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
-            .inject(this)
+        getComponent(HomeDashboardComponent::class.java).inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -303,6 +300,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         super.onCreateOptionsMenu(menu, inflater)
         menu.clear()
         inflater.inflate(R.menu.sah_menu_home_toolbar, menu)
+
+        for (i in 0 until menu.size()) {
+            menu.getItem(i)?.let { menuItem ->
+                menuItem.actionView?.setOnClickListener {
+                    onOptionsItemSelected(menuItem)
+                }
+            }
+        }
+
         this.menu = menu
         showNotificationBadge()
     }
@@ -1685,28 +1691,28 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     @Suppress("UNCHECKED_CAST")
     private fun updateWidgets(newWidgets: List<BaseWidgetUiModel<BaseDataUiModel>>) {
-        val diffUtilCallback = SellerHomeDiffUtilCallback(
-            adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>,
-            newWidgets
-        )
-        val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
-        adapter.data.clear()
-        adapter.data.addAll(newWidgets)
-        diffUtilResult.dispatchUpdatesTo(adapter)
+        try {
+            val diffUtilCallback = SellerHomeDiffUtilCallback(
+                adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>,
+                newWidgets
+            )
+            val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
+            adapter.data.clear()
+            adapter.data.addAll(newWidgets)
+            diffUtilResult.dispatchUpdatesTo(adapter)
+        } catch (e: Exception) {
+            SellerHomeErrorHandler.logException(e, SellerHomeErrorHandler.UPDATE_WIDGET_ERROR)
+        }
     }
 
     @SuppressLint("AnnotateVersionCheck")
     private fun notifyWidgetWithSdkChecking(callback: () -> Unit) {
-        try {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            callback()
+        } else {
+            recyclerView?.post {
                 callback()
-            } else {
-                Handler(Looper.getMainLooper()).post {
-                    callback()
-                }
             }
-        } catch (e: Exception) {
-            SellerHomeErrorHandler.logException(e, SellerHomeErrorHandler.UPDATE_WIDGET_ERROR)
         }
     }
 

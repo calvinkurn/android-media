@@ -94,6 +94,8 @@ interface SuggestionContract {
         fun finish()
 
         val chooseAddressData: LocalCacheModel?
+
+        val className: String
     }
 
     interface Presenter : CustomerPresenter<View> {

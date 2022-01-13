@@ -7,8 +7,10 @@ import com.tokopedia.shop.score.uitest.features.performance.base.ShopScoreTest
 import com.tokopedia.shop.score.uitest.stub.common.util.onClick
 import com.tokopedia.shop.score.uitest.stub.common.util.onIdView
 import com.tokopedia.shop.score.uitest.stub.common.util.scrollTo
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 
+@UiTest
 class ExistingOsActivityTest: ShopScoreTest() {
 
     override fun setup() {
@@ -33,6 +35,7 @@ class ExistingOsActivityTest: ShopScoreTest() {
 
     @Test
     fun show_bottom_sheet_tooltip_level_existing_os() {
+        shopScorePrefManagerStub.setFinishCoachMark(true)
         activityRule.launchActivity(getShopPerformancePageIntent())
         onIdView(R.id.ic_performance_level_information).onClick()
         showBottomSheetTooltipLevelOs(existingSellerOsResponse)
@@ -40,6 +43,7 @@ class ExistingOsActivityTest: ShopScoreTest() {
 
     @Test
     fun show_bottom_sheet_tooltip_score_existing_os() {
+        shopScorePrefManagerStub.setFinishCoachMark(true)
         activityRule.launchActivity(getShopPerformancePageIntent())
         onIdView(R.id.ic_shop_score_performance).onClick()
         showBottomSheetTooltipScoreExisting()
@@ -47,6 +51,7 @@ class ExistingOsActivityTest: ShopScoreTest() {
 
     @Test
     fun show_section_period_detail_existing_os() {
+        shopScorePrefManagerStub.setFinishCoachMark(true)
         activityRule.launchActivity(getShopPerformancePageIntent())
         activityRule.activity.scrollTo<PeriodDetailPerformanceUiModel>()
         showSectionPeriodDetailExisting(existingSellerOsResponse)
@@ -54,15 +59,17 @@ class ExistingOsActivityTest: ShopScoreTest() {
 
     @Test
     fun show_item_detail_performance_and_show_bottomsheet_os() {
+        shopScorePrefManagerStub.setFinishCoachMark(true)
         activityRule.launchActivity(getShopPerformancePageIntent())
         showDetailPerformanceExisting()
     }
 
     @Test
     fun show_faq_shop_score_existing_os() {
+        shopScorePrefManagerStub.setFinishCoachMark(true)
         activityRule.launchActivity(getShopPerformancePageIntent())
         activityRule.activity.scrollTo<SectionFaqUiModel>()
-        showFaqItemList(existingSellerOsResponse)
+        showFaqItemList()
     }
 
 
