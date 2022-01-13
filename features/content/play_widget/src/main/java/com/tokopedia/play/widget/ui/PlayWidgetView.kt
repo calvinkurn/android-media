@@ -55,6 +55,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
             is PlayWidgetSmallView -> child.setWidgetInternalListener(listener)
             is PlayWidgetMediumView -> child.setWidgetInternalListener(listener)
             is PlayWidgetLargeView -> child.setWidgetInternalListener(listener)
+            is PlayWidgetJumboView -> child.setWidgetInternalListener(listener)
         }
     }
 
@@ -68,6 +69,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
             is PlayWidgetUiModel.Small -> addSmallView(model)
             is PlayWidgetUiModel.Medium -> addMediumView(model)
             is PlayWidgetUiModel.Large -> addLargeView(model)
+            is PlayWidgetUiModel.Jumbo -> addJumboView(model)
             PlayWidgetUiModel.Placeholder -> addPlaceholderView()
         }
     }
@@ -86,6 +88,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
             is PlayWidgetSmallView -> child.setWidgetListener(listener)
             is PlayWidgetMediumView -> child.setWidgetListener(listener)
             is PlayWidgetLargeView -> child.setWidgetListener(listener)
+            is PlayWidgetJumboView -> child.setWidgetListener(listener)
         }
     }
 
@@ -121,6 +124,18 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
 
     private fun addLargeView(model: PlayWidgetUiModel.Large) {
         val widgetView = addWidgetView { PlayWidgetLargeView(context) }
+        if (model.items.isEmpty()) {
+            widgetView.hide()
+        } else {
+            widgetView.show()
+            widgetView.setData(model)
+            widgetView.setWidgetListener(mWidgetListener)
+            widgetView.setWidgetInternalListener(mWidgetInternalListener)
+        }
+    }
+
+    private fun addJumboView(model: PlayWidgetUiModel.Jumbo) {
+        val widgetView = addWidgetView { PlayWidgetJumboView(context) }
         if (model.items.isEmpty()) {
             widgetView.hide()
         } else {

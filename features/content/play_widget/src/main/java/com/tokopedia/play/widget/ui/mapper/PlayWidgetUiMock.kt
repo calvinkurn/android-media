@@ -19,6 +19,8 @@ object PlayWidgetUiMock {
 
     fun getPlayWidgetLarge(): PlayWidgetUiModel = getSamplePlayLargeWidget()
 
+    fun getPlayWidgetJumbo(): PlayWidgetUiModel = getSamplePlayJumboWidget()
+
     private fun getSamplePlaySmallWidget(): PlayWidgetUiModel = PlayWidgetUiModel.Small(
             title = "Yuk Nonton Sekarang!",
             actionTitle = "Lihat semua",
@@ -46,6 +48,15 @@ object PlayWidgetUiMock {
         isActionVisible = true,
         config = getPlayWidgetConfigUiModel(),
         items = getSampleLargeCardData()
+    )
+
+    private fun getSamplePlayJumboWidget(): PlayWidgetUiModel = PlayWidgetUiModel.Jumbo(
+        title = "Ini JumboTRON!",
+        actionTitle = "Lihat semua",
+        actionAppLink = "tokopedia://webview?titlebar=false\\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
+        isActionVisible = true,
+        config = getPlayWidgetConfigUiModel(),
+        items = getSampleJumboCardData()
     )
 
     private fun getSampleSmallCardData(): List<PlayWidgetSmallItemUiModel> {
@@ -83,7 +94,7 @@ object PlayWidgetUiMock {
 
     private fun getSampleLargeCardData(): List<PlayWidgetLargeItemUiModel> {
         return List(5) {
-            if (it == 0) getSampleLargeCardBanner()
+            if (it == 1) getSampleLargeCardBanner()
             else {
                 val channelType = when (cardItemTypeRandom.nextInt(0, 4)) {
                     0 -> PlayWidgetChannelType.Upcoming
@@ -91,6 +102,20 @@ object PlayWidgetUiMock {
                     else -> PlayWidgetChannelType.Live
                 }
                 getSampleLargeChannelCardBanner(channelType)
+            }
+        }
+    }
+
+    private fun getSampleJumboCardData(): List<PlayWidgetJumboItemUiModel> {
+        return List(2) {
+            if(it == 0) getSampleJumboChannelCardBanner(PlayWidgetChannelType.Live)
+            else{
+//                val channelType = when (cardItemTypeRandom.nextInt(0, 1)) {
+//                    0 -> PlayWidgetChannelType.Upcoming
+//                    1 -> PlayWidgetChannelType.Upcoming
+//                    else -> PlayWidgetChannelType.Live
+//                }
+                getSampleJumboCardBanner()
             }
         }
     }
@@ -108,6 +133,13 @@ object PlayWidgetUiMock {
             partner = PlayWidgetPartnerUiModel("123", "Google")
     )
 
+    private fun getSampleJumboCardBanner() = PlayWidgetJumboBannerUiModel(
+        imageUrl = "https://cdn.jpegmini.com/user/images/slider_puffin_before_mobile.jpg",
+        appLink = "",
+        webLink = "",
+        partner = PlayWidgetPartnerUiModel("123", "Google")
+    )
+
     private fun getSampleSmallChannelCardBanner(channelType: PlayWidgetChannelType) = PlayWidgetSmallChannelUiModel(
             channelId = "123",
             title = "Google Assistant review with me",
@@ -123,8 +155,32 @@ object PlayWidgetUiMock {
             poolType = "",
             recommendationType = "",
     )
-
     private fun getSampleLargeChannelCardBanner(channelType: PlayWidgetChannelType) = PlayWidgetLargeChannelUiModel(
+        channelId = "123",
+        title = "Google Assistant review with me",
+        channelType = channelType,
+        appLink = "",
+        webLink = "",
+        startTime = "",
+        totalView = "10,0 rb",
+        totalViewVisible = true,
+        promoType = PlayWidgetPromoType.Default("Diskon 100%"),
+        reminderType = PlayWidgetReminderType.Reminded,
+        partner = PlayWidgetPartnerUiModel("123", "Google"),
+        video = getVideoUiModel(channelType),
+        hasAction = true,
+        channelTypeTransition = PlayWidgetChannelTypeTransition(null, channelType),
+        share = PlayWidgetShareUiModel(
+            "TEST CHANNEL covert vod transcoding \nYuk, nonton siaran dari testtokoucup di Tokopedia PLAY! Bakal seru banget lho!\n https://tokopedia.link/hwql0mV2Wab",
+            isShow = true
+        ),
+        performanceSummaryLink = "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fshop%2Fituajakak%2Fstatistic%2F10734",
+        hasGiveaway = true,
+        poolType = "",
+        recommendationType = "",
+    )
+
+    private fun getSampleJumboChannelCardBanner(channelType: PlayWidgetChannelType) = PlayWidgetJumboChannelUiModel(
         channelId = "123",
         title = "Google Assistant review with me",
         channelType = channelType,

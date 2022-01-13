@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:startColor="@color/play_widget_dms_jumbo_overlay_gradient_white"
+        android:endColor="@color/play_widget_dms_jumbo_overlay_gradient_darker"
+        android:angle="-90"/>
+</shape>

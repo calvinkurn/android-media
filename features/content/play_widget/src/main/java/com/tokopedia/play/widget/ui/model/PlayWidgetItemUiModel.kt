@@ -129,3 +129,41 @@ data class PlayWidgetLargeChannelUiModel(
 
         override val impressHolder = ImpressHolder()
 }
+
+/**
+ * Jumbo
+ * */
+
+sealed class PlayWidgetJumboItemUiModel: PlayWidgetItemUiModel()
+
+data class PlayWidgetJumboBannerUiModel(
+        val imageUrl: String,
+        val appLink: String,
+        val webLink: String,
+        val partner: PlayWidgetPartnerUiModel
+) : PlayWidgetJumboItemUiModel()
+
+data class PlayWidgetJumboChannelUiModel(
+        val channelId: String,
+        val title: String,
+        val appLink: String,
+        val webLink: String,
+        val startTime: String,
+        val totalView: String,
+        val totalViewVisible: Boolean,
+        val promoType: PlayWidgetPromoType,
+        val reminderType: PlayWidgetReminderType,
+        val partner: PlayWidgetPartnerUiModel,
+        val video: PlayWidgetVideoUiModel,
+        val channelType: PlayWidgetChannelType,
+        val hasAction: Boolean,
+        val channelTypeTransition: PlayWidgetChannelTypeTransition,
+        val share: PlayWidgetShareUiModel,
+        val performanceSummaryLink: String,
+        val hasGiveaway: Boolean,
+        val poolType: String,
+        val recommendationType: String,
+) : PlayWidgetJumboItemUiModel(), ImpressionableModel {
+
+        override val impressHolder = ImpressHolder()
+}

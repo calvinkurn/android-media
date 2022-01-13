@@ -7,7 +7,8 @@ enum class PlayWidgetSize(val typeString: String) {
 
     Small("SMALL"),
     Medium("MEDIUM"),
-    Large("LARGE");
+    Large("LARGE"),
+    Jumbo("JUMBO");
 
     companion object {
         private val values = values()

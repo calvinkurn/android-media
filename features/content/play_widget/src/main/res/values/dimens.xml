@@ -28,6 +28,8 @@
 
     <dimen name="play_widget_card_large_height">284dp</dimen>
 
+    <dimen name="play_widget_card_jumbo_height">410dp</dimen>
+
     <!--Play Widget Placeholder-->
     <dimen name="play_widget_placeholder_title_width">188dp</dimen>
     <dimen name="play_widget_placeholder_action_width">62dp</dimen>

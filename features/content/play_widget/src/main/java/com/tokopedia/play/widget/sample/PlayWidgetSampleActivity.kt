@@ -47,7 +47,8 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
                 PlayWidgetUiModel.Placeholder,
                 PlayWidgetUiMock.getPlayWidgetSmall(),
                 PlayWidgetUiMock.getPlayWidgetMedium(),
-                PlayWidgetUiMock.getPlayWidgetLarge()
+                PlayWidgetUiMock.getPlayWidgetLarge(),
+                PlayWidgetUiMock.getPlayWidgetJumbo()
         )
     }
 }
