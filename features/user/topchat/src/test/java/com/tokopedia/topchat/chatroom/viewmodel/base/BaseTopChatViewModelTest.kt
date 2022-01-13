@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -13,6 +14,10 @@ import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.network.TopchatCacheManager
+import com.tokopedia.topchat.common.websocket.TopchatWebSocket
+import com.tokopedia.topchat.common.websocket.WebSocketParser
+import com.tokopedia.topchat.common.websocket.WebSocketStateHandler
+import com.tokopedia.topchat.common.websocket.WebsocketPayloadGenerator
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
@@ -103,6 +108,27 @@ abstract class BaseTopChatViewModelTest {
     @RelaxedMockK
     lateinit var existingChatMapper: TopChatRoomGetExistingChatMapper
 
+    @RelaxedMockK
+    lateinit var chatWebSocket: TopchatWebSocket
+
+    @RelaxedMockK
+    lateinit var webSocketStateHandler: WebSocketStateHandler
+
+    @RelaxedMockK
+    lateinit var webSocketParser: WebSocketParser
+
+    @RelaxedMockK
+    lateinit var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper
+
+    @RelaxedMockK
+    lateinit var payloadGenerator: WebsocketPayloadGenerator
+
+    @RelaxedMockK
+    lateinit var uploadImageUseCase: TopchatUploadImageUseCase
+
+    @RelaxedMockK
+    lateinit var compressImageUseCase: CompressImageUseCase
+
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
     protected lateinit var viewModel: TopChatViewModel
@@ -141,7 +167,14 @@ abstract class BaseTopChatViewModelTest {
             dispatchers,
             remoteConfig,
             chatAttachmentMapper,
-            existingChatMapper
+            existingChatMapper,
+            chatWebSocket,
+            webSocketStateHandler,
+            webSocketParser,
+            topChatRoomWebSocketMessageMapper,
+            payloadGenerator,
+            uploadImageUseCase,
+            compressImageUseCase
         )
     }
 }

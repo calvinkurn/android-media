@@ -206,17 +206,17 @@ abstract class BaseTopChatRoomPresenterTest {
         mockSingletonObject()
         presenter = spyk(
             TopChatRoomPresenter(
-                tkpdAuthInterceptor,
-                fingerprintInterceptor,
+//                tkpdAuthInterceptor,
+//                fingerprintInterceptor,
                 userSession,
-                webSocketUtil,
+//                webSocketUtil,
                 topChatRoomWebSocketMessageMapper,
                 getTemplateChatRoomUseCase,
                 replyChatUseCase,
-                compressImageUseCase,
-                uploadImageUseCase,
+//                compressImageUseCase,
+//                uploadImageUseCase,
                 dispatchers,
-                remoteConfig
+//                remoteConfig
             )
         )
         presenter.attachView(view)
