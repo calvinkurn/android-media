@@ -29,7 +29,6 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
@@ -694,8 +693,7 @@ public class MainParentActivity extends BaseActivity implements
         }
         isUserFirstTimeLogin = !userSession.get().isLoggedIn();
 
-        WeaveInterface mainDaggerWeave = this::addShortcuts;
-        Weaver.Companion.executeWeaveCoRoutineNow(mainDaggerWeave);
+        addShortcutsAsync();
 
         if (currentFragment != null) {
             configureStatusBarBasedOnFragment(currentFragment);
@@ -1096,7 +1094,15 @@ public class MainParentActivity extends BaseActivity implements
         this.presenter = (Lazy<MainParentPresenter>) presenter;
     }
 
-    private boolean addShortcuts() {
+    private void addShortcutsAsync() {
+        WeaveInterface mainDaggerWeave = () -> {
+            addShortcuts();
+            return true;
+        };
+        Weaver.Companion.executeWeaveCoRoutineNow(mainDaggerWeave);
+    }
+
+    private void addShortcuts() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             try {
                 ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
@@ -1183,7 +1189,6 @@ public class MainParentActivity extends BaseActivity implements
                 e.printStackTrace();
             }
         }
-        return true;
     }
 
     @Override
