@@ -56,7 +56,7 @@ class TwoFactorViewModelTest {
         val showInterruptData = ShowInterruptData(interval = interval, popupType = 1)
         val result = ShowInterruptResponse(showInterruptData)
 
-        coEvery { useCase.invoke(Unit) } returns result
+        coEvery { useCase.invoke(any()) } returns result
         every { userSession.isLoggedIn } returns true
         every { pref.isNeedCheck() } returns true
 
@@ -78,7 +78,7 @@ class TwoFactorViewModelTest {
         val showInterruptData = ShowInterruptData(interval = interval, popupType = 0, accountLinkReminderData = accountLinkReminderData)
         val result = ShowInterruptResponse(showInterruptData)
 
-        coEvery { useCase.invoke(Unit) } returns result
+        coEvery { useCase.invoke(any()) } returns result
         every { userSession.isLoggedIn } returns true
         every { pref.isNeedCheck() } returns true
 
@@ -93,7 +93,7 @@ class TwoFactorViewModelTest {
     @Test
     fun `Execute Check Fail`() {
         /* When */
-        coEvery { useCase.invoke(Unit) } throws mockThrowable
+        coEvery { useCase.invoke(any()) } throws mockThrowable
         every { userSession.isLoggedIn } returns true
         every { pref.isNeedCheck() } returns true
 

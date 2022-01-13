@@ -16,11 +16,16 @@ import javax.inject.Inject
 class ShowInterruptUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatcher
-): CoroutineUseCase<Map<String, Any>, ShowInterruptResponse>(dispatcher) {
+): CoroutineUseCase<String, ShowInterruptResponse>(dispatcher) {
 
-    override suspend fun execute(params: Map<String, Any>): ShowInterruptResponse {
-        return repository.request(graphqlQuery(), params)
+    override suspend fun execute(params: String): ShowInterruptResponse {
+        val mappedParam = createParam(params)
+        return repository.request(graphqlQuery(), mappedParam)
     }
+
+    private fun createParam(module: String) = mapOf(
+        PARAM_MODULE to module
+    )
 
     override fun graphqlQuery(): String = """
         query showInterrupt(${'$'}module: String!){
