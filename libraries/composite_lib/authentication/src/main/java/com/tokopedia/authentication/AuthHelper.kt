@@ -46,7 +46,7 @@ class AuthHelper {
             val date = generateDate(dateFormat)
             val contentMD5 = getMD5Hash(strParam)
             val authString = "${method}\n${contentMD5}\n${contentType}\n${date}\n${path}"
-            val signature = ""
+            val signature = calculateRFC2104HMAC(authString, authKey)
 
             val headerMap = ArrayMap<String, String>()
             headerMap[HEADER_CONTENT_TYPE] = contentType
