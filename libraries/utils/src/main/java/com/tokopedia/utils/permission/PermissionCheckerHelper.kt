@@ -339,7 +339,7 @@ class PermissionCheckerHelper {
     fun onRequestPermissionsResult(context: Context?, requestCode: Int,
                                    permissions: Array<String>,
                                    grantResults: IntArray) {
-        if (context == null) {
+        if (context == null || !this::listener.isInitialized) {
             return
         }
         var permissionsDenied: Array<String> = arrayOf()
