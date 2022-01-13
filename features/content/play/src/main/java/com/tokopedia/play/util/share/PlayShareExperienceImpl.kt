@@ -51,7 +51,7 @@ class PlayShareExperienceImpl @Inject constructor(
             textContent = data.textDescription
             imgUri = data.coverUrl
             deepLink = generateDeepLinkPath()
-            ogUrl = data.redirectUrl
+//            ogUrl = data.redirectUrl
             type = LinkerData.PLAY_VIEWER
             uri = data.redirectUrl
 
