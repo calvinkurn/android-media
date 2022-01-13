@@ -30,6 +30,7 @@ class PartialBottomArView private constructor(val view: View, val listener: Prod
     private val lblDiscounted = view.findViewById<Label>(R.id.lbl_discounted_ar)
     private val rvVariant = view.findViewById<RecyclerView>(R.id.rv_ar)
     private val buttonContainer = view.findViewById<ConstraintLayout>(R.id.container_button_ar)
+    private val txtUnavailableProduct = view.findViewById<Typography>(R.id.txt_unavailable_product)
 
     val adapter = VariantArAdapter(listener)
 
@@ -47,14 +48,32 @@ class PartialBottomArView private constructor(val view: View, val listener: Prod
     }
 
     fun renderBottomInfoText(data: ProductAr) {
-        atcButton.text = data.button.text
-        atcButton?.run {
-            text = data.button.text
-            generateTheme(data.button.color)
-        }
+        if (data.unavailableCopy.isNotEmpty()) {
+            hideNormalFlow()
+            txtUnavailableProduct.show()
+            txtUnavailableProduct.text = data.unavailableCopy
+        } else {
+            txtUnavailableProduct.hide()
+            atcButton.text = data.button.text
+            atcButton?.run {
+                text = data.button.text
+                generateTheme(data.button.color)
+            }
 
-        txtStock.text = data.stockCopy
-        renderCampaign(data)
+            txtStock.run {
+                text = data.stockCopy
+                show()
+            }
+            renderCampaign(data)
+        }
+    }
+
+    private fun hideNormalFlow() {
+        txtStock.hide()
+        txtMainPrice.hide()
+        txtSlashPrice.hide()
+        lblDiscounted.hide()
+        txtSlashPrice.hide()
     }
 
     private fun renderCampaign(data: ProductAr) = with(view) {
@@ -66,10 +85,12 @@ class PartialBottomArView private constructor(val view: View, val listener: Prod
                     data.campaignInfo.percentageAmount.toString())
 
             txtSlashPrice.paintFlags = txtSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            txtMainPrice.show()
             txtSlashPrice.show()
             lblDiscounted.show()
         } else {
             txtMainPrice.text = data.price.getCurrencyFormatted()
+            txtMainPrice.show()
             txtSlashPrice.hide()
             lblDiscounted.hide()
         }

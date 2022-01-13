@@ -75,6 +75,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
 
     private var binding by autoClearedNullable<FragmentProductArBinding>()
     private var partialBottomArView: PartialBottomArView? = null
+    private var shouldPause: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -103,12 +104,6 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-
-        binding?.mainImg?.let {
-            getMakeUpEngine()?.setDetectionCallbackForCameraFeed(this)
-            getMakeUpEngine()?.attachMakeupView(it)
-            setupLiveCamera()
-        }
 
         binding?.icCompareAr?.setOnClickListener {
             binding?.arLoader?.show()
@@ -282,11 +277,18 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         viewModel?.productArList?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    shouldPause = true
+                    binding?.mainImg?.let {
+                        getMakeUpEngine()?.setDetectionCallbackForCameraFeed(this)
+                        getMakeUpEngine()?.attachMakeupView(it)
+                    }
+
                     binding?.globalErrorProductAr?.hide()
                     setupNavBarIconPage()
                     partialBottomArView?.renderRecyclerView(it.data)
                 }
                 is Fail -> {
+                    shouldPause = false
                     showGlobalError(it.throwable)
                 }
             }
@@ -370,8 +372,11 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     }
 
     override fun onPause() {
-        getMakeUpEngine()?.setDetectionCallbackForCameraFeed(null)
-        getMakeUpEngine()?.onPause()
+        if (shouldPause) {
+            //if we pause this and then do background call, it will block the UI
+            getMakeUpEngine()?.setDetectionCallbackForCameraFeed(null)
+            getMakeUpEngine()?.onPause()
+        }
         super.onPause()
     }
 

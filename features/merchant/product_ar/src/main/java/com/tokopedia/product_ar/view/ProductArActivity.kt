@@ -3,7 +3,6 @@ package com.tokopedia.product_ar.view
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -20,9 +19,8 @@ import com.tokopedia.product_ar.util.ProductArConstant
 import com.tokopedia.product_ar.view.fragment.ProductArComparisonFragment
 import com.tokopedia.product_ar.view.fragment.ProductArComparisonFragment.Companion.PRODUCT_AR_COMPARISON_FRAGMENT
 import com.tokopedia.product_ar.view.fragment.ProductArFragment
-import java.util.ArrayList
 
-class ProductArActivity : BaseSimpleActivity(), HasComponent<ProductArComponent>, MFEMakeupEngine.MFEMakeupEngineErrorCallback {
+class ProductArActivity : BaseSimpleActivity(), HasComponent<ProductArComponent> {
 
     companion object {
         const val SHOP_ID_EXTRA = "shopId"
@@ -87,7 +85,7 @@ class ProductArActivity : BaseSimpleActivity(), HasComponent<ProductArComponent>
             shopId = intent.getStringExtra(SHOP_ID_EXTRA) ?: ""
         }
 
-        mMakeupEngine = MFEMakeupEngine(this, MFEMakeupEngine.Region.US, this)
+        mMakeupEngine = MFEMakeupEngine(this, MFEMakeupEngine.Region.US)
         mMakeupEngine?.setMakeupRenderingParameters(MFEMakeupRenderingParameters(false));
         mMakeupEngine?.loadResources(this, null)
     }
@@ -101,11 +99,8 @@ class ProductArActivity : BaseSimpleActivity(), HasComponent<ProductArComponent>
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         mMakeupEngine?.close()
-    }
-
-    override fun onMakeupEngineError(p0: MFEMakeupEngine.ErrorSeverity, p1: MFEMakeupEngine.ErrorType, p2: ArrayList<Throwable>) {
-        Log.e("errornya", "ini ${p1.name}")
+        mMakeupEngine = null
+        super.onDestroy()
     }
 }

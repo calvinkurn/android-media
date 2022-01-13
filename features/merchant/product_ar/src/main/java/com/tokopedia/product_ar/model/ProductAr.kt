@@ -38,6 +38,9 @@ data class ProductAr(
         @SerializedName("type")
         @Expose
         val type: String = "",
+        @SerializedName("unavailableCopy")
+        @Expose
+        val unavailableCopy: String = "",
         @Transient
         val providerDataCompiled: ModifaceProvider? = null
 )
