@@ -6,7 +6,7 @@
     <dimen name="widget_recommendation_small_card_height">60dp</dimen>
     <dimen name="widget_recommendation_single_card_height">80dp</dimen>
     <dimen name="widget_recommendation_big_card_height">96dp</dimen>
-    <dimen name="widget_recommendation_card_width">240dp</dimen>
+    <dimen name="widget_recommendation_card_width">280dp</dimen>
     <dimen name="widget_denom_flash_sale_image_width">10dp</dimen>
     <dimen name="widget_denom_label_percentage_margin">10dp</dimen>
     <dimen name="widget_denom_flash_sale_image_height">14dp</dimen>
