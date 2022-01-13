@@ -1,9 +1,9 @@
 package com.tokopedia.product_ar.view.adapter
 
-import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.product_ar.model.ComparissonImageUiModel
 import com.tokopedia.product_ar.view.fragment.ComparissonHelperListener
 import com.tokopedia.product_ar.view.viewholder.FullImageViewHolder
 import com.tokopedia.product_ar.view.viewholder.GridImageViewHolder
@@ -15,9 +15,9 @@ class PhotoComparisonAdapter(val listener: ComparissonHelperListener) : Recycler
         const val MULTIPLE_PHOTO_TYPE = 2
     }
 
-    var listBitmap: MutableList<Bitmap> = mutableListOf()
+    var listBitmap: MutableList<ComparissonImageUiModel> = mutableListOf()
 
-    fun setData(data: List<Bitmap>) {
+    fun setData(data: List<ComparissonImageUiModel>) {
         listBitmap = data.toMutableList()
         notifyDataSetChanged()
     }

@@ -23,6 +23,7 @@ import com.tokopedia.product.detail.common.SingleClick
 import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.di.ProductArComponent
+import com.tokopedia.product_ar.model.ComparissonImageUiModel
 import com.tokopedia.product_ar.model.state.ImageMapMode
 import com.tokopedia.product_ar.util.ArGridImageDownloader
 import com.tokopedia.product_ar.util.ItemDividerGrid
@@ -158,9 +159,14 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
     private fun observeInitialData() {
         sharedViewModel?.arListData?.observeOnce(viewLifecycleOwner) {
             getMakeUpEngine()?.startRunningWithPhoto(it.originalPhoto, true)
+            val getSelectedProductName = it.modifaceUiModel
+                    .firstOrNull { it.isSelected }?.productName ?: ""
 
             it.processedPhoto?.let { processedPhoto ->
-                comparisonAdapter.setData(listOf(processedPhoto))
+                comparisonAdapter.setData(listOf(ComparissonImageUiModel(
+                        processedPhoto,
+                        getSelectedProductName))
+                )
                 loader?.hide()
             }
 

@@ -1,6 +1,5 @@
 package com.tokopedia.product_ar.util
 
-import android.graphics.Bitmap
 import android.graphics.Color
 import com.modiface.mfemakeupkit.effects.MFEMakeupLipLayer
 import com.modiface.mfemakeupkit.effects.MFEMakeupLook
@@ -10,6 +9,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.product_ar.model.ComparissonImageUiModel
 import com.tokopedia.product_ar.model.ModifaceProvider
 import com.tokopedia.product_ar.model.ModifaceUiModel
 import com.tokopedia.product_ar.model.ProductAr
@@ -64,9 +64,8 @@ object ProductArMapper {
         }
     }
 
-    fun getInitialMfMakeUpLook(data: List<ModifaceUiModel>): MFEMakeupLook {
-        val selectedData = data.firstOrNull { it.isSelected }
-        return selectedData?.modifaceProductData ?: MFEMakeupLook()
+    fun getSelectedProductName(data: List<ModifaceUiModel>, selectedProductId: String): String {
+        return data.firstOrNull { it.productId == selectedProductId }?.productName ?: ""
     }
 
     fun getMfMakeUpLookByProductId(data: List<ModifaceUiModel>,
@@ -103,7 +102,7 @@ object ProductArMapper {
         }
     }
 
-    fun decideSpanSize(listImages: List<Bitmap>,
+    fun decideSpanSize(listImages: List<ComparissonImageUiModel>,
                        mode: ImageMapMode): Int {
         return if (mode == ImageMapMode.APPEND) {
             return if (listImages.size > 1) {

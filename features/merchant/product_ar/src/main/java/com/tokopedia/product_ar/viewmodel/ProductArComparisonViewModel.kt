@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.modiface.mfemakeupkit.effects.MFEMakeupLook
+import com.tokopedia.product_ar.model.ComparissonImageUiModel
 import com.tokopedia.product_ar.model.ModifaceUiModel
 import com.tokopedia.product_ar.model.state.ImageMapMode
 import com.tokopedia.product_ar.model.state.ModifaceImageGridState
@@ -29,11 +30,13 @@ class ProductArComparisonViewModel @Inject constructor() : ViewModel() {
     val generateMakeUpBackground: LiveData<MFEMakeupLook>
         get() = _generateMakeUpBackground
 
+    private var latestSelectedProductName = ""
+
     fun addGridImages(processedImage: Bitmap,
-                      currentList: List<Bitmap>) {
+                      currentList: List<ComparissonImageUiModel>) {
         val updatedData = currentList.toMutableList()
         if (updatedData.size < 4) {
-            updatedData.add(processedImage)
+            updatedData.add(ComparissonImageUiModel(processedImage, latestSelectedProductName))
 
             _addRemoveImageGrid.value = _addRemoveImageGrid.value.copy(
                     mode = ImageMapMode.APPEND,
@@ -94,6 +97,12 @@ class ProductArComparisonViewModel @Inject constructor() : ViewModel() {
                 updatedVariants,
                 selectedProductId
         )
+        val selectedProductName = ProductArMapper.getSelectedProductName(
+                updatedVariants,
+                selectedProductId
+        )
+
+        latestSelectedProductName = selectedProductName
         _generateMakeUpBackground.value = selectedMfLookData
     }
 
