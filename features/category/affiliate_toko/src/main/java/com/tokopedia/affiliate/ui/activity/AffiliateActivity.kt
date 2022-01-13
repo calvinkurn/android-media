@@ -42,6 +42,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSessionWebViewFragment
 import java.net.SocketTimeoutException
@@ -228,11 +229,16 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun showFraudTicker() {
-        val currentFragment =
+        var currentFragment =
             supportFragmentManager.findFragmentByTag(AffiliateLoginFragment::class.java.simpleName)
-        if (currentFragment != null) {
-            (currentFragment as? AffiliateLoginFragment)?.showFraudTicker()
+        if (currentFragment == null) {
+            showLoginPortal()
+            currentFragment = supportFragmentManager.findFragmentByTag(AffiliateLoginFragment::class.java.simpleName)
         }
+        currentFragment?.let { fragment ->
+            (fragment as? AffiliateLoginFragment)?.showFraudTicker()
+        }
+
     }
 
     override fun onRegistrationSuccessful() {
@@ -240,6 +246,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun showSplashScreen() {
+        findViewById<Typography>(R.id.splash_title).text = getString(R.string.affiliate_hai_ana_selamat_bergabung_di_tokopedia_affiliate).replace("{name}",userSessionInterface.name)
         findViewById<Group>(R.id.splash_group)?.show()
         Handler().postDelayed({
             findViewById<Group>(R.id.splash_group)?.hide()

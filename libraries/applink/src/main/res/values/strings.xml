@@ -147,4 +147,8 @@
     <string name="title_revamped_buyer_order_detail">Detail Pesanan</string>
 
     <string name="title_feed_create_post">Create Post</string>
+
+    <!-- Buyer Order Request Cancel -->
+    <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
+
 </resources>

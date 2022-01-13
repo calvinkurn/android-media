@@ -5,10 +5,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.carouselproductcard.typeFactory.CarouselProductCardGridTypeFactoryImpl
 
-internal class CarouselProductCardGridAdapter :
-        ListAdapter<BaseCarouselCardModel, BaseProductCardViewHolder<BaseCarouselCardModel>>(ProductCardModelDiffUtil()),
-        CarouselProductCardAdapter {
-    private val adapterTypeFactory = CarouselProductCardGridTypeFactoryImpl()
+internal class CarouselProductCardGridAdapter(
+    internalListener: CarouselProductCardInternalListener
+): ListAdapter<BaseCarouselCardModel,
+    BaseProductCardViewHolder<BaseCarouselCardModel>>(ProductCardModelDiffUtil()),
+    CarouselProductCardAdapter {
+
+    private val adapterTypeFactory = CarouselProductCardGridTypeFactoryImpl(internalListener)
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): BaseProductCardViewHolder<BaseCarouselCardModel> {
         return adapterTypeFactory.onCreateViewHolder(viewGroup, viewType)

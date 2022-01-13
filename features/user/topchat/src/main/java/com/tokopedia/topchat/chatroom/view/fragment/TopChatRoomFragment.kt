@@ -147,7 +147,9 @@ import kotlin.math.abs
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel.Companion.SHOP_TYPE_TOKONOW
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 
 
@@ -953,7 +955,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 shopId = shopId.toString(),
                 shopName = "",
                 isSeller = isSeller(),
-                warehouseId = presenter.attachProductWarehouseId
+                warehouseId = viewModel.attachProductWarehouseId
             )
             startActivityForResult(intent, TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE)
         }
@@ -2070,9 +2072,29 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         showToasterError(errorMessage)
     }
 
+    private fun showToasterMsg(@StringRes messageRes: Int) {
+        view?.let {
+            val msg = it.context.getString(messageRes)
+            showToasterMsg(msg)
+        }
+    }
+
     private fun showToasterMsg(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+        }
+    }
+
+    private fun showToasterError(@StringRes messageRes: Int) {
+        view?.let {
+            val msg = it.context.getString(messageRes)
+            showToasterError(msg)
+        }
+    }
+
+    private fun showToasterError(message: String) {
+        view?.let {
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }
     }
 
@@ -2080,12 +2102,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "Oke")
                 .show()
-        }
-    }
-
-    private fun showToasterError(message: String) {
-        view?.let {
-            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }
     }
 
@@ -2455,17 +2471,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         })
 
         viewModel.srwTickerReminder.observe(viewLifecycleOwner, {
-            when(it) {
+            when (it) {
                 is Success -> onSuccessGetTickerReminder(it.data)
             }
         })
 
         viewModel.occProduct.observe(viewLifecycleOwner, {
-            when(it) {
+            when (it) {
                 is Success -> {
                     topchatViewState?.chatRoomViewModel?.let { chatData ->
                         TopChatAnalyticsKt.eventClickOCCButton(
-                            it.data, chatData, getUserSession().userId)
+                            it.data, chatData, getUserSession().userId
+                        )
                     }
                     goToOCC()
                 }
@@ -2552,6 +2569,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             when(it) {
                 is Success -> onSuccessGetBottomChat(it.data.chatroomViewModel, it.data.chatReplies)
                 is Fail -> onErrorGetBottomChat(it.throwable)
+            }
+        })
+
+        viewModel.deleteBubble.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    adapter.deleteMsg(it.data)
+                    showToasterMsg(R.string.topchat_success_delete_msg_bubble)
+                }
+                is Fail -> showToasterError(R.string.topchat_error_delete_msg_bubble)
             }
         })
     }
@@ -2641,17 +2668,49 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun showMsgMenu(msg: BaseChatUiModel, text: CharSequence) {
+    override fun showMsgMenu(
+        msg: BaseChatUiModel, text: CharSequence, menus: List<Int>
+    ) {
         replyBubbleOnBoarding.dismiss()
         val bs = TopchatBottomSheetBuilder.getLongClickBubbleMenuBs(
-            context, msg
-        ) { id, msg ->
-            when (id) {
+            context, msg, menus
+        ) { itemMenu, msg ->
+            TopChatAnalyticsKt.eventClickMsgMenu(itemMenu.title)
+            when (itemMenu.id) {
                 MENU_ID_REPLY -> replyCompose?.composeReplyData(msg, text, true)
                 MENU_ID_COPY_TO_CLIPBOARD -> copyToClipboard(text)
+                MENU_ID_DELETE_BUBBLE -> confirmDeleteBubble(msg)
             }
         }
         bs.show(childFragmentManager, BS_CHAT_BUBBLE_MENU)
+    }
+
+    private fun confirmDeleteBubble(msg: BaseChatUiModel) {
+        context?.let {
+            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(it.getString(R.string.topchat_title_delete_msg_bubble_confirmation))
+                setDescription(it.getString(R.string.topchat_desc_delete_msg_bubble_confirmation))
+                setPrimaryCTAText(it.getString(R.string.topchat_action_delete_msg_bubble_confirmation))
+                setSecondaryCTAText(it.getString(R.string.cancel_bottom_sheet))
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+                setPrimaryCTAClickListener {
+                    TopChatAnalyticsKt.eventConfirmDeleteMsg(msg.replyId)
+                    deleteBubble(msg)
+                    dismiss()
+                }
+            }.show()
+        }
+    }
+
+    private fun deleteBubble(msg: BaseChatUiModel) {
+        val replyTimeNano = msg.replyTime ?: return
+        viewModel.deleteMsg(presenter.roomMetaData.msgId, replyTimeNano)
+    }
+
+    override fun onReceiveWsEventDeleteMsg(replyTimeNano: String) {
+        adapter.deleteMsg(replyTimeNano)
     }
 
     override fun getCommonShopId(): Long {
