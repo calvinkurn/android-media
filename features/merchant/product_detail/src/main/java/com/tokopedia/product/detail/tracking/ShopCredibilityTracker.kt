@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.tracking
 
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.data.util.TrackingUtil
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 
 sealed class ShopCredibilityTracker {
@@ -26,7 +27,7 @@ sealed class ShopCredibilityTracker {
         val shopType = productInfo.shopTypeString
         val title = tickerDataResponse.title
         val message = tickerDataResponse.message
-        val tickerType = tickerDataResponse.tickerType
+        val tickerType = TrackingUtil.getTickerTypeInfoString(tickerDataResponse.tickerType)
     }
 
     data class ClickShopTicker(
@@ -49,7 +50,7 @@ sealed class ShopCredibilityTracker {
         val shopType = productInfo.shopTypeString
         val title = tickerDataResponse.title
         val message = tickerDataResponse.message
-        val tickerType = tickerDataResponse.tickerType
+        val tickerType = TrackingUtil.getTickerTypeInfoString(tickerDataResponse.tickerType)
         val buttonText = tickerDataResponse.link
     }
 }
