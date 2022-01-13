@@ -19,19 +19,47 @@ public class RechargeCCUtil {
         return isCorrect;
     }
 
-    //this method used to separate cc per 4digits
-    public static String concatString(char[] digits, int dividerPosition, char divider) {
-        final StringBuilder formatted = new StringBuilder();
-
-        for (int i = 0; i < digits.length; i++) {
-            if (digits[i] != 0) {
-                formatted.append(digits[i]);
-                if ((i > 0) && (i < (digits.length - 1)) && (((i + 1) % dividerPosition) == 0)) {
-                    formatted.append(divider);
-                }
+    public static boolean isInputCorrectAmex(Editable s, int totalSymbols, char divider) {
+        boolean isCorrect = s.length() <= totalSymbols; // check size of entered string
+        for (int i = 0; i < s.length(); i++) { // check that every element is right
+            if ((i + 1) == 5 || (i + 1) == 12 || (i + 1) == 17) {
+                isCorrect &= divider == s.charAt(i);
+            } else {
+                isCorrect &= Character.isDigit(s.charAt(i));
             }
         }
+        return isCorrect;
+    }
 
+    //this method used for separate cc with following patterns xxxx-xxxxxx-xxxxx
+    public static String concatStringWith15D(char[] text, char divider) {
+        StringBuilder formatted = new StringBuilder();
+        int count = 0;
+        for (char c : text) {
+            if (Character.isDigit(c)) {
+                if (count > 0 && ((count == 4) || (count == 10))) {
+                    formatted.append(divider);
+                }
+                formatted.append(c);
+                ++count;
+            }
+        }
+        return formatted.toString();
+    }
+
+    //this method used for separate cc with following patterns xxxx-xxxx-xxxx-xxxx
+    public static String concatStringWith16D(char[] text, char divider){
+        StringBuilder formatted = new StringBuilder();
+        int count = 0;
+        for (char c : text) {
+            if (Character.isDigit(c)) {
+                if (count % 4 == 0 && count > 0) {
+                    formatted.append(divider);
+                }
+                formatted.append(c);
+                ++count;
+            }
+        }
         return formatted.toString();
     }
 
