@@ -77,6 +77,7 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
+import com.tokopedia.logisticCommon.data.entity.address.UserAddressTokoNow;
 import com.tokopedia.logisticCommon.data.entity.address.WarehouseDataModel;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
@@ -3229,6 +3230,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         Activity activity = getActivity();
         if (activity != null) {
             LocalCacheModel localCache = ChooseAddressUtils.INSTANCE.getLocalizingAddressData(activity);
+            UserAddressTokoNow newTokoNowData = userAddress.getTokoNow();
             if (userAddress.getState() == UserAddress.STATE_ADDRESS_ID_NOT_MATCH || localCache.getAddress_id().isEmpty() || localCache.getAddress_id().equals("0")) {
                 ChooseAddressUtils.INSTANCE.updateLocalizingAddressDataFromOther(
                         activity,
@@ -3239,11 +3241,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         userAddress.getLongitude(),
                         String.format("%s %s", userAddress.getAddressName(), userAddress.getReceiverName()),
                         userAddress.getPostalCode(),
-                        userAddress.getShopId(),
-                        userAddress.getWarehouseId(),
-                        // TODO: 21/12/21 UPDATE AFTER BE ADJUSTMENT
-                        new ArrayList<LocalWarehouseModel>(),
-                        ""
+                        newTokoNowData.isModified() ? newTokoNowData.getShopId() : localCache.getShop_id(),
+                        newTokoNowData.isModified() ? newTokoNowData.getWarehouseId() : localCache.getWarehouse_id(),
+                        newTokoNowData.isModified() ? TokonowWarehouseMapper.INSTANCE.mapWarehousesAddAddressModelToLocal(newTokoNowData.getWarehouses()) : localCache.getWarehouses(),
+                        newTokoNowData.isModified() ? newTokoNowData.getServiceType() : localCache.getService_type()
+                );
+            } else if (newTokoNowData.isModified()) {
+                ChooseAddressUtils.INSTANCE.updateTokoNowData(
+                        activity,
+                        newTokoNowData.getShopId(),
+                        newTokoNowData.getWarehouseId(),
+                        TokonowWarehouseMapper.INSTANCE.mapWarehousesAddAddressModelToLocal(newTokoNowData.getWarehouses()),
+                        newTokoNowData.getServiceType()
                 );
             }
         }

@@ -9,6 +9,7 @@ import com.tokopedia.checkout.old.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.old.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.old.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.old.view.uimodel.EgoldTieringModel
+import com.tokopedia.logisticCommon.data.entity.address.UserAddressTokoNow
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.model.ShipProd
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
@@ -396,8 +397,10 @@ class ShipmentMapper @Inject constructor() {
             isCorner = groupAddress.userAddress.isCorner
             state = groupAddress.userAddress.state
             stateDetail = groupAddress.userAddress.stateDetail
-            shopId = groupAddress.userAddress.tokoNow.shopId
-            warehouseId = groupAddress.userAddress.tokoNow.warehouseId
+            tokoNow = UserAddressTokoNow(
+                shopId = groupAddress.userAddress.tokoNow.shopId,
+                warehouseId = groupAddress.userAddress.tokoNow.warehouseId
+            )
         }
     }
 
@@ -706,8 +709,10 @@ class ShipmentMapper @Inject constructor() {
             provinceName = defaultAddress.provinceName
             receiverName = defaultAddress.receiverName
             status = defaultAddress.status
-            shopId = defaultAddress.tokoNow.shopId
-            warehouseId = defaultAddress.tokoNow.warehouseId
+            tokoNow = UserAddressTokoNow(
+                shopId = defaultAddress.tokoNow.shopId,
+                warehouseId = defaultAddress.tokoNow.warehouseId,
+            )
         }
     }
 
