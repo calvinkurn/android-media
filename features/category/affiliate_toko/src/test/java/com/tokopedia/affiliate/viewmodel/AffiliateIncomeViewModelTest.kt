@@ -1,16 +1,21 @@
 package com.tokopedia.affiliate.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.affiliate.PAGE_ZERO
+import com.tokopedia.affiliate.PROJECT_ID
+import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.model.response.AffiliateBalance
+import com.tokopedia.affiliate.model.response.AffiliateKycDetailsData
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
+import com.tokopedia.affiliate.model.response.AffiliateTransactionHistoryData
 import com.tokopedia.affiliate.repository.AffiliateRepository
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.usecase.AffiliateBalanceDataUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSearchUseCase
+import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.mockk
-import io.mockk.spyk
+import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -25,15 +30,13 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 class AffiliateIncomeViewModelTest{
     var affiliateIncomeViewModel = spyk(AffiliateIncomeViewModel())
-    private val repository = spyk(AffiliateRepository())
-    private val affiliateBalanceDataUseCase = spyk(AffiliateBalanceDataUseCase (repository))
+
     @get:Rule
     var rule = InstantTaskExecutorRule()
 
     @Before
     @Throws(Exception::class)
     fun setUp() {
-
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
     }
@@ -48,16 +51,74 @@ class AffiliateIncomeViewModelTest{
     @Test
     fun `Get Affiliate Balance`() {
         val affiliateBalance : AffiliateBalance = mockk(relaxed = true)
-        coEvery { affiliateBalanceDataUseCase.getAffiliateBalance() } returns affiliateBalance
 
+        coEvery { affiliateIncomeViewModel.affiliateBalanceDataUseCase.getAffiliateBalance() } returns affiliateBalance
         affiliateIncomeViewModel.getAffiliateBalance()
 
-//        assertEquals(affiliateIncomeViewModel.getAffiliateBalanceData().value , affiliateBalance)
+        assertEquals(affiliateIncomeViewModel.getAffiliateBalanceData().value , affiliateBalance.affiliateBalance?.data)
 
     }
 
+    /**************************** getKycDetails() *******************************************/
     @Test
-    fun `Get Affiliate Balance Exception`() {
+    fun `Get Kyc Details`() {
+        val kycDetails : AffiliateKycDetailsData = mockk(relaxed = true)
 
+        coEvery { affiliateIncomeViewModel.affiliatKycHistoryUseCase.getKycInformation(PROJECT_ID) } returns kycDetails
+        affiliateIncomeViewModel.getKycDetails()
+
+        assertEquals(affiliateIncomeViewModel.getAffiliateKycData().value , kycDetails.kycProjectInfo)
+        assertEquals(affiliateIncomeViewModel.getAffiliateKycLoader().value , false)
+
+    }
+    @Test
+    fun getKycDetailsException(){
+        val exception = Throwable("Exception")
+        coEvery { affiliateIncomeViewModel.affiliatKycHistoryUseCase.getKycInformation(PROJECT_ID) } throws exception
+
+        affiliateIncomeViewModel.getKycDetails()
+
+        assertEquals(affiliateIncomeViewModel.getKycErrorMessage().value, exception.message)
+        assertEquals(affiliateIncomeViewModel.getAffiliateKycLoader().value , false)
+    }
+
+    /**************************** getSelectedDate() *******************************************/
+    @Test
+    fun getSelectedDataTest(){
+        val selectedDate = AffiliateBottomDatePicker.SEVEN_DAYS
+        assertEquals(affiliateIncomeViewModel.getSelectedDate(),selectedDate)
+    }
+
+    /**************************** onRangeChanged() *******************************************/
+    @Test
+    fun onRangeChangeTest(){
+        val range : AffiliateDatePickerData = mockk(relaxed = true)
+        affiliateIncomeViewModel.onRangeChanged(range)
+
+        assertEquals(affiliateIncomeViewModel.getRangeChange().value,true)
+    }
+
+    /**************************** getTransactionDetails() *******************************************/
+    @Test
+    fun getTransactionDetailsTest(){
+        val transaction : AffiliateTransactionHistoryData = mockk(relaxed = true)
+        coEvery { affiliateIncomeViewModel.affiliateTransactionHistoryUseCase.getAffiliateTransactionHistory(any(),any()) } returns transaction
+        val response = affiliateIncomeViewModel.convertDataToVisitables(transaction.getAffiliateTransactionHistory?.data)
+
+        affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
+
+        assertEquals(affiliateIncomeViewModel.getAffiliateDataItems().value,response)
+        assertEquals(affiliateIncomeViewModel.getShimmerVisibility().value,true)
+        assertEquals(affiliateIncomeViewModel.hasNext,false)
+    }
+    @Test
+    fun getTransactionDetailsTestExaception(){
+        val throwable = Throwable("Validate Data Exception")
+        coEvery { affiliateIncomeViewModel.affiliateTransactionHistoryUseCase.getAffiliateTransactionHistory(any(),any()) } throws throwable
+
+        affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
+
+        assertEquals(affiliateIncomeViewModel.getShimmerVisibility().value, false)
+        assertEquals(affiliateIncomeViewModel.getErrorMessage().value , throwable)
     }
 }

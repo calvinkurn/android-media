@@ -65,6 +65,7 @@ class AffiliateRecommendedProductViewModelTest{
         )
         assertEquals(affiliateRecommendedProductViewModel.getAffiliateDataItems().value,response)
         assertEquals(affiliateRecommendedProductViewModel.getAffiliateItemCount().value,affiliateRecommendedProduct.recommendedAffiliateProduct?.data?.pageInfo)
+        assertEquals(affiliateRecommendedProductViewModel.isUserBlackListed,false)
     }
 
     @Test

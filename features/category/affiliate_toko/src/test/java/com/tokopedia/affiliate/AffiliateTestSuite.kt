@@ -16,7 +16,8 @@ import org.junit.runners.Suite
         AffiliateTransactionDetailViewModelTest::class,
         AffiliateTermsAndConditionViewModelTest::class,
         AffiliateViewModelTest::class,
-        AffiliatePortfolioViewModelTest::class
+        AffiliatePortfolioViewModelTest::class,
+        AffiliateIncomeViewModelTest::class
 
 )
 class AffiliateTestSuite

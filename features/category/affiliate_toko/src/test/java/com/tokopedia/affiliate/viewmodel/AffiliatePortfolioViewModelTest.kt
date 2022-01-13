@@ -60,6 +60,7 @@ class AffiliatePortfolioViewModelTest{
         itemList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData("Selanjutnya", UnifyButton.Type.MAIN,UnifyButton.Variant.FILLED,true)))
 
         aff.createDefaultListForSm()
+        assertEquals(Gson().toJson(aff.affiliatePortfolioData.value),Gson().toJson(itemList))
         assertEquals(Gson().toJson(aff.getPortfolioUrlList().value),Gson().toJson(itemList))
     }
 
