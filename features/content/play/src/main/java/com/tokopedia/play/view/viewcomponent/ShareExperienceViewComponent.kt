@@ -61,11 +61,8 @@ class ShareExperienceViewComponent(
 
     private var screenshotDetector: ScreenshotDetector? = null
 
-    private var startTime: Long = 0L
-
     init {
         ivShareLink.setOnClickListener {
-            startTime = System.currentTimeMillis()
             listener.onShareIconClick(this)
         }
     }
