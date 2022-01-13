@@ -14,7 +14,24 @@
               "id": 856,
               "attributes": {
                 "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/qnb.png",
-                "default_product_id": 2695
+                "default_product_id": 2695,
+                "rule": {
+                  "maximum_length": 16
+                }
+              }
+            }
+          },
+          {
+            "key": "999",
+            "value": "371449",
+            "operator": {
+              "id": 908,
+              "attributes": {
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/qnb.png",
+                "default_product_id": 9090,
+                "rule": {
+                  "maximum_length": 15
+                }
               }
             }
           }
