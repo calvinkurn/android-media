@@ -4,6 +4,7 @@ import com.tokopedia.topchat.chatroom.responses.WebsocketResponses
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -159,5 +160,20 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
 
         // Then
         assertEquals(viewModel.msgRead.value, Unit)
+    }
+
+    @Test
+    fun should_not_update_onread_value_on_receive_read_event_in_the_middle_of_the_page() {
+        // Given
+        every { getChatUseCase.isInTheMiddleOfThePage() } returns true
+        onConnectWebsocket {
+            it.onMessage(websocket, WebsocketResponses.read)
+        }
+
+        // When
+        viewModel.connectWebSocket()
+
+        // Then
+        assertEquals(viewModel.msgRead.value, null)
     }
 }
