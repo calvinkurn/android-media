@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.viewmodel
 
+import com.tokopedia.topchat.chatroom.responses.WebsocketResponses
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket
 import io.mockk.coVerify
@@ -102,5 +103,19 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
             chatWebSocket.close()
             webSocketStateHandler.scheduleForRetry(any())
         }
+    }
+
+    @Test
+    fun should_update_typing_value_on_receive_typing_event() {
+        // Given
+        onConnectWebsocket {
+            it.onMessage(websocket, WebsocketResponses.typing)
+        }
+
+        // When
+        viewModel.connectWebSocket()
+
+        // Then
+        assertEquals(viewModel.isTyping.value, true)
     }
 }

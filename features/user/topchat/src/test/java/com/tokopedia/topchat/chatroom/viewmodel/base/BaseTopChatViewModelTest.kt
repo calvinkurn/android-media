@@ -14,10 +14,7 @@ import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.network.TopchatCacheManager
-import com.tokopedia.topchat.common.websocket.TopchatWebSocket
-import com.tokopedia.topchat.common.websocket.WebSocketParser
-import com.tokopedia.topchat.common.websocket.WebSocketStateHandler
-import com.tokopedia.topchat.common.websocket.WebsocketPayloadGenerator
+import com.tokopedia.topchat.common.websocket.*
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
@@ -120,8 +117,7 @@ abstract class BaseTopChatViewModelTest {
     @RelaxedMockK
     lateinit var webSocketStateHandler: WebSocketStateHandler
 
-    @RelaxedMockK
-    lateinit var webSocketParser: WebSocketParser
+    private val webSocketParser: WebSocketParser = DefaultWebSocketParser()
 
     @RelaxedMockK
     lateinit var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper

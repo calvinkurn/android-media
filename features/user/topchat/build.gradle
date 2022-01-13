@@ -39,6 +39,16 @@ android {
             java.srcDirs += "$projectDir/src/testCommon/java"
         }
     }
+
+
+    testOptions {
+        unitTests.all {
+            jacoco {
+                includeNoLocationClasses = true
+                excludes = ['jdk.internal.*']
+            }
+        }
+    }
 }
 
 dependencies {
