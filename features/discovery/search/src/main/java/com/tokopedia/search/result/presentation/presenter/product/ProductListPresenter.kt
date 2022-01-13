@@ -1207,6 +1207,8 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun processInspirationSizePosition(list: MutableList<Visitable<*>>) {
+        if (inspirationSizeDataView.isEmpty()) return
+
         inspirationSizeDataView.forEach {
             list.add(0, it)
         }

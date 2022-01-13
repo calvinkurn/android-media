@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.mapper
 
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -412,7 +413,7 @@ class ProductViewModelMapper {
     private fun convertToInspirationCardViewModel(
             searchInspirationWidget: SearchInspirationWidget
     ): List<InspirationCardDataView> {
-        return searchInspirationWidget.data.map { data ->
+        return searchInspirationWidget.data.filter { it.type != SearchConstant.InspirationCard.TYPE_SIZE_PERSO }.map { data ->
             InspirationCardDataView(
                     data.title,
                     data.type,
@@ -425,7 +426,7 @@ class ProductViewModelMapper {
     private fun convertToInspirationSizeViewModel(
             searchInspirationWidget: SearchInspirationWidget
     ): List<SizeDataView> {
-        return searchInspirationWidget.data.map { data ->
+        return searchInspirationWidget.data.filter { it.type == SearchConstant.InspirationCard.TYPE_SIZE_PERSO }.map { data ->
             SizeDataView(
                     data.title,
                     data.type,
