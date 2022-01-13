@@ -440,9 +440,10 @@ public class BranchWrapper implements WrapperInterface {
             deeplinkPath = getApplinkPath(LinkerConstants.DISCOVERY_CATALOG, data.getId());
         } else if (LinkerData.PROMO_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.PROMO_DETAIL, data.getId());
-        } else if (LinkerData.PLAY_BROADCASTER.equalsIgnoreCase(data.getType()) ||
-                    LinkerData.PLAY_VIEWER.equalsIgnoreCase(data.getType())) {
+        } else if (LinkerData.PLAY_BROADCASTER.equalsIgnoreCase(data.getType())) {
             deeplinkPath = data.getUri();
+        } else if (LinkerData.PLAY_VIEWER.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(LinkerConstants.PLAY, data.getId());
         } else if (LinkerData.MERCHANT_VOUCHER.equalsIgnoreCase(data.getType())) {
             deeplinkPath = data.getDeepLink();
         } else if (isAppShowReferralButtonActivated(context) && LinkerData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {
