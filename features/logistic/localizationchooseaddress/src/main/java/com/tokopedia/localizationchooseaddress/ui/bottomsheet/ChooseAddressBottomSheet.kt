@@ -407,7 +407,6 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
             buttonAddAddress?.gone()
             buttonLogin?.visible()
             shouldShowGpsPopUp = true
-            Log.i("qwerty", "ChooseAddressBottomSheet: setViewState: not login")
             showGpsPopUp()
         } else {
             if (adapter.containsChosenAddress()) {
@@ -420,7 +419,6 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 buttonAddAddress?.visible()
                 shouldShowGpsPopUp = true
                 showGpsPopUp()
-                Log.i("qwerty", "ChooseAddressBottomSheet: setViewState: login")
             }
         }
         errorLayout?.gone()
@@ -547,7 +545,6 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        Log.i("qwerty", "ChooseAddressBottomSheet: onRequestPermissionResult : ${requestCode}")
         permissionCheckerHelper?.setListener(object : PermissionCheckerHelper.PermissionCheckListener {
             override fun onPermissionDenied(permissionText: String) {
                 ChooseAddressTracking.onClickDontAllowLocation(userSession.userId)
@@ -572,10 +569,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     }
 
     private fun showGpsPopUp() {
-        Log.i("qwerty", "ChooseAddressBottomSheet: showGpsPopUp 559")
         if (shouldShowGpsPopUp && hasBottomSheetShown && !hasAskedPermission) {
             hasAskedPermission = true
-            Log.i("qwerty", "ChooseAddressBottomSheet: showGpsPopUp 562")
             if (permissionCheckerHelper?.hasPermission(requireContext(), getPermissions()) == false) {
                 permissionCheckerHelper?.checkPermissions(this, getPermissions(), object : PermissionCheckerHelper.PermissionCheckListener {
                     override fun onPermissionDenied(permissionText: String) {
@@ -592,7 +587,6 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                     }
                 })
             }
-            Log.i("qwerty", "ChooseAddressBottomSheet: showGpsPopUp done creating listener")
         }
     }
 

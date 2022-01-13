@@ -132,7 +132,6 @@ class PermissionCheckerHelper {
                          @NotNull listener: PermissionCheckListener,
                          @NotNull rationaleText: String = "") {
         this.listener = listener
-
         try {
             if (!hasPermission(fragment.requireContext(), permissions)) {
                 onPermissionNotGranted(fragment, permissions, listener, rationaleText)
@@ -340,9 +339,7 @@ class PermissionCheckerHelper {
     fun onRequestPermissionsResult(context: Context?, requestCode: Int,
                                    permissions: Array<String>,
                                    grantResults: IntArray) {
-        Log.i("qwerty", "PermissionCheckerHelper: onRequestPermissionResult : ${requestCode}")
         if (context == null || !this::listener.isInitialized) {
-            Log.i("qwerty", "PermissionCheckerHelper: onRequestPermissionResult : ${requestCode} listener is not initialized")
             return
         }
         var permissionsDenied: Array<String> = arrayOf()
@@ -378,9 +375,7 @@ class PermissionCheckerHelper {
     }
 
     fun setListener(listener: PermissionCheckListener) {
-        if (!this::listener.isInitialized) {
-            this.listener = listener
-        }
+        this.listener = listener
     }
 
     fun onPermissionDenied(@NonNull context: Context, @NonNull permissionText: String) {
