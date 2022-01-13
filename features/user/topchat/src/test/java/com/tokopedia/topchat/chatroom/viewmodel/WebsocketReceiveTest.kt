@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.viewmodel
 
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
+import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket
 import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -35,5 +36,16 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
             webSocketStateHandler.retrySucceed()
         }
         verifySendMarkAsRead()
+    }
+
+    @Test
+    fun should_do_nothing_on_closing_websocket() {
+        // Given
+        onConnectWebsocket {
+            it.onClosing(websocket, DefaultTopChatWebSocket.CODE_NORMAL_CLOSURE, "")
+        }
+
+        // When
+        viewModel.connectWebSocket()
     }
 }
