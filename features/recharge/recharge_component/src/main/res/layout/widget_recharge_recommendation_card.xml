@@ -13,6 +13,7 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:textColor="@color/Unify_N700_96"
+        android:visibility="gone"
         app:typographyType="heading_4" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -20,9 +21,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
+        android:visibility="gone"
         android:paddingLeft="@dimen/unify_space_12"
         android:layout_marginTop="@dimen/unify_space_12"
         android:layout_marginBottom="@dimen/spacing_lvl4" />
+
+    <include
+        android:id="@+id/shimmering_recommendation"
+        layout="@layout/view_recharge_recommendation_shimmering"
+        />
 
 </LinearLayout>
 

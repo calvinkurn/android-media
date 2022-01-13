@@ -50,7 +50,14 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeData()
+        initalView()
         viewModel.getDelayedResponse()
+    }
+
+    private fun initalView(){
+        binding?.let {
+            it.widgetRecommendationCard.renderShimmering()
+        }
     }
 
     private fun observeData() {

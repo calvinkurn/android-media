@@ -5,6 +5,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.recharge_component.databinding.WidgetRechargeRecommendationCardBinding
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
@@ -21,12 +23,23 @@ class RechargeRecommendationCardWidget @JvmOverloads constructor(@NotNull contex
     fun renderRecommendationLayout(recommendationListener: RechargeRecommendationCardListener, titleRecommendation:String, listRecommendation: List<RecommendationCardWidgetModel>){
         val adapterRecommendation = RecommendationCardWidgetAdapter(recommendationListener)
         with(rechargeRecommendationViewBinding){
+            shimmeringRecommendation.root.hide()
+            tgRechargeRecommendationCardTitle.show()
+            rvRechargeRecommendationCardTitle.show()
             tgRechargeRecommendationCardTitle.text = titleRecommendation
             rvRechargeRecommendationCardTitle.apply {
                 adapterRecommendation.setRecommendationList(listRecommendation)
                 adapter = adapterRecommendation
                 layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             }
+        }
+    }
+
+    fun renderShimmering(){
+        with(rechargeRecommendationViewBinding){
+            tgRechargeRecommendationCardTitle.hide()
+            rvRechargeRecommendationCardTitle.hide()
+            shimmeringRecommendation.root.show()
         }
     }
 
