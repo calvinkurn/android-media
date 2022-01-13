@@ -144,6 +144,8 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracking
+import com.tokopedia.product.detail.tracking.ShopCredibilityTracker
+import com.tokopedia.product.detail.tracking.ShopCredibilityTracking
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtilCallback
@@ -3187,20 +3189,45 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    override fun onShopTickerClicked(action: String, applink: String, tickerActionBs: ShopInfo.TickerDataResponse.TickerActionBs?) {
-        // TODO vindo - update the tracker
-//        trackOnTickerClicked(tickerTitle, tickerType, componentTrackDataModel, tickerDescription)
-        if (action == "applink") {
+    override fun onShopTickerClicked(
+        tickerDataResponse: ShopInfo.TickerDataResponse,
+        componentTrackDataModel: ComponentTrackDataModel
+    ) {
+
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+        ShopCredibilityTracking.clickShopTicker(
+            ShopCredibilityTracker.ClickShopTicker(
+                productInfo,
+                componentTrackDataModel,
+                tickerDataResponse,
+                viewModel.userId
+            )
+        )
+
+        if (tickerDataResponse.action == "applink") {
+        val applink = tickerDataResponse.actionLink
             if (activity != null && RouteManager.isSupportApplink(activity, applink)) {
                 goToApplink(applink)
             } else {
                 openWebViewUrl(applink)
             }
         } else {
-            if (tickerActionBs != null) {
-                goToBottomSheetShopTicker(tickerActionBs)
-            }
+            goToBottomSheetShopTicker(tickerDataResponse.actionBottomSheet)
         }
+    }
+
+    override fun onShopTickerImpressed(
+        tickerDataResponse: ShopInfo.TickerDataResponse,
+        componentTrackDataModel: ComponentTrackDataModel
+    ) {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+        val data = ShopCredibilityTracker.ImpressionShopTicker(
+            productInfo = productInfo,
+            componentTrackDataModel = componentTrackDataModel,
+            tickerDataResponse = tickerDataResponse,
+            userId = viewModel.userId
+        )
+        ShopCredibilityTracking.impressShopTicker(data)
     }
 
     private fun onShopFavoriteClick(componentTrackDataModel: ComponentTrackDataModel? = null, isNplFollowType: Boolean = false) {

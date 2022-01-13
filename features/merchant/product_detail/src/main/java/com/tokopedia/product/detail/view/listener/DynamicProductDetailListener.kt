@@ -93,8 +93,8 @@ interface DynamicProductDetailListener {
      */
     fun onShopInfoClicked(itemId: Int, componentTrackDataModel: ComponentTrackDataModel)
     fun gotoShopDetail(componentTrackDataModel: ComponentTrackDataModel)
-    fun onShopTickerClicked(action: String, applink: String, tickerActionBs: ShopInfo.TickerDataResponse.TickerActionBs?)
-//    fun onShopTickerImpressed()
+    fun onShopTickerClicked(tickerDataResponse: ShopInfo.TickerDataResponse, componentTrackDataModel: ComponentTrackDataModel)
+    fun onShopTickerImpressed(tickerDataResponse: ShopInfo.TickerDataResponse, componentTrackDataModel: ComponentTrackDataModel)
 
     /**
      * ProductRecommendationAnnotationChipViewHolder

@@ -90,7 +90,7 @@ class ProductShopCredibilityViewHolder(
                 listener.gotoShopDetail(componentTracker)
             }
 
-            setupTicker(element.tickerDataResponse, this)
+            setupTicker(element.tickerDataResponse, componentTracker, this)
 
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(componentTracker)
@@ -100,15 +100,19 @@ class ProductShopCredibilityViewHolder(
 
     private fun setupTicker(
         tickerDataResponse: List<ShopInfo.TickerDataResponse>,
+        componentTrackDataModel: ComponentTrackDataModel,
         binding: ViewShopCredibilityBinding
     ) {
         binding.shopCredibilityInfoTicker.showIfWithBlock(tickerDataResponse.isNotEmpty()) {
             val data = tickerDataResponse.first()
+
+            listener.onShopTickerImpressed(data, componentTrackDataModel)
+
             setHtmlDescription(generateHtml(data.message, data.link))
             tickerTitle = data.title
             setDescriptionClickEvent(object : TickerCallback{
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    listener.onShopTickerClicked(data.action, data.actionLink, data.actionBottomSheet)
+                    listener.onShopTickerClicked(data, componentTrackDataModel)
                 }
 
                 override fun onDismiss() {
