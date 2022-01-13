@@ -18,6 +18,7 @@ import com.modiface.mfemakeupkit.data.MFETrackingData
 import com.modiface.mfemakeupkit.effects.MFEMakeupProduct
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerPageSource
@@ -51,6 +52,9 @@ import com.tokopedia.utils.image.ImageProcessingUtil.getBitmapFromPath
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMakeupEngineDetectionCallback {
@@ -145,21 +149,10 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         activity?.let { activity ->
             binding?.productArToolbar?.run {
                 setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
-                setCustomBackButton(color = ContextCompat.getColor(context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
-
                 setToolbarTitle("")
                 setupToolbarWithStatusBar(activity, NavToolbar.Companion.StatusBar.STATUS_BAR_DARK)
-                setIcon(
-                        IconBuilder()
-                                .addIcon(IconUnify.INFORMATION) {
-                                    context?.let { ctx ->
-                                        ProductArBottomSheetBuilder.getArInfoBottomSheet(ctx)
-                                                .show(activity.supportFragmentManager, "info ar")
-                                    }
-                                }
-                                .addIcon(IconList.ID_CART) {}
-                )
+                setCustomBackButton(color = ContextCompat.getColor(context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
                 viewLifecycleOwner.lifecycle.addObserver(this)
             }
         }
@@ -289,9 +282,12 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         viewModel?.productArList?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    binding?.globalErrorProductAr?.hide()
+                    setupNavBarIconPage()
                     partialBottomArView?.renderRecyclerView(it.data)
                 }
                 is Fail -> {
+                    showGlobalError(it.throwable)
                 }
             }
         }
@@ -306,6 +302,54 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
                     // still noop
                 }
             }
+        }
+    }
+
+    private fun showGlobalError(throwable: Throwable) {
+        val errorType = if (throwable is SocketTimeoutException
+                || throwable is UnknownHostException
+                || throwable is ConnectException) {
+            GlobalError.NO_CONNECTION
+        } else {
+            GlobalError.SERVER_ERROR
+        }
+
+        binding?.globalErrorProductAr?.run {
+            setupNavBarIconPageError()
+            show()
+            setType(errorType)
+            setActionClickListener {
+                viewModel?.getArData()
+            }
+        }
+    }
+
+    private fun setupNavBarIconPage() {
+        activity?.let {
+            binding?.productArToolbar?.setIcon(
+                    IconBuilder()
+                            .addIcon(IconUnify.INFORMATION) {
+                                context?.let { ctx ->
+                                    ProductArBottomSheetBuilder.getArInfoBottomSheet(ctx)
+                                            .show(it.supportFragmentManager, "info ar")
+                                }
+                            }
+                            .addIcon(IconList.ID_CART) {}
+            )
+
+            binding?.productArToolbar?.setCustomBackButton(color = ContextCompat.getColor(
+                    requireContext(),
+                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+        }
+    }
+
+    private fun setupNavBarIconPageError() {
+        context?.let {
+            binding?.productArToolbar?.setIcon(
+                    IconBuilder()
+            )
+            binding?.productArToolbar?.setCustomBackButton(color = ContextCompat.getColor(it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN700))
         }
     }
 

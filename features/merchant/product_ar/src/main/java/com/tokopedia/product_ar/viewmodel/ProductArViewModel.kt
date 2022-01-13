@@ -82,7 +82,7 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         }
     }
 
-    private fun getArData() {
+    fun getArData() {
         viewModelScope.launchCatchError(block = {
             val result = getProductArUseCase.executeOnBackground(
                     GetProductArUseCase.createParams(initialProductId, shopId, chosenAddressRequestHelper)
@@ -104,7 +104,7 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             }
 
         }, onError = {
-            _selectedProductArData.postValue(Fail(it))
+            _productArList.postValue(Fail(it))
         })
     }
 
