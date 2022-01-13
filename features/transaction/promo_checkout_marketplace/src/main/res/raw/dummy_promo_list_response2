@@ -41,7 +41,6 @@
           "sub_title": "Kamu bisa gabungkan promo biar makin hemat",
           "icon_url": "",
           "is_enabled": true,
-          "is_collapsed": false,
           "tags": [],
           "id": "",
           "coupon_groups": [],
@@ -52,7 +51,6 @@
               "sub_title": "Promo dipilih",
               "icon_url": "https://ecs7.tokopedia.net/img/blog/promo/2020/03/color%403x.png",
               "is_enabled": true,
-              "is_collapsed": false,
               "tags": [],
               "id": "my_coupons",
               "coupon_groups": [
@@ -107,19 +105,14 @@
                   "title": "Gratis Ongkir hingga Rp100.000",
                   "message": "",
                   "expiry_info": "",
-                  "expiry_count_down": -1,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/000/fff&text=CPGSH"
-                  ],
                   "benefit_amount": 100000,
                   "is_recommended": true,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -148,19 +141,15 @@
                   "title": "Gratis Ongkir hingga Rp30.000",
                   "message": "",
                   "expiry_info": "",
-                  "expiry_count_down": -1,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/055/fff&text=CPGSM"
-                  ],
+
                   "benefit_amount": 30000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -189,7 +178,6 @@
                   "title": "Cashback Rp25.000",
                   "message": "",
                   "expiry_info": "",
-                  "expiry_count_down": -1,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
@@ -201,7 +189,6 @@
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -230,7 +217,6 @@
                   "title": "Cashback Rp25.000",
                   "message": "",
                   "expiry_info": "",
-                  "expiry_count_down": -1,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
@@ -242,7 +228,6 @@
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -276,12 +261,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [],
                   "benefit_amount": 7500,
                   "is_recommended": false,
                   "is_selected": true,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -309,12 +292,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [],
                   "benefit_amount": 7500,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -342,12 +323,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [],
                   "benefit_amount": 7500,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -375,12 +354,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [],
                   "benefit_amount": 7500,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -403,19 +380,14 @@
                   "title": "Gratis Ongkir hingga Rp5.000",
                   "message": "",
                   "expiry_info": "",
-                  "expiry_count_down": -1,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/6R5/fff&text=CPGSS"
-                  ],
                   "benefit_amount": 5000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -438,7 +410,6 @@
                   "title": "Cashback Rp5.000",
                   "message": "",
                   "expiry_info": "",
-                  "expiry_count_down": -1,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
@@ -450,7 +421,6 @@
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -478,12 +448,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [],
                   "benefit_amount": 1,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -508,7 +476,6 @@
               "sub_title": "Promo dipilih",
               "icon_url": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
               "is_enabled": true,
-              "is_collapsed": false,
               "tags": [],
               "id": "merchant_vouchers",
               "coupon_groups": [
@@ -548,12 +515,10 @@
                   "coupon_app_link": "HCKCSCP479006-",
                   "unique_id": "479006-0-22266",
                   "shop_id": 479006,
-                  "tag_image_urls": [],
                   "benefit_amount": 75000,
                   "is_recommended": true,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [],
                   "currency_details_str": "(75.000 GoPay Coins)",
                   "coachmark": {
@@ -583,7 +548,6 @@
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [],
                   "currency_details_str": "(25.000 GoPay Coins)",
                   "coachmark": {
@@ -613,7 +577,6 @@
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [],
                   "currency_details_str": "(25.000 GoPay Coins)",
                   "coachmark": {
@@ -643,7 +606,6 @@
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [],
                   "currency_details_str": "(25.000 GoPay Coins)",
                   "coachmark": {
@@ -673,7 +635,6 @@
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "CPPY45EOGXQTU6KAURU",
@@ -741,12 +702,10 @@
                   "coupon_app_link": "HCKCSCP479006-",
                   "unique_id": "479006-0-22266",
                   "shop_id": 479006,
-                  "tag_image_urls": [],
                   "benefit_amount": 10000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [],
                   "currency_details_str": "(10.000 GoPay Coins)",
                   "coachmark": {
@@ -767,14 +726,6 @@
       "attempted_promo_code_error": {
         "code": "",
         "message": ""
-      },
-      "additional_message": "Kamu bisa hemat",
-      "reward_points_info": {
-        "message": "",
-        "gain_reward_points_tnc": {
-          "title": "",
-          "tnc_details": []
-        }
       },
       "section_tabs": [
         {

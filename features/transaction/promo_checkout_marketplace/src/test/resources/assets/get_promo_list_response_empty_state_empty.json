@@ -24,14 +24,6 @@
       "attempted_promo_code_error": {
         "code": "",
         "message": ""
-      },
-      "additional_message": "",
-      "reward_points_info": {
-        "message": "",
-        "gain_reward_points_tnc": {
-          "title": "",
-          "tnc_details": []
-        }
       }
     }
   }

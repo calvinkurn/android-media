@@ -89,8 +89,6 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                             sub_title
                             icon_url
                             is_enabled
-                            is_collapsed
-                            tags
                             id
                             coupon_groups {
                                 id
@@ -100,9 +98,6 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                 code
                                 title
                                 message
-                                expiry_info
-                                expiry_count_down
-                                coupon_url
                                 coupon_app_link
                                 unique_id
                                 shop_id
@@ -110,15 +105,12 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                 is_recommended
                                 is_selected
                                 is_attempted
-                                radio_check_state
                             }
                             sub_sections {
                                 title
                                 sub_title
                                 icon_url
                                 is_enabled
-                                is_collapsed
-                                tags
                                 id
                                 coupon_groups {
                                     id
@@ -128,18 +120,13 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                     code
                                     title
                                     message
-                                    expiry_info
-                                    expiry_count_down
-                                    coupon_url
                                     coupon_app_link
                                     unique_id
                                     shop_id
-                                    tag_image_urls
                                     benefit_amount
                                     is_recommended
                                     is_selected
                                     is_attempted
-                                    radio_check_state
                                     clashing_infos {
                                         code
                                         message
@@ -165,17 +152,6 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                         attempted_promo_code_error {
                             code
                             message
-                        }
-                        additional_message
-                        reward_points_info {
-                            message
-                            gain_reward_points_tnc {
-                                title
-                                tnc_details {
-                                    icon_image_url
-                                    description
-                                }
-                            }
                         }
                         section_tabs {
                             id

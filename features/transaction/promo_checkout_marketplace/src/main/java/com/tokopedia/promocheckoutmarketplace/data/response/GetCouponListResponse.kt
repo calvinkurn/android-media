@@ -36,19 +36,8 @@ data class Data(
         val couponSections: List<CouponSection> = emptyList(),
         @SerializedName("attempted_promo_code_error")
         val attemptedPromoCodeError: AttemptedPromoCodeError = AttemptedPromoCodeError(),
-        @SerializedName("additional_message")
-        val additionalMessage: String = "",
-        @SerializedName("reward_points_info")
-        val rewardPointsInfo: RewardPointsInfo = RewardPointsInfo(),
         @SerializedName("section_tabs")
         val sectionTabs: List<SectionTab> = emptyList()
-)
-
-data class RewardPointsInfo(
-        @SerializedName("message")
-        val message: String = "",
-        @SerializedName("gain_reward_points_tnc")
-        val gainRewardPointsTnc: GainRewardPointsTnc = GainRewardPointsTnc()
 )
 
 data class GainRewardPointsTnc(
@@ -127,10 +116,6 @@ data class CouponSection(
         val iconUrl: String = "",
         @SerializedName("is_enabled")
         val isEnabled: Boolean = false,
-        @SerializedName("is_collapsed")
-        val isCollapsed: Boolean = false,
-        @SerializedName("tags")
-        val tags: List<String> = emptyList(),
         @SerializedName("sub_sections")
         val subSections: List<SubSection> = emptyList(),
         @SerializedName("coupon_groups")
@@ -155,10 +140,6 @@ data class SubSection(
         val iconUrl: String = "",
         @SerializedName("is_enabled")
         val isEnabled: Boolean = false,
-        @SerializedName("is_collapsed")
-        val isCollapsed: Boolean = false,
-        @SerializedName("tags")
-        val tags: List<String> = emptyList(),
         @SerializedName("coupons")
         val coupons: List<Coupon> = emptyList(),
         @SerializedName("coupon_groups")
@@ -172,20 +153,12 @@ data class Coupon(
         val title: String = "",
         @SerializedName("message")
         val message: String = "",
-        @SerializedName("expiry_info")
-        val expiryInfo: String = "",
-        @SerializedName("expiry_count_down")
-        val expiryCountDown: Int = 0,
-        @SerializedName("coupon_url")
-        val couponUrl: String = "",
         @SerializedName("coupon_app_link")
         val couponAppLink: String = "",
         @SerializedName("unique_id")
         val uniqueId: String = "",
         @SerializedName("shop_id")
         val shopId: String = "",
-        @SerializedName("tag_image_urls")
-        val tagImageUrls: List<String> = emptyList(),
         @SerializedName("benefit_amount")
         val benefitAmount: Int = 0,
         @SerializedName("is_recommended")
@@ -194,8 +167,6 @@ data class Coupon(
         var isSelected: Boolean = false,
         @SerializedName("is_attempted")
         val isAttempted: Boolean = false,
-        @SerializedName("radio_check_state")
-        val radioCheckState: String = "",
         @SerializedName("clashing_infos")
         val clashingInfos: List<ClashingInfo> = emptyList(),
         @SerializedName("currency_details_str")

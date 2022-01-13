@@ -25,7 +25,6 @@ data class PromoListItemUiModel(
 
             var errorMessage: String = "",
             var errorIcon: String = "",
-            var imageResourceUrls: List<String> = emptyList(),
             var benefitAmount: Int = 0,
             var promoCode: String = "",
             var couponAppLink: String = "",

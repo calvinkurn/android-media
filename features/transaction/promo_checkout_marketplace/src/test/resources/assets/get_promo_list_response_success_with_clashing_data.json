@@ -35,7 +35,6 @@
           "sub_title": "Kamu bisa gabungkan promo biar makin hemat",
           "icon_url": "",
           "is_enabled": true,
-          "is_collapsed": false,
           "tags": [],
           "coupons": [],
           "id": "",
@@ -46,7 +45,6 @@
               "sub_title": "Promo dipilih",
               "icon_url": "https://ecs7.tokopedia.net/img/blog/promo/2020/03/color%403x.png",
               "is_enabled": true,
-              "is_collapsed": false,
               "tags": [],
               "id": "my_coupons",
               "coupon_groups": [
@@ -69,19 +67,14 @@
                   "title": "Cashback Rp12.150",
                   "message": "",
                   "expiry_info": "Berakhir 1 jam lagi!",
-                  "expiry_count_down": 1637341199,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://ecs7.tokopedia.net/img/blog/promo/2021/09/os-icon-84x84.png"
-                  ],
                   "benefit_amount": 12150,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "NPNVTU0Z",
@@ -133,19 +126,14 @@
                   "title": "Cashback Rp12.150",
                   "message": "",
                   "expiry_info": "Berakhir 1 jam lagi!",
-                  "expiry_count_down": 1637341199,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://ecs7.tokopedia.net/img/blog/promo/2021/09/os-icon-84x84.png"
-                  ],
                   "benefit_amount": 12150,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "NPNVTU0Z",
@@ -195,17 +183,14 @@
                   "title": "Diskon Rp30.000",
                   "message": "",
                   "expiry_info": "Berakhir 1 jam lagi!",
-                  "expiry_count_down": 1637341199,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [],
                   "benefit_amount": 30000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "NPNVTU0Z",
@@ -255,17 +240,14 @@
                   "title": "Diskon Rp30.000",
                   "message": "",
                   "expiry_info": "Berakhir 1 jam lagi!",
-                  "expiry_count_down": 1637341199,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [],
                   "benefit_amount": 30000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "NPNVTU0Z",
@@ -315,17 +297,14 @@
                   "title": "Gratis Ongkir hingga Rp50.000",
                   "message": "",
                   "expiry_info": "Berakhir 11 hari lagi!",
-                  "expiry_count_down": 1638291599,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [],
                   "benefit_amount": 50000,
                   "is_recommended": true,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "NPNVTU0Z",
@@ -377,7 +356,6 @@
               "sub_title": "Promo dipilih",
               "icon_url": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
               "is_enabled": true,
-              "is_collapsed": false,
               "tags": [],
               "id": "merchant_vouchers",
               "coupon_groups": [
@@ -392,17 +370,14 @@
                   "title": "Cashback Rp30.000",
                   "message": "",
                   "expiry_info": "Berakhir 29 menit lagi!",
-                  "expiry_count_down": 1637336346,
                   "coupon_url": "HCKCSCP5696005-",
                   "coupon_app_link": "HCKCSCP5696005-",
                   "unique_id": "5696005-0-5974780",
                   "shop_id": 5696005,
-                  "tag_image_urls": [],
                   "benefit_amount": 30000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "QQQ17CN6MKC80RDQQRE",
@@ -447,17 +422,14 @@
                   "title": "Cashback Rp30.000",
                   "message": "",
                   "expiry_info": "Berakhir 29 menit lagi!",
-                  "expiry_count_down": 1637336346,
                   "coupon_url": "HCKCSCP5696005-",
                   "coupon_app_link": "HCKCSCP5696005-",
                   "unique_id": "5696005-0-5974780",
                   "shop_id": 5696005,
-                  "tag_image_urls": [],
                   "benefit_amount": 30000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "QQQ17CN6MKC80RDQQRE",
@@ -511,14 +483,6 @@
       "attempted_promo_code_error": {
         "code": "",
         "message": ""
-      },
-      "additional_message": "Kamu bisa hemat",
-      "reward_points_info": {
-        "message": "",
-        "gain_reward_points_tnc": {
-          "title": "",
-          "tnc_details": []
-        }
       },
       "section_tabs": [
         {

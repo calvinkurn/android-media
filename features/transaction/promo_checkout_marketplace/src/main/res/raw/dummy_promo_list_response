@@ -41,7 +41,6 @@
           "sub_title": "Kamu bisa gabungkan promo biar makin hemat",
           "icon_url": "",
           "is_enabled": true,
-          "is_collapsed": false,
           "tags": [],
           "id": "",
           "coupon_groups": [],
@@ -52,7 +51,6 @@
               "sub_title": "Promo dipilih",
               "icon_url": "https://ecs7.tokopedia.net/img/blog/promo/2021/12/My-Coupons.png",
               "is_enabled": true,
-              "is_collapsed": false,
               "tags": [],
               "id": "my_coupons",
               "coupon_groups": [
@@ -196,14 +194,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/f9b0c3/fff&text=CPBTS"
-                  ],
                   "benefit_amount": 0,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -242,14 +236,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/000/fff&text=CPGSH"
-                  ],
                   "benefit_amount": 100000,
                   "is_recommended": true,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -289,14 +279,11 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/055/fff&text=CPGSM"
-                  ],
+
                   "benefit_amount": 30000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -341,15 +328,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/C4A484/fff&text=GOPAY",
-                    "https://dummyimage.com/84x84/C4A484/fff&text=GPC"
-                  ],
                   "benefit_amount": 30000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -389,14 +371,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/000/fff&text=CPGSH"
-                  ],
                   "benefit_amount": 100000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -436,14 +414,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/000/fff&text=CPGSH"
-                  ],
                   "benefit_amount": 100000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -483,14 +457,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/000/fff&text=CPGSH"
-                  ],
                   "benefit_amount": 100000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -530,14 +500,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/000/fff&text=CPGSH"
-                  ],
                   "benefit_amount": 100000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -577,14 +543,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/000/fff&text=CPGSH"
-                  ],
                   "benefit_amount": 100000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -624,14 +586,11 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/055/fff&text=CPGSM"
-                  ],
+
                   "benefit_amount": 30000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -671,14 +630,11 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/055/fff&text=CPGSM"
-                  ],
+
                   "benefit_amount": 30000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -718,14 +674,11 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/055/fff&text=CPGSM"
-                  ],
+
                   "benefit_amount": 30000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -765,15 +718,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/C4A484/fff&text=GOPAY",
-                    "https://dummyimage.com/84x84/C4A484/fff&text=GPC"
-                  ],
                   "benefit_amount": 30000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -813,15 +761,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/C4A484/fff&text=GOPAY",
-                    "https://dummyimage.com/84x84/C4A484/fff&text=GPC"
-                  ],
                   "benefit_amount": 30000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -861,15 +804,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/C4A484/fff&text=GOPAY",
-                    "https://dummyimage.com/84x84/C4A484/fff&text=GPC"
-                  ],
                   "benefit_amount": 30000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -909,16 +847,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/c7b9c3/fff&text=SD",
-                    "https://dummyimage.com/84x84/c7b9c3/fff&text=ND",
-                    "https://dummyimage.com/84x84/c7b9c3/fff&text=REG"
-                  ],
                   "benefit_amount": 20000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -958,14 +890,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/6R5/fff&text=CPGSS"
-                  ],
                   "benefit_amount": 5000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -1000,14 +928,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/6R5/fff&text=CPGSS"
-                  ],
                   "benefit_amount": 5000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -1042,14 +966,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/6R5/fff&text=CPGSS"
-                  ],
                   "benefit_amount": 5000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -1084,14 +1004,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/6R5/fff&text=CPGSS"
-                  ],
                   "benefit_amount": 5000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -1126,14 +1042,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/FFA500/fff&text=CPDC1"
-                  ],
                   "benefit_amount": 5000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -1168,17 +1080,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA1",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA2",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA3",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA4"
-                  ],
                   "benefit_amount": 5000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -1213,17 +1118,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA1",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA2",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA3",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA4"
-                  ],
                   "benefit_amount": 5000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -1258,17 +1156,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA1",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA2",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA3",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA4"
-                  ],
                   "benefit_amount": 5000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -1298,22 +1189,14 @@
                   "title": "Cashback Rp5.000",
                   "message": "",
                   "expiry_info": "",
-                  "expiry_count_down": -1,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA1",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA2",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA3",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA4"
-                  ],
                   "benefit_amount": 5000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -1343,22 +1226,14 @@
                   "title": "Cashback Rp5.000",
                   "message": "",
                   "expiry_info": "",
-                  "expiry_count_down": -1,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA1",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA2",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA3",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA4"
-                  ],
                   "benefit_amount": 5000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -1393,17 +1268,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA1",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA2",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA3",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA4"
-                  ],
                   "benefit_amount": 10,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -1438,17 +1306,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA1",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA2",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA3",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA4"
-                  ],
                   "benefit_amount": 10,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -1483,17 +1344,10 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA1",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA2",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA3",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA4"
-                  ],
                   "benefit_amount": 10,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -1523,22 +1377,14 @@
                   "title": "Cashback Rp10",
                   "message": "",
                   "expiry_info": "",
-                  "expiry_count_down": -1,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA1",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA2",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA3",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA4"
-                  ],
                   "benefit_amount": 10,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -1568,22 +1414,14 @@
                   "title": "Cashback Rp10",
                   "message": "",
                   "expiry_info": "",
-                  "expiry_count_down": -1,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA1",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA2",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA3",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA4"
-                  ],
                   "benefit_amount": 10,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -1613,22 +1451,14 @@
                   "title": "Cashback Rp10",
                   "message": "",
                   "expiry_info": "",
-                  "expiry_count_down": -1,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA1",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA2",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA3",
-                    "https://dummyimage.com/84x84/cb4154/fff&text=VA4"
-                  ],
                   "benefit_amount": 10,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -1660,7 +1490,6 @@
               "sub_title": "Promo dipilih",
               "icon_url": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
               "is_enabled": true,
-              "is_collapsed": false,
               "tags": [],
               "id": "merchant_vouchers",
               "coupon_groups": [
@@ -1696,12 +1525,10 @@
                   "coupon_app_link": "HCKCSCP479006-",
                   "unique_id": "479006-0-22266",
                   "shop_id": 479006,
-                  "tag_image_urls": [],
                   "benefit_amount": 100000,
                   "is_recommended": true,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [],
                   "currency_details_str": "(100.000 GoPay Coins)",
                   "coachmark": {
@@ -1730,14 +1557,10 @@
                   "coupon_app_link": "HCKCSCP479006-",
                   "unique_id": "479006-0-22266",
                   "shop_id": 479006,
-                  "tag_image_urls": [
-                    "https://images.tokopedia.net/img/tokopoints/MVC/TokoMember/tm.png"
-                  ],
                   "benefit_amount": 34500,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [],
                   "currency_details_str": "(34.500 GoPay Coins)",
                   "coachmark": {
@@ -1771,14 +1594,10 @@
                   "coupon_app_link": "HCKCSCP479006-",
                   "unique_id": "479006-0-22266",
                   "shop_id": 479006,
-                  "tag_image_urls": [
-                    "https://images.tokopedia.net/img/tokopoints/MVC/TokoMember/tm.png"
-                  ],
                   "benefit_amount": 34500,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [],
                   "currency_details_str": "(34.500 GoPay Coins)",
                   "coachmark": {
@@ -1812,14 +1631,10 @@
                   "coupon_app_link": "HCKCSCP479006-",
                   "unique_id": "479006-0-22266",
                   "shop_id": 479006,
-                  "tag_image_urls": [
-                    "https://images.tokopedia.net/img/tokopoints/MVC/TokoMember/tm.png"
-                  ],
                   "benefit_amount": 20000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [
                     {
                       "code": "CPPY45CR19FU6U148DW",
@@ -2014,12 +1829,10 @@
                   "coupon_app_link": "HCKCSCP479006-",
                   "unique_id": "479006-0-22266",
                   "shop_id": 479006,
-                  "tag_image_urls": [],
                   "benefit_amount": 10000,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "enabled",
                   "clashing_infos": [],
                   "currency_details_str": "(10.000 GoPay Coins)",
                   "coachmark": {
@@ -2047,7 +1860,6 @@
           "sub_title": "",
           "icon_url": "",
           "is_enabled": false,
-          "is_collapsed": true,
           "tags": [],
           "id": "",
           "coupon_groups": [],
@@ -2058,7 +1870,6 @@
               "sub_title": "Promo dipilih",
               "icon_url": "https://ecs7.tokopedia.net/img/blog/promo/2021/12/My-Coupons.png",
               "is_enabled": false,
-              "is_collapsed": false,
               "tags": [],
               "id": "ineligible_coupons",
               "coupon_groups": [
@@ -2110,14 +1921,11 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/3EB489/fff&text=GOPAY"
-                  ],
                   "benefit_amount": 0,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "disabled",
+
                   "clashing_infos": [],
                   "currency_details_str": "",
                   "coachmark": {
@@ -2151,14 +1959,11 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/6R500/fff&text=CPGVS"
-                  ],
                   "benefit_amount": 0,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "disabled",
+
                   "clashing_infos": [],
                   "currency_details_str": "",
                   "coachmark": {
@@ -2192,14 +1997,11 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/3EB489/fff&text=GOPAY"
-                  ],
                   "benefit_amount": 0,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "disabled",
+
                   "clashing_infos": [],
                   "currency_details_str": "",
                   "coachmark": {
@@ -2233,14 +2035,11 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/3EB489/fff&text=GOPAY"
-                  ],
                   "benefit_amount": 0,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "disabled",
+
                   "clashing_infos": [],
                   "currency_details_str": "",
                   "coachmark": {
@@ -2274,14 +2073,11 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/3EB489/fff&text=GOPAY"
-                  ],
                   "benefit_amount": 0,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "disabled",
+
                   "clashing_infos": [],
                   "currency_details_str": "",
                   "coachmark": {
@@ -2315,14 +2111,11 @@
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [
-                    "https://dummyimage.com/84x84/6R500/fff&text=CPGVS"
-                  ],
                   "benefit_amount": 0,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "disabled",
+
                   "clashing_infos": [],
                   "currency_details_str": "",
                   "coachmark": {
@@ -2351,17 +2144,15 @@
                   "title": "Nurturing : Tebus Murah Rp100",
                   "message": "Promo ini hanya dapat digunakan untuk produk 15349716.",
                   "expiry_info": "",
-                  "expiry_count_down": -1,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [],
                   "benefit_amount": 0,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "disabled",
+
                   "clashing_infos": [],
                   "currency_details_str": "",
                   "coachmark": {
@@ -2390,17 +2181,15 @@
                   "title": "Nurturing : Tebus Murah Rp100",
                   "message": "Promo ini hanya dapat digunakan untuk produk 15349716.",
                   "expiry_info": "",
-                  "expiry_count_down": -1,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [],
                   "benefit_amount": 0,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "disabled",
+
                   "clashing_infos": [],
                   "currency_details_str": "",
                   "coachmark": {
@@ -2429,17 +2218,15 @@
                   "title": "Nurturing : Tebus Murah Rp100",
                   "message": "Promo ini hanya dapat digunakan untuk produk 15349716.",
                   "expiry_info": "",
-                  "expiry_count_down": -1,
                   "coupon_url": "",
                   "coupon_app_link": "",
                   "unique_id": "",
                   "shop_id": 0,
-                  "tag_image_urls": [],
                   "benefit_amount": 0,
                   "is_recommended": false,
                   "is_selected": false,
                   "is_attempted": false,
-                  "radio_check_state": "disabled",
+
                   "clashing_infos": [],
                   "currency_details_str": "",
                   "coachmark": {
@@ -2471,14 +2258,6 @@
       "attempted_promo_code_error": {
         "code": "TEST",
         "message": "Kode promo yang kamu masukkan salah 1. Kode promo yang kamu masukkan salah 2. Kode promo yang kamu masukkan salah 3. Kode promo yang kamu masukkan salah 4. Kode promo yang kamu masukkan salah 5."
-      },
-      "additional_message": "Kamu bisa hemat",
-      "reward_points_info": {
-        "message": "",
-        "gain_reward_points_tnc": {
-          "title": "",
-          "tnc_details": []
-        }
       },
       "section_tabs": [
         {
