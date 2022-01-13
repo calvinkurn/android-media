@@ -29,9 +29,9 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
     private val widgetRechargeMCCMFlashSaleGridWidget = WidgetRechargeMccmGridBinding.inflate(
         LayoutInflater.from(context), this, true)
 
-    fun renderMCCMGrid(denomGridListener: RechargeDenomGridListener, titleDenomGrid: String, listDenomGrid: List<DenomWidgetModel>){
+    fun renderMCCMGrid(denomGridListener: RechargeDenomGridListener, textColor:String, titleDenomGrid: String, listDenomGrid: List<DenomWidgetModel>){
         with(widgetRechargeMCCMFlashSaleGridWidget){
-            headerMccmGrid.setChannel(DenomMCCMFlashSaleMapper.getChannelMCCM(titleDenomGrid, "#FFFFFF"), object : HeaderListener {
+            headerMccmGrid.setChannel(DenomMCCMFlashSaleMapper.getChannelMCCM(titleDenomGrid, textColor), object : HeaderListener {
                 override fun onChannelExpired(channelModel: ChannelModel) {
 
                 }
@@ -44,9 +44,9 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
         }
     }
 
-    fun renderFlashSaleGrid(denomGridListener: RechargeDenomGridListener, titleFlashSale: String, subtitleFlashSale: String, listDenomGrid: List<DenomWidgetModel>){
+    fun renderFlashSaleGrid(denomGridListener: RechargeDenomGridListener, textColor: String, titleFlashSale: String, subtitleFlashSale: String, listDenomGrid: List<DenomWidgetModel>){
         with(widgetRechargeMCCMFlashSaleGridWidget){
-            headerMccmGrid.setChannel(DenomMCCMFlashSaleMapper.getChannelFlashSale(titleFlashSale, subtitleFlashSale,  "#FFFFFF"), object : HeaderListener {
+            headerMccmGrid.setChannel(DenomMCCMFlashSaleMapper.getChannelFlashSale(titleFlashSale, subtitleFlashSale,  textColor), object : HeaderListener {
                 override fun onChannelExpired(channelModel: ChannelModel) {
 
                 }

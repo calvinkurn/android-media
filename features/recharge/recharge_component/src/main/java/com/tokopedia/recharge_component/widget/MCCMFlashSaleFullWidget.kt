@@ -24,9 +24,9 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
     private val widgetRechargeMCCMFlashSaleFullWidget = WidgetRechargeMccmFullBinding.inflate(
         LayoutInflater.from(context), this, true)
 
-    fun renderMCCMFull(denomFullListener: RechargeDenomFullListener, titleDenomFull: String, listDenomFull: List<DenomWidgetModel>){
+    fun renderMCCMFull(denomFullListener: RechargeDenomFullListener, textColor:String, titleDenomFull: String, listDenomFull: List<DenomWidgetModel>){
         with(widgetRechargeMCCMFlashSaleFullWidget){
-            headerMccmFull.setChannel(DenomMCCMFlashSaleMapper.getChannelMCCM(titleDenomFull, "#FFFFFF"), object :
+            headerMccmFull.setChannel(DenomMCCMFlashSaleMapper.getChannelMCCM(titleDenomFull, textColor), object :
                 HeaderListener {
                 override fun onChannelExpired(channelModel: ChannelModel) {
 
@@ -40,9 +40,9 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
         }
     }
 
-    fun renderFlashSaleFull(denomFullListener: RechargeDenomFullListener, titleFlashSale: String, subtitleFlashSale: String, listDenomFull: List<DenomWidgetModel>){
+    fun renderFlashSaleFull(denomFullListener: RechargeDenomFullListener, textColor: String, titleFlashSale: String, subtitleFlashSale: String, listDenomFull: List<DenomWidgetModel>){
         with(widgetRechargeMCCMFlashSaleFullWidget){
-            headerMccmFull.setChannel(DenomMCCMFlashSaleMapper.getChannelFlashSale(titleFlashSale, subtitleFlashSale,  "#FFFFFF"), object :
+            headerMccmFull.setChannel(DenomMCCMFlashSaleMapper.getChannelFlashSale(titleFlashSale, subtitleFlashSale,  textColor), object :
                 HeaderListener {
                 override fun onChannelExpired(channelModel: ChannelModel) {
 

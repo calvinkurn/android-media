@@ -144,7 +144,8 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
                 override fun onDenomFullClicked(denomGrid: DenomWidgetModel, position: Int) {
 
                 }
-            }, "Diskon Rp15.000 buat pengguna baru, nih!",
+            },"#FFFFFF" ,
+                "Diskon Rp15.000 buat pengguna baru, nih!",
                 listOf(
                     DenomWidgetModel(
                         title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
@@ -201,7 +202,7 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
                 override fun onDenomFullClicked(denomGrid: DenomWidgetModel, position: Int) {
 
                 }
-            }, "Diskon Rp15.000 buat pengguna baru, nih!",
+            }, "#FFFFFF","Diskon Rp15.000 buat pengguna baru, nih!",
                 "Sampai dengan",
                 listOf(
                     DenomWidgetModel(
