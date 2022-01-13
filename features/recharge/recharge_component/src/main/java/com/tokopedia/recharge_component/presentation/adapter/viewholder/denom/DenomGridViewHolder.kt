@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.ViewRechargeDenomGridBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
-import com.tokopedia.recharge_component.model.denom.DenomWidgetGridEnum
+import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -21,7 +21,7 @@ class DenomGridViewHolder (
     private val binding: ViewRechargeDenomGridBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(denomGrid: DenomWidgetModel, denomGridType: DenomWidgetGridEnum,
+    fun bind(denomGrid: DenomWidgetModel, denomType: DenomWidgetEnum,
              isSelectedItem: Boolean, position: Int){
 
         with(binding){
@@ -116,14 +116,14 @@ class DenomGridViewHolder (
             }
 
             cardDenomGrid.run {
-                layoutParams.width = if (denomGridType == DenomWidgetGridEnum.GRID_TYPE){
+                layoutParams.width = if (denomType == DenomWidgetEnum.GRID_TYPE){
                     ViewGroup.LayoutParams.MATCH_PARENT
                 } else resources.getDimension(R.dimen.widget_denom_grid_width).toInt()
 
                 setBackgroundColor(ContextCompat.getColor(rootView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
 
                 cardType = if (isSelectedItem) CardUnify.TYPE_BORDER_ACTIVE else
-                    if (denomGridType == DenomWidgetGridEnum.MCCM_TYPE) CardUnify.TYPE_SHADOW
+                    if (denomType == DenomWidgetEnum.MCCM_TYPE) CardUnify.TYPE_SHADOW
                     else CardUnify.TYPE_BORDER
             }
 

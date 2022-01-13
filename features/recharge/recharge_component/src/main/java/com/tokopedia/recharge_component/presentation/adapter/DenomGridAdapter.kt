@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.recharge_component.databinding.ViewRechargeDenomGridBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
-import com.tokopedia.recharge_component.model.denom.DenomWidgetGridEnum
+import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.denom.DenomGridViewHolder
 
@@ -15,14 +15,14 @@ class DenomGridAdapter: RecyclerView.Adapter<DenomGridViewHolder>(), RechargeDen
 
     var selectedProductIndex: Int? = null
 
-    var denomWidgetGridType: DenomWidgetGridEnum = DenomWidgetGridEnum.GRID_TYPE
+    var denomWidgetType: DenomWidgetEnum = DenomWidgetEnum.GRID_TYPE
 
     var listener: RechargeDenomGridListener? = null
 
     override fun getItemCount(): Int = listDenom.size
 
     override fun onBindViewHolder(holder: DenomGridViewHolder, position: Int) {
-        holder.bind(listDenom[position], denomWidgetGridType, position == selectedProductIndex, position)
+        holder.bind(listDenom[position], denomWidgetType, position == selectedProductIndex, position)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DenomGridViewHolder {

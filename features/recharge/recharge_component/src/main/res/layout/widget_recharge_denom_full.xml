@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tg_denom_grid_widget_title"
+        android:id="@+id/tg_denom_full_widget_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -16,7 +16,7 @@
         app:typographyType="heading_4" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_denom_grid_card"
+        android:id="@+id/rv_denom_full_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
@@ -27,7 +27,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl4" />
 
     <include
-        android:id="@+id/denom_grid_shimmering"
-        layout="@layout/view_recharge_denom_grid_list_shimmering"/>
+        android:id="@+id/denom_full_shimmering"
+        layout="@layout/view_recharge_denom_full_list_shimmering"/>
 
 </LinearLayout>

@@ -13,5 +13,6 @@ data class DenomWidgetModel(
     val flashSaleLabel: String = "",
     val price: String = "",
     val pricePlain: Int = 0,
+    val isShowChevron: Boolean = true,
     val appLink: String = "",
 )

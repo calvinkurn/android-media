@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
+import com.tokopedia.recharge_component.listener.RechargeDenomFullListener
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardEnum
@@ -54,228 +55,215 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
 
     private fun observeData() {
         viewModel.dummy.observe(viewLifecycleOwner, {
-            showDenomGrid()
-            showMCCM()
-            showFlashSale()
+            showDenomFull()
+            showMCCMFull()
+            showFlashSaleFull()
         })
     }
 
     private fun showInitalView(){
         binding?.let {
+            it.widgetDenomFull.renderDenomFullShimmering("Diskon Rp15.000 buat pengguna baru, nih!")
         }
     }
 
-
-
-    private fun showDenomGrid(){
+    private fun showDenomFull(){
         binding?.let {
-            it.widgetDenomGrid.renderDenomGridLayout(denomGridListener = object: RechargeDenomGridListener{
-                override fun onDenomGridClicked(denomGrid: DenomWidgetModel, position: Int) {
-                    //todo
+            it.widgetDenomFull.renderDenomFullLayout(denomFullListener = object : RechargeDenomFullListener{
+                override fun onChevronDenomClicked(denomGrid: DenomWidgetModel, position: Int) {
+
+                }
+
+                override fun onDenomFullClicked(denomGrid: DenomWidgetModel, position: Int) {
+
                 }
             }, "Diskon Rp15.000 buat pengguna baru, nih!",
                 listOf(
                     DenomWidgetModel(
-                        title="15 ribu",
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
+                        description = "The description related to the product, max 1 line",
                         specialLabel = "Any campaign label",
                         price = "Rp500",
-                        slashPrice = "Rp16.500",
-                    ),
-                    DenomWidgetModel(
-                        title="15 ribu",
-                        specialLabel = "Any campaign label",
-                        price = "Rp500",
+                        quotaInfo = "3 GB",
+                        expiredDays = "30 Hari",
                         discountLabel = "10%",
                         slashPrice = "Rp16.500",
                         appLink = "tokopedia://deals",
                         expiredDate = "December 2021",
                         flashSaleLabel = "Segera Habis",
-                        flashSalePercentage = 80
+                        flashSalePercentage = 80,
+                        isShowChevron = true
                     ),
                     DenomWidgetModel(
-                        title="50 ribu",
-                        price = "Rp35.500",
-                    ),
-                    DenomWidgetModel(
-                        title="50 ribu",
-                        price = "Rp35.500",
-                        slashPrice = "75.000"
-                    ),
-                    DenomWidgetModel(
-                        title="100 ribu",
-                        price = "Rp85.500",
-                        slashPrice = "105.000"
-                    ),
-                    DenomWidgetModel(
-                        title="50 ribu",
-                        specialLabel = "Any campaign label",
-                        price = "Rp35.500",
-                    ),
-                    DenomWidgetModel(
-                        title="50 ribu",
-                        price = "Rp35.500",
-                    ),
-                    DenomWidgetModel(
-                        title="50 ribu",
-                        price = "Rp35.500",
-                    ),
-                    DenomWidgetModel(
-                        title="15 ribu",
-                        //specialLabel = "Any campaign label",
-                        specialLabel = "Any campaign label",
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
                         price = "Rp500",
-//                        discountLabel = "10%",
+                        quotaInfo = "3 GB",
+                        expiredDays = "30 Hari",
+                        slashPrice = "Rp16.500",
                         discountLabel = "10%",
+                        appLink = "tokopedia://deals",
+                        isShowChevron = true
+                    ),
+                    DenomWidgetModel(
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
+                        price = "Rp500",
+                        quotaInfo = "3 GB - 5 GB",
+                        expiredDays = "30 Hari",
                         slashPrice = "Rp16.500",
                         appLink = "tokopedia://deals",
-                        expiredDate = "December 2021",
-                        flashSaleLabel = "Segera Habis",
-                        flashSalePercentage = 80
+                        isShowChevron = true
                     ),
                     DenomWidgetModel(
-                        title="50 ribu",
-                        price = "Rp35.500",
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
+                        price = "Rp500",
+                        quotaInfo = "3 GB - 5 GB",
                         slashPrice = "Rp16.500",
-//                        appLink = "tokopedia://deals",
-//                        expiredDate = "December 2021",
-//                        flashSaleLabel = "Segera Habis",
-//                        flashSalePercentage = 80
+                        appLink = "tokopedia://deals",
+                        isShowChevron = true
+                    ),
+                    DenomWidgetModel(
+                    title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
+                    price = "Rp500",
+                    quotaInfo = "3 GB - 5 GB",
+                    appLink = "tokopedia://deals",
+                    isShowChevron = true
+                )
+
+                )
+            )
+        }
+    }
+
+    private fun showMCCMFull(){
+        binding?.let {
+            it.widgetMccmFull.renderMCCMFull(denomFullListener = object : RechargeDenomFullListener{
+                override fun onChevronDenomClicked(denomGrid: DenomWidgetModel, position: Int) {
+
+                }
+
+                override fun onDenomFullClicked(denomGrid: DenomWidgetModel, position: Int) {
+
+                }
+            },"#FFFFFF" ,
+                "Diskon Rp15.000 buat pengguna baru, nih!",
+                listOf(
+                    DenomWidgetModel(
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
+                        price = "Rp500",
+                        quotaInfo = "3 GB",
+                        expiredDays = "30 Hari",
+                        slashPrice = "Rp16.500",
+                        discountLabel = "10%",
+                        appLink = "tokopedia://deals",
+                        isShowChevron = true
+                    ),
+                    DenomWidgetModel(
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
+                        price = "Rp500",
+                        quotaInfo = "3 GB",
+                        expiredDays = "30 Hari",
+                        slashPrice = "Rp16.500",
+                        discountLabel = "10%",
+                        appLink = "tokopedia://deals",
+                        isShowChevron = true
+                    ),
+                    DenomWidgetModel(
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
+                        price = "Rp500",
+                        quotaInfo = "3 GB",
+                        expiredDays = "30 Hari",
+                        slashPrice = "Rp16.500",
+                        discountLabel = "10%",
+                        appLink = "tokopedia://deals",
+                        isShowChevron = true
+                    ),
+                    DenomWidgetModel(
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
+                        price = "Rp500",
+                        quotaInfo = "3 GB",
+                        expiredDays = "30 Hari",
+                        slashPrice = "Rp16.500",
+                        discountLabel = "10%",
+                        appLink = "tokopedia://deals",
+                        isShowChevron = true
                     )
                 )
             )
         }
     }
 
-    fun showMCCM(){
+    private fun showFlashSaleFull(){
         binding?.let {
-            it.widgetMccmGrid.renderMCCMGrid(
-                denomGridListener = object: RechargeDenomGridListener{
-                override fun onDenomGridClicked(denomGrid: DenomWidgetModel, position: Int) {
-                    //todo
-                }
-            }, "Diskon Rp15.000 buat pengguna baru, nih!",
-                listOf(
-                    DenomWidgetModel(
-                        title="15 ribu",
-                        specialLabel = "Any campaign label",
-                        price = "Rp500",
-                        discountLabel = "10%",
-                        slashPrice = "Rp16.500",
-                        appLink = "tokopedia://deals",
-                    ),
-                    DenomWidgetModel(
-                        title="15 ribu",
-                        specialLabel = "Any campaign label",
-                        price = "Rp500",
-                        discountLabel = "10%",
-                        slashPrice = "Rp16.500",
-                        appLink = "tokopedia://deals",
-                    ),
-                    DenomWidgetModel(
-                        title="15 ribu",
-                        specialLabel = "Any campaign label",
-                        price = "Rp500",
-                        discountLabel = "10%",
-                        slashPrice = "Rp16.500",
-                        appLink = "tokopedia://deals",
-                    ),
-                    DenomWidgetModel(
-                        title="15 ribu",
-                        specialLabel = "Any campaign label",
-                        price = "Rp500",
-                        discountLabel = "10%",
-                        slashPrice = "Rp16.500",
-                        appLink = "tokopedia://deals",
-                    ),
-                    DenomWidgetModel(
-                        title="15 ribu",
-                        specialLabel = "Any campaign label",
-                        price = "Rp500",
-                        discountLabel = "10%",
-                        slashPrice = "Rp16.500",
-                        appLink = "tokopedia://deals",
-                    ),
-                    DenomWidgetModel(
-                        title="15 ribu",
-                        specialLabel = "Any campaign label",
-                        price = "Rp500",
-                        discountLabel = "10%",
-                        slashPrice = "Rp16.500",
-                        appLink = "tokopedia://deals",
-                    )
-                )
-            )
-        }
-    }
+            it.widgetFlashSaleFull.renderFlashSaleFull(denomFullListener = object : RechargeDenomFullListener{
+                override fun onChevronDenomClicked(denomGrid: DenomWidgetModel, position: Int) {
 
-    fun showFlashSale(){
-        binding?.let {
-            it.widgetFlashSaleGrid.renderFlashSaleGrid(
-                denomGridListener = object: RechargeDenomGridListener{
-                    override fun onDenomGridClicked(denomGrid: DenomWidgetModel, position: Int) {
-                        //todo
-                    }
-                }, "Diskon Rp15.000 buat pengguna baru, nih!", "Selesai dalam",
+                }
+
+                override fun onDenomFullClicked(denomGrid: DenomWidgetModel, position: Int) {
+
+                }
+            }, "#FFFFFF","Diskon Rp15.000 buat pengguna baru, nih!",
+                "Sampai dengan",
                 listOf(
                     DenomWidgetModel(
-                        title="15 ribu",
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
+                        description = "The description related to the product, max 1 line",
                         specialLabel = "Any campaign label",
                         price = "Rp500",
+                        quotaInfo = "3 GB",
+                        expiredDays = "30 Hari",
                         discountLabel = "10%",
                         slashPrice = "Rp16.500",
                         appLink = "tokopedia://deals",
+                        expiredDate = "December 2021",
+                        flashSaleLabel = "Segera Habis",
                         flashSalePercentage = 80,
-                        flashSaleLabel = "Mau habis"
+                        isShowChevron = true
                     ),
                     DenomWidgetModel(
-                        title="15 ribu",
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
+                        description = "The description related to the product, max 1 line",
                         specialLabel = "Any campaign label",
                         price = "Rp500",
+                        quotaInfo = "3 GB",
+                        expiredDays = "30 Hari",
                         discountLabel = "10%",
                         slashPrice = "Rp16.500",
                         appLink = "tokopedia://deals",
+                        expiredDate = "December 2021",
+                        flashSaleLabel = "Segera Habis",
                         flashSalePercentage = 80,
-                        flashSaleLabel = "Mau habis"
+                        isShowChevron = true
                     ),
                     DenomWidgetModel(
-                        title="15 ribu",
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
+                        description = "The description related to the product, max 1 line",
                         specialLabel = "Any campaign label",
                         price = "Rp500",
+                        quotaInfo = "3 GB",
+                        expiredDays = "30 Hari",
                         discountLabel = "10%",
                         slashPrice = "Rp16.500",
                         appLink = "tokopedia://deals",
+                        expiredDate = "December 2021",
+                        flashSaleLabel = "Segera Habis",
                         flashSalePercentage = 80,
-                        flashSaleLabel = "Mau habis"
+                        isShowChevron = true
                     ),
                     DenomWidgetModel(
-                        title="15 ribu",
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
+                        description = "The description related to the product, max 1 line",
                         specialLabel = "Any campaign label",
                         price = "Rp500",
+                        quotaInfo = "3 GB",
+                        expiredDays = "30 Hari",
                         discountLabel = "10%",
                         slashPrice = "Rp16.500",
                         appLink = "tokopedia://deals",
+                        expiredDate = "December 2021",
+                        flashSaleLabel = "Segera Habis",
                         flashSalePercentage = 80,
-                        flashSaleLabel = "Mau habis"
-                    ),
-                    DenomWidgetModel(
-                        title="15 ribu",
-                        specialLabel = "Any campaign label",
-                        price = "Rp500",
-                        discountLabel = "10%",
-                        slashPrice = "Rp16.500",
-                        appLink = "tokopedia://deals",
-                        flashSalePercentage = 80,
-                        flashSaleLabel = "Mau habis"
-                    ),
-                    DenomWidgetModel(
-                        title="15 ribu",
-                        specialLabel = "Any campaign label",
-                        price = "Rp500",
-                        discountLabel = "10%",
-                        slashPrice = "Rp16.500",
-                        appLink = "tokopedia://deals",
-                        flashSalePercentage = 80,
-                        flashSaleLabel = "Mau habis"
+                        isShowChevron = true
                     )
                 )
             )
