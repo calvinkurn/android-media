@@ -41,8 +41,6 @@ class PlayShareExperienceImpl @Inject constructor(
                 else "${data.textDescription}\n$url"
     }
 
-    private fun generateDeepLinkPath(): String = "play/${data.id}"
-
     override fun createUrl(listener: PlayShareExperience.Listener) {
         val linkerData = LinkerData().apply {
             id = data.id
@@ -50,8 +48,6 @@ class PlayShareExperienceImpl @Inject constructor(
             description = data.title
             textContent = data.textDescription
             imgUri = data.coverUrl
-            deepLink = generateDeepLinkPath()
-//            ogUrl = data.redirectUrl
             type = LinkerData.PLAY_VIEWER
             uri = data.redirectUrl
 
