@@ -208,6 +208,9 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
                 val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
                 lastToken = sp.getString(KEY_TOKEN, DEFAULT_VALUE_DATAVISOR)
                     ?: DEFAULT_VALUE_DATAVISOR
+                if (lastToken.isEmpty()) {
+                    lastToken = DEFAULT_VALUE_DATAVISOR
+                }
                 lastTimestampWorker = sp.getLong(KEY_TS_WORKER, 0L)
                 isTokenExpired = sp.getBoolean(KEY_EXPIRED, false)
             }
