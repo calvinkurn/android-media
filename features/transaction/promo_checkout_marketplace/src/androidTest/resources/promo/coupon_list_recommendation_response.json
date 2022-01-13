@@ -37,6 +37,13 @@
                   "is_enabled": true,
                   "is_collapsed": true,
                   "tags": [],
+                  "id": "my_coupons",
+                  "coupon_groups": [
+                    {
+                      "id": 9598,
+                      "count": 1
+                    }
+                  ],
                   "coupons": [
                     {
                       "code": "KRDCICIL598GSNML0AM",
@@ -56,7 +63,21 @@
                       "is_selected": false,
                       "is_attempted": false,
                       "radio_check_state": "enabled",
-                      "clashing_infos": []
+                      "clashing_infos": [],
+                      "is_highlighted": true,
+                      "group_id": 9598,
+                      "is_group_header": true,
+                      "promo_infos": [
+                        {
+                          "type": "promo_validity",
+                          "title": "Berakhir 14 hari lagi!",
+                          "icon": "CLOCK"
+                        }, {
+                          "type": "top_banner",
+                          "title": "Jangan Lewatkan",
+                          "icon": ""
+                        }
+                      ]
                     }
                   ]
                 },
@@ -66,7 +87,14 @@
                   "icon_url": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
                   "is_enabled": true,
                   "is_collapsed": false,
+                  "id": "merchant_vouchers",
                   "tags": [],
+                  "coupon_groups": [
+                    {
+                      "id": 9324,
+                      "count": 6
+                    }
+                  ],
                   "coupons": [
                     {
                       "code": "POMAH09JBL",
@@ -84,11 +112,36 @@
                       "is_selected": false,
                       "is_attempted": false,
                       "radio_check_state": "enabled",
-                      "clashing_infos": []
+                      "clashing_infos": [],
+                      "is_highlighted": false,
+                      "group_id": 9324,
+                      "is_group_header": true,
+                      "promo_infos": [
+                        {
+                          "type": "promo_info",
+                          "title": "Khusus pengiriman <b>Go-Send Instant</b>",
+                          "icon": "COURIER"
+                        },
+                        {
+                          "type": "promo_validity",
+                          "title": "Berakhir 7 hari lagi!",
+                          "icon": "CLOCK"
+                        }
+                      ]
                     }
                   ]
                 }
               ]
+            }
+          ],
+          "section_tabs": [
+            {
+              "id": "my_coupons",
+              "title": "Kupon Saya"
+            },
+            {
+              "id": "merchant_vouchers",
+              "title": "Kupon Toko"
             }
           ]
         }
