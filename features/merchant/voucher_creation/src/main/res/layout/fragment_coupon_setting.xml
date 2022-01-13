@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".product.create.view.fragment.CouponSettingFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_margin="@dimen/unify_space_16"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/typography"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:text="@string/coupon_type"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_5" />
+
+        <com.tokopedia.unifycomponents.ChipsUnify
+            android:id="@+id/chipCouponType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:centerText="true"
+            app:chipSize="medium"
+            app:chipText="@string/mvc_vps"
+            app:chipType="normal"
+            android:layout_marginTop="@dimen/unify_space_4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/typography" />
+
+        <com.tokopedia.unifycomponents.TextFieldUnify2
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:unify_text_field_label="@string/quota"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chipCouponType" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgDiscountType"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:text="@string/coupon_discount_type"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_5" />
+
+        <com.tokopedia.unifycomponents.ChipsUnify
+            android:id="@+id/chipDiscountType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:centerText="true"
+            app:chipSize="medium"
+            app:chipText="@string/mvc_vps"
+            app:chipType="normal"
+            android:layout_marginTop="@dimen/unify_space_4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/typography" />
+
+        <com.tokopedia.unifycomponents.TextFieldUnify2
+            android:id="@+id/txtQuota"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:unify_text_field_label="@string/quota"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chipCouponType" />
+
+
+        <RelativeLayout
+            android:id="@+id/layoutExpenseEstimation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_32"
+            android:padding="@dimen/unify_space_12"
+            android:background="@drawable/mvc_rectangle_grey_f8fafc_radius_4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtQuota">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/typography20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/maximum_expense_estimation"
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyType="heading_6" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_4"
+                android:layout_toEndOf="@id/typography20"
+                android:contentDescription="@string/maximum_expense_estimation"
+                android:src="@drawable/ic_info_outline"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/typography30"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/typography20"
+                android:layout_marginTop="@dimen/unify_space_2"
+                android:text="@string/expense_description"
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyType="body_3" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpg_expense_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/typography20"
+                android:layout_alignTop="@id/typography20"
+                android:layout_alignBottom="@id/typography30"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="@dimen/unify_space_2"
+                android:gravity="center"
+                android:text="@string/hyphen"
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyType="heading_5"
+                tools:text="Rp 20.000" />
+
+        </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
