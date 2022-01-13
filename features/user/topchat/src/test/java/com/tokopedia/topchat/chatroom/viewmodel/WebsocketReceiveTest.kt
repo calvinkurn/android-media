@@ -132,4 +132,18 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         // Then
         assertEquals(viewModel.isTyping.value, null)
     }
+
+    @Test
+    fun should_update_typing_value_on_receive_end_typing_event() {
+        // Given
+        onConnectWebsocket {
+            it.onMessage(websocket, WebsocketResponses.endTyping)
+        }
+
+        // When
+        viewModel.connectWebSocket()
+
+        // Then
+        assertEquals(viewModel.isTyping.value, false)
+    }
 }
