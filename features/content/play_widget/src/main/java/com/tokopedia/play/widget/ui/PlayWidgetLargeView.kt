@@ -39,8 +39,6 @@ class PlayWidgetLargeView : ConstraintLayout, IPlayWidgetView {
         mWidgetInternalListener = listener
     }
 
-    private val title: Typography
-
     private val itemContainer: FrameLayout
 
     private val recyclerViewItem: RecyclerView
@@ -112,8 +110,6 @@ class PlayWidgetLargeView : ConstraintLayout, IPlayWidgetView {
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.view_play_widget_large, this)
 
-        title = view.findViewById(R.id.play_widget_large_title)
-
         itemContainer = view.findViewById(R.id.play_widget_container)
 
         recyclerViewItem = view.findViewById(R.id.play_widget_recycler_view)
@@ -146,8 +142,6 @@ class PlayWidgetLargeView : ConstraintLayout, IPlayWidgetView {
     }
 
     fun setData(data: PlayWidgetUiModel.Large) {
-        title.text = data.title
-
         recyclerViewItem.addOneTimeGlobalLayoutListener {
             mWidgetInternalListener?.onWidgetCardsScrollChanged(recyclerViewItem)
         }
