@@ -3205,7 +3205,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         )
 
         if (tickerDataResponse.action == "applink") {
-        val applink = tickerDataResponse.actionLink
+            val applink = tickerDataResponse.actionLink
             if (activity != null && RouteManager.isSupportApplink(activity, applink)) {
                 goToApplink(applink)
             } else {
