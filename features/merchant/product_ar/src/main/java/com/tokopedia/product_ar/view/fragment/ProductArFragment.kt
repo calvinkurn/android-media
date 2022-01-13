@@ -45,6 +45,7 @@ import com.tokopedia.product_ar.viewmodel.ProductArViewModel
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -317,10 +318,12 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         }
 
         binding?.globalErrorProductAr?.run {
+            (errorAction as? UnifyButton)?.isLoading = false
             setupNavBarIconPageError()
             show()
             setType(errorType)
             setActionClickListener {
+                (errorAction as? UnifyButton)?.isLoading = true
                 viewModel?.getArData()
             }
         }
