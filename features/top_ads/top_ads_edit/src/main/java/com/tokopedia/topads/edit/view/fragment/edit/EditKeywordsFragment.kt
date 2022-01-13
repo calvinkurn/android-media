@@ -261,12 +261,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun getLatestBid() {
-        val dummyId: MutableList<String> = mutableListOf()
-        productId.forEach {
-            dummyId.add(it)
-        }
         val suggestionsDefault = java.util.ArrayList<DataSuggestions>()
-        suggestionsDefault.add(DataSuggestions(Constants.PRODUCT, dummyId))
+        suggestionsDefault.add(DataSuggestions("", listOf(groupId.toString())))
         viewModel.getBidInfoDefault(suggestionsDefault, this::onBidSuccessSuggestion)
     }
 
@@ -276,15 +272,9 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             minBid = it.minBid
             maxBid = it.maxBid
         }
-        sharedViewModel.getBidSettings().observe(viewLifecycleOwner, {
-            it.forEach {
-                if (it.bidType.equals("product_auto_search")) {
-                    budgetInput.textFieldInput.setText(suggestBidPerClick)
-                } else if (it.bidType.equals("product_auto_browse")) {
-                    budgetInputRekomendasi.textFieldInput.setText(suggestBidPerClick)
-                }
-            }
-        })
+
+        budgetInput.textFieldInput.setText(suggestBidPerClick)
+        budgetInputRekomendasi.textFieldInput.setText(suggestBidPerClick)
         checkForbidValidity(getCurrentBid())
         checkForRekommendedBid(getCurrentRekommendedBid())
     }
@@ -664,18 +654,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             )
             onAddKeyword()
         }
-
-        sharedViewModel.getBidSettings().observe(viewLifecycleOwner, {
-            it.forEach {
-                if (it.bidType.equals("product_search")) {
-                    budgetInput.textFieldInput.setText(
-                        ( it.priceBid?.toInt()?:suggestBidPerClick).toString()
-                    )
-                } else if(it.bidType.equals("product_browse")) {
-                            budgetInputRekomendasi.textFieldInput.setText(( it.priceBid?.toInt()?:suggestBidPerClick).toString())
-                }
-            }
-        })
 
         if(budgetInput.textFiedlLabelText.text.isEmpty()) {
             budgetInput.setError(true)
