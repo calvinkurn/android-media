@@ -176,4 +176,21 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         // Then
         assertEquals(viewModel.msgRead.value, null)
     }
+
+
+    @Test
+    fun should_update_delete_msg_value_when_receive_delete_msg_event() {
+        // Given
+        val responseText = WebsocketResponses.deleteMsg
+        val chat = generateChatPojoFromWsResponse(responseText)
+        onConnectWebsocket {
+            it.onMessage(websocket, responseText)
+        }
+
+        // When
+        viewModel.connectWebSocket()
+
+        // Then
+        assertEquals(viewModel.msgDeleted.value, chat.replyTime)
+    }
 }

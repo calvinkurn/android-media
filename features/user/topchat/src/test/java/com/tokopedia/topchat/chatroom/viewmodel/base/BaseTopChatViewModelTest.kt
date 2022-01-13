@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
@@ -117,9 +118,9 @@ abstract class BaseTopChatViewModelTest {
     @RelaxedMockK
     lateinit var webSocketStateHandler: WebSocketStateHandler
 
-    private val webSocketParser: WebSocketParser = DefaultWebSocketParser()
+    protected val webSocketParser: WebSocketParser = DefaultWebSocketParser()
 
-    private val topChatRoomWebSocketMessageMapper = TopChatRoomWebSocketMessageMapper()
+    protected val topChatRoomWebSocketMessageMapper = TopChatRoomWebSocketMessageMapper()
 
     @RelaxedMockK
     lateinit var payloadGenerator: WebsocketPayloadGenerator
@@ -196,5 +197,10 @@ abstract class BaseTopChatViewModelTest {
         verify {
             chatWebSocket.sendPayload(payload)
         }
+    }
+
+    protected fun generateChatPojoFromWsResponse(response: String): ChatSocketPojo {
+        val wsResponse = webSocketParser.parseResponse(response)
+        return topChatRoomWebSocketMessageMapper.parseResponse(wsResponse)
     }
 }

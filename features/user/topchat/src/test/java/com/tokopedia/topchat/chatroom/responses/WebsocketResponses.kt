@@ -69,4 +69,14 @@ object WebsocketResponses {
           }
         }
     """.trimIndent()
+
+    val deleteMsg = """
+          {
+            "code": 104,
+            "data": {
+              "msg_id": 0,
+              "reply_time": 1638958002690827000
+            }
+          }
+    """.trimIndent()
 }
