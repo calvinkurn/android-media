@@ -48,6 +48,10 @@ class AnimatedTextIcon : LinearLayout {
         }
     }
 
+    fun getIconInstanceView(): View? {
+        return icImg
+    }
+
     fun renderText(text: String, iconUnify: Int) {
         txtTitle?.show()
         txtTitle?.text = text

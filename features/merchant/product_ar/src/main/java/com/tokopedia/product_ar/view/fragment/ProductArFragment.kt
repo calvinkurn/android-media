@@ -18,6 +18,9 @@ import com.modiface.mfemakeupkit.data.MFETrackingData
 import com.modiface.mfemakeupkit.effects.MFEMakeupProduct
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2.Companion.POSITION_TOP
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
@@ -40,6 +43,7 @@ import com.tokopedia.product_ar.databinding.FragmentProductArBinding
 import com.tokopedia.product_ar.model.state.AnimatedTextIconClickMode
 import com.tokopedia.product_ar.model.state.ModifaceViewMode
 import com.tokopedia.product_ar.util.AnimatedTextIcon
+import com.tokopedia.product_ar.util.CoachMarkArSharedPreference
 import com.tokopedia.product_ar.util.ProductArConstant.REQUEST_CODE_CAMERA_PERMISSION
 import com.tokopedia.product_ar.util.ProductArConstant.REQUEST_CODE_IMAGE_PICKER
 import com.tokopedia.product_ar.view.ProductArActivity
@@ -77,6 +81,9 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
+    @Inject
+    lateinit var coachMarkSharedPref: CoachMarkArSharedPreference
+
     private var viewModel: ProductArViewModel? = null
     private var sharedViewModel: ProductArSharedViewModel? = null
 
@@ -111,7 +118,6 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-
         binding?.mainImg?.let {
             getMakeUpEngine()?.setDetectionCallbackForCameraFeed(this)
             getMakeUpEngine()?.attachMakeupView(it)
@@ -127,6 +133,38 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
 
         binding?.imgShadowBackground?.setImageResource(R.drawable.ic_gradient_ar)
         setupNavToolbar()
+    }
+
+    private fun setupCoachMark() {
+        val shouldShowCoachmark = coachMarkSharedPref.getCoachMarkState() == false
+
+        if (shouldShowCoachmark) {
+            val coachMarkList = arrayListOf<CoachMark2Item>()
+
+            partialBottomArView?.rvVariant?.run {
+                val title1 = context.getString(R.string.coachmark_1_title_ar)
+                val desc1 = context.getString(R.string.coachmark_1_desc_ar)
+                coachMarkList.add(CoachMark2Item(this,
+                        title1, position = POSITION_TOP, description = desc1))
+            }
+
+            binding?.animatedTxtIcon2?.getIconInstanceView()?.run {
+                val title2 = context.getString(R.string.coachmark_2_title_ar)
+                val desc2 = context.getString(R.string.coachmark_2_desc_ar)
+                coachMarkList.add(CoachMark2Item(this,
+                        title2, position = POSITION_TOP, description = desc2))
+            }
+
+            binding?.icCompareAr?.run {
+                val title3 = context.getString(R.string.coachmark_2_title_ar)
+                val desc3 = context.getString(R.string.coachmark_2_desc_ar)
+                coachMarkList.add(CoachMark2Item(this,
+                        title3, position = POSITION_TOP, description = desc3))
+            }
+
+            CoachMark2(requireContext()).showCoachMark(coachMarkList)
+            coachMarkSharedPref.setCoachMarkState(true)
+        }
     }
 
     private fun initView() {
@@ -276,6 +314,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
                     binding?.globalErrorProductAr?.hide()
                     setupNavBarIconPage()
                     partialBottomArView?.renderRecyclerView(it.data)
+                    setupCoachMark()
                 }
                 is Fail -> {
                     shouldPause = false
@@ -354,7 +393,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         }
     }
 
-    private fun onSuccessAtc(successMessage:String?) {
+    private fun onSuccessAtc(successMessage: String?) {
         context?.let {
             val message = if (successMessage == null || successMessage.isEmpty())
                 it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default)

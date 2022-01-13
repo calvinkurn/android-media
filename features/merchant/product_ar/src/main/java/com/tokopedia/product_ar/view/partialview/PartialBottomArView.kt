@@ -28,7 +28,7 @@ class PartialBottomArView private constructor(val view: View, val listener: Prod
     private val txtMainPrice = view.findViewById<Typography>(R.id.txt_main_price_ar)
     private val txtSlashPrice = view.findViewById<Typography>(R.id.txt_slash_price_ar)
     private val lblDiscounted = view.findViewById<Label>(R.id.lbl_discounted_ar)
-    private val rvVariant = view.findViewById<RecyclerView>(R.id.rv_ar)
+    val rvVariant = view.findViewById<RecyclerView>(R.id.rv_ar)
     private val buttonContainer = view.findViewById<ConstraintLayout>(R.id.container_button_ar)
     private val txtUnavailableProduct = view.findViewById<Typography>(R.id.txt_unavailable_product)
 
