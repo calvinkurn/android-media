@@ -48,15 +48,6 @@ class ShopCommonModule {
     }
 
     @Provides
-    @Named(GQLQueryNamedConstant.SHOP_INFO)
-    fun provideGqlQueryShopInfo(@ApplicationContext context: Context?): String {
-        return getShopInfoQuery(
-                GqlQueryConstant.SHOP_INFO_REQUEST_QUERY_STRING,
-                DEFAULT_SHOP_INFO_QUERY_NAME
-        )
-    }
-
-    @Provides
     @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_HEADER)
     fun provideGqlQueryShopInfoForHeader(@ApplicationContext context: Context?): String {
         return getShopInfoQuery(
@@ -159,12 +150,6 @@ class ShopCommonModule {
     fun provideFavorite(graphqlUseCase: MultiRequestGraphqlUseCase?,
                         @Named(GQLQueryNamedConstant.FAVORITE_STATUS_GQL) gqlQuery: String?): GQLGetShopFavoriteStatusUseCase {
         return GQLGetShopFavoriteStatusUseCase(gqlQuery!!, graphqlUseCase!!)
-    }
-
-    @Provides
-    fun provideGqlGetShopInfoUseCase(graphqlUseCase: MultiRequestGraphqlUseCase?,
-                                     @Named(GQLQueryNamedConstant.SHOP_INFO) gqlQuery: String?): GQLGetShopInfoUseCase {
-        return GQLGetShopInfoUseCase(gqlQuery!!, graphqlUseCase!!)
     }
 
     @GqlGetShopInfoForHeaderUseCaseQualifier
