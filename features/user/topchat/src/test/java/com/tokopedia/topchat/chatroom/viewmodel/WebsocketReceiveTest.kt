@@ -215,4 +215,21 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
             (chatUiModel as MessageUiModel).localId
         )
     }
+
+    @Test
+    fun should_render_msg_when_receive_reply_event_from_opposite() {
+        // Given
+        val responseText = WebsocketResponses.generateReplyMsg(
+            isOpposite = true
+        )
+        onConnectWebsocket {
+            it.onMessage(websocket, responseText)
+        }
+
+        // When
+        viewModel.connectWebSocket()
+
+        // Then
+        verifySendMarkAsRead()
+    }
 }
