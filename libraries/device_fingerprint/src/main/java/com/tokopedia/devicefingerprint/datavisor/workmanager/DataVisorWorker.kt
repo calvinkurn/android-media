@@ -40,7 +40,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
             return Result.failure()
         }
         val isLoginRegister = inputData.getBoolean(PARAM_IS_LOGIN_REGISTER, false)
-        val reinitDataVisor = isLoginRegister || lastToken == DEFAULT_VALUE_DATAVISOR || isTokenExpired
+        val reinitDataVisor = isLoginRegister || lastToken == DEFAULT_VALUE_DATAVISOR || lastToken.isEmpty() || isTokenExpired
         val needCheckExpired = !reinitDataVisor
         return withContext(Dispatchers.IO) {
             val result: Result
@@ -160,6 +160,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
                     if (GlobalConfig.isSellerApp()) {
                         return@launch
                     }
+                    initVar(appContext)
                     if (forceWorker || needToRun(appContext)) {
                         runWorker(appContext, forceWorker)
                     }
@@ -192,13 +193,6 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
         }
 
         private fun needToRun(context: Context): Boolean {
-            if (lastToken.isEmpty()) {
-                val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
-                lastToken = sp.getString(KEY_TOKEN, DEFAULT_VALUE_DATAVISOR)
-                    ?: DEFAULT_VALUE_DATAVISOR
-                lastTimestampWorker = sp.getLong(KEY_TS_WORKER, 0L)
-                isTokenExpired = sp.getBoolean(KEY_EXPIRED, false)
-            }
             val userSession = getUserSession(context)
             if (!userSession.isLoggedIn) {
                 return false
@@ -207,6 +201,16 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
                 return false
             }
             return true
+        }
+
+        fun initVar(context: Context){
+            if (lastToken.isEmpty()) {
+                val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                lastToken = sp.getString(KEY_TOKEN, DEFAULT_VALUE_DATAVISOR)
+                    ?: DEFAULT_VALUE_DATAVISOR
+                lastTimestampWorker = sp.getLong(KEY_TS_WORKER, 0L)
+                isTokenExpired = sp.getBoolean(KEY_EXPIRED, false)
+            }
         }
 
         fun getUserSession(context: Context): UserSessionInterface {
