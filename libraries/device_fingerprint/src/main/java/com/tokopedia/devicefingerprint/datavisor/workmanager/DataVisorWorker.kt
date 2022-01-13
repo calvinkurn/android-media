@@ -5,7 +5,7 @@ import androidx.work.*
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance.Companion.DEFAULT_VALUE_DATAVISOR
-import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance.Companion.DV_SHARED_PREF_NAME
+import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance.Companion.getSharedPrefName
 import com.tokopedia.devicefingerprint.datavisor.response.SubmitDeviceInitResponse
 import com.tokopedia.devicefingerprint.datavisor.usecase.SubmitDVTokenUseCase
 import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
@@ -21,7 +21,8 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.resume
 
-class DataVisorWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker(appContext, params) {
+class DataVisorWorker(appContext: Context, params: WorkerParameters) :
+    CoroutineWorker(appContext, params) {
 
     @Inject
     lateinit var submitDVTokenUseCase: SubmitDVTokenUseCase
@@ -91,14 +92,18 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
     }
 
     private fun sendLog(token: String = "", isError: Boolean = false, throwableString: String) {
-        ServerLogger.log(Priority.P1, LOG_TAG,
-            mapOf("token" to token,
+        ServerLogger.log(
+            Priority.P1, LOG_TAG,
+            mapOf(
+                "token" to token,
                 "isError" to isError.toString(),
-                "error" to throwableString))
+                "error" to throwableString
+            )
+        )
     }
 
     fun setTokenLocal(context: Context, token: String) {
-        val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
+        val sp = context.getSharedPreferences(getSharedPrefName(), Context.MODE_PRIVATE)
         val now = System.currentTimeMillis()
         val editor = sp.edit()
         editor.putString(KEY_TOKEN, token).putLong(KEY_TS_TOKEN, now)
@@ -112,8 +117,10 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
         sendDataVisorToServer(DEFAULT_VALUE_DATAVISOR, runAttemptCount, errorMessage)
     }
 
-    private suspend fun sendDataVisorToServer(token: String = DEFAULT_VALUE_DATAVISOR,
-                                              countAttempt: Int, errorMessage: String): SubmitDeviceInitResponse {
+    private suspend fun sendDataVisorToServer(
+        token: String = DEFAULT_VALUE_DATAVISOR,
+        countAttempt: Int, errorMessage: String
+    ): SubmitDeviceInitResponse {
         return submitDVTokenUseCase.execute(
             token,
             countAttempt,
@@ -152,7 +159,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
         }
 
         fun setTsWorker(context: Context) {
-            val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
+            val sp = context.getSharedPreferences(getSharedPrefName(), Context.MODE_PRIVATE)
             val now = System.currentTimeMillis()
             sp.edit().putLong(KEY_TS_WORKER, now)
                 .apply()
@@ -161,7 +168,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
 
         fun initVar(context: Context) {
             if (lastToken.isEmpty()) {
-                val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                val sp = context.getSharedPreferences(getSharedPrefName(), Context.MODE_PRIVATE)
                 lastToken = sp.getString(KEY_TOKEN, DEFAULT_VALUE_DATAVISOR)
                     ?: DEFAULT_VALUE_DATAVISOR
                 lastTimestampToken = sp.getLong(KEY_TS_TOKEN, 0L)
@@ -201,10 +208,13 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
                     ExistingWorkPolicy.REPLACE,
                     OneTimeWorkRequest
                         .Builder(DataVisorWorker::class.java)
-                        .setConstraints(Constraints.Builder()
-                            .setRequiredNetworkType(NetworkType.CONNECTED)
-                            .build())
-                        .build())
+                        .setConstraints(
+                            Constraints.Builder()
+                                .setRequiredNetworkType(NetworkType.CONNECTED)
+                                .build()
+                        )
+                        .build()
+                )
             } catch (ex: Exception) {
                 Timber.w(ex.toString())
             }
