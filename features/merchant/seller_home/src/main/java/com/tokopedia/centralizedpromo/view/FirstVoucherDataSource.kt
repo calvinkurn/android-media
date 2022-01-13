@@ -11,8 +11,14 @@ object FirstVoucherDataSource {
     private val TIME_DESCRIPTION = R.string.centralized_promo_bottomsheet_time_desc
     private val FLEXIBLE_PROMOTION_TITLE = R.string.centralized_promo_bottomsheet_flexible
     private val FLEXIBLE_PROMOTION_DESCRIPTION = R.string.centralized_promo_bottomsheet_flexible_desc
+    private val SELECTED_PRODUCT_TITLE = R.string.centralized_promo_bottomsheet_selected_product
+    private val SELECTED_PRODUCT_DESCRIPTION = R.string.centralized_promo_bottomsheet_selected_product_desc
+    private val FLEXIBLE_DISCOUNT_TITLE = R.string.centralized_promo_bottomsheet_flexible_discount
+    private val FLEXIBLE_DISCOUNT_DESCRIPTION = R.string.centralized_promo_bottomsheet_flexible_discount_desc
+    private val QUICK_SOLD_OUT_TITLE = R.string.centralized_promo_bottomsheet_quick_sold_out
+    private val QUICK_SOLD_OUT_DESCRIPTION = R.string.centralized_promo_bottomsheet_quick_sold_out_desc
 
-    fun getFirstVoucherInfoItems() = listOf(
+    fun getFirstVoucherCashbackInfoItems() = listOf(
             FirstVoucherUiModel(
                     iconDrawableRes = R.drawable.ic_voucher_increase_sells,
                     titleRes = INCREASE_SELLS_TITLE,
@@ -29,4 +35,23 @@ object FirstVoucherDataSource {
                     descriptionRes = FLEXIBLE_PROMOTION_DESCRIPTION
             )
     )
+
+    fun getFirstProductCouponInfoItems() = listOf(
+        FirstVoucherUiModel(
+            iconDrawableRes = R.drawable.ic_voucher_increase_sells,
+            titleRes = SELECTED_PRODUCT_TITLE,
+            descriptionRes = SELECTED_PRODUCT_DESCRIPTION
+        ),
+        FirstVoucherUiModel(
+            iconDrawableRes = R.drawable.ic_voucher_waktu,
+            titleRes = FLEXIBLE_DISCOUNT_TITLE,
+            descriptionRes = FLEXIBLE_DISCOUNT_DESCRIPTION
+        ),
+        FirstVoucherUiModel(
+            iconDrawableRes = R.drawable.ic_voucher_promosi_fleksibel,
+            titleRes = QUICK_SOLD_OUT_TITLE,
+            descriptionRes = QUICK_SOLD_OUT_DESCRIPTION
+        )
+    )
+
 }

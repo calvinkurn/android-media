@@ -1,5 +1,6 @@
 package com.tokopedia.centralizedpromo.view.viewmodel
 
+import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -27,12 +28,16 @@ class CentralizedPromoViewModel @Inject constructor(
     private val getChatBlastSellerMetadataUseCase: GetChatBlastSellerMetadataUseCase,
     private val voucherCashbackEligibleUseCase: VoucherCashbackEligibleUseCase,
     private val remoteConfig: FirebaseRemoteConfigImpl,
+    private val sharedPreferences: SharedPreferences,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     companion object {
         private const val UNAVAILABLE_PROMO_TYPE = 0
         private const val BROADCAST_CHAT_PROMO_TYPE = 2
+
+        private const val IS_MVC_FIRST_TIME = "is_mvc_first_time"
+        private const val IS_PRODUCT_COUPON_FIRST_TIME = "is_product_coupon_first_time"
     }
 
     val getLayoutResultLiveData: MutableLiveData<MutableMap<LayoutType, Result<BaseUiModel>>> =
@@ -84,17 +89,27 @@ class CentralizedPromoViewModel @Inject constructor(
             val isVoucherCashbackEligibleDeferred = async {
                 voucherCashbackEligibleUseCase.execute(userSession.shopId)
             }
+            val isVoucherCashbackFirstTimeDeferred = async {
+                sharedPreferences.getBoolean(IS_MVC_FIRST_TIME, true)
+            }
+            val isProductCouponFirstTimeDeferred = async {
+                sharedPreferences.getBoolean(IS_PRODUCT_COUPON_FIRST_TIME, true)
+            }
 
             val (broadcastChatExtra, chatBlastSellerUrl) = broadcastChatPairDeferred.await()
             val isFreeShippingEnabled = isFreeShippingEnabledDeferred.await()
             val isVoucherCashbackEligible = isVoucherCashbackEligibleDeferred.await()
+            val isVoucherCashbackFirstTime = isVoucherCashbackFirstTimeDeferred.await()
+            val isProductCouponFirstTime = isProductCouponFirstTimeDeferred.await()
             Success(
                 PromoCreationStaticData.provideStaticData(
                     resourceProvider,
                     broadcastChatExtra,
                     chatBlastSellerUrl,
                     isFreeShippingEnabled,
-                    isVoucherCashbackEligible
+                    isVoucherCashbackEligible,
+                    isVoucherCashbackFirstTime,
+                    isProductCouponFirstTime
                 )
             )
         } catch (t: Throwable) {

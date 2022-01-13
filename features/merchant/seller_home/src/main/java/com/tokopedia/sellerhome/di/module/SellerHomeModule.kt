@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.di.module
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -22,6 +23,8 @@ import dagger.Provides
 
 @Module
 class SellerHomeModule {
+
+    private val prefName = "voucher_creation"
 
     @SellerHomeScope
     @Provides
@@ -62,4 +65,11 @@ class SellerHomeModule {
         val analytics = TrackApp.getInstance().gtm
         return SellerMenuTracker(analytics, userSession)
     }
+
+    @SellerHomeScope
+    @Provides
+    fun provideVoucherCreationSharedPref(@ApplicationContext context: Context): SharedPreferences {
+        return context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
+    }
+
 }

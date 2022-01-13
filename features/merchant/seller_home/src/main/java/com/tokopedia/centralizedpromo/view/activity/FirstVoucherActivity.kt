@@ -1,16 +1,25 @@
-package com.tokopedia.sellerhome.adminrestriction.view.activity
+package com.tokopedia.centralizedpromo.view.activity
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
+import com.tokopedia.centralizedpromo.view.fragment.FirstVoucherBottomSheetFragment
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.adminrestriction.view.bottomsheet.AdminRestrictionBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class AdminRestrictionActivity: BaseSimpleActivity() {
-
+class FirstVoucherActivity: BaseSimpleActivity() {
+    
+    private val voucherType by lazy {
+        intent.data?.getQueryParameter(SellerHomeApplinkConst.VOUCHER_TYPE).orEmpty()
+    }
+    
     private val bottomSheet by lazy {
-        AdminRestrictionBottomSheet.createInstance(this)
+        FirstVoucherBottomSheetFragment.createInstance(voucherType).apply {
+            setCloseClickListener {
+                this.dismiss()
+            }
+        }
     }
 
     override fun getNewFragment(): Fragment? = null

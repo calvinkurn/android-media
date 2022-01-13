@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.FirstVoucherDataSource
 import com.tokopedia.centralizedpromo.view.adapter.FirstVoucherAdapter
@@ -26,13 +28,23 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
 
     companion object {
         @JvmStatic
-        fun createInstance() = FirstVoucherBottomSheetFragment().apply {
+        fun createInstance(voucherType: String) = FirstVoucherBottomSheetFragment().apply {
+            val bundle = Bundle().apply {
+                putString(SellerHomeApplinkConst.VOUCHER_TYPE, voucherType)
+            }
+            arguments = bundle
             setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
         }
+
+        private const val TAG = "first_voucher"
     }
 
     private val impressHolder: ImpressHolder = ImpressHolder()
     private var binding by autoClearedNullable<CentralizedPromoFirstVoucherBottomsheetLayoutBinding>()
+
+    private val voucherType by lazy {
+        arguments?.getString(SellerHomeApplinkConst.VOUCHER_TYPE).orEmpty()
+    }
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -68,6 +80,10 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
     }
 
+    fun show(fragmentManager: FragmentManager) {
+        show(fragmentManager, TAG)
+    }
+
     private fun initInjector() {
         DaggerSellerHomeComponent.builder()
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
@@ -81,16 +97,42 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
             dismiss()
         }
 
+        when (voucherType) {
+            SellerHomeApplinkConst.TYPE_PRODUCT -> {
+                binding?.firstVoucherBottomSheetTitle?.text =
+                    context?.getString(R.string.centralized_promo_bottomsheet_product_coupon_title)
+                binding?.firstVoucherButton?.text =
+                    context?.getString(R.string.centralized_promo_bottomsheet_product_coupon_next)
+            }
+            else -> {
+                binding?.firstVoucherBottomSheetTitle?.text =
+                    context?.getString(R.string.centralized_promo_bottomsheet_title)
+                binding?.firstVoucherButton?.text =
+                    context?.getString(R.string.centralized_promo_bottomsheet_next)
+            }
+        }
+
         binding?.firstVoucherRecyclerView?.run {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
-            val itemList = FirstVoucherDataSource.getFirstVoucherInfoItems()
+            val itemList =
+                when (voucherType) {
+                    SellerHomeApplinkConst.TYPE_PRODUCT -> FirstVoucherDataSource.getFirstProductCouponInfoItems()
+                    else -> FirstVoucherDataSource.getFirstVoucherCashbackInfoItems()
+                }
             adapter = FirstVoucherAdapter(itemList)
         }
 
         binding?.firstVoucherButton?.setOnClickListener {
             CentralizedPromoTracking.sendFirstVoucherBottomSheetClick(userSession.userId, false)
-            RouteManager.route(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
+            when (voucherType) {
+                SellerHomeApplinkConst.TYPE_PRODUCT -> {
+                    // TODO: go to create product coupon
+                }
+                else -> {
+                    RouteManager.route(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
+                }
+            }
             this.dismiss()
         }
     }
