@@ -4,7 +4,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
-import com.tokopedia.shop.score.uitest.features.performance.base.ShopScoreTest
+import com.tokopedia.shop.score.uitest.features.performance.base.ShopScoreUiTest
 import com.tokopedia.shop.score.stub.common.util.isViewDisplayed
 import com.tokopedia.shop.score.stub.common.util.onClick
 import com.tokopedia.shop.score.stub.common.util.onIdView
@@ -15,7 +15,7 @@ import org.hamcrest.CoreMatchers
 import org.junit.Test
 
 @UiTest
-class ReactivatedBeforeMondayOSActivityTest: ShopScoreTest() {
+class ReactivatedBeforeMondayOSActivityUiTest: ShopScoreUiTest() {
 
     override fun setup() {
         super.setup()

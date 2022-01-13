@@ -1,17 +1,8 @@
 package com.tokopedia.shop.score.uitest.features.performance.base
 
-import android.app.Activity
-import android.app.Instrumentation
-import android.content.Context
-import android.content.Intent
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.gm.common.data.source.cloud.model.ShopInfoPeriodWrapperResponse
@@ -19,19 +10,14 @@ import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.view.getNumberFormatted
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.common.BaseShopScoreTest
 import com.tokopedia.shop.score.performance.domain.model.GoldGetPMOStatusResponse
 import com.tokopedia.shop.score.performance.domain.model.GoldGetPMShopInfoResponse
 import com.tokopedia.shop.score.performance.domain.model.ShopScoreLevelResponse
 import com.tokopedia.shop.score.performance.presentation.model.HeaderShopPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerformanceUiModel
-import com.tokopedia.shop.score.performance.presentation.model.ItemFaqUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSellerUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
-import com.tokopedia.shop.score.stub.common.UserSessionStub
-import com.tokopedia.shop.score.stub.common.graphql.repository.GraphqlRepositoryStub
-import com.tokopedia.shop.score.stub.common.util.AndroidTestUtil
-import com.tokopedia.shop.score.stub.common.util.ShopPerformanceComponentStubInstance
-import com.tokopedia.shop.score.stub.common.util.ShopScorePrefManagerStub
 import com.tokopedia.shop.score.stub.common.util.getShopPerformanceFragment
 import com.tokopedia.shop.score.stub.common.util.getTextHtml
 import com.tokopedia.shop.score.stub.common.util.isViewDisplayed
@@ -42,114 +28,13 @@ import com.tokopedia.shop.score.stub.common.util.onIdView
 import com.tokopedia.shop.score.stub.common.util.smoothScrollTo
 import com.tokopedia.shop.score.stub.common.util.smoothScrollToFaq
 import com.tokopedia.shop.score.stub.common.util.withTextStr
-import com.tokopedia.shop.score.stub.performance.domain.mapper.ShopScoreCommonMapperStub
-import com.tokopedia.shop.score.stub.performance.domain.mapper.ShopScoreMapperStub
 import com.tokopedia.shop.score.stub.performance.domain.response.ShopInfoPeriodResponseStub
 import com.tokopedia.shop.score.stub.performance.domain.response.ShopScoreResponseStub
-import com.tokopedia.shop.score.stub.performance.domain.usecase.GetShopInfoPeriodUseCaseStub
-import com.tokopedia.shop.score.stub.performance.domain.usecase.GetShopPerformanceUseCaseStub
-import com.tokopedia.shop.score.stub.performance.presentation.activity.ShopPerformanceActivityStub
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import org.hamcrest.CoreMatchers.`is`
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
 
-abstract class ShopScoreTest {
-
-    @get:Rule
-    var activityRule = IntentsTestRule(ShopPerformanceActivityStub::class.java, true, false)
-
-    @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
-
-    protected lateinit var applicationContext: Context
-    protected lateinit var userSessionStub: UserSessionStub
-    protected lateinit var graphqlRepositoryStub: GraphqlRepositoryStub
-    protected lateinit var getShopInfoPeriodUseCaseStub: GetShopInfoPeriodUseCaseStub
-    protected lateinit var getShopPerformanceUseCaseStub: GetShopPerformanceUseCaseStub
-    protected lateinit var shopScorePrefManagerStub: ShopScorePrefManagerStub
-    protected lateinit var shopScoreMapperStub: ShopScoreMapperStub
-    protected lateinit var shopScoreCommonMapperStub: ShopScoreCommonMapperStub
-
-    protected val getShopPerformanceComponentStub by lazy {
-        ShopPerformanceComponentStubInstance.getShopPerformanceComponentStub(
-            applicationContext
-        )
-    }
-
-    protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
-
-    protected val existingSellerOsResponse: ShopScoreResponseStub
-        get() = AndroidTestUtil.parse(
-            "raw/seller/existing/shop_score_existing_os.json",
-            ShopScoreResponseStub::class.java
-        )
-
-    protected val existingSellerPmResponse = AndroidTestUtil.parse<ShopScoreResponseStub>(
-        "raw/seller/existing/shop_score_existing_pm.json",
-        ShopScoreResponseStub::class.java
-    )
-
-    protected val newOsAfterMondayResponse = AndroidTestUtil.parse<ShopScoreResponseStub>(
-        "raw/seller/new/new_os_after_monday.json",
-        ShopScoreResponseStub::class.java
-    )
-
-    protected val newOsBeforeMondayResponse = AndroidTestUtil.parse<ShopScoreResponseStub>(
-        "raw/seller/new/new_os_before_monday.json",
-        ShopScoreResponseStub::class.java
-    )
-
-    protected val shopInfoPeriodAfterMondayResponse =
-        AndroidTestUtil.parse<ShopInfoPeriodResponseStub>(
-            "raw/seller/new/shop_info_period_after_monday.json",
-            ShopInfoPeriodResponseStub::class.java
-        )
-
-    protected val reactivatedAfterMondayPmResponse = AndroidTestUtil.parse<ShopScoreResponseStub>(
-        "raw/seller/reactivated/reactivated_after_monday_pm.json",
-        ShopScoreResponseStub::class.java
-    )
-
-    protected val reactivatedBeforeMondayOsResponse = AndroidTestUtil.parse<ShopScoreResponseStub>(
-        "raw/seller/reactivated/reactivated_before_monday_os.json",
-        ShopScoreResponseStub::class.java
-    )
-
-    protected val shopInfoPeriodResponse: ShopInfoPeriodResponseStub
-        get() = AndroidTestUtil.parse(
-            "raw/seller/shopinfo/shop_info_period.json",
-            ShopInfoPeriodResponseStub::class.java
-        )
-
-    @Before
-    open fun setup() {
-        applicationContext = InstrumentationRegistry.getInstrumentation().context.applicationContext
-        graphqlRepositoryStub =
-            getShopPerformanceComponentStub.graphQlRepository() as GraphqlRepositoryStub
-        userSessionStub = getShopPerformanceComponentStub.userSessionInterface() as UserSessionStub
-        getShopPerformanceUseCaseStub =
-            getShopPerformanceComponentStub.getShopPerformanceUseCaseStub() as GetShopPerformanceUseCaseStub
-        getShopInfoPeriodUseCaseStub =
-            getShopPerformanceComponentStub.getShopInfoPeriodUseCaseStub() as GetShopInfoPeriodUseCaseStub
-        shopScoreCommonMapperStub =
-            getShopPerformanceComponentStub.shopScoreCommonMapper() as ShopScoreCommonMapperStub
-        shopScoreMapperStub =
-            getShopPerformanceComponentStub.shopScoreMapper() as ShopScoreMapperStub
-        shopScorePrefManagerStub =
-            getShopPerformanceComponentStub.shopScorePrefManager() as ShopScorePrefManagerStub
-    }
-
-    @After
-    fun finish() {
-        graphqlRepositoryStub.clearMocks()
-    }
-
-    protected fun getShopPerformancePageIntent(): Intent {
-        return ShopPerformanceActivityStub.createIntent(context)
-    }
+abstract class ShopScoreUiTest: BaseShopScoreTest() {
 
     protected fun getShopInfoPeriod(
         shopInfoPeriodResponseStub: ShopInfoPeriodResponseStub
@@ -173,21 +58,6 @@ abstract class ShopScoreTest {
             powerMerchantResponse = powerMerchantResponse,
             shopAge = goldGetPMShopInfoResponse?.shopAge.orZero(),
             dateShopCreated = getShopInfoPeriod(shopInfoPeriodResponseStub).dateShopCreated
-        )
-    }
-
-    protected fun getFaqList(
-        shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?,
-        goldGetPMShopInfoResponse: GoldGetPMShopInfoResponse.GoldGetPMShopInfo?,
-        pmData: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data.PowerMerchant
-    ): List<ItemFaqUiModel> {
-        return shopScoreMapperStub.mapToItemFaqUiModel(
-            isNewSeller = false,
-            isOfficialStore = true,
-            shopScoreDetail = shopScoreLevelResponse?.shopScoreDetail,
-            shopScore = shopScoreLevelResponse?.shopScore.orZero(),
-            shopAge = goldGetPMShopInfoResponse?.shopAge.orZero(),
-            pmData = pmData
         )
     }
 
@@ -714,15 +584,6 @@ abstract class ShopScoreTest {
         )
 
         closeBottomSheet()
-    }
-
-    protected fun closeBottomSheet() {
-        onIdView(com.tokopedia.unifycomponents.R.id.bottom_sheet_close).onClick()
-    }
-
-    protected fun intendingIntent() {
-        Intents.intending(IntentMatchers.anyIntent())
-            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
 }

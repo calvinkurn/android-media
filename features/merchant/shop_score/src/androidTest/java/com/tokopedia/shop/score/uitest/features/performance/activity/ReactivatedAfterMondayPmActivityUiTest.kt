@@ -7,7 +7,7 @@ import com.tokopedia.shop.score.performance.presentation.activity.ShopPerformanc
 import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ProtectedParameterSectionUiModel
-import com.tokopedia.shop.score.uitest.features.performance.base.ShopScoreTest
+import com.tokopedia.shop.score.uitest.features.performance.base.ShopScoreUiTest
 import com.tokopedia.shop.score.stub.common.util.isViewDisplayed
 import com.tokopedia.shop.score.stub.common.util.onClick
 import com.tokopedia.shop.score.stub.common.util.onIdView
@@ -17,7 +17,7 @@ import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 
 @UiTest
-class ReactivatedAfterMondayPmActivityTest: ShopScoreTest() {
+class ReactivatedAfterMondayPmActivityUiTest: ShopScoreUiTest() {
 
     override fun setup() {
         super.setup()

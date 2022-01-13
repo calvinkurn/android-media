@@ -1,5 +1,6 @@
 package com.tokopedia.shop.score.stub.common.util
 
+import android.app.Activity
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
@@ -12,6 +13,7 @@ import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.stub.performance.presentation.activity.ShopPerformanceActivityStub
@@ -19,6 +21,10 @@ import com.tokopedia.shop.score.stub.performance.presentation.fragment.ShopPerfo
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
+
+fun <T : Activity> performClose(activityTestRule: ActivityTestRule<T>) {
+    activityTestRule.finishActivity()
+}
 
 fun onIdView(id: Int): ViewInteraction = onView(allOf(withId(id)))
 

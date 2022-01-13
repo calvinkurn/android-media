@@ -3,7 +3,7 @@ package com.tokopedia.shop.score.uitest.features.performance.activity
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.uitest.features.performance.base.ShopScoreTest
+import com.tokopedia.shop.score.uitest.features.performance.base.ShopScoreUiTest
 import com.tokopedia.shop.score.stub.common.util.isViewDisplayed
 import com.tokopedia.shop.score.stub.common.util.onIdView
 import com.tokopedia.test.application.annotations.UiTest
@@ -12,7 +12,7 @@ import org.junit.Test
 import java.io.IOException
 
 @UiTest
-class ErrorStateActivityTest : ShopScoreTest() {
+class ErrorStateActivityUiTest : ShopScoreUiTest() {
 
     @Test
     fun show_global_error_state_with_no_connection_error() {
