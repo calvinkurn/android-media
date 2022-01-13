@@ -5,8 +5,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.UserReportSubmissionResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
@@ -16,10 +14,16 @@ import javax.inject.Inject
  */
 @GqlQuery(PostUserReportUseCase.QUERY_NAME, PostUserReportUseCase.QUERY)
 class PostUserReportUseCase @Inject constructor(
-    private val graphqlRepository: GraphqlRepository
+    graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<UserReportSubmissionResponse>(graphqlRepository) {
 
-    var params: RequestParams = RequestParams.EMPTY
+    init {
+        setGraphqlQuery(PostUserReportUseCaseQuery.GQL_QUERY)
+        setCacheStrategy(
+            GraphqlCacheStrategy
+            .Builder(CacheType.ALWAYS_CLOUD).build())
+        setTypeClass(UserReportSubmissionResponse::class.java)
+    }
 
     fun createParam(
         reporterId: Long,
@@ -41,26 +45,6 @@ class PostUserReportUseCase @Inject constructor(
         )
         return RequestParams.create().apply {
             putObject(INPUT, params)
-        }
-    }
-
-    override suspend fun executeOnBackground(): UserReportSubmissionResponse {
-        val gqlRequest = GraphqlRequest(
-            PostUserReportUseCaseQuery.GQL_QUERY,
-            UserReportSubmissionResponse::class.java,
-            params.parameters
-        )
-        val gqlResponse = graphqlRepository.response(
-            listOf(gqlRequest), GraphqlCacheStrategy
-                .Builder(CacheType.ALWAYS_CLOUD).build()
-        )
-
-        val error = gqlResponse.getError(UserReportSubmissionResponse::class.java)
-        if (error == null || error.isEmpty()) {
-            return gqlResponse.getData(UserReportSubmissionResponse::class.java)
-        } else {
-            throw MessageErrorException(error.mapNotNull { it.message }
-                .joinToString(separator = ", "))
         }
     }
 

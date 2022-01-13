@@ -46,7 +46,7 @@ class PlayViewerUserReportRepositoryImpl @Inject constructor(
             timestamp = timestamp,
             reportDesc = reportDesc
         )
-        postUserReportUseCase.params = request
+        postUserReportUseCase.setRequestParams(request.parameters)
         val response = postUserReportUseCase.executeOnBackground()
         return@withContext playUiModelMapper.mapUserReportSubmission(response.submissionReport)
     }

@@ -10,7 +10,7 @@ import java.lang.ref.WeakReference
 /**
  * Created by jegul on 30/06/20
  */
-class KeyboardWatcher(private val threshold: Int = 800) {
+class KeyboardWatcher(private val threshold: Int = 100) {
 
     @Volatile
     private var isKeyboardOpened: Boolean = false

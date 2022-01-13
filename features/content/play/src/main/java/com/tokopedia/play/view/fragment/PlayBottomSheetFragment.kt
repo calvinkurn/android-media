@@ -19,7 +19,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
@@ -53,6 +52,7 @@ import com.tokopedia.play_common.ui.leaderboard.PlayInteractiveLeaderboardViewCo
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.url.TokopediaUrl
 import kotlinx.coroutines.flow.collectLatest
 import java.net.ConnectException
 import java.net.UnknownHostException
@@ -83,8 +83,6 @@ class PlayBottomSheetFragment @Inject constructor(
         private const val PERCENT_FULL_SHEET_HEIGHT = 0.9
 
         private const val TO_SECONDS_DIVIDER = 1000L
-
-        private const val MEDIA_URL_PATH = "play/channel/"
     }
 
     private val productSheetView by viewComponent { ProductSheetViewComponent(it, this) }
@@ -281,7 +279,7 @@ class PlayBottomSheetFragment @Inject constructor(
         )
     }
 
-    private fun getMediaUrl(channelId: String) : String = TkpdBaseURL.WEB_DOMAIN + MEDIA_URL_PATH + channelId
+    private fun getMediaUrl(channelId: String) : String = "${TokopediaUrl.getInstance().WEB}play/channel/$channelId"
 
     private fun getTimestampVideo(startTime: String): Long{
         return if(playViewModel.channelType.isLive){
@@ -446,7 +444,7 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun showDialog(title: String, description: String, primaryCTAText: String, secondaryCTAText: String, primaryAction: () -> Unit, secondaryAction: () -> Unit = {}){
         activity?.let {
-            val dialog = DialogUnify(context = requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            val dialog = DialogUnify(context = it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.apply {
                 setTitle(title)
                 setDescription(description)
