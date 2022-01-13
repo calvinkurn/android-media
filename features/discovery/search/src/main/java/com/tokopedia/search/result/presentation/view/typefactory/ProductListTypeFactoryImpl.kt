@@ -9,28 +9,31 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.search.result.presentation.model.*
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.SearchLoadingMoreViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.*
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ChooseAddressViewHolder
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationSizeViewHolder
 import com.tokopedia.search.result.presentation.view.listener.*
 import com.tokopedia.topads.sdk.base.Config
 
+@Suppress("LongParameterList")
 class ProductListTypeFactoryImpl(
-    private val productListener: ProductListener,
-    private val tickerListener: TickerListener,
-    private val suggestionListener: SuggestionListener,
-    private val globalNavListener: GlobalNavListener,
-    private val bannerAdsListener: BannerAdsListener,
-    private val emptyStateListener: EmptyStateListener,
-    private val recommendationListener: RecommendationListener,
-    private val inspirationCarouselListener: InspirationCarouselListener,
-    private val broadMatchListener: BroadMatchListener,
-    private val inspirationCardListener: InspirationCardListener,
-    private val searchInTokopediaListener: SearchInTokopediaListener,
-    private val searchNavigationListener: SearchNavigationClickListener,
-    private val topAdsImageViewListener: TopAdsImageViewListener,
-    private val chooseAddressListener: ChooseAddressListener,
-    private val bannerListener: BannerListener,
-    private val lastFilterListener: LastFilterListener,
-    private val topAdsConfig: Config,
-    private val inspirationSizeOptionListener: InspirationSizeOptionListener,
+        private val productListener: ProductListener,
+        private val tickerListener: TickerListener,
+        private val suggestionListener: SuggestionListener,
+        private val globalNavListener: GlobalNavListener,
+        private val bannerAdsListener: BannerAdsListener,
+        private val emptyStateListener: EmptyStateListener,
+        private val recommendationListener: RecommendationListener,
+        private val inspirationCarouselListener: InspirationCarouselListener,
+        private val broadMatchListener: BroadMatchListener,
+        private val inspirationCardListener: InspirationCardListener,
+        private val searchInTokopediaListener: SearchInTokopediaListener,
+        private val searchNavigationListener: SearchNavigationClickListener,
+        private val topAdsImageViewListener: TopAdsImageViewListener,
+        private val chooseAddressListener: ChooseAddressListener,
+        private val bannerListener: BannerListener,
+        private val lastFilterListener: LastFilterListener,
+        private val topAdsConfig: Config,
+        private val inspirationSizeOptionListener: InspirationSizeOptionListener,
 ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
 
     override var recyclerViewItem = 0
@@ -142,7 +145,7 @@ class ProductListTypeFactoryImpl(
     override fun type(sizeDataView: SizeDataView): Int {
         return InspirationSizeViewHolder.LAYOUT
     }
-
+    @Suppress("ComplexMethod")
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ListProductItemViewHolder.LAYOUT ->

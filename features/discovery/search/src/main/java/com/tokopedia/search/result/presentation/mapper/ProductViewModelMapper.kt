@@ -22,11 +22,31 @@ import com.tokopedia.search.result.domain.model.SearchProductModel.Related
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationWidget
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchProductData
-import com.tokopedia.search.result.presentation.model.*
-import java.util.*
+import com.tokopedia.search.result.presentation.model.BadgeItemDataView
+import com.tokopedia.search.result.presentation.model.BannerDataView
+import com.tokopedia.search.result.presentation.model.BroadMatch
+import com.tokopedia.search.result.presentation.model.BroadMatchDataView
+import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
+import com.tokopedia.search.result.presentation.model.BroadMatchProduct
+import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
+import com.tokopedia.search.result.presentation.model.GlobalNavDataView
+import com.tokopedia.search.result.presentation.model.InspirationCardDataView
+import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.presentation.model.LabelGroupDataView
+import com.tokopedia.search.result.presentation.model.LabelGroupVariantDataView
+import com.tokopedia.search.result.presentation.model.LastFilterDataView
+import com.tokopedia.search.result.presentation.model.ProductDataView
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.presentation.model.RelatedDataView
+import com.tokopedia.search.result.presentation.model.SuggestionDataView
+import com.tokopedia.search.result.presentation.model.TickerDataView
+import com.tokopedia.search.result.presentation.model.SizeDataView
+import com.tokopedia.search.result.presentation.model.SizeOptionDataView
 
 class ProductViewModelMapper {
 
+    @Suppress("LongParameterList")
     fun convertToProductViewModel(
         lastProductItemPosition: Int,
         searchProductModel: SearchProductModel,
@@ -56,7 +76,6 @@ class ProductViewModelMapper {
             pageTitle,
             dimension90,
         )
-        productDataView.adsModel = searchProductModel.topAdsModel
         productDataView.tickerModel = convertToTickerDataView(
             searchProductData,
             keyword,

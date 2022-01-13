@@ -9,8 +9,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.CopyableKeyValueUiModel
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifyprinciples.Typography
 
 open class CopyableKeyValueViewHolder<T : CopyableKeyValueUiModel>(itemView: View?) : BaseToasterViewHolder<T>(itemView) {
@@ -18,7 +16,7 @@ open class CopyableKeyValueViewHolder<T : CopyableKeyValueUiModel>(itemView: Vie
         val LAYOUT = R.layout.item_buyer_order_detail_copyable_key_value
     }
     private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
-    private val icBuyerOrderDetailCopy = itemView?.findViewById<IconUnify>(R.id.icBuyerOrderDetailCopy)
+    private val maskTriggerCopyArea = itemView?.findViewById<View>(R.id.maskTriggerCopyArea)
     private val tvBuyerOrderDetailCopyableValue = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailCopyableValue)
     private val tvBuyerOrderDetailCopyableLabel = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailCopyableLabel)
 
@@ -31,8 +29,8 @@ open class CopyableKeyValueViewHolder<T : CopyableKeyValueUiModel>(itemView: Vie
     override fun bind(element: T?) {
         element?.let {
             this.element = it
-            setupLabel(it.label)
-            setupCopyIcon(it.copyLabel)
+            setupLabel(it.label.getString(itemView.context))
+            setupTriggerCopyArea(it.copyLabel.getString(itemView.context))
             setupTextToShow(it.copyableText)
         }
     }
@@ -44,7 +42,7 @@ open class CopyableKeyValueViewHolder<T : CopyableKeyValueUiModel>(itemView: Vie
     }
 
     private fun setupClickListener() {
-        icBuyerOrderDetailCopy?.setOnClickListener {
+        maskTriggerCopyArea?.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 it?.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
             } else {
@@ -58,11 +56,8 @@ open class CopyableKeyValueViewHolder<T : CopyableKeyValueUiModel>(itemView: Vie
         tvBuyerOrderDetailCopyableLabel?.text = label
     }
 
-    private fun setupCopyIcon(copyLabel: String) {
-        icBuyerOrderDetailCopy?.run {
-            tag = copyLabel
-            showWithCondition(copyLabel.isNotBlank())
-        }
+    private fun setupTriggerCopyArea(copyLabel: String) {
+        maskTriggerCopyArea?.tag = copyLabel
     }
 
     private fun setupTextToShow(text: String) {
@@ -75,10 +70,10 @@ open class CopyableKeyValueViewHolder<T : CopyableKeyValueUiModel>(itemView: Vie
         element?.let {
             Utils.copyText(
                 itemView.context,
-                it.copyLabel,
+                it.copyLabel.getString(itemView.context),
                 MethodChecker.fromHtmlWithoutExtraSpace(it.copyableText)
             )
-            showToaster(it.copyMessage)
+            showToaster(it.copyMessage.getString(itemView.context))
         }
     }
 }

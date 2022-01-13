@@ -60,4 +60,8 @@ object RollenceKey {
     const val WISHLIST_V2_REVAMP = "Wishlist_revamp_apps"
     const val WISHLIST_OLD_VARIANT = "control_variant"
     const val WISHLIST_V2_VARIANT = "experiment_variant"
+
+    // advanced search negative keywords
+    const val SEARCH_ADVANCED_KEYWORD_ADV_NEG = "keyword_adv_neg"
+    const val SEARCH_ADVANCED_NEGATIVE_NO_ADS = "negative_no_ads"
 }
