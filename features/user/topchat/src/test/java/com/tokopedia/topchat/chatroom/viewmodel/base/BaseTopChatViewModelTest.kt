@@ -119,8 +119,7 @@ abstract class BaseTopChatViewModelTest {
 
     private val webSocketParser: WebSocketParser = DefaultWebSocketParser()
 
-    @RelaxedMockK
-    lateinit var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper
+    private val topChatRoomWebSocketMessageMapper = TopChatRoomWebSocketMessageMapper()
 
     @RelaxedMockK
     lateinit var payloadGenerator: WebsocketPayloadGenerator

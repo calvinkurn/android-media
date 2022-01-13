@@ -118,4 +118,18 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         // Then
         assertEquals(viewModel.isTyping.value, true)
     }
+
+    @Test
+    fun should_do_nothing_when_msg_not_intended_for_me() {
+        // Given
+        onConnectWebsocket {
+            it.onMessage(websocket, WebsocketResponses.typingNotForMe)
+        }
+
+        // When
+        viewModel.connectWebSocket()
+
+        // Then
+        assertEquals(viewModel.isTyping.value, null)
+    }
 }
