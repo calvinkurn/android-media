@@ -5,20 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-        <com.tokopedia.recharge_component.widget.MCCMFlashSaleFullWidget
-            android:id="@+id/widget_mccm_full"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-
-        <com.tokopedia.recharge_component.widget.MCCMFlashSaleFullWidget
-            android:id="@+id/widget_flash_sale_full"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-
-        <com.tokopedia.recharge_component.widget.DenomFullWidget
-            android:id="@+id/widget_denom_full"
+        <com.tokopedia.recharge_component.widget.RechargeRecommendationCardWidget
+            android:id="@+id/widget_recommendation_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
