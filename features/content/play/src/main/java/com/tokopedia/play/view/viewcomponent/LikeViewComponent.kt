@@ -100,7 +100,6 @@ class LikeViewComponent(
     }
 
     fun playLikeAnimation() = cleanAnimate {
-        clickAnimator.playTogether(clickRotateAnimation, clickScaleXAnimation, clickScaleYAnimation)
         clickAnimator.start()
 
         /**
@@ -112,7 +111,6 @@ class LikeViewComponent(
     }
 
     fun playReminderAnimation() = cleanAnimate {
-        remindAnimator.playTogether(remindRotateAnimation, remindScaleXAnimation, remindScaleYAnimation)
         remindAnimator.start()
     }
 
