@@ -220,8 +220,6 @@
     <string name="notif_troubleshooter_app_name">Push Notification Troubleshooter</string>
 
     <!-- Payment-Setting-->
-    <string name="df_payment_instant_debit_bca">Instant Debit BCA</string>
-    <string name="instant_debit_bca_title">Tambah Kartu BCA</string>
     <string name="payment_setting_app_name">payment_setting</string>
     <string name="payment_title_list_card">Pengaturan Kartu Kredit</string>
     <string name="payment_label_credit_card">Kartu Kredit</string>
