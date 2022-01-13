@@ -20,10 +20,8 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.resume
-import kotlin.math.min
 
-class DataVisorWorker(appContext: Context, params: WorkerParameters) :
-    CoroutineWorker(appContext, params) {
+class DataVisorWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker(appContext, params) {
 
     @Inject
     lateinit var submitDVTokenUseCase: SubmitDVTokenUseCase
@@ -39,9 +37,6 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
         if (runAttemptCount > MAX_RUN_ATTEMPT) {
             return Result.failure()
         }
-        val isLoginRegister = inputData.getBoolean(PARAM_IS_LOGIN_REGISTER, false)
-        val reinitDataVisor = isLoginRegister || lastToken == DEFAULT_VALUE_DATAVISOR || lastToken.isEmpty() || isTokenExpired
-        val needCheckExpired = !reinitDataVisor
         return withContext(Dispatchers.IO) {
             val result: Result
             var resultInit: Pair<String, String>?
@@ -52,22 +47,17 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
             try {
                 resultInit = suspendCancellableCoroutine { continuation ->
                     try {
-                        if (reinitDataVisor) {
-                            VisorFingerprintInstance.initToken(applicationContext,
-                                userSession.userId,
-                                listener = object : VisorFingerprintInstance.onVisorInitListener {
-                                    override fun onSuccessInitToken(token: String) {
-                                        lastToken = token
-                                        continuation.resume(token to "")
-                                    }
+                        VisorFingerprintInstance.initToken(applicationContext,
+                            userSession.userId,
+                            listener = object : VisorFingerprintInstance.onVisorInitListener {
+                                override fun onSuccessInitToken(token: String) {
+                                    continuation.resume(token to "")
+                                }
 
-                                    override fun onFailedInitToken(error: String) {
-                                        continuation.resume("" to error)
-                                    }
-                                })
-                        } else {
-                            continuation.resume(lastToken to "")
-                        }
+                                override fun onFailedInitToken(error: String) {
+                                    continuation.resume("" to error)
+                                }
+                            })
                     } catch (e: Exception) {
                         continuation.resume("" to e.toString())
                     }
@@ -78,17 +68,10 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
             val token = resultInit?.first ?: ""
             result = if (token.isNotEmpty()) {
                 try {
-                    val resultServer =
-                        sendDataVisorToServer(token, runAttemptCount, "", needCheckExpired)
+                    val resultServer = sendDataVisorToServer(token, runAttemptCount, "")
                     if (!resultServer.subDvcIntlEvent.isError) {
-                        setToken(applicationContext, token)
-                        if (resultServer.subDvcIntlEvent.dvData.isExpire) {
-                            setTokenExpired(applicationContext, true)
-                            Result.retry()
-                        } else {
-                            setTokenExpired(applicationContext, false)
-                            Result.success()
-                        }
+                        setTokenLocal(applicationContext, token)
+                        Result.success()
                     } else {
                         sendLog(token, true, "")
                         Result.retry()
@@ -100,7 +83,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
             } else {
                 val error = resultInit?.second ?: ""
                 sendLog(token, false, error)
-                sendErrorDataVisorToServer(runAttemptCount, error, false)
+                sendErrorDataVisorToServer(runAttemptCount, error)
                 Result.retry()
             }
             result
@@ -108,34 +91,33 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
     }
 
     private fun sendLog(token: String = "", isError: Boolean = false, throwableString: String) {
-        ServerLogger.log(
-            Priority.P1, LOG_TAG,
-            mapOf(
-                "token" to token,
+        ServerLogger.log(Priority.P1, LOG_TAG,
+            mapOf("token" to token,
                 "isError" to isError.toString(),
-                "error" to throwableString
-            )
-        )
+                "error" to throwableString))
     }
 
-    suspend fun sendErrorDataVisorToServer(
-        runAttemptCount: Int,
-        errorMessage: String,
-        checkForceInit: Boolean
-    ) {
-        sendDataVisorToServer(DEFAULT_VALUE_DATAVISOR, runAttemptCount, errorMessage, checkForceInit)
+    fun setTokenLocal(context: Context, token: String) {
+        val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
+        val now = System.currentTimeMillis()
+        val editor = sp.edit()
+        editor.putString(KEY_TOKEN, token).putLong(KEY_TS_TOKEN, now)
+        editor.apply()
+        lastToken = token
+        lastTimestampToken = now
+        FingerprintModelGenerator.expireFingerprint()
     }
 
-    private suspend fun sendDataVisorToServer(
-        token: String = DEFAULT_VALUE_DATAVISOR,
-        countAttempt: Int, errorMessage: String,
-        checkForce: Boolean
-    ): SubmitDeviceInitResponse {
+    suspend fun sendErrorDataVisorToServer(runAttemptCount: Int, errorMessage: String) {
+        sendDataVisorToServer(DEFAULT_VALUE_DATAVISOR, runAttemptCount, errorMessage)
+    }
+
+    private suspend fun sendDataVisorToServer(token: String = DEFAULT_VALUE_DATAVISOR,
+                                              countAttempt: Int, errorMessage: String): SubmitDeviceInitResponse {
         return submitDVTokenUseCase.execute(
             token,
             countAttempt,
-            errorMessage,
-            checkForce = checkForce
+            errorMessage
         )
     }
 
@@ -143,14 +125,14 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
         const val WORKER_NAME = "DV_WORKER"
         const val MAX_RUN_ATTEMPT = 3
         const val KEY_TOKEN = "tk"
-        const val KEY_EXPIRED = "is_exp"
+        const val KEY_TS_TOKEN = "ts_tk"
         const val KEY_TS_WORKER = "ts_worker"
-        const val PARAM_IS_LOGIN_REGISTER = "isloginRegister"
         const val LOG_TAG = "GQL_ERROR_RISK"
+        val THRES_TOKEN_VALID_AGE = TimeUnit.DAYS.toMillis(30)
         val THRES_WORKER = TimeUnit.DAYS.toMillis(1)
         var lastToken = ""
+        var lastTimestampToken = 0L
         var lastTimestampWorker = 0L
-        var isTokenExpired = false
         var userSession: UserSessionInterface? = null
 
         fun scheduleWorker(context: Context, forceWorker: Boolean) {
@@ -162,21 +144,14 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
                     }
                     initVar(appContext)
                     if (forceWorker || needToRun(appContext)) {
-                        runWorker(appContext, forceWorker)
+                        runWorker(appContext)
                     }
                 } catch (ignored: Exception) {
                 }
             }
         }
 
-        fun setToken(context: Context, token: String) {
-            val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
-            lastToken = token
-            sp.edit().putString(KEY_TOKEN, token).apply()
-            FingerprintModelGenerator.expireFingerprint()
-        }
-
-        private fun setTsWorker(context: Context) {
+        fun setTsWorker(context: Context) {
             val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
             val now = System.currentTimeMillis()
             sp.edit().putLong(KEY_TS_WORKER, now)
@@ -184,15 +159,23 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
             lastTimestampWorker = now
         }
 
-        fun setTokenExpired(context: Context, isExpired: Boolean) {
-            if (isTokenExpired != isExpired) {
+        fun initVar(context: Context) {
+            if (lastToken.isEmpty()) {
                 val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
-                sp.edit().putBoolean(KEY_EXPIRED, isExpired).apply()
-                isTokenExpired = isExpired
+                lastToken = sp.getString(KEY_TOKEN, DEFAULT_VALUE_DATAVISOR)
+                    ?: DEFAULT_VALUE_DATAVISOR
+                lastTimestampToken = sp.getLong(KEY_TS_TOKEN, 0L)
+                lastTimestampWorker = sp.getLong(KEY_TS_WORKER, 0L)
             }
         }
 
-        private fun needToRun(context: Context): Boolean {
+        fun needToRun(context: Context): Boolean {
+            if (lastToken != DEFAULT_VALUE_DATAVISOR) {
+                //check token valid age
+                if (System.currentTimeMillis() - lastTimestampToken < THRES_TOKEN_VALID_AGE) {
+                    return false
+                }
+            }
             val userSession = getUserSession(context)
             if (!userSession.isLoggedIn) {
                 return false
@@ -203,19 +186,6 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
             return true
         }
 
-        fun initVar(context: Context){
-            if (lastToken.isEmpty()) {
-                val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
-                lastToken = sp.getString(KEY_TOKEN, DEFAULT_VALUE_DATAVISOR)
-                    ?: DEFAULT_VALUE_DATAVISOR
-                if (lastToken.isEmpty()) {
-                    lastToken = DEFAULT_VALUE_DATAVISOR
-                }
-                lastTimestampWorker = sp.getLong(KEY_TS_WORKER, 0L)
-                isTokenExpired = sp.getBoolean(KEY_EXPIRED, false)
-            }
-        }
-
         fun getUserSession(context: Context): UserSessionInterface {
             if (userSession == null) {
                 userSession = UserSession(context.applicationContext)
@@ -223,7 +193,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
             return userSession!!
         }
 
-        fun runWorker(context: Context, isLoginRegister: Boolean) {
+        fun runWorker(context: Context) {
             try {
                 setTsWorker(context)
                 WorkManager.getInstance(context).enqueueUniqueWork(
@@ -231,14 +201,10 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
                     ExistingWorkPolicy.REPLACE,
                     OneTimeWorkRequest
                         .Builder(DataVisorWorker::class.java)
-                        .setConstraints(
-                            Constraints.Builder()
-                                .setRequiredNetworkType(NetworkType.CONNECTED)
-                                .build()
-                        )
-                        .setInputData(Data.Builder().putBoolean(PARAM_IS_LOGIN_REGISTER, isLoginRegister).build())
-                        .build()
-                )
+                        .setConstraints(Constraints.Builder()
+                            .setRequiredNetworkType(NetworkType.CONNECTED)
+                            .build())
+                        .build())
             } catch (ex: Exception) {
                 Timber.w(ex.toString())
             }
