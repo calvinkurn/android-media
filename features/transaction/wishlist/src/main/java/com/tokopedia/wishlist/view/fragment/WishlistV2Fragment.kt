@@ -1148,7 +1148,11 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         wishlistV2Adapter.isRefreshing = true
         binding?.run {
             containerDelete.gone()
-            clWishlistHeader.visible()
+            if (isBulkDeleteShow) {
+                clWishlistHeader.gone()
+            } else {
+                clWishlistHeader.visible()
+            }
         }
     }
 

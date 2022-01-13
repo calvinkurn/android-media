@@ -931,7 +931,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 shopId = shopId.toString(),
                 shopName = "",
                 isSeller = isSeller(),
-                warehouseId = presenter.attachProductWarehouseId
+                warehouseId = viewModel.attachProductWarehouseId
             )
             startActivityForResult(intent, TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE)
         }
@@ -2652,8 +2652,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         replyBubbleOnBoarding.dismiss()
         val bs = TopchatBottomSheetBuilder.getLongClickBubbleMenuBs(
             context, msg, menus
-        ) { id, msg ->
-            when (id) {
+        ) { itemMenu, msg ->
+            TopChatAnalyticsKt.eventClickMsgMenu(itemMenu.title)
+            when (itemMenu.id) {
                 MENU_ID_REPLY -> replyCompose?.composeReplyData(msg, text, true)
                 MENU_ID_COPY_TO_CLIPBOARD -> copyToClipboard(text)
                 MENU_ID_DELETE_BUBBLE -> confirmDeleteBubble(msg)
@@ -2673,6 +2674,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     dismiss()
                 }
                 setPrimaryCTAClickListener {
+                    TopChatAnalyticsKt.eventConfirmDeleteMsg(msg.replyId)
                     deleteBubble(msg)
                     dismiss()
                 }
