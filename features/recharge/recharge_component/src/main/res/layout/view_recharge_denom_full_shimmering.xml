@@ -4,9 +4,7 @@
     android:id="@+id/card_denom_full_shimmering"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_weight="1"
     app:card_type="border"
-    android:layout_marginTop="@dimen/unify_space_12"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
