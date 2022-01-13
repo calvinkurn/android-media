@@ -98,6 +98,7 @@ class MilestoneViewHolder(
             btnShcCloseMission.setOnClickListener {
                 setOnCloseWidgetClicked(element)
             }
+            showCloseWidgetButton(element)
 
             itemView.addOnImpressionListener(element.impressHolder) {
                 listener.sendMilestoneWidgetImpressionEvent(element)
@@ -124,10 +125,7 @@ class MilestoneViewHolder(
                 tvShcMilestoneCta.gone()
                 showProgressWithAnimation()
                 iconShcToggleMission.setImage(IconUnify.CHEVRON_UP)
-                val isAllMissionFinished = element.data?.milestoneMissions
-                    ?.any { it is MilestoneFinishMissionUiModel }
-                    .orFalse()
-                btnShcCloseMission.isVisible = isAllMissionFinished
+                showCloseWidgetButton(element)
             } else {
                 rvShcMissionMilestone.visible()
                 setupSeeMoreCta(element)
@@ -139,6 +137,15 @@ class MilestoneViewHolder(
                 element.isAlreadyMinimized = true
                 listener.sendMilestoneWidgetMinimizeClickEvent()
             }
+        }
+    }
+
+    private fun showCloseWidgetButton(element: MilestoneWidgetUiModel) {
+        with(successStateBinding) {
+            val isAllMissionFinished = element.data?.milestoneMissions
+                ?.any { it is MilestoneFinishMissionUiModel }
+                .orFalse()
+            btnShcCloseMission.isVisible = isAllMissionFinished
         }
     }
 
