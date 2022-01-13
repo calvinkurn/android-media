@@ -1,18 +1,32 @@
 package com.tokopedia.autocompletecomponent.suggestion.domain
 
 import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.autocompletecomponent.suggestion.domain.model.SuggestionResponse
+import com.tokopedia.autocompletecomponent.util.CPM
+import com.tokopedia.autocompletecomponent.util.CPM_ITEM_COUNT
+import com.tokopedia.autocompletecomponent.util.CPM_PAGE
+import com.tokopedia.autocompletecomponent.util.CPM_SEARCH_AUTO
+import com.tokopedia.autocompletecomponent.util.CPM_ST
+import com.tokopedia.autocompletecomponent.util.CPM_KEY_TEMPLATE
+import com.tokopedia.autocompletecomponent.util.CPM_TEMPLATE
 import com.tokopedia.autocompletecomponent.util.DEFAULT_COUNT
 import com.tokopedia.autocompletecomponent.util.DEVICE_ID
 import com.tokopedia.autocompletecomponent.util.IS_TYPING
 import com.tokopedia.autocompletecomponent.util.KEY_COUNT
 import com.tokopedia.autocompletecomponent.util.SEARCHBAR
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEVICE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.SOURCE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.UNIQUE_ID
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_WAREHOUSE_ID
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.topads.sdk.domain.TopAdsParams
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import rx.Observable
+import rx.functions.Func2
 
 object SuggestionRequestUtils {
 
@@ -71,6 +85,27 @@ object SuggestionRequestUtils {
         }
     """
 
+    const val HEADLINE_ADS_QUERY = """
+        query HeadlineAds(${'$'}headline_params: String!) {
+            headlineAds: displayAdsV3(displayParams: ${'$'}headline_params) {
+                data {
+                    ad_click_url
+                    applinks
+                    headline {
+                        name
+                        image {
+                            full_url
+                            full_ecs
+                        }
+                        badges {
+                            image_url
+                        }
+                    }
+                }
+            }
+        }
+    """
+
     fun getParams(
         searchParameter: Map<String, Any>,
         userSession: UserSessionInterface,
@@ -100,4 +135,39 @@ object SuggestionRequestUtils {
     private fun getUniqueId(userId: String, registrationId: String) =
         if (userId.isNotEmpty()) AuthHelper.getMD5Hash(userId)
         else AuthHelper.getMD5Hash(registrationId)
+
+    internal fun createHeadlineParams(requestParams: RequestParams): Map<String, String> {
+        val keyword = requestParams.parameters[SearchApiConst.Q]?.toString() ?: ""
+
+        return mapOf(
+            TopAdsParams.KEY_EP to CPM,
+            TopAdsParams.KEY_ITEM to CPM_ITEM_COUNT,
+            TopAdsParams.KEY_SRC to CPM_SEARCH_AUTO,
+            TopAdsParams.KEY_PAGE to CPM_PAGE,
+            SearchApiConst.ACTIVE_TAB to CPM_ST,
+            CPM_KEY_TEMPLATE to CPM_TEMPLATE,
+            DEVICE to DEFAULT_VALUE_OF_PARAMETER_DEVICE,
+            SearchApiConst.Q to keyword,
+        )
+    }
+
+    internal fun <T: Any> GraphqlUseCase<T>.prepare(
+        query: String,
+        tClass: Class<T>,
+        params: Map<String, Any?>,
+    ) {
+        setGraphqlQuery(query)
+        setTypeClass(tClass)
+        setRequestParams(params)
+    }
+
+    internal fun <T: Any> GraphqlUseCase<T>.prepare(
+        query: GqlQueryInterface,
+        tClass: Class<T>,
+        params: Map<String, Any?>,
+    ) {
+        setGraphqlQuery(query)
+        setTypeClass(tClass)
+        setRequestParams(params)
+    }
 }

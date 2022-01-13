@@ -89,6 +89,9 @@ abstract class BaseTopChatViewModelTest {
 
     //Misc
     @RelaxedMockK
+    lateinit var unsendReplyUseCase: UnsendReplyUseCase
+
+    @RelaxedMockK
     lateinit var remoteConfig: RemoteConfig
 
     @RelaxedMockK
@@ -134,6 +137,7 @@ abstract class BaseTopChatViewModelTest {
             addWishListUseCase,
             removeWishListUseCase,
             getChatUseCase,
+            unsendReplyUseCase,
             dispatchers,
             remoteConfig,
             chatAttachmentMapper,

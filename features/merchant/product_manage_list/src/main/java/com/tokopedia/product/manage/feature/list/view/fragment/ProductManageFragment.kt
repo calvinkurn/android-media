@@ -24,7 +24,6 @@ import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -282,7 +281,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         get() = binding?.layoutFragmentProductManage?.multiSelectContainer
     private val checkBoxSelectAll: CheckboxUnify?
         get() = binding?.layoutFragmentProductManage?.checkBoxSelectAll
-    private val btnMultiEdit: CardView?
+    private val btnMultiEdit: CardUnify?
         get() = binding?.layoutFragmentProductManage?.btnMultiEdit
     private val recyclerView: VerticalRecyclerView?
         get() = binding?.layoutFragmentProductManage?.recyclerView
@@ -414,6 +413,15 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
         menu.clear()
         inflater.inflate(menuViewId, menu)
+
+        for (i in 0 until menu.size()) {
+            menu.getItem(i)?.let { menuItem ->
+                menuItem.actionView?.setOnClickListener {
+                    onOptionsItemSelected(menuItem)
+                }
+            }
+        }
+
         showHideOptionsMenu()
         super.onCreateOptionsMenu(menu, inflater)
     }
