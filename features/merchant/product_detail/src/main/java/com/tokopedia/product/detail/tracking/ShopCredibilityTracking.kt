@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.tracking
 
 import com.tokopedia.track.TrackApp
+import com.tokopedia.trackingoptimizer.TrackingQueue
 
 object ShopCredibilityTracking {
 
@@ -9,12 +10,15 @@ object ShopCredibilityTracking {
     private const val VALUE_PRODUCT_DETAIL_PAGE = "product detail page"
     private const val VALUE_CURRENT_SITE = "tokopediamarketplace"
 
-    fun impressShopTicker(data: ShopCredibilityTracker.ImpressionShopTicker) {
+    fun impressShopTicker(
+        data: ShopCredibilityTracker.ImpressionShopTicker,
+        trackingQueue: TrackingQueue
+    ) {
 
         val shopId = data.shopId
 
-        val mapEvent = mapOf(
-            "event" to "view_item",
+        val mapEvent = hashMapOf(
+            "event" to "promoView",
             "eventAction" to "impression - shop component ticker",
             "eventCategory" to VALUE_PRODUCT_DETAIL_PAGE,
             "eventLabel" to "shop_id:$shopId;",
@@ -23,18 +27,16 @@ object ShopCredibilityTracking {
             "currentSite" to VALUE_CURRENT_SITE,
             "layout" to "layout:${data.layoutName};catName:${data.categoryName};catId:${data.categoryId};",
             "productId" to data.productId,
-            "promotions" to listOf(
-                mapOf(
-                    "creative_name" to data.message,
-                    "creative_slot" to "null",
-                    "item_id" to data.title,
-                    "item_name" to data.tickerType
-                ),
-                mapOf(
-                    "creative_name" to "{{message}}",
-                    "creative_slot" to "null",
-                    "item_id" to "{{title}}",
-                    "item_name" to "{{ticker_type}}"
+            "ecommerce" to mapOf(
+                "promoView" to mapOf(
+                    "promotions" to listOf(
+                        mapOf(
+                            "creative_name" to data.message,
+                            "creative_slot" to "null",
+                            "item_id" to data.title,
+                            "item_name" to data.tickerType
+                        )
+                    )
                 )
             ),
             "shopId" to "$shopId;",
@@ -42,14 +44,14 @@ object ShopCredibilityTracking {
             "userId" to "${data.userId};"
         )
 
-        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+        trackingQueue.putEETracking(mapEvent)
     }
 
     fun clickShopTicker(data: ShopCredibilityTracker.ClickShopTicker) {
 
         val shopId = data.shopId
 
-        val mapEvent = mapOf(
+        val mapEvent = hashMapOf<String, Any>(
             "event" to "clickPG",
             "eventAction" to ACTION_CLICK_SHOP_TICKER,
             "eventCategory" to VALUE_PRODUCT_DETAIL_PAGE,

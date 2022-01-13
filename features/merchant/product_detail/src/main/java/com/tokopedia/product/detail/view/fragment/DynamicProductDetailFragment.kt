@@ -3227,7 +3227,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             tickerDataResponse = tickerDataResponse,
             userId = viewModel.userId
         )
-        ShopCredibilityTracking.impressShopTicker(data)
+        ShopCredibilityTracking.impressShopTicker(data, trackingQueue)
     }
 
     private fun onShopFavoriteClick(componentTrackDataModel: ComponentTrackDataModel? = null, isNplFollowType: Boolean = false) {
