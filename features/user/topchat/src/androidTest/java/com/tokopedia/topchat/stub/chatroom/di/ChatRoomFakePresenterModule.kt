@@ -35,7 +35,7 @@ class ChatRoomFakePresenterModule {
 //            webSocketUtil: RxWebSocketUtil,
             topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
             getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
-            replyChatUseCase: ReplyChatUseCase,
+//            replyChatUseCase: ReplyChatUseCase,
 //            compressImageUseCase: CompressImageUseCase,
 //            uploadImageUseCase: TopchatUploadImageUseCase,
             dispatchers: CoroutineDispatchers
@@ -48,7 +48,7 @@ class ChatRoomFakePresenterModule {
 //                        webSocketUtil,
                         topChatRoomWebSocketMessageMapper,
                         getTemplateChatRoomUseCase,
-                        replyChatUseCase,
+//                        replyChatUseCase,
 //                        compressImageUseCase,
 //                        uploadImageUseCase,
                         dispatchers

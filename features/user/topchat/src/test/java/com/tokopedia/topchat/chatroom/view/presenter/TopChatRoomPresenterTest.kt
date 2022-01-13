@@ -86,7 +86,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         // Then
         verify {
             getTemplateChatRoomUseCase.unsubscribe()
-            replyChatUseCase.unsubscribe()
         }
     }
 
@@ -178,16 +177,16 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
 //        }
 //    }
 
-    @Test
-    fun `on clearAttachmentPreview`() {
-        // When
-        presenter.addAttachmentPreview(sendAbleProductPreview)
-        presenter.clearAttachmentPreview()
-        val isEmptyAttachmentPreview = presenter.hasEmptyAttachmentPreview()
-
-        // Then
-        assert(isEmptyAttachmentPreview)
-    }
+//    @Test
+//    fun `on clearAttachmentPreview`() {
+//        // When
+//        presenter.addAttachmentPreview(sendAbleProductPreview)
+//        presenter.clearAttachmentPreview()
+//        val isEmptyAttachmentPreview = presenter.hasEmptyAttachmentPreview()
+//
+//        // Then
+//        assert(isEmptyAttachmentPreview)
+//    }
 
 //    @Test
 //    fun `on initProductPreviewFromAttachProduct`() {

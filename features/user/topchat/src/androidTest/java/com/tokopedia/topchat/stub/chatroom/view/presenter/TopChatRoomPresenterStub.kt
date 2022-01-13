@@ -23,7 +23,7 @@ class TopChatRoomPresenterStub @Inject constructor(
 //    webSocketUtil: RxWebSocketUtil,
     topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
     getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
-    replyChatUseCase: ReplyChatUseCase,
+//    replyChatUseCase: ReplyChatUseCase,
 //    compressImageUseCase: CompressImageUseCase,
 //    uploadImageUseCase: TopchatUploadImageUseCase,
     dispatchers: CoroutineDispatchers
@@ -35,7 +35,7 @@ class TopChatRoomPresenterStub @Inject constructor(
 //    webSocketUtil,
     topChatRoomWebSocketMessageMapper,
     getTemplateChatRoomUseCase,
-    replyChatUseCase,
+//    replyChatUseCase,
 //    compressImageUseCase,
 //    uploadImageUseCase,
     dispatchers

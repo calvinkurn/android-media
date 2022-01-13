@@ -78,7 +78,6 @@ open class TopChatRoomPresenter @Inject constructor(
     userSession: UserSessionInterface,
     private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
     private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
-    private var replyChatUseCase: ReplyChatUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
     TopChatContract.Presenter, CoroutineScope {
@@ -125,7 +124,6 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun detachView() {
         getTemplateChatRoomUseCase.unsubscribe()
-        replyChatUseCase.unsubscribe()
         super.detachView()
     }
 

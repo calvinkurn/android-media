@@ -212,7 +212,7 @@ abstract class BaseTopChatRoomPresenterTest {
 //                webSocketUtil,
                 topChatRoomWebSocketMessageMapper,
                 getTemplateChatRoomUseCase,
-                replyChatUseCase,
+//                replyChatUseCase,
 //                compressImageUseCase,
 //                uploadImageUseCase,
                 dispatchers,
