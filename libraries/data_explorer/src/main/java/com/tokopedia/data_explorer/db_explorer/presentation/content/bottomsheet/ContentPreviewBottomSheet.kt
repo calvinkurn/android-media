@@ -1,4 +1,4 @@
-package com.tokopedia.data_explorer.db_explorer.presentation.content
+package com.tokopedia.data_explorer.db_explorer.presentation.content.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater

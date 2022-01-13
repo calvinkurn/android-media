@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,6 +21,7 @@ import com.tokopedia.data_explorer.db_explorer.extensions.setupGrid
 import com.tokopedia.data_explorer.db_explorer.presentation.Constants
 import com.tokopedia.data_explorer.db_explorer.presentation.Searchable
 import com.tokopedia.data_explorer.db_explorer.presentation.content.bottomsheet.ColumnPickerBottomSheet
+import com.tokopedia.data_explorer.db_explorer.presentation.content.bottomsheet.ContentPreviewBottomSheet
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Toaster
@@ -110,11 +112,12 @@ class ContentFragment : BaseDaggerFragment(), Searchable {
         val columnNameList: List<String> = columnList.filterNot {
             it.text.isNullOrEmpty()
         }.map { it.text ?: "" }
-        if (columnNameList.isEmpty()) {
-            // show toast
+        val query = searchQuery()
+        if (columnNameList.isEmpty() || query.isEmpty()) {
+            Toast.makeText(context, "Cannot perform search operation", Toast.LENGTH_LONG).show()
         } else {
             activity?.let {
-                ColumnPickerBottomSheet.showBottomSheet(searchQuery(), childFragmentManager)
+                ColumnPickerBottomSheet.showBottomSheet(query, childFragmentManager)
             }
         }
     }
