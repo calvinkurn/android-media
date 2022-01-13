@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST_INT
 import javax.inject.Inject
 
 class WishlistV2LayoutPreference  @Inject constructor(val context: Context) {
@@ -25,7 +26,7 @@ class WishlistV2LayoutPreference  @Inject constructor(val context: Context) {
 
     fun getTypeLayout(): String {
         val typeLayout = sharedPrefs?.getInt(USER_LAYOUT_WISHLIST_V2_TYPE, 1)
-        return if (typeLayout == 0) {
+        return if (typeLayout == TYPE_LIST_INT) {
             TYPE_LIST
         } else {
             TYPE_GRID

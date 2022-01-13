@@ -73,7 +73,9 @@ import com.tokopedia.wishlist.di.DaggerWishlistV2Component
 import com.tokopedia.wishlist.di.WishlistV2Module
 import com.tokopedia.wishlist.util.WishlistV2Analytics
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID_INT
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST_INT
 import com.tokopedia.wishlist.util.WishlistV2LayoutPreference
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 import com.tokopedia.wishlist.view.adapter.WishlistV2FilterBottomSheetAdapter
@@ -422,10 +424,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun changeTypeLayout() {
         if (wishlistPref?.getTypeLayout() == TYPE_LIST) {
-            wishlistPref?.setTypeLayout(1)
+            wishlistPref?.setTypeLayout(TYPE_GRID_INT)
             WishlistV2Analytics.clickLayoutSettings(TYPE_GRID)
         } else {
-            wishlistPref?.setTypeLayout(0)
+            wishlistPref?.setTypeLayout(TYPE_LIST_INT)
             WishlistV2Analytics.clickLayoutSettings(TYPE_LIST)
         }
         setPaddingReferToTypeLayout()
