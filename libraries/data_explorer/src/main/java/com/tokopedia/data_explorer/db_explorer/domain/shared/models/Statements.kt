@@ -26,10 +26,13 @@ internal object Statements {
             return "SELECT name FROM sqlite_master WHERE type = 'table' $searchParam ORDER BY name"
         }
 
-        fun count(name: String?) =
-            "SELECT COUNT(*) FROM $name"
+        fun count(name: String?, whereClause: String = "") =
+            "SELECT COUNT(*) FROM $name $whereClause".trim()
 
-        fun table(name: String?, orderByColumns: String?, sort: Order, page: Int?): String {
+        fun searchByCol(query: String, columnName: String) =
+            "WHERE $columnName like \"%$query%\""
+
+        fun table(name: String?, orderByColumns: String?, sort: Order, page: Int?, whereClause: String = ""): String {
             val orderBySql = if (orderByColumns.isNullOrEmpty()) {
                 ""
             } else {
@@ -39,7 +42,7 @@ internal object Statements {
             val offsetString = page?.let { "${(it - 1) * PAGE_SIZE}," }
             val limit = "LIMIT ${offsetString ?: ""}$PAGE_SIZE"
 
-            return "SELECT * FROM $name $orderBySql $limit"
+            return "SELECT * FROM $name $whereClause $orderBySql $limit"
         }
 
         fun dropContent(name: String?) = "DELETE from $name"

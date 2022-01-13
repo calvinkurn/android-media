@@ -64,8 +64,8 @@ class ColumnPickerBottomSheet : BottomSheetDialogFragment() {
         rvColumnList.adapter = adapter
         rvColumnList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         searchBtn.setOnClickListener {
-            Toast.makeText(context, "$query  --> ${columnList[adapter.lastCheckedColumnIndex]}", Toast.LENGTH_LONG).show()
-            //viewModel.search(query, columnList[adapter.lastCheckedColumnIndex] ?: "")
+            viewModel.search(query, columnList.getOrNull(adapter.lastCheckedColumnIndex) ?: "")
+            dismiss()
         }
     }
 

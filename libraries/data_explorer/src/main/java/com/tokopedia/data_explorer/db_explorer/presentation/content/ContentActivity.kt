@@ -53,6 +53,13 @@ class ContentActivity : BaseSimpleActivity(), HasComponent<DataExplorerComponent
                     clearContents()
                 }
             }
+            addRightIcon(0).apply {
+                clearImage()
+                setImageDrawable(getIconUnifyDrawable(context, IconUnify.SEARCH, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)))
+                setOnClickListener {
+                    openSearch()
+                }
+            }
         }
         toolbar = dataExplorerHeader
         setSupportActionBar(toolbar)
@@ -60,6 +67,10 @@ class ContentActivity : BaseSimpleActivity(), HasComponent<DataExplorerComponent
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.setDisplayShowTitleEnabled(true)
         }
+    }
+
+    private fun openSearch() {
+
     }
 
     private fun clearContents() {

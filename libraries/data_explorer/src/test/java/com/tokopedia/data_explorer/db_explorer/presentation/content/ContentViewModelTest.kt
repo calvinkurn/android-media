@@ -2,20 +2,15 @@ package com.tokopedia.data_explorer.db_explorer.presentation.content
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.data_explorer.db_explorer.data.models.cursor.input.Order
-import com.tokopedia.data_explorer.db_explorer.domain.databases.models.DatabaseDescriptor
-import com.tokopedia.data_explorer.db_explorer.domain.databases.usecases.CopyDatabasesUseCase
-import com.tokopedia.data_explorer.db_explorer.domain.databases.usecases.GetDatabasesUseCase
-import com.tokopedia.data_explorer.db_explorer.domain.databases.usecases.RemoveDatabasesUseCase
 import com.tokopedia.data_explorer.db_explorer.domain.pragma.usecases.GetTableInfoUseCase
 import com.tokopedia.data_explorer.db_explorer.domain.schema.usecases.DropTableContentUseCase
 import com.tokopedia.data_explorer.db_explorer.domain.schema.usecases.GetTableContentUseCase
 import com.tokopedia.data_explorer.db_explorer.domain.shared.models.Cell
+import com.tokopedia.data_explorer.db_explorer.domain.shared.models.DataBaseController
 import com.tokopedia.data_explorer.db_explorer.domain.shared.models.Page
 import com.tokopedia.data_explorer.db_explorer.extensions.InvalidPageRequestException
 import com.tokopedia.data_explorer.db_explorer.presentation.Constants
-import com.tokopedia.data_explorer.db_explorer.presentation.databases.DatabaseViewModel
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,7 +19,6 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.internal.matchers.Null
 import java.lang.NullPointerException
 
 @ExperimentalCoroutinesApi
@@ -44,7 +38,7 @@ class ContentViewModelTest {
     @Before
     fun setUp() {
         viewModel = ContentViewModel(getTableInfoUseCase, getTableContentUseCase, dropTableContentUseCase)
-        viewModel.databasePath = "/testpath"
+        viewModel.dataBaseController = DataBaseController("db", "/path", "test.db")
     }
 
     @Test
@@ -54,7 +48,7 @@ class ContentViewModelTest {
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.getTableInfo("test.db")
+        viewModel.getTableInfo()
         assert(viewModel.errorLiveData.value is Throwable)
     }
 
@@ -67,7 +61,7 @@ class ContentViewModelTest {
         } coAnswers {
             firstArg<(Page) -> Unit>().invoke(page)
         }
-        viewModel.getTableInfo("test.db")
+        viewModel.getTableInfo()
         assert(viewModel.columnHeaderLiveData.value is List<Cell>)
         assert(viewModel.columnHeaderLiveData.value?.get(0)?.text == "column_name")
     }
@@ -80,7 +74,7 @@ class ContentViewModelTest {
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.getTableRowsCount("test.db")
+        viewModel.getTableRowsCount()
         assert(viewModel.resultRowLiveData.value == false)
     }
 
@@ -93,14 +87,14 @@ class ContentViewModelTest {
         } coAnswers {
             firstArg<(Page) -> Unit>().invoke(page)
         }
-        viewModel.getTableRowsCount("test.db")
+        viewModel.getTableRowsCount()
         assert(viewModel.resultRowLiveData.value == true)
         assert(viewModel.totalResults == 12)
     }
 
     @Test
     fun `getTableContent case - empty table totalResults = 0`() {
-        viewModel.getTableContent("test.db", orderBy = "", Order.ASCENDING)
+        viewModel.getTableContent(orderBy = "", Order.ASCENDING)
         assert(viewModel.errorLiveData.value is NullPointerException)
         assert(viewModel.errorLiveData.value?.message == Constants.ErrorMessages.NO_CONTENT)
     }
@@ -109,7 +103,7 @@ class ContentViewModelTest {
     fun `getTableContent case - empty table invalidPageRequest`() {
         viewModel.totalResults = 6
         viewModel.currentPage = 3
-        viewModel.getTableContent("test.db", orderBy = "", Order.ASCENDING)
+        viewModel.getTableContent(orderBy = "", Order.ASCENDING)
         assert(viewModel.errorLiveData.value is InvalidPageRequestException)
         assert(viewModel.errorLiveData.value?.message == Constants.ErrorMessages.INVALID_PAGE_REQUEST)
     }
@@ -122,7 +116,7 @@ class ContentViewModelTest {
         coEvery { getTableContentUseCase.getTable(any(), any(), any()) } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.getTableContent("test.db", orderBy = "", Order.ASCENDING)
+        viewModel.getTableContent(orderBy = "", Order.ASCENDING)
         assert(viewModel.errorLiveData.value is Throwable)
     }
 
@@ -135,7 +129,7 @@ class ContentViewModelTest {
         coEvery { getTableContentUseCase.getTable(any(), any(), any()) } coAnswers {
             firstArg<(Page) -> Unit>().invoke(page)
         }
-        viewModel.getTableContent("test.db", orderBy = "", Order.ASCENDING)
+        viewModel.getTableContent(orderBy = "", Order.ASCENDING)
         assert(viewModel.contentLiveData.value is List<Cell>)
         assert(viewModel.contentLiveData.value?.get(0)?.text == "cell1")
     }
@@ -161,7 +155,7 @@ class ContentViewModelTest {
     }
 
     @Test
-    fun updateHeader() {
+    fun `updateHeader`() {
         val cell = Cell(text = "test")
         viewModel.columnHeaderList = arrayListOf(cell)
         viewModel.updateHeader(cell)

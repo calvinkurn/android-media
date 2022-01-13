@@ -9,6 +9,7 @@ import com.tokopedia.data_explorer.db_explorer.domain.pragma.usecases.GetTableIn
 import com.tokopedia.data_explorer.db_explorer.domain.schema.usecases.DropTableContentUseCase
 import com.tokopedia.data_explorer.db_explorer.domain.schema.usecases.GetTableContentUseCase
 import com.tokopedia.data_explorer.db_explorer.domain.shared.models.Cell
+import com.tokopedia.data_explorer.db_explorer.domain.shared.models.DataBaseController
 import com.tokopedia.data_explorer.db_explorer.domain.shared.models.Page
 import com.tokopedia.data_explorer.db_explorer.domain.shared.models.Statements
 import com.tokopedia.data_explorer.db_explorer.domain.shared.models.parameters.ContentParameters
@@ -28,25 +29,29 @@ internal class ContentViewModel @Inject constructor(
     val contentLiveData = MutableLiveData<List<Cell>>()
     val errorLiveData = MutableLiveData<Throwable>()
     val resultRowLiveData = MutableLiveData<Boolean>()
+
     @VisibleForTesting
     var columnHeaderList = listOf<Cell>()
 
     var totalResults: Int = 0
     var currentPage: Int = 1
-    lateinit var databasePath: String
+    lateinit var dataBaseController: DataBaseController
+    private var searchClause: String = ""
 
-    fun getTableInfo(schemaName: String) {
+    fun getTableInfo() {
         getTableInfoUseCase.getTableInfo(
             ::onColumnHeaderFetched,
             ::onTablesError,
             PragmaParameters.Pragma(
-                databasePath = databasePath,
-                statement = Statements.Pragma.tableInfo(schemaName)
+                databasePath = dataBaseController.databasePath,
+                statement = Statements.Pragma.tableInfo(dataBaseController.schemaName)
             )
         )
     }
 
-    fun getTableRowsCount(schemaName: String) {
+    fun getTableRowsCount(searchClause: String = "") {
+        this.searchClause = searchClause
+        resetPage()
         getTableContentUseCase.getTable(
             {
                 totalResults = it.cells.getOrNull(0)?.text?.toInt() ?: 0
@@ -54,20 +59,26 @@ internal class ContentViewModel @Inject constructor(
             },
             { resultRowLiveData.postValue(false) },
             ContentParameters(
-                databasePath = databasePath,
-                statement = Statements.Schema.count(schemaName)
+                databasePath = dataBaseController.databasePath,
+                statement = Statements.Schema.count(dataBaseController.schemaName, searchClause)
             )
         )
     }
 
-    fun getTableContent(schemaName: String, orderBy: String?, sort: Order) {
+    fun getTableContent(orderBy: String?, sort: Order) {
         if (totalResults != 0 && validatePageRequest(currentPage)) {
             getTableContentUseCase.getTable(
                 ::onTableContentFetched,
                 ::onTablesError,
                 ContentParameters(
-                    databasePath = databasePath,
-                    statement = Statements.Schema.table(schemaName, orderBy, sort, currentPage)
+                    databasePath = dataBaseController.databasePath,
+                    statement = Statements.Schema.table(
+                        name = dataBaseController.schemaName,
+                        orderByColumns = orderBy,
+                        sort = sort,
+                        page = currentPage,
+                        whereClause = searchClause
+                    )
                 )
             )
         } else {
@@ -79,7 +90,8 @@ internal class ContentViewModel @Inject constructor(
     }
 
     fun search(query: String, columnName: String) {
-
+        resetPage()
+        getTableRowsCount(Statements.Schema.searchByCol(query, columnName))
     }
 
     private fun validatePageRequest(page: Int?): Boolean {
@@ -93,14 +105,15 @@ internal class ContentViewModel @Inject constructor(
         }, {
             onTablesError(it)
         },
-        ContentParameters(
-            databasePath = databasePath,
-            statement = Statements.Schema.dropContent(schemaName)
-        ))
+            ContentParameters(
+                databasePath = dataBaseController.databasePath,
+                statement = Statements.Schema.dropContent(schemaName)
+            )
+        )
     }
 
     private fun onTableContentFetched(page: Page) {
-        val mergedList= columnHeaderList.plus(page.cells)
+        val mergedList = columnHeaderList.plus(page.cells)
         if (mergedList.isNullOrEmpty())
             contentLiveData.postValue(page.cells)
         else contentLiveData.postValue(mergedList)
@@ -121,6 +134,11 @@ internal class ContentViewModel @Inject constructor(
                 cell.copy(active = true)
             else it.copy(active = false)
         }
+    }
+
+    private fun resetPage() {
+        currentPage = 1
+        totalResults = 0
     }
 
 }

@@ -62,16 +62,18 @@ class ContentFragment : BaseDaggerFragment(), Searchable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (dataBaseController.hasSchemaData) {
-            viewModel.databasePath = databasePath
-            viewModel.getTableInfo(schemaName)
-
+            viewModel.dataBaseController = dataBaseController
+            viewModel.getTableInfo()
         } else showDatabaseError("No Schema Available")
         observeViewModels()
         initListeners()
     }
 
     private fun initListeners() {
-        searchInputView.clearListener = { search(null) }
+        searchInputView.clearListener = {
+            resetTableUI()
+            viewModel.getTableRowsCount()
+        }
         searchBtn.setOnClickListener { openColumnPicker(viewModel.columnHeaderList) }
 
         contentAdapter.onClick = { cell -> onCellClicked(cell) }
@@ -104,6 +106,7 @@ class ContentFragment : BaseDaggerFragment(), Searchable {
     }
 
     private fun openColumnPicker(columnList: List<Cell>) {
+        resetTableUI()
         val columnNameList: List<String> = columnList.filterNot {
             it.text.isNullOrEmpty()
         }.map { it.text ?: "" }
@@ -116,8 +119,12 @@ class ContentFragment : BaseDaggerFragment(), Searchable {
         }
     }
 
+    private fun resetTableUI() {
+        pageNumberEditor.setValue(1)
+    }
+
     private fun queryContent(orderBy: String? = null, sort: Order = Order.ASCENDING) {
-        viewModel.getTableContent(schemaName, orderBy, sort)
+        viewModel.getTableContent(orderBy, sort)
     }
 
     private fun showDatabaseError(errorType: String) {
@@ -137,7 +144,7 @@ class ContentFragment : BaseDaggerFragment(), Searchable {
                 RecyclerView.VERTICAL,
                 false
             )
-            viewModel.getTableRowsCount(schemaName)
+            viewModel.getTableRowsCount()
         })
         viewModel.resultRowLiveData.observe(viewLifecycleOwner, {
             if (it) queryContent() else showDatabaseError(Constants.ErrorMessages.NO_CONTENT)
@@ -185,6 +192,8 @@ class ContentFragment : BaseDaggerFragment(), Searchable {
 
     override fun getScreenName() = ""
     override fun initInjector() = getComponent(DataExplorerComponent::class.java).inject(this)
+    override fun search(query: String?) {}
+    override fun searchQuery() = searchInputView.searchBarTextField.text.toString()
 
     companion object {
         fun newInstance(
@@ -203,7 +212,4 @@ class ContentFragment : BaseDaggerFragment(), Searchable {
         }
     }
 
-    override fun search(query: String?) {}
-
-    override fun searchQuery() = searchInputView.searchBarTextField.text.toString()
-}
+   }
