@@ -10,13 +10,26 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineShcMilestoneCardStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="12dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineShcMilestoneCardEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="12dp" />
+
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imgShcMission"
             android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginStart="12dp"
+            android:layout_height="30dp"
             android:layout_marginTop="12dp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guidelineShcMilestoneCardStart"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -38,14 +51,12 @@
             android:id="@+id/tvShcDescItemMission"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
             android:layout_marginTop="6dp"
-            android:layout_marginEnd="12dp"
             android:ellipsize="end"
             android:maxLines="3"
             android:textColor="@color/Unify_N700_68"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineShcMilestoneCardEnd"
+            app:layout_constraintStart_toStartOf="@+id/guidelineShcMilestoneCardStart"
             app:layout_constraintTop_toBottomOf="@+id/imgShcMission"
             app:typographyType="body_3"
             tools:text="Maksimalkan pengalaman belanja di tokomu dengan tambah 4 produk lagi, ya!" />
@@ -56,8 +67,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@+id/tvShcDescItemMission"
-            app:layout_constraintStart_toStartOf="@+id/tvShcDescItemMission"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineShcMilestoneCardEnd"
+            app:layout_constraintStart_toStartOf="@+id/guidelineShcMilestoneCardStart"
             app:layout_constraintTop_toBottomOf="@+id/tvShcDescItemMission"
             tools:layout_height="@dimen/layout_lvl2"
             tools:visibility="visible" />
@@ -66,13 +77,13 @@
             android:id="@+id/tvShcMilestoneCardDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:layout_marginTop="2dp"
+            android:textColor="@color/Unify_NN600"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="@+id/progressBarShcMilestoneCard"
-            app:layout_constraintStart_toStartOf="@+id/progressBarShcMilestoneCard"
+            app:layout_constraintStart_toStartOf="@+id/guidelineShcMilestoneCardStart"
             app:layout_constraintTop_toBottomOf="@+id/progressBarShcMilestoneCard"
             app:typographyType="small"
-            android:textColor="@color/Unify_NN600"
             tools:text="Produk diiklankan"
             tools:visibility="visible" />
 
@@ -83,8 +94,8 @@
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/tvShcDescItemMission"
-            app:layout_constraintStart_toStartOf="@+id/tvShcDescItemMission"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineShcMilestoneCardEnd"
+            app:layout_constraintStart_toStartOf="@+id/guidelineShcMilestoneCardStart"
             app:layout_constraintTop_toBottomOf="@id/tvShcMilestoneCardDescription"
             app:layout_constraintVertical_bias="1"
             app:unifyButtonSize="small"
