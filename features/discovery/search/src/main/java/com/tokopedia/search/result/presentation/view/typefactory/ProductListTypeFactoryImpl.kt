@@ -30,6 +30,7 @@ class ProductListTypeFactoryImpl(
     private val bannerListener: BannerListener,
     private val lastFilterListener: LastFilterListener,
     private val topAdsConfig: Config,
+    private val inspirationSizeOptionListener: InspirationSizeOptionListener,
 ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
 
     override var recyclerViewItem = 0
@@ -95,6 +96,8 @@ class ProductListTypeFactoryImpl(
     }
 
     override fun type(inspirationCardDataView: InspirationCardDataView): Int {
+//        if (inspirationCardDataView.type == SearchConstant.InspirationCard.TYPE_SIZE_PERSO) return InspirationSizeViewHolder.LAYOUT
+
         return when (recyclerViewItem) {
             SearchConstant.RecyclerView.VIEW_LIST,
             SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID ->
@@ -135,6 +138,10 @@ class ProductListTypeFactoryImpl(
 
     override fun type(lastFilterDataView: LastFilterDataView): Int =
         LastFilterViewHolder.LAYOUT
+
+    override fun type(sizeDataView: SizeDataView): Int {
+        return InspirationSizeViewHolder.LAYOUT
+    }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
@@ -180,6 +187,7 @@ class ProductListTypeFactoryImpl(
                 ChooseAddressViewHolder(view, chooseAddressListener, searchNavigationListener)
             BannerViewHolder.LAYOUT -> BannerViewHolder(view, bannerListener)
             LastFilterViewHolder.LAYOUT -> LastFilterViewHolder(view, lastFilterListener)
+            InspirationSizeViewHolder.LAYOUT -> InspirationSizeViewHolder(view, inspirationSizeOptionListener)
 
             else -> super.createViewHolder(view, type)
         }

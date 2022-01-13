@@ -79,40 +79,11 @@ import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.di.module.SearchContextModule
 import com.tokopedia.search.result.presentation.ProductListSectionContract
-import com.tokopedia.search.result.presentation.model.BannerDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
-import com.tokopedia.search.result.presentation.model.GlobalNavDataView
-import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
-import com.tokopedia.search.result.presentation.model.LastFilterDataView
-import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
-import com.tokopedia.search.result.presentation.model.SuggestionDataView
-import com.tokopedia.search.result.presentation.model.TickerDataView
+import com.tokopedia.search.result.presentation.model.*
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter.OnItemChangeView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration
-import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
-import com.tokopedia.search.result.presentation.view.listener.BannerListener
-import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
-import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListener
-import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
-import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener
-import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
-import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
-import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
-import com.tokopedia.search.result.presentation.view.listener.ProductListener
-import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
-import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
-import com.tokopedia.search.result.presentation.view.listener.SearchInTokopediaListener
-import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener
-import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
-import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener
-import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
-import com.tokopedia.search.result.presentation.view.listener.TickerListener
-import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
+import com.tokopedia.search.result.presentation.view.listener.*
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
@@ -160,7 +131,8 @@ class ProductListFragment: BaseDaggerFragment(),
         TopAdsImageViewListener,
         ChooseAddressListener,
         BannerListener,
-        LastFilterListener {
+        LastFilterListener,
+        InspirationSizeOptionListener {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -368,6 +340,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 bannerListener = this,
                 lastFilterListener = this,
                 topAdsConfig = topAdsConfig,
+                inspirationSizeOptionListener = this,
         )
 
         productListAdapter = ProductListAdapter(itemChangeView = this, typeFactory = productListTypeFactory)
@@ -1683,6 +1656,14 @@ class ProductListFragment: BaseDaggerFragment(),
         trackEventClickInspirationCardOption(optionData)
 
         redirectionStartActivity(optionData.applink, optionData.url)
+    }
+
+    override fun onInspirationSizeOptionClicked(optionData: SizeOptionDataView) {
+
+    }
+
+    override fun onInspirationSizeClosed() {
+
     }
 
     private fun trackEventClickInspirationCardOption(option: InspirationCardOptionDataView) {

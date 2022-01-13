@@ -52,36 +52,7 @@ import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.mapper.InspirationCarouselProductDataViewMapper
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper
-import com.tokopedia.search.result.presentation.model.BadgeItemDataView
-import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView
-import com.tokopedia.search.result.presentation.model.BannedProductsTickerDataView
-import com.tokopedia.search.result.presentation.model.BannerDataView
-import com.tokopedia.search.result.presentation.model.BroadMatch
-import com.tokopedia.search.result.presentation.model.BroadMatchDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchProduct
-import com.tokopedia.search.result.presentation.model.CarouselOptionType
-import com.tokopedia.search.result.presentation.model.CarouselProductType
-import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
-import com.tokopedia.search.result.presentation.model.CpmDataView
-import com.tokopedia.search.result.presentation.model.DynamicCarouselOption
-import com.tokopedia.search.result.presentation.model.DynamicCarouselProduct
-import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
-import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
-import com.tokopedia.search.result.presentation.model.GlobalNavDataView
-import com.tokopedia.search.result.presentation.model.InspirationCardDataView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
-import com.tokopedia.search.result.presentation.model.LabelGroupDataView
-import com.tokopedia.search.result.presentation.model.ProductDataView
-import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
-import com.tokopedia.search.result.presentation.model.RelatedDataView
-import com.tokopedia.search.result.presentation.model.SearchInTokopediaDataView
-import com.tokopedia.search.result.presentation.model.SearchProductCountDataView
-import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
-import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
-import com.tokopedia.search.result.presentation.model.SeparatorDataView
-import com.tokopedia.search.result.presentation.model.SuggestionDataView
+import com.tokopedia.search.result.presentation.model.*
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.UrlParamUtils
@@ -160,6 +131,7 @@ class ProductListPresenter @Inject constructor(
                 SearchConstant.InspirationCard.TYPE_GUIDED,
                 SearchConstant.InspirationCard.TYPE_CURATED,
                 SearchConstant.InspirationCard.TYPE_RELATED,
+                SearchConstant.InspirationCard.TYPE_SIZE_PERSO,
         )
         private const val SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search"
         private const val DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu"
@@ -201,6 +173,7 @@ class ProductListPresenter @Inject constructor(
     private var productList = mutableListOf<Visitable<*>>()
     private var inspirationCarouselDataView = mutableListOf<InspirationCarouselDataView>()
     private var inspirationCardDataView = mutableListOf<InspirationCardDataView>()
+    private var inspirationSizeDataView = mutableListOf<SizeDataView>()
     private var topAdsImageViewModelList = mutableListOf<TopAdsImageViewModel>()
     private var suggestionDataView: SuggestionDataView? = null
     private var relatedDataView: RelatedDataView? = null
@@ -516,6 +489,7 @@ class ProductListPresenter @Inject constructor(
         processTopAdsImageViewModel(searchParameter, list)
         processInspirationCardPosition(searchParameter, list)
         processInspirationCarouselPosition(searchParameter, list)
+        processInspirationSizePosition(list)
         processBannerAndBroadmatchInSamePosition(searchProduct, list)
         processBanner(searchProduct, list)
         processBroadMatch(searchProduct, list)
@@ -1057,6 +1031,9 @@ class ProductListPresenter @Inject constructor(
         inspirationCardDataView = productDataView.inspirationCardDataView.toMutableList()
         processInspirationCardPosition(searchParameter, list)
 
+        inspirationSizeDataView = productDataView.inspirationSizeDataView.toMutableList()
+        processInspirationSizePosition(list)
+
         processBannerAndBroadmatchInSamePosition(searchProduct, list)
         processBanner(searchProduct, list)
         processBroadMatch(searchProduct, list)
@@ -1204,15 +1181,19 @@ class ProductListPresenter @Inject constructor(
         if (inspirationCardDataView.isEmpty()) return
 
         val inspirationCardViewModelIterator = inspirationCardDataView.iterator()
+
         while (inspirationCardViewModelIterator.hasNext()) {
             val data = inspirationCardViewModelIterator.next()
 
-            if (data.position <= 0) {
-                inspirationCardViewModelIterator.remove()
-                continue
-            }
+//            if (data.position <= 0) {
+//                inspirationCardViewModelIterator.remove()
+//                continue
+//            }
 
             if (data.position <= productList.size && shouldShowInspirationCard(data.type)) {
+//                if (data.type == SearchConstant.InspirationCard.TYPE_SIZE_PERSO) {
+//                    list.add(0, data)
+//                }
                 try {
                     val product = productList[data.position - 1]
                     list.add(list.indexOf(product) + 1, data)
@@ -1222,6 +1203,12 @@ class ProductListPresenter @Inject constructor(
                     view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), exception)
                 }
             }
+        }
+    }
+
+    private fun processInspirationSizePosition(list: MutableList<Visitable<*>>) {
+        inspirationSizeDataView.forEach {
+            list.add(0, it)
         }
     }
 

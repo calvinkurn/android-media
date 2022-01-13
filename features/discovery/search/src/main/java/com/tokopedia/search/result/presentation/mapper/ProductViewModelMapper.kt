@@ -21,25 +21,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel.Related
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationWidget
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchProductData
-import com.tokopedia.search.result.presentation.model.BadgeItemDataView
-import com.tokopedia.search.result.presentation.model.BannerDataView
-import com.tokopedia.search.result.presentation.model.BroadMatch
-import com.tokopedia.search.result.presentation.model.BroadMatchDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchProduct
-import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
-import com.tokopedia.search.result.presentation.model.GlobalNavDataView
-import com.tokopedia.search.result.presentation.model.InspirationCardDataView
-import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
-import com.tokopedia.search.result.presentation.model.LabelGroupDataView
-import com.tokopedia.search.result.presentation.model.LabelGroupVariantDataView
-import com.tokopedia.search.result.presentation.model.LastFilterDataView
-import com.tokopedia.search.result.presentation.model.ProductDataView
-import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.presentation.model.RelatedDataView
-import com.tokopedia.search.result.presentation.model.SuggestionDataView
-import com.tokopedia.search.result.presentation.model.TickerDataView
+import com.tokopedia.search.result.presentation.model.*
 import java.util.*
 
 class ProductViewModelMapper {
@@ -97,6 +79,9 @@ class ProductViewModelMapper {
         )
         productDataView.inspirationCardDataView = convertToInspirationCardViewModel(
             searchProductModel.searchInspirationWidget
+        )
+        productDataView.inspirationSizeDataView = convertToInspirationSizeViewModel(
+                searchProductModel.searchInspirationWidget
         )
         productDataView.additionalParams = searchProductHeader.additionalParams
         productDataView.autocompleteApplink = searchProductData.autocompleteApplink
@@ -437,6 +422,19 @@ class ProductViewModelMapper {
         }
     }
 
+    private fun convertToInspirationSizeViewModel(
+            searchInspirationWidget: SearchInspirationWidget
+    ): List<SizeDataView> {
+        return searchInspirationWidget.data.map { data ->
+            SizeDataView(
+                    data.title,
+                    data.type,
+                    data.position,
+                    data.inspiratioWidgetOptions.mapToInspirationSizeOptionDataView(data.type)
+            )
+        }
+    }
+
     private fun List<InspirationCardOption>.mapToInspirationCardOptionDataView(
             inspirationCardType: String
     ) = this.map { optionModel ->
@@ -449,6 +447,19 @@ class ProductViewModelMapper {
                     inspirationCardType,
             )
         }
+
+    private fun List<InspirationCardOption>.mapToInspirationSizeOptionDataView(
+            inspirationCardType: String
+    ) = this.map { optionModel ->
+        SizeOptionDataView(
+                optionModel.text,
+                optionModel.img,
+                optionModel.url,
+                optionModel.color,
+                optionModel.applink,
+                inspirationCardType,
+        )
+    }
 
     private fun convertToBannerDataView(bannerModel: Banner): BannerDataView {
         return BannerDataView(
