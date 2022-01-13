@@ -146,4 +146,18 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         // Then
         assertEquals(viewModel.isTyping.value, false)
     }
+
+    @Test
+    fun should_update_onread_value_on_receive_read_event() {
+        // Given
+        onConnectWebsocket {
+            it.onMessage(websocket, WebsocketResponses.read)
+        }
+
+        // When
+        viewModel.connectWebSocket()
+
+        // Then
+        assertEquals(viewModel.msgRead.value, Unit)
+    }
 }
