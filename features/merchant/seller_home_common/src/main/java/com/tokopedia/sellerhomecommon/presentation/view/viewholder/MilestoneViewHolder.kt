@@ -95,7 +95,9 @@ class MilestoneViewHolder(
             showMilestoneBackground(data.backgroundImageUrl)
             setupMilestoneProgress(data.milestoneProgress)
             setupTooltip(tvTitleMilestoneWidget, element)
-            setOnCloseWidgetClicked(element)
+            btnShcCloseMission.setOnClickListener {
+                setOnCloseWidgetClicked(element)
+            }
 
             itemView.addOnImpressionListener(element.impressHolder) {
                 listener.sendMilestoneWidgetImpressionEvent(element)
