@@ -332,7 +332,6 @@ class TopChatViewModel @Inject constructor(
         }
     }
 
-    // TODO: check upload image
     private fun renderChatItem(chat: ChatSocketPojo) {
         val chatUiModel = topChatRoomWebSocketMessageMapper.map(chat)
         _newMsg.postValue(chatUiModel)
@@ -340,11 +339,6 @@ class TopChatViewModel @Inject constructor(
         if (chat.isOpposite) {
             markAsRead()
         }
-//        if (!pojo.isOpposite) {
-//            checkDummyAndRemove(uiModel)
-//        } else {
-//            readMessage()
-//        }
     }
 
     private fun handleSrwBubbleState(pojo: ChatSocketPojo, uiModel: Visitable<*>) {
@@ -869,9 +863,6 @@ class TopChatViewModel @Inject constructor(
             showPreviewMsg(previewMsg)
             sendWsPayload(wsPayload)
             _attachmentSent.value = attachment
-//            processPreviewMessage(previewMsg)
-//            sendWebSocketAttachmentPayload(wsMsgPayload)
-//            view?.sendAnalyticAttachmentSent(attachment)
         }
     }
 
