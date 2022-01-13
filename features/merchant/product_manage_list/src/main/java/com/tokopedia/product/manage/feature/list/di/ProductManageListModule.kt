@@ -42,6 +42,13 @@ class ProductManageListModule(private val context: Context) {
 
     @Provides
     @ProductManageListScope
+    fun provideGqlGetShopInfoUseCase(graphqlUseCase: MultiRequestGraphqlUseCase?,
+                                     @Named(GQLQueryNamedConstant.SHOP_INFO) gqlQuery: String?): GQLGetShopInfoUseCase {
+        return GQLGetShopInfoUseCase(gqlQuery!!, graphqlUseCase!!)
+    }
+
+    @Provides
+    @ProductManageListScope
     fun provideGmCommonRepository(gmCommonDataSource: GMCommonDataSource): GMCommonRepository {
         return GMCommonRepositoryImpl(gmCommonDataSource)
     }
@@ -105,6 +112,15 @@ class ProductManageListModule(private val context: Context) {
             context.resources,
             com.tokopedia.shop.common.R.raw.gql_get_product_list
         )
+    }
+
+    @ProductManageListScope
+    @Provides
+    @Named(GQLQueryNamedConstant.SHOP_INFO)
+    fun provideGqlQueryShopInfo(): String {
+        return GraphqlHelper.loadRawString(
+            context.resources,
+            com.tokopedia.shop.common.R.raw.gql_get_shop_info)
     }
 
     @ProductManageListScope

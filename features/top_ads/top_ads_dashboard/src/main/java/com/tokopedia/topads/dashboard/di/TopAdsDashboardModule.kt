@@ -73,6 +73,19 @@ class TopAdsDashboardModule {
     @Named("Main")
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
+    @Provides
+    @Named(GQLQueryNamedConstant.SHOP_INFO)
+    fun provideGqlQueryShopInfo(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_info)
+    }
+
+    @TopAdsDashboardScope
+    @Provides
+    fun provideGqlGetShopInfoUseCase(graphqlUseCase: MultiRequestGraphqlUseCase,
+                                     @Named(GQLQueryNamedConstant.SHOP_INFO)
+                                     gqlQuery: String): GQLGetShopInfoUseCase =
+            GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase)
+
     @TopAdsDashboardScope
     @Provides
     fun provideMultiRequestGraphqlUseCase(): MultiRequestGraphqlUseCase =
