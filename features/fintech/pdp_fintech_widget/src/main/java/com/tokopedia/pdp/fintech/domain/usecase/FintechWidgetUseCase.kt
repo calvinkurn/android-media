@@ -13,7 +13,7 @@ class FintechWidgetUseCase @Inject constructor() {
     }
 
 
-    val jsonValue = " {\n" +
+    val jsonValue = "{\n" +
             "    \"list\": [\n" +
             "      {\n" +
             "        \"price\": 15000000,\n" +
@@ -29,7 +29,7 @@ class FintechWidgetUseCase @Inject constructor() {
             "            \"header\": \"Bayar 24 Nov 2021\",\n" +
             "            \"subheader\": \"Activate\",\n" +
             "            \"subheader_color\": \"green\",\n" +
-            "            \"product_icon_light\": \"images.tokopedia.net\",\n" +
+            "            \"product_icon_light\": \"https://images.tokopedia.net/img/assets-fintech-frontend/pdp/briceria/Logo-Ceria.png\",\n" +
             "            \"product_icon_dark\": \"images.tokopedia.net\",\n" +
             "            \"cta\": {\n" +
             "              \"type\": 5,\n" +
@@ -81,7 +81,7 @@ class FintechWidgetUseCase @Inject constructor() {
             "            \"header\": \"Rp. 1.250.000 x12\",\n" +
             "            \"subheader\": \"Activate\",\n" +
             "            \"subheader_color\": \"green\",\n" +
-            "            \"product_icon_light\": \"images.tokopedia.net\",\n" +
+            "            \"product_icon_light\": \"https://images.tokopedia.net/img/gpl_cicil_s.png\",\n" +
             "            \"product_icon_dark\": \"images.tokopedia.net\", \n" +
             "            \"cta\": {\n" +
             "              \"type\": 5,\n" +
@@ -153,7 +153,7 @@ class FintechWidgetUseCase @Inject constructor() {
             "            \"header\": \"Bayar 24 Nov 2021\",\n" +
             "            \"subheader\": \"Activate\",\n" +
             "            \"subheader_color\": \"green\",\n" +
-            "            \"product_icon_light\": \"images.tokopedia.net\",\n" +
+            "            \"product_icon_light\": \"https://images.tokopedia.net/img/gpl_cicil_s.png\",\n" +
             "            \"product_icon_dark\": \"images.tokopedia.net\",\n" +
             "            \"cta\": {\n" +
             "              \"type\": 5,\n" +
@@ -205,7 +205,7 @@ class FintechWidgetUseCase @Inject constructor() {
             "            \"header\": \"Rp. 1.250.000 x12\",\n" +
             "            \"subheader\": \"Activate\",\n" +
             "            \"subheader_color\": \"green\",\n" +
-            "            \"product_icon_light\": \"images.tokopedia.net\",\n" +
+            "            \"product_icon_light\": \"https://images.tokopedia.net/img/assets-fintech-frontend/pdp/briceria/Logo-Ceria.png\",\n" +
             "            \"product_icon_dark\": \"images.tokopedia.net\", \n" +
             "            \"cta\": {\n" +
             "              \"type\": 5,\n" +

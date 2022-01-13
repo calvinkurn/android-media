@@ -38,6 +38,8 @@ class PdpFintechWidget @JvmOverloads constructor(
     private lateinit var instanceProductUpdateListner: ProductUpdateListner
     private lateinit var fintechWidgetViewModel: FintechWidgetViewModel
 
+    private var counter =0;
+
 
     init {
         initInjector()
@@ -129,7 +131,9 @@ class PdpFintechWidget @JvmOverloads constructor(
     ) {
         this.instanceProductUpdateListner = fintechWidgetViewHolder
         loader.visibility = View.VISIBLE
-        fintechWidgetViewModel.getProductDetail(productID)
+        if(counter != 0)
+            fintechWidgetViewModel.getProductDetail(productID)
+        counter += 1
 
 
     }

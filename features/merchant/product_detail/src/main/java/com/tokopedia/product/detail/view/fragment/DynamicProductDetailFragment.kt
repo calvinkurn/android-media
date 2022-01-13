@@ -781,18 +781,14 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         {
             activity?.let {
                 //Make sure dont put your parameter inside constructor, it will cause crash when dont keep activity
-                val checkoutDetailBottomSheet = CheckoutDetailBottomSheet()
-                checkoutDetailBottomSheet.show(it.supportFragmentManager)
-            }
-        }
-        if(ctaType == 2)
-        {
-            activity?.let {
-                //Make sure dont put your parameter inside constructor, it will cause crash when dont keep activity
                 val redirectActivateBottomSheet = RedirectActivateBottomSheet()
                 redirectActivateBottomSheet.show(it.supportFragmentManager)
 
             }
+        }
+        if(ctaType == 2)
+        {
+            RouteManager.route(context, "tokopedia://fintech/paylater?category=iOS&price=5350000.000000&productURL=https%3A%2F%2Fwww.tokopedia.com%2Fbakso-abang-ade%2Fi-phone-11-ibox-128gb-hitam-128-gb&userID=3660665&productID=15577631")
         }
         if(ctaType!=1 && ctaType!=2){
             RouteManager.route(context, "tokopedia://fintech/paylater?category=iOS&price=5350000.000000&productURL=https%3A%2F%2Fwww.tokopedia.com%2Fbakso-abang-ade%2Fi-phone-11-ibox-128gb-hitam-128-gb&userID=3660665&productID=15577631")
