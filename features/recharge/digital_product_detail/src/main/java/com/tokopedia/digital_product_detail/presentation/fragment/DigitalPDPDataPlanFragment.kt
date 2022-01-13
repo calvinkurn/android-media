@@ -55,9 +55,6 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
 
     private fun observeData() {
         viewModel.dummy.observe(viewLifecycleOwner, {
-//            showDenomGrid()
-//            showMCCM()
-//            showFlashSale()
             showDenomFull()
             showMCCMFull()
             showFlashSaleFull()
@@ -66,7 +63,7 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
 
     private fun showInitalView(){
         binding?.let {
-            it.widgetDenomFull.renderDenomFullShimmering("Halo data")
+            it.widgetDenomFull.renderDenomFullShimmering("Diskon Rp15.000 buat pengguna baru, nih!")
         }
     }
 
@@ -83,7 +80,7 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
             }, "Diskon Rp15.000 buat pengguna baru, nih!",
                 listOf(
                     DenomWidgetModel(
-                        title="15 ribu",
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
                         description = "The description related to the product, max 1 line",
                         specialLabel = "Any campaign label",
                         price = "Rp500",
@@ -96,7 +93,42 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
                         flashSaleLabel = "Segera Habis",
                         flashSalePercentage = 80,
                         isShowChevron = true
-                    )
+                    ),
+                    DenomWidgetModel(
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
+                        price = "Rp500",
+                        quotaInfo = "3 GB",
+                        expiredDays = "30 Hari",
+                        slashPrice = "Rp16.500",
+                        discountLabel = "10%",
+                        appLink = "tokopedia://deals",
+                        isShowChevron = true
+                    ),
+                    DenomWidgetModel(
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
+                        price = "Rp500",
+                        quotaInfo = "3 GB - 5 GB",
+                        expiredDays = "30 Hari",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                        isShowChevron = true
+                    ),
+                    DenomWidgetModel(
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
+                        price = "Rp500",
+                        quotaInfo = "3 GB - 5 GB",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                        isShowChevron = true
+                    ),
+                    DenomWidgetModel(
+                    title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
+                    price = "Rp500",
+                    quotaInfo = "3 GB - 5 GB",
+                    appLink = "tokopedia://deals",
+                    isShowChevron = true
+                )
+
                 )
             )
         }
@@ -115,18 +147,43 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
             }, "Diskon Rp15.000 buat pengguna baru, nih!",
                 listOf(
                     DenomWidgetModel(
-                        title="15 ribu",
-                        description = "The description related to the product, max 1 line",
-                        specialLabel = "Any campaign label",
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
                         price = "Rp500",
                         quotaInfo = "3 GB",
                         expiredDays = "30 Hari",
-                        discountLabel = "10%",
                         slashPrice = "Rp16.500",
+                        discountLabel = "10%",
                         appLink = "tokopedia://deals",
-                        expiredDate = "December 2021",
-                        flashSaleLabel = "Segera Habis",
-                        flashSalePercentage = 80,
+                        isShowChevron = true
+                    ),
+                    DenomWidgetModel(
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
+                        price = "Rp500",
+                        quotaInfo = "3 GB",
+                        expiredDays = "30 Hari",
+                        slashPrice = "Rp16.500",
+                        discountLabel = "10%",
+                        appLink = "tokopedia://deals",
+                        isShowChevron = true
+                    ),
+                    DenomWidgetModel(
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
+                        price = "Rp500",
+                        quotaInfo = "3 GB",
+                        expiredDays = "30 Hari",
+                        slashPrice = "Rp16.500",
+                        discountLabel = "10%",
+                        appLink = "tokopedia://deals",
+                        isShowChevron = true
+                    ),
+                    DenomWidgetModel(
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
+                        price = "Rp500",
+                        quotaInfo = "3 GB",
+                        expiredDays = "30 Hari",
+                        slashPrice = "Rp16.500",
+                        discountLabel = "10%",
+                        appLink = "tokopedia://deals",
                         isShowChevron = true
                     )
                 )
@@ -148,7 +205,52 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
                 "Sampai dengan",
                 listOf(
                     DenomWidgetModel(
-                        title="15 ribu",
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
+                        description = "The description related to the product, max 1 line",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        quotaInfo = "3 GB",
+                        expiredDays = "30 Hari",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                        expiredDate = "December 2021",
+                        flashSaleLabel = "Segera Habis",
+                        flashSalePercentage = 80,
+                        isShowChevron = true
+                    ),
+                    DenomWidgetModel(
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
+                        description = "The description related to the product, max 1 line",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        quotaInfo = "3 GB",
+                        expiredDays = "30 Hari",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                        expiredDate = "December 2021",
+                        flashSaleLabel = "Segera Habis",
+                        flashSalePercentage = 80,
+                        isShowChevron = true
+                    ),
+                    DenomWidgetModel(
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
+                        description = "The description related to the product, max 1 line",
+                        specialLabel = "Any campaign label",
+                        price = "Rp500",
+                        quotaInfo = "3 GB",
+                        expiredDays = "30 Hari",
+                        discountLabel = "10%",
+                        slashPrice = "Rp16.500",
+                        appLink = "tokopedia://deals",
+                        expiredDate = "December 2021",
+                        flashSaleLabel = "Segera Habis",
+                        flashSalePercentage = 80,
+                        isShowChevron = true
+                    ),
+                    DenomWidgetModel(
+                        title="Simpati OMG Unlimited for 1 Year - Gratis Telfon ke sesama Telkomsel, max 2 lines",
                         description = "The description related to the product, max 1 line",
                         specialLabel = "Any campaign label",
                         price = "Rp500",
