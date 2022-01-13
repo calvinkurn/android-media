@@ -4,7 +4,6 @@ import android.graphics.Color
 import com.modiface.mfemakeupkit.effects.MFEMakeupLipLayer
 import com.modiface.mfemakeupkit.effects.MFEMakeupLook
 import com.modiface.mfemakeupkit.effects.MFEMakeupProduct
-import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -27,7 +26,6 @@ object ProductArMapper {
             notes = ""
             attribution = ""
             listTracker = ""
-            atcFromExternalSource = AtcFromExternalSource.ATC_FROM_AR
             productName = productAr?.name ?: ""
             category = "" //todo
             price = productAr?.getFinalPrice().toString()
