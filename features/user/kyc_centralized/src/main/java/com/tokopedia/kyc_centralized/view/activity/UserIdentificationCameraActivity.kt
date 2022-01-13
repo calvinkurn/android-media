@@ -2,6 +2,7 @@ package com.tokopedia.kyc_centralized.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
@@ -9,6 +10,9 @@ import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationCameraFragment
+import com.tokopedia.kyc_centralized.view.fragment.camera.CameraWithCroppingFragment
+import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.permission.request
 
 /**
  * @author by alvinatin on 07/11/18.
@@ -24,7 +28,8 @@ class UserIdentificationCameraActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? {
-        return UserIdentificationCameraFragment.createInstance(viewMode)
+//        return UserIdentificationCameraFragment.createInstance(viewMode)
+        return CameraWithCroppingFragment.createInstance(viewMode)
     }
 
     companion object {
