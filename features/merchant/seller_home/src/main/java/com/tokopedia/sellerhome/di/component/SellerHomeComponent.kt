@@ -29,10 +29,6 @@ import dagger.Component
 )
 interface SellerHomeComponent {
 
-    fun inject(sellerHomeActivity: SellerHomeActivity)
-
-    fun inject(sellerHomeFragment: SellerHomeFragment)
-
     fun inject(sellerHomeFragment: MenuSettingFragment)
 
     fun inject(otherMenuFragment: OtherMenuFragment)

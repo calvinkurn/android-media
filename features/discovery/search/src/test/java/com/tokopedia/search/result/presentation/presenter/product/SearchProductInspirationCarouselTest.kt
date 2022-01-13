@@ -835,6 +835,8 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
             actual.imageUrl shouldBe expected.imageUrl
             actual.isShown shouldBe expected.isShown
         }
+
+        componentId shouldBe inspirationCarouselProduct.componentId
     }
 
     private fun Visitable<*>.assertNotBroadMatchDataView(visitableIndex: Int) {
@@ -893,7 +895,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
 
     private fun assertCarouselProductTypeBroadMatch(
             broadMatchDataView: BroadMatchDataView,
-            inspirationCarouselData: SearchProductModel.InspirationCarouselData,
+            ignored: SearchProductModel.InspirationCarouselData,
     ) {
         val carouselOptionType = broadMatchDataView.carouselOptionType
         carouselOptionType.shouldBeInstanceOf<BroadMatch>()

@@ -28,6 +28,8 @@ data class ParentReply(
     val isExpired: Boolean = false,
     @SerializedName("source")
     val source: String = "",
+    @SerializedName("replyID")
+    val replyId: String = "",
 ) {
 
     val replyTimeMillisOffset: String get() {

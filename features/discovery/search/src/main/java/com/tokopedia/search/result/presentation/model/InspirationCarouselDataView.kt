@@ -22,6 +22,7 @@ class InspirationCarouselDataView(
         return typeFactory.type(this)
     }
 
+    @Suppress("LongParameterList")
     class Option(
             val title: String = "",
             val url: String = "",
@@ -65,6 +66,7 @@ class InspirationCarouselDataView(
 
         fun isShowChipsIcon() = hexColor.isNotEmpty() || chipImageUrl.isNotEmpty()
 
+        @Suppress("LongParameterList")
         class Product(
                 val id: String = "",
                 val name: String = "",

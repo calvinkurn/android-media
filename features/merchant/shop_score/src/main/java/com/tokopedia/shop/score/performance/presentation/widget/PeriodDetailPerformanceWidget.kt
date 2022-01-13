@@ -41,10 +41,6 @@ class PeriodDetailPerformanceWidget: ConstraintLayout {
 
     private fun setupViews(element: BasePeriodDetailUiModel?) {
         binding?.run {
-            tvPerformanceDetailLabel.text =
-                context.getString(R.string.title_detail_performa, element?.period.orEmpty())
-            tvPerformanceDetailDate.text =
-                context.getString(R.string.title_update_date, element?.nextUpdate.orEmpty())
 
             if (element?.isNewSeller == true) {
                 tvPerformanceDetailLabel.text =

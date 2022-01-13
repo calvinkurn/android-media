@@ -18,7 +18,9 @@ data class TrackingData(
         @SerializedName("track_order")
         val trackOrder: TrackOrder = TrackOrder(),
         @SerializedName("page")
-        val page: Page = Page()
+        val page: Page = Page(),
+        @SerializedName("tipping")
+        val tipping: Tipping = Tipping()
 )
 
 data class TrackOrder(
@@ -82,6 +84,8 @@ data class TrackHistory(
         val city: String = "",
         @SerializedName("time")
         val time: String = "",
+        @SerializedName("partner_name")
+        val partnerName: String = "",
         @SerializedName("proof")
         val proof: Proof = Proof()
 )
@@ -142,4 +146,29 @@ data class EtaHistoriesItem(
 
         @field:SerializedName("event_time")
         val eventTime: String = ""
+)
+
+
+data class Tipping(
+        @SerializedName("status")
+        val status: Int = 0,
+        @SerializedName("status_title")
+        val statusTitle: String = "",
+        @SerializedName("status_subtitle")
+        val statusSubtitle: String = "",
+        @SerializedName("last_driver")
+        val lastDriver: LastDriver = LastDriver()
+)
+
+data class LastDriver(
+        @SerializedName("photo")
+        val photo: String = "",
+        @SerializedName("name")
+        val name: String = "",
+        @SerializedName("phone")
+        val phone: String = "",
+        @SerializedName("license_number")
+        val licenseNumber: String = "",
+        @SerializedName("is_changed")
+        val isChanged: Boolean = false
 )
