@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
@@ -339,7 +340,9 @@ class PermissionCheckerHelper {
     fun onRequestPermissionsResult(context: Context?, requestCode: Int,
                                    permissions: Array<String>,
                                    grantResults: IntArray) {
-        if (context == null) {
+        Log.i("qwerty", "PermissionCheckerHelper: onRequestPermissionResult : ${requestCode}")
+        if (context == null || !this::listener.isInitialized) {
+            Log.i("qwerty", "PermissionCheckerHelper: onRequestPermissionResult : ${requestCode} listener is not initialized")
             return
         }
         var permissionsDenied: Array<String> = arrayOf()
@@ -371,6 +374,12 @@ class PermissionCheckerHelper {
                 listener.onPermissionDenied(getJoinedText
                 (permissionsDeniedNeedToShowRationale))
             }
+        }
+    }
+
+    fun setListener(listener: PermissionCheckListener) {
+        if (!this::listener.isInitialized) {
+            this.listener = listener
         }
     }
 

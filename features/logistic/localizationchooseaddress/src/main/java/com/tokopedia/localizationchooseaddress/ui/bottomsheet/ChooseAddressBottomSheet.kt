@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -406,6 +407,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
             buttonAddAddress?.gone()
             buttonLogin?.visible()
             shouldShowGpsPopUp = true
+            Log.i("qwerty", "ChooseAddressBottomSheet: setViewState: not login")
             showGpsPopUp()
         } else {
             if (adapter.containsChosenAddress()) {
@@ -418,6 +420,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 buttonAddAddress?.visible()
                 shouldShowGpsPopUp = true
                 showGpsPopUp()
+                Log.i("qwerty", "ChooseAddressBottomSheet: setViewState: login")
             }
         }
         errorLayout?.gone()
@@ -544,6 +547,21 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        Log.i("qwerty", "ChooseAddressBottomSheet: onRequestPermissionResult : ${requestCode}")
+        permissionCheckerHelper?.setListener(object : PermissionCheckerHelper.PermissionCheckListener {
+            override fun onPermissionDenied(permissionText: String) {
+                ChooseAddressTracking.onClickDontAllowLocation(userSession.userId)
+            }
+
+            override fun onNeverAskAgain(permissionText: String) {
+                //no op
+            }
+
+            override fun onPermissionGranted() {
+                ChooseAddressTracking.onClickAllowLocation(userSession.userId)
+                getLocation()
+            }
+        })
         permissionCheckerHelper?.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
     }
 
@@ -554,8 +572,10 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     }
 
     private fun showGpsPopUp() {
+        Log.i("qwerty", "ChooseAddressBottomSheet: showGpsPopUp 559")
         if (shouldShowGpsPopUp && hasBottomSheetShown && !hasAskedPermission) {
             hasAskedPermission = true
+            Log.i("qwerty", "ChooseAddressBottomSheet: showGpsPopUp 562")
             if (permissionCheckerHelper?.hasPermission(requireContext(), getPermissions()) == false) {
                 permissionCheckerHelper?.checkPermissions(this, getPermissions(), object : PermissionCheckerHelper.PermissionCheckListener {
                     override fun onPermissionDenied(permissionText: String) {
@@ -572,6 +592,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                     }
                 })
             }
+            Log.i("qwerty", "ChooseAddressBottomSheet: showGpsPopUp done creating listener")
         }
     }
 
