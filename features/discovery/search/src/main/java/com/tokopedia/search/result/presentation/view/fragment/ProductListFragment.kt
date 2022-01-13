@@ -67,10 +67,12 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.IProductCardView
+import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_MPC_LIFECYCLE_OBSERVER
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.InspirationCarouselAnalyticsData
@@ -198,6 +200,9 @@ class ProductListFragment: BaseDaggerFragment(),
     @Inject
     lateinit var inspirationCarouselTrackingUnification: InspirationCarouselTrackingUnification
 
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
+
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var refreshLayout: SwipeRefreshLayout? = null
     private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
@@ -225,12 +230,15 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override val carouselRecycledViewPool = RecyclerView.RecycledViewPool()
+    override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
+        private set
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         loadDataFromArguments()
         initTrackingQueue()
+        initProductCardLifecycleObserver()
     }
 
     private fun loadDataFromArguments() {
@@ -248,6 +256,15 @@ class ProductListFragment: BaseDaggerFragment(),
     private fun initTrackingQueue() {
         context?.let {
             trackingQueue = TrackingQueue(it)
+        }
+    }
+
+    private fun initProductCardLifecycleObserver() {
+        if (!remoteConfig.getBoolean(ENABLE_MPC_LIFECYCLE_OBSERVER)) return
+
+        ProductCardLifecycleObserver().also {
+            productCardLifecycleObserver = it
+            lifecycle.addObserver(it)
         }
     }
 

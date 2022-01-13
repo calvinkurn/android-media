@@ -61,7 +61,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 
-class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTypeFactory>(),
+open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTypeFactory>(),
     HasComponent<ReviewProductListComponent>,
     ReviewSummaryViewHolder.ReviewSummaryViewListener,
     SellerReviewListViewHolder.SellerReviewListListener,

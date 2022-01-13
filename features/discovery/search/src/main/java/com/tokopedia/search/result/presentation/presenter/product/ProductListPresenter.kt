@@ -41,6 +41,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
@@ -225,6 +226,22 @@ class ProductListPresenter @Inject constructor(
 
         isEnableChooseAddress = view.isChooseAddressWidgetEnabled
         if (isEnableChooseAddress) chooseAddressData = view.chooseAddressData
+    }
+
+    private val isABTestNegativeNoAds : Boolean  by lazy {
+        getABTestNegativeNoAds()
+    }
+
+    private fun getABTestNegativeNoAds() :Boolean {
+        return try {
+            val abTestKeywordAdvNeg = view.abTestRemoteConfig?.getString(
+                RollenceKey.SEARCH_ADVANCED_KEYWORD_ADV_NEG,
+                ""
+            )
+            RollenceKey.SEARCH_ADVANCED_NEGATIVE_NO_ADS == abTestKeywordAdvNeg
+        } catch (e: Exception) {
+            false
+        }
     }
 
     override val userId: String
@@ -449,6 +466,14 @@ class ProductListPresenter @Inject constructor(
         totalData = productDataView.totalData
     }
 
+    private fun isDisableAdsNegativeKeywords(productDataView: ProductDataView) :Boolean {
+        return isABTestNegativeNoAds && productDataView.isAdvancedNegativeKeywordSearch()
+    }
+
+    private fun isHideProductAds(productDataView: ProductDataView) : Boolean {
+        return isLocalSearch() || isDisableAdsNegativeKeywords(productDataView)
+    }
+
     private fun createProductDataView(
         searchProductModel: SearchProductModel,
         pageTitleEventLabel: String = "",
@@ -528,15 +553,16 @@ class ProductListPresenter @Inject constructor(
 
     private fun createProductItemVisitableList(productDataView: ProductDataView): MutableList<Visitable<*>> {
         val list: MutableList<Visitable<*>> = productDataView.productList.toMutableList()
-        if (isLocalSearch()) return list
+        if (isHideProductAds(productDataView)) return list
+        val adsModel = productDataView.adsModel ?: return list
 
         var j = 0
         for (i in 0 until productDataView.getTotalItem()) {
             try {
                 // Already surrounded by try catch per looping, safe to force nullable
-                if (productDataView.adsModel!!.templates.size <= 0) continue
-                if (productDataView.adsModel!!.templates[i].isIsAd) {
-                    val topAds = productDataView.adsModel!!.data[j]
+                if (adsModel.templates.size <= 0) continue
+                if (adsModel.templates[i].isIsAd) {
+                    val topAds = adsModel.data[j]
                     val item = ProductItemDataView()
                     item.productID = topAds.product.id
                     item.isTopAds = true
@@ -1062,6 +1088,7 @@ class ProductListPresenter @Inject constructor(
         processBannerAndBroadmatchInSamePosition(searchProduct, list)
         processBanner(searchProduct, list)
         processBroadMatch(searchProduct, list)
+
         topAdsImageViewModelList = searchProductModel.getTopAdsImageViewModelList().toMutableList()
         processTopAdsImageViewModel(searchParameter, list)
 

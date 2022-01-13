@@ -1,12 +1,10 @@
 package com.tokopedia.review.analytics.seller.activity
 
 import android.app.Activity
+import android.app.Application
 import android.app.Instrumentation
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.IdlingPolicies
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
@@ -22,19 +20,19 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.analytics.common.SellerReviewRobot
 import com.tokopedia.review.analytics.common.actionTest
-import com.tokopedia.review.analytics.seller.mockresponse.SellerReviewListMockResponse
-import com.tokopedia.review.analytics.seller.util.SellerReviewIdlingInterface
-import com.tokopedia.review.analytics.seller.util.SellerReviewNetworkIdlingResource
-import com.tokopedia.review.feature.inbox.presentation.InboxReputationActivity
+import com.tokopedia.review.common.Utils
+import com.tokopedia.review.feature.reviewlist.data.ProductRatingOverallResponse
+import com.tokopedia.review.feature.reviewlist.data.ProductReviewListResponse
 import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.review.stub.common.di.component.BaseAppComponentStubInstance
+import com.tokopedia.review.stub.common.graphql.coroutines.domain.repository.GraphqlRepositoryStub
+import com.tokopedia.review.stub.inbox.presentation.activity.InboxReputationActivityStub
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.util.concurrent.TimeUnit
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 @LargeTest
@@ -53,38 +51,24 @@ class SellerReviewListActivityTest {
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(targetContext)
 
-    private val idlingResource by lazy {
-        SellerReviewNetworkIdlingResource(object : SellerReviewIdlingInterface {
-            override fun getName(): String = "SellerReviewListIdle"
-
-            override fun idleState(): Boolean {
-                val fragment = getRatingProductFragment()
-                if (fragment.view?.findViewById<RecyclerView>(R.id.rvRatingProduct) == null) {
-                    throw RuntimeException("Recyclerview not found")
-                }
-
-                return fragment.view?.findViewById<RecyclerView>(R.id.rvRatingProduct)?.visibility == View.VISIBLE
-            }
-        })
-    }
+    lateinit var graphqlRepositoryStub: GraphqlRepositoryStub
 
     @get:Rule
-    var activityRule: ActivityTestRule<InboxReputationActivity> =
-        IntentsTestRule(InboxReputationActivity::class.java, false, false)
+    var activityRule: ActivityTestRule<InboxReputationActivityStub> =
+        IntentsTestRule(InboxReputationActivityStub::class.java, false, false)
 
     @Before
     fun setup() {
         setAppToSellerApp()
-        setupGraphqlMockResponse(SellerReviewListMockResponse())
+        getGraphqlRepositoryStub()
+        mockResponses()
         gtmLogDBSource.deleteAll().toBlocking().first()
-        setUpTimeoutIdlingResource()
-        val intent = InboxReputationActivity.getCallingIntent(targetContext)
+        val intent = InboxReputationActivityStub.getCallingIntent(targetContext)
         activityRule.launchActivity(intent)
     }
 
     @After
     fun finish() {
-        IdlingRegistry.getInstance().unregister(idlingResource)
         finishTest()
     }
 
@@ -109,7 +93,6 @@ class SellerReviewListActivityTest {
                     ViewActions.scrollTo()
                 )
             )
-            waitForResume()
             viewInteractionRatingProduct.perform(
                 RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                     getRatingProductItemCount() - 1,
@@ -117,7 +100,6 @@ class SellerReviewListActivityTest {
                 )
             )
             intendingIntent()
-            waitForResume()
         } assertTest {
             performClose(activityRule)
             validate(gtmLogDBSource, targetContext, CLICK_PRODUCT_PATH)
@@ -177,7 +159,6 @@ class SellerReviewListActivityTest {
             activityRule.activity,
             RatingProductFragment.TAG_COACH_MARK_RATING_PRODUCT
         )
-        waitForResume()
         if (!isVisibleCoachMark && coachMark.isVisible) {
             clickAction(com.tokopedia.coachmark.R.id.text_skip)
         }
@@ -189,37 +170,16 @@ class SellerReviewListActivityTest {
     }
 
     private fun finishTest() {
-        Thread.sleep(2000)
         gtmLogDBSource.deleteAll().subscribe()
-    }
-
-    private fun scrollAndWait() {
-        waitForResume()
-        Espresso.onView(ViewMatchers.withId(R.id.rvRatingProduct)).perform(
-            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                getRatingProductItemCount() - 1,
-                ViewActions.scrollTo()
-            )
-        )
     }
 
     private fun getRatingProductFragment(): RatingProductFragment {
         return activityRule.activity.getFragmentList().filterIsInstance<RatingProductFragment>().first()
     }
 
-    private fun waitForResume() {
-        Thread.sleep(1000)
-    }
-
     private fun getRatingProductItemCount(): Int {
         return activityRule.activity.findViewById<RecyclerView>(R.id.rvRatingProduct).adapter?.itemCount
             ?: 0
-    }
-
-    private fun setUpTimeoutIdlingResource() {
-        IdlingPolicies.setMasterPolicyTimeout(5, TimeUnit.MINUTES)
-        IdlingPolicies.setIdlingResourceTimeout(5, TimeUnit.MINUTES)
-        IdlingRegistry.getInstance().register(idlingResource)
     }
 
     private fun setAppToSellerApp() {
@@ -228,4 +188,21 @@ class SellerReviewListActivityTest {
         GlobalConfig.DEBUG = true
     }
 
+    private fun getGraphqlRepositoryStub() {
+        graphqlRepositoryStub = BaseAppComponentStubInstance.getBaseAppComponentStub(
+            targetContext.applicationContext as Application
+        ).graphqlRepository() as GraphqlRepositoryStub
+        graphqlRepositoryStub.clearMocks()
+    }
+
+    private fun mockResponses() {
+        graphqlRepositoryStub.createMapResult(
+            ProductRatingOverallResponse::class.java,
+            Utils.parseFromJson<ProductRatingOverallResponse>("mockresponse/reviewlist/getproductratingoverallusecase/product_rating_overall.json")
+        )
+        graphqlRepositoryStub.createMapResult(
+            ProductReviewListResponse::class.java,
+            Utils.parseFromJson<ProductReviewListResponse>("mockresponse/reviewlist/getproductratingoverallusecase/product_review_list.json")
+        )
+    }
 }

@@ -1,14 +1,13 @@
 package com.tokopedia.review.analytics.seller.activity
 
 import android.app.Activity
+import android.app.Application
 import android.app.Instrumentation
 import android.content.Intent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingPolicies
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
@@ -17,11 +16,16 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.coachmark.CoachMark
@@ -29,32 +33,37 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.analytics.common.SellerReviewRobot
 import com.tokopedia.review.analytics.common.actionTest
-import com.tokopedia.review.analytics.seller.mockresponse.SellerReviewDetailMockResponse
-import com.tokopedia.review.analytics.seller.util.SellerReviewIdlingInterface
-import com.tokopedia.review.analytics.seller.util.SellerReviewNetworkIdlingResource
-import com.tokopedia.review.feature.reviewdetail.view.activity.SellerReviewDetailActivity
+import com.tokopedia.review.common.Utils
+import com.tokopedia.review.feature.reviewdetail.data.ProductFeedbackDetailResponse
+import com.tokopedia.review.feature.reviewdetail.data.ProductFeedbackFilterResponse
+import com.tokopedia.review.feature.reviewdetail.data.ProductReviewDetailOverallResponse
 import com.tokopedia.review.feature.reviewdetail.view.adapter.SortListAdapter
 import com.tokopedia.review.feature.reviewdetail.view.adapter.TopicListAdapter
 import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.OverallRatingDetailViewHolder
 import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.ProductFeedbackDetailViewHolder
 import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.RatingAndTopicDetailViewHolder
 import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.TopicViewHolder
+import com.tokopedia.review.feature.reviewdetail.view.bottomsheet.BaseTopicsBottomSheet
 import com.tokopedia.review.feature.reviewdetail.view.fragment.SellerReviewDetailFragment
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.ProductReviewFilterUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.TopicUiModel
 import com.tokopedia.review.feature.reviewreply.view.viewholder.ReviewReplyFeedbackImageViewHolder
+import com.tokopedia.review.stub.common.di.component.BaseAppComponentStubInstance
+import com.tokopedia.review.stub.common.graphql.coroutines.domain.repository.GraphqlRepositoryStub
+import com.tokopedia.review.stub.reviewdetail.view.activity.SellerReviewDetailActivityStub
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.hamcrest.CoreMatchers.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import org.hamcrest.CoreMatchers.anything
+import org.hamcrest.CoreMatchers.startsWith
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.util.concurrent.TimeUnit
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 @LargeTest
@@ -81,34 +90,19 @@ class SellerReviewDetailActivityTest {
 
     private val gtmLogDBSource = GtmLogDBSource(targetContext)
 
+    lateinit var graphqlRepositoryStub: GraphqlRepositoryStub
+
     @get:Rule
-    var activityRule: ActivityTestRule<SellerReviewDetailActivity> =
-        IntentsTestRule(SellerReviewDetailActivity::class.java, false, false)
-
-    private val idlingResource by lazy {
-        SellerReviewNetworkIdlingResource(object : SellerReviewIdlingInterface {
-            override fun getName(): String = "SellerReviewDetailIdle"
-
-            override fun idleState(): Boolean {
-                val fragment =
-                    activityRule.activity.supportFragmentManager.findFragmentByTag("TAG_FRAGMENT") as SellerReviewDetailFragment
-                if (fragment.view?.findViewById<RecyclerView>(R.id.rvRatingDetail) == null) {
-                    throw RuntimeException("Recyclerview not found")
-                }
-
-                return fragment.view?.findViewById<RecyclerView>(R.id.rvRatingDetail)?.visibility == View.VISIBLE
-            }
-        })
-    }
-
+    var activityRule: ActivityTestRule<SellerReviewDetailActivityStub> =
+        IntentsTestRule(SellerReviewDetailActivityStub::class.java, false, false)
 
     @Before
     fun setup() {
+        getGraphqlRepositoryStub()
         setAppToSellerApp()
-        setupGraphqlMockResponse(SellerReviewDetailMockResponse())
+        mockResponses()
         gtmLogDBSource.deleteAll().toBlocking().first()
-        setUpTimeoutIdlingResource()
-        val intent = Intent(targetContext, SellerReviewDetailActivity::class.java).apply {
+        val intent = Intent(targetContext, SellerReviewDetailActivityStub::class.java).apply {
             putExtra(SellerReviewDetailFragment.PRODUCT_ID, PRODUCT_ID)
             putExtra(SellerReviewDetailFragment.PRODUCT_IMAGE, "")
         }
@@ -117,7 +111,6 @@ class SellerReviewDetailActivityTest {
 
     @After
     fun finish() {
-        IdlingRegistry.getInstance().unregister(idlingResource)
         finishTest()
     }
 
@@ -172,7 +165,6 @@ class SellerReviewDetailActivityTest {
         actionTest {
             skipCoachMark()
             clickSortFilter()
-            waitForResume()
             clickAction(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)
         } assertTest {
             performClose(activityRule)
@@ -237,7 +229,6 @@ class SellerReviewDetailActivityTest {
     }
 
     private fun clickSortFilter() {
-        waitForResume()
         onView(withId(R.id.rvRatingDetail)).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                 getPositionViewHolderByClass<FeedbackUiModel>(),
@@ -252,28 +243,23 @@ class SellerReviewDetailActivityTest {
                 CommonActions.clickChildViewWithId(com.tokopedia.sortfilter.R.id.sort_filter_prefix)
             )
         )
-        waitForResume()
+        waitUntilViewVisible(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header))
         onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(
             ViewActions.swipeUp()
         )
-        waitForResume()
+        waitUntilBottomSheetShowingAndSettled()
         onView(withId(R.id.rvSortFilter)).check(matches(isDisplayed())).perform(
             RecyclerViewActions.actionOnItemAtPosition<SortListAdapter.SortListViewHolder>(
                 2,
                 click()
             )
         )
-        waitForResume()
         onView(withId(R.id.rvTopicFilter)).perform(
             RecyclerViewActions.actionOnItemAtPosition<TopicListAdapter.TopicListViewHolder>(
                 1,
                 click()
             )
         )
-    }
-
-    private fun waitForResume() {
-        Thread.sleep(1000)
     }
 
     private fun clickQuickFilter() {
@@ -358,14 +344,61 @@ class SellerReviewDetailActivityTest {
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
-    private fun setUpTimeoutIdlingResource() {
-        IdlingPolicies.setMasterPolicyTimeout(5, TimeUnit.MINUTES)
-        IdlingPolicies.setIdlingResourceTimeout(5, TimeUnit.MINUTES)
-        IdlingRegistry.getInstance().register(idlingResource)
-    }
-
     private fun setAppToSellerApp() {
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
         GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP
+    }
+
+    private fun getGraphqlRepositoryStub() {
+        graphqlRepositoryStub = BaseAppComponentStubInstance.getBaseAppComponentStub(
+            targetContext.applicationContext as Application
+        ).graphqlRepository() as GraphqlRepositoryStub
+        graphqlRepositoryStub.clearMocks()
+    }
+
+    private fun mockResponses() {
+        graphqlRepositoryStub.createMapResult(
+            ProductReviewDetailOverallResponse::class.java,
+            Utils.parseFromJson<ProductReviewDetailOverallResponse>("mockresponse/reviewdetail/getproductreviewinitialusecase/overall.json")
+        )
+        graphqlRepositoryStub.createMapResult(
+            ProductFeedbackDetailResponse::class.java,
+            Utils.parseFromJson<ProductFeedbackDetailResponse>("mockresponse/reviewdetail/getproductreviewinitialusecase/feedback_detail_list.json")
+        )
+        graphqlRepositoryStub.createMapResult(
+            ProductFeedbackFilterResponse::class.java,
+            Utils.parseFromJson<ProductFeedbackFilterResponse>("mockresponse/reviewdetail/getproductreviewinitialusecase/product_feedback_filter.json")
+        )
+    }
+
+    private fun isViewVisible(matcher: Matcher<View>): Boolean {
+        return try {
+            onView(matcher).check(matches(ViewMatchers.isDisplayingAtLeast(90)))
+            true
+        } catch (t: Throwable) {
+            false
+        }
+    }
+
+    private fun waitUntilViewVisible(matcher: Matcher<View>) {
+        Utils.waitForCondition {
+            isViewVisible(matcher)
+        }
+    }
+
+    private fun waitUntilBottomSheetShowingAndSettled() {
+        Utils.waitForCondition {
+            val bottomSheetUnify = getPopularTopicsBottomSheet()
+            isBottomSheetShowingAndSettled(bottomSheetUnify)
+        }
+    }
+
+    private fun isBottomSheetShowingAndSettled(bottomSheetUnify: BottomSheetUnify?): Boolean {
+        val state = bottomSheetUnify?.bottomSheet?.state
+        return state == BottomSheetBehavior.STATE_EXPANDED || state == BottomSheetBehavior.STATE_HALF_EXPANDED || state == BottomSheetBehavior.STATE_COLLAPSED
+    }
+
+    private fun getPopularTopicsBottomSheet(): BottomSheetUnify? {
+        return activityRule.activity.supportFragmentManager.findFragmentByTag(BaseTopicsBottomSheet.BOTTOM_SHEET_TITLE) as? BottomSheetUnify
     }
 }
