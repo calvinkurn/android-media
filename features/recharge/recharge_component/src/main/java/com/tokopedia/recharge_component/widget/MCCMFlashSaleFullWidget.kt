@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.databinding.WidgetRechargeMccmFullBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomFullListener
 import com.tokopedia.recharge_component.mapper.DenomMCCMFlashSaleMapper
+import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.presentation.adapter.DenomFullAdapter
@@ -24,9 +25,9 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
     private val widgetRechargeMCCMFlashSaleFullWidget = WidgetRechargeMccmFullBinding.inflate(
         LayoutInflater.from(context), this, true)
 
-    fun renderMCCMFull(denomFullListener: RechargeDenomFullListener, textColor:String, titleDenomFull: String, listDenomFull: List<DenomWidgetModel>){
+    fun renderMCCMFull(denomFullListener: RechargeDenomFullListener, denomData: DenomWidgetModel){
         with(widgetRechargeMCCMFlashSaleFullWidget){
-            headerMccmFull.setChannel(DenomMCCMFlashSaleMapper.getChannelMCCM(titleDenomFull, textColor), object :
+            headerMccmFull.setChannel(DenomMCCMFlashSaleMapper.getChannelMCCM(denomData.mainTitle, denomData.textColor), object :
                 HeaderListener {
                 override fun onChannelExpired(channelModel: ChannelModel) {
 
@@ -36,13 +37,16 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
 
                 }
             })
-            renderAdapter(denomFullListener, listDenomFull)
+            renderAdapter(denomFullListener, denomData.listDenomWidget)
         }
     }
 
-    fun renderFlashSaleFull(denomFullListener: RechargeDenomFullListener, textColor: String, titleFlashSale: String, subtitleFlashSale: String, listDenomFull: List<DenomWidgetModel>){
+    fun renderFlashSaleFull(denomFullListener: RechargeDenomFullListener, denomData: DenomWidgetModel){
         with(widgetRechargeMCCMFlashSaleFullWidget){
-            headerMccmFull.setChannel(DenomMCCMFlashSaleMapper.getChannelFlashSale(titleFlashSale, subtitleFlashSale,  textColor), object :
+            headerMccmFull.setChannel(DenomMCCMFlashSaleMapper.getChannelFlashSale(
+                denomData.mainTitle,
+                denomData.subTitle,
+                denomData.textColor), object :
                 HeaderListener {
                 override fun onChannelExpired(channelModel: ChannelModel) {
 
@@ -52,11 +56,11 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
 
                 }
             })
-            renderAdapter(denomFullListener, listDenomFull)
+            renderAdapter(denomFullListener, denomData.listDenomWidget)
         }
     }
 
-    private fun renderAdapter(denomFullListener: RechargeDenomFullListener, listDenomFull: List<DenomWidgetModel>){
+    private fun renderAdapter(denomFullListener: RechargeDenomFullListener, listDenomFull: List<DenomData>){
         val adapterDenomFull = DenomFullAdapter()
         with(widgetRechargeMCCMFlashSaleFullWidget){
             rvMccmFull.run {

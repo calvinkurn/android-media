@@ -10,7 +10,7 @@ import dagger.Component
  */
 
 @DigitalPDPScope
-@Component(modules = [DigitalPDPModule::class, DigitalPDPViewModelModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [DigitalPDPModule::class, DigitalPDPViewModelModule::class, DigitalPDPBindModule::class], dependencies = [BaseAppComponent::class])
 interface DigitalPDPComponent {
 
     fun inject(digitalPDPPulsaFragment: DigitalPDPPulsaFragment)

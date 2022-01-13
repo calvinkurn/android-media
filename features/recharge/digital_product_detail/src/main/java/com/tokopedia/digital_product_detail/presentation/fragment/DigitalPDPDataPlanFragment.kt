@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.digital_product_detail.data.model.DigitalDenomGridUiModel
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
@@ -15,6 +16,9 @@ import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListe
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardEnum
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -22,7 +26,10 @@ import javax.inject.Inject
  * @author by firmanda on 04/01/21
  */
 
-class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
+class DigitalPDPDataPlanFragment :
+    BaseDaggerFragment(),
+    RechargeDenomGridListener
+{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -49,9 +56,8 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getInitalData()
         observeData()
-        initalView()
-        viewModel.getDelayedResponse()
     }
 
     private fun initalView(){
@@ -116,6 +122,17 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
         })
     }
 
+    private fun getInitalData(){
+        initalView()
+        viewModel.getRechargeCatalogInput(148, "17")
+    }
+
+    /**
+     * DenomGrid Listener
+     */
+    override fun onDenomGridClicked(denomGrid: DenomData, position: Int) {
+
+    }
 
 
     companion object {

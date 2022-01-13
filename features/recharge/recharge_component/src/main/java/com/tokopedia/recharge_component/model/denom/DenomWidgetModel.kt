@@ -1,6 +1,13 @@
 package com.tokopedia.recharge_component.model.denom
 
 data class DenomWidgetModel(
+   val mainTitle: String = "",
+   val subTitle: String = "",
+   val textColor: String = "",
+   val listDenomWidget: List<DenomData> = emptyList()
+)
+
+data class DenomData(
     val title: String = "",
     val description: String = "",
     val quotaInfo: String = "",
