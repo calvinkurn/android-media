@@ -371,6 +371,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                 if (newToken.isEmpty()) {
                     return response;
                 }
+
                 networkRouter.doRelogin(newToken);
                 Request newestRequest;
                 if (finalRequest.header(AUTHORIZATION).contains(BEARER)) {
