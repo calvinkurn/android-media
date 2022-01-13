@@ -2,8 +2,8 @@ package com.tokopedia.topchat.chatroom.viewmodel.base
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
@@ -22,8 +22,14 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.MockKAnnotations
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.slot
+import io.mockk.verify
+import okhttp3.Response
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
 import org.junit.Before
 import org.junit.Rule
 
@@ -139,6 +145,11 @@ abstract class BaseTopChatViewModelTest {
     protected val expectedThrowable = Throwable("Oops!")
     protected val testMessageId = "123123"
 
+    @RelaxedMockK
+    lateinit var websocket: WebSocket
+    @RelaxedMockK
+    lateinit var websocketResponse: Response
+
     @Before
     open fun before() {
         MockKAnnotations.init(this)
@@ -176,5 +187,19 @@ abstract class BaseTopChatViewModelTest {
             uploadImageUseCase,
             compressImageUseCase
         )
+    }
+
+    protected fun onConnectWebsocket(listener: (WebSocketListener) -> Unit) {
+        val slot = slot<WebSocketListener>()
+        every { chatWebSocket.connectWebSocket(capture(slot)) } answers {
+            listener.invoke(slot.captured)
+        }
+    }
+
+    protected fun verifySendMarkAsRead() {
+        val payload = payloadGenerator.generateMarkAsReadPayload(viewModel.roomMetaData)
+        verify {
+            chatWebSocket.sendPayload(payload)
+        }
     }
 }

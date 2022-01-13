@@ -1,18 +1,14 @@
 package com.tokopedia.topchat.chatroom.viewmodel
 
-import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
-import io.mockk.coEvery
 import io.mockk.verify
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class WebsocketReceiveTest: BaseTopChatViewModelTest() {
+class WebsocketReceiveTest : BaseTopChatViewModelTest() {
 
     @Test
-    fun on_destroy_activity() {
+    fun should_close_websocket_on_destroy_host() {
         // When
         viewModel.onDestroy()
 
@@ -21,5 +17,23 @@ class WebsocketReceiveTest: BaseTopChatViewModelTest() {
             chatWebSocket.close()
             chatWebSocket.destroy()
         }
+    }
+
+    @Test
+    fun should_send_mark_as_read_on_open_websocket() {
+        // Given
+        onConnectWebsocket {
+            it.onOpen(websocket, websocketResponse)
+        }
+
+        // When
+        viewModel.connectWebSocket()
+
+        // Then
+        assertEquals(viewModel.isWebsocketError.value, false)
+        verify {
+            webSocketStateHandler.retrySucceed()
+        }
+        verifySendMarkAsRead()
     }
 }
