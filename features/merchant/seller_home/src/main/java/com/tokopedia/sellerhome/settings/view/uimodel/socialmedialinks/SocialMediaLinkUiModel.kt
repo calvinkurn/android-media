@@ -10,6 +10,7 @@ class SocialMediaLinkUiModel(@DrawableRes private val iconDrawableRes: Int,
                              @StringRes private val titleRes: Int,
                              @StringRes private val descriptionRes: Int,
                              val ctaLink: String,
+                             val fallbackUrl: String,
                              val eventAction: String) {
 
     fun getDrawable(context: Context?): Drawable? {

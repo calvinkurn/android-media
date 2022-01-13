@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhome.settings.view.adapter.socialmedialinks
 
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -24,7 +23,7 @@ class SocialMediaLinksViewHolder(itemView: View): RecyclerView.ViewHolder(itemVi
 
     fun bind(uiModel: SocialMediaLinkUiModel) {
         setupLayout(uiModel)
-        setCtaClick(uiModel.eventAction, uiModel.ctaLink)
+        setCtaClick(uiModel.eventAction, uiModel.ctaLink, uiModel.fallbackUrl)
     }
 
     private fun setupLayout(uiModel: SocialMediaLinkUiModel) {
@@ -38,22 +37,29 @@ class SocialMediaLinksViewHolder(itemView: View): RecyclerView.ViewHolder(itemVi
     }
 
     private fun setCtaClick(eventAction: String,
-                            link: String) {
+                            link: String,
+                            fallbackLink: String) {
         binding?.btnSahItemSocial?.run {
             setOnClickListener {
                 SocialMediaLinksTracker.sendClickEvent(eventAction)
                 val uri = Uri.parse(link)
-                goToDefaultIntent(itemView.context, uri)
+                goToDefaultIntent(itemView.context, uri, fallbackLink)
             }
         }
     }
 
-    private fun goToDefaultIntent(context: Context?, uri: Uri) {
+    private fun goToDefaultIntent(context: Context?, uri: Uri, fallbackLink: String) {
         try {
             val myIntent = Intent(Intent.ACTION_VIEW, uri)
             context?.startActivity(myIntent)
-        } catch (e: ActivityNotFoundException) {
-            e.printStackTrace()
+        } catch (e: Exception) {
+            val fallbackUri = Uri.parse(fallbackLink)
+            try {
+                val fallbackIntent = Intent(Intent.ACTION_VIEW, fallbackUri)
+                context?.startActivity(fallbackIntent)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
