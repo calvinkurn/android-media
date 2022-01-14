@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.product_ar.util.CoachMarkArSharedPreference
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -26,10 +25,6 @@ class ProductArModule(val productId: String, val shopId: String) {
     @Provides
     @ProductArScope
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
-
-    @Provides
-    @ProductArScope
-    fun provideCoachMarkSharedPref(@ApplicationContext context: Context): CoachMarkArSharedPreference = CoachMarkArSharedPreference(context)
 
     @Provides
     @ProductArScope

@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.listener
 
 import android.app.Application
 import android.util.SparseIntArray
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
@@ -183,6 +184,8 @@ interface DynamicProductDetailListener {
     fun openShipmentClickedBottomSheet(title: String, labelShipping: String, isCod: Boolean, componentTrackDataModel: ComponentTrackDataModel?)
     fun clickShippingComponentError(errorCode: Int, title: String, componentTrackDataModel: ComponentTrackDataModel?)
     fun showCoachmark(view: Typography?, isBoeType: Boolean)
+
+    fun showArCoachMark(view:ConstraintLayout?)
 
     /**
      * ProductCategoryCarouselViewHolder

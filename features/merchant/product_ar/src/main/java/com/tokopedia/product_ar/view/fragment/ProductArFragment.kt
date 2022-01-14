@@ -36,6 +36,7 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.ProductCartHelper
+import com.tokopedia.product.detail.common.pref.CoachMarkProductPref
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product_ar.R
@@ -43,7 +44,6 @@ import com.tokopedia.product_ar.databinding.FragmentProductArBinding
 import com.tokopedia.product_ar.model.state.AnimatedTextIconClickMode
 import com.tokopedia.product_ar.model.state.ModifaceViewMode
 import com.tokopedia.product_ar.util.AnimatedTextIcon
-import com.tokopedia.product_ar.util.CoachMarkArSharedPreference
 import com.tokopedia.product_ar.util.ProductArConstant.REQUEST_CODE_CAMERA_PERMISSION
 import com.tokopedia.product_ar.util.ProductArConstant.REQUEST_CODE_IMAGE_PICKER
 import com.tokopedia.product_ar.view.ProductArActivity
@@ -81,8 +81,11 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
-    @Inject
-    lateinit var coachMarkSharedPref: CoachMarkArSharedPreference
+    private val coachMarkSharedPref by lazy(LazyThreadSafetyMode.NONE) {
+        context?.let {
+            CoachMarkProductPref(it, CoachMarkProductPref.PRODUCT_AR_PAGE_COACHMARK)
+        }
+    }
 
     private var viewModel: ProductArViewModel? = null
     private var sharedViewModel: ProductArSharedViewModel? = null
@@ -136,7 +139,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     }
 
     private fun setupCoachMark() {
-        val shouldShowCoachmark = coachMarkSharedPref.getCoachMarkState() == false
+        val shouldShowCoachmark = coachMarkSharedPref?.getCoachMarkState() == false
 
         if (shouldShowCoachmark) {
             val coachMarkList = arrayListOf<CoachMark2Item>()
@@ -163,7 +166,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
             }
 
             CoachMark2(requireContext()).showCoachMark(coachMarkList)
-            coachMarkSharedPref.setCoachMarkState(true)
+            coachMarkSharedPref?.setCoachMarkState(true)
         }
     }
 

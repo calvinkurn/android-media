@@ -1,18 +1,14 @@
-package com.tokopedia.product_ar.util
+package com.tokopedia.product.detail.common.pref
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import javax.inject.Inject
 
-class CoachMarkArSharedPreference @Inject constructor(@ApplicationContext context: Context) {
-
-    private val PREFERENCE_NAME = "coach_mark_ar"
+class CoachMarkProductPref(context: Context, pref_name: String) {
 
     private val EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
 
     private val sharedPref: SharedPreferences? by lazy {
-        context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
+        context.getSharedPreferences(pref_name, Context.MODE_PRIVATE)
     }
 
     private val editor = sharedPref?.edit()
@@ -24,5 +20,11 @@ class CoachMarkArSharedPreference @Inject constructor(@ApplicationContext contex
 
     fun getCoachMarkState(): Boolean? {
         return sharedPref?.getBoolean(EXTRA_IS_COACHMARK, false)
+    }
+
+    companion object {
+        const val PRODUCT_AR_PAGE_COACHMARK = "coach_mark_ar_page"
+        const val PRODUCT_DETAIL_AR_PAGE_COACHMARK = "coach_mark_pdp_ar_page"
+
     }
 }
