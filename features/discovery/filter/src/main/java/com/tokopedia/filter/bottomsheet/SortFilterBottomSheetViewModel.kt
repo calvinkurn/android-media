@@ -15,7 +15,6 @@ import com.tokopedia.filter.bottomsheet.sort.SortViewModel
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
-import com.tokopedia.filter.common.data.LevelThreeCategory
 import com.tokopedia.filter.common.data.LevelTwoCategory
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Sort
@@ -350,8 +349,8 @@ internal class SortFilterBottomSheetViewModel {
         sortFilterList.forEachIndexed { index, visitable ->
             if(visitable is FilterViewModel && visitable.filter.options.isNotEmpty()) {
                 val needUpdate = visitable.filter.options.any { option ->
-                    (filterOptionMap.containsKey(option.key) && filterOptionMap[option.key] == option.value)
-                            || matchAnyKeyValueInLevelTwoCategories(option.levelTwoCategoryList, filterOptionMap)
+                    option.isInFilterOptionMap(filterOptionMap)
+                            || option.isLevelTwoCategoriesInFilterOptionMap(filterOptionMap)
                 }
                 if(needUpdate) {
                     visitable.refreshOptionList()
@@ -361,21 +360,27 @@ internal class SortFilterBottomSheetViewModel {
         }
     }
 
-    private fun matchAnyKeyValueInLevelTwoCategories(
-        levelTwoCategories: List<LevelTwoCategory>,
+    private fun Option.isInFilterOptionMap(filterOptionMap: Map<String, String>) : Boolean {
+        return filterOptionMap.containsKey(key) && filterOptionMap[key] == value
+    }
+
+    private fun Option.isLevelTwoCategoriesInFilterOptionMap(
         filterOptionMap: Map<String, String>,
     ) : Boolean {
-        return levelTwoCategories.isNotEmpty() && levelTwoCategories.any { levelTwoCategory ->
-            (filterOptionMap.containsKey(levelTwoCategory.key) && filterOptionMap[levelTwoCategory.key] == levelTwoCategory.value)
-                    || matchAnyKeyValueInLevelThreeCategories(levelTwoCategory.levelThreeCategoryList, filterOptionMap)
+        return levelTwoCategoryList.isNotEmpty() && levelTwoCategoryList.any { levelTwoCategory ->
+            levelTwoCategory.isInFilterOptionMap(filterOptionMap)
+                    || levelTwoCategory.isLevelThreeCategoriesInFilterOptionMap(filterOptionMap)
         }
     }
 
-    private fun matchAnyKeyValueInLevelThreeCategories(
-        levelThreeCategories: List<LevelThreeCategory>,
+    private fun LevelTwoCategory.isInFilterOptionMap(filterOptionMap: Map<String, String>) : Boolean {
+        return filterOptionMap.containsKey(key) && filterOptionMap[key] == value
+    }
+
+    private fun LevelTwoCategory.isLevelThreeCategoriesInFilterOptionMap(
         filterOptionMap: Map<String, String>,
     ) : Boolean {
-        return levelThreeCategories.isNotEmpty() && levelThreeCategories.any { levelThreeCategory ->
+        return levelThreeCategoryList.isNotEmpty() && levelThreeCategoryList.any { levelThreeCategory ->
             filterOptionMap.containsKey(levelThreeCategory.key) && filterOptionMap[levelThreeCategory.key] == levelThreeCategory.value
         }
     }
