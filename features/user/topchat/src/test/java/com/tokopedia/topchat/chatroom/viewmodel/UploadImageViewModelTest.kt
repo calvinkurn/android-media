@@ -1,0 +1,43 @@
+package com.tokopedia.topchat.chatroom.viewmodel
+
+import com.tokopedia.chat_common.data.ImageUploadUiModel
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
+import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
+import io.mockk.every
+import io.mockk.invoke
+import io.mockk.verify
+import org.junit.Assert.assertEquals
+import org.junit.Test
+
+class UploadImageViewModelTest: BaseTopChatViewModelTest() {
+
+    val imageUpload = ImageUploadUiModel.Builder().build()
+
+    private fun disableUploadByService() {
+        every {
+            remoteConfig.getBoolean(TopChatRoomPresenter.ENABLE_UPLOAD_IMAGE_SERVICE)
+        } returns false
+    }
+
+    @Test
+    fun should_upload_image_through_ws_when_success_uploadpedia() {
+        // Given
+        val wsPayload = "image"
+        disableUploadByService()
+        every { uploadImageUseCase.upload(imageUpload, captureLambda(), any()) } answers {
+            val onSuccess = lambda<(String, ImageUploadUiModel) -> Unit>()
+            onSuccess.invoke("123", imageUpload)
+        }
+        every { payloadGenerator .generateImageWsPayload(any(), any(), any()) } returns wsPayload
+
+        // When
+        viewModel.startUploadImages(imageUpload)
+
+        // Then
+        assertEquals(viewModel.previewMsg.value, imageUpload)
+        verify {
+            chatWebSocket.sendPayload(wsPayload)
+        }
+    }
+
+}
