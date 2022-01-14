@@ -251,10 +251,15 @@ class ChatModule {
         userSession: UserSessionInterface,
         client: OkHttpClient
     ): TopchatWebSocket {
-        val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
-                "?os_type=1" +
-                "&device_id=" + userSession.deviceId +
-                "&user_id=" + userSession.userId
+        val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN
+            .plus(ChatUrl.CONNECT_WEBSOCKET)
+            .plus("?os_type=1")
+            .plus("&device_id=%s")
+            .plus("&user_id=%s")
+            .format(
+                userSession.deviceId,
+                userSession.userId
+            )
         return DefaultTopChatWebSocket(
             client, webSocketUrl, userSession.accessToken, PAGE_CHATROOM
         )
