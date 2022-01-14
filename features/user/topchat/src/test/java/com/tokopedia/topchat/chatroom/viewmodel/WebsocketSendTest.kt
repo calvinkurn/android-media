@@ -1,12 +1,15 @@
 package com.tokopedia.topchat.chatroom.viewmodel
 
 import com.tokopedia.attachcommon.preview.ProductPreview
+import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import io.mockk.every
+import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -94,5 +97,26 @@ class WebsocketSendTest: BaseTopChatViewModelTest() {
         // Then
         assertEquals(viewModel.previewMsg.value, null)
         assertEquals(viewModel.attachmentSent.value, null)
+    }
+
+    @Test
+    fun should_remove_srw_bubble_if_send_invoice() {
+        // Given
+        val sendablePreview = mockk<InvoicePreviewUiModel>()
+        val preview = AttachInvoiceSentUiModel.Builder().build()
+        val payload = ""
+        every {
+            payloadGenerator.generateAttachmentPreviewMsg(any(), any(), any())
+        } returns preview
+        every {
+            payloadGenerator.generateAttachmentWsPayload(any(), any(), any(), any(), any())
+        } returns payload
+
+        // When
+        viewModel.addAttachmentPreview(sendablePreview)
+        viewModel.sendAttachments("a")
+
+        // Then
+        assertEquals(viewModel.removeSrwBubble.value, null)
     }
 }
