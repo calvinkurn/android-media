@@ -325,4 +325,13 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
             (chatUiModel as ProductAttachmentUiModel).productId
         )
     }
+
+    @Test
+    fun should_reset_unread_msg() {
+        // When
+        viewModel.resetUnreadMessage()
+
+        // Then
+        assertEquals(viewModel.unreadMsg.value, 0)
+    }
 }
