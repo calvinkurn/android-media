@@ -256,6 +256,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
+    private val deleteMsgObserver = Observer<String> { replyTime ->
+        onReceiveWsEventDeleteMsg(replyTime)
+    }
+
     /**
      * stack to keep latest change address request
      */
@@ -2604,9 +2608,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             }
         })
 
-        viewModel.msgDeleted.observe(viewLifecycleOwner, { replyTime ->
-            onReceiveWsEventDeleteMsg(replyTime)
-        })
+        viewModel.msgDeleted.observeForever(deleteMsgObserver)
 
         viewModel.msgRead.observe(viewLifecycleOwner, { replyTime ->
             onReceiveReadEvent()
@@ -2663,6 +2665,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onDestroyView() {
         viewModel.newMsg.removeObserver(newMsgObserver)
         viewModel.removeSrwBubble.removeObserver(srwRemovalObserver)
+        viewModel.msgDeleted.removeObserver(deleteMsgObserver)
         super.onDestroyView()
         replyBubbleOnBoarding.flush()
         lifecycleScope.launch(Dispatchers.IO) {
