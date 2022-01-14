@@ -162,6 +162,7 @@ class MilestoneViewHolder(
             }
 
             root.post {
+                progressBarShcMilestone.invisible()
                 progressBarShcMilestone.startAnimation(animation)
                 tvProgressValueMilestoneWidget.animate()
                     .x(guidelineShcMilestoneStart.x)
@@ -184,6 +185,7 @@ class MilestoneViewHolder(
             }
 
             root.post {
+                progressBarShcMilestone.visible()
                 progressBarShcMilestone.startAnimation(animation)
                 tvProgressValueMilestoneWidget.animate()
                     .x(viewShcProgressBarEnd.x)
