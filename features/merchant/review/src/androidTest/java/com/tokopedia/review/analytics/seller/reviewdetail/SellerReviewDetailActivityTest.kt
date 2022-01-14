@@ -3,23 +3,18 @@ package com.tokopedia.review.analytics.seller.reviewdetail
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import android.view.View
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.filters.LargeTest
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.coachmark.CoachMarkPreference
@@ -43,11 +38,9 @@ import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import org.hamcrest.CoreMatchers.anything
 import org.hamcrest.CoreMatchers.startsWith
-import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
 class SellerReviewDetailActivityTest: CassavaTestFixture() {
 
@@ -179,6 +172,7 @@ class SellerReviewDetailActivityTest: CassavaTestFixture() {
             findFragmentByTag(context.getString(R.string.option_menu_label))
         }
         intendingIntent()
+        waitUntilViewVisible(withId(R.id.optionFeedbackList))
         onData(anything()).inAdapterView(withId(R.id.optionFeedbackList)).atPosition(1)
             .perform(click())
     }
@@ -264,7 +258,8 @@ class SellerReviewDetailActivityTest: CassavaTestFixture() {
         } ?: 0
     }
 
-    private fun clickEditProduct() {
+    private fun SellerReviewRobot.clickEditProduct() {
+        waitUntilViewVisible(withId(R.id.optionFeedbackList))
         onData(anything()).inAdapterView(withId(R.id.optionFeedbackList)).atPosition(0)
             .perform(click())
     }
@@ -287,21 +282,6 @@ class SellerReviewDetailActivityTest: CassavaTestFixture() {
             ProductFeedbackFilterResponse::class.java,
             Utils.parseFromJson<ProductFeedbackFilterResponse>("mockresponse/reviewdetail/get_product_review_initial_usecase/product_feedback_filter.json")
         )
-    }
-
-    private fun isViewVisible(matcher: Matcher<View>): Boolean {
-        return try {
-            onView(matcher).check(matches(ViewMatchers.isDisplayingAtLeast(90)))
-            true
-        } catch (t: Throwable) {
-            false
-        }
-    }
-
-    private fun waitUntilViewVisible(matcher: Matcher<View>) {
-        Utils.waitForCondition {
-            isViewVisible(matcher)
-        }
     }
 
     private fun getPopularTopicsBottomSheet(): BottomSheetUnify? {

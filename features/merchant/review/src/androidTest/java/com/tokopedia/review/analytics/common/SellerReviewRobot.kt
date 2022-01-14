@@ -1,6 +1,7 @@
 package com.tokopedia.review.analytics.common
 
 import android.app.Activity
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.ViewAction
@@ -14,6 +15,7 @@ import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.review.common.Utils
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import org.hamcrest.Matcher
 
 class SellerReviewRobot {
 
@@ -22,15 +24,27 @@ class SellerReviewRobot {
         return state == BottomSheetBehavior.STATE_EXPANDED || state == BottomSheetBehavior.STATE_HALF_EXPANDED || state == BottomSheetBehavior.STATE_COLLAPSED
     }
 
+    private fun isViewVisible(matcher: Matcher<View>): Boolean {
+        return try {
+            Espresso.onView(matcher)
+                .check(ViewAssertions.matches(ViewMatchers.isDisplayingAtLeast(90)))
+            true
+        } catch (t: Throwable) {
+            false
+        }
+    }
+
     fun <T : Activity> performClose(activityTestRule: ActivityTestRule<T>) {
         activityTestRule.finishActivity()
     }
 
     fun clickAction(idView: Int) {
+        waitUntilViewVisible(ViewMatchers.withId(idView))
         Espresso.onView(ViewMatchers.withId(idView)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
     }
 
     fun clickAction(text: String) {
+        waitUntilViewVisible(ViewMatchers.withText(text))
         Espresso.onView(ViewMatchers.withText(text)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
     }
 
@@ -43,6 +57,7 @@ class SellerReviewRobot {
     }
 
     fun actionOnRecyclerViewItem(recyclerViewId: Int, position: Int, action: ViewAction?) {
+        waitUntilViewVisible(ViewMatchers.withId(recyclerViewId))
         Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                 position,
@@ -53,7 +68,17 @@ class SellerReviewRobot {
 
     fun waitUntilBottomSheetShowingAndSettled(bottomSheetFinder: () -> BottomSheetUnify?) {
         Utils.waitForCondition {
-            isBottomSheetShowingAndSettled(bottomSheetFinder())
+            try {
+                isBottomSheetShowingAndSettled(bottomSheetFinder())
+            } catch (_: Throwable) {
+                false
+            }
+        }
+    }
+
+    fun waitUntilViewVisible(matcher: Matcher<View>) {
+        Utils.waitForCondition {
+            isViewVisible(matcher)
         }
     }
 
