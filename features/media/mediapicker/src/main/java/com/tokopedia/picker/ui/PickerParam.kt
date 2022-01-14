@@ -11,4 +11,10 @@ data class PickerParam(
     var isOnlyVideo: Boolean = false,
     var isIncludeAnimation: Boolean = false,
     var excludedImages: List<File> = emptyList(),
+    var cameraRatio: CameraRatio = CameraRatio.Full
 )
+
+sealed class CameraRatio {
+    object Square: CameraRatio()
+    object Full: CameraRatio()
+}
