@@ -269,4 +269,20 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         // Then
         assertEquals(viewModel.unreadMsg.value, null)
     }
+
+    @Test
+    fun should_do_nothing_from_unrecognized_ws_event() {
+        // Given
+        onConnectWebsocket {
+            it.onMessage(websocket, WebsocketResponses.notRecognizedEvent)
+        }
+
+        // When
+        viewModel.connectWebSocket()
+
+        // Then
+        assertEquals(viewModel.unreadMsg.value, null)
+        assertEquals(viewModel.msgDeleted.value, null)
+        assertEquals(viewModel.newMsg.value, null)
+    }
 }
