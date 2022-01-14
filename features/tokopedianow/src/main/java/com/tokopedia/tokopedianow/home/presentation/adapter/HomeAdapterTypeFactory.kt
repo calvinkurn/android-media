@@ -31,7 +31,9 @@ class HomeAdapterTypeFactory(
     private val homeSharingEducationListener: HomeSharingEducationWidgetViewHolder.HomeSharingEducationListener? = null,
     private val homeEducationalInformationListener: HomeEducationalInformationWidgetViewHolder.HomeEducationalInformationListener? = null,
     private val serverErrorListener: TokoNowServerErrorViewHolder.ServerErrorListener,
-    private val tokoNowEmptyStateOocListener: TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener? = null
+    private val tokoNowEmptyStateOocListener: TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener? = null,
+    private val dynamicLegoBannerCallback: DynamicLegoBannerCallback? = null,
+    private val homeSwitcherListener: HomeSwitcherViewHolder.HomeSwitcherListener? = null,
 ):  BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -95,15 +97,16 @@ class HomeAdapterTypeFactory(
             HomeSharingEducationWidgetViewHolder.LAYOUT -> HomeSharingEducationWidgetViewHolder(view, homeSharingEducationListener)
             HomeEducationalInformationWidgetViewHolder.LAYOUT -> HomeEducationalInformationWidgetViewHolder(view, homeEducationalInformationListener)
             HomeProgressBarViewHolder.LAYOUT -> HomeProgressBarViewHolder(view)
-            HomeSwitcherViewHolder.LAYOUT -> HomeSwitcherViewHolder(view)
+            HomeSwitcherViewHolder.LAYOUT -> HomeSwitcherViewHolder(view, homeSwitcherListener)
             // endregion
 
             // region Global Home Component
             DynamicLegoBannerViewHolder.LAYOUT -> {
-                val listener = DynamicLegoBannerCallback(view.context)
-                DynamicLegoBannerViewHolder(view, listener, null)
+                DynamicLegoBannerViewHolder(view, dynamicLegoBannerCallback, null)
             }
-            BannerComponentViewHolder.LAYOUT -> BannerComponentViewHolder(view, bannerComponentListener, null)
+            BannerComponentViewHolder.LAYOUT -> {
+                BannerComponentViewHolder(view, bannerComponentListener, null)
+            }
             // endregion
             else -> super.createViewHolder(view, type)
         }

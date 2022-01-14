@@ -10,7 +10,8 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeSwitcherViewHolder(
-    itemView: View
+    itemView: View,
+    private val listener: HomeSwitcherListener?
 ): AbstractViewHolder<HomeSwitcherUiModel>(itemView) {
 
     companion object {
@@ -25,7 +26,11 @@ class HomeSwitcherViewHolder(
             textTitle.text = itemView.context.getString(uiModel.title)
             textSubtitle.text = itemView.context.getString(uiModel.subtitle)
             ivIcon.setImageDrawable(ContextCompat.getDrawable(itemView.context, uiModel.icon))
-            root.setOnClickListener { uiModel.onClick() }
+            root.setOnClickListener { listener?.onClickSwitcher() }
         }
+    }
+
+    interface HomeSwitcherListener {
+        fun onClickSwitcher()
     }
 }

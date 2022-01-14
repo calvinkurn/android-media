@@ -28,6 +28,7 @@ import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUse
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_OOC_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMMENDATION_PARAM
+import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
@@ -37,6 +38,8 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
+import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
+import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addLoadingIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addMoreHomeLayout
@@ -83,6 +86,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     private val getRepurchaseWidgetUseCase: GetRepurchaseWidgetUseCase,
+    private val setUserPreferenceUseCase: SetUserPreferenceUseCase,
     private val userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.io) {
@@ -111,6 +115,8 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _atcQuantity
     val openScreenTracker: LiveData<String>
         get() = _openScreenTracker
+    val setUserPreference: LiveData<Result<SetUserPreferenceData>>
+        get() = _setUserPreference
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
@@ -122,6 +128,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _homeAddToCartTracker = MutableLiveData<HomeAddToCartTracker>()
     private val _atcQuantity = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _openScreenTracker = MutableLiveData<String>()
+    private val _setUserPreference = MutableLiveData<Result<SetUserPreferenceData>>()
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
@@ -191,8 +198,8 @@ class TokoNowHomeViewModel @Inject constructor(
                 hasTickerBeenRemoved,
                 hasSharingEducationBeenRemoved,
                 miniCartSimplifiedData,
-                localCacheModel.service_type
-            ) { refreshPage() }
+                localCacheModel
+            )
 
             getLayoutComponentData(warehouseId)
 
@@ -391,6 +398,27 @@ class TokoNowHomeViewModel @Inject constructor(
         return repurchase?.productList.orEmpty()
     }
 
+    /***
+     * Switch between NOW 15 minutes/2 hours
+     * @param localCacheModel local data from choose address
+     */
+    fun switchService(localCacheModel: LocalCacheModel) {
+        launchCatchError(block = {
+            val currentServiceType = localCacheModel.service_type
+
+            val serviceType = if(currentServiceType == ServiceType.NOW_15M) {
+                ServiceType.NOW_2H
+            } else {
+                ServiceType.NOW_15M
+            }
+
+            val userPreference = setUserPreferenceUseCase.execute(localCacheModel, serviceType)
+            _setUserPreference.postValue(Success(userPreference))
+        }) {
+            _setUserPreference.postValue(Fail(it))
+        }
+    }
+
     /**
      * Get layout content data from external query.
      * Example: Category Grid get its data from TokonowCategoryTree.
@@ -489,11 +517,6 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private suspend fun getCategoryList(warehouseId: String): List<CategoryResponse> {
         return getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
-    }
-
-    private fun refreshPage() {
-        // to do: refresh page based on service type
-        getLoadingState()
     }
 
     private fun addItemToCart(
