@@ -14,7 +14,10 @@ import com.tokopedia.unifyprinciples.Typography
 
 const val AUTO_BID = "Otomatis"
 const val MANUAL_BID = "Manual"
+private const val AUTO_BID_STATE = "auto_bid"
 private const val CLICK_BID_TYPE_SELECT = "click - mode pengaturan"
+private const val MANUAL_LAYOUT_EVENT_LABEL = "mode pengaturan atur manual"
+private const val OTOMATIS_LAYOUT_EVENT_LABEL = "mode pengaturan atur otomatis"
 
 class AutoBidSelectionSheet : BottomSheetUnify() {
 
@@ -69,7 +72,7 @@ class AutoBidSelectionSheet : BottomSheetUnify() {
         manualLayout.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(
                 CLICK_BID_TYPE_SELECT,
-                "mode pengaturan atur manual"
+                MANUAL_LAYOUT_EVENT_LABEL
             )
             manualRadioBtn.isChecked = true
             otomatisRadioBtn.isChecked = false
@@ -80,11 +83,11 @@ class AutoBidSelectionSheet : BottomSheetUnify() {
         otomatisLayout.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(
                 CLICK_BID_TYPE_SELECT,
-                "mode pengaturan atur otomatis"
+                OTOMATIS_LAYOUT_EVENT_LABEL
             )
             otomatisRadioBtn.isChecked = true
             manualRadioBtn.isChecked = false
-            onItemClick?.invoke("auto_bid")
+            onItemClick?.invoke(AUTO_BID_STATE)
             dismiss()
         }
     }

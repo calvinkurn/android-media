@@ -24,6 +24,7 @@ import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 
+private const val AUTO_BID_STATE = "auto_bid"
 private const val MANUAL_BID = 10
 private const val AUTO_BID = 20
 private const val CLICK_SAVE_AUTO_BID = "click - lanjutkan pengaturan iklan"
@@ -186,7 +187,7 @@ class AutoBidSelectionFragment : BaseStepperFragment<CreateManualAdsStepperModel
         otomatisLayout.setOnClickListener {
             otomatisRadioBtn.isChecked = true
             manualRadioBtn.isChecked = false
-            stepperModel?.autoBidState = "auto_bid"
+            stepperModel?.autoBidState = AUTO_BID_STATE
         }
 
         manualRadioBtn.setOnCheckedChangeListener { _, isChecked ->
@@ -198,8 +199,7 @@ class AutoBidSelectionFragment : BaseStepperFragment<CreateManualAdsStepperModel
         otomatisRadioBtn.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 manualRadioBtn.isChecked = false
-                stepperModel?.autoBidState = "auto_bid"
-
+                stepperModel?.autoBidState = AUTO_BID_STATE
             }
         }
     }
