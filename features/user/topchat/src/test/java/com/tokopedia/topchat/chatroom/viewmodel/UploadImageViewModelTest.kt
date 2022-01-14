@@ -88,4 +88,16 @@ class UploadImageViewModelTest: BaseTopChatViewModelTest() {
             ImageUploadMapper.mapToImageUploadServer(imageUpload)
         )
     }
+
+    @Test
+    fun should_return_true_when_uploading() {
+        // Given
+        every { uploadImageUseCase.isUploading } returns true
+
+        // When
+        val isUploading = viewModel.isUploading()
+
+        // Then
+        assertEquals(isUploading, true)
+    }
 }
