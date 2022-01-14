@@ -1180,9 +1180,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             val isRequestNetwork = data.peekContent()
             if (isRequestNetwork && getPageLoadTimeCallback() != null) {
                 getPageLoadTimeCallback()?.startNetworkRequestPerformanceMonitoring()
-            } else if (getPageLoadTimeCallback() != null) {
-                getPageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
-                getPageLoadTimeCallback()?.startRenderPerformanceMonitoring()
             }
         })
     }
@@ -1425,6 +1422,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun setData(data: List<Visitable<*>>, isCache: Boolean) {
         if (data.isNotEmpty()) {
             if (needToPerformanceMonitoring(data) && getPageLoadTimeCallback() != null) {
+                getPageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
+                getPageLoadTimeCallback()?.startRenderPerformanceMonitoring()
                 setOnRecyclerViewLayoutReady(isCache)
             }
             adapter?.submitList(data)
