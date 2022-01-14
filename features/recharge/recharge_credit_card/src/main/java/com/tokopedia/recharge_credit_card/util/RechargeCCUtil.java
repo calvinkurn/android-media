@@ -7,6 +7,14 @@ import java.security.NoSuchAlgorithmException;
 
 public class RechargeCCUtil {
 
+    private static final int FIRST_AMEX_DIVIDER_POSITION = 4;
+    private static final int SECOND_AMEX_DIVIDER_POSITION = 10;
+    private static final int FIRST_AMEX_DIVIDER_POSITION_CHECKER = FIRST_AMEX_DIVIDER_POSITION + 1;
+    private static final int SECOND_AMEX_DIVIDER_POSITION_CHECKER = SECOND_AMEX_DIVIDER_POSITION + 2;
+    private static final int THIRD_AMEX_DIVIDER_POSITION_CHECKER = SECOND_AMEX_DIVIDER_POSITION_CHECKER + 5;
+    private static final int DIVIDER_POSITION = 4;
+    private static final int LUHN_ALGORITHM_MODULO = 10;
+
     public static boolean isInputCorrect(Editable s, int totalSymbols, int dividerModulo, char divider) {
         boolean isCorrect = s.length() <= totalSymbols; // check size of entered string
         for (int i = 0; i < s.length(); i++) { // check that every element is right
@@ -22,7 +30,9 @@ public class RechargeCCUtil {
     public static boolean isInputCorrectAmex(Editable s, int totalSymbols, char divider) {
         boolean isCorrect = s.length() <= totalSymbols; // check size of entered string
         for (int i = 0; i < s.length(); i++) { // check that every element is right
-            if ((i + 1) == 5 || (i + 1) == 12 || (i + 1) == 17) {
+            if ((i + 1) == FIRST_AMEX_DIVIDER_POSITION_CHECKER
+                    || (i + 1) == SECOND_AMEX_DIVIDER_POSITION_CHECKER
+                    || (i + 1) == THIRD_AMEX_DIVIDER_POSITION_CHECKER) {
                 isCorrect &= divider == s.charAt(i);
             } else {
                 isCorrect &= Character.isDigit(s.charAt(i));
@@ -37,7 +47,9 @@ public class RechargeCCUtil {
         int count = 0;
         for (char c : text) {
             if (Character.isDigit(c)) {
-                if (count > 0 && ((count == 4) || (count == 10))) {
+                if (count > 0
+                        && ((count == FIRST_AMEX_DIVIDER_POSITION)
+                        || (count == SECOND_AMEX_DIVIDER_POSITION))) {
                     formatted.append(divider);
                 }
                 formatted.append(c);
@@ -53,7 +65,7 @@ public class RechargeCCUtil {
         int count = 0;
         for (char c : text) {
             if (Character.isDigit(c)) {
-                if (count % 4 == 0 && count > 0) {
+                if (count % DIVIDER_POSITION == 0 && count > 0) {
                     formatted.append(divider);
                 }
                 formatted.append(c);
@@ -89,7 +101,7 @@ public class RechargeCCUtil {
             incNum = Integer.parseInt(String.valueOf(temp.charAt(i)));
             counter += (odd = !odd) ? incNum : luhnArr[incNum];
         }
-        return (counter % 10 == 0);
+        return (counter % LUHN_ALGORITHM_MODULO == 0);
     }
 
     public static String generateIdemPotencyCheckout(String userLoginId) {

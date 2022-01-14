@@ -170,10 +170,10 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
         private const val DEFAULT_MAX_LENGTH = 16
         private const val TOTAL_SYMBOLS_AMEX = 17
         private const val TOTAL_DIGITS_AMEX = 15
-
         private const val TOTAL_SYMBOLS = 19
         private const val TOTAL_DIGITS = 16
         private const val DIVIDER_MODULO = 5
+
         private const val DIVIDER = ' '
         private const val MIN_VALID_LENGTH = 7
         private const val IMAGE_ICON_WIDTH = 150
