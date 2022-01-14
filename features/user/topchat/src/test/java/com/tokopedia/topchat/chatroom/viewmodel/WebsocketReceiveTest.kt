@@ -232,4 +232,41 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         // Then
         verifySendMarkAsRead()
     }
+
+    @Test
+    fun should_increment_unread_msg_when_receive_reply_from_opposite_in_the_middle_of_the_page() {
+        // Given
+        val responseText = WebsocketResponses.generateReplyMsg(
+            isOpposite = true
+        )
+        every { getChatUseCase.isInTheMiddleOfThePage() } returns true
+        onConnectWebsocket {
+            it.onMessage(websocket, responseText)
+            it.onMessage(websocket, responseText)
+        }
+
+        // When
+        viewModel.connectWebSocket()
+
+        // Then
+        assertEquals(viewModel.unreadMsg.value, 2)
+    }
+
+    @Test
+    fun should_not_increment_unread_msg_when_receive_reply_from_not_opposite_in_the_middle_of_the_page() {
+        // Given
+        val responseText = WebsocketResponses.generateReplyMsg(
+            isOpposite = false
+        )
+        every { getChatUseCase.isInTheMiddleOfThePage() } returns true
+        onConnectWebsocket {
+            it.onMessage(websocket, responseText)
+        }
+
+        // When
+        viewModel.connectWebSocket()
+
+        // Then
+        assertEquals(viewModel.unreadMsg.value, null)
+    }
 }
