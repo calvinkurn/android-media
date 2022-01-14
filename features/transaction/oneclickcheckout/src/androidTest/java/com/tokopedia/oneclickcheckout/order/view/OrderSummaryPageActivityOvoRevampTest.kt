@@ -9,12 +9,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_OVO_ACTIVATED_REVAMP_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_OVO_ACTIVATION_REVAMP_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_OVO_LOW_WALLET_REVAMP_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_OVO_NO_PHONE_REVAMP_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_OVO_TOP_UP_REVAMP_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
+import com.tokopedia.oneclickcheckout.common.interceptor.*
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import org.junit.After
@@ -49,7 +44,8 @@ class OrderSummaryPageActivityOvoRevampTest {
         activityRule.finishActivity()
     }
 
-    @Test
+//    Disable test for firebase due to webview issue
+//    @Test
     fun happyFlow_OvoActivationFlow() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_OVO_ACTIVATION_REVAMP_RESPONSE_PATH
 
@@ -142,7 +138,8 @@ class OrderSummaryPageActivityOvoRevampTest {
         }
     }
 
-    @Test
+//    Disable test for firebase due to webview issue
+//    @Test
     fun errorFlow_OvoActivationFlow() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_OVO_ACTIVATION_REVAMP_RESPONSE_PATH
 
