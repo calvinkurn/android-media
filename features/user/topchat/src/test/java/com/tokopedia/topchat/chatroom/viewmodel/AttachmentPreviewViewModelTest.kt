@@ -44,4 +44,13 @@ class AttachmentPreviewViewModelTest : BaseTopChatViewModelTest() {
         assertEquals(viewModel.getAttachmentsPreview().size, 0)
     }
 
+    @Test
+    fun should_map_product_preview_product_id() {
+        // When
+        viewModel.initProductPreviewFromAttachProduct(resultProduct)
+        val productIds = viewModel.getProductIdPreview()
+
+        // Then
+        assertEquals(productIds[0], resultProduct[0].productId)
+    }
 }
