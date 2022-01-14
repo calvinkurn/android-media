@@ -53,6 +53,7 @@
     <string name="product_manage_set_promo_ads_menu">Iklankan Produk</string>
     <string name="product_manage_see_promo_ads_menu">Lihat Performa Iklan</string>
     <string name="product_manage_create_broadcast_chat">Buat Broadcast Chat</string>
+    <string name="product_manage_create_product_coupon">Buat Kupon Produk</string>
 
     <string name="product_stock_reminder_toaster_success_desc">Pengingat stok \"%1$s\" berhasil dipasang.</string>
     <string name="product_stock_reminder_toaster_success_remove_desc">Pengingat stok \"%1$s\" berhasil dinonaktifkan.</string>
@@ -147,6 +148,7 @@
     <string name="product_manage_violation_button_text">Lihat Detail</string>
 
     <string name="product_manage_max_count">%s+</string>
+    <string name="product_manage_new_tag">BARU</string>
 
     <string name="popup_tips_trick_clickable">baru di sini.</string>
     <string name="popup_label_static">Produk pertamamu siap</string>
