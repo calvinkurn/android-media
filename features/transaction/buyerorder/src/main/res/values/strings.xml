@@ -6,6 +6,9 @@
     <string name="tkpdtransaction_oms_retry_failed_deals">E-voucher belum terbit. Tunggu 30 detik untuk cek ulang, ya.</string>
     <string name="tkpdtransaction_oms_retry_failed_event">E-tiket belum terbit. Tunggu 30 detik untuk cek ulang, ya.</string>
     <string name="tkpdtransaction_oms_retry_success">Hore! E-voucher kamu sudah terbit.</string>
+    <string name="booking_code">TPR9QTMYE</string>
+    <string name="salin_text">Salin</string>
+    <string name="image_desc">Image Description</string>
     <string name="event_ticket_booking_count">Kode Booking</string>
     <string name="event_ticket_voucher_multiple">x E-Tiket</string>
     <string name="event_ticket_voucher_count">E-Tiket</string>
@@ -49,7 +52,6 @@
 
     <string name="label_event_date">Tanggal Event</string>
     <string name="button_order_detail_download_invoice">Unduh</string>
-    <string name="button_order_detail_request_cancel">Ajukan Pembatalan</string>
 
     <string name="detail_label_digital">Detail Pembelian</string>
     <string name="lihat_detail">Lihat Detail</string>
@@ -76,43 +78,6 @@
     <string name="btn_redeem_ticket">Tutup</string>
     <string name="redeem_deals_btn">Redeem</string>
 
-    <string name="popup_selesai_cancel_btn">Kembali</string>
-    <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
-    <string name="see_all_placeholder">Lihat Semua Produk</string>
-    <string name="ask_1_placeholder">Mengapa kamu ingin membatalkan pesanan ini?</string>
-    <string name="ask_2_placeholder">Apa detail pembatalan dari pesanan ini?</string>
-    <string name="reason_placeholder">Pilih alasan</string>
-    <string name="ajukan_btn">Ajukan</string>
-    <string name="chat_penjual">Chat Penjual</string>
-    <string name="reason_cancel">Ingin mengubah pesanan</string>
-    <string name="show_bottomsheet">Show Bottomsheet</string>
-    <string name="tulis_alasan">Tulis alasan...</string>
-    <string name="ask_2_lainnya">Tulis detail pembatalan pesanan.</string>
-    <string name="toaster_lainnya_empty">Mohon isi kendala yang kamu alami</string>
-    <string name="toaster_manual_max">Max 160 karakter</string>
-    <string name="toaster_manual_min">Min. 15 karakter</string>
-    <string name="salin_text">Salin</string>
-    <string name="image_desc">Image Description</string>
-    <string name="booking_code">TPR9QTMYE</string>
-
-
-    <string name="buyer_ticker_info_selengkapnya">
-        <![CDATA[
-        <html>
-        <body>
-        <a href="#ticker_url"><strong style="color: green;">#ticker_label</strong></a>
-        </body>
-        </html>
-        ]]>
-    </string>
-
-    <string name="mengerti_button">Mengerti</string>
-    <string name="pusat_bantuan_button">Hubungi Pusat Bantuan</string>
-    <string name="min_char_reason_lainnya">Min. 15 karakter</string>
-    <string name="cancellation_no_connection_title">Koneksi internetmu terganggu!</string>
-    <string name="cancellation_no_connection_desc">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
-    <string name="cancellation_no_connection_btn">Coba Lagi</string>
-
     <string name="btn_ajukan_komplain">Ajukan Komplain</string>
     <string name="btn_finish_order">Selesai</string>
     <string name="img_content_desc">img_content_desc</string>
@@ -122,8 +87,6 @@
     <string name="banner_deals_coachmark_title">Wow, ada yang seru nih!</string>
     <string name="contact_us_clickable_text">Hubungi Tokopedia Care</string>
 
-    <string name="error_message_buyer_request_cancel_reason_should_not_contains_special_chars">Hindari penggunaan karakter spesial (@#$%^*)</string>
-    <string name="buyer_fail_cancellation">Terjadi kesalahan, mohon dicoba kembali</string>
     <string name="review_create_success_toaster">Terima kasih, %s. Ulasanmu akan membantu penjual &amp; calon pembeli lain!</string>
     <string name="review_oke">Oke</string>
     <string name="review_create_invalid_to_review">Oops, kamu tidak bisa ulas barang ini karena sudah melebihi batas waktu.</string>
@@ -131,7 +94,6 @@
 
     <string name="zero_rupiah">Rp0</string>
     <string name="free_rupiah">Gratis</string>
-    <string name="icon_placeholder">Icon</string>
     <string name="buyer_finish_order_desc">Dengan klik "Selesai", dana akan diteruskan ke penjual dan kamu tidak dapat mengajukan komplain.</string>
     <string name="buyer_finish_order_1">Pastikan kamu sudah menerima barang yang sesuai dengan pesananmu.</string>
     <string name="buyer_finish_order_2">Jika memenuhi syarat &amp; Ketentuan, cashback dari transaksi yang pakai promo akan dikirim maks. 24 jam ke depan.</string>

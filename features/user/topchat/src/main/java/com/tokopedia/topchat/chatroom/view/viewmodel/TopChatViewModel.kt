@@ -74,6 +74,7 @@ class TopChatViewModel @Inject constructor(
     private var addWishListUseCase: AddWishListUseCase,
     private var removeWishListUseCase: RemoveWishListUseCase,
     private var getChatUseCase: GetChatUseCase,
+    private var unsendReplyUseCase: UnsendReplyUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig,
     private val chatAttachmentMapper: ChatAttachmentMapper,
@@ -152,6 +153,10 @@ class TopChatViewModel @Inject constructor(
     private val _bottomChat = MutableLiveData<Result<GetChatResult>>()
     val bottomChat: LiveData<Result<GetChatResult>>
         get() = _bottomChat
+
+    private val _deleteBubble = MutableLiveData<Result<String>>()
+    val deleteBubble: LiveData<Result<String>>
+        get() = _deleteBubble
 
     var attachProductWarehouseId = "0"
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
@@ -570,4 +575,21 @@ class TopChatViewModel @Inject constructor(
         getChatUseCase.reset()
     }
 
+
+    fun deleteMsg(msgId: String, replyTimeNano: String) {
+        launchCatchError(block = {
+            val existingMessageIdParam = UnsendReplyUseCase.Param(
+                msgID = msgId.toLongOrZero(),
+                replyTimes = replyTimeNano
+            )
+            val response = unsendReplyUseCase(existingMessageIdParam)
+            if (response.unsendReply.isSuccess) {
+                _deleteBubble.value = Success(replyTimeNano)
+            } else {
+                _deleteBubble.value = Fail(IllegalStateException())
+            }
+        }, onError = {
+            _deleteBubble.value = Fail(it)
+        })
+    }
 }
