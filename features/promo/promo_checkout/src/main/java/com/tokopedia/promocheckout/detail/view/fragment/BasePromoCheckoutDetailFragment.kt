@@ -10,6 +10,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.network.constant.ErrorNetMessage
@@ -51,7 +52,11 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         pageTracking = arguments?.getInt(PAGE_TRACKING, 1) ?: 1
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_checkout_detail_layout, container, false)
     }
 
@@ -134,10 +139,12 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
             textTitlePromo?.text = it.title
             hideTimerView()
             if ((it.usage.activeCountDown > 0 &&
-                            it.usage.activeCountDown < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
+                        it.usage.activeCountDown < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)
+            ) {
                 setActiveTimerUsage(it.usage.activeCountDown.toLong())
             } else if ((it.usage.expiredCountDown > 0 &&
-                            it.usage.expiredCountDown < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
+                        it.usage.expiredCountDown < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)
+            ) {
                 setExpiryTimerUsage(it.usage.expiredCountDown.toLong())
             }
             view?.textPeriod?.text = it.usage.usageStr
@@ -228,7 +235,8 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         if (e is CheckPromoCodeException) {
             message = e.message.toString()
         }
-        NetworkErrorHelper.createSnackbarRedWithAction(activity, message) { onClickUse() }.showRetrySnackbar()
+        NetworkErrorHelper.createSnackbarRedWithAction(activity, message) { onClickUse() }
+            .showRetrySnackbar()
     }
 
     override fun onErrorCheckPromoStacking(e: Throwable) {
@@ -255,17 +263,19 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
 
         val intent = Intent()
         val variant = "global"
-        val typePromo = if (data.isCoupon == PromoStackingData.VALUE_COUPON) PromoStackingData.TYPE_COUPON else PromoStackingData.TYPE_VOUCHER
+        val typePromo =
+            if (data.isCoupon == PromoStackingData.VALUE_COUPON) PromoStackingData.TYPE_COUPON else PromoStackingData.TYPE_VOUCHER
         val promoStackingData = PromoStackingData(
-                typePromo = typePromo,
-                promoCode = data.codes[0],
-                description = data.message.text,
-                title = data.titleDescription,
-                counterLabel = "",
-                amount = data.cashbackWalletAmount,
-                state = data.message.state.mapToStatePromoStackingCheckout(),
-                variant = variant.mapToVariantPromoStackingCheckout(),
-                trackingDetailUiModels = data.trackingDetailUiModel)
+            typePromo = typePromo,
+            promoCode = data.codes[0],
+            description = data.message.text,
+            title = data.titleDescription,
+            counterLabel = "",
+            amount = data.cashbackWalletAmount,
+            state = data.message.state.mapToStatePromoStackingCheckout(),
+            variant = variant.mapToVariantPromoStackingCheckout(),
+            trackingDetailUiModels = data.trackingDetailUiModel
+        )
         intent.putExtra(EXTRA_PROMO_DATA, promoStackingData)
         intent.putExtra(EXTRA_INPUT_TYPE, INPUT_TYPE_COUPON)
         activity?.setResult(Activity.RESULT_OK, intent)
@@ -280,7 +290,10 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         isUse = false
         validateButton()
         val intent = Intent()
-        val promoStackingData = PromoStackingData(PromoStackingData.TYPE_COUPON, state = TickerPromoStackingCheckoutView.State.EMPTY)
+        val promoStackingData = PromoStackingData(
+            PromoStackingData.TYPE_COUPON,
+            state = TickerPromoStackingCheckoutView.State.EMPTY
+        )
         intent.putExtra(EXTRA_PROMO_DATA, promoStackingData)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
@@ -308,7 +321,12 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
     }
 
     private fun getFormattedHtml(content: String?): String {
-        return getString(R.string.promo_label_html_tnc_promo, content)
+        return context?.let {
+            String.format(getString(R.string.promo_label_html_tnc_promo),
+                "#${Integer.toHexString(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))}",
+                content
+            )
+        } ?: ""
     }
 
     override fun onErroGetDetail(e: Throwable) {

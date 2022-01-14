@@ -1011,7 +1011,16 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                         binding?.rvSomList?.show()
                     }
                 }
-                is Fail -> showToasterError(view)
+                is Fail -> {
+                    showToasterError(view)
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.GET_TOP_ADS_CATEGORY_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
+                }
             }
         })
     }
@@ -1023,6 +1032,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 is Fail -> {
                     binding?.tickerSomList?.gone()
                     showToasterError(view)
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.GET_TICKERS_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -1039,7 +1055,16 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                             realtimeDataChangeCount =
                                 onSuccessGetFilter(result, realtimeDataChangeCount)
                         }
-                        is Fail -> showGlobalError(result.throwable)
+                        is Fail -> {
+                            showGlobalError(result.throwable)
+                            SomErrorHandler.logExceptionToServer(
+                                errorTag = SomErrorHandler.SOM_TAG,
+                                throwable = result.throwable,
+                                errorType =
+                                SomErrorHandler.SomMessage.FILTER_DATA_ON_ORDER_LIST_ERROR,
+                                deviceId = userSession.deviceId.orEmpty()
+                            )
+                        }
                         else -> showGlobalError(Throwable())
                     }
                     binding?.shimmerViews?.gone()
@@ -1052,6 +1077,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             when (result) {
                 is Fail -> {
                     showToasterError(view)
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.GET_WAITING_PAYMENT_COUNTER_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
             updateToolbarMenu()
@@ -1067,7 +1099,16 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             }
             when (result) {
                 is Success -> renderOrderList(result.data)
-                is Fail -> showGlobalError(result.throwable)
+                is Fail -> {
+                    showGlobalError(result.throwable)
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.GET_ORDER_LIST_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
+                }
             }
         })
     }
@@ -1085,11 +1126,20 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         viewModel.acceptOrderResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> onAcceptOrderSuccess(result.data.acceptOrder, false)
-                is Fail -> showToasterError(
-                    view,
-                    getString(R.string.som_list_failed_accept_order),
-                    canRetry = false
-                )
+                is Fail -> {
+                    showToasterError(
+                        view,
+                        getString(R.string.som_list_failed_accept_order),
+                        canRetry = false
+                    )
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.ACCEPT_ORDER_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
+                }
             }
         })
     }
@@ -1111,6 +1161,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 }
                 is Fail -> {
                     it.throwable.showErrorToaster()
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.REJECT_ORDER_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -1145,6 +1202,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     } else {
                         it.throwable.showErrorToaster()
                     }
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.CHANGE_AWB_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -1161,6 +1225,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     SomErrorHandler.logExceptionToCrashlytics(
                         result.throwable,
                         SomConsts.ERROR_REJECT_CANCEL_ORDER
+                    )
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.REJECT_CANCEL_REQUEST_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
                     )
                     result.throwable.showErrorToaster()
                 }
@@ -1184,6 +1255,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     } else {
                         result.throwable.showErrorToaster()
                     }
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.BULK_ACCEPT_ORDER_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -1251,6 +1329,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 }
                 is Fail -> {
                     newShowFailedAcceptAllOrderDialog(getSelectedOrderIds().size, getSelectedOrderIds().size)
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.GET_BULK_ACCEPT_ORDER_STATUS_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -1417,6 +1502,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 }
                 is Fail -> {
                     showErrorBulkRequestPickup()
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.BULK_REQUEST_PICKUP_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }
@@ -1663,7 +1755,16 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             getSwipeRefreshLayout(view)?.isRefreshing = viewModel.isRefreshingOrder()
             when (result) {
                 is Success -> onSuccessValidateOrder(result.data)
-                is Fail -> onFailedValidateOrder()
+                is Fail -> {
+                    onFailedValidateOrder()
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.VALIDATE_ORDER_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
+                }
             }
         })
     }
@@ -1685,6 +1786,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 }
                 is Fail -> {
                     showGlobalError(result.throwable)
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.GET_ADMIN_PERMISSION_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
