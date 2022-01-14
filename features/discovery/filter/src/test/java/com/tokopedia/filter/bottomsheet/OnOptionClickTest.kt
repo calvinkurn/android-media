@@ -383,4 +383,35 @@ internal class OnOptionClickTest: SortFilterBottomSheetViewModelTestFixtures() {
 
         `Then assert button apply is not shown`()
     }
+
+    @Test
+    fun `onOptionClick on BebasOngkir should apply BebasOngkir in offering too`() {
+        val dynamicFilterModel = "dynamic-filter-model-offering.json".jsonToObject<DynamicFilterModel>()
+        val selectedFilter = dynamicFilterModel.data.filter.find { it.title == "Bebas Ongkir" }!!
+        `Given SortFilterBottomSheet view is already created`(mapOf(), dynamicFilterModel)
+
+        val filterViewModel = sortFilterList!!.findFilterViewModel(selectedFilter)
+        val clickedOptionViewModel = filterViewModel!!.optionViewModelList[0]
+        `When an Option is Clicked And Applied`(filterViewModel, clickedOptionViewModel)
+
+        `Then assert that two bebas ongkir filter option is selected`(clickedOptionViewModel)
+        `Then assert button apply is shown with loading`()
+    }
+
+    private fun `Then assert that two bebas ongkir filter option is selected`(clickedOptionViewModel: OptionViewModel) {
+        val bebasOngkirOptionViewModelList =
+            sortFilterList!!.filterIsInstance(FilterViewModel::class.java)
+                .filter {
+                    clickedOptionViewModel.option in it.filter.options
+                }
+                .map { filter ->
+                    filter.optionViewModelList.first { it.option == clickedOptionViewModel.option }
+                }
+        assert(bebasOngkirOptionViewModelList.size == 2) {
+            "Bebas Ongkir option size should be 2 (two), but ${bebasOngkirOptionViewModelList.size} found "
+        }
+        bebasOngkirOptionViewModelList.forEach { optionViewModel ->
+            `Then assert option selected state`(optionViewModel, true)
+        }
+    }
 }
