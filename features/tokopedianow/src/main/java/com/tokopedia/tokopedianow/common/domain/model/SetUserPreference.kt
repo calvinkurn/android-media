@@ -1,10 +1,8 @@
 package com.tokopedia.tokopedianow.common.domain.model
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.data.model.response.Header
-import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 
 data class SetUserPreference(
     @Expose
@@ -23,18 +21,16 @@ data class SetUserPreference(
 
     data class SetUserPreferenceData(
         @Expose
-        @SerializedName("shop_id")
-        @SuppressLint("Invalid Data Type")
-        val shopId: Int,
+        @SerializedName("shopID")
+        val shopId: String,
         @Expose
-        @SerializedName("warehouse_id")
-        @SuppressLint("Invalid Data Type")
-        val warehouseId: Int,
+        @SerializedName("warehouseID")
+        val warehouseId: String,
         @Expose
-        @SerializedName("service_type")
+        @SerializedName("serviceType")
         val serviceType: String,
         @Expose
         @SerializedName("warehouses")
-        val warehouses: List<LocalWarehouseModel>
+        val warehouses: List<WarehouseData>
     )
 }
