@@ -16,6 +16,15 @@ class AttachmentPreviewViewModelTest : BaseTopChatViewModelTest() {
         )
     )
 
+    val notEnoughRequiredProductData = arrayListOf(
+        ResultProduct(
+            name = "",
+            productImageThumbnail = "",
+            price = "",
+            productId = ""
+        )
+    )
+
     @Test
     fun should_add_product_attachment_preview_on_initialization_not_empty() {
         // When
@@ -24,6 +33,15 @@ class AttachmentPreviewViewModelTest : BaseTopChatViewModelTest() {
 
         // Then
         assertEquals(viewModel.getAttachmentsPreview().size, 1)
+    }
+
+    @Test
+    fun should_not_add_product_attachment_preview_on_initialization_when_not_enough_required_data() {
+        // When
+        viewModel.initProductPreviewFromAttachProduct(notEnoughRequiredProductData)
+
+        // Then
+        assertEquals(viewModel.getAttachmentsPreview().size, 0)
     }
 
 }
