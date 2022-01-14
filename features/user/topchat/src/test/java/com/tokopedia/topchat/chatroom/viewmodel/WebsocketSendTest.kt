@@ -85,4 +85,14 @@ class WebsocketSendTest: BaseTopChatViewModelTest() {
             chatWebSocket.sendPayload(payload)
         }
     }
+
+    @Test
+    fun should_not_send_attachment_to_ws() {
+        // When
+        viewModel.sendAttachments("a")
+
+        // Then
+        assertEquals(viewModel.previewMsg.value, null)
+        assertEquals(viewModel.attachmentSent.value, null)
+    }
 }
