@@ -248,6 +248,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         onReceiveMessageEvent(uiModel)
     }
 
+    private val srwRemovalObserver = Observer<String?> { productId ->
+        if (productId != null) {
+            removeSrwBubble(productId)
+        } else {
+            removeSrwBubble()
+        }
+    }
+
     /**
      * stack to keep latest change address request
      */
@@ -2613,14 +2621,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         })
 
         viewModel.newMsg.observeForever(newMsgObserver)
-
-        viewModel.removeSrwBubble.observe(viewLifecycleOwner, { productId ->
-            if (productId != null) {
-                removeSrwBubble(productId)
-            } else {
-                removeSrwBubble()
-            }
-        })
+        viewModel.removeSrwBubble.observeForever(srwRemovalObserver)
 
         viewModel.previewMsg.observe(viewLifecycleOwner, { preview ->
             showPreviewMsg(preview)
@@ -2661,6 +2662,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onDestroyView() {
         viewModel.newMsg.removeObserver(newMsgObserver)
+        viewModel.removeSrwBubble.removeObserver(srwRemovalObserver)
         super.onDestroyView()
         replyBubbleOnBoarding.flush()
         lifecycleScope.launch(Dispatchers.IO) {
