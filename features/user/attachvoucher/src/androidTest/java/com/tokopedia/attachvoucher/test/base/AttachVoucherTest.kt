@@ -2,11 +2,13 @@ package com.tokopedia.attachvoucher.test.base
 
 import android.content.Context
 import android.content.Intent
+import androidx.annotation.IdRes
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.attachvoucher.common.AndroidFileUtil
 import com.tokopedia.attachvoucher.common.di.DaggerFakeBaseAppComponent
@@ -17,10 +19,10 @@ import com.tokopedia.attachvoucher.stub.di.DaggerAttachVoucherComponentStub
 import com.tokopedia.attachvoucher.stub.usecase.GetVoucherUseCaseStub
 import com.tokopedia.attachvoucher.stub.view.AttachVoucherActivityStub
 import com.tokopedia.attachvoucher.test.R
+import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
-import org.junit.Test
 import javax.inject.Inject
 
 abstract class AttachVoucherTest {
@@ -37,6 +39,7 @@ abstract class AttachVoucherTest {
     @Inject
     lateinit var getVoucherUseCase: GetVoucherUseCaseStub
 
+    protected var errorMessageResponse = "Oops!"
     protected var successGetMerchantPromotionGetMVListResponse = GetMerchantPromotionGetMVListResponse()
 
     @Before
@@ -76,6 +79,14 @@ abstract class AttachVoucherTest {
         onView(withId(R.id.recycler_view)).perform(
             scrollToPosition<RecyclerView.ViewHolder>(position)
         )
+    }
+
+    protected fun checkViewNotDisplayed(@IdRes viewId: Int) {
+        onView(withId(viewId)).check(matches(not(isDisplayed())))
+    }
+
+    protected fun checkViewWithMessageDisplayed(msg: String) {
+        onView(withSubstring(msg)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
     }
 
     @After

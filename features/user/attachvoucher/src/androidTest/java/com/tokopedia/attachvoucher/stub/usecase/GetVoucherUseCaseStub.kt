@@ -18,4 +18,12 @@ class GetVoucherUseCaseStub @Inject constructor(
             repository.createMapResult(response::class.java, value)
             field = value
         }
+
+    var errorMessage = ""
+        set(value) {
+            if (value.isNotEmpty()) {
+                repository.createErrorMapResult(response::class.java, value)
+            }
+            field = value
+        }
 }
