@@ -71,6 +71,7 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.Response
 import okhttp3.WebSocket
@@ -318,13 +319,13 @@ class TopChatViewModel @Inject constructor(
     }
 
     private fun onReceiveDeleteMsgEvent(chat: ChatSocketPojo) {
-        _msgDeleted.postValue(chat.replyTime)
+        updateLiveDataOnMainThread(_msgDeleted, chat.replyTime)
     }
 
     private fun onReceiveReplyEvent(chat: ChatSocketPojo) {
         if (!isInTheMiddleOfThePage()) {
             renderChatItem(chat)
-            _unreadMsg.postValue(0)
+            updateLiveDataOnMainThread(_unreadMsg, 0)
         } else {
             if (chat.isOpposite) {
                 incrementUnreadMsg()
@@ -334,7 +335,7 @@ class TopChatViewModel @Inject constructor(
 
     private fun renderChatItem(chat: ChatSocketPojo) {
         val chatUiModel = topChatRoomWebSocketMessageMapper.map(chat)
-        _newMsg.postValue(chatUiModel)
+        updateLiveDataOnMainThread(_newMsg, chatUiModel)
         handleSrwBubbleState(chat, chatUiModel)
         if (chat.isOpposite) {
             markAsRead()
@@ -345,10 +346,12 @@ class TopChatViewModel @Inject constructor(
         when (pojo.attachment?.type) {
             AttachmentType.Companion.TYPE_INVOICE_SEND,
             AttachmentType.Companion.TYPE_IMAGE_UPLOAD,
-            AttachmentType.Companion.TYPE_VOUCHER -> _removeSrwBubble.postValue(null)
+            AttachmentType.Companion.TYPE_VOUCHER -> updateLiveDataOnMainThread(
+                _removeSrwBubble, null
+            )
             AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT -> {
                 if (uiModel is ProductAttachmentUiModel) {
-                    _removeSrwBubble.postValue(uiModel.productId)
+                    updateLiveDataOnMainThread(_removeSrwBubble, uiModel.productId)
                 }
             }
         }
@@ -362,21 +365,21 @@ class TopChatViewModel @Inject constructor(
 
     private fun incrementUnreadMsg() {
         val currentValue = _unreadMsg.value ?: 0
-        _unreadMsg.postValue(currentValue + 1)
+        updateLiveDataOnMainThread(_unreadMsg, currentValue + 1)
     }
 
     private fun onReceiveReadMsgEvent() {
         if (!isInTheMiddleOfThePage()) {
-            _msgRead.postValue(Unit)
+            updateLiveDataOnMainThread(_msgRead, Unit)
         }
     }
 
     private fun onReceiveEndTypingEvent() {
-        _isTyping.postValue(false)
+        updateLiveDataOnMainThread(_isTyping, false)
     }
 
     private fun onReceiveTypingEvent() {
-        _isTyping.postValue(true)
+        updateLiveDataOnMainThread(_isTyping, true)
     }
 
     private fun handleOnClosedWebSocket(code: Int) {
@@ -386,7 +389,7 @@ class TopChatViewModel @Inject constructor(
     }
 
     fun resetUnreadMessage() {
-        _unreadMsg.postValue(0)
+        _unreadMsg.value = 0
     }
 
     private fun handleOnFailureWebSocket() {
@@ -1092,6 +1095,12 @@ class TopChatViewModel @Inject constructor(
                 ImageUtil.IMAGE_UNDERSIZE -> showErrorSnackbar(R.string.undersize_image)
                 ImageUtil.IMAGE_EXCEED_SIZE_LIMIT -> showErrorSnackbar(R.string.oversize_image)
             }
+        }
+    }
+
+    private fun <T> updateLiveDataOnMainThread(liveData: MutableLiveData<T>, value: T) {
+        viewModelScope.launch(dispatcher.main) {
+            liveData.value = value
         }
     }
 
