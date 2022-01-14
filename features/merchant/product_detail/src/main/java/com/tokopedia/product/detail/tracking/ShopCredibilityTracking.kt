@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.tracking
 
-import com.tokopedia.product.detail.common.ProductTrackingConstant
+import com.tokopedia.product.detail.tracking.TrackingConstant.Hit
+import com.tokopedia.product.detail.tracking.TrackingConstant.Item
+import com.tokopedia.product.detail.tracking.TrackingConstant.Value
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -17,52 +19,54 @@ object ShopCredibilityTracking {
         val shopId = data.shopId
 
         val mapEvent = hashMapOf(
-            "event" to ProductTrackingConstant.Tracking.PROMO_VIEW,
-            "eventAction" to ACTION_IMPRESSION_SHOP_TICKER,
-            "eventCategory" to ProductTrackingConstant.Category.PDP,
-            "eventLabel" to "shop_id:$shopId;",
-            "businessUnit" to ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
-            "component" to "comp:${data.componentName};temp:${data.componentType};elem:$ACTION_IMPRESSION_SHOP_TICKER;cpos:${data.componentPosition};",
-            "currentSite" to ProductTrackingConstant.Tracking.CURRENT_SITE,
-            "layout" to "layout:${data.layoutName};catName:${data.categoryName};catId:${data.categoryId};",
-            "productId" to data.productId,
-            "ecommerce" to mapOf(
-                "promoView" to mapOf(
-                    "promotions" to listOf(
+            Hit.EVENT to Value.PROMO_VIEW,
+            Hit.EVENT_ACTION to ACTION_IMPRESSION_SHOP_TICKER,
+            Hit.EVENT_CATEGORY to Value.PRODUCT_DETAIL_PAGE,
+            Hit.EVENT_LABEL to "shop_id:$shopId;",
+            Hit.BUSINESS_UNIT to Value.PRODUCT_DETAIL_PAGE,
+            Hit.COMPONENT to "comp:${data.componentName};temp:${data.componentType};elem:$ACTION_IMPRESSION_SHOP_TICKER;cpos:${data.componentPosition};",
+            Hit.CURRENT_SITE to Value.TOKOPEDIA_MARKETPLACE,
+            Hit.LAYOUT to "layout:${data.layoutName};catName:${data.categoryName};catId:${data.categoryId};",
+            Hit.PRODUCT_ID to data.productId,
+            Hit.ECOMMERCE to mapOf(
+                Hit.PROMO_VIEW to mapOf(
+                    Hit.PROMOTIONS to listOf(
                         mapOf(
-                            "creative_name" to data.message,
-                            "creative_slot" to "null",
-                            "item_id" to data.title,
-                            "item_name" to data.tickerType
+                            Item.CREATIVE_NAME to data.message,
+                            Item.CREATIVE_SLOT to "null",
+                            Item.ITEM_ID to data.title,
+                            Item.ITEM_NAME to data.tickerType
                         )
                     )
                 )
             ),
-            "shopId" to "$shopId;",
-            "shopType" to data.shopType,
-            "userId" to "${data.userId};"
+            Hit.SHOP_ID to "$shopId;",
+            Hit.SHOP_TYPE to data.shopType,
+            Hit.USER_ID to "${data.userId};"
         )
 
         trackingQueue.putEETracking(mapEvent)
     }
 
-    fun clickShopTicker(data: ShopCredibilityTracker.ClickShopTicker) {
+    fun clickShopTicker(
+        data: ShopCredibilityTracker.ClickShopTicker
+    ) {
 
         val shopId = data.shopId
 
         val mapEvent = hashMapOf<String, Any>(
-            "event" to "clickPG",
-            "eventAction" to ACTION_CLICK_SHOP_TICKER,
-            "eventCategory" to ProductTrackingConstant.Category.PDP,
-            "eventLabel" to "shop_id:$shopId;title:${data.title};ticker_type:${data.tickerType};message:${data.message};button_text:${data.buttonText};",
-            "businessUnit" to ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
-            "component" to "comp:${data.componentName};temp:${data.componentType};elem:$ACTION_CLICK_SHOP_TICKER;cpos:${data.componentPosition};",
-            "currentSite" to ProductTrackingConstant.Tracking.CURRENT_SITE,
-            "layout" to "layout:${data.layoutName};catName:${data.categoryName};catId:${data.categoryId};",
-            "productId" to data.productId,
-            "shopId" to "$shopId;",
-            "shopType" to data.shopType,
-            "userId" to "${data.userId};"
+            Hit.EVENT to "clickPG",
+            Hit.EVENT_ACTION to ACTION_CLICK_SHOP_TICKER,
+            Hit.EVENT_CATEGORY to Value.PRODUCT_DETAIL_PAGE,
+            Hit.EVENT_LABEL to "shop_id:$shopId;title:${data.title};ticker_type:${data.tickerType};message:${data.message};button_text:${data.buttonText};",
+            Hit.BUSINESS_UNIT to Value.PRODUCT_DETAIL_PAGE,
+            Hit.COMPONENT to "comp:${data.componentName};temp:${data.componentType};elem:$ACTION_CLICK_SHOP_TICKER;cpos:${data.componentPosition};",
+            Hit.CURRENT_SITE to Value.TOKOPEDIA_MARKETPLACE,
+            Hit.LAYOUT to "layout:${data.layoutName};catName:${data.categoryName};catId:${data.categoryId};",
+            Hit.PRODUCT_ID to data.productId,
+            Hit.SHOP_ID to "$shopId;",
+            Hit.SHOP_TYPE to data.shopType,
+            Hit.USER_ID to "${data.userId};"
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
