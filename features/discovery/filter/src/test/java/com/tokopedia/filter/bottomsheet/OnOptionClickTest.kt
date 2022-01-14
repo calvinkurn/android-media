@@ -41,7 +41,7 @@ internal class OnOptionClickTest: SortFilterBottomSheetViewModelTestFixtures() {
         clickedOptionViewModel: OptionViewModel
     ) : OptionViewModel {
         return filterViewModel.optionViewModelList.first { optionVM ->
-            optionVM.option.key == clickedOptionViewModel.option.key && optionVM.option.value == clickedOptionViewModel.option.value
+            optionVM.option == clickedOptionViewModel.option
         }
     }
 
