@@ -15,6 +15,7 @@ import androidx.collection.ArrayMap
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -241,6 +242,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun getAnalytic(): TopChatAnalytics = analytics
 
     override fun isLoadMoreEnabledByDefault(): Boolean = false
+
+    private val newMsgObserver = Observer<Visitable<*>> { uiModel ->
+        onSendAndReceiveMessage()
+        onReceiveMessageEvent(uiModel)
+    }
 
     /**
      * stack to keep latest change address request
@@ -1729,14 +1735,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        replyBubbleOnBoarding.flush()
-        lifecycleScope.launch(Dispatchers.IO) {
-            sellerReviewHelper.saveMessageId(messageId)
-        }
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
@@ -2614,10 +2612,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             }
         })
 
-        viewModel.newMsg.observe(viewLifecycleOwner, { uiModel ->
-            onSendAndReceiveMessage()
-            onReceiveMessageEvent(uiModel)
-        })
+        viewModel.newMsg.observeForever(newMsgObserver)
 
         viewModel.removeSrwBubble.observe(viewLifecycleOwner, { productId ->
             if (productId != null) {
@@ -2662,6 +2657,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         viewModel.uploadImageService.observe(viewLifecycleOwner, { image ->
             uploadImage(image)
         })
+    }
+
+    override fun onDestroyView() {
+        viewModel.newMsg.removeObserver(newMsgObserver)
+        super.onDestroyView()
+        replyBubbleOnBoarding.flush()
+        lifecycleScope.launch(Dispatchers.IO) {
+            sellerReviewHelper.saveMessageId(messageId)
+        }
     }
 
     private fun uploadImage(image: ImageUploadServiceModel) {
