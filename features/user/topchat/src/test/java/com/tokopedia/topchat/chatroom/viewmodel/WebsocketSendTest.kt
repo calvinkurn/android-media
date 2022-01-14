@@ -1,6 +1,8 @@
 package com.tokopedia.topchat.chatroom.viewmodel
 
 import com.tokopedia.chat_common.data.MessageUiModel
+import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
+import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import io.mockk.every
 import io.mockk.verify
@@ -24,6 +26,30 @@ class WebsocketSendTest: BaseTopChatViewModelTest() {
         // When
         viewModel.sendMsg("", null, null)
         viewModel.sendMsg("", null, null, listOf())
+
+        // Then
+        assertEquals(viewModel.previewMsg.value, preview)
+        verify {
+            chatWebSocket.sendPayload(payload)
+        }
+        verifySendStopTyping()
+    }
+
+    @Test
+    fun should_send_sticker_to_ws() {
+        // Given
+        val preview = StickerUiModel.Builder().build()
+        val payload = ""
+        val sticker = Sticker()
+        every {
+            payloadGenerator.generateStickerPreview(any(), any(), any())
+        } returns preview
+        every {
+            payloadGenerator.generateStickerWsPayload(any(), any(), any(), any(), any())
+        } returns payload
+
+        // When
+        viewModel.sendSticker(sticker, null)
 
         // Then
         assertEquals(viewModel.previewMsg.value, preview)
