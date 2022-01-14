@@ -109,8 +109,6 @@ class InstallmentDetailBottomSheetRobot {
 class OvoActivationBottomSheetRobot {
 
     fun performActivation(isSuccess: Boolean) {
-        //block main thread to wait webview loaded
-//        Thread.sleep(2000)
         onView(withId(R.id.web_view)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
             Log.i("qwertyuiop", "check webview")
