@@ -119,4 +119,20 @@ class WebsocketSendTest: BaseTopChatViewModelTest() {
         // Then
         assertEquals(viewModel.removeSrwBubble.value, null)
     }
+
+    @Test
+    fun should_send_ws_start_typing() {
+        // Given
+        val payload = payloadGenerator.generateWsPayloadStartTyping(
+            viewModel.roomMetaData.msgId
+        )
+
+        // When
+        viewModel.sendWsStartTyping()
+
+        // Then
+        verify {
+            chatWebSocket.sendPayload(payload)
+        }
+    }
 }
