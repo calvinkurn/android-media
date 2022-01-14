@@ -17,7 +17,8 @@ open class VoucherUiModel constructor(
         merchantVoucherBanner: MerchantVoucherBanner?,
         merchantVoucherStatus: MerchantVoucherStatus?,
         restrictedForLiquidProduct: Boolean,
-        val isPublic: Int = 1
+        val isPublic: Int = 1,
+        val remainingQuota: Int = 0
 ) : MerchantVoucherModel(
         voucherId,
         voucherName,

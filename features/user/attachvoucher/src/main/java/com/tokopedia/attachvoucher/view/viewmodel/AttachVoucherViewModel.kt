@@ -1,26 +1,20 @@
 package com.tokopedia.attachvoucher.view.viewmodel
 
-import androidx.collection.ArrayMap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.attachvoucher.data.FilterParam
 import com.tokopedia.attachvoucher.data.GetVoucherParam
 import com.tokopedia.attachvoucher.data.VoucherUiModel
-import com.tokopedia.attachvoucher.mapper.VoucherMapper
 import com.tokopedia.attachvoucher.usecase.GetVoucherUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AttachVoucherViewModel @Inject constructor(
         private val getVouchersUseCase: GetVoucherUseCase,
-        private val dispatcher: CoroutineDispatchers,
+        dispatcher: CoroutineDispatchers,
 ) : BaseViewModel(dispatcher.main) {
 
     val hasNext: Boolean get() = getVouchersUseCase.hasNext

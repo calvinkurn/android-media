@@ -32,6 +32,17 @@
         app:typographyWeight="bold"
         tools:text="Cashback 20rb" />
 
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/voucher_publicity_status"
+        app:layout_constraintTop_toTopOf="@id/title"
+        app:layout_constraintLeft_toRightOf="@id/title"
+        app:layout_constraintBottom_toBottomOf="@id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        app:labelType="highlight_light_grey"
+        tools:text="Khusus"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/validStatus"
         android:layout_width="wrap_content"
@@ -40,6 +51,7 @@
         app:layout_constraintStart_toStartOf="@+id/title"
         app:layout_constraintTop_toBottomOf="@+id/title"
         app:typographyType="body_3"
+        android:textColor="@color/Unify_N700"
         tools:text="Berlaku hingga: 20 Nov 2019  |  Tersisa: 8" />
 
     <com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView

@@ -13,7 +13,7 @@ import com.tokopedia.attachvoucher.di.AttachVoucherComponent
 import com.tokopedia.attachvoucher.di.DaggerAttachVoucherComponent
 import com.tokopedia.attachvoucher.view.fragment.AttachVoucherFragment
 
-class AttachVoucherActivity : BaseSimpleActivity(), HasComponent<AttachVoucherComponent> {
+open class AttachVoucherActivity : BaseSimpleActivity(), HasComponent<AttachVoucherComponent> {
 
     override fun getNewFragment(): Fragment? {
         return AttachVoucherFragment.createInstance()
