@@ -1,4 +1,4 @@
-package com.tokopedia.cart.bundle.utils
+package com.tokopedia.cart.utils
 
 import com.google.gson.Gson
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartGqlResponse
@@ -10,12 +10,12 @@ object DataProvider {
     private val fileUtil = UnitTestFileUtils
 
     fun provideUpdateCartSuccess(): UpdateCartV2Data {
-        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/update_cart_success"), UpdateCartGqlResponse::class.java)
+        val json = gson.fromJson(UnitTestFileUtils.getJsonFromAsset("assets/update_cart_success"), UpdateCartGqlResponse::class.java)
         return json.updateCartData
     }
 
     fun provideUpdateCartFailed(): UpdateCartV2Data {
-        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/update_cart_failed"), UpdateCartGqlResponse::class.java)
+        val json = gson.fromJson(UnitTestFileUtils.getJsonFromAsset("assets/update_cart_failed"), UpdateCartGqlResponse::class.java)
         return json.updateCartData
     }
 
