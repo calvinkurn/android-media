@@ -21,6 +21,7 @@ import com.tokopedia.topchat.common.Constant.NET_WRITE_TIMEOUT
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.websocket.*
+import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket.Companion.PAGE_CHATLIST
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.DEFAULT_PING
@@ -166,7 +167,7 @@ class ChatListNetworkModule {
                 "&device_id=" + userSession.deviceId +
                 "&user_id=" + userSession.userId
         return DefaultTopChatWebSocket(
-            client, webSocketUrl, userSession.accessToken, "chatlist"
+            client, webSocketUrl, userSession.accessToken, PAGE_CHATLIST
         )
     }
 

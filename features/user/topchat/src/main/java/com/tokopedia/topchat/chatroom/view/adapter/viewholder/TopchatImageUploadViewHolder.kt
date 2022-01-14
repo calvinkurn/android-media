@@ -78,8 +78,8 @@ class TopchatImageUploadViewHolder(
 
     override fun bind(element: ImageUploadUiModel?, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
-        when (payloads[0]) {
-            Payload.REBIND -> bind(element)
+        if (payloads.first() == Payload.REBIND) {
+            bind(element)
         }
     }
 

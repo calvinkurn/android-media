@@ -39,6 +39,7 @@ import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
 import com.tokopedia.topchat.common.websocket.*
+import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket.Companion.PAGE_CHATROOM
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocketUtil
@@ -255,7 +256,7 @@ class ChatModule {
                 "&device_id=" + userSession.deviceId +
                 "&user_id=" + userSession.userId
         return DefaultTopChatWebSocket(
-            client, webSocketUrl, userSession.accessToken, "topchat"
+            client, webSocketUrl, userSession.accessToken, PAGE_CHATROOM
         )
     }
 

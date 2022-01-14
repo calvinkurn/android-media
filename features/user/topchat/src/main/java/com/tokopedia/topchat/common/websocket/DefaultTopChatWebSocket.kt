@@ -54,6 +54,8 @@ class DefaultTopChatWebSocket @Inject constructor(
         private const val HEADER_VALUE_BEARER = "Bearer"
 
         const val CODE_NORMAL_CLOSURE = 1000
+        const val PAGE_CHATLIST = "chatlist"
+        const val PAGE_CHATROOM = "chatroom"
     }
 
 }
