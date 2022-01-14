@@ -1,8 +1,10 @@
 package com.tokopedia.topchat.chatroom.viewmodel
 
+import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import io.mockk.every
 import io.mockk.verify
@@ -57,5 +59,30 @@ class WebsocketSendTest: BaseTopChatViewModelTest() {
             chatWebSocket.sendPayload(payload)
         }
         verifySendStopTyping()
+    }
+
+    @Test
+    fun should_send_attachment_to_ws() {
+        // Given
+        val sendablePreview = SendableProductPreview(ProductPreview())
+        val preview = StickerUiModel.Builder().build()
+        val payload = ""
+        every {
+            payloadGenerator.generateAttachmentPreviewMsg(any(), any(), any())
+        } returns preview
+        every {
+            payloadGenerator.generateAttachmentWsPayload(any(), any(), any(), any(), any())
+        } returns payload
+
+        // When
+        viewModel.addAttachmentPreview(sendablePreview)
+        viewModel.sendAttachments("a")
+
+        // Then
+        assertEquals(viewModel.previewMsg.value, preview)
+        assertEquals(viewModel.attachmentSent.value, sendablePreview)
+        verify {
+            chatWebSocket.sendPayload(payload)
+        }
     }
 }
