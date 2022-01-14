@@ -14,5 +14,5 @@ data class ShipmentInformation(
         @SerializedName("preorder")
         val preorder: PreOrder = PreOrder(),
         @SerializedName("enable_bo_affordability")
-        val enableBoAffordability: Boolean = true
+        val enableBoAffordability: Boolean = false
 )
