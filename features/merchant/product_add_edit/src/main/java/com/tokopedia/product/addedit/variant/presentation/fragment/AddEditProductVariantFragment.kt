@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -1106,19 +1108,19 @@ class AddEditProductVariantFragment :
 
     private fun showGetVariantCategoryCombinationErrorToast(errorMessage: String) {
         view?.let {
-            Toaster.make(it, errorMessage,
-                    type = Toaster.TYPE_ERROR,
-                    actionText = getString(com.tokopedia.abstraction.R.string.title_try_again),
-                    duration = Snackbar.LENGTH_INDEFINITE,
-                    clickListener = View.OnClickListener {
-                        val categoryId = viewModel.productInputModel.value?.detailInputModel?.categoryId
-                        val selections = viewModel.productInputModel.value?.variantInputModel?.selections
-                                ?: listOf()
-                        categoryId?.let { id ->
-                            val paramId = id.toIntOrNull()
-                            paramId?.run { viewModel.getVariantCategoryCombination(this, selections) }
-                        }
-                    })
+            Toaster.build(it, errorMessage,
+                duration = Snackbar.LENGTH_INDEFINITE,
+                type = Toaster.TYPE_ERROR,
+                actionText = getString(com.tokopedia.abstraction.R.string.title_try_again),
+                clickListener = View.OnClickListener {
+                    val categoryId = viewModel.productInputModel.value?.detailInputModel?.categoryId
+                    val selections = viewModel.productInputModel.value?.variantInputModel?.selections
+                        ?: listOf()
+                    categoryId?.let { id ->
+                        val paramId = id.toIntOrNull()
+                        paramId?.run { viewModel.getVariantCategoryCombination(this, selections) }
+                    }
+                }).show()
         }
     }
 
@@ -1135,7 +1137,20 @@ class AddEditProductVariantFragment :
             )
             val coachMark = CoachMark2(requireContext())
             coachMark.showCoachMark(ArrayList(items), scrollViewContent)
+            hideCoachmarkWhenTouchOutside(coachMark)
             SharedPreferencesUtil.setFirstTimeCustomVariantType(requireActivity(), true)
+        }
+    }
+
+    private fun hideCoachmarkWhenTouchOutside(coachMark: CoachMark2) {
+        Handler(Looper.getMainLooper()).post {
+            buttonAddVariantType.requestFocusFromTouch()
+            buttonAddVariantType.setOnFocusChangeListener { _, _ ->
+                coachMark.dismissCoachMark()
+            }
+        }
+        coachMark.setOnDismissListener {
+            buttonAddVariantType.clearFocus()
         }
     }
 
