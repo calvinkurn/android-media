@@ -1,6 +1,7 @@
 package com.tokopedia.picker.ui.activity.main
 
 import androidx.lifecycle.*
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.utils.EventBusFactory
@@ -10,17 +11,18 @@ import javax.inject.Inject
 
 class PickerViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
-) : ViewModel(), LifecycleObserver {
+) : BaseViewModel(dispatchers.io), LifecycleObserver {
 
-    private var _finishButtonState = MediatorLiveData<Boolean>()
-    val finishButtonState: LiveData<Boolean> get() = _finishButtonState
+    private var _continueActionState = MediatorLiveData<Boolean>()
+    val continueActionState: LiveData<Boolean> get() = _continueActionState
 
     private var _selectedMedia = MediatorLiveData<List<Media>>()
     val selectedMedia: LiveData<List<Media>> get() = _selectedMedia
 
-    init {
-        _finishButtonState.addSource(_selectedMedia) {
-            finishButtonState(it.isNotEmpty())
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun continueActionState() {
+        _continueActionState.addSource(_selectedMedia) {
+            _continueActionState.value = it.isNotEmpty()
         }
     }
 
@@ -33,10 +35,6 @@ class PickerViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    private fun finishButtonState(value: Boolean) {
-        _finishButtonState.value = value
     }
 
 }

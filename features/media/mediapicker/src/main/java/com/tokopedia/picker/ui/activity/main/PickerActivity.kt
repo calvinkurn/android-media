@@ -138,7 +138,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener {
     private fun initObservable() {
         lifecycle.addObserver(viewModel)
 
-        viewModel.finishButtonState.observe(this) {
+        viewModel.continueActionState.observe(this) {
             val color = if (it) G500 else N600
 
             binding?.toolbar?.btnDone?.setTextColor(
