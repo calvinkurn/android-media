@@ -265,13 +265,14 @@ class OfficialHomeMapper (
 
     fun updateFeaturedShopDC(newData: FeaturedShopDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
         val newList = mutableListOf<Visitable<*>>()
-        listOfficialStore.forEach {
-            if (it is FeaturedShopDataModel && it.channelModel.id == newData.channelModel.id) {
+        listOfficialStore.forEachIndexed {index, it ->
+            if (it is FeaturedShopDataModel && it.channelModel.id == newData.channelModel.id && it.channelModel.channelGrids.isEmpty()) {
                 newData.channelModel.verticalPosition = it.channelModel.verticalPosition
                 newList.add(newData.copy())
+                listOfficialStore[index] = newData.copy()
             } else newList.add(it)
         }
-        action.invoke(newList.toMutableList())
+        action.invoke(listOfficialStore)
     }
 
     fun removeFeaturedShopDC(newData: FeaturedShopDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
