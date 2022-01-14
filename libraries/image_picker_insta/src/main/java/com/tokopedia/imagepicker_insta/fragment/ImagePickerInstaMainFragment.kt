@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.otaliastudios.cameraview.size.AspectRatio
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.imagepicker_insta.LiveDataResult
 import com.tokopedia.imagepicker_insta.R
@@ -33,6 +34,8 @@ import com.tokopedia.imagepicker_insta.util.AlbumUtil
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.util.PermissionUtil
 import com.tokopedia.imagepicker_insta.util.VideoUtil
+import com.tokopedia.imagepicker_insta.util.VideoUtil.getImageDimensions
+import com.tokopedia.imagepicker_insta.util.VideoUtil.getVideoDimensions
 import com.tokopedia.imagepicker_insta.viewmodel.PickerViewModel
 import com.tokopedia.imagepicker_insta.views.FolderChooserView
 import com.tokopedia.imagepicker_insta.views.MediaView
@@ -488,11 +491,27 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             { imageAdapterData: ImageAdapterData, isSelected: Boolean ->
                 if (isSelected) {
 
+                    var zoomInfo: ZoomInfo? = null
+                    imageAdapter.getListOfIndexWhichAreSelected()
+
                     if (!isMultiSelectEnable()) {
                         zoomImageAdapterDataMap.clear()
                     }
-
-                    selectedMediaView.loadAsset(imageAdapterData, prepareZoomInfo(imageAdapterData))
+                    else {
+                        val firstSelectedMedia = imageAdapter.dataList[imageAdapter.getListOfIndexWhichAreSelected()[0]]
+                        if(firstSelectedMedia.asset is PhotosData) {
+                            zoomInfo = getZoomInfoWithNewDimensions(firstSelectedMedia, imageAdapterData)
+                        }
+                        else{
+                            zoomInfo = getZoomInfoForVideo(imageAdapterData)
+                        }
+                        zoomImageAdapterDataMap[imageAdapterData] = zoomInfo
+                    }
+                    if(zoomInfo == null){
+                        zoomInfo = prepareZoomInfo(imageAdapterData)
+                    }
+                    selectedMediaView.loadAsset(imageAdapterData, zoomInfo)
+//                    selectedMediaView.loadAsset(imageAdapterData, prepareZoomInfo(imageAdapterData))
                 } else {
                     //DO nothing
                 }
@@ -508,6 +527,57 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                 imageMultiSelect.toggle(true)
             }
         }
+    }
+
+    private fun getZoomInfoForVideo(imageAdapterData: ImageAdapterData): ZoomInfo {
+        val videoSize = imageAdapterData.asset.contentUri.getVideoDimensions(requireContext())
+
+        val width = videoSize.width
+        val height = videoSize.height
+
+        val ar = AspectRatio.of(width, height)
+        val ratio = (ar.x/ar.y).toFloat()
+
+        /*
+        * As we are supposed to maintain the orientation PORTRAIT
+        * So will keep the width same
+        * And change height according to aspect ratio
+        */
+
+        val zoomInfo = ZoomInfo()
+        zoomInfo.bmpWidth = width
+        zoomInfo.bmpHeight = width.div(ratio).toInt()
+        return zoomInfo
+    }
+
+    private fun getZoomInfoWithNewDimensions(imageAdapterData: ImageAdapterData, originalImageAdapterData: ImageAdapterData): ZoomInfo {
+
+        // getting original width of the new selected video
+        val originalWidth = originalImageAdapterData.asset.contentUri.getImageDimensions(requireContext()).width
+
+        //TODO get selected media ki list ka first index
+        val width = zoomImageAdapterDataMap[imageAdapterData]?.bmpWidth
+        val height = zoomImageAdapterDataMap[imageAdapterData]?.bmpHeight
+
+        var ratio = 0.0f
+
+        if (width != null && height != null)
+        {
+            val ar = AspectRatio.of(width, height)
+            ratio = (ar.x.toFloat()/ar.y)
+        }
+
+        /*
+        * As we are supposed to maintain the orientation PORTRAIT
+        * So will keep the width same
+        * And change height according to aspect ratio
+        */
+
+        val zoomInfo = ZoomInfo()
+        zoomInfo.bmpWidth = originalWidth
+        zoomInfo.bmpHeight = originalWidth?.div(ratio)?.toInt()
+        return zoomInfo
+
     }
 
     private fun updateMediaToUi(mediaVmMData: MediaVmMData?) {
@@ -636,6 +706,17 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         var zoomInfo = zoomImageAdapterDataMap[imageAdapterData]
         if (zoomInfo == null) {
             zoomInfo = ZoomInfo()
+
+            if(imageAdapterData.asset is PhotosData){
+                val size = imageAdapterData.asset.contentUri.getImageDimensions(requireContext())
+                zoomInfo.bmpWidth = size.width
+                zoomInfo.bmpHeight = size.height
+            }
+            else{
+                val size = imageAdapterData.asset.contentUri.getVideoDimensions(requireContext())
+                zoomInfo.bmpWidth = size.width
+                zoomInfo.bmpHeight = size.height
+            }
             zoomImageAdapterDataMap[imageAdapterData] = zoomInfo
         }
         return zoomInfo
