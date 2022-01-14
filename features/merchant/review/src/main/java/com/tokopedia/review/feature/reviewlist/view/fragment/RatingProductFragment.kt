@@ -69,10 +69,10 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
 
     companion object {
         const val TAG_COACH_MARK_RATING_PRODUCT = "coachMarkRatingProduct"
+        const val BOTTOM_SHEET_FILTER_TAG = "bottomSheetFilterTag"
+        const val BOTTOM_SHEET_SORT_TAG = "bottomSheetSortTag"
         private const val searchQuery = "search"
         private const val MAX_LENGTH_SEARCH = 3
-        private const val BOTTOM_SHEET_SORT_TAG = "bottomSheetSortTag"
-        private const val BOTTOM_SHEET_FILTER_TAG = "bottomSheetFilterTag"
 
         private const val IS_DIRECTLY_GO_TO_RATING = "is_directly_go_to_rating"
 
@@ -102,7 +102,7 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
 
     private val prefKey = this.javaClass.name + ".pref"
 
-    private var prefs: SharedPreferences? = null
+    protected var prefs: SharedPreferences? = null
 
     private val coachMarkItems: ArrayList<CoachMarkItem> = arrayListOf()
 
