@@ -8,7 +8,7 @@ object SetUserPreferenceQuery : GqlQueryInterface {
     )
 
     override fun getQuery(): String {
-        return "mutation TokonowSetUserPreference(${'$'}shop_id:Int,${'$'}warehouse_id:Int,${'$'}service_type:String,${'$'}warehouses:[TokonowWarehouse]){TokonowSetUserPreference(shop_id:${'$'}shop_id,warehouse_id:${'$'}warehouse_id,service_type:${'$'}service_type,warehouses:${'$'}warehouses){header{process_time messages reason error_code}data{shop_id warehouse_id service_type warehouses{service_type warehouse_id}}}}"
+        return "query TokonowSetUserPreference(${'$'}shopID:String!,${'$'}warehouseID:String,${'$'}serviceType:String!,${'$'}warehouses:[WarehouseUserPreference!]!){TokonowSetUserPreference(shopID:${'$'}shopID,warehouseID:${'$'}warehouseID,serviceType:${'$'}serviceType,warehouses:${'$'}warehouses){header{process_time messages reason error_code}data{shopID warehouseID serviceType warehouses{serviceType warehouseID}}}}"
     }
 
     override fun getTopOperationName() = "TokonowSetUserPreference"
