@@ -85,6 +85,17 @@
             layout="@layout/item_shipment_seller_info_bundle"
             tools:visibility="visible" />
 
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/ticker_warning_closable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            app:closeButtonVisibility="visible"
+            app:tickerShapeType="loose"
+            app:tickerType="warning" />
+
         <include
             layout="@layout/item_shipment_product_bundle"
             tools:visibility="gone" />
