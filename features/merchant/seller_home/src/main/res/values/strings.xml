@@ -144,4 +144,18 @@
     <string name="sah_admin_restriction_title">Oops, kamu nggak punya izin untuk mengakses fitur ini</string>
     <string name="sah_admin_restriction_desc">Hubungi pemilik toko terlebih dulu untuk melanjutkan aktivitas, ya.</string>
     <string name="sah_admin_restriction_button">Oke, Saya Mengerti</string>
+    
+    <!-- Social Media Links -->
+    <string name="sah_social_menu_title">Media Sosial Tokopedia Seller</string>
+    <string name="sah_social_title">Media sosial Tokopedia Seller</string>
+    <string name="sah_social_desc">Ikuti akun media sosial Tokopedia Seller agar kamu tidak ketinggalan info terkini, tips dan trik berjualan, dan promo menarik.</string>
+    <string name="sah_social_ig_title">\@tokopediaseller</string>
+    <string name="sah_social_ig_desc">Nikmati konten edukasi dan kabar terbaru untuk Seller.</string>
+    <string name="sah_social_youtube_fb_title">Tokopedia Seller</string>
+    <string name="sah_social_youtube_desc">Tonton berbagai video edukasi pengembangan bisnis untuk Seller.</string>
+    <string name="sah_social_fb_desc">Nikmati konten edukasi dan kabar terbaru untuk Seller.</string>
+    <string name="sah_social_fb_com_title">Keluarga Tokopedia</string>
+    <string name="sah_social_fb_com_desc">Gabung grup Keluarga Tokopedia untuk berbagi info dan pengalaman ke sesama Seller.</string>
+    <string name="sah_social_cta">Lihat</string>
+        
 </resources>
