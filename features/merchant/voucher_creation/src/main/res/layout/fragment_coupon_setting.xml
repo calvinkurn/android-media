@@ -57,12 +57,12 @@
                 android:id="@+id/chipFreeShipping"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_8"
                 android:layout_marginTop="@dimen/unify_space_4"
                 app:centerText="true"
                 app:chipSize="medium"
-                app:chipType="normal"
-                android:layout_marginStart="@dimen/unify_space_8"
                 app:chipText="@string/mvc_free_shipping"
+                app:chipType="normal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@id/chipCashback"
@@ -85,11 +85,11 @@
                 android:id="@+id/chipDiscountTypeNominal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_4"
                 app:centerText="true"
                 app:chipSize="medium"
                 app:chipText="@string/nominal"
                 app:chipType="normal"
-                android:layout_marginTop="@dimen/unify_space_4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tpgDiscountType" />
 
@@ -97,12 +97,12 @@
                 android:id="@+id/chipDiscountTypePercentage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_8"
                 android:layout_marginTop="@dimen/unify_space_4"
                 app:centerText="true"
                 app:chipSize="medium"
-                app:chipType="normal"
-                android:layout_marginStart="@dimen/unify_space_8"
                 app:chipText="@string/mvc_create_tips_subtitle_percentage"
+                app:chipType="normal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@id/chipDiscountTypeNominal"
@@ -113,14 +113,14 @@
                 android:id="@+id/textAreaMinimumDiscount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:text_area_clearable="false"
-                app:text_area_message="@string/helper_message_minimum_discount"
-                app:text_area_label_static="true"
-                app:text_area_label="@string/mvc_create_promo_type_cashback_textfield_discount_amount"
                 android:layout_marginTop="@dimen/unify_space_16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/chipDiscountTypeNominal" />
+                app:layout_constraintTop_toBottomOf="@+id/chipDiscountTypeNominal"
+                app:text_area_clearable="false"
+                app:text_area_label="@string/mvc_create_promo_type_cashback_textfield_discount_amount"
+                app:text_area_label_static="true"
+                app:text_area_message="@string/helper_message_minimum_discount" />
 
             <!-- Group Minimum Purchase -->
             <com.tokopedia.unifyprinciples.Typography
@@ -151,12 +151,12 @@
                 android:id="@+id/chipMinimumPurchaseQuantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_8"
                 android:layout_marginTop="@dimen/unify_space_4"
                 app:centerText="true"
                 app:chipSize="medium"
-                app:chipType="normal"
-                android:layout_marginStart="@dimen/unify_space_8"
                 app:chipText="@string/quantity"
+                app:chipType="normal"
                 app:layout_constraintStart_toEndOf="@id/chipMinimumPurchaseNominal"
                 app:layout_constraintTop_toBottomOf="@id/tpgMinimumPurchase" />
 
@@ -164,42 +164,69 @@
                 android:id="@+id/chipMinimumPurchaseNothing"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_8"
                 android:layout_marginTop="@dimen/unify_space_4"
                 app:centerText="true"
                 app:chipSize="medium"
-                app:chipType="normal"
-                android:layout_marginStart="@dimen/unify_space_8"
                 app:chipText="@string/nothing"
+                app:chipType="normal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@id/chipMinimumPurchaseQuantity"
                 app:layout_constraintTop_toBottomOf="@id/tpgMinimumPurchase" />
 
-            <!-- Minimal Purchase -->
+            <!-- Minimal Purchase (Coupon Type: Cashback)-->
             <com.tokopedia.unifycomponents.TextAreaUnify
                 android:id="@+id/textAreaMinimumPurchase"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:text_area_clearable="false"
-                app:text_area_message="@string/helper_message_min_quantity"
-                app:text_area_label="@string/minimum_purchase"
                 android:layout_marginTop="@dimen/unify_space_16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/chipMinimumPurchaseNominal" />
+                app:layout_constraintTop_toBottomOf="@+id/chipMinimumPurchaseNominal"
+                app:text_area_clearable="false"
+                app:text_area_label="@string/minimum_purchase"
+                app:text_area_message="@string/helper_message_min_quantity" />
 
-            <!--Quota-->
+            <!--Quota (Coupon Type: Cashback)-->
             <com.tokopedia.unifycomponents.TextAreaUnify
                 android:id="@+id/textAreaQuota"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:text_area_label="@string/quota"
                 android:layout_marginTop="@dimen/unify_space_16"
-                app:text_area_clearable="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textAreaMinimumPurchase"
-                />
+                android:layout_marginBottom="@dimen/unify_space_40"
+                app:layout_constraintBottom_toTopOf="@id/layoutExpenseEstimation"
+                app:text_area_clearable="false"
+                app:text_area_label="@string/quota" />
+
+            <!-- Minimal Purchase (Coupon Type: Free Shipping)-->
+            <com.tokopedia.unifycomponents.TextAreaUnify
+                android:id="@+id/textAreaFreeShippingAmount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/chipMinimumPurchaseNominal"
+                app:text_area_clearable="false"
+                app:text_area_label="Nominal gratis ongkir"
+                app:text_area_message="Diskon minimal Rp 5.000"/>
+
+            <!-- Minimal Purchase (Coupon Type: Free Shipping)-->
+            <com.tokopedia.unifycomponents.TextAreaUnify
+                android:id="@+id/textAreaFreeShippingMinimumPurchase"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textAreaFreeShippingAmount"
+                app:text_area_clearable="false"
+                app:text_area_label="@string/minimum_purchase"
+                app:text_area_message="@string/helper_message_min_quantity" />
+
 
             <!--Max expense estimation-->
             <RelativeLayout
@@ -209,10 +236,9 @@
                 android:layout_marginTop="@dimen/unify_space_32"
                 android:background="@drawable/mvc_rectangle_grey_f8fafc_radius_4dp"
                 android:padding="@dimen/unify_space_12"
-                android:layout_marginBottom="@dimen/unify_space_16"
-                app:layout_constraintTop_toBottomOf="@id/textAreaQuota"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography20"
@@ -258,8 +284,22 @@
                     tools:text="Rp 20.000" />
 
 
-
             </RelativeLayout>
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupCashback"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="tpgDiscountType,chipDiscountTypeNominal,chipDiscountTypePercentage,textAreaMinimumDiscount,tpgMinimumPurchase,chipMinimumPurchaseNominal,chipMinimumPurchaseQuantity,chipMinimumPurchaseNothing,textAreaMinimumPurchase" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupFreeShipping"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="textAreaFreeShippingAmount,textAreaFreeShippingMinimumPurchase" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

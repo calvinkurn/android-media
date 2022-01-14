@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.vouchercreation.databinding.FragmentCouponSettingBinding
@@ -43,14 +45,29 @@ class CouponSettingFragment : Fragment() {
     private fun setupViews() {
         binding.chipCashback.chip_container.setOnClickListener {
             binding.chipCashback.chipType = ChipsUnify.TYPE_SELECTED
+            binding.chipFreeShipping.chipType = ChipsUnify.TYPE_NORMAL
+        }
+
+        binding.chipFreeShipping.chip_container.setOnClickListener {
+            binding.chipCashback.chipType = ChipsUnify.TYPE_NORMAL
+            binding.chipFreeShipping.chipType = ChipsUnify.TYPE_SELECTED
         }
 
         binding.chipCashback.selectedChangeListener = { isActive ->
+            if (isActive) {
+                binding.groupCashback.visible()
+            } else {
+                binding.groupCashback.gone()
+            }
 
         }
 
-
         binding.chipFreeShipping.selectedChangeListener = { isActive ->
+            if (isActive) {
+                binding.groupFreeShipping.visible()
+            } else {
+                binding.groupFreeShipping.gone()
+            }
 
         }
 
