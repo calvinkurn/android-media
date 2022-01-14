@@ -102,6 +102,7 @@ object ProductDetailCommonConstant {
     const val BEBAS_ONGKIR_NORMAL = 1
     const val BEBAS_ONGKIR_EXTRA = 2
     const val BO_TOKONOW = 3
+    const val BO_TOKONOW_15 = 4
 
     const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
     const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
