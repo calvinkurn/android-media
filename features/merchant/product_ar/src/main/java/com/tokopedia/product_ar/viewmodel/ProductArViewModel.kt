@@ -19,6 +19,8 @@ import com.tokopedia.product_ar.model.ProductAr
 import com.tokopedia.product_ar.model.ProductArUiModel
 import com.tokopedia.product_ar.model.state.AnimatedTextIconClickMode
 import com.tokopedia.product_ar.model.state.AnimatedTextIconState
+import com.tokopedia.product_ar.model.state.ArGlobalErrorMode
+import com.tokopedia.product_ar.model.state.ArGlobalErrorState
 import com.tokopedia.product_ar.model.state.ModifaceViewMode
 import com.tokopedia.product_ar.model.state.ModifaceViewState
 import com.tokopedia.product_ar.usecase.GetProductArUseCase
@@ -57,9 +59,7 @@ class ProductArViewModel @Inject constructor(private val dispatchers: CoroutineD
     private val _animatedTextIconState = MutableStateFlow(AnimatedTextIconState())
     val animatedTextIconState: StateFlow<AnimatedTextIconState> = _animatedTextIconState
 
-    private val _modifaceViewState = MutableStateFlow(ModifaceViewState(
-            mode = ModifaceViewMode.LIVE)
-    )
+    private val _modifaceViewState = MutableStateFlow(ModifaceViewState(mode = ModifaceViewMode.LIVE))
     val modifaceViewState: StateFlow<ModifaceViewState> = _modifaceViewState
 
     private val _modifaceLoadingState = MutableStateFlow(true)
@@ -67,6 +67,9 @@ class ProductArViewModel @Inject constructor(private val dispatchers: CoroutineD
 
     private val _bottomLoadingState = MutableStateFlow(true)
     val bottomLoadingState: StateFlow<Boolean> = _bottomLoadingState
+
+    private val _globalErrorState = MutableStateFlow(ArGlobalErrorState())
+    val globalErrorState: StateFlow<ArGlobalErrorState> = _globalErrorState
 
     private val _selectedProductArData = MutableLiveData<Result<ProductAr>>()
     val selectedProductArData: LiveData<Result<ProductAr>>
@@ -117,8 +120,13 @@ class ProductArViewModel @Inject constructor(private val dispatchers: CoroutineD
                 it.copy(view2ClickMode = AnimatedTextIconClickMode.CHOOSE_FROM_GALLERY)
             }
 
-        }, onError = {
-            _productArList.postValue(Fail(it))
+            _globalErrorState.update {
+                it.copy(state = ArGlobalErrorMode.SUCCESS)
+            }
+        }, onError = { throwable ->
+            _globalErrorState.update {
+                it.copy(state = ArGlobalErrorMode.ERROR, throwable = throwable)
+            }
         })
     }
 

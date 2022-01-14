@@ -42,6 +42,7 @@ import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.databinding.FragmentProductArBinding
 import com.tokopedia.product_ar.model.state.AnimatedTextIconClickMode
+import com.tokopedia.product_ar.model.state.ArGlobalErrorMode
 import com.tokopedia.product_ar.model.state.ModifaceViewMode
 import com.tokopedia.product_ar.util.AnimatedTextIcon
 import com.tokopedia.product_ar.util.ProductArConstant.REQUEST_CODE_CAMERA_PERMISSION
@@ -81,7 +82,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
-    private val coachMarkSharedPref by lazy(LazyThreadSafetyMode.NONE) {
+    private val coachMarkSharedPref by lazy {
         context?.let {
             CoachMarkProductPref(it, CoachMarkProductPref.PRODUCT_AR_PAGE_COACHMARK)
         }
@@ -92,7 +93,6 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
 
     private var binding by autoClearedNullable<FragmentProductArBinding>()
     private var partialBottomArView: PartialBottomArView? = null
-    private var shouldPause: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -279,6 +279,26 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         observeBackendData()
         observeMakeUpLook()
         observeAtc()
+        observeGlobalError()
+    }
+
+    private fun observeGlobalError() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel?.globalErrorState?.collectLatest { data ->
+                when (data.state) {
+                    ArGlobalErrorMode.ERROR -> {
+                        data.throwable?.let {
+                            setupNavBarIconPageError()
+                            showGlobalError(it)
+                        }
+                    }
+                    ArGlobalErrorMode.SUCCESS -> {
+                        setupNavBarIconPage()
+                        binding?.globalErrorProductAr?.hide()
+                    }
+                }
+            }
+        }
     }
 
     private fun observeAtc() {
@@ -313,15 +333,10 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         viewModel?.productArList?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    shouldPause = true
-                    binding?.globalErrorProductAr?.hide()
-                    setupNavBarIconPage()
                     partialBottomArView?.renderRecyclerView(it.data)
                     setupCoachMark()
                 }
                 is Fail -> {
-                    shouldPause = false
-                    showGlobalError(it.throwable)
                 }
             }
         }
@@ -452,7 +467,6 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
 
         binding?.globalErrorProductAr?.run {
             (errorAction as? UnifyButton)?.isLoading = false
-            setupNavBarIconPageError()
             show()
             setType(errorType)
             setActionClickListener {
@@ -508,11 +522,8 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     }
 
     override fun onPause() {
-        if (shouldPause) {
-            //if we pause this and then do background call, it will block the UI
-            getMakeUpEngine()?.setDetectionCallbackForCameraFeed(null)
-            getMakeUpEngine()?.onPause()
-        }
+        getMakeUpEngine()?.setDetectionCallbackForCameraFeed(null)
+        getMakeUpEngine()?.onPause()
         super.onPause()
     }
 

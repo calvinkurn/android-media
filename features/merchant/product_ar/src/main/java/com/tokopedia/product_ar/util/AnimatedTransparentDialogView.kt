@@ -31,7 +31,7 @@ class AnimatedTransparentDialogView : FrameLayout {
     var inAnimation: Animation? = null
     var outAnimation: Animation? = null
 
-    private val shapeDrawable by lazy(LazyThreadSafetyMode.NONE) {
+    private val shapeDrawable by lazy {
         val shapeDrawableModel = ShapeAppearanceModel()
                 .toBuilder()
                 .setAllCorners(CornerFamily.ROUNDED, radius)

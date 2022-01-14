@@ -16,6 +16,7 @@
     <string name="message_face_not_detected">Oops, wajahmu nggak terdeteksi. Coba\n lagi pastikan wajahmu terlihat jelas, ya.</string>
     <string name="product_ar_oke_label">Oke</string>
     <string name="product_ar_see">Lihat</string>
+    <string name="product_ar_permission_rejected_message">Untuk dapat mengakses halaman ini, permissions harus diaktifkan di bagian pengaturan aplikasi</string>
 
     <string name="coachmark_1_title_ar">Cobain pilihan varian yang ada, yuk!</string>
     <string name="coachmark_1_desc_ar">Tinggal klik varian yang tersedia di bawah sini dan lihat hasil makeup-nya.</string>

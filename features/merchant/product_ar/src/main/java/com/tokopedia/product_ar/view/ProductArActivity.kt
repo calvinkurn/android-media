@@ -3,6 +3,7 @@ package com.tokopedia.product_ar.view
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -28,7 +29,6 @@ class ProductArActivity : BaseSimpleActivity(), HasComponent<ProductArComponent>
 
     private var productId: String = ""
     private var shopId: String = ""
-
     private var mMakeupEngine: MFEMakeupEngine? = null
 
     fun getMakeUpEngine(): MFEMakeupEngine? = mMakeupEngine
@@ -71,6 +71,10 @@ class ProductArActivity : BaseSimpleActivity(), HasComponent<ProductArComponent>
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 inflateFragment()
             } else {
+                //Never ask again selected, or device policy prohibits the app from having that permission.
+                Toast.makeText(this,
+                        getString(R.string.product_ar_permission_rejected_message),
+                        Toast.LENGTH_LONG).show()
                 finish()
             }
         }
@@ -85,6 +89,10 @@ class ProductArActivity : BaseSimpleActivity(), HasComponent<ProductArComponent>
             shopId = intent.getStringExtra(SHOP_ID_EXTRA) ?: ""
         }
 
+        setupEngine()
+    }
+
+    private fun setupEngine() {
         mMakeupEngine = MFEMakeupEngine(this, MFEMakeupEngine.Region.US)
         mMakeupEngine?.setMakeupRenderingParameters(MFEMakeupRenderingParameters(false));
         mMakeupEngine?.loadResources(this, null)
