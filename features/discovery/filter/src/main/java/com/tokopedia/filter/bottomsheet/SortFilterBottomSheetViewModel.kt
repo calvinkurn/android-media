@@ -15,7 +15,6 @@ import com.tokopedia.filter.bottomsheet.sort.SortViewModel
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
-import com.tokopedia.filter.common.data.LevelTwoCategory
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.filter.common.helper.toMapParam
@@ -335,53 +334,25 @@ internal class SortFilterBottomSheetViewModel {
         val isSelected = !optionViewModel.isSelected
         filterController.setFilter(optionViewModel.option, isSelected, isCleanUpExistingFilterWithSameKey)
         val sortFilterIndexSet : MutableSet<Int> = mutableSetOf()
-        with(optionViewModel.option) {
-            updateSortFilterList(mapOf(key to value), sortFilterIndexSet)
-        }
+        updateSortFilterList(listOf(optionViewModel.option), sortFilterIndexSet)
         refreshMapParameter()
         notifyViewOnApplyFilter(sortFilterIndexSet.toList())
     }
 
     private fun updateSortFilterList(
-        filterOptionMap: Map<String, String>,
+        filterOptionList: List<Option>,
         sortFilterIndexSet: MutableSet<Int>
     ) {
         sortFilterList.forEachIndexed { index, visitable ->
             if(visitable is FilterViewModel && visitable.filter.options.isNotEmpty()) {
-                val needUpdate = visitable.filter.options.any { option ->
-                    option.isInFilterOptionMap(filterOptionMap)
-                            || option.isLevelTwoCategoriesInFilterOptionMap(filterOptionMap)
+                val needUpdate = visitable.filter.getFlattenedOptions().any { option ->
+                    option in filterOptionList
                 }
                 if(needUpdate) {
                     visitable.refreshOptionList()
                     sortFilterIndexSet.add(index)
                 }
             }
-        }
-    }
-
-    private fun Option.isInFilterOptionMap(filterOptionMap: Map<String, String>) : Boolean {
-        return filterOptionMap.containsKey(key) && filterOptionMap[key] == value
-    }
-
-    private fun Option.isLevelTwoCategoriesInFilterOptionMap(
-        filterOptionMap: Map<String, String>,
-    ) : Boolean {
-        return levelTwoCategoryList.isNotEmpty() && levelTwoCategoryList.any { levelTwoCategory ->
-            levelTwoCategory.isInFilterOptionMap(filterOptionMap)
-                    || levelTwoCategory.isLevelThreeCategoriesInFilterOptionMap(filterOptionMap)
-        }
-    }
-
-    private fun LevelTwoCategory.isInFilterOptionMap(filterOptionMap: Map<String, String>) : Boolean {
-        return filterOptionMap.containsKey(key) && filterOptionMap[key] == value
-    }
-
-    private fun LevelTwoCategory.isLevelThreeCategoriesInFilterOptionMap(
-        filterOptionMap: Map<String, String>,
-    ) : Boolean {
-        return levelThreeCategoryList.isNotEmpty() && levelThreeCategoryList.any { levelThreeCategory ->
-            filterOptionMap.containsKey(levelThreeCategory.key) && filterOptionMap[levelThreeCategory.key] == levelThreeCategory.value
         }
     }
 
@@ -689,7 +660,7 @@ internal class SortFilterBottomSheetViewModel {
 
         filterController.setFilter(filterViewModel.filter.options)
         val sortFilterIndexSet = mutableSetOf<Int>()
-        updateSortFilterList(optionList.associateBy({it.key}, {it.value}), sortFilterIndexSet)
+        updateSortFilterList(optionList, sortFilterIndexSet)
         refreshMapParameter()
         notifyViewOnApplyFilter(sortFilterIndexSet.toList())
     }
