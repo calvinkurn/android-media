@@ -5,12 +5,12 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.picker.R
 import com.tokopedia.picker.common.PickerFragmentType
 import com.tokopedia.picker.common.PickerPageType
@@ -23,6 +23,8 @@ import com.tokopedia.picker.ui.PickerFragmentFactoryImpl
 import com.tokopedia.picker.ui.PickerNavigator
 import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.fragment.permission.PermissionFragment
+import com.tokopedia.picker.utils.G500
+import com.tokopedia.picker.utils.N600
 import com.tokopedia.picker.utils.addOnTabSelected
 import com.tokopedia.picker.utils.delegates.permissionGranted
 import com.tokopedia.utils.view.binding.viewBinding
@@ -137,7 +139,11 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener {
         lifecycle.addObserver(viewModel)
 
         viewModel.finishButtonState.observe(this) {
-            binding?.toolbar?.btnDone?.showWithCondition(it)
+            val color = if (it) G500 else N600
+
+            binding?.toolbar?.btnDone?.setTextColor(
+                ContextCompat.getColor(applicationContext, color)
+            )
         }
 
         viewModel.selectedMedia.observe(this) {
