@@ -248,6 +248,7 @@ class FakeTopchatWebSocket @Inject constructor(
     }
 
     companion object {
+        const val exStartTime = "123123123"
         const val START_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
         private val data = "data"
         private val msg_id = "msg_id"
