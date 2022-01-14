@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.common.robot
 
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
@@ -109,12 +110,15 @@ class OvoActivationBottomSheetRobot {
 
     fun performActivation(isSuccess: Boolean) {
         //block main thread to wait webview loaded
-        Thread.sleep(2000)
+//        Thread.sleep(2000)
         onView(withId(R.id.web_view)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
+            Log.i("qwertyuiop", "check webview")
             (view as? WebView)?.loadUrl("https://api-staging.tokopedia.com/cart/v2/receiver/?is_success=${if (isSuccess) 1 else 0}")
+            Log.i("qwertyuiop", "load webview")
         }
         //block main thread for webview processing
-        Thread.sleep(2000)
+        Thread.sleep(5000)
+        Log.i("qwertyuiop", "done webview")
     }
 }
