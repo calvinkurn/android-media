@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.StringRes
@@ -129,7 +128,6 @@ import com.tokopedia.topchat.common.custom.TopChatKeyboardHandler
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.util.TopChatSellerReviewHelper
 import com.tokopedia.topchat.common.util.Utils
-import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifycomponents.toPx
@@ -218,7 +216,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var seenAttachedProduct = HashSet<String>()
     private var seenAttachedBannedProduct = HashSet<String>()
     private val reviewRequest = Stack<ReviewRequestResult>()
-    private var composeArea: EditText? = null
+    private var composeMsgArea: ComposeMessageAreaConstraintLayout? = null
     private var orderProgress: TransactionOrderProgressLayout? = null
     private var chatMenu: ChatMenuView? = null
     private var rvLayoutManager: TopchatLinearLayoutManager? = null
@@ -231,8 +229,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var rvContainer: CoordinatorLayout? = null
     private var chatBackground: ImageView? = null
     private var sendButton: IconUnify? = null
-    private var textWatcher: MessageTextWatcher? = null
-    private var sendButtontextWatcher: SendButtonTextWatcher? = null
     protected var topchatViewState: TopChatViewStateImpl? = null
     private var uploadImageBroadcastReceiver: BroadcastReceiver? = null
     private var smoothScroller: CenterSmoothScroller? = null
@@ -273,11 +269,21 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             initSrw()
             initUserLocation()
             initObserver()
-            initReplyTextWatcher()
+            initComposeAreaMsg()
             initStickerView()
             initFbNewUnreadMessage()
-            initTextComposeBackground()
+            setupLifecycleObserver()
         }
+    }
+
+    private fun setupLifecycleObserver() {
+        composeMsgArea?.let {
+            viewLifecycleOwner.lifecycle.addObserver(it)
+        }
+    }
+
+    private fun initComposeAreaMsg() {
+        composeMsgArea?.initLayout(this,this)
     }
 
     private fun initSrw() {
@@ -402,36 +408,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 (rvSrw?.isLoadingState() == true && hasProductPreviewShown())
     }
 
-    private fun initReplyTextWatcher() {
-        textWatcher = MessageTextWatcher(this)
-        composeArea?.addTextChangedListener(textWatcher)
-        sendButtontextWatcher = SendButtonTextWatcher(this)
-        composeArea?.addTextChangedListener(sendButtontextWatcher)
-    }
-
-    private fun initTextComposeBackground() {
-        val bgComposeArea = ViewUtil.generateBackgroundWithShadow(
-            view = composeArea,
-            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
-            topLeftRadius = R.dimen.dp_topchat_20,
-            topRightRadius = R.dimen.dp_topchat_20,
-            bottomLeftRadius = R.dimen.dp_topchat_20,
-            bottomRightRadius = R.dimen.dp_topchat_20,
-            shadowColor = R.color.topchat_dms_chat_bubble_shadow,
-            elevation = R.dimen.dp_topchat_2,
-            shadowRadius = R.dimen.dp_topchat_1,
-            shadowGravity = Gravity.CENTER
-        )
-        val paddingStart =
-            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl7).toInt()
-        val paddingEnd =
-            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8).toInt()
-        val paddingTop = resources.getDimension(R.dimen.dp_topchat_11).toInt()
-        val paddingBottom = resources.getDimension(R.dimen.dp_topchat_10).toInt()
-        composeArea?.background = bgComposeArea
-        composeArea?.setPadding(paddingStart, paddingTop, paddingEnd, paddingBottom)
-    }
-
     private fun initFbNewUnreadMessage() {
         val customView = layoutInflater.inflate(R.layout.custom_fb_new_unread_message, null).apply {
             tvTotalUnreadMessage = this.findViewById(R.id.txt_new_unread_message)
@@ -441,7 +417,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun bindView(view: View?) {
-        composeArea = view?.findViewById(R.id.new_comment)
+        composeMsgArea = view?.findViewById(R.id.reply_box)
         orderProgress = view?.findViewById(R.id.ll_transaction_progress)
         chatMenu = view?.findViewById(R.id.fl_chat_menu)
         rv = view?.findViewById(recyclerViewResourceId)
@@ -481,7 +457,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         setupBeforeReplyTime()
         loadInitialData()
         initLoadMoreListener()
-        onReplyBoxEmpty()
+        disableSendButton()
         initKeyboardListener(view)
         removeAttachmentIfNecessary(savedInstanceState)
         setupObservers()
@@ -1119,7 +1095,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return if (message != null && message.isNotEmpty()) {
             message
         } else {
-            composeArea?.text?.toString() ?: ""
+            composeMsgArea?.getComposedText() ?: ""
         }
     }
 
@@ -1129,7 +1105,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun sendComposedMsg() {
-        textWatcher?.cancelJob()
+        composeMsgArea?.onSendMessage()
         val composedMsg = getComposedMessage()
         sendMessage(composedMsg)
         onSendingMessage().invoke()
@@ -2351,15 +2327,17 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun onReplyBoxEmpty() {
+    override fun disableSendButton(isExceedLimit: Boolean) {
         sendButton?.background =
             MethodChecker.getDrawable(context, R.drawable.bg_topchat_send_btn_disabled)
         sendButton?.setOnClickListener {
-            showSnackbarError(getString(R.string.topchat_desc_empty_text_box))
+            if (!isExceedLimit) {
+                showSnackbarError(getString(R.string.topchat_desc_empty_text_box))
+            }
         }
     }
 
-    override fun onReplyBoxNotEmpty() {
+    override fun enableSendButton() {
         sendButton?.background = MethodChecker.getDrawable(context, R.drawable.bg_topchat_send_btn)
         sendButton?.setOnClickListener {
             onSendButtonClicked()
