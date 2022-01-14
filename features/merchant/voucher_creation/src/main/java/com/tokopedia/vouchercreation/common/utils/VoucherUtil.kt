@@ -1,12 +1,21 @@
 package com.tokopedia.vouchercreation.common.utils
 
 import android.content.Context
+import android.graphics.drawable.GradientDrawable
+import android.text.InputType
 import android.view.View
+import android.widget.ImageView
 import androidx.annotation.DimenRes
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -16,14 +25,19 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMaxStartDate
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinStartDate
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getToday
 import com.tokopedia.vouchercreation.shop.detail.view.fragment.VoucherDetailFragment
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.SocmedType
+import java.util.*
 
 fun View.showErrorToaster(errorMessage: String) {
     Toaster.make(this,
@@ -57,9 +71,58 @@ fun View.showDownloadActionTicker(isSuccess: Boolean,
             context?.getString(R.string.mvc_oke).toBlankOrString())
 }
 
+fun View.highlightView(active: Boolean) {
+    resources?.run {
+        val borderColorRes = if (active) {
+            com.tokopedia.unifyprinciples.R.color.Green_G400
+        } else {
+            com.tokopedia.unifyprinciples.R.color.Neutral_N75
+        }
+        (background as GradientDrawable).setStroke(
+            getDimension(R.dimen.mvc_create_target_card_border_width).toInt().orZero(),
+            MethodChecker.getColor(context, borderColorRes))
+    }
+}
+
 fun FragmentManager.dismissBottomSheetWithTags(vararg tags: String) {
     tags.forEach {
         (findFragmentByTag(it) as? BottomSheetUnify)?.dismiss()
+    }
+}
+
+fun Fragment.getStartDateTimePicker(
+    title: String,
+    info: CharSequence,
+    minDate: Calendar,
+    defaultDate: Calendar,
+    maxDate: Calendar,
+) {
+    context?.let { context ->
+        DateTimePickerUnify(context, minDate, defaultDate, maxDate, null,
+            DateTimePickerUnify.TYPE_DATETIMEPICKER).apply {
+            setTitle(title)
+            setInfo(info)
+            setInfoVisible(true)
+            setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+            minuteInterval = 30
+            datePickerButton.text = context.getString(R.string.mvc_pick)
+            datePickerButton.setOnClickListener {
+                //
+                dismiss()
+            }
+        }.show(childFragmentManager, "")
+    }
+}
+
+fun ImageView.tintDrawableToBlack() {
+    setColorFilter(MethodChecker.getColor(context,
+        com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+}
+
+fun TextFieldUnify.setFieldOnClickListener(onClick: () -> Unit) {
+    textFieldInput.inputType = InputType.TYPE_NULL
+    textFieldInput.setOnClickListener {
+        onClick.invoke()
     }
 }
 
