@@ -10,6 +10,7 @@ object ShopCredibilityTracking {
 
     private const val ACTION_IMPRESSION_SHOP_TICKER = "impression - shop component ticker"
     private const val ACTION_CLICK_SHOP_TICKER = "click - button text on shop component ticker"
+    private const val SHOP_COMPONENT_TICKER = "shop component ticker"
 
     fun impressShopTicker(
         data: ShopCredibilityTracker.ImpressionShopTicker,
@@ -17,6 +18,7 @@ object ShopCredibilityTracking {
     ) {
 
         val shopId = data.shopId
+        val componentPosition = data.componentPosition
 
         val mapEvent = hashMapOf(
             Hit.EVENT to Value.PROMO_VIEW,
@@ -24,7 +26,7 @@ object ShopCredibilityTracking {
             Hit.EVENT_CATEGORY to Value.PRODUCT_DETAIL_PAGE,
             Hit.EVENT_LABEL to "shop_id:$shopId;",
             Hit.BUSINESS_UNIT to Value.PRODUCT_DETAIL_PAGE,
-            Hit.COMPONENT to "comp:${data.componentName};temp:${data.componentType};elem:$ACTION_IMPRESSION_SHOP_TICKER;cpos:${data.componentPosition};",
+            Hit.COMPONENT to "comp:${data.componentName};temp:${data.componentType};elem:$ACTION_IMPRESSION_SHOP_TICKER;cpos:${componentPosition};",
             Hit.CURRENT_SITE to Value.TOKOPEDIA_MARKETPLACE,
             Hit.LAYOUT to "layout:${data.layoutName};catName:${data.categoryName};catId:${data.categoryId};",
             Hit.PRODUCT_ID to data.productId,
@@ -33,8 +35,8 @@ object ShopCredibilityTracking {
                     Hit.PROMOTIONS to listOf(
                         mapOf(
                             Item.CREATIVE_NAME to data.message,
-                            Item.CREATIVE_SLOT to "null",
-                            Item.ITEM_ID to data.title,
+                            Item.CREATIVE_SLOT to componentPosition,
+                            Item.ITEM_ID to SHOP_COMPONENT_TICKER,
                             Item.ITEM_NAME to data.tickerType
                         )
                     )
