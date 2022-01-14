@@ -63,114 +63,134 @@
         android:id="@+id/layout_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:paddingTop="@dimen/unify_space_12"
-        android:paddingBottom="@dimen/unify_space_12"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:paddingTop="@dimen/unify_space_12"
+        android:paddingBottom="@dimen/unify_space_4"
         tools:visibility="visible">
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/img_user_login"
-            android:layout_width="@dimen/nav_user_profile_image_size"
-            android:layout_height="@dimen/nav_user_profile_image_size"
-            android:layout_marginStart="@dimen/unify_space_12"
-            app:layout_constraintLeft_toLeftOf="parent"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_login_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintTop_toTopOf="parent"
-            app:unify_image_type="circle" />
+            >
 
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/btn_settings"
-            android:layout_width="@dimen/nav_user_profile_icon_setting_size"
-            android:layout_height="@dimen/nav_user_profile_icon_setting_size"
-            android:layout_marginLeft="10dp"
-            android:layout_marginEnd="@dimen/unify_space_8"
-            app:icon_name="SETTING"
-            app:layout_constraintBottom_toBottomOf="@id/img_user_login"
-            app:layout_constraintEnd_toStartOf="@id/btn_try_again"
-            app:layout_constraintTop_toTopOf="@id/img_user_login"
-            app:layout_constraintVertical_bias="0.5"
-            app:layout_constraintVertical_chainStyle="packed" />
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/img_user_login"
+                android:layout_width="@dimen/nav_user_profile_image_size"
+                android:layout_height="@dimen/nav_user_profile_image_size"
+                android:layout_marginStart="@dimen/unify_space_12"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:unify_image_type="circle" />
 
-        <ImageView
-            android:id="@+id/btn_try_again"
-            android:layout_width="@dimen/nav_user_profile_icon_retry_size"
-            android:layout_height="@dimen/nav_user_profile_icon_retry_size"
-            android:background="@drawable/ic_oval_bg"
-            android:contentDescription="@string/account_header_store_title"
-            android:padding="5dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/img_user_login"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@id/img_user_login"
-            tools:visibility="visible" />
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/btn_settings"
+                android:layout_width="@dimen/nav_user_profile_icon_setting_size"
+                android:layout_height="@dimen/nav_user_profile_icon_setting_size"
+                app:icon_name="SETTING"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="10dp"
+                app:layout_goneMarginEnd="0dp"
+                app:layout_constraintEnd_toStartOf="@id/btn_try_again"
+                app:layout_constraintTop_toTopOf="@id/section_header_profile"
+                app:layout_constraintVertical_chainStyle="packed" />
 
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/section_icon_barrier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:barrierDirection="start"
-            app:constraint_referenced_ids="btn_settings,btn_try_again" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/btn_try_again"
+                android:layout_width="@dimen/nav_user_profile_icon_retry_size"
+                android:layout_height="@dimen/nav_user_profile_icon_retry_size"
+                android:contentDescription="@string/account_header_store_title"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/btn_settings"
+                app:layout_constraintBottom_toBottomOf="@id/btn_settings"
+                android:visibility="visible"
+                app:cardCornerRadius="12dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardElevation="1dp"
+                >
 
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/section_user_image_barrier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:barrierDirection="end"
-            app:constraint_referenced_ids="img_user_login" />
+                <com.tokopedia.iconunify.IconUnify
+                    android:id="@+id/image_try_again"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:contentDescription="@string/account_header_store_title"
+                    android:layout_gravity="center"
+                    app:icon_name="RELOAD"
+                    />
 
-        <include
-            android:id="@+id/section_header_profile"
-            layout="@layout/holder_account_header_user_profile"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            app:layout_constraintEnd_toStartOf="@id/section_icon_barrier"
-            app:layout_constraintStart_toEndOf="@id/section_user_image_barrier"
-            app:layout_constraintTop_toTopOf="@id/img_user_login"
-            app:layout_goneMarginStart="10dp" />
+            </androidx.cardview.widget.CardView>
 
-        <include
-            android:id="@+id/section_header_wallet"
-            layout="@layout/holder_account_header_wallet"
-            android:layout_marginStart="10dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/unify_space_8"
-            android:layout_marginEnd="@dimen/unify_space_16"
-            app:layout_constraintEnd_toStartOf="@id/section_icon_barrier"
-            app:layout_constraintStart_toEndOf="@id/section_user_image_barrier"
-            app:layout_constraintTop_toBottomOf="@id/section_header_profile" />
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/section_icon_barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:barrierDirection="start"
+                app:constraint_referenced_ids="btn_settings,btn_try_again" />
 
-        <include
-            android:id="@+id/section_header_saldo"
-            layout="@layout/holder_account_header_saldo"
-            android:layout_marginStart="10dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/unify_space_8"
-            android:layout_marginEnd="@dimen/unify_space_16"
-            app:layout_constraintEnd_toStartOf="@id/section_icon_barrier"
-            app:layout_constraintStart_toEndOf="@id/section_user_image_barrier"
-            app:layout_constraintTop_toBottomOf="@id/section_header_wallet" />
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/section_user_image_barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:barrierDirection="end"
+                app:constraint_referenced_ids="img_user_login" />
+
+            <include
+                android:id="@+id/section_header_profile"
+                layout="@layout/holder_account_header_user_profile"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                app:layout_constraintEnd_toStartOf="@id/section_icon_barrier"
+                app:layout_constraintStart_toEndOf="@id/section_user_image_barrier"
+                app:layout_constraintTop_toTopOf="@id/img_user_login"
+                app:layout_goneMarginStart="10dp" />
+
+            <include
+                android:id="@+id/section_header_wallet"
+                layout="@layout/holder_account_header_wallet"
+                android:layout_marginStart="10dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                app:layout_constraintEnd_toStartOf="@id/section_icon_barrier"
+                app:layout_constraintStart_toEndOf="@id/section_user_image_barrier"
+                app:layout_constraintTop_toBottomOf="@id/section_header_profile" />
+
+            <include
+                android:id="@+id/section_header_saldo"
+                layout="@layout/holder_account_header_saldo"
+                android:layout_marginStart="10dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                app:layout_constraintEnd_toStartOf="@id/section_icon_barrier"
+                app:layout_constraintStart_toEndOf="@id/section_user_image_barrier"
+                app:layout_constraintTop_toBottomOf="@id/section_header_wallet" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <include
             android:id="@+id/section_header_shop"
             layout="@layout/holder_account_header_user_shop"
             android:layout_marginStart="10dp"
-            android:layout_marginEnd="@dimen/unify_space_16"
+            android:layout_marginEnd="10dp"
             android:layout_width="0dp"
+            android:layout_marginTop="4dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/unify_space_8"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/img_user_login"
-            app:layout_constraintTop_toBottomOf="@id/section_header_saldo"
-            app:layout_goneMarginStart="10dp" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_login_header"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

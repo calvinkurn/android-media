@@ -18,6 +18,7 @@ import com.tokopedia.tokopedianow.common.model.*
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.SORT_FILTER
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseProductMapper.mapToProductListUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.factory.RepurchaseSortFilterFactory
+import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurchaseFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseEmptyStateNoHistoryUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLoadingUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
@@ -70,8 +71,8 @@ object RepurchaseLayoutMapper {
         removeAll { it is RepurchaseProductUiModel }
     }
 
-    fun MutableList<Visitable<*>>.addCategoryGrid(response: List<CategoryResponse>?) {
-        val categoryList = RepurchaseCategoryMapper.mapToCategoryList(response)
+    fun MutableList<Visitable<*>>.addCategoryGrid(response: List<CategoryResponse>?, warehouseId: String) {
+        val categoryList = RepurchaseCategoryMapper.mapToCategoryList(response, warehouseId)
         add(TokoNowCategoryGridUiModel(
                 id = "",
                 title = "",
@@ -97,7 +98,7 @@ object RepurchaseLayoutMapper {
     }
 
     fun MutableList<Visitable<*>>.addEmptyStateOoc() {
-        add(TokoNowEmptyStateOocUiModel())
+        add(TokoNowEmptyStateOocUiModel(hostSource = SOURCE))
     }
 
     fun MutableList<Visitable<*>>.addRecomWidget(pageName: String) {

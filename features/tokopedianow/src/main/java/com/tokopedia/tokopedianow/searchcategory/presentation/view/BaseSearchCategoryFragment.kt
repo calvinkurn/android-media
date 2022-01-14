@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -37,8 +38,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
-import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.ChooseAddressBottomSheetListener
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
@@ -63,6 +62,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowSearchCategoryBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCategoryAdapter
@@ -75,7 +75,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAdd
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.OutOfCoverageListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
@@ -100,8 +99,6 @@ abstract class BaseSearchCategoryFragment:
     MiniCartWidgetListener,
     ProductItemListener,
     TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
-    ChooseAddressBottomSheetListener,
-    OutOfCoverageListener,
     TokoNowProductCardListener,
     TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
     TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener {
@@ -110,6 +107,7 @@ abstract class BaseSearchCategoryFragment:
         protected const val DEFAULT_SPAN_COUNT = 2
         protected const val OUT_OF_COVERAGE_CHOOSE_ADDRESS = "OUT_OF_COVERAGE_CHOOSE_ADDRESS"
         protected const val REQUEST_CODE_LOGIN = 69
+        private const val DEFAULT_POSITION = 0
     }
 
     private var binding by autoClearedNullable<FragmentTokopedianowSearchCategoryBinding>()
@@ -213,10 +211,7 @@ abstract class BaseSearchCategoryFragment:
         val navToolbar = navToolbar ?: return
 
         activity?.let {
-            navToolbar.setupToolbarWithStatusBar(
-                    activity = it,
-                    applyPadding = false,
-            )
+            navToolbar.setupToolbarWithStatusBar(activity = it)
         }
         viewLifecycleOwner.lifecycle.addObserver(navToolbar)
 
@@ -331,11 +326,28 @@ abstract class BaseSearchCategoryFragment:
     protected open fun getKeyword() =
         getViewModel().queryParam[SearchApiConst.Q] ?: ""
 
+    protected open fun createTokoNowEmptyStateOocListener(eventCategory: String): TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
+        return object : TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
+            override fun onRefreshLayoutPage() {
+                getViewModel().onLocalizingAddressSelected()
+            }
+
+            override fun onGetFragmentManager(): FragmentManager = parentFragmentManager
+
+            override fun onGetEventCategory(): String = eventCategory
+        }
+    }
+
     private fun configureSwipeRefreshLayout() {
         swipeRefreshLayout?.setOnRefreshListener {
+            resetMovingPosition()
             carouselScrollPosition.clear()
             getViewModel().onViewReloadPage()
         }
+    }
+
+    private fun resetMovingPosition() {
+        movingPosition = DEFAULT_POSITION
     }
 
     private fun configureStatusBar() {
@@ -401,8 +413,13 @@ abstract class BaseSearchCategoryFragment:
 
     private fun evaluateNavToolbarShadow(recyclerView: RecyclerView, dy: Int) {
         movingPosition += dy
-        headerBackground?.y = -(movingPosition.toFloat())
-        if (recyclerView.canScrollVertically(1) || movingPosition != 0) {
+        headerBackground?.y = if(movingPosition >= DEFAULT_POSITION) {
+            -(movingPosition.toFloat())
+        } else {
+            resetMovingPosition()
+            movingPosition.toFloat()
+        }
+        if (recyclerView.canScrollVertically(1) || movingPosition != DEFAULT_POSITION) {
             navToolbar?.showShadow(lineShadow = false)
         } else {
             navToolbar?.hideShadow(lineShadow = false)
@@ -772,32 +789,6 @@ abstract class BaseSearchCategoryFragment:
     override fun onRemoveFilterClick(option: Option) {
         getViewModel().onViewRemoveFilter(option)
     }
-
-    override fun onChangeAddressClicked() {
-        val parentFragmentManager = parentFragmentManager
-
-        ChooseAddressBottomSheet().also {
-            it.setListener(this)
-            it.show(parentFragmentManager, OUT_OF_COVERAGE_CHOOSE_ADDRESS)
-        }
-    }
-
-    override fun onReturnClick() {
-        RouteManager.route(context, ApplinkConst.HOME)
-    }
-
-    override fun getLocalizingAddressHostSourceBottomSheet() =
-            SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
-
-    override fun onAddressDataChanged() {
-        getViewModel().onLocalizingAddressSelected()
-    }
-
-    override fun onLocalizingAddressServerDown() { }
-
-    override fun onLocalizingAddressLoginSuccessBottomSheet() { }
-
-    override fun onDismissChooseAddressBottomSheet() { }
 
     override fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int) {
         carouselScrollPosition.put(adapterPosition, scrollPosition)

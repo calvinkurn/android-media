@@ -89,5 +89,6 @@ class CartItemAdapter(private val actionListener: ActionListener) : RecyclerView
         fun onSimilarProductUrlClicked(data: CartItemHolderData)
         fun onShowActionSeeOtherProduct(productId: String, errorType: String)
         fun onFollowShopClicked(shopId: String, errorType: String)
+        fun onVerificationClicked(applink: String)
     }
 }

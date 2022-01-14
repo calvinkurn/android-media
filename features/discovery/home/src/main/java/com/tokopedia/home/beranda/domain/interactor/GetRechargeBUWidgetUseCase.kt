@@ -37,6 +37,9 @@ class GetRechargeBUWidgetUseCase @Inject constructor(
             query getBUWidget($widgetSource: WidgetSource!) {
                 getBUWidget(widgetSource: $widgetSource) {
                   title
+                  subtitle
+                  start_time
+                  end_time
                   media_url
                   app_link
                   web_link
@@ -68,6 +71,20 @@ class GetRechargeBUWidgetUseCase @Inject constructor(
                       action
                       data
                     }
+                    tracking_data{
+                      product_id
+                      operator_id
+                      business_unit
+                      item_type
+                      item_label
+                      client_number
+                      category_id
+                      category_name
+                    }
+                    sold_percentage_value
+                    sold_percentage_label
+                    sold_percentage_label_color
+                    show_sold_percentage
                   }
                 }
             }

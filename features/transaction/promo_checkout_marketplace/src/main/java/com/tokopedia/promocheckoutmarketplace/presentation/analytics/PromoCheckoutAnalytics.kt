@@ -1,7 +1,11 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.analytics
 
-import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.*
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventAction
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventLabel
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.Key
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
 import com.tokopedia.purchase_platform.common.constant.PAGE_CHECKOUT
@@ -63,19 +67,18 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
                                          eventAction: String,
                                          eventLabel: String,
                                          eCommerceMapData: Map<String, Any>) {
-        val dataLayer = DataLayer.mapOf(
-                Key.EVENT, EventName.PROMO_VIEW,
-                Key.EVENT_CATEGORY,
+        val dataLayer = getGtmData(
+                EventName.PROMO_VIEW,
                 when (page) {
                     PAGE_CART -> EventCategory.CART
                     PAGE_CHECKOUT -> EventCategory.COURIER_SELECTION
                     PAGE_OCC -> EventCategory.ORDER_SUMMARY
                     else -> ""
                 },
-                Key.EVENT_ACTION, eventAction,
-                Key.EVENT_LABEL, eventLabel,
-                Key.E_COMMERCE, eCommerceMapData
+                eventAction,
+                eventLabel
         )
+        dataLayer[Key.E_COMMERCE] = eCommerceMapData
         sendEnhancedEcommerce(dataLayer)
     }
 

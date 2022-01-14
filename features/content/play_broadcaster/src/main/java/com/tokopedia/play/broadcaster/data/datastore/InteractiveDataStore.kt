@@ -8,7 +8,9 @@ interface InteractiveDataStore {
 
     fun getInteractiveId(): String
 
-    fun getInteractiveTitle(): String
+    fun getSetupInteractiveTitle(): String
+
+    fun getActiveInteractiveTitle(): String
 
     fun getSelectedInteractiveDuration(): Long
 
@@ -16,7 +18,9 @@ interface InteractiveDataStore {
 
     fun setInteractiveId(id: String)
 
-    fun setInteractiveTitle(title: String)
+    fun setSetupInteractiveTitle(title: String)
+
+    fun setActiveInteractiveTitle(title: String)
 
     fun setSelectedInteractiveDuration(durationInMs: Long)
 

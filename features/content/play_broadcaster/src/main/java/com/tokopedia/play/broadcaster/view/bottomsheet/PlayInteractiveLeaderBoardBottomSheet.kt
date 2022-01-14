@@ -11,7 +11,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -48,7 +47,7 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
             analytic.onClickChatWinnerIcon(
                 parentViewModel.channelId,
                 parentViewModel.interactiveId,
-                parentViewModel.interactiveTitle
+                parentViewModel.activeInteractiveTitle
             )
             RouteManager.route(
                 requireContext(),

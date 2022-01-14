@@ -3,7 +3,7 @@ package com.tokopedia.notifications.analytics
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import com.tokopedia.track.TrackApp
 
-object InAppAnalytics {
+object  InAppAnalytics {
 
     private const val KEY_EVENT = "event"
     private const val KEY_EVENT_CATEGORY = "eventCategory"

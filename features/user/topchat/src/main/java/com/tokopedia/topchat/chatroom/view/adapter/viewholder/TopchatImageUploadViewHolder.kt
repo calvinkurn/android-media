@@ -5,14 +5,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.adapter.util.LongClickMenuItemGenerator
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWidthSenderDimenRes
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.common.util.ViewUtil
@@ -20,10 +22,10 @@ import com.tokopedia.unifycomponents.ImageUnify
 
 class TopchatImageUploadViewHolder(
     itemView: View?,
-    listener: ImageUploadListener,
-    private val replyBubbleListener: ReplyBubbleAreaMessage.Listener
-)
-    : ImageUploadViewHolder(itemView, listener) {
+    private val listener: ImageUploadListener,
+    private val replyBubbleListener: ReplyBubbleAreaMessage.Listener,
+    private val commonListener: CommonViewHolderListener,
+) : ImageUploadViewHolder(itemView, listener) {
 
     private val viewContainer: LinearLayout? = itemView?.findViewById(R.id.ll_image_container)
     private var replyBubbleArea: ReplyBubbleAreaMessage? = itemView?.findViewById(
@@ -42,7 +44,7 @@ class TopchatImageUploadViewHolder(
 
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
         view = chatBalloon,
-        backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
+        backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
         topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         topRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
@@ -51,7 +53,7 @@ class TopchatImageUploadViewHolder(
         elevation = R.dimen.dp_topchat_2,
         shadowRadius = R.dimen.dp_topchat_1,
         shadowGravity = Gravity.CENTER,
-        strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
+        strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
         strokeWidth = getStrokeWidthSenderDimenRes()
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
@@ -83,6 +85,27 @@ class TopchatImageUploadViewHolder(
         bindReplyBubbleListener()
         bindReplyReference(element)
         bindMsgOffsetLine(element)
+        bindLongClick(element)
+    }
+
+    private fun bindLongClick(element: ImageUploadUiModel) {
+        attachmentUnify?.setOnLongClickListener {
+            if (element.isSender) {
+                val menus = LongClickMenuItemGenerator.createLongClickMenuUploadImageBubble()
+                commonListener.showMsgMenu(
+                    element, "", menus
+                )
+            }
+            true
+        }
+    }
+
+    override fun bindClickListener(element: ImageUploadUiModel) {
+        attachmentUnify?.setOnClickListener { view ->
+            if (element.imageUrl != null && element.replyTime != null) {
+                listener.onImageUploadClicked(element.imageUrl!!, element.replyTime!!)
+            }
+        }
     }
 
     override fun setChatLeft(chatBalloon: View?) {
@@ -115,7 +138,7 @@ class TopchatImageUploadViewHolder(
     }
 
     private fun hideReadStatusIfRetry(element: ImageUploadUiModel) {
-        if(element.isRetry) {
+        if (element.isRetry) {
             chatReadStatus.hide()
         }
     }
@@ -137,7 +160,7 @@ class TopchatImageUploadViewHolder(
     }
 
     override fun bindImageAttachment(element: ImageUploadUiModel) {
-        changeHourColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        changeHourColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         attachment?.scaleType = ImageView.ScaleType.CENTER_CROP
         if (element.isDummy) {
             setVisibility(progressBarSendImage, View.VISIBLE)
@@ -145,7 +168,7 @@ class TopchatImageUploadViewHolder(
             setVisibility(progressBarSendImage, View.GONE)
         }
         element.imageUrl?.let {
-            ImageHandler.LoadImage(attachmentUnify, it)
+            attachmentUnify?.loadImage(it)
         }
     }
 

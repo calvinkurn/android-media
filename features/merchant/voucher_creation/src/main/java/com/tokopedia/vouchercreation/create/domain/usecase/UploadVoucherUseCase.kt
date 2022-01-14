@@ -7,8 +7,8 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.create.domain.model.upload.ImageUploadResponse
-import okhttp3.MediaType
-import okhttp3.RequestBody
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import rx.Observable
 import rx.functions.Func1
 import javax.inject.Inject
@@ -58,15 +58,15 @@ class UploadVoucherUseCase @Inject constructor(
             }
 
     private fun createUploadParams(fileLocation: String): RequestParams {
-        val id = RequestBody.create(MediaType.parse(TEXT_PLAIN), userSession.userId)
-        val token = RequestBody.create(MediaType.parse(TEXT_PLAIN), userSession.accessToken)
-        val resolution = RequestBody.create(MediaType.parse(TEXT_PLAIN), RESOLUTION_500)
+        val id = userSession.userId.toRequestBody(TEXT_PLAIN.toMediaTypeOrNull())
+        val token = userSession.accessToken.toRequestBody(TEXT_PLAIN.toMediaTypeOrNull())
+        val resolution = RESOLUTION_500.toRequestBody(TEXT_PLAIN.toMediaTypeOrNull())
         val maps = mapOf(PARAM_ID to id, PARAM_TOKEN to token, PARAM_RESOLUTION to resolution)
         return uploadImageUseCase.createRequestParam(
-                fileLocation,
-                DEFAULT_UPLOAD_PATH,
-                DEFAULT_UPLOAD_TYPE,
-                maps
+            fileLocation,
+            DEFAULT_UPLOAD_PATH,
+            DEFAULT_UPLOAD_TYPE,
+            maps
         )
     }
 }

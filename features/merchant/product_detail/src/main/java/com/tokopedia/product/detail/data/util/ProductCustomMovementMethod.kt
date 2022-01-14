@@ -12,6 +12,10 @@ import android.widget.TextView
  */
 class ProductCustomMovementMethod(val listener: (String) -> Unit) : ArrowKeyMovementMethod() {
 
+    companion object{
+        private const val BRANCH_IO_HOST = "tokopedia.link"
+    }
+
     override fun onTouchEvent(widget: TextView, buffer: Spannable, event: MotionEvent): Boolean {
         val action = event.action
 
@@ -45,7 +49,7 @@ class ProductCustomMovementMethod(val listener: (String) -> Unit) : ArrowKeyMove
                         super.onTouchEvent(widget, buffer, event)
                     }
                 }
-            } catch (e: Throwable) {
+            } catch (_: Throwable) {
             }
 
         }
@@ -53,7 +57,6 @@ class ProductCustomMovementMethod(val listener: (String) -> Unit) : ArrowKeyMove
     }
 
     private fun isBranchIoLink(url: String): Boolean {
-        val BRANCH_IO_HOST = "tokopedia.link"
         val uri = Uri.parse(url)
         return uri.host != null && uri.host == BRANCH_IO_HOST
     }

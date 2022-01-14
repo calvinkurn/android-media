@@ -79,6 +79,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             viewModelShopPageProductListViewModel.getProductListData(
                     anyString(),
                     anyInt(),
+                    anyInt(),
                     anyString(),
                     ShopProductFilterParameter(),
                     addressWidgetData
@@ -103,6 +104,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             viewModelShopPageProductListViewModel.getProductListData(
                     anyString(),
                     anyInt(),
+                    anyInt(),
                     anyString(),
                     ShopProductFilterParameter(),
                     addressWidgetData
@@ -121,7 +123,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     fun `check whether response  get product list data error is null`() {
         runBlocking {
             coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
-            viewModelShopPageProductListViewModel.getProductListData(anyString(), anyInt(), anyString(), ShopProductFilterParameter(), addressWidgetData)
+            viewModelShopPageProductListViewModel.getProductListData(anyString(), anyInt(), anyInt(), anyString(), ShopProductFilterParameter(), addressWidgetData)
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
 
@@ -425,8 +427,10 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
     @Test
     fun `check setInitialProductList is Success`() {
-        viewModelShopPageProductListViewModel.setInitialProductList("123", ShopProduct.GetShopProduct(
-                data = listOf(ShopProduct())
+        viewModelShopPageProductListViewModel.setInitialProductList(
+                "123",
+                productPerPage = mockProductPerPage,
+                ShopProduct.GetShopProduct(data = listOf(ShopProduct())
         ))
         Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success<GetShopProductUiModel>)
     }
@@ -479,6 +483,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
             viewModelShopPageProductListViewModel.getFilterResultCount(
                     shopId = "123",
+                    productPerPage = mockProductPerPage,
                     tempShopProductFilterParameter = ShopProductFilterParameter(),
                     widgetUserAddressLocalData = addressWidgetData
             )
@@ -501,6 +506,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
             viewModelShopPageProductListViewModel.getFilterResultCount(
                     shopId = "123",
+                    productPerPage = mockProductPerPage,
                     tempShopProductFilterParameter = ShopProductFilterParameter(),
                     widgetUserAddressLocalData = addressWidgetData
             )

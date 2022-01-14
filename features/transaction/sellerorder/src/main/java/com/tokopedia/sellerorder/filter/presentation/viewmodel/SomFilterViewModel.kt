@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_COURIER
-import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_DATE
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_LABEL
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_SORT
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ORDER
@@ -26,6 +26,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
@@ -61,6 +62,63 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         isRequestCancelFilterApplied = somFilterUiModel.getIsRequestCancelApplied()
     }
 
+    @Throws(NoSuchElementException::class)
+    private fun getSomFilterDate(result: List<BaseSomFilter>): SomFilterDateUiModel {
+        return result.filterIsInstance<SomFilterDateUiModel>().first()
+    }
+
+    private fun getSomFilterUiModel(nameFilter: String): SomFilterUiModel? {
+        return somFilterUiModel.find { it.nameFilter == nameFilter }
+    }
+
+    private fun getSomFilterUiModelItems(nameFilter: String): List<SomFilterChipsUiModel> {
+        return getSomFilterUiModel(nameFilter)?.somFilterData.orEmpty()
+    }
+
+    private fun findFirstSelectedFilterUiModelItemId(nameFilter: String): Int {
+        return getSomFilterUiModelItems(nameFilter).find {
+            it.isSelected
+        }?.id.orZero()
+    }
+
+    private fun findAllSelectedFilterUiModelItemsIds(nameFilter: String): MutableSet<Int> {
+        return getSomFilterUiModelItems(nameFilter).filter {
+            it.isSelected
+        }.map {
+            it.id
+        }.toMutableSet()
+    }
+
+    private fun updateSomFilterUiModel(
+        nameFilter: String,
+        somSubFilterList: List<SomFilterChipsUiModel>
+    ) {
+        getSomFilterUiModel(nameFilter)?.somFilterData = somSubFilterList
+    }
+
+    private fun selectOrderStatusFilter(orderStatus: String) {
+        getSomFilterUiModelItems(FILTER_STATUS_ORDER).forEach { chips ->
+            if(chips.name != SomConsts.STATUS_NAME_ALL_ORDER) {
+                chips.isSelected = chips.name == orderStatus
+            } else {
+                chips.isSelected
+            }
+        }
+    }
+
+    private fun deselectCorrespondingFilterItems(nameFilter: String) {
+        getSomFilterUiModelItems(nameFilter).forEach { it.isSelected = false }
+    }
+
+    private fun updateCorrespondingFilterItemSelectedState(
+        nameFilter: String,
+        position: Int,
+        chipType: String
+    ) {
+        val selected = chipType == ChipsUnify.TYPE_SELECTED
+        getSomFilterUiModelItems(nameFilter).getOrNull(position)?.isSelected = !selected
+    }
+
     fun setIsRequestCancelFilterApplied(value: Boolean) {
         isRequestCancelFilterApplied = value
     }
@@ -84,98 +142,70 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         launchCatchError(block = {
             val result = getSomOrderFilterUseCase.execute()
             val somFilterResult = result.filterIsInstance<SomFilterUiModel>()
-            somFilterDate = result.filterIsInstance<SomFilterDateUiModel>().firstOrNull()
-                    ?: SomFilterDateUiModel(nameFilter = FILTER_DATE)
+            val somFilterDate = getSomFilterDate(result)
 
             if (date.isNotBlank()) {
-                somFilterDate?.date = date
+                somFilterDate.date = date
             }
 
-            if (somFilterUiModel.isNullOrEmpty()) {
+            if (somFilterUiModel.isEmpty()) {
                 somFilterUiModel.clear()
                 somFilterUiModel.addAll(somFilterResult)
             }
 
-            somFilterUiModel.find { it.nameFilter == FILTER_STATUS_ORDER }?.somFilterData?.map { chips ->
-                if(chips.name != SomConsts.STATUS_NAME_ALL_ORDER) {
-                    chips.isSelected = chips.name == orderStatus
-                } else {
-                    chips.isSelected
-                }
-            }
-
+            selectOrderStatusFilter(orderStatus)
             shouldSelectRequestCancelFilter()
             val somFilterVisitable = mutableListOf<BaseSomFilter>()
             somFilterVisitable.addAll(somFilterUiModel)
-            somFilterDate?.let { somFilterVisitable.add(it) }
-            somFilterVisitable.let {
-                _filterResult.postValue(Success(it))
-            }
+            somFilterVisitable.add(somFilterDate)
+            _filterResult.postValue(Success(somFilterVisitable))
+            this@SomFilterViewModel.somFilterDate = somFilterDate
         }, onError = {
             _filterResult.postValue(Fail(it))
         })
     }
 
     fun updateFilterSelected(idFilter: String, position: Int, chipType: String) {
-        launchCatchError(block = {
-            val updateChipsSelected = chipType == ChipsUnify.TYPE_SELECTED
-            somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData?.map { it.isSelected = false }
-            somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData?.getOrNull(position)?.isSelected = !updateChipsSelected
-            val chipsUiModelList = somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData
-                    ?: listOf()
+        launch {
+            deselectCorrespondingFilterItems(idFilter)
+            updateCorrespondingFilterItemSelectedState(idFilter, position, chipType)
+            val chipsUiModelList = getSomFilterUiModelItems(idFilter)
             updateIsRequestCancelFilterApplied()
             _updateFilterSelected.postValue(Success(Pair(chipsUiModelList, idFilter)))
-        }, onError = {
-            _updateFilterSelected.postValue(Fail(it))
-        })
+        }
     }
 
     fun updateFilterManySelected(idFilter: String, chipType: String, position: Int) {
-        launchCatchError(block = {
-            val updateChipsSelected = chipType == ChipsUnify.TYPE_SELECTED
-            val isSelected = somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData?.getOrNull(position)
-            somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData?.onEach { chipsFiler ->
-                if (chipsFiler == isSelected) {
-                    chipsFiler.isSelected = !updateChipsSelected
-                }
-            }
-            val chipsUiModelList = somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData
-                    ?: listOf()
+        launch {
+            updateCorrespondingFilterItemSelectedState(idFilter, position, chipType)
+            val chipsUiModelList = getSomFilterUiModelItems(idFilter)
             updateIsRequestCancelFilterApplied()
             _updateFilterSelected.postValue(Success(Pair(chipsUiModelList, idFilter)))
-        }, onError = {
-            _updateFilterSelected.postValue(Fail(it))
-        })
+        }
     }
 
     fun updateSomFilterSeeAll(idFilter: String,
                               somSubFilterList: List<SomFilterChipsUiModel>) {
-        launchCatchError(block = {
-            somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData = somSubFilterList
-            val chipsUiModelList = somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData
-                    ?: listOf()
+        launch {
+            updateSomFilterUiModel(idFilter, somSubFilterList)
+            val chipsUiModelList = getSomFilterUiModelItems(idFilter)
             updateIsRequestCancelFilterApplied()
             _updateFilterSelected.postValue(Success(Pair(chipsUiModelList, idFilter)))
-        }, onError = {
-            _updateFilterSelected.postValue(Fail(it))
-        })
+        }
     }
 
     fun updateParamSom(idFilter: String) {
-        launchCatchError(block = {
-            val idOneSelect = somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData?.find { it.isSelected }?.id
-            val idManySelect = somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData?.filter { it.isSelected }?.map { it.id }?.toMutableSet()
-                    ?: mutableSetOf()
+        launch {
+            val idOneSelect = findFirstSelectedFilterUiModelItemId(idFilter)
+            val idManySelect = findAllSelectedFilterUiModelItemsIds(idFilter)
             when (idFilter) {
                 FILTER_SORT -> {
-                    somListGetOrderListParam.sortBy = idOneSelect ?: 0
+                    somListGetOrderListParam.sortBy = idOneSelect
                 }
                 FILTER_STATUS_ORDER -> {
-                    val statusList = somFilterUiModel.find { it.nameFilter == idFilter }
-                            ?.somFilterData?.filter {
-                                it.isSelected
-                            }?.flatMap { it.idList } ?: listOf()
-                    somListGetOrderListParam.statusList = statusList
+                    somListGetOrderListParam.statusList = getSomFilterUiModelItems(idFilter).filter {
+                        it.isSelected
+                    }.flatMap { it.idList }
                 }
                 FILTER_TYPE_ORDER -> {
                     somListGetOrderListParam.orderTypeList = idManySelect
@@ -184,13 +214,11 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                     somListGetOrderListParam.shippingList = idManySelect
                 }
                 FILTER_LABEL -> {
-                    somListGetOrderListParam.isShippingPrinted = idOneSelect ?: 0
+                    somListGetOrderListParam.isShippingPrinted = idOneSelect
                 }
             }
             _somFilterOrderListParam.postValue(Success(somListGetOrderListParam))
-        }, onError = {
-            _somFilterOrderListParam.postValue(Fail(it))
-        })
+        }
     }
 
     fun resetFilterSelected() {

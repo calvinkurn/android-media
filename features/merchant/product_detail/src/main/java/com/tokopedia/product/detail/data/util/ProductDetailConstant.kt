@@ -66,6 +66,7 @@ object ProductDetailConstant {
     const val VARIANT = "variant"
     const val PDP_3 = "pdp_3"
     const val PDP_7 = "pdp_7"
+    const val PDP_9_TOKONOW = "pdp_9_tokonow"
     const val PDP_K2K = "k2k_pdp"
     const val SHOPADS_CAROUSEL = "shopads_carousel"
     const val PRODUCT_VARIANT_INFO = "variant"
@@ -81,7 +82,6 @@ object ProductDetailConstant {
     const val VALUE_PROP = "value_prop"
     const val PRODUCT_CONTENT = "product_content"
     const val MEDIA = "product_media"
-    const val BY_ME = "byme"
     const val TOP_ADS = "banner_ads"
     const val REPORT = "report"
     const val MVC = "mvc"
@@ -92,6 +92,8 @@ object ProductDetailConstant {
     const val STOCK_ASSURANCE = "stock_assurance"
     const val ONE_LINERS = "one_liners"
     const val PRODUCT_BUNDLING = "product_bundling"
+    const val CONTENT_WIDGET = "content_widget"
+    const val PLAY_CAROUSEL = "play_carousel"
 
     //Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
@@ -101,7 +103,6 @@ object ProductDetailConstant {
     const val ARG_TRACKER_ATTRIBUTION = "ARG_TRACKER_ATTRIBUTION"
     const val ARG_TRACKER_LIST_NAME = "ARG_TRACKER_LIST_NAME"
     const val ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK"
-    const val ARG_FROM_AFFILIATE = "ARG_FROM_AFFILIATE"
     const val ARG_AFFILIATE_STRING = "ARG_AFFILIATE_STRING"
     const val ARG_AFFILIATE_UNIQUE_ID = "ARG_AFFILIATE_UNIQUE_ID"
     const val ARG_DEEPLINK_URL = "ARG_DEEPLINK_URL"

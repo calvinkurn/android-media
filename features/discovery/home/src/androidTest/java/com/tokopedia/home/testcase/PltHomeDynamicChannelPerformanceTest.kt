@@ -1,6 +1,5 @@
 package com.tokopedia.home.testcase
 
-import android.content.Context
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
@@ -15,12 +14,10 @@ import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import com.tokopedia.test.application.util.setupTotalSizeInterceptor
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -38,7 +35,6 @@ class PltHomeDynamicChannelPerformanceTest {
     var activityRule = object: ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            disableCoachMark()
             setupGraphqlMockResponseWithCheck(HomeMockResponseConfig())
             setupTotalSizeInterceptor(listOf("dynamicPosition", "getDynamicChannel"))
             setupRemoteConfig()
@@ -57,14 +53,6 @@ class PltHomeDynamicChannelPerformanceTest {
         )
         remoteConfig.setString(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, "true")
         remoteConfig.setString(RemoteConfigKey.HOME_ENABLE_PAGINATION, "true")
-    }
-
-    private fun disableCoachMark(){
-        val sharedPrefs = InstrumentationRegistry
-                .getInstrumentation().context
-                .getSharedPreferences(NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
-        sharedPrefs.edit().putBoolean(
-                NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false).apply()
     }
 
     @get:Rule

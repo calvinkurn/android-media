@@ -11,11 +11,17 @@ import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleO
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
-import com.tokopedia.notifications.FragmentObserver;
 import com.tokopedia.notifications.common.CMNotificationUtils;
 import com.tokopedia.notifications.common.CMRemoteConfigUtils;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.data.AmplificationDataSource;
+import com.tokopedia.notifications.inApp.applifecycle.CmActivityLifecycleHandler;
+import com.tokopedia.notifications.inApp.applifecycle.CmFragmentLifecycleHandler;
+import com.tokopedia.notifications.inApp.applifecycle.ShowInAppCallback;
+import com.tokopedia.notifications.inApp.external.CmEventListener;
+import com.tokopedia.notifications.inApp.external.ExternalCallbackImpl;
+import com.tokopedia.notifications.inApp.external.IExternalInAppCallback;
+import com.tokopedia.notifications.inApp.external.PushIntentHandler;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataConsumer;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
@@ -24,8 +30,9 @@ import com.tokopedia.notifications.inApp.ruleEngine.rulesinterpreter.RuleInterpr
 import com.tokopedia.notifications.inApp.ruleEngine.storage.DataConsumerImpl;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 import com.tokopedia.notifications.inApp.usecase.InAppLocalDatabaseController;
-import com.tokopedia.notifications.inApp.viewEngine.CMActivityLifeCycle;
+import com.tokopedia.notifications.inApp.applifecycle.CMActivityLifeCycle;
 import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
+import com.tokopedia.notifications.inApp.viewEngine.CMInAppProcessor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
 import com.tokopedia.notifications.inApp.viewEngine.ElementType;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -40,6 +47,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import static com.tokopedia.notifications.common.InAppRemoteConfigKey.ENABLE_NEW_INAPP_LOCAL_FETCH;
+import static com.tokopedia.notifications.common.InAppRemoteConfigKey.ENABLE_NEW_INAPP_LOCAL_SAVE;
 import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL;
@@ -53,7 +61,6 @@ public class CMInAppManager implements CmInAppListener,
         DataProvider,
         CmActivityLifecycleHandler.CmActivityApplicationCallback,
         ShowInAppCallback,
-        SendPushContract, CmDialogVisibilityContract,
         CMInAppController.OnNewInAppDataStoreListener {
 
     private static final CMInAppManager inAppManager;
@@ -72,9 +79,10 @@ public class CMInAppManager implements CmInAppListener,
 
     //DialogHandlers
     private CmDialogHandler cmDialogHandler;
-    public CmDataConsumer cmDataConsumer;
     public DataConsumer dataConsumer;
     private Boolean isCmInAppManagerInitialized = false;
+    @Nullable
+    private IExternalInAppCallback externalInAppCallback;
 
     static {
         inAppManager = new CMInAppManager();
@@ -96,7 +104,6 @@ public class CMInAppManager implements CmInAppListener,
 
         this.cmInAppListener = this;
         cmRemoteConfigUtils = new CMRemoteConfigUtils(application);
-        cmDataConsumer = new CmDataConsumer(this);
 
         cmDialogHandler = new CmDialogHandler();
         pushIntentHandler = new PushIntentHandler();
@@ -106,6 +113,7 @@ public class CMInAppManager implements CmInAppListener,
                 this);
         initInAppManager();
         isCmInAppManagerInitialized = true;
+        externalInAppCallback = new ExternalCallbackImpl(this);
     }
 
     public static CmInAppListener getCmInAppListener() {
@@ -114,28 +122,25 @@ public class CMInAppManager implements CmInAppListener,
         return inAppManager.cmInAppListener;
     }
 
+    @Nullable
+    public IExternalInAppCallback getExternalInAppCallback(){
+        return externalInAppCallback;
+    }
+
     private void initInAppManager() {
         CMActivityLifeCycle lifeCycle = new CMActivityLifeCycle(activityLifecycleHandler);
         application.registerActivityLifecycleCallbacks(lifeCycle);
         CmFragmentLifecycleHandler cmFragmentLifecycleHandler = new CmFragmentLifecycleHandler(this, pushIntentHandler);
-        FragmentObserver fragmentObserver = new FragmentObserver(cmFragmentLifecycleHandler);
-        FragmentLifecycleObserver.INSTANCE.registerCallback(fragmentObserver);
+        FragmentLifecycleObserver.INSTANCE.registerCallback(cmFragmentLifecycleHandler);
     }
 
     private void showInAppNotification(String name, int entityHashCode, boolean isActivity) {
         if (excludeScreenList != null && excludeScreenList.contains(name))
             return;
-        if(cmRemoteConfigUtils == null) {
+        if (isFetchInAppNewFlowEnabled()) {
+            fetchInAppVNew(name, entityHashCode, isActivity);
+        } else {
             fetchInAppVOld(name, entityHashCode, isActivity);
-        }else {
-            boolean isNewFetchEnabled =
-                    cmRemoteConfigUtils.getBooleanRemoteConfig(ENABLE_NEW_INAPP_LOCAL_FETCH,
-                            false);
-            if(isNewFetchEnabled){
-                fetchInAppVNew(name, entityHashCode, isActivity);
-            }else {
-                fetchInAppVOld(name, entityHashCode, isActivity);
-            }
         }
     }
 
@@ -148,7 +153,7 @@ public class CMInAppManager implements CmInAppListener,
                 isActivity);
     }
 
-    private void fetchInAppVNew(String name, int entityHashCode, boolean isActivity){
+    private void fetchInAppVNew(String name, int entityHashCode, boolean isActivity) {
         InAppLocalDatabaseController.Companion.getInstance(application, RepositoryManager.getInstance())
                 .clearExpiredInApp();
         InAppLocalDatabaseController.Companion.getInstance(application, RepositoryManager.getInstance())
@@ -158,7 +163,10 @@ public class CMInAppManager implements CmInAppListener,
                 );
     }
 
-
+    private Boolean isFetchInAppNewFlowEnabled() {
+        return cmRemoteConfigUtils != null && cmRemoteConfigUtils.getBooleanRemoteConfig(ENABLE_NEW_INAPP_LOCAL_FETCH,
+                false);
+    }
 
     @Override
     public void notificationsDataResult(List<CMInApp> inAppDataList, int entityHashCode, String screenName) {
@@ -232,12 +240,17 @@ public class CMInAppManager implements CmInAppListener,
     }
 
     private void showLegacyDialog(WeakReference<Activity> currentActivity, CMInApp data) {
-        cmDialogHandler.showLegacyDialog(currentActivity, data, new CmDialogHandler.AbstractCmDialogHandlerCallback() {
+        cmDialogHandler.showLegacyDialog(currentActivity, data,  new CmDialogHandler.CmDialogHandlerCallback() {
             @Override
             public void onShow(@NotNull Activity activity) {
                 onDialogShown(activity);
                 dataConsumed(data);
                 sendAmplificationEventInAppRead(data);
+            }
+
+            @Override
+            public void onException(@NotNull Exception e, @NotNull CMInApp data) {
+                onCMInAppInflateException(data);
             }
         });
     }
@@ -255,19 +268,93 @@ public class CMInAppManager implements CmInAppListener,
         return false;
     }
 
-    private void dataConsumed(CMInApp inAppData) {
+    public void dataConsumed(CMInApp inAppData) {
         RulesManager.getInstance().dataConsumed(inAppData.id);
         sendPushEvent(inAppData, IrisAnalyticsEvents.INAPP_RECEIVED, null);
     }
 
-    public void handlePushPayload(RemoteMessage remoteMessage) {
-        new CMInAppController(application, this)
-                .processAndSaveRemoteDataCMInApp(remoteMessage);
+    public void handleCMInAppPushPayload(RemoteMessage cmInAppRemoteMessage) {
+
+        if (isSaveInAppNewFlowEnabled()) {
+            handlePushPayloadVNew(cmInAppRemoteMessage);
+        } else {
+            handlePushPayloadVOld(cmInAppRemoteMessage);
+        }
     }
 
-    public void handleAmplificationInAppData(String dataString) {
-        new CMInAppController(application,this)
-                .processAndSaveAmplificationInAppData(dataString);
+    private void handlePushPayloadVOld(RemoteMessage cmInAppRemoteMessage) {
+        if (application != null) {
+            new CMInAppController(application.getApplicationContext(), this)
+                    .processAndSaveCMInAppRemotePayload(cmInAppRemoteMessage);
+        } else {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "application_null");
+            messageMap.put("data", "");
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
+        }
+    }
+
+    private void handlePushPayloadVNew(RemoteMessage cmInAppRemoteMessage) {
+        if (application != null) {
+            new CMInAppProcessor(application.getApplicationContext(), this::onNewInAppStored)
+                    .processAndSaveCMInAppRemotePayload(cmInAppRemoteMessage);
+        } else {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "application_null");
+            messageMap.put("data", "");
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
+        }
+    }
+
+    public void handleCMInAppAmplificationData(String cmInAppAmplificationDataString) {
+
+        if (isSaveInAppNewFlowEnabled()) {
+            handleCMInAppAmplificationDataVNew(cmInAppAmplificationDataString);
+        } else {
+            handleCMInAppAmplificationDataVOld(cmInAppAmplificationDataString);
+        }
+    }
+
+    private void handleCMInAppAmplificationDataVOld(String cmInAppAmplificationDataString) {
+        if (application != null) {
+            new CMInAppController(application.getApplicationContext(), this::onNewInAppStored)
+                    .processAndSaveCMInAppAmplificationData(cmInAppAmplificationDataString);
+        } else {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "application_null");
+            messageMap.put("data", "");
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
+        }
+    }
+
+    private void handleCMInAppAmplificationDataVNew(String cmInAppAmplificationDataString) {
+        if (application != null) {
+            new CMInAppProcessor(application.getApplicationContext(), this::onNewInAppStored)
+                    .processAndSaveCMInAppAmplificationData(cmInAppAmplificationDataString);
+        } else {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "application_null");
+            messageMap.put("data", "");
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
+        }
+    }
+
+    private Boolean isSaveInAppNewFlowEnabled() {
+        return cmRemoteConfigUtils != null && cmRemoteConfigUtils.getBooleanRemoteConfig(ENABLE_NEW_INAPP_LOCAL_SAVE,
+                false);
+    }
+
+    private void onNewInAppStored() {
+        if (isCmInAppManagerInitialized) {
+            Activity currentActivity = activityLifecycleHandler.getCurrentActivity();
+            if (currentActivity != null && !pushIntentHandler.isHandledByPush() && canShowDialog()) {
+                showInAppForScreen(currentActivity.getClass().getName(), currentActivity.hashCode(), true);
+            }
+        }
     }
 
     @Override
@@ -281,6 +368,10 @@ public class CMInAppManager implements CmInAppListener,
     @Override
     public void onCMinAppInteraction(CMInApp cmInApp) {
         RulesManager.getInstance().interactedWithView(cmInApp.id);
+    }
+
+    public void onCMinAppInteraction(Long cmInAppID) {
+        RulesManager.getInstance().interactedWithView(cmInAppID);
     }
 
     @Override
@@ -307,7 +398,6 @@ public class CMInAppManager implements CmInAppListener,
         }
     }
 
-    @Override
     public void sendPushEvent(CMInApp cmInApp, String eventName, String elementId) {
         if (cmInApp == null) return;
 
@@ -352,17 +442,14 @@ public class CMInAppManager implements CmInAppListener,
         return activityLifecycleHandler;
     }
 
-    @Override
     public void onDialogShown(@NotNull Activity activity) {
         dialogIsShownMap.put(activity, true);
     }
 
-    @Override
     public void onDialogDismiss(@NotNull Activity activity) {
         dialogIsShownMap.remove(activity);
     }
 
-    @Override
     public boolean isDialogVisible(@NotNull Activity activity) {
         return dialogIsShownMap.containsKey(activity) && dialogIsShownMap.get(activity);
     }
@@ -387,7 +474,7 @@ public class CMInAppManager implements CmInAppListener,
     }
 
     private Boolean getAmplificationRemoteConfig() {
-        if(cmRemoteConfigUtils == null)
+        if (cmRemoteConfigUtils == null)
             return false;
         return cmRemoteConfigUtils.getBooleanRemoteConfig(RemoteConfigKey.ENABLE_AMPLIFICATION,
                 false);
@@ -396,13 +483,14 @@ public class CMInAppManager implements CmInAppListener,
     @Override
     public void onFirstScreenOpen(@NonNull WeakReference<Activity> activity) {
         try {
-            if(activity.get() != null) {
+            if (activity.get() != null) {
                 IrisAnalyticsEvents.INSTANCE.sendFirstScreenEvent(application);
                 if (RulesManager.getInstance() != null)
                     RulesManager.getInstance().updateVisibleStateForAlreadyShown();
                 getAmplificationPushData(activity.get().getApplication());
             }
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
     }
 }
 

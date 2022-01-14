@@ -17,14 +17,17 @@ import com.tokopedia.track.interfaces.Analytics
 
 object TokoNowCommonAnalytics {
 
-    fun onOpenScreen(isLoggedInStatus : Boolean, screenName: String, userId: String) {
-        hitCommonHomeScreenTracker(
+    fun onOpenScreen(isLoggedInStatus : Boolean, screenName: String, additionalMap: MutableMap<String, String>? = null) {
+        val map = mutableMapOf(
+            Pair(TrackAppUtils.EVENT, EVENT_OPEN_SCREEN),
+            Pair(KEY_IS_LOGGED_IN_STATUS, isLoggedInStatus.toString()),
+        )
+        additionalMap?.apply {
+            map.putAll(this)
+        }
+        hitCommonScreenTracker(
             screenName,
-            mutableMapOf(
-                Pair(TrackAppUtils.EVENT, EVENT_OPEN_SCREEN),
-                Pair(KEY_IS_LOGGED_IN_STATUS, isLoggedInStatus.toString()),
-                Pair(KEY_USER_ID, userId)
-            )
+            map,
         )
     }
 
@@ -35,7 +38,7 @@ object TokoNowCommonAnalytics {
             category = category
         )
         dataLayer[KEY_USER_ID] = userId
-        hitCommonHomeTracker(
+        hitCommonTracker(
             dataLayer
         )
     }
@@ -47,12 +50,20 @@ object TokoNowCommonAnalytics {
             category = category
         )
         dataLayer[KEY_USER_ID] = userId
-        hitCommonHomeTracker(
+        hitCommonTracker(
             dataLayer
         )
     }
 
-    private fun getDataLayer(event: String, action: String, category: String, label: String = ""): MutableMap<String, Any> {
+    fun getTracker(): Analytics {
+        return TrackApp.getInstance().gtm
+    }
+
+    fun hitCommonTracker(dataLayer: MutableMap<String, Any>) {
+        getTracker().sendGeneralEvent(dataLayer.getCommonGeneralTracker())
+    }
+
+    fun getDataLayer(event: String, action: String, category: String, label: String = ""): MutableMap<String, Any> {
         return DataLayer.mapOf(
             TrackAppUtils.EVENT, event,
             TrackAppUtils.EVENT_ACTION, action,
@@ -61,16 +72,8 @@ object TokoNowCommonAnalytics {
         )
     }
 
-    private fun hitCommonHomeTracker(dataLayer: MutableMap<String, Any>) {
-        getTracker().sendGeneralEvent(dataLayer.getCommonGeneralTracker())
-    }
-
-    private fun hitCommonHomeScreenTracker(screenName: String, dataLayer: MutableMap<String, String>) {
+    private fun hitCommonScreenTracker(screenName: String, dataLayer: MutableMap<String, String>) {
         getTracker().sendScreenAuthenticated(screenName, dataLayer.getCommonScreenTracker())
-    }
-
-    private fun getTracker(): Analytics {
-        return TrackApp.getInstance().gtm
     }
 
     private fun MutableMap<String, Any>.getCommonGeneralTracker(): MutableMap<String, Any> {

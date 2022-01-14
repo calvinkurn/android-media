@@ -9,6 +9,7 @@ data class CartItemModel(
         var shopId: String = "",
         var shopName: String = "",
         var productId: Long = 0,
+        var productCatId: Long = 0,
         var name: String = "",
         var price: Double = 0.0,
         var originalPrice: Double = 0.0,

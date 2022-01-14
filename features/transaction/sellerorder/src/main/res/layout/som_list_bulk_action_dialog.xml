@@ -35,7 +35,7 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:gravity="center"
         app:typographyType="body_2"
-        tools:text="@string/som_list_bulk_accept_dialog_description_success" />
+        tools:text="@string/som_list_bulk_accept_dialog_description_success_accept_all_orders" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnSomListBulkActionDialogPrimaryButton"

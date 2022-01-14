@@ -7,7 +7,8 @@
             android:name=".presentation.activity.EmoneyPdpActivity"
             android:screenOrientation="portrait"
             android:label="@string/recharge_pdp_emoney_toolbar_title"
-            android:theme="@style/Theme.WhiteUnify">
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter android:autoVerify="true">
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -21,5 +22,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

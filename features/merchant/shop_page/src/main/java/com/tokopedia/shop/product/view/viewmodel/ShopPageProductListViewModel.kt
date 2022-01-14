@@ -265,24 +265,26 @@ class ShopPageProductListViewModel @Inject constructor(
             widgetUserAddressLocalData: LocalCacheModel,
             rating: String = "",
             pmax: Int = 0,
-            pmin: Int = 0
+            pmin: Int = 0,
+            fcategory: Int? = null
     ): GetShopProductUiModel {
         useCase.params = GqlGetShopProductUseCase.createParams(shopId, ShopProductFilterInput(
-                page,
-                perPage,
-                keyword,
-                etalaseId,
-                sortId,
-                rating,
-                pmax,
-                pmin,
-                widgetUserAddressLocalData.district_id,
-                widgetUserAddressLocalData.city_id,
-                widgetUserAddressLocalData.lat,
-                widgetUserAddressLocalData.long
+                page = page,
+                perPage = perPage,
+                searchKeyword = keyword,
+                etalaseMenu = etalaseId,
+                sort = sortId,
+                rating = rating,
+                pmax = pmax,
+                pmin = pmin,
+                fcategory = fcategory,
+                userDistrictId = widgetUserAddressLocalData.district_id,
+                userCityId = widgetUserAddressLocalData.city_id,
+                userLat = widgetUserAddressLocalData.lat,
+                userLong = widgetUserAddressLocalData.long
         ))
         val productListResponse = useCase.executeOnBackground()
-        val isHasNextPage = isHasNextPage(page, ShopPageConstant.DEFAULT_PER_PAGE, productListResponse.totalData)
+        val isHasNextPage = isHasNextPage(page, perPage, productListResponse.totalData)
         val totalProductData = productListResponse.totalData
         return GetShopProductUiModel(
                 isHasNextPage,
@@ -305,6 +307,7 @@ class ShopPageProductListViewModel @Inject constructor(
     fun getProductListData(
             shopId: String,
             page: Int,
+            productPerPage: Int,
             selectedEtalaseId: String,
             shopProductFilterParameter: ShopProductFilterParameter,
             widgetUserAddressLocalData: LocalCacheModel
@@ -315,14 +318,15 @@ class ShopPageProductListViewModel @Inject constructor(
                         getShopProductUseCase,
                         shopId,
                         page,
-                        ShopPageConstant.DEFAULT_PER_PAGE,
+                        productPerPage,
                         selectedEtalaseId,
                         "",
                         shopProductFilterParameter.getSortId().toIntOrZero(),
                         widgetUserAddressLocalData,
                         shopProductFilterParameter.getRating(),
                         shopProductFilterParameter.getPmax(),
-                        shopProductFilterParameter.getPmin()
+                        shopProductFilterParameter.getPmin(),
+                        shopProductFilterParameter.getCategory()
                 )
             }
             productListData.postValue(Success(listShopProduct))
@@ -402,13 +406,14 @@ class ShopPageProductListViewModel @Inject constructor(
 
     fun setInitialProductList(
             shopId: String,
+            productPerPage: Int,
             initialProductListData: ShopProduct.GetShopProduct
     ) {
         productListData.postValue(Success(
                 GetShopProductUiModel(
                         ShopUtil.isHasNextPage(
                                 START_PAGE,
-                                ShopPageConstant.DEFAULT_PER_PAGE,
+                                productPerPage,
                                 initialProductListData.totalData
                         ),
                         initialProductListData.data.map {
@@ -419,10 +424,10 @@ class ShopPageProductListViewModel @Inject constructor(
         ))
     }
 
-    fun getBottomSheetFilterData() {
+    fun getBottomSheetFilterData(shopId: String = "") {
         launchCatchError(coroutineContext, block = {
             val filterBottomSheetData = withContext(dispatcherProvider.io) {
-                getShopFilterBottomSheetDataUseCase.params = GetShopFilterBottomSheetDataUseCase.createParams()
+                getShopFilterBottomSheetDataUseCase.params = GetShopFilterBottomSheetDataUseCase.createParams(shopId)
                 getShopFilterBottomSheetDataUseCase.executeOnBackground()
             }
             filterBottomSheetData.data.let {
@@ -438,12 +443,13 @@ class ShopPageProductListViewModel @Inject constructor(
 
     fun getFilterResultCount(
             shopId: String,
+            productPerPage: Int,
             tempShopProductFilterParameter: ShopProductFilterParameter,
             widgetUserAddressLocalData: LocalCacheModel
     ) {
         launchCatchError(block = {
             val filterResultProductCount = withContext(dispatcherProvider.io) {
-                getFilterResultCountData(shopId, tempShopProductFilterParameter, widgetUserAddressLocalData)
+                getFilterResultCountData(shopId, productPerPage, tempShopProductFilterParameter, widgetUserAddressLocalData)
             }
             shopProductFilterCountLiveData.postValue(Success(filterResultProductCount))
         }) {}
@@ -451,18 +457,20 @@ class ShopPageProductListViewModel @Inject constructor(
 
     private suspend fun getFilterResultCountData(
             shopId: String,
+            productPerPage: Int,
             tempShopProductFilterParameter: ShopProductFilterParameter,
             widgetUserAddressLocalData: LocalCacheModel
     ): Int {
         val filter = ShopProductFilterInput(
                 START_PAGE,
-                ShopPageConstant.DEFAULT_PER_PAGE,
+                productPerPage,
                 "",
                 "",
                 tempShopProductFilterParameter.getSortId().toIntOrZero(),
                 tempShopProductFilterParameter.getRating(),
                 tempShopProductFilterParameter.getPmax(),
                 tempShopProductFilterParameter.getPmin(),
+                tempShopProductFilterParameter.getCategory(),
                 widgetUserAddressLocalData.district_id,
                 widgetUserAddressLocalData.city_id,
                 widgetUserAddressLocalData.lat,

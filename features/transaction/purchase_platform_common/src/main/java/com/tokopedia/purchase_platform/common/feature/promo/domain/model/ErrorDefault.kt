@@ -7,8 +7,7 @@ import com.google.gson.annotations.SerializedName
  */
 data class ErrorDefault(
         @SerializedName("title")
-        val title: String? = null,
-
+        val title: String = "",
         @SerializedName("description")
-        val description: String? = null
+        val description: String = ""
 )

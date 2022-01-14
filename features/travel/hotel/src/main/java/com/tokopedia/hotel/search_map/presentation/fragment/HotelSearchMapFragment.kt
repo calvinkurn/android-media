@@ -432,7 +432,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 setTextColor(
                     ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                        R.color.hotel_dms_max_radius_font_color
                     )
                 )
                 text = getString(R.string.hotel_search_map_max_radius_info)
@@ -607,11 +607,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 )
             }
         }
-    }
-
-    override fun onDestroyView() {
-        googleMap.clear()
-        super.onDestroyView()
     }
 
     override fun onSubmitFilter(selectedFilter: MutableList<ParamFilterV2>) {

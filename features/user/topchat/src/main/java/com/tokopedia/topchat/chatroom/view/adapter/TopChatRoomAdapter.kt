@@ -86,6 +86,22 @@ class TopChatRoomAdapter constructor(
         notifyItemChanged(chatBubblePosition, Payload.REBIND)
     }
 
+    fun deleteMsg(replyTimeNano: String) {
+        val chatBubblePosition = visitables.indexOfFirst {
+            it is BaseChatUiModel && it.replyTime == replyTimeNano
+        }
+        if (chatBubblePosition == RecyclerView.NO_POSITION) return
+        val msg = visitables[chatBubblePosition] as? BaseChatUiModel ?: return
+        val deletedBubbleUiModel = MessageUiModel.Builder()
+            .withBaseChatUiModel(msg)
+            .withSafelySendableUiModel(msg)
+            .withMarkAsDeleted()
+            .build()
+        visitables.removeAt(chatBubblePosition)
+        visitables.add(chatBubblePosition, deletedBubbleUiModel)
+        notifyItemChanged(chatBubblePosition)
+    }
+
     override fun getItemViewType(position: Int): Int {
         val default = super.getItemViewType(position)
         return adapterTypeFactory.getItemViewType(visitables, position, default)
@@ -164,6 +180,11 @@ class TopChatRoomAdapter constructor(
         handler.post {
             super.showLoading()
         }
+    }
+
+    override fun addElement(position: Int, element: Visitable<*>?) {
+        visitables.add(position, element)
+        notifyItemInserted(position)
     }
 
     private fun postChangeToFallbackUiModel(lastKnownPosition: Int, element: ReviewUiModel) {
@@ -398,6 +419,16 @@ class TopChatRoomAdapter constructor(
         return null
     }
 
+    fun removeViewHolder(element: Visitable<*>, position: Int) {
+        val itemPair = getUpToDateUiModelPosition(
+            position, element
+        )
+        val latestPosition = itemPair.first
+        if (latestPosition != RecyclerView.NO_POSITION) {
+            visitables.removeAt(latestPosition)
+            notifyItemRemoved(latestPosition)
+        }
+    }
 
     fun updateReviewState(
         review: ReviewUiModel,
@@ -541,6 +572,27 @@ class TopChatRoomAdapter constructor(
         val srwModelPosition = getUpToDateSrwUiModelPosition(srwModel) ?: return
         srwModel.isExpanded = true
         notifyItemChanged(srwModelPosition, SrwBubbleViewHolder.Signal.EXPANDED)
+    }
+
+    fun findSrwTickerPosition(regexMessage: String): Int {
+        for (idx in visitables.indices) {
+            if (isNextMsgProduct(idx) && isRegexMatch(idx, regexMessage)) {
+                return idx
+            }
+        }
+        return RecyclerView.NO_POSITION
+    }
+
+    private fun isRegexMatch(idx: Int, regexMessage: String): Boolean {
+        val currentItem = visitables.getOrNull(idx)
+        if (currentItem == null || currentItem !is MessageUiModel) return false
+        val rgx = regexMessage.toRegex(setOf(RegexOption.IGNORE_CASE))
+        return rgx.containsMatchIn(currentItem.message)
+    }
+
+    private fun isNextMsgProduct(idx: Int): Boolean {
+        return visitables.getOrNull(idx + 1) is ProductAttachmentUiModel ||
+                visitables.getOrNull(idx + 1) is ProductCarouselUiModel
     }
 
     private fun getUpToDateSrwUiModelPosition(

@@ -118,6 +118,7 @@ dari Feed.</string>
 
     <!--Share -->
     <string name="feed_share_weblink">https://www.tokopedia.com/content/%s</string>
+    <string name="feed_vod_share_weblink">https://www.tokopedia.com/play/channel/%s</string>
     <string name="feed_share_pdp">https://www.tokopedia.com/product_detail/%s</string>
     <string name="feed_share_asgc_weblink">https://www.tokopedia.com/feedcommunicationdetail/%s</string>
     <string name="feed_background_image">Feed background image</string>
@@ -132,5 +133,6 @@ dari Feed.</string>
     <!--Floating Action Button-->
     <string name="feed_fab_create_post">Buat Post</string>
     <string name="feed_fab_create_live">Buat Live</string>
+    <string name="feed_detail_page_header">Semua Barang Terbaru</string>
 
 </resources>

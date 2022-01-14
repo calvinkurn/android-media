@@ -5,12 +5,12 @@ import android.animation.LayoutTransition.CHANGING
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
@@ -81,7 +81,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
 import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
 import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
 import com.tokopedia.sellerorder.databinding.FragmentSomListBinding
-import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterAdapter
 import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterCancelWrapper
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
@@ -730,9 +729,9 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 binding?.rvSomList?.itemAnimator = fadeRightAnimator
                 selectedOrderId = order.orderId
                 orderRequestCancelBottomSheet = orderRequestCancelBottomSheet?.apply {
-                    setupBuyerRequestCancelBottomSheet(this, it, order)
+                    setupBuyerRequestCancelBottomSheet(this, order)
                 } ?: SomOrderRequestCancelBottomSheet(it.context).apply {
-                    setupBuyerRequestCancelBottomSheet(this, it, order)
+                    setupBuyerRequestCancelBottomSheet(this, order)
                 }
                 orderRequestCancelBottomSheet?.init(it)
                 orderRequestCancelBottomSheet?.show()
@@ -757,9 +756,9 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         view?.let {
             if (it is ViewGroup) {
                 somOrderEditAwbBottomSheet = somOrderEditAwbBottomSheet?.apply {
-                    setupSomOrderEditAwbBottomSheet(this, it, orderId)
+                    setupSomOrderEditAwbBottomSheet(this, orderId)
                 } ?: SomOrderEditAwbBottomSheet(it.context).apply {
-                    setupSomOrderEditAwbBottomSheet(this, it, orderId)
+                    setupSomOrderEditAwbBottomSheet(this, orderId)
                 }
                 somOrderEditAwbBottomSheet?.init(it)
                 somOrderEditAwbBottomSheet?.show()
@@ -802,7 +801,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         when (keyAction) {
             KEY_PRINT_AWB -> {
                 context?.let { context ->
-                    SomListBulkPrintDialog(context)?.run {
+                    SomListBulkPrintDialog(context).run {
                         setTitle(
                             getString(
                                 R.string.som_list_bulk_print_dialog_title,
@@ -860,7 +859,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     private fun setupBuyerRequestCancelBottomSheet(
         somOrderRequestCancelBottomSheet: SomOrderRequestCancelBottomSheet,
-        view: ViewGroup,
         order: SomListOrderUiModel
     ) {
         somOrderRequestCancelBottomSheet.apply {
@@ -903,7 +901,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     private fun setupSomOrderEditAwbBottomSheet(
         somOrderEditAwbBottomSheet: SomOrderEditAwbBottomSheet,
-        it: ViewGroup,
         orderId: String
     ) {
         somOrderEditAwbBottomSheet.apply {
@@ -973,7 +970,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         activity?.window?.decorView?.setBackgroundColor(
             ContextCompat.getColor(
                 requireContext(),
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
         )
         showWaitingPaymentOrderListMenuShimmer()
@@ -1000,13 +997,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun observeLoadingStatus() {
-        viewModel.isLoadingOrder.observe(viewLifecycleOwner, Observer { isLoading ->
+        viewModel.isLoadingOrder.observe(viewLifecycleOwner, { isLoading ->
             if (!isLoading) hideLoading()
         })
     }
 
     private fun observeTopAdsCategory() {
-        viewModel.topAdsCategoryResult.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.topAdsCategoryResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
                     if (adapter.data.filterIsInstance<SomListEmptyStateUiModel>().isNotEmpty()) {
@@ -1020,7 +1017,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun observeTickers() {
-        viewModel.tickerResult.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.tickerResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> renderTickers(result.data)
                 is Fail -> {
@@ -1051,7 +1048,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun observeWaitingPaymentCounter() {
-        viewModel.waitingPaymentCounterResult.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.waitingPaymentCounterResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Fail -> {
                     showToasterError(view)
@@ -1062,7 +1059,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun observeOrderList() {
-        viewModel.orderListResult.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.orderListResult.observe(viewLifecycleOwner, { result ->
             somListLoadTimeMonitoring?.startRenderPerformanceMonitoring()
             binding?.rvSomList?.addOneTimeGlobalLayoutListener {
                 stopLoadTimeMonitoring()
@@ -1076,7 +1073,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun observeRefreshOrder() {
-        viewModel.refreshOrderResult.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.refreshOrderResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> onRefreshOrderSuccess(result.data)
                 is Fail -> onRefreshOrderFailed()
@@ -1085,7 +1082,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun observeAcceptOrder() {
-        viewModel.acceptOrderResult.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.acceptOrderResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> onAcceptOrderSuccess(result.data.acceptOrder, false)
                 is Fail -> showToasterError(
@@ -1098,7 +1095,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun observeRejectOrder() {
-        viewModel.rejectOrderResult.observe(viewLifecycleOwner, Observer {
+        viewModel.rejectOrderResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     val rejectOrderResponse = it.data.rejectOrder
@@ -1120,7 +1117,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun observeEditAwb() {
-        viewModel.editRefNumResult.observe(viewLifecycleOwner, Observer {
+        viewModel.editRefNumResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     val successEditAwbResponse = it.data
@@ -1154,7 +1151,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun observeRejectCancelRequest() {
-        viewModel.rejectCancelOrderResult.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.rejectCancelOrderResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
                     onActionCompleted(false, selectedOrderId)
@@ -1172,13 +1169,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun observeBulkAcceptOrder() {
-        viewModel.bulkAcceptOrderResult.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.bulkAcceptOrderResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
                     if (somListBulkProcessOrderBottomSheet?.isShowing() == true) {
                         somListBulkProcessOrderBottomSheet?.dismiss()
                     }
-                    showBulkAcceptOrderDialog(getSelectedOrderIds().size)
+                    showBulkAcceptOrderDialog(result.data.data.totalOrder)
                 }
                 is Fail -> {
                     if (somListBulkProcessOrderBottomSheet?.isShowing() == true) {
@@ -1194,43 +1191,54 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     private fun observeBulkAcceptOrderStatus() {
         /*
-            there is 4 possibility in this process
-            1. All order confirmed as accepted because we receive a response which saying that m order
-               is accepted from n total order where m == n
-            2. Some order is confirmed as accepted and the rest might already accepted or not because
-               after getting response which saying that m order from n total order is accepted where
-               m < n but after receiving that response, the next 19 times check status is always
-               failed (no internet or backend problem)
-            3. Some order is accepted and some order is not yet accepted because we receive a response
-               after check status for 20 times and the response is saying that m order is accepted from n
-               total order where m < n
-            4. No order is processed because 20th response is saying that 0 success and 0 failed
-            5. Unknown state because check status always failed
+            let n be the number of order the user select
+            let s be the number of accepted order
+            let f be the number of failed to accept order
+            there is 4 possibility in this process:
+            1. s == n which mean that all selected order is accepted (show success accept all order)
+            2. f == n which mean that all selected order cannot be accepted (show failed accept all order)
+            3. s < n && f == 0 which mean that some order is accepted but some orders have unknown state
+               (maybe because the server is busy) (show partial success and can retry recheck remaining order status)
+            4. s < n && f > 0 && s + f < n which mean that some order is accepted and some order cannot
+               be accepted and there's some orders that have unknown state (maybe because the server is busy)
+               (show partial success and error, can retry to recheck remaining order status)
+            5. s < n && f > 0 && s + f == n which mean that some order is accepted and some order
+               cannot be accepted (show partial success and error, cannot retry recheck remaining order status)
+            6. s == 0 && f > 0 && s + f < n which mean that some order cannot be accepted and there's
+               some order that have unknown state (maybe because the server is busy)
+               (show partial error, can retry to recheck remaining order status)
+            7. s == 0 && f == 0 which mean that all order still have unknown state (maybe because the server is busy)
+               (show in progress state, can retry to recheck remaining order status)
          */
-        viewModel.bulkAcceptOrderStatusResult.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.bulkAcceptOrderStatusResult.observe(viewLifecycleOwner, { result ->
             when (result) {
-                null -> {
-                    showFailedAcceptAllOrderDialog(getSelectedOrderIds().size, true) // fifth case
-                }
                 is Success -> {
                     val orderCount = result.data.data.totalOrder
                     val successCount = result.data.data.success
-                    val failedCount = orderCount - successCount
-                    bulkAcceptOrderDialog?.apply {
-                        if (successCount > 0) {
-                            if (failedCount == 0) {
-                                showSuccessAcceptAllOrderDialog(successCount) // first case
-                            } else {
-                                showPartialSuccessAcceptAllOrderDialog(
-                                    successCount,
-                                    failedCount,
-                                    result.data.data.shouldRecheck
-                                ) // second case
-                            }
-                        } else if (failedCount > 0) {
-                            showFailedAcceptAllOrderDialog(orderCount, false) // third case
-                        } else {
-                            showFailedAcceptAllOrderDialog(orderCount, true) // fourth case
+                    val failedCount = result.data.data.fail
+                    val processed = successCount + failedCount
+                    val unprocessed = orderCount - processed
+                    when {
+                        successCount == orderCount -> { // case 1
+                            newShowSuccessAcceptAllOrderDialog(successCount)
+                        }
+                        failedCount == orderCount -> {
+                            newShowFailedAcceptAllOrderDialog(failedCount, orderCount)
+                        }
+                        successCount > Int.ZERO && failedCount == Int.ZERO && processed < orderCount -> {
+                            newShowPartialSuccessAcceptOrderDialog(successCount, unprocessed)
+                        }
+                        successCount > Int.ZERO && failedCount > Int.ZERO && processed < orderCount -> {
+                            newShowPartialMixedAcceptOrderDialog(successCount, failedCount, unprocessed, orderCount)
+                        }
+                        successCount > Int.ZERO && failedCount > Int.ZERO && processed == orderCount -> {
+                            newShowSuccessMixedAcceptOrderDialog(successCount, failedCount, orderCount)
+                        }
+                        successCount == Int.ZERO && failedCount > Int.ZERO && processed < orderCount -> {
+                            newShowPartialFailedAcceptOrderDialog(failedCount, unprocessed, orderCount)
+                        }
+                        successCount == Int.ZERO && failedCount == Int.ZERO -> {
+                            newShowUnprocessedAcceptOrderDialog(orderCount)
                         }
                     }
                     SomAnalytics.eventBulkAcceptOrder(
@@ -1241,8 +1249,120 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                         userSession.shopId
                     )
                 }
+                is Fail -> {
+                    newShowFailedAcceptAllOrderDialog(getSelectedOrderIds().size, getSelectedOrderIds().size)
+                }
             }
         })
+    }
+
+    private fun showOnProgressAcceptAllOrderDialog(orderCount: Int) {
+        bulkAcceptOrderDialog?.run {
+            hidePrimaryButton()
+            hideSecondaryButton()
+            setTitle(getString(R.string.som_list_bulk_accept_dialog_title_on_progress, orderCount))
+            setDescription(getString(R.string.som_list_bulk_accept_dialog_description_on_progress))
+            showOnProgress()
+        }
+    }
+
+    private fun newShowSuccessAcceptAllOrderDialog(successCount: Int) {
+        bulkAcceptOrderDialog?.run {
+            setTitle(getString(R.string.som_list_bulk_accept_dialog_title_success, successCount))
+            setDescription(getString(R.string.som_list_bulk_accept_dialog_description_success_accept_all_orders))
+            showSuccess()
+            setPrimaryButton(getString(R.string.som_list_bulk_accept_dialog_primary_button_success_accept_all_orders)) {
+                dismissAndRunAction()
+            }
+            hideSecondaryButton()
+        }
+    }
+
+    private fun newShowFailedAcceptAllOrderDialog(failedCount: Int, orderCount: Int) {
+        bulkAcceptOrderDialog?.run {
+            setTitle(getString(R.string.som_list_bulk_accept_dialog_title_failed, failedCount))
+            setDescription(getString(R.string.som_list_bulk_accept_dialog_description_failed))
+            showFailed()
+            setPrimaryButton(getString(R.string.som_list_bulk_accept_dialog_primary_button_failed)) {
+                showOnProgressAcceptAllOrderDialog(orderCount)
+                viewModel.bulkAcceptOrder(getSelectedOrderIds())
+            }
+            setSecondaryButton(getString(R.string.som_list_bulk_accept_dialog_secondary_button_failed)) { dismiss() }
+        }
+    }
+
+    private fun newShowPartialSuccessAcceptOrderDialog(successCount: Int, unprocessedCount: Int) {
+        bulkAcceptOrderDialog?.run {
+            setTitle(getString(R.string.som_list_bulk_accept_dialog_title_partial_success, successCount))
+            setDescription(getString(R.string.som_list_bulk_accept_dialog_description_partial_success, unprocessedCount))
+            showSuccess()
+            setPrimaryButton(getString(R.string.som_list_bulk_accept_dialog_primary_button_partial_success)) {
+                showOnProgressAcceptAllOrderDialog(unprocessedCount)
+                viewModel.retryGetBulkAcceptOrderStatus()
+            }
+            setSecondaryButton(getString(R.string.som_list_bulk_accept_dialog_secondary_button_partial_success)) { dismiss() }
+        }
+    }
+
+    private fun newShowPartialMixedAcceptOrderDialog(
+        successCount: Int,
+        failedCount: Int,
+        unprocessed: Int,
+        orderCount: Int
+    ) {
+        bulkAcceptOrderDialog?.run {
+            setTitle(getString(R.string.som_list_bulk_accept_dialog_title_partial_mixed, successCount))
+            setDescription(getString(R.string.som_list_bulk_accept_dialog_description_partial_mixed, failedCount, unprocessed))
+            showSuccess()
+            setPrimaryButton(getString(R.string.som_list_bulk_accept_dialog_primary_button_partial_mixed)) {
+                showOnProgressAcceptAllOrderDialog(orderCount)
+                viewModel.bulkAcceptOrder(getSelectedOrderIds())
+            }
+            setSecondaryButton(getString(R.string.som_list_bulk_accept_dialog_secondary_button_partial_mixed)) { dismiss() }
+        }
+    }
+
+    private fun newShowSuccessMixedAcceptOrderDialog(
+        successCount: Int,
+        failedCount: Int,
+        orderCount: Int
+    ) {
+        bulkAcceptOrderDialog?.run {
+            setTitle(getString(R.string.som_list_bulk_accept_dialog_title_success_mixed, successCount))
+            setDescription(getString(R.string.som_list_bulk_accept_dialog_description_success_mixed, failedCount))
+            showSuccess()
+            setPrimaryButton(getString(R.string.som_list_bulk_accept_dialog_primary_button_success_mixed)) {
+                showOnProgressAcceptAllOrderDialog(orderCount)
+                viewModel.bulkAcceptOrder(getSelectedOrderIds())
+            }
+            setSecondaryButton(getString(R.string.som_list_bulk_accept_dialog_secondary_button_success_mixed)) { dismiss() }
+        }
+    }
+
+    private fun newShowPartialFailedAcceptOrderDialog(failedCount: Int, unprocessed: Int, orderCount: Int) {
+        bulkAcceptOrderDialog?.run {
+            setTitle(getString(R.string.som_list_bulk_accept_dialog_title_partial_failed, failedCount))
+            setDescription(getString(R.string.som_list_bulk_accept_dialog_description_partial_failed, failedCount, unprocessed))
+            showFailed()
+            setPrimaryButton(getString(R.string.som_list_bulk_accept_dialog_primary_button_partial_failed)) {
+                showOnProgressAcceptAllOrderDialog(orderCount)
+                viewModel.retryGetBulkAcceptOrderStatus()
+            }
+            setSecondaryButton(getString(R.string.som_list_bulk_accept_dialog_secondary_button_partial_failed)) { dismiss() }
+        }
+    }
+
+    private fun newShowUnprocessedAcceptOrderDialog(orderCount: Int) {
+        bulkAcceptOrderDialog?.run {
+            setTitle(getString(R.string.som_list_bulk_accept_dialog_title_unprocessed))
+            setDescription(getString(R.string.som_list_bulk_accept_dialog_description_unprocessed, orderCount))
+            showFailed()
+            setPrimaryButton(getString(R.string.som_list_bulk_accept_dialog_primary_button_unprocessed)) {
+                showOnProgressAcceptAllOrderDialog(orderCount)
+                viewModel.retryGetBulkAcceptOrderStatus()
+            }
+            setSecondaryButton(getString(R.string.som_list_bulk_accept_dialog_secondary_button_unprocessed)) { dismiss() }
+        }
     }
 
     private fun observeBulkRequestPickupFinalResult() {
@@ -1302,7 +1422,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
     }
 
-    private fun showPartialSuccessRequestPickup(totalSuccess: Long, orderIdsFail: List<String>) {
+    private fun showPartialSuccessRequestPickup(totalSuccess: Int, orderIdsFail: List<String>) {
         bulkRequestPickupDialog?.run {
             setTitle(
                 getString(
@@ -1334,8 +1454,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun showPartialSuccessNotEligibleRequestPickup(
-        totalSuccess: Long,
-        totalNotEligible: Long
+        totalSuccess: Int,
+        totalNotEligible: Int
     ) {
         bulkRequestPickupDialog?.run {
             setTitle(
@@ -1359,8 +1479,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun showPartialSuccessNotEligibleFailRequestPickup(
-        totalSuccess: Long,
-        totalNotEligible: Long,
+        totalSuccess: Int,
+        totalNotEligible: Int,
         orderIdsFail: List<String>
     ) {
         bulkRequestPickupDialog?.run {
@@ -1395,7 +1515,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun showNotEligibleAndFailRequestPickup(
-        totalNotEligible: Long,
+        totalNotEligible: Int,
         orderIdsFail: List<String>
     ) {
         bulkRequestPickupDialog?.run {
@@ -1497,7 +1617,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
     }
 
-    private fun showAllSuccessBulkRequestPickupDialog(orderCount: Long) {
+    private fun showAllSuccessBulkRequestPickupDialog(orderCount: Int) {
         bulkRequestPickupDialog?.run {
             setPrimaryButton(getString(R.string.understand)) {
                 dismissAndRunAction()
@@ -1539,7 +1659,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
 
     private fun observeValidateOrder() {
-        viewModel.validateOrderResult.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.validateOrderResult.observe(viewLifecycleOwner, { result ->
             getSwipeRefreshLayout(view)?.isRefreshing = viewModel.isRefreshingOrder()
             when (result) {
                 is Success -> onSuccessValidateOrder(result.data)
@@ -1549,7 +1669,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun observeIsAdminEligible() {
-        viewModel.isOrderManageEligible.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.isOrderManageEligible.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
                     result.data.let { (isSomListEligible, isMultiAcceptEligible) ->
@@ -1571,7 +1691,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun observeRefreshOrderRequest() {
-        viewModel.refreshOrderRequest.observe(viewLifecycleOwner, Observer { request ->
+        viewModel.refreshOrderRequest.observe(viewLifecycleOwner, { request ->
             onReceiveRefreshOrderRequest(request.first, request.second)
         })
     }
@@ -1608,81 +1728,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         return refreshOrder && (realtimeDataChangeCount >= 1 || (realtimeDataChangeCount == 0 && viewModel.isOrderStatusIdsChanged(
             ids
         )))
-    }
-
-    private fun showOnProgressAcceptAllOrderDialog(orderCount: Int) {
-        bulkAcceptOrderDialog?.run {
-            hidePrimaryButton()
-            hideSecondaryButton()
-            setTitle(getString(R.string.som_list_bulk_accept_dialog_title_on_progress, orderCount))
-            setDescription(getString(R.string.som_list_bulk_accept_dialog_description_on_progress))
-            showOnProgress()
-        }
-    }
-
-    private fun showSuccessAcceptAllOrderDialog(successCount: Int) {
-        bulkAcceptOrderDialog?.run {
-            setTitle(getString(R.string.som_list_bulk_accept_dialog_title_success, successCount))
-            setDescription(getString(R.string.som_list_bulk_accept_dialog_description_success))
-            showSuccess()
-            setPrimaryButton(getString(R.string.som_list_bulk_accept_dialog_primary_button_success)) {
-                dismissAndRunAction()
-            }
-            hideSecondaryButton()
-        }
-    }
-
-    private fun showPartialSuccessAcceptAllOrderDialog(
-        successCount: Int,
-        failedCount: Int,
-        canRetry: Boolean
-    ) {
-        bulkAcceptOrderDialog?.run {
-            setTitle(getString(R.string.som_list_bulk_accept_dialog_title_success, successCount))
-            if (canRetry) {
-                setDescription(
-                    getString(
-                        R.string.som_list_bulk_accept_dialog_description_partial_success_can_retry,
-                        failedCount
-                    )
-                )
-                showSuccess()
-                setPrimaryButton(getString(R.string.som_list_bulk_accept_dialog_primary_button_partial_success_can_retry)) {
-                    showOnProgressAcceptAllOrderDialog(successCount + failedCount)
-                    viewModel.retryGetBulkAcceptOrderStatus()
-                }
-                setSecondaryButton(getString(R.string.som_list_bulk_accept_dialog_secondary_button_partial_success_can_retry)) { dismiss() }
-            } else {
-                setDescription(
-                    getString(
-                        R.string.som_list_bulk_accept_dialog_description_partial_success_can_retry,
-                        failedCount
-                    )
-                )
-                showSuccess()
-                setPrimaryButton(getString(R.string.som_list_bulk_accept_dialog_primary_button_partial_success_cant_retry)) {
-                    dismissAndRunAction()
-                }
-                setSecondaryButton("")
-            }
-        }
-    }
-
-    private fun showFailedAcceptAllOrderDialog(orderCount: Int, shouldRetryCheck: Boolean) {
-        bulkAcceptOrderDialog?.run {
-            setTitle(getString(R.string.som_list_bulk_accept_dialog_title_failed, orderCount))
-            setDescription(getString(R.string.som_list_bulk_accept_dialog_description_failed))
-            showFailed()
-            setPrimaryButton(getString(R.string.som_list_bulk_accept_dialog_primary_button_failed)) {
-                showOnProgressAcceptAllOrderDialog(orderCount)
-                if (shouldRetryCheck) {
-                    viewModel.retryGetBulkAcceptOrderStatus()
-                } else {
-                    viewModel.bulkAcceptOrder(getSelectedOrderIds())
-                }
-            }
-            setSecondaryButton(getString(R.string.som_list_bulk_accept_dialog_secondary_button_failed)) { dismiss() }
-        }
     }
 
     private fun getSelectedOrderStatusCodes(): List<Int> {
@@ -1798,7 +1843,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     private fun setupListeners() {
         binding?.run {
             tickerSomList.setDescriptionClickEvent(this@SomListFragment)
-            searchBarSomList.searchBarTextField?.apply {
+            searchBarSomList.searchBarTextField.apply {
                 addTextChangedListener(this@SomListFragment)
                 setOnEditorActionListener { _, _, _ ->
                     hideKeyboard()
@@ -1855,7 +1900,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 val verticalPadding =
                     resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
                         .toInt()
-                if (searchBarContainer?.paddingBottom != verticalPadding || searchBarContainer?.paddingTop != verticalPadding) {
+                if (searchBarContainer?.paddingBottom != verticalPadding || searchBarContainer.paddingTop != verticalPadding) {
                     binding?.bulkActionCheckBoxContainer?.layoutTransition?.disableTransitionType(CHANGING)
                     searchBarContainer?.setPadding(
                         horizontalPadding,
@@ -2301,20 +2346,20 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     message,
                     Toaster.LENGTH_INDEFINITE,
                     Toaster.TYPE_ERROR,
-                    buttonMessage,
-                    View.OnClickListener {
-                        refreshFailedRequests()
-                    })
+                    buttonMessage
+                ) {
+                    refreshFailedRequests()
+                }
             } else {
                 errorToaster = Toaster.build(
                     it,
                     message,
                     Toaster.LENGTH_INDEFINITE,
                     Toaster.TYPE_ERROR,
-                    getString(R.string.som_list_button_ok),
-                    View.OnClickListener {
-                        errorToaster?.dismiss()
-                    })
+                    getString(R.string.som_list_button_ok)
+                ) {
+                    errorToaster?.dismiss()
+                }
             }
         }
         if (errorToaster?.isShown == false) {
@@ -2806,7 +2851,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun animateOrderTicker(isEnter: Boolean) {
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             val shouldAnimateTicker =
                 (isEnter && tickerIsReady && (binding?.tickerSomList?.visibility == View.INVISIBLE || binding?.tickerSomList?.visibility == View.GONE)) || !isEnter
             if (adapter.data.isNotEmpty() && shouldAnimateTicker) {
@@ -2974,9 +3019,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             (this as? AppCompatActivity)?.run {
                 supportActionBar?.hide()
                 binding?.somListToolbar?.run {
-                    setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
                     inflateMenu(R.menu.menu_som_list)
-                    title = getString(R.string.title_som_list)
+                    title = getString(getSomListResTitle())
                     isShowBackButton = showBackButton()
                     setOnMenuItemClickListener(this@SomListFragment)
                     setNavigationOnClickListener {
@@ -2986,6 +3030,14 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 updateToolbarMenu()
                 tryReshowCoachMark()
             }
+        }
+    }
+
+    private fun getSomListResTitle(): Int {
+        return if (GlobalConfig.isSellerApp()) {
+            R.string.title_som_list_sa
+        } else {
+            R.string.title_som_list
         }
     }
 
@@ -3036,7 +3088,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     protected open fun shouldShowBulkAcceptOrderCoachMark() =
         binding?.scrollViewErrorState?.isVisible == false &&
                 shouldShowCoachMark && binding?.rvSomList != null && coachMarkIndexToShow == bulkProcessCoachMarkItemPosition &&
-                binding?.tvSomListBulk?.isVisible == true && tabActive == SomConsts.STATUS_NEW_ORDER
+                binding?.tvSomListBulk?.isVisible == true && tabActive == STATUS_NEW_ORDER
 
     protected open fun onSuccessGetFilter(
         result: Success<SomListFilterUiModel>,

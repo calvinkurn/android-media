@@ -5,58 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/search_pdp_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:visibility="visible"
-        android:gravity="center"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:id="@+id/layout_search"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/pdp_bg_search"
-            android:layout_toStartOf="@+id/btn_wishlist"
-            android:layout_toLeftOf="@+id/btn_wishlist"
-            android:orientation="horizontal"
-            android:padding="4dp">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:contentDescription="@null"
-                android:layout_marginStart="2dp"
-                android:layout_marginLeft="2dp"
-                app:srcCompat="@drawable/ic_product_detail_search_bar" />
-
-            <TextView
-                android:id="@+id/et_search"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="4dp"
-                android:layout_marginLeft="4dp"
-                android:background="@null"
-                android:ellipsize="end"
-                android:enabled="true"
-                android:focusable="false"
-                android:gravity="center_vertical"
-                android:hint="@string/pdp_search_hint"
-                android:inputType="none"
-                android:lines="1"
-                android:maxLines="1"
-                android:textColorHint="@color/Unify_N200"
-                android:textSize="@dimen/sp_12" />
-        </LinearLayout>
-
-    </androidx.appcompat.widget.Toolbar>
-
     <com.tokopedia.searchbar.navigation_component.NavToolbar
         android:id="@+id/pdp_navtoolbar"
         android:layout_width="match_parent"
@@ -71,13 +19,6 @@
         app:toolbarContentType="typeSearchbar"
         app:toolbarInitialTheme="light" />
 
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/toolbar_barrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="pdp_navtoolbar, search_pdp_toolbar"
-        app:barrierDirection="bottom"/>
-
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipeRefreshPdp"
         android:layout_width="match_parent"
@@ -87,7 +28,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:focusableInTouchMode="true"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_barrier">
+        app:layout_constraintTop_toBottomOf="@+id/pdp_navtoolbar">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_pdp"
@@ -125,89 +66,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:sticky_left_icon="@drawable/ic_toped_widget_login" />
-
-        <RelativeLayout
-            android:id="@+id/base_btn_affiliate_dynamic"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="@drawable/card_shadow_top"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
-            android:paddingTop="16dp"
-            android:paddingRight="16dp"
-            android:paddingBottom="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sticky_login_pdp"
-            android:visibility="gone">
-
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/getCommissionPdp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/affiliate_get_commission"
-                android:visibility="gone"
-                tools:visibility="visible"
-                app:fontSize="small"
-                app:textViewTheme="lightSecondary"/>
-
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/commissionPdp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/getCommissionPdp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                android:layout_toStartOf="@+id/btn_affiliate"
-                android:layout_toLeftOf="@+id/btn_affiliate"
-                android:textColor="@color/Unify_B500"
-                android:textStyle="bold"
-                android:visibility="gone"
-                tools:visibility="visible"
-                app:fontSize="small"
-                tools:text="Rp500.000.000.000" />
-
-            <RelativeLayout
-                android:id="@+id/btn_affiliate_pdp"
-                android:layout_width="@dimen/dp_145"
-                android:layout_height="40dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/bg_button_green"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                tools:ignore="UnusedAttribute">
-
-                <com.tokopedia.design.component.TextViewCompat
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:fontFamily="sans-serif-medium"
-                    android:gravity="center_horizontal"
-                    android:text="@string/button_affiliate"
-                    app:fontSize="small"
-                    app:textViewTheme="darkPrimary" />
-
-            </RelativeLayout>
-
-            <FrameLayout
-                android:id="@+id/loadingAffiliateDynamic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                tools:visibility="gone"
-                android:background="@color/Unify_N0">
-
-                <ProgressBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center" />
-            </FrameLayout>
-        </RelativeLayout>
 
         <include
             android:id="@+id/partial_layout_button_action"

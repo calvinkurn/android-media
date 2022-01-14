@@ -22,6 +22,7 @@ class RepurchaseEmptyStateNoHistoryViewHolder (
 
     override fun bind(element: RepurchaseEmptyStateNoHistoryUiModel) {
         binding?.apply {
+            listener?.onImpressEmptyStateNoHistory()
             tpTitle.text = getString(element.title)
             tpDesc.text = getString(element.description)
             btnOpenTokopedianow.setOnClickListener {
@@ -32,5 +33,6 @@ class RepurchaseEmptyStateNoHistoryViewHolder (
 
     interface RepurchaseEmptyStateNoHistoryListener {
         fun onClickEmptyStateNoHistoryBtn()
+        fun onImpressEmptyStateNoHistory()
     }
 }

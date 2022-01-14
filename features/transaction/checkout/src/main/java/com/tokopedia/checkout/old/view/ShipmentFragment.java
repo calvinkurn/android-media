@@ -95,7 +95,6 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.network.exception.ResponseErrorException;
 import com.tokopedia.network.utils.ErrorHandler;
-import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
@@ -110,13 +109,13 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 import com.tokopedia.purchase_platform.common.constant.LoggerConstant;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel;
@@ -855,28 +854,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCheckoutCartErrorReporter(CheckoutData checkoutData) {
-        DialogUnify createTicketDialog = new DialogUnify(getActivityContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
-        createTicketDialog.setTitle(checkoutData.getErrorReporter().getTexts().getSubmitTitle());
-        createTicketDialog.setDescription(checkoutData.getErrorReporter().getTexts().getSubmitDescription());
-        createTicketDialog.setSecondaryCTAText(checkoutData.getErrorReporter().getTexts().getCancelButton());
-        createTicketDialog.setSecondaryCTAClickListener(() -> {
-            checkoutAnalyticsCourierSelection.eventClickCloseOnHelpPopUpInCheckout();
-            createTicketDialog.dismiss();
-            return Unit.INSTANCE;
-        });
-        createTicketDialog.setPrimaryCTAText(checkoutData.getErrorReporter().getTexts().getSubmitButton());
-        createTicketDialog.setPrimaryCTAClickListener(() -> {
-            checkoutAnalyticsCourierSelection.eventClickReportOnHelpPopUpInCheckout();
-            createTicketDialog.dismiss();
-            shipmentPresenter.processSubmitHelpTicket(checkoutData);
-            return Unit.INSTANCE;
-        });
-        createTicketDialog.show();
-        checkoutAnalyticsCourierSelection.eventViewHelpPopUpAfterErrorInCheckout();
-    }
-
-    @Override
     public void renderCheckoutPriceUpdated(PriceValidationData priceValidationData) {
         if (getActivity() != null) {
             com.tokopedia.checkout.old.domain.model.checkout.MessageData messageData =
@@ -906,19 +883,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
             checkoutAnalyticsCourierSelection.eventViewPopupPriceIncrease(eventLabelBuilder.toString());
         }
-    }
-
-    @Override
-    public void renderSubmitHelpTicketSuccess(SubmitTicketResult submitTicketResult) {
-        DialogUnify successTicketDialog = new DialogUnify(getActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
-        successTicketDialog.setTitle(submitTicketResult.getTexts().getSubmitTitle());
-        successTicketDialog.setDescription(submitTicketResult.getTexts().getSubmitDescription());
-        successTicketDialog.setPrimaryCTAText(submitTicketResult.getTexts().getSuccessButton());
-        successTicketDialog.setPrimaryCTAClickListener(() -> {
-            getActivity().finish();
-            return Unit.INSTANCE;
-        });
-        successTicketDialog.show();
     }
 
     @Override
@@ -1311,7 +1275,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
                 if (trackingDetailsItemUiModels.size() > 0) {
                     for (TrackingDetailsItemUiModel trackingDetailsItemUiModel : trackingDetailsItemUiModels) {
-                        if (trackingDetailsItemUiModel.getProductId() != null && trackingDetailsItemUiModel.getProductId() == cartItemModel.getProductId() &&
+                        if (trackingDetailsItemUiModel.getProductId() == cartItemModel.getProductId() &&
                                 cartItemModel.getAnalyticsProductCheckoutData() != null) {
                             cartItemModel.getAnalyticsProductCheckoutData().setPromoCode(trackingDetailsItemUiModel.getPromoCodesTracking());
                             cartItemModel.getAnalyticsProductCheckoutData().setPromoDetails(trackingDetailsItemUiModel.getPromoDetailsTracking());

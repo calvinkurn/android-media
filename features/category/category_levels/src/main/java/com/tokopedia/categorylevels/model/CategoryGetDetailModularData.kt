@@ -88,6 +88,8 @@ data class CategoryGetDetailModularData(
             var targetId: Int,
             @SerializedName("sticky")
             var sticky: Boolean,
+            @SerializedName("properties")
+            var properties: Properties,
             @SerializedName("data")
             var `data`: List<Data>
         ) {
@@ -102,11 +104,24 @@ data class CategoryGetDetailModularData(
                 @SerializedName("thumbnailImage")
                 var thumbnailImage: String? = null,
                 @SerializedName("isAdult")
-                var isAdult: Int,
+                var isAdult: Int = 0,
                 @SerializedName("applinks")
                 var applinks: String? = null,
                 @SerializedName("text")
-                var text: String? = null
+                var text: String? = null,
+                @SerializedName("categoryName")
+                var categoryName: String? = null,
+                @SerializedName("targetComponentId")
+                var targetComponentId: String? = null,
+            )
+            @Keep
+            data class Properties(
+                @SerializedName("background")
+                val background: String? = null,
+                @SerializedName("dynamic")
+                var dynamic: Boolean = false,
+                @SerializedName("categoryDetail")
+                val categoryDetail: Boolean = false,
             )
         }
     }

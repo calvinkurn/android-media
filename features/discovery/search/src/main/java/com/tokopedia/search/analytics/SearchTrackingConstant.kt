@@ -15,4 +15,5 @@ object SearchTrackingConstant {
     const val RELATED_KEYWORD = "relatedKeyword"
     const val PAGE_SOURCE = "pageSource"
     const val SEARCHFILTER = "searchFilter"
+    const val ANDROID_ID = "androidId"
 }

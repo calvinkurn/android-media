@@ -134,6 +134,7 @@ class ShopHomeViewModelTest {
     private val mockShopId = "1234"
     private val mockCampaignId = "123"
     private val mockPage = 2
+    private val mockProductPerPage = 10
     private val shopProductFilterParameter = ShopProductFilterParameter().apply {
         setSortId("6")
         setMapData(
@@ -234,7 +235,7 @@ class ShopHomeViewModelTest {
                 data = listOf(ShopProduct(), ShopProduct())
         )
 
-        viewModel.getNewProductList(mockShopId, mockPage, shopProductFilterParameter, addressWidgetData)
+        viewModel.getNewProductList(mockShopId, mockPage, mockProductPerPage, shopProductFilterParameter, addressWidgetData)
 
         coVerify {
             getShopProductUseCase.executeOnBackground()
@@ -248,7 +249,7 @@ class ShopHomeViewModelTest {
     fun `check whether response get lazy load product failed is null`() {
         coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
 
-        viewModel.getNewProductList(mockShopId, mockPage, shopProductFilterParameter, addressWidgetData)
+        viewModel.getNewProductList(mockShopId, mockPage, mockProductPerPage, shopProductFilterParameter, addressWidgetData)
 
         coVerify {
             getShopProductUseCase.executeOnBackground()
@@ -547,6 +548,24 @@ class ShopHomeViewModelTest {
     }
 
     @Test
+    fun `check whether campaignFlashSaleRemindMeStatusData post Success value`() {
+        val mockCampaignId ="12345"
+        coEvery { getCampaignNotifyMeUseCase.get().executeOnBackground() } returns GetCampaignNotifyMeModel()
+        viewModel.getCampaignFlashSaleRemindMeStatus(mockCampaignId)
+        coVerify { getCampaignNotifyMeUseCase.get().executeOnBackground() }
+        assert(viewModel.campaignFlashSaleStatusData.value is Success)
+    }
+
+    @Test
+    fun `check whether campaignFlashSaleRemindMeStatusData value is null when error`() {
+        val mockCampaignId ="12345"
+        coEvery { getCampaignNotifyMeUseCase.get().executeOnBackground() } throws Throwable()
+        viewModel.getCampaignFlashSaleRemindMeStatus(mockCampaignId)
+        coVerify { getCampaignNotifyMeUseCase.get().executeOnBackground() }
+        assert(viewModel.campaignFlashSaleStatusData.value == null)
+    }
+
+    @Test
     fun `check whether checkCampaignNplRemindMeStatusData post Success value`() {
         val mockAction = "action"
         coEvery { checkCampaignNotifyMeUseCase.get().executeOnBackground() } returns CheckCampaignNotifyMeModel()
@@ -562,6 +581,24 @@ class ShopHomeViewModelTest {
         viewModel.clickRemindMe(mockCampaignId, mockAction)
         coVerify { checkCampaignNotifyMeUseCase.get().executeOnBackground() }
         assert(viewModel.checkCampaignNplRemindMeStatusData.value is Fail)
+    }
+
+    @Test
+    fun `check whether checkCampaignFlashSaleRemindMeStatusData post Success value`() {
+        val mockAction = "action"
+        coEvery { checkCampaignNotifyMeUseCase.get().executeOnBackground() } returns CheckCampaignNotifyMeModel()
+        viewModel.clickFlashSaleReminder(mockCampaignId, mockAction)
+        coVerify { checkCampaignNotifyMeUseCase.get().executeOnBackground() }
+        assert(viewModel.checkCampaignFlashSaleRemindMeStatusData.value is Success)
+    }
+
+    @Test
+    fun `check whether checkCampaignFlashSaleRemindMeStatusData post Fail value`() {
+        val mockAction = "action"
+        coEvery { checkCampaignNotifyMeUseCase.get().executeOnBackground() } throws Throwable()
+        viewModel.clickFlashSaleReminder(mockCampaignId, mockAction)
+        coVerify { checkCampaignNotifyMeUseCase.get().executeOnBackground() }
+        assert(viewModel.checkCampaignFlashSaleRemindMeStatusData.value is Fail)
     }
 
     @Test
@@ -588,7 +625,7 @@ class ShopHomeViewModelTest {
     fun `check whether shopProductFilterCountLiveData post Success value`() {
         val mockTotalProduct = 10
         coEvery { getShopFilterProductCountUseCase.executeOnBackground() } returns mockTotalProduct
-        viewModel.getFilterResultCount(mockShopId, ShopProductFilterParameter(), addressWidgetData)
+        viewModel.getFilterResultCount(mockShopId, mockProductPerPage, ShopProductFilterParameter(), addressWidgetData)
         coVerify { getShopFilterProductCountUseCase.executeOnBackground() }
         val shopProductFilterCountValue = viewModel.shopProductFilterCountLiveData.value
         assert(shopProductFilterCountValue is Success)
@@ -598,7 +635,7 @@ class ShopHomeViewModelTest {
     @Test
     fun `check whether shopProductFilterCountLiveData value is null if exception is thrown`() {
         coEvery { getShopFilterProductCountUseCase.executeOnBackground() } throws Exception()
-        viewModel.getFilterResultCount(mockShopId, ShopProductFilterParameter(), addressWidgetData)
+        viewModel.getFilterResultCount(mockShopId, mockProductPerPage, ShopProductFilterParameter(), addressWidgetData)
         coVerify { getShopFilterProductCountUseCase.executeOnBackground() }
         val shopProductFilterCountValue = viewModel.shopProductFilterCountLiveData.value
         assert(shopProductFilterCountValue == null)
@@ -709,6 +746,7 @@ class ShopHomeViewModelTest {
         )
         viewModel.getProductGridListWidgetData(
                 mockShopId,
+                mockProductPerPage,
                 shopProductFilterParameter,
                 null,
                 addressWidgetData
@@ -730,6 +768,7 @@ class ShopHomeViewModelTest {
         )
         viewModel.getProductGridListWidgetData(
                 mockShopId,
+                mockProductPerPage,
                 shopProductFilterParameter,
                 null,
                 addressWidgetData
@@ -749,7 +788,7 @@ class ShopHomeViewModelTest {
                     name = mockSortName
                 }
         )
-        viewModel.getProductGridListWidgetData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
+        viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
         assert(viewModel.getSortNameById(mockSortId) == mockSortName)
     }
 
@@ -758,7 +797,7 @@ class ShopHomeViewModelTest {
         val mockSortId = "123"
         coEvery { gqlGetShopSortUseCase.executeOnBackground() } returns listOf()
         coEvery { shopProductSortMapper.convertSort(any()) } throws Exception()
-        viewModel.getProductGridListWidgetData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
+        viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
         assert(viewModel.getSortNameById(mockSortId).isEmpty())
     }
 
@@ -771,7 +810,7 @@ class ShopHomeViewModelTest {
         coEvery { shopProductSortMapper.convertSort(any()) } returns mutableListOf(
                 ShopProductSortModel()
         )
-        viewModel.getProductGridListWidgetData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
+        viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
     }
 
     @Test
@@ -786,7 +825,7 @@ class ShopHomeViewModelTest {
                     name = mockSortName
                 }
         )
-        viewModel.getProductGridListWidgetData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
+        viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
         assert(viewModel.getSortNameById("").isEmpty())
     }
 
@@ -952,6 +991,7 @@ class ShopHomeViewModelTest {
                                 PlayWidgetVideoUiModel("", false, "", ""),
                                 PlayWidgetChannelType.Upcoming,
                                 false,
+                                "",
                                 ""
                         )
                 )
@@ -1039,6 +1079,7 @@ class ShopHomeViewModelTest {
                     PlayWidgetShareUiModel("", false),
                     "",
                     false,
+                    "",
                     ""
                 )
             )
@@ -1106,6 +1147,7 @@ class ShopHomeViewModelTest {
                                 PlayWidgetShareUiModel("", false),
                                 "",
                                 false,
+                                "",
                                 ""
                         )
                 )

@@ -24,6 +24,7 @@ object ProductDetailErrorHelper {
     private const val CODE_PRODUCT_ERR_NOT_FOUND_GENERAL = "400"
     private const val CODE_ERR_GENERAL = "1"
     private const val DEEPLINK_PREFIX = "tokopedia://marketplace/product-detail/"
+    private const val LOG_DEEPLINK_DELAY_MILIS = 5L
     const val CODE_PRODUCT_ERR_BANNED = "2998"
     const val CODE_PRODUCT_ERR_DELETED = "3000"
     const val CODE_PRODUCT_ERR_KELONTONG = "3005"
@@ -97,7 +98,7 @@ object ProductDetailErrorHelper {
 
             Handler().postDelayed({
                 links.remove(weblink)
-            }, TimeUnit.MINUTES.toMillis(5))
+            }, TimeUnit.MINUTES.toMillis(LOG_DEEPLINK_DELAY_MILIS))
         }
     }
 

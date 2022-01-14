@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.usecase
 
-import com.tokopedia.affiliate.model.AffiliateValidateUserData
+import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.model.raw.GQL_Affiliate_Validate
 import com.tokopedia.affiliate.repository.AffiliateRepository
 import javax.inject.Inject
