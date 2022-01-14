@@ -285,4 +285,21 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
         assertEquals(viewModel.msgDeleted.value, null)
         assertEquals(viewModel.newMsg.value, null)
     }
+
+    @Test
+    fun should_remove_srw_bubble_state_when_receive_invoice_attachment() {
+        // Given
+        val responseText = WebsocketResponses.generateReplyInvoice(
+            isOpposite = false
+        )
+        onConnectWebsocket {
+            it.onMessage(websocket, responseText)
+        }
+
+        // When
+        viewModel.connectWebSocket()
+
+        // Then
+        assertEquals(viewModel.removeSrwBubble.value, null)
+    }
 }
