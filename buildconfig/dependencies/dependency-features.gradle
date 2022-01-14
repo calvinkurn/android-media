@@ -72,7 +72,6 @@ ext {
             deals                           : ":features:entertainment:deals",
             digitalDeals                    : ":features:entertainment:digital_deals",
             event                           : ":features:entertainment:event",
-            instantDebitBca                 : ":features:digital:instant_debit_bca",
 
             umrah                           : ":features:salam:umrah",
 
@@ -236,6 +235,7 @@ ext {
             snapshot                        : ":features:ordermanagement:snapshot",
             ordermanagementhistory          : ":features:ordermanagement:orderhistory",
             buyerorderdetail                : ":features:ordermanagement:buyer_order_detail",
+            buyercancellationorder          : ":features:ordermanagement:buyercancellationorder",
 
             pushNotificationCommon          : ":features:communication:push-notification-common",
 

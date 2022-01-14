@@ -49,6 +49,7 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.util.ArrayList
 
 internal class ShopListFragment:
         TkpdBaseV4Fragment(),
@@ -355,7 +356,7 @@ internal class ShopListFragment:
         })
     }
 
-    private fun trackEventShopItemImpression(trackingObjectList: List<Any>) {
+    private fun trackEventShopItemImpression(trackingObjectList: ArrayList<Any>) {
         val keyword = searchShopViewModel?.getSearchParameterQuery()
         SearchTracking.trackImpressionSearchResultShop(trackingObjectList, keyword)
     }
@@ -366,7 +367,7 @@ internal class ShopListFragment:
         })
     }
 
-    private fun trackEventProductPreviewImpression(trackingObjectList: List<Any>) {
+    private fun trackEventProductPreviewImpression(trackingObjectList: ArrayList<Any>) {
         val keyword = searchShopViewModel?.getSearchParameterQuery()
         SearchTracking.eventImpressionSearchResultShopProductPreview(trackingObjectList, keyword)
     }
@@ -416,7 +417,7 @@ internal class ShopListFragment:
         })
     }
 
-    private fun trackEventImpressionShopRecommendation(trackingObjectList: List<Any>) {
+    private fun trackEventImpressionShopRecommendation(trackingObjectList: ArrayList<Any>) {
         val keyword = searchShopViewModel?.getSearchParameterQuery()
         SearchTracking.trackEventImpressionShopRecommendation(trackingObjectList, keyword)
     }
@@ -427,7 +428,7 @@ internal class ShopListFragment:
         })
     }
 
-    private fun trackEventImpressionShopRecommendationProductPreview(trackingObjectList: List<Any>) {
+    private fun trackEventImpressionShopRecommendationProductPreview(trackingObjectList: ArrayList<Any>) {
         val keyword = searchShopViewModel?.getSearchParameterQuery()
         SearchTracking.trackEventImpressionShopRecommendationProductPreview(trackingObjectList, keyword)
     }
@@ -586,7 +587,7 @@ internal class ShopListFragment:
     }
 
     override fun onEmptyButtonClicked() {
-        SearchTracking.eventUserClickNewSearchOnEmptySearch(context, screenName)
+        SearchTracking.eventUserClickNewSearchOnEmptySearch(screenName)
         searchViewModel?.showAutoCompleteView()
     }
 
