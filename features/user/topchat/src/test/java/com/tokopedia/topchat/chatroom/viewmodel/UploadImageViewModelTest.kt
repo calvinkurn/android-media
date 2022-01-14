@@ -8,6 +8,7 @@ import io.mockk.invoke
 import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.lang.IllegalStateException
 
 class UploadImageViewModelTest: BaseTopChatViewModelTest() {
 
@@ -40,4 +41,21 @@ class UploadImageViewModelTest: BaseTopChatViewModelTest() {
         }
     }
 
+    @Test
+    fun should_update_snackbar_value_if_error_uploadpedia_through_ws() {
+        // Given
+        val error = IllegalStateException()
+        disableUploadByService()
+        every { uploadImageUseCase.upload(imageUpload, any(), captureLambda()) } answers {
+            val onError = lambda<(Throwable, ImageUploadUiModel) -> Unit>()
+            onError.invoke(error, imageUpload)
+        }
+
+        // When
+        viewModel.startUploadImages(imageUpload)
+
+        // Then
+        assertEquals(viewModel.errorSnackbar.value, error)
+        assertEquals(viewModel.failUploadImage.value, imageUpload)
+    }
 }
