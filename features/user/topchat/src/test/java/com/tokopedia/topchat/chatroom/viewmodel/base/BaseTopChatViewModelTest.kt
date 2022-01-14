@@ -199,6 +199,13 @@ abstract class BaseTopChatViewModelTest {
         }
     }
 
+    protected fun verifySendStopTyping() {
+        val payload = payloadGenerator.generateWsPayloadStopTyping(viewModel.roomMetaData.msgId)
+        verify {
+            chatWebSocket.sendPayload(payload)
+        }
+    }
+
     protected fun generateChatPojoFromWsResponse(response: String): ChatSocketPojo {
         val wsResponse = webSocketParser.parseResponse(response)
         return topChatRoomWebSocketMessageMapper.parseResponse(wsResponse)
