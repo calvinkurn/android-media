@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.*
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.otaliastudios.cameraview.CameraListener
@@ -30,7 +29,9 @@ import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlin.math.abs
 
-open class CameraFragment : BaseDaggerFragment(), GestureDetector.OnGestureListener {
+open class CameraFragment : BaseDaggerFragment()
+    , GestureDetector.OnGestureListener
+    , ViewTreeObserver.OnScrollChangedListener {
 
     private val param = PickerUiConfig.getFileLoaderParam()
 
@@ -39,8 +40,6 @@ open class CameraFragment : BaseDaggerFragment(), GestureDetector.OnGestureListe
 
     private var flashList = arrayListOf<Flash>()
     private var flashIndex = 0
-
-    private var isPhotoMode = true
 
     val gestureDetector by lazy {
         GestureDetector(requireContext(), this)
@@ -133,6 +132,9 @@ open class CameraFragment : BaseDaggerFragment(), GestureDetector.OnGestureListe
         super.onDestroyView()
         exceptionHandler {
             cameraView?.destroy()
+            if (param.isIncludeVideo) {
+                binding?.lstCameraMode?.viewTreeObserver?.removeOnScrollChangedListener(this)
+            }
         }
     }
 
@@ -141,9 +143,22 @@ open class CameraFragment : BaseDaggerFragment(), GestureDetector.OnGestureListe
         outState.putInt(CACHE_FLASH_INDEX, flashIndex)
     }
 
+    override fun onScrollChanged() {
+        val activePosition = (binding?.lstCameraMode?.layoutManager as LinearLayoutManager)
+            .findLastCompletelyVisibleItemPosition()
+
+        if (activePosition == -1) return
+
+        if (activePosition == 0) {
+            photoModeUi()
+        } else if (activePosition == 1) {
+            videoModeUi()
+        }
+    }
+
     private fun initView() {
         setupCameraView()
-        horizontalPicker()
+        setupCameraModeUiState()
 
         binding?.btnFlip?.setOnClickListener(::switchCameraClicked)
         binding?.btnFlash?.setOnClickListener(::cameraFlashClicked)
@@ -156,35 +171,30 @@ open class CameraFragment : BaseDaggerFragment(), GestureDetector.OnGestureListe
         }
     }
 
-    private fun horizontalPicker() {
-        if (!param.isIncludeVideo) return
-
-        binding?.lstCameraMode?.show()
-
-        binding?.lstCameraMode?.viewTreeObserver?.addOnScrollChangedListener {
-            val activePosition = (binding?.lstCameraMode?.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
-            if (activePosition == -1) return@addOnScrollChangedListener
-
-            Toast.makeText(requireContext(), "your position is: $activePosition", Toast.LENGTH_SHORT).show()
+    private fun setupCameraModeUiState() {
+        when {
+            param.isIncludeVideo -> horizontalPicker()
+            param.isOnlyVideo -> videoModeUi()
+            else -> photoModeUi()
         }
+    }
+
+    private fun horizontalPicker() {
+        binding?.lstCameraMode?.show()
+        binding?.lstCameraMode?.viewTreeObserver?.addOnScrollChangedListener(this)
 
         binding?.lstCameraMode?.also { recyclerView ->
             // Camera mode element
             val camerasMode = listOf("PHOTO", "VIDEO")
 
             // Setting the padding such that the items will appear in the middle of the screen
-            val padding = (getScreenWidth() / 2 - 40f.dpToPx()).toInt()
+            val halfSizeOfItemWidth = 40f
+            val padding = (getScreenWidth() / 2 - halfSizeOfItemWidth.dpToPx()).toInt()
+
             recyclerView.setPadding(padding, 0, padding, 0)
 
             // Layout manager
-            recyclerView.layoutManager = SliderLayoutManager(
-                requireContext(),
-                object : SliderLayoutManager.Listener {
-                    override fun onItemSelected(index: Int) {
-                        isPhotoMode = camerasMode[index] == "PHOTO"
-                    }
-                }
-            )
+            recyclerView.layoutManager = SliderLayoutManager(requireContext())
 
             recyclerView.adapter = CameraSliderAdapter(
                 camerasMode,
@@ -208,6 +218,14 @@ open class CameraFragment : BaseDaggerFragment(), GestureDetector.OnGestureListe
             addCameraListener(initCameraViewListener())
             mapGesture(Gesture.TAP, GestureAction.AUTO_FOCUS)
         }
+    }
+
+    private fun photoModeUi() {
+        binding?.btnTakeCamera?.setBackgroundResource(R.drawable.bg_picker_camera_take_photo)
+    }
+
+    private fun videoModeUi() {
+        binding?.btnTakeCamera?.setBackgroundResource(R.drawable.bg_picker_camera_take_video)
     }
 
     private fun initCameraViewListener() = object : CameraListener() {

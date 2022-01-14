@@ -7,10 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.abs
 import kotlin.math.sqrt
 
-class SliderLayoutManager constructor(
-    context: Context?,
-    var callback: Listener? = null
-) : LinearLayoutManager(context) {
+class SliderLayoutManager(context: Context?) : LinearLayoutManager(context) {
 
     private lateinit var recyclerView: RecyclerView
 
@@ -23,41 +20,6 @@ class SliderLayoutManager constructor(
         recyclerView = view
 
         LinearSnapHelper().attachToRecyclerView(recyclerView)
-    }
-
-    override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State) {
-        super.onLayoutChildren(recycler, state)
-        scaleDownView()
-    }
-
-    override fun scrollHorizontallyBy(dx: Int, recycler: RecyclerView.Recycler?, state: RecyclerView.State?): Int {
-        if (orientation == HORIZONTAL) {
-            val scrolled = super.scrollHorizontallyBy(dx, recycler, state)
-            scaleDownView()
-            return scrolled
-        } else {
-            return 0
-        }
-    }
-
-    private fun scaleDownView() {
-        val mid = width / 2.0f
-
-        for (i in 0 until childCount) {
-
-            // Calculating the distance of the child from the center
-            val child = getChildAt(i)?: return
-
-            val childMid = (getDecoratedLeft(child) + getDecoratedRight(child)) / 2.0f
-            val distanceFromCenter = abs(mid - childMid)
-
-            // The scaling formula
-            val scale = 1 - sqrt((distanceFromCenter / width).toDouble()).toFloat() * 0.66f
-
-            // Set scale to view
-            child.scaleX = scale
-            child.scaleY = scale
-        }
     }
 
     override fun onScrollStateChanged(state: Int) {
@@ -81,18 +43,31 @@ class SliderLayoutManager constructor(
                     position = recyclerView.getChildLayoutPosition(child)
                 }
             }
+        }
+    }
 
-            // Notify on item selection
-            callback?.onItemSelected(position)
+    private fun scaleDownView() {
+        val mid = width / 2.0f
+
+        for (i in 0 until childCount) {
+
+            // Calculating the distance of the child from the center
+            val child = getChildAt(i)?: return
+
+            val childMid = (getDecoratedLeft(child) + getDecoratedRight(child)) / 2.0f
+            val distanceFromCenter = abs(mid - childMid)
+
+            // The scaling formula
+            val scale = 1 - sqrt((distanceFromCenter / width).toDouble()).toFloat() * 0.66f
+
+            // Set scale to view
+            child.scaleX = scale
+            child.scaleY = scale
         }
     }
 
     private fun recyclerViewCenterX() : Int {
         return (recyclerView.right - recyclerView.left) / 2 + recyclerView.left
-    }
-
-    interface Listener {
-        fun onItemSelected(index: Int)
     }
 
 }
