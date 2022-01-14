@@ -276,6 +276,7 @@ class PlayBottomSheetFragment @Inject constructor(
      */
 
     override fun onCloseButtonClicked(view: PlayUserReportSubmissionViewComponent) {
+        listenKeyboard()
         playViewModel.hideUserReportSubmissionSheet()
     }
 
