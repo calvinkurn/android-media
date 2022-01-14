@@ -31,6 +31,8 @@ class ShipmentCartItemModel(
         var shopAlertMessage: String? = null,
         var shopTypeInfoData: ShopTypeInfoData? = null,
         var isTokoNow: Boolean = false,
+        var shopTickerTitle: String = "",
+        var shopTicker: String = "",
 
         // Cart item state
         var cartString: String? = null,

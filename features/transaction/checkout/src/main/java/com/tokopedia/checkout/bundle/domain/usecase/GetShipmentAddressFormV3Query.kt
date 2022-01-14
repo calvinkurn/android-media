@@ -125,6 +125,8 @@ fun getQueryShipmentAddressFormV3(): String {
                     is_tokonow
                     is_gold
                     is_official
+                    shop_ticker
+                    #shop_ticker_title
                     shop_type_info {
                       shop_tier
                       shop_grade

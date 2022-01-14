@@ -1757,9 +1757,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderWarningCloseable(ShipmentCartItemModel shipmentCartItemModel) {
-        if (!shipmentCartItemModel.isError()) {
-            tickerWarningCloseable.setTickerTitle("Periksa kembali pesananmu");
-            tickerWarningCloseable.setTextDescription("Setelah pembayaran terkonfirmasi, pesanan NOW! 15 menit tiba, tidak bisa dibatalkan");
+        if (!shipmentCartItemModel.isError() && !TextUtils.isEmpty(shipmentCartItemModel.getShopTicker())) {
+            tickerWarningCloseable.setTickerTitle(shipmentCartItemModel.getShopTickerTitle());
+            tickerWarningCloseable.setHtmlDescription(shipmentCartItemModel.getShopTicker());
             tickerWarningCloseable.setVisibility(View.VISIBLE);
             tickerWarningCloseable.setDescriptionClickEvent(new TickerCallback() {
                 @Override
@@ -1769,6 +1769,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
                 @Override
                 public void onDismiss() {
+                    shipmentCartItemModel.setShopTicker("");
                     tickerWarningCloseable.setVisibility(View.GONE);
                 }
             });
