@@ -272,13 +272,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             initComposeAreaMsg()
             initStickerView()
             initFbNewUnreadMessage()
-            setupLifecycleObserver()
-        }
-    }
-
-    private fun setupLifecycleObserver() {
-        composeMsgArea?.let {
-            viewLifecycleOwner.lifecycle.addObserver(it)
         }
     }
 
