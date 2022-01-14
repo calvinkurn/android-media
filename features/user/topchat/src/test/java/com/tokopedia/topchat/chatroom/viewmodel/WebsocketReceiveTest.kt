@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.viewmodel
 
 import com.tokopedia.chat_common.data.MessageUiModel
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.topchat.chatroom.responses.WebsocketResponses
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket
@@ -301,5 +302,27 @@ class WebsocketReceiveTest : BaseTopChatViewModelTest() {
 
         // Then
         assertEquals(viewModel.removeSrwBubble.value, null)
+    }
+
+    @Test
+    fun should_remove_srw_bubble_state_when_receive_product_attachment() {
+        // Given
+        val responseText = WebsocketResponses.generateReplyProduct(
+            isOpposite = false
+        )
+        val chat = generateChatPojoFromWsResponse(responseText)
+        val chatUiModel = topChatRoomWebSocketMessageMapper.map(chat)
+        onConnectWebsocket {
+            it.onMessage(websocket, responseText)
+        }
+
+        // When
+        viewModel.connectWebSocket()
+
+        // Then
+        assertEquals(
+            viewModel.removeSrwBubble.value,
+            (chatUiModel as ProductAttachmentUiModel).productId
+        )
     }
 }
