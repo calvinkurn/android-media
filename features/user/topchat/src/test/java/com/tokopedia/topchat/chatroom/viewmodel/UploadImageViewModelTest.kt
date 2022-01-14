@@ -1,10 +1,14 @@
 package com.tokopedia.topchat.chatroom.viewmodel
 
 import com.tokopedia.chat_common.data.ImageUploadUiModel
+import com.tokopedia.device.info.DeviceInfo
+import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
+import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import io.mockk.every
 import io.mockk.invoke
+import io.mockk.mockkStatic
 import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -18,6 +22,13 @@ class UploadImageViewModelTest: BaseTopChatViewModelTest() {
         every {
             remoteConfig.getBoolean(TopChatRoomPresenter.ENABLE_UPLOAD_IMAGE_SERVICE)
         } returns false
+    }
+
+    private fun enableUploadByService() {
+        every {
+            remoteConfig.getBoolean(TopChatRoomPresenter.ENABLE_UPLOAD_IMAGE_SERVICE, any())
+        } returns true
+        mockkStatic(DeviceInfo::getModelName)
     }
 
     @Test
@@ -57,5 +68,24 @@ class UploadImageViewModelTest: BaseTopChatViewModelTest() {
         // Then
         assertEquals(viewModel.errorSnackbar.value, error)
         assertEquals(viewModel.failUploadImage.value, imageUpload)
+    }
+
+    @Test
+    fun should_upload_image_through_service() {
+        // Given
+        enableUploadByService()
+        every { DeviceInfo.getModelName() } returns ""
+
+        // When
+        viewModel.startUploadImages(imageUpload)
+        viewModel.startUploadImages(imageUpload)
+
+        // Then
+        assertEquals(UploadImageChatService.dummyMap.size, 1)
+        assertEquals(viewModel.previewMsg.value, imageUpload)
+        assertEquals(
+            viewModel.uploadImageService.value,
+            ImageUploadMapper.mapToImageUploadServer(imageUpload)
+        )
     }
 }

@@ -19,12 +19,9 @@ import com.tokopedia.topchat.common.websocket.*
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.slot
-import io.mockk.verify
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
@@ -143,6 +140,7 @@ abstract class BaseTopChatViewModelTest {
 
     @RelaxedMockK
     lateinit var websocket: WebSocket
+
     @RelaxedMockK
     lateinit var websocketResponse: Response
 
