@@ -21,11 +21,16 @@ class AlbumViewModel @Inject constructor(
     private var _albums = MutableLiveData<List<Album>>()
     val albums: LiveData<List<Album>> get() = _albums
 
+    private var _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
     fun fetch(param: PickerParam) {
+        _isLoading.value = true
         viewModelScope.launch(dispatcher.io) {
             val albums = album(param)
 
             withContext(dispatcher.main) {
+                _isLoading.value = false
                 _albums.value = albums
             }
         }

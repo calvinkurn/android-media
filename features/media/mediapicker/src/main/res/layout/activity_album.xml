@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/Unify_N0">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_container"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="?actionBarSize">
 
         <include
             android:id="@+id/toolbar"
@@ -19,12 +18,14 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+    <include
+        android:id="@+id/shimmering"
+        layout="@layout/shimmer_list_item_album_picker"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lst_album"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_container"
+        android:layout_height="match_parent"
         tools:listitem="@layout/view_item_album_picker"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
