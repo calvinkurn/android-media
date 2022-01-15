@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.picker.R
 import com.tokopedia.picker.common.PickerFragmentType
 import com.tokopedia.picker.common.PickerPageType
@@ -22,7 +21,7 @@ import com.tokopedia.picker.ui.PickerFragmentFactoryImpl
 import com.tokopedia.picker.ui.PickerNavigator
 import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.fragment.permission.PermissionFragment
-import com.tokopedia.picker.ui.widget.bottomsheet.MediaPickerPreviewWidget
+import com.tokopedia.picker.ui.widget.selectors.MediaSelectionNavigationWidget
 import com.tokopedia.picker.utils.ActionType
 import com.tokopedia.picker.utils.G500
 import com.tokopedia.picker.utils.N600
@@ -70,7 +69,7 @@ import javax.inject.Inject
  * if you want to set between single or multiple selection, just add this query:
  * ...&type=single/multiple
  */
-open class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaPickerPreviewWidget.MediaPickerPreviewWidgetListener {
+open class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaSelectionNavigationWidget.Listener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
 
@@ -121,6 +120,19 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaPi
         navigateByPageType()
     }
 
+    override fun onDataSetChanged(action: ActionType) {
+        when (action) {
+            is ActionType.Add -> {}
+            is ActionType.Remove -> {
+                viewModel.publishMediaRemovedChanged(action.mediaToRemove)
+                updateSelectedMedia(action.data)
+            }
+            is ActionType.Reorder -> {
+                viewModel.publishMediaSelectedChanged(action.data)
+            }
+        }
+    }
+
     private fun setupQueryAndUIConfigBuilder() {
         val data = intent?.data ?: return
 
@@ -152,8 +164,8 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaPi
         }
 
         viewModel.selectedMedia.observe(this) {
-            _selectedMedias.clear()
-            _selectedMedias.addAll(it)
+            binding?.mediaPickerPreviewWidget?.setData(it)
+            updateSelectedMedia(it)
         }
     }
 
@@ -164,6 +176,11 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaPi
                 println("MEDIAPICKER -> ${it.path}")
             }
         }
+    }
+
+    private fun updateSelectedMedia(list: List<Media>) {
+        _selectedMedias.clear()
+        _selectedMedias.addAll(list)
     }
 
     private fun permissionGrantedState() {
@@ -197,9 +214,10 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaPi
 
         binding?.tabContainer?.tabLayout?.addOnTabSelected { position ->
             if (position == 0) {
+                binding?.mediaPickerPreviewWidget?.hide()
                 navigator?.onPageSelected(PickerFragmentType.CAMERA)
             } else if (position == 1) {
-                binding?.mediaPickerPreviewWidget?.visible()
+                binding?.mediaPickerPreviewWidget?.show()
                 navigator?.onPageSelected(PickerFragmentType.GALLERY)
             }
         }
@@ -222,36 +240,6 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaPi
         fun start(context: Context) {
             context.startActivity(Intent(context, PickerActivity::class.java))
         }
-    }
-
-    fun addData(data: List<Media>) {
-        binding?.mediaPickerPreviewWidget?.setData(data)
-    }
-
-    //listener to notify when data on bottomsheet changed
-    override fun onDataSetChanged(action: ActionType) {
-        when (action) {
-            //do something if add data from bottomsheet
-            is ActionType.Add -> {
-                if (action.error != null) {
-
-                }
-            }
-            //do somethig if remove data from bottomsheet
-            is ActionType.Remove -> {
-                viewModel.publishMediaSelectedChanged(action.data)
-
-            }
-            //do something if reoder position data
-            is ActionType.Reorder -> {
-                viewModel.publishMediaSelectedChanged(action.data)
-            }
-        }
-    }
-
-    private fun setData(data: List<Media>) {
-        _selectedMedias.clear()
-        _selectedMedias.addAll(data)
     }
 
 }

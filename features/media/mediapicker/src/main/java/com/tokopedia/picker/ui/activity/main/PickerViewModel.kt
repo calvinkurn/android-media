@@ -35,6 +35,10 @@ class PickerViewModel @Inject constructor(
         }
     }
 
+    fun publishMediaRemovedChanged(data: Media) {
+        EventBusFactory.send(EventState.MediaRemoved(data))
+    }
+
     fun publishMediaSelectedChanged(data: List<Media>) {
         EventBusFactory.send(EventState.MediaSelection(data))
     }

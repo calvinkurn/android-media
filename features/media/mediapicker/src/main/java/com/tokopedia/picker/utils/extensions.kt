@@ -1,5 +1,6 @@
 package com.tokopedia.picker.utils
 
+import android.content.Context
 import com.google.android.material.tabs.TabLayout
 
 fun TabLayout?.addOnTabSelected(
@@ -11,3 +12,7 @@ fun TabLayout?.addOnTabSelected(
     override fun onTabReselected(tab: TabLayout.Tab?) {}
     override fun onTabUnselected(tab: TabLayout.Tab?) {}
 })
+
+fun Context.dimensionPixelOffsetOf(dimen: Int) = resources.getDimensionPixelOffset(dimen)
+
+fun Context.dimensionOf(dimen: Int) = resources.getDimension(dimen)

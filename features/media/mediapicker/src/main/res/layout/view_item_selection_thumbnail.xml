@@ -21,7 +21,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/rect_stroke_grey" />
+            android:src="@drawable/picker_rect_grey_media" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_duration"
@@ -31,11 +31,14 @@
             android:layout_marginBottom="@dimen/unify_space_4"
             android:layout_marginStart="5dp"
             android:gravity="center"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
             app:typographyType="small"
-            android:textColor="@color/Unify_NN1000"
+            android:background="@color/Unify_NN1000"
+            android:textColor="@color/Unify_Static_White"
             android:textSize="@dimen/sp_13"
             android:layout_marginEnd="@dimen/unify_space_4"
-            android:text="00:12" />
+            tools:text="00:12" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="@dimen/unify_space_16"
@@ -44,8 +47,8 @@
             android:alpha="0.8"
             android:layout_marginStart="@dimen/unify_space_4"
             android:layout_marginBottom="@dimen/unify_space_4"
-            app:srcCompat="@drawable/ic_baseline_more_vert_24"
-            android:background="@drawable/circle_trans_white" />
+            app:srcCompat="@drawable/picker_ic_baseline_more_24"
+            android:background="@drawable/picker_circle_trans_white" />
 
     </FrameLayout>
 
@@ -54,7 +57,7 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_gravity="top|end"
-        android:background="@drawable/circle_grey"
+        android:background="@drawable/picker_circle_grey"
         app:srcCompat="@drawable/ic_close_white"
         android:padding="2dp"/>
 </FrameLayout>

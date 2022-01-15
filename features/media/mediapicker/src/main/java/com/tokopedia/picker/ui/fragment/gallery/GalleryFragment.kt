@@ -20,10 +20,10 @@ import com.tokopedia.picker.di.DaggerPickerComponent
 import com.tokopedia.picker.di.module.PickerModule
 import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.activity.album.AlbumActivity
-import com.tokopedia.picker.ui.activity.main.PickerActivity
 import com.tokopedia.picker.ui.fragment.gallery.recyclers.adapter.GalleryAdapter
 import com.tokopedia.picker.ui.fragment.gallery.recyclers.utils.GridItemDecoration
-import com.tokopedia.picker.utils.ActionType
+import com.tokopedia.picker.utils.EventBusFactory
+import com.tokopedia.picker.utils.EventState
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -80,8 +80,17 @@ open class GalleryFragment : BaseDaggerFragment() {
     }
 
     private fun initObservable() {
+        lifecycle.addObserver(viewModel)
+
         viewModel.files.observe(viewLifecycleOwner) {
             adapter.setData(it)
+        }
+
+        viewModel.mediaRemoved.observe(viewLifecycleOwner) {
+            it?.let { media ->
+                adapter.removeSelected(media)
+                EventBusFactory.send(EventState.MediaRemoved(null))
+            }
         }
     }
 
@@ -128,7 +137,6 @@ open class GalleryFragment : BaseDaggerFragment() {
 
         adapter.setListener {
             viewModel.publishMediaSelected(it)
-            (activity as PickerActivity).addData(it)
         }
     }
 

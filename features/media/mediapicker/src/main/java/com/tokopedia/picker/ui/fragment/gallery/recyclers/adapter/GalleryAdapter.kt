@@ -75,6 +75,15 @@ class GalleryAdapter(
         }
     }
 
+    fun removeSelected(media: Media) {
+        mutate {
+            val mainIndex = listDiffer.currentList.indexOf(media)
+            val selectedIndex = selectedMedias.indexOf(media)
+            selectedMedias.removeAt(selectedIndex)
+            notifyItemChanged(mainIndex)
+        }
+    }
+
     fun setListener(itemSelectedListener: OnMediaSelectedListener?) {
         this.itemSelectedListener = itemSelectedListener
     }
