@@ -1,4 +1,4 @@
-package com.tokopedia.picker.ui.widget.selectors.adapters
+package com.tokopedia.picker.ui.widget.selectornav.adapter
 
 import android.annotation.SuppressLint
 import android.content.ClipData
@@ -11,9 +11,9 @@ import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.picker.data.entity.Media
-import com.tokopedia.picker.ui.widget.selectors.MediaSelectionNavigationWidget
-import com.tokopedia.picker.ui.widget.selectors.viewholders.PlaceholderViewHolder
-import com.tokopedia.picker.ui.widget.selectors.viewholders.ThumbnailViewHolder
+import com.tokopedia.picker.ui.widget.selectornav.MediaSelectionNavigationWidget
+import com.tokopedia.picker.ui.widget.selectornav.viewholder.PlaceholderViewHolder
+import com.tokopedia.picker.ui.widget.selectornav.viewholder.ThumbnailViewHolder
 import com.tokopedia.picker.utils.ActionType
 import com.tokopedia.picker.utils.isVideoFormat
 

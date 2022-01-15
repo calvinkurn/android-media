@@ -21,7 +21,7 @@ import com.tokopedia.picker.ui.PickerFragmentFactoryImpl
 import com.tokopedia.picker.ui.PickerNavigator
 import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.fragment.permission.PermissionFragment
-import com.tokopedia.picker.ui.widget.selectors.MediaSelectionNavigationWidget
+import com.tokopedia.picker.ui.widget.selectornav.MediaSelectionNavigationWidget
 import com.tokopedia.picker.utils.ActionType
 import com.tokopedia.picker.utils.G500
 import com.tokopedia.picker.utils.N600

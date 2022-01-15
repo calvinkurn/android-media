@@ -1,4 +1,4 @@
-package com.tokopedia.picker.ui.widget.selectors.viewholders
+package com.tokopedia.picker.ui.widget.selectornav.viewholder
 
 import android.view.LayoutInflater
 import android.view.View

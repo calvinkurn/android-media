@@ -1,4 +1,4 @@
-package com.tokopedia.picker.ui.widget.selectors
+package com.tokopedia.picker.ui.widget.selectornav
 
 import android.content.Context
 import android.util.AttributeSet
@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.picker.R
 import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.databinding.WidgetSelectionBottomNavBinding
-import com.tokopedia.picker.ui.widget.selectors.adapters.MediaSelectionAdapter
+import com.tokopedia.picker.ui.widget.selectornav.adapter.MediaSelectionAdapter
 import com.tokopedia.picker.utils.ActionType
 import com.tokopedia.picker.utils.N0
 
