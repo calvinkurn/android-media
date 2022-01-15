@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.picker.R
 import com.tokopedia.picker.data.entity.Album
 import com.tokopedia.picker.databinding.ViewItemAlbumPickerBinding
 import com.tokopedia.picker.ui.fragment.OnAlbumClickListener
+import com.tokopedia.picker.utils.pickerLoadImage
 import com.tokopedia.utils.view.binding.viewBinding
 
 class AlbumAdapter constructor(
@@ -48,7 +48,7 @@ class AlbumAdapter constructor(
             )
 
             album.preview?.let {
-                binding?.imgPreview?.loadImageRounded(it)
+                binding?.imgPreview?.pickerLoadImage(it.toString())
             }
 
             itemView.setOnClickListener {

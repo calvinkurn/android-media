@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.picker.R
 import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.databinding.ViewItemGalleryPickerBinding
@@ -20,6 +19,7 @@ import com.tokopedia.picker.ui.fragment.OnMediaSelectedListener
 import com.tokopedia.picker.ui.fragment.gallery.recyclers.utils.MediaDiffUtil
 import com.tokopedia.picker.utils.getVideoDurationLabel
 import com.tokopedia.picker.utils.isVideoFormat
+import com.tokopedia.picker.utils.pickerLoadImage
 import com.tokopedia.utils.view.binding.viewBinding
 
 class GalleryAdapter(
@@ -122,8 +122,9 @@ class GalleryAdapter(
 
         fun bind(element: Media, isSelected: Boolean, click: () -> Unit) {
             videoDurationLabel(element)
+
             binding?.viewAlpha?.alpha = if (isSelected) 0.5f else 0f
-            binding?.imgPreview?.loadImageRounded(element.uri)
+            binding?.imgPreview?.pickerLoadImage(element.uri.toString())
 
             itemView.setOnClickListener {
                 click()

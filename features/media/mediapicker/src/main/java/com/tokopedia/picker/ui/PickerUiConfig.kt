@@ -19,7 +19,7 @@ object PickerUiConfig {
 
     private var pickerParam: PickerParam? = null
 
-    fun getFileLoaderParam(): PickerParam {
+    fun pickerParam(): PickerParam {
         val isOnlyVideo = paramMode == PickerModeType.VIDEO_ONLY
         val isIncludeVideo = paramMode == PickerModeType.COMMON
 

@@ -22,8 +22,6 @@ import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.activity.album.AlbumActivity
 import com.tokopedia.picker.ui.fragment.gallery.recyclers.adapter.GalleryAdapter
 import com.tokopedia.picker.ui.fragment.gallery.recyclers.utils.GridItemDecoration
-import com.tokopedia.picker.utils.EventBusFactory
-import com.tokopedia.picker.utils.EventState
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -32,7 +30,7 @@ open class GalleryFragment : BaseDaggerFragment() {
     @Inject lateinit var factory: ViewModelProvider.Factory
 
     private val binding: FragmentGalleryBinding? by viewBinding()
-    private val param = PickerUiConfig.getFileLoaderParam()
+    private val param = PickerUiConfig.pickerParam()
 
     private val adapter by lazy {
         GalleryAdapter(emptyList()) {
@@ -89,7 +87,6 @@ open class GalleryFragment : BaseDaggerFragment() {
         viewModel.mediaRemoved.observe(viewLifecycleOwner) {
             it?.let { media ->
                 adapter.removeSelected(media)
-                EventBusFactory.send(EventState.MediaRemoved(null))
             }
         }
     }
@@ -136,7 +133,7 @@ open class GalleryFragment : BaseDaggerFragment() {
         })
 
         adapter.setListener {
-            viewModel.publishMediaSelected(it)
+            viewModel.publishSelectionDataChanged(it)
         }
     }
 
@@ -172,9 +169,9 @@ open class GalleryFragment : BaseDaggerFragment() {
     override fun getScreenName() = "Camera"
 
     companion object {
-        const val RC_ALBUM_SELECTOR = 123
-
-        const val LIST_SPAN_COUNT = 3
+        private const val KEY_SELECTED_MEDIA = "selected_media.key"
+        private const val RC_ALBUM_SELECTOR = 123
+        private const val LIST_SPAN_COUNT = 3
     }
 
 }

@@ -36,17 +36,16 @@ class GalleryViewModel @Inject constructor(
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun getSelectedMedia() {
         viewModelScope.launch {
-            EventBusFactory.consumer(dispatchers.computation) {
-                if (it is EventState.MediaRemoved) {
+            EventBusFactory.consumer {
+                if (it is EventState.SelectionRemoved) {
                     _mediaRemoved.value = it.media
                 }
             }
         }
     }
 
-
-    fun publishMediaSelected(data: List<Media>) {
-        EventBusFactory.send(EventState.MediaSelection(data))
+    fun publishSelectionDataChanged(data: List<Media>) {
+        EventBusFactory.send(EventState.SelectionChanged(data))
     }
 
 }

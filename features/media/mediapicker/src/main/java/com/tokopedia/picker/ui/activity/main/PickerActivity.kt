@@ -23,10 +23,10 @@ import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.picker.ui.widget.selectornav.MediaSelectionNavigationWidget
 import com.tokopedia.picker.utils.ActionType
-import com.tokopedia.picker.utils.G500
-import com.tokopedia.picker.utils.N600
 import com.tokopedia.picker.utils.addOnTabSelected
 import com.tokopedia.picker.utils.delegates.permissionGranted
+import com.tokopedia.picker.utils.Unify_G500
+import com.tokopedia.picker.utils.Unify_N600
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -69,15 +69,18 @@ import javax.inject.Inject
  * if you want to set between single or multiple selection, just add this query:
  * ...&type=single/multiple
  */
-open class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaSelectionNavigationWidget.Listener {
+open class PickerActivity : BaseActivity()
+    , PermissionFragment.Listener
+    , MediaSelectionNavigationWidget.Listener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
 
     private val binding: ActivityPickerBinding? by viewBinding()
     private val hasPermissionGranted: Boolean by permissionGranted()
+    private val param = PickerUiConfig.pickerParam()
 
-    private val _selectedMedias: MutableList<Media> = mutableListOf()
-    val selectedMedias: List<Media> get() = _selectedMedias
+    // this the final collection data ready to passing into next page
+    private val selectedMedia: MutableList<Media> = mutableListOf()
 
     private val viewModel by lazy {
         ViewModelProvider(
@@ -124,11 +127,11 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaSe
         when (action) {
             is ActionType.Add -> {}
             is ActionType.Remove -> {
-                viewModel.publishMediaRemovedChanged(action.mediaToRemove)
-                updateSelectedMedia(action.data)
+                viewModel.publishSelectionRemovedChanged(action.mediaToRemove)
+                viewModel.publishSelectionDataChanged(action.data)
             }
             is ActionType.Reorder -> {
-                viewModel.publishMediaSelectedChanged(action.data)
+                viewModel.publishSelectionDataChanged(action.data)
             }
         }
     }
@@ -143,21 +146,24 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaSe
 
     private fun initView() {
         if (hasPermissionGranted) {
-            permissionGrantedState()
             navigateByPageType()
-            return
+            permissionGrantedState()
+        } else {
+            navigator?.start(PickerFragmentType.PERMISSION)
+            permissionDeniedState()
         }
 
-        navigator?.start(PickerFragmentType.PERMISSION)
-        permissionDeniedState()
+        // setup bottom nav selector widget
+        binding?.mediaPickerPreviewWidget?.setMaxAdapterSize(param.limit)
     }
 
     private fun initObservable() {
         lifecycle.addObserver(viewModel)
 
         viewModel.finishButtonState.observe(this) {
-            val color = if (it) G500 else N600
+            val color = if (it) Unify_G500 else Unify_N600
 
+            binding?.toolbar?.btnDone?.showWithCondition(it)
             binding?.toolbar?.btnDone?.setTextColor(
                 ContextCompat.getColor(applicationContext, color)
             )
@@ -172,15 +178,15 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener, MediaSe
     private fun initToolbar() {
         binding?.toolbar?.btnDone?.show()
         binding?.toolbar?.btnDone?.setOnClickListener {
-            _selectedMedias.forEach {
+            selectedMedia.forEach {
                 println("MEDIAPICKER -> ${it.path}")
             }
         }
     }
 
     private fun updateSelectedMedia(list: List<Media>) {
-        _selectedMedias.clear()
-        _selectedMedias.addAll(list)
+        selectedMedia.clear()
+        selectedMedia.addAll(list)
     }
 
     private fun permissionGrantedState() {

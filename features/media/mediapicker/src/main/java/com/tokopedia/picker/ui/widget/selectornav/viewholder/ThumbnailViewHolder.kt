@@ -8,18 +8,13 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.data.Resize
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.picker.R
 import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.databinding.ViewItemSelectionThumbnailBinding
-import com.tokopedia.picker.utils.dimensionOf
-import com.tokopedia.picker.utils.dimensionPixelOffsetOf
 import com.tokopedia.picker.utils.getVideoDurationLabel
 import com.tokopedia.picker.utils.isVideoFormat
-import com.tokopedia.utils.image.ImageProcessingUtil
+import com.tokopedia.picker.utils.pickerLoadImage
 import com.tokopedia.utils.view.binding.viewBinding
-import java.io.File
 
 class ThumbnailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -27,26 +22,7 @@ class ThumbnailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val context by lazy { itemView.context }
 
     fun bind(media: Media, deletedOnClick: () -> Unit = {}) {
-        val thumbnailSize = context.dimensionPixelOffsetOf(com.tokopedia.abstraction.R.dimen.dp_72)
-        val roundedSize = context.dimensionOf(com.tokopedia.abstraction.R.dimen.dp_6)
-
-        var loadFitCenter = false
-        val file = File(media.path)
-
-        if (file.exists()) {
-            loadFitCenter = ImageProcessingUtil.shouldLoadFitCenter(file)
-        }
-
-        binding?.imageView?.loadImage(media.path) {
-            overrideSize(Resize(thumbnailSize, thumbnailSize))
-            setRoundedRadius(roundedSize)
-
-            if (loadFitCenter) {
-                fitCenter()
-            } else {
-                centerCrop()
-            }
-        }
+        binding?.imageView?.pickerLoadImage(media.path)
 
         binding?.ivDelete?.setOnClickListener {
             deletedOnClick()

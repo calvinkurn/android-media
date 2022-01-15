@@ -22,7 +22,7 @@ class AlbumActivity : BaseActivity() {
     @Inject lateinit var factory: ViewModelProvider.Factory
 
     private val binding: ActivityAlbumBinding? by viewBinding()
-    private val param = PickerUiConfig.getFileLoaderParam()
+    private val param = PickerUiConfig.pickerParam()
 
     private val adapter by lazy {
         AlbumAdapter(listener = onAlbumClickListener)

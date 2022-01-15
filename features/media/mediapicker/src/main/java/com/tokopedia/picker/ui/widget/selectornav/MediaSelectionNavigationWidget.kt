@@ -13,7 +13,7 @@ import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.databinding.WidgetSelectionBottomNavBinding
 import com.tokopedia.picker.ui.widget.selectornav.adapter.MediaSelectionAdapter
 import com.tokopedia.picker.utils.ActionType
-import com.tokopedia.picker.utils.N0
+import com.tokopedia.picker.utils.Unify_N0
 
 class MediaSelectionNavigationWidget : FrameLayout {
 
@@ -86,7 +86,7 @@ class MediaSelectionNavigationWidget : FrameLayout {
     }
 
     private fun setAttribute(attrs: AttributeSet?) {
-        val defaultColor = ContextCompat.getColor(context, N0)
+        val defaultColor = ContextCompat.getColor(context, Unify_N0)
 
         val typedArray = context.theme.obtainStyledAttributes(
             attrs,
@@ -116,7 +116,7 @@ class MediaSelectionNavigationWidget : FrameLayout {
         )
     }
 
-    fun setCanReorder(canReorder: Boolean) {
+    fun isAbleToReorder(canReorder: Boolean) {
         adapter?.canReorder = canReorder
     }
 

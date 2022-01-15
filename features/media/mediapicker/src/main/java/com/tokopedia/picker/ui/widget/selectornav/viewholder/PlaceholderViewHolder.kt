@@ -33,6 +33,7 @@ class PlaceholderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val view = LayoutInflater
                 .from(viewGroup.context)
                 .inflate(LAYOUT, viewGroup, false)
+
             return PlaceholderViewHolder(view)
         }
     }
