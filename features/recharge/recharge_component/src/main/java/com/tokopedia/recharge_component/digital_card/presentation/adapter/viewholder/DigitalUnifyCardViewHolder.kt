@@ -272,7 +272,7 @@ class DigitalUnifyCardViewHolder(
 
     private fun renderCampaignText(label: String, textColor: String) {
         with(binding.dguCampaignLabel) {
-            if (text.isNotEmpty()) {
+            if (label.isNotEmpty()) {
                 text = label
 
                 try {
