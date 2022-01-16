@@ -132,6 +132,10 @@ class DigitalUnifyCardViewHolder(
                     renderStarRating(element.rating)
                     hideSquareRating()
                 }
+                else -> {
+                    hideStarRating()
+                    hideSquareRating()
+                }
             }
         }
     }
