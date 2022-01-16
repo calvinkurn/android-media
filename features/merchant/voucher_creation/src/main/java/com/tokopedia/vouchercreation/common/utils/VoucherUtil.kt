@@ -39,6 +39,9 @@ import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.SocmedType
 import java.util.*
 
+private const val DATE_TIME_PICKER_TAG = "date_time_picker_tag"
+private const val DATE_TIME_MINUTE_INTERVAL = 30
+
 fun View.showErrorToaster(errorMessage: String) {
     Toaster.make(this,
             errorMessage,
@@ -96,6 +99,7 @@ fun Fragment.getStartDateTimePicker(
     minDate: Calendar,
     defaultDate: Calendar,
     maxDate: Calendar,
+    onDateTimePicked: (calendar: Calendar) -> Unit
 ) {
     context?.let { context ->
         DateTimePickerUnify(context, minDate, defaultDate, maxDate, null,
@@ -104,13 +108,13 @@ fun Fragment.getStartDateTimePicker(
             setInfo(info)
             setInfoVisible(true)
             setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
-            minuteInterval = 30
+            minuteInterval = DATE_TIME_MINUTE_INTERVAL
             datePickerButton.text = context.getString(R.string.mvc_pick)
             datePickerButton.setOnClickListener {
-                //
+                onDateTimePicked.invoke(getDate())
                 dismiss()
             }
-        }.show(childFragmentManager, "")
+        }.show(childFragmentManager, DATE_TIME_PICKER_TAG)
     }
 }
 
@@ -124,6 +128,8 @@ fun TextFieldUnify.setFieldOnClickListener(onClick: () -> Unit) {
     textFieldInput.setOnClickListener {
         onClick.invoke()
     }
+    textFieldInput.isFocusable = false
+    textFieldInput.isClickable = true
 }
 
 fun ShopBasicDataResult.shareVoucher(context: Context,

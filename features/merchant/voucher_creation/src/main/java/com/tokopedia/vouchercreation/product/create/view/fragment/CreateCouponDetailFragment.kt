@@ -11,16 +11,15 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.kotlin.extensions.view.afterTextChanged
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.datepicker.LocaleUtils
+import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
-import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.utils.*
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMaxStartDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinStartDate
@@ -29,15 +28,16 @@ import com.tokopedia.vouchercreation.databinding.FragmentMvcCreateCouponDetailBi
 import com.tokopedia.vouchercreation.product.create.view.adapter.CreateCouponTargetAdapter
 import com.tokopedia.vouchercreation.product.create.view.uimodel.CouponTargetEnum
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.CreateCouponDetailViewModel
-import com.tokopedia.vouchercreation.shop.create.view.fragment.step.MerchantVoucherTargetFragment
-import kotlinx.android.synthetic.main.fragment_merchant_voucher_target.*
 import java.util.*
 import javax.inject.Inject
 
 class CreateCouponDetailFragment : BaseDaggerFragment(){
 
+    companion object {
+        private const val FULL_DAY_FORMAT = "EEE, dd MMM yyyy, HH:mm z"
+    }
+
     private var binding by autoClearedNullable<FragmentMvcCreateCouponDetailBinding>()
-    private val scrollViewCouponDetail by lazy { binding?.scrollViewCouponDetail }
     private val btnCouponCreateNext by lazy { binding?.btnCouponCreateNext }
     private val rvTarget by lazy { binding?.layoutCouponTarget?.rvTarget}
     private val tfuFillCouponName by lazy { binding?.layoutCouponName?.tfuFillCouponName }
@@ -76,17 +76,46 @@ class CreateCouponDetailFragment : BaseDaggerFragment(){
         super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerViewTarget()
-        setupNameInput()
         setupDateInput()
         setupNextButton()
 
         observeCouponTargetList()
         observeSelectedCouponTarget()
-        observeSubmitValidationResult()
+        observeInputDate()
+        observeCouponValidationResult()
+        observePeriodValidationResult()
+
+        viewModel.setStartDateCalendar(GregorianCalendar())
+        viewModel.setEndDateCalendar(GregorianCalendar())
         viewModel.populateCouponTarget()
     }
 
-    private fun observeSubmitValidationResult() {
+    private fun observeCouponTargetList() {
+        viewModel.couponTargetList.observe(viewLifecycleOwner) {
+            rvTarget?.adapter = CreateCouponTargetAdapter(::onCouponTargetChanged).apply { setData(it) }
+        }
+    }
+
+    private fun observeSelectedCouponTarget() {
+        viewModel.selectedCouponTarget.observe(viewLifecycleOwner) {
+            tfuFillCouponCode?.isVisible = it == CouponTargetEnum.PRIVATE
+            btnCouponCreateNext?.isButtonEnabled = true
+        }
+    }
+
+    private fun observeInputDate() {
+        viewModel.startDateCalendarLiveData.observe(viewLifecycleOwner) { startDate ->
+            val formattedDate = startDate.time.toFormattedString(FULL_DAY_FORMAT, LocaleUtils.getIDLocale())
+            tfuCouponDateStart?.textFieldInput?.setText(formattedDate)
+        }
+
+        viewModel.endDateCalendarLiveData.observe(viewLifecycleOwner) { endDate ->
+            val formattedDate = endDate.time.toFormattedString(FULL_DAY_FORMAT, LocaleUtils.getIDLocale())
+            tfuCouponDateEnd?.textFieldInput?.setText(formattedDate)
+        }
+    }
+
+    private fun observeCouponValidationResult() {
         viewModel.couponValidationResult.observe(viewLifecycleOwner) {
             if (it is Success) {
                 val validationResult = it.data
@@ -94,7 +123,6 @@ class CreateCouponDetailFragment : BaseDaggerFragment(){
                     activity?.run {
                         KeyboardHandler.hideSoftKeyboard(this)
                     }
-                    clearErrorMessage()
                     // TODO: navigate to next page
                 } else {
                     when {
@@ -120,32 +148,43 @@ class CreateCouponDetailFragment : BaseDaggerFragment(){
         }
     }
 
+    private fun observePeriodValidationResult() {
+        viewModel.periodValidationLiveData.observe(viewLifecycleOwner) {
+            if (it is Success) {
+                val validationResult = it.data
+                if (!validationResult.getIsHaveError()) {
+                    activity?.run {
+                        KeyboardHandler.hideSoftKeyboard(this)
+                    }
+                    // TODO: navigate to next page
+                } else {
+                     (validationResult.dateStartError.isNotBlank() ||
+                             validationResult.hourStartError.isNotBlank()).run {
+                        tfuCouponDateStart?.setError(this)
+                        tfuCouponDateStart?.setMessage(validationResult.dateStartError)
+                    }
+
+                    (validationResult.dateEndError.isNotBlank() ||
+                            validationResult.hourEndError.isNotBlank()).run {
+                        tfuCouponDateEnd?.setError(this)
+                        tfuCouponDateEnd?.setMessage(validationResult.dateEndError)
+                    }
+                }
+            } else if (it is Fail) {
+                val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                view?.showErrorToaster(errorMessage)
+            }
+        }
+    }
+
     private fun setupNextButton() {
+        btnCouponCreateNext?.isButtonEnabled = false
         btnCouponCreateNext?.setOnClickListener {
             val promoCode = tfuFillCouponCode?.textFieldInput?.text?.toString().orEmpty()
             val couponName = tfuFillCouponName?.textFieldInput?.text?.toString().orEmpty()
             viewModel.validateCouponTarget(promoCode, couponName)
-        }
-    }
-
-    private fun setupNameInput() {
-        tfuFillCouponCode?.textFieldInput?.afterTextChanged {
-
-        }
-        tfuFillCouponName?.textFieldInput?.afterTextChanged {
-
-        }
-    }
-
-    private fun observeSelectedCouponTarget() {
-        viewModel.selectedCouponTarget.observe(viewLifecycleOwner) {
-            tfuFillCouponCode?.isVisible = it == CouponTargetEnum.PRIVATE
-        }
-    }
-
-    private fun observeCouponTargetList() {
-        viewModel.couponTargetList.observe(viewLifecycleOwner) {
-            rvTarget?.adapter = CreateCouponTargetAdapter(::onCouponTargetChanged).apply { setData(it) }
+            viewModel.validateCouponPeriod()
+            clearErrorMessage()
         }
     }
 
@@ -174,18 +213,22 @@ class CreateCouponDetailFragment : BaseDaggerFragment(){
         val title = getString(R.string.mvc_start_date_title)
         val info = getString(R.string.mvc_create_coupon_date_desc).parseAsHtml()
         val minDate = requireContext().getMinStartDate()
-        val defaultDate = requireContext().getToday()
+        val defaultDate = viewModel.startDateCalendarLiveData.value ?: GregorianCalendar()
         val maxDate = requireContext().getMaxStartDate()
-        getStartDateTimePicker(title, info, minDate, defaultDate, maxDate)
+        getStartDateTimePicker(title, info, minDate, defaultDate, maxDate) {
+            viewModel.setStartDateCalendar(it)
+        }
     }
 
     private fun pickEndDate() {
         val title = getString(R.string.mvc_start_date_title)
         val info = getString(R.string.mvc_create_coupon_date_desc).parseAsHtml()
         val minDate = DateTimeUtils.getMinEndDate(requireContext().getToday()) ?: GregorianCalendar()
-        val defaultDate = requireContext().getToday()
+        val defaultDate = viewModel.endDateCalendarLiveData.value ?: GregorianCalendar()
         val maxDate = DateTimeUtils.getMaxEndDate(requireContext().getToday()) ?: GregorianCalendar()
-        getStartDateTimePicker(title, info, minDate, defaultDate, maxDate)
+        getStartDateTimePicker(title, info, minDate, defaultDate, maxDate) {
+            viewModel.setEndDateCalendar(it)
+        }
     }
 
     private fun clearErrorMessage() {
@@ -197,6 +240,7 @@ class CreateCouponDetailFragment : BaseDaggerFragment(){
         tfuCouponDateStart?.setMessage("")
         tfuCouponDateEnd?.setError(false)
         tfuCouponDateEnd?.setMessage("")
+        tickerErrorCouponValidation?.gone()
     }
 
     private fun RecyclerView.setRecyclerViewToVertical() {
