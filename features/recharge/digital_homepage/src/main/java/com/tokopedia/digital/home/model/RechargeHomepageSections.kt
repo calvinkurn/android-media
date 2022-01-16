@@ -437,9 +437,17 @@ data class RechargeHomepageSwipeBannerModel(val section: RechargeHomepageSection
 data class RechargeProductCardUnifyModel(val section: RechargeHomepageSections.Section) :
     RechargeHomepageSectionModel {
 
+    // use 1 media type for all items
+    var mediaImageType: String = ""
+
     val digitalUnifyItems: List<DigitalUnifyModel>
         get() =
             section.items.map {
+                // use the first media type only
+                if (mediaImageType.isEmpty()) {
+                    mediaImageType = it.attributes.mediaUrlType
+                }
+
                 val discountLabel: String = when {
                     it.attributes.cashback.isNotEmpty() -> it.attributes.cashback
                     it.attributes.specialDiscount.isNotEmpty() -> it.attributes.specialDiscount
@@ -462,7 +470,7 @@ data class RechargeProductCardUnifyModel(val section: RechargeHomepageSections.S
                 DigitalUnifyModel(
                     id = it.id,
                     mediaUrl = it.mediaUrl,
-                    mediaType = it.attributes.mediaUrlType,
+                    mediaType = mediaImageType,
                     mediaTitle = it.attributes.mediaUrlTitle,
                     iconUrl = it.attributes.iconUrl,
                     iconBackgroundColor = "",

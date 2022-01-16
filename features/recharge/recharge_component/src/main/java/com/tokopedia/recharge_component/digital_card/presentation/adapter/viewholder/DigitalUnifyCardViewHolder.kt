@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.data.PLACEHOLDER_RES_UNIFY
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.ItemDigitalUnifyCardBinding
@@ -206,7 +207,8 @@ class DigitalUnifyCardViewHolder(
                 loadImage(mediaUrl)
                 show()
             } else {
-                hide()
+                setImageResource(PLACEHOLDER_RES_UNIFY)
+                show()
             }
         }
     }
