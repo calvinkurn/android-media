@@ -18,6 +18,7 @@ import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.user.session.UserSession
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -358,6 +359,24 @@ class Utils {
                 }
             }catch (e:Exception){
 
+            }
+        }
+
+        fun updateProductAddedInCart(products:List<ComponentsItem>,
+                                             map: Map<String, MiniCartItem>?) {
+            if (map == null) return
+            products.forEach { componentsItem ->
+                componentsItem.data?.firstOrNull()?.let { dataItem ->
+                    if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(dataItem.parentProductId)) {
+                        map[dataItem.parentProductId]?.quantity?.let { quantity ->
+                            dataItem.quantity = quantity
+                        }
+                    }else if (dataItem.hasATC && !dataItem.productId.isNullOrEmpty() && map.containsKey(dataItem.productId)) {
+                        map[dataItem.productId]?.quantity?.let { quantity ->
+                            dataItem.quantity = quantity
+                        }
+                    }
+                }
             }
         }
     }
