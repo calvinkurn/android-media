@@ -20,7 +20,6 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 
@@ -116,6 +115,9 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
             ComponentNames.ProductCardCarousel.componentName -> {
                 updateCarouselWithCart(component)
                 listComponents.add(component)
+            }
+            ComponentNames.Section.componentName ->{
+                listComponents.addAll(parseSectionComponent(component))
             }
             ComponentNames.QuickCoupon.componentName -> {
                 if (component.isApplicable) {
@@ -376,7 +378,6 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
         return listComponents
     }
 
-
     private fun handleProductState(component: ComponentsItem, componentName: String, queryParameterMap: Map<String, String?>? = null): ArrayList<ComponentsItem> {
         val productState: ArrayList<ComponentsItem> = ArrayList()
         productState.add(ComponentsItem(name = componentName).apply {
@@ -431,6 +432,32 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
             return true
         }
         return false
+    }
+
+    private fun parseSectionComponent(component: ComponentsItem): List<ComponentsItem> {
+        val listComponents: ArrayList<ComponentsItem> = ArrayList()
+        listComponents.add(component)
+        component.getComponentsItem()?.let {
+//            listComponents.addAll(getSectionComponentList(it, component.position))
+            listComponents.addAll(getDiscoveryComponentList(it))
+        }
+        return listComponents
+    }
+
+    private fun getSectionComponentList(
+        components: List<ComponentsItem>,
+        sectionPosition: Int
+    ): List<ComponentsItem> {
+        val listComponents: ArrayList<ComponentsItem> = ArrayList()
+        for ((position, component) in components.withIndex()) {
+            listComponents.addAll(
+                parseComponent(
+                    component,
+                    sectionPosition + position
+                )
+            )
+        }
+        return listComponents
     }
 }
 

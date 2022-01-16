@@ -1,9 +1,9 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section
 
 import android.app.Application
+import android.util.Log
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.usecase.SectionUseCase
-import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.CoroutineScope
@@ -35,6 +35,7 @@ class SectionViewModel(
 
         }, onError = {
 //            Todo:: Error Handling
+            Log.e("TEST_TAG","onError - ${components.sectionId}")
         })
     }
 
