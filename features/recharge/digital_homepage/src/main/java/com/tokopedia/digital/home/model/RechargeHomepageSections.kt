@@ -139,6 +139,9 @@ data class RechargeHomepageSections(
         @SerializedName("sold_percentage_label")
         @Expose
         val soldPercentageLabel: String = "",
+        @SerializedName("sold_percentage_label_color")
+        @Expose
+        val soldPercentageLabelColor: String = "",
         @SerializedName("show_sold_percentage")
         @Expose
         val showSoldPercentage: Boolean = false,
@@ -512,7 +515,7 @@ data class RechargeProductCardUnifyModel(val section: RechargeHomepageSections.S
                         showPercentage = it.attributes.showSoldPercentage,
                         value = it.attributes.soldPercentageValue,
                         label = it.attributes.soldPercentageLabel,
-                        labelColor = ""
+                        labelColor = it.attributes.soldPercentageLabelColor
                     ),
                     actionButton = DigitalCardActionModel(
                         text = it.textlink,

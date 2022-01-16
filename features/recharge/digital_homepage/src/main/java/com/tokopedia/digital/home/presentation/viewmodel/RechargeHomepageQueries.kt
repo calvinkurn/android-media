@@ -74,6 +74,7 @@ object RechargeHomepageQueries {
                             sold_value
                             sold_percentage_value
                             sold_percentage_label
+                            sold_percentage_label_color
                             show_sold_percentage
                             campaign_label_text
                             campaign_label_text_color
