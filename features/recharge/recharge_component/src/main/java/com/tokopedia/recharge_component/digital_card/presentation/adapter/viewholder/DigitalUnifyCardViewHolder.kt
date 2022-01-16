@@ -291,7 +291,7 @@ class DigitalUnifyCardViewHolder(
     private fun renderStarRating(rating: DigitalCardRatingModel) {
         with(binding) {
             // render rating
-            if (rating.rating > 0.0) {
+            if (rating.rating > 0) {
                 dguReviewStarRatingValue.text = rating.rating.toString()
                 dguReviewStarRatingValue.show()
                 dguReviewStarIcon.show()
@@ -321,7 +321,7 @@ class DigitalUnifyCardViewHolder(
     private fun renderSquareRating(rating: DigitalCardRatingModel) {
         with(binding) {
             // render rating
-            if (rating.rating > 0.0) {
+            if (rating.rating > 0) {
                 dguReviewSquareRatingValue.text = rating.rating.toString()
                 dguReviewSquareRatingValue.show()
             } else {
