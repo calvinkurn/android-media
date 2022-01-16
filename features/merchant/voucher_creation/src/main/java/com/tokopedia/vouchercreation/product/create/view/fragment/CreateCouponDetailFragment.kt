@@ -1,7 +1,6 @@
 package com.tokopedia.vouchercreation.product.create.view.fragment
 
 import android.os.Bundle
-import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,22 +10,27 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
-import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
+import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
+import com.tokopedia.vouchercreation.common.utils.*
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMaxStartDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinStartDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getToday
-import com.tokopedia.vouchercreation.common.utils.getStartDateTimePicker
-import com.tokopedia.vouchercreation.common.utils.setFieldOnClickListener
-import com.tokopedia.vouchercreation.common.utils.tintDrawableToBlack
 import com.tokopedia.vouchercreation.databinding.FragmentMvcCreateCouponDetailBinding
 import com.tokopedia.vouchercreation.product.create.view.adapter.CreateCouponTargetAdapter
 import com.tokopedia.vouchercreation.product.create.view.uimodel.CouponTargetEnum
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.CreateCouponDetailViewModel
+import com.tokopedia.vouchercreation.shop.create.view.fragment.step.MerchantVoucherTargetFragment
+import kotlinx.android.synthetic.main.fragment_merchant_voucher_target.*
 import java.util.*
 import javax.inject.Inject
 
@@ -72,11 +76,65 @@ class CreateCouponDetailFragment : BaseDaggerFragment(){
         super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerViewTarget()
+        setupNameInput()
         setupDateInput()
+        setupNextButton()
 
         observeCouponTargetList()
         observeSelectedCouponTarget()
+        observeSubmitValidationResult()
         viewModel.populateCouponTarget()
+    }
+
+    private fun observeSubmitValidationResult() {
+        viewModel.couponValidationResult.observe(viewLifecycleOwner) {
+            if (it is Success) {
+                val validationResult = it.data
+                if (!validationResult.checkHasError()) {
+                    activity?.run {
+                        KeyboardHandler.hideSoftKeyboard(this)
+                    }
+                    clearErrorMessage()
+                    // TODO: navigate to next page
+                } else {
+                    when {
+                        validationResult.isPublicError.isNotBlank() -> {
+                            view?.showErrorToaster(validationResult.isPublicError)
+                        }
+                        else -> {
+                            val isCouponNameError = validationResult.couponNameError.isNotBlank()
+                            val isCouponCodeError = validationResult.codeError.isNotBlank()
+                            tfuFillCouponName?.setError(isCouponNameError)
+                            tfuFillCouponName?.setMessage(validationResult.couponNameError)
+                            tfuFillCouponCode?.setError(isCouponCodeError)
+                            tfuFillCouponCode?.setMessage(validationResult.codeError)
+                            tickerErrorCouponValidation?.isVisible =
+                                isCouponCodeError || isCouponNameError
+                        }
+                    }
+                }
+            } else if (it is Fail) {
+                val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                view?.showErrorToaster(errorMessage)
+            }
+        }
+    }
+
+    private fun setupNextButton() {
+        btnCouponCreateNext?.setOnClickListener {
+            val promoCode = tfuFillCouponCode?.textFieldInput?.text?.toString().orEmpty()
+            val couponName = tfuFillCouponName?.textFieldInput?.text?.toString().orEmpty()
+            viewModel.validateCouponTarget(promoCode, couponName)
+        }
+    }
+
+    private fun setupNameInput() {
+        tfuFillCouponCode?.textFieldInput?.afterTextChanged {
+
+        }
+        tfuFillCouponName?.textFieldInput?.afterTextChanged {
+
+        }
     }
 
     private fun observeSelectedCouponTarget() {
@@ -128,6 +186,17 @@ class CreateCouponDetailFragment : BaseDaggerFragment(){
         val defaultDate = requireContext().getToday()
         val maxDate = DateTimeUtils.getMaxEndDate(requireContext().getToday()) ?: GregorianCalendar()
         getStartDateTimePicker(title, info, minDate, defaultDate, maxDate)
+    }
+
+    private fun clearErrorMessage() {
+        tfuFillCouponName?.setError(false)
+        tfuFillCouponName?.setMessage("")
+        tfuFillCouponCode?.setError(false)
+        tfuFillCouponCode?.setMessage("")
+        tfuCouponDateStart?.setError(false)
+        tfuCouponDateStart?.setMessage("")
+        tfuCouponDateEnd?.setError(false)
+        tfuCouponDateEnd?.setMessage("")
     }
 
     private fun RecyclerView.setRecyclerViewToVertical() {

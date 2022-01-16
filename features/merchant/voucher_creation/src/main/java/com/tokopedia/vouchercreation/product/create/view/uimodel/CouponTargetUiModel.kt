@@ -11,6 +11,7 @@ data class CouponTargetUiModel(
     var selected: Boolean
 )
 
-enum class CouponTargetEnum{
-    PRIVATE, PUBLIC
+enum class CouponTargetEnum(val value: Int){
+    PRIVATE(0),
+    PUBLIC(1)
 }
