@@ -6,15 +6,25 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/btn_action"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="ARROW_BACK"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_action"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyWeight="reguler"
-        android:text="Image Editor"/>
+        tools:text="Image Editor" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_done"

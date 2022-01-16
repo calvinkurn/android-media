@@ -24,12 +24,10 @@ import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.picker.ui.widget.selectornav.MediaSelectionNavigationWidget
 import com.tokopedia.picker.utils.ActionType
+import com.tokopedia.picker.utils.Unify_G500
 import com.tokopedia.picker.utils.addOnTabSelected
 import com.tokopedia.picker.utils.delegates.permissionGranted
-import com.tokopedia.picker.utils.Unify_G500
-import com.tokopedia.picker.utils.Unify_N600
 import com.tokopedia.utils.view.binding.viewBinding
-import javax.inject.Inject
 
 /**
  * main applink:
@@ -74,10 +72,9 @@ open class PickerActivity : BaseActivity()
     , PermissionFragment.Listener
     , MediaSelectionNavigationWidget.Listener {
 
-    @Inject lateinit var factory: ViewModelProvider.Factory
-
     private val binding: ActivityPickerBinding? by viewBinding()
     private val hasPermissionGranted: Boolean by permissionGranted()
+
     private val param = PickerUiConfig.pickerParam()
 
     // this the final collection data ready to passing into next page
@@ -86,7 +83,6 @@ open class PickerActivity : BaseActivity()
     private val viewModel by lazy {
         ViewModelProvider(
             this,
-            factory
         )[PickerViewModel::class.java]
     }
 
@@ -162,11 +158,8 @@ open class PickerActivity : BaseActivity()
         lifecycle.addObserver(viewModel)
 
         viewModel.finishButtonState.observe(this) {
-            val color = if (it) Unify_G500 else Unify_N600
-
-            binding?.toolbar?.btnDone?.showWithCondition(it)
-            binding?.toolbar?.btnDone?.setTextColor(
-                ContextCompat.getColor(applicationContext, color)
+            binding?.toolbar?.btnDone?.showWithCondition(
+                it && selectedMedia.isNotEmpty()
             )
         }
 
@@ -177,7 +170,12 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun initToolbar() {
-        binding?.toolbar?.btnDone?.show()
+        // set green color of continue button
+
+        binding?.toolbar?.btnDone?.setTextColor(
+            ContextCompat.getColor(applicationContext, Unify_G500)
+        )
+
         binding?.toolbar?.btnDone?.setOnClickListener {
             selectedMedia.forEach {
                 println("MEDIAPICKER -> ${it.path}")
