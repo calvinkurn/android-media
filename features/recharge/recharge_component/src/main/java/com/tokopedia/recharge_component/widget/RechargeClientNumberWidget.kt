@@ -20,6 +20,7 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.WidgetRechargeClientNumberBinding
 import com.tokopedia.sortfilter.SortFilterItem
@@ -58,6 +59,8 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                 isInputError = false
                 textInputLayout.hint = textFieldStaticLabel
                 clearErrorState()
+                hideCheckIcon()
+                hideOperatorIcon()
             }
         }
     }
@@ -255,6 +258,8 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         binding.clientNumberWidgetInputField.icon1.hide()
     }
 
+    fun isErrorMessageShown(): Boolean = binding.clientNumberWidgetInputField.isInputError
+
     fun setErrorInputField(errorMessage: String) {
         binding.clientNumberWidgetInputField.run {
             val temp = textInputLayout.helperText.toString()
@@ -314,6 +319,19 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     private fun hideClearIcon() {
         with (binding.clientNumberWidgetInputField.clearIconView) {
             if (isVisible) hide()
+        }
+    }
+
+    fun showOperatorIcon(url: String) {
+        with (binding) {
+            clientNumberWidgetOperatorGroup.show()
+            clientNumberWidgetOperatorIcon.loadImage(url)
+        }
+    }
+
+    fun hideOperatorIcon() {
+        with (binding) {
+            clientNumberWidgetOperatorGroup.hide()
         }
     }
 
