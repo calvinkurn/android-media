@@ -6,7 +6,9 @@ import android.graphics.drawable.GradientDrawable
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -46,6 +48,20 @@ class DigitalUnifyCardViewHolder(
                 listener?.onItemClicked(element, adapterPosition)
                 RouteManager.route(context, element.actionButton.applink)
             }
+        }
+
+        applyCarousel()
+    }
+
+    fun applyCarousel() {
+        setCardHeightMatchParent()
+    }
+
+    private fun setCardHeightMatchParent() {
+        with(binding) {
+            val layoutParams = cardViewProductCard.layoutParams
+            layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
+            cardViewProductCard.layoutParams = layoutParams
         }
     }
 
