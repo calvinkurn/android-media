@@ -335,6 +335,8 @@ object ConstantTransactionAnalytics {
         const val VIEW_ERROR_PRODUCT_LEVEL_TICKER = "view error product level tickers"
         const val VIEW_ERROR_ORDER_LEVEL_TICKER = "view error order level tickers"
         const val VIEW_ERROR_TOASTER_MESSAGE = "view error toaster message"
+        const val VIEW_TOP_UP_GOPAY_BUTTON = "view top up gopay button"
+        const val CLICK_TOP_UP_GOPAY_BUTTON = "click top up gopay button"
 
         // OCC PP
         const val PP_IMPRESSION_ON_INSURANCE_SECTION = "pp - ins section impression"
