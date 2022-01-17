@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.stub.chatroom.websocket
+package com.tokopedia.topchat.common.websocket
 
 import android.util.Log
 import com.google.gson.Gson
@@ -11,107 +11,54 @@ import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachment
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductProfile
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.common.network.util.CommonUtil
-import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.chatlist.data.ChatWebSocketConstant
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributesResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerProfile
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.common.alterResponseOf
+import com.tokopedia.topchat.stub.chatroom.websocket.WebSocketStub
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.time.RfcDateTimeParser
-import com.tokopedia.websocket.RxWebSocketUtil
-import com.tokopedia.websocket.WebSocketInfo
 import com.tokopedia.websocket.WebSocketResponse
 import okhttp3.WebSocket
-import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
-import rx.subjects.PublishSubject
+import okhttp3.WebSocketListener
 import java.util.*
+import javax.inject.Inject
 
-class RxWebSocketUtilStub constructor(
+class FakeTopchatWebSocket @Inject constructor(
     private val mapper: TopChatRoomGetExistingChatMapper,
-    private val session: UserSessionInterface,
-) : RxWebSocketUtil(
-    emptyList(), 60, 5, 5
-) {
+    private val session: UserSessionInterface
+) : TopchatWebSocket {
 
-    val defaultImageResponsePath = "ws/image_response.json"
-    val deleteImageResponsePath = "ws/delete_image.json"
-
-    val changeAddressResponse: WebSocketResponse
-        get() {
-            return AndroidFileUtil.parse(
-                "buyer/ws_opposite_with_label.json",
-                WebSocketResponse::class.java
-            )
-        }
-
-    val deleteImageResponse: WebSocketResponse
-        get() = alterResponseOf(deleteImageResponsePath) {}
-
-    private val websocketInfoObservable = PublishSubject.create<WebSocketInfo>()
     private val websocket: WebSocket = WebSocketStub()
+    private var listener: WebSocketListener? = null
     private val gson: Gson = GsonBuilder().create()
     private val startTimeQueue = LinkedList<String>()
 
-    override fun getWebSocketInfo(url: String, accessToken: String): Observable<WebSocketInfo>? {
-        return websocketInfoObservable
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .also {
-                websocketInfoObservable.onNext(WebSocketInfo(websocket, true))
-            }
+    val defaultImageResponsePath = "ws/image_response.json"
+    val deleteImageResponsePath = "ws/delete_image.json"
+    val changeAddressResponse: WebSocketResponse
+        get() = alterResponseOf("buyer/ws_opposite_with_label.json") {}
+    val deleteImageResponse: WebSocketResponse
+        get() = alterResponseOf(deleteImageResponsePath) {}
+
+    override fun connectWebSocket(listener: WebSocketListener) {
+        this.listener = listener
     }
 
-    override fun send(msg: String) {
-        startTimeQueue.add(msg)
+    override fun close() {
+
     }
 
-    fun generateUploadImageResposne(roomMetaData: RoomMetaData): WebSocketResponse {
-        return alterResponseOf(defaultImageResponsePath) {
-            val data = it.getAsJsonObject(data)
-            data.addProperty(msg_id, roomMetaData.msgId)
-            data.addProperty(from_uid, roomMetaData.receiver.uid)
-            data.addProperty(to_uid, roomMetaData.sender.uid)
-            data.addProperty(is_opposite, true)
-        }
+    override fun destroy() {
+        this.listener = null
     }
 
-    private val data = "data"
-    private val msg_id = "msg_id"
-    private val from_uid = "from_uid"
-    private val to_uid = "to_uid"
-    private val is_opposite = "is_opposite"
-
-    fun simulateResponse(wsResponseText: WebSocketResponse) {
-        val responseString = CommonUtil.toJson(wsResponseText)
-        val wsInfo = WebSocketInfo(
-            websocket, responseString
-        )
-        websocketInfoObservable.onNext(wsInfo)
+    override fun sendPayload(wsPayload: String) {
+        startTimeQueue.add(wsPayload)
     }
 
-    /**
-     * simulate just start_time only
-     */
-    fun simulateResponseMatchRequestStartTime(
-        wsResponseText: WebSocketResponse
-    ) {
-        val requestMsg = startTimeQueue.remove() ?: return
-        val requestObj: WebSocketResponse = CommonUtil.fromJson(
-            requestMsg, WebSocketResponse::class.java
-        )
-        val startTime = requestObj.jsonObject?.get("start_time")?.asString ?: return
-        wsResponseText.jsonObject?.addProperty("start_time", startTime)
-        val responseString = CommonUtil.toJson(wsResponseText)
-        val wsInfo = WebSocketInfo(
-            websocket, responseString
-        )
-        websocketInfoObservable.onNext(wsInfo)
-    }
-
-    // TODO: handle invoice and image attachment
     fun simulateResponseFromRequestQueue(room: GetExistingChatPojo) {
         while (startTimeQueue.peek() != null) {
             val requestMsg = startTimeQueue.remove()
@@ -178,6 +125,13 @@ class RxWebSocketUtilStub constructor(
         simulateWsResponse(attachment, request, room)
     }
 
+    private fun simulateMessageResponse(
+        request: WebSocketResponse,
+        room: GetExistingChatPojo
+    ) {
+        simulateWsResponse(null, request, room)
+    }
+
     private fun simulateWsResponse(
         attachment: AttachmentPojo?,
         request: WebSocketResponse,
@@ -223,13 +177,6 @@ class RxWebSocketUtilStub constructor(
             "", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE, chatElement
         )
         simulateResponse(response)
-    }
-
-    private fun simulateMessageResponse(
-        request: WebSocketResponse,
-        room: GetExistingChatPojo
-    ) {
-        simulateWsResponse(null, request, room)
     }
 
     private fun generateParentReplyFrom(request: WebSocketResponse): ParentReply? {
@@ -285,8 +232,28 @@ class RxWebSocketUtilStub constructor(
         return requestObj.code == ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE
     }
 
+    fun simulateResponse(wsResponseText: WebSocketResponse) {
+        val responseString = CommonUtil.toJson(wsResponseText)
+        listener?.onMessage(websocket, responseString)
+    }
+
+    fun generateUploadImageResposne(roomMetaData: RoomMetaData): WebSocketResponse {
+        return alterResponseOf(defaultImageResponsePath) {
+            val data = it.getAsJsonObject(data)
+            data.addProperty(msg_id, roomMetaData.msgId)
+            data.addProperty(from_uid, roomMetaData.receiver.uid)
+            data.addProperty(to_uid, roomMetaData.sender.uid)
+            data.addProperty(is_opposite, true)
+        }
+    }
+
     companion object {
+        const val exStartTime = "123123123"
         const val START_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        private val data = "data"
+        private val msg_id = "msg_id"
+        private val from_uid = "from_uid"
+        private val to_uid = "to_uid"
+        private val is_opposite = "is_opposite"
     }
 }
-

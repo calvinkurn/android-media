@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatlist.domain.websocket
+package com.tokopedia.topchat.common.websocket
 
 interface WebSocketStateHandler {
     suspend fun scheduleForRetry(onStartRetry: suspend () -> Unit)

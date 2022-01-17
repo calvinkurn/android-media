@@ -1,7 +1,7 @@
 package com.tokopedia.chat_common.domain.pojo.roommetadata
 
 class RoomMetaData(
-    _msgId: String = "",
+    _msgId: String = "0",
     val sender: User = User(),
     val receiver: User = User(),
     val userIdMap: Map<String, User> = emptyMap()
