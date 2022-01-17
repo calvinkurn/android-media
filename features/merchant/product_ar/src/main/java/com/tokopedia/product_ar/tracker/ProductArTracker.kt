@@ -14,6 +14,7 @@ object ProductArTracker {
     private const val ACTION_CLICK_COMPARISSON_AR = "click - comparing variants floating button"
     private const val ACTION_CLICK_SAVE_PHOTO_AR = "click - simpan foto"
     private const val ACTION_CLICK_ATC_AR = "click - tambah ke keranjang on product augmented reality"
+    private const val ACTION_CLICK_BACK_COMPARISSON_AR = "click - exit product augmented reality screen"
 
     fun openScreen(productId: String, userId: String) {
 
@@ -38,7 +39,7 @@ object ProductArTracker {
                 "event" to EVENT_AR,
                 "eventAction" to ACTION_CLICK_VARIANT_AR,
                 "eventCategory" to CATEGORY_AR,
-                "eventLabel" to "child_id:${productId};variant_name:${variantName};variant_value:${variantName}",
+                "eventLabel" to "child_id:${productId};variant_name:warna;variant_value:${variantName}",
                 "businessUnit" to ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
                 "currentSite" to ProductTrackingConstant.Tracking.CURRENT_SITE,
                 "productId" to productId,
@@ -125,6 +126,20 @@ object ProductArTracker {
                         "shop_type" to shopType
                 )
                 )
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
+    fun interactionTimeTrack(productId: String, accessTime: Long, variantSize: Int, variantTried: Int) {
+        val interactionTimeSecond = (System.currentTimeMillis() - accessTime) / 1000
+        val mapEvent = mapOf(
+                "event" to EVENT_AR,
+                "eventAction" to ACTION_CLICK_BACK_COMPARISSON_AR,
+                "eventCategory" to CATEGORY_AR,
+                "eventLabel" to "interaction_time:$interactionTimeSecond;variants_available:$variantSize;variant_tried:$variantTried",
+                "businessUnit" to ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
+                "currentSite" to ProductTrackingConstant.Tracking.CURRENT_SITE,
+                "productId" to productId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }

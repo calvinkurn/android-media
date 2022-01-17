@@ -51,6 +51,8 @@ class ProductArActivity : BaseSimpleActivity(), HasComponent<ProductArComponent>
         if (supportFragmentManager.backStackEntryCount == 0) {
             super.onBackPressed()
         } else {
+            val fragment = supportFragmentManager.findFragmentByTag(PRODUCT_AR_COMPARISON_FRAGMENT)
+            (fragment as? ProductArComparisonFragment)?.onBackPressed()
             supportFragmentManager.popBackStackImmediate()
         }
     }

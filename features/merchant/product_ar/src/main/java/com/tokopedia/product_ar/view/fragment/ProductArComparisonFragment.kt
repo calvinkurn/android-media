@@ -41,7 +41,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListener, ProductArListener {
+class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListener,
+        ProductArListener, ProductArComparissonListener {
 
     companion object {
         const val PRODUCT_AR_COMPARISON_FRAGMENT = "product_ar_fragment"
@@ -64,6 +65,8 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
     private var layoutManager: GridLayoutManager? = null
     private val mainThreadHandler: Handler = Handler(Looper.getMainLooper())
     private var loader: LoaderUnify? = null
+    private var startTime: Long = 0
+    private var variantTriedMap: HashSet<String> = hashSetOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -159,20 +162,24 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
 
     private fun observeInitialData() {
         sharedViewModel?.arListData?.observeOnce(viewLifecycleOwner) {
+            startTime = System.currentTimeMillis()
             getMakeUpEngine()?.startRunningWithPhoto(it.originalPhoto, true)
-            val getSelectedProductName = it.modifaceUiModel
-                    .firstOrNull { it.isSelected }?.productName ?: ""
+            isSelectVariant(getInitialProductId())
 
             it.processedPhoto?.let { processedPhoto ->
                 comparisonAdapter.setData(listOf(ComparissonImageUiModel(
                         processedPhoto,
-                        getSelectedProductName))
+                        getInitialProductName()))
                 )
                 loader?.hide()
             }
 
             viewModel?.renderInitialData(it.modifaceUiModel)
         }
+    }
+
+    private fun isSelectVariant(productId: String) {
+        variantTriedMap.add(productId)
     }
 
     private fun setEngineCallback(disabled: Boolean = false) {
@@ -226,6 +233,7 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
                                   isSelected: Boolean,
                                   selectedMfeProduct: MFEMakeupProduct) {
         SingleClick.doSomethingBeforeTime(delayInterval = 100) {
+            isSelectVariant(productId)
             viewModel?.onVariantClicked(
                     data = bottomComparissonView?.adapter?.getCurrentArImageDatas() ?: listOf(),
                     selectedProductId = productId,
@@ -234,18 +242,28 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
         }
     }
 
-    private fun getFirstProductId(): String {
+    private fun getInitialProductId(): String {
         return sharedViewModel?.arListData?.value?.modifaceUiModel?.firstOrNull {
             it.isSelected
         }?.productId ?: ""
     }
 
+    private fun getInitialProductName(): String {
+        return sharedViewModel?.arListData?.value?.modifaceUiModel?.firstOrNull {
+            it.isSelected
+        }?.productName ?: ""
+    }
+
+    private fun getVariantTotalSize(): Int {
+        return sharedViewModel?.arListData?.value?.modifaceUiModel?.size ?: 0
+    }
+
     override fun onButtonClicked(productId: String) {
         ArGridImageDownloader.screenShotAndSaveGridImage(rvComparison as? View,
                 viewModel?.addRemoveImageGrid?.value?.imagesBitmap?.size ?: -1, {
-            ProductArTracker.savePhoto(getFirstProductId(), false)
+            ProductArTracker.savePhoto(getInitialProductId(), false)
         }) {
-            ProductArTracker.savePhoto(getFirstProductId(), true)
+            ProductArTracker.savePhoto(getInitialProductId(), true)
             mainThreadHandler.postDelayed({
                 bottomComparissonView?.stopButtonLoading()
                 val messageSuccess = context?.getString(R.string.message_success_save_photo_to_gallery)
@@ -254,8 +272,21 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
             }, 500)
         }
     }
+
+    override fun onBackPressed() {
+        ProductArTracker.interactionTimeTrack(
+                productId = getInitialProductId(),
+                accessTime = startTime,
+                variantSize = getVariantTotalSize(),
+                variantTried = variantTriedMap.size
+        )
+    }
 }
 
 interface ComparissonHelperListener {
     fun getRecyclerViewFullHeight(): Int
+}
+
+interface ProductArComparissonListener {
+    fun onBackPressed()
 }
