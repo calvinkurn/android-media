@@ -295,7 +295,12 @@ class OfficialStoreHomeViewModel @Inject constructor(
             getDisplayHeadlineAds.createParams(featuredShopDataModel.channelModel.widgetParam)
             val data = getDisplayHeadlineAds.executeOnBackground()
             if(data.isEmpty()){
-                _featuredShopRemove.value = featuredShopDataModel
+                _featuredShopResult.value = Success(
+                    featuredShopDataModel.copy(
+                        state = FeaturedShopDataModel.STATE_READY,
+                        page = featuredShopDataModel.page
+                    )
+                )
             } else {
                 _featuredShopResult.value = Success(
                     featuredShopDataModel.copy(
