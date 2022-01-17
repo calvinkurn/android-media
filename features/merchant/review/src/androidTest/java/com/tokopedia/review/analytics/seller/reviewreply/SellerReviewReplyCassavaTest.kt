@@ -6,7 +6,7 @@ import com.tokopedia.review.R
 import com.tokopedia.review.analytics.common.CassavaTestFixture
 import com.tokopedia.review.analytics.common.actionTest
 import com.tokopedia.review.common.Utils
-import com.tokopedia.review.common.reviewreply.update.domain.model.ReviewReplyUpdateResponse
+import com.tokopedia.review.feature.reviewreply.update.domain.model.ReviewReplyUpdateResponse
 import com.tokopedia.review.feature.inboxreview.domain.mapper.InboxReviewMapper
 import com.tokopedia.review.feature.inboxreview.domain.response.InboxReviewResponse
 import com.tokopedia.review.feature.inboxreview.presentation.model.FeedbackInboxUiModel

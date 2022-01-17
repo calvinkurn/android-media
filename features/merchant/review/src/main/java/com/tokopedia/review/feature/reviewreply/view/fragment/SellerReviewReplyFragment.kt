@@ -27,14 +27,14 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
-import com.tokopedia.review.common.reviewreply.update.presenter.model.ReviewReplyUpdateUiModel
-import com.tokopedia.review.common.reviewreplyinsert.presentation.model.ReviewReplyInsertUiModel
 import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.toRelativeDate
 import com.tokopedia.review.databinding.FragmentSellerReviewReplyBinding
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.review.feature.reviewreply.analytics.SellerReviewReplyTracking
 import com.tokopedia.review.feature.reviewreply.di.component.ReviewReplyComponent
+import com.tokopedia.review.feature.reviewreply.insert.presentation.model.ReviewReplyInsertUiModel
+import com.tokopedia.review.feature.reviewreply.update.presenter.model.ReviewReplyUpdateUiModel
 import com.tokopedia.review.feature.reviewreply.util.mapper.SellerReviewReplyMapper
 import com.tokopedia.review.feature.reviewreply.view.adapter.ReviewTemplateListAdapter
 import com.tokopedia.review.feature.reviewreply.view.bottomsheet.AddTemplateBottomSheet

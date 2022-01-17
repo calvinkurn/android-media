@@ -1,4 +1,4 @@
-package com.tokopedia.review.common.reviewreply.update.domain.model
+package com.tokopedia.review.feature.reviewreply.update.domain.model
 
 import com.google.gson.annotations.SerializedName
 

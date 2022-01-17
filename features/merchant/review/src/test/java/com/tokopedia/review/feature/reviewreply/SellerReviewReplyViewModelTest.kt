@@ -1,9 +1,9 @@
 package com.tokopedia.review.feature.reviewreply
 
-import com.tokopedia.review.common.reviewreply.update.domain.model.ReviewReplyUpdateResponse
-import com.tokopedia.review.common.reviewreply.update.presenter.model.ReviewReplyUpdateUiModel
-import com.tokopedia.review.common.reviewreplyinsert.domain.model.ReviewReplyInsertResponse
-import com.tokopedia.review.common.reviewreplyinsert.presentation.model.ReviewReplyInsertUiModel
+import com.tokopedia.review.feature.reviewreply.update.domain.model.ReviewReplyUpdateResponse
+import com.tokopedia.review.feature.reviewreply.update.presenter.model.ReviewReplyUpdateUiModel
+import com.tokopedia.review.feature.reviewreply.insert.domain.model.ReviewReplyInsertResponse
+import com.tokopedia.review.feature.reviewreply.insert.presentation.model.ReviewReplyInsertUiModel
 import com.tokopedia.review.feature.reviewreply.data.ReviewReplyInsertTemplateResponse
 import com.tokopedia.review.feature.reviewreply.data.ReviewReplyTemplateListResponse
 import com.tokopedia.review.feature.reviewreply.view.fragment.SellerReviewReplyFragment.Companion.DATE_REVIEW_FORMAT

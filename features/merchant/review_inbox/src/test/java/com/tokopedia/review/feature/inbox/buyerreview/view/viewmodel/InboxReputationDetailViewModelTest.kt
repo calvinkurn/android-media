@@ -1,9 +1,9 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel
 
-import com.tokopedia.review.common.reviewreply.update.domain.model.ReviewReplyUpdateResponse
-import com.tokopedia.review.common.reviewreply.update.presenter.model.ReviewReplyUpdateUiModel
-import com.tokopedia.review.common.reviewreplyinsert.domain.model.ReviewReplyInsertResponse
-import com.tokopedia.review.common.reviewreplyinsert.presentation.model.ReviewReplyInsertUiModel
+import com.tokopedia.review.feature.reviewreply.update.domain.model.ReviewReplyUpdateResponse
+import com.tokopedia.review.feature.reviewreply.update.presenter.model.ReviewReplyUpdateUiModel
+import com.tokopedia.review.feature.reviewreply.insert.domain.model.ReviewReplyInsertResponse
+import com.tokopedia.review.feature.reviewreply.insert.presentation.model.ReviewReplyInsertUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery

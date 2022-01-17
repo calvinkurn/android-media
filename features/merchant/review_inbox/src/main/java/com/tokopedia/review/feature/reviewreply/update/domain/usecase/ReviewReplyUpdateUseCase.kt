@@ -1,10 +1,10 @@
-package com.tokopedia.review.common.reviewreply.update.domain.usecase
+package com.tokopedia.review.feature.reviewreply.update.domain.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.review.common.reviewreply.update.domain.model.ReviewReplyUpdateResponse
+import com.tokopedia.review.feature.reviewreply.update.domain.model.ReviewReplyUpdateResponse
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 

@@ -1,7 +1,7 @@
-package com.tokopedia.review.common.reviewreply.update.domain.mapper
+package com.tokopedia.review.feature.reviewreply.update.domain.mapper
 
-import com.tokopedia.review.common.reviewreply.update.domain.model.ReviewReplyUpdateResponse
-import com.tokopedia.review.common.reviewreply.update.presenter.model.ReviewReplyUpdateUiModel
+import com.tokopedia.review.feature.reviewreply.update.domain.model.ReviewReplyUpdateResponse
+import com.tokopedia.review.feature.reviewreply.update.presenter.model.ReviewReplyUpdateUiModel
 
 object ReviewReplyUpdateMapper {
     fun mapToUpdateReplyUiModel(
