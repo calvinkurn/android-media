@@ -354,26 +354,34 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    protected Response refreshTokenAndGcmUpdate(Chain chain, Response response, Request finalRequest) throws IOException {
-        AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
+    private String getNewToken(Response response, Request finalRequest) {
         try {
+            AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
             String path = getRefreshQueryPath(finalRequest, response);
-            String newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter, path);
+            return accessTokenRefresh.refreshToken(context, userSession, networkRouter, path);
+        }catch (Exception e) {
+            return "";
+        }
+    }
 
-            if(newAccessToken.isEmpty()) {
-                return response;
+    protected Response refreshTokenAndGcmUpdate(Chain chain, Response response, Request finalRequest) throws IOException {
+        try {
+            if(userSession.isLoggedIn()) {
+                String newToken = getNewToken(response, finalRequest);
+                if (newToken.isEmpty()) {
+                    return response;
+                }
+
+                networkRouter.doRelogin(newToken);
+                Request newestRequest;
+                if (finalRequest.header(AUTHORIZATION).contains(BEARER)) {
+                    newestRequest = recreateRequestWithNewAccessToken(chain);
+                } else {
+                    newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
+                }
+                return chain.proceed(newestRequest);
             }
-
-            networkRouter.doRelogin(newAccessToken);
-
-            Request newestRequest;
-            if (finalRequest.header(AUTHORIZATION).contains(BEARER)) {
-                newestRequest = recreateRequestWithNewAccessToken(chain);
-            } else {
-                newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
-            }
-
-            return chain.proceed(newestRequest);
+            return response;
         } catch (IOException e) {
             e.printStackTrace();
             return response;
@@ -381,18 +389,16 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     protected Response refreshToken(Chain chain, Response response, Request finalRequest)  {
-        AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
-            String path = getRefreshQueryPath(finalRequest, response);
-            String newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter, path);
-
-            if(newAccessToken.isEmpty()) {
-                return response;
+            if(userSession.isLoggedIn()) {
+                String newToken = getNewToken(response, finalRequest);
+                if (newToken.isEmpty()) {
+                    return response;
+                }
+                Request newest = recreateRequestWithNewAccessToken(chain);
+                return chain.proceed(newest);
             }
-
-            Request newest = recreateRequestWithNewAccessToken(chain);
-
-            return chain.proceed(newest);
+            return response;
         } catch (IOException e) {
             e.printStackTrace();
             return response;
