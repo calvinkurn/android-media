@@ -4,12 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.vouchercreation.common.utils.ResourceProvider
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
 import com.tokopedia.vouchercreation.product.create.domain.entity.DiscountType
 import com.tokopedia.vouchercreation.product.create.domain.entity.MinimumPurchaseType
 import javax.inject.Inject
 
 class CouponSettingViewModel @Inject constructor(
+    private val resourceProvider: ResourceProvider,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -68,11 +70,11 @@ class CouponSettingViewModel @Inject constructor(
     }
 
 
-    fun isDiscountTypeSelected(selectedDiscountType: DiscountType): Boolean {
+    private fun isDiscountTypeSelected(selectedDiscountType: DiscountType): Boolean {
         return selectedDiscountType != DiscountType.NONE
     }
 
-    fun isMinimumPurchaseSelected(selectedMinimumPurchaseType: MinimumPurchaseType): Boolean {
+    private fun isMinimumPurchaseSelected(selectedMinimumPurchaseType: MinimumPurchaseType): Boolean {
         return selectedMinimumPurchaseType != MinimumPurchaseType.NONE
     }
 
@@ -112,4 +114,13 @@ class CouponSettingViewModel @Inject constructor(
         _areInputValid.value = false
         _couponType.value = selectedCouponType
     }
+
+    fun getMinimalPurchaseErrorMessage(selectedMinimumPurchaseType: MinimumPurchaseType) : String {
+        return if (selectedMinimumPurchaseType == MinimumPurchaseType.NOMINAL) {
+            resourceProvider.getInvalidMinimalPurchaseNominalErrorMessage()
+        } else {
+            resourceProvider.getInvalidMinimalQuantityQuantityErrorMessage()
+        }
+    }
+
 }

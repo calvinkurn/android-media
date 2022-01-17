@@ -148,10 +148,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
                 if (isValidInput) {
                     clearErrorMessage(binding.textAreaMinimumPurchase)
                 } else {
-                    showErrorMessage(
-                        binding.textAreaMinimumPurchase,
-                        getString(R.string.error_message_invalid_cashback_minimum_purchase)
-                    )
+                    showMinimalPurchaseErrorMessage(binding.textAreaMinimumPurchase)
                 }
                 validateInput()
             })
@@ -208,7 +205,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
                 if (isValidInput) {
                     clearErrorMessage(binding.textAreaFreeShippingMinimumPurchase)
                 } else {
-                    showErrorMessage(binding.textAreaFreeShippingMinimumPurchase, getString(R.string.error_message_invalid_shipping_fee))
+                    showErrorMessage(binding.textAreaFreeShippingMinimumPurchase, getString(R.string.error_message_invalid_free_shipping_minimum_purchase))
                 }
                 validateInput()
             })
@@ -380,6 +377,13 @@ class CouponSettingFragment : BaseDaggerFragment() {
     private fun clearErrorMessage(view: TextAreaUnify) {
         view.isError = false
         view.textAreaWrapper.error = EMPTY_STRING
+    }
+
+    private fun showMinimalPurchaseErrorMessage(view: TextAreaUnify) {
+        val errorMessage = viewModel.getMinimalPurchaseErrorMessage(selectedMinimumPurchaseType)
+        view.textAreaMessage = EMPTY_STRING
+        view.isError = true
+        view.textAreaWrapper.error = errorMessage
     }
 
 }
