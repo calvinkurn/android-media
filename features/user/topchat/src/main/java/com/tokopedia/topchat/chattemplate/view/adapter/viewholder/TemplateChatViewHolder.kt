@@ -1,38 +1,33 @@
-package com.tokopedia.topchat.chattemplate.view.adapter.viewholder;
+package com.tokopedia.topchat.chattemplate.view.adapter.viewholder
 
-import android.view.View;
-
-import androidx.annotation.LayoutRes;
-
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.topchat.R;
-import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
-import com.tokopedia.unifycomponents.ChipsUnify;
+import android.view.View
+import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.topchat.chattemplate.view.uimodel.TemplateChatModel
+import com.tokopedia.unifycomponents.ChipsUnify
+import androidx.annotation.LayoutRes
+import com.tokopedia.topchat.R
 
 /**
  * Created by stevenfredian on 11/29/17.
  */
+class TemplateChatViewHolder(
+    itemView: View, private var viewListener: ChatTemplateListener
+) : AbstractViewHolder<TemplateChatModel>(itemView) {
 
-public class TemplateChatViewHolder extends AbstractViewHolder<TemplateChatModel> {
+    var textHolder: ChipsUnify? = itemView.findViewById(R.id.chipsText)
 
-    @LayoutRes
-    public static final int LAYOUT = R.layout.item_template_chat_layout;
-
-    ChatTemplateListener viewListener;
-    ChipsUnify textHolder;
-
-    public TemplateChatViewHolder(View itemView, ChatTemplateListener viewListener) {
-        super(itemView);
-        textHolder = itemView.findViewById(R.id.chipsText);
-        this.viewListener = viewListener;
+    override fun bind(element: TemplateChatModel) {
+        textHolder?.chipText = element.ellipsizedMessage
+        textHolder?.setOnClickListener { view: View? ->
+            viewListener.addTemplateString(element.message)
+        }
     }
 
-    @Override
-    public void bind(final TemplateChatModel element) {
-        textHolder.setChipText(element.getEllipsizedMessage());
-        textHolder.setOnClickListener(view ->
-                viewListener.addTemplateString(element.getMessage())
-        );
+    companion object {
+        @JvmField
+        @LayoutRes
+        val LAYOUT = R.layout.item_template_chat_layout
     }
+
 }

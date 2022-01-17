@@ -15,7 +15,7 @@ import android.graphics.PorterDuff
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent
 import com.tokopedia.topchat.chattemplate.di.TemplateChatModule
-import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateUiModel
+import com.tokopedia.topchat.chattemplate.view.uimodel.EditTemplateUiModel
 import android.content.Intent
 import android.view.*
 import com.google.android.material.snackbar.Snackbar
@@ -215,7 +215,7 @@ class EditTemplateChatFragment : BaseDaggerFragment(), EditTemplateChatContract.
                 .baseAppComponent
             val daggerTemplateChatComponent = DaggerTemplateChatComponent.builder()
                 .baseAppComponent(appComponent)
-                .templateChatModule(TemplateChatModule(context))
+                .templateChatModule(TemplateChatModule(requireContext()))
                 .build() as DaggerTemplateChatComponent
             daggerTemplateChatComponent.inject(this)
         }
@@ -280,10 +280,10 @@ class EditTemplateChatFragment : BaseDaggerFragment(), EditTemplateChatContract.
         private const val DISABLE_DELETE = 130
         private const val ENABLE_DELETE = 255
         @JvmStatic
-        fun createInstance(extras: Bundle): EditTemplateChatFragment {
+        fun createInstance(extras: Bundle?): EditTemplateChatFragment {
             val fragment = EditTemplateChatFragment()
             fragment.arguments = extras
-            fragment.isSeller = extras.getBoolean(TemplateChatActivity.PARAM_IS_SELLER, false)
+            fragment.isSeller = extras?.getBoolean(TemplateChatActivity.PARAM_IS_SELLER, false)?: false
             return fragment
         }
     }

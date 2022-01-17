@@ -1,17 +1,14 @@
-package com.tokopedia.topchat.chattemplate.view.adapter;
+package com.tokopedia.topchat.chattemplate.view.adapter
 
-import android.view.View;
-
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
+import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.topchat.chattemplate.view.uimodel.TemplateChatModel
 
 /**
  * Created by stevenfredian on 9/27/17.
  */
-
-public interface TemplateChatTypeFactory {
-
-    AbstractViewHolder createViewHolder(View view, int viewType);
-
-    int type(TemplateChatModel templateChatModel);
+interface TemplateChatTypeFactory {
+    fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
+    fun type(templateChatModel: TemplateChatModel): Int
 }

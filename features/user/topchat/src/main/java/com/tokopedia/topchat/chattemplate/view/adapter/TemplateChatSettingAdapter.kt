@@ -1,136 +1,109 @@
-package com.tokopedia.topchat.chattemplate.view.adapter;
+package com.tokopedia.topchat.chattemplate.view.adapter
 
-import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.topchat.common.util.ItemTouchHelperAdapter;
-import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract;
-import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import android.view.ViewGroup
+import android.view.LayoutInflater
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.topchat.chattemplate.view.uimodel.TemplateChatModel
+import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder
+import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract
+import com.tokopedia.topchat.common.util.ItemTouchHelperAdapter
+import java.util.*
 
 /**
  * Created by stevenfredian on 11/29/17.
  */
+class TemplateChatSettingAdapter(
+    private val typeFactory: TemplateChatSettingTypeFactory,
+    private val view: TemplateChatContract.View
+) : RecyclerView.Adapter<AbstractViewHolder<*>>(), ItemTouchHelperAdapter {
 
-public class TemplateChatSettingAdapter extends RecyclerView.Adapter<AbstractViewHolder>
-        implements ItemTouchHelperAdapter {
+    private val list: MutableList<Visitable<*>> = arrayListOf()
+    private val listString: ArrayList<String> = arrayListOf()
 
-    private final TemplateChatSettingTypeFactory typeFactory;
-    private final TemplateChatContract.View view;
-    private List<Visitable> list;
-    private ArrayList<String> listString;
-
-    public TemplateChatSettingAdapter(TemplateChatSettingTypeFactory typeFactory, TemplateChatContract.View view) {
-        this.view = view;
-        this.typeFactory = typeFactory;
-        this.list = new ArrayList<>();
-        this.listString = new ArrayList<>();
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
+        val context = parent.context
+        val view = LayoutInflater.from(context).inflate(viewType, parent, false)
+        return typeFactory.createViewHolder(view, viewType)
     }
 
-    @Override
-    public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        View view = LayoutInflater.from(context).inflate(viewType, parent, false);
-        return typeFactory.createViewHolder(view, viewType);
+    override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
+        (holder as? AbstractViewHolder<Visitable<*>>)?.bind(list[holder.adapterPosition])
     }
 
-    @Override
-    public void onBindViewHolder(AbstractViewHolder holder, int position) {
-        holder.bind(list.get(holder.getAdapterPosition()));
+    override fun getItemViewType(position: Int): Int {
+        return (list[position] as? Visitable<TemplateChatSettingTypeFactory>)?.type(typeFactory) ?: 0
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return list.get(position).type(typeFactory);
+    override fun getItemCount(): Int {
+        return list.size
     }
 
-    @Override
-    public int getItemCount() {
-        return list.size();
+    fun getList(): List<Visitable<*>?> {
+        return list
     }
 
-    public List<Visitable> getList() {
-        return list;
-    }
-
-    public ArrayList<String> getListString() {
-        this.listString.clear();
-        for (int i = 0; i < list.size() - 1; i++) {
-            String temp = ((TemplateChatModel) list.get(i)).getMessage();
-            listString.add(temp);
+    fun getListString(): ArrayList<String> {
+        listString.clear()
+        for (i in 0 until list.size - 1) {
+            val temp = (list[i] as TemplateChatModel).message ?: ""
+            listString.add(temp)
         }
-        return listString;
+        return listString
     }
 
-    public void setList(List<Visitable> list) {
-        this.list.clear();
-        if(list != null){
-            this.list.addAll(list);
+    fun setList(list: List<Visitable<*>>?) {
+        this.list.clear()
+        if (list != null) {
+            this.list.addAll(list)
         }
-        notifyDataSetChanged();
+        notifyDataSetChanged()
     }
 
-    @Override
-    public void onItemDismiss(int position) {
-
+    override fun onItemDismiss(position: Int) {}
+    override fun onReallyMoved(from: Int, to: Int) {
+        view.reArrange(from, to)
     }
 
-    @Override
-    public void onReallyMoved(int from, int to) {
-        view.reArrange(from, to);
-    }
+    fun startDrag(ini: ItemTemplateChatViewHolder?) {}
 
-    public void startDrag(ItemTemplateChatViewHolder ini) {
-
-    }
-
-    public void edit(int index, String string) {
-        if(list!=null && list.size()>0) {
-            ((TemplateChatModel) list.get(index)).setMessage(string);
-            notifyItemChanged(index);
+    fun edit(index: Int, string: String?) {
+        if (list.size > 0) {
+            (list[index] as TemplateChatModel?)!!.message = string
+            notifyItemChanged(index)
         }
     }
 
-    public void delete(int index) {
-        if(list!=null && list.size()>0) {
-            list.remove(index);
-            notifyItemRemoved(index);
-            list.remove(list.size() - 1);
-            notifyItemRemoved(list.size() - 1);
-            list.add(new TemplateChatModel(false, list.size()));
-            notifyItemInserted(list.size());
+    fun delete(index: Int) {
+        if (list.size > 0) {
+            list.removeAt(index)
+            notifyItemRemoved(index)
+            list.removeAt(list.size - 1)
+            notifyItemRemoved(list.size - 1)
+            list.add(TemplateChatModel(false, list.size))
+            notifyItemInserted(list.size)
         }
     }
 
-    public void add(String string) {
-        if(list!=null && list.size()>0) {
-            list.remove(list.size() - 1);
-            notifyItemRemoved(list.size() - 1);
-            list.add(new TemplateChatModel(string));
-            list.add(new TemplateChatModel(false, list.size()));
-            notifyItemRangeInserted(list.size(), 2);
+    fun add(string: String?) {
+        if (list.size > 0) {
+            list.removeAt(list.size - 1)
+            notifyItemRemoved(list.size - 1)
+            list.add(TemplateChatModel(string))
+            list.add(TemplateChatModel(false, list.size))
+            notifyItemRangeInserted(list.size, 2)
         }
     }
 
-
-    @Override
-    public boolean onItemMove(int fromPosition, int toPosition) {
-        Collections.swap(list, fromPosition, toPosition);
-        notifyItemMoved(fromPosition, toPosition);
-        return true;
+    override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
+        Collections.swap(list, fromPosition, toPosition)
+        notifyItemMoved(fromPosition, toPosition)
+        return true
     }
 
-    public void revertArrange(int fromPosition, int toPosition) {
-        Collections.swap(list, fromPosition, toPosition);
-        notifyItemMoved(fromPosition, toPosition);
+    fun revertArrange(fromPosition: Int, toPosition: Int) {
+        Collections.swap(list, fromPosition, toPosition)
+        notifyItemMoved(fromPosition, toPosition)
     }
 }

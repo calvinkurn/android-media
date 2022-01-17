@@ -1,47 +1,34 @@
-package com.tokopedia.topchat.chattemplate.view.adapter;
+package com.tokopedia.topchat.chattemplate.view.adapter
 
-import android.view.View;
-
-import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract;
-import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemAddTemplateChatViewHolder;
-import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
+import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder
+import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemAddTemplateChatViewHolder
+import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract
+import com.tokopedia.topchat.chattemplate.view.uimodel.TemplateChatModel
 
 /**
  * Created by stevenfredian on 9/27/17.
  */
+class TemplateChatSettingTypeFactoryImpl(
+    var viewListener: TemplateChatContract.View
+) : BaseAdapterTypeFactory(), TemplateChatSettingTypeFactory {
 
-public class TemplateChatSettingTypeFactoryImpl extends BaseAdapterTypeFactory implements TemplateChatSettingTypeFactory {
-
-    TemplateChatContract.View viewListener;
-
-    public TemplateChatSettingTypeFactoryImpl(TemplateChatContract.View listener) {
-        this.viewListener = listener;
-    }
-
-    @Override
-    public AbstractViewHolder createViewHolder(View view, int type) {
-
-        AbstractViewHolder viewHolder;
-
-        if (type == ItemTemplateChatViewHolder.LAYOUT) {
-            viewHolder = new ItemTemplateChatViewHolder(view, viewListener);
-        } else if (type == ItemAddTemplateChatViewHolder.LAYOUT) {
-            viewHolder = new ItemAddTemplateChatViewHolder(view, viewListener);
+    override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
+        val viewHolder: AbstractViewHolder<*> = if (viewType == ItemTemplateChatViewHolder.LAYOUT) {
+            ItemTemplateChatViewHolder(view, viewListener)
+        } else if (viewType == ItemAddTemplateChatViewHolder.LAYOUT) {
+            ItemAddTemplateChatViewHolder(view, viewListener)
         } else {
-            return super.createViewHolder(view, type);
+            return super.createViewHolder(view, viewType)
         }
-        return viewHolder;
+        return viewHolder
     }
 
-    @Override
-    public int type(TemplateChatModel templateChatModel) {
-        if (templateChatModel.isIcon()) {
-            return ItemAddTemplateChatViewHolder.LAYOUT;
-        }
-        return ItemTemplateChatViewHolder.LAYOUT;
+    override fun type(templateChatModel: TemplateChatModel): Int {
+        return if (templateChatModel.isIcon) {
+            ItemAddTemplateChatViewHolder.LAYOUT
+        } else ItemTemplateChatViewHolder.LAYOUT
     }
-
 }

@@ -1228,7 +1228,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun onSuccessGetTemplate(list: List<Visitable<Any>>) {
+    override fun onSuccessGetTemplate(list: List<Visitable<*>>) {
         val isLastMessageBroadcast = adapter.isLastMessageBroadcast()
         val amIBuyer = !isSeller()
         chatRoomFlexModeListener?.getSeparatedTemplateChat()?.updateTemplate(list)

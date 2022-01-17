@@ -1,8 +1,6 @@
 package com.tokopedia.topchat.chattemplate.data.repository
 
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
-import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateUiModel
-import java.util.*
 
 interface EditTemplateRepositoryKt {
 

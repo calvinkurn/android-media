@@ -1,74 +1,56 @@
-package com.tokopedia.topchat.chattemplate.view.adapter;
+package com.tokopedia.topchat.chattemplate.view.adapter
 
-import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import android.view.ViewGroup
+import android.view.LayoutInflater
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.topchat.chattemplate.view.uimodel.TemplateChatModel
+import java.util.ArrayList
 
 /**
  * Created by stevenfredian on 11/29/17.
  */
+class TemplateChatAdapter(
+    private val typeFactory: TemplateChatTypeFactory
+) : RecyclerView.Adapter<AbstractViewHolder<*>>() {
 
-public class TemplateChatAdapter extends RecyclerView.Adapter<AbstractViewHolder>{
+    val list: MutableList<Visitable<*>> = mutableListOf()
 
-    private final TemplateChatTypeFactory typeFactory;
-    private List<Visitable> list;
-
-    public TemplateChatAdapter(TemplateChatTypeFactory typeFactory) {
-        this.typeFactory = typeFactory;
-        this.list = new ArrayList<>();
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
+        val context = parent.context
+        val view = LayoutInflater.from(context).inflate(viewType, parent, false)
+        return typeFactory.createViewHolder(view, viewType)
     }
 
-    @Override
-    public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        View view = LayoutInflater.from(context).inflate(viewType, parent, false);
-        return typeFactory.createViewHolder(view, viewType);
+    override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
+        (holder as? AbstractViewHolder<Visitable<*>>)?.bind(list[holder.adapterPosition])
     }
 
-    @Override
-    public void onBindViewHolder(AbstractViewHolder holder, int position) {
-        holder.bind(list.get(holder.getAdapterPosition()));
+    override fun getItemViewType(position: Int): Int {
+        return (list[position] as? Visitable<TemplateChatTypeFactory>)?.type(typeFactory) ?: 0
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return list.get(position).type(typeFactory);
+    override fun getItemCount(): Int {
+        return list.size
     }
 
-    @Override
-    public int getItemCount() {
-        return list.size();
+    fun setList(list: List<Visitable<*>>) {
+        this.list.clear()
+        this.list.addAll(list)
+        notifyDataSetChanged()
     }
 
-    public List<Visitable> getList() {
-        return list;
-    }
-
-    public void setList(List<Visitable> list) {
-        this.list.clear();
-        this.list.addAll(list);
-        notifyDataSetChanged();
-    }
-
-    public void update(ArrayList<String> strings) {
-        list.clear();
-        for (int i = 0; i < strings.size(); i++) {
-            list.add(new TemplateChatModel(strings.get(i)));
+    fun update(strings: ArrayList<String?>) {
+        list.clear()
+        for (i in strings.indices) {
+            list.add(TemplateChatModel(strings[i]))
         }
-        list.add(new TemplateChatModel(false));
-        notifyDataSetChanged();
+        list.add(TemplateChatModel(false))
+        notifyDataSetChanged()
     }
 
-    public boolean hasTemplateChat() {
-        return !list.isEmpty();
+    fun hasTemplateChat(): Boolean {
+        return list.isNotEmpty()
     }
 }

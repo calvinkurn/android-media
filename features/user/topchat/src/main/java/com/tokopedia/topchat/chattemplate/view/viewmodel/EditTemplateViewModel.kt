@@ -9,6 +9,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapperKt.mapToEditTemplateUiModel
 import com.tokopedia.topchat.chattemplate.domain.usecase.*
 import com.tokopedia.topchat.chattemplate.view.uimodel.CreateEditTemplateResultModel
+import com.tokopedia.topchat.chattemplate.view.uimodel.EditTemplateUiModel
 import javax.inject.Inject
 
 class EditTemplateViewModel @Inject constructor(
