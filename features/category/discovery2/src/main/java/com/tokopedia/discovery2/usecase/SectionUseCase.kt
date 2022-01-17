@@ -23,6 +23,7 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
             ))
             withContext(Dispatchers.IO){
                 components.forEach { comp ->
+                    comp.parentSectionId = it.sectionId
                     val creativeName = comp.creativeName ?: ""
                     var isProductComponent = true
                     val productListData = when(comp.name) {
