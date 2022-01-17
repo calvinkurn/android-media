@@ -25,6 +25,7 @@ import com.tokopedia.unifyprinciples.Typography
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.isA
+import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 
@@ -121,16 +122,10 @@ class CheckoutPageRobot {
                         assertEquals(View.VISIBLE, view.findViewById<View>(R.id.layout_state_has_selected_single_shipping).visibility)
                         assertEquals(title, view.findViewById<Typography>(R.id.label_selected_single_shipping_title).text)
                         if (originalPrice != null) {
-                            assertEquals(originalPrice, view.findViewById<Typography>(R.id.label_selected_single_shipping_original_price).text)
-                            assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.label_selected_single_shipping_original_price).visibility)
-                        } else {
-                            assertEquals(View.GONE, view.findViewById<Typography>(R.id.label_selected_single_shipping_original_price).visibility)
+                            Assert.assertTrue((view.findViewById<Typography>(R.id.label_selected_single_shipping_title).text).contains(originalPrice))
                         }
                         if (discountedPrice != null) {
-                            assertEquals(discountedPrice, view.findViewById<Typography>(R.id.label_selected_single_shipping_discounted_price).text)
-                            assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.label_selected_single_shipping_original_price).visibility)
-                        } else {
-                            assertEquals(View.GONE, view.findViewById<Typography>(R.id.label_selected_single_shipping_discounted_price).visibility)
+                            Assert.assertTrue((view.findViewById<Typography>(R.id.label_selected_single_shipping_title).text).contains(discountedPrice))
                         }
                         assertEquals(eta, view.findViewById<Typography>(R.id.label_single_shipping_eta).text)
                         if (message != null) {

@@ -98,8 +98,8 @@ class CheckoutTokoNowTest {
             // Wait for Validate Use
             waitForData()
             assertHasSingleShipmentSelected(activityRule,
-                    title = "Gojek (",
-                    originalPrice = "Rp13.000",
+                    title = "Bebas Ongkir (Rp13.000 Rp8.000)",
+                    originalPrice = "(Rp13.000 ",
                     discountedPrice = " Rp8.000)",
                     eta = "Estimasi tiba hari ini",
                     message = "Pengiriman melebihi limit bebas ongkir, kamu cukup bayar Rp8.000")
