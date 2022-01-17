@@ -48,8 +48,19 @@ class FintechWidgetViewModel @Inject constructor
     }
 
 
-    fun getWidgetData(productCategory: String, listOfAmount: MutableList<Double>) {
+    fun getWidgetData(productCategory: String, listOfAmount: List<Double>) {
+        fintchWidgetUseCase.getWidgetData(
+            ::onSuccessWidgetData,
+            ::onFailWidgetData, productCategory, listOfAmount
+        )
+    }
 
+    private fun onSuccessWidgetData(widgetDetail: WidgetDetail) {
+        _widgetDetailLiveData.value = Success(widgetDetail)
+    }
+
+    private fun onFailWidgetData(throwable: Throwable) {
+        _widgetDetailLiveData.value = Fail(throwable)
     }
 
 }

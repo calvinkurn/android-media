@@ -1,7 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import android.view.ViewGroup.LayoutParams;
+import android.view.ViewGroup.LayoutParams
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.pdp.fintech.listner.ProductUpdateListner
 import com.tokopedia.pdp.fintech.view.PdpFintechWidget
@@ -20,10 +20,12 @@ class FintechWidgetViewHolder(val view: View,val  listener: DynamicProductDetail
 
     override fun bind(element: FintechWidgetDataModel?) {
         val fintechWidget = view.findViewById<PdpFintechWidget>(R.id.pdpBasicFintechWidget)
-        fintechWidget.updateBaseFragmentContext(listener.getParentViewModelStoreOwner(),
-            listener.getParentLifeCyclerOwner())
+        fintechWidget.updateBaseFragmentContext(
+            listener.getParentViewModelStoreOwner(),
+            listener.getParentLifeCyclerOwner()
+        )
         listener.getProductId()?.let { productId ->
-            fintechWidget.updateProductId(productId,this)
+            fintechWidget.updateProductId(productId, this)
         }
     }
 

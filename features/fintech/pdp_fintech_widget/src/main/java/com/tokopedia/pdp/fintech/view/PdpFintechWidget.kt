@@ -44,6 +44,7 @@ class PdpFintechWidget @JvmOverloads constructor(
     private lateinit var instanceProductUpdateListner: ProductUpdateListner
     private lateinit var fintechWidgetViewModel: FintechWidgetViewModel
 
+    private var counter = 0
 
 
     init {
@@ -162,9 +163,30 @@ class PdpFintechWidget @JvmOverloads constructor(
     ) {
         this.instanceProductUpdateListner = fintechWidgetViewHolder
         loader.visibility = View.VISIBLE
+        if (counter == 0) {
+            counter++
             fintechWidgetViewModel.getProductDetail(productID)
+        } else {
+            if (priceToChip.size != 0 && idToPriceMap.size != 0)
+                getChipDataAndUpdate(idToPriceMap.get(productID))
+            else
+                fintechWidgetViewModel.getProductDetail(productID)
+        }
 
 
+    }
+
+    private fun getChipDataAndUpdate(productPrice: String?) {
+        productPrice?.let {
+            priceToChip[it]?.let {
+                fintechWidgetAdapter.setData(it)
+
+            } ?: run {
+                instanceProductUpdateListner.removeWidget()
+            }
+        } ?: run {
+            instanceProductUpdateListner.removeWidget()
+        }
     }
 
 

@@ -23,10 +23,11 @@ data class Variant(
     @SerializedName("products") val products: List<Products>
 ) : Parcelable
 
+@Parcelize
 data class CategoryDetail(
     @SerializedName("id")
     val categoryId: String?
-)
+) : Parcelable
 
 @Parcelize
 data class Options(

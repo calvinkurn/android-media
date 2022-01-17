@@ -17,7 +17,7 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
         onSuccess: (WidgetDetail) -> Unit,
         onError: (Throwable) -> Unit,
         productCategory: String,
-        listofAmount: List<Long>,
+        listofAmount: List<Double>,
     ) {
         try {
             this.setTypeClass(WidgetDetail::class.java)
@@ -37,7 +37,7 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
 
 
     private fun getRequestParams(
-        productCategory: String, listofAmount: List<Long>
+        productCategory: String, listofAmount: List<Double>
     ): MutableMap<String, Any?> {
 
         var listOfVariantDetail: MutableList<WidgetRequestModel> = setAmountList(listofAmount)
@@ -45,7 +45,7 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
         return mutableMapOf("request" to setProductDetailMap(productCategory, listOfVariantDetail))
     }
 
-    private fun setAmountList(listofAmount: List<Long>): MutableList<WidgetRequestModel> {
+    private fun setAmountList(listofAmount: List<Double>): MutableList<WidgetRequestModel> {
         var listOfVariantDetail: MutableList<WidgetRequestModel> = ArrayList()
         for (i in listofAmount.indices) {
             listOfVariantDetail.add(WidgetRequestModel(amount = listofAmount[i], ""))
@@ -77,7 +77,7 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
 
 data class WidgetRequestModel(
     @SerializedName("amount")
-    val amount: Long,
+    val amount: Double,
     @SerializedName("redirect_url")
     val redirectionUrl: String?
 )
