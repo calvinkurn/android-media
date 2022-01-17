@@ -41,6 +41,10 @@ class DenomGridWidget @JvmOverloads constructor(@NotNull context: Context, attrs
         }
     }
 
+    fun renderFailDenomGrid(){
+        rechargeDenomGridViewBinding.root.hide()
+    }
+
     fun renderDenomGridShimmering(){
         with(rechargeDenomGridViewBinding){
             tgDenomGridWidgetTitle.hide()

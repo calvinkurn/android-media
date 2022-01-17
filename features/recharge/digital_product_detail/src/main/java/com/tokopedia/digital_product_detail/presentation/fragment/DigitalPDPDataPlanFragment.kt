@@ -65,6 +65,9 @@ class DigitalPDPDataPlanFragment :
 
                is RechargeNetworkResult.Fail -> {
                    view?.let {
+                       binding?.let {
+                           it.widgetDenomGrid.renderFailDenomGrid()
+                       }
                        Toaster.build(it, denomData.error.message ?: "Nei", Toaster.LENGTH_LONG).show()
                    }
                }

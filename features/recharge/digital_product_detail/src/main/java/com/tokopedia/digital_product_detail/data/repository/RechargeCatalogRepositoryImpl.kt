@@ -14,7 +14,7 @@ class RechargeCatalogRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ): RechargeCatalogRepository {
 
-    override suspend fun getCatalogRepository(menuId: Int, operator: String): DenomWidgetModel = withContext(dispatchers.io) {
+    override suspend fun getDenomList(menuId: Int, operator: String) = withContext(dispatchers.io) {
         val catalog = getRechargeCatalogUseCase.apply {
             params = GetRechargeCatalogUseCase.createProductListParams(menuId, operator)
         }.executeOnBackground()
