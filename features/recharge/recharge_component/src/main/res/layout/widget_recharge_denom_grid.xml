@@ -16,7 +16,7 @@
         app:typographyType="heading_4" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_denom_grid_card_title"
+        android:id="@+id/rv_denom_grid_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
@@ -29,6 +29,6 @@
 
     <include
         android:id="@+id/denom_grid_shimmering"
-        layout="@layout/view_recharge_denom_grid_all_shimmering"/>
+        layout="@layout/view_recharge_denom_grid_list_shimmering"/>
 
 </LinearLayout>

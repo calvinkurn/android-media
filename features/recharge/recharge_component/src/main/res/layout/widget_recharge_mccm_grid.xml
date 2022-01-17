@@ -8,21 +8,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/bg_mccm_grid">
+        android:background="@drawable/bg_mccm">
 
         <com.tokopedia.home_component.customview.DynamicChannelHeaderView
-            android:id="@+id/header_mccm"
+            android:id="@+id/header_mccm_grid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_mccm"
+            android:id="@+id/rv_mccm_grid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:nestedScrollingEnabled="false"
             android:paddingLeft="@dimen/spacing_lvl3"
             android:clipToPadding="false"
             />

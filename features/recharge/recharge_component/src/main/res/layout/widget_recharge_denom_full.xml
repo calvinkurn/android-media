@@ -1,37 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tg_recharge_recommendation_card_title"
+        android:id="@+id/tg_denom_full_widget_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:textColor="@color/Unify_N700_96"
-        android:visibility="gone"
         app:typographyType="heading_4" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_recharge_recommendation_card_title"
+        android:id="@+id/rv_denom_full_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:nestedScrollingEnabled="false"
         android:clipToPadding="false"
         android:visibility="gone"
-        android:paddingLeft="@dimen/unify_space_12"
-        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginLeft="@dimen/unify_space_12"
+        android:layout_marginRight="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl4" />
 
     <include
-        android:id="@+id/shimmering_recommendation"
-        layout="@layout/view_recharge_recommendation_shimmering"
-        />
+        android:id="@+id/denom_full_shimmering"
+        layout="@layout/view_recharge_denom_full_list_shimmering"/>
 
 </LinearLayout>
-
-

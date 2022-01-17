@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.recharge_component.databinding.ViewRechargeRecommendationCardBigBinding
 import com.tokopedia.recharge_component.databinding.ViewRechargeRecommendationCardSmallBinding
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
@@ -65,7 +66,19 @@ class RecommendationCardWidgetAdapter(private val recommendationListener: Rechar
             }
         }
         if (listRecommendationProduct.size == 1){
-            viewHolder.itemView.layoutParams?.width = MATCH_PARENT
+            viewHolder.itemView.run {
+                layoutParams?.width = MATCH_PARENT
+                setMargin(
+                    resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                        .toInt(),
+                    resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                        .toInt(),
+                    resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
+                        .toInt(),
+                    resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                        .toInt()
+                )
+            }
         }
         return viewHolder
     }
