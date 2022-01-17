@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName
 data class TokoNow(
     @Expose
     @SerializedName("shopID")
-    val shopId: String,
+    val shopId: String = "",
 
     @Expose
     @SerializedName("whID")
-    val warehouseId: String,
+    val warehouseId: String = "",
 
     @Expose
     @SerializedName("serviceType")
-    val serviceType: String
+    val serviceType: String = ""
 )
