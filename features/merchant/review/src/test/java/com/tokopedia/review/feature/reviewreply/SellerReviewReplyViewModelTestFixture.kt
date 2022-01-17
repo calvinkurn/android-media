@@ -2,12 +2,11 @@ package com.tokopedia.review.feature.reviewreply
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.review.feature.reviewreply.domain.GetReviewTemplateListUseCase
-import com.tokopedia.review.feature.reviewreply.domain.InsertSellerResponseUseCase
 import com.tokopedia.review.feature.reviewreply.domain.InsertTemplateReviewReplyUseCase
 import com.tokopedia.review.feature.reviewreply.domain.UpdateSellerResponseUseCase
 import com.tokopedia.review.feature.reviewreply.view.viewmodel.SellerReviewReplyViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
@@ -24,9 +23,6 @@ abstract class SellerReviewReplyViewModelTestFixture {
     lateinit var getReviewTemplateListUseCase: GetReviewTemplateListUseCase
 
     @RelaxedMockK
-    lateinit var insertSellerResponseUseCase: InsertSellerResponseUseCase
-
-    @RelaxedMockK
     lateinit var updateSellerResponseUseCase: UpdateSellerResponseUseCase
 
     @RelaxedMockK
@@ -38,7 +34,7 @@ abstract class SellerReviewReplyViewModelTestFixture {
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = SellerReviewReplyViewModel(CoroutineTestDispatchersProvider,
-                getReviewTemplateListUseCase, insertSellerResponseUseCase,
+                getReviewTemplateListUseCase,
                 updateSellerResponseUseCase, insertTemplateReviewReplyUseCase)
     }
 

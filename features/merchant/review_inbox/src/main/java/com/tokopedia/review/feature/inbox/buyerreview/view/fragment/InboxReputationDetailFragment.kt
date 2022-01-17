@@ -14,6 +14,7 @@ import android.view.Window
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
@@ -30,6 +31,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.imagepreview.ImagePreviewActivity.Companion.getCallingIntent
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.review.common.reviewreplyinsert.presentation.viewmodel.ReviewReplyInsertViewModel
 import com.tokopedia.review.common.util.ClipboardHandler
 import com.tokopedia.review.common.util.ReviewErrorHandler.getErrorMessage
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.AppScreen
@@ -48,6 +51,8 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.I
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailItemUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailPassModel
 import com.tokopedia.review.inbox.R
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
@@ -77,6 +82,12 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var reputationTracking: ReputationTracking
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModelReviewReplyInsert: ReviewReplyInsertViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(ReviewReplyInsertViewModel::class.java)
+    }
 
     private var reputationId: String = ""
     var orderId: String = ""
@@ -204,6 +215,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         } else {
             activity?.finish()
         }
+        observeInsertReviewReply()
     }
 
     override fun showLoading() {
@@ -396,17 +408,14 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         element: InboxReputationDetailItemUiModel,
         replyReview: String
     ) {
-        presenter.sendReplyReview(
-            element.reputationId, element.productId,
-            element.shopId, element.reviewId, replyReview
-        )
+        viewModelReviewReplyInsert.insertReviewReply(element.reviewId, replyReview)
     }
 
-    override fun onErrorReplyReview(errorMessage: String?) {
+    private fun onErrorReplyReview(errorMessage: String?) {
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
-    override fun onSuccessReplyReview() {
+    private fun onSuccessReplyReview() {
         refreshPage()
         NetworkErrorHelper.showSnackbar(activity, getString(R.string.reply_response_send))
     }
@@ -555,6 +564,23 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.detachView()
+    }
+
+    private fun observeInsertReviewReply() {
+        viewModelReviewReplyInsert.insertReviewReply.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    finishLoadingDialog()
+                    if (it.data.success) onSuccessReplyReview() else onErrorReplyReview(
+                        getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
+                    )
+                }
+                is Fail -> {
+                    finishLoadingDialog()
+                    onErrorReplyReview(ErrorHandler.getErrorMessage(context, it.throwable))
+                }
+            }
+        })
     }
 
     companion object {

@@ -43,8 +43,6 @@ interface InboxReputationDetail {
         fun onErrorDeleteReviewResponse(errorMessage: String?)
         fun onSuccessDeleteReviewResponse()
         fun onSendReplyReview(element: InboxReputationDetailItemUiModel, replyReview: String)
-        fun onErrorReplyReview(errorMessage: String?)
-        fun onSuccessReplyReview()
         fun onShareReview(
             inboxReputationDetailItemUiModel: InboxReputationDetailItemUiModel,
             adapterPosition: Int
@@ -74,11 +72,6 @@ interface InboxReputationDetail {
             productId: String,
             shopId: String,
             reputationId: String
-        )
-
-        fun sendReplyReview(
-            reputationId: Long, productId: String, shopId: Long,
-            reviewId: String, replyReview: String
         )
     }
 }

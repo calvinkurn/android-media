@@ -1,11 +1,9 @@
 package com.tokopedia.review.feature.reviewreply
 
-import com.tokopedia.review.feature.reviewreply.data.ReviewReplyInsertResponse
 import com.tokopedia.review.feature.reviewreply.data.ReviewReplyInsertTemplateResponse
 import com.tokopedia.review.feature.reviewreply.data.ReviewReplyTemplateListResponse
 import com.tokopedia.review.feature.reviewreply.data.ReviewReplyUpdateResponse
 import com.tokopedia.review.feature.reviewreply.view.fragment.SellerReviewReplyFragment.Companion.DATE_REVIEW_FORMAT
-import com.tokopedia.review.feature.reviewreply.view.model.InsertReplyResponseUiModel
 import com.tokopedia.review.feature.reviewreply.view.model.InsertTemplateReplyUiModel
 import com.tokopedia.review.feature.reviewreply.view.model.UpdateReplyResponseUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -33,19 +31,6 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
             verifySuccessReplyTemplateListUseCaseCalled()
             assertTrue(viewModel.reviewTemplate.value is Success)
             assertNotNull(viewModel.reviewTemplate.value)
-        }
-    }
-
-    @Test
-    fun `when insert review reply should return success`() {
-        runBlocking {
-            onInsertReviewReply_thenReturn()
-            viewModel.insertReviewReply(anyString(), anyString())
-
-            verifySuccessInsertReviewReplyUseCalled()
-            val expectedValue = Success(InsertReplyResponseUiModel(anyBoolean()))
-            assertTrue(viewModel.insertReviewReply.value is Success)
-            viewModel.insertReviewReply.verifyValueEquals(expectedValue)
         }
     }
 
@@ -101,18 +86,6 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
     }
 
     @Test
-    fun `when insert review reply return fail`() {
-        runBlocking {
-            val error = NullPointerException()
-            onInsertReviewReply_thenError(error)
-
-            viewModel.insertReviewReply(anyString(), anyString())
-            val expectedResult = Fail(error)
-            viewModel.insertReviewReply.verifyErrorEquals(expectedResult)
-        }
-    }
-
-    @Test
     fun `when update review reply return fail`() {
         runBlocking {
             val error = NullPointerException()
@@ -134,10 +107,6 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
         coEvery { getReviewTemplateListUseCase.executeOnBackground() } coAnswers { throw exception }
     }
 
-    private fun onInsertReviewReply_thenError(exception: NullPointerException) {
-        coEvery { insertSellerResponseUseCase.executeOnBackground() } coAnswers { throw exception }
-    }
-
     private fun onUpdateReviewReply_thenError(exception: NullPointerException) {
         coEvery { updateSellerResponseUseCase.executeOnBackground() } coAnswers { throw exception }
     }
@@ -150,20 +119,12 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
         coEvery { getReviewTemplateListUseCase.executeOnBackground() } returns ReviewReplyTemplateListResponse.ReviewResponseTemplateList()
     }
 
-    private fun onInsertReviewReply_thenReturn() {
-        coEvery { insertSellerResponseUseCase.executeOnBackground() } returns ReviewReplyInsertResponse.ProductrevInsertSellerResponse()
-    }
-
     private fun onUpdateReviewReply_thenReturn() {
         coEvery { updateSellerResponseUseCase.executeOnBackground() } returns ReviewReplyUpdateResponse.ProductrevUpdateSellerResponse()
     }
 
     private fun onInsertTemplateReply_thenReturn() {
         coEvery { insertTemplateReviewReplyUseCase.executeOnBackground() } returns ReviewReplyInsertTemplateResponse.InsertResponseTemplate()
-    }
-
-    private fun verifySuccessInsertReviewReplyUseCalled() {
-        coVerify { insertSellerResponseUseCase.executeOnBackground() }
     }
 
     private fun verifyUpdateReviewReplyUseCaseCalled() {

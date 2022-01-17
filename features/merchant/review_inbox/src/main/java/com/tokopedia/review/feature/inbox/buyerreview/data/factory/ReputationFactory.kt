@@ -4,7 +4,6 @@ import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.DeleteReviewResponseMapper
 import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.InboxReputationDetailMapper
 import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.InboxReputationMapper
-import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.ReplyReviewMapper
 import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.ReportReviewMapper
 import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.SendSmileyReputationMapper
 import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.ShopFavoritedMapper
@@ -12,7 +11,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.data.source.CloudCheckShop
 import com.tokopedia.review.feature.inbox.buyerreview.data.source.CloudDeleteReviewResponseDataSource
 import com.tokopedia.review.feature.inbox.buyerreview.data.source.CloudInboxReputationDataSource
 import com.tokopedia.review.feature.inbox.buyerreview.data.source.CloudInboxReputationDetailDataSource
-import com.tokopedia.review.feature.inbox.buyerreview.data.source.CloudReplyReviewDataSource
 import com.tokopedia.review.feature.inbox.buyerreview.data.source.CloudReportReviewDataSource
 import com.tokopedia.review.feature.inbox.buyerreview.data.source.CloudSendSmileyReputationDataSource
 import com.tokopedia.review.feature.inbox.buyerreview.data.source.LocalInboxReputationDataSource
@@ -33,7 +31,6 @@ class ReputationFactory @Inject constructor(
     private val reportReviewMapper: ReportReviewMapper,
     private val shopFavoritedMapper: ShopFavoritedMapper,
     private val persistentCacheManager: PersistentCacheManager,
-    private val replyReviewMapper: ReplyReviewMapper,
     private val deleteReviewResponseMapper: DeleteReviewResponseMapper,
     private val userSession: UserSessionInterface
 ) {
@@ -82,12 +79,5 @@ class ReputationFactory @Inject constructor(
 
     fun createCloudCheckShopFavoriteDataSource(): CloudCheckShopFavoriteDataSource {
         return CloudCheckShopFavoriteDataSource(tomeService, shopFavoritedMapper)
-    }
-
-    fun createCloudReplyReviewDataSource(): CloudReplyReviewDataSource {
-        return CloudReplyReviewDataSource(
-            reputationService,
-            replyReviewMapper, userSession
-        )
     }
 }

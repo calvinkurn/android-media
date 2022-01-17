@@ -27,6 +27,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
+import com.tokopedia.review.common.reviewreplyinsert.presentation.model.ReviewReplyInsertUiModel
+import com.tokopedia.review.common.reviewreplyinsert.presentation.viewmodel.ReviewReplyInsertViewModel
 import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.toRelativeDate
 import com.tokopedia.review.databinding.FragmentSellerReviewReplyBinding
@@ -36,7 +38,6 @@ import com.tokopedia.review.feature.reviewreply.di.component.ReviewReplyComponen
 import com.tokopedia.review.feature.reviewreply.util.mapper.SellerReviewReplyMapper
 import com.tokopedia.review.feature.reviewreply.view.adapter.ReviewTemplateListAdapter
 import com.tokopedia.review.feature.reviewreply.view.bottomsheet.AddTemplateBottomSheet
-import com.tokopedia.review.feature.reviewreply.view.model.InsertReplyResponseUiModel
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
 import com.tokopedia.review.feature.reviewreply.view.model.ReplyTemplateUiModel
 import com.tokopedia.review.feature.reviewreply.view.model.UpdateReplyResponseUiModel
@@ -75,6 +76,9 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private var viewModelReviewReply: SellerReviewReplyViewModel? = null
+    private val viewModelReviewReplyInsert: ReviewReplyInsertViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(ReviewReplyInsertViewModel::class.java)
+    }
 
     private var optionMenuReplyReview: ListUnify? = null
     private var bottomSheetReplyReview: BottomSheetUnify? = null
@@ -177,9 +181,9 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
 
     override fun onDestroy() {
         viewModelReviewReply?.reviewTemplate?.removeObservers(this)
-        viewModelReviewReply?.insertReviewReply?.removeObservers(this)
         viewModelReviewReply?.updateReviewReply?.removeObservers(this)
         viewModelReviewReply?.insertTemplateReply?.removeObservers(this)
+        viewModelReviewReplyInsert.insertReviewReply.removeObservers(this)
         super.onDestroy()
     }
 
@@ -252,7 +256,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
     }
 
     private fun observeInsertReviewReply() {
-        viewModelReviewReply?.insertReviewReply?.observe(viewLifecycleOwner, {
+        viewModelReviewReplyInsert.insertReviewReply.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     isEmptyReply = false
@@ -330,7 +334,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
                         (!isEmptyReply).toString()
                     )
                     if (isEmptyReply) {
-                        viewModelReviewReply?.insertReviewReply(
+                        viewModelReviewReplyInsert.insertReviewReply(
                             feedbackUiModel?.feedbackID ?: "",
                             getText()
                         )
@@ -345,7 +349,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun insertReviewReplySuccess(data: InsertReplyResponseUiModel) {
+    private fun insertReviewReplySuccess(data: ReviewReplyInsertUiModel) {
         if (data.success) {
             activity?.let { KeyboardHandler.showSoftKeyboard(it) }
             binding?.reviewReplyTextBoxWidget?.hide()

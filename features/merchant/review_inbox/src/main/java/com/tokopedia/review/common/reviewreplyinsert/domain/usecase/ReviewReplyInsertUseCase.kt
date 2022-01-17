@@ -1,16 +1,16 @@
-package com.tokopedia.review.feature.reviewreply.domain
+package com.tokopedia.review.common.reviewreplyinsert.domain.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.review.feature.reviewreply.data.ReviewReplyInsertResponse
+import com.tokopedia.review.common.reviewreplyinsert.domain.model.ReviewReplyInsertResponse
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class InsertSellerResponseUseCase @Inject constructor(
-        private val graphQlRepository: GraphqlRepository
-): UseCase<ReviewReplyInsertResponse.ProductrevInsertSellerResponse>() {
+class ReviewReplyInsertUseCase @Inject constructor(
+    private val graphQlRepository: GraphqlRepository
+) : UseCase<ReviewReplyInsertResponse.ProductrevInsertSellerResponse>() {
 
     companion object {
         private const val FEEDBACK_ID = "feedbackID"
@@ -26,7 +26,7 @@ class InsertSellerResponseUseCase @Inject constructor(
 
         @JvmStatic
         fun createParams(feedbackId: String, responseMessage: String): Map<String, Any> =
-                mapOf(FEEDBACK_ID to feedbackId, RESPONSE_MESSAGE to responseMessage)
+            mapOf(FEEDBACK_ID to feedbackId, RESPONSE_MESSAGE to responseMessage)
     }
 
     var params = mapOf<String, Any>()
@@ -39,7 +39,7 @@ class InsertSellerResponseUseCase @Inject constructor(
         if (error.isNullOrEmpty()) {
             return gqlResponse.getData<ReviewReplyInsertResponse>(ReviewReplyInsertResponse::class.java).productrevInsertSellerResponse
         } else {
-            throw MessageErrorException(error.joinToString(", ") { it.message} )
+            throw MessageErrorException(error.joinToString(", ") { it.message })
         }
     }
 }

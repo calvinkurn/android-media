@@ -5,7 +5,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.domain.model.InboxReputati
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.CheckShopFavoriteDomain
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.DeleteReviewResponseDomain
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewDomain
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.SendReplyReviewDomain
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.SendSmileyReputationDomain
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.report.ReportReviewDomain
 import com.tokopedia.usecase.RequestParams
@@ -59,11 +58,5 @@ class ReputationRepository @Inject constructor(
         return reputationFactory
             .createCloudCheckShopFavoriteDataSource()
             .checkShopIsFavorited(requestParams)
-    }
-
-    fun insertReviewResponse(requestParams: RequestParams): Observable<SendReplyReviewDomain> {
-        return reputationFactory
-            .createCloudReplyReviewDataSource()
-            .insertReviewResponse(requestParams)
     }
 }

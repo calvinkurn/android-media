@@ -6,11 +6,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.review.feature.reviewreply.domain.GetReviewTemplateListUseCase
-import com.tokopedia.review.feature.reviewreply.domain.InsertSellerResponseUseCase
 import com.tokopedia.review.feature.reviewreply.domain.InsertTemplateReviewReplyUseCase
 import com.tokopedia.review.feature.reviewreply.domain.UpdateSellerResponseUseCase
 import com.tokopedia.review.feature.reviewreply.util.mapper.SellerReviewReplyMapper
-import com.tokopedia.review.feature.reviewreply.view.model.InsertReplyResponseUiModel
 import com.tokopedia.review.feature.reviewreply.view.model.InsertTemplateReplyUiModel
 import com.tokopedia.review.feature.reviewreply.view.model.ReplyTemplateUiModel
 import com.tokopedia.review.feature.reviewreply.view.model.UpdateReplyResponseUiModel
@@ -25,7 +23,6 @@ import javax.inject.Inject
 class SellerReviewReplyViewModel @Inject constructor(
     private val dispatcherProvider: CoroutineDispatchers,
     private val getReviewTemplateListUseCase: GetReviewTemplateListUseCase,
-    private val insertSellerResponseUseCase: InsertSellerResponseUseCase,
     private val updateSellerResponseUseCase: UpdateSellerResponseUseCase,
     private val insertTemplateReviewReplyUseCase: InsertTemplateReviewReplyUseCase)
     : BaseViewModel(dispatcherProvider.main) {
@@ -37,10 +34,6 @@ class SellerReviewReplyViewModel @Inject constructor(
     private val _updateReviewReply = MutableLiveData<Result<UpdateReplyResponseUiModel>>()
     val updateReviewReply: LiveData<Result<UpdateReplyResponseUiModel>>
         get() = _updateReviewReply
-
-    private val _insertReviewReply = MutableLiveData<Result<InsertReplyResponseUiModel>>()
-    val insertReviewReply: LiveData<Result<InsertReplyResponseUiModel>>
-        get() = _insertReviewReply
 
     private val _reviewTemplate = MutableLiveData<Result<List<ReplyTemplateUiModel>>>()
     val reviewTemplate: LiveData<Result<List<ReplyTemplateUiModel>>>
@@ -58,21 +51,6 @@ class SellerReviewReplyViewModel @Inject constructor(
             _reviewTemplate.value = Success(reviewTemplateList)
         }, onError = {
             _reviewTemplate.value = Fail(it)
-        })
-    }
-
-    fun insertReviewReply(feedbackId: String, responseMessage: String) {
-        launchCatchError(block = {
-            val responseInsertReply = withContext(dispatcherProvider.io) {
-                insertSellerResponseUseCase.params = InsertSellerResponseUseCase.createParams(
-                    feedbackId,
-                    responseMessage
-                )
-                SellerReviewReplyMapper.mapToInsertReplyUiModel(insertSellerResponseUseCase.executeOnBackground())
-            }
-            _insertReviewReply.value = Success(responseInsertReply)
-        }, onError = {
-            _insertReviewReply.value = Fail(it)
         })
     }
 
