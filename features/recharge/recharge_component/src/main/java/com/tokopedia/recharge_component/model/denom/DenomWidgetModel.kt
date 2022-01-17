@@ -4,7 +4,7 @@ data class DenomWidgetModel(
    val mainTitle: String = "",
    val subTitle: String = "",
    val textColor: String = "",
-   val listDenomWidget: List<DenomData> = emptyList()
+   val listDenomData: List<DenomData> = emptyList()
 )
 
 data class DenomData(
