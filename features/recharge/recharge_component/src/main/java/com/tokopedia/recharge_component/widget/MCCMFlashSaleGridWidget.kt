@@ -41,7 +41,7 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
 
                 }
             })
-            renderAdapter(denomGridListener, denomData.listDenomWidget)
+            renderAdapter(denomGridListener, denomData.listDenomData)
         }
     }
 
@@ -56,7 +56,7 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
 
                 }
             })
-            renderAdapter(denomGridListener, denomData.listDenomWidget)
+            renderAdapter(denomGridListener, denomData.listDenomData)
         }
     }
 
