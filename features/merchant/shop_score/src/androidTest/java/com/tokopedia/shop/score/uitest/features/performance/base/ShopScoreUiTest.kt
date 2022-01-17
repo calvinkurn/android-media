@@ -38,7 +38,7 @@ import org.hamcrest.CoreMatchers.`is`
 
 abstract class ShopScoreUiTest: BaseShopScoreTest() {
 
-    protected fun getShopInfoPeriod(
+    private fun getShopInfoPeriod(
         shopInfoPeriodResponseStub: ShopInfoPeriodResponseStub
     ): ShopInfoPeriodUiModel {
         return shopScoreCommonMapperStub.mapToGetShopInfo(
@@ -49,7 +49,7 @@ abstract class ShopScoreUiTest: BaseShopScoreTest() {
         )
     }
 
-    protected fun getHeaderPerformanceUiModel(
+    private fun getHeaderPerformanceUiModel(
         shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?,
         powerMerchantResponse: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data?,
         goldGetPMShopInfoResponse: GoldGetPMShopInfoResponse.GoldGetPMShopInfo?,
@@ -258,13 +258,13 @@ abstract class ShopScoreUiTest: BaseShopScoreTest() {
             )
         onIdView(R.id.tvPerformanceDetailDate).isViewDisplayed()
             .withTextStr(
-                context?.getString(
+                context.getString(
                     R.string.title_update_date_new_seller,
                     shopScoreLevel.period
                 )
             )
         onIdView(R.id.tvPerformanceDetailDateNewSeller).isViewDisplayed()
-            .withTextStr(context?.getString(R.string.title_update_date, shopScoreLevel.nextUpdate))
+            .withTextStr(context.getString(R.string.title_update_date, shopScoreLevel.nextUpdate))
     }
 
     protected fun showDetailPerformanceNewOsBeforeMonday() {
@@ -449,7 +449,7 @@ abstract class ShopScoreUiTest: BaseShopScoreTest() {
         }
     }
 
-    protected fun showDetailPerformanceBottomSheet(identifierDetailPerformance: String) {
+    private fun showDetailPerformanceBottomSheet(identifierDetailPerformance: String) {
         val shopPerformanceDetail =
             shopScoreMapperStub.mapToShopPerformanceDetail(identifierDetailPerformance)
         onIdView(R.id.tvDescCalculationDetail).isViewDisplayed().withTextStr(
