@@ -670,7 +670,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         var filters = ""
         if (!selectedOption.isNullOrEmpty()) {
             for (filter in selectedOption) {
-                filters += reasonList?.get(filter.toInt()) + ","
+                if(filter.isNotEmpty())
+                    filters += reasonList?.get(filter.toInt()) + ","
             }
             return filters.substring(0, filters.length - 1)
         }

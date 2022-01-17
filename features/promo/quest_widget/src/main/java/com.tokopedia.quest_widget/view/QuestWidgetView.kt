@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.kotlin.extensions.view.hide
@@ -21,12 +22,12 @@ import com.tokopedia.quest_widget.di.DaggerQuestComponent
 import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.quest_widget.tracker.QuestSource
 import com.tokopedia.quest_widget.tracker.QuestTracker
+import com.tokopedia.quest_widget.tracker.QuestTrackerImpl
 import com.tokopedia.quest_widget.util.ConnectionLiveData
 import com.tokopedia.quest_widget.util.LiveDataResult
-import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 class QuestWidgetView @JvmOverloads constructor(
@@ -47,7 +48,7 @@ class QuestWidgetView @JvmOverloads constructor(
     private var rvQuestWidget: RecyclerView
     private var shimmerQuestWidget: ConstraintLayout
     private var constraintLayoutQuestWidget: ConstraintLayout
-    private var questWidgetLogin: ImageUnify
+    private var questWidgetLogin: DeferredImageView
     private var rvError: RecyclerView
     var userSession: UserSessionInterface
     private lateinit var page: String
@@ -87,7 +88,7 @@ class QuestWidgetView @JvmOverloads constructor(
             }
             else{
                 if(reload)
-                getQuestList(0, "", page = page, source = source)
+                    getQuestList(0, "", page = page, source = source)
             }
         })
 
@@ -185,6 +186,11 @@ class QuestWidgetView @JvmOverloads constructor(
 
     private fun setData(data: QuestData?) {
 
+        if(data?.widgetData?.questWidgetList?.pageDetail?.title.isNullOrEmpty()){
+            tvLabel.hide()
+            tvLihat.hide()
+        }
+
         tvLabel.text = data?.widgetData?.questWidgetList?.pageDetail?.title
         tvLihat.text = data?.widgetData?.questWidgetList?.pageDetail?.cta?.text
 
@@ -267,5 +273,9 @@ class QuestWidgetView @JvmOverloads constructor(
         constraintLayoutQuestWidget.hide()
         shimmerQuestWidget.show()
         getQuestList(0, "", this.page, this.source)
+    }
+
+    fun setTrackerImpl(questTrackerImpl: QuestTrackerImpl){
+        questTracker.trackerImpl = questTrackerImpl
     }
 }

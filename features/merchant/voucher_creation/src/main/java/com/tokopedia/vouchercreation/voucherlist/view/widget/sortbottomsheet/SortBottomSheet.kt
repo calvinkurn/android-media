@@ -108,9 +108,7 @@ class SortBottomSheet : BottomSheetUnify() {
         if (sort.isSelected) return
         sortAdapter.sortItems.forEach { it.isSelected = false }
         sort.isSelected = true
-        view?.rvMcvSort?.post {
-            sortAdapter.notifyDataSetChanged()
-        }
+        sortAdapter.notifyDataSetChanged()
     }
 
     private fun List<SortUiModel>.copy(): List<SortUiModel> {

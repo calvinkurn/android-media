@@ -316,6 +316,43 @@
     <string name="topads_dashboard_no_product_sheet_body">Tambah produk terlebih dahulu untuk mulai beriklan</string>
     <string name="topads_dashboard_no_product_sheet_button">Tambah produk</string>
     <string name="topads_dashboard_updated_daily_budget">Anggaran harian diperbaharui</string>
+    
+    <string name="topads_insight_select_ads_type">Pilih tipe iklan</string>
+    <string name="topads_insight_title_bid_keyword">Rekomendasi biaya kata kunci (%d)</string>
+    <string name="topads_insight_title_new_keyword">Rekomendasi kata kunci baru (%d)</string>
+    <string name="topads_insight_title_negative_keyword">Rekomendasi kata kunci negatif (%d)</string>
+    <string name="topads_insight_recomm_keyword_title">Tambah biaya kata kunci untuk %d iklanmu supaya bisa</string>
+    <string name="topads_insight_recomm_keyword_subtitle">tampil lebih banyak hingga +%s kali!</string>
+    <string name="topads_insight_keyword_error">Lengkapi informasi iklan produkmu.</string>
+    <string name="topads_insight_oke_button">Oke</string>
+
+    <!-- TOPADS INSIGHT KEYWORDS LAYOUT -->
+    <string name="apply_keyword_toast_message">"%d rekomendasi anggaran harian berhasil diterapkan"</string>
+    <string name="empty_view_title">Semua kata kunci iklanmu sudah dimaksimalkan!</string>
+    <string name="empty_view_desc">Ayo cek rekomendasi iklan lainnya yang masih menunggumu untuk dioptimalkan.</string>
+    <string name="label_select_all">Pilih Semua</string>
+    <string name="bid_keyword_btn_text">Terapkan Biaya (%d)</string>
+    <string name="new_keyword_btn_text">Terapkan Kata Kunci Baru (%d)</string>
+    <string name="neg_keyword_btn_text">Tambah Kata Kunci Negatif (%d)</string>
+
+    <!-- TOPADS INSIGHT KEYWORDS ADAPTER -->
+    <string name="label_group">Grup:</string>
+    <string name="no_of_searches">Jumlah pencarian <![CDATA["<font color='#000000'><b>+%drb</b></font>]]>/bulan</string>
+    <string name="per_click_value">%d/klik</string>
+    <string name="per_click_bold_value"><![CDATA["<font color='#000000'><b>%d</b></font>]]>/klik</string>
+    <string name="keyword_recommended_budget">•Rekomendasi Rp%d</string>
+    <string name="biaya_optimal">Biaya optimal ✔️</string>
+    <string name="max_times_month">Potensi tampil maks. <![CDATA["<font color='#000000'><b>+%d</b></font>]]> kali/bulan</string>
+
+    <string name="error_bid_not_multiple_50">Harus kelipatan Rp50</string>
+    <string name="min_bid_error_number">Biaya min. Rp%d</string>
+    <string name="max_bid_error_number">Biaya maks. Rp%d</string>
+    <string name="new_keyword_subtitle2">Biaya kata kunci</string>
+
+    <string name="title_current_cost">Biaya saat ini</string>
+    <string name="title_new_fee">Biaya baru</string>
+
+
 
     <!--RECOMMENDATION DAILY BUDGET & PRODUCT -->
     <string name="topads_dash_recom_daily_budget_title">Rekomendasi anggaran harian iklan</string>

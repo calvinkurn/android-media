@@ -19,9 +19,11 @@ class PromoCheckoutListDealsActivity : BaseSimpleActivity(), HasComponent<PromoC
                 intent?.extras?.getBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, true),
                 intent?.extras?.getString(BasePromoCheckoutListFragment.EXTRA_PROMO_CODE, ""),
                 intent?.extras?.getInt(PromoCheckoutListDealsFragment.EXTRA_CATEGORY_ID, 1) ?: 1,
+                intent?.extras?.getString(PromoCheckoutListDealsFragment.EXTRA_CATEGORY_NAME, ""),
+                intent?.extras?.getInt(PromoCheckoutListDealsFragment.EXTRA_GRAND_TOTAL, 0) ?: 0,
+                intent?.extras?.getString(PromoCheckoutListDealsFragment.EXTRA_META_DATA, ""),
                 intent?.extras?.getInt(BasePromoCheckoutListFragment.PAGE_TRACKING, 1) ?: 1,
-                intent?.extras?.getString(PromoCheckoutListDealsFragment.EXTRA_PRODUCTID, ""),
-                intent?.extras?.getString(PromoCheckoutListDealsFragment.EXTRA_CHECKOUT_DATA, ""))
+                intent?.extras?.getString(PromoCheckoutListDealsFragment.EXTRA_PRODUCTID, ""))
     }
 
     override fun getComponent(): PromoCheckoutListComponent {
@@ -29,12 +31,15 @@ class PromoCheckoutListDealsActivity : BaseSimpleActivity(), HasComponent<PromoC
     }
 
     companion object {
-        fun newInstance(activity: Context, isCouponActive: Boolean, platform: String, categoryId: String, pageTracking: Int): Intent {
+        fun newInstance(activity: Context, isCouponActive: Boolean, platform: String, categoryId: String, categoryName: String, grandTotal:Int, metaData: String, pageTracking: Int): Intent {
             val intent = Intent(activity, PromoCheckoutListDealsActivity::class.java)
             val bundle = Bundle()
             bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, isCouponActive)
             bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PLATFORM, platform)
             bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORYID, categoryId)
+            bundle.putString(PromoCheckoutListDealsFragment.EXTRA_CATEGORY_NAME, categoryName)
+            bundle.putInt(PromoCheckoutListDealsFragment.EXTRA_GRAND_TOTAL, grandTotal)
+            bundle.putString(PromoCheckoutListDealsFragment.EXTRA_META_DATA, metaData)
             bundle.putInt(BasePromoCheckoutListFragment.PAGE_TRACKING, pageTracking)
             intent.putExtras(bundle)
             return intent

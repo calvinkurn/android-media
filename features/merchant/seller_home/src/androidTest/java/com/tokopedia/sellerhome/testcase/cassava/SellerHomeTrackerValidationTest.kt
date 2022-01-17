@@ -1,17 +1,13 @@
 package com.tokopedia.sellerhome.testcase.cassava
 
 import android.content.Context
-import androidx.test.espresso.IdlingPolicies
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.SellerHomeIdlingResource
 import com.tokopedia.sellerhome.stub.features.home.presentation.SellerHomeActivityStub
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
@@ -24,12 +20,10 @@ import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.util.concurrent.TimeUnit
 
 @LargeTest
 @RunWith(AndroidJUnit4ClassRunner::class)
@@ -44,9 +38,7 @@ class SellerHomeTrackerValidationTest {
         ) {
             override fun afterActivityLaunched() {
                 super.afterActivityLaunched()
-                sellerHomeLoadTimeMonitoringListener.onStartPltMonitoring()
-                activity.loadTimeMonitoringListener = sellerHomeLoadTimeMonitoringListener
-                markAsIdleIfPltIsSucceed()
+                waitingForWidgetLoaded()
             }
         }
 
@@ -56,33 +48,15 @@ class SellerHomeTrackerValidationTest {
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
 
-    // this is only to make the test wait until widgets rendered
-    val sellerHomeLoadTimeMonitoringListener = object : LoadTimeMonitoringListener {
-        override fun onStartPltMonitoring() {
-            SellerHomeIdlingResource.increment()
-        }
-
-        override fun onStopPltMonitoring() {
-            SellerHomeIdlingResource.decrement()
-        }
-    }
-
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before
     fun init() {
-        setUpTimeoutPolicy()
-        this.registerIdlingResources()
         setupGraphqlMockResponse(createMockModelConfig())
         gtmLogDBSource.deleteAll().toBlocking().first()
 
         activityRule.launchActivity(SellerHomeActivityStub.createIntent(context))
-    }
-
-    @After
-    fun tearDown() {
-        this.unregisterIdlingResources()
     }
 
     @Test
@@ -291,29 +265,12 @@ class SellerHomeTrackerValidationTest {
         }
     }
 
-    private fun markAsIdleIfPltIsSucceed() {
-        val performanceData =
-            activityRule.activity.performanceMonitoringSellerHomeLayoutPlt?.getPltPerformanceMonitoring()
-        if (performanceData?.isSuccess == true) {
-            sellerHomeLoadTimeMonitoringListener.onStopPltMonitoring()
-        }
-    }
-
-    private fun setUpTimeoutPolicy() {
-        IdlingPolicies.setMasterPolicyTimeout(1, TimeUnit.MINUTES)
-        IdlingPolicies.setIdlingResourceTimeout(1, TimeUnit.MINUTES)
-    }
-
-    private fun registerIdlingResources() {
-        IdlingRegistry.getInstance().register(SellerHomeIdlingResource.idlingResource)
-    }
-
-    private fun unregisterIdlingResources() {
-        IdlingRegistry.getInstance().unregister(SellerHomeIdlingResource.idlingResource)
-    }
-
     private fun waitForTrackerSent() {
         Thread.sleep(2000)
+    }
+
+    private fun waitingForWidgetLoaded() {
+        Thread.sleep(5000)
     }
 
     private fun createMockModelConfig(): MockModelConfig {

@@ -233,8 +233,6 @@
     <string name="notif_troubleshooter_app_name">Push Notification Troubleshooter</string>
 
     <!-- Payment-Setting-->
-    <string name="df_payment_instant_debit_bca">Instant Debit BCA</string>
-    <string name="instant_debit_bca_title">Tambah Kartu BCA</string>
     <string name="payment_setting_app_name">payment_setting</string>
     <string name="payment_title_list_card">Pengaturan Kartu Kredit</string>
     <string name="payment_label_credit_card">Kartu Kredit</string>
@@ -329,7 +327,6 @@
     <string name="title_one_click_checkout">Beli Langsung</string>
     <string name="title_one_click_checkout_choose_payment_method">Pilih Metode Pembayaran</string>
     <string name="title_one_click_checkout_credit_card_and_debit">Kartu Kredit</string>
-    <string name="title_one_click_checkout_top_up_ovo">Top-up OVO</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
     <string name="title_uoh_list">Daftar Transaksi</string>
     <string name="title_wishlist_v2">Wishlist</string>
