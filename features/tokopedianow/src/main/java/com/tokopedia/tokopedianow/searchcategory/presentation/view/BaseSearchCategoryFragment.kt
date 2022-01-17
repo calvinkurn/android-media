@@ -1026,7 +1026,7 @@ abstract class BaseSearchCategoryFragment:
                     ChooseAddressUtils.updateTokoNowData(
                         context = this,
                         warehouseId = result.data.warehouseId,
-                        shopId = userSession.shopId,
+                        shopId = result.data.shopId,
                         serviceType = result.data.serviceType,
                         warehouses = result.data.warehouses.map {
                             LocalWarehouseModel(
