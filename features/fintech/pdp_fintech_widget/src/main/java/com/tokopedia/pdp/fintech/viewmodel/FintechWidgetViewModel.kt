@@ -48,8 +48,8 @@ class FintechWidgetViewModel @Inject constructor
     }
 
 
-    fun getWidgetData() {
-        _widgetDetailLiveData.value = Success(fintchWidgetUseCase.setWidget())
+    fun getWidgetData(productCategory: String, listOfAmount: MutableList<Double>) {
+
     }
 
 }

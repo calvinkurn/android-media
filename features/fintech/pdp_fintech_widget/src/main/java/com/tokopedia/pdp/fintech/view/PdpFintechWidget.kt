@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter
 import com.tokopedia.pdp.fintech.di.components.DaggerFintechWidgetComponent
+import com.tokopedia.pdp.fintech.domain.datamodel.ChipsData
+import com.tokopedia.pdp.fintech.domain.datamodel.ProductDetailClass
 import com.tokopedia.pdp.fintech.domain.datamodel.WidgetDetail
 import com.tokopedia.pdp.fintech.listner.ProductUpdateListner
 import com.tokopedia.pdp.fintech.listner.WidgetClickListner
@@ -30,6 +32,10 @@ class PdpFintechWidget @JvmOverloads constructor(
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
 
+    var idToPriceMap = HashMap<String, String>()
+    var priceToChip = HashMap<String, ArrayList<ChipsData>>()
+
+
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
     private lateinit var baseView: View
@@ -38,7 +44,6 @@ class PdpFintechWidget @JvmOverloads constructor(
     private lateinit var instanceProductUpdateListner: ProductUpdateListner
     private lateinit var fintechWidgetViewModel: FintechWidgetViewModel
 
-    private var counter =0;
 
 
     init {
@@ -65,37 +70,62 @@ class PdpFintechWidget @JvmOverloads constructor(
         fintechWidgetViewModel.widgetDetailLiveData.observe(parentLifeCycleOwner, {
             when (it) {
                 is Success -> {
-                    fintechWidgetAdapter.setData(clearData(it.data).list[0].chips)
-                }
-                is Fail -> {
-
-                }
-            }
-        })
-    }
-
-    /**
-     * This method sets the view type
-     * @param data : All Widget data
-     */
-
-    private fun clearData(data: WidgetDetail): WidgetDetail {
-
-        return data
-    }
-
-    private fun observeProductInfo(parentLifeCycleOwner: LifecycleOwner) {
-        fintechWidgetViewModel.productDetailLiveData.observe(parentLifeCycleOwner, {
-            when (it) {
-                is Success -> {
-                    loader.visibility = GONE
-                    fintechWidgetViewModel.getWidgetData()
+                    setPriceToChipMap(it.data)
                 }
                 is Fail -> {
                     instanceProductUpdateListner.removeWidget()
                 }
             }
         })
+    }
+
+    private fun setPriceToChipMap(widgetDetail: WidgetDetail) {
+        for (i in widgetDetail.list.indices) {
+            priceToChip.put(widgetDetail.list[i].price.toString(), widgetDetail.list[i].chips)
+        }
+    }
+
+
+    private fun observeProductInfo(parentLifeCycleOwner: LifecycleOwner) {
+        fintechWidgetViewModel.productDetailLiveData.observe(parentLifeCycleOwner, {
+            when (it) {
+                is Success -> {
+                    loader.visibility = GONE
+                    setIdToPriceMap(it.data)
+                    sendProductCategory(it.data)
+                }
+                is Fail -> {
+                    instanceProductUpdateListner.removeWidget()
+                }
+            }
+        })
+    }
+
+    private fun sendProductCategory(productDetailClass: ProductDetailClass) {
+
+        val listOfAmount: MutableList<Double> = ArrayList()
+        productDetailClass.getProductV3?.variant?.products?.map { products ->
+            products.price
+        }?.toCollection(listOfAmount)
+            ?: instanceProductUpdateListner.removeWidget()
+
+        productDetailClass.getProductV3?.categoryDetail?.categoryId?.let {
+            fintechWidgetViewModel.getWidgetData(it, listOfAmount)
+        } ?: run {
+            instanceProductUpdateListner.removeWidget()
+        }
+    }
+
+
+    private fun setIdToPriceMap(productDetailData: ProductDetailClass) {
+        productDetailData.getProductV3?.variant?.products?.let { productList ->
+            for (i in productList.indices) {
+                productList[i].productID?.let { productId ->
+                    idToPriceMap.put(productId, productList[i].price.toString())
+                }
+            }
+        }
+
     }
 
     private fun initInjector() {
@@ -125,15 +155,14 @@ class PdpFintechWidget @JvmOverloads constructor(
         loader = baseView.findViewById(R.id.widgetShimmer)
     }
 
+
     fun updateProductId(
         productID: String,
         fintechWidgetViewHolder: ProductUpdateListner
     ) {
         this.instanceProductUpdateListner = fintechWidgetViewHolder
         loader.visibility = View.VISIBLE
-        if(counter != 0)
             fintechWidgetViewModel.getProductDetail(productID)
-        counter += 1
 
 
     }

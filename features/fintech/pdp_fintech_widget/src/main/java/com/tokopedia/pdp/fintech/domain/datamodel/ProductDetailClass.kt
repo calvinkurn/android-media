@@ -14,21 +14,19 @@ data class GetProductV3(
     @SerializedName("productName") val productName: String?,
     @SerializedName("url") val url: String?,
     @SerializedName("price") val price: Double?,
-    @SerializedName("pictures") val pictures: List<Pictures?>?,
+    @SerializedName("category") val categoryDetail: CategoryDetail?,
     @SerializedName("variant") val variant: Variant?,
 ) : Parcelable
 
 @Parcelize
 data class Variant(
-
-    @SerializedName("selections") val selections: List<Selections>,
     @SerializedName("products") val products: List<Products>
 ) : Parcelable
 
-@Parcelize
-data class Selections(
-    @SerializedName("options") val options: List<Options?>
-) : Parcelable
+data class CategoryDetail(
+    @SerializedName("id")
+    val categoryId: String?
+)
 
 @Parcelize
 data class Options(
@@ -38,13 +36,9 @@ data class Options(
 @Parcelize
 data class Products(
     @SerializedName("productID") val productID: String?,
-    @SerializedName("combination") val combination: List<Int?>
+    @SerializedName("price") val price: Double
 ) : Parcelable
 
-@Parcelize
-data class Pictures(
-    @SerializedName("urlThumbnail") val urlThumbnail: String?
-) : Parcelable
 
 
 
