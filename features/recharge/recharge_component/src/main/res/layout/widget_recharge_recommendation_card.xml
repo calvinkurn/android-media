@@ -20,6 +20,7 @@
         android:id="@+id/rv_recharge_recommendation_card_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:nestedScrollingEnabled="false"
         android:clipToPadding="false"
         android:visibility="gone"
         android:paddingLeft="@dimen/unify_space_12"
