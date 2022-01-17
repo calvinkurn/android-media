@@ -36,11 +36,9 @@ import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.domain.model.WarehouseModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
-import com.tokopedia.localizationchooseaddress.domain.response.Warehouse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
@@ -78,6 +76,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolde
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
+import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE
@@ -109,6 +108,8 @@ import com.tokopedia.tokopedianow.home.analytic.HomePageLoadTimeMonitoring
 import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home15mSwitcher
 import com.tokopedia.tokopedianow.home.presentation.view.coachmark.SwitcherCoachMark
+import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
+import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeSwitcherListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingEducationWidgetViewHolder.*
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
@@ -193,7 +194,9 @@ class TokoNowHomeFragment: Fragment(),
                 homeSharingEducationListener = this,
                 homeEducationalInformationListener = this,
                 serverErrorListener = this,
-                tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener()
+                tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(),
+                dynamicLegoBannerCallback = createLegoBannerCallback(),
+                homeSwitcherListener = createHomeSwitcherListener()
             ),
             differ = HomeListDiffer()
         )
@@ -920,6 +923,12 @@ class TokoNowHomeFragment: Fragment(),
                 screenName = screenName
             )
         }
+
+        observe(viewModelTokoNow.setUserPreference) {
+            if(it is Success) {
+                onSuccessSetUserPreference(it.data)
+            }
+        }
     }
 
     private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
@@ -959,6 +968,24 @@ class TokoNowHomeFragment: Fragment(),
             position = position.toString(),
             cartId = cartId
         )
+    }
+
+    private fun onSuccessSetUserPreference(data: SetUserPreferenceData) {
+        val warehouses = data.warehouses.map {
+            LocalWarehouseModel(
+                it.warehouseId.toLongOrZero(),
+                it.serviceType
+            )
+        }
+
+        ChooseAddressUtils.updateTokoNowData(
+            requireContext(),
+            data.warehouseId,
+            data.shopId,
+            warehouses,
+            data.serviceType
+        )
+        refreshLayoutPage()
     }
 
     private fun trackRepurchaseImpression(data: TokoNowProductCardUiModel) {
@@ -1399,6 +1426,14 @@ class TokoNowHomeFragment: Fragment(),
 
             override fun onGetEventCategory(): String = EVENT_CATEGORY_HOME_PAGE
         }
+    }
+
+    private fun createLegoBannerCallback(): DynamicLegoBannerCallback {
+        return DynamicLegoBannerCallback(requireContext(), viewModelTokoNow)
+    }
+
+    private fun createHomeSwitcherListener(): HomeSwitcherListener {
+        return HomeSwitcherListener(requireContext(), viewModelTokoNow)
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {

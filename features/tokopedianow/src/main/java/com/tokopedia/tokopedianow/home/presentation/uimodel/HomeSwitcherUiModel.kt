@@ -9,25 +9,22 @@ import com.tokopedia.tokopedianow.home.presentation.adapter.HomeTypeFactory
 sealed class HomeSwitcherUiModel(
     @StringRes val title: Int,
     @StringRes val subtitle: Int,
-    @DrawableRes val icon: Int,
-    open val onClick: () -> Unit
+    @DrawableRes val icon: Int
 ): HomeLayoutUiModel(HomeStaticLayoutId.SWITCH_SERVICE_WIDGET) {
 
     override fun type(typeFactory: HomeTypeFactory): Int {
         return typeFactory.type(this)
     }
 
-    data class Home15mSwitcher(override val onClick: () -> Unit): HomeSwitcherUiModel(
+    object Home15mSwitcher: HomeSwitcherUiModel(
         R.string.tokopedianow_15m_switcher_title,
         R.string.tokopedianow_15m_switcher_subtitle,
-        R.drawable.tokopedianow_ic_15m,
-        { onClick }
+        R.drawable.tokopedianow_ic_15m
     )
 
-    data class Home2hSwitcher(override val onClick: () -> Unit): HomeSwitcherUiModel(
+    object Home2hSwitcher: HomeSwitcherUiModel(
         R.string.tokopedianow_2h_switcher_title,
         R.string.tokopedianow_2h_switcher_subtitle,
-        R.drawable.tokopedianow_ic_2h,
-        onClick
+        R.drawable.tokopedianow_ic_2h
     )
 }
