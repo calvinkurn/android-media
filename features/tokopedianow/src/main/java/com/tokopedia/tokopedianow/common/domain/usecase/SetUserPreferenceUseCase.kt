@@ -3,8 +3,10 @@ package com.tokopedia.tokopedianow.common.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.domain.query.SetUserPreferenceQuery
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
@@ -12,24 +14,38 @@ import javax.inject.Inject
 class SetUserPreferenceUseCase @Inject constructor(graphqlRepository: GraphqlRepository) {
 
     companion object {
-        private const val PARAM_SHOP_ID = "shop_id"
-        private const val PARAM_WAREHOUSE_ID = "warehouse_id"
-        private const val PARAM_SERVICE_TYPE = "service_type"
+        private const val PARAM_SHOP_ID = "shopID"
+        private const val PARAM_WAREHOUSE_ID = "warehouseID"
+        private const val PARAM_SERVICE_TYPE = "serviceType"
         private const val PARAM_WAREHOUSES = "warehouses"
     }
 
     private val graphql by lazy { GraphqlUseCase<SetUserPreference>(graphqlRepository) }
 
-    suspend fun execute(localCacheModel: LocalCacheModel, serviceType: String): SetUserPreferenceData {
+    suspend fun execute(localCacheModel: LocalCacheModel): SetUserPreferenceData {
         graphql.apply {
-            val shopId = localCacheModel.shop_id.toInt()
-            val warehouses = localCacheModel.warehouses
-            val warehouse = warehouses.first { it.service_type == serviceType }
-            val warehouseId = warehouse.warehouse_id.toInt()
+            val currentServiceType = localCacheModel.service_type
+
+            val serviceType = if(currentServiceType == ServiceType.NOW_15M) {
+                ServiceType.NOW_2H
+            } else {
+                ServiceType.NOW_15M
+            }
+
+            val warehouses = localCacheModel.warehouses.map {
+                WarehouseData(
+                    it.warehouse_id.toString(),
+                    it.service_type
+                )
+            }
+
+            val shopId = localCacheModel.shop_id
+            val warehouse = warehouses.first { it.serviceType == serviceType }
+            val warehouseId = warehouse.warehouseId
 
             val requestParams = RequestParams().apply {
-                putInt(PARAM_SHOP_ID, shopId)
-                putInt(PARAM_WAREHOUSE_ID, warehouseId)
+                putString(PARAM_SHOP_ID, shopId)
+                putString(PARAM_WAREHOUSE_ID, warehouseId)
                 putString(PARAM_SERVICE_TYPE, serviceType)
                 putObject(PARAM_WAREHOUSES, warehouses)
             }.parameters
