@@ -196,14 +196,12 @@
                 android:layout_marginTop="@dimen/unify_space_16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginBottom="@dimen/unify_space_40"
-                app:layout_constraintBottom_toTopOf="@id/layoutExpenseEstimation"
+                app:layout_constraintTop_toBottomOf="@id/textAreaMinimumPurchase"
                 app:text_area_clearable="false"
                 app:text_area_label="@string/quota" />
 
-            <!-- Minimal Purchase (Coupon Type: Free Shipping)-->
             <com.tokopedia.unifycomponents.TextAreaUnify
-                android:id="@+id/textAreaFreeShippingAmount"
+                android:id="@+id/textAreaFreeShippingDiscountAmount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_16"
@@ -211,8 +209,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/chipMinimumPurchaseNominal"
                 app:text_area_clearable="false"
-                app:text_area_label="Nominal gratis ongkir"
-                app:text_area_message="Diskon minimal Rp 5.000"/>
+                app:text_area_label="@string/shipping_cost_amount"
+                app:text_area_message="@string/helper_message_min_shipping_cost"/>
 
             <!-- Minimal Purchase (Coupon Type: Free Shipping)-->
             <com.tokopedia.unifycomponents.TextAreaUnify
@@ -222,18 +220,28 @@
                 android:layout_marginTop="@dimen/unify_space_16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textAreaFreeShippingAmount"
+                app:layout_constraintTop_toBottomOf="@+id/textAreaFreeShippingDiscountAmount"
                 app:text_area_clearable="false"
                 app:text_area_label="@string/minimum_purchase"
                 app:text_area_message="@string/helper_message_min_quantity" />
 
+            <!-- Quota (Coupon Type: Free Shipping)-->
+            <com.tokopedia.unifycomponents.TextAreaUnify
+                android:id="@+id/textAreaQuotaFreeShipping"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textAreaFreeShippingMinimumPurchase"
+                app:text_area_clearable="false"
+                app:text_area_label="@string/quota" />
 
             <!--Max expense estimation-->
             <RelativeLayout
                 android:id="@+id/layoutExpenseEstimation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/unify_space_32"
                 android:background="@drawable/mvc_rectangle_grey_f8fafc_radius_4dp"
                 android:padding="@dimen/unify_space_12"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -291,14 +299,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:constraint_referenced_ids="tpgDiscountType,chipDiscountTypeNominal,chipDiscountTypePercentage,textAreaMinimumDiscount,tpgMinimumPurchase,chipMinimumPurchaseNominal,chipMinimumPurchaseQuantity,chipMinimumPurchaseNothing,textAreaMinimumPurchase" />
+                app:constraint_referenced_ids="tpgDiscountType,chipDiscountTypeNominal,chipDiscountTypePercentage,textAreaMinimumDiscount,tpgMinimumPurchase,chipMinimumPurchaseNominal,chipMinimumPurchaseQuantity,chipMinimumPurchaseNothing,textAreaMinimumPurchase, textAreaQuota" />
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/groupFreeShipping"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:constraint_referenced_ids="textAreaFreeShippingAmount,textAreaFreeShippingMinimumPurchase" />
+                app:constraint_referenced_ids="textAreaQuotaFreeShipping, textAreaFreeShippingDiscountAmount,textAreaFreeShippingMinimumPurchase" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

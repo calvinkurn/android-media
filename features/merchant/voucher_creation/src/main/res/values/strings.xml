@@ -376,4 +376,6 @@
     <string name="quantity">Buah</string>
     <string name="nothing">Tidak ada</string>
     <string name="helper_message_min_quantity">Minimum 1 buah</string>
+    <string name="helper_message_min_shipping_cost">Diskon minimal Rp 5.000</string>
+    <string name="shipping_cost_amount">Nominal gratis ongkir</string>
 </resources>
