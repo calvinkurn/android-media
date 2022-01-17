@@ -1,5 +1,8 @@
 package com.tokopedia.chat_common.data
 
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel.Builder
@@ -283,6 +286,31 @@ open class ProductAttachmentUiModel protected constructor(
     //not a variant, not product campaign, not broadcast, & not pre-order
     fun isEligibleOCC(): Boolean {
         return !isSupportVariant && !isProductCampaign() && !fromBroadcast() && !isPreOrder
+    }
+
+    fun generateVariantRequest(): JsonElement? {
+        val list = JsonArray()
+
+        if (hasColorVariant()) {
+            val color = JsonObject()
+            val colorOption = JsonObject()
+            colorOption.addProperty("id", colorVariantId.toLongOrNull() ?: 0)
+            colorOption.addProperty("value", colorVariant)
+            colorOption.addProperty("hex", colorHexVariant)
+            color.add("option", colorOption)
+            list.add(color)
+        }
+
+        if (hasSizeVariant()) {
+            val size = JsonObject()
+            val sizeOption = JsonObject()
+            sizeOption.addProperty("id", sizeVariantId.toInt())
+            sizeOption.addProperty("value", sizeVariant)
+            size.add("option", sizeOption)
+            list.add(size)
+        }
+
+        return list
     }
 
     companion object {

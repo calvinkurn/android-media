@@ -1037,6 +1037,7 @@ class TopChatViewModel @Inject constructor(
                 .withProductId(productId)
             (builder as TopchatProductAttachmentPreviewUiModel.Builder).build()
         }
+        attachmentsPreview.addAll(sendablePreviews)
         _showableAttachmentPreviews.value = ArrayList(sendablePreviews)
     }
 

@@ -1797,6 +1797,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun clearAttachmentPreviews() {
         topchatViewState?.clearAttachmentPreview()
+        viewModel.clearAttachmentPreview()
     }
 
     override fun sendAnalyticAttachmentSent(attachment: SendablePreview) {

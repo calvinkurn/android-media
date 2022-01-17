@@ -15,9 +15,7 @@ import com.tokopedia.chat_common.data.parentreply.ParentReplyWsRequest
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
-import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatProductAttachmentPreviewUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.*
 import com.tokopedia.topchat.common.InboxChatConstant.UPLOADING
 import com.tokopedia.topchat.common.util.AddressUtil
 
@@ -82,16 +80,56 @@ object TopChatWebSocketParam {
     }
 
     fun generateParamSendProductAttachment(
-        messageId: TopchatProductAttachmentPreviewUiModel,
-        product: String,
+        product: TopchatProductAttachmentPreviewUiModel,
+        msgId: String,
         startTime: String,
         toUid: String,
-        productPreview: String,
-        message: LocalCacheModel,
-        userLocationInfo: String
+        message: String,
+        userLocationInfo: LocalCacheModel,
+        localId: String
     ): JsonObject {
-        // TODO: implement later
         val json = JsonObject()
+        json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
+        val data = JsonObject()
+        data.addProperty("message_id", msgId.toLongOrZero())
+        data.addProperty("local_id", localId)
+        data.addProperty("message", product.productUrl)
+        data.addProperty("start_time", startTime)
+        data.addProperty("to_uid", toUid)
+        data.addProperty(
+            "attachment_type",
+            Integer.parseInt(AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT)
+        )
+        data.addProperty("product_id", product.productId.toLongOrZero())
+
+        val productProfile = JsonObject()
+        productProfile.addProperty("name", product.productName)
+        productProfile.addProperty("price", product.productPrice)
+        productProfile.addProperty("price_before", product.priceBefore)
+        productProfile.addProperty("price_before_int", product.priceInt)
+        productProfile.addProperty("drop_percentage", product.dropPercentage)
+        productProfile.addProperty("image_url", product.productImage)
+        productProfile.addProperty("url", product.productUrl)
+        productProfile.addProperty("text", message)
+        productProfile.addProperty("status", product.status)
+        productProfile.addProperty("remaining_stock", product.remainingStock)
+        productProfile.addProperty("is_variant", product.isSupportVariant)
+        productProfile.add("variant", product.generateVariantRequest())
+        productProfile.addProperty("campaign_id", product.campaignId)
+        productProfile.addProperty("is_preorder", product.isPreOrder)
+        productProfile.addProperty("price_int", product.priceInt)
+        productProfile.addProperty("category_id", product.categoryId)
+
+        val freeShipping = JsonObject()
+        freeShipping.addProperty("is_active", product.freeShipping.isActive)
+        freeShipping.addProperty("image_url", product.freeShipping.imageUrl)
+        productProfile.add("free_ongkir", freeShipping)
+
+        val extras = createProductExtrasAttachments(userLocationInfo)
+        data.add("extras", extras)
+
+        data.add("product_profile", productProfile)
+        json.add("data", data)
         return json
     }
 
