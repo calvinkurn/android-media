@@ -2,4 +2,6 @@
 <resources>
     <string name="content_desc_recharge_bu_parallax_image">Background Image</string>
     <string name="label_recharge_client_number">Nama Kontak atau Nomor HP</string>
+    <string name="buy_widget_total_price">Total Bayar</string>
+    <string name="buy_widget_total_price_btn">Lanjutkan</string>
 </resources>
