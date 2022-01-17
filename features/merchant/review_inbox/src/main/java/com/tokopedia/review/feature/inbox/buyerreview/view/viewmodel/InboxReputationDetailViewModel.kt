@@ -1,4 +1,4 @@
-package com.tokopedia.review.common.reviewreplyinsert.presentation.viewmodel
+package com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,7 +14,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ReviewReplyInsertViewModel @Inject constructor(
+class InboxReputationDetailViewModel @Inject constructor(
     private val coroutineDispatchers: CoroutineDispatchers,
     private val reviewReplyInsertUseCase: ReviewReplyInsertUseCase
 ): BaseViewModel(coroutineDispatchers.main) {

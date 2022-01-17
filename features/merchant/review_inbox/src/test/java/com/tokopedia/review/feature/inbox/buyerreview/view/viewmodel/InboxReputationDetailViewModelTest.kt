@@ -1,4 +1,4 @@
-package com.tokopedia.review.common.reviewreplyinsert.presentation.viewmodel
+package com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel
 
 import com.tokopedia.review.common.reviewreplyinsert.domain.model.ReviewReplyInsertResponse
 import com.tokopedia.review.common.reviewreplyinsert.presentation.model.ReviewReplyInsertUiModel
@@ -11,7 +11,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.mockito.ArgumentMatchers
 
-class ReviewReplyInsertViewModelTest: ReviewReplyInsertViewModelTestFixture() {
+class InboxReputationDetailViewModelTest: InboxReputationDetailViewModelTestFixture() {
     @Test
     fun `when insert review reply should return success`() {
         runBlocking {

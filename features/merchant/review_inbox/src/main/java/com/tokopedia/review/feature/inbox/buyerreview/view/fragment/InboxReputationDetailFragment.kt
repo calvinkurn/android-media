@@ -32,7 +32,6 @@ import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.imagepreview.ImagePreviewActivity.Companion.getCallingIntent
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.review.common.reviewreplyinsert.presentation.viewmodel.ReviewReplyInsertViewModel
 import com.tokopedia.review.common.util.ClipboardHandler
 import com.tokopedia.review.common.util.ReviewErrorHandler.getErrorMessage
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.AppScreen
@@ -50,6 +49,7 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.I
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailHeaderUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailItemUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailPassModel
+import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.InboxReputationDetailViewModel
 import com.tokopedia.review.inbox.R
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -85,8 +85,8 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelReviewReplyInsert: ReviewReplyInsertViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(ReviewReplyInsertViewModel::class.java)
+    private val inboxReputationDetailViewModel: InboxReputationDetailViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(InboxReputationDetailViewModel::class.java)
     }
 
     private var reputationId: String = ""
@@ -408,7 +408,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         element: InboxReputationDetailItemUiModel,
         replyReview: String
     ) {
-        viewModelReviewReplyInsert.insertReviewReply(element.reviewId, replyReview)
+        inboxReputationDetailViewModel.insertReviewReply(element.reviewId, replyReview)
     }
 
     private fun onErrorReplyReview(errorMessage: String?) {
@@ -567,7 +567,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observeInsertReviewReply() {
-        viewModelReviewReplyInsert.insertReviewReply.observe(viewLifecycleOwner, {
+        inboxReputationDetailViewModel.insertReviewReply.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     finishLoadingDialog()

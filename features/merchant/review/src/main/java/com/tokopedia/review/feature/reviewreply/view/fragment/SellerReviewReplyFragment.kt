@@ -28,7 +28,6 @@ import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
 import com.tokopedia.review.common.reviewreplyinsert.presentation.model.ReviewReplyInsertUiModel
-import com.tokopedia.review.common.reviewreplyinsert.presentation.viewmodel.ReviewReplyInsertViewModel
 import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.toRelativeDate
 import com.tokopedia.review.databinding.FragmentSellerReviewReplyBinding
@@ -76,9 +75,6 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private var viewModelReviewReply: SellerReviewReplyViewModel? = null
-    private val viewModelReviewReplyInsert: ReviewReplyInsertViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(ReviewReplyInsertViewModel::class.java)
-    }
 
     private var optionMenuReplyReview: ListUnify? = null
     private var bottomSheetReplyReview: BottomSheetUnify? = null
@@ -183,7 +179,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
         viewModelReviewReply?.reviewTemplate?.removeObservers(this)
         viewModelReviewReply?.updateReviewReply?.removeObservers(this)
         viewModelReviewReply?.insertTemplateReply?.removeObservers(this)
-        viewModelReviewReplyInsert.insertReviewReply.removeObservers(this)
+        viewModelReviewReply?.insertReviewReply?.removeObservers(this)
         super.onDestroy()
     }
 
@@ -256,7 +252,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
     }
 
     private fun observeInsertReviewReply() {
-        viewModelReviewReplyInsert.insertReviewReply.observe(viewLifecycleOwner, {
+        viewModelReviewReply?.insertReviewReply?.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     isEmptyReply = false
@@ -334,7 +330,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
                         (!isEmptyReply).toString()
                     )
                     if (isEmptyReply) {
-                        viewModelReviewReplyInsert.insertReviewReply(
+                        viewModelReviewReply?.insertReviewReply(
                             feedbackUiModel?.feedbackID ?: "",
                             getText()
                         )

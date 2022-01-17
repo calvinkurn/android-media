@@ -1,4 +1,4 @@
-package com.tokopedia.review.common.reviewreplyinsert.presentation.viewmodel
+package com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
@@ -11,19 +11,19 @@ import junit.framework.TestCase
 import org.junit.Before
 import org.junit.Rule
 
-abstract class ReviewReplyInsertViewModelTestFixture {
+abstract class InboxReputationDetailViewModelTestFixture {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
     @RelaxedMockK
     lateinit var reviewReplyInsertUseCase: ReviewReplyInsertUseCase
 
-    protected lateinit var viewModel: ReviewReplyInsertViewModel
+    protected lateinit var viewModel: InboxReputationDetailViewModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = ReviewReplyInsertViewModel(CoroutineTestDispatchersProvider, reviewReplyInsertUseCase)
+        viewModel = InboxReputationDetailViewModel(CoroutineTestDispatchersProvider, reviewReplyInsertUseCase)
     }
 
     protected fun LiveData<*>.verifyValueEquals(expected: Any) {
