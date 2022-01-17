@@ -154,6 +154,19 @@ abstract class BaseAtcVariantViewModelTest {
         }
     }
 
+    fun assertCampaign(visitables: List<AtcVariantVisitable>,
+                       expectedCampaignActive: Boolean,
+                       expectedDiscountedPrice: String) {
+
+        visitables.first {
+            it is VariantHeaderDataModel
+        }.let {
+            val headerData = it as VariantHeaderDataModel
+            Assert.assertEquals(headerData.headerData.isCampaignActive, expectedCampaignActive)
+            Assert.assertEquals(headerData.headerData.productSlashPrice, expectedDiscountedPrice)
+        }
+    }
+
     fun assertVisitables(visitables: List<AtcVariantVisitable>,
                          showQuantityEditor: Boolean,
                          expectedSelectedProductId: String,

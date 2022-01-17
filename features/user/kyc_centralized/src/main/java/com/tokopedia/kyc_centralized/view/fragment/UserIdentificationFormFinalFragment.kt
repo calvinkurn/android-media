@@ -27,7 +27,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.listener.StepperListener
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -40,11 +39,15 @@ import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.KYC_UPLOAD_ERROR_ENCRYPT_DECRYPT
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
+import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity.Companion.FILE_NAME_KYC
 import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
+import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_FACE_CACHE
+import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -70,6 +73,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private var errorUploadLayout: RelativeLayout? = null
     private var resultImageKtp: ImageView? = null
     private var resultImageFace: ImageView? = null
+    private var mainImage: ImageView? = null
     private var resultTextKtp: TextView? = null
     private var resultTextFace: TextView? = null
     private var bulletTextLayout: LinearLayout? = null
@@ -133,7 +137,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     }
 
     private fun initObserver() {
-        kycUploadViewModel.kycResponseLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        kycUploadViewModel.kycResponseLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     sendSuccessTimberLog()
@@ -148,7 +152,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
             }
         })
 
-        kycUploadViewModel.encryptImageLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        kycUploadViewModel.encryptImageLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     uploadButton?.isEnabled = true
@@ -228,7 +232,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private fun encryptImage() {
         if (isUsingEncrypt()) {
             uploadButton?.isEnabled = false
-            kycUploadViewModel.encryptImageFace(stepperModel?.faceFile.toEmptyStringIfNull())
+            kycUploadViewModel.encryptImage(stepperModel?.faceFile.toEmptyStringIfNull(), KYC_IV_FACE_CACHE)
         }
     }
 
@@ -358,8 +362,8 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
             buttonText: String,
             listMessage: ArrayList<String>?
     ) {
-        ImageHandler.LoadImage(resultImageKtp, urlKtp)
-        ImageHandler.LoadImage(resultImageFace, urlFace)
+        resultImageKtp?.loadImage(urlKtp)
+        resultImageFace?.loadImage(urlFace)
         if (colorKtp != null) {
             resultTextKtp?.setTextColor(colorKtp)
         }
@@ -401,6 +405,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         mainLayout = view.findViewById(R.id.layout_main)
         resultImageKtp = view.findViewById(R.id.result_image_ktp)
         resultImageFace = view.findViewById(R.id.result_image_face)
+        mainImage = view.findViewById(R.id.main_image)
         resultTextKtp = view.findViewById(R.id.result_text_ktp)
         resultTextFace = view.findViewById(R.id.result_text_face)
         bulletTextLayout = view.findViewById(R.id.layout_info_bullet)
@@ -423,7 +428,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                 retakeActionCode = RETAKE_KTP
                 stepperModel?.ktpFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT).toEmptyStringIfNull()
                 if (isUsingEncrypt()) {
-                    kycUploadViewModel.encryptImageKtp(stepperModel?.ktpFile.toEmptyStringIfNull())
+                    kycUploadViewModel.encryptImage(stepperModel?.ktpFile.toEmptyStringIfNull(), KYC_IV_KTP_CACHE)
                 } else {
                     goToLivenessOrSelfie()
                 }
@@ -436,7 +441,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                     stepperModel?.faceFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT).toEmptyStringIfNull()
                 }
                 if (isUsingEncrypt()) {
-                    kycUploadViewModel.encryptImageFace(stepperModel?.faceFile.toEmptyStringIfNull())
+                    kycUploadViewModel.encryptImage(stepperModel?.faceFile.toEmptyStringIfNull(), KYC_IV_FACE_CACHE)
                 } else {
                     uploadKycFiles()
                 }
@@ -555,14 +560,16 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private fun setViews(failedReasonTitle: String, failedReason: String, failedImage: String) {
         kyc_upload_error_title?.text = failedReasonTitle
         kyc_upload_error_subtitle?.text = failedReason
-        main_image?.let {
-            ImageHandler.LoadImage(main_image, failedImage)
-        }
+        mainImage?.loadImage(failedImage)
     }
 
     fun deleteTmpFile(deleteKtp: Boolean, deleteFace: Boolean) {
-        if (deleteKtp) FileUtil.deleteFile(stepperModel?.ktpFile)
-        if (deleteFace) FileUtil.deleteFile(stepperModel?.faceFile)
+        if(deleteKtp && deleteFace) {
+            FileUtil.deleteFolder(context?.externalCacheDir?.absolutePath + FILE_NAME_KYC)
+        } else {
+            if (deleteKtp) FileUtil.deleteFile(stepperModel?.ktpFile)
+            if (deleteFace) FileUtil.deleteFile(stepperModel?.faceFile)
+        }
     }
 
     private fun isUsingEncrypt(): Boolean {

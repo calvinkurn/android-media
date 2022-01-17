@@ -12,14 +12,17 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.utils.TextHtmlUtils
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.data.HotelCancellationButtonEnum
+import com.tokopedia.hotel.cancellation.data.HotelCancellationError
 import com.tokopedia.hotel.cancellation.data.HotelCancellationModel
-import com.tokopedia.hotel.cancellation.data.HotelCancellationSubmitModel
 import com.tokopedia.hotel.cancellation.di.HotelCancellationComponent
 import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationActivity
-import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationConfirmationActivity
 import com.tokopedia.hotel.cancellation.presentation.viewmodel.HotelCancellationViewModel
 import com.tokopedia.hotel.cancellation.presentation.widget.HotelCancellationRefundDetailWidget
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
@@ -27,11 +30,9 @@ import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelTextHyperlinkUtil
 import com.tokopedia.hotel.databinding.FragmentHotelCancellationBinding
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
@@ -77,7 +78,8 @@ class HotelCancellationFragment : HotelBaseFragment() {
 
 
     override fun onErrorRetryClicked() {
-        binding?.containerError?.root?.hide()
+        hideErrorContainer()
+
         showLoadingState()
         getCancellationData()
     }
@@ -113,21 +115,13 @@ class HotelCancellationFragment : HotelBaseFragment() {
                     hideLoadingState()
                 }
                 is Fail -> {
-                    when {
-                        ErrorHandlerHotel.isOrderNotFound(it.throwable) -> showErrorOrderNotFound()
-                        ErrorHandlerHotel.isOrderHasBeenCancelled(it.throwable) -> showErrorOrderHasBeenCancelled()
-                        else -> {
-                            showErrorView(it.throwable)
-                        }
-                    }
+                    convertDynamicError(it.throwable)
                 }
             }
         })
     }
 
     fun showErrorView(error: Throwable?){
-        hideLoadingState()
-        binding?.containerError?.root?.visible()
         context?.run {
             binding?.containerError?.globalError?.let {
                 ErrorHandlerHotel.getErrorUnify(this, error,
@@ -137,31 +131,49 @@ class HotelCancellationFragment : HotelBaseFragment() {
         }
     }
 
-    private fun showErrorOrderNotFound() {
-        startActivity(HotelCancellationConfirmationActivity.getCallingIntent(requireContext(), getErrorOrderNotFoundModel(), true))
-        activity?.finish()
+    private fun convertDynamicError(error: Throwable){
+        hideLoadingState()
+        showErrorContainer()
+        try {
+            val gson = Gson()
+            val itemType = object : TypeToken<HotelCancellationError>() {}.type
+            val errorData = gson.fromJson<HotelCancellationError>(error.message, itemType)
+            context?.run {
+                binding?.containerError?.globalError?.let {
+                    it.setType(GlobalError.SERVER_ERROR)
+                    it.errorTitle.text = errorData.content.title
+                    it.errorDescription.text = errorData.content.desc
+                    it.errorAction.text = errorData.content.actionButton.firstOrNull()?.label ?: ""
+                    (it.errorAction as UnifyButton).buttonType = HotelCancellationButtonEnum
+                        .getEnumFromValue(errorData.content.actionButton.firstOrNull()?.buttonType ?: "").buttonType
+                    (it.errorAction as UnifyButton).buttonVariant = HotelCancellationButtonEnum
+                        .getEnumFromValue(errorData.content.actionButton.firstOrNull()?.buttonType ?: "").buttonVariant
+                    it.setActionClickListener {
+                        RouteManager.route(this,errorData.content.actionButton.firstOrNull()?.uri)
+                    }
+                    if(errorData.content.actionButton.lastIndex == 1){
+                        it.errorSecondaryAction.show()
+                        it.errorSecondaryAction.text = errorData.content.actionButton.lastOrNull()?.label ?: ""
+                        (it.errorSecondaryAction as UnifyButton).buttonType = HotelCancellationButtonEnum
+                            .getEnumFromValue(errorData.content.actionButton.lastOrNull()?.buttonType ?: "").buttonType
+                        (it.errorSecondaryAction as UnifyButton).buttonVariant = HotelCancellationButtonEnum
+                            .getEnumFromValue(errorData.content.actionButton.lastOrNull()?.buttonType ?: "").buttonVariant
+                        it.setSecondaryActionClickListener {
+                            RouteManager.route(this,errorData.content.actionButton.lastOrNull()?.uri)
+                        }
+                    }else{
+                        it.errorSecondaryAction.gone()
+                    }
+                }
+            }
+        }catch (throwable: Throwable){
+            showErrorView(throwable)
+        }
     }
-
-    private fun showErrorOrderHasBeenCancelled() {
-        startActivity(HotelCancellationConfirmationActivity.getCallingIntent(requireContext(), getErrorOrderHasBeenCancelled(), false))
-        activity?.finish()
-    }
-
-    private fun getErrorOrderNotFoundModel(): HotelCancellationSubmitModel = HotelCancellationSubmitModel(false,
-            getString(R.string.hotel_cancellation_fail_order_not_found_title),
-            getString(R.string.hotel_cancellation_fail_order_not_found_description),
-            listOf(HotelCancellationSubmitModel.ActionButton(getString(R.string.hotel_cancellation_fail_order_not_found_cta),
-                    HotelCancellationButtonEnum.SECONDARY.value, getString(R.string.hotel_cancellation_order_list_applink),
-                    getString(R.string.hotel_cancellation_order_list_applink))))
-
-    private fun getErrorOrderHasBeenCancelled(): HotelCancellationSubmitModel = HotelCancellationSubmitModel(false,
-            getString(R.string.hotel_cancellation_fail_has_been_cancelled_title),
-            getString(R.string.hotel_cancellation_fail_has_been_cancelled_description),
-            listOf(HotelCancellationSubmitModel.ActionButton(getString(R.string.hotel_cancellation_fail_has_been_cancelled_cta),
-                    HotelCancellationButtonEnum.SECONDARY.value, getString(R.string.hotel_cancellation_order_list_applink),
-                    getString(R.string.hotel_cancellation_order_list_applink))))
 
     private fun initView(hotelCancellationModel: HotelCancellationModel) {
+        hideErrorContainer()
+
         hotelCancellationModel.property.let {
             binding?.layoutHotelCancellationSummary?.hotelCancellationPropertyName?.text = it.name
             binding?.layoutHotelCancellationSummary?.hotelCancellationRoomName?.text = it.room.firstOrNull()?.roomName ?: ""
@@ -274,6 +286,15 @@ class HotelCancellationFragment : HotelBaseFragment() {
         trackingHotelUtil.viewHotelCancellationPage(requireContext(), invoiceId, hotelCancellationModel, HOTEL_CANCELLATION_SCREEN_NAME)
     }
 
+    private fun showErrorContainer(){
+        binding?.hotelCancellationContainer?.gone()
+        binding?.containerError?.root?.visible()
+    }
+
+    private fun hideErrorContainer(){
+        binding?.hotelCancellationContainer?.visible()
+        binding?.containerError?.root?.gone()
+    }
     companion object {
         const val HOTEL_CANCELLATION_SCREEN_NAME = "/hotel/ordercancel"
         const val ADD_LINE_SPACING = 6f

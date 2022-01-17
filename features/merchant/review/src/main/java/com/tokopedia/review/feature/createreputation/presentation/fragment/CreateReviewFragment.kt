@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.createreputation.presentation.fragment
 
 import android.animation.Animator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -10,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
@@ -26,8 +26,16 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.device.info.DevicePerformanceInfo
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.imagepicker.common.*
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerPageSource
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.imagepicker.common.putParamPageSource
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
@@ -39,7 +47,12 @@ import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.analytics.ReviewTracking
-import com.tokopedia.review.common.data.*
+import com.tokopedia.review.common.data.Fail
+import com.tokopedia.review.common.data.LoadingView
+import com.tokopedia.review.common.data.ProductrevGetReviewDetail
+import com.tokopedia.review.common.data.ProductrevGetReviewDetailProduct
+import com.tokopedia.review.common.data.ProductrevGetReviewDetailReview
+import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.ReviewUtil
@@ -49,12 +62,14 @@ import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTrack
 import com.tokopedia.review.feature.createreputation.di.DaggerCreateReviewComponent
 import com.tokopedia.review.feature.createreputation.model.BaseImageReviewUiModel
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
+import com.tokopedia.review.feature.createreputation.model.ProductrevGetPostSubmitBottomSheetResponse
 import com.tokopedia.review.feature.createreputation.model.Reputation
 import com.tokopedia.review.feature.createreputation.presentation.activity.CreateReviewActivity
 import com.tokopedia.review.feature.createreputation.presentation.adapter.ImageReviewAdapter
 import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.IncentiveOvoThankYouBottomSheetBuilder
 import com.tokopedia.review.feature.createreputation.presentation.listener.ImageClickListener
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
+import com.tokopedia.review.feature.createreputation.presentation.uimodel.PostSubmitUiState
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextAreaBottomSheet
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
@@ -104,7 +119,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         const val RATING_3 = 3
         const val RATING_4 = 4
         const val RATING_5 = 5
-        private const val SAME_ARGS_ERROR = 3
+        private const val SAME_ARGS_ERROR = 9
 
         const val REVIEW_INCENTIVE_MINIMUM_THRESHOLD = 40
 
@@ -145,7 +160,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private var isEditMode: Boolean = false
     private var feedbackId: String = ""
     private var utmSource: String = ""
-    private var shouldShowThankYouBottomSheet = false
 
     lateinit var imgAnimationView: LottieAnimationView
     private var textAreaBottomSheet: CreateReviewTextAreaBottomSheet? = null
@@ -153,9 +167,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private var thankYouBottomSheet: BottomSheetUnify? = null
     private var incentiveHelper = ""
     private var isReviewIncomplete = false
-    private var thankYouBottomSheetText = ""
-    private var imagesFedIntoPicker = arrayListOf<String>()
-    private var thankYouBottomSheetImage = ""
 
     private var binding by autoClearedNullable<FragmentCreateReviewBinding>()
 
@@ -223,7 +234,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         activity?.window?.decorView?.setBackgroundColor(
             ContextCompat.getColor(
                 requireContext(),
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
         )
 
@@ -288,15 +299,28 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     showLoading()
                 }
                 is Success -> {
-                    onSuccessSubmitReview()
+                    onSuccessSubmitReview(feedbackId)
                 }
                 is Fail -> {
                     onFailEditReview(it.fail)
                 }
             }
         })
+
+        createReviewViewModel.postSubmitUiState.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is PostSubmitUiState.ShowThankYouBottomSheet -> showThankYouBottomSheet(
+                    result.data,
+                    result.hasPendingIncentive
+                )
+                is PostSubmitUiState.ShowThankYouToaster -> showThankYouToaster(
+                    result.data
+                )
+            }
+        }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         stopPreparePerfomancePageMonitoring()
         startNetworkRequestPerformanceMonitoring()
@@ -405,11 +429,10 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     override fun onAddImageClick() {
         clearFocusAndHideSoftInput(view)
-        imagesFedIntoPicker = createReviewViewModel.getSelectedImagesUrl()
         context?.let {
             val builder = ImagePickerBuilder.getSquareImageBuilder(it)
                 .withSimpleEditor()
-                .withSimpleMultipleSelection(initialImagePathList = imagesFedIntoPicker)
+                .withSimpleMultipleSelection(initialImagePathList = createReviewViewModel.getSelectedImagesUrl())
                 .apply {
                     title = getString(R.string.image_picker_title)
                 }
@@ -430,15 +453,14 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     override fun onExpandButtonClicked(text: String) {
         CreateReviewTracking.onExpandTextBoxClicked(getOrderId(), productId)
-        if (incentiveHelper.isBlank()) incentiveHelper =
-            context?.getString(R.string.review_create_text_area_eligible) ?: ""
         textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(
             this,
             text,
             incentiveHelper,
-            createReviewViewModel.isUserEligible()
+            hasIncentive(),
+            hasOngoingChallenge()
         )
-        (textAreaBottomSheet as BottomSheetUnify).setTitle(binding?.createReviewTextAreaTitle?.text.toString())
+        (textAreaBottomSheet as? BottomSheetUnify)?.setTitle(binding?.createReviewTextAreaTitle?.text.toString())
         fragmentManager?.let { textAreaBottomSheet?.show(it, "") }
     }
 
@@ -491,11 +513,14 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     override fun onClickCloseThankYouBottomSheet() {
-        finishIfRoot(true)
-    }
-
-    override fun onClickReviewAnother() {
-        goToReviewPending()
+        finishIfRoot(
+            success = true,
+            message = getString(
+                R.string.review_create_success_toaster,
+                createReviewViewModel.getUserName()
+            ),
+            feedbackId = if (isEditMode) feedbackId else getFeedbackId()
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -518,7 +543,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     if (!selectedImage.isNullOrEmpty()) {
                         val imageListData = createReviewViewModel.getAfterEditImageList(
                             selectedImage,
-                            imagesFedIntoPicker
+                            result.imagesFedIntoPicker
                         )
                         imageAdapter.setImageReviewData(imageListData)
                         binding?.rvImgReview?.show()
@@ -555,7 +580,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             binding?.createReviewAnonymousCheckbox?.isChecked ?: false,
             isEditMode,
             feedbackId,
-            createReviewViewModel.isUserEligible() && isReviewComplete()
+            hasIncentive() && isReviewComplete()
         )
         if (isEditMode) {
             if (reviewMessage?.isBlank() == true) {
@@ -573,7 +598,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 binding?.createReviewAnonymousCheckbox?.isChecked ?: false
             )
         } else {
-            if (!isReviewComplete() && isUserEligible()) {
+            if (!isReviewComplete() && hasIncentive()) {
                 showReviewIncompleteDialog()
                 return
             }
@@ -582,8 +607,12 @@ class CreateReviewFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun isUserEligible(): Boolean {
-        return createReviewViewModel.isUserEligible()
+    private fun hasIncentive(): Boolean {
+        return createReviewViewModel.hasIncentive()
+    }
+
+    private fun hasOngoingChallenge(): Boolean {
+        return createReviewViewModel.hasOngoingChallenge()
     }
 
     private fun submitNewReview() {
@@ -634,13 +663,18 @@ class CreateReviewFragment : BaseDaggerFragment(),
             updateProductId(productData.productIDStr)
             when {
                 !validToReview -> {
-                    finishIfRoot(false, getString(R.string.review_pending_invalid_to_review))
+                    finishIfRoot(
+                        success = false,
+                        message = getString(R.string.review_pending_invalid_to_review),
+                        feedbackId = if (isEditMode) feedbackId else getFeedbackId()
+                    )
                     return
                 }
                 productData.productStatus == 0 -> {
                     finishIfRoot(
-                        false,
-                        getString(R.string.review_pending_deleted_product_error_toaster)
+                        success = false,
+                        message = getString(R.string.review_pending_deleted_product_error_toaster),
+                        feedbackId = if (isEditMode) feedbackId else getFeedbackId()
                     )
                     return
                 }
@@ -681,13 +715,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvoDomain?) {
-        if (shouldShowThankYouBottomSheet) {
-            showThankYouBottomSheet(data)
-            return
-        }
         data?.productrevIncentiveOvo?.let {
-            thankYouBottomSheetText = it.bottomSheetText
-            thankYouBottomSheetImage = it.thankYouImage
             it.ticker.let {
                 binding?.ovoPointsTicker?.apply {
                     visibility = View.VISIBLE
@@ -698,10 +726,12 @@ class CreateReviewFragment : BaseDaggerFragment(),
                             if (ovoIncentiveBottomSheet == null) {
                                 ovoIncentiveBottomSheet =
                                     IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(
-                                        context,
-                                        data,
-                                        this@CreateReviewFragment,
-                                        ""
+                                        context = context,
+                                        productRevIncentiveOvoDomain = data,
+                                        hasIncentive = hasIncentive(),
+                                        hasOngoingChallenge = hasOngoingChallenge(),
+                                        incentiveOvoListener = this@CreateReviewFragment,
+                                        category = ""
                                     )
                             }
                             ovoIncentiveBottomSheet?.let { bottomSheet ->
@@ -730,22 +760,36 @@ class CreateReviewFragment : BaseDaggerFragment(),
         binding?.ovoPointsTicker?.hide()
     }
 
-    private fun showThankYouBottomSheet(data: ProductRevIncentiveOvoDomain?) {
+    private fun showThankYouBottomSheet(
+        data: ProductrevGetPostSubmitBottomSheetResponse,
+        hasPendingIncentive: Boolean
+    ) {
         if (thankYouBottomSheet == null) {
             thankYouBottomSheet = context?.let {
                 IncentiveOvoThankYouBottomSheetBuilder.getThankYouBottomSheet(
                     it,
                     data,
+                    hasIncentive(),
+                    hasOngoingChallenge(),
                     this@CreateReviewFragment,
-                    getThankYouFormTrackerData(),
-                    thankYouBottomSheetText,
-                    thankYouBottomSheetImage
+                    getThankYouFormTrackerData()
                 )
             }
         }
         thankYouBottomSheet?.let { bottomSheet ->
             activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
         }
+    }
+
+    private fun showThankYouToaster(data: ProductrevGetPostSubmitBottomSheetResponse?) {
+        finishIfRoot(
+            success = true,
+            message = data?.getToasterText(createReviewViewModel.getUserName()) ?: getString(
+                R.string.review_create_success_toaster,
+                createReviewViewModel.getUserName()
+            ),
+            feedbackId = if (isEditMode) feedbackId else getFeedbackId()
+        )
     }
 
     private fun onSuccessGetReviewDetail(productrevGetReviewDetail: ProductrevGetReviewDetail) {
@@ -787,10 +831,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun onFailGetReviewDetail(throwable: Throwable) {
         hideShimmering()
         if (throwable is MessageErrorException) {
-            activity?.let {
-                Toast.makeText(it, R.string.review_error_not_found, Toast.LENGTH_LONG).show()
-                finishIfRoot()
-            }
+            finishIfRoot(
+                success = false,
+                message = getString(R.string.review_error_not_found),
+                feedbackId = if (isEditMode) feedbackId else getFeedbackId()
+            )
         } else {
             binding?.reviewRoot?.let {
                 NetworkErrorHelper.showEmptyState(context, it) {
@@ -916,14 +961,18 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessSubmitReview(feedbackId: String = "") {
-        stopLoading()
-        showLayout()
-        if (isUserEligible() && !isReviewIncomplete) {
-            getIncentiveOvoData()
-            shouldShowThankYouBottomSheet = true
-            return
+        if (isEditMode) {
+            stopLoading()
+            showLayout()
+            finishIfRoot(
+                success = true,
+                message = getString(R.string.review_create_success_toaster),
+                feedbackId = feedbackId
+            )
+        } else {
+            val reviewMessage = binding?.createReviewExpandableTextArea?.getText().orEmpty()
+            createReviewViewModel.getPostSubmitBottomSheetData(reviewMessage, feedbackId)
         }
-        finishIfRoot(success = true, feedbackId = feedbackId)
     }
 
     private fun onFailSubmitReview(throwable: Throwable) {
@@ -993,10 +1042,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun onErrorGetReviewForm(throwable: Throwable) {
         hideShimmering()
         if (throwable is MessageErrorException) {
-            activity?.let {
-                Toast.makeText(it, R.string.review_error_not_found, Toast.LENGTH_LONG).show()
-                finishIfRoot()
-            }
+            finishIfRoot(
+                success = false,
+                message = getString(R.string.review_error_not_found),
+                feedbackId = if (isEditMode) feedbackId else getFeedbackId()
+            )
         } else {
             binding?.reviewRoot?.let {
                 NetworkErrorHelper.showEmptyState(context, it) {
@@ -1009,8 +1059,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun finishIfRoot(
         success: Boolean = false,
-        errorMessage: String = "",
-        feedbackId: String = ""
+        message: String,
+        feedbackId: String
     ) {
         activity?.run {
             if (isTaskRoot) {
@@ -1021,6 +1071,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 startActivity(intent)
             } else {
                 val intent = Intent()
+                intent.putExtra(ReviewInboxConstants.CREATE_REVIEW_MESSAGE, message)
                 if (success) {
                     intent.putExtra(ReputationCommonConstants.ARGS_FEEDBACK_ID, feedbackId)
                     intent.putExtra(ReputationCommonConstants.ARGS_RATING, reviewClickAt)
@@ -1032,7 +1083,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     )
                     setResult(Activity.RESULT_OK, intent)
                 } else {
-                    intent.putExtra(ReviewInboxConstants.CREATE_REVIEW_ERROR_MESSAGE, errorMessage)
                     intent.putExtra(
                         ReputationCommonConstants.ARGS_REVIEW_STATE,
                         ReputationCommonConstants.INVALID_TO_REVIEW
@@ -1119,19 +1169,34 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun setHelperText(textLength: Int) {
-        if (!createReviewViewModel.isUserEligible()) {
-            return
-        }
         binding?.incentiveHelperText?.apply {
             incentiveHelper = when {
                 textLength >= REVIEW_INCENTIVE_MINIMUM_THRESHOLD -> {
-                    context?.getString(R.string.review_create_text_area_eligible) ?: ""
+                    if (hasIncentive()) {
+                        context?.getString(R.string.review_create_text_area_eligible_incentive) ?: ""
+                    } else if (hasOngoingChallenge()) {
+                        context?.getString(R.string.review_create_text_area_eligible_challenge) ?: ""
+                    } else {
+                        ""
+                    }
                 }
                 textLength < REVIEW_INCENTIVE_MINIMUM_THRESHOLD && textLength != 0 -> {
-                    context?.getString(R.string.review_create_text_area_partial) ?: ""
+                    if (hasIncentive()) {
+                        context?.getString(R.string.review_create_text_area_partial_incentive) ?: ""
+                    } else if (hasOngoingChallenge()) {
+                        context?.getString(R.string.review_create_text_area_partial_challenge) ?: ""
+                    } else {
+                        ""
+                    }
                 }
                 else -> {
-                    context?.getString(R.string.review_create_text_area_empty) ?: ""
+                    if (hasIncentive()) {
+                        context?.getString(R.string.review_create_text_area_empty_incentive) ?: ""
+                    } else if (hasOngoingChallenge()) {
+                        context?.getString(R.string.review_create_text_area_empty_challenge) ?: ""
+                    } else {
+                        ""
+                    }
                 }
             }
             text = incentiveHelper

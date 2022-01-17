@@ -11,7 +11,7 @@ data class ProductInfo(
 
         @SerializedName("productId")
         @Expose
-        var productId: Int? = 0,
+        var productId: Long? = 0,
 
         @SerializedName("productTitle")
         @Expose
@@ -47,7 +47,7 @@ data class ProductInfo(
 
         @SerializedName("shopId")
         @Expose
-        var shopId: Int? = 0,
+        var shopId: Long? = 0,
 
         @SerializedName("appLink")
         @Expose

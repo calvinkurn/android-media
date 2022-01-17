@@ -16,7 +16,6 @@ import androidx.work.Configuration;
 import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.analytics.performance.util.AppStartPerformanceTracker;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
@@ -40,6 +39,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     @Override
     public void initConfigValues() {
         GlobalConfig.PACKAGE_APPLICATION = "com.tokopedia.tkpd";
+        GlobalConfig.LAUNCHER_ICON_RES_ID = com.tokopedia.tkpd.R.mipmap.ic_launcher_customerapp;
         setVersionCode();
         setVersionName();
         initFileDirConfig();
@@ -63,7 +63,6 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         if (BuildConfig.DEBUG_TRACE_NAME != null) {
             com.tokopedia.config.GlobalConfig.DEBUG_TRACE_NAME = BuildConfig.DEBUG_TRACE_NAME.split(",");
         }
-        generateConsumerAppNetworkKeys();
     }
 
     public String getOriginalPackageApp() {
@@ -84,13 +83,6 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     public int versionCode() {
         return BuildConfig.VERSION_CODE;
     }
-
-    @Override
-    public void generateConsumerAppNetworkKeys() {
-        AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = ConsumerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
-        AuthUtil.KEY.ZEUS_WHITELIST = ConsumerAppNetworkKeys.ZEUS_WHITELIST;
-    }
-
 
     @Override
     public void onCreate() {

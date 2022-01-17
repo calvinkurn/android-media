@@ -86,7 +86,7 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
         messageId = intent.getStringExtra(MESSAGE_ID,)?: ""
         val imageUploadService = intent.getParcelableExtra<ImageUploadServiceModel>(IMAGE)
         imageUploadService?.let {
-            image =  ImageUploadMapper.mapToImageUploadViewModel(it)
+            image =  ImageUploadMapper.mapToImageUploadUiModel(it)
         }
     }
 
@@ -100,10 +100,21 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
         sendImageByGQL(messageId, "Uploaded Image", uploadId, dummyMessage)
     }
 
-    private fun sendImageByGQL(msgId: String, msg: String, filePath: String, dummyMessage: ImageUploadUiModel) {
+    private fun sendImageByGQL(
+        msgId: String,
+        msg: String,
+        filePath: String,
+        dummyMessage: ImageUploadUiModel
+    ) {
         launchCatchError(block = {
             withContext(dispatcher.io) {
-                val result = replyChatGQLUseCase.replyMessage(msgId, msg, filePath, dummyMessage.source)
+                val result = replyChatGQLUseCase.replyMessage(
+                    msgId = msgId,
+                    msg = msg,
+                    filePath = filePath,
+                    source = dummyMessage.source,
+                    parentReply = dummyMessage.parentReply
+                )
                 if(result.data.attachment.attributes.isNotEmpty()) {
                     removeDummyOnList(dummyMessage)
                     sendSuccessBroadcast()

@@ -191,9 +191,6 @@ class EnhancedECommerceProductCartMapData {
     }
 
     companion object {
-        const val SHOP_TYPE_REGULER = "reguler"
-        const val SHOP_TYPE_OFFICIAL_STORE = "official_store"
-        const val SHOP_TYPE_GOLD_MERCHANT = "gold_merchant"
         private const val KEY_NAME = "name"
         private const val KEY_ID = "id"
         private const val KEY_PRICE = "price"

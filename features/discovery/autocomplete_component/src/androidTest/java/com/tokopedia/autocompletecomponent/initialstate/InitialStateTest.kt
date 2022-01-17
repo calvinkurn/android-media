@@ -6,9 +6,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Rule
 import org.junit.Test
 
+@UiTest
 class InitialStateTest {
 
     companion object {

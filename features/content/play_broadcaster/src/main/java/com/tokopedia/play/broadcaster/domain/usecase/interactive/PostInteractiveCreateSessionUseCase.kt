@@ -14,7 +14,7 @@ import javax.inject.Inject
  */
 class PostInteractiveCreateSessionUseCase @Inject constructor(
     gqlRepository: GraphqlRepository
-) : RetryableGraphqlUseCase<PostInteractiveCreateSessionResponse>(gqlRepository) {
+) : RetryableGraphqlUseCase<PostInteractiveCreateSessionResponse>(gqlRepository, HIGH_RETRY_COUNT) {
 
     private val query = """
         mutation PostInteractiveCreateSession(${"$$PARAM_SHOP_ID"}: String!, ${"$$PARAM_CHANNEL_ID"}: String!, ${"$$PARAM_TITLE"}: String!, ${"$$PARAM_TIMER"}: String!) {

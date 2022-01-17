@@ -57,4 +57,6 @@ class HomeViewModelHomeDataTest {
         assert( homeViewModel.homeLiveData.value?.list?.find { it is DynamicChannelLoadingModel } != null )
         assert( homeViewModel.homeLiveData.value?.list?.find { it is DynamicChannelRetryModel }== null )
     }
+
+
 }

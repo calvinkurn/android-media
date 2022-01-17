@@ -4,7 +4,7 @@
     android:id="@+id/coordl_bottom_sheet"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent"
+    android:background="@android:color/transparent"
     >
 
     <include
@@ -17,6 +17,22 @@
 
     <include
         layout="@layout/view_play_interactive_leaderboard"
+        />
+
+    <include
+        layout="@layout/view_shop_coupon_sheet"
+        />
+
+    <include
+        layout="@layout/view_kebab_menu_sheet"
+        />
+
+    <include
+        layout="@layout/view_play_user_report_sheet"
+        />
+
+    <include
+        layout="@layout/view_user_report_submission"
         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

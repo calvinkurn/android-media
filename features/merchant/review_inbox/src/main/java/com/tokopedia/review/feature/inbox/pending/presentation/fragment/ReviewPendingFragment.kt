@@ -40,15 +40,19 @@ import com.tokopedia.review.common.presentation.InboxUnifiedRemoteConfig
 import com.tokopedia.review.common.util.ReviewInboxUtil
 import com.tokopedia.review.feature.inbox.container.presentation.listener.ReviewInboxListener
 import com.tokopedia.review.feature.inbox.pending.analytics.ReviewPendingTracking
+import com.tokopedia.review.feature.inbox.pending.data.ProductrevWaitForFeedbackLabelAndImage
 import com.tokopedia.review.feature.inbox.pending.data.mapper.ReviewPendingMapper
 import com.tokopedia.review.feature.inbox.pending.di.DaggerReviewPendingComponent
 import com.tokopedia.review.feature.inbox.pending.di.ReviewPendingComponent
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.ReviewPendingAdapter
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.ReviewPendingAdapterTypeFactory
+import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingCredibilityCarouselUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingCredibilityUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingEmptyUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingOvoIncentiveUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingUiModel
+import com.tokopedia.review.feature.inbox.pending.presentation.coachmark.CoachMarkManager
+import com.tokopedia.review.feature.inbox.pending.presentation.scroller.ReviewPendingRecyclerViewScroller
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
 import com.tokopedia.review.feature.inbox.pending.presentation.viewmodel.ReviewPendingViewModel
 import com.tokopedia.review.feature.inbox.pending.util.ReviewPendingPreference
@@ -75,6 +79,7 @@ class ReviewPendingFragment :
         const val CREATE_REVIEW_REQUEST_CODE = 420
         const val INBOX_SOURCE = "inbox"
         const val COACH_MARK_SHOWN = false
+        const val PARAM_WRITE_FORM_SOURCE = "source"
         fun createNewInstance(reviewInboxListener: ReviewInboxListener): ReviewPendingFragment {
             return ReviewPendingFragment().apply {
                 this.reviewInboxListener = reviewInboxListener
@@ -93,6 +98,13 @@ class ReviewPendingFragment :
     private var reviewPendingPreference: ReviewPendingPreference? = null
 
     private var binding by autoClearedNullable<FragmentReviewPendingBinding>()
+
+    private val smoothScroller by lazy(LazyThreadSafetyMode.NONE) {
+        binding?.reviewPendingRecyclerView?.let { ReviewPendingRecyclerViewScroller(it) }
+    }
+    private val coachMarkManager by lazy(LazyThreadSafetyMode.NONE) {
+        binding?.root?.let { CoachMarkManager(it, smoothScroller) }
+    }
 
     override fun getAdapterTypeFactory(): ReviewPendingAdapterTypeFactory {
         return ReviewPendingAdapterTypeFactory(this)
@@ -233,6 +245,7 @@ class ReviewPendingFragment :
 
     override fun onDestroy() {
         super.onDestroy()
+        coachMarkManager?.dismissCoachMark()
         removeObservers(viewModel.reviewList)
     }
 
@@ -257,6 +270,7 @@ class ReviewPendingFragment :
         hideLoading()
         adapter.addElement(list)
         updateScrollListenerState(hasNextPage)
+        coachMarkManager?.notifyUpdatedAdapter(!isLoadingInitialData)
         isLoadingInitialData = false
         if (adapter.dataSize < minimumScrollableNumOfItems && isAutoLoadEnabled
             && hasNextPage && endlessRecyclerViewScrollListener != null
@@ -270,14 +284,17 @@ class ReviewPendingFragment :
         if (requestCode == CREATE_REVIEW_REQUEST_CODE) {
             reviewInboxListener?.reloadCounter()
             if (resultCode == Activity.RESULT_OK) {
-                onSuccessCreateReview()
+                onSuccessCreateReview(
+                    data?.getStringExtra(ReviewInboxConstants.CREATE_REVIEW_MESSAGE)
+                        ?: getString(R.string.review_create_success_toaster, viewModel.getUserName())
+                )
             } else if (resultCode == Activity.RESULT_FIRST_USER) {
                 onFailCreateReview(
-                    data?.getStringExtra(ReviewInboxConstants.CREATE_REVIEW_ERROR_MESSAGE)
+                    data?.getStringExtra(ReviewInboxConstants.CREATE_REVIEW_MESSAGE)
                         ?: getString(R.string.review_pending_invalid_to_review)
                 )
             }
-            loadInitialData()
+            refresh()
         }
     }
 
@@ -296,10 +313,6 @@ class ReviewPendingFragment :
         // No Op
     }
 
-    override fun onClickReviewAnother() {
-        // No Op
-    }
-
     override fun onDismissOvoIncentiveTicker(subtitle: String) {
         ReviewTracking.onClickDismissIncentiveOvoTracker(
             subtitle,
@@ -307,12 +320,21 @@ class ReviewPendingFragment :
         )
     }
 
-    override fun onReviewCredibilityWidgetClicked() {
-        goToCredibility()
-        ReviewPendingTracking.trackOnCredibilityClicked(viewModel.getUserId())
+    override fun onReviewCredibilityWidgetClicked(appLink: String, title: String, position: Int) {
+        if (appLink.isBlank()) {
+            goToCredibility()
+        } else {
+            RouteManager.route(context, appLink)
+        }
+        ReviewPendingTracking.trackCredibilityCarouselItemClick(position, title, viewModel.getUserId())
+    }
+
+    override fun onReviewCredibilityWidgetImpressed(title: String, position: Int) {
+        ReviewPendingTracking.trackCredibilityCarouselItemImpression(position, title, viewModel.getUserId())
     }
 
     override fun onSwipeRefresh() {
+        coachMarkManager?.resetCoachMarkState()
         super.onSwipeRefresh()
         reviewInboxListener?.reloadCounter()
     }
@@ -451,13 +473,12 @@ class ReviewPendingFragment :
                     hideError()
                     hideLoading()
                     if (it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE && shouldShowCredibility()) {
-                        with(it.data.credibilityWidget) {
-                            addCredibilityWidget(imageURL, labelTitle, labelSubtitle)
-                        }
+                        addCredibilityCarouselWidget(it.data.banners)
                     }
                     if (it.data.list.isEmpty() && it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
                         with(it.data.emptyState) {
                             handleEmptyState(imageURL, labelTitle, labelSubtitle)
+                            renderList(listOf(), it.data.hasNext)
                         }
                     } else {
                         renderReviewData(
@@ -508,10 +529,12 @@ class ReviewPendingFragment :
         if (ovoIncentiveBottomSheet == null) {
             ovoIncentiveBottomSheet = context?.let {
                 IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(
-                    it,
-                    productRevIncentiveOvoDomain,
-                    this,
-                    ReviewInboxTrackingConstants.PENDING_TAB
+                    context = it,
+                    productRevIncentiveOvoDomain = productRevIncentiveOvoDomain,
+                    hasIncentive = true,
+                    hasOngoingChallenge = false,
+                    incentiveOvoListener = this,
+                    category = ReviewInboxTrackingConstants.PENDING_TAB
                 )
             }
         }
@@ -524,11 +547,8 @@ class ReviewPendingFragment :
         }
     }
 
-    private fun onSuccessCreateReview() {
-        showToaster(
-            getString(R.string.review_create_success_toaster, viewModel.getUserName()),
-            getString(R.string.review_oke)
-        )
+    private fun onSuccessCreateReview(message: String) {
+        showToaster(message, getString(R.string.review_oke))
     }
 
     private fun onFailCreateReview(errorMessage: String) {
@@ -558,6 +578,7 @@ class ReviewPendingFragment :
                 )
                     .buildUpon()
                     .appendQueryParameter(PARAM_RATING, rating.toString())
+                    .appendQueryParameter(PARAM_WRITE_FORM_SOURCE, INBOX_SOURCE)
                     .build()
                     .toString()
             )
@@ -592,12 +613,17 @@ class ReviewPendingFragment :
         )
     }
 
-    private fun addCredibilityWidget(imageUrl: String, title: String, subtitle: String) {
-        (adapter as? ReviewPendingAdapter)?.insertCredibilityWidget(
-            ReviewPendingCredibilityUiModel(
-                imageUrl,
-                title,
-                subtitle
+    private fun addCredibilityCarouselWidget(banners: List<ProductrevWaitForFeedbackLabelAndImage>) {
+        (adapter as? ReviewPendingAdapter)?.insertCredibilityCarouselWidget(
+            ReviewPendingCredibilityCarouselUiModel(
+                banners.map {
+                    ReviewPendingCredibilityUiModel(
+                        it.imageURL,
+                        it.labelTitle,
+                        it.labelSubtitle,
+                        it.appLink
+                    )
+                }
             )
         )
     }
@@ -607,7 +633,7 @@ class ReviewPendingFragment :
     }
 
     private fun shouldShowCredibility(): Boolean {
-        return isNewCredibilityEnabled() && isNewReadingExperienceEnabled()
+        return isNewCredibilityEnabled()
     }
 
     private fun isNewCredibilityEnabled(): Boolean {
@@ -616,16 +642,6 @@ class ReviewPendingFragment :
                 RollenceKey.EXPERIMENT_NAME_REVIEW_CREDIBILITY,
                 RollenceKey.VARIANT_REVIEW_CREDIBILITY_WITHOUT_BOTTOM_SHEET
             ) == RollenceKey.VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET
-        }
-        return false
-    }
-
-    private fun isNewReadingExperienceEnabled(): Boolean {
-        getAbTestPlatform()?.let {
-            return it.getString(
-                RollenceKey.EXPERIMENT_NAME_REVIEW_PRODUCT_READING,
-                RollenceKey.VARIANT_OLD_REVIEW_PRODUCT_READING
-            ) == RollenceKey.VARIANT_NEW_REVIEW_PRODUCT_READING
         }
         return false
     }
@@ -655,5 +671,10 @@ class ReviewPendingFragment :
         } else {
             showEmptyState()
         }
+    }
+
+    private fun refresh() {
+        coachMarkManager?.resetCoachMarkState()
+        loadInitialData()
     }
 }

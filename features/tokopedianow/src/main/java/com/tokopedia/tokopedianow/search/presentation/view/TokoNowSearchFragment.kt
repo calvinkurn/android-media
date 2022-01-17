@@ -1,7 +1,6 @@
 package com.tokopedia.tokopedianow.search.presentation.view
 
 import android.os.Bundle
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -26,6 +25,7 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_S
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_SRP_RECOM_OOC
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_SRP_PRODUCT_TOKONOW
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_SRP_RECOM_OOC
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_DASH_SEARCH_PAGE
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_EMPTY_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKOOW_SEARCH_RESULT_PAGE
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.RECOM_LIST_PAGE
@@ -68,9 +68,6 @@ class TokoNowSearchFragment :
     private lateinit var tokoNowSearchViewModel: TokoNowSearchViewModel
 
     override val toolbarPageName = "TokoNow Search"
-
-    override val oocPageName: String
-        get() = "tokonow - search page"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -137,6 +134,7 @@ class TokoNowSearchFragment :
     }
 
     override fun createTypeFactory() = SearchTypeFactoryImpl(
+            tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(TOKONOW_DASH_SEARCH_PAGE),
             chooseAddressListener = this,
             titleListener = this,
             bannerListener = this,
@@ -145,12 +143,11 @@ class TokoNowSearchFragment :
             productItemListener = this,
             tokoNowEmptyStateNoResultListener = this,
             suggestionListener = this,
-            outOfCoverageListener = this,
             categoryJumperListener = this,
             ctaTokoNowHomeListener = this,
             recommendationCarouselListener = this,
             broadMatchListener = this,
-        recomWidgetBindPageNameListener = this
+            recomWidgetBindPageNameListener = this
     )
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
@@ -421,6 +418,6 @@ class TokoNowSearchFragment :
     }
 
     override fun sendOOCOpenScreenTracking(isTracked: Boolean) {
-        SearchTracking.sendOOCOpenScreenTracking()
+        SearchTracking.sendOOCOpenScreenTracking(userSession.isLoggedIn)
     }
 }

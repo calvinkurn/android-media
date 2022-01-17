@@ -1,6 +1,5 @@
 package com.tokopedia.home_recom.view.fragment
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,12 +22,10 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
-import com.tokopedia.home_recom.model.datamodel.RecommendationEmptyDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
 import com.tokopedia.home_recom.util.RecomPageConstant
 import com.tokopedia.home_recom.util.RecomPageConstant.PAGE_TITLE_RECOM_DEFAULT
 import com.tokopedia.home_recom.util.RecomPageConstant.RV_SPAN_COUNT
-import com.tokopedia.home_recom.util.RecomPageUiUpdater
 import com.tokopedia.home_recom.util.showToastError
 import com.tokopedia.home_recom.util.showToastErrorWithAction
 import com.tokopedia.home_recom.view.adapter.RecomPageAdapter
@@ -40,15 +37,10 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
-import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -114,7 +106,7 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context?.let {
-            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         }
         setHasOptionsMenu(true)
         productAdapter = createAdapterInstance()
@@ -369,13 +361,9 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
     }
 
     private fun initNavBar() {
-        getRollenceNavigationValue()
-        var iconBuilder = IconBuilder()
-        if (isNewNavigation) {
-            iconBuilder = IconBuilder()
+        val iconBuilder = IconBuilder()
                     .addIcon(IconList.ID_CART) {}
                     .addIcon(IconList.ID_NAV_GLOBAL) {}
-        }
         navToolbar?.let {
             it.setShowShadowEnabled(true)
             it.setIcon(iconBuilder)
@@ -403,28 +391,6 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
                     autoInitializeData = false,
                     pageName = setMiniCartPageName()
             )
-        }
-    }
-
-    private fun getRollenceNavigationValue() {
-        try {
-            this.isNewNavigation =
-                    (RemoteConfigInstance
-                            .getInstance()
-                            .abTestPlatform
-                            .getString(RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD)
-                            == RollenceKey.NAVIGATION_VARIANT_REVAMP) ||
-                            (RemoteConfigInstance
-                                    .getInstance()
-                                    .abTestPlatform
-                                    .getString(
-                                            RollenceKey.NAVIGATION_EXP_TOP_NAV2,
-                                            RollenceKey.NAVIGATION_VARIANT_OLD
-                                    )
-                                    == RollenceKey.NAVIGATION_VARIANT_REVAMP2)
-
-        } catch (e: java.lang.Exception) {
-            this.isNewNavigation = false
         }
     }
 }

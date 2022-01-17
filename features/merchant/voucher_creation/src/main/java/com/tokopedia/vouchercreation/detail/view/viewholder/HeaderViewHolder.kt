@@ -50,6 +50,9 @@ class HeaderViewHolder(
             val textColorResId: Int
 
             headerContainer?.gone()
+            label_vps.gone()
+            tpg_package_name.gone()
+            label_subsidy.gone()
 
             when(element.status) {
                 VoucherStatusConst.NOT_STARTED -> {
@@ -113,6 +116,20 @@ class HeaderViewHolder(
             containerColor?.run {
                 headerContainer?.setContainerColor(this)
             }
+
+            if (element.isVps) {
+                label_vps.visible()
+                tpg_package_name.visible()
+                label_subsidy.gone()
+                tpg_package_name.text = element.packageName
+            }
+
+            if (!element.isVps && element.isSubsidy) {
+                label_vps.gone()
+                tpg_package_name.gone()
+                label_subsidy.visible()
+            }
+
             btnMvcDownload.setOnClickListener {
                 onDownloadClick()
             }

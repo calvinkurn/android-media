@@ -5,7 +5,7 @@ import androidx.work.*
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance.Companion.DEFAULT_VALUE_DATAVISOR
-import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance.Companion.DV_SHARED_PREF_NAME
+import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance.Companion.getSharedPrefName
 import com.tokopedia.devicefingerprint.datavisor.response.SubmitDeviceInitResponse
 import com.tokopedia.devicefingerprint.datavisor.usecase.SubmitDVTokenUseCase
 import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
@@ -20,18 +20,18 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.resume
-import kotlin.math.min
 
-class DataVisorWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker(appContext, params) {
+class DataVisorWorker(appContext: Context, params: WorkerParameters) :
+    CoroutineWorker(appContext, params) {
 
     @Inject
     lateinit var submitDVTokenUseCase: SubmitDVTokenUseCase
 
     init {
         DaggerDeviceFingerprintComponent.builder()
-                .deviceFingerprintModule(DeviceFingerprintModule(applicationContext))
-                .build()
-                .inject(this)
+            .deviceFingerprintModule(DeviceFingerprintModule(applicationContext))
+            .build()
+            .inject(this)
     }
 
     override suspend fun doWork(): Result {
@@ -49,16 +49,16 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
                 resultInit = suspendCancellableCoroutine { continuation ->
                     try {
                         VisorFingerprintInstance.initToken(applicationContext,
-                                userSession.userId,
-                                listener = object : VisorFingerprintInstance.onVisorInitListener {
-                                    override fun onSuccessInitToken(token: String) {
-                                        continuation.resume(token to "")
-                                    }
+                            userSession.userId,
+                            listener = object : VisorFingerprintInstance.onVisorInitListener {
+                                override fun onSuccessInitToken(token: String) {
+                                    continuation.resume(token to "")
+                                }
 
-                                    override fun onFailedInitToken(error: String) {
-                                        continuation.resume("" to error)
-                                    }
-                                })
+                                override fun onFailedInitToken(error: String) {
+                                    continuation.resume("" to error)
+                                }
+                            })
                     } catch (e: Exception) {
                         continuation.resume("" to e.toString())
                     }
@@ -92,19 +92,18 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
     }
 
     private fun sendLog(token: String = "", isError: Boolean = false, throwableString: String) {
-        val throwableTruncate = if (throwableString.isNotEmpty()) {
-            throwableString.substring(0, min(ERR_MAX_LENGTH, throwableString.length))
-        } else {
-            ""
-        }
-        ServerLogger.log(Priority.P1, LOG_TAG,
-                mapOf("token" to token,
-                        "isError" to isError.toString(),
-                        "error" to throwableTruncate))
+        ServerLogger.log(
+            Priority.P1, LOG_TAG,
+            mapOf(
+                "token" to token,
+                "isError" to isError.toString(),
+                "error" to throwableString
+            )
+        )
     }
 
     fun setTokenLocal(context: Context, token: String) {
-        val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
+        val sp = context.getSharedPreferences(getSharedPrefName(), Context.MODE_PRIVATE)
         val now = System.currentTimeMillis()
         val editor = sp.edit()
         editor.putString(KEY_TOKEN, token).putLong(KEY_TS_TOKEN, now)
@@ -118,12 +117,14 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
         sendDataVisorToServer(DEFAULT_VALUE_DATAVISOR, runAttemptCount, errorMessage)
     }
 
-    private suspend fun sendDataVisorToServer(token: String = DEFAULT_VALUE_DATAVISOR,
-                                              countAttempt: Int, errorMessage: String): SubmitDeviceInitResponse {
+    private suspend fun sendDataVisorToServer(
+        token: String = DEFAULT_VALUE_DATAVISOR,
+        countAttempt: Int, errorMessage: String
+    ): SubmitDeviceInitResponse {
         return submitDVTokenUseCase.execute(
-                token,
-                countAttempt,
-                errorMessage
+            token,
+            countAttempt,
+            errorMessage
         )
     }
 
@@ -134,7 +135,6 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
         const val KEY_TS_TOKEN = "ts_tk"
         const val KEY_TS_WORKER = "ts_worker"
         const val LOG_TAG = "GQL_ERROR_RISK"
-        const val ERR_MAX_LENGTH = 100
         val THRES_TOKEN_VALID_AGE = TimeUnit.DAYS.toMillis(30)
         val THRES_WORKER = TimeUnit.DAYS.toMillis(1)
         var lastToken = ""
@@ -149,6 +149,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
                     if (GlobalConfig.isSellerApp()) {
                         return@launch
                     }
+                    initVar(appContext)
                     if (forceWorker || needToRun(appContext)) {
                         runWorker(appContext)
                     }
@@ -158,21 +159,24 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
         }
 
         fun setTsWorker(context: Context) {
-            val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
+            val sp = context.getSharedPreferences(getSharedPrefName(), Context.MODE_PRIVATE)
             val now = System.currentTimeMillis()
             sp.edit().putLong(KEY_TS_WORKER, now)
-                    .apply()
+                .apply()
             lastTimestampWorker = now
         }
 
-        fun needToRun(context: Context): Boolean {
+        fun initVar(context: Context) {
             if (lastToken.isEmpty()) {
-                val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                val sp = context.getSharedPreferences(getSharedPrefName(), Context.MODE_PRIVATE)
                 lastToken = sp.getString(KEY_TOKEN, DEFAULT_VALUE_DATAVISOR)
-                        ?: DEFAULT_VALUE_DATAVISOR
+                    ?: DEFAULT_VALUE_DATAVISOR
                 lastTimestampToken = sp.getLong(KEY_TS_TOKEN, 0L)
                 lastTimestampWorker = sp.getLong(KEY_TS_WORKER, 0L)
             }
+        }
+
+        fun needToRun(context: Context): Boolean {
             if (lastToken != DEFAULT_VALUE_DATAVISOR) {
                 //check token valid age
                 if (System.currentTimeMillis() - lastTimestampToken < THRES_TOKEN_VALID_AGE) {
@@ -200,14 +204,17 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
             try {
                 setTsWorker(context)
                 WorkManager.getInstance(context).enqueueUniqueWork(
-                        WORKER_NAME,
-                        ExistingWorkPolicy.REPLACE,
-                        OneTimeWorkRequest
-                                .Builder(DataVisorWorker::class.java)
-                                .setConstraints(Constraints.Builder()
-                                        .setRequiredNetworkType(NetworkType.CONNECTED)
-                                        .build())
-                                .build())
+                    WORKER_NAME,
+                    ExistingWorkPolicy.REPLACE,
+                    OneTimeWorkRequest
+                        .Builder(DataVisorWorker::class.java)
+                        .setConstraints(
+                            Constraints.Builder()
+                                .setRequiredNetworkType(NetworkType.CONNECTED)
+                                .build()
+                        )
+                        .build()
+                )
             } catch (ex: Exception) {
                 Timber.w(ex.toString())
             }

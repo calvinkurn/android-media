@@ -24,14 +24,12 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.Shippin
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.feature.editaddress.di.PeopleAddressNetworkModule
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
@@ -47,7 +45,6 @@ import javax.inject.Named
 
 @Module(includes = [
     PeopleAddressNetworkModule::class,
-    PromoCheckoutModule::class,
     PurchasePlatformNetworkModule::class,
     PurchasePlatformBaseModule::class
 ])
@@ -71,13 +68,6 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
 
     @Provides
     @CheckoutScope
-    @Named(SubmitHelpTicketUseCase.QUERY_NAME)
-    fun provideSubmitHelpTicketUseCaseQuery(context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.purchase_platform.common.R.raw.submit_help_ticket)
-    }
-
-    @Provides
-    @CheckoutScope
     fun provideScheduler(): SchedulerProvider {
         return MainScheduler()
     }
@@ -97,15 +87,14 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  ratesUseCase: GetRatesUseCase,
                                  ratesApiUseCase: GetRatesApiUseCase,
                                  stateConverter: RatesResponseStateConverter,
-                                 clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
-                                 submitHelpTicketUseCase: SubmitHelpTicketUseCase,
+                                 clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase,
                                  shippingCourierConverter: ShippingCourierConverter,
                                  userSessionInterface: UserSessionInterface,
                                  analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection,
                                  checkoutAnalytics: CheckoutAnalyticsCourierSelection,
                                  shipmentDataConverter: ShipmentDataConverter,
                                  releaseBookingUseCase: ReleaseBookingUseCase,
-                                 validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
+                                 validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
                                  gson: Gson,
                                  executorSchedulers: ExecutorSchedulers): ShipmentContract.Presenter {
         return ShipmentPresenter(compositeSubscription,
@@ -113,7 +102,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                 editAddressUseCase, changeShippingAddressGqlUseCase,
                 saveShipmentStateGqlUseCase,
                 ratesUseCase, ratesApiUseCase,
-                clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
+                clearCacheAutoApplyStackUseCase,
                 stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
                 analyticsPurchaseProtection, checkoutAnalytics,
                 shipmentDataConverter, releaseBookingUseCase, validateUsePromoRevampUseCase, gson,

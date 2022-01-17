@@ -1,0 +1,1632 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "totalData": 169349,
+      "totalDataText": "169rb+",
+      "defaultView": 1,
+      "responseCode": 0,
+      "errorMessage": "",
+      "additionalParams": "rf\u003dtrue\u0026nuq\u003dtv",
+      "keywordProcess": "22",
+      "componentId": "01.02.02.01"
+    },
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "tokopedia://search-autocomplete?navsource\u003dhome\u0026q\u003dtv%20-samsung%20-lg%20-realme%20-android%20-smart",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "Menampilkan hasil pencarian \u003cb\u003etv\u003c/b\u003e  tanpa kata \u003cb\u003esamsung\u003c/b\u003e, \u003cb\u003elg\u003c/b\u003e, \u003cb\u003erealme\u003c/b\u003e, \u003cb\u003eandroid\u003c/b\u003e and \u003cb\u003esmart\u003c/b\u003e. Tetap mencari berdasarkan kata \u003ca href\u003dhttps://www.tokopedia.com/search?q\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026skip_rewrite\u003dtrue\u0026source\u003dsearch\u003e\"tv -samsung -lg -realme -android -smart\"\u003c/a\u003e ?",
+        "query": "skip_rewrite\u003dtrue\u0026srp_component_id\u003d03.09.01.00",
+        "typeId": 4,
+        "componentId": "03.09.01.00",
+        "trackingOption": 3
+      },
+      "banner": {
+        "position": 0,
+        "text": "",
+        "applink": "",
+        "imageUrl": ""
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "trackingOption": 0,
+        "otherRelated": []
+      },
+      "suggestion": {
+        "suggestion": "",
+        "query": "",
+        "text": "",
+        "componentId": "",
+        "trackingOption": 0
+      },
+      "products": [
+        {
+          "id": 2108906164,
+          "name": "Televisi [ TV ] LED TV Murah 24 Inch",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 1312607,
+            "name": "PVBLIC ONE",
+            "city": "Tangerang",
+            "url": "https://www.tokopedia.com/pvblicone",
+            "isOfficial": true,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/12/21/d9dfd42c-0826-4b65-81e8-f35aac84aaff.png",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/12/21/d9dfd42c-0826-4b65-81e8-f35aac84aaff.png",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/12/21/d9dfd42c-0826-4b65-81e8-f35aac84aaff.png",
+          "price": "Rp639.000",
+          "priceInt": 639000,
+          "priceRange": "",
+          "categoryId": 60,
+          "categoryName": "Elektronik",
+          "categoryBreadcrumb": "elektronik/tv-aksesoris/televisi",
+          "ratingAverage": "4.8",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/pvblicone/televisi-tv-led-tv-murah-24-inch-speaker-17inch?refined\u003dtrue\u0026whid\u003d0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Sisa 3",
+              "position": "gimmick",
+              "type": "textDarkRed",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 358",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Tiba 4 - 6 Jan",
+              "position": "eta",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/2108906164?extParam\u003dwhid%3D0"
+        },
+        {
+          "id": 2109096846,
+          "name": "Televisi [ TV ] LED TV Murah dan SNI 21 Inch Garansi 1 tahun",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 1312607,
+            "name": "PVBLIC ONE",
+            "city": "Tangerang",
+            "url": "https://www.tokopedia.com/pvblicone",
+            "isOfficial": true,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/12/21/8bd92f77-617d-4dc4-8843-662670fb3344.png",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/12/21/8bd92f77-617d-4dc4-8843-662670fb3344.png",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/12/21/8bd92f77-617d-4dc4-8843-662670fb3344.png",
+          "price": "Rp639.000",
+          "priceInt": 639000,
+          "priceRange": "",
+          "categoryId": 60,
+          "categoryName": "Elektronik",
+          "categoryBreadcrumb": "elektronik/tv-aksesoris/televisi",
+          "ratingAverage": "4.9",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/pvblicone/televisi-tv-led-tv-murah-dan-sni-21-inch-garansi-1-tahun-speaker-17inch?refined\u003dtrue\u0026whid\u003d0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Sisa 3",
+              "position": "gimmick",
+              "type": "textDarkRed",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 177",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Tiba 4 - 6 Jan",
+              "position": "eta",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/2109096846?extParam\u003dwhid%3D0"
+        },
+        {
+          "id": 1907899500,
+          "name": "(RESMI) Apple TV 4K 2021 6th Gen 32GB Garansi Apple IBOX 1 Tahun 32 GB",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 1265115,
+            "name": "Putra Group",
+            "city": "Jakarta Pusat",
+            "url": "https://www.tokopedia.com/putragroup",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/13/a5133874-4697-4ac5-a1c0-ce1d2481d61a.png",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/6/13/a5133874-4697-4ac5-a1c0-ce1d2481d61a.png",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/13/a5133874-4697-4ac5-a1c0-ce1d2481d61a.png",
+          "price": "Rp2.850.000",
+          "priceInt": 2850000,
+          "priceRange": "",
+          "categoryId": 60,
+          "categoryName": "Elektronik",
+          "categoryBreadcrumb": "elektronik/tv-aksesoris/televisi",
+          "ratingAverage": "5.0",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/putragroup/resmi-apple-tv-4k-2021-6th-gen-32gb-garansi-apple-ibox-1-tahun-32-gb-resmi-inter-4k-32gb?refined\u003dtrue\u0026whid\u003d0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 81",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Tiba 4 - 6 Jan",
+              "position": "eta",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Merchant Pro Badge",
+              "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/1907899500?extParam\u003dwhid%3D0"
+        },
+        {
+          "id": 2004384830,
+          "name": "SHARP AQUOS LED 32 Inch DIGITAL 2T-C32DC1i",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 1776467,
+            "name": "DPRINCE",
+            "city": "Jakarta Barat",
+            "url": "https://www.tokopedia.com/dprince",
+            "isOfficial": true,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/8/6/46089775-dce1-4031-8358-d32602ca1f15.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/8/6/46089775-dce1-4031-8358-d32602ca1f15.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/8/6/46089775-dce1-4031-8358-d32602ca1f15.jpg",
+          "price": "Rp2.349.000",
+          "priceInt": 2349000,
+          "priceRange": "",
+          "categoryId": 60,
+          "categoryName": "Elektronik",
+          "categoryBreadcrumb": "elektronik/tv-aksesoris/televisi",
+          "ratingAverage": "4.9",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/dprince/sharp-aquos-led-32-inch-digital-2t-c32dc1i?refined\u003dtrue\u0026whid\u003d0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Grosir",
+              "position": "offers",
+              "type": "lightGrey",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 243",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Tiba 4 - 6 Jan",
+              "position": "eta",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/2004384830?extParam\u003dwhid%3D0"
+        },
+        {
+          "id": 559501326,
+          "name": "LED TV Sharp 50 Inch 2T-C50AD1I - 50AD1 FullHD DVB-T2 HDMI USBMovie",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 6634266,
+            "name": "SJ_Elektronik",
+            "city": "Jakarta Pusat",
+            "url": "https://www.tokopedia.com/sjelektronik-1",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/7/21/96d3b3e6-a70c-4809-8eaf-b8f1bdacf54e.png",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/7/21/96d3b3e6-a70c-4809-8eaf-b8f1bdacf54e.png",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/7/21/96d3b3e6-a70c-4809-8eaf-b8f1bdacf54e.png",
+          "price": "Rp5.090.000",
+          "priceInt": 5090000,
+          "priceRange": "",
+          "categoryId": 60,
+          "categoryName": "Elektronik",
+          "categoryBreadcrumb": "elektronik/tv-aksesoris/televisi",
+          "ratingAverage": "5.0",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/sjelektronik-1/led-tv-sharp-50-inch-2t-c50ad1i-50ad1-fullhd-dvb-t2-hdmi-usbmovie?refined\u003dtrue\u0026whid\u003d0",
+          "labelGroups": [
+            {
+              "title": "Sisa 7",
+              "position": "gimmick",
+              "type": "textDarkRed",
+              "url": ""
+            },
+            {
+              "title": "Terjual 190",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Merchant Pro Badge",
+              "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/559501326?extParam\u003dwhid%3D0"
+        },
+        {
+          "id": 2109103997,
+          "name": "Televisi [ TV ] LED TV Murah dan SNI 20 Inch Garansi 1 tahun",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 1312607,
+            "name": "PVBLIC ONE",
+            "city": "Tangerang",
+            "url": "https://www.tokopedia.com/pvblicone",
+            "isOfficial": true,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/12/21/47544850-b324-470e-97e4-42cfae0474fa.png",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/12/21/47544850-b324-470e-97e4-42cfae0474fa.png",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/12/21/47544850-b324-470e-97e4-42cfae0474fa.png",
+          "price": "Rp639.000",
+          "priceInt": 639000,
+          "priceRange": "",
+          "categoryId": 60,
+          "categoryName": "Elektronik",
+          "categoryBreadcrumb": "elektronik/tv-aksesoris/televisi",
+          "ratingAverage": "4.9",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/pvblicone/televisi-tv-led-tv-murah-dan-sni-20-inch-garansi-1-tahun-speaker-17inch?refined\u003dtrue\u0026whid\u003d0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 129",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Tiba 4 - 6 Jan",
+              "position": "eta",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/2109103997?extParam\u003dwhid%3D0"
+        },
+        {
+          "id": 1783591878,
+          "name": "(RESMI) Apple TV 4K 2021 6th Gen 64GB Garansi Apple IBOX 1 Tahun 64 GB",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 1265115,
+            "name": "Putra Group",
+            "city": "Jakarta Pusat",
+            "url": "https://www.tokopedia.com/putragroup",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/13/6002098f-152f-40e7-a47e-d65d9912fb0c.png",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/6/13/6002098f-152f-40e7-a47e-d65d9912fb0c.png",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/13/6002098f-152f-40e7-a47e-d65d9912fb0c.png",
+          "price": "Rp3.350.000",
+          "priceInt": 3350000,
+          "priceRange": "",
+          "categoryId": 60,
+          "categoryName": "Elektronik",
+          "categoryBreadcrumb": "elektronik/tv-aksesoris/televisi",
+          "ratingAverage": "5.0",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/putragroup/resmi-apple-tv-4k-2021-6th-gen-64gb-garansi-apple-ibox-1-tahun-64-gb-resmi-inter?refined\u003dtrue\u0026whid\u003d0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 109",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Tiba 4 - 6 Jan",
+              "position": "eta",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Gadget Pilihan",
+              "position": "campaign",
+              "type": "",
+              "url": "https://images.tokopedia.net/img/phOWBv/2021/12/6/4a666632-cd32-4dfa-a6a4-cc17834f2d2c.png"
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Merchant Pro Badge",
+              "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/1783591878?extParam\u003dwhid%3D0"
+        },
+        {
+          "id": 504215436,
+          "name": "Sharp 2T-C32BA1i LED TV 32inch New 2019 Garansi 5 tahun",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 1776467,
+            "name": "DPRINCE",
+            "city": "Jakarta Barat",
+            "url": "https://www.tokopedia.com/dprince",
+            "isOfficial": true,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/7/7653a7ac-2cf9-4734-aa49-72b1174c6b3d.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/11/7/7653a7ac-2cf9-4734-aa49-72b1174c6b3d.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/11/7/7653a7ac-2cf9-4734-aa49-72b1174c6b3d.jpg",
+          "price": "Rp2.239.000",
+          "priceInt": 2239000,
+          "priceRange": "",
+          "categoryId": 60,
+          "categoryName": "Elektronik",
+          "categoryBreadcrumb": "elektronik/tv-aksesoris/televisi",
+          "ratingAverage": "4.9",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/dprince/sharp-2t-c32ba1i-led-tv-32inch-new-2019-garansi-5-tahun?refined\u003dtrue\u0026whid\u003d0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Grosir",
+              "position": "offers",
+              "type": "lightGrey",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "Terjual 806",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            },
+            {
+              "title": "Tiba 4 - 6 Jan",
+              "position": "eta",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/504215436?extParam\u003dwhid%3D0"
+        }
+      ]
+    }
+  },
+
+  "productAds": {
+    "status": {
+      "error_code": 0,
+      "message": "OK"
+    },
+    "header": {
+      "process_time": 0.045107934,
+      "total_data": 6
+    },
+    "data": [
+      {
+        "id": "88671244",
+        "ad_ref_key": "",
+        "redirect": "https://www.tokopedia.com/injayastore",
+        "sticker_id": "0",
+        "sticker_image": "",
+        "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6AKfopJaoAeDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosehH_jOHAKfbm-srcHi6seOHmFiy3zwrfo5rM1i6sURoZdOHpKOomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OuoVja3M2qu71a_VzmqOBk39z6zVg23uHhqV2I19xHuOg0_MOzPO2119xqQuVE39B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_u61pe7_92sH7Oku_VozVJh_92zH1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkypVHqBuE_7zuH1OEZ926zJ1O_7zSq3gzv_7ibm-Orfua9fBjUstiH_KNosHhosrdUiFirfuprfB5QBY2gmUEUMoiy7WdrchOuJWWZVB6ZcUagB2e19jEeuCC6_Vizfg9qMozzcuG_J2cb12a1pxDzjtdPfHaoJYi_u2z1Bu0gVUpu_-FQsCo8cPOe9xhQ72igj2Wb3H76JzpzSzj3AVZeRVJPOUaZAraZMrO8AgEy72zzJ-H69CJeZ7RH1W9HpgUqSxVy3VeZJP9rjghe9Va11ea9RBZ1RuqZAP39RgSocOUZsHibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDfHmFfo_1Dos1N9ZFiQBYsy3Njq3zxPcuwy3zpUsthHAHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-srcowrfx5rVYOQSJibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthH_n7HaFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiyfVpq3NSUIzfUIoWy9-7UchSUiFigR-5P9CwrRzay9zBgRji6BDhbA-Pbm-FrMBsguYiq3ei6seOHmFigfYxQVY2gmUEHiFiqp-09fz2rRzxQMoB9RosQR-BUstFbsnf6An7oAefH_HF6_jF6_Kawe?sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026is_search\u003d1\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026dv\u003dandroid\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Finjayastore%2Fmagic-remote-lg-smart-tv-cover-case-sarung-silicone-pelindung-hitam%3Fsrc%3Dtopads\u0026src\u003dsearch\u0026ob\u003d23\u0026management_type\u003d1\u0026page\u003d1\u0026t\u003dandroid",
+        "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUE6AKfopJaoAeDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosehH_jOHAKfbm-srcHi6seOHmFiy3zwrfo5rM1i6sURoZdOHpKOomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OuoVja3M2qu71a_VzmqOBk39z6zVg23uHhqV2I19xHuOg0_MOzPO2119xqQuVE39B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_u61pe7_92sH7Oku_VozVJh_92zH1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkypVHqBuE_7zuH1OEZ926zJ1O_7zSq3gzv_7ibm-Orfua9fBjUstiH_KNosHhosrdUiFirfuprfB5QBY2gmUEUMoiy7WdrchOuJWWZVB6ZcUagB2e19jEeuCC6_Vizfg9qMozzcuG_J2cb12a1pxDzjtdPfHaoJYi_u2z1Bu0gVUpu_-FQsCo8cPOe9xhQ72igj2Wb3H76JzpzSzj3AVZeRVJPOUaZAraZMrO8AgEy72zzJ-H69CJeZ7RH1W9HpgUqSxVy3VeZJP9rjghe9Va11ea9RBZ1RuqZAP39RgSocOUZsHibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDfHmFfo_1Dos1N9ZFiQBYsy3Njq3zxPcuwy3zpUsthHAHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-srcowrfx5rVYOQSJibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthH_n7HaFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiyfVpq3NSUIzfUIoWy9-7UchSUiFigR-5P9CwrRzay9zBgRji6BDhbA-Pbm-FrMBsguYiq3ei6seOHmFigfYxQVY2gmUEHiFiqp-09fz2rRzxQMoB9RosQR-BUstFbsnf6An7oAefH_HF6_jF6_Kawe?t\u003dandroid\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Finjayastore%2Fmagic-remote-lg-smart-tv-cover-case-sarung-silicone-pelindung-hitam%3Fsrc%3Dtopads\u0026is_search\u003d1\u0026src\u003dsearch\u0026product_id\u003d1640238042\u0026management_type\u003d1\u0026uid\u003d189631678\u0026page\u003d1\u0026dv\u003dandroid\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026ob\u003d23",
+        "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6AKfopJaoAeDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosehH_jOHAKfbm-srcHi6seOHmFiy3zwrfo5rM1i6sURoZdOHpKOomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OuoVja3M2qu71a_VzmqOBk39z6zVg23uHhqV2I19xHuOg0_MOzPO2119xqQuVE39B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_u61pe7_92sH7Oku_VozVJh_92zH1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkypVHqBuE_7zuH1OEZ926zJ1O_7zSq3gzv_7ibm-Orfua9fBjUstiH_KNosHhosrdUiFirfuprfB5QBY2gmUEUMoiy7WdrchOuJWWZVB6ZcUagB2e19jEeuCC6_Vizfg9qMozzcuG_J2cb12a1pxDzjtdPfHaoJYi_u2z1Bu0gVUpu_-FQsCo8cPOe9xhQ72igj2Wb3H76JzpzSzj3AVZeRVJPOUaZAraZMrO8AgEy72zzJ-H69CJeZ7RH1W9HpgUqSxVy3VeZJP9rjghe9Va11ea9RBZ1RuqZAP39RgSocOUZsHibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDfHmFfo_1Dos1N9ZFiQBYsy3Njq3zxPcuwy3zpUsthHAHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-srcowrfx5rVYOQSJibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthH_n7HaFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiyfVpq3NSUIzfUIoWy9-7UchSUiFigR-5P9CwrRzay9zBgRji6BDhbA-Pbm-FrMBsguYiq3ei6seOHmFigfYxQVY2gmUEHiFiqp-09fz2rRzxQMoB9RosQR-BUstFbsnf6An7oAefH_HF6_jF6_Kawe?src\u003dsearch\u0026dv\u003dandroid\u0026page\u003d1\u0026management_type\u003d1\u0026uid\u003d189631678\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026t\u003dandroid\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Finjayastore",
+        "tag": 301,
+        "product": {
+          "id": "1640238042",
+          "name": "Magic Remote Lg Smart TV Cover Case Sarung Silicone Pelindung - Hitam",
+          "category_breadcrumb": "elektronik / tv-aksesoris / remote-tv",
+          "wishlist": false,
+          "image": {
+            "m_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sKdosrhHse7bm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_y7H_JNo_ndoiFircV7qmUEUMBWy3PBraN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5uSViyfOobpUFHsJ5Hi4ObpCjy_U7g3Jpb_1p6_eWoAJdgmOio_-Mb_JaH_eOyfuM6Axi6ZNkrcribm-xgVYpyfYagZUEHsrObs1p6A17bm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-Qu173_-qqB29z_-HuJ-0332gPJNJuMBg1pVt3jPz8Jh9uMW6QuVR3Bzz8V2W192g81BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-QjdFyBo-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-o1N_oAzo8MHp_32uH1OJ1_Vo8BJhZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32sH1hku92vzV1h_92-8jNJz_uvzcP2gBJYvZUDUSupg9-wq3ei6iUh6AjfHpJfopKibm-pg9opq3YX9fBjUstiyf-sZRxFQIu1ZfOU31NUys-M3BCz8_2C1JJNH3-IgBPkyOVJg12HZjyWZS-_6chcZsxRypU7_f-o3BVZu3Wj1souHSCXHJOdgRuC8IV5ZM-MZM7WypedzIocPczyHu-Ar1zR1s-Uop-GgpudoS2sZBVJejFNrJzCb_rhZOrpojxk8JuxyuCUzOPazSVCr9-zzA-w8u-_Pu2UoOgwPMr7Q1xGHaUDUMVDgaUEUMVDPVY0g9BRQR-j9fzBgMVOQIeibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiQBYsy3Njq3zxPcuwy3zpUsthHAHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDiyRCs9RotQRCwP3NhUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sJhHAepbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUi9ZFiy3h7g9-Xy9zB9fWB89P5rMei6i-sy9o2QMrKPIyKrfOxrSeKQcribm-SrMYOrVYpPI-xPcuS8ZUE3pJDHB7DUSCaq3oB9f-2gmUEoA1Fbm-SQfVD9fBjUstabm-0HMWwgcBpPcVXyfuwrfo5rM1i6snXHAydHAe7oAyhHpnN6_nN6A-Y?src\u003dsearch\u0026ob\u003d23\u0026t\u003dandroid\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026is_search\u003d1\u0026dv\u003dandroid\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026page\u003d1\u0026management_type\u003d1",
+            "s_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sKdosrhHse7bm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_y7H_JNo_ndoiFircV7qmUEUMBWy3PBraN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbOghyMoW_Z4aHAUhbpU5oZ4FgcJaocuxHa7OHpj7b_eh6ceWys1agi7hHsJ7o3oBgsKdysjXqSCSUiFiy3zwrfo5rM1i6sURoZdOHpKOomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OuoVja3M2qu71a_VzmqOBk39z6zVg23uHhqV2I19xHuOg0_MOzPO2119xqQuVE39B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_u61pe7_92sH7Oku_VozVJh_92zH1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkypVHqBuE_7zuH1OEZ926zJ1O_7zSq3gzv_7ibm-Orfua9fBjUstiH_KNosHhosrdUiFirfuprfB5QBY2gmUEUMoiy7WdrchOuJWWZVB6ZcUagB2e19jEeuCC6_Vizfg9qMozzcuG_J2cb12a1pxDzjtdPfHaoJYi_u2z1Bu0gVUpu_-FQsCo8cPOe9xhQ72igj2Wb3H76JzpzSzj3AVZeRVJPOUaZAraZMrO8AgEy72zzJ-H69CJeZ7RH1W9HpgUqSxVy3VeZJP9rjghe9Va11ea9RBZ1RuqZAP39RgSocOUZsHibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEH_npbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMoFyOYpqcYF9RuXrZ-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthH_n7HaFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiyfVpq3NSUIzfUIoWy9-7UchSUiFigR-5P9CwrRzay9zBgRji6BDhbA-Pbm-FrMBsguYiq3ei6seOHmFigfYxQVY2gmUEHiFiqp-09fz2rRzxQMoB9RosQR-BUstFbsnf6An7oAefH_HF6_jF6_Kawe?src\u003dsearch\u0026ob\u003d23\u0026t\u003dandroid\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026is_search\u003d1\u0026dv\u003dandroid\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026page\u003d1\u0026management_type\u003d1",
+            "xs_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sKdosrhHse7bm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_y7H_JNo_ndoiFircV7qmUEUMBWy3PBraN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbOghyMoW_Z4aHAUhbpU5oZ4FgcJaocuxHa7OHpj7b_eh6ceWys1agi7hHsJ7o3oBgsKdysjXqSCSUiFiy3zwrfo5rM1i6sURoZdOHpKOomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OuoVja3M2qu71a_VzmqOBk39z6zVg23uHhqV2I19xHuOg0_MOzPO2119xqQuVE39B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_u61pe7_92sH7Oku_VozVJh_92zH1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkypVHqBuE_7zuH1OEZ926zJ1O_7zSq3gzv_7ibm-Orfua9fBjUstiH_KNosHhosrdUiFirfuprfB5QBY2gmUEUMoiy7WdrchOuJWWZVB6ZcUagB2e19jEeuCC6_Vizfg9qMozzcuG_J2cb12a1pxDzjtdPfHaoJYi_u2z1Bu0gVUpu_-FQsCo8cPOe9xhQ72igj2Wb3H76JzpzSzj3AVZeRVJPOUaZAraZMrO8AgEy72zzJ-H69CJeZ7RH1W9HpgUqSxVy3VeZJP9rjghe9Va11ea9RBZ1RuqZAP39RgSocOUZsHibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEH_npbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMoFyOYpqcYF9RuXrZ-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthH_n7HaFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiyfVpq3NSUIzfUIoWy9-7UchSUiFigR-5P9CwrRzay9zBgRji6BDhbA-Pbm-FrMBsguYiq3ei6seOHmFigfYxQVY2gmUEHiFiqp-09fz2rRzxQMoB9RosQR-BUstFbsnf6An7oAefH_HF6_jF6_Kawe?src\u003dsearch\u0026ob\u003d23\u0026t\u003dandroid\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026is_search\u003d1\u0026dv\u003dandroid\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026page\u003d1\u0026management_type\u003d1",
+            "m_ecs": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/2/5/0da24ea3-5394-418d-b52f-12145cef88b9.jpg",
+            "s_ecs": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/2/5/0da24ea3-5394-418d-b52f-12145cef88b9.jpg",
+            "xs_ecs": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/2/5/0da24ea3-5394-418d-b52f-12145cef88b9.jpg"
+          },
+          "uri": "https://www.tokopedia.com/injayastore/magic-remote-lg-smart-tv-cover-case-sarung-silicone-pelindung-hitam?src\u003dtopads",
+          "relative_uri": "injayastore/magic-remote-lg-smart-tv-cover-case-sarung-silicone-pelindung-hitam",
+          "price_format": "Rp60.000",
+          "wholesale_price": [],
+          "count_talk_format": "5",
+          "count_review_format": "75",
+          "category": {
+            "id": "659"
+          },
+          "product_preorder": false,
+          "product_wholesale": false,
+          "free_return": "https://images.tokopedia.net/img/blank.gif",
+          "product_cashback": false,
+          "product_new_label": false,
+          "product_cashback_rate": "",
+          "product_rating": 98,
+          "product_rating_format": "4.9",
+          "product_item_sold_payment_verified": "Terjual 127",
+          "product_minimum_order": 1,
+          "free_ongkir": {
+            "is_active": true,
+            "img_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "campaign": {
+            "original_price": "",
+            "discount_percentage": 0
+          },
+          "label_group": [
+            {
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "title": "Terjual 127",
+              "url": ""
+            },
+            {
+              "position": "eta",
+              "type": "textDarkGrey",
+              "title": "Tiba 4 - 6 Jan",
+              "url": ""
+            }
+          ]
+        },
+        "shop": {
+          "id": "1982998",
+          "name": "Injaya Store",
+          "domain": "injayastore",
+          "location": "Bekasi",
+          "city": "Bekasi",
+          "gold_shop": false,
+          "gold_shop_badge": true,
+          "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id\u003d1982998",
+          "uri": "https://www.tokopedia.com/injayastore",
+          "owner_id": "17398552",
+          "is_owner": false,
+          "shop_is_official": false,
+          "shop_rating_avg": "",
+          "badges": [
+            {
+              "title": "Free Return",
+              "image_url": "https://images.tokopedia.net/img/blank.gif",
+              "show": false
+            },
+            {
+              "title": "Power Merchant Pro",
+              "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png",
+              "show": true
+            }
+          ]
+        },
+        "applinks": "tokopedia://product/1640238042"
+      },
+      {
+        "id": "88304878",
+        "ad_ref_key": "",
+        "redirect": "https://www.tokopedia.com/bracket-tv",
+        "sticker_id": "0",
+        "sticker_image": "",
+        "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6AKpHAedopKDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosehH_jOHAKfbm-srcHi6s1OHmFiy3zwrfo5rM1i6sUfomddopjNoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OuoVja3M2qu71a_VzmqOBk39z6zVg23uHhqV2I19xHuOg0_MOzPO2119xqQuVE39B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_-6epzN_S2C8jO1gRx68MWN_jzgHjN2Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_-6epe7_S20o1Nk__z6qj17_7zC8jBXHA7ibm-Orfua9fBjUstiH_KNosHhosrdUiFirfuprfB5QBY2gmUEUMoiy7WdrchOuJWWZVB6ZcUagB2e19jEeuCC6_Vizfg9qMozzcuG_J2cb12a1pxDzjtdPfHaoJYi_u2z1Bu0gVUpu_-FQsCo8cPOe9xhQ72igj2Wb3H76JzpzSzj3AVZeRVJPOUaZAraZMrO8AgEy72zzJ-H69CJeZ7RH1W9HpgUqSxVy3VeZJP9rjghe9Va11ea9RBZ1RuqZAP39RgSocOUZsHibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDfHmFfo_1Dos1N9ZFiQBYsy3Njq3zxPcuwy3zpUsthHAHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-srcowrfx5rVYOQSJibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstposyRbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUi9ZFiy3h7g9-Xy9zB9fWB89P5rMei6i-sy9o2QMrKPIyKrfOxrSeKQcribm-FrMBsguYiq3ei6s1OHmFigfYxQVY2gmUEHiFiqp-09fz2rRzxQMoB9RosQR-BUstFbsnf6An7oAefH_HF6_jF6_Kawe?r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fbracket-tv%2Fcase-remote-tv-lg-smart-tv-magic-serie-uk-um-un-biru-muda%3Fsrc%3Dtopads\u0026src\u003dsearch\u0026t\u003dandroid\u0026page\u003d1\u0026ob\u003d23\u0026dv\u003dandroid\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026is_search\u003d1\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026management_type\u003d1",
+        "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUE6AKpHAedopKDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosehH_jOHAKfbm-srcHi6s1OHmFiy3zwrfo5rM1i6sUfomddopjNoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OuoVja3M2qu71a_VzmqOBk39z6zVg23uHhqV2I19xHuOg0_MOzPO2119xqQuVE39B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_-6epzN_S2C8jO1gRx68MWN_jzgHjN2Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_-6epe7_S20o1Nk__z6qj17_7zC8jBXHA7ibm-Orfua9fBjUstiH_KNosHhosrdUiFirfuprfB5QBY2gmUEUMoiy7WdrchOuJWWZVB6ZcUagB2e19jEeuCC6_Vizfg9qMozzcuG_J2cb12a1pxDzjtdPfHaoJYi_u2z1Bu0gVUpu_-FQsCo8cPOe9xhQ72igj2Wb3H76JzpzSzj3AVZeRVJPOUaZAraZMrO8AgEy72zzJ-H69CJeZ7RH1W9HpgUqSxVy3VeZJP9rjghe9Va11ea9RBZ1RuqZAP39RgSocOUZsHibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDfHmFfo_1Dos1N9ZFiQBYsy3Njq3zxPcuwy3zpUsthHAHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-srcowrfx5rVYOQSJibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstposyRbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUi9ZFiy3h7g9-Xy9zB9fWB89P5rMei6i-sy9o2QMrKPIyKrfOxrSeKQcribm-FrMBsguYiq3ei6s1OHmFigfYxQVY2gmUEHiFiqp-09fz2rRzxQMoB9RosQR-BUstFbsnf6An7oAefH_HF6_jF6_Kawe?page\u003d1\u0026t\u003dandroid\u0026src\u003dsearch\u0026is_search\u003d1\u0026product_id\u003d1876749058\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026ob\u003d23\u0026management_type\u003d1\u0026uid\u003d189631678\u0026dv\u003dandroid\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fbracket-tv%2Fcase-remote-tv-lg-smart-tv-magic-serie-uk-um-un-biru-muda%3Fsrc%3Dtopads",
+        "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6AKpHAedopKDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosehH_jOHAKfbm-srcHi6s1OHmFiy3zwrfo5rM1i6sUfomddopjNoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OuoVja3M2qu71a_VzmqOBk39z6zVg23uHhqV2I19xHuOg0_MOzPO2119xqQuVE39B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_-6epzN_S2C8jO1gRx68MWN_jzgHjN2Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_-6epe7_S20o1Nk__z6qj17_7zC8jBXHA7ibm-Orfua9fBjUstiH_KNosHhosrdUiFirfuprfB5QBY2gmUEUMoiy7WdrchOuJWWZVB6ZcUagB2e19jEeuCC6_Vizfg9qMozzcuG_J2cb12a1pxDzjtdPfHaoJYi_u2z1Bu0gVUpu_-FQsCo8cPOe9xhQ72igj2Wb3H76JzpzSzj3AVZeRVJPOUaZAraZMrO8AgEy72zzJ-H69CJeZ7RH1W9HpgUqSxVy3VeZJP9rjghe9Va11ea9RBZ1RuqZAP39RgSocOUZsHibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDfHmFfo_1Dos1N9ZFiQBYsy3Njq3zxPcuwy3zpUsthHAHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-srcowrfx5rVYOQSJibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstposyRbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUi9ZFiy3h7g9-Xy9zB9fWB89P5rMei6i-sy9o2QMrKPIyKrfOxrSeKQcribm-FrMBsguYiq3ei6s1OHmFigfYxQVY2gmUEHiFiqp-09fz2rRzxQMoB9RosQR-BUstFbsnf6An7oAefH_HF6_jF6_Kawe?uid\u003d189631678\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026dv\u003dandroid\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fbracket-tv\u0026src\u003dsearch\u0026management_type\u003d1\u0026page\u003d1\u0026t\u003dandroid\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3",
+        "tag": 301,
+        "product": {
+          "id": "1876749058",
+          "name": "case remote tv lg smart tv magic serie UK UM UN - Biru Muda",
+          "category_breadcrumb": "elektronik / tv-aksesoris / remote-tv",
+          "wishlist": false,
+          "image": {
+            "m_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sKdHpn76Ardbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_y7H_JNo_ndoiFircV7qmUEUMBWy3PBraN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5uSViyfOobpUFHsn5H_U5HZ4dg_KpysUOomOBo_KOb_zBgsUW6AUaHZ7OH_BByfVjHAxxHf1XqSCSUiFiy3zwrfo5rM1i6sUfomddopjNoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OuoVja3M2qu71a_VzmqOBk39z6zVg23uHhqV2I19xHuOg0_MOzPO2119xqQuVE39B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_-6epzN_S2C8jO1gRx68MWN_jzgHjN2Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_-6epe7_S20o1Nk__z6qj17_7zC8jBXHA7ibm-Orfua9fBjUstiH_KNosHhosrdUiFirfuprfB5QBY2gmUEUMoiy7WdrchOuJWWZVB6ZcUagB2e19jEeuCC6_Vizfg9qMozzcuG_J2cb12a1pxDzjtdPfHaoJYi_u2z1Bu0gVUpu_-FQsCo8cPOe9xhQ72igj2Wb3H76JzpzSzj3AVZeRVJPOUaZAraZMrO8AgEy72zzJ-H69CJeZ7RH1W9HpgUqSxVy3VeZJP9rjghe9Va11ea9RBZ1RuqZAP39RgSocOUZsHibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEH_npbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMoFyOYpqcYF9RuXrZ-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstposyRbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUi9ZFiy3h7g9-Xy9zB9fWB89P5rMei6i-sy9o2QMrKPIyKrfOxrSeKQcribm-FrMBsguYiq3ei6s1OHmFigfYxQVY2gmUEHiFiqp-09fz2rRzxQMoB9RosQR-BUstFbsnf6An7oAefH_HF6_jF6_Kawe?sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026page\u003d1\u0026dv\u003dandroid\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026src\u003dsearch\u0026is_search\u003d1\u0026ob\u003d23\u0026t\u003dandroid\u0026management_type\u003d1",
+            "s_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sKdHpn76Ardbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_y7H_JNo_ndoiFircV7qmUEUMBWy3PBraN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJabpJ56c1dHfUao_eWg_1doZ77g3yab_KaHsJWo_JNg3oxgAndy_oBbM2FgaUDUMVj9RosQR-BUstaoseX6ArN6_rDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBWu_zgHB2k3BPVHjh1eMWgqBB7_jz3quB_H3xqzOVd_VP3q7NW19PquVVd3MOz8BBNZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjja_jH781NEe92oucPd_S2081NJ3_-6q1BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjja_jH7oJNEqpu6qj77_M2VoJYJe92-QsnYUiFiP9oBrBY2gmUEUsJd6_ypH_yR6mUDUSoBrRo2QfNwq3ei6i-syMob8ICDPuzbQ1xg_jxiHMgq1VVN6jVee_jhyjPMuf2s11zBZjhGziOGrBHdQJgG6IPsHszvyjOq1u-uqfzZHO1arcdF_9xSP1Vdr3YGyMgGQZOsoAxJr7g7gVKh1johzIPZHjKRHj2So9Kf8MoG11zm_ABFzJJWopVbupHfZc2dz3Vx1JxIuR-cr1VhrBVJHBYN1BoO3jKRuBYfgpzWZJtpUiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-X9foxQMz2gcV7guYxgIHi6sJFHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-srcowrfx5rVYOQSJi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpyfoaFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiyfVpq3NSUIzfUIoWy9-7UchSUiFirI-2yfuwyMBjUstOo_nDUMP5y3hwq3ei6sUDUMDaqOYjq9o7y3NsguYpyfYagZUEHmdFosKFoAe7osJpHAjNHAjdHS7?sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026page\u003d1\u0026dv\u003dandroid\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026src\u003dsearch\u0026is_search\u003d1\u0026ob\u003d23\u0026t\u003dandroid\u0026management_type\u003d1",
+            "xs_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sKdHpn76Ardbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_y7H_JNo_ndoiFircV7qmUEUMBWy3PBraN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJabpJ56c1dHfUao_eWg_1doZ77g3yab_KaHsJWo_JNg3oxgAndy_oBbM2FgaUDUMVj9RosQR-BUstaoseX6ArN6_rDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBWu_zgHB2k3BPVHjh1eMWgqBB7_jz3quB_H3xqzOVd_VP3q7NW19PquVVd3MOz8BBNZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjja_jH781NEe92oucPd_S2081NJ3_-6q1BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjja_jH7oJNEqpu6qj77_M2VoJYJe92-QsnYUiFiP9oBrBY2gmUEUsJd6_ypH_yR6mUDUSoBrRo2QfNwq3ei6i-syMob8ICDPuzbQ1xg_jxiHMgq1VVN6jVee_jhyjPMuf2s11zBZjhGziOGrBHdQJgG6IPsHszvyjOq1u-uqfzZHO1arcdF_9xSP1Vdr3YGyMgGQZOsoAxJr7g7gVKh1johzIPZHjKRHj2So9Kf8MoG11zm_ABFzJJWopVbupHfZc2dz3Vx1JxIuR-cr1VhrBVJHBYN1BoO3jKRuBYfgpzWZJtpUiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-X9foxQMz2gcV7guYxgIHi6sJFHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-srcowrfx5rVYOQSJi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpyfoaFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiyfVpq3NSUIzfUIoWy9-7UchSUiFirI-2yfuwyMBjUstOo_nDUMP5y3hwq3ei6sUDUMDaqOYjq9o7y3NsguYpyfYagZUEHmdFosKFoAe7osJpHAjNHAjdHS7?sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026page\u003d1\u0026dv\u003dandroid\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026src\u003dsearch\u0026is_search\u003d1\u0026ob\u003d23\u0026t\u003dandroid\u0026management_type\u003d1",
+            "m_ecs": "https://images.tokopedia.net/img/cache/300/VqbcmM/2020/12/1/8e83b254-e585-4ef2-8221-519ecad08a3e.jpg",
+            "s_ecs": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/1/8e83b254-e585-4ef2-8221-519ecad08a3e.jpg",
+            "xs_ecs": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/12/1/8e83b254-e585-4ef2-8221-519ecad08a3e.jpg"
+          },
+          "uri": "https://www.tokopedia.com/bracket-tv/case-remote-tv-lg-smart-tv-magic-serie-uk-um-un-biru-muda?src\u003dtopads",
+          "relative_uri": "bracket-tv/case-remote-tv-lg-smart-tv-magic-serie-uk-um-un-biru-muda",
+          "price_format": "Rp105.000",
+          "wholesale_price": [],
+          "count_talk_format": "1",
+          "count_review_format": "7",
+          "category": {
+            "id": "659"
+          },
+          "product_preorder": false,
+          "product_wholesale": false,
+          "free_return": "https://images.tokopedia.net/img/blank.gif",
+          "product_cashback": false,
+          "product_new_label": false,
+          "product_cashback_rate": "",
+          "product_rating": 91,
+          "product_rating_format": "4.6",
+          "product_item_sold_payment_verified": "Terjual 11",
+          "product_minimum_order": 1,
+          "free_ongkir": {
+            "is_active": true,
+            "img_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "campaign": {
+            "original_price": "",
+            "discount_percentage": 0
+          },
+          "label_group": [
+            {
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "title": "Terjual 11",
+              "url": ""
+            },
+            {
+              "position": "eta",
+              "type": "textDarkGrey",
+              "title": "Tiba 4 - 6 Jan",
+              "url": ""
+            }
+          ]
+        },
+        "shop": {
+          "id": "4880515",
+          "name": "Bracket tv Gasari",
+          "domain": "bracket-tv",
+          "location": "Jakarta Timur",
+          "city": "Jakarta Timur",
+          "gold_shop": false,
+          "gold_shop_badge": true,
+          "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id\u003d4880515",
+          "uri": "https://www.tokopedia.com/bracket-tv",
+          "owner_id": "9001171",
+          "is_owner": false,
+          "shop_is_official": false,
+          "shop_rating_avg": "\u003cb\u003e4.8\u003c/b\u003e Rating Toko",
+          "badges": [
+            {
+              "title": "Free Return",
+              "image_url": "https://images.tokopedia.net/img/blank.gif",
+              "show": false
+            },
+            {
+              "title": "Power Merchant Pro",
+              "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png",
+              "show": true
+            }
+          ]
+        },
+        "applinks": "tokopedia://product/1876749058"
+      },
+      {
+        "id": "86550291",
+        "ad_ref_key": "",
+        "redirect": "https://www.tokopedia.com/w4ndey",
+        "sticker_id": "0",
+        "sticker_image": "",
+        "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6AyOo_na6_JDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthosehH_jOHAKfbm-srcHi6seOHmFiy3zwrfo5rM1i6sUdHZda6AyFomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9BHqBu2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325qu21qc2qQ1ND3uzgPJOI1MB6q_nF_BPGqJh9zMWqzJu73BPzHB2JeMh6zJgW3jz6qjB2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q3Hp1Sz-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqMHp_c2-HjY1gRB6zcH7_92uH1O1e92-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqMPd_c2-oJNke92oqMHO_S2-8JO1u92-QsnYUiFiP9oBrBY2gmUEUsJd6_ypH_yR6mUDUSoBrRo2QfNwq3ei6i-syMob8ICDPuzbQ1xg_jxiHMgq1VVN6jVee_jhyjPMuf2s11zBZjhGziOGrBHdQJgG6IPsHszvyjOq1u-uqfzZHO1arcdF_9xSP1Vdr3YGyMgGQZOsoAxJr7g7gVKh1johzIPZHjKRHj2So9Kf8MoG11zm_ABFzJJWopVbupHfZc2dz3Vx1JxIuR-cr1VhrBVJHBYN1BoO3jKRuBYfgpzWZJtpUiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2QosnDos1ObAyO6u7DUMNwyfVXgcBjy9zB9fVjraUEH_npbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstiyRCs9RotQRCwP3NhUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAnNosKDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUSzfUIoWy9-7UIoxQ9oOQMrKQcribm-FrMBsguYiq3ei6seOHmFigfYxQVY2gmUEHiFiqp-09fz2rRzxQMoB9RosQR-BUstFbsnO6_UaHAUf6_HaHsHNo_Hao97?dv\u003dandroid\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fw4ndey%2Fremote-keyboard-smart-tv-bluetooth-touchpad-samsung-mi-xiaomi-lg-sony%3Fsrc%3Dtopads\u0026page\u003d1\u0026t\u003dandroid\u0026src\u003dsearch\u0026is_search\u003d1\u0026ob\u003d23\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026management_type\u003d1",
+        "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUE6AyOo_na6_JDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthosehH_jOHAKfbm-srcHi6seOHmFiy3zwrfo5rM1i6sUdHZda6AyFomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9BHqBu2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325qu21qc2qQ1ND3uzgPJOI1MB6q_nF_BPGqJh9zMWqzJu73BPzHB2JeMh6zJgW3jz6qjB2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q3Hp1Sz-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqMHp_c2-HjY1gRB6zcH7_92uH1O1e92-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqMPd_c2-oJNke92oqMHO_S2-8JO1u92-QsnYUiFiP9oBrBY2gmUEUsJd6_ypH_yR6mUDUSoBrRo2QfNwq3ei6i-syMob8ICDPuzbQ1xg_jxiHMgq1VVN6jVee_jhyjPMuf2s11zBZjhGziOGrBHdQJgG6IPsHszvyjOq1u-uqfzZHO1arcdF_9xSP1Vdr3YGyMgGQZOsoAxJr7g7gVKh1johzIPZHjKRHj2So9Kf8MoG11zm_ABFzJJWopVbupHfZc2dz3Vx1JxIuR-cr1VhrBVJHBYN1BoO3jKRuBYfgpzWZJtpUiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2QosnDos1ObAyO6u7DUMNwyfVXgcBjy9zB9fVjraUEH_npbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstiyRCs9RotQRCwP3NhUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAnNosKDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUSzfUIoWy9-7UIoxQ9oOQMrKQcribm-FrMBsguYiq3ei6seOHmFigfYxQVY2gmUEHiFiqp-09fz2rRzxQMoB9RosQR-BUstFbsnO6_UaHAUf6_HaHsHNo_Hao97?sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fw4ndey%2Fremote-keyboard-smart-tv-bluetooth-touchpad-samsung-mi-xiaomi-lg-sony%3Fsrc%3Dtopads\u0026t\u003dandroid\u0026dv\u003dandroid\u0026src\u003dsearch\u0026product_id\u003d1224442746\u0026management_type\u003d1\u0026uid\u003d189631678\u0026ob\u003d23\u0026page\u003d1\u0026is_search\u003d1\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart",
+        "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6AyOo_na6_JDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthosehH_jOHAKfbm-srcHi6seOHmFiy3zwrfo5rM1i6sUdHZda6AyFomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9BHqBu2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325qu21qc2qQ1ND3uzgPJOI1MB6q_nF_BPGqJh9zMWqzJu73BPzHB2JeMh6zJgW3jz6qjB2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q3Hp1Sz-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqMHp_c2-HjY1gRB6zcH7_92uH1O1e92-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqMPd_c2-oJNke92oqMHO_S2-8JO1u92-QsnYUiFiP9oBrBY2gmUEUsJd6_ypH_yR6mUDUSoBrRo2QfNwq3ei6i-syMob8ICDPuzbQ1xg_jxiHMgq1VVN6jVee_jhyjPMuf2s11zBZjhGziOGrBHdQJgG6IPsHszvyjOq1u-uqfzZHO1arcdF_9xSP1Vdr3YGyMgGQZOsoAxJr7g7gVKh1johzIPZHjKRHj2So9Kf8MoG11zm_ABFzJJWopVbupHfZc2dz3Vx1JxIuR-cr1VhrBVJHBYN1BoO3jKRuBYfgpzWZJtpUiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2QosnDos1ObAyO6u7DUMNwyfVXgcBjy9zB9fVjraUEH_npbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstiyRCs9RotQRCwP3NhUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAnNosKDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUSzfUIoWy9-7UIoxQ9oOQMrKQcribm-FrMBsguYiq3ei6seOHmFigfYxQVY2gmUEHiFiqp-09fz2rRzxQMoB9RosQR-BUstFbsnO6_UaHAUf6_HaHsHNo_Hao97?dv\u003dandroid\u0026src\u003dsearch\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026page\u003d1\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fw4ndey\u0026management_type\u003d1\u0026t\u003dandroid\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026uid\u003d189631678",
+        "tag": 301,
+        "product": {
+          "id": "1224442746",
+          "name": "Remote Keyboard Smart TV Bluetooth Touchpad Samsung Mi XIaomi LG Sony",
+          "category_breadcrumb": "elektronik / tv-aksesoris / remote-tv",
+          "wishlist": false,
+          "image": {
+            "m_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sKfo_1FHsjhbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHaFiPcBWgZUEH_y7H_JNo_ndoiFircV7qmUEUMBWy3PBraN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5uSViyfOobpUFHsJ5Ha4pbpedypnho_nab31Og_KWoAzByiOxg3yfb_xsy3URgsJhocyR6ZNkrcribm-xgVYpyfYagZUEHsKhbsUdosn7bm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-81hku3BHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBoe7BpZ37OPM-W_Mh-qMY23BztqB2W_MhguVB7_1PZq1N2HAC6u72t_VPcqO2Jz9zquOJa3jzmQJNJzMOqzJNkZ3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2ypoZPJB2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1OkypoHqjja_OzS81NJypzo8B1h_uzC8jB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkgRxHqjj7_M2C8jOkypu68jBd_uzu8jBXHA7ibm-Orfua9fBjUstiH_KNosHhosrdUiFirfuprfB5QBY2gmUEUMoiy7WdrchOuJWWZVB6ZcUagB2e19jEeuCC6_Vizfg9qMozzcuG_J2cb12a1pxDzjtdPfHaoJYi_u2z1Bu0gVUpu_-FQsCo8cPOe9xhQ72igj2Wb3H76JzpzSzj3AVZeRVJPOUaZAraZMrO8AgEy72zzJ-H69CJeZ7RH1W9HpgUqSxVy3VeZJP9rjghe9Va11ea9RBZ1RuqZAP39RgSocOUZsHibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEH_npbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMoFyOYpqcYF9RuXrZ-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst7HAjf6mFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiPIyKrfOxrSeKrfVWrRuXgaCDgaUDUSCaq3oB9f-2gmUEoA1Fbm-SQfVD9fBjUstabm-0HMWwgcBpPcVXyfuwrfo5rM1i6snXHA1NHsUFHsyNHpUaHpjOHpUOwe?is_search\u003d1\u0026page\u003d1\u0026t\u003dandroid\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026management_type\u003d1\u0026dv\u003dandroid\u0026ob\u003d23\u0026src\u003dsearch",
+            "s_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sKfo_1FHsjhbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHaFiPcBWgZUEH_y7H_JNo_ndoiFircV7qmUEUMBWy3PBraN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbOghyMoW_Z4aHAUhbpH5Ha476cHFH_1FHiOBo31db_e7g3UWy3uMoi7dyfViofyhH_zMopjXqSCSUiFiy3zwrfo5rM1i6sUdHZda6AyFomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9BHqBu2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325qu21qc2qQ1ND3uzgPJOI1MB6q_nF_BPGqJh9zMWqzJu73BPzHB2JeMh6zJgW3jz6qjB2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q3Hp1Sz-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqMHp_c2-HjY1gRB6zcH7_92uH1O1e92-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqMPd_c2-oJNke92oqMHO_S2-8JO1u92-QsnYUiFiP9oBrBY2gmUEUsJd6_ypH_yR6mUDUSoBrRo2QfNwq3ei6i-syMob8ICDPuzbQ1xg_jxiHMgq1VVN6jVee_jhyjPMuf2s11zBZjhGziOGrBHdQJgG6IPsHszvyjOq1u-uqfzZHO1arcdF_9xSP1Vdr3YGyMgGQZOsoAxJr7g7gVKh1johzIPZHjKRHj2So9Kf8MoG11zm_ABFzJJWopVbupHfZc2dz3Vx1JxIuR-cr1VhrBVJHBYN1BoO3jKRuBYfgpzWZJtpUiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-X9foxQMz2gcV7guYxgIHi6sJFHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-srcowrfx5rVYOQSJi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAnNosKDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUSzfUIoWy9-7UIoxQ9oOQMrKQcribm-FrMBsguYiq3ei6seOHmFigfYxQVY2gmUEHiFiqp-09fz2rRzxQMoB9RosQR-BUstFbsnO6_UaHAUf6_HaHsHNo_Hao97?is_search\u003d1\u0026page\u003d1\u0026t\u003dandroid\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026management_type\u003d1\u0026dv\u003dandroid\u0026ob\u003d23\u0026src\u003dsearch",
+            "xs_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sKfo_1FHsjhbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHaFiPcBWgZUEH_y7H_JNo_ndoiFircV7qmUEUMBWy3PBraN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbOghyMoW_Z4aHAUhbpH5Ha476cHFH_1FHiOBo31db_e7g3UWy3uMoi7dyfViofyhH_zMopjXqSCSUiFiy3zwrfo5rM1i6sUdHZda6AyFomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9BHqBu2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325qu21qc2qQ1ND3uzgPJOI1MB6q_nF_BPGqJh9zMWqzJu73BPzHB2JeMh6zJgW3jz6qjB2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q3Hp1Sz-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqMHp_c2-HjY1gRB6zcH7_92uH1O1e92-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqMPd_c2-oJNke92oqMHO_S2-8JO1u92-QsnYUiFiP9oBrBY2gmUEUsJd6_ypH_yR6mUDUSoBrRo2QfNwq3ei6i-syMob8ICDPuzbQ1xg_jxiHMgq1VVN6jVee_jhyjPMuf2s11zBZjhGziOGrBHdQJgG6IPsHszvyjOq1u-uqfzZHO1arcdF_9xSP1Vdr3YGyMgGQZOsoAxJr7g7gVKh1johzIPZHjKRHj2So9Kf8MoG11zm_ABFzJJWopVbupHfZc2dz3Vx1JxIuR-cr1VhrBVJHBYN1BoO3jKRuBYfgpzWZJtpUiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-X9foxQMz2gcV7guYxgIHi6sJFHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-srcowrfx5rVYOQSJi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAnNosKDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUSzfUIoWy9-7UIoxQ9oOQMrKQcribm-FrMBsguYiq3ei6seOHmFigfYxQVY2gmUEHiFiqp-09fz2rRzxQMoB9RosQR-BUstFbsnO6_UaHAUf6_HaHsHNo_Hao97?is_search\u003d1\u0026page\u003d1\u0026t\u003dandroid\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026management_type\u003d1\u0026dv\u003dandroid\u0026ob\u003d23\u0026src\u003dsearch",
+            "m_ecs": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/3/3/48c01502-e5e8-44eb-aef6-8cab7f114f79.jpg",
+            "s_ecs": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/3/3/48c01502-e5e8-44eb-aef6-8cab7f114f79.jpg",
+            "xs_ecs": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/3/3/48c01502-e5e8-44eb-aef6-8cab7f114f79.jpg"
+          },
+          "uri": "https://www.tokopedia.com/w4ndey/remote-keyboard-smart-tv-bluetooth-touchpad-samsung-mi-xiaomi-lg-sony?src\u003dtopads",
+          "relative_uri": "w4ndey/remote-keyboard-smart-tv-bluetooth-touchpad-samsung-mi-xiaomi-lg-sony",
+          "price_format": "Rp150.000",
+          "wholesale_price": [],
+          "count_talk_format": "34",
+          "count_review_format": "118",
+          "category": {
+            "id": "659"
+          },
+          "product_preorder": false,
+          "product_wholesale": false,
+          "free_return": "https://images.tokopedia.net/img/blank.gif",
+          "product_cashback": false,
+          "product_new_label": false,
+          "product_cashback_rate": "",
+          "product_rating": 94,
+          "product_rating_format": "4.7",
+          "product_item_sold_payment_verified": "Terjual 203",
+          "product_minimum_order": 1,
+          "free_ongkir": {
+            "is_active": false,
+            "img_url": ""
+          },
+          "campaign": {
+            "original_price": "",
+            "discount_percentage": 0
+          },
+          "label_group": [
+            {
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "title": "Terjual 203",
+              "url": ""
+            }
+          ]
+        },
+        "shop": {
+          "id": "1141271",
+          "name": "W4ndey",
+          "domain": "w4ndey",
+          "location": "Jakarta Barat",
+          "city": "Jakarta Barat",
+          "gold_shop": false,
+          "gold_shop_badge": true,
+          "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id\u003d1141271",
+          "uri": "https://www.tokopedia.com/w4ndey",
+          "owner_id": "7408031",
+          "is_owner": false,
+          "shop_is_official": false,
+          "shop_rating_avg": "\u003cb\u003e4.4\u003c/b\u003e Rating Toko",
+          "badges": [
+            {
+              "title": "Free Return",
+              "image_url": "https://images.tokopedia.net/img/blank.gif",
+              "show": false
+            },
+            {
+              "title": "Power Merchant Pro",
+              "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png",
+              "show": true
+            }
+          ]
+        },
+        "applinks": "tokopedia://product/1224442746"
+      },
+      {
+        "id": "94625724",
+        "ad_ref_key": "",
+        "redirect": "https://www.tokopedia.com/gondolstore",
+        "sticker_id": "0",
+        "sticker_image": "",
+        "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6_efHs1RHseDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUst7bm-7q3OBUsthosehH_jOHAKfbm-srcHi6srOHmFiy3zwrfo5rM1i6sURomdpopUFoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OuoVja3M2qu71a_VzmqOBk39z6zVg23uHhqV2I19xHuOg0_MOzPO2119xqQuVE39B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_o6epzd_BzzP7OJZ9Bo8MHa_7zooJB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkypCHqj7p_32CH7NkZ_Cozcra_Ozz8jBXHA7ibm-Orfua9fBjUstiH_KNosHhosrdUiFirfuprfB5QBY2gmUEUMoiy7WdrchOuJWWZVB6ZcUagB2e19jEeuCC6_Vizfg9qMozzcuG_J2cb12a1pxDzjtdPfHaoJYi_u2z1Bu0gVUpu_-FQsCo8cPOe9xhQ72igj2Wb3H76JzpzSzj3AVZeRVJPOUaZAraZMrO8AgEy72zzJ-H69CJeZ7RH1W9HpgUqSxVy3VeZJP9rjghe9Va11ea9RBZ1RuqZAP39RgSocOUZsHibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDfHmFfo_1Dos1N9ZFiQBYsy3Njq3zxPcuwy3zpUsthHAHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-srcowrfx5rVYOQSJibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstaH_Uf6mFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiPIyKrfOxrSeKrfVWrRuXgaCDgaUDUMPaQRuF9Ro7rMV7g3PNUs2QHZFa9ZFirI-2yfuwyMBjUstRo_nDUMP5y3hwq3ei6sUDUMDaqOYjq9o7y3NsguYpyfYagZUEHmdFo_jaHsnaosjpHsUp6_1pHsuY?ob\u003d23\u0026is_search\u003d1\u0026src\u003dsearch\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026page\u003d1\u0026dv\u003dandroid\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fgondolstore%2Fremote-remot-multi-smart-tv-lcd-led-samsung-lg-sony-chunshin-gs-l-3000%3Fsrc%3Dtopads\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026t\u003dandroid\u0026management_type\u003d1",
+        "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUE6_efHs1RHseDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUst7bm-7q3OBUsthosehH_jOHAKfbm-srcHi6srOHmFiy3zwrfo5rM1i6sURomdpopUFoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OuoVja3M2qu71a_VzmqOBk39z6zVg23uHhqV2I19xHuOg0_MOzPO2119xqQuVE39B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_o6epzd_BzzP7OJZ9Bo8MHa_7zooJB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkypCHqj7p_32CH7NkZ_Cozcra_Ozz8jBXHA7ibm-Orfua9fBjUstiH_KNosHhosrdUiFirfuprfB5QBY2gmUEUMoiy7WdrchOuJWWZVB6ZcUagB2e19jEeuCC6_Vizfg9qMozzcuG_J2cb12a1pxDzjtdPfHaoJYi_u2z1Bu0gVUpu_-FQsCo8cPOe9xhQ72igj2Wb3H76JzpzSzj3AVZeRVJPOUaZAraZMrO8AgEy72zzJ-H69CJeZ7RH1W9HpgUqSxVy3VeZJP9rjghe9Va11ea9RBZ1RuqZAP39RgSocOUZsHibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDfHmFfo_1Dos1N9ZFiQBYsy3Njq3zxPcuwy3zpUsthHAHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-srcowrfx5rVYOQSJibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstaH_Uf6mFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiPIyKrfOxrSeKrfVWrRuXgaCDgaUDUMPaQRuF9Ro7rMV7g3PNUs2QHZFa9ZFirI-2yfuwyMBjUstRo_nDUMP5y3hwq3ei6sUDUMDaqOYjq9o7y3NsguYpyfYagZUEHmdFo_jaHsnaosjpHsUp6_1pHsuY?uid\u003d189631678\u0026dv\u003dandroid\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fgondolstore%2Fremote-remot-multi-smart-tv-lcd-led-samsung-lg-sony-chunshin-gs-l-3000%3Fsrc%3Dtopads\u0026is_search\u003d1\u0026product_id\u003d1618523634\u0026page\u003d1\u0026ob\u003d23\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026t\u003dandroid\u0026management_type\u003d1\u0026src\u003dsearch",
+        "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6_efHs1RHseDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUst7bm-7q3OBUsthosehH_jOHAKfbm-srcHi6srOHmFiy3zwrfo5rM1i6sURomdpopUFoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OuoVja3M2qu71a_VzmqOBk39z6zVg23uHhqV2I19xHuOg0_MOzPO2119xqQuVE39B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_o6epzd_BzzP7OJZ9Bo8MHa_7zooJB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkypCHqj7p_32CH7NkZ_Cozcra_Ozz8jBXHA7ibm-Orfua9fBjUstiH_KNosHhosrdUiFirfuprfB5QBY2gmUEUMoiy7WdrchOuJWWZVB6ZcUagB2e19jEeuCC6_Vizfg9qMozzcuG_J2cb12a1pxDzjtdPfHaoJYi_u2z1Bu0gVUpu_-FQsCo8cPOe9xhQ72igj2Wb3H76JzpzSzj3AVZeRVJPOUaZAraZMrO8AgEy72zzJ-H69CJeZ7RH1W9HpgUqSxVy3VeZJP9rjghe9Va11ea9RBZ1RuqZAP39RgSocOUZsHibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDfHmFfo_1Dos1N9ZFiQBYsy3Njq3zxPcuwy3zpUsthHAHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-srcowrfx5rVYOQSJibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstaH_Uf6mFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiPIyKrfOxrSeKrfVWrRuXgaCDgaUDUMPaQRuF9Ro7rMV7g3PNUs2QHZFa9ZFirI-2yfuwyMBjUstRo_nDUMP5y3hwq3ei6sUDUMDaqOYjq9o7y3NsguYpyfYagZUEHmdFo_jaHsnaosjpHsUp6_1pHsuY?uid\u003d189631678\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026t\u003dandroid\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026management_type\u003d1\u0026page\u003d1\u0026dv\u003dandroid\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fgondolstore\u0026src\u003dsearch",
+        "tag": 301,
+        "product": {
+          "id": "1618523634",
+          "name": "REMOTE/REMOT MULTI SMART TV LCD/LED SAMSUNG LG SONY CHUNSHIN GS-L 3000",
+          "category_breadcrumb": "elektronik / tv-aksesoris / remote-tv",
+          "wishlist": false,
+          "image": {
+            "m_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sj7osUOopU7bm-xgVY789CBUsthbm-FQRo2PcB5QiUEomFiPcBWgZUEH_y7H_JNo_ndoiFircV7qmUEUMBWy3PBraN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5uSViyfOobpUFHsJ5Hi4aHZ4hgsrfyMuxgm7hg3zxb_eOoMyWy_CjHi7ao_nFy_UhypKOH3HXqSCSUiFiy3zwrfo5rM1i6sURomdpopUFoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OuoVja3M2qu71a_VzmqOBk39z6zVg23uHhqV2I19xHuOg0_MOzPO2119xqQuVE39B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_o6epzd_BzzP7OJZ9Bo8MHa_7zooJB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkypCHqj7p_32CH7NkZ_Cozcra_Ozz8jBXHA7ibm-Orfua9fBjUstiH_KNosHhosrdUiFirfuprfB5QBY2gmUEUMoiy7WdrchOuJWWZVB6ZcUagB2e19jEeuCC6_Vizfg9qMozzcuG_J2cb12a1pxDzjtdPfHaoJYi_u2z1Bu0gVUpu_-FQsCo8cPOe9xhQ72igj2Wb3H76JzpzSzj3AVZeRVJPOUaZAraZMrO8AgEy72zzJ-H69CJeZ7RH1W9HpgUqSxVy3VeZJP9rjghe9Va11ea9RBZ1RuqZAP39RgSocOUZsHibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEH_npbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMoFyOYpqcYF9RuXrZ-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstaH_Uf6mFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiPIyKrfOxrSeKrfVWrRuXgaCDgaUDUMPaQRuF9Ro7rMV7g3PNUs2QHZFa9ZFirI-2yfuwyMBjUstRo_nDUMP5y3hwq3ei6sUDUMDaqOYjq9o7y3NsguYpyfYagZUEHmdFo_jaHsnaosjpHsUp6_1pHsuY?src\u003dsearch\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026management_type\u003d1\u0026page\u003d1\u0026ob\u003d23\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026is_search\u003d1\u0026t\u003dandroid\u0026dv\u003dandroid",
+            "s_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sj7osUOopU7bm-xgVY789CBUsthbm-FQRo2PcB5QiUEomFiPcBWgZUEH_y7H_JNo_ndoiFircV7qmUEUMBWy3PBraN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbOghyMoW_Z4aHAUhbpU5HsJ5H3yRoM-By3eWH3ujyZ77o_gMb3JFgAUWHs1FHcJaH3Hdo_VsbM2FgaUDUMVj9RosQR-BUstaopeXHpraHArDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBWu_zgHB2k3BPVHjh1eMWgqBB7_jz3quB_H3xqzOVd_VP3q7NW19PquVVd3MOz8BBNZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjp_jH78JN119PozJBN_92sHjYJ__z-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqMHF_c2oH7Oke_o6qjjF_1zSHjY1192-QsnYUiFiP9oBrBY2gmUEUsJd6_ypH_yR6mUDUSoBrRo2QfNwq3ei6i-syMob8ICDPuzbQ1xg_jxiHMgq1VVN6jVee_jhyjPMuf2s11zBZjhGziOGrBHdQJgG6IPsHszvyjOq1u-uqfzZHO1arcdF_9xSP1Vdr3YGyMgGQZOsoAxJr7g7gVKh1johzIPZHjKRHj2So9Kf8MoG11zm_ABFzJJWopVbupHfZc2dz3Vx1JxIuR-cr1VhrBVJHBYN1BoO3jKRuBYfgpzWZJtpUiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-X9foxQMz2gcV7guYxgIHi6sJFHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-srcowrfx5rVYOQSJi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHsJaosKDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUSzfUIoWy9-7UIoxQ9oOQMrKQcribm-SrMYOrVYpPI-xPcuS8ZUE3pJDHB7DUSCaq3oB9f-2gmUEop1Fbm-SQfVD9fBjUstabm-0HMWwgcBpPcVXyfuwrfo5rM1i6snXHA1NHsUFHsyNHpUaHpjOHpUOwe?src\u003dsearch\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026management_type\u003d1\u0026page\u003d1\u0026ob\u003d23\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026is_search\u003d1\u0026t\u003dandroid\u0026dv\u003dandroid",
+            "xs_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sj7osUOopU7bm-xgVY789CBUsthbm-FQRo2PcB5QiUEomFiPcBWgZUEH_y7H_JNo_ndoiFircV7qmUEUMBWy3PBraN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbOghyMoW_Z4aHAUhbpU5HsJ5H3yRoM-By3eWH3ujyZ77o_gMb3JFgAUWHs1FHcJaH3Hdo_VsbM2FgaUDUMVj9RosQR-BUstaopeXHpraHArDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBWu_zgHB2k3BPVHjh1eMWgqBB7_jz3quB_H3xqzOVd_VP3q7NW19PquVVd3MOz8BBNZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjp_jH78JN119PozJBN_92sHjYJ__z-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqMHF_c2oH7Oke_o6qjjF_1zSHjY1192-QsnYUiFiP9oBrBY2gmUEUsJd6_ypH_yR6mUDUSoBrRo2QfNwq3ei6i-syMob8ICDPuzbQ1xg_jxiHMgq1VVN6jVee_jhyjPMuf2s11zBZjhGziOGrBHdQJgG6IPsHszvyjOq1u-uqfzZHO1arcdF_9xSP1Vdr3YGyMgGQZOsoAxJr7g7gVKh1johzIPZHjKRHj2So9Kf8MoG11zm_ABFzJJWopVbupHfZc2dz3Vx1JxIuR-cr1VhrBVJHBYN1BoO3jKRuBYfgpzWZJtpUiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-X9foxQMz2gcV7guYxgIHi6sJFHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-srcowrfx5rVYOQSJi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHsJaosKDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUSzfUIoWy9-7UIoxQ9oOQMrKQcribm-SrMYOrVYpPI-xPcuS8ZUE3pJDHB7DUSCaq3oB9f-2gmUEop1Fbm-SQfVD9fBjUstabm-0HMWwgcBpPcVXyfuwrfo5rM1i6snXHA1NHsUFHsyNHpUaHpjOHpUOwe?src\u003dsearch\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026management_type\u003d1\u0026page\u003d1\u0026ob\u003d23\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026is_search\u003d1\u0026t\u003dandroid\u0026dv\u003dandroid",
+            "m_ecs": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/2/21/1f76bead-1eda-456f-a0d2-2500a21c851c.jpg",
+            "s_ecs": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/2/21/1f76bead-1eda-456f-a0d2-2500a21c851c.jpg",
+            "xs_ecs": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/2/21/1f76bead-1eda-456f-a0d2-2500a21c851c.jpg"
+          },
+          "uri": "https://www.tokopedia.com/gondolstore/remote-remot-multi-smart-tv-lcd-led-samsung-lg-sony-chunshin-gs-l-3000?src\u003dtopads",
+          "relative_uri": "gondolstore/remote-remot-multi-smart-tv-lcd-led-samsung-lg-sony-chunshin-gs-l-3000",
+          "price_format": "Rp34.000",
+          "wholesale_price": [
+            {
+              "price_format": "Rp27.000",
+              "quantity_max_format": "11",
+              "quantity_min_format": "6"
+            },
+            {
+              "price_format": "Rp25.000",
+              "quantity_max_format": "10.000",
+              "quantity_min_format": "12"
+            }
+          ],
+          "count_talk_format": "0",
+          "count_review_format": "0",
+          "category": {
+            "id": "659"
+          },
+          "product_preorder": false,
+          "product_wholesale": true,
+          "free_return": "https://images.tokopedia.net/img/blank.gif",
+          "product_cashback": true,
+          "product_new_label": false,
+          "product_cashback_rate": "",
+          "product_rating": 0,
+          "product_rating_format": "",
+          "product_item_sold_payment_verified": "",
+          "product_minimum_order": 1,
+          "free_ongkir": {
+            "is_active": true,
+            "img_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "campaign": {
+            "original_price": "",
+            "discount_percentage": 0
+          },
+          "label_group": [
+            {
+              "position": "promo",
+              "type": "lightGreen",
+              "title": "Cashback",
+              "url": ""
+            },
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Grosir",
+              "url": ""
+            },
+            {
+              "position": "price",
+              "type": "lightGreen",
+              "title": "Cashback",
+              "url": ""
+            },
+            {
+              "position": "eta",
+              "type": "textDarkGrey",
+              "title": "Tiba 4 - 6 Jan",
+              "url": ""
+            }
+          ]
+        },
+        "shop": {
+          "id": "7372057",
+          "name": "GONDOL STORE",
+          "domain": "gondolstore",
+          "location": "Jakarta Barat",
+          "city": "Jakarta Barat",
+          "gold_shop": false,
+          "gold_shop_badge": true,
+          "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id\u003d7372057",
+          "uri": "https://www.tokopedia.com/gondolstore",
+          "owner_id": "17794418",
+          "is_owner": false,
+          "shop_is_official": false,
+          "shop_rating_avg": "\u003cb\u003e5.0\u003c/b\u003e Rating Toko",
+          "badges": [
+            {
+              "title": "Free Return",
+              "image_url": "https://images.tokopedia.net/img/blank.gif",
+              "show": false
+            },
+            {
+              "title": "Power Merchant Pro",
+              "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png",
+              "show": true
+            }
+          ]
+        },
+        "applinks": "tokopedia://product/1618523634"
+      },
+      {
+        "id": "134881811",
+        "ad_ref_key": "",
+        "redirect": "https://www.tokopedia.com/tiselmart",
+        "sticker_id": "0",
+        "sticker_image": "",
+        "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_H76AKh6AJhbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_y7H_JNo_ndoiFiyRCsUstfo_nDUMVj9RosQR-BUstaopnXH_1NoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OuoVja3M2qu71a_VzmqOBk39z6zVg23uHhqV2I19xHuOg0_MOzPO2119xqQuVE39B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_zo1pzN_Bzg81O1gR2vucrp_M2zH7N2Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_ooepzd_Bz0HJY1Z_zvucoE_BzCoJNAZsjibm-Orfua9fBjUstiH_KNosHhosrdUiFirfuprfB5QBY2gmUEUMoiy7WdrchOuJWWZVB6ZcUagB2e19jEeuCC6_Vizfg9qMozzcuG_J2cb12a1pxDzjtdPfHaoJYi_u2z1Bu0gVUpu_-FQsCo8cPOe9xhQ72igj2Wb3H76JzpzSzj3AVZeRVJPOUaZAraZMrO8AgEy72zzJ-H69CJeZ7RH1W9HpgUqSxVy3VeZJP9rjghe9Va11ea9RBZ1RuqZAP39RgSocOUZsHibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDfHmFfo_1Dos1N9ZFiQBYsy3Njq3zxPcuwy3zpUsthHAHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-srcowrfx5rVYOQSJibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst7HAjf6mFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiPIyKrfOxrSeKrfVWrRuXgaCDgaUDUSCaq3oB9f-2gmUEos1Fbm-SQfVD9fBjUstabm-0HMWwgcBpPcVXyfuwrfo5rM1i6snXHA1NHsUFHsyNHpUaHpjOHpUOwe?management_type\u003d1\u0026dv\u003dandroid\u0026ob\u003d23\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Ftiselmart%2Fremote-tv-huayu-4in1-all-samsung-sharp-polytron-lg-smart-tv-function%3Fsrc%3Dtopads\u0026t\u003dandroid\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026is_search\u003d1\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026src\u003dsearch\u0026page\u003d1",
+        "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_H76AKh6AJhbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_y7H_JNo_ndoiFiyRCsUstfo_nDUMVj9RosQR-BUstaopnXH_1NoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OuoVja3M2qu71a_VzmqOBk39z6zVg23uHhqV2I19xHuOg0_MOzPO2119xqQuVE39B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_zo1pzN_Bzg81O1gR2vucrp_M2zH7N2Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_ooepzd_Bz0HJY1Z_zvucoE_BzCoJNAZsjibm-Orfua9fBjUstiH_KNosHhosrdUiFirfuprfB5QBY2gmUEUMoiy7WdrchOuJWWZVB6ZcUagB2e19jEeuCC6_Vizfg9qMozzcuG_J2cb12a1pxDzjtdPfHaoJYi_u2z1Bu0gVUpu_-FQsCo8cPOe9xhQ72igj2Wb3H76JzpzSzj3AVZeRVJPOUaZAraZMrO8AgEy72zzJ-H69CJeZ7RH1W9HpgUqSxVy3VeZJP9rjghe9Va11ea9RBZ1RuqZAP39RgSocOUZsHibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDfHmFfo_1Dos1N9ZFiQBYsy3Njq3zxPcuwy3zpUsthHAHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-srcowrfx5rVYOQSJibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst7HAjf6mFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiPIyKrfOxrSeKrfVWrRuXgaCDgaUDUSCaq3oB9f-2gmUEos1Fbm-SQfVD9fBjUstabm-0HMWwgcBpPcVXyfuwrfo5rM1i6snXHA1NHsUFHsyNHpUaHpjOHpUOwe?ob\u003d23\u0026management_type\u003d1\u0026is_search\u003d1\u0026t\u003dandroid\u0026src\u003dsearch\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Ftiselmart%2Fremote-tv-huayu-4in1-all-samsung-sharp-polytron-lg-smart-tv-function%3Fsrc%3Dtopads\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026uid\u003d189631678\u0026product_id\u003d2173285688\u0026page\u003d1\u0026dv\u003dandroid",
+        "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_H76AKh6AJhbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_y7H_JNo_ndoiFiyRCsUstfo_nDUMVj9RosQR-BUstaopnXH_1NoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OuoVja3M2qu71a_VzmqOBk39z6zVg23uHhqV2I19xHuOg0_MOzPO2119xqQuVE39B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_zo1pzN_Bzg81O1gR2vucrp_M2zH7N2Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_ooepzd_Bz0HJY1Z_zvucoE_BzCoJNAZsjibm-Orfua9fBjUstiH_KNosHhosrdUiFirfuprfB5QBY2gmUEUMoiy7WdrchOuJWWZVB6ZcUagB2e19jEeuCC6_Vizfg9qMozzcuG_J2cb12a1pxDzjtdPfHaoJYi_u2z1Bu0gVUpu_-FQsCo8cPOe9xhQ72igj2Wb3H76JzpzSzj3AVZeRVJPOUaZAraZMrO8AgEy72zzJ-H69CJeZ7RH1W9HpgUqSxVy3VeZJP9rjghe9Va11ea9RBZ1RuqZAP39RgSocOUZsHibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDfHmFfo_1Dos1N9ZFiQBYsy3Njq3zxPcuwy3zpUsthHAHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-srcowrfx5rVYOQSJibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst7HAjf6mFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiPIyKrfOxrSeKrfVWrRuXgaCDgaUDUSCaq3oB9f-2gmUEos1Fbm-SQfVD9fBjUstabm-0HMWwgcBpPcVXyfuwrfo5rM1i6snXHA1NHsUFHsyNHpUaHpjOHpUOwe?sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026src\u003dsearch\u0026page\u003d1\u0026t\u003dandroid\u0026uid\u003d189631678\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Ftiselmart\u0026management_type\u003d1\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026dv\u003dandroid",
+        "tag": 301,
+        "product": {
+          "id": "2173285688",
+          "name": "Remote TV HUAYU 4in1 All Samsung-Sharp-Polytron-LG Smart TV Function",
+          "category_breadcrumb": "elektronik / tv-aksesoris / remote-tv",
+          "wishlist": false,
+          "image": {
+            "m_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJpoAKdH_KhHZFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6s1DUSz2Q31i6sJfoAJh6_1F6AyDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFbOghyMoW_Z4aHAUhbpj5H_15H3uBy3gjgcJWgsrpom77HAedb3JRgsUWH3JRHM-jypnhofojbSCXgaUDUMVj9RosQR-BUstaopnXH_1NoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OuoVja3M2qu71a_VzmqOBk39z6zVg23uHhqV2I19xHuOg0_MOzPO2119xqQuVE39B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_zo1pzN_Bzg81O1gR2vucrp_M2zH7N2Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_ooepzd_Bz0HJY1Z_zvucoE_BzCoJNAZsjibm-Orfua9fBjUstiH_KNosHhosrdUiFirfuprfB5QBY2gmUEUMoiy7WdrchOuJWWZVB6ZcUagB2e19jEeuCC6_Vizfg9qMozzcuG_J2cb12a1pxDzjtdPfHaoJYi_u2z1Bu0gVUpu_-FQsCo8cPOe9xhQ72igj2Wb3H76JzpzSzj3AVZeRVJPOUaZAraZMrO8AgEy72zzJ-H69CJeZ7RH1W9HpgUqSxVy3VeZJP9rjghe9Va11ea9RBZ1RuqZAP39RgSocOUZsHibm-xQcri6i-xQIzwqfuNPfYagVYjg3gxP3h7UiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEH_npbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMoFyOYpqcYF9RuXrZ-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst7HAjf6mFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiUB7DUMVDPcuaQMV7guY0g9BRQR-jUstiPIyKrfOxrSeKrfVWrRuXgaCDgaUDUSCaq3oB9f-2gmUEos1Fbm-SQfVD9fBjUstabm-0HMWwgcBpPcVXyfuwrfo5rM1i6snXHA1NHsUFHsyNHpUaHpjOHpUOwe?management_type\u003d1\u0026t\u003dandroid\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026page\u003d1\u0026dv\u003dandroid\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026src\u003dsearch\u0026is_search\u003d1\u0026ob\u003d23",
+            "s_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJpoAKdH_KhHZFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6s1DUSz2Q31i6sJfoAJh6_1F6AyDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HsnFb9ohP3VagZY3r3-sQ175HsnaHZ4NbpJObpVBg3VMgczxb3yRHpeWoAn76mOxofyab_Vxop-igcHFH_PsgmNFQMribm-xgVYpyfYagZUEHsrFbsJO6_1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBWu_zgHB2k3BPVHjh1eMWgqBB7_jz3quB_H3xqzOVd_VP3q7NW19PquVVd3MOz8BBNZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjj7_uH781N139BoucPE_OzSH7Nk1_o6q1BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjjp_1H78JN1qpCvuJj7_Ozs8jN1e_z6e7tNUiFiP9oBrBY2gmUEUsJd6_ypH_yR6mUDUSoBrRo2QfNwq3ei6i-syMob8ICDPuzbQ1xg_jxiHMgq1VVN6jVee_jhyjPMuf2s11zBZjhGziOGrBHdQJgG6IPsHszvyjOq1u-uqfzZHO1arcdF_9xSP1Vdr3YGyMgGQZOsoAxJr7g7gVKh1johzIPZHjKRHj2So9Kf8MoG11zm_ABFzJJWopVbupHfZc2dz3Vx1JxIuR-cr1VhrBVJHBYN1BoO3jKRuBYfgpzWZJtpUiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-X9foxQMz2gcV7guYxgIHi6sJFHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-srcowrfx5rVYOQSJi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAnNosKDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUSzfUIoWy9-7UIoxQ9oOQMrKQcribm-FrMBsguYiq3ei6syOHmFigfYxQVY2gmUEHiFiqp-09fz2rRzxQMoB9RosQR-BUstFbsnO6_UaHAUf6_HaHsHNo_Hao97?management_type\u003d1\u0026t\u003dandroid\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026page\u003d1\u0026dv\u003dandroid\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026src\u003dsearch\u0026is_search\u003d1\u0026ob\u003d23",
+            "xs_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJpoAKdH_KhHZFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6s1DUSz2Q31i6sJfoAJh6_1F6AyDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15H_nFb9ohP3VagZY3r3-sQ175HsnaHZ4NbpJObpVBg3VMgczxb3yRHpeWoAn76mOxofyab_Vxop-igcHFH_PsgmNFQMribm-xgVYpyfYagZUEHsrFbsJO6_1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBWu_zgHB2k3BPVHjh1eMWgqBB7_jz3quB_H3xqzOVd_VP3q7NW19PquVVd3MOz8BBNZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjj7_uH781N139BoucPE_OzSH7Nk1_o6q1BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjjp_1H78JN1qpCvuJj7_Ozs8jN1e_z6e7tNUiFiP9oBrBY2gmUEUsJd6_ypH_yR6mUDUSoBrRo2QfNwq3ei6i-syMob8ICDPuzbQ1xg_jxiHMgq1VVN6jVee_jhyjPMuf2s11zBZjhGziOGrBHdQJgG6IPsHszvyjOq1u-uqfzZHO1arcdF_9xSP1Vdr3YGyMgGQZOsoAxJr7g7gVKh1johzIPZHjKRHj2So9Kf8MoG11zm_ABFzJJWopVbupHfZc2dz3Vx1JxIuR-cr1VhrBVJHBYN1BoO3jKRuBYfgpzWZJtpUiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-X9foxQMz2gcV7guYxgIHi6sJFHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-srcowrfx5rVYOQSJi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAnNosKDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUSzfUIoWy9-7UIoxQ9oOQMrKQcribm-FrMBsguYiq3ei6syOHmFigfYxQVY2gmUEHiFiqp-09fz2rRzxQMoB9RosQR-BUstFbsnO6_UaHAUf6_HaHsHNo_Hao97?management_type\u003d1\u0026t\u003dandroid\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026page\u003d1\u0026dv\u003dandroid\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026src\u003dsearch\u0026is_search\u003d1\u0026ob\u003d23",
+            "m_ecs": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/9/15/1eeafdda-f734-4048-a7f2-1a72bdc017cd.png",
+            "s_ecs": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/9/15/1eeafdda-f734-4048-a7f2-1a72bdc017cd.png",
+            "xs_ecs": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/9/15/1eeafdda-f734-4048-a7f2-1a72bdc017cd.png"
+          },
+          "uri": "https://www.tokopedia.com/tiselmart/remote-tv-huayu-4in1-all-samsung-sharp-polytron-lg-smart-tv-function?src\u003dtopads",
+          "relative_uri": "tiselmart/remote-tv-huayu-4in1-all-samsung-sharp-polytron-lg-smart-tv-function",
+          "price_format": "Rp25.000",
+          "wholesale_price": [],
+          "count_talk_format": "0",
+          "count_review_format": "4",
+          "category": {
+            "id": "659"
+          },
+          "product_preorder": false,
+          "product_wholesale": false,
+          "free_return": "https://images.tokopedia.net/img/blank.gif",
+          "product_cashback": false,
+          "product_new_label": false,
+          "product_cashback_rate": "",
+          "product_rating": 100,
+          "product_rating_format": "5.0",
+          "product_item_sold_payment_verified": "Terjual 8",
+          "product_minimum_order": 1,
+          "free_ongkir": {
+            "is_active": true,
+            "img_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "campaign": {
+            "original_price": "",
+            "discount_percentage": 0
+          },
+          "label_group": [
+            {
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "title": "Terjual 8",
+              "url": ""
+            },
+            {
+              "position": "eta",
+              "type": "textDarkGrey",
+              "title": "Tiba 4 - 6 Jan",
+              "url": ""
+            }
+          ]
+        },
+        "shop": {
+          "id": "12192389",
+          "name": "TISELMART",
+          "domain": "tiselmart",
+          "location": "Bogor",
+          "city": "Bogor",
+          "gold_shop": false,
+          "gold_shop_badge": true,
+          "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id\u003d12192389",
+          "uri": "https://www.tokopedia.com/tiselmart",
+          "owner_id": "163033420",
+          "is_owner": false,
+          "shop_is_official": false,
+          "shop_rating_avg": "",
+          "badges": [
+            {
+              "title": "Free Return",
+              "image_url": "https://images.tokopedia.net/img/blank.gif",
+              "show": false
+            },
+            {
+              "title": "Power Merchant Pro",
+              "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png",
+              "show": true
+            }
+          ]
+        },
+        "applinks": "tokopedia://product/2173285688"
+      },
+      {
+        "id": "126408003",
+        "ad_ref_key": "",
+        "redirect": "https://www.tokopedia.com/m4xprima",
+        "sticker_id": "0",
+        "sticker_image": "",
+        "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_UfoAndHAnpbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoiFiPcBWgZUEH_y7H_JNo_ndoiFiyRCsUstpo_nDUMVj9RosQR-BUstaosjXopJho_UDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBWu_zgHB2k3BPVHjh1eMWgqBB7_jz3quB_H3xqzOVd_VP3q7NW19PquVVd3MOz8BBNZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjp_uH7H7O1gpuo8jja_32zoJOEZ_o617BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjja_OH7H7O1z_VoqMWd_S20o1Y1yRx-QsnYUiFiP9oBrBY2gmUEUsJd6_ypH_yR6mUDUSoBrRo2QfNwq3ei6i-syMob8ICDPuzbQ1xg_jxiHMgq1VVN6jVee_jhyjPMuf2s11zBZjhGziOGrBHdQJgG6IPsHszvyjOq1u-uqfzZHO1arcdF_9xSP1Vdr3YGyMgGQZOsoAxJr7g7gVKh1johzIPZHjKRHj2So9Kf8MoG11zm_ABFzJJWopVbupHfZc2dz3Vx1JxIuR-cr1VhrBVJHBYN1BoO3jKRuBYfgpzWZJtpUiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2QosnDos1ObAyO6u7DUMNwyfVXgcBjy9zB9fVjraUEH_npbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstiyRCs9RotQRCwP3NhUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHsyaopjDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUSzfUIoWy9-7UIoxQ9oOQMrKQcribm-FrMBsguYiq3ei6sHOHmFigfYxQVY2gmUEHiFiqp-09fz2rRzxQMoB9RosQR-BUstFbsnO6_UaHAUf6_HaHsHNo_Hao97?src\u003dsearch\u0026is_search\u003d1\u0026dv\u003dandroid\u0026ob\u003d23\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026t\u003dandroid\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fm4xprima%2Fremote-keyboard-smart-tv-xiaomi-mi-lg-samsung-changhong-sony-realme%3Fsrc%3Dtopads\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026page\u003d1\u0026management_type\u003d1",
+        "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_UfoAndHAnpbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoiFiPcBWgZUEH_y7H_JNo_ndoiFiyRCsUstpo_nDUMVj9RosQR-BUstaosjXopJho_UDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBWu_zgHB2k3BPVHjh1eMWgqBB7_jz3quB_H3xqzOVd_VP3q7NW19PquVVd3MOz8BBNZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjp_uH7H7O1gpuo8jja_32zoJOEZ_o617BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjja_OH7H7O1z_VoqMWd_S20o1Y1yRx-QsnYUiFiP9oBrBY2gmUEUsJd6_ypH_yR6mUDUSoBrRo2QfNwq3ei6i-syMob8ICDPuzbQ1xg_jxiHMgq1VVN6jVee_jhyjPMuf2s11zBZjhGziOGrBHdQJgG6IPsHszvyjOq1u-uqfzZHO1arcdF_9xSP1Vdr3YGyMgGQZOsoAxJr7g7gVKh1johzIPZHjKRHj2So9Kf8MoG11zm_ABFzJJWopVbupHfZc2dz3Vx1JxIuR-cr1VhrBVJHBYN1BoO3jKRuBYfgpzWZJtpUiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2QosnDos1ObAyO6u7DUMNwyfVXgcBjy9zB9fVjraUEH_npbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstiyRCs9RotQRCwP3NhUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHsyaopjDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUSzfUIoWy9-7UIoxQ9oOQMrKQcribm-FrMBsguYiq3ei6sHOHmFigfYxQVY2gmUEHiFiqp-09fz2rRzxQMoB9RosQR-BUstFbsnO6_UaHAUf6_HaHsHNo_Hao97?dv\u003dandroid\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fm4xprima%2Fremote-keyboard-smart-tv-xiaomi-mi-lg-samsung-changhong-sony-realme%3Fsrc%3Dtopads\u0026src\u003dsearch\u0026product_id\u003d2177627624\u0026ob\u003d23\u0026management_type\u003d1\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026uid\u003d189631678\u0026is_search\u003d1\u0026t\u003dandroid\u0026page\u003d1",
+        "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_UfoAndHAnpbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoiFiPcBWgZUEH_y7H_JNo_ndoiFiyRCsUstpo_nDUMVj9RosQR-BUstaosjXopJho_UDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBWu_zgHB2k3BPVHjh1eMWgqBB7_jz3quB_H3xqzOVd_VP3q7NW19PquVVd3MOz8BBNZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjp_uH7H7O1gpuo8jja_32zoJOEZ_o617BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjja_OH7H7O1z_VoqMWd_S20o1Y1yRx-QsnYUiFiP9oBrBY2gmUEUsJd6_ypH_yR6mUDUSoBrRo2QfNwq3ei6i-syMob8ICDPuzbQ1xg_jxiHMgq1VVN6jVee_jhyjPMuf2s11zBZjhGziOGrBHdQJgG6IPsHszvyjOq1u-uqfzZHO1arcdF_9xSP1Vdr3YGyMgGQZOsoAxJr7g7gVKh1johzIPZHjKRHj2So9Kf8MoG11zm_ABFzJJWopVbupHfZc2dz3Vx1JxIuR-cr1VhrBVJHBYN1BoO3jKRuBYfgpzWZJtpUiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2QosnDos1ObAyO6u7DUMNwyfVXgcBjy9zB9fVjraUEH_npbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstiyRCs9RotQRCwP3NhUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHsyaopjDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUSzfUIoWy9-7UIoxQ9oOQMrKQcribm-FrMBsguYiq3ei6sHOHmFigfYxQVY2gmUEHiFiqp-09fz2rRzxQMoB9RosQR-BUstFbsnO6_UaHAUf6_HaHsHNo_Hao97?r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fm4xprima\u0026page\u003d1\u0026dv\u003dandroid\u0026uid\u003d189631678\u0026t\u003dandroid\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026src\u003dsearch\u0026management_type\u003d1\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3",
+        "tag": 301,
+        "product": {
+          "id": "2177627624",
+          "name": "Remote Keyboard Smart TV Xiaomi Mi LG Samsung Changhong Sony RealMe",
+          "category_breadcrumb": "elektronik / tv-aksesoris / remote-tv",
+          "wishlist": false,
+          "image": {
+            "m_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJaoseF6AnFHaFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6syDUSz2Q31i6sJfoAJh6_1F6AyDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFbOghyMoW_Z4aHAUhbpj5H_y5ofHO6317Hp1WH_jOgZ77y_Vib_xB631WoAHaopPiysJdosBxbM2FgaUDUMVj9RosQR-BUstaosjXopJho_UDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBWu_zgHB2k3BPVHjh1eMWgqBB7_jz3quB_H3xqzOVd_VP3q7NW19PquVVd3MOz8BBNZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjp_uH7H7O1gpuo8jja_32zoJOEZ_o617BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjja_OH7H7O1z_VoqMWd_S20o1Y1yRx-QsnYUiFiP9oBrBY2gmUEUsJd6_ypH_yR6mUDUSoBrRo2QfNwq3ei6i-syMob8ICDPuzbQ1xg_jxiHMgq1VVN6jVee_jhyjPMuf2s11zBZjhGziOGrBHdQJgG6IPsHszvyjOq1u-uqfzZHO1arcdF_9xSP1Vdr3YGyMgGQZOsoAxJr7g7gVKh1johzIPZHjKRHj2So9Kf8MoG11zm_ABFzJJWopVbupHfZc2dz3Vx1JxIuR-cr1VhrBVJHBYN1BoO3jKRuBYfgpzWZJtpUiFiy3hSUstiy3h79fWB89P5rMzwgcuMy9uDPmUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-X9foxQMz2gcV7guYxgIHi6sJFHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-srcowrfx5rVYOQSJi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHsyaopjDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUi-Pbm-xQIzBrMNxPcuwqfuNPfYagmUEUSzfUIoWy9-7UIoxQ9oOQMrKQcribm-FrMBsguYiq3ei6sHOHmFigfYxQVY2gmUEHiFiqp-09fz2rRzxQMoB9RosQR-BUstFbsnO6_UaHAUf6_HaHsHNo_Hao97?keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026page\u003d1\u0026ob\u003d23\u0026src\u003dsearch\u0026t\u003dandroid\u0026dv\u003dandroid\u0026management_type\u003d1\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026is_search\u003d1",
+            "s_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJaoseF6AnFHaFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6syDUSz2Q31i6sJfoAJh6_1F6AyDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HsnFb9ohP3VagZY3r3-sQ175HsnaHZ4NbpJfbpPso_BBoAHOb_JNo31WocJhyi7dg_BBb_epHsrRyMUh6AyNyZNkrcribm-xgVYpyfYagZUEHsyNbsrhH_1abm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-Qu173_-qqB29z_-HuJ-0332gPJNJuMBg1pVt3jPz8Jh9uMW6QuVR3Bzz8V2W192g81BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-QjdFyBo-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H7O_oAooucrO_92-HjOk1_zo8jjp_Bo-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-HjY_oAoouJ1h_3208JNEqpuvucodZ3dFvZUDUSupg9-wq3ei6iUh6AjfHpJfopKibm-pg9opq3YX9fBjUstiyf-sZRxFQIu1ZfOU31NUys-M3BCz8_2C1JJNH3-IgBPkyOVJg12HZjyWZS-_6chcZsxRypU7_f-o3BVZu3Wj1souHSCXHJOdgRuC8IV5ZM-MZM7WypedzIocPczyHu-Ar1zR1s-Uop-GgpudoS2sZBVJejFNrJzCb_rhZOrpojxk8JuxyuCUzOPazSVCr9-zzA-w8u-_Pu2UoOgwPMr7Q1xGHaUDUMVDgaUEUMVDPVY0g9BRQR-j9fzBgMVOQIeibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiQBYsy3Njq3zxPcuwy3zpUsthHAHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDiyRCs9RotQRCwP3NhUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUfHsrNbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUi9ZFiy3h7g9-Xy9zB9fWB89P5rMei6i-7PiCpQ3VaPmCpy3OpP3NSUchSUiFirI-2yfuwyMBjUstpo_nDUMP5y3hwq3ei6sUDUMDaqOYjq9o7y3NsguYpyfYagZUEHmdFo_jaHsnaosjpHsUp6_1pHsuY?keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026page\u003d1\u0026ob\u003d23\u0026src\u003dsearch\u0026t\u003dandroid\u0026dv\u003dandroid\u0026management_type\u003d1\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026is_search\u003d1",
+            "xs_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJaoseF6AnFHaFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6syDUSz2Q31i6sJfoAJh6_1F6AyDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15H_nFb9ohP3VagZY3r3-sQ175HsnaHZ4NbpJfbpPso_BBoAHOb_JNo31WocJhyi7dg_BBb_epHsrRyMUh6AyNyZNkrcribm-xgVYpyfYagZUEHsyNbsrhH_1abm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-Qu173_-qqB29z_-HuJ-0332gPJNJuMBg1pVt3jPz8Jh9uMW6QuVR3Bzz8V2W192g81BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-QjdFyBo-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H7O_oAooucrO_92-HjOk1_zo8jjp_Bo-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-HjY_oAoouJ1h_3208JNEqpuvucodZ3dFvZUDUSupg9-wq3ei6iUh6AjfHpJfopKibm-pg9opq3YX9fBjUstiyf-sZRxFQIu1ZfOU31NUys-M3BCz8_2C1JJNH3-IgBPkyOVJg12HZjyWZS-_6chcZsxRypU7_f-o3BVZu3Wj1souHSCXHJOdgRuC8IV5ZM-MZM7WypedzIocPczyHu-Ar1zR1s-Uop-GgpudoS2sZBVJejFNrJzCb_rhZOrpojxk8JuxyuCUzOPazSVCr9-zzA-w8u-_Pu2UoOgwPMr7Q1xGHaUDUMVDgaUEUMVDPVY0g9BRQR-j9fzBgMVOQIeibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiQBYsy3Njq3zxPcuwy3zpUsthHAHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDiyRCs9RotQRCwP3NhUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUfHsrNbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUi9ZFiy3h7g9-Xy9zB9fWB89P5rMei6i-7PiCpQ3VaPmCpy3OpP3NSUchSUiFirI-2yfuwyMBjUstpo_nDUMP5y3hwq3ei6sUDUMDaqOYjq9o7y3NsguYpyfYagZUEHmdFo_jaHsnaosjpHsUp6_1pHsuY?keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026page\u003d1\u0026ob\u003d23\u0026src\u003dsearch\u0026t\u003dandroid\u0026dv\u003dandroid\u0026management_type\u003d1\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026is_search\u003d1",
+            "m_ecs": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/9/16/7c59e435-195e-4a1b-8e9e-43277bb1869a.jpg",
+            "s_ecs": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/9/16/7c59e435-195e-4a1b-8e9e-43277bb1869a.jpg",
+            "xs_ecs": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/9/16/7c59e435-195e-4a1b-8e9e-43277bb1869a.jpg"
+          },
+          "uri": "https://www.tokopedia.com/m4xprima/remote-keyboard-smart-tv-xiaomi-mi-lg-samsung-changhong-sony-realme?src\u003dtopads",
+          "relative_uri": "m4xprima/remote-keyboard-smart-tv-xiaomi-mi-lg-samsung-changhong-sony-realme",
+          "price_format": "Rp150.000",
+          "wholesale_price": [],
+          "count_talk_format": "0",
+          "count_review_format": "2",
+          "category": {
+            "id": "659"
+          },
+          "product_preorder": false,
+          "product_wholesale": false,
+          "free_return": "https://images.tokopedia.net/img/blank.gif",
+          "product_cashback": false,
+          "product_new_label": false,
+          "product_cashback_rate": "",
+          "product_rating": 60,
+          "product_rating_format": "3.0",
+          "product_item_sold_payment_verified": "Terjual 4",
+          "product_minimum_order": 1,
+          "free_ongkir": {
+            "is_active": true,
+            "img_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "campaign": {
+            "original_price": "",
+            "discount_percentage": 0
+          },
+          "label_group": [
+            {
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "title": "Terjual 4",
+              "url": ""
+            },
+            {
+              "position": "eta",
+              "type": "textDarkGrey",
+              "title": "Tiba 4 - 6 Jan",
+              "url": ""
+            }
+          ]
+        },
+        "shop": {
+          "id": "3102928",
+          "name": "M4XPrima",
+          "domain": "m4xprima",
+          "location": "Jakarta Barat",
+          "city": "Jakarta Barat",
+          "gold_shop": false,
+          "gold_shop_badge": true,
+          "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id\u003d3102928",
+          "uri": "https://www.tokopedia.com/m4xprima",
+          "owner_id": "28698050",
+          "is_owner": false,
+          "shop_is_official": false,
+          "shop_rating_avg": "\u003cb\u003e4.1\u003c/b\u003e Rating Toko",
+          "badges": [
+            {
+              "title": "Free Return",
+              "image_url": "https://images.tokopedia.net/img/blank.gif",
+              "show": false
+            },
+            {
+              "title": "Power Merchant Pro",
+              "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png",
+              "show": true
+            }
+          ]
+        },
+        "applinks": "tokopedia://product/2177627624"
+      }
+    ],
+    "template": [
+      {
+        "is_ad": true
+      },
+      {
+        "is_ad": true
+      },
+      {
+        "is_ad": false
+      },
+      {
+        "is_ad": false
+      },
+      {
+        "is_ad": false
+      },
+      {
+        "is_ad": true
+      },
+      {
+        "is_ad": true
+      },
+      {
+        "is_ad": false
+      },
+      {
+        "is_ad": false
+      },
+      {
+        "is_ad": true
+      },
+      {
+        "is_ad": true
+      },
+      {
+        "is_ad": false
+      },
+      {
+        "is_ad": false
+      },
+      {
+        "is_ad": false
+      }
+    ]
+  },
+
+  "headlineAds": {
+    "status": {
+      "error_code": 0,
+      "message": "OK"
+    },
+    "header": {
+      "process_time": 0.085383193,
+      "total_data": 2
+    },
+    "data": [
+      {
+        "id": "85442544",
+        "ad_ref_key": "85442544",
+        "redirect": "https://www.tokopedia.com/centralstore14",
+        "ad_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6A17oAUOoAeDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUsthbm-7q3OBUsthosehH_jOHAKfbm-0g9BRQR-j9fBjUsta6_K7opnR6mFiy3zwrfo5rM1i6sUO6mdF6AjhoAnhopepH_UFomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9PHqMHF_1zsHJOJypCozcHF_1zsHJOJgfBHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBo8_ehZ3BRq3-W69ugHBu2_fB-HJOIZMhouJJF_uHF8JNEZ9xHuVJh3MO-PJY1__u68_np_7PVoJNJqc2oz722_BPzq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fB-q1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-P7B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Oku_zHqjJ7_OzVHJOJz_o6zJOd_32CHJBXHA7ibm-Orfua9fBjUstiH_KNosHhosrdUiFirfuprfB5QBY2gmUEUMoiy7WdrchOuJWWZVB6ZcUagB2e19jEeuCC6_Vizfg9qMozzcuG_J2cb12a1pxDzjtdPfHaoJYi_u2z1Bu0gVUpu_-FQsCo8cPOe9xhQ72igj2Wb3H76JzpzSzj3AVZeRVJPOUaZAraZMrO8AgEy72zzJ-H69CJeZ7RH1W9HpgUqSxVy3VeZJP9rjghe9Va11ea9RBZ1RuqZAP39RgSocOUZsHibm-xQcri6i-0PVYFqI-xrf1ibm-XP3Oig9-wQfgwy3zpUstabm-XP3Oig9-wy3zp9R-BrZUEHiFiQBYsy3Njq3zxPcuwy3zpUstfbm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHiUDUSCaq3oB9f-2gmUEoAnFHAnDUMP5y3hwq3ei6sVY?t\u003dandroid\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026click_ad_type\u003d1\u0026page\u003d1\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026ob\u003d23\u0026dv\u003dandroid-4.01\u0026uid\u003d189631678\u0026src\u003dsearch\u0026is_search\u003d1\u0026cpm_template_req\u003d3%2C4%2C5\u0026template_id_used\u003d3\u0026keyword_correction\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fcentralstore14",
+        "headline": {
+          "template_id": "3",
+          "name": "Central Store ID",
+          "image": {
+            "full_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sKOoAeao_e7bm-xgVY789CBUstpbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_y7H_JNo_ndoiFircV7qmUEUMBWy3PBraN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbRotQRCpb_J5Hsnh6m4ObpJ7bpH7H_1fo_15Hpeho_yOouYM6_zM631pHi7hH3U7b_eagAnW6_zsoi7Ny3-BH3zMg_KRHfJXqSCSUiFiyRCWUst7HmFiqfuNPfYagVY2gmUEHsjdoArFopKDUMVj9RosQR-BUstao_KXHAKNH_eFH_r7HpJaHAeDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BR_c2sHJOJypCozcHF_1zsHJOJypCozcP2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_9j7H1B2PfBiQ_BO3_-uq1Y2Z_Coz72D_uzCHJO_HIx68jBd_VzzHu2WZ9zvuJ7O_SjFH7YIz_z6zcxk_1PGq1N913BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z9P-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqB17_c2CoJY1z_CozJ1p_jzo8JOke_C-QsnYUiFiP9oBrBY2gmUEUsJd6_ypH_yR6mUDUSoBrRo2QfNwq3ei6i-syMob8ICDPuzbQ1xg_jxiHMgq1VVN6jVee_jhyjPMuf2s11zBZjhGziOGrBHdQJgG6IPsHszvyjOq1u-uqfzZHO1arcdF_9xSP1Vdr3YGyMgGQZOsoAxJr7g7gVKh1johzIPZHjKRHj2So9Kf8MoG11zm_ABFzJJWopVbupHfZc2dz3Vx1JxIuR-cr1VhrBVJHBYN1BoO3jKRuBYfgpzWZJtpUiFiy3hSUstiqRzwrcxay9oBUiFiQSuWyMua9fYM9fVjraUEHiFiQSuWyMua9fVjrOYag9Ji6sUDUMNwyfVXgcBjy9zB9fVjraUEoiFiy3-wPcupPmUEUjdibm-fg9-pq3YXUstiPsUibm-ag9Vwqcuxgch2QMuwrI-5gIusPVYsQRuXPmUEHaFiPMBBPfuj9RCaQfzOyRzwq3zpUs2QHpJfo_KRopJNbAUd6_KdHpraoiFhH_jRHsnN6A1F9ZFirI-2yfuwyMBjUst7HAnFHmFigfYxQVY2gmUEH97?page\u003d1\u0026template_id_used\u003d3\u0026dv\u003dandroid-4.01\u0026uid\u003d189631678\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026t\u003dandroid\u0026is_search\u003d1\u0026keyword_correction\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026ob\u003d23\u0026cpm_template_req\u003d3%2C4%2C5\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026src\u003dsearch",
+            "full_ecs": "https://images.tokopedia.net/img/cache/100-square/shops-1/2018/5/14/3415655/3415655_f94f9e32-11b4-42d0-94c6-9abe1dfe873a.jpg"
+          },
+          "shop": {
+            "id": "3415655",
+            "name": "Central Store ID",
+            "domain": "centralstore14",
+            "tagline": "Giving The Best",
+            "slogan": "Dapatkan pengalaman berbelanja online terbaik di Central Store ID.",
+            "location": "Jakarta Barat",
+            "city": "Jakarta Barat",
+            "gold_shop": false,
+            "gold_shop_badge": true,
+            "shop_is_official": false,
+            "pm_pro_shop": true,
+            "merchant_vouchers": [],
+            "product": [
+              {
+                "id": "316587719",
+                "name": "Remote Remot Dekoder Decoder Receiver INDOVISION ORIGINAL",
+                "price_format": "Rp 72.000",
+                "applinks": "tokopedia://product/316587719",
+                "product_cashback": false,
+                "product_cashback_rate": "",
+                "product_new_label": false,
+                "count_review_format": "211",
+                "rating_average": "4.8",
+                "label_group": [
+                  {
+                    "title": "Terjual 520",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  }
+                ],
+                "free_ongkir": {
+                  "is_active": true,
+                  "img_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                },
+                "image_product": {
+                  "product_id": "316587719",
+                  "product_name": "Remote Remot Dekoder Decoder Receiver INDOVISION ORIGINAL",
+                  "image_url": "https://images.tokopedia.net/img/cache/200-square/product-1/2018/8/9/316587719/316587719_d74a3ccf-b660-4087-bdea-d469e1ae8149_700_700.jpg",
+                  "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6A17oAUOoAeDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUsthbm-7q3OBUsthosehH_jOHAKfbm-0g9BRQR-j9fBjUsta6_K7opnR6mFiy3zwrfo5rM1i6sUO6mdF6AjhoAnhopepH_UFomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9PHqMHF_1zsHJOJypCozcHF_1zsHJOJgfBHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBo8_ehZ3BRq3-W69ugHBu2_fB-HJOIZMhouJJF_uHF8JNEZ9xHuVJh3MO-PJY1__u68_np_7PVoJNJqc2oz722_BPzq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fB-q1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-P7B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Oku_zHqjJ7_OzVHJOJz_o6zJOd_32CHJBXHA7ibm-Orfua9fBjUstiH_KNosHhosrdUiFirfuprfB5QBY2gmUEUMoiy7WdrchOuJWWZVB6ZcUagB2e19jEeuCC6_Vizfg9qMozzcuG_J2cb12a1pxDzjtdPfHaoJYi_u2z1Bu0gVUpu_-FQsCo8cPOe9xhQ72igj2Wb3H76JzpzSzj3AVZeRVJPOUaZAraZMrO8AgEy72zzJ-H69CJeZ7RH1W9HpgUqSxVy3VeZJP9rjghe9Va11ea9RBZ1RuqZAP39RgSocOUZsHibm-xQcri6i-0PVYFqI-xrf1ibm-XP3Oig9-wQfgwy3zpUstabm-XP3Oig9-wy3zp9R-BrZUEHiFiQBYsy3Njq3zxPcuwy3zpUstfbm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHiUDUSCaq3oB9f-2gmUEoAnFHACY?uid\u003d189631678\u0026is_search\u003d1\u0026product_id\u003d316587719\u0026ob\u003d23\u0026dv\u003dandroid-4.01\u0026t\u003dandroid\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fcentralstore14%2Fremote-remot-dekoder-decoder-receiver-indovision-original\u0026src\u003dsearch\u0026template_id_used\u003d3\u0026click_ad_type\u003d2\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026page\u003d1\u0026cpm_template_req\u003d3%2C4%2C5\u0026keyword_correction\u003dtv+-samsung+-lg+-realme+-android+-smart"
+                },
+                "campaign": {
+                  "original_price": "",
+                  "discount_percentage": 0
+                }
+              },
+              {
+                "id": "289883726",
+                "name": "Remote TV LG ORIGINAL",
+                "price_format": "Rp 55.000",
+                "applinks": "tokopedia://product/289883726",
+                "product_cashback": false,
+                "product_cashback_rate": "",
+                "product_new_label": false,
+                "count_review_format": "2.139",
+                "rating_average": "4.8",
+                "label_group": [
+                  {
+                    "title": "Grosir",
+                    "type": "lightGrey",
+                    "position": "offers",
+                    "url": ""
+                  },
+                  {
+                    "title": "Terjual 4,9 rb",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  }
+                ],
+                "free_ongkir": {
+                  "is_active": true,
+                  "img_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                },
+                "image_product": {
+                  "product_id": "289883726",
+                  "product_name": "Remote TV LG ORIGINAL",
+                  "image_url": "https://images.tokopedia.net/img/cache/200-square/product-1/2018/5/16/3415655/3415655_ba1ce648-18ad-4b85-a592-2fb04dbaa6f4_772_772.jpg",
+                  "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6A17oAUOoAeDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUsthbm-7q3OBUsthosehH_jOHAKfbm-0g9BRQR-j9fBjUsta6_K7opnR6mFiy3zwrfo5rM1i6sUO6mdF6AjhoAnhopepH_UFomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9PHqMHF_1zsHJOJypCozcHF_1zsHJOJgfBHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBo8_ehZ3BRq3-W69ugHBu2_fB-HJOIZMhouJJF_uHF8JNEZ9xHuVJh3MO-PJY1__u68_np_7PVoJNJqc2oz722_BPzq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fB-q1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-P7B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Oku_zHqjJ7_OzVHJOJz_o6zJOd_32CHJBXHA7ibm-Orfua9fBjUstiH_KNosHhosrdUiFirfuprfB5QBY2gmUEUMoiy7WdrchOuJWWZVB6ZcUagB2e19jEeuCC6_Vizfg9qMozzcuG_J2cb12a1pxDzjtdPfHaoJYi_u2z1Bu0gVUpu_-FQsCo8cPOe9xhQ72igj2Wb3H76JzpzSzj3AVZeRVJPOUaZAraZMrO8AgEy72zzJ-H69CJeZ7RH1W9HpgUqSxVy3VeZJP9rjghe9Va11ea9RBZ1RuqZAP39RgSocOUZsHibm-xQcri6i-0PVYFqI-xrf1ibm-XP3Oig9-wQfgwy3zpUstabm-XP3Oig9-wy3zp9R-BrZUEHiFiQBYsy3Njq3zxPcuwy3zpUstfbm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHiUDUSCaq3oB9f-2gmUEoAnFHACY?r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fcentralstore14%2Fremote-tv-lg-original\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026cpm_template_req\u003d3%2C4%2C5\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026product_id\u003d289883726\u0026ob\u003d23\u0026dv\u003dandroid-4.01\u0026t\u003dandroid\u0026src\u003dsearch\u0026keyword_correction\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026click_ad_type\u003d2\u0026uid\u003d189631678\u0026is_search\u003d1\u0026page\u003d1\u0026template_id_used\u003d3"
+                },
+                "campaign": {
+                  "original_price": "",
+                  "discount_percentage": 0
+                }
+              },
+              {
+                "id": "1197209850",
+                "name": "Remote TV Smart TV TCL NETFLIX ORIGINAL",
+                "price_format": "Rp 185.000",
+                "applinks": "tokopedia://product/1197209850",
+                "product_cashback": false,
+                "product_cashback_rate": "",
+                "product_new_label": false,
+                "count_review_format": "23",
+                "rating_average": "4.8",
+                "label_group": [
+                  {
+                    "title": "Terjual 40",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  }
+                ],
+                "free_ongkir": {
+                  "is_active": true,
+                  "img_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                },
+                "image_product": {
+                  "product_id": "1197209850",
+                  "product_name": "Remote TV Smart TV TCL NETFLIX ORIGINAL",
+                  "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/9/19/beb32c9d-b3e0-4950-8f0d-7a7f157fb4f3.jpg",
+                  "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6A17oAUOoAeDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUsthbm-7q3OBUsthosehH_jOHAKfbm-0g9BRQR-j9fBjUsta6_K7opnR6mFiy3zwrfo5rM1i6sUO6mdF6AjhoAnhopepH_UFomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9PHqMHF_1zsHJOJypCozcHF_1zsHJOJgfBHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBo8_ehZ3BRq3-W69ugHBu2_fB-HJOIZMhouJJF_uHF8JNEZ9xHuVJh3MO-PJY1__u68_np_7PVoJNJqc2oz722_BPzq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fB-q1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-P7B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Oku_zHqjJ7_OzVHJOJz_o6zJOd_32CHJBXHA7ibm-Orfua9fBjUstiH_KNosHhosrdUiFirfuprfB5QBY2gmUEUMoiy7WdrchOuJWWZVB6ZcUagB2e19jEeuCC6_Vizfg9qMozzcuG_J2cb12a1pxDzjtdPfHaoJYi_u2z1Bu0gVUpu_-FQsCo8cPOe9xhQ72igj2Wb3H76JzpzSzj3AVZeRVJPOUaZAraZMrO8AgEy72zzJ-H69CJeZ7RH1W9HpgUqSxVy3VeZJP9rjghe9Va11ea9RBZ1RuqZAP39RgSocOUZsHibm-xQcri6i-0PVYFqI-xrf1ibm-XP3Oig9-wQfgwy3zpUstabm-XP3Oig9-wy3zp9R-BrZUEHiFiQBYsy3Njq3zxPcuwy3zpUstfbm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHiUDUSCaq3oB9f-2gmUEoAnFHACY?cpm_template_req\u003d3%2C4%2C5\u0026template_id_used\u003d3\u0026click_ad_type\u003d2\u0026dv\u003dandroid-4.01\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026src\u003dsearch\u0026page\u003d1\u0026product_id\u003d1197209850\u0026ob\u003d23\u0026is_search\u003d1\u0026t\u003dandroid\u0026uid\u003d189631678\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fcentralstore14%2Fremote-tv-smart-tv-tcl-netflix-original\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026keyword_correction\u003dtv+-samsung+-lg+-realme+-android+-smart"
+                },
+                "campaign": {
+                  "original_price": "",
+                  "discount_percentage": 0
+                }
+              }
+            ],
+            "image_shop": {
+              "cover": "https://images.tokopedia.net/img/cache/750/web_service-shopnocover.png",
+              "s_url": "https://images.tokopedia.net/img/cache/215-square/shops-1/2018/5/14/3415655/3415655_f94f9e32-11b4-42d0-94c6-9abe1dfe873a.jpg",
+              "xs_url": "https://images.tokopedia.net/img/cache/100-square/shops-1/2018/5/14/3415655/3415655_f94f9e32-11b4-42d0-94c6-9abe1dfe873a.jpg",
+              "cover_ecs": "https://images.tokopedia.net/img/cache/750/web_service-shopnocover.png",
+              "s_ecs": "https://images.tokopedia.net/img/cache/215-square/shops-1/2018/5/14/3415655/3415655_f94f9e32-11b4-42d0-94c6-9abe1dfe873a.jpg",
+              "xs_ecs": "https://images.tokopedia.net/img/cache/100-square/shops-1/2018/5/14/3415655/3415655_f94f9e32-11b4-42d0-94c6-9abe1dfe873a.jpg"
+            }
+          },
+          "badges": [
+            {
+              "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png",
+              "show": true,
+              "title": "Power Merchant Pro"
+            }
+          ],
+          "button_text": "Cek Sekarang",
+          "promoted_text": "Dipromosikan oleh",
+          "description": "Dapatkan pengalaman berbelanja online terbaik di Central Store ID.",
+          "uri": "https://www.tokopedia.com/centralstore14",
+          "layout": 1
+        },
+        "applinks": "tokopedia://shop/3415655"
+      },
+      {
+        "id": "117576173",
+        "ad_ref_key": "117576173",
+        "redirect": "https://www.tokopedia.com/abadicell123",
+        "ad_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_JRo_rfH_rpbm-xgVY789CBUstpbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_y7H_JNo_ndoiFiqfuNPfYagVY2gmUEo_KOoAJFHpyabm-xgVYpyfYagZUEHs17bsjRHAJRoAjFHAJRHpUabm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-8Jhk1_ovzcrp_92-8jY11926qBBd_Ozsq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1O_oIP617BpZ37OPM-W_Mh-qMY2_jzmqu21z9P6zJu7_uzs81O_HAC6uO22_Vz08jY1yRz68Mxt_7zzoVBEeMBgqBg0Z3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2Z3BRq3Ha_SgsQugM33NGPMep_Mh-qMY2_1o-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-H1NAoAu68jVd_S2zo1OJe9x68jON_3BG6ZUDUSupg9-wq3ei6iUh6AjfHpJfopKibm-pg9opq3YX9fBjUstiyf-sZRxFQIu1ZfOU31NUys-M3BCz8_2C1JJNH3-IgBPkyOVJg12HZjyWZS-_6chcZsxRypU7_f-o3BVZu3Wj1souHSCXHJOdgRuC8IV5ZM-MZM7WypedzIocPczyHu-Ar1zR1s-Uop-GgpudoS2sZBVJejFNrJzCb_rhZOrpojxk8JuxyuCUzOPazSVCr9-zzA-w8u-_Pu2UoOgwPMr7Q1xGHaUDUMVDgaUEUMW79RCtrMVpgZUDUMNOQ3-BrBY5gBYxgIHi6sUDUMNOQ3-BrBYxgIowrMuhUstabm-X9foxQMz2gcV7guYxgIHi6syDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUiFirI-2yfuwyMBjUsthHsnFHmFigfYxQVY2gmUEH97?click_ad_type\u003d1\u0026dv\u003dandroid-4.01\u0026t\u003dandroid\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fabadicell123\u0026page\u003d1\u0026cpm_template_req\u003d3%2C4%2C5\u0026keyword_correction\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026uid\u003d189631678\u0026is_search\u003d1\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026template_id_used\u003d3\u0026src\u003dsearch\u0026ob\u003d23",
+        "headline": {
+          "template_id": "3",
+          "name": "Abadi Cell 123",
+          "image": {
+            "full_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJhop1RosJRHaFiy3zwPIBFgZUEHaFircYpq9z2Qfdi6sUDUSz2Q31i6sJfoAJh6_1F6AyDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15H_nFb9ohP3VagZYpqcYFra7hbpUFHsn5HZ4pHm4fosKa6_Jdbpyf6AUNH_xwyfgBoAoMgsyWgsoM6m77ofe7b3Udo_1Wy_HfgcUNysHO6AJNbM2FgaUDUMoFQZUEH_UDUMWB89P5rMzwq3ei6s1do_ehHAHfHiFiy3zwrfo5rM1i6sUOomdNopnhopeNHAnhopHaHiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9xHqBJp_7zSH7OEZ92vuVVE_M2g8JY1yfBHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBo1pzR_Bo-r7BWo9giQ1NDZ325q1NJeMBquJuR_jzVPJO1yRBo1pnF_BPqq1h1qR2vuco7_S2tqJYJ1_zg8j-23323q7B2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1OAZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_V6epeO_S2C8JNE1_uozJVd_S2o81O2Zsjibm-Orfua9fBjUstiH_KNosHhosrdUiFirfuprfB5QBY2gmUEUMoiy7WdrchOuJWWZVB6ZcUagB2e19jEeuCC6_Vizfg9qMozzcuG_J2cb12a1pxDzjtdPfHaoJYi_u2z1Bu0gVUpu_-FQsCo8cPOe9xhQ72igj2Wb3H76JzpzSzj3AVZeRVJPOUaZAraZMrO8AgEy72zzJ-H69CJeZ7RH1W9HpgUqSxVy3VeZJP9rjghe9Va11ea9RBZ1RuqZAP39RgSocOUZsHibm-xQcri6i-0PVYFqI-xrf1ibm-XP3Oig9-wQfgwy3zpUstabm-XP3Oig9-wy3zp9R-BrZUEHiFiQBYsy3Njq3zxPcuwy3zpUstfbm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHiUDUS-BruYtg3VjQcBXguYFrMYjP3o79fo5P3N7Ustpbm-fq3uRg3zwrI-5gIusPVY2gIHi6BDh6AnpH_ydH_H7bAJN6_jpHAy76_KDH_KRHsrOHAHaoV7DUSCaq3oB9f-2gmUEH_UFHAnDUMP5y3hwq3ei6sVY?sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026is_search\u003d1\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026page\u003d1\u0026cpm_template_req\u003d3%2C4%2C5\u0026t\u003dandroid\u0026ob\u003d23\u0026dv\u003dandroid-4.01\u0026template_id_used\u003d3\u0026keyword_correction\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026src\u003dsearch\u0026uid\u003d189631678",
+            "full_ecs": "https://images.tokopedia.net/img/cache/100-square/shops-1/2020/1/30/6682918/6682918_cfe43ff6-f3f8-47d4-b855-a36db9b35819.jpg"
+          },
+          "shop": {
+            "id": "6682918",
+            "name": "Abadi Cell 123",
+            "domain": "abadicell123",
+            "tagline": "Resmi dan cepat",
+            "slogan": "Ada promo menarik untuk produk ori buatan Indonesia.",
+            "location": "Jakarta Pusat",
+            "city": "Jakarta Pusat",
+            "gold_shop": false,
+            "gold_shop_badge": true,
+            "shop_is_official": false,
+            "pm_pro_shop": true,
+            "merchant_vouchers": [],
+            "product": [
+              {
+                "id": "1803168134",
+                "name": "Samsung A10s - Biru",
+                "price_format": "Rp 1.569.000",
+                "applinks": "tokopedia://product/1803168134",
+                "product_cashback": false,
+                "product_cashback_rate": "",
+                "product_new_label": false,
+                "count_review_format": "121",
+                "rating_average": "4.9",
+                "label_group": [
+                  {
+                    "title": "Terjual 999",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  }
+                ],
+                "free_ongkir": {
+                  "is_active": false,
+                  "img_url": ""
+                },
+                "image_product": {
+                  "product_id": "1803168134",
+                  "product_name": "Samsung A10s - Biru",
+                  "image_url": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/11/3/6682918/6682918_4e646cee-c136-4cc2-8896-372f13d4746e_920_920.jpg",
+                  "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_JRo_rfH_rpbm-xgVY789CBUstpbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_y7H_JNo_ndoiFiqfuNPfYagVY2gmUEo_KOoAJFHpyabm-xgVYpyfYagZUEHs17bsjRHAJRoAjFHAJRHpUabm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-8Jhk1_ovzcrp_92-8jY11926qBBd_Ozsq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1O_oIP617BpZ37OPM-W_Mh-qMY2_jzmqu21z9P6zJu7_uzs81O_HAC6uO22_Vz08jY1yRz68Mxt_7zzoVBEeMBgqBg0Z3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2Z3BRq3Ha_SgsQugM33NGPMep_Mh-qMY2_1o-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-H1NAoAu68jVd_S2zo1OJe9x68jON_3BG6ZUDUSupg9-wq3ei6iUh6AjfHpJfopKibm-pg9opq3YX9fBjUstiyf-sZRxFQIu1ZfOU31NUys-M3BCz8_2C1JJNH3-IgBPkyOVJg12HZjyWZS-_6chcZsxRypU7_f-o3BVZu3Wj1souHSCXHJOdgRuC8IV5ZM-MZM7WypedzIocPczyHu-Ar1zR1s-Uop-GgpudoS2sZBVJejFNrJzCb_rhZOrpojxk8JuxyuCUzOPazSVCr9-zzA-w8u-_Pu2UoOgwPMr7Q1xGHaUDUMVDgaUEUMW79RCtrMVpgZUDUMNOQ3-BrBY5gBYxgIHi6sUDUMNOQ3-BrBYxgIowrMuhUstabm-X9foxQMz2gcV7guYxgIHi6syDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUiFirI-2yfuwyMBjUsthHsnFHI7?src\u003dsearch\u0026page\u003d1\u0026keyword_correction\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fabadicell123%2Fsamsung-a10s-biru\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026product_id\u003d1803168134\u0026ob\u003d23\u0026dv\u003dandroid-4.01\u0026uid\u003d189631678\u0026t\u003dandroid\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026is_search\u003d1\u0026cpm_template_req\u003d3%2C4%2C5\u0026template_id_used\u003d3\u0026click_ad_type\u003d2"
+                },
+                "campaign": {
+                  "original_price": "",
+                  "discount_percentage": 0
+                }
+              },
+              {
+                "id": "1999306498",
+                "name": "samsung a22 5g",
+                "price_format": "Rp 3.199.000",
+                "applinks": "tokopedia://product/1999306498",
+                "product_cashback": false,
+                "product_cashback_rate": "",
+                "product_new_label": false,
+                "count_review_format": "2",
+                "rating_average": "5.0",
+                "label_group": [
+                  {
+                    "title": "Terjual 3",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  }
+                ],
+                "free_ongkir": {
+                  "is_active": false,
+                  "img_url": ""
+                },
+                "image_product": {
+                  "product_id": "1999306498",
+                  "product_name": "samsung a22 5g",
+                  "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/7/14/788a0e28-2c0b-442e-b7b8-c47112383beb.jpg",
+                  "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_JRo_rfH_rpbm-xgVY789CBUstpbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_y7H_JNo_ndoiFiqfuNPfYagVY2gmUEo_KOoAJFHpyabm-xgVYpyfYagZUEHs17bsjRHAJRoAjFHAJRHpUabm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-8Jhk1_ovzcrp_92-8jY11926qBBd_Ozsq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1O_oIP617BpZ37OPM-W_Mh-qMY2_jzmqu21z9P6zJu7_uzs81O_HAC6uO22_Vz08jY1yRz68Mxt_7zzoVBEeMBgqBg0Z3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2Z3BRq3Ha_SgsQugM33NGPMep_Mh-qMY2_1o-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-H1NAoAu68jVd_S2zo1OJe9x68jON_3BG6ZUDUSupg9-wq3ei6iUh6AjfHpJfopKibm-pg9opq3YX9fBjUstiyf-sZRxFQIu1ZfOU31NUys-M3BCz8_2C1JJNH3-IgBPkyOVJg12HZjyWZS-_6chcZsxRypU7_f-o3BVZu3Wj1souHSCXHJOdgRuC8IV5ZM-MZM7WypedzIocPczyHu-Ar1zR1s-Uop-GgpudoS2sZBVJejFNrJzCb_rhZOrpojxk8JuxyuCUzOPazSVCr9-zzA-w8u-_Pu2UoOgwPMr7Q1xGHaUDUMVDgaUEUMW79RCtrMVpgZUDUMNOQ3-BrBY5gBYxgIHi6sUDUMNOQ3-BrBYxgIowrMuhUstabm-X9foxQMz2gcV7guYxgIHi6syDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUiFirI-2yfuwyMBjUsthHsnFHI7?template_id_used\u003d3\u0026product_id\u003d1999306498\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026src\u003dsearch\u0026cpm_template_req\u003d3%2C4%2C5\u0026click_ad_type\u003d2\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026uid\u003d189631678\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fabadicell123%2Fsamsung-a22-5g\u0026is_search\u003d1\u0026page\u003d1\u0026keyword_correction\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026ob\u003d23\u0026dv\u003dandroid-4.01\u0026t\u003dandroid"
+                },
+                "campaign": {
+                  "original_price": "",
+                  "discount_percentage": 0
+                }
+              },
+              {
+                "id": "1872750324",
+                "name": "oppo a74 5g 6/128",
+                "price_format": "Rp 3.899.000",
+                "applinks": "tokopedia://product/1872750324",
+                "product_cashback": false,
+                "product_cashback_rate": "",
+                "product_new_label": false,
+                "count_review_format": "2",
+                "rating_average": "4.5",
+                "label_group": [
+                  {
+                    "title": "Terjual 4",
+                    "type": "textDarkGrey",
+                    "position": "integrity",
+                    "url": ""
+                  }
+                ],
+                "free_ongkir": {
+                  "is_active": false,
+                  "img_url": ""
+                },
+                "image_product": {
+                  "product_id": "1872750324",
+                  "product_name": "oppo a74 5g 6/128",
+                  "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/5/30/0f91e641-3747-4f25-a779-13cfeb444fee.jpg",
+                  "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_JRo_rfH_rpbm-xgVY789CBUstpbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_y7H_JNo_ndoiFiqfuNPfYagVY2gmUEo_KOoAJFHpyabm-xgVYpyfYagZUEHs17bsjRHAJRoAjFHAJRHpUabm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-8Jhk1_ovzcrp_92-8jY11926qBBd_Ozsq1hAZS-q3cFpysoGqOKp_M2iH72DZ325q1O_oIP617BpZ37OPM-W_Mh-qMY2_jzmqu21z9P6zJu7_uzs81O_HAC6uO22_Vz08jY1yRz68Mxt_7zzoVBEeMBgqBg0Z3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2Z3BRq3Ha_SgsQugM33NGPMep_Mh-qMY2_1o-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-H1NAoAu68jVd_S2zo1OJe9x68jON_3BG6ZUDUSupg9-wq3ei6iUh6AjfHpJfopKibm-pg9opq3YX9fBjUstiyf-sZRxFQIu1ZfOU31NUys-M3BCz8_2C1JJNH3-IgBPkyOVJg12HZjyWZS-_6chcZsxRypU7_f-o3BVZu3Wj1souHSCXHJOdgRuC8IV5ZM-MZM7WypedzIocPczyHu-Ar1zR1s-Uop-GgpudoS2sZBVJejFNrJzCb_rhZOrpojxk8JuxyuCUzOPazSVCr9-zzA-w8u-_Pu2UoOgwPMr7Q1xGHaUDUMVDgaUEUMW79RCtrMVpgZUDUMNOQ3-BrBY5gBYxgIHi6sUDUMNOQ3-BrBYxgIowrMuhUstabm-X9foxQMz2gcV7guYxgIHi6syDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUiFirI-2yfuwyMBjUsthHsnFHI7?ob\u003d23\u0026is_search\u003d1\u0026keywords\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026page\u003d1\u0026click_ad_type\u003d2\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fabadicell123%2Foppo-a74-5g-6-128\u0026src\u003dsearch\u0026template_id_used\u003d3\u0026sid\u003dcbcKxpluTKmHYNHb2fZPQy%3AAPA91bGfWjcQDeJLJF-JrS8lFJ8wc24ObMZQRUkdR3U2pn0MxguAxqoJbfJm-c48DsFtdX1RCqDwR2H72Jg5x6zcJQDBL9pDA-71KW36HjxEaaPHGWrFqAqrQD2_yRSuZH7V_vg4mHJ3\u0026uid\u003d189631678\u0026keyword_correction\u003dtv+-samsung+-lg+-realme+-android+-smart\u0026product_id\u003d1872750324\u0026dv\u003dandroid-4.01\u0026t\u003dandroid\u0026cpm_template_req\u003d3%2C4%2C5"
+                },
+                "campaign": {
+                  "original_price": "",
+                  "discount_percentage": 0
+                }
+              }
+            ],
+            "image_shop": {
+              "cover": "https://images.tokopedia.net/img/cache/750/web_service-shopnocover.png",
+              "s_url": "https://images.tokopedia.net/img/cache/215-square/shops-1/2020/1/30/6682918/6682918_cfe43ff6-f3f8-47d4-b855-a36db9b35819.jpg",
+              "xs_url": "https://images.tokopedia.net/img/cache/100-square/shops-1/2020/1/30/6682918/6682918_cfe43ff6-f3f8-47d4-b855-a36db9b35819.jpg",
+              "cover_ecs": "https://images.tokopedia.net/img/cache/750/web_service-shopnocover.png",
+              "s_ecs": "https://images.tokopedia.net/img/cache/215-square/shops-1/2020/1/30/6682918/6682918_cfe43ff6-f3f8-47d4-b855-a36db9b35819.jpg",
+              "xs_ecs": "https://images.tokopedia.net/img/cache/100-square/shops-1/2020/1/30/6682918/6682918_cfe43ff6-f3f8-47d4-b855-a36db9b35819.jpg"
+            }
+          },
+          "badges": [
+            {
+              "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png",
+              "show": true,
+              "title": "Power Merchant Pro"
+            }
+          ],
+          "button_text": "Cek Sekarang",
+          "promoted_text": "Dipromosikan oleh",
+          "description": "Ada promo menarik untuk produk ori buatan Indonesia.",
+          "uri": "https://www.tokopedia.com/abadicell123",
+          "layout": 2
+        },
+        "applinks": "tokopedia://shop/6682918"
+      }
+    ]
+  }
+}

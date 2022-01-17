@@ -33,7 +33,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             PlayChannelData(
                     id = it.id,
                     channelDetail = PlayChannelDetailUiModel(
-                        channelInfo = mapChannelInfo(it.id, it.isLive, it.config, it.title, it.coverUrl),
+                        channelInfo = mapChannelInfo(it.id, it.isLive, it.config, it.title, it.coverUrl, it.startTime),
                         shareInfo = mapShareInfo(it.share),
                         rtnConfigInfo = mapRealTimeNotificationConfig(
                             it.config.welcomeFormat,
@@ -43,8 +43,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     ),
                     partnerInfo = mapPartnerInfo(it.partner),
                     likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
-                    channelReportInfo = mapChannelReportInfo(),
-                    cartInfo = mapCartInfo(it.config),
+                    channelReportInfo = mapChannelReportInfo(it.id, extraParams),
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
                     quickReplyInfo = mapQuickReply(it.quickReplies),
                     videoMetaInfo = if(it.airTime == PlayUpcomingUiModel.COMING_SOON) emptyVideoMetaInfo() else mapVideoMeta(it.video, it.id, it.title, extraParams),
@@ -60,20 +59,24 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             isLive: Boolean,
             configResponse: ChannelDetailsWithRecomResponse.Config,
             title: String,
-            coverUrl: String
+            coverUrl: String,
+            startTime: String
     ) = PlayChannelInfoUiModel(
             id = channelId,
             channelType = if (isLive) PlayChannelType.Live else PlayChannelType.VOD,
             backgroundUrl = configResponse.roomBackground.imageUrl,
             title = title,
-            coverUrl = coverUrl
+            coverUrl = coverUrl,
+            startTime = startTime
     )
 
     private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPartnerInfo(
-            id = partnerResponse.id.toLongOrZero(),
-            name = htmlTextTransformer.transform(partnerResponse.name),
-            type = PartnerType.getTypeByValue(partnerResponse.type),
-            status = PlayPartnerFollowStatus.Unknown,
+        id = partnerResponse.id.toLongOrZero(),
+        name = htmlTextTransformer.transform(partnerResponse.name),
+        type = PartnerType.getTypeByValue(partnerResponse.type),
+        status = PlayPartnerFollowStatus.Unknown,
+        iconUrl = partnerResponse.thumbnailUrl,
+        badgeUrl = partnerResponse.badgeUrl,
     )
 
     private fun mapLikeInfo(
@@ -88,7 +91,13 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         likeBubbleConfig = mapMultipleLikeConfig(configs),
     )
 
-    private fun mapChannelReportInfo() = PlayChannelReportUiModel()
+    private fun mapChannelReportInfo(
+        channelId: String,
+        extraParams: ExtraParams
+    ) = PlayChannelReportUiModel(
+        shouldTrack = if(channelId == extraParams.channelId) extraParams.shouldTrack else true,
+        sourceType = extraParams.sourceType
+    )
 
     private fun mapShareInfo(shareResponse: ChannelDetailsWithRecomResponse.Share): PlayShareInfoUiModel {
         val fullShareContent = try {
@@ -127,10 +136,6 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         return multipleLikesMapper.mapMultipleLikeConfig(configs)
     }
 
-    private fun mapCartInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayCartInfoUiModel(
-            shouldShow = configResponse.showCart
-    )
-
     private fun mapPinnedInfo(
             pinnedMessageResponse: ChannelDetailsWithRecomResponse.PinnedMessage,
             partnerResponse: ChannelDetailsWithRecomResponse.Partner,
@@ -153,8 +158,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     private fun mapPinnedMessage(pinnedMessageResponse: ChannelDetailsWithRecomResponse.PinnedMessage, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PinnedMessageUiModel(
             id = pinnedMessageResponse.id,
-            applink = pinnedMessageResponse.redirectUrl,
-            partnerName = htmlTextTransformer.transform(partnerResponse.name),
+            appLink = pinnedMessageResponse.redirectUrl,
             title = pinnedMessageResponse.title,
     )
 
@@ -208,7 +212,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             statusType = mapStatusType(!configResponse.active || configResponse.freezed),
             bannedModel = mapBannedModel(configResponse.bannedData),
             freezeModel = mapFreezeModel(configResponse.freezeData, title),
-            shouldAutoSwipeOnFreeze = true
+            shouldAutoSwipeOnFreeze = true,
+            waitingDuration = 0,
     )
 
     private fun mapBannedModel(
@@ -275,6 +280,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     data class ExtraParams(
             val channelId: String?,
-            val videoStartMillis: Long?
+            val videoStartMillis: Long?,
+            val shouldTrack: Boolean,
+            val sourceType: String,
     )
 }

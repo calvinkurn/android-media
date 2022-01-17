@@ -22,6 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.discovery.common.manager.ProductCardOptionsManager;
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
+import com.tokopedia.discovery.common.utils.ViewUtilsKt;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.analytics.InboxGtmTracker;
@@ -79,6 +80,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     public static final int HELP_MENU = 3;
     public static final int DEFAULT_SPAN_COUNT = 2;
     public static final int SINGLE_SPAN_COUNT = 1;
+    public static final int HEADLINE_POS_NOT_TO_BE_ADDED = 11;
     private static final String PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition";
     private static final String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
     private static final int REQUEST_FROM_PDP = 138;
@@ -111,6 +113,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private String talkUnreadCount = "";
     private CpmModel headlineData;
     private boolean isAdded;
+    private int headlineExperimentPosition = HEADLINE_POS_NOT_TO_BE_ADDED;
 
     public static InboxFragment newInstance() {
         return new InboxFragment();
@@ -234,8 +237,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         swipeRefreshLayout = view.findViewById(R.id.swipe);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(new RecomItemDecoration(getResources()
-                .getDimensionPixelSize(R.dimen.dp_8)));
+        recyclerView.addItemDecoration(new RecomItemDecoration(ViewUtilsKt.toDpInt(8f)));
         layoutManager = new StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL);
         endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener();
         recyclerView.setLayoutManager(layoutManager);
@@ -438,31 +440,32 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     public void onTopAdsHeadlineReceived(CpmModel data) {
         this.headlineData = data;
         presenter.getFirstRecomData();
+
+        if (data == null
+                || data.getData() == null
+                || data.getData().isEmpty()
+                || data.getData().get(0) == null
+                || data.getData().get(0).getCpm() == null
+                || adapter == null) {
+            return;
+        }
+
+        headlineExperimentPosition = data.getData().get(0).getCpm().getPosition()
+                + adapter.getList().size();
     }
 
     @Override
     public void onRenderRecomInbox(List<Visitable> list, RecomTitle title) {
-            adapter.addElement(title);
+        this.visitables = list;
+        adapter.addElement(list);
 
-            if (headlineData == null
-                || headlineData.getData() == null
-                || headlineData.getData().get(0) == null
-                || headlineData.getData().get(0).getCpm() == null) {
-            this.visitables = list;
-            adapter.addElement(list);
-            return;
-        } else {
-            int absRecommPosition = headlineData.getData().get(0).getCpm().getPosition() + adapter.getList().size();
-            headlineData.getData().get(0).getCpm().setPosition(absRecommPosition);
-            adapter.addElement(list);
-
-            if (absRecommPosition <= adapter.getList().size() && !isAdded) {
-                adapter.addElement(absRecommPosition, new TopadsHeadlineUiModel(headlineData, 0));
-                isAdded = true;
-            }
-
-            this.visitables = list;
+        if (headlineExperimentPosition != HEADLINE_POS_NOT_TO_BE_ADDED
+                && headlineExperimentPosition <= adapter.getList().size() && !isAdded) {
+            adapter.addElement(headlineExperimentPosition,
+                    new TopadsHeadlineUiModel(headlineData, 0));
+            isAdded = true;
         }
+
 
     }
 

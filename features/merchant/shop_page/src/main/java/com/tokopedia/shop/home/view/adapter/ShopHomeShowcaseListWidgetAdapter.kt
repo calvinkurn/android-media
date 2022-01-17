@@ -13,13 +13,16 @@ import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowcaseListSlide
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowcaseListSliderSmallViewHolder
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
 
 class ShopHomeShowcaseListWidgetAdapter(
         showcaseListItemData: List<ShopHomeShowcaseListItemUiModel> = listOf(),
-        private val showcaseListWidgetListener: ShopHomeShowcaseListWidgetListener
+        val showcaseListWidgetListener: ShopHomeShowcaseListWidgetListener
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var showcaseListItem: List<ShopHomeShowcaseListItemUiModel> = showcaseListItemData
+    private var shopHomeShowcaseListSliderUiModel: ShopHomeShowcaseListSliderUiModel = ShopHomeShowcaseListSliderUiModel()
+    private var parentPosition: Int = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -69,9 +72,9 @@ class ShopHomeShowcaseListWidgetAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is ShopHomeShowcaseListSliderSmallViewHolder -> holder.bind(showcaseListItem[position])
-            is ShopHomeShowcaseListSliderMediumViewHolder -> holder.bind(showcaseListItem[position])
-            is ShopHomeShowcaseListGridViewHolder -> holder.bind(showcaseListItem[position])
+            is ShopHomeShowcaseListSliderSmallViewHolder -> holder.bind(showcaseListItem[position], shopHomeShowcaseListSliderUiModel, parentPosition)
+            is ShopHomeShowcaseListSliderMediumViewHolder -> holder.bind(showcaseListItem[position], shopHomeShowcaseListSliderUiModel, parentPosition)
+            is ShopHomeShowcaseListGridViewHolder -> holder.bind(showcaseListItem[position], shopHomeShowcaseListSliderUiModel, parentPosition)
         }
     }
 
@@ -93,6 +96,14 @@ class ShopHomeShowcaseListWidgetAdapter(
     fun updateDataSet(newList: List<ShopHomeShowcaseListItemUiModel>) {
         showcaseListItem = newList
         notifyDataSetChanged()
+    }
+
+    fun setShopHomeShowcaseListSliderUiModel(element: ShopHomeShowcaseListSliderUiModel) {
+        this.shopHomeShowcaseListSliderUiModel = element
+    }
+
+    fun setParentPosition(adapterPosition: Int) {
+        this.parentPosition = adapterPosition
     }
 
 }

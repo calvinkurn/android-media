@@ -12,7 +12,10 @@ class VoucherHeaderUiModel(
         val voucherImageUrl: String,
         val startTime: String,
         val finishTime: String,
-        val cancelTime: String? = null
+        val cancelTime: String? = null,
+        val isVps: Boolean = false,
+        val isSubsidy: Boolean = false,
+        val packageName: String = ""
 ) : VoucherDetailUiModel {
 
     override fun type(typeFactory: VoucherDetailAdapterFactory): Int {

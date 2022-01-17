@@ -53,10 +53,10 @@ private const val NET_RETRY = 1
 class FeedPlusModule {
     @FeedPlusScope
     @Provides
-    fun provideOkHttpClient(@ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor?,
+    fun provideOkHttpClient(@ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
                             @FeedPlusQualifier retryPolicy: OkHttpRetryPolicy,
-                            @FeedPlusChuckQualifier chuckInterceptor: Interceptor?,
-                            feedAuthInterceptor: FeedAuthInterceptor?): OkHttpClient {
+                            @FeedPlusChuckQualifier chuckInterceptor: Interceptor,
+                            feedAuthInterceptor: FeedAuthInterceptor): OkHttpClient {
         val clientBuilder = OkHttpClient.Builder()
                 .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
@@ -136,7 +136,6 @@ class FeedPlusModule {
     @FeedPlusScope
     @Provides
     fun provideGraphQlRepository(@ApplicationContext context: Context): GraphqlRepository {
-        GraphqlClient.init(context)
         return GraphqlInteractor.getInstance().graphqlRepository
     }
 

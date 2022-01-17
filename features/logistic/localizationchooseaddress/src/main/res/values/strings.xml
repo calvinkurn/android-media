@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">localizationchooseaddress</string>
     <string name="txt_send_to">Dikirim ke &lt;b&gt;%s&lt;/b&gt;</string>
 
     <string name="coachmark_title">Bisa pilih alamat pengirimanmu dulu</string>

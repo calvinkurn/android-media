@@ -3,6 +3,8 @@ package com.tokopedia.officialstore.topads
 import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
+import android.view.View
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.espresso.Espresso
@@ -24,6 +26,7 @@ import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.environment.InstrumentationOfficialStoreTestActivity
 import com.tokopedia.officialstore.environment.InstrumentationOfficialStoreTestFullActivity
@@ -32,6 +35,8 @@ import com.tokopedia.officialstore.official.presentation.adapter.viewholder.Offi
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelMixTopViewHolder
 import com.tokopedia.officialstore.util.OSRecyclerViewIdlingResource
+import com.tokopedia.officialstore.util.preloadRecomOnOSPage
+import com.tokopedia.officialstore.util.removeProgressBarOnOsPage
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
@@ -91,9 +96,19 @@ class OSTopAdsVerificationTest {
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.os_child_recycler_view)
         val itemAdapter: OfficialHomeAdapter = recyclerView.adapter as OfficialHomeAdapter
 
+        /**
+         * This function needed to remove any loading view, because any infinite loop rendered view such as loading view,
+         * shimmering, progress bar, etc can block instrumentation test
+         */
+        removeProgressBarOnOsPage(recyclerView, activityRule.activity)
+
+        /**
+         * This function needed to trigger product recommendation usecase in official store,
+         * official store page only hit recommendation usecase on scroll in the end of current list
+         */
+        preloadRecomOnOSPage(recyclerView)
         Espresso.onView(firstView(withId(R.id.os_child_recycler_view))).perform(ViewActions.swipeUp())
-        Espresso.onView(firstView(withId(R.id.os_child_recycler_view))).perform(ViewActions.swipeUp())
-        Espresso.onView(firstView(withId(R.id.os_child_recycler_view))).perform(ViewActions.swipeUp())
+
         waitForData()
 
         val itemList = itemAdapter.currentList
@@ -102,6 +117,8 @@ class OSTopAdsVerificationTest {
         val itemCount = itemList.size
 
         for (i in 0 until itemCount) {
+            val checkLoadingView: View? = activityRule.activity.findViewById<View>(R.id.loading_view)
+            checkLoadingView?.let { checkLoadingView.gone() }
             scrollHomeRecyclerViewToPosition(recyclerView, i)
             checkProductOnDynamicChannel(recyclerView, i)
         }

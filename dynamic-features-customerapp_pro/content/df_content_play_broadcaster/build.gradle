@@ -50,5 +50,6 @@ android {
 dependencies {
     implementation project(rootProject.ext.app.customerapp_pro)
 
+    implementation projectOrAar(rootProject.ext.features.liveBroadcaster)
     implementation projectOrAar(rootProject.ext.features.playBroadcaster)
 }

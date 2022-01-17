@@ -31,7 +31,7 @@ object ChatMessageViewHolderBinder {
                 topRightRadius = R.dimen.dp_topchat_0,
                 bottomLeftRadius = R.dimen.dp_topchat_20,
                 bottomRightRadius = R.dimen.dp_topchat_20,
-                shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+                shadowColor = R.color.topchat_dms_chat_bubble_shadow,
                 elevation = R.dimen.dp_topchat_2,
                 shadowRadius = R.dimen.dp_topchat_1,
                 shadowGravity = Gravity.CENTER
@@ -41,12 +41,12 @@ object ChatMessageViewHolderBinder {
         }
         return ViewUtil.generateBackgroundWithShadow(
             view = view,
-            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_GN50,
+            backgroundColor = R.color.topchat_bg_dms_right_bubble,
             topLeftRadius = R.dimen.dp_topchat_20,
             topRightRadius = R.dimen.dp_topchat_0,
             bottomLeftRadius = R.dimen.dp_topchat_20,
             bottomRightRadius = R.dimen.dp_topchat_20,
-            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            shadowColor = R.color.topchat_dms_chat_bubble_shadow,
             elevation = R.dimen.dp_topchat_2,
             shadowRadius = R.dimen.dp_topchat_1,
             shadowGravity = Gravity.CENTER,
@@ -66,7 +66,7 @@ object ChatMessageViewHolderBinder {
                 topRightRadius = R.dimen.dp_topchat_20,
                 bottomLeftRadius = R.dimen.dp_topchat_20,
                 bottomRightRadius = R.dimen.dp_topchat_20,
-                shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+                shadowColor = R.color.topchat_dms_chat_bubble_shadow,
                 elevation = R.dimen.dp_topchat_2,
                 shadowRadius = R.dimen.dp_topchat_1,
                 shadowGravity = Gravity.CENTER
@@ -76,12 +76,12 @@ object ChatMessageViewHolderBinder {
         }
         return ViewUtil.generateBackgroundWithShadow(
             view = view,
-            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            backgroundColor = R.color.topchat_bg_dms_left_bubble,
             topLeftRadius = R.dimen.dp_topchat_0,
             topRightRadius = R.dimen.dp_topchat_20,
             bottomLeftRadius = R.dimen.dp_topchat_20,
             bottomRightRadius = R.dimen.dp_topchat_20,
-            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            shadowColor = R.color.topchat_dms_chat_bubble_shadow,
             elevation = R.dimen.dp_topchat_2,
             shadowRadius = R.dimen.dp_topchat_1,
             shadowGravity = Gravity.CENTER,
@@ -95,6 +95,7 @@ object ChatMessageViewHolderBinder {
         fxChat: FlexBoxChatLayout?
     ) {
         val htmlMessage = MethodChecker.fromHtml(chat.message)
+        fxChat?.setMessageTypeFace(chat)
         fxChat?.setMessage(htmlMessage)
     }
 
@@ -138,7 +139,7 @@ object ChatMessageViewHolderBinder {
     }
 
     fun bindChatReadStatus(element: MessageUiModel, checkMark: ImageView) {
-        if (element.isShowTime && element.isSender) {
+        if (element.isShowTime && element.isSender && !element.isDeleted()) {
             checkMark.show()
             val imageResource = when {
                 element.isDummy -> com.tokopedia.chat_common.R.drawable.ic_chatcommon_check_rounded_grey

@@ -28,6 +28,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.TitleValidationModel
+import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
@@ -49,17 +50,18 @@ import javax.inject.Inject
 
 @FlowPreview
 class AddEditProductDetailViewModel @Inject constructor(
-        val provider: ResourceProvider,
-        private val dispatchers: CoroutineDispatchers,
-        private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
-        private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
-        private val validateProductUseCase: ValidateProductUseCase,
-        private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
-        private val annotationCategoryUseCase: AnnotationCategoryUseCase,
-        private val priceSuggestionSuggestedPriceGetUseCase: PriceSuggestionSuggestedPriceGetUseCase,
-        private val priceSuggestionSuggestedPriceGetByKeywordUseCase: PriceSuggestionSuggestedPriceGetByKeywordUseCase,
-        private val getProductTitleValidationUseCase: GetProductTitleValidationUseCase,
-        private val userSession: UserSessionInterface
+    val provider: ResourceProvider,
+    private val dispatchers: CoroutineDispatchers,
+    private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
+    private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
+    private val validateProductUseCase: ValidateProductUseCase,
+    private val validateProductNameUseCase: ValidateProductNameUseCase,
+    private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
+    private val annotationCategoryUseCase: AnnotationCategoryUseCase,
+    private val priceSuggestionSuggestedPriceGetUseCase: PriceSuggestionSuggestedPriceGetUseCase,
+    private val priceSuggestionSuggestedPriceGetByKeywordUseCase: PriceSuggestionSuggestedPriceGetByKeywordUseCase,
+    private val getProductTitleValidationUseCase: GetProductTitleValidationUseCase,
+    private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main) {
 
     var isEditing = false
@@ -69,7 +71,6 @@ class AddEditProductDetailViewModel @Inject constructor(
     var isReloadingShowCase = false
     var isFirstMoved = false
     var shouldUpdateVariant = false
-    var usingNewProductTitleRequest = false
 
     var productInputModel = ProductInputModel()
     val hasVariants get() = productInputModel.variantInputModel.selections.isNotEmpty()
@@ -129,6 +130,10 @@ class AddEditProductDetailViewModel @Inject constructor(
     val isProductSkuInputError: LiveData<Boolean>
         get() = mIsProductSkuInputError
     var productSkuMessage: String = ""
+
+    private var _productNameValidationFromNetwork = MutableLiveData<Result<String>>()
+    val productNameValidationFromNetwork : LiveData<Result<String>>
+        get() = _productNameValidationFromNetwork
 
     init {
         launch {
@@ -268,22 +273,13 @@ class AddEditProductDetailViewModel @Inject constructor(
                 // remote product name validation
                 launchCatchError(block = {
                     productNameValidationResult = withContext(dispatchers.io) {
-                        if (usingNewProductTitleRequest) {
-                            getProductTitleValidationUseCase.setParam(productNameInput)
-                            getProductTitleValidationUseCase.getDataModelOnBackground()
-                        } else {
-                            validateProductUseCase.setParamsProductName(productNameInput)
-                            validateProductUseCase.getDataModelOnBackground()
-                        }
+                        getProductTitleValidationUseCase.setParam(productNameInput)
+                        getProductTitleValidationUseCase.getDataModelOnBackground()
                     }
 
                     productNameMessage = when {
                         productNameValidationResult.isBlacklistKeyword -> {
-                            if (usingNewProductTitleRequest) {
-                                provider.getTitleValidationErrorBlacklisted()
-                            } else {
-                                productNameValidationResult.errorKeywords.joinToString("\n")
-                            }
+                            provider.getTitleValidationErrorBlacklisted()
                         }
                         productNameValidationResult.isTypoDetected -> {
                             provider.getTitleValidationErrorTypo()
@@ -451,6 +447,28 @@ class AddEditProductDetailViewModel @Inject constructor(
             // log error
             AddEditProductErrorHandler.logExceptionToCrashlytics(it)
         })
+    }
+
+    fun validateProductNameInputFromNetwork(productName: String) {
+        launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                validateProductNameUseCase.setParamsProductName(
+                    productInputModel.productId.toString(), productName)
+                validateProductNameUseCase.executeOnBackground()
+            }
+            val validationMessage = response.productValidateV3.data.validationResults.joinToString("\n")
+            _productNameValidationFromNetwork.value = Success(validationMessage)
+        }, onError = {
+            _productNameValidationFromNetwork.value = Fail(it)
+        })
+    }
+
+    fun setProductNameInputFromNetwork(value: Result<String>?) {
+        _productNameValidationFromNetwork.value = value
+    }
+
+    fun setIsProductNameInputError(value: Boolean) {
+        mIsProductNameInputError.value = value
     }
 
     fun validatePreOrderDurationInput(timeUnit: Int, preOrderDurationInput: String) {

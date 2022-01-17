@@ -71,7 +71,7 @@ class SomSubFilterActivity : BaseSimpleActivity(),
         val somSubFilterListWrapper: SomSubFilterListWrapper? = cacheManager.get(KEY_SOM_LIST_FILTER_CHIPS, SomSubFilterListWrapper::class.java)
         somSubFilterList = somSubFilterListWrapper?.somSubFilterList
         super.onCreate(savedInstanceState)
-        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         btnSaveSubFilter()
         setToolbarSubFilter()
         setToggleResetSubFilter()
@@ -131,14 +131,10 @@ class SomSubFilterActivity : BaseSimpleActivity(),
     }
 
     private fun setToolbarSubFilter() {
+        supportActionBar?.hide()
         setSupportActionBar(binding.somSubFilterToolbar)
-        supportActionBar?.apply {
-            title = "$ALL_FILTER $idFilter"
-            setDisplayShowHomeEnabled(true)
-        }
         binding.somSubFilterToolbar.apply {
-            isShowBackButton = true
-            isShowShadow = false
+            title = "$ALL_FILTER $idFilter"
             setNavigationOnClickListener {
                 onBackPressed()
             }

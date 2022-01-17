@@ -4,7 +4,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.domain.model.PriceSuggestionSuggestedPriceGet
 import com.tokopedia.product.addedit.detail.domain.model.ProductValidateData
@@ -18,6 +20,8 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.TitleValidationModel
+import com.tokopedia.product.addedit.preview.data.model.responses.ValidateProductNameResponse
+import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryResponse
@@ -41,13 +45,14 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertFalse
+import junit.framework.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.mockito.ArgumentMatchers.any
+import java.io.IOException
+import java.lang.Exception
 import kotlin.reflect.KFunction0
 
 @FlowPreview
@@ -65,6 +70,9 @@ class AddEditProductDetailViewModelTest {
 
     @RelaxedMockK
     lateinit var validateProductUseCase: ValidateProductUseCase
+
+    @RelaxedMockK
+    lateinit var validateProductNameUseCase: ValidateProductNameUseCase
 
     @RelaxedMockK
     lateinit var getShopEtalaseUseCase: GetShopEtalaseUseCase
@@ -142,7 +150,7 @@ class AddEditProductDetailViewModelTest {
     private val viewModel: AddEditProductDetailViewModel by lazy {
         AddEditProductDetailViewModel(provider, CoroutineTestDispatchersProvider,
                 getNameRecommendationUseCase, getCategoryRecommendationUseCase,
-                validateProductUseCase, getShopEtalaseUseCase, annotationCategoryUseCase,
+                validateProductUseCase, validateProductNameUseCase, getShopEtalaseUseCase, annotationCategoryUseCase,
                 productPriceSuggestionSuggestedPriceGetUseCase,
                 priceSuggestionSuggestedPriceGetByKeywordUseCase, getProductTitleValidationUseCase,
                 userSession)
@@ -317,6 +325,21 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
+    fun `isInputValid should return true if wholesale params is valid`() {
+        var isValid = false
+
+        isValid = getIsTheLastOfWholeSaleTestResult(true, false)
+        Assert.assertTrue(isValid)
+
+        isValid = getIsTheLastOfWholeSaleTestResult(true, true)
+        Assert.assertFalse(isValid)
+
+        isValid = getIsTheLastOfWholeSaleTestResult(false, false)
+        Assert.assertFalse(isValid)
+
+    }
+
+    @Test
     fun `validateProductPhotoInput should valid when product have photo`() {
         viewModel.validateProductPhotoInput(1)
 
@@ -358,37 +381,44 @@ class AddEditProductDetailViewModelTest {
 
     @Test
     fun `validateProductNameInput should invalid when product name is blacklisted`() = coroutineTestRule.runBlockingTest {
-        val productNameInput = "indodax"
-        val resultMessage = listOf("indodax")
-        val errorMessage = "error blacklist"
+        val errorMessageBlacklist = "error blacklist"
+        val errorMessageTypo = "error typo"
+        val errorMessageNegative = "error blacklist"
 
-        viewModel.usingNewProductTitleRequest = true
-
-        coEvery {
-            getProductTitleValidationUseCase.getDataModelOnBackground()
-        } returns TitleValidationModel(
-                isBlacklistKeyword = true,
-                errorKeywords = resultMessage
+        getValidateProductNameInputTestResult(
+            true,
+            false,
+            false,
+            errorMessageBlacklist,
+            errorMessageTypo,
+            errorMessageNegative
         )
+        Assert.assertEquals(errorMessageBlacklist, viewModel.productNameMessage)
 
-        coEvery {
-            provider.getTitleValidationErrorBlacklisted()
-        } returns errorMessage
+        getValidateProductNameInputTestResult(
+            false,
+            true,
+            false,
+            errorMessageBlacklist,
+            errorMessageTypo,
+            errorMessageNegative
+        )
+        Assert.assertEquals(errorMessageTypo, viewModel.productNameMessage)
 
-        viewModel.validateProductNameInput(productNameInput)
-
-        coVerify {
-            getProductTitleValidationUseCase.getDataModelOnBackground()
-            provider.getTitleValidationErrorBlacklisted()
-        }
-
-        Assert.assertEquals(errorMessage, viewModel.productNameMessage)
+        getValidateProductNameInputTestResult(
+            false,
+            false,
+            true,
+            errorMessageBlacklist,
+            errorMessageTypo,
+            errorMessageNegative
+        )
+        Assert.assertEquals(errorMessageNegative, viewModel.productNameMessage)
     }
 
     @Test
     fun `validateProductNameInput should valid when product name no error`() = coroutineTestRule.runBlockingTest {
         val productNameInput = "indomilk"
-        viewModel.usingNewProductTitleRequest = true
 
         coEvery {
             getProductTitleValidationUseCase.getDataModelOnBackground()
@@ -817,6 +847,62 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
+    fun `validateProductNameInputFromNetwork should valid when productNameValidationFromNetwork returns blank message`() = coroutineTestRule.runBlockingTest {
+        coEvery {
+            validateProductNameUseCase.executeOnBackground()
+        } returns ValidateProductNameResponse()
+
+        viewModel.validateProductNameInputFromNetwork("book")
+
+        coVerify {
+            validateProductNameUseCase.executeOnBackground()
+        }
+
+        val result = viewModel.productNameValidationFromNetwork.getOrAwaitValue()
+        Assert.assertTrue(result is Success)
+    }
+
+    @Test
+    fun `validateProductNameInputFromNetwork should valid when productNameValidationFromNetwork returns message`() = coroutineTestRule.runBlockingTest {
+        val errorMessage = "Error Message"
+
+        coEvery {
+            validateProductNameUseCase.executeOnBackground()
+        } returns ValidateProductNameResponse(
+            productValidateV3 = com.tokopedia.product.addedit.preview.data.model.responses.ProductValidateV3(
+                data = com.tokopedia.product.addedit.preview.data.model.responses.ProductValidateData(
+                    validationResults = listOf(errorMessage)
+                )
+            )
+        )
+
+        viewModel.validateProductNameInputFromNetwork("book")
+
+        coVerify {
+            validateProductNameUseCase.executeOnBackground()
+        }
+
+        val result = viewModel.productNameValidationFromNetwork.getOrAwaitValue()
+        Assert.assertTrue((result as Success).data == errorMessage)
+    }
+
+    @Test
+    fun `set data to productNameInputFromNetwork and isProductNameInputError, the value should the same with the latest provided variable`()  {
+        var productName: Success<String>? = null
+        viewModel.setProductNameInputFromNetwork(productName)
+        productName = Success("Error Message")
+        viewModel.setProductNameInputFromNetwork(productName)
+
+        var isProductNameInput = false
+        viewModel.setIsProductNameInputError(isProductNameInput)
+        isProductNameInput = true
+        viewModel.setIsProductNameInputError(isProductNameInput)
+
+        Assert.assertTrue(viewModel.productNameValidationFromNetwork.value == productName)
+        Assert.assertTrue(viewModel.isProductNameInputError.value == isProductNameInput)
+    }
+
+    @Test
     fun `validateProductSkuInput should invalid when productSkuInput is contains space char`() = coroutineTestRule.runBlockingTest  {
         val resultMessage = listOf("error 1", "error 2")
 
@@ -832,6 +918,22 @@ class AddEditProductDetailViewModelTest {
             validateProductUseCase.executeOnBackground()
         }
         Assert.assertTrue(isError && viewModel.productSkuMessage.isNotBlank() && viewModel.productSkuMessage == resultMessage.joinToString("\n"))
+    }
+
+    @Test
+    fun `When validate product sku error, should log error to crashlytics`() {
+        coEvery { validateProductUseCase.executeOnBackground() } throws MessageErrorException("")
+
+        //Mock FirebaseCrashlytics because .getInstance() method is a static method
+        mockkStatic(FirebaseCrashlytics::class)
+
+        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns mockk(relaxed = true)
+
+        viewModel.validateProductSkuInput("ESKU")
+
+        coVerify { validateProductUseCase.executeOnBackground() }
+
+        coVerify { AddEditProductErrorHandler.logExceptionToCrashlytics(any()) }
     }
 
     @Test
@@ -973,6 +1075,21 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
+    fun `When get shop showcases error, should post error to observer`() = runBlocking {
+        coEvery {
+            getShopEtalaseUseCase.executeOnBackground()
+        } throws IOException()
+
+        viewModel.getShopShowCasesUseCase()
+
+        coVerify {
+            getShopEtalaseUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.shopShowCases.value is Fail)
+    }
+
+    @Test
     fun `getAnnotationCategory should return unfilled data when productId is not provided`() = coroutineTestRule.runBlockingTest {
         val annotationCategoryData = listOf<AnnotationCategoryData>()
 
@@ -1100,6 +1217,23 @@ class AddEditProductDetailViewModelTest {
             val specificationText = viewModel.specificationText.getOrAwaitValue()
             Assert.assertEquals("Indomie, Bawang1, Bawang2, Bawang3, Bawang4, +1 lainnya", specificationText)
         }
+    }
+
+    @Test
+    fun `When get annotation category error, should post error to observer`() = runBlocking {
+        coEvery {
+            annotationCategoryUseCase.executeOnBackground()
+        } throws MessageErrorException("")
+
+        viewModel.getAnnotationCategory("", "11090")
+
+        val result = viewModel.annotationCategoryData.getOrAwaitValue()
+
+        coVerify {
+            annotationCategoryUseCase.executeOnBackground()
+        }
+
+        assertTrue(result is Fail)
     }
 
     @Test
@@ -1254,6 +1388,21 @@ class AddEditProductDetailViewModelTest {
         }
 
         assertEquals(1000.0, result.suggestedPrice)
+    }
+
+    @Test
+    fun `When get all product drafts error, should post error to observer`() = runBlocking {
+        coEvery {
+            priceSuggestionSuggestedPriceGetByKeywordUseCase.executeOnBackground()
+        } throws MessageErrorException("")
+
+        viewModel.getProductPriceRecommendationByKeyword("Batik")
+
+        coVerify {
+            priceSuggestionSuggestedPriceGetByKeywordUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.productPriceRecommendationError.value is Throwable)
     }
 
     @Test
@@ -1443,6 +1592,52 @@ class AddEditProductDetailViewModelTest {
 
     }
 
+    private fun getIsTheLastOfWholeSaleTestResult(
+        isAddingWholeSale: Boolean,
+        isAddingValidationWholeSale: Boolean
+    ): Boolean {
+        viewModel.isAddingWholeSale = isAddingWholeSale
+        viewModel.isAddingValidationWholeSale = isAddingValidationWholeSale
+        viewModel.isTheLastOfWholeSale.value = true
+
+        return viewModel.isInputValid.getOrAwaitValue()
+    }
+
+    private fun getValidateProductNameInputTestResult(
+        blacklistKeyword: Boolean,
+        typoDetected: Boolean,
+        negativeKeyword: Boolean,
+        errorMessageBlacklisted: String,
+        errorMessageTypo: String,
+        errorMessageNegative: String,
+    ) {
+        coEvery {
+            getProductTitleValidationUseCase.getDataModelOnBackground()
+        } returns TitleValidationModel(
+            isBlacklistKeyword = blacklistKeyword,
+            isTypoDetected = typoDetected,
+            isNegativeKeyword = negativeKeyword
+        )
+
+        coEvery {
+            provider.getTitleValidationErrorBlacklisted()
+        } returns errorMessageBlacklisted
+
+        coEvery {
+            provider.getTitleValidationErrorTypo()
+        } returns errorMessageTypo
+
+        coEvery {
+            provider.getTitleValidationErrorNegative()
+        } returns errorMessageNegative
+
+        viewModel.validateProductNameInput("dummy")
+
+        coVerify {
+            getProductTitleValidationUseCase.getDataModelOnBackground()
+        }
+    }
+
     private fun getSampleProductPhotos(): List<PictureInputModel> {
         return listOf(
                 PictureInputModel(picID = "1", urlOriginal = "local/path/to/image1.jpg", urlThumbnail = "thumb 1", url300 = "300 1"),
@@ -1463,4 +1658,5 @@ class AddEditProductDetailViewModelTest {
         verify { provider() }
         return result
     }
+
 }

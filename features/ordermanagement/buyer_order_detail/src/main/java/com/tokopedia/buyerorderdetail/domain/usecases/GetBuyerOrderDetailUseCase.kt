@@ -40,6 +40,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                 invoice_url
                 payment_date
                 cashback_info
+                ads_page_name
                 order_status {
                   id
                   status_name
@@ -183,6 +184,8 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   shipping_display_name
                   shipping_ref_num
                   eta
+                  eta_is_updated
+                  user_updated_info
                   receiver {
                     name
                     phone
@@ -263,6 +266,17 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                 dropship {
                   name
                   phone_number
+                }
+                logistic_section_info {
+                  index
+                  id
+                  image_link
+                  title
+                  subtitle
+                  action {
+                    name
+                    link
+                  }
                 }
               }
             }

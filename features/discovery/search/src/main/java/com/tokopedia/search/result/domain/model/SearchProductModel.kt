@@ -4,11 +4,12 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.filter.common.data.DataValue
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.LastFilterModel.LastFilter
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
-import java.util.*
+import java.util.ArrayList
 
 data class SearchProductModel(
         @SerializedName("ace_search_product_v4")
@@ -52,6 +53,12 @@ data class SearchProductModel(
 
     fun getTopAdsImageViewModelList(): List<TopAdsImageViewModel> = topAdsImageViewModelList
 
+    fun isAdvancedNegativeKeywordSearch(): Boolean {
+        val keywordProcessed = searchProduct.header.keywordProcess
+        if (keywordProcessed.isEmpty()) return false
+        return keywordProcessed.toIntOrZero() in 16..31
+    }
+
     data class SearchProduct (
             @SerializedName("header")
             @Expose
@@ -89,7 +96,11 @@ data class SearchProductModel(
 
             @SerializedName("keywordProcess")
             @Expose
-            val keywordProcess: String = "0"
+            val keywordProcess: String = "0",
+
+            @SerializedName("componentId")
+            @Expose
+            val componentId: String = "",
     )
 
     data class SearchProductData(
@@ -143,7 +154,15 @@ data class SearchProductModel(
 
             @SerializedName("typeId")
             @Expose
-            val typeId: Int = 0
+            val typeId: Int = 0,
+
+            @SerializedName("componentId")
+            @Expose
+            val componentId: String = "",
+
+            @SerializedName("trackingOption")
+            @Expose
+            val trackingOption: Int = 0,
     )
 
     data class Related(
@@ -154,6 +173,10 @@ data class SearchProductModel(
             @SerializedName("position")
             @Expose
             val position: Int = 0,
+
+            @SerializedName("trackingOption")
+            @Expose
+            val trackingOption: Int = 0,
 
             @SerializedName("otherRelated")
             @Expose
@@ -172,6 +195,10 @@ data class SearchProductModel(
             @SerializedName("applink")
             @Expose
             val applink: String = "",
+
+            @SerializedName("componentId")
+            @Expose
+            val componentId: String = "",
 
             @SerializedName("product")
             @Expose
@@ -234,7 +261,11 @@ data class SearchProductModel(
 
             @SerializedName("ads")
             @Expose
-            val ads: ProductAds = ProductAds()
+            val ads: ProductAds = ProductAds(),
+
+            @SerializedName("componentId")
+            @Expose
+            val componentId: String = "",
     ) {
             fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
     }
@@ -276,7 +307,15 @@ data class SearchProductModel(
 
             @SerializedName("text")
             @Expose
-            val text: String = ""
+            val text: String = "",
+
+            @SerializedName("componentId")
+            @Expose
+            val componentId: String = "",
+
+            @SerializedName("trackingOption")
+            @Expose
+            val trackingOption: Int = 0,
     )
 
     data class Banner(
@@ -401,7 +440,11 @@ data class SearchProductModel(
 
             @SerializedName("url")
             @Expose
-            val url: String = ""
+            val url: String = "",
+
+            @SerializedName("applink")
+            @Expose
+            val applink: String = ""
     ) {
 
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
@@ -628,6 +671,10 @@ data class SearchProductModel(
             @Expose
             val layout: String = "",
 
+            @SerializedName("tracking_option")
+            @Expose
+            val trackingOption: String = "0",
+
             @SerializedName("options")
             @Expose
             val inspirationCarouselOptions: List<InspirationCarouselOption> = listOf()
@@ -665,6 +712,10 @@ data class SearchProductModel(
             @SerializedName("meta")
             @Expose
             val meta: String = "",
+
+            @SerializedName("component_id")
+            @Expose
+            val componentId: String = "",
 
             @SerializedName("product")
             @Expose
@@ -748,6 +799,10 @@ data class SearchProductModel(
             @SerializedName("ads")
             @Expose
             val ads: ProductAds = ProductAds(),
+
+            @SerializedName("component_id")
+            @Expose
+            val componentId: String = "",
     ) {
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
     }

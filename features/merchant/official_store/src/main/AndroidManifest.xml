@@ -2,8 +2,24 @@
     package="com.tokopedia.officialstore">
 
     <application>
-        <activity android:name=".OfficialStoreActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
-    </application>
+        <activity
+            android:name=".OfficialStoreActivity"
+            android:label="@string/label_official_store"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_merchant"
+                    android:path="@string/path_official_store"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+    </application>
 </manifest>

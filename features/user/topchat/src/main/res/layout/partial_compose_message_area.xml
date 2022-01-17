@@ -34,16 +34,15 @@
         android:id="@+id/send_but"
         android:layout_width="@dimen/spacing_lvl7"
         android:layout_height="@dimen/spacing_lvl7"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:background="@drawable/bg_topchat_send_btn_disabled"
         android:paddingStart="@dimen/dp_topchat_10"
         android:paddingTop="@dimen/dp_topchat_10"
         android:paddingEnd="@dimen/dp_topchat_9"
         android:paddingBottom="@dimen/dp_topchat_10"
         app:icon_color_light_enable="@color/Unify_Static_White"
-        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_NN300"
         app:icon_name="SEND_TEXT"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/new_comment"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
@@ -59,11 +58,10 @@
         android:paddingStart="@dimen/spacing_lvl7"
         android:paddingTop="@dimen/dp_topchat_10"
         android:paddingEnd="@dimen/spacing_lvl8"
-        android:paddingBottom="@dimen/dp_topchat_10"
         android:textColor="@color/Unify_N700_96"
         android:textColorHint="@color/Unify_N700_32"
         android:textSize="@dimen/fontSize_lvl4"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/tp_error_compose"
         app:layout_constraintEnd_toStartOf="@+id/send_but"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="@tools:sample/lorem/random" />
@@ -75,6 +73,7 @@
         android:layout_marginBottom="@dimen/dp_topchat_1"
         android:padding="@dimen/spacing_lvl3"
         app:icon_color_light_enable="@color/topchat_dms_icon_compose"
+        app:icon_color_night_enable="@color/topchat_dms_icon_compose"
         app:icon_name="STICKER"
         app:layout_constraintBottom_toBottomOf="@+id/new_comment"
         app:layout_constraintStart_toStartOf="@+id/new_comment" />
@@ -87,7 +86,24 @@
         android:layout_marginBottom="@dimen/dp_topchat_1"
         android:padding="@dimen/spacing_lvl3"
         app:icon_color_light_enable="@color/topchat_dms_icon_compose"
+        app:icon_color_night_enable="@color/topchat_dms_icon_compose"
         app:icon_name="ADD_CIRCLE"
         app:layout_constraintBottom_toBottomOf="@+id/new_comment"
         app:layout_constraintEnd_toEndOf="@+id/new_comment" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_error_compose"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:paddingStart="9dp"
+        android:paddingEnd="9dp"
+        android:textColor="@color/Unify_RN500"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/new_comment"
+        app:layout_constraintStart_toStartOf="@+id/new_comment"
+        app:layout_constraintTop_toBottomOf="@+id/new_comment"
+        app:typographyType="body_3"
+        tools:text="Coba pendekin 123 karakter lagi, ya!"
+        tools:visibility="visible" />
 </merge>

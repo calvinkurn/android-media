@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.bundle.domain.model.cartshipmentform
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class CourierSelectionErrorData(

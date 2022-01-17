@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
 import androidx.annotation.Nullable
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
@@ -73,7 +72,7 @@ class PlayFragment @Inject constructor(
         FragmentYouTubeViewComponent.Listener,
         PlayVideoScalingManager.Listener {
 
-    private lateinit var ivClose: ImageView
+    private lateinit var ivClose: View
     private val fragmentVideoView by viewComponent {
         FragmentVideoViewComponent(channelId, it, R.id.fl_video, childFragmentManager, this)
     }
@@ -85,9 +84,6 @@ class PlayFragment @Inject constructor(
     }
     private val fragmentYouTubeView by viewComponent {
         FragmentYouTubeViewComponent(channelId, it, R.id.fl_youtube, childFragmentManager, this)
-    }
-    private val fragmentUpcomingView by viewComponent {
-        FragmentUpcomingViewComponent(it, R.id.fl_upcoming, childFragmentManager)
     }
 
     private lateinit var playParentViewModel: PlayParentViewModel
@@ -231,16 +227,6 @@ class PlayFragment @Inject constructor(
         isFirstTopBoundsCalculated = true
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             when {
-                playViewModel.upcomingInfo?.isUpcoming == true -> {
-                    fragmentVideoView.safeRelease()
-                    fragmentVideoView.hide()
-                    fragmentYouTubeView.safeRelease()
-                    fragmentYouTubeView.hide()
-                    fragmentUserInteractionView.safeRelease()
-                    fragmentUserInteractionView.hide()
-
-                    fragmentUpcomingView.safeInit()
-                }
                 playViewModel.videoPlayer.isYouTube -> {
                     fragmentYouTubeView.safeInit()
                     fragmentYouTubeView.show()
@@ -268,9 +254,6 @@ class PlayFragment @Inject constructor(
             val totalView = playViewModel.totalView
             if (totalView.isNotEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
             if (channelId.isNotEmpty()) putExtra(EXTRA_CHANNEL_ID, channelId)
-            playViewModel.upcomingInfo?.let {
-                putExtra(EXTRA_IS_REMINDER, it.isReminderSet)
-            }
         })
     }
 
@@ -531,7 +514,7 @@ class PlayFragment @Inject constructor(
         pageMonitoring.stopMonitoring()
     }
 
-    private fun hideKeyboard() {
+    fun hideKeyboard() {
         val view = activity?.currentFocus
         view?.let { v ->
             val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -546,7 +529,7 @@ class PlayFragment @Inject constructor(
         )
     }
 
-    private fun registerKeyboardListener(view: View) {
+    fun registerKeyboardListener(view: View) {
         keyboardWatcher.listen(view, object : KeyboardWatcher.Listener {
             override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
                 playViewModel.onKeyboardShown(estimatedKeyboardHeight)
@@ -559,7 +542,7 @@ class PlayFragment @Inject constructor(
         })
     }
 
-    private fun unregisterKeyboardListener(view: View) {
+    fun unregisterKeyboardListener(view: View) {
         keyboardWatcher.unlisten(view)
     }
 
@@ -642,9 +625,8 @@ class PlayFragment @Inject constructor(
     companion object {
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
-        private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
 
-        private const val KEYBOARD_REGISTER_DELAY = 200L
+        const val KEYBOARD_REGISTER_DELAY = 200L
         private const val FIRST_FRAGMENT_ACTIVE_DELAY = 500L
     }
 }

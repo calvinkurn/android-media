@@ -187,7 +187,7 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
     }
 
     private fun setFooterText(footer: String) {
-        this.footer?.text = footer
+        this.footer?.text = context?.let { HtmlLinkHelper(it, footer).spannedString } ?: footer
     }
 
     private fun setButton(buttonText: String, applink: String) {

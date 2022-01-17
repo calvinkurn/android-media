@@ -18,7 +18,7 @@ class OrderHistoryModule {
 
     @OrderHistoryScope
     @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @OrderHistoryScope
     @Provides

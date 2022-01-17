@@ -22,13 +22,14 @@ class GetShopFilterBottomSheetDataUseCase @Inject constructor(
         private const val KEY_DEVICE = "device"
         private const val VALUE_SOURCE = "shop_product"
         private const val DEVICE_VALUE = "android"
+        private const val KEY_SHOP_ID = "shop_id"
 
-        fun createParams() = mapOf(
+        fun createParams(shopId: String = "") = mapOf(
                 KEY_PARAMS to UrlParamUtil.convertMapToStringParam(mapOf(
                         KEY_SOURCE to VALUE_SOURCE,
-                        KEY_DEVICE to DEVICE_VALUE
-                ))
-        )
+                        KEY_DEVICE to DEVICE_VALUE,
+                        KEY_SHOP_ID to shopId
+                )))
     }
 
     var params = mapOf<String, Any>()

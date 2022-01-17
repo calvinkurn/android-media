@@ -14,7 +14,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chooseaccount.common.analytics.LoginPhoneNumberAnalytics
 import com.tokopedia.chooseaccount.common.di.DaggerLoginRegisterPhoneComponent
 import com.tokopedia.chooseaccount.data.AccountListDataModel
-import com.tokopedia.chooseaccount.data.ChooseAccountViewModel
+import com.tokopedia.chooseaccount.data.ChooseAccountUiModel
 import com.tokopedia.chooseaccount.data.UserDetailDataModel
 import com.tokopedia.chooseaccount.di.DaggerChooseAccountComponent
 import com.tokopedia.chooseaccount.view.base.BaseChooseAccountFragment
@@ -34,7 +34,7 @@ import javax.inject.Named
 
 open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountListener {
 
-    private var viewModel: ChooseAccountViewModel = ChooseAccountViewModel()
+    private var uiModel: ChooseAccountUiModel = ChooseAccountUiModel()
     private var selectedAccount: UserDetailDataModel? = null
     private var selectedPhoneNo: String? = null
 
@@ -83,18 +83,16 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
         super.onCreate(savedInstanceState)
         when {
             savedInstanceState != null -> {
-                viewModel.phoneNumber = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
-                viewModel.accessToken = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
-                viewModel.loginType = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, "")
-                viewModel.isFromRegister = savedInstanceState.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, false)
-                viewModel.isFacebook = savedInstanceState.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FACEBOOK, false)
+                uiModel.phoneNumber = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
+                uiModel.accessToken = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
+                uiModel.loginType = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, "")
+                uiModel.isFromRegister = savedInstanceState.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, false)
             }
             arguments != null -> {
-                viewModel.phoneNumber = arguments?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
-                viewModel.accessToken = arguments?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
-                viewModel.loginType = arguments?.getString(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, "")
-                viewModel.isFromRegister = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, false) ?: false
-                viewModel.isFacebook = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FACEBOOK, false) ?: false
+                uiModel.phoneNumber = arguments?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
+                uiModel.accessToken = arguments?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
+                uiModel.loginType = arguments?.getString(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, "")
+                uiModel.isFromRegister = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, false) ?: false
             }
             activity != null -> activity?.finish()
         }
@@ -159,7 +157,7 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, account.email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ID_ENC, account.userIdEnc)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, viewModel.accessToken)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, uiModel.accessToken)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ID, account.userId)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
@@ -170,45 +168,20 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
     }
 
     fun getAccountList() {
-        when (viewModel.loginType) {
-            FACEBOOK_LOGIN_TYPE -> {
-                viewModel.accessToken?.let {
-                    if (it.isNotEmpty())
-                        chooseAccountViewModel.getAccountListFacebook(it)
-                }
-            }
-            else -> {
-                LetUtil.ifLet(viewModel.accessToken, viewModel.phoneNumber) { (accessToken, phoneNumber) ->
-                    chooseAccountViewModel.getAccountListPhoneNumber(accessToken, phoneNumber)
-                }
-            }
+        LetUtil.ifLet(uiModel.accessToken, uiModel.phoneNumber) { (accessToken, phoneNumber) ->
+            chooseAccountViewModel.getAccountListPhoneNumber(accessToken, phoneNumber)
         }
     }
 
     private fun loginToken(account: UserDetailDataModel?, phone: String) {
         account?.let {
-            when (viewModel.loginType) {
-                FACEBOOK_LOGIN_TYPE -> {
-                    if (phone.isNotEmpty()) {
-                        viewModel.accountListDataModel?.key?.let { key ->
-                            chooseAccountViewModel.loginTokenFacebook(
-                                    key,
-                                    it.email,
-                                    phone
-                            )
-                        }
-                    }
-                }
-                else -> {
-                    LetUtil.ifLet(viewModel.accountListDataModel, viewModel.phoneNumber) { (accountList, phoneNumber) ->
-                        if (accountList is AccountListDataModel && phoneNumber is String) {
-                            chooseAccountViewModel.loginTokenPhone(
-                                    accountList.key,
-                                    it.email,
-                                    phoneNumber
-                            )
-                        }
-                    }
+            LetUtil.ifLet(uiModel.accountListDataModel, uiModel.phoneNumber) { (accountList, phoneNumber) ->
+                if (accountList is AccountListDataModel && phoneNumber is String) {
+                    chooseAccountViewModel.loginTokenPhone(
+                        accountList.key,
+                        it.email,
+                        phoneNumber
+                    )
                 }
             }
         }
@@ -228,7 +201,7 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
     }
 
     private fun onSuccessGetAccountList(accountListDataModel: AccountListDataModel) {
-        this.viewModel.accountListDataModel = accountListDataModel
+        this.uiModel.accountListDataModel = accountListDataModel
 
         if (accountListDataModel.userDetailDataModels.size == 1 && accountListDataModel.msisdn.isNotEmpty()) {
             adapter?.setList(accountListDataModel.userDetailDataModels, accountListDataModel.msisdn)
@@ -272,8 +245,8 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(ApplinkConstInternalGlobal.PARAM_UUID, viewModel.accessToken)
-        outState.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, viewModel.phoneNumber)
+        outState.putString(ApplinkConstInternalGlobal.PARAM_UUID, uiModel.accessToken)
+        outState.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, uiModel.phoneNumber)
     }
 
     override fun onDestroy() {

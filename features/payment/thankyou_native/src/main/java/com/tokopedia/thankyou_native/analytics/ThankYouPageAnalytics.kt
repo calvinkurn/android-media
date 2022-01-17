@@ -56,7 +56,7 @@ class ThankYouPageAnalytics @Inject constructor(
             appsFlyerPurchaseEvent(thanksPageData)
             sendBranchIOEvent(thanksPageData)
         } else {
-            sendPushGtmFalseEvent(thanksPageData.profileCode, thanksPageData.paymentID.toString())
+            sendPushGtmFalseEvent(thanksPageData.profileCode, thanksPageData.paymentID)
         }
     }
 
@@ -71,6 +71,7 @@ class ThankYouPageAnalytics @Inject constructor(
                     data[ParentTrackingKey.KEY_LOGISTIC_TYPE] = shopOrder.logisticType
                     data[ParentTrackingKey.KEY_ECOMMERCE] = getEnhancedECommerceNode(shopOrder)
                     data[ParentTrackingKey.IS_NEW_USER] = thanksPageData.isNewUser.toString()
+                    data[ParentTrackingKey.NEW_CUSTOMER] = thanksPageData.isNewUser.toString()
                     analyticTracker.sendEnhanceEcommerceEvent(data)
                 }
             }
@@ -376,6 +377,7 @@ object ParentTrackingKey {
     val KEY_CURRENT_SITE = "currentSite"
     val KEY_BUSINESS_UNIT = "businessUnit"
     const val IS_NEW_USER = "isNewUser"
+    const val NEW_CUSTOMER = "new_customer"
     const val KEY_ID = "id"
     const val KEY_QTY = "quantity"
     const val AF_SHIPPING_PRICE = "af_shipping_price"

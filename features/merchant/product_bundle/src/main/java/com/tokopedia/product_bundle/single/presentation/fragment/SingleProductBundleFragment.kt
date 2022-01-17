@@ -227,7 +227,7 @@ class SingleProductBundleFragment(
             }
             hideLoadingDialog()
             Toaster.build(requireView(), errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                getString(R.string.action_oke)).show()
+                getString(R.string.action_oke)).setAnchorView(totalAmount?.bottomContentView).show()
         })
     }
 
@@ -274,7 +274,7 @@ class SingleProductBundleFragment(
                 ErrorHandler.getErrorMessage(context, it),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR
-            ).show()
+            ).setAnchorView(totalAmount?.bottomContentView).show()
             hideLoadingDialog()
             // TODO: log error
         })

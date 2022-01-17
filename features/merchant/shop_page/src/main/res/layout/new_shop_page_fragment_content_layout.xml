@@ -30,6 +30,7 @@
             app:elevation="0dp">
 
             <include
+                android:id="@+id/layout_partial_shop_page_header"
                 layout="@layout/new_partial_new_shop_page_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
