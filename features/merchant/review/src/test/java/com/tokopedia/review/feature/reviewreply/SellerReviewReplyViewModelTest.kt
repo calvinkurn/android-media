@@ -12,10 +12,13 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
-import junit.framework.TestCase.*
+import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNotNull
+import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
-import org.mockito.ArgumentMatchers.*
+import org.mockito.ArgumentMatchers.anyBoolean
+import org.mockito.ArgumentMatchers.anyString
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -37,10 +40,10 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
     fun `when insert review reply should return success`() {
         runBlocking {
             onInsertReviewReply_thenReturn()
-            viewModel.insertReviewReply(anyString(), anyString(), anyString(), anyString())
+            viewModel.insertReviewReply(anyString(), anyString())
 
             verifySuccessInsertReviewReplyUseCalled()
-            val expectedValue = Success(InsertReplyResponseUiModel(anyLong()))
+            val expectedValue = Success(InsertReplyResponseUiModel(anyBoolean()))
             assertTrue(viewModel.insertReviewReply.value is Success)
             viewModel.insertReviewReply.verifyValueEquals(expectedValue)
         }
@@ -103,7 +106,7 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
             val error = NullPointerException()
             onInsertReviewReply_thenError(error)
 
-            viewModel.insertReviewReply(anyString(), anyString(), anyString(), anyString())
+            viewModel.insertReviewReply(anyString(), anyString())
             val expectedResult = Fail(error)
             viewModel.insertReviewReply.verifyErrorEquals(expectedResult)
         }
@@ -148,7 +151,7 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
     }
 
     private fun onInsertReviewReply_thenReturn() {
-        coEvery { insertSellerResponseUseCase.executeOnBackground() } returns ReviewReplyInsertResponse.InboxReviewInsertReviewResponse()
+        coEvery { insertSellerResponseUseCase.executeOnBackground() } returns ReviewReplyInsertResponse.ProductrevInsertSellerResponse()
     }
 
     private fun onUpdateReviewReply_thenReturn() {

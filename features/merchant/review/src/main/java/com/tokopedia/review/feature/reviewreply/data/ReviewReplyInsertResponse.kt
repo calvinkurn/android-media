@@ -1,13 +1,16 @@
 package com.tokopedia.review.feature.reviewreply.data
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ReviewReplyInsertResponse(
-        @SerializedName("inboxReviewInsertReviewResponseV2")
-        val inboxReviewInsertReviewResponse: InboxReviewInsertReviewResponse = InboxReviewInsertReviewResponse()
+        @SerializedName("productrevInsertSellerResponse")
+        @Expose
+        val productrevInsertSellerResponse: ProductrevInsertSellerResponse = ProductrevInsertSellerResponse()
 ) {
-    data class InboxReviewInsertReviewResponse(
-            @SerializedName("isSuccesss")
-            val isSuccesss: String = "0"
+    data class ProductrevInsertSellerResponse(
+            @SerializedName("success")
+            @Expose
+            val success: Boolean? = false
     )
 }

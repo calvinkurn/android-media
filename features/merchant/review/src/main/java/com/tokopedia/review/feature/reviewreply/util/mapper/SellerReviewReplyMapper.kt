@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.reviewreply.util.mapper
 
 import android.content.Context
 import androidx.core.content.ContextCompat
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.reviewreply.data.ReviewReplyInsertResponse
@@ -18,10 +19,9 @@ import com.tokopedia.unifycomponents.toPx
 object SellerReviewReplyMapper {
 
     fun mapToInsertReplyUiModel(
-        inboxReviewInsertReviewResponse:
-        ReviewReplyInsertResponse.InboxReviewInsertReviewResponse
+        productrevInsertSellerResponse: ReviewReplyInsertResponse.ProductrevInsertSellerResponse
     ): InsertReplyResponseUiModel {
-        return InsertReplyResponseUiModel(inboxReviewInsertReviewResponse.isSuccesss.toLongOrZero())
+        return InsertReplyResponseUiModel(productrevInsertSellerResponse.success.orFalse())
     }
 
     fun mapToUpdateReplyUiModel(

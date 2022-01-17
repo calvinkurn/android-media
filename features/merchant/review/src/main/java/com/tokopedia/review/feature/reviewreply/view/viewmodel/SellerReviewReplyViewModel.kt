@@ -61,14 +61,13 @@ class SellerReviewReplyViewModel @Inject constructor(
         })
     }
 
-    fun insertReviewReply(reviewId: String, productId: String, shopId: String, responseMessage: String) {
+    fun insertReviewReply(feedbackId: String, responseMessage: String) {
         launchCatchError(block = {
             val responseInsertReply = withContext(dispatcherProvider.io) {
                 insertSellerResponseUseCase.params = InsertSellerResponseUseCase.createParams(
-                        reviewId,
-                        productId,
-                        shopId,
-                        responseMessage)
+                    feedbackId,
+                    responseMessage
+                )
                 SellerReviewReplyMapper.mapToInsertReplyUiModel(insertSellerResponseUseCase.executeOnBackground())
             }
             _insertReviewReply.value = Success(responseInsertReply)

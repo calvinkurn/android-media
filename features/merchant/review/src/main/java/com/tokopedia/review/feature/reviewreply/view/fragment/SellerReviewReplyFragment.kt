@@ -63,7 +63,6 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
         const val IS_EMPTY_REPLY_REVIEW = "IS_EMPTY_REPLY_REVIEW"
         const val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
         const val TEMPLATE_MAX = 6
-        const val IS_SUCCESS_REPLY = 1L
         const val POSITION_REPORT = 0
     }
 
@@ -333,8 +332,6 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
                     if (isEmptyReply) {
                         viewModelReviewReply?.insertReviewReply(
                             feedbackUiModel?.feedbackID ?: "",
-                            productReplyUiModel?.productID ?: "",
-                            shopId,
                             getText()
                         )
                     } else {
@@ -349,7 +346,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
     }
 
     private fun insertReviewReplySuccess(data: InsertReplyResponseUiModel) {
-        if (data.isSuccess == IS_SUCCESS_REPLY) {
+        if (data.success) {
             activity?.let { KeyboardHandler.showSoftKeyboard(it) }
             binding?.reviewReplyTextBoxWidget?.hide()
             binding?.feedbackItemReplyWidget?.apply {
