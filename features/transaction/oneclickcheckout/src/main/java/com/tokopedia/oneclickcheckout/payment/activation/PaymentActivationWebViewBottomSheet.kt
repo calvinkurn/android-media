@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.net.http.SslError
-import android.util.Log
 import android.view.LayoutInflater
 import android.webkit.*
 import com.google.android.play.core.splitcompat.SplitCompat
@@ -161,14 +160,12 @@ class PaymentActivationWebViewBottomSheet(private val activationUrl: String,
 
         override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
             super.onReceivedSslError(view, handler, error)
-            Log.i("qwertyuiop", "ssl error")
             handler?.cancel()
         }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
             // moved here because it is "GET" operation
-            Log.i("qwertyuiop", "start page webview")
             if (url != null && url.startsWith(generateRedirectUrl(), true)) {
                 val uri = Uri.parse(url)
                 val isSuccessResult = uri.getQueryParameter(IS_SUCCESS_QUERY) == SUCCESS_QUERY_VALUE
@@ -183,7 +180,6 @@ class PaymentActivationWebViewBottomSheet(private val activationUrl: String,
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
-            Log.i("qwertyuiop", "page finished")
             binding?.progressBar?.gone()
         }
     }
