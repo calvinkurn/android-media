@@ -23,6 +23,7 @@ class AffiliatePortfolioViewModel@Inject constructor(
     :BaseViewModel() {
     var affiliatePortfolioData = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var updateListItem = MutableLiveData<Int>()
+    private var isError = MutableLiveData<Boolean>()
 
     fun createDefaultListForSm() {
         val itemList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
@@ -37,8 +38,10 @@ class AffiliatePortfolioViewModel@Inject constructor(
         (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.text = text
         if(text.isNotEmpty()){
             (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.isError = !Patterns.WEB_URL.matcher(text).matches()
+            isError.value = !Patterns.WEB_URL.matcher(text).matches()
         }else {
             (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.isError = false
+            isError.value = !checkDataForAtLeastOne()
         }
     }
 
@@ -77,6 +80,7 @@ class AffiliatePortfolioViewModel@Inject constructor(
 
     fun getPortfolioUrlList() : LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = affiliatePortfolioData
     fun getUpdateItemIndex() : LiveData<Int> = updateListItem
+    fun isError() : LiveData<Boolean> = isError
 
     fun finEditTextModelWithId(id : Int?) : AffiliatePortfolioUrlInputData?{
         affiliatePortfolioData.value?.forEach {

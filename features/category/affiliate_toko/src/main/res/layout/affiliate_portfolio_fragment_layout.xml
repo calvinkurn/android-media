@@ -64,6 +64,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:unifyButtonSize="medium"
                 app:unifyButtonType="main"
+                android:enabled="false"
                 app:unifyButtonVariant="filled" />
         </LinearLayout>
     </ScrollView>

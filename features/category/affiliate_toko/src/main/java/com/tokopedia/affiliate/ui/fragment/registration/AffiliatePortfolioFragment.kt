@@ -128,6 +128,11 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
             index->
             affiliateAdapter.notifyItemChanged(index)
         })
+        affiliatePortfolioViewModel.isError().observe(this ,{ isError ->
+                view?.findViewById<UnifyButton>(R.id.next_button)?.apply {
+                    isEnabled = !isError
+                }
+        })
     }
 
     private fun setDataToRV(data: ArrayList<Visitable<AffiliateAdapterTypeFactory>>?) {
