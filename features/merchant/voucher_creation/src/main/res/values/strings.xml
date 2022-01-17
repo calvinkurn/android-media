@@ -369,25 +369,20 @@
     <string name="expense_description">Dipotong dari transaksi selesai.</string>
     <string name="coupon_discount_type">Tipe Potongan</string>
     <string name="add_product_coupon">Tambah Kupon Produk</string>
-    <string name="helper_message_minimum_discount">Diskon minimal Rp 5.000</string>
+
     <string name="nominal">Nominal</string>
     <string name="quantity">Buah</string>
     <string name="nothing">Tidak ada</string>
-    <string name="helper_message_min_quantity">Minimum 1 buah</string>
-    <string name="helper_message_min_shipping_cost">Diskon minimal Rp 5.000</string>
     <string name="shipping_cost_amount">Nominal gratis ongkir</string>
-    <string name="error_message_invalid_min_purchase">Diskon minimal Rp 5.000</string>
-
-    <string name="error_message_invalid_free_shipping_quota">Min. 1 voucher</string>
-    <string name="error_message_invalid_free_shipping_quota_exceed_max_value">Maks. 999 voucher</string>
 
     <string name="in_rupiah">Dalam Rupiah</string>
     <string name="in_percentage">Dalam Persentase</string>
     <string name="in_nominal">Dalam nominal</string>
     <string name="in_quantity">Dalam buah</string>
 
-    <string name="helper_message_invalid_free_shipping_minimum_purchase">Tidak boleh lebih kecil dari potongan harga</string>
-
+    <string name="error_message_minimum_discount">Diskon minimal Rp 5.000</string>
+    <string name="error_message_invalid_free_shipping_quota">Min. 1 voucher</string>
+    <string name="error_message_invalid_free_shipping_quota_exceed_max_value">Maks. 999 voucher</string>
     <string name="error_message_invalid_cashback_minimum_purchase_nominal">Tidak boleh lebih kecil dari potongan harga</string>
     <string name="error_message_invalid_cashback_minimum_purchase_quantity">Minimum 1 buah</string>
     <string name="error_message_invalid_free_shipping_minimum_purchase">Nominal lebih kecil dari nominal gratis ongkir</string>

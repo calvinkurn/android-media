@@ -106,6 +106,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
     private fun observeCouponTypeChange() {
         viewModel.couponType.observe(viewLifecycleOwner, { couponType ->
             binding.btnSave.isEnabled = false
+            calculateMaxExpenseEstimation()
             /*if (couponType == CouponType.CASHBACK) {
                 clearCashbackData()
             } else {
@@ -141,9 +142,9 @@ class CouponSettingFragment : BaseDaggerFragment() {
                 val isValidInput =
                     viewModel.isValidCashbackDiscountAmount(number)
                 if (isValidInput) {
-                    clearErrorMessage(binding.textAreaMinimumDiscount, getString(R.string.error_message_invalid_min_purchase))
+                    clearErrorMessage(binding.textAreaMinimumDiscount, getString(R.string.error_message_minimum_discount))
                 } else {
-                    showErrorMessage(binding.textAreaMinimumDiscount, getString(R.string.error_message_invalid_min_purchase))
+                    showErrorMessage(binding.textAreaMinimumDiscount, getString(R.string.error_message_minimum_discount))
                 }
                 validateInput()
                 calculateMaxExpenseEstimation()
@@ -200,9 +201,9 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
                 val isValidInput = viewModel.isValidFreeShippingDiscountAmount(number)
                 if (isValidInput) {
-                    clearErrorMessage(binding.textAreaFreeShippingDiscountAmount, getString(R.string.error_message_invalid_min_purchase))
+                    clearErrorMessage(binding.textAreaFreeShippingDiscountAmount, getString(R.string.error_message_minimum_discount))
                 } else {
-                    showErrorMessage(binding.textAreaFreeShippingDiscountAmount, getString(R.string.error_message_invalid_min_purchase))
+                    showErrorMessage(binding.textAreaFreeShippingDiscountAmount, getString(R.string.error_message_minimum_discount))
                 }
                 validateInput()
                 calculateMaxExpenseEstimation()
@@ -412,14 +413,14 @@ class CouponSettingFragment : BaseDaggerFragment() {
     }
 
     private fun showMinimalPurchaseErrorMessage(view: TextAreaUnify) {
-        val errorMessage = viewModel.getMinimalPurchaseErrorMessage(selectedMinimumPurchaseType)
+        val errorMessage = viewModel.getMinimalPurchaseErrorMessage(selectedCouponType, selectedMinimumPurchaseType)
         view.textAreaMessage = EMPTY_STRING
         view.isError = true
         view.textAreaWrapper.error = errorMessage
     }
 
     private fun clearMinimalPurchaseErrorMessage(view: TextAreaUnify) {
-        val errorMessage = viewModel.getMinimalPurchaseErrorMessage(selectedMinimumPurchaseType)
+        val errorMessage = viewModel.getMinimalPurchaseErrorMessage(selectedCouponType, selectedMinimumPurchaseType)
         view.isError = false
         view.textAreaWrapper.error = EMPTY_STRING
         view.textAreaMessage = errorMessage
