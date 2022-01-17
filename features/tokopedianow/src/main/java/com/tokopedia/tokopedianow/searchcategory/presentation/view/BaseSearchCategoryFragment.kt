@@ -39,6 +39,8 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -1021,10 +1023,15 @@ abstract class BaseSearchCategoryFragment:
                     //Set user preference data to local cache
                     ChooseAddressUtils.updateTokoNowData(
                         context = this,
-                        warehouseId = result.data.warehouseId.toString(),
+                        warehouseId = result.data.warehouseId,
                         shopId = userSession.shopId,
                         serviceType = result.data.serviceType,
-                        warehouses = result.data.warehouses
+                        warehouses = result.data.warehouses.map {
+                            LocalWarehouseModel(
+                                it.warehouseId.toLongOrZero(),
+                                it.serviceType
+                            )
+                        }
                     )
 
                     //Refresh the page
