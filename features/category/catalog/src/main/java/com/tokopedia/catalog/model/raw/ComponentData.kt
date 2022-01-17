@@ -1,6 +1,7 @@
 package com.tokopedia.catalog.model.raw
 
 import android.os.Parcelable
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
@@ -37,7 +38,14 @@ data class ComponentData(
         @SerializedName( "marketPrice")
         val marketPrice: List<CatalogResponseData.CatalogGetDetailModular.BasicInfo.MarketPrice>?,
         @SerializedName("topSpec")
-        val topSpecifications : List<SpecificationsRow>?
+        val topSpecifications : List<SpecificationsRow>?,
+
+        @Expose @SerializedName("avgRating")
+        val avgRating: String?,
+        @Expose @SerializedName("reviews")
+        val reviews: ArrayList<CatalogProductReviewResponse.CatalogGetProductReview.ReviewData.Review?>?,
+        @Expose @SerializedName("totalHelpfulReview")
+        val totalHelpfulReview: Int?
 
 ){
     @Parcelize
@@ -82,3 +90,9 @@ data class ComparisionModel(
 
         val key : String?,
         val value : String?) : Parcelable
+
+@Parcelize
+data class ReviewComponentData(
+        val avgRating: String?,
+        val reviews: ArrayList<CatalogProductReviewResponse.CatalogGetProductReview.ReviewData.Review?>?,
+        val totalHelpfulReview: Int?): Parcelable

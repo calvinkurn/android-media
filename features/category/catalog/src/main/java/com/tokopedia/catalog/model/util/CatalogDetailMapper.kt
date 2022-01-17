@@ -46,6 +46,14 @@ object CatalogDetailMapper {
                     listOfComponents.add(CatalogVideoDataModel(name = component.name, type = component.type , videosList = videoArray ))
                 }
 
+                CatalogConstant.REVIEW -> {
+                    val crudeReviewData = component.data
+                    crudeReviewData?.firstOrNull()?.let {  componentData ->
+                        listOfComponents.add(CatalogReviewDataModel(name = component.name, type = component.type,
+                                data = ReviewComponentData(componentData.avgRating,componentData.reviews,componentData.totalHelpfulReview)))
+                    }
+                }
+
                 CatalogConstant.COMPARISION -> {
                     component.data?.firstOrNull()?.let { comparisionData ->
                         val keySet = LinkedHashSet<String>()

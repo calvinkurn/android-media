@@ -86,6 +86,19 @@ const val GQL_CATALOG_QUERY: String = """query catalogGetDetailModular(${'$'}cat
             }
           }
         }
+        ... on CatalogModularProductReview{
+          avgRating
+          totalHelpfulReview
+          reviews {
+            rating
+            informativeScore
+            reviewerName
+            reviewDate
+            reviewText
+            reviewImageUrl
+            reviewId
+          }
+        }
       }
     }
   }
