@@ -22,7 +22,6 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 
 class OfficialHomeMapper (
         private val context: Context,
@@ -264,13 +263,11 @@ class OfficialHomeMapper (
     }
 
     fun updateFeaturedShopDC(newData: FeaturedShopDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
-        val newList = mutableListOf<Visitable<*>>()
         listOfficialStore.forEachIndexed {index, it ->
-            if (it is FeaturedShopDataModel && it.channelModel.id == newData.channelModel.id && it.channelModel.channelGrids.isEmpty()) {
+            if (it is FeaturedShopDataModel && it.channelModel.id == newData.channelModel.id) {
                 newData.channelModel.verticalPosition = it.channelModel.verticalPosition
-                newList.add(newData.copy())
                 listOfficialStore[index] = newData.copy()
-            } else newList.add(it)
+            }
         }
         action.invoke(listOfficialStore)
     }
