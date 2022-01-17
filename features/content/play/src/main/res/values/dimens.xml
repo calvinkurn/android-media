@@ -115,6 +115,9 @@
     <!--Featured Product-->
     <dimen name="play_featured_product_radius">8dp</dimen>
 
+    <!--User Report-->
+    <dimen name="play_user_report_list_divider_height">0.5dp</dimen>
+
     <!--General Dimension-->
     <dimen name="play_offset_6">6dp</dimen>
     <dimen name="play_offset_10">10dp</dimen>

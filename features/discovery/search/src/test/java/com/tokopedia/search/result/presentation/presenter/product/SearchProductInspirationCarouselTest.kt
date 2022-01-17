@@ -895,7 +895,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
 
     private fun assertCarouselProductTypeBroadMatch(
             broadMatchDataView: BroadMatchDataView,
-            inspirationCarouselData: SearchProductModel.InspirationCarouselData,
+            ignored: SearchProductModel.InspirationCarouselData,
     ) {
         val carouselOptionType = broadMatchDataView.carouselOptionType
         carouselOptionType.shouldBeInstanceOf<BroadMatch>()

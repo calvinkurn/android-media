@@ -81,6 +81,7 @@ class ReplyBubbleTest : TopchatRoomTest() {
         clickComposeArea()
         typeMessage("reply this")
         clickSendBtn()
+        waitForIt(5000)
 
         // Then
         ReplyBubbleResult.hasNoVisibleReplyBubbleAt(0)

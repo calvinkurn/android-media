@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.carouselproductcard.CarouselProductCardListener.*
 import com.tokopedia.carouselproductcard.helper.StartSnapHelper
+import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.utils.getMaxHeightForListView
@@ -18,7 +19,7 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.carousel_product_card_layout.view.*
 import kotlinx.coroutines.*
 
-class CarouselProductCardView : BaseCustomView, CoroutineScope {
+class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductCardInternalListener {
 
     private var carouselLayoutManager: RecyclerView.LayoutManager? = null
     private val defaultRecyclerViewDecorator = CarouselProductCardDefaultDecorator()
@@ -26,6 +27,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
     private val snapHelper = StartSnapHelper()
     private var isUseDefaultItemDecorator = true
     private val masterJob = SupervisorJob()
+    override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
 
     override val coroutineContext = masterJob + Dispatchers.Main
 
@@ -149,11 +151,11 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
     }
 
     private fun initGridAdapter() {
-        carouselProductCardAdapter = CarouselProductCardGridAdapter()
+        carouselProductCardAdapter = CarouselProductCardGridAdapter(this)
     }
 
     private fun initListAdapter() {
-        carouselProductCardAdapter = CarouselProductCardListAdapter()
+        carouselProductCardAdapter = CarouselProductCardListAdapter(this)
     }
 
     private suspend fun tryBindCarousel(

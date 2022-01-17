@@ -10,6 +10,7 @@ import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductBigGridInspirationCardLayoutBinding
@@ -54,6 +55,10 @@ class BigGridInspirationCardViewHolder(
         } else {
             setDefaultLayout(element)
         }
+    }
+
+    override fun onViewRecycled() {
+        inspirationCardCuratedBinding?.inspirationCardCuratedIcon?.clearImage()
     }
 
     private fun setBaseLayout(isCurated: Boolean) {
