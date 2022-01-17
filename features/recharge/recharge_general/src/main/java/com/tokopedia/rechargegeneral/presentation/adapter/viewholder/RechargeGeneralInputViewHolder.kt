@@ -14,7 +14,6 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
         val inputView = itemView as TopupBillsInputFieldWidget
         inputView.resetState()
         inputView.setLabel(enquiryData.text)
-        inputView.setHint("")
         inputView.setInputType(enquiryData.style)
         if (!isAddSBM) {
             inputView.isCustomInput = enquiryData.isFavoriteNumber
