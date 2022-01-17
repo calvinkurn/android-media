@@ -1,10 +1,8 @@
 package com.tokopedia.productcard
 
-import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.parcel.Parcelize
 
 data class ProductCardModel (
         val productImageUrl: String = "",
@@ -85,18 +83,12 @@ data class ProductCardModel (
             val imageUrl: String = ""
     )
 
-    @Parcelize
     data class LabelGroup(
             val position: String = "",
             val title: String = "",
             val type: String = "",
             val imageUrl: String = ""
-    ):Parcelable {
-
-        fun isShowLabelCampaign(): Boolean {
-            return imageUrl.isNotEmpty() && title.isNotEmpty()
-        }
-    }
+    )
 
     data class LabelGroupVariant(
             val typeVariant: String = "",

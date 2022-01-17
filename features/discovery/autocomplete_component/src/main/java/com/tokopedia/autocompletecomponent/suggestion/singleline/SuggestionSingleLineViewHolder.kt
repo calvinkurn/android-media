@@ -57,7 +57,7 @@ class SuggestionSingleLineViewHolder(
             highlightedTitle.safeSetSpan(
                 StyleSpan(Typeface.BOLD),
                 startIndex + item.searchTerm.length,
-                item.title.length,
+                highlightedTitle.length,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             itemView.singleLineTitle?.text = highlightedTitle
