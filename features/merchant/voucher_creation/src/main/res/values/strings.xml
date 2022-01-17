@@ -383,5 +383,7 @@
     <string name="error_message_invalid_free_shipping_quota">Kuota tidak boleh 0</string>
     <string name="in_rupiah">Dalam Rupiah</string>
     <string name="in_percentage">Dalam Persentase</string>
+    <string name="in_nominal">Dalam nominal</string>
+    <string name="in_quantity">Dalam buah</string>
     <string name="error_message_invalid_cashback_minimum_purchase">Tidak boleh lebih kecil dari potongan harga</string>
 </resources>

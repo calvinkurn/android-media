@@ -132,8 +132,8 @@ class CouponSettingFragment : BaseDaggerFragment() {
                         binding.textAreaMinimumPurchase,
                         getString(R.string.error_message_invalid_cashback_minimum_purchase)
                     )
-                    validateInput()
                 }
+                validateInput()
             }
             textAreaQuota.textAreaInput.onTextChanged { text ->
                 val isValidInput =
@@ -145,8 +145,8 @@ class CouponSettingFragment : BaseDaggerFragment() {
                         binding.textAreaQuota,
                         getString(R.string.error_message_invalid_free_shipping_quota)
                     )
-                    validateInput()
                 }
+                validateInput()
             }
             textAreaFreeShippingDiscountAmount.textAreaInput.onTextChanged { text ->
                 val isValidInput = viewModel.isValidFreeShippingDiscountAmount(text.trim().toIntSafely())
@@ -235,6 +235,9 @@ class CouponSettingFragment : BaseDaggerFragment() {
         }
 
         binding.chipMinimumPurchaseNominal.chip_container.setOnClickListener {
+            binding.chipMinimumPurchaseNominal.chipText = getString(R.string.in_nominal)
+            binding.chipMinimumPurchaseQuantity.chipText = getString(R.string.quantity)
+
             binding.chipMinimumPurchaseNominal.chipType = ChipsUnify.TYPE_SELECTED
             binding.chipMinimumPurchaseQuantity.chipType = ChipsUnify.TYPE_NORMAL
             binding.chipMinimumPurchaseNothing.chipType = ChipsUnify.TYPE_NORMAL
@@ -243,6 +246,9 @@ class CouponSettingFragment : BaseDaggerFragment() {
         }
 
         binding.chipMinimumPurchaseQuantity.chip_container.setOnClickListener {
+            binding.chipMinimumPurchaseNominal.chipText = getString(R.string.nominal)
+            binding.chipMinimumPurchaseQuantity.chipText = getString(R.string.in_quantity)
+
             binding.chipMinimumPurchaseNominal.chipType = ChipsUnify.TYPE_NORMAL
             binding.chipMinimumPurchaseQuantity.chipType = ChipsUnify.TYPE_SELECTED
             binding.chipMinimumPurchaseNothing.chipType = ChipsUnify.TYPE_NORMAL
@@ -251,6 +257,9 @@ class CouponSettingFragment : BaseDaggerFragment() {
         }
 
         binding.chipMinimumPurchaseNothing.chip_container.setOnClickListener {
+            binding.chipMinimumPurchaseNominal.chipText = getString(R.string.nominal)
+            binding.chipMinimumPurchaseQuantity.chipText = getString(R.string.quantity)
+
             binding.chipMinimumPurchaseNominal.chipType = ChipsUnify.TYPE_NORMAL
             binding.chipMinimumPurchaseQuantity.chipType = ChipsUnify.TYPE_NORMAL
             binding.chipMinimumPurchaseNothing.chipType = ChipsUnify.TYPE_SELECTED
