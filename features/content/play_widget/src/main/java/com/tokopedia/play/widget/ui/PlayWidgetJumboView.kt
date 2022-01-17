@@ -14,13 +14,12 @@ import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardJumboAdapter
 import com.tokopedia.play.widget.ui.adapter.viewholder.jumbo.PlayWidgetCardJumboBannerViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.jumbo.PlayWidgetCardJumboChannelViewHolder
+import com.tokopedia.play.widget.ui.adapter.viewholder.jumbo.PlayWidgetCardJumboTranscodeViewHolder
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetJumboListener
-import com.tokopedia.play.widget.ui.model.PlayWidgetJumboBannerUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetJumboChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.play_common.util.blur.ImageBlurUtil
 
 /**
  * @author by astidhiyaa on 12/01/22
@@ -95,10 +94,18 @@ class PlayWidgetJumboView : ConstraintLayout, IPlayWidgetView {
         ) {
         }
     }
+    private val transcodeCardListener = object : PlayWidgetCardJumboTranscodeViewHolder.Listener {
+        override fun onFailedTranscodingChannelDeleteButtonClicked(view: View, item: PlayWidgetJumboChannelUiModel, position: Int) {
+            mWidgetListener?.onDeleteFailedTranscodingChannel(this@PlayWidgetJumboView, item.channelId)
+        }
+    }
+
 
     private val adapter = PlayWidgetCardJumboAdapter(
+        imageBlurUtil = ImageBlurUtil(context),
         channelCardListener = channelCardListener,
-        bannerCardListener = bannerCardListener
+        bannerCardListener = bannerCardListener,
+        transcodeListener = transcodeCardListener
     )
 
     private var mIsAutoPlay: Boolean = false

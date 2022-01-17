@@ -128,6 +128,9 @@ data class PlayWidgetLargeChannelUiModel(
 ) : PlayWidgetLargeItemUiModel(), ImpressionableModel {
 
         override val impressHolder = ImpressHolder()
+
+        val hasPromo: Boolean
+                get() = promoType != PlayWidgetPromoType.NoPromo && promoType != PlayWidgetPromoType.Unknown
 }
 
 /**
@@ -166,4 +169,7 @@ data class PlayWidgetJumboChannelUiModel(
 ) : PlayWidgetJumboItemUiModel(), ImpressionableModel {
 
         override val impressHolder = ImpressHolder()
+
+        val hasPromo: Boolean
+                get() = promoType != PlayWidgetPromoType.NoPromo && promoType != PlayWidgetPromoType.Unknown
 }

@@ -14,4 +14,9 @@ interface PlayWidgetJumboListener : PlayWidgetRouterListener {
         position: Int
     ) {
     }
+
+    fun onDeleteFailedTranscodingChannel(
+        view: PlayWidgetJumboView,
+        channelId: String
+    ) {}
 }

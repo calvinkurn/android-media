@@ -16,12 +16,13 @@ import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardLargeAdapter
 import com.tokopedia.play.widget.ui.adapter.viewholder.large.PlayWidgetCardLargeBannerViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.large.PlayWidgetCardLargeChannelViewHolder
+import com.tokopedia.play.widget.ui.adapter.viewholder.large.PlayWidgetCardLargeTranscodeViewHolder
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetLargeListener
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.snaphelper.PlayWidgetSnapHelper
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.play_common.util.blur.ImageBlurUtil
 
 /**
  * @author by astidhiyaa on 11/01/22
@@ -99,9 +100,17 @@ class PlayWidgetLargeView : ConstraintLayout, IPlayWidgetView {
         }
     }
 
+    private val transcodeCardListener = object : PlayWidgetCardLargeTranscodeViewHolder.Listener {
+        override fun onFailedTranscodingChannelDeleteButtonClicked(view: View, item: PlayWidgetLargeChannelUiModel, position: Int) {
+            mWidgetListener?.onDeleteFailedTranscodingChannel(this@PlayWidgetLargeView, item.channelId)
+        }
+    }
+
     private val adapter = PlayWidgetCardLargeAdapter(
+        imageBlurUtil = ImageBlurUtil(context),
         channelCardListener = channelCardListener,
-        bannerCardListener = bannerCardListener
+        bannerCardListener = bannerCardListener,
+        transcodeCardListener = transcodeCardListener
     )
 
     private var mIsAutoPlay: Boolean = false
