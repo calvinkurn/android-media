@@ -308,6 +308,12 @@
                 android:visibility="gone"
                 app:constraint_referenced_ids="textAreaQuotaFreeShipping, textAreaFreeShippingDiscountAmount,textAreaFreeShippingMinimumPurchase" />
 
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupCashbackMinimumPurchase"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="textAreaMinimumPurchase" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

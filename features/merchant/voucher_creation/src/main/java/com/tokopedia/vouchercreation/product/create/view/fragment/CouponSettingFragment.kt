@@ -186,6 +186,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
             adjustExpenseEstimationConstraint(binding.textAreaQuota.id)
             selectedCouponType = CouponType.CASHBACK
             viewModel.couponTypeChanged(selectedCouponType)
+            binding.groupCashbackMinimumPurchase.visible()
         }
 
         binding.chipFreeShipping.chip_container.setOnClickListener {
@@ -194,6 +195,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
             adjustExpenseEstimationConstraint(binding.textAreaQuotaFreeShipping.id)
             selectedCouponType = CouponType.FREE_SHIPPING
             viewModel.couponTypeChanged(selectedCouponType)
+            binding.groupCashbackMinimumPurchase.gone()
         }
 
         binding.chipCashback.selectedChangeListener = { isActive ->
@@ -238,6 +240,8 @@ class CouponSettingFragment : BaseDaggerFragment() {
             binding.chipMinimumPurchaseNominal.chipText = getString(R.string.in_nominal)
             binding.chipMinimumPurchaseQuantity.chipText = getString(R.string.quantity)
 
+            binding.groupCashbackMinimumPurchase.visible()
+
             binding.chipMinimumPurchaseNominal.chipType = ChipsUnify.TYPE_SELECTED
             binding.chipMinimumPurchaseQuantity.chipType = ChipsUnify.TYPE_NORMAL
             binding.chipMinimumPurchaseNothing.chipType = ChipsUnify.TYPE_NORMAL
@@ -249,6 +253,8 @@ class CouponSettingFragment : BaseDaggerFragment() {
             binding.chipMinimumPurchaseNominal.chipText = getString(R.string.nominal)
             binding.chipMinimumPurchaseQuantity.chipText = getString(R.string.in_quantity)
 
+            binding.groupCashbackMinimumPurchase.visible()
+
             binding.chipMinimumPurchaseNominal.chipType = ChipsUnify.TYPE_NORMAL
             binding.chipMinimumPurchaseQuantity.chipType = ChipsUnify.TYPE_SELECTED
             binding.chipMinimumPurchaseNothing.chipType = ChipsUnify.TYPE_NORMAL
@@ -259,6 +265,8 @@ class CouponSettingFragment : BaseDaggerFragment() {
         binding.chipMinimumPurchaseNothing.chip_container.setOnClickListener {
             binding.chipMinimumPurchaseNominal.chipText = getString(R.string.nominal)
             binding.chipMinimumPurchaseQuantity.chipText = getString(R.string.quantity)
+
+            binding.groupCashbackMinimumPurchase.gone()
 
             binding.chipMinimumPurchaseNominal.chipType = ChipsUnify.TYPE_NORMAL
             binding.chipMinimumPurchaseQuantity.chipType = ChipsUnify.TYPE_NORMAL
