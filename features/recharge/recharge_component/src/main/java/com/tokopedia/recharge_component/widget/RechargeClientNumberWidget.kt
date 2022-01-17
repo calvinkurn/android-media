@@ -82,7 +82,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
                 addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(s: Editable?) {
-
+                        // [Misael] explore showClearIcon here
                     }
 
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
