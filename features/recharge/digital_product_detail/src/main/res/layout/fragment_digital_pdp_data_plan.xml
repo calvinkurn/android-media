@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-        <com.tokopedia.recharge_component.widget.RechargeRecommendationCardWidget
-            android:id="@+id/widget_recommendation_card"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
+    <com.tokopedia.recharge_component.widget.DenomGridWidget
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/widget_denom_grid"
+        />
 
 </LinearLayout>

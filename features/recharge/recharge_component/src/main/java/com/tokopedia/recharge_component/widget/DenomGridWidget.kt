@@ -20,15 +20,18 @@ class DenomGridWidget @JvmOverloads constructor(@NotNull context: Context, attrs
 
     private var rechargeDenomGridViewBinding = WidgetRechargeDenomGridBinding.inflate(LayoutInflater.from(context), this, true)
 
-    fun renderDenomGridLayout(denomGridListener: RechargeDenomGridListener, titleDenomGrid: String, listDenomGrid: List<DenomWidgetModel>){
+    fun renderDenomGridLayout(denomGridListener: RechargeDenomGridListener, denomData: DenomWidgetModel){
         val adapterDenomGrid = DenomGridAdapter()
         with(rechargeDenomGridViewBinding){
             denomGridShimmering.root.hide()
-            tgDenomGridWidgetTitle.text = titleDenomGrid
+            tgDenomGridWidgetTitle.run {
+                show()
+                text = denomData.mainTitle
+            }
             rvDenomGridCard.run {
                 show()
                 adapterDenomGrid.clearDenomGridData()
-                adapterDenomGrid.setDenomGridList(listDenomGrid)
+                adapterDenomGrid.setDenomGridList(denomData.listDenomWidget)
                 adapterDenomGrid.listener = denomGridListener
                 adapterDenomGrid.selectedProductIndex = null
                 adapterDenomGrid.denomWidgetType = DenomWidgetEnum.GRID_TYPE
@@ -38,9 +41,13 @@ class DenomGridWidget @JvmOverloads constructor(@NotNull context: Context, attrs
         }
     }
 
-    fun renderDenomGridShimmering(titleDenomGrid: String){
+    fun renderFailDenomGrid(){
+        rechargeDenomGridViewBinding.root.hide()
+    }
+
+    fun renderDenomGridShimmering(){
         with(rechargeDenomGridViewBinding){
-            tgDenomGridWidgetTitle.text = titleDenomGrid
+            tgDenomGridWidgetTitle.hide()
             denomGridShimmering.root.show()
             rvDenomGridCard.hide()
         }

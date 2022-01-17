@@ -2,42 +2,36 @@ package com.tokopedia.digital_product_detail.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
+import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import javax.inject.Inject
 
 class DigitalPDPDataPlanViewModel @Inject constructor(
-    private val graphqlRepository: GraphqlRepository,
-    private val dispatcher: CoroutineDispatchers
-) : BaseViewModel(dispatcher.io) {
+    val repo: DigitalPDPRepository,
+    private val dispatchers: CoroutineDispatchers
+) : ViewModel() {
 
-    private val _dummy = MutableLiveData<Boolean>()
-    val dummy: LiveData<Boolean>
-        get() = _dummy
+    val observableDenomData: LiveData<RechargeNetworkResult<DenomWidgetModel>>
+    get() = _observableDenomData
 
-    private var debounceJob: Job? = null
+    private val _observableDenomData = MutableLiveData<RechargeNetworkResult<DenomWidgetModel>>()
 
-    private val _errorMessage = MutableLiveData<Result<String>>()
-    val errorMessage: LiveData<Result<String>>
-        get() = _errorMessage
-
-    fun getDelayedResponse() {
-        debounceJob?.cancel()
-        debounceJob = CoroutineScope(coroutineContext).launch {
-            launchCatchError(block = {
-                delay(3000)
-                _dummy.postValue(true)
-            }) {
-
-            }
-        }
+    fun setInital(){
+        _observableDenomData.postValue(RechargeNetworkResult.Loading)
     }
 
+
+    fun getRechargeCatalogInput(menuId: Int, operator: String){
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            val denomGrid = repo.getDenomList(menuId, operator)
+            _observableDenomData.postValue(RechargeNetworkResult.Success(denomGrid))
+        }){
+            _observableDenomData.postValue(RechargeNetworkResult.Fail(it))
+        }
+    }
 }

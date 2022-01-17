@@ -21,17 +21,20 @@ class DenomFullWidget @JvmOverloads constructor(@NotNull context: Context, attrs
 
         private var rechargeDenomFullWidgetBinding = WidgetRechargeDenomFullBinding.inflate(LayoutInflater.from(context), this, true)
 
-        fun renderDenomFullLayout(denomFullListener: RechargeDenomFullListener, titleDenomFull: String,
-                                  listDenomFull: List<DenomWidgetModel>){
+        fun renderDenomFullLayout(denomFullListener: RechargeDenomFullListener,
+                                  denomData: DenomWidgetModel){
             val adapterDenomFull = DenomFullAdapter()
             with(rechargeDenomFullWidgetBinding){
                 denomFullShimmering.root.hide()
-                tgDenomFullWidgetTitle.text = titleDenomFull
+                tgDenomFullWidgetTitle.run {
+                    show()
+                    text = denomData.mainTitle
+                }
                 rvDenomFullCard.run {
                     show()
                     with(adapterDenomFull){
                         clearDenomFullData()
-                        setDenomFullList(listDenomFull)
+                        setDenomFullList(denomData.listDenomWidget)
                         listener = denomFullListener
                         selectedProductIndex = null
                         denomWidgetType = DenomWidgetEnum.FULL_TYPE
@@ -42,9 +45,9 @@ class DenomFullWidget @JvmOverloads constructor(@NotNull context: Context, attrs
             }
         }
 
-        fun renderDenomFullShimmering(titleDenomFull: String){
+        fun renderDenomFullShimmering(){
             with(rechargeDenomFullWidgetBinding){
-                tgDenomFullWidgetTitle.text = titleDenomFull
+                tgDenomFullWidgetTitle.hide()
                 denomFullShimmering.root.show()
                 rvDenomFullCard.hide()
             }
