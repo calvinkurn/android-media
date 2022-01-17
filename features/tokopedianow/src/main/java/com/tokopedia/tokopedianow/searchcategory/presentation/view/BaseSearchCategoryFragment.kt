@@ -400,7 +400,9 @@ abstract class BaseSearchCategoryFragment:
         staggeredGridLayoutManager = StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         staggeredGridLayoutManager?.gapStrategy = GAP_HANDLING_NONE
 
-        endlessScrollListener = createEndlessScrollListener(staggeredGridLayoutManager!!)
+        staggeredGridLayoutManager?.let {
+            endlessScrollListener =  createEndlessScrollListener(it)
+        }
         searchCategoryAdapter = SearchCategoryAdapter(createTypeFactory())
 
         recyclerView?.adapter = searchCategoryAdapter
