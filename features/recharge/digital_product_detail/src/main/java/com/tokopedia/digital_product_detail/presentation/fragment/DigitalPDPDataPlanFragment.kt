@@ -9,7 +9,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
+import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryPulsaBottomsheet
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
+import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -23,8 +25,7 @@ import javax.inject.Inject
 
 class DigitalPDPDataPlanFragment :
     BaseDaggerFragment(),
-    RechargeDenomGridListener
-{
+    RechargeDenomGridListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -32,7 +33,7 @@ class DigitalPDPDataPlanFragment :
 
     private var binding by autoClearedNullable<FragmentDigitalPdpDataPlanBinding>()
 
-    override fun getScreenName(): String  = ""
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
         getComponent(DigitalPDPComponent::class.java).inject(this)
@@ -44,7 +45,11 @@ class DigitalPDPDataPlanFragment :
         viewModel = viewModelProvider.get(DigitalPDPDataPlanViewModel::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentDigitalPdpDataPlanBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -56,34 +61,58 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun observeData() {
-       viewModel.observableDenomData.observe(viewLifecycleOwner, { denomData ->
-           when(denomData){
-               is RechargeNetworkResult.Success -> {
-                   binding?.let {
-                       it.widgetDenomGrid.renderDenomGridLayout(this, denomData.data)
-                   }
-               }
+        binding?.let {
+            it.widgetBuyWidget.showBuyWidget(CatalogProduct(
+                "1", attributes = CatalogProduct.Attributes(
+                    price = "Rp50.000",
+                    pricePlain = "50000",
+                    promo = CatalogProduct.Promo(
+                        newPrice = "Rp49.500",
+                        newPricePlain = 49500
+                    )
+                )
+            ), listener = object : RechargeBuyWidgetListener {
+                override fun onClickedChevron(product: CatalogProduct) {
+                    fragmentManager?.let {
+                        SummaryPulsaBottomsheet(product).show(it, "")
+                    }
+                }
 
-               is RechargeNetworkResult.Fail -> {
-                   view?.let {
-                       binding?.let {
-                           it.widgetDenomGrid.renderFailDenomGrid()
-                       }
-                       Toaster.build(it, denomData.error.message ?: "Nei", Toaster.LENGTH_LONG).show()
-                   }
-               }
+                override fun onClickedButtonLanjutkan(product: CatalogProduct) {
 
-               is RechargeNetworkResult.Loading -> {
-                   binding?.let {
-                       it.widgetDenomGrid.renderDenomGridShimmering()
-                   }
-               }
-           }
+                }
+            })
+        }
 
-       })
+        viewModel.observableDenomData.observe(viewLifecycleOwner, { denomData ->
+            when (denomData) {
+                is RechargeNetworkResult.Success -> {
+                    binding?.let {
+                        it.widgetDenomGrid.renderDenomGridLayout(this, denomData.data)
+                    }
+                }
+
+                is RechargeNetworkResult.Fail -> {
+                    view?.let {
+                        binding?.let {
+                            it.widgetDenomGrid.renderFailDenomGrid()
+                        }
+                        Toaster.build(it, denomData.error.message ?: "Nei", Toaster.LENGTH_LONG)
+                            .show()
+                    }
+                }
+
+                is RechargeNetworkResult.Loading -> {
+                    binding?.let {
+                        it.widgetDenomGrid.renderDenomGridShimmering()
+                    }
+                }
+            }
+
+        })
     }
 
-    private fun getInitalData(){
+    private fun getInitalData() {
         viewModel.setInital()
         viewModel.getRechargeCatalogInput(148, "17")
     }
