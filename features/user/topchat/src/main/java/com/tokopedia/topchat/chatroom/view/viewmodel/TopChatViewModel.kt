@@ -115,7 +115,8 @@ class TopChatViewModel @Inject constructor(
     private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
     private var payloadGenerator: WebsocketPayloadGenerator,
     private var uploadImageUseCase: TopchatUploadImageUseCase,
-    private var compressImageUseCase: CompressImageUseCase
+    private var compressImageUseCase: CompressImageUseCase,
+    private var chatPreAttachPayload: GetChatPreAttachPayloadUseCase
 ) : BaseViewModel(dispatcher.main), LifecycleObserver {
 
     private val _messageId = MutableLiveData<Result<String>>()
@@ -994,31 +995,50 @@ class TopChatViewModel @Inject constructor(
         attachmentsPreview.add(sendablePreview)
     }
 
-    fun initProductPreviewFromAttachProduct(resultProducts: ArrayList<ResultProduct>) {
-        if (resultProducts.isNotEmpty()) clearAttachmentPreview()
-        for (resultProduct in resultProducts) {
-            val productPreview = ProductPreview(
-                id = resultProduct.productId,
-                imageUrl = resultProduct.productImageThumbnail,
-                name = resultProduct.name,
-                price = resultProduct.price,
-                url = resultProduct.productUrl,
-                priceBefore = resultProduct.priceBefore,
-                dropPercentage = resultProduct.dropPercentage,
-                productFsIsActive = resultProduct.isFreeOngkirActive,
-                productFsImageUrl = resultProduct.imgUrlFreeOngkir,
-                remainingStock = resultProduct.stock,
-                isSupportVariant = resultProduct.isSupportVariant,
-                campaignId = resultProduct.campaignId,
-                isPreorder = resultProduct.isPreorder,
-                priceInt = resultProduct.priceInt,
-                categoryId = resultProduct.categoryId
+    fun loadProductPreview(
+        productIds: List<String>,
+        amISeller: Boolean
+    ) {
+        if (productIds.isEmpty()) return
+        if (productIds.isNotEmpty()) clearAttachmentPreview()
+
+        launchCatchError(block = {
+            val param = GetChatPreAttachPayloadUseCase.Param(
+                ids = productIds.joinToString(separator = ","),
+                isSeller = amISeller,
+                type = GetChatPreAttachPayloadUseCase.Param.TYPE_PRODUCT,
+                addressID = userLocationInfo.address_id.toLongOrZero(),
+                districtID = userLocationInfo.district_id.toLongOrZero(),
+                postalCode = userLocationInfo.postal_code,
+                latlon = userLocationInfo.latLong
             )
-            if (productPreview.notEnoughRequiredData()) continue
-            val sendAbleProductPreview = SendableProductPreview(productPreview)
-            addAttachmentPreview(sendAbleProductPreview)
-        }
-        initAttachmentPreview()
+            val response = chatPreAttachPayload(param)
+        }, onError = {
+
+        })
+//        for (resultProduct in resultProducts) {
+//            val productPreview = ProductPreview(
+//                id = resultProduct.productId,
+//                imageUrl = resultProduct.productImageThumbnail,
+//                name = resultProduct.name,
+//                price = resultProduct.price,
+//                url = resultProduct.productUrl,
+//                priceBefore = resultProduct.priceBefore,
+//                dropPercentage = resultProduct.dropPercentage,
+//                productFsIsActive = resultProduct.isFreeOngkirActive,
+//                productFsImageUrl = resultProduct.imgUrlFreeOngkir,
+//                remainingStock = resultProduct.stock,
+//                isSupportVariant = resultProduct.isSupportVariant,
+//                campaignId = resultProduct.campaignId,
+//                isPreorder = resultProduct.isPreorder,
+//                priceInt = resultProduct.priceInt,
+//                categoryId = resultProduct.categoryId
+//            )
+//            if (productPreview.notEnoughRequiredData()) continue
+//            val sendAbleProductPreview = SendableProductPreview(productPreview)
+//            addAttachmentPreview(sendAbleProductPreview)
+//        }
+//        initAttachmentPreview()
     }
 
     fun clearAttachmentPreview() {

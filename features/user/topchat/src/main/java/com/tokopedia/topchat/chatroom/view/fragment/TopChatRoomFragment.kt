@@ -126,7 +126,6 @@ import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_S
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.custom.TopChatKeyboardHandler
-import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.util.TopChatSellerReviewHelper
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.unifycomponents.Toaster
@@ -1455,8 +1454,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val resultProducts: ArrayList<ResultProduct>? = data.getParcelableArrayListExtra(
             TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY
         )
-        resultProducts?.let {
-            viewModel.initProductPreviewFromAttachProduct(it)
+        resultProducts?.let { products ->
+            val productIds = products.map { it.productId }
+            viewModel.loadProductPreview(productIds, amISeller)
             removeSrwBubble()
         }
     }

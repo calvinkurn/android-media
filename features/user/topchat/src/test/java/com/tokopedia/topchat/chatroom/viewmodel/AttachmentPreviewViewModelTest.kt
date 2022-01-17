@@ -28,8 +28,8 @@ class AttachmentPreviewViewModelTest : BaseTopChatViewModelTest() {
     @Test
     fun should_add_product_attachment_preview_on_initialization_not_empty() {
         // When
-        viewModel.initProductPreviewFromAttachProduct(arrayListOf())
-        viewModel.initProductPreviewFromAttachProduct(resultProduct)
+        viewModel.loadProductPreview(arrayListOf())
+        viewModel.loadProductPreview(resultProduct)
 
         // Then
         assertEquals(viewModel.getAttachmentsPreview().size, 1)
@@ -38,7 +38,7 @@ class AttachmentPreviewViewModelTest : BaseTopChatViewModelTest() {
     @Test
     fun should_not_add_product_attachment_preview_on_initialization_when_not_enough_required_data() {
         // When
-        viewModel.initProductPreviewFromAttachProduct(notEnoughRequiredProductData)
+        viewModel.loadProductPreview(notEnoughRequiredProductData)
 
         // Then
         assertEquals(viewModel.getAttachmentsPreview().size, 0)
@@ -47,7 +47,7 @@ class AttachmentPreviewViewModelTest : BaseTopChatViewModelTest() {
     @Test
     fun should_map_product_preview_product_id() {
         // When
-        viewModel.initProductPreviewFromAttachProduct(resultProduct)
+        viewModel.loadProductPreview(resultProduct)
         val productIds = viewModel.getProductIdPreview()
 
         // Then
