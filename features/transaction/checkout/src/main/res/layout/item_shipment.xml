@@ -95,7 +95,7 @@
 
             <!--Shipping: Shipping Experience-->
             <include
-                layout="@layout/item_shipment_shipping_experience_bundle"
+                layout="@layout/item_shipment_shipping_experience"
                 tools:visibility="visible" />
 
             <!--Shipping: Option (Insurance, dropshipper, etc)-->
