@@ -133,9 +133,13 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             viewModel.requestCheckoutParam =
                 savedInstanceState.getParcelable(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER)
                     ?: DigitalCheckoutDataParameter()
-            viewModel.requestCheckoutParam.deviceId = cartPassData?.deviceId ?: DEFAULT_ANDROID_DEVICE_ID
             cartPassData?.needGetCart = true
+        } else {
+            viewModel.requestCheckoutParam = DigitalCheckoutDataParameter()
         }
+
+        viewModel.requestCheckoutParam.deviceId =
+            cartPassData?.deviceId ?: DEFAULT_ANDROID_DEVICE_ID
 
         initViews()
         loadData()

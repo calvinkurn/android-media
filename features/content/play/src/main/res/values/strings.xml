@@ -97,4 +97,17 @@
     <string name="play_voucher_sheet_coupon_expired">Berakhir dalam %1$s hari</string>
     <string name="play_voucher_sheet_coupon_stock">Sisa %1$s kupon</string>
 
+    <!--Kebab Menu-->
+    <string name="play_kebab_report_title">Laporkan Video</string>
+
+    <!--User Report-->
+    <string name="play_user_report_footer"><![CDATA[<strong><span style="color:#03AC0E">Pelajari Selengkapnya</span></strong> tipe-tipe pelanggaran di Tokopedia.]]></string>
+    <string name="play_user_report_header">Pilih kategori pelanggaran yang terjadi pada video ini</string>
+    <string name="play_user_report_submission_button">Laporkan</string>
+    <string name="play_user_report_text_area_min">%1$s Min. %2$s karakter</string>
+    <string name="play_user_report_footer_weblink">https://www.tokopedia.com/help/article/tokopedia-play-live-streaming</string>
+    <string name="play_user_report_verification_dialog_title">Lanjutkan laporkan Produk</string>
+    <string name="play_user_report_verification_dialog_desc">Dengan klik \"Lapor\", saya menyatakan bahwa segala informasi yang dilaporkan memang benar dan bertanggung jawab atas informasi tersebut.</string>
+    <string name="play_user_report_verification_dialog_btn_ok">Lapor</string>
+
 </resources>

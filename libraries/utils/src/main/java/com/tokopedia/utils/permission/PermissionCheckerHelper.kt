@@ -131,6 +131,7 @@ class PermissionCheckerHelper {
                          @NotNull listener: PermissionCheckListener,
                          @NotNull rationaleText: String = "") {
         this.listener = listener
+        
         try {
             if (!hasPermission(fragment.requireContext(), permissions)) {
                 onPermissionNotGranted(fragment, permissions, listener, rationaleText)
