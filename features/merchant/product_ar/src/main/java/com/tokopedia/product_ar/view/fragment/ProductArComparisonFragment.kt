@@ -229,6 +229,7 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
             viewModel?.onVariantClicked(
                     data = bottomComparissonView?.adapter?.getCurrentArImageDatas() ?: listOf(),
                     selectedProductId = productId,
+                    selectedProductName = productName,
                     isSelected = isSelected)
         }
     }

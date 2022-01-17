@@ -62,10 +62,6 @@ object ProductArMapper {
         }
     }
 
-    fun getSelectedProductName(data: List<ModifaceUiModel>, selectedProductId: String): String {
-        return data.firstOrNull { it.productId == selectedProductId }?.productName ?: ""
-    }
-
     fun getMfMakeUpLookByProductId(data: List<ModifaceUiModel>,
                                    selectedProductId: String): MFEMakeupLook {
         val selectedData = data.firstOrNull { it.productId == selectedProductId }

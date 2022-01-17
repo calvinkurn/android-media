@@ -34,70 +34,80 @@ class ProductArComparisonViewModel @Inject constructor() : ViewModel() {
 
     fun addGridImages(processedImage: Bitmap,
                       currentList: List<ComparissonImageUiModel>) {
-        val updatedData = currentList.toMutableList()
-        if (updatedData.size < 4) {
-            updatedData.add(ComparissonImageUiModel(processedImage, latestSelectedProductName))
+        try {
+            val updatedData = currentList.toMutableList()
+            if (updatedData.size < 4) {
+                updatedData.add(ComparissonImageUiModel(processedImage, latestSelectedProductName))
 
-            _addRemoveImageGrid.value = _addRemoveImageGrid.value.copy(
-                    mode = ImageMapMode.APPEND,
-                    imagesBitmap = updatedData,
-                    spanSize = if (updatedData.size == 1) 1 else 2
-            )
+                _addRemoveImageGrid.value = _addRemoveImageGrid.value.copy(
+                        mode = ImageMapMode.APPEND,
+                        imagesBitmap = updatedData,
+                        spanSize = if (updatedData.size == 1) 1 else 2
+                )
+            }
+        } catch (e: Throwable) {
+
         }
     }
 
     fun renderInitialData(data: List<ModifaceUiModel>) {
-        counter++
-        val updatedData = ProductArMapper.updateInitialListWithCounter(data)
-        _processedVariantData.value = updatedData
+        try {
+            counter++
+            val updatedData = ProductArMapper.updateInitialListWithCounter(data)
+            _processedVariantData.value = updatedData
+        } catch (e: Throwable) {
+
+        }
     }
 
     fun onVariantClicked(data: List<ModifaceUiModel>,
                          selectedProductId: String,
+                         selectedProductName: String,
                          isSelected: Boolean) {
-        val needToDisableSelection = ProductArMapper.needToDisableSelection(
-                selectedProductId = selectedProductId,
-                data = data,
-                isSelected = isSelected,
-                currentCounter = counter
-        )
-
-        if (needToDisableSelection) return
-
-        val updatedVariants = ProductArMapper.updateListAfterSelectedCounter(
-                data = data,
-                counterTotal = counter,
-                selectedProductId = selectedProductId,
-                selectedListener = {
-                    counter++
-                },
-                unselectedListener = {
-                    counter--
-                }
-        )
-
-        if (!isSelected) {
-            //append state
-            processImageWithModify(updatedVariants, selectedProductId)
-        } else {
-            //remove state
-            removeImageAtPosition(
-                    isSelected,
-                    data,
-                    selectedProductId
+        try {
+            val needToDisableSelection = ProductArMapper.needToDisableSelection(
+                    selectedProductId = selectedProductId,
+                    data = data,
+                    isSelected = isSelected,
+                    currentCounter = counter
             )
-        }
 
-        _processedVariantData.value = updatedVariants
+            if (needToDisableSelection) return
+
+            val updatedVariants = ProductArMapper.updateListAfterSelectedCounter(
+                    data = data,
+                    counterTotal = counter,
+                    selectedProductId = selectedProductId,
+                    selectedListener = {
+                        counter++
+                    },
+                    unselectedListener = {
+                        counter--
+                    }
+            )
+
+            if (!isSelected) {
+                //append state
+                processImageWithModify(updatedVariants, selectedProductId, selectedProductName)
+            } else {
+                //remove state
+                removeImageAtPosition(
+                        isSelected,
+                        data,
+                        selectedProductId
+                )
+            }
+
+            _processedVariantData.value = updatedVariants
+        } catch (e: Throwable) {
+
+        }
     }
 
     private fun processImageWithModify(updatedVariants: List<ModifaceUiModel>,
-                                       selectedProductId: String) {
+                                       selectedProductId: String,
+                                       selectedProductName: String) {
         val selectedMfLookData = ProductArMapper.getMfMakeUpLookByProductId(
-                updatedVariants,
-                selectedProductId
-        )
-        val selectedProductName = ProductArMapper.getSelectedProductName(
                 updatedVariants,
                 selectedProductId
         )
