@@ -23,6 +23,11 @@ class CouponSettingViewModel @Inject constructor(
     val couponType: LiveData<CouponType>
         get() = _couponType
 
+    private val _maxExpenseEstimation = MutableLiveData<Long>()
+    val maxExpenseEstimation: LiveData<Long>
+        get() = _maxExpenseEstimation
+
+    
     companion object {
         private const val MINIMUM_CASHBACK_DISCOUNT_AMOUNT = 5_000
         private const val MINIMUM_FREE_SHIPPING_DISCOUNT_AMOUNT = 5_000
@@ -121,6 +126,10 @@ class CouponSettingViewModel @Inject constructor(
         } else {
             resourceProvider.getInvalidMinimalQuantityQuantityErrorMessage()
         }
+    }
+    
+    fun calculateMaxExpenseEstimation(discountAmount : Int, voucherQuotaCount : Int) {
+        _maxExpenseEstimation.value = (discountAmount * voucherQuotaCount).toLong()
     }
 
 }

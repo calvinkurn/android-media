@@ -186,7 +186,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/chipMinimumPurchaseNominal"
                 app:text_area_clearable="false"
                 app:text_area_label="@string/minimum_purchase"
-                app:text_area_message="@string/helper_message_min_quantity" />
+                app:text_area_message="@string/error_message_invalid_cashback_minimum_purchase_nominal" />
 
             <!--Quota (Coupon Type: Cashback)-->
             <com.tokopedia.unifycomponents.TextAreaUnify
@@ -223,7 +223,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/textAreaFreeShippingDiscountAmount"
                 app:text_area_clearable="false"
                 app:text_area_label="@string/minimum_purchase"
-                app:text_area_message="@string/helper_message_min_quantity" />
+                app:text_area_message="@string/helper_message_invalid_free_shipping_minimum_purchase" />
 
             <!-- Quota (Coupon Type: Free Shipping)-->
             <com.tokopedia.unifycomponents.TextAreaUnify

@@ -20,13 +20,13 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.consts.LocaleConstant
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.extension.digitsOnlyInt
+import com.tokopedia.vouchercreation.common.extension.splitByThousand
 import com.tokopedia.vouchercreation.common.textwatcher.NumberThousandSeparatorTextWatcher
 import com.tokopedia.vouchercreation.databinding.FragmentCouponSettingBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
 import com.tokopedia.vouchercreation.product.create.domain.entity.DiscountType
 import com.tokopedia.vouchercreation.product.create.domain.entity.MinimumPurchaseType
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.CouponSettingViewModel
-import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import javax.inject.Inject
@@ -37,6 +37,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
     companion object {
         private const val SCREEN_NAME = "Coupon Setting Page"
         private const val EMPTY_STRING = ""
+        private const val ZERO = 0
         fun newInstance():  CouponSettingFragment {
             val args = Bundle()
             val fragment = CouponSettingFragment()
@@ -80,12 +81,25 @@ class CouponSettingFragment : BaseDaggerFragment() {
         setupTextAreaListener()
         observeInputValidationResult()
         observeCouponTypeChange()
+        observeMaxExpenseEstimation()
+    }
+
+    private fun observeMaxExpenseEstimation() {
+        viewModel.maxExpenseEstimation.observe(viewLifecycleOwner, { maxExpense ->
+            if (maxExpense > ZERO) {
+                binding.tpgExpenseAmount.text = String.format(
+                    getString(R.string.placeholder_rupiah),
+                    maxExpense.splitByThousand()
+                )
+            } else {
+                binding.tpgExpenseAmount.text = getString(R.string.hyphen)
+            }
+        })
     }
 
     private fun observeInputValidationResult() {
         viewModel.areInputValid.observe(viewLifecycleOwner, { validationResult ->
             binding.btnSave.isEnabled = validationResult
-            Timber.d("Validation result is $validationResult")
         })
     }
 
@@ -127,11 +141,12 @@ class CouponSettingFragment : BaseDaggerFragment() {
                 val isValidInput =
                     viewModel.isValidCashbackDiscountAmount(number)
                 if (isValidInput) {
-                    clearErrorMessage(binding.textAreaMinimumDiscount)
+                    clearErrorMessage(binding.textAreaMinimumDiscount, getString(R.string.error_message_invalid_min_purchase))
                 } else {
                     showErrorMessage(binding.textAreaMinimumDiscount, getString(R.string.error_message_invalid_min_purchase))
                 }
                 validateInput()
+                calculateMaxExpenseEstimation()
             })
 
             textAreaMinimumPurchase.textAreaInput.addTextChangedListener(NumberThousandSeparatorTextWatcher(
@@ -146,7 +161,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
                 val isValidInput =
                     viewModel.isValidCashbackMinimumPurchase(number, discountAmount)
                 if (isValidInput) {
-                    clearErrorMessage(binding.textAreaMinimumPurchase)
+                    clearMinimalPurchaseErrorMessage(binding.textAreaMinimumPurchase)
                 } else {
                     showMinimalPurchaseErrorMessage(binding.textAreaMinimumPurchase)
                 }
@@ -164,7 +179,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
                 val isValidInput =
                     viewModel.isValidCashbackQuota(number)
                 if (isValidInput) {
-                    clearErrorMessage(binding.textAreaQuota)
+                    clearErrorMessage(binding.textAreaQuota,  getString(R.string.error_message_invalid_free_shipping_quota))
                 } else {
                     showErrorMessage(
                         binding.textAreaQuota,
@@ -172,6 +187,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
                     )
                 }
                 validateInput()
+                calculateMaxExpenseEstimation()
             })
 
             textAreaFreeShippingDiscountAmount.textAreaInput.addTextChangedListener(NumberThousandSeparatorTextWatcher(
@@ -184,11 +200,12 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
                 val isValidInput = viewModel.isValidFreeShippingDiscountAmount(number)
                 if (isValidInput) {
-                    clearErrorMessage(binding.textAreaFreeShippingDiscountAmount)
+                    clearErrorMessage(binding.textAreaFreeShippingDiscountAmount, getString(R.string.error_message_invalid_min_purchase))
                 } else {
                     showErrorMessage(binding.textAreaFreeShippingDiscountAmount, getString(R.string.error_message_invalid_min_purchase))
                 }
                 validateInput()
+                calculateMaxExpenseEstimation()
             })
 
 
@@ -203,7 +220,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
                 val freeShippingDiscountAmount = binding.textAreaFreeShippingDiscountAmount.textAreaInput.text.toString().trim().digitsOnlyInt()
                 val isValidInput = viewModel.isValidFreeShippingMinimumPurchase(number, freeShippingDiscountAmount)
                 if (isValidInput) {
-                    clearErrorMessage(binding.textAreaFreeShippingMinimumPurchase)
+                    clearMinimalPurchaseErrorMessage(binding.textAreaFreeShippingMinimumPurchase)
                 } else {
                     showErrorMessage(binding.textAreaFreeShippingMinimumPurchase, getString(R.string.error_message_invalid_free_shipping_minimum_purchase))
                 }
@@ -220,11 +237,12 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
                 val isValidInput = viewModel.isValidFreeShippingQuota(number)
                 if (isValidInput) {
-                    clearErrorMessage(binding.textAreaQuotaFreeShipping)
+                    clearErrorMessage(binding.textAreaQuotaFreeShipping, getString(R.string.error_message_invalid_free_shipping_quota))
                 } else {
                     showErrorMessage(binding.textAreaQuotaFreeShipping, getString(R.string.error_message_invalid_free_shipping_quota))
                 }
                 validateInput()
+                calculateMaxExpenseEstimation()
             })
 
         }
@@ -368,15 +386,29 @@ class CouponSettingFragment : BaseDaggerFragment() {
         )
     }
 
+    private fun calculateMaxExpenseEstimation() {
+        val discountAmount = if (selectedCouponType == CouponType.CASHBACK) {
+            binding.textAreaMinimumDiscount.textAreaInput.text.toString().trim().digitsOnlyInt()
+        } else {
+            binding.textAreaFreeShippingDiscountAmount.textAreaInput.text.toString().trim().digitsOnlyInt()
+        }
+        val voucherQuota = if (selectedCouponType == CouponType.CASHBACK) {
+            binding.textAreaQuota.textAreaInput.text.toString().trim().digitsOnlyInt()
+        } else {
+            binding.textAreaQuotaFreeShipping.textAreaInput.text.toString().trim().digitsOnlyInt()
+        }
+        viewModel.calculateMaxExpenseEstimation(discountAmount, voucherQuota)
+    }
     private fun showErrorMessage(view: TextAreaUnify, errorMessage : String) {
         view.textAreaMessage = EMPTY_STRING
         view.isError = true
         view.textAreaWrapper.error = errorMessage
     }
 
-    private fun clearErrorMessage(view: TextAreaUnify) {
+    private fun clearErrorMessage(view: TextAreaUnify, errorMessage: String) {
         view.isError = false
         view.textAreaWrapper.error = EMPTY_STRING
+        view.textAreaMessage = errorMessage
     }
 
     private fun showMinimalPurchaseErrorMessage(view: TextAreaUnify) {
@@ -384,6 +416,13 @@ class CouponSettingFragment : BaseDaggerFragment() {
         view.textAreaMessage = EMPTY_STRING
         view.isError = true
         view.textAreaWrapper.error = errorMessage
+    }
+
+    private fun clearMinimalPurchaseErrorMessage(view: TextAreaUnify) {
+        val errorMessage = viewModel.getMinimalPurchaseErrorMessage(selectedMinimumPurchaseType)
+        view.isError = false
+        view.textAreaWrapper.error = EMPTY_STRING
+        view.textAreaMessage = errorMessage
     }
 
 }
