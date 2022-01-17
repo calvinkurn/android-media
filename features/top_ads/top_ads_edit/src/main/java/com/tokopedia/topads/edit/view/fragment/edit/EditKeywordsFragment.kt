@@ -272,9 +272,15 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             minBid = it.minBid
             maxBid = it.maxBid
         }
-
-        budgetInput.textFieldInput.setText(suggestBidPerClick)
-        budgetInputRekomendasi.textFieldInput.setText(suggestBidPerClick)
+        sharedViewModel.getBidSettings().observe(viewLifecycleOwner, {
+            it.forEach {
+                if (it.bidType.equals("product_auto_search")) {
+                    budgetInput.textFieldInput.setText(suggestBidPerClick)
+                } else if (it.bidType.equals("product_auto_browse")) {
+                    budgetInputRekomendasi.textFieldInput.setText(suggestBidPerClick)
+                }
+            }
+        })
         checkForbidValidity(getCurrentBid())
         checkForRekommendedBid(getCurrentRekommendedBid())
     }
@@ -654,6 +660,18 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             )
             onAddKeyword()
         }
+
+        sharedViewModel.getBidSettings().observe(viewLifecycleOwner, {
+            it.forEach {
+                if (it.bidType.equals("product_search")) {
+                    budgetInput.textFieldInput.setText(
+                        ( it.priceBid?.toInt()?:suggestBidPerClick).toString()
+                    )
+                } else if(it.bidType.equals("product_browse")) {
+                            budgetInputRekomendasi.textFieldInput.setText(( it.priceBid?.toInt()?:suggestBidPerClick).toString())
+                }
+            }
+        })
 
         if(budgetInput.textFiedlLabelText.text.isEmpty()) {
             budgetInput.setError(true)
