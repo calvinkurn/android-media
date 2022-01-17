@@ -1,15 +1,18 @@
 package com.tokopedia.tokopedianow.searchcategory.presentation.viewholder
 
+import android.content.Context
+import android.graphics.drawable.BitmapDrawable
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.media.loader.loadImageWithTarget
+import com.tokopedia.media.loader.utils.MediaTarget
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategorySwitcherWidgetBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SwitcherWidgetDataView
 import com.tokopedia.utils.view.binding.viewBinding
-import com.tokopedia.tokopedianow.common.util.ImageUtil.setBackgroundImageFromUrl
 
 class SwitcherWidgetViewHolder(
     itemView: View,
@@ -34,9 +37,9 @@ class SwitcherWidgetViewHolder(
 
     private fun setImage() {
         binding?.root?.context?.let {
-            setBackgroundImageFromUrl(it, SWITCHER_WIDGET_BG_URL, binding?.switcherLayout)
-            setBackgroundImageFromUrl(it, SWITCHER_WIDGET_CARD_2H_BG_URL, binding?.container2h)
-            setBackgroundImageFromUrl(it, SWITCHER_WIDGET_CARD_15M_BG_URL, binding?.container15m)
+            setBackgroundImage(it, SWITCHER_WIDGET_BG_URL, binding?.switcherLayout)
+            setBackgroundImage(it, SWITCHER_WIDGET_CARD_2H_BG_URL, binding?.container2h)
+            setBackgroundImage(it, SWITCHER_WIDGET_CARD_15M_BG_URL, binding?.container15m)
         }
     }
 
@@ -55,6 +58,16 @@ class SwitcherWidgetViewHolder(
             cv2h.setOnClickListener {
                 listener?.onClickSwitcherTo2H()
             }
+        }
+    }
+
+    private fun setBackgroundImage(context: Context, url: String, view: View?) {
+        view?.let {
+            loadImageWithTarget(context = context, url = url, {
+                useBlurHash(true)
+            }, MediaTarget(view, onReady = { _, resource ->
+                it.background = BitmapDrawable(it.resources, resource)
+            }))
         }
     }
 }
