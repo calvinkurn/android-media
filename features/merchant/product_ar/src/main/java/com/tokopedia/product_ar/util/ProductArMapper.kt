@@ -82,7 +82,7 @@ object ProductArMapper {
                     && it.counter == 1
                     && currentCounter == 1
         }
-        val tryToSelectMoreThanFour = currentCounter + 1 > 5 && !isSelected
+        val tryToSelectMoreThanFour = currentCounter + 1 > 4 && !isSelected
 
         return (tryUnselectOneData || tryToSelectMoreThanFour)
     }

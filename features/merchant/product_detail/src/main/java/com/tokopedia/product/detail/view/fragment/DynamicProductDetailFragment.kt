@@ -146,6 +146,8 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracking
+import com.tokopedia.product.detail.tracking.ProductArTrackerData
+import com.tokopedia.product.detail.tracking.ProductArTracking
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtilCallback
@@ -842,7 +844,13 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         RouteManager.route(context, url)
     }
 
-    override fun goToArPage() {
+    override fun goToArPage(componentTrackDataModel: ComponentTrackDataModel) {
+        ProductArTracking.clickArComponent(
+                data = ProductArTrackerData(
+                        productInfo = viewModel.getDynamicProductInfoP1,
+                        componentTrackDataModel = componentTrackDataModel
+                )
+        )
         val productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
         RouteManager.route(requireContext(), ApplinkConst.PRODUCT_AR, productId)
     }

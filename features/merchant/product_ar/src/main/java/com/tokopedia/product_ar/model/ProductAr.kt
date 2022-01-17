@@ -4,6 +4,7 @@ package com.tokopedia.product_ar.model
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 
 data class ProductAr(
@@ -46,6 +47,10 @@ data class ProductAr(
 ) {
     fun getFinalPrice(): Double {
         return if (campaignInfo.isActive) campaignInfo.discountedPrice else price
+    }
+
+    fun getFinalStock(): Int {
+        return if (campaignInfo.isActive) campaignInfo.stock else stock.toIntOrZero()
     }
 }
 

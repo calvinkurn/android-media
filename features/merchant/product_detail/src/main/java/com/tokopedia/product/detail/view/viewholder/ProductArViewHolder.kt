@@ -5,18 +5,18 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.unifyprinciples.Typography
 
 class ProductArViewHolder(
         val view: View,
         private val listener: DynamicProductDetailListener
-) : AbstractViewHolder<ArButtonDataModel>(view) {
+) : ProductDetailPageViewHolder<ArButtonDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.custom_button_view_holder
@@ -36,7 +36,7 @@ class ProductArViewHolder(
         itemView.setOnClickListener {
             //todo change
 //            listener.goToApplink(element.applink)
-            listener.goToArPage()
+            listener.goToArPage(getComponentTrackData(element))
         }
 
         if (element.message.isNotEmpty()) {
@@ -53,5 +53,11 @@ class ProductArViewHolder(
             itemView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
         }
     }
+
+    private fun getComponentTrackData(element: ArButtonDataModel) = ComponentTrackDataModel(
+            componentType = element.type(),
+            componentName = element.name(),
+            adapterPosition = adapterPosition + 1
+    )
 
 }

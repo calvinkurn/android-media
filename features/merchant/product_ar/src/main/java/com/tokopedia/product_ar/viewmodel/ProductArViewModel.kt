@@ -39,13 +39,13 @@ import javax.inject.Inject
 import javax.inject.Named
 
 
-class ProductArViewModel @Inject constructor(private val dispatchers: CoroutineDispatchers,
-                                             @Named(PRODUCT_ID_PROVIDED) private val initialProductId: String,
-                                             @Named(SHOP_ID_PROVIDED) private val shopId: String,
+class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
+                                             @Named(PRODUCT_ID_PROVIDED) val initialProductId: String,
+                                             @Named(SHOP_ID_PROVIDED) val shopId: String,
                                              private val addToCartUseCase: AddToCartUseCase,
                                              private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
                                              private val getProductArUseCase: GetProductArUseCase,
-                                             private val userSessionInterface: UserSessionInterface)
+                                             val userSessionInterface: UserSessionInterface)
     : BaseViewModel(dispatchers.io) {
 
     init {

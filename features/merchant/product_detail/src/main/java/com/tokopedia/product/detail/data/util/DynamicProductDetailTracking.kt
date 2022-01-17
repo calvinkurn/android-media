@@ -4,9 +4,6 @@ import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.linker.LinkerConstants
-import com.tokopedia.linker.LinkerManager
-import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.product.detail.common.ProductCartHelper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant
@@ -32,8 +29,8 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.*
-import kotlin.collections.HashMap
+import java.util.ArrayList
+import java.util.Locale
 
 
 object DynamicProductDetailTracking {

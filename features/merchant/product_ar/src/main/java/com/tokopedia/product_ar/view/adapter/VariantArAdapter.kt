@@ -101,6 +101,7 @@ class VariantArAdapter(private val listener: ProductArListener,
                     data.modifaceProductData.lipLayers?.firstOrNull()?.let {
                         imgVariant.setColorFilter(it.product.color, PorterDuff.Mode.DST_ATOP)
                         listener.onVariantClicked(data.productId,
+                                data.productName,
                                 data.isSelected,
                                 it.product)
                     }

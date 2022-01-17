@@ -41,9 +41,11 @@ import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.databinding.FragmentProductArBinding
+import com.tokopedia.product_ar.model.ProductAr
 import com.tokopedia.product_ar.model.state.AnimatedTextIconClickMode
 import com.tokopedia.product_ar.model.state.ArGlobalErrorMode
 import com.tokopedia.product_ar.model.state.ModifaceViewMode
+import com.tokopedia.product_ar.tracker.ProductArTracker
 import com.tokopedia.product_ar.util.AnimatedTextIcon
 import com.tokopedia.product_ar.util.ProductArConstant.REQUEST_CODE_CAMERA_PERMISSION
 import com.tokopedia.product_ar.util.ProductArConstant.REQUEST_CODE_IMAGE_PICKER
@@ -116,6 +118,9 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         }
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(ProductArViewModel::class.java)
+        ProductArTracker.openScreen(
+                viewModel?.initialProductId ?: "",
+                viewModel?.userSessionInterface?.userId ?: "")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -177,6 +182,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     }
 
     private fun goToArComparissonPage() {
+        ProductArTracker.clickComparisson(getSelectedProductId())
         captureImageAndSetupData()
     }
 
@@ -307,6 +313,15 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
                 partialBottomArView?.stopLoadingButton()
                 when (data) {
                     is Success -> {
+                        ProductArTracker.successAtc(
+                                arData = getSelectedProductData(),
+                                shopId = data.data.data.shopId.toString(),
+                                shopName = "",
+                                shopType = "",
+                                userId = viewModel?.userSessionInterface?.userId ?: "",
+                                cartId = data.data.data.cartId
+                        )
+
                         onSuccessAtc(data.data.errorMessage.firstOrNull())
                     }
                     is Fail -> {
@@ -528,9 +543,17 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     }
 
     override fun onVariantClicked(productId: String,
+                                  productName: String,
                                   isSelected: Boolean,
                                   selectedMfeProduct: MFEMakeupProduct) {
         if (isSelected) return
+
+        ProductArTracker.clickVariant(
+                productId,
+                productName,
+                viewModel?.userSessionInterface?.userId ?: ""
+        )
+
         viewModel?.let {
             it.onVariantClicked(
                     productId, it.getProductArUiModel(),
@@ -560,8 +583,18 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         }
     }
 
+    private fun getSelectedProductId(): String {
+        return getSelectedProductData()?.productID ?: ""
+    }
+
+    private fun getSelectedProductData(): ProductAr? {
+        return (viewModel?.selectedProductArData?.value as? Success)?.data
+    }
+
     private fun onAddImageClick() {
         context?.let {
+            ProductArTracker.clickGallery(getSelectedProductId())
+
             val builder = ImagePickerBuilder.getSquareImageBuilder(it)
                     .apply {
                         title = it.getString(R.string.txt_image_picker_title)

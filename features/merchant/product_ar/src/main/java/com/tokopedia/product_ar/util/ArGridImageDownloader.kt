@@ -11,7 +11,10 @@ object ArGridImageDownloader {
     private const val TOTAL_MARGIN_LEFT_RIGHT_MULTIPLE_COMPARISSON_RV = 32 //padding left right rv
     private const val TOTAL_MARGIN_LEFT_RIGHT_SINGLE_COMPARISSON_RV = 34 //padding left right + padding item decorator
 
-    fun screenShotAndSaveGridImage(v: View?, bitmapsSize: Int, finishScreenshot: () -> Unit) {
+    fun screenShotAndSaveGridImage(v: View?,
+                                   bitmapsSize: Int,
+                                   failScreenShot: () -> Unit,
+                                   finishScreenshot: () -> Unit) {
         try {
             if (v != null) {
                 val totalPadding = if (bitmapsSize == 1)
@@ -34,12 +37,11 @@ object ArGridImageDownloader {
                             it,
                             System.currentTimeMillis().toString() + ".jpg"
                     )
+                    finishScreenshot.invoke()
                 }
             }
         } catch (e: Exception) {
-            // NOOP
-        } finally {
-            finishScreenshot.invoke()
+            failScreenShot.invoke()
         }
     }
 }

@@ -25,6 +25,7 @@ import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.di.ProductArComponent
 import com.tokopedia.product_ar.model.ComparissonImageUiModel
 import com.tokopedia.product_ar.model.state.ImageMapMode
+import com.tokopedia.product_ar.tracker.ProductArTracker
 import com.tokopedia.product_ar.util.ArGridImageDownloader
 import com.tokopedia.product_ar.util.ItemDividerGrid
 import com.tokopedia.product_ar.view.ProductArActivity
@@ -220,7 +221,10 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
         }
     }
 
-    override fun onVariantClicked(productId: String, isSelected: Boolean, selectedMfeProduct: MFEMakeupProduct) {
+    override fun onVariantClicked(productId: String,
+                                  productName: String,
+                                  isSelected: Boolean,
+                                  selectedMfeProduct: MFEMakeupProduct) {
         SingleClick.doSomethingBeforeTime(delayInterval = 100) {
             viewModel?.onVariantClicked(
                     data = bottomComparissonView?.adapter?.getCurrentArImageDatas() ?: listOf(),
@@ -229,9 +233,18 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
         }
     }
 
+    private fun getFirstProductId(): String {
+        return sharedViewModel?.arListData?.value?.modifaceUiModel?.firstOrNull {
+            it.isSelected
+        }?.productId ?: ""
+    }
+
     override fun onButtonClicked(productId: String) {
         ArGridImageDownloader.screenShotAndSaveGridImage(rvComparison as? View,
-                viewModel?.addRemoveImageGrid?.value?.imagesBitmap?.size ?: -1) {
+                viewModel?.addRemoveImageGrid?.value?.imagesBitmap?.size ?: -1, {
+            ProductArTracker.savePhoto(getFirstProductId(), false)
+        }) {
+            ProductArTracker.savePhoto(getFirstProductId(), true)
             mainThreadHandler.postDelayed({
                 bottomComparissonView?.stopButtonLoading()
                 val messageSuccess = context?.getString(R.string.message_success_save_photo_to_gallery)

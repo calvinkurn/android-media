@@ -59,8 +59,6 @@ interface DynamicProductDetailListener {
     fun onEtalaseClicked(url: String, componentTrackDataModel: ComponentTrackDataModel)
     fun goToApplink(url: String)
 
-    fun goToArPage()
-
     fun onBbiInfoClick(url: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
 
     /**
@@ -185,7 +183,11 @@ interface DynamicProductDetailListener {
     fun clickShippingComponentError(errorCode: Int, title: String, componentTrackDataModel: ComponentTrackDataModel?)
     fun showCoachmark(view: Typography?, isBoeType: Boolean)
 
+    /**
+     * ProductArViewHolder
+     */
     fun showArCoachMark(view:ConstraintLayout?)
+    fun goToArPage(componentTrackDataModel: ComponentTrackDataModel)
 
     /**
      * ProductCategoryCarouselViewHolder
