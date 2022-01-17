@@ -22,6 +22,7 @@ import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPTel
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
+import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardEnum
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
@@ -212,18 +213,19 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
         binding?.let {
             it.rechargePdpPulsaDenomGridWidget.renderDenomGridLayout(denomGridListener = object:
                 RechargeDenomGridListener {
-                override fun onDenomGridClicked(denomGrid: DenomWidgetModel, position: Int) {
-                    //todo
+                override fun onDenomGridClicked(denomGrid: DenomData, position: Int) {
+                    // TODO("Not yet implemented")
                 }
-            }, "Diskon Rp15.000 buat pengguna baru, nih!",
-                listOf(
-                    DenomWidgetModel(
+            }, DenomWidgetModel(
+                mainTitle = "Diskon Rp15.000 buat pengguna baru, nih!",
+                listDenomData = listOf(
+                    DenomData(
                         title="15 ribu",
                         specialLabel = "Any campaign label",
                         price = "Rp500",
                         slashPrice = "Rp16.500",
                     ),
-                    DenomWidgetModel(
+                    DenomData(
                         title="15 ribu",
                         specialLabel = "Any campaign label",
                         price = "Rp500",
@@ -234,34 +236,34 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
                         flashSaleLabel = "Segera Habis",
                         flashSalePercentage = 80
                     ),
-                    DenomWidgetModel(
+                    DenomData(
                         title="50 ribu",
                         price = "Rp35.500",
                     ),
-                    DenomWidgetModel(
+                    DenomData(
                         title="50 ribu",
                         price = "Rp35.500",
                         slashPrice = "75.000"
                     ),
-                    DenomWidgetModel(
+                    DenomData(
                         title="100 ribu",
                         price = "Rp85.500",
                         slashPrice = "105.000"
                     ),
-                    DenomWidgetModel(
+                    DenomData(
                         title="50 ribu",
                         specialLabel = "Any campaign label",
                         price = "Rp35.500",
                     ),
-                    DenomWidgetModel(
+                    DenomData(
                         title="50 ribu",
                         price = "Rp35.500",
                     ),
-                    DenomWidgetModel(
+                    DenomData(
                         title="50 ribu",
                         price = "Rp35.500",
                     ),
-                    DenomWidgetModel(
+                    DenomData(
                         title="15 ribu",
                         //specialLabel = "Any campaign label",
                         specialLabel = "Any campaign label",
@@ -274,7 +276,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
                         flashSaleLabel = "Segera Habis",
                         flashSalePercentage = 80
                     ),
-                    DenomWidgetModel(
+                    DenomData(
                         title="50 ribu",
                         price = "Rp35.500",
                         slashPrice = "Rp16.500",
@@ -284,7 +286,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
 //                        flashSalePercentage = 80
                     )
                 )
-            )
+            ))
         }
     }
 
@@ -330,58 +332,60 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
         binding?.let {
             it.rechargePdpPulsaPromoWidget.renderMCCMGrid(
                 denomGridListener = object: RechargeDenomGridListener{
-                    override fun onDenomGridClicked(denomGrid: DenomWidgetModel, position: Int) {
-                        //todo
+                    override fun onDenomGridClicked(denomGrid: DenomData, position: Int) {
+                        // TODO("Not yet implemented")
                     }
-                }, "Diskon Rp15.000 buat pengguna baru, nih!",
-                listOf(
-                    DenomWidgetModel(
-                        title="15 ribu",
-                        specialLabel = "Any campaign label",
-                        price = "Rp500",
-                        discountLabel = "10%",
-                        slashPrice = "Rp16.500",
-                        appLink = "tokopedia://deals",
-                    ),
-                    DenomWidgetModel(
-                        title="15 ribu",
-                        specialLabel = "Any campaign label",
-                        price = "Rp500",
-                        discountLabel = "10%",
-                        slashPrice = "Rp16.500",
-                        appLink = "tokopedia://deals",
-                    ),
-                    DenomWidgetModel(
-                        title="15 ribu",
-                        specialLabel = "Any campaign label",
-                        price = "Rp500",
-                        discountLabel = "10%",
-                        slashPrice = "Rp16.500",
-                        appLink = "tokopedia://deals",
-                    ),
-                    DenomWidgetModel(
-                        title="15 ribu",
-                        specialLabel = "Any campaign label",
-                        price = "Rp500",
-                        discountLabel = "10%",
-                        slashPrice = "Rp16.500",
-                        appLink = "tokopedia://deals",
-                    ),
-                    DenomWidgetModel(
-                        title="15 ribu",
-                        specialLabel = "Any campaign label",
-                        price = "Rp500",
-                        discountLabel = "10%",
-                        slashPrice = "Rp16.500",
-                        appLink = "tokopedia://deals",
-                    ),
-                    DenomWidgetModel(
-                        title="15 ribu",
-                        specialLabel = "Any campaign label",
-                        price = "Rp500",
-                        discountLabel = "10%",
-                        slashPrice = "Rp16.500",
-                        appLink = "tokopedia://deals",
+                }, DenomWidgetModel(
+                    mainTitle = "Diskon Rp15.000 buat pengguna baru, nih!",
+                    listDenomData = listOf(
+                        DenomData(
+                            title="15 ribu",
+                            specialLabel = "Any campaign label",
+                            price = "Rp500",
+                            discountLabel = "10%",
+                            slashPrice = "Rp16.500",
+                            appLink = "tokopedia://deals",
+                        ),
+                        DenomData(
+                            title="15 ribu",
+                            specialLabel = "Any campaign label",
+                            price = "Rp500",
+                            discountLabel = "10%",
+                            slashPrice = "Rp16.500",
+                            appLink = "tokopedia://deals",
+                        ),
+                        DenomData(
+                            title="15 ribu",
+                            specialLabel = "Any campaign label",
+                            price = "Rp500",
+                            discountLabel = "10%",
+                            slashPrice = "Rp16.500",
+                            appLink = "tokopedia://deals",
+                        ),
+                        DenomData(
+                            title="15 ribu",
+                            specialLabel = "Any campaign label",
+                            price = "Rp500",
+                            discountLabel = "10%",
+                            slashPrice = "Rp16.500",
+                            appLink = "tokopedia://deals",
+                        ),
+                        DenomData(
+                            title="15 ribu",
+                            specialLabel = "Any campaign label",
+                            price = "Rp500",
+                            discountLabel = "10%",
+                            slashPrice = "Rp16.500",
+                            appLink = "tokopedia://deals",
+                        ),
+                        DenomData(
+                            title="15 ribu",
+                            specialLabel = "Any campaign label",
+                            price = "Rp500",
+                            discountLabel = "10%",
+                            slashPrice = "Rp16.500",
+                            appLink = "tokopedia://deals",
+                        )
                     )
                 )
             )
