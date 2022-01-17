@@ -2,7 +2,6 @@ package com.tokopedia.review.common.reviewreply.update.domain.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.review.common.reviewreply.update.domain.model.ReviewReplyUpdateResponse
@@ -46,7 +45,7 @@ class ReviewReplyUpdateUseCase @Inject constructor(
             params
         )
         val gqlResponse = graphQlRepository.response(listOf(gqlRequest))
-        val error = gqlResponse.getError(GraphqlError::class.java)
+        val error = gqlResponse.getError(ReviewReplyUpdateResponse::class.java)
         if (error.isNullOrEmpty()) {
             return gqlResponse.getData<ReviewReplyUpdateResponse>(ReviewReplyUpdateResponse::class.java).productrevUpdateSellerResponse
         } else {
