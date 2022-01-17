@@ -646,6 +646,13 @@
         <package android:name="xyz.duit.saku" />
         <package android:name="xyz.rupiah.sigap.pinjol" />
         <package android:name="zone.bytesreverser.xposeddeviceidmaskerpro" />
+        <package android:name="com.instagram.android"/>
+        <package android:name="com.facebook.katana"/>
+        <package android:name="com.whatsapp"/>
+        <package android:name="jp.naver.line.android"/>
+        <package android:name="com.twitter.android"/>
+        <package android:name="org.telegram.messenger"/>
+        <package android:name="com.google.android.gm"/>
     </queries>
     <application
         android:name=".ConsumerMainApplication"
