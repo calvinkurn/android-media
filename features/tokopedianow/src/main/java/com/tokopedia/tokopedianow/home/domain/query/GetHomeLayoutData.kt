@@ -86,6 +86,7 @@ internal object GetHomeLayoutData {
                  position
                  type
                }
+               param
              }
              banner {
                id
