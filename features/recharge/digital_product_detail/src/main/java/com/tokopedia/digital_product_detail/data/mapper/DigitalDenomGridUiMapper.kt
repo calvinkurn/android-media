@@ -15,7 +15,7 @@ class DigitalDenomGridUiMapper @Inject constructor() {
 
         val denomWidget =  DenomWidgetModel(
             mainTitle = catalogData.product.text,
-            listDenomWidget = products.map {
+            listDenomData = products.map {
                 DenomData(
                     title = it.attributes.desc,
                     price = it.attributes.price,

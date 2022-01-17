@@ -31,7 +31,7 @@ class DenomGridWidget @JvmOverloads constructor(@NotNull context: Context, attrs
             rvDenomGridCard.run {
                 show()
                 adapterDenomGrid.clearDenomGridData()
-                adapterDenomGrid.setDenomGridList(denomData.listDenomWidget)
+                adapterDenomGrid.setDenomGridList(denomData.listDenomData)
                 adapterDenomGrid.listener = denomGridListener
                 adapterDenomGrid.selectedProductIndex = null
                 adapterDenomGrid.denomWidgetType = DenomWidgetEnum.GRID_TYPE
