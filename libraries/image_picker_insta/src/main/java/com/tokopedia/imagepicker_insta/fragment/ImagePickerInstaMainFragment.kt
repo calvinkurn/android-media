@@ -23,11 +23,11 @@ import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity
 import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.imagepicker_insta.common.ImagePickerRouter.DEFAULT_MULTI_SELECT_LIMIT
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
+import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
 import com.tokopedia.imagepicker_insta.common.ui.toolbar.ImagePickerCommonToolbar
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
 import com.tokopedia.imagepicker_insta.mediacapture.MediaRepository
-import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
 import com.tokopedia.imagepicker_insta.models.*
 import com.tokopedia.imagepicker_insta.toPx
 import com.tokopedia.imagepicker_insta.util.AlbumUtil
@@ -498,12 +498,13 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                         zoomImageAdapterDataMap.clear()
                     }
                     else {
-                        val firstSelectedMedia = imageAdapter.dataList[imageAdapter.getListOfIndexWhichAreSelected()[0]]
-                        if(firstSelectedMedia.asset is PhotosData) {
-                            zoomInfo = getZoomInfoWithNewDimensions(firstSelectedMedia, imageAdapterData)
+                        val firstSelectedMedia = imageAdapter.selectionOrder.getOrderList().last()
+//                        val firstSelectedMedia = imageAdapter.dataList[imageAdapter.getListOfIndexWhichAreSelected()[0]]
+                        if(imageAdapterData.asset is PhotosData) {
+                            zoomInfo = getZoomInfoForImage(firstSelectedMedia, imageAdapterData)
                         }
                         else{
-                            zoomInfo = getZoomInfoForVideo(imageAdapterData)
+                            zoomInfo = getZoomInfoForVideo(firstSelectedMedia, imageAdapterData)
                         }
                         zoomImageAdapterDataMap[imageAdapterData] = zoomInfo
                     }
@@ -529,43 +530,23 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         }
     }
 
-    private fun getZoomInfoForVideo(imageAdapterData: ImageAdapterData): ZoomInfo {
-        val videoSize = imageAdapterData.asset.contentUri.getVideoDimensions(requireContext())
+    private fun getZoomInfoForVideo(firstSelectedMedia: ImageAdapterData, originalImageAdapterData: ImageAdapterData): ZoomInfo {
+        val originalWidth = originalImageAdapterData.asset.contentUri.getVideoDimensions(requireContext()).width
+        val originalHeight = originalImageAdapterData.asset.contentUri.getVideoDimensions(requireContext()).height
 
-        val width = videoSize.width
-        val height = videoSize.height
-
-        val ar = AspectRatio.of(width, height)
-        val ratio = (ar.x/ar.y).toFloat()
-
-        /*
-        * As we are supposed to maintain the orientation PORTRAIT
-        * So will keep the width same
-        * And change height according to aspect ratio
-        */
-
-        val zoomInfo = ZoomInfo()
-        zoomInfo.bmpWidth = width
-        zoomInfo.bmpHeight = width.div(ratio).toInt()
-        return zoomInfo
-    }
-
-    private fun getZoomInfoWithNewDimensions(imageAdapterData: ImageAdapterData, originalImageAdapterData: ImageAdapterData): ZoomInfo {
-
-        // getting original width of the new selected video
-        val originalWidth = originalImageAdapterData.asset.contentUri.getImageDimensions(requireContext()).width
-
-        //TODO get selected media ki list ka first index
-        val width = zoomImageAdapterDataMap[imageAdapterData]?.bmpWidth
-        val height = zoomImageAdapterDataMap[imageAdapterData]?.bmpHeight
+        val width = zoomImageAdapterDataMap[firstSelectedMedia]?.bmpWidth
+        val height = zoomImageAdapterDataMap[firstSelectedMedia]?.bmpHeight
 
         var ratio = 0.0f
 
-        if (width != null && height != null)
-        {
-            val ar = AspectRatio.of(width, height)
-            ratio = (ar.x.toFloat()/ar.y)
+        try {
+            if (width != null && height != null)
+            {
+                val ar = AspectRatio.of(width, height)
+                ratio = (ar.x.toFloat()/ar.y)
+            }
         }
+        catch (e: Exception) {e.printStackTrace()}
 
         /*
         * As we are supposed to maintain the orientation PORTRAIT
@@ -575,7 +556,51 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
         val zoomInfo = ZoomInfo()
         zoomInfo.bmpWidth = originalWidth
-        zoomInfo.bmpHeight = originalWidth?.div(ratio)?.toInt()
+        if(ratio != 0.0F) {
+            zoomInfo.bmpHeight = originalWidth.div(ratio).toInt()
+        }
+        else{
+            zoomInfo.bmpHeight = originalHeight
+        }
+        return zoomInfo
+    }
+
+    private fun getZoomInfoForImage(firstSelectedMedia: ImageAdapterData, originalImageAdapterData: ImageAdapterData): ZoomInfo {
+
+        // getting original width of the new selected video
+        val originalWidth = originalImageAdapterData.asset.contentUri.getImageDimensions(requireContext()).width
+        val originalHeight = originalImageAdapterData.asset.contentUri.getVideoDimensions(requireContext()).height
+
+        //TODO get selected media ki list ka first index
+        val width = zoomImageAdapterDataMap[firstSelectedMedia]?.bmpWidth
+        val height = zoomImageAdapterDataMap[firstSelectedMedia]?.bmpHeight
+
+        var ratio = 0.0f
+
+        try {
+            if (width != null && height != null)
+            {
+                val ar = AspectRatio.of(width, height)
+                ratio = (ar.x.toFloat()/ar.y)
+            }
+        }
+        catch (e: Exception) {e.printStackTrace()}
+
+        /*
+        * As we are supposed to maintain the orientation PORTRAIT
+        * So will keep the width same
+        * And change height according to aspect ratio
+        */
+
+
+        val zoomInfo = ZoomInfo()
+        zoomInfo.bmpWidth = originalWidth
+        if(ratio != 0.0F) {
+            zoomInfo.bmpHeight = originalWidth.div(ratio).toInt()
+        }
+        else{
+            zoomInfo.bmpHeight = originalHeight
+        }
         return zoomInfo
 
     }
