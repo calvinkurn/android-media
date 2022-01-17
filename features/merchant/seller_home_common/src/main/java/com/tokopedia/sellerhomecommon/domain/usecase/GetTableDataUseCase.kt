@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sellerhomecommon.domain.gqlquery.GqlGetTableData
 import com.tokopedia.sellerhomecommon.domain.mapper.TableMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
@@ -22,28 +23,13 @@ class GetTableDataUseCase(
     private val tableMapper: TableMapper,
     dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetTableDataResponse, List<TableDataUiModel>>(
-    graphqlRepository, tableMapper, dispatchers, GetTableDataResponse::class.java, QUERY, false
+    graphqlRepository,
+    tableMapper,
+    dispatchers,
+    GetTableDataResponse::class.java,
+    GqlGetTableData.QUERY,
+    false
 ) {
-
-    override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
-        super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
-    }
-
-    override suspend fun executeOnBackground(): List<TableDataUiModel> {
-        val dataKays: List<DataKeyModel> =
-            (params.getObject(DATA_KEYS) as? List<DataKeyModel>).orEmpty()
-        val gqlRequest = GraphqlRequest(QUERY, GetTableDataResponse::class.java, params.parameters)
-        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), cacheStrategy)
-
-        val errors = gqlResponse.getError(GetTableDataResponse::class.java)
-        if (errors.isNullOrEmpty()) {
-            val data = gqlResponse.getData<GetTableDataResponse>()
-            val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
-            return tableMapper.mapRemoteDataToUiData(data, isFromCache, dataKays)
-        } else {
-            throw MessageErrorException(errors.firstOrNull()?.message.orEmpty())
-        }
-    }
 
     companion object {
         private const val DATA_KEYS = "dataKeys"
@@ -65,31 +51,28 @@ class GetTableDataUseCase(
                 putObject(DATA_KEYS, dataKeys)
             }
         }
+    }
 
-        private val QUERY = """
-            query getTableData(${'$'}dataKeys: [dataKey!]!) {
-              fetchSearchTableWidgetData(dataKeys: ${'$'}dataKeys) {
-                data {
-                  dataKey
-                  data {
-                    headers {
-                      title
-                      width
-                    }
-                    rows {
-                      columns {
-                        value
-                        type
-                      }
-                      id
-                    }
-                  }
-                  error
-                  errorMsg
-                  showWidget
-                }
-              }
-            }
-        """.trimIndent()
+    override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
+        super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
+    }
+
+    override suspend fun executeOnBackground(): List<TableDataUiModel> {
+        val dataKeys = (params.getObject(DATA_KEYS) as? List<DataKeyModel>).orEmpty()
+        val gqlRequest = GraphqlRequest(
+            GqlGetTableData,
+            GetTableDataResponse::class.java,
+            params.parameters
+        )
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), cacheStrategy)
+
+        val errors = gqlResponse.getError(GetTableDataResponse::class.java)
+        if (errors.isNullOrEmpty()) {
+            val data = gqlResponse.getData<GetTableDataResponse>()
+            val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
+            return tableMapper.mapRemoteDataToUiData(data, isFromCache, dataKeys)
+        } else {
+            throw MessageErrorException(errors.firstOrNull()?.message.orEmpty())
+        }
     }
 }
