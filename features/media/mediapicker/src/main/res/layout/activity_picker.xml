@@ -28,13 +28,24 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+    <com.tokopedia.picker.ui.widget.selectornav.MediaSelectionNavigationWidget
+        android:id="@+id/media_picker_preview_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:backgroundColorPlaceHolder="@color/Unify_N0"
+        app:canReorder="true"
+        app:layout_constraintBottom_toTopOf="@+id/tab_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:placeholder="@drawable/picker_ic_placeholder_media_preview"
+        tools:visibility="visible" />
+
     <com.tokopedia.unifycomponents.TabsUnify
         android:id="@+id/tab_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

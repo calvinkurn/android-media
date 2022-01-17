@@ -33,7 +33,7 @@ open class CameraFragment : BaseDaggerFragment()
     , GestureDetector.OnGestureListener
     , ViewTreeObserver.OnScrollChangedListener {
 
-    private val param = PickerUiConfig.getFileLoaderParam()
+    private val param = PickerUiConfig.pickerParam()
 
     private val binding: FragmentCameraBinding? by viewBinding()
     private val cameraView by lazy { binding?.cameraView }

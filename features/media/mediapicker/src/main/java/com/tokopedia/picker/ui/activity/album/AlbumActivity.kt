@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.picker.R
 import com.tokopedia.picker.data.entity.Album
 import com.tokopedia.picker.databinding.ActivityAlbumBinding
@@ -22,7 +23,7 @@ class AlbumActivity : BaseActivity() {
     @Inject lateinit var factory: ViewModelProvider.Factory
 
     private val binding: ActivityAlbumBinding? by viewBinding()
-    private val param = PickerUiConfig.getFileLoaderParam()
+    private val param = PickerUiConfig.pickerParam()
 
     private val adapter by lazy {
         AlbumAdapter(listener = onAlbumClickListener)
@@ -50,6 +51,10 @@ class AlbumActivity : BaseActivity() {
             if (it.isNotEmpty()) {
                 adapter.setData(it)
             }
+        }
+
+        viewModel.isLoading.observe(this) {
+            binding?.shimmering?.container?.showWithCondition(it)
         }
     }
 

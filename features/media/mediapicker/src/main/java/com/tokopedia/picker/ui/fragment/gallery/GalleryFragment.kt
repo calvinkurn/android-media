@@ -30,7 +30,7 @@ open class GalleryFragment : BaseDaggerFragment() {
     @Inject lateinit var factory: ViewModelProvider.Factory
 
     private val binding: FragmentGalleryBinding? by viewBinding()
-    private val param = PickerUiConfig.getFileLoaderParam()
+    private val param = PickerUiConfig.pickerParam()
 
     private val adapter by lazy {
         GalleryAdapter(emptyList()) {
@@ -78,8 +78,16 @@ open class GalleryFragment : BaseDaggerFragment() {
     }
 
     private fun initObservable() {
+        lifecycle.addObserver(viewModel)
+
         viewModel.files.observe(viewLifecycleOwner) {
             adapter.setData(it)
+        }
+
+        viewModel.mediaRemoved.observe(viewLifecycleOwner) {
+            it?.let { media ->
+                adapter.removeSelected(media)
+            }
         }
     }
 
@@ -125,7 +133,7 @@ open class GalleryFragment : BaseDaggerFragment() {
         })
 
         adapter.setListener {
-            viewModel.publishMediaSelected(it)
+            viewModel.publishSelectionDataChanged(it)
         }
     }
 
@@ -161,9 +169,9 @@ open class GalleryFragment : BaseDaggerFragment() {
     override fun getScreenName() = "Camera"
 
     companion object {
-        const val RC_ALBUM_SELECTOR = 123
-
-        const val LIST_SPAN_COUNT = 3
+        private const val KEY_SELECTED_MEDIA = "selected_media.key"
+        private const val RC_ALBUM_SELECTOR = 123
+        private const val LIST_SPAN_COUNT = 3
     }
 
 }

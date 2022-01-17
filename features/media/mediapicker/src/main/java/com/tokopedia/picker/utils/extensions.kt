@@ -1,6 +1,12 @@
 package com.tokopedia.picker.utils
 
+import android.content.Context
+import android.widget.ImageView
 import com.google.android.material.tabs.TabLayout
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.utils.image.ImageProcessingUtil
+import java.io.File
 
 fun TabLayout?.addOnTabSelected(
     selected: (Int) -> Unit
@@ -11,3 +17,32 @@ fun TabLayout?.addOnTabSelected(
     override fun onTabReselected(tab: TabLayout.Tab?) {}
     override fun onTabUnselected(tab: TabLayout.Tab?) {}
 })
+
+fun Context.dimensionPixelOffsetOf(dimen: Int) = resources.getDimensionPixelOffset(dimen)
+
+fun Context.dimensionOf(dimen: Int) = resources.getDimension(dimen)
+
+fun ImageView.pickerLoadImage(path: String) {
+    val thumbnailSize = context.dimensionPixelOffsetOf(DP_72)
+    val roundedSize = context.dimensionOf(DP_4)
+
+    val isFitCenter = File(path).let {
+        if (it.exists()) {
+            ImageProcessingUtil.shouldLoadFitCenter(it)
+        } else {
+            false
+        }
+    }
+
+    loadImage(path) {
+        overrideSize(Resize(thumbnailSize, thumbnailSize))
+        setRoundedRadius(roundedSize)
+
+        if (isFitCenter) {
+            fitCenter()
+        } else {
+            centerCrop()
+        }
+    }
+
+}

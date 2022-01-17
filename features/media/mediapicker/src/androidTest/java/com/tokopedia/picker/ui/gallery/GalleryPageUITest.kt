@@ -5,7 +5,7 @@ import com.tokopedia.picker.common.di.TestPickerInterceptor
 import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.core.GalleryPageTest
-import com.tokopedia.picker.utils.G500
+import com.tokopedia.picker.utils.Unify_G500
 import com.tokopedia.test.application.annotations.UiTest
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
@@ -35,7 +35,7 @@ class GalleryPageUITest : GalleryPageTest() {
             interceptor.realMedia(
                 context,
                 -1,
-                PickerUiConfig.getFileLoaderParam()
+                PickerUiConfig.pickerParam()
             )
 
             // When
@@ -97,7 +97,7 @@ class GalleryPageUITest : GalleryPageTest() {
         Thread.sleep(500)
 
         // Then
-        Assertion.assertContinueTextButtonColor(context, G500)
+        Assertion.assertContinueTextButtonColor(context, Unify_G500)
     }
 
 }
