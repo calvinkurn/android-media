@@ -3,6 +3,7 @@ package com.tokopedia.sellerhome.view.helper
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant
+import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.WidgetHeight
@@ -75,6 +76,7 @@ class SellerHomeLayoutHelper @Inject constructor(
     private val getAnnouncementUseCase: Lazy<GetAnnouncementDataUseCase>,
     private val getRecommendationUseCase: Lazy<GetRecommendationDataUseCase>,
     private val getMilestoneDataUseCase: Lazy<GetMilestoneDataUseCase>,
+    private val remoteConfig: Lazy<SellerHomeRemoteConfig>,
     private val dispatcher: CoroutineDispatchers
 ) {
 
@@ -342,7 +344,9 @@ class SellerHomeLayoutHelper @Inject constructor(
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_LINE_GRAPH_TRACE
         }
-        return getDataFromUseCase(getLineGraphDataUseCase.get())
+        val includeCache = remoteConfig.get()
+            .isSellerHomeDashboardCachingEnabled() && getLineGraphDataUseCase.get().isFirstLoad
+        return getDataFromUseCase(getLineGraphDataUseCase.get(), includeCache)
     }
 
     private suspend fun getProgressData(widgets: List<BaseWidgetUiModel<*>>): List<ProgressDataUiModel> {
@@ -429,7 +433,7 @@ class SellerHomeLayoutHelper @Inject constructor(
     }
 
     private suspend fun getMultiLineGraphData(widgets: List<BaseWidgetUiModel<*>>): List<MultiLineGraphDataUiModel> {
-        widgets.onEach { it.isLoaded = true }
+        widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<MultiLineGraphWidgetUiModel>(widgets)
         val params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
         getMultiLineGraphUseCase.get().params = params
@@ -437,11 +441,11 @@ class SellerHomeLayoutHelper @Inject constructor(
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_MULTI_LINE_GRAPH_TRACE
         }
-        return getMultiLineGraphUseCase.get().executeOnBackground()
+        return getDataFromUseCase(getMultiLineGraphUseCase.get())
     }
 
     private suspend fun getRecommendationData(widgets: List<BaseWidgetUiModel<*>>): List<RecommendationDataUiModel> {
-        widgets.onEach { it.isLoaded = true }
+        widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<RecommendationWidgetUiModel>(widgets)
         val params = GetRecommendationDataUseCase.createParams(dataKeys)
         getRecommendationUseCase.get().params = params
@@ -449,11 +453,11 @@ class SellerHomeLayoutHelper @Inject constructor(
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_RECOMMENDATION_TRACE
         }
-        return getRecommendationUseCase.get().executeOnBackground()
+        return getDataFromUseCase(getRecommendationUseCase.get())
     }
 
     private suspend fun getMilestoneData(widgets: List<BaseWidgetUiModel<*>>): List<MilestoneDataUiModel> {
-        widgets.forEach { it.isLoaded = true }
+        widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<MilestoneWidgetUiModel>(widgets)
         val params = GetMilestoneDataUseCase.createParams(dataKeys)
         getMilestoneDataUseCase.get().params = params
@@ -461,11 +465,11 @@ class SellerHomeLayoutHelper @Inject constructor(
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_MILESTONE_TRACE
         }
-        return getMilestoneDataUseCase.get().executeOnBackground()
+        return getDataFromUseCase(getMilestoneDataUseCase.get())
     }
 
     private suspend fun getAnnouncementData(widgets: List<BaseWidgetUiModel<*>>): List<AnnouncementDataUiModel> {
-        widgets.onEach { it.isLoaded = true }
+        widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<AnnouncementWidgetUiModel>(widgets)
         val params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
         getAnnouncementUseCase.get().params = params
@@ -473,7 +477,7 @@ class SellerHomeLayoutHelper @Inject constructor(
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_ANNOUNCEMENT_TRACE
         }
-        return getAnnouncementUseCase.get().executeOnBackground()
+        return getDataFromUseCase(getAnnouncementUseCase.get())
     }
 
     private fun List<BaseWidgetUiModel<*>>.setLoading() {
@@ -483,8 +487,11 @@ class SellerHomeLayoutHelper @Inject constructor(
         }
     }
 
-    private suspend fun <T : Any> getDataFromUseCase(useCase: BaseGqlUseCase<T>): T {
-        useCase.setUseCache(false)
+    private suspend fun <T : Any> getDataFromUseCase(
+        useCase: BaseGqlUseCase<T>,
+        useCache: Boolean = false
+    ): T {
+        useCase.setUseCache(useCache)
         return useCase.executeUseCase()
     }
 

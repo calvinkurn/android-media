@@ -67,7 +67,7 @@ class GetMultiLineGraphUseCase(
             val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
             return mapper.mapRemoteDataToUiData(data, isFromCache)
         } else {
-            throw MessageErrorException(errors.firstOrNull()?.message)
+            throw MessageErrorException(errors.firstOrNull()?.message.orEmpty())
         }
     }
 }
