@@ -1393,13 +1393,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
         processImagePathToUpload(data)?.let { model ->
             remoteConfig?.getBoolean(RemoteConfigKey.TOPCHAT_COMPRESS).let {
-                if (it == null || it == false) {
-                    onSendAndReceiveMessage()
-                    viewModel.startUploadImages(model)
-                    topchatViewState?.scrollToBottom()
-                } else {
-                    viewModel.startCompressImages(model)
-                }
+//                if (it == null || it == false) {
+//                    onSendAndReceiveMessage()
+//                    viewModel.startUploadImages(model)
+//                    topchatViewState?.scrollToBottom()
+//                } else {
+//                    viewModel.startCompressImages(model)
+//                }
+                viewModel.startCompressImages(model)
                 sellerReviewHelper.hasRepliedChat = true
             }
         }
@@ -2658,6 +2659,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 is Fail -> onErrorGetTemplate()
             }
         })
+
+        viewModel.compressImageError.observe(viewLifecycleOwner, {
+            showSnackbarError(getStringResource(it))
+        })
+
     }
 
     override fun onDestroyView() {

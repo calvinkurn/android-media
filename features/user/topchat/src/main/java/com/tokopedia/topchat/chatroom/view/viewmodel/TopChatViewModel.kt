@@ -77,7 +77,6 @@ import kotlinx.coroutines.withContext
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
-import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.*
@@ -258,6 +257,10 @@ class TopChatViewModel @Inject constructor(
     private val _templateChat = MutableLiveData<Result<ArrayList<Visitable<Any>>>>()
     val templateChat: LiveData<Result<ArrayList<Visitable<Any>>>>
         get() = _templateChat
+
+    private val _compressImageError = MutableLiveData<Int>()
+    val compressImageError: LiveData<Int>
+        get() = _compressImageError
 
     var attachProductWarehouseId = "0"
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
@@ -1076,33 +1079,24 @@ class TopChatViewModel @Inject constructor(
         return uploadImageUseCase.isUploading
     }
 
-    fun startCompressImages(it: ImageUploadUiModel) {
-        val isValidImage = ImageUtil.validateImageAttachment(it.imageUrl)
-        if (isValidImage.first) {
-            it.imageUrl?.let { it1 ->
-                val subscription = compressImageUseCase.compressImage(it1)
-                    .subscribe(object : Subscriber<String>() {
-                        override fun onNext(compressedImageUrl: String?) {
-                            it.imageUrl = compressedImageUrl
-                            startUploadImages(it)
-                        }
-
-                        override fun onCompleted() {
-                        }
-
-                        override fun onError(e: Throwable?) {
-                            showErrorSnackbar(R.string.error_compress_image)
-                        }
-                    })
-                compressImageSubscription.clear()
-                compressImageSubscription.add(subscription)
+    fun startCompressImages(imageUploadUiModel: ImageUploadUiModel) {
+        launchCatchError(block = {
+            val isValidImage = ImageUtil.validateImageAttachment(imageUploadUiModel.imageUrl)
+            if (isValidImage.first) {
+                imageUploadUiModel.imageUrl?.let { imageUrl ->
+                    val compressedImageUrl = compressImageUseCase.compressImage(imageUrl)
+                    imageUploadUiModel.imageUrl = compressedImageUrl
+                    startUploadImages(imageUploadUiModel)
+                }
+            } else {
+                when (isValidImage.second) {
+                    ImageUtil.IMAGE_UNDERSIZE -> _compressImageError.value = R.string.undersize_image
+                    ImageUtil.IMAGE_EXCEED_SIZE_LIMIT -> _compressImageError.value = R.string.oversize_image
+                }
             }
-        } else {
-            when (isValidImage.second) {
-                ImageUtil.IMAGE_UNDERSIZE -> showErrorSnackbar(R.string.undersize_image)
-                ImageUtil.IMAGE_EXCEED_SIZE_LIMIT -> showErrorSnackbar(R.string.oversize_image)
-            }
-        }
+        }, onError = {
+            _compressImageError.value = R.string.error_compress_image
+        })
     }
 
     private fun <T> updateLiveDataOnMainThread(liveData: MutableLiveData<T>, value: T) {
