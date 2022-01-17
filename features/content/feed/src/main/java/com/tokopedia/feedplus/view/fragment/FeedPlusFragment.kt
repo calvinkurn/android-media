@@ -8,7 +8,6 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -114,8 +113,6 @@ import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
-import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter
 import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.interest_pick_common.view.viewmodel.SubmitInterestResponseViewModel
@@ -271,6 +268,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val SOURCE_TYPE = "source_type"
         private const val VOD_POST = "VOD_POST"
         private const val TYPE_FEED_X_CARD_LONG_VIDEO: String = "content-long-video"
+        private const val TYPE_LONG_VIDEO: String = "long-video"
         private const val TYPE_FEED_X_CARD_VOD_VIDEO: String = "play-channel-vod"
 
 
@@ -1870,7 +1868,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     .appendQueryParameter(SOURCE_TYPE, VOD_POST)
                     .build().toString()
         }
-        if (feedXCard.type == TYPE_FEED_X_CARD_LONG_VIDEO)
+        if (feedXCard.media.first().type == TYPE_FEED_X_CARD_LONG_VIDEO)
             onVideoPlayerClicked(positionInFeed,0,feedXCard.id,feedXCard.media[0].mediaUrl,feedXCard.author.id,"",feedXCard.followers.isFollowed)
         else
             onGoToLink(finalApplink)

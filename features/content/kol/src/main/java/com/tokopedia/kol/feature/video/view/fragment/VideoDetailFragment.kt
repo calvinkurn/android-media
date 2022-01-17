@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.MediaController
 import android.widget.Toast
+import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -21,12 +22,13 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXComments
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXLike
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.*
-import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateBody
-import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
-import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.DaggerKolComponent
@@ -70,9 +72,8 @@ class VideoDetailFragment :
     @Inject
     lateinit var presenter: VideoDetailContract.Presenter
 
-    lateinit var dynamicPostViewModel: DynamicPostViewModel
+    lateinit var dynamicPostViewModel: DynamicPostUiModel
 
-    lateinit var videoViewModel: VideoViewModel
 
     @Inject
     override lateinit var userSession: UserSessionInterface
@@ -176,24 +177,24 @@ class VideoDetailFragment :
 
     override fun onLikeKolSuccess(rowNumber: Int, action: LikeKolPostUseCase.LikeKolPostAction) {
 
-        val like = dynamicPostViewModel.footer.like
-        like.isChecked = !like.isChecked
-        if (like.isChecked) {
+        val like = dynamicPostViewModel.feedXCard.like
+        like.isLiked = !like.isLiked
+        if (like.isLiked) {
             try {
-                val likeValue = Integer.valueOf(like.fmt) + 1
-                like.fmt = likeValue.toString()
+                val likeValue = Integer.valueOf(like.countFmt) + 1
+                like.countFmt = likeValue.toString()
             } catch (ignored: NumberFormatException) {
             }
 
-            like.value = like.value + 1
+            like.count = like.count + 1
         } else {
             try {
-                val likeValue = Integer.valueOf(like.fmt) - 1
-                like.fmt = likeValue.toString()
+                val likeValue = Integer.valueOf(like.countFmt) - 1
+                like.countFmt = likeValue.toString()
             } catch (ignored: NumberFormatException) {
             }
 
-            like.value = like.value - 1
+            like.count = like.count - 1
         }
         bindLike(like)
     }
@@ -208,16 +209,18 @@ class VideoDetailFragment :
     }
 
     override fun onSuccessGetVideoDetail(visitables: List<Visitable<*>>) {
-        dynamicPostViewModel = visitables[0] as DynamicPostViewModel
-        bindHeader(dynamicPostViewModel.header)
-        bindCaption(dynamicPostViewModel.caption, dynamicPostViewModel.template.cardpost.body)
-        bindFooter(dynamicPostViewModel.footer, dynamicPostViewModel.template.cardpost.footer)
-        if (dynamicPostViewModel.contentList[index] is VideoViewModel) {
-            if (dynamicPostViewModel.contentList.size > index) {
-                videoViewModel = dynamicPostViewModel.contentList[index] as VideoViewModel
+        if (visitables[0] is DynamicPostUiModel)
+        dynamicPostViewModel = visitables[0] as DynamicPostUiModel
+        val feedXCard = dynamicPostViewModel.feedXCard
+        bindHeader(dynamicPostViewModel.feedXCard)
+        bindCaption(dynamicPostViewModel.feedXCard)
+        bindFooter(dynamicPostViewModel.feedXCard)
+
+            if (feedXCard.media.isNotEmpty()) {
+                feedXCard.media.firstOrNull()?.let { initPlayer(it.mediaUrl) }
             }
-            initPlayer(videoViewModel.url)
-        }
+
+
     }
 
     override fun showLoading() {
@@ -294,8 +297,8 @@ class VideoDetailFragment :
         ivClose.setOnClickListener {
             val intent = Intent()
             intent.putExtra(POST_POSITION, arguments?.getInt(POST_POSITION))
-            intent.putExtra(PARAM_COMMENT_COUNT, dynamicPostViewModel.footer.comment.value)
-            intent.putExtra(PARAM_LIKE_COUNT, dynamicPostViewModel.footer.like.isChecked)
+            intent.putExtra(PARAM_COMMENT_COUNT, dynamicPostViewModel.feedXCard.comments.count)
+            intent.putExtra(PARAM_LIKE_COUNT, dynamicPostViewModel.feedXCard.like.isLiked)
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
         }
@@ -351,47 +354,47 @@ class VideoDetailFragment :
         }
     }
 
-    private fun bindHeader(header: Header) {
-        header.let {
+    private fun bindHeader(feedXCard: FeedXCard) {
+        val author = feedXCard.author
+        author.let {
             headerLayout.visibility = View.VISIBLE
-            if (!TextUtils.isEmpty(it.avatar)) {
-                authorImage.loadImageCircle(it.avatar)
+            if (!TextUtils.isEmpty(it.logoURL)) {
+                authorImage.loadImageCircle(it.logoURL)
             } else {
                 authorImage.setImageDrawable(
-                    MethodChecker.getDrawable(
-                        requireActivity(),
-                        com.tokopedia.design.R.drawable.error_drawable
-                    )
+                        MethodChecker.getDrawable(
+                                requireActivity(),
+                                com.tokopedia.design.R.drawable.error_drawable
+                        )
                 )
             }
-            if (it.avatarBadgeImage.isNotBlank()) {
+            if (it.badgeURL.isNotBlank()) {
                 authorBadge.show()
-                authorBadge.loadImage(it.avatarBadgeImage)
+                authorBadge.loadImage(it.badgeURL)
                 authorTitle.setMargin(
-                    authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_4),
-                    0,
-                    authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                    0
+                        authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_4),
+                        0,
+                        authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                        0
                 )
             } else {
                 authorBadge.hide()
                 authorTitle.setMargin(
-                    authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                    0,
-                    authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                    0
+                        authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                        0,
+                        authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                        0
                 )
             }
 
-            authorTitle.text = MethodChecker.fromHtml(it.avatarTitle)
-
-            it.avatarDate = TimeConverter.generateTime(requireActivity(), it.avatarDate)
-            authorSubtitile.text = it.avatarDate
+            authorTitle.text = MethodChecker.fromHtml(it.name)
         }
+
+        authorSubtitile.text = TimeConverter.generateTime(requireActivity(), feedXCard.publishedAt)
     }
 
-    private fun bindCaption(captionModel: Caption, template: TemplateBody) {
-        captionModel.let {
+    private fun bindCaption(feedXCard: FeedXCard) {
+        feedXCard.let {
             if (it.text.isEmpty()) {
                 captionLayout.visibility = View.GONE
             } else {
@@ -400,10 +403,11 @@ class VideoDetailFragment :
         }
     }
 
-    private fun bindFooter(footer: Footer, template: TemplateFooter?) {
-        footer.let {
+    private fun bindFooter(feedXCard: FeedXCard) {
+        feedXCard.let {
             bottomLayout.visibility = View.VISIBLE
-            if (template?.like == true) {
+            val like = feedXCard.like
+            if (like.likedBy.isNotEmpty() || like.count != 0) {
                 likeIcon.show()
                 likeText.show()
                 bindLike(it.like)
@@ -411,32 +415,31 @@ class VideoDetailFragment :
                 likeIcon.hide()
                 likeText.hide()
             }
+            val comments = feedXCard.comments
 
-            if (template?.comment == true) {
+            if (comments.count != 0) {
                 commentIcon.show()
                 commentText.show()
-                bindComment(it.comment)
+                bindComment(it.comments)
             } else {
                 commentIcon.hide()
                 commentText.hide()
             }
 
-            if (template?.share == true) {
+
                 shareIcon.show()
                 shareText.show()
-                shareText.text = footer.share.text
-                shareIcon.setOnClickListener {
+                var desc = context?.getString(com.tokopedia.feedcomponent.R.string.feed_share_default_text)
+
+            shareIcon.setOnClickListener {
                     doShare(
                         String.format(
                             "%s",
-                            dynamicPostViewModel.footer.share.description
-                        ), dynamicPostViewModel.footer.share.title
+                            desc?.replace("%s", feedXCard.author.name),
+                        ), feedXCard.author.name + " `post"
                     )
                 }
-            } else {
-                shareIcon.hide()
-                shareText.hide()
-            }
+
         }
 
     }
@@ -450,11 +453,11 @@ class VideoDetailFragment :
         )
     }
 
-    private fun bindLike(like: Like) {
+    private fun bindLike(like: FeedXLike) {
         when {
-            like.isChecked -> {
+            like.isLiked -> {
                 likeIcon.loadImageWithoutPlaceholder(com.tokopedia.feedcomponent.R.drawable.ic_thumb_green)
-                likeText.text = like.fmt
+                likeText.text = like.countFmt
                 likeText.setTextColor(
                     MethodChecker.getColor(
                         likeText.context,
@@ -462,9 +465,9 @@ class VideoDetailFragment :
                     )
                 )
             }
-            like.value > 0 -> {
+            like.count > 0 -> {
                 likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
-                likeText.text = like.fmt
+                likeText.text = like.countFmt
                 likeText.setTextColor(
                     MethodChecker.getColor(
                         likeText.context,
@@ -485,22 +488,22 @@ class VideoDetailFragment :
         }
     }
 
-    private fun bindComment(comment: Comment) {
+    private fun bindComment(comments: FeedXComments) {
         commentText.text =
-            if (comment.value == 0) getString(com.tokopedia.feedcomponent.R.string.kol_action_comment)
-            else comment.fmt
+            if (comments.count == 0) getString(com.tokopedia.feedcomponent.R.string.kol_action_comment)
+            else comments.countFmt
     }
 
     private fun calculateTotalComment(totalNewComment: Int) {
-        val comment: Comment = dynamicPostViewModel.footer.comment
+        val comment: FeedXComments = dynamicPostViewModel.feedXCard.comments
         try {
-            val commentValue = Integer.valueOf(comment.fmt) + totalNewComment
-            comment.fmt = commentValue.toString()
+            val commentValue = Integer.valueOf(comment.countFmt) + totalNewComment
+            comment.countFmt = commentValue.toString()
         } catch (ignored: NumberFormatException) {
         }
 
-        comment.value = comment.value + totalNewComment
-        commentText.text = comment.fmt
+        comment.count = comment.count + totalNewComment
+        commentText.text = comment.countFmt
     }
 
     private fun goToLogin() {

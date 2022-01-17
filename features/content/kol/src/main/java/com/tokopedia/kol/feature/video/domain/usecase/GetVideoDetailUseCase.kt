@@ -3,11 +3,11 @@ package com.tokopedia.kol.feature.video.domain.usecase
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
+import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
-import rx.Observable
-import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
@@ -15,11 +15,17 @@ import javax.inject.Inject
  */
 class GetVideoDetailUseCase
 @Inject constructor(@ApplicationContext private val context: Context,
-                    private val getDynamicFeedUseCase: GetDynamicFeedUseCase)
-    :UseCase<DynamicFeedDomainModel>(){
+                    private val getDynamicFeedUseCase: GetDynamicFeedNewUseCase,
+                    graphqlRepository: GraphqlRepository)
+    : GraphqlUseCase<DynamicFeedDomainModel>(graphqlRepository){
 
-    override fun createObservable(requestParams: RequestParams?): Observable<DynamicFeedDomainModel> {
-        return getDynamicFeedUseCase.createObservable(requestParams).subscribeOn(Schedulers.io())
+     suspend fun execute(cursor: String = "", limit: Int = 5, detailId: String = "") : DynamicFeedDomainModel{
+        try {
+            return  getDynamicFeedUseCase.execute(cursor, limit, detailId)
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            throw e
+        }
     }
 
     companion object {
