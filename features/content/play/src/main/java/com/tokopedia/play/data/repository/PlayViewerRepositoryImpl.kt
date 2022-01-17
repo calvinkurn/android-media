@@ -11,8 +11,10 @@ class PlayViewerRepositoryImpl @Inject constructor(
         private val partnerRepo: PlayViewerPartnerRepository,
         private val likeRepo: PlayViewerLikeRepository,
         private val cartRepo: PlayViewerCartRepository,
+        private val userReportRepo: PlayViewerUserReportRepository
 ) : PlayViewerRepository,
         PlayViewerCartRepository by cartRepo,
         PlayViewerInteractiveRepository by interactiveRepo,
         PlayViewerLikeRepository by likeRepo,
-        PlayViewerPartnerRepository by partnerRepo
+        PlayViewerPartnerRepository by partnerRepo,
+        PlayViewerUserReportRepository by userReportRepo

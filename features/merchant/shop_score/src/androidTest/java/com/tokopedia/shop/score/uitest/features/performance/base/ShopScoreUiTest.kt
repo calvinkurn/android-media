@@ -17,19 +17,31 @@ import com.tokopedia.shop.score.performance.domain.model.ShopScoreLevelResponse
 import com.tokopedia.shop.score.performance.presentation.model.HeaderShopPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSellerUiModel
+import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
-import com.tokopedia.shop.score.stub.common.util.getShopPerformanceFragment
-import com.tokopedia.shop.score.stub.common.util.getTextHtml
-import com.tokopedia.shop.score.stub.common.util.isViewDisplayed
-import com.tokopedia.shop.score.stub.common.util.isViewNotDisplayed
-import com.tokopedia.shop.score.stub.common.util.onClick
-import com.tokopedia.shop.score.stub.common.util.onContentDescPopup
-import com.tokopedia.shop.score.stub.common.util.onIdView
-import com.tokopedia.shop.score.stub.common.util.smoothScrollTo
-import com.tokopedia.shop.score.stub.common.util.smoothScrollToFaq
-import com.tokopedia.shop.score.stub.common.util.withTextStr
-import com.tokopedia.shop.score.stub.performance.domain.response.ShopInfoPeriodResponseStub
-import com.tokopedia.shop.score.stub.performance.domain.response.ShopScoreResponseStub
+import com.tokopedia.shop.score.uitest.stub.common.UserSessionStub
+import com.tokopedia.shop.score.uitest.stub.common.graphql.repository.GraphqlRepositoryStub
+import com.tokopedia.shop.score.uitest.stub.common.util.AndroidTestUtil
+import com.tokopedia.shop.score.uitest.stub.common.util.ShopPerformanceComponentStubInstance
+import com.tokopedia.shop.score.uitest.stub.common.util.ShopScorePrefManagerStub
+import com.tokopedia.shop.score.uitest.stub.common.util.getShopPerformanceFragment
+import com.tokopedia.shop.score.uitest.stub.common.util.getTextHtml
+import com.tokopedia.shop.score.uitest.stub.common.util.isViewDisplayed
+import com.tokopedia.shop.score.uitest.stub.common.util.isViewNotDisplayed
+import com.tokopedia.shop.score.uitest.stub.common.util.onClick
+import com.tokopedia.shop.score.uitest.stub.common.util.onContentDescPopup
+import com.tokopedia.shop.score.uitest.stub.common.util.onIdView
+import com.tokopedia.shop.score.uitest.stub.common.util.scrollTo
+import com.tokopedia.shop.score.uitest.stub.common.util.smoothScrollTo
+import com.tokopedia.shop.score.uitest.stub.common.util.smoothScrollToFaq
+import com.tokopedia.shop.score.uitest.stub.common.util.withTextStr
+import com.tokopedia.shop.score.uitest.stub.performance.domain.mapper.ShopScoreCommonMapperStub
+import com.tokopedia.shop.score.uitest.stub.performance.domain.mapper.ShopScoreMapperStub
+import com.tokopedia.shop.score.uitest.stub.performance.domain.response.ShopInfoPeriodResponseStub
+import com.tokopedia.shop.score.uitest.stub.performance.domain.response.ShopScoreResponseStub
+import com.tokopedia.shop.score.uitest.stub.performance.domain.usecase.GetShopInfoPeriodUseCaseStub
+import com.tokopedia.shop.score.uitest.stub.performance.domain.usecase.GetShopPerformanceUseCaseStub
+import com.tokopedia.shop.score.uitest.stub.performance.presentation.activity.ShopPerformanceActivityStub
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import org.hamcrest.CoreMatchers.`is`
@@ -463,6 +475,7 @@ abstract class ShopScoreUiTest: BaseShopScoreTest() {
         onContentDescPopup(context.getString(R.string.title_coachmark_shop_score_1)).isViewDisplayed()
         onContentDescPopup(context.getString(R.string.desc_coachmark_shop_score_1)).isViewDisplayed()
         onContentDescPopup(coachMark2.stepButtonText).onClick()
+        activityRule.activity.scrollTo<PeriodDetailPerformanceUiModel>()
         onContentDescPopup(context.getString(R.string.title_coachmark_shop_score_2)).isViewDisplayed()
         onContentDescPopup(context.getString(R.string.desc_coachmark_shop_score_2)).isViewDisplayed()
         onContentDescPopup(coachMark2.stepButtonTextLastChild).onClick()
