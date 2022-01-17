@@ -113,6 +113,6 @@ class OvoActivationBottomSheetRobot {
             (view as? WebView)?.loadUrl("https://api-staging.tokopedia.com/cart/v2/receiver/?is_success=${if (isSuccess) 1 else 0}")
         }
         //block main thread for webview processing
-        Thread.sleep(5000)
+        Thread.sleep(2000)
     }
 }
