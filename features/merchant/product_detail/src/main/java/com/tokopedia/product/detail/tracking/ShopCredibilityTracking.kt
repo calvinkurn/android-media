@@ -60,7 +60,7 @@ object ShopCredibilityTracking {
             Hit.EVENT to "clickPG",
             Hit.EVENT_ACTION to ACTION_CLICK_SHOP_TICKER,
             Hit.EVENT_CATEGORY to Value.PRODUCT_DETAIL_PAGE,
-            Hit.EVENT_LABEL to "shop_id:$shopId;title:${data.title};ticker_type:${data.tickerType};message:${data.message};button_text:${data.buttonText};",
+            Hit.EVENT_LABEL to "shop_id:$shopId;title:$SHOP_COMPONENT_TICKER;ticker_type:${data.tickerType};message:${data.message};button_text:${data.buttonText};",
             Hit.BUSINESS_UNIT to Value.PRODUCT_DETAIL_PAGE,
             Hit.COMPONENT to "comp:${data.componentName};temp:${data.componentType};elem:$ACTION_CLICK_SHOP_TICKER;cpos:${data.componentPosition};",
             Hit.CURRENT_SITE to Value.TOKOPEDIA_MARKETPLACE,
