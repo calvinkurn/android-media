@@ -8,7 +8,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
-    
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_review_title_catalog"
         android:layout_width="wrap_content"
