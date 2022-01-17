@@ -140,6 +140,11 @@ class ProductListAdapter(
 
     override fun getItemCount() = list.size
 
+    override fun onViewRecycled(holder: AbstractViewHolder<*>) {
+        super.onViewRecycled(holder)
+        holder.onViewRecycled()
+    }
+
     fun appendItems(list: List<Visitable<*>>) {
         val start = itemCount
         this.list.addAll(list)

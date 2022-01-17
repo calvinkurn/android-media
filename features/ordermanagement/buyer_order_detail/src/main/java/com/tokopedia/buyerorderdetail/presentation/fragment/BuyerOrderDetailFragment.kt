@@ -136,7 +136,7 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
             this
         )
     }
-    private val adapter: BuyerOrderDetailAdapter by lazy {
+    protected open val adapter: BuyerOrderDetailAdapter by lazy {
         BuyerOrderDetailAdapter(typeFactory)
     }
     private val requestCancelResultDialog: RequestCancelResultDialog by lazy {
