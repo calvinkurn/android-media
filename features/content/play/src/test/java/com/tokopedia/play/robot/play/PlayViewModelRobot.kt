@@ -154,6 +154,10 @@ class PlayViewModelRobot(
         viewModel.onShowProductSheet(bottomSheetHeight)
     }
 
+    fun showCouponBottomSheet(bottomSheetHeight: Int = 50){
+        viewModel.showCouponSheet(bottomSheetHeight)
+    }
+
     fun hideProductBottomSheet() {
         viewModel.onHideProductSheet()
     }
@@ -172,6 +176,10 @@ class PlayViewModelRobot(
 
     fun hideLeaderboardBottomSheet() {
         viewModel.submitAction(ClickCloseLeaderboardSheetAction)
+    }
+
+    fun hideCouponBottomSheet(){
+        viewModel.hideCouponSheet()
     }
 
     fun goBack() = viewModel.goBack()
