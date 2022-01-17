@@ -55,7 +55,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStic
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
-import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.network.TopchatCacheManager
@@ -223,13 +223,13 @@ abstract class TopchatRoomTest {
 
     protected open fun enableUploadImageByService() {
         remoteConfig.setString(
-            TopChatRoomPresenter.ENABLE_UPLOAD_IMAGE_SERVICE, "true"
+            TopChatViewModel.ENABLE_UPLOAD_IMAGE_SERVICE, "true"
         )
     }
 
     protected open fun disableUploadImageByService() {
         remoteConfig.setString(
-            TopChatRoomPresenter.ENABLE_UPLOAD_IMAGE_SERVICE, "false"
+            TopChatViewModel.ENABLE_UPLOAD_IMAGE_SERVICE, "false"
         )
     }
 

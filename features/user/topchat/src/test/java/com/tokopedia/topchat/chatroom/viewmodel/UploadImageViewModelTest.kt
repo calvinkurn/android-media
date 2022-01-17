@@ -3,7 +3,7 @@ package com.tokopedia.topchat.chatroom.viewmodel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
-import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import io.mockk.every
@@ -20,13 +20,13 @@ class UploadImageViewModelTest: BaseTopChatViewModelTest() {
 
     private fun disableUploadByService() {
         every {
-            remoteConfig.getBoolean(TopChatRoomPresenter.ENABLE_UPLOAD_IMAGE_SERVICE)
+            remoteConfig.getBoolean(TopChatViewModel.ENABLE_UPLOAD_IMAGE_SERVICE)
         } returns false
     }
 
     private fun enableUploadByService() {
         every {
-            remoteConfig.getBoolean(TopChatRoomPresenter.ENABLE_UPLOAD_IMAGE_SERVICE, any())
+            remoteConfig.getBoolean(TopChatViewModel.ENABLE_UPLOAD_IMAGE_SERVICE, any())
         } returns true
         mockkStatic(DeviceInfo::getModelName)
     }

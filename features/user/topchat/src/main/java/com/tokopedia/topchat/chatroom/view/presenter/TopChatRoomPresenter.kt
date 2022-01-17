@@ -77,7 +77,6 @@ import kotlin.coroutines.CoroutineContext
 open class TopChatRoomPresenter @Inject constructor(
     userSession: UserSessionInterface,
     private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
-    private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
     TopChatContract.Presenter, CoroutineScope {
@@ -88,34 +87,6 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun destroyWebSocket() { }
 
-    fun getTemplate(isSeller: Boolean) {
-        getTemplateChatRoomUseCase.execute(
-            GetTemplateChatRoomUseCase.generateParam(isSeller),
-            object : Subscriber<GetTemplateUiModel>() {
-                override fun onNext(templateUiModel: GetTemplateUiModel?) {
-                    val templateList = arrayListOf<Visitable<Any>>()
-                    if (templateUiModel != null) {
-                        if (templateUiModel.isEnabled) {
-                            templateUiModel.listTemplate?.let {
-                                templateList.addAll(it)
-                            }
-                        }
-                    }
-                    view?.onSuccessGetTemplate(templateList)
-                }
-
-                override fun onCompleted() {
-
-                }
-
-                override fun onError(e: Throwable?) {
-                    view?.onErrorGetTemplate()
-                }
-
-            }
-        )
-    }
-
     override fun isUploading(): Boolean {
         return false
     }
@@ -123,7 +94,6 @@ open class TopChatRoomPresenter @Inject constructor(
     override fun showErrorSnackbar(@StringRes stringId: Int) {}
 
     override fun detachView() {
-        getTemplateChatRoomUseCase.unsubscribe()
         super.detachView()
     }
 

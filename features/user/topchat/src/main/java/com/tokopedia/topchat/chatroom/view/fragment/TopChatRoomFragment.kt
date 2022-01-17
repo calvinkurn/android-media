@@ -724,7 +724,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             chatRoom, onToolbarClicked(), this
         )
         topchatViewState?.onSetCustomMessage(customMessage)
-        presenter.getTemplate(chatRoom.isSeller())
+        viewModel.getTemplate(chatRoom.isSeller())
         viewModel.getStickerGroupList(chatRoom.isSeller())
         replyCompose?.setReplyListener(this)
         if (isSeller()) {
@@ -1414,7 +1414,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun onReturnFromSettingTemplate() {
-        presenter.getTemplate(getUserSession().shopId == shopId.toString())
+        viewModel.getTemplate(getUserSession().shopId == shopId.toString())
     }
 
     private fun onReturnFromReportUser(data: Intent?, resultCode: Int) {
@@ -2659,6 +2659,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         viewModel.uploadImageService.observe(viewLifecycleOwner, { image ->
             uploadImage(image)
+        })
+
+        viewModel.templateChat.observe(viewLifecycleOwner, {
+            when(it) {
+                is Success -> onSuccessGetTemplate(it.data)
+                is Fail -> onErrorGetTemplate()
+            }
         })
     }
 

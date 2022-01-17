@@ -115,7 +115,8 @@ class TopChatViewModel @Inject constructor(
     private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
     private var payloadGenerator: WebsocketPayloadGenerator,
     private var uploadImageUseCase: TopchatUploadImageUseCase,
-    private var compressImageUseCase: CompressImageUseCase
+    private var compressImageUseCase: CompressImageUseCase,
+    private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase
 ) : BaseViewModel(dispatcher.main), LifecycleObserver {
 
     private val _messageId = MutableLiveData<Result<String>>()
@@ -252,6 +253,10 @@ class TopChatViewModel @Inject constructor(
     private val _uploadImageService = MutableLiveData<ImageUploadServiceModel>()
     val uploadImageService: LiveData<ImageUploadServiceModel>
         get() = _uploadImageService
+
+    private val _templateChat = MutableLiveData<Result<ArrayList<Visitable<Any>>>>()
+    val templateChat: LiveData<Result<ArrayList<Visitable<Any>>>>
+        get() = _templateChat
 
     var attachProductWarehouseId = "0"
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
@@ -1052,7 +1057,7 @@ class TopChatViewModel @Inject constructor(
     private fun isEnableUploadImageService(): Boolean {
         return try {
             remoteConfig.getBoolean(
-                TopChatRoomPresenter.ENABLE_UPLOAD_IMAGE_SERVICE, false
+                ENABLE_UPLOAD_IMAGE_SERVICE, false
             ) && !isProblematicDevice()
         } catch (ex: Exception) {
             false
@@ -1111,6 +1116,21 @@ class TopChatViewModel @Inject constructor(
 
     private fun showErrorSnackbar(@StringRes stringId: Int) {
         _errorSnackbarStringRes.value = stringId
+    }
+
+    fun getTemplate(isSeller: Boolean) {
+        launchCatchError(block = {
+            val result = getTemplateChatRoomUseCase.getTemplateChat(isSeller)
+            val templateList = arrayListOf<Visitable<Any>>()
+            if (result.isEnabled) {
+                result.listTemplate?.let {
+                    templateList.addAll(it)
+                }
+            }
+            _templateChat.value = Success(templateList)
+        }, onError = {
+            _templateChat.value = Fail(it)
+        })
     }
 
     companion object {
