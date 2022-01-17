@@ -77,7 +77,8 @@ class CouponSettingViewModel @Inject constructor(
     }
 
     fun isValidCashbackDiscountAmount(cashbackDiscountAmount: Int): Boolean {
-        return cashbackDiscountAmount > MINIMUM_CASHBACK_DISCOUNT_AMOUNT
+
+        return cashbackDiscountAmount >= MINIMUM_CASHBACK_DISCOUNT_AMOUNT
     }
 
     fun isValidCashbackMinimumPurchase(

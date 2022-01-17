@@ -17,14 +17,18 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.TextAreaUnify
 import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.consts.LocaleConstant
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
-import com.tokopedia.vouchercreation.common.extension.onTextChanged
+import com.tokopedia.vouchercreation.common.extension.digitsOnlyInt
+import com.tokopedia.vouchercreation.common.textwatcher.NumberThousandSeparatorTextWatcher
 import com.tokopedia.vouchercreation.databinding.FragmentCouponSettingBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
 import com.tokopedia.vouchercreation.product.create.domain.entity.DiscountType
 import com.tokopedia.vouchercreation.product.create.domain.entity.MinimumPurchaseType
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.CouponSettingViewModel
 import timber.log.Timber
+import java.text.DecimalFormat
+import java.text.NumberFormat
 import javax.inject.Inject
 
 
@@ -107,24 +111,40 @@ class CouponSettingFragment : BaseDaggerFragment() {
     }
 
     private fun setupTextAreaListener() {
+        val numberFormatter = NumberFormat.getInstance(LocaleConstant.INDONESIA) as DecimalFormat
+        numberFormatter.applyPattern("#,###,###")
+
         with(binding) {
-            textAreaMinimumDiscount.textAreaInput.onTextChanged { text ->
+
+            textAreaMinimumDiscount.textAreaInput.addTextChangedListener(NumberThousandSeparatorTextWatcher(
+                textAreaMinimumDiscount.textAreaInput,
+                numberFormatter
+            ) { number, formattedNumber ->
+
+                textAreaMinimumDiscount.textAreaInput.setText(formattedNumber)
+                textAreaMinimumDiscount.textAreaInput.setSelection(binding.textAreaMinimumDiscount.textAreaInput.text?.length ?: 0)
+
                 val isValidInput =
-                    viewModel.isValidCashbackDiscountAmount(text.trim().toIntSafely())
+                    viewModel.isValidCashbackDiscountAmount(number)
                 if (isValidInput) {
                     clearErrorMessage(binding.textAreaMinimumDiscount)
                 } else {
-                    showErrorMessage(
-                        binding.textAreaMinimumDiscount,
-                        getString(R.string.error_message_invalid_min_purchase)
-                    )
+                    showErrorMessage(binding.textAreaMinimumDiscount, getString(R.string.error_message_invalid_min_purchase))
                 }
                 validateInput()
-            }
-            textAreaMinimumPurchase.textAreaInput.onTextChanged { text ->
-                val discountAmount = binding.textAreaMinimumDiscount.textAreaInput.text.toString().trim().toIntSafely()
+            })
+
+            textAreaMinimumPurchase.textAreaInput.addTextChangedListener(NumberThousandSeparatorTextWatcher(
+                textAreaMinimumPurchase.textAreaInput,
+                numberFormatter
+            ) { number, formattedNumber ->
+
+                textAreaMinimumPurchase.textAreaInput.setText(formattedNumber)
+                textAreaMinimumPurchase.textAreaInput.setSelection(binding.textAreaMinimumPurchase.textAreaInput.text?.length ?: 0)
+
+                val discountAmount = binding.textAreaMinimumDiscount.textAreaInput.text.toString().trim().digitsOnlyInt()
                 val isValidInput =
-                    viewModel.isValidCashbackMinimumPurchase(text.trim().toIntSafely(), discountAmount)
+                    viewModel.isValidCashbackMinimumPurchase(number, discountAmount)
                 if (isValidInput) {
                     clearErrorMessage(binding.textAreaMinimumPurchase)
                 } else {
@@ -134,10 +154,18 @@ class CouponSettingFragment : BaseDaggerFragment() {
                     )
                 }
                 validateInput()
-            }
-            textAreaQuota.textAreaInput.onTextChanged { text ->
+            })
+
+            textAreaQuota.textAreaInput.addTextChangedListener(NumberThousandSeparatorTextWatcher(
+                textAreaQuota.textAreaInput,
+                numberFormatter
+            ) { number, formattedNumber ->
+
+                textAreaQuota.textAreaInput.setText(formattedNumber)
+                textAreaQuota.textAreaInput.setSelection(binding.textAreaQuota.textAreaInput.text?.length ?: 0)
+
                 val isValidInput =
-                    viewModel.isValidCashbackQuota(text.trim().toIntSafely())
+                    viewModel.isValidCashbackQuota(number)
                 if (isValidInput) {
                     clearErrorMessage(binding.textAreaQuota)
                 } else {
@@ -147,35 +175,61 @@ class CouponSettingFragment : BaseDaggerFragment() {
                     )
                 }
                 validateInput()
-            }
-            textAreaFreeShippingDiscountAmount.textAreaInput.onTextChanged { text ->
-                val isValidInput = viewModel.isValidFreeShippingDiscountAmount(text.trim().toIntSafely())
+            })
+
+            textAreaFreeShippingDiscountAmount.textAreaInput.addTextChangedListener(NumberThousandSeparatorTextWatcher(
+                textAreaFreeShippingDiscountAmount.textAreaInput,
+                numberFormatter
+            ) { number, formattedNumber ->
+
+                textAreaFreeShippingDiscountAmount.textAreaInput.setText(formattedNumber)
+                textAreaFreeShippingDiscountAmount.textAreaInput.setSelection(binding.textAreaFreeShippingDiscountAmount.textAreaInput.text?.length ?: 0)
+
+                val isValidInput = viewModel.isValidFreeShippingDiscountAmount(number)
                 if (isValidInput) {
                     clearErrorMessage(binding.textAreaFreeShippingDiscountAmount)
                 } else {
                     showErrorMessage(binding.textAreaFreeShippingDiscountAmount, getString(R.string.error_message_invalid_min_purchase))
                 }
                 validateInput()
-            }
-            textAreaFreeShippingMinimumPurchase.textAreaInput.onTextChanged { text ->
-                val freeShippingDiscountAmount = binding.textAreaFreeShippingDiscountAmount.textAreaInput.text.toString().trim().toIntSafely()
-                val isValidInput = viewModel.isValidFreeShippingMinimumPurchase(text.trim().toIntSafely(), freeShippingDiscountAmount)
+            })
+
+
+            textAreaFreeShippingMinimumPurchase.textAreaInput.addTextChangedListener(NumberThousandSeparatorTextWatcher(
+                textAreaFreeShippingMinimumPurchase.textAreaInput,
+                numberFormatter
+            ) { number, formattedNumber ->
+
+                textAreaFreeShippingMinimumPurchase.textAreaInput.setText(formattedNumber)
+                textAreaFreeShippingMinimumPurchase.textAreaInput.setSelection(binding.textAreaFreeShippingMinimumPurchase.textAreaInput.text?.length ?: 0)
+
+                val freeShippingDiscountAmount = binding.textAreaFreeShippingDiscountAmount.textAreaInput.text.toString().trim().digitsOnlyInt()
+                val isValidInput = viewModel.isValidFreeShippingMinimumPurchase(number, freeShippingDiscountAmount)
                 if (isValidInput) {
                     clearErrorMessage(binding.textAreaFreeShippingMinimumPurchase)
                 } else {
                     showErrorMessage(binding.textAreaFreeShippingMinimumPurchase, getString(R.string.error_message_invalid_shipping_fee))
                 }
                 validateInput()
-            }
-            textAreaQuotaFreeShipping.textAreaInput.onTextChanged { text ->
-                val isValidInput = viewModel.isValidFreeShippingQuota(text.trim().toIntSafely())
+            })
+
+            textAreaQuotaFreeShipping.textAreaInput.addTextChangedListener(NumberThousandSeparatorTextWatcher(
+                textAreaQuotaFreeShipping.textAreaInput,
+                numberFormatter
+            ) { number, formattedNumber ->
+
+                textAreaQuotaFreeShipping.textAreaInput.setText(formattedNumber)
+                textAreaQuotaFreeShipping.textAreaInput.setSelection(binding.textAreaQuotaFreeShipping.textAreaInput.text?.length ?: 0)
+
+                val isValidInput = viewModel.isValidFreeShippingQuota(number)
                 if (isValidInput) {
                     clearErrorMessage(binding.textAreaQuotaFreeShipping)
                 } else {
                     showErrorMessage(binding.textAreaQuotaFreeShipping, getString(R.string.error_message_invalid_free_shipping_quota))
                 }
                 validateInput()
-            }
+            })
+
         }
     }
 
@@ -296,13 +350,13 @@ class CouponSettingFragment : BaseDaggerFragment() {
     }
 
     private fun validateInput() {
-        val cashbackDiscountAmount = binding.textAreaMinimumDiscount.textAreaInput.text.toString().trim().toIntSafely()
-        val cashbackMinimumPurchase = binding.textAreaMinimumPurchase.textAreaInput.text.toString().trim().toIntSafely()
-        val cashbackQuota = binding.textAreaQuota.textAreaInput.text.toString().trim().toIntSafely()
+        val cashbackDiscountAmount = binding.textAreaMinimumDiscount.textAreaInput.text.toString().trim().digitsOnlyInt()
+        val cashbackMinimumPurchase = binding.textAreaMinimumPurchase.textAreaInput.text.toString().trim().digitsOnlyInt()
+        val cashbackQuota = binding.textAreaQuota.textAreaInput.text.toString().trim().digitsOnlyInt()
 
-        val freeShippingDiscountAmount = binding.textAreaFreeShippingDiscountAmount.textAreaInput.text.toString().trim().toIntSafely()
-        val freeShippingMinimumPurchase = binding.textAreaFreeShippingMinimumPurchase.textAreaInput.text.toString().trim().toIntSafely()
-        val freeShippingQuota = binding.textAreaQuotaFreeShipping.textAreaInput.text.toString().trim().toIntSafely()
+        val freeShippingDiscountAmount = binding.textAreaFreeShippingDiscountAmount.textAreaInput.text.toString().trim().digitsOnlyInt()
+        val freeShippingMinimumPurchase = binding.textAreaFreeShippingMinimumPurchase.textAreaInput.text.toString().trim().digitsOnlyInt()
+        val freeShippingQuota = binding.textAreaQuotaFreeShipping.textAreaInput.text.toString().trim().digitsOnlyInt()
 
         viewModel.validateInput(
             selectedCouponType,
@@ -328,11 +382,4 @@ class CouponSettingFragment : BaseDaggerFragment() {
         view.textAreaWrapper.error = EMPTY_STRING
     }
 
-    private fun String.toIntSafely(): Int {
-        return try {
-            this.toInt()
-        } catch (e: Exception) {
-            0
-        }
-    }
 }
