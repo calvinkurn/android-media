@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.InboxReputationDetailViewModel
+import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.InboxReputationDetailViewModel
+import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.report.InboxReputationReportViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -19,4 +20,9 @@ abstract class ReputationViewModelModule {
     @IntoMap
     @ViewModelKey(InboxReputationDetailViewModel::class)
     internal abstract fun provideInboxReputationDetailViewModel(viewModel: InboxReputationDetailViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(InboxReputationReportViewModel::class)
+    internal abstract fun provideInboxReputationReportViewModel(viewModel: InboxReputationReportViewModel): ViewModel
 }

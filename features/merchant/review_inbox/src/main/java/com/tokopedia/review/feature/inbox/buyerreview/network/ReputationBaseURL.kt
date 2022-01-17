@@ -11,8 +11,6 @@ object ReputationBaseURL {
             + REPUTATION_VERSION + "/inbox")
     const val PATH_GET_DETAIL_INBOX_REPUTATION: String = ("review/api/"
             + REPUTATION_VERSION + "/list")
-    const val PATH_REPORT_REVIEW: String = ("review/api/"
-            + REPUTATION_VERSION + "/report")
 
     // Tome
     const val PATH_IS_FAVORITE_SHOP: String = "v1/user/isfollowing"

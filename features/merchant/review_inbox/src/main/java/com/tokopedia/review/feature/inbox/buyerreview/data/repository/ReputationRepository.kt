@@ -5,7 +5,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.domain.model.InboxReputati
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.CheckShopFavoriteDomain
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewDomain
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.SendSmileyReputationDomain
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.report.ReportReviewDomain
 import com.tokopedia.usecase.RequestParams
 import rx.Observable
 import javax.inject.Inject
@@ -39,12 +38,6 @@ class ReputationRepository @Inject constructor(
         return reputationFactory
             .createCloudSendSmileyReputationDataSource()
             .sendSmiley(requestParams)
-    }
-
-    fun reportReview(requestParams: RequestParams): Observable<ReportReviewDomain> {
-        return reputationFactory
-            .createCloudReportReviewDataSource()
-            .reportReview(requestParams)
     }
 
     fun checkIsShopFavorited(requestParams: RequestParams): Observable<CheckShopFavoriteDomain> {

@@ -49,7 +49,7 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.I
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailHeaderUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailItemUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailPassModel
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.InboxReputationDetailViewModel
+import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.InboxReputationDetailViewModel
 import com.tokopedia.review.inbox.R
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -565,7 +565,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observeInsertReviewReply() {
-        inboxReputationDetailViewModel.insertReviewReply.observe(viewLifecycleOwner, {
+        inboxReputationDetailViewModel.insertReviewReplyResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     finishLoadingDialog()
@@ -582,7 +582,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observeDeleteReviewReply() {
-        inboxReputationDetailViewModel.deleteReviewReply.observe(viewLifecycleOwner, {
+        inboxReputationDetailViewModel.deleteReviewReplyResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     finishLoadingDialog()

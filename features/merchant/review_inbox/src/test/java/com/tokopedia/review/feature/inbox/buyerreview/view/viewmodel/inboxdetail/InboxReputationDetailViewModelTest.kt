@@ -1,9 +1,9 @@
-package com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel
+package com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail
 
-import com.tokopedia.review.feature.reviewreply.update.domain.model.ReviewReplyUpdateResponse
-import com.tokopedia.review.feature.reviewreply.update.presenter.model.ReviewReplyUpdateUiModel
 import com.tokopedia.review.feature.reviewreply.insert.domain.model.ReviewReplyInsertResponse
 import com.tokopedia.review.feature.reviewreply.insert.presentation.model.ReviewReplyInsertUiModel
+import com.tokopedia.review.feature.reviewreply.update.domain.model.ReviewReplyUpdateResponse
+import com.tokopedia.review.feature.reviewreply.update.presenter.model.ReviewReplyUpdateUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -23,8 +23,8 @@ class InboxReputationDetailViewModelTest : InboxReputationDetailViewModelTestFix
 
             verifySuccessInsertReviewReplyUseCalled()
             val expectedValue = Success(ReviewReplyInsertUiModel(anyBoolean()))
-            assertTrue(viewModel.insertReviewReply.value is Success)
-            viewModel.insertReviewReply.verifyValueEquals(expectedValue)
+            assertTrue(viewModel.insertReviewReplyResult.value is Success)
+            viewModel.insertReviewReplyResult.verifyValueEquals(expectedValue)
         }
     }
 
@@ -36,7 +36,7 @@ class InboxReputationDetailViewModelTest : InboxReputationDetailViewModelTestFix
 
             viewModel.insertReviewReply(anyString(), anyString())
             val expectedResult = Fail(error)
-            viewModel.insertReviewReply.verifyErrorEquals(expectedResult)
+            viewModel.insertReviewReplyResult.verifyErrorEquals(expectedResult)
         }
     }
 
@@ -48,8 +48,8 @@ class InboxReputationDetailViewModelTest : InboxReputationDetailViewModelTestFix
 
             verifySuccessUpdateReviewReplyResponseUseCaseCalled()
             val expectedValue = Success(ReviewReplyUpdateUiModel(anyBoolean(), anyString()))
-            assertTrue(viewModel.deleteReviewReply.value is Success)
-            viewModel.deleteReviewReply.verifyValueEquals(expectedValue)
+            assertTrue(viewModel.deleteReviewReplyResult.value is Success)
+            viewModel.deleteReviewReplyResult.verifyValueEquals(expectedValue)
         }
     }
 
@@ -61,7 +61,7 @@ class InboxReputationDetailViewModelTest : InboxReputationDetailViewModelTestFix
 
             viewModel.deleteReviewResponse(anyString())
             val expectedResult = Fail(error)
-            viewModel.deleteReviewReply.verifyErrorEquals(expectedResult)
+            viewModel.deleteReviewReplyResult.verifyErrorEquals(expectedResult)
         }
     }
 
