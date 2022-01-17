@@ -18,7 +18,7 @@ import org.junit.Test
 class TopchatRoomSellerAttachVoucherTest: BaseSellerTopchatRoomTest() {
 
     @Test
-    fun should_open_voucher_detail_when_click_beli_in_attached_product() {
+    fun should_open_voucher_detail_when_click_voucher() {
         // Given
         getChatUseCase.response = getChatUseCase.voucherAttachmentChatWithSellerResponse
         launchChatRoomActivity()
