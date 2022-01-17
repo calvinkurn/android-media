@@ -32,6 +32,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatroom.data.ImageUploadServiceModel
 import com.tokopedia.topchat.chatroom.data.UploadImageDummy
+import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.GetChatResult
@@ -53,7 +54,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Param.Companion.SRW_TICKER
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
-import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
+import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
@@ -261,6 +262,7 @@ class TopChatViewModel @Inject constructor(
     var attachProductWarehouseId = "0"
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     var roomMetaData: RoomMetaData = RoomMetaData()
+    val onGoingStockUpdate: ArrayMap<String, UpdateProductStockResult> = ArrayMap()
     private var userLocationInfo = LocalCacheModel()
     private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
     private val compressImageSubscription = CompositeSubscription()
@@ -1131,6 +1133,15 @@ class TopChatViewModel @Inject constructor(
         }, onError = {
             _templateChat.value = Fail(it)
         })
+    }
+
+    fun addOngoingUpdateProductStock(
+        productId: String,
+        product: ProductAttachmentUiModel, adapterPosition: Int,
+        parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
+    ) {
+        val result = UpdateProductStockResult(product, adapterPosition, parentMetaData)
+        onGoingStockUpdate[productId] = result
     }
 
     companion object {

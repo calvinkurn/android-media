@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chatroom.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
-import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapperNew
+import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -12,7 +12,7 @@ import javax.inject.Inject
  */
 class GetTemplateChatRoomUseCase @Inject constructor(
     private val api: ChatRoomApi,
-    private val mapper: GetTemplateChatRoomMapperNew,
+    private val mapper: GetTemplateChatRoomMapper,
     private val dispatcher: CoroutineDispatchers
 ) {
 

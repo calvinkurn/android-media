@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.stub.chatroom.usecase
 
-import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.usecase.GetTemplateChatRoomUseCase
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
