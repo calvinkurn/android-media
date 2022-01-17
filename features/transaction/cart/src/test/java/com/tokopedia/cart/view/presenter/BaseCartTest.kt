@@ -11,8 +11,8 @@ import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
@@ -20,7 +20,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -34,13 +37,13 @@ abstract class BaseCartTest {
     var addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()
     var updateCartUseCase: UpdateCartUseCase = mockk()
     var updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase = mockk()
-    var validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase = mockk()
+    var validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase = mockk()
     var compositeSubscription: CompositeSubscription = mockk(relaxed = true)
     var addWishListUseCase: AddWishListUseCase = mockk()
     var removeWishListUseCase: RemoveWishListUseCase = mockk()
     var updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
     var userSessionInterface: UserSessionInterface = mockk()
-    var clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
+    var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase = mockk()
     var getRecentViewUseCase: GetRecommendationUseCase = mockk()
     var getWishlistUseCase: GetWishlistUseCase = mockk()
     var getRecommendationUseCase: GetRecommendationUseCase = mockk()
@@ -58,7 +61,6 @@ abstract class BaseCartTest {
 
     @Before
     fun setUp() {
-        MockKAnnotations.init(this)
         cartListPresenter = CartListPresenter(getCartRevampV3UseCase, deleteCartUseCase,
                 undoDeleteCartUseCase, updateCartUseCase, compositeSubscription, addWishListUseCase,
                 addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,

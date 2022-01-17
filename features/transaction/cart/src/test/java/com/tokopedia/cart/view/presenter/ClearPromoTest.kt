@@ -1,7 +1,7 @@
 package com.tokopedia.cart.view.presenter
 
-import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
