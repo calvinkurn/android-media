@@ -87,11 +87,12 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
     private fun observeCouponTypeChange() {
         viewModel.couponType.observe(viewLifecycleOwner, { couponType ->
-            if (couponType == CouponType.CASHBACK) {
+            binding.btnSave.isEnabled = false
+            /*if (couponType == CouponType.CASHBACK) {
                 clearCashbackData()
             } else {
                 clearFreeShippingData()
-            }
+            }*/
         })
     }
 
@@ -107,9 +108,46 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
     private fun setupTextAreaListener() {
         with(binding) {
-            textAreaMinimumDiscount.textAreaInput.onTextChanged { text -> validateInput() }
-            textAreaQuota.textAreaInput.onTextChanged { text -> validateInput() }
-            textAreaMinimumPurchase.textAreaInput.onTextChanged { text -> validateInput() }
+            textAreaMinimumDiscount.textAreaInput.onTextChanged { text ->
+                val isValidInput =
+                    viewModel.isValidCashbackDiscountAmount(text.trim().toIntSafely())
+                if (isValidInput) {
+                    clearErrorMessage(binding.textAreaMinimumDiscount)
+                } else {
+                    showErrorMessage(
+                        binding.textAreaMinimumDiscount,
+                        getString(R.string.error_message_invalid_min_purchase)
+                    )
+                }
+                validateInput()
+            }
+            textAreaMinimumPurchase.textAreaInput.onTextChanged { text ->
+                val discountAmount = binding.textAreaMinimumDiscount.textAreaInput.text.toString().trim().toIntSafely()
+                val isValidInput =
+                    viewModel.isValidCashbackMinimumPurchase(text.trim().toIntSafely(), discountAmount)
+                if (isValidInput) {
+                    clearErrorMessage(binding.textAreaMinimumPurchase)
+                } else {
+                    showErrorMessage(
+                        binding.textAreaMinimumPurchase,
+                        getString(R.string.error_message_invalid_cashback_minimum_purchase)
+                    )
+                    validateInput()
+                }
+            }
+            textAreaQuota.textAreaInput.onTextChanged { text ->
+                val isValidInput =
+                    viewModel.isValidCashbackQuota(text.trim().toIntSafely())
+                if (isValidInput) {
+                    clearErrorMessage(binding.textAreaQuota)
+                } else {
+                    showErrorMessage(
+                        binding.textAreaQuota,
+                        getString(R.string.error_message_invalid_free_shipping_quota)
+                    )
+                    validateInput()
+                }
+            }
             textAreaFreeShippingDiscountAmount.textAreaInput.onTextChanged { text ->
                 val isValidInput = viewModel.isValidFreeShippingDiscountAmount(text.trim().toIntSafely())
                 if (isValidInput) {
@@ -147,6 +185,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
             binding.chipFreeShipping.chipType = ChipsUnify.TYPE_NORMAL
             adjustExpenseEstimationConstraint(binding.textAreaQuota.id)
             selectedCouponType = CouponType.CASHBACK
+            viewModel.couponTypeChanged(selectedCouponType)
         }
 
         binding.chipFreeShipping.chip_container.setOnClickListener {
@@ -154,10 +193,10 @@ class CouponSettingFragment : BaseDaggerFragment() {
             binding.chipFreeShipping.chipType = ChipsUnify.TYPE_SELECTED
             adjustExpenseEstimationConstraint(binding.textAreaQuotaFreeShipping.id)
             selectedCouponType = CouponType.FREE_SHIPPING
+            viewModel.couponTypeChanged(selectedCouponType)
         }
 
         binding.chipCashback.selectedChangeListener = { isActive ->
-           // viewModel.couponTypeChanged(selectedCouponType)
             if (isActive) {
                 binding.groupCashback.visible()
             } else {
@@ -166,7 +205,6 @@ class CouponSettingFragment : BaseDaggerFragment() {
         }
 
         binding.chipFreeShipping.selectedChangeListener = { isActive ->
-           // viewModel.couponTypeChanged(selectedCouponType)
             if (isActive) {
                 binding.groupFreeShipping.visible()
             } else {
@@ -175,15 +213,23 @@ class CouponSettingFragment : BaseDaggerFragment() {
         }
 
         binding.chipDiscountTypeNominal.chip_container.setOnClickListener {
+            binding.chipDiscountTypeNominal.chipText = getString(R.string.in_rupiah)
             binding.chipDiscountTypeNominal.chipType = ChipsUnify.TYPE_SELECTED
+
+            binding.chipDiscountTypePercentage.chipText = getString(R.string.mvc_create_tips_subtitle_percentage)
             binding.chipDiscountTypePercentage.chipType = ChipsUnify.TYPE_NORMAL
+
             selectedDiscountType = DiscountType.NOMINAL
             validateInput()
         }
 
         binding.chipDiscountTypePercentage.chip_container.setOnClickListener {
+            binding.chipDiscountTypeNominal.chipText = getString(R.string.nominal)
             binding.chipDiscountTypeNominal.chipType = ChipsUnify.TYPE_NORMAL
+
+            binding.chipDiscountTypePercentage.chipText = getString(R.string.in_percentage)
             binding.chipDiscountTypePercentage.chipType = ChipsUnify.TYPE_SELECTED
+
             selectedDiscountType = DiscountType.PERCENTAGE
             validateInput()
         }
@@ -241,7 +287,17 @@ class CouponSettingFragment : BaseDaggerFragment() {
         val freeShippingMinimumPurchase = binding.textAreaFreeShippingMinimumPurchase.textAreaInput.text.toString().trim().toIntSafely()
         val freeShippingQuota = binding.textAreaQuotaFreeShipping.textAreaInput.text.toString().trim().toIntSafely()
 
-        viewModel.validateInput(selectedCouponType, selectedDiscountType, selectedMinimumPurchaseType, cashbackDiscountAmount, cashbackMinimumPurchase, cashbackQuota, freeShippingDiscountAmount, freeShippingMinimumPurchase, freeShippingQuota)
+        viewModel.validateInput(
+            selectedCouponType,
+            selectedDiscountType,
+            selectedMinimumPurchaseType,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota
+        )
     }
 
     private fun showErrorMessage(view: TextAreaUnify, errorMessage : String) {
