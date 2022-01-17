@@ -26,7 +26,6 @@ class GetTableDataUseCase(
     graphqlRepository,
     tableMapper,
     dispatchers,
-    GetTableDataResponse::class.java,
     GqlGetTableData.QUERY,
     false
 ) {
@@ -53,6 +52,9 @@ class GetTableDataUseCase(
         }
     }
 
+    override val classType: Class<GetTableDataResponse>
+        get() = GetTableDataResponse::class.java
+
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
     }
@@ -61,12 +63,12 @@ class GetTableDataUseCase(
         val dataKeys = (params.getObject(DATA_KEYS) as? List<DataKeyModel>).orEmpty()
         val gqlRequest = GraphqlRequest(
             GqlGetTableData,
-            GetTableDataResponse::class.java,
+            classType,
             params.parameters
         )
         val gqlResponse = graphqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
-        val errors = gqlResponse.getError(GetTableDataResponse::class.java)
+        val errors = gqlResponse.getError(classType)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetTableDataResponse>()
             val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY

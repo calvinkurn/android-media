@@ -3,6 +3,7 @@ package com.tokopedia.sellerhomecommon.domain.mapper
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.sellerhomecommon.domain.model.GetMilestoneDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.MilestoneData
 import com.tokopedia.sellerhomecommon.domain.model.MissionProgressBar
 import com.tokopedia.sellerhomecommon.presentation.model.*
@@ -11,7 +12,7 @@ import javax.inject.Inject
 
 class MilestoneMapper @Inject constructor(
     private val sellerHomeCommonPreferenceManager: SellerHomeCommonPreferenceManager
-) {
+) : BaseResponseMapper<GetMilestoneDataResponse, List<MilestoneDataUiModel>> {
 
     companion object {
         private const val HIDDEN_BUTTON_STATUS = 0
@@ -19,11 +20,11 @@ class MilestoneMapper @Inject constructor(
         private const val DISABLED_BUTTON_STATUS = 2
     }
 
-    fun mapMilestoneResponseToUiModel(
-        data: List<MilestoneData>,
+    override fun mapRemoteDataToUiData(
+        response: GetMilestoneDataResponse,
         isFromCache: Boolean
     ): List<MilestoneDataUiModel> {
-
+        val data = response.fetchMilestoneWidgetData?.data.orEmpty()
         return data.map {
             val missionMilestone = mapGetMilestoneMission(it.mission.orEmpty())
                 .plus(mapGetMilestoneFinish(it.finishMission))

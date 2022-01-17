@@ -151,18 +151,20 @@ class SellerHomeUseCaseModule {
     @Provides
     fun provideGetRecommendationDataUseCase(
         gqlRepository: GraphqlRepository,
-        mapper: RecommendationMapper
+        mapper: RecommendationMapper,
+        dispatchers: CoroutineDispatchers
     ): GetRecommendationDataUseCase {
-        return GetRecommendationDataUseCase(gqlRepository, mapper)
+        return GetRecommendationDataUseCase(gqlRepository, mapper, dispatchers)
     }
 
     @SellerHomeScope
     @Provides
     fun provideGetMilestoneDataUseCase(
         gqlRepository: GraphqlRepository,
-        mapper: MilestoneMapper
+        mapper: MilestoneMapper,
+        dispatchers: CoroutineDispatchers
     ): GetMilestoneDataUseCase {
-        return GetMilestoneDataUseCase(gqlRepository, mapper)
+        return GetMilestoneDataUseCase(gqlRepository, mapper, dispatchers)
     }
 
     @SellerHomeScope
