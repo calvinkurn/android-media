@@ -34,7 +34,7 @@ class DenomFullWidget @JvmOverloads constructor(@NotNull context: Context, attrs
                     show()
                     with(adapterDenomFull){
                         clearDenomFullData()
-                        setDenomFullList(denomData.listDenomWidget)
+                        setDenomFullList(denomData.listDenomData)
                         listener = denomFullListener
                         selectedProductIndex = null
                         denomWidgetType = DenomWidgetEnum.FULL_TYPE

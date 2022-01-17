@@ -37,7 +37,7 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
 
                 }
             })
-            renderAdapter(denomFullListener, denomData.listDenomWidget)
+            renderAdapter(denomFullListener, denomData.listDenomData)
         }
     }
 
@@ -56,7 +56,7 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
 
                 }
             })
-            renderAdapter(denomFullListener, denomData.listDenomWidget)
+            renderAdapter(denomFullListener, denomData.listDenomData)
         }
     }
 
