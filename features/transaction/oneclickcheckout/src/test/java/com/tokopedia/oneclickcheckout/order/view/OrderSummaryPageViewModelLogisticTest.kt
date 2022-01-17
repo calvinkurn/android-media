@@ -629,6 +629,45 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
+    fun `Get Rates Courier With Selected Order Shipment Second Courier With Different Promo Code`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationUiModels.toMutableList()
+        helper.shippingRecommendationData.shippingDurationUiModels = shippingDurationViewModels
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(shipperProductId = helper.secondCourierFirstDuration.productData.shipperProductId, isApplyLogisticPromo = true, logisticPromoViewModel = helper.logisticPromo.copy(promoCode = "bob"))
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(mutableListOf("promo"))
+
+        every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()).executeOnBackground() } returns ClearPromoUiModel()
+
+        // When
+        orderSummaryPageViewModel.getRates()
+
+        // Then
+        assertEquals(
+            OrderShipment(
+                serviceName = helper.firstDuration.serviceData.serviceName,
+                serviceDuration = helper.firstDuration.serviceData.serviceName,
+                serviceId = helper.firstDuration.serviceData.serviceId,
+                shipperName = helper.secondCourierFirstDuration.productData.shipperName,
+                shipperProductId = helper.secondCourierFirstDuration.productData.shipperProductId,
+                shipperId = helper.secondCourierFirstDuration.productData.shipperId,
+                ratesId = helper.secondCourierFirstDuration.ratesId,
+                ut = helper.secondCourierFirstDuration.productData.unixTime,
+                checksum = helper.secondCourierFirstDuration.productData.checkSum,
+                insurance = OrderInsurance(helper.secondCourierFirstDuration.productData.insurance),
+                shippingPrice = helper.secondCourierFirstDuration.productData.price.price,
+                shippingRecommendationData = helper.shippingRecommendationData,
+                logisticPromoTickerMessage = "Tersedia bbo",
+                logisticPromoViewModel = helper.logisticPromo),
+            orderSummaryPageViewModel.orderShipment.value)
+        coVerify(exactly = 1) { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() }
+        verify(inverse = true) { orderSummaryAnalytics.eventViewPreselectedCourierOption(helper.secondCourierFirstDuration.productData.shipperProductId.toString(), any()) }
+    }
+
+    @Test
     fun `Get Rates Courier With Selected Order Shipment No Courier`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
