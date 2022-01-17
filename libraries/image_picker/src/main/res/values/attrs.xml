@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <declare-styleable name="MediaPickerPreviewWidget">
-        <attr name="backgroundColorPlaceHolder" format="color"  />
-        <attr name="canReorder" format="boolean"/>
-        <attr name="maxVideo" format="integer"/>
-    </declare-styleable>
-</resources>

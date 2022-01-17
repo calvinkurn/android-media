@@ -53,12 +53,10 @@
         android:clipToPadding="false"
         app:can_swipe="false"/>
 
-    <com.tokopedia.imagepicker.media_picker.widget.MediaPickerPreviewWidget
+    <com.tokopedia.imagepicker.picker.widget.ImagePickerPreviewWidget
         android:id="@+id/image_picker_preview_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:backgroundColorPlaceHolder="@color/Unify_N0"
-        app:canReorder="true"
         android:visibility="gone"
         tools:visibility="visible"/>
 
