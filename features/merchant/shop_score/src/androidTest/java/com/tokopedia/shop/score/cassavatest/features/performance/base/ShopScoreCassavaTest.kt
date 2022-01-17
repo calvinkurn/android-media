@@ -1,14 +1,24 @@
 package com.tokopedia.shop.score.cassavatest.features.performance.base
 
+import androidx.test.espresso.contrib.RecyclerViewActions
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.BaseShopScoreTest
+import com.tokopedia.shop.score.performance.presentation.adapter.viewholder.SectionShopFeatureRecommendationViewHolder
+import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
+import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionShopRecommendationUiModel
+import com.tokopedia.shop.score.stub.common.util.isViewDisplayed
+import com.tokopedia.shop.score.stub.common.util.onClick
+import com.tokopedia.shop.score.stub.common.util.onIdView
 import com.tokopedia.shop.score.stub.common.util.scrollTo
+import com.tokopedia.test.application.espresso_component.CommonActions
 import org.hamcrest.MatcherAssert
 import org.junit.Rule
+import org.junit.Test
 
-class ShopScoreCassavaTest : BaseShopScoreTest() {
+open class ShopScoreCassavaTest : BaseShopScoreTest() {
 
     companion object {
         const val CLICK_HELP_CENTER_FAQ_NEW_SELLER_PATH =
@@ -18,23 +28,45 @@ class ShopScoreCassavaTest : BaseShopScoreTest() {
         const val CLICK_WATCH_VIDEO_NEW_SELLER_PATH =
             "tracker/merchant/shop_score/performance/sp_click_watch_video_new_seller.json"
         const val CLICK_MERCHANT_TOOLS_RECOMMENDATION_PATH =
-            "tracker/merchant/sp_click_merchant_tools_recommandation.json"
+            "tracker/merchant/shop_score/performance/sp_click_merchant_tools_recommandation.json"
         const val CLICK_POWER_MERCHANT_SECTION_PATH =
-            "tracker/merchant/sp_click_power_merchant_section.json"
+            "tracker/merchant/shop_score/performance/sp_click_power_merchant_section.json"
         const val CLICK_REGULAR_MERCHANT_SECTION_PATH =
-            "tracker/merchant/sp_click_regular_merchant_section.json"
+            "tracker/merchant/shop_score/performance/sp_click_regular_merchant_section.json"
         const val CLICK_TICKER_PENALTY_PATH =
-            "tracker/merchant/sp_click_ticker_penalty.json"
+            "tracker/merchant/shop_score/performance/sp_click_ticker_penalty.json"
     }
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
 
     protected fun validate(fileName: String) {
+        activityRule.finishActivity()
+        Thread.sleep(3000)
         MatcherAssert.assertThat(cassavaTestRule.validate(fileName), hasAllSuccess())
     }
 
     protected fun clickMerchantToolsRecommendation() {
         activityRule.activity.scrollTo<SectionShopRecommendationUiModel>()
+        onIdView(R.id.rvShopScoreCreation).isViewDisplayed()
+            .perform(
+                RecyclerViewActions.actionOnItemAtPosition<SectionShopFeatureRecommendationViewHolder>(
+                    0,
+                    CommonActions.clickChildViewWithId(R.id.cardPromoCreation)
+                )
+            )
+        validate(CLICK_MERCHANT_TOOLS_RECOMMENDATION_PATH)
+    }
+
+    protected fun clickPowerMerchantSection() {
+        activityRule.activity.scrollTo<ItemStatusPMUiModel>()
+        onIdView(R.id.potentialPowerMerchantWidget).isViewDisplayed().onClick()
+        validate(CLICK_POWER_MERCHANT_SECTION_PATH)
+    }
+
+    protected fun clickTickerPenalty() {
+        activityRule.activity.scrollTo<PeriodDetailPerformanceUiModel>()
+        onIdView(com.tokopedia.unifycomponents.R.id.ticker_description).isViewDisplayed().onClick()
+        validate(CLICK_TICKER_PENALTY_PATH)
     }
 }

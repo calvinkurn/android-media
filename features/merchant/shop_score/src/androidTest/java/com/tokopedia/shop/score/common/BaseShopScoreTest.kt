@@ -54,44 +54,49 @@ abstract class BaseShopScoreTest {
 
     protected val existingSellerOsResponse: ShopScoreResponseStub
         get() = AndroidTestUtil.parse(
-            "raw/seller/existing/shop_score_existing_os.json",
+            "raw/seller/uitest/existing/shop_score_existing_os.json",
             ShopScoreResponseStub::class.java
         )
 
     protected val existingSellerPmResponse = AndroidTestUtil.parse<ShopScoreResponseStub>(
-        "raw/seller/existing/shop_score_existing_pm.json",
+        "raw/seller/uitest/existing/shop_score_existing_pm.json",
+        ShopScoreResponseStub::class.java
+    )
+
+    protected val existingSellerWithRecomToolsResponse = AndroidTestUtil.parse<ShopScoreResponseStub>(
+        "raw/seller/cassava/existing/shop_score_existing_pm_with_recom_tools.json",
         ShopScoreResponseStub::class.java
     )
 
     protected val newOsAfterMondayResponse = AndroidTestUtil.parse<ShopScoreResponseStub>(
-        "raw/seller/new/new_os_after_monday.json",
+        "raw/seller/uitest/new/new_os_after_monday.json",
         ShopScoreResponseStub::class.java
     )
 
     protected val newOsBeforeMondayResponse = AndroidTestUtil.parse<ShopScoreResponseStub>(
-        "raw/seller/new/new_os_before_monday.json",
+        "raw/seller/uitest/new/new_os_before_monday.json",
         ShopScoreResponseStub::class.java
     )
 
     protected val shopInfoPeriodAfterMondayResponse =
         AndroidTestUtil.parse<ShopInfoPeriodResponseStub>(
-            "raw/seller/new/shop_info_period_after_monday.json",
+            "raw/seller/uitest/new/shop_info_period_after_monday.json",
             ShopInfoPeriodResponseStub::class.java
         )
 
     protected val reactivatedAfterMondayPmResponse = AndroidTestUtil.parse<ShopScoreResponseStub>(
-        "raw/seller/reactivated/reactivated_after_monday_pm.json",
+        "raw/seller/uitest/reactivated/reactivated_after_monday_pm.json",
         ShopScoreResponseStub::class.java
     )
 
     protected val reactivatedBeforeMondayOsResponse = AndroidTestUtil.parse<ShopScoreResponseStub>(
-        "raw/seller/reactivated/reactivated_before_monday_os.json",
+        "raw/seller/uitest/reactivated/reactivated_before_monday_os.json",
         ShopScoreResponseStub::class.java
     )
 
     protected val shopInfoPeriodResponse: ShopInfoPeriodResponseStub
         get() = AndroidTestUtil.parse(
-            "raw/seller/shopinfo/shop_info_period.json",
+            "raw/seller/uitest/shopinfo/shop_info_period.json",
             ShopInfoPeriodResponseStub::class.java
         )
 
