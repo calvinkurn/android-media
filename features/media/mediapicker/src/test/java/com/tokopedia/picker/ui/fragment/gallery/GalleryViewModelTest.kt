@@ -75,7 +75,7 @@ class GalleryViewModelTest {
         justRun { EventBusFactory.send(any()) }
 
         // when
-        viewModel.publishMediaSelected(listOf())
+        viewModel.publishSelectionDataChanged(listOf())
 
         // then
         verify(exactly = 1) {

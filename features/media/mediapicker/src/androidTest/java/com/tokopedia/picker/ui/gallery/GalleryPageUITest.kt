@@ -4,7 +4,7 @@ import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.picker.common.di.TestPickerInterceptor
 import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.ui.core.GalleryPageTest
-import com.tokopedia.picker.utils.G500
+import com.tokopedia.picker.utils.Unify_G500
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Rule
 import org.junit.Test
@@ -74,7 +74,7 @@ class GalleryPageUITest : GalleryPageTest() {
         Thread.sleep(500)
 
         // Then
-        Assertion.assertContinueTextButtonColor(context, G500)
+        Assertion.assertContinueTextButtonColor(context, Unify_G500)
     }
 
 }

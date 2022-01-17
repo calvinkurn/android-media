@@ -1,4 +1,4 @@
-package com.tokopedia.picker.ui.widget
+package com.tokopedia.picker.ui.widget.layout
 
 import android.content.Context
 import android.util.AttributeSet

@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/unify_space_16"
+    android:background="@color/Unify_N0"
     android:foreground="?selectableItemBackground"
     tools:ignore="UnusedAttribute">
 
@@ -14,10 +15,19 @@
         android:id="@+id/txt_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/picker_title_all_media"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_2"
-        app:typographyWeight="bold"
-        android:text="@string/picker_title_all_media" />
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="4dp"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_name"
+        app:layout_constraintStart_toEndOf="@+id/txt_name"
+        app:layout_constraintTop_toTopOf="@+id/txt_name"
+        app:icon_name="CHEVRON_DOWN" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
