@@ -396,14 +396,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
     }
 
     private fun setAnimationAppBarLayout() {
-        val fadeIn = AlphaAnimation(0f, 1.0f)
-        fadeIn.duration = FADE_IN_DURATION
-        fadeIn.fillAfter = true
-
-        val fadeOut = AlphaAnimation(1.0f, 0f)
-        fadeOut.duration = FADE_OUT_DURATION
-        fadeOut.fillAfter = true
-
         //initial appBar state is expanded
         (activity as? DigitalPDPPulsaActivity)?.setupAppBar()
 
