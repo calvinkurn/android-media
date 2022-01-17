@@ -111,6 +111,7 @@
             app:layout_constraintRight_toRightOf="@id/dgu_campaign_image_background"
             app:layout_constraintTop_toTopOf="@id/dgu_campaign_image_background"
             app:typographyType="small"
+            app:typographyWeight="bold"
             tools:text="Campaign Label" />
 
         <com.tokopedia.unifyprinciples.Typography
