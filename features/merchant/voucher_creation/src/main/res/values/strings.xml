@@ -378,4 +378,7 @@
     <string name="helper_message_min_quantity">Minimum 1 buah</string>
     <string name="helper_message_min_shipping_cost">Diskon minimal Rp 5.000</string>
     <string name="shipping_cost_amount">Nominal gratis ongkir</string>
+    <string name="error_message_invalid_min_purchase">Diskon minimal Rp 5.000</string>
+    <string name="error_message_invalid_shipping_fee">Nominal lebih kecil dari nominal gratis ongkir</string>
+    <string name="error_message_invalid_free_shipping_quota">Kuota tidak boleh 0</string>
 </resources>

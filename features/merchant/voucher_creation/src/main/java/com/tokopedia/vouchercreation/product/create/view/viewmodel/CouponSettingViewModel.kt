@@ -13,37 +13,19 @@ class CouponSettingViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _areInputValid = MutableLiveData<ValidationResult>()
-    val areInputValid: LiveData<ValidationResult>
+    private val _areInputValid = MutableLiveData<Boolean>()
+    val areInputValid: LiveData<Boolean>
         get() = _areInputValid
+
+    private val _couponType = MutableLiveData<CouponType>()
+    val couponType: LiveData<CouponType>
+        get() = _couponType
 
     companion object {
         private const val MINIMUM_CASHBACK_DISCOUNT_AMOUNT = 5_000
         private const val MINIMUM_FREE_SHIPPING_DISCOUNT_AMOUNT = 5_000
         private const val MINIMUM_CASHBACK_QUOTA = 1
         private const val MINIMUM_FREE_SHIPPING_QUOTA = 1
-    }
-
-    sealed class ValidationResult {
-        object CouponTypeNotSelected : ValidationResult()
-
-        sealed class Cashback : ValidationResult() {
-            object DiscountTypeNotSelected : Cashback()
-            object MinimumPurchaseTypeNotSelected : Cashback()
-            object InvalidDiscountAmount : Cashback()
-            object InvalidMinimumPurchase : Cashback()
-            object InvalidQuota : Cashback()
-            object Valid : Cashback()
-        }
-
-        sealed class FreeShipping : ValidationResult() {
-            object InvalidFreeShippingAmount : FreeShipping()
-            object InvalidMinimumPurchase : FreeShipping()
-            object InvalidQuota : FreeShipping()
-            object Valid : FreeShipping()
-        }
-
-        object Valid : ValidationResult()
     }
 
     fun validateInput(
@@ -59,81 +41,74 @@ class CouponSettingViewModel @Inject constructor(
     ) {
 
         if (selectedCouponType == CouponType.NONE) {
-            _areInputValid.value = ValidationResult.CouponTypeNotSelected
+            _areInputValid.value = false
             return
         }
 
         if (selectedCouponType == CouponType.CASHBACK) {
-            val validCashbackCoupon =
-                isValidCashback(
-                    selectedDiscountType,
-                    selectedMinimumPurchaseType,
-                    cashbackDiscountAmount,
+            val isValidCashback =
+                isDiscountTypeSelected(selectedDiscountType) && isMinimumPurchaseSelected(
+                    selectedMinimumPurchaseType
+                ) && isValidCashbackDiscountAmount(cashbackDiscountAmount) && isValidCashbackMinimumPurchase(
                     cashbackMinimumPurchase,
-                    cashbackQuota
-                )
+                    cashbackDiscountAmount
+                ) && isValidCashbackQuota(cashbackQuota)
 
-            _areInputValid.value = validCashbackCoupon
-
+            _areInputValid.value = isValidCashback
         } else {
-            val validFreeShippingCoupon = isValidFreeShipping(
-                freeShippingDiscountAmount,
-                freeShippingMinimumPurchase,
-                freeShippingQuota
-            )
-            _areInputValid.value = validFreeShippingCoupon
+
+            val isValidFreeShipping = isValidFreeShippingDiscountAmount(freeShippingDiscountAmount)
+                    && isValidFreeShippingMinimumPurchase(freeShippingMinimumPurchase, freeShippingDiscountAmount)
+                    && isValidFreeShippingQuota(freeShippingQuota)
+
+            _areInputValid.value = isValidFreeShipping
+
         }
 
     }
 
-    private fun isValidCashback(
-        selectedDiscountType: DiscountType,
-        selectedMinimumPurchaseType: MinimumPurchaseType,
-        cashbackDiscountAmount: Int,
+
+    fun isDiscountTypeSelected(selectedDiscountType: DiscountType): Boolean {
+        return selectedDiscountType != DiscountType.NONE
+    }
+
+    fun isMinimumPurchaseSelected(selectedMinimumPurchaseType: MinimumPurchaseType): Boolean {
+        return selectedMinimumPurchaseType != MinimumPurchaseType.NONE
+    }
+
+    fun isValidCashbackDiscountAmount(cashbackDiscountAmount: Int): Boolean {
+        return cashbackDiscountAmount > MINIMUM_CASHBACK_DISCOUNT_AMOUNT
+    }
+
+    fun isValidCashbackMinimumPurchase(
         cashbackMinimumPurchase: Int,
-        cashbackQuota: Int
-    ): ValidationResult {
-
-        if (selectedDiscountType == DiscountType.NONE) {
-            return ValidationResult.Cashback.DiscountTypeNotSelected
-        }
-
-        if (selectedMinimumPurchaseType == MinimumPurchaseType.NONE) {
-            return ValidationResult.Cashback.MinimumPurchaseTypeNotSelected
-        }
-
-        if (cashbackDiscountAmount < MINIMUM_CASHBACK_DISCOUNT_AMOUNT) {
-            return ValidationResult.Cashback.InvalidDiscountAmount
-        }
-
-        if (cashbackMinimumPurchase < cashbackDiscountAmount) {
-            return ValidationResult.Cashback.InvalidMinimumPurchase
-        }
-
-        if (cashbackQuota < MINIMUM_CASHBACK_QUOTA) {
-            return ValidationResult.Cashback.InvalidQuota
-        }
-
-        return ValidationResult.Cashback.Valid
+        cashbackDiscountAmount: Int
+    ): Boolean {
+        return cashbackMinimumPurchase > cashbackDiscountAmount
     }
 
-    private fun isValidFreeShipping(
-        freeShippingDiscountAmount: Int,
+    fun isValidCashbackQuota(cashbackQuota: Int): Boolean {
+        return cashbackQuota >= MINIMUM_CASHBACK_QUOTA
+    }
+
+
+    fun isValidFreeShippingDiscountAmount(freeShippingDiscountAmount: Int): Boolean {
+        return freeShippingDiscountAmount >= MINIMUM_FREE_SHIPPING_DISCOUNT_AMOUNT
+    }
+
+    fun isValidFreeShippingMinimumPurchase(
         freeShippingMinimumPurchase: Int,
-        freeShippingQuota: Int
-    ): ValidationResult {
-        if (freeShippingDiscountAmount < MINIMUM_FREE_SHIPPING_DISCOUNT_AMOUNT) {
-            return ValidationResult.FreeShipping.InvalidFreeShippingAmount
-        }
+        freeShippingDiscountAmount: Int
+    ): Boolean {
+        return freeShippingMinimumPurchase > freeShippingDiscountAmount
+    }
 
-        if (freeShippingMinimumPurchase < freeShippingDiscountAmount) {
-            return ValidationResult.FreeShipping.InvalidMinimumPurchase
-        }
+    fun isValidFreeShippingQuota(freeShippingQuota: Int): Boolean {
+        return freeShippingQuota >= MINIMUM_FREE_SHIPPING_QUOTA
+    }
 
-        if (freeShippingQuota < MINIMUM_FREE_SHIPPING_QUOTA) {
-            return ValidationResult.FreeShipping.InvalidQuota
-        }
-
-        return ValidationResult.FreeShipping.Valid
+    fun couponTypeChanged(selectedCouponType: CouponType) {
+        _areInputValid.value = false
+        _couponType.value = selectedCouponType
     }
 }

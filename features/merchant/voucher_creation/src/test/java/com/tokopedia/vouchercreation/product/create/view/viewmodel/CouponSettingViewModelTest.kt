@@ -19,6 +19,7 @@ class CouponSettingViewModelTest {
     companion object {
         private const val ZERO = 0
     }
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 

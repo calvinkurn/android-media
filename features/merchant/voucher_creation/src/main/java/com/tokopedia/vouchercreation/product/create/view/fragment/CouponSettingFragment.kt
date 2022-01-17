@@ -14,7 +14,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.TextAreaUnify
 import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.extension.onTextChanged
 import com.tokopedia.vouchercreation.databinding.FragmentCouponSettingBinding
@@ -22,6 +24,7 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
 import com.tokopedia.vouchercreation.product.create.domain.entity.DiscountType
 import com.tokopedia.vouchercreation.product.create.domain.entity.MinimumPurchaseType
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.CouponSettingViewModel
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -29,6 +32,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
     companion object {
         private const val SCREEN_NAME = "Coupon Setting Page"
+        private const val EMPTY_STRING = ""
         fun newInstance():  CouponSettingFragment {
             val args = Bundle()
             val fragment = CouponSettingFragment()
@@ -71,23 +75,22 @@ class CouponSettingFragment : BaseDaggerFragment() {
         setupChipsListener()
         setupTextAreaListener()
         observeInputValidationResult()
+        observeCouponTypeChange()
     }
 
     private fun observeInputValidationResult() {
         viewModel.areInputValid.observe(viewLifecycleOwner, { validationResult ->
-            when (validationResult) {
-                CouponSettingViewModel.ValidationResult.Cashback.DiscountTypeNotSelected -> TODO()
-                CouponSettingViewModel.ValidationResult.Cashback.InvalidDiscountAmount -> TODO()
-                CouponSettingViewModel.ValidationResult.Cashback.InvalidMinimumPurchase -> TODO()
-                CouponSettingViewModel.ValidationResult.Cashback.InvalidQuota -> TODO()
-                CouponSettingViewModel.ValidationResult.Cashback.MinimumPurchaseTypeNotSelected -> TODO()
-                CouponSettingViewModel.ValidationResult.Cashback.Valid -> TODO()
-                CouponSettingViewModel.ValidationResult.CouponTypeNotSelected -> TODO()
-                CouponSettingViewModel.ValidationResult.FreeShipping.InvalidFreeShippingAmount -> TODO()
-                CouponSettingViewModel.ValidationResult.FreeShipping.InvalidMinimumPurchase -> TODO()
-                CouponSettingViewModel.ValidationResult.FreeShipping.InvalidQuota -> TODO()
-                CouponSettingViewModel.ValidationResult.FreeShipping.Valid -> TODO()
-                CouponSettingViewModel.ValidationResult.Valid -> TODO()
+            binding.btnSave.isEnabled = validationResult
+            Timber.d("Validation result is $validationResult")
+        })
+    }
+
+    private fun observeCouponTypeChange() {
+        viewModel.couponType.observe(viewLifecycleOwner, { couponType ->
+            if (couponType == CouponType.CASHBACK) {
+                clearCashbackData()
+            } else {
+                clearFreeShippingData()
             }
         })
     }
@@ -104,12 +107,37 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
     private fun setupTextAreaListener() {
         with(binding) {
-            textAreaMinimumDiscount.textAreaInput.onTextChanged { validateInput() }
-            textAreaQuota.textAreaInput.onTextChanged { validateInput() }
-            textAreaMinimumPurchase.textAreaInput.onTextChanged { validateInput() }
-            textAreaQuotaFreeShipping.textAreaInput.onTextChanged { validateInput() }
-            textAreaFreeShippingDiscountAmount.textAreaInput.onTextChanged { validateInput() }
-            textAreaFreeShippingMinimumPurchase.textAreaInput.onTextChanged { validateInput() }
+            textAreaMinimumDiscount.textAreaInput.onTextChanged { text -> validateInput() }
+            textAreaQuota.textAreaInput.onTextChanged { text -> validateInput() }
+            textAreaMinimumPurchase.textAreaInput.onTextChanged { text -> validateInput() }
+            textAreaFreeShippingDiscountAmount.textAreaInput.onTextChanged { text ->
+                val isValidInput = viewModel.isValidFreeShippingDiscountAmount(text.trim().toIntSafely())
+                if (isValidInput) {
+                    clearErrorMessage(binding.textAreaFreeShippingDiscountAmount)
+                } else {
+                    showErrorMessage(binding.textAreaFreeShippingDiscountAmount, getString(R.string.error_message_invalid_min_purchase))
+                }
+                validateInput()
+            }
+            textAreaFreeShippingMinimumPurchase.textAreaInput.onTextChanged { text ->
+                val freeShippingDiscountAmount = binding.textAreaFreeShippingDiscountAmount.textAreaInput.text.toString().trim().toIntSafely()
+                val isValidInput = viewModel.isValidFreeShippingMinimumPurchase(text.trim().toIntSafely(), freeShippingDiscountAmount)
+                if (isValidInput) {
+                    clearErrorMessage(binding.textAreaFreeShippingMinimumPurchase)
+                } else {
+                    showErrorMessage(binding.textAreaFreeShippingMinimumPurchase, getString(R.string.error_message_invalid_shipping_fee))
+                }
+                validateInput()
+            }
+            textAreaQuotaFreeShipping.textAreaInput.onTextChanged { text ->
+                val isValidInput = viewModel.isValidFreeShippingQuota(text.trim().toIntSafely())
+                if (isValidInput) {
+                    clearErrorMessage(binding.textAreaQuotaFreeShipping)
+                } else {
+                    showErrorMessage(binding.textAreaQuotaFreeShipping, getString(R.string.error_message_invalid_free_shipping_quota))
+                }
+                validateInput()
+            }
         }
     }
 
@@ -119,7 +147,6 @@ class CouponSettingFragment : BaseDaggerFragment() {
             binding.chipFreeShipping.chipType = ChipsUnify.TYPE_NORMAL
             adjustExpenseEstimationConstraint(binding.textAreaQuota.id)
             selectedCouponType = CouponType.CASHBACK
-            validateInput()
         }
 
         binding.chipFreeShipping.chip_container.setOnClickListener {
@@ -127,10 +154,10 @@ class CouponSettingFragment : BaseDaggerFragment() {
             binding.chipFreeShipping.chipType = ChipsUnify.TYPE_SELECTED
             adjustExpenseEstimationConstraint(binding.textAreaQuotaFreeShipping.id)
             selectedCouponType = CouponType.FREE_SHIPPING
-            validateInput()
         }
 
         binding.chipCashback.selectedChangeListener = { isActive ->
+           // viewModel.couponTypeChanged(selectedCouponType)
             if (isActive) {
                 binding.groupCashback.visible()
             } else {
@@ -139,6 +166,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
         }
 
         binding.chipFreeShipping.selectedChangeListener = { isActive ->
+           // viewModel.couponTypeChanged(selectedCouponType)
             if (isActive) {
                 binding.groupFreeShipping.visible()
             } else {
@@ -191,15 +219,47 @@ class CouponSettingFragment : BaseDaggerFragment() {
         layoutParams.topToBottom = viewId
     }
 
-    private fun validateInput() {
-        val cashbackDiscountAmount = binding.textAreaMinimumDiscount.textAreaInput.text.toString().trim().toInt()
-        val cashbackMinimumPurchase = binding.textAreaMinimumPurchase.textAreaInput.text.toString().trim().toInt()
-        val cashbackQuota = binding.textAreaQuota.textAreaInput.text.toString().trim().toInt()
 
-        val freeShippingDiscountAmount = binding.textAreaFreeShippingDiscountAmount.textAreaInput.text.toString().trim().toInt()
-        val freeShippingMinimumPurchase = binding.textAreaFreeShippingMinimumPurchase.textAreaInput.text.toString().trim().toInt()
-        val freeShippingQuota = binding.textAreaQuotaFreeShipping.textAreaInput.text.toString().trim().toInt()
+    private fun clearFreeShippingData() {
+        binding.textAreaQuotaFreeShipping.textAreaInput.text = null
+        binding.textAreaFreeShippingDiscountAmount.textAreaInput.text = null
+        binding.textAreaFreeShippingMinimumPurchase.textAreaInput.text = null
+    }
+
+    private fun clearCashbackData() {
+        binding.textAreaMinimumDiscount.textAreaInput.text = null
+        binding.textAreaQuota.textAreaInput.text = null
+        binding.textAreaMinimumPurchase.textAreaInput.text = null
+    }
+
+    private fun validateInput() {
+        val cashbackDiscountAmount = binding.textAreaMinimumDiscount.textAreaInput.text.toString().trim().toIntSafely()
+        val cashbackMinimumPurchase = binding.textAreaMinimumPurchase.textAreaInput.text.toString().trim().toIntSafely()
+        val cashbackQuota = binding.textAreaQuota.textAreaInput.text.toString().trim().toIntSafely()
+
+        val freeShippingDiscountAmount = binding.textAreaFreeShippingDiscountAmount.textAreaInput.text.toString().trim().toIntSafely()
+        val freeShippingMinimumPurchase = binding.textAreaFreeShippingMinimumPurchase.textAreaInput.text.toString().trim().toIntSafely()
+        val freeShippingQuota = binding.textAreaQuotaFreeShipping.textAreaInput.text.toString().trim().toIntSafely()
 
         viewModel.validateInput(selectedCouponType, selectedDiscountType, selectedMinimumPurchaseType, cashbackDiscountAmount, cashbackMinimumPurchase, cashbackQuota, freeShippingDiscountAmount, freeShippingMinimumPurchase, freeShippingQuota)
+    }
+
+    private fun showErrorMessage(view: TextAreaUnify, errorMessage : String) {
+        view.textAreaMessage = EMPTY_STRING
+        view.isError = true
+        view.textAreaWrapper.error = errorMessage
+    }
+
+    private fun clearErrorMessage(view: TextAreaUnify) {
+        view.isError = false
+        view.textAreaWrapper.error = EMPTY_STRING
+    }
+
+    private fun String.toIntSafely(): Int {
+        return try {
+            this.toInt()
+        } catch (e: Exception) {
+            0
+        }
     }
 }
