@@ -11,8 +11,9 @@ internal class ShopListDiffUtilCallback(
 ): DiffUtil.Callback() {
 
     override fun areItemsTheSame(oldPosition: Int, newPosition: Int): Boolean {
-        if (oldPosition >= oldList.size) return false
-        if (newPosition >= newList.size) return false
+        if (oldPosition >= oldList.size
+            || newPosition >= newList.size)
+                return false
 
         val oldItem = oldList[oldPosition]
         val newItem = newList[newPosition]
@@ -36,8 +37,9 @@ internal class ShopListDiffUtilCallback(
     }
 
     override fun areContentsTheSame(oldPosition: Int, newPosition: Int): Boolean {
-        if (oldPosition >= oldList.size) return false
-        if (newPosition >= newList.size) return false
+        if (oldPosition >= oldList.size
+            || newPosition >= newList.size)
+                return false
 
         val oldItem = oldList[oldPosition]
         val newItem = newList[newPosition]

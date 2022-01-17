@@ -39,7 +39,7 @@ class AffiliateTutorialPagerAdapter(val list : ArrayList<LoginTutorialData>)
             itemView.findViewById<Typography>(R.id.affiliate_tutorial_title).text = model.title
             itemView.findViewById<Typography>(R.id.affiliate_tutorial_subtitle).text = model.subTitle
             itemView.findViewById<DeferredImageView>(R.id.affiliate_tutorial_iv).loadRemoteImageDrawable(model.imageUrl,
-                    ImageDensityType.SUPPORT_SINGLE_DPI)
+                    model.imageUrl)
         }
         companion object{
             val LAYOUT = R.layout.affiliate_login_tutorial_layout

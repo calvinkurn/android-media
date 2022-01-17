@@ -2,6 +2,7 @@ package com.tokopedia.affiliate.model.pojo
 
 class AffiliatePortfolioUrlInputData (
     var id : Int?,
+    var serviceFormat : String? = "",
     var title:String?,
     var text:String?,
     var successContent:String?,

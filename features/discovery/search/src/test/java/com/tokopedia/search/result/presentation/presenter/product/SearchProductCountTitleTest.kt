@@ -17,7 +17,6 @@ internal class SearchProductCountTitleTest: ProductListPresenterTestFixtures() {
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
 
-    // TODO:: Remove this test class, and combine this test case with SearchProductFirstPageTest
     @Test
     fun `Show ProductCountViewModel in Navigation Revamp`() {
         `Given Search Product API will return SearchProductModel`(searchProductCommonResponseJSON.jsonToObject())
