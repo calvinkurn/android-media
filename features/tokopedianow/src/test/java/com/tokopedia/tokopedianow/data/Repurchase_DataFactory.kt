@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
+import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addCategoryGrid
@@ -101,7 +102,7 @@ fun createEmptyStateLayout(id: String): List<Visitable<*>> {
             layoutList.addServerErrorState()
         }
         else -> {
-            layoutList.addEmptyStateNoResult()
+            layoutList.addEmptyStateNoResult(ServiceType.NOW_2H)
         }
     }
     return layoutList

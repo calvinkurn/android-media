@@ -22,16 +22,8 @@ class SetUserPreferenceUseCase @Inject constructor(graphqlRepository: GraphqlRep
 
     private val graphql by lazy { GraphqlUseCase<SetUserPreference>(graphqlRepository) }
 
-    suspend fun execute(localCacheModel: LocalCacheModel): SetUserPreferenceData {
+    suspend fun execute(localCacheModel: LocalCacheModel, serviceType: String): SetUserPreferenceData {
         graphql.apply {
-            val currentServiceType = localCacheModel.service_type
-
-            val serviceType = if(currentServiceType == ServiceType.NOW_15M) {
-                ServiceType.NOW_2H
-            } else {
-                ServiceType.NOW_15M
-            }
-
             val warehouses = localCacheModel.warehouses.map {
                 WarehouseData(
                     it.warehouse_id.toString(),
