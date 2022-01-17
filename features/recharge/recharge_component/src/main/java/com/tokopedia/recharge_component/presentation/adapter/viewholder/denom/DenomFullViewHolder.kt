@@ -10,8 +10,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.ViewRechargeDenomFullBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomFullListener
+import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
-import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
 
@@ -20,7 +20,7 @@ class DenomFullViewHolder(
     private val binding: ViewRechargeDenomFullBinding
 ): RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(denomFull: DenomWidgetModel, denomType: DenomWidgetEnum,
+    fun bind(denomFull: DenomData, denomType: DenomWidgetEnum,
              isSelectedItem: Boolean, position: Int){
 
         with(binding){

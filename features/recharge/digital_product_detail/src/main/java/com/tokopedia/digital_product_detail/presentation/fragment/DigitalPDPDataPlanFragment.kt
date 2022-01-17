@@ -10,13 +10,10 @@ import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
-import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
-import com.tokopedia.recharge_component.listener.RechargeDenomFullListener
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
-import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
-import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
-import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardEnum
-import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
+import com.tokopedia.recharge_component.model.denom.DenomData
+import com.tokopedia.recharge_component.result.RechargeNetworkResult
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -24,7 +21,10 @@ import javax.inject.Inject
  * @author by firmanda on 04/01/21
  */
 
-class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
+class DigitalPDPDataPlanFragment :
+    BaseDaggerFragment(),
+    RechargeDenomGridListener
+{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -51,39 +51,49 @@ class DigitalPDPDataPlanFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getInitalData()
         observeData()
-        initalView()
-        viewModel.getDelayedResponse()
-    }
-
-    private fun initalView(){
-        binding?.let {
-        }
     }
 
     private fun observeData() {
-        viewModel.dummy.observe(viewLifecycleOwner, {
-            binding?.let {
-                it.widgetBuyWidget.showBuyWidget(CatalogProduct(
-                    "1"
-                    ,attributes = CatalogProduct.Attributes(
-                        price = "Rp35.000",
-                        promo = CatalogProduct.Promo(
-                        )
-                    )
-                ), listener = object: RechargeBuyWidgetListener{
-                    override fun onClickedChevron(product: CatalogProduct) {
+       viewModel.observableDenomData.observe(viewLifecycleOwner, { denomData ->
+           when(denomData){
+               is RechargeNetworkResult.Success -> {
+                   binding?.let {
+                       it.widgetDenomGrid.renderDenomGridLayout(this, denomData.data)
+                   }
+               }
 
-                    }
+               is RechargeNetworkResult.Fail -> {
+                   view?.let {
+                       binding?.let {
+                           it.widgetDenomGrid.renderFailDenomGrid()
+                       }
+                       Toaster.build(it, denomData.error.message ?: "Nei", Toaster.LENGTH_LONG).show()
+                   }
+               }
 
-                    override fun onClickedButtonLanjutkan(product: CatalogProduct) {
+               is RechargeNetworkResult.Loading -> {
+                   binding?.let {
+                       it.widgetDenomGrid.renderDenomGridShimmering()
+                   }
+               }
+           }
 
-                    }
-                })
-            }
-        })
+       })
     }
 
+    private fun getInitalData(){
+        viewModel.setInital()
+        viewModel.getRechargeCatalogInput(148, "17")
+    }
+
+    /**
+     * DenomGrid Listener
+     */
+    override fun onDenomGridClicked(denomGrid: DenomData, position: Int) {
+
+    }
 
 
     companion object {

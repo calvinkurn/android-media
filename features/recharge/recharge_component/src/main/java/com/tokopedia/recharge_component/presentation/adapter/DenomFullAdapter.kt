@@ -5,13 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.recharge_component.databinding.ViewRechargeDenomFullBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomFullListener
+import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
-import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.denom.DenomFullViewHolder
 
 class DenomFullAdapter: RecyclerView.Adapter<DenomFullViewHolder>(), RechargeDenomFullListener {
 
-    private var listDenom = mutableListOf<DenomWidgetModel>()
+    private var listDenom = mutableListOf<DenomData>()
 
     var selectedProductIndex: Int? = null
 
@@ -40,7 +40,7 @@ class DenomFullAdapter: RecyclerView.Adapter<DenomFullViewHolder>(), RechargeDen
         return DenomFullViewHolder(this, binding)
     }
 
-    override fun onDenomFullClicked(denomGrid: DenomWidgetModel, position: Int) {
+    override fun onDenomFullClicked(denomGrid: DenomData, position: Int) {
         if (selectedProductIndex == null) {
             selectedProductIndex = position
             notifyItemChanged(position)
@@ -54,11 +54,11 @@ class DenomFullAdapter: RecyclerView.Adapter<DenomFullViewHolder>(), RechargeDen
         listener?.onDenomFullClicked(denomGrid, position)
     }
 
-    override fun onChevronDenomClicked(denomGrid: DenomWidgetModel, position: Int) {
+    override fun onChevronDenomClicked(denomGrid: DenomData, position: Int) {
         listener?.onChevronDenomClicked(denomGrid, position)
     }
 
-    fun setDenomFullList(listDenom: List<DenomWidgetModel>) {
+    fun setDenomFullList(listDenom: List<DenomData>) {
         this.listDenom = listDenom.toMutableList()
         notifyDataSetChanged()
     }

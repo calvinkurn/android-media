@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
+import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPTelcoViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -26,4 +27,9 @@ abstract class DigitalPDPViewModelModule {
     @IntoMap
     @ViewModelKey(DigitalPDPPulsaViewModel::class)
     internal abstract fun digitalPDPPulsaViewModel(customViewModel: DigitalPDPPulsaViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DigitalPDPTelcoViewModel::class)
+    internal abstract fun digitalPDPTelcoViewModel(customViewModel: DigitalPDPTelcoViewModel): ViewModel
 }

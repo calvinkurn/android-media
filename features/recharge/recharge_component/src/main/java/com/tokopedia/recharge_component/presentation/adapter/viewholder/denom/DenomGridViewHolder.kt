@@ -11,8 +11,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.ViewRechargeDenomGridBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
+import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
-import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
 
@@ -21,7 +21,7 @@ class DenomGridViewHolder (
     private val binding: ViewRechargeDenomGridBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(denomGrid: DenomWidgetModel, denomType: DenomWidgetEnum,
+    fun bind(denomGrid: DenomData, denomType: DenomWidgetEnum,
              isSelectedItem: Boolean, position: Int){
 
         with(binding){

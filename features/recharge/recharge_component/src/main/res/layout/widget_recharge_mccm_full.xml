@@ -22,6 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:nestedScrollingEnabled="false"
             android:paddingLeft="@dimen/spacing_lvl3"
             android:clipToPadding="false"
             />

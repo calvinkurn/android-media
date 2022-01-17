@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.databinding.WidgetRechargeMccmGridBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.mapper.DenomMCCMFlashSaleMapper
+import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.presentation.adapter.DenomGridAdapter
@@ -29,9 +30,9 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
     private val widgetRechargeMCCMFlashSaleGridWidget = WidgetRechargeMccmGridBinding.inflate(
         LayoutInflater.from(context), this, true)
 
-    fun renderMCCMGrid(denomGridListener: RechargeDenomGridListener, textColor:String, titleDenomGrid: String, listDenomGrid: List<DenomWidgetModel>){
+    fun renderMCCMGrid(denomGridListener: RechargeDenomGridListener, denomData: DenomWidgetModel){
         with(widgetRechargeMCCMFlashSaleGridWidget){
-            headerMccmGrid.setChannel(DenomMCCMFlashSaleMapper.getChannelMCCM(titleDenomGrid, textColor), object : HeaderListener {
+            headerMccmGrid.setChannel(DenomMCCMFlashSaleMapper.getChannelMCCM(denomData.mainTitle, denomData.textColor), object : HeaderListener {
                 override fun onChannelExpired(channelModel: ChannelModel) {
 
                 }
@@ -40,13 +41,13 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
 
                 }
             })
-            renderAdapter(denomGridListener, listDenomGrid)
+            renderAdapter(denomGridListener, denomData.listDenomWidget)
         }
     }
 
-    fun renderFlashSaleGrid(denomGridListener: RechargeDenomGridListener, textColor: String, titleFlashSale: String, subtitleFlashSale: String, listDenomGrid: List<DenomWidgetModel>){
+    fun renderFlashSaleGrid(denomGridListener: RechargeDenomGridListener, denomData: DenomWidgetModel){
         with(widgetRechargeMCCMFlashSaleGridWidget){
-            headerMccmGrid.setChannel(DenomMCCMFlashSaleMapper.getChannelFlashSale(titleFlashSale, subtitleFlashSale,  textColor), object : HeaderListener {
+            headerMccmGrid.setChannel(DenomMCCMFlashSaleMapper.getChannelFlashSale(denomData.mainTitle, denomData.subTitle, denomData.textColor), object : HeaderListener {
                 override fun onChannelExpired(channelModel: ChannelModel) {
 
                 }
@@ -55,11 +56,11 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
 
                 }
             })
-            renderAdapter(denomGridListener, listDenomGrid)
+            renderAdapter(denomGridListener, denomData.listDenomWidget)
         }
     }
 
-    private fun renderAdapter(denomGridListener: RechargeDenomGridListener, listDenomGrid: List<DenomWidgetModel>){
+    private fun renderAdapter(denomGridListener: RechargeDenomGridListener, listDenomGrid: List<DenomData>){
         val adapterDenomGrid = DenomGridAdapter()
         with(widgetRechargeMCCMFlashSaleGridWidget){
             rvMccmGrid.apply {
