@@ -27,6 +27,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
+import com.tokopedia.review.common.reviewreply.update.presenter.model.ReviewReplyUpdateUiModel
 import com.tokopedia.review.common.reviewreplyinsert.presentation.model.ReviewReplyInsertUiModel
 import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.toRelativeDate
@@ -39,7 +40,6 @@ import com.tokopedia.review.feature.reviewreply.view.adapter.ReviewTemplateListA
 import com.tokopedia.review.feature.reviewreply.view.bottomsheet.AddTemplateBottomSheet
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
 import com.tokopedia.review.feature.reviewreply.view.model.ReplyTemplateUiModel
-import com.tokopedia.review.feature.reviewreply.view.model.UpdateReplyResponseUiModel
 import com.tokopedia.review.feature.reviewreply.view.viewholder.ReviewTemplateListViewHolder
 import com.tokopedia.review.feature.reviewreply.view.viewmodel.SellerReviewReplyViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -177,7 +177,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
 
     override fun onDestroy() {
         viewModelReviewReply?.reviewTemplate?.removeObservers(this)
-        viewModelReviewReply?.updateReviewReply?.removeObservers(this)
+        viewModelReviewReply?.reviewReviewReply?.removeObservers(this)
         viewModelReviewReply?.insertTemplateReply?.removeObservers(this)
         viewModelReviewReply?.insertReviewReply?.removeObservers(this)
         super.onDestroy()
@@ -272,7 +272,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
     }
 
     private fun observeUpdateReviewReply() {
-        viewModelReviewReply?.updateReviewReply?.observe(viewLifecycleOwner, {
+        viewModelReviewReply?.reviewReviewReply?.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     updateReviewReplySuccess(it.data)
@@ -364,8 +364,8 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
         KeyboardHandler.hideSoftKeyboard(requireActivity())
     }
 
-    private fun updateReviewReplySuccess(data: UpdateReplyResponseUiModel) {
-        if (data.isSuccess) {
+    private fun updateReviewReplySuccess(data: ReviewReplyUpdateUiModel) {
+        if (data.success) {
             activity?.let { KeyboardHandler.showSoftKeyboard(it) }
             binding?.reviewReplyTextBoxWidget?.hide()
             binding?.reviewReplyTextBoxWidget?.clearEditText()

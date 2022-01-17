@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
+import com.tokopedia.review.common.reviewreply.update.domain.usecase.ReviewReplyUpdateUseCase
 import com.tokopedia.review.common.reviewreplyinsert.domain.usecase.ReviewReplyInsertUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -18,12 +19,19 @@ abstract class InboxReputationDetailViewModelTestFixture {
     @RelaxedMockK
     lateinit var reviewReplyInsertUseCase: ReviewReplyInsertUseCase
 
+    @RelaxedMockK
+    lateinit var reviewReplyUpdateUseCase: ReviewReplyUpdateUseCase
+
     protected lateinit var viewModel: InboxReputationDetailViewModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = InboxReputationDetailViewModel(CoroutineTestDispatchersProvider, reviewReplyInsertUseCase)
+        viewModel = InboxReputationDetailViewModel(
+            CoroutineTestDispatchersProvider,
+            reviewReplyInsertUseCase,
+            reviewReplyUpdateUseCase
+        )
     }
 
     protected fun LiveData<*>.verifyValueEquals(expected: Any) {

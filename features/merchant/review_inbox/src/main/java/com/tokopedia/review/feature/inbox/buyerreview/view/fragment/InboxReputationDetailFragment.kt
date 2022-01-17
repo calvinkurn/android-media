@@ -216,6 +216,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
             activity?.finish()
         }
         observeInsertReviewReply()
+        observeDeleteReviewReply()
     }
 
     override fun showLoading() {
@@ -388,19 +389,15 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onDeleteReviewResponse(element: InboxReputationDetailItemUiModel) {
-        presenter.deleteReviewResponse(
-            element.reviewId,
-            element.productId,
-            element.shopId.toString(),
-            element.reputationId.toString()
-        )
+        showLoadingDialog()
+        inboxReputationDetailViewModel.deleteReviewResponse(element.reviewId)
     }
 
-    override fun onErrorDeleteReviewResponse(errorMessage: String?) {
+    private fun onErrorDeleteReviewResponse(errorMessage: String?) {
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
-    override fun onSuccessDeleteReviewResponse() {
+    private fun onSuccessDeleteReviewResponse() {
         refreshPage()
     }
 
@@ -408,6 +405,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         element: InboxReputationDetailItemUiModel,
         replyReview: String
     ) {
+        showLoadingDialog()
         inboxReputationDetailViewModel.insertReviewReply(element.reviewId, replyReview)
     }
 
@@ -578,6 +576,25 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
                 is Fail -> {
                     finishLoadingDialog()
                     onErrorReplyReview(ErrorHandler.getErrorMessage(context, it.throwable))
+                }
+            }
+        })
+    }
+
+    private fun observeDeleteReviewReply() {
+        inboxReputationDetailViewModel.deleteReviewReply.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    finishLoadingDialog()
+                    if (it.data.success) {
+                        onSuccessDeleteReviewResponse()
+                    } else onErrorDeleteReviewResponse(
+                        getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
+                    )
+                }
+                is Fail -> {
+                    finishLoadingDialog()
+                    onErrorDeleteReviewResponse(ErrorHandler.getErrorMessage(context, it.throwable))
                 }
             }
         })

@@ -1,11 +1,9 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inboxdetail.DeleteReviewResponseUseCase
 import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inboxdetail.GetInboxReputationDetailUseCase
 import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inboxdetail.SendSmileyReputationUseCase
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationDetail
-import com.tokopedia.review.feature.inbox.buyerreview.view.subscriber.DeleteReviewResponseSubscriber
 import com.tokopedia.review.feature.inbox.buyerreview.view.subscriber.GetInboxReputationDetailSubscriber
 import com.tokopedia.review.feature.inbox.buyerreview.view.subscriber.RefreshInboxReputationDetailSubscriber
 import com.tokopedia.review.feature.inbox.buyerreview.view.subscriber.SendSmileySubscriber
@@ -18,7 +16,6 @@ import javax.inject.Inject
 class InboxReputationDetailPresenter @Inject internal constructor(
     private val getInboxReputationDetailUseCase: GetInboxReputationDetailUseCase,
     private val sendSmileyReputationUseCase: SendSmileyReputationUseCase,
-    private val deleteReviewResponseUseCase: DeleteReviewResponseUseCase,
     private val userSession: UserSessionInterface
 ) : BaseDaggerPresenter<InboxReputationDetail.View>(), InboxReputationDetail.Presenter {
 
@@ -33,7 +30,6 @@ class InboxReputationDetailPresenter @Inject internal constructor(
         super.detachView()
         getInboxReputationDetailUseCase.unsubscribe()
         sendSmileyReputationUseCase.unsubscribe()
-        deleteReviewResponseUseCase.unsubscribe()
     }
 
     override fun getInboxDetail(id: String, anInt: Int) {
@@ -57,23 +53,6 @@ class InboxReputationDetailPresenter @Inject internal constructor(
                 role
             ),
             viewListener?.let { SendSmileySubscriber(it, score) }
-        )
-    }
-
-    override fun deleteReviewResponse(
-        reviewId: String,
-        productId: String,
-        shopId: String,
-        reputationId: String
-    ) {
-        viewListener?.showLoadingDialog()
-        deleteReviewResponseUseCase.execute(
-            DeleteReviewResponseUseCase.getParam(
-                reviewId,
-                productId,
-                shopId,
-                reputationId
-            ), viewListener?.let { DeleteReviewResponseSubscriber(it) }
         )
     }
 

@@ -23,8 +23,4 @@ interface ReputationApi {
     @POST(ReputationBaseURL.PATH_REPORT_REVIEW)
     @FormUrlEncoded
     fun reportReview(@FieldMap params: Map<String, String>): Observable<Response<TokopediaWsV4Response?>?>
-
-    @POST(ReputationBaseURL.PATH_DELETE_REVIEW_RESPONSE)
-    @FormUrlEncoded
-    fun deleteReviewResponse(@FieldMap params: Map<String, String>): Observable<Response<TokopediaWsV4Response?>?>
 }
