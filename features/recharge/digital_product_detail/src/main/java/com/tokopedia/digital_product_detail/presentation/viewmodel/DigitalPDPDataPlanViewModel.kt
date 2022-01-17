@@ -8,9 +8,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import javax.inject.Inject
 
 class DigitalPDPDataPlanViewModel @Inject constructor(
@@ -18,18 +16,22 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
-    val observableDenomData: LiveData<Result<DenomWidgetModel>>
+    val observableDenomData: LiveData<RechargeNetworkResult<DenomWidgetModel>>
     get() = _observableDenomData
 
-    private val _observableDenomData = MutableLiveData<Result<DenomWidgetModel>>()
+    private val _observableDenomData = MutableLiveData<RechargeNetworkResult<DenomWidgetModel>>()
+
+    fun setInital(){
+        _observableDenomData.postValue(RechargeNetworkResult.Loading)
+    }
 
 
     fun getRechargeCatalogInput(menuId: Int, operator: String){
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val denomGrid = repo.getCatalogRepository(menuId, operator)
-            _observableDenomData.postValue(Success(denomGrid))
+            _observableDenomData.postValue(RechargeNetworkResult.Success(denomGrid))
         }){
-            _observableDenomData.postValue(Fail(it))
+            _observableDenomData.postValue(RechargeNetworkResult.Fail(it))
         }
     }
 }
