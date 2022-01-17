@@ -12,13 +12,17 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatProductAttachmentPreviewUiModel
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.topchat.common.util.ViewUtil.ellipsizeLongText
 import com.tokopedia.unifycomponents.toPx
 
-class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: AttachmentItemPreviewListener)
-    : AttachmentPreviewViewHolder<SendableProductPreview>(itemView, attachmentItemPreviewListener) {
+class ProductPreviewViewHolder(
+    itemView: View, attachmentItemPreviewListener: AttachmentItemPreviewListener
+) : AttachmentPreviewViewHolder<TopchatProductAttachmentPreviewUiModel>(
+    itemView, attachmentItemPreviewListener
+) {
 
     private val productImage = itemView.findViewById<ImageView>(R.id.iv_product)
     private val productName = itemView.findViewById<TextView>(R.id.tv_product_name)
@@ -49,7 +53,14 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
         return itemView.findViewById(R.id.iv_close)
     }
 
-    override fun bind(model: SendableProductPreview) {
+    override fun bind(model: TopchatProductAttachmentPreviewUiModel, payloads: List<Any>) {
+        if (payloads.isEmpty()) return
+        if (payloads.first() == Payload.REBIND) {
+            bind(model)
+        }
+    }
+
+    override fun bind(model: TopchatProductAttachmentPreviewUiModel) {
         super.bind(model)
         bindBackground()
         bindImageThumbnail(model)
@@ -58,21 +69,20 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
         bindProductVariant(model)
     }
 
-    private fun bindProductName(model: SendableProductPreview) {
-        productName?.text = model.productPreview.name
+    private fun bindProductName(model: TopchatProductAttachmentPreviewUiModel) {
+        productName?.text = model.productName
     }
 
-    private fun bindProductPrice(model: SendableProductPreview) {
-        productPrice?.text = model.productPreview.price
+    private fun bindProductPrice(model: TopchatProductAttachmentPreviewUiModel) {
+        productPrice?.text = model.productPrice
     }
 
-    private fun bindProductVariant(model: SendableProductPreview) {
-        val productPreview = model.productPreview
+    private fun bindProductVariant(model: TopchatProductAttachmentPreviewUiModel) {
         productVariantContainer?.showWithCondition(model.hasVariant())
         if (model.hasColorVariant()) {
             productColorVariant.show()
             productColorVariantValue?.text = ellipsizeLongText(
-                productPreview.colorVariant, MAX_VARIANT_LABEL_CHAR)
+                model.colorVariant, MAX_VARIANT_LABEL_CHAR)
         } else {
             productColorVariant?.hide()
         }
@@ -80,12 +90,12 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
         val productHasSizeVariant = model.hasSizeVariant()
         productSizeVariant?.shouldShowWithAction(productHasSizeVariant) {
             productSizeVariantValue?.text = ellipsizeLongText(
-                productPreview.sizeVariant, MAX_VARIANT_LABEL_CHAR)
+                model.sizeVariant, MAX_VARIANT_LABEL_CHAR)
         }
     }
 
-    private fun bindImageThumbnail(model: SendableProductPreview) {
-        productImage?.loadImageRounded(model.productPreview.imageUrl, 6.toPx().toFloat())
+    private fun bindImageThumbnail(model: TopchatProductAttachmentPreviewUiModel) {
+        productImage?.loadImageRounded(model.productImage, 6.toPx().toFloat())
     }
 
     private fun bindBackground() {

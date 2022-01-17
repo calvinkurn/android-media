@@ -2527,6 +2527,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         viewModel.chatAttachments.observe(viewLifecycleOwner, {
             updateAttachmentsView(it)
+            updateAttachmentsPreview(it)
         })
 
         viewModel.chatListGroupSticker.observe(viewLifecycleOwner, {
@@ -2660,6 +2661,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         viewModel.uploadImageService.observe(viewLifecycleOwner, { image ->
             uploadImage(image)
         })
+    }
+
+    private fun updateAttachmentsPreview(products: ArrayMap<String, Attachment>) {
+        topchatViewState?.updateProductPreviews(products)
     }
 
     override fun onDestroyView() {

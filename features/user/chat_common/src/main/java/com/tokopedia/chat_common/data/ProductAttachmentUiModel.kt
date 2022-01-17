@@ -93,6 +93,10 @@ open class ProductAttachmentUiModel protected constructor(
         }
     }
 
+    protected fun updateCanShowFooter(canShowFooter: Boolean) {
+        this.canShowFooter = canShowFooter
+    }
+
     override fun updateData(attribute: Any?) {
         if (attribute is ProductAttachmentAttributes) {
             productId = attribute.productId

@@ -23,4 +23,8 @@ abstract class AttachmentPreviewViewHolder<in T: SendablePreview>(
             attachmentItemPreviewListener.closeItem(model)
         }
     }
+
+    open fun bind(model: T, payloads: List<Any>) {
+
+    }
 }

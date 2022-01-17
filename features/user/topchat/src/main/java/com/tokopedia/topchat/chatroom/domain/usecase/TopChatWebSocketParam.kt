@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatProductAttachmentPreviewUiModel
 import com.tokopedia.topchat.common.InboxChatConstant.UPLOADING
 import com.tokopedia.topchat.common.util.AddressUtil
 
@@ -78,6 +79,20 @@ object TopChatWebSocketParam {
             source = "inbox"
         )
         return gson.toJsonTree(requestContract)
+    }
+
+    fun generateParamSendProductAttachment(
+        messageId: TopchatProductAttachmentPreviewUiModel,
+        product: String,
+        startTime: String,
+        toUid: String,
+        productPreview: String,
+        message: LocalCacheModel,
+        userLocationInfo: String
+    ): JsonObject {
+        // TODO: implement later
+        val json = JsonObject()
+        return json
     }
 
     fun generateParamSendProductAttachment(

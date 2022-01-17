@@ -1001,44 +1001,43 @@ class TopChatViewModel @Inject constructor(
     ) {
         if (productIds.isEmpty()) return
         if (productIds.isNotEmpty()) clearAttachmentPreview()
-
         launchCatchError(block = {
-            val param = GetChatPreAttachPayloadUseCase.Param(
-                ids = productIds.joinToString(separator = ","),
-                isSeller = amISeller,
-                type = GetChatPreAttachPayloadUseCase.Param.TYPE_PRODUCT,
-                addressID = userLocationInfo.address_id.toLongOrZero(),
-                districtID = userLocationInfo.district_id.toLongOrZero(),
-                postalCode = userLocationInfo.postal_code,
-                latlon = userLocationInfo.latLong
-            )
-            val response = chatPreAttachPayload(param)
+            showLoadingProductPreview(productIds)
+            if (!alreadyHasAttachmentData(productIds)) {
+                val param = GetChatPreAttachPayloadUseCase.Param(
+                    ids = productIds.joinToString(separator = ","),
+                    isSeller = amISeller,
+                    type = GetChatPreAttachPayloadUseCase.Param.TYPE_PRODUCT,
+                    addressID = userLocationInfo.address_id.toLongOrZero(),
+                    districtID = userLocationInfo.district_id.toLongOrZero(),
+                    postalCode = userLocationInfo.postal_code,
+                    latlon = userLocationInfo.latLong
+                )
+                val response = chatPreAttachPayload(param)
+                val mapAttachment = chatAttachmentMapper.map(response)
+                attachments.putAll(mapAttachment.toMap())
+            }
+            _chatAttachments.value = attachments
         }, onError = {
-
+            // TODO: handle error
         })
-//        for (resultProduct in resultProducts) {
-//            val productPreview = ProductPreview(
-//                id = resultProduct.productId,
-//                imageUrl = resultProduct.productImageThumbnail,
-//                name = resultProduct.name,
-//                price = resultProduct.price,
-//                url = resultProduct.productUrl,
-//                priceBefore = resultProduct.priceBefore,
-//                dropPercentage = resultProduct.dropPercentage,
-//                productFsIsActive = resultProduct.isFreeOngkirActive,
-//                productFsImageUrl = resultProduct.imgUrlFreeOngkir,
-//                remainingStock = resultProduct.stock,
-//                isSupportVariant = resultProduct.isSupportVariant,
-//                campaignId = resultProduct.campaignId,
-//                isPreorder = resultProduct.isPreorder,
-//                priceInt = resultProduct.priceInt,
-//                categoryId = resultProduct.categoryId
-//            )
-//            if (productPreview.notEnoughRequiredData()) continue
-//            val sendAbleProductPreview = SendableProductPreview(productPreview)
-//            addAttachmentPreview(sendAbleProductPreview)
-//        }
-//        initAttachmentPreview()
+    }
+
+    private fun alreadyHasAttachmentData(productIds: List<String>): Boolean {
+        for (productId in productIds) {
+            if (!attachments.contains(productId)) return false
+        }
+        return true
+    }
+
+    private fun showLoadingProductPreview(productIds: List<String>) {
+        val sendablePreviews: List<TopchatProductAttachmentPreviewUiModel> = productIds.map { productId ->
+            val builder = TopchatProductAttachmentPreviewUiModel.Builder()
+                .withRoomMetaData(roomMetaData)
+                .withProductId(productId)
+            (builder as TopchatProductAttachmentPreviewUiModel.Builder).build()
+        }
+        _showableAttachmentPreviews.value = ArrayList(sendablePreviews)
     }
 
     fun clearAttachmentPreview() {
