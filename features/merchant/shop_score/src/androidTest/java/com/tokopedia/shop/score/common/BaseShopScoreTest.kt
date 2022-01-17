@@ -16,6 +16,7 @@ import com.tokopedia.shop.score.stub.common.util.ShopPerformanceComponentStubIns
 import com.tokopedia.shop.score.stub.common.util.ShopScorePrefManagerStub
 import com.tokopedia.shop.score.stub.common.util.onClick
 import com.tokopedia.shop.score.stub.common.util.onIdView
+import com.tokopedia.shop.score.stub.penalty.domain.usecase.GetShopPenaltyDetailUseCaseStub
 import com.tokopedia.shop.score.stub.performance.domain.mapper.ShopScoreCommonMapperStub
 import com.tokopedia.shop.score.stub.performance.domain.mapper.ShopScoreMapperStub
 import com.tokopedia.shop.score.stub.performance.domain.response.ShopInfoPeriodResponseStub
@@ -29,6 +30,7 @@ import org.junit.Before
 import org.junit.Rule
 
 abstract class BaseShopScoreTest {
+
     @get:Rule
     var activityRule = IntentsTestRule(ShopPerformanceActivityStub::class.java, true, false)
 
@@ -63,8 +65,18 @@ abstract class BaseShopScoreTest {
         ShopScoreResponseStub::class.java
     )
 
-    protected val existingSellerWithRecomToolsResponse = AndroidTestUtil.parse<ShopScoreResponseStub>(
-        "raw/seller/cassava/existing/shop_score_existing_pm_with_recom_tools.json",
+    protected val existingSellerPmRecomToolsResponse = AndroidTestUtil.parse<ShopScoreResponseStub>(
+        "raw/seller/cassava/performance/existing/shop_score_existing_pm_recom_tools.json",
+        ShopScoreResponseStub::class.java
+    )
+
+    protected val existingSellerRmResponse = AndroidTestUtil.parse<ShopScoreResponseStub>(
+        "raw/seller/cassava/performance/existing/shop_score_existing_rm.json",
+        ShopScoreResponseStub::class.java
+    )
+
+    protected val newSellerRmResponse = AndroidTestUtil.parse<ShopScoreResponseStub>(
+        "raw/seller/cassava/performance/new/shop_score_new_rm.json",
         ShopScoreResponseStub::class.java
     )
 
