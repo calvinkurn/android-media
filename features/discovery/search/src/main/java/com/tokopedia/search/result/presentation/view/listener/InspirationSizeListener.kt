@@ -1,8 +1,8 @@
 package com.tokopedia.search.result.presentation.view.listener
 
-import com.tokopedia.search.result.presentation.model.SizeOptionDataView
+import com.tokopedia.filter.common.data.Option
 
 interface InspirationSizeOptionListener {
-    fun onInspirationSizeOptionClicked(optionData: SizeOptionDataView)
+    fun onInspirationSizeOptionClicked(option: Option, isActive: Boolean)
     fun onInspirationSizeClosed()
 }

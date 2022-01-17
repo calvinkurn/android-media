@@ -24,6 +24,7 @@ internal class InspirationSizeViewHolder(
     }
 
     private var binding: SearchResultProductSizeLayoutBinding? by viewBinding()
+    private var inspirationSizeOptionAdapter: InspirationSizeOptionAdapter? = null
 
     override fun bind(element: SizeDataView) {
         bindTitle(element)
@@ -31,13 +32,14 @@ internal class InspirationSizeViewHolder(
     }
 
     private fun bindTitle(element: SizeDataView) {
-        binding?.searchProductSizeTitle?.text = element.title
+        binding?.searchProductSizeTitle?.text = element.data.title
     }
 
     private fun bindOptions(element: SizeDataView) {
         binding?.searchProductSizeOptionRecyclerView?.apply {
             layoutManager = createLayoutManager()
-            adapter = createAdapter(element.optionData)
+            createAdapter(element)
+            adapter = inspirationSizeOptionAdapter
         }
     }
 
@@ -48,10 +50,11 @@ internal class InspirationSizeViewHolder(
                 .build()
     }
 
-    private fun createAdapter(inspirationSizeOptionData: List<SizeOptionDataView>): RecyclerView.Adapter<RecyclerView.ViewHolder> {
-        val inspirationSizeOptionAdapter = InspirationSizeOptionAdapter(inspirationSizeOptionListener)
-        inspirationSizeOptionAdapter.setItemList(inspirationSizeOptionData)
+    private fun createAdapter(element: SizeDataView) {
+        val adapter = InspirationSizeOptionAdapter(inspirationSizeOptionListener)
+        adapter.setItemList(element.data.optionSizeData)
+        adapter.setInspirationSizeDataView(element)
 
-        return inspirationSizeOptionAdapter
+        inspirationSizeOptionAdapter = adapter
     }
 }

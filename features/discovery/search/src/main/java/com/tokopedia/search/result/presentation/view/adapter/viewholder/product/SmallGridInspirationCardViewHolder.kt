@@ -44,7 +44,7 @@ class SmallGridInspirationCardViewHolder(
     }
 
     override fun bind(element: InspirationCardDataView) {
-        val isCurated = element.type == SearchConstant.InspirationCard.TYPE_CURATED
+        val isCurated = element.data.type == SearchConstant.InspirationCard.TYPE_CURATED
         setBaseLayout(isCurated)
         if (isCurated) {
             setCuratedLayout(element)
@@ -68,7 +68,7 @@ class SmallGridInspirationCardViewHolder(
     }
 
     private fun setCuratedLayout(element: InspirationCardDataView) {
-        val option = element.optionData.firstOrNull() ?: return
+        val option = element.data.optionCardData.firstOrNull() ?: return
 
         bindCuratedBackground()
         bindCuratedIcon(option)
@@ -115,8 +115,8 @@ class SmallGridInspirationCardViewHolder(
 
     private fun bindTitle(element: InspirationCardDataView) {
         inspirationCardBinding?.inspirationCardTitle?.let {
-            it.shouldShowWithAction(element.title.isNotEmpty()) {
-                it.text = element.title
+            it.shouldShowWithAction(element.data.title.isNotEmpty()) {
+                it.text = element.data.title
             }
         }
     }
@@ -129,7 +129,7 @@ class SmallGridInspirationCardViewHolder(
 
         inspirationCardBinding?.recyclerViewInspirationCardOptionList?.let {
             it.layoutManager = createLayoutManager()
-            it.adapter = createAdapter(element.optionData)
+            it.adapter = createAdapter(element.data.optionCardData)
             if (!element.isRelated())
                 it.addItemDecorationIfNotExists(spacingItemDecoration)
         }

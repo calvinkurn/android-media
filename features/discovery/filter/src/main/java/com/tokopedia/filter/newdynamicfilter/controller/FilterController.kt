@@ -20,6 +20,8 @@ open class FilterController {
     val filterViewStateSet: Set<String>
         get() = filterViewState
 
+    val activeSizeOptionList = mutableListOf<String>()
+
     fun initFilterController(parameter: Map<String, String>? = mapOf(),
                              filterList: List<Filter>? = listOf()) {
         resetStatesBeforeLoad()
@@ -91,6 +93,10 @@ open class FilterController {
         for(option in optionsForFilterViewState) {
             if(option.value == "" || option.isTypeTextBox) option.value = parameter[option.key].toString()
             filterViewState.add(option.uniqueId)
+        }
+
+        for (uniqueId in activeSizeOptionList) {
+            filterViewState.add(uniqueId)
         }
     }
 
@@ -419,4 +425,12 @@ open class FilterController {
             val option = OptionHelper.generateOptionFromUniqueId(it)
             SavedOption.create(option, filterList)
         }
+
+    fun setActiveSizeOptionList(option: Option, isActive: Boolean) {
+        if (isActive && !activeSizeOptionList.contains(option.uniqueId)) {
+            activeSizeOptionList.add(option.uniqueId)
+        } else {
+            activeSizeOptionList.remove(option.uniqueId)
+        }
+    }
 }

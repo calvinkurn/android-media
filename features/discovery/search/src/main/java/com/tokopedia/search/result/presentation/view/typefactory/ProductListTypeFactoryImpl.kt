@@ -99,8 +99,6 @@ class ProductListTypeFactoryImpl(
     }
 
     override fun type(inspirationCardDataView: InspirationCardDataView): Int {
-//        if (inspirationCardDataView.type == SearchConstant.InspirationCard.TYPE_SIZE_PERSO) return InspirationSizeViewHolder.LAYOUT
-
         return when (recyclerViewItem) {
             SearchConstant.RecyclerView.VIEW_LIST,
             SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID ->

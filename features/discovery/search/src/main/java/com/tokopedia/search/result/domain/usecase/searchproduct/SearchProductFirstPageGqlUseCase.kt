@@ -369,6 +369,12 @@ class SearchProductFirstPageGqlUseCase(
                             url
                             color
                             applink
+                            filters {
+                              title
+                              key
+                              name
+                              value
+                            }
                         }
                     }
                 }

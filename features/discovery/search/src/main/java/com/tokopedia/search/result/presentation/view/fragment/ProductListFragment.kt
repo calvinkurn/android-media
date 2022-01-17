@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -55,6 +56,7 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper.combinePriceFilterIfExists
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper.generateOptionFromUniqueId
 import com.tokopedia.iris.Iris
@@ -1685,12 +1687,23 @@ class ProductListFragment: BaseDaggerFragment(),
         redirectionStartActivity(optionData.applink, optionData.url)
     }
 
-    override fun onInspirationSizeOptionClicked(optionData: SizeOptionDataView) {
+    override fun onInspirationSizeOptionClicked(option: Option, isActive: Boolean) {
+        filterController.setActiveSizeOptionList(option, isActive)
+        filterController.setFilter(option, isActive)
 
+        refreshSearchParameter(filterController.getParameter())
+
+        reloadData()
     }
 
     override fun onInspirationSizeClosed() {
 
+    }
+
+    override fun setSelectedSizeOption() {
+        productListAdapter?.setSelectedSizeOption(filterController.activeSizeOptionList.map {
+            OptionHelper.generateOptionFromUniqueId(it).value
+        })
     }
 
     private fun trackEventClickInspirationCardOption(option: InspirationCardOptionDataView) {

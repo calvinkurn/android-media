@@ -122,6 +122,7 @@ interface ProductListSectionContract {
             inspirationCarouselOption: InspirationCarouselDataView.Option,
         )
         fun modifyApplinkToSearchResult(applink: String): String
+        fun setSelectedSizeOption()
     }
 
     interface Presenter : CustomerPresenter<View> {

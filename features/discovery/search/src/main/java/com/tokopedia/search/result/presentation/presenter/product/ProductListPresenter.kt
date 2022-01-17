@@ -516,7 +516,6 @@ class ProductListPresenter @Inject constructor(
         processTopAdsImageViewModel(searchParameter, list)
         processInspirationCardPosition(searchParameter, list)
         processInspirationCarouselPosition(searchParameter, list)
-        processInspirationSizePosition(list)
         processBannerAndBroadmatchInSamePosition(searchProduct, list)
         processBanner(searchProduct, list)
         processBroadMatch(searchProduct, list)
@@ -759,6 +758,7 @@ class ProductListPresenter @Inject constructor(
             getViewToShowProductList(searchParameter, searchProductModel, productDataView)
             processDefaultQuickFilter(searchProductModel)
             processQuickFilter(searchProductModel.quickFilterModel)
+            view.setSelectedSizeOption()
         }
 
         view.updateScrollListener()
@@ -1212,17 +1212,9 @@ class ProductListPresenter @Inject constructor(
         while (inspirationCardViewModelIterator.hasNext()) {
             val data = inspirationCardViewModelIterator.next()
 
-//            if (data.position <= 0) {
-//                inspirationCardViewModelIterator.remove()
-//                continue
-//            }
-
-            if (data.position <= productList.size && shouldShowInspirationCard(data.type)) {
-//                if (data.type == SearchConstant.InspirationCard.TYPE_SIZE_PERSO) {
-//                    list.add(0, data)
-//                }
+            if (data.data.position <= productList.size && shouldShowInspirationCard(data.data.type)) {
                 try {
-                    val product = productList[data.position - 1]
+                    val product = productList[data.data.position - 1]
                     list.add(list.indexOf(product) + 1, data)
                     inspirationCardViewModelIterator.remove()
                 } catch (exception: Throwable) {

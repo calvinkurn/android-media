@@ -2,17 +2,19 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductInspirationSizeOptionChipLayoutBinding
-import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
 import com.tokopedia.search.result.presentation.model.SizeOptionDataView
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.InspirationSizeOptionAdapter
 import com.tokopedia.search.result.presentation.view.listener.InspirationSizeOptionListener
-import com.tokopedia.utils.view.binding.noreflection.viewBinding
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.view.binding.viewBinding
 
 class InspirationSizeOptionViewHolder(
         itemView: View,
-        private val inspirationOptionListener: InspirationSizeOptionListener
+        private val inspirationOptionListener: InspirationSizeOptionListener,
+        private val adapter: InspirationSizeOptionAdapter
 ): RecyclerView.ViewHolder(itemView) {
     companion object {
         val LAYOUT = R.layout.search_result_product_inspiration_size_option_chip_layout
@@ -20,13 +22,24 @@ class InspirationSizeOptionViewHolder(
 
     private var binding: SearchResultProductInspirationSizeOptionChipLayoutBinding? by viewBinding()
 
-    internal fun bind(optionData: SizeOptionDataView) {
-        binding?.inspirationSizeOptionChip?.chipText = optionData.text
+    internal fun bind(optionData: SizeOptionDataView, isActive: Boolean) {
+        val binding = binding ?: return
+        val chipsUnify =  binding.inspirationSizeOptionChip
+        chipsUnify.chipText = optionData.text
+        chipsUnify.chipType = if (isActive) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
 
-        setListener(optionData)
+        setListener(chipsUnify, optionData, isActive)
     }
 
-    private fun setListener(optionData: SizeOptionDataView) {
-        inspirationOptionListener.onInspirationSizeOptionClicked(optionData)
+    private fun setListener(chipsUnify: ChipsUnify, optionData: SizeOptionDataView, isActive: Boolean) {
+        chipsUnify.setOnClickListener {
+            inspirationOptionListener.onInspirationSizeOptionClicked(createOption(optionData), !isActive)
+        }
     }
+
+    private fun createOption(optionData: SizeOptionDataView) = Option(
+            optionData.filters.name,
+            optionData.filters.key,
+            optionData.filters.value
+    )
 }

@@ -22,27 +22,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel.Related
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationWidget
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchProductData
-import com.tokopedia.search.result.presentation.model.BadgeItemDataView
-import com.tokopedia.search.result.presentation.model.BannerDataView
-import com.tokopedia.search.result.presentation.model.BroadMatch
-import com.tokopedia.search.result.presentation.model.BroadMatchDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchProduct
-import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
-import com.tokopedia.search.result.presentation.model.GlobalNavDataView
-import com.tokopedia.search.result.presentation.model.InspirationCardDataView
-import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
-import com.tokopedia.search.result.presentation.model.LabelGroupDataView
-import com.tokopedia.search.result.presentation.model.LabelGroupVariantDataView
-import com.tokopedia.search.result.presentation.model.LastFilterDataView
-import com.tokopedia.search.result.presentation.model.ProductDataView
-import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.presentation.model.RelatedDataView
-import com.tokopedia.search.result.presentation.model.SuggestionDataView
-import com.tokopedia.search.result.presentation.model.TickerDataView
-import com.tokopedia.search.result.presentation.model.SizeDataView
-import com.tokopedia.search.result.presentation.model.SizeOptionDataView
+import com.tokopedia.search.result.presentation.model.*
 
 class ProductViewModelMapper {
 
@@ -434,10 +414,12 @@ class ProductViewModelMapper {
     ): List<InspirationCardDataView> {
         return searchInspirationWidget.data.filter { it.type != SearchConstant.InspirationCard.TYPE_SIZE_PERSO }.map { data ->
             InspirationCardDataView(
-                    data.title,
-                    data.type,
-                    data.position,
-                    data.inspiratioWidgetOptions.mapToInspirationCardOptionDataView(data.type)
+                    InspirationData(
+                            title = data.title,
+                            type = data.type,
+                            position = data.position,
+                            optionCardData = data.inspirationWidgetOptions.mapToInspirationCardOptionDataView(data.type)
+                    )
             )
         }
     }
@@ -447,10 +429,12 @@ class ProductViewModelMapper {
     ): List<SizeDataView> {
         return searchInspirationWidget.data.filter { it.type == SearchConstant.InspirationCard.TYPE_SIZE_PERSO }.map { data ->
             SizeDataView(
-                    data.title,
-                    data.type,
-                    data.position,
-                    data.inspiratioWidgetOptions.mapToInspirationSizeOptionDataView(data.type)
+                    InspirationData(
+                            title = data.title,
+                            type = data.type,
+                            position = data.position,
+                            optionSizeData = data.inspirationWidgetOptions.mapToInspirationSizeOptionDataView(data.type)
+                    )
             )
         }
     }
@@ -477,9 +461,17 @@ class ProductViewModelMapper {
                 optionModel.url,
                 optionModel.color,
                 optionModel.applink,
-                inspirationCardType,
+                optionModel.filters.toInspirationSizeOptionFiltersDataView(),
+                inspirationCardType
         )
     }
+
+    private fun SearchProductModel.InspirationCardOptionFilter.toInspirationSizeOptionFiltersDataView() =
+            InspirationSizeOptionFiltersDataView(
+                this.key,
+                this.name,
+                this.value
+            )
 
     private fun convertToBannerDataView(bannerModel: Banner): BannerDataView {
         return BannerDataView(

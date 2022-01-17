@@ -6,5 +6,10 @@ data class SizeOptionDataView(
         val url: String = "",
         val hexColor: String = "",
         val applink: String = "",
+        val filters: InspirationSizeOptionFiltersDataView = InspirationSizeOptionFiltersDataView(
+                "",
+                "",
+                ""
+        ),
         val inspirationCardType: String = ""
 )
