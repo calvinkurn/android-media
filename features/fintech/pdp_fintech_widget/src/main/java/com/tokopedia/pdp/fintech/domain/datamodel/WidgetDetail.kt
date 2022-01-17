@@ -3,6 +3,14 @@ package com.tokopedia.pdp.fintech.domain.datamodel
 import com.google.gson.annotations.SerializedName
 
 data class WidgetDetail(
+    @SerializedName("paylater_getPDPWidgetV2") var baseWidgetResponse: BaseDataResponse? = null
+)
+
+data class BaseDataResponse(
+    @SerializedName("data") var baseData: BaseChipResponse? = null
+)
+
+data class BaseChipResponse(
     @SerializedName("list") var list: ArrayList<ChipList> = arrayListOf()
 )
 

@@ -32,8 +32,9 @@ class PdpFintechWidget @JvmOverloads constructor(
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
 
-    var idToPriceMap = HashMap<String, String>()
-    var priceToChip = HashMap<String, ArrayList<ChipsData>>()
+    private var idToPriceMap = HashMap<String, String>()
+    private var priceToChip = HashMap<String, ArrayList<ChipsData>>()
+    private lateinit var productID: String
 
 
     @Inject
@@ -72,6 +73,8 @@ class PdpFintechWidget @JvmOverloads constructor(
             when (it) {
                 is Success -> {
                     setPriceToChipMap(it.data)
+                    loader.visibility = View.GONE
+                    getChipDataAndUpdate(idToPriceMap[productID])
                 }
                 is Fail -> {
                     instanceProductUpdateListner.removeWidget()
@@ -81,8 +84,10 @@ class PdpFintechWidget @JvmOverloads constructor(
     }
 
     private fun setPriceToChipMap(widgetDetail: WidgetDetail) {
-        for (i in widgetDetail.list.indices) {
-            priceToChip.put(widgetDetail.list[i].price.toString(), widgetDetail.list[i].chips)
+        widgetDetail.baseWidgetResponse?.baseData?.let {
+            for (i in it.list.indices) {
+                priceToChip[it.list[i].price.toString()] = it.list[i].chips
+            }
         }
     }
 
@@ -91,7 +96,6 @@ class PdpFintechWidget @JvmOverloads constructor(
         fintechWidgetViewModel.productDetailLiveData.observe(parentLifeCycleOwner, {
             when (it) {
                 is Success -> {
-                    loader.visibility = GONE
                     setIdToPriceMap(it.data)
                     sendProductCategory(it.data)
                 }
@@ -161,6 +165,7 @@ class PdpFintechWidget @JvmOverloads constructor(
         productID: String,
         fintechWidgetViewHolder: ProductUpdateListner
     ) {
+        this.productID = productID
         this.instanceProductUpdateListner = fintechWidgetViewHolder
         loader.visibility = View.VISIBLE
         if (counter == 0) {
@@ -168,7 +173,7 @@ class PdpFintechWidget @JvmOverloads constructor(
             fintechWidgetViewModel.getProductDetail(productID)
         } else {
             if (priceToChip.size != 0 && idToPriceMap.size != 0)
-                getChipDataAndUpdate(idToPriceMap.get(productID))
+                getChipDataAndUpdate(idToPriceMap[productID])
             else
                 fintechWidgetViewModel.getProductDetail(productID)
         }
@@ -178,8 +183,9 @@ class PdpFintechWidget @JvmOverloads constructor(
 
     private fun getChipDataAndUpdate(productPrice: String?) {
         productPrice?.let {
-            priceToChip[it]?.let {
-                fintechWidgetAdapter.setData(it)
+            priceToChip[it]?.let { chipList ->
+                loader.visibility = View.GONE
+                fintechWidgetAdapter.setData(chipList)
 
             } ?: run {
                 instanceProductUpdateListner.removeWidget()

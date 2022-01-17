@@ -57,6 +57,8 @@ dependencies {
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.viewModel
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 }

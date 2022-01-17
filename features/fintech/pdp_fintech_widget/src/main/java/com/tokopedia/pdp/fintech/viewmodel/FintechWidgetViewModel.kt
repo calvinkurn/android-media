@@ -1,7 +1,6 @@
 package com.tokopedia.pdp.fintech.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.pdp.fintech.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.pdp.fintech.domain.datamodel.ProductDetailClass
@@ -11,6 +10,7 @@ import com.tokopedia.pdp.fintech.domain.usecase.ProductDetailUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
@@ -22,12 +22,12 @@ class FintechWidgetViewModel @Inject constructor
 ) :
     BaseViewModel(dispatcher) {
 
-    private val _productDetailLiveData = MutableLiveData<Result<ProductDetailClass>>()
-    val productDetailLiveData: LiveData<Result<ProductDetailClass>> =
+    private val _productDetailLiveData = SingleLiveEvent<Result<ProductDetailClass>>()
+    val productDetailLiveData: SingleLiveEvent<Result<ProductDetailClass>> =
         _productDetailLiveData
 
-    private val _widgetDetailLiveData = MutableLiveData<Result<WidgetDetail>>()
-    val widgetDetailLiveData: LiveData<Result<WidgetDetail>> =
+    private val _widgetDetailLiveData = SingleLiveEvent<Result<WidgetDetail>>()
+    val widgetDetailLiveData: SingleLiveEvent<Result<WidgetDetail>> =
         _widgetDetailLiveData
 
 
@@ -40,11 +40,11 @@ class FintechWidgetViewModel @Inject constructor
     }
 
     private fun onFailProductInfo(throwable: Throwable) {
-        _productDetailLiveData.value = Fail(throwable)
+        _productDetailLiveData.postValue(Fail(throwable))
     }
 
     private fun onSuccessProductInfo(productDetailClass: ProductDetailClass) {
-        _productDetailLiveData.value = Success(productDetailClass)
+        _productDetailLiveData.postValue(Success(productDetailClass))
     }
 
 
@@ -56,11 +56,11 @@ class FintechWidgetViewModel @Inject constructor
     }
 
     private fun onSuccessWidgetData(widgetDetail: WidgetDetail) {
-        _widgetDetailLiveData.value = Success(widgetDetail)
+        _widgetDetailLiveData.postValue(Success(widgetDetail))
     }
 
     private fun onFailWidgetData(throwable: Throwable) {
-        _widgetDetailLiveData.value = Fail(throwable)
+        _widgetDetailLiveData.postValue(Fail(throwable))
     }
 
 }
