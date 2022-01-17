@@ -52,7 +52,7 @@ class CheckoutTokoNowTest {
             // Wait for Validate Use
             waitForData()
             assertHasSingleShipmentSelected(activityRule,
-                    title = "Gojek (Rp0)",
+                    title = "Bebas Ongkir (Rp0)",
                     eta = "Estimasi tiba hari ini")
             clickChoosePaymentButton(activityRule)
         } validateAnalytics {
@@ -75,7 +75,7 @@ class CheckoutTokoNowTest {
             // Wait for Validate Use
             waitForData()
             assertHasSingleShipmentSelected(activityRule,
-                    title = "Gojek (Rp0)",
+                    title = "Bebas Ongkir (Rp0)",
                     eta = "Estimasi tiba hari ini")
             clickChoosePaymentButton(activityRule)
         } validateAnalytics {

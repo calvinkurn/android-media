@@ -161,7 +161,7 @@ class CheckoutPageRobot {
 
                         override fun perform(uiController: UiController?, view: View) {
                             assertEquals(View.VISIBLE, view.findViewById<View>(R.id.layout_state_has_selected_single_shipping).visibility)
-                            assertEquals(title, view.findViewById<Typography>(R.id.label_selected_single_shipping_title).text)
+                            assertEquals(title, view.findViewById<Typography>(R.id.label_selected_single_shipping_title).text.toString())
                             if (originalPrice != null) {
                                 Assert.assertTrue((view.findViewById<Typography>(R.id.label_selected_single_shipping_title).text).contains(originalPrice))
                             }
