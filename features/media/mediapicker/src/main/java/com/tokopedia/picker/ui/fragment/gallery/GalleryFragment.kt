@@ -9,11 +9,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.picker.R
 import com.tokopedia.picker.common.PickerSelectionType
+import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.data.repository.AlbumRepositoryImpl.Companion.RECENT_ALBUM_ID
 import com.tokopedia.picker.databinding.FragmentGalleryBinding
 import com.tokopedia.picker.di.DaggerPickerComponent
@@ -22,6 +22,7 @@ import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.activity.album.AlbumActivity
 import com.tokopedia.picker.ui.fragment.gallery.recyclers.adapter.GalleryAdapter
 import com.tokopedia.picker.ui.fragment.gallery.recyclers.utils.GridItemDecoration
+import com.tokopedia.picker.utils.isVideoFormat
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -33,9 +34,7 @@ open class GalleryFragment : BaseDaggerFragment() {
     private val param = PickerUiConfig.pickerParam()
 
     private val adapter by lazy {
-        GalleryAdapter(emptyList()) {
-            selectMedia(it)
-        }
+        GalleryAdapter(emptyList(), ::selectMedia)
     }
 
     private val viewModel by lazy {
@@ -74,13 +73,18 @@ open class GalleryFragment : BaseDaggerFragment() {
 
             // fetch album by bucket id
             viewModel.fetch(bucketId, param)
+
+            // force and scrool to up
+            if (bucketId == -1L) {
+                binding?.lstMedia?.smoothScrollToPosition(0)
+            }
         }
     }
 
     private fun initObservable() {
         lifecycle.addObserver(viewModel)
 
-        viewModel.files.observe(viewLifecycleOwner) {
+        viewModel.mediaFiles.observe(viewLifecycleOwner) {
             adapter.setData(it)
         }
 
@@ -125,21 +129,23 @@ open class GalleryFragment : BaseDaggerFragment() {
 
         binding?.lstMedia?.adapter = adapter
 
-        // force scroll to top if user trying to change the album
-        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
-                binding?.lstMedia?.scrollToPosition(positionStart)
-            }
-        })
-
         adapter.setListener {
             viewModel.publishSelectionDataChanged(it)
         }
     }
 
-    private fun selectMedia(isSelected: Boolean): Boolean {
+    private fun selectMedia(media: Media, isSelected: Boolean): Boolean {
         if (PickerUiConfig.paramType == PickerSelectionType.MULTIPLE) {
-            if (adapter.selectedMedias.size >= param.limit && !isSelected) {
+            if (isVideoFormat(media.path) && PickerUiConfig.hasAtLeastOneVideoOnGlobalSelection()) {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.picker_selection_limit_video),
+                    Toast.LENGTH_SHORT
+                ).show()
+                return false
+            }
+
+            if (PickerUiConfig.mediaSelectionList().size >= param.limit && !isSelected) {
                 Toast.makeText(
                     requireContext(),
                     getString(
@@ -151,7 +157,7 @@ open class GalleryFragment : BaseDaggerFragment() {
                 return false
             }
         } else if (PickerUiConfig.paramType == PickerSelectionType.SINGLE) {
-            if (adapter.selectedMedias.size > 0) {
+            if (PickerUiConfig.mediaSelectionList().isNotEmpty()) {
                 adapter.removeAllSelectedSingleClick()
             }
         }
