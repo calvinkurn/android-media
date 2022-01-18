@@ -20,8 +20,6 @@ open class FilterController {
     val filterViewStateSet: Set<String>
         get() = filterViewState
 
-    var sizeOptionList = listOf<Option>()
-
     fun initFilterController(parameter: Map<String, String>? = mapOf(),
                              filterList: List<Filter>? = listOf()) {
         resetStatesBeforeLoad()
@@ -79,7 +77,6 @@ open class FilterController {
     private fun loadFilterViewState(parameter: Map<String, String>?) {
         if(parameter == null) return
 
-        val param = parameter
         val optionsForFilterViewState = mutableListOf<Option>()
 
         loopOptionsInFilterList { _, option ->
@@ -88,12 +85,6 @@ open class FilterController {
             }
             else {
                 addOptionsFromDeeperLevelCategory(parameter, option, optionsForFilterViewState)
-            }
-        }
-
-        sizeOptionList.forEach { option ->
-            if(isSizeOptionSelected(parameter, option)) {
-                optionsForFilterViewState.add(option)
             }
         }
 
@@ -183,6 +174,10 @@ open class FilterController {
         loadFilterList(filterList)
         loadParameter(parameter)
         loadFilterViewState(parameter)
+    }
+
+    fun addFilterList(filter: Filter) {
+        filterList.add(filter)
     }
 
     fun refreshMapParameter(parameter: Map<String, String>) {

@@ -1228,8 +1228,14 @@ class ProductListPresenter @Inject constructor(
     private fun processInspirationSizePosition(list: MutableList<Visitable<*>>) {
         if (inspirationSizeDataView.isEmpty()) return
 
+        val inspirationSizeVisitableList = arrayListOf<Visitable<ProductListTypeFactory>>()
+
         inspirationSizeDataView.forEach {
-            list.add(0, it)
+            inspirationSizeVisitableList.add(SeparatorDataView())
+            inspirationSizeVisitableList.add(it)
+            inspirationSizeVisitableList.add(SeparatorDataView())
+
+            list.addAll(list.indexOf(productList[it.data.position]), inspirationSizeVisitableList)
         }
     }
 

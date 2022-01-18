@@ -202,6 +202,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE
         )
     }
+    private var inspirationSizeFilter: Filter? = null
 
     override val carouselRecycledViewPool = RecyclerView.RecycledViewPool()
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
@@ -1697,14 +1698,17 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun setSizeOptionFilterOnFilterController(dataView: MutableList<SizeDataView>) {
         if (dataView.size > 0) {
-            filterController.sizeOptionList =
-                    dataView[0].data.optionSizeData.map {
+            inspirationSizeFilter = Filter(
+                    title = dataView[0].data.title,
+                    options = dataView[0].data.optionSizeData.map {
                         Option(
-                                it.filters.name,
-                                it.filters.key,
-                                it.filters.value
+                                name = it.filters.name,
+                                key = it.filters.key,
+                                value = it.filters.value,
+                                isPopular = true
                         )
                     }
+            )
         }
     }
 
@@ -1712,10 +1716,8 @@ class ProductListFragment: BaseDaggerFragment(),
         val selectedSizeOptions = mutableListOf<SavedOption>()
 
         filterController.getActiveSavedOptionList().forEach { activeOption ->
-            filterController.sizeOptionList.forEach { availableSizeOption ->
-                if (activeOption.key == availableSizeOption.key && activeOption.value == availableSizeOption.value) {
-                    selectedSizeOptions.add(activeOption)
-                }
+            if (activeOption.key == Option.KEY_VARIANTS) {
+                selectedSizeOptions.add(activeOption)
             }
         }
 
@@ -1730,7 +1732,11 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun initFilterControllerForQuickFilter(quickFilterList: List<Filter>) {
-        filterController.initFilterController(searchParameter?.getSearchParameterHashMap(), quickFilterList)
+        val filterList = quickFilterList.toMutableList()
+        inspirationSizeFilter?.let {
+            filterList.add(it)
+        }
+        filterController.initFilterController(searchParameter?.getSearchParameterHashMap(), filterList)
     }
 
     override fun hideQuickFilterShimmering() {
@@ -1863,10 +1869,24 @@ class ProductListFragment: BaseDaggerFragment(),
         }
     }
 
+    private fun isFiltersContainsSameTitle(filterList: List<Filter>?, title: String): Boolean {
+        filterList?.forEach {
+            if (it.title == title) return true
+        }
+
+        return false
+    }
+
     override fun setDynamicFilter(dynamicFilterModel: DynamicFilterModel) {
         val searchParameterMap = searchParameter?.getSearchParameterHashMap() ?: mapOf()
 
-        filterController.appendFilterList(searchParameterMap, dynamicFilterModel.data.filter)
+        val filterList = dynamicFilterModel.data.filter.toMutableList()
+        inspirationSizeFilter?.let {
+            if (!isFiltersContainsSameTitle(filterList, it.title)) filterList.add(it)
+        }
+
+        dynamicFilterModel.data.filter = filterList.toList()
+        filterController.appendFilterList(searchParameterMap, filterList)
 
         sortFilterBottomSheet?.setDynamicFilterModel(dynamicFilterModel)
     }

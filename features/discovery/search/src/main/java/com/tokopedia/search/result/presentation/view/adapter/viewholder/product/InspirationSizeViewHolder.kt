@@ -11,6 +11,9 @@ import com.tokopedia.search.result.presentation.model.SizeDataView
 import com.tokopedia.search.result.presentation.model.SizeOptionDataView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.InspirationSizeOptionAdapter
 import com.tokopedia.search.result.presentation.view.listener.InspirationSizeOptionListener
+import com.tokopedia.search.utils.ChipSpacingItemDecoration
+import com.tokopedia.search.utils.addItemDecorationIfNotExists
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
 internal class InspirationSizeViewHolder(
@@ -36,10 +39,12 @@ internal class InspirationSizeViewHolder(
     }
 
     private fun bindOptions(element: SizeDataView) {
+        val chipVerticalSpacaing = 4.toPx()
         binding?.searchProductSizeOptionRecyclerView?.apply {
             layoutManager = createLayoutManager()
             createAdapter(element)
             adapter = inspirationSizeOptionAdapter
+            addItemDecorationIfNotExists(ChipSpacingItemDecoration(chipVerticalSpacaing, 0))
         }
     }
 
