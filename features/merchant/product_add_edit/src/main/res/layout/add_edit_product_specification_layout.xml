@@ -36,6 +36,13 @@
         app:layout_constraintTop_toBottomOf="@id/tv_add_product_specification"
         app:typographyType="body_2" />
 
+    <com.tokopedia.product.addedit.tooltip.presentation.TooltipCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:text="Mohon isi status IMEI (sudah terdaftar/belum) di dalam spesifikasi, ya."
+        app:iconVisible="false"
+        app:layout_constraintTop_toBottomOf="@id/tv_product_specification" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/reload_product_specification_layout"
         android:layout_width="match_parent"

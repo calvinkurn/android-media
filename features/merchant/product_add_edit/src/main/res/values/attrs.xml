@@ -2,6 +2,7 @@
 <resources>
     <declare-styleable name="TooltipCardView">
         <attr name="text" format="string" />
+        <attr name="iconVisible" format="boolean" />
     </declare-styleable>
     <declare-styleable name="TooltipCardViewSelectable">
         <attr name="textTitle" format="string" />
