@@ -167,7 +167,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
                 val discountAmount = textAreaMinimumDiscount.textAreaInput.text.toString().trim().digitsOnlyInt()
                 val isValidInput =
-                    viewModel.isValidCashbackMinimumPurchase(number, discountAmount)
+                    viewModel.isValidCashbackMinimumPurchase(number, discountAmount, selectedMinimumPurchaseType)
                 if (isValidInput) {
                     clearMinimalPurchaseErrorMessage(textAreaMinimumPurchase)
                 } else {
@@ -263,10 +263,14 @@ class CouponSettingFragment : BaseDaggerFragment() {
         binding.chipCashback.chip_container.setOnClickListener {
             binding.chipCashback.chipType = ChipsUnify.TYPE_SELECTED
             binding.chipFreeShipping.chipType = ChipsUnify.TYPE_NORMAL
+
             binding.chipDiscountTypeNominal.chipType = ChipsUnify.TYPE_SELECTED
             binding.chipMinimumPurchaseNominal.chipType = ChipsUnify.TYPE_SELECTED
 
             selectedCouponType = CouponType.CASHBACK
+            selectedDiscountType = DiscountType.NOMINAL
+            selectedMinimumPurchaseType = MinimumPurchaseType.NOMINAL
+
             viewModel.couponTypeChanged(selectedCouponType)
 
             showCashbackCouponTypeWidget()
@@ -296,6 +300,18 @@ class CouponSettingFragment : BaseDaggerFragment() {
             } else {
                 binding.groupFreeShipping.gone()
             }
+        }
+
+        binding.chipDiscountTypeNominal.selectedChangeListener = {
+            binding.chipDiscountTypeNominal.chipText = getString(R.string.in_rupiah)
+            binding.textAreaMinimumDiscount.textAreaWrapper.prefixText = getString(R.string.rupiah)
+            binding.textAreaMinimumDiscount.textAreaWrapper.suffixText = EMPTY_STRING
+        }
+
+        binding.chipMinimumPurchaseNominal.selectedChangeListener = {
+            binding.chipMinimumPurchaseNominal.chipText = getString(R.string.in_nominal)
+            binding.textAreaMinimumPurchase.textAreaWrapper.prefixText = getString(R.string.rupiah)
+            binding.textAreaMinimumPurchase.textAreaWrapper.suffixText = EMPTY_STRING
         }
 
         binding.chipDiscountTypeNominal.chip_container.setOnClickListener {
@@ -330,6 +346,9 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
             binding.groupCashbackMinimumPurchase.visible()
 
+            binding.textAreaMinimumPurchase.textAreaWrapper.prefixText = getString(R.string.rupiah)
+            binding.textAreaMinimumPurchase.textAreaWrapper.suffixText = EMPTY_STRING
+
             binding.textAreaMinimumPurchase.textAreaMessage = getString(R.string.error_message_invalid_cashback_minimum_purchase_nominal)
 
             binding.chipMinimumPurchaseNominal.chipType = ChipsUnify.TYPE_SELECTED
@@ -346,6 +365,9 @@ class CouponSettingFragment : BaseDaggerFragment() {
             binding.chipMinimumPurchaseQuantity.chipText = getString(R.string.in_quantity)
 
             binding.groupCashbackMinimumPurchase.visible()
+
+            binding.textAreaMinimumPurchase.textAreaWrapper.prefixText = EMPTY_STRING
+            binding.textAreaMinimumPurchase.textAreaWrapper.suffixText = getString(R.string.pcs)
 
             binding.textAreaMinimumPurchase.textAreaMessage = getString(R.string.error_message_invalid_cashback_minimum_purchase_quantity)
 
@@ -364,6 +386,8 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
             binding.groupCashbackMinimumPurchase.gone()
 
+            binding.textAreaMinimumPurchase.textAreaWrapper.prefixText = EMPTY_STRING
+            binding.textAreaMinimumPurchase.textAreaWrapper.suffixText = EMPTY_STRING
             binding.textAreaMinimumPurchase.textAreaMessage = EMPTY_STRING
 
             binding.chipMinimumPurchaseNominal.chipType = ChipsUnify.TYPE_NORMAL

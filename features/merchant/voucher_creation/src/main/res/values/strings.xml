@@ -391,4 +391,7 @@
     <string name="error_message_discount_percentage">Min. 2%</string>
     <string name="error_message_maximum_price">Min Rp 5.000</string>
     <string name="max_discount">Maks. Potongan Harga</string>
+    <string name="pcs">Pcs</string>
+    <string name="rupiah">Rp</string>
+    <string name="percent">%</string>
 </resources>
