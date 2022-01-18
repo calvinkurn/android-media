@@ -5,7 +5,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
+import com.tokopedia.product.detail.common.data.model.variant.VariantCampaign
 
 data class ProductAr(
         @SerializedName("button")
@@ -13,7 +13,7 @@ data class ProductAr(
         val button: ProductArButton = ProductArButton(),
         @SerializedName("campaignInfo")
         @Expose
-        val campaignInfo: CampaignModular = CampaignModular(),
+        val campaignInfo: VariantCampaign = VariantCampaign(),
         @SerializedName("name")
         @Expose
         val name: String = "",
@@ -46,11 +46,11 @@ data class ProductAr(
         val providerDataCompiled: ModifaceProvider? = null
 ) {
     fun getFinalPrice(): Double {
-        return if (campaignInfo.isActive) campaignInfo.discountedPrice else price
+        return if (campaignInfo.isActive == true) campaignInfo.discountedPrice ?: 0.0 else price
     }
 
     fun getFinalStock(): Int {
-        return if (campaignInfo.isActive) campaignInfo.stock else stock.toIntOrZero()
+        return if (campaignInfo.isActive == true) campaignInfo.stock ?: 0 else stock.toIntOrZero()
     }
 }
 

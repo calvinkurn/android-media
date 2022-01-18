@@ -30,6 +30,7 @@ class GetProductArUseCase @Inject constructor(graphqlRepository: GraphqlReposito
                       providerData
                       price
                       campaignInfo {
+                        isActive
                         campaignID
                         campaignType
                         campaignTypeName

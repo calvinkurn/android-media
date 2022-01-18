@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.product.detail.common.generateTheme
 import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.model.ModifaceUiModel
@@ -90,12 +91,12 @@ class PartialBottomArView private constructor(val view: View, val listener: Prod
     }
 
     private fun renderCampaign(data: ProductAr) = with(view) {
-        if (data.campaignInfo.isActive) {
-            txtMainPrice.text = data.campaignInfo.discountedPrice.getCurrencyFormatted()
-            txtSlashPrice.text = data.campaignInfo.originalPrice.getCurrencyFormatted()
+        if (data.campaignInfo.isActive == true) {
+            txtMainPrice.text = data.campaignInfo.discountedPrice?.getCurrencyFormatted()
+            txtSlashPrice.text = data.campaignInfo.originalPrice?.getCurrencyFormatted()
             lblDiscounted.text = context.getString(
                     com.tokopedia.product.detail.common.R.string.template_campaign_off,
-                    data.campaignInfo.percentageAmount.toString())
+                    data.campaignInfo.discountedPercentage.toIntSafely().toString())
 
             txtSlashPrice.paintFlags = txtSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             txtMainPrice.show()
