@@ -159,12 +159,10 @@ class PlayActivity : BaseActivity(),
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        val newBundle = intent.extras
+        val newBundle = intent.extras ?: Bundle()
 
-        if (newBundle != null) {
-            newBundle.putString(PLAY_KEY_CHANNEL_ID, intent.data?.lastPathSegment.orEmpty())
-            viewModel.setNewChannelParams(newBundle)
-        }
+        newBundle.putString(PLAY_KEY_CHANNEL_ID, intent.data?.lastPathSegment.orEmpty())
+        viewModel.setNewChannelParams(newBundle)
     }
 
     override fun onEnterPiPMode() {

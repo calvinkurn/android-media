@@ -1,5 +1,6 @@
 package com.tokopedia.search.utils
 
+import timber.log.Timber
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 import java.util.*
@@ -54,7 +55,7 @@ object UrlParamUtils {
         try {
             paramList.add(entry.key.toString() + "=" + URLEncoder.encode(entry.value.toString(), "UTF-8"))
         } catch (e: UnsupportedEncodingException) {
-            e.printStackTrace()
+            Timber.w(e)
         }
     }
 
@@ -74,11 +75,13 @@ object UrlParamUtils {
 
     @JvmStatic
     fun removeKeysFromQueryParams(queryParams: String?, keysToRemove: List<String?>?): String {
-        if (queryParams == null) return ""
-        if (keysToRemove == null || keysToRemove.isEmpty()) return queryParams
-        val queryParamsMap = getParamMap(queryParams)
-        for (key in keysToRemove) queryParamsMap.remove(key)
-        return generateUrlParamString(queryParamsMap)
+        return if(queryParams == null) ""
+        else if(keysToRemove == null || keysToRemove.isEmpty()) queryParams
+        else {
+            val queryParamsMap = getParamMap(queryParams)
+            for (key in keysToRemove) queryParamsMap.remove(key)
+            generateUrlParamString(queryParamsMap)
+        }
     }
 
     @JvmStatic
