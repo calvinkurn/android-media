@@ -16,7 +16,7 @@ class RechargeCatalogPrefixSelectRepositoryImpl @Inject constructor(
         menuId: Int
     ): TelcoCatalogPrefixSelect = withContext(dispatchers.io) {
         return@withContext getRechargeCatalogPrefixSelectUseCase.apply {
-            params = createPrefixSelectParam(menuId)
+            setRequestParam(menuId)
         }.executeOnBackground()
     }
 }

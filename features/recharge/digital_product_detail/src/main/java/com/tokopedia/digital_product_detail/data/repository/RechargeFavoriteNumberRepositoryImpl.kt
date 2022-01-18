@@ -17,7 +17,7 @@ class RechargeFavoriteNumberRepositoryImpl @Inject constructor(
     ): TopupBillsSeamlessFavNumberData = withContext(dispatchers.io) {
 
         return@withContext getRechargeFavoriteNumberUseCase.apply {
-            params = createSeamlessFavoriteNumberParams(categoryIds)
+            setRequestParams(categoryIds)
         }.executeOnBackground()
     }
 }
