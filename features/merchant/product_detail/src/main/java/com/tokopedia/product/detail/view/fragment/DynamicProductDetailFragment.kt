@@ -77,6 +77,7 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
+import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
@@ -119,14 +120,7 @@ import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBu
 import com.tokopedia.product.detail.common.view.ProductDetailRestrictionHelper
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
-import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
-import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
+import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.data.model.upcoming.NotifyMeUiData
@@ -769,15 +763,19 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
 
-    override fun fintechRedirection(ctaType: Int,redirectionLink: String) {
-        if(ctaType == 1)
+    override fun fintechRedirection(fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass) {
+        if(fintechRedirectionWidgetDataClass.cta == 1)
             {
-                val intent = RouteManager.getIntent(requireContext(), redirectionLink)
+                val applink = fintechRedirectionWidgetDataClass.redirectionUrl+
+                        "?price=${fintechRedirectionWidgetDataClass.price}" +
+                        "&productURL=${fintechRedirectionWidgetDataClass.productURl}" +
+                        "&productID=${fintechRedirectionWidgetDataClass.productId}"
+                val intent = RouteManager.getIntent(requireContext(), applink)
                 startActivity(intent)
              }
-        else
+        if(fintechRedirectionWidgetDataClass.cta == 2)
             {
-                openWebViewUrl(redirectionLink)
+                fintechRedirectionWidgetDataClass.redirectionUrl?.let { openWebViewUrl(it) }
             }
 
     }

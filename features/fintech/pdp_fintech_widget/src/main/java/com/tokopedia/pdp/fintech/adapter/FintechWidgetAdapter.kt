@@ -80,7 +80,7 @@ class FintechWidgetAdapter(var widgetClickListner: WidgetClickListner) : Recycle
                 chipsData[adapterPosition].cta?.bottomsheet?.buttons?.get(0)?.buttonUrl?.let { url ->
                     chipsData[adapterPosition].cta?.type?.let { ctaType ->
                         widgetClickListner.clickedWidget(
-                            ctaType, url
+                            ctaType, url,
                         )
                     }
                 }

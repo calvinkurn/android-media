@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter
 import com.tokopedia.pdp.fintech.di.components.DaggerFintechWidgetComponent
 import com.tokopedia.pdp.fintech.domain.datamodel.ChipsData
+import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.pdp.fintech.domain.datamodel.ProductDetailClass
 import com.tokopedia.pdp.fintech.domain.datamodel.WidgetDetail
 import com.tokopedia.pdp.fintech.listner.ProductUpdateListner
@@ -35,6 +36,8 @@ class PdpFintechWidget @JvmOverloads constructor(
     private var idToPriceMap = HashMap<String, String>()
     private var priceToChip = HashMap<String, ArrayList<ChipsData>>()
     private lateinit var productID: String
+    private lateinit var productUrl: String
+    private lateinit var productPrice: String
 
 
     @Inject
@@ -123,6 +126,8 @@ class PdpFintechWidget @JvmOverloads constructor(
 
 
     private fun setIdToPriceMap(productDetailData: ProductDetailClass) {
+        productPrice = productDetailData.getProductV3?.price.toString()
+        productUrl = productDetailData.getProductV3?.url.toString()
         productDetailData.getProductV3?.variant?.products?.let { productList ->
             for (i in productList.indices) {
                 productList[i].productID?.let { productId ->
@@ -144,7 +149,7 @@ class PdpFintechWidget @JvmOverloads constructor(
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         fintechWidgetAdapter = FintechWidgetAdapter(object : WidgetClickListner {
             override fun clickedWidget(cta: Int,url:String) {
-               instanceProductUpdateListner.fintechRedirection(cta,url)
+               instanceProductUpdateListner.fintechRedirection(FintechRedirectionWidgetDataClass(cta,url,productUrl,productPrice,productID))
             }
 
 
@@ -179,6 +184,9 @@ class PdpFintechWidget @JvmOverloads constructor(
     }
 
     private fun getChipDataAndUpdate(productPrice: String?) {
+        if (productPrice != null) {
+            this.productPrice = productPrice
+        }
         productPrice?.let {
             priceToChip[it]?.let { chipList ->
                 loader.visibility = View.GONE

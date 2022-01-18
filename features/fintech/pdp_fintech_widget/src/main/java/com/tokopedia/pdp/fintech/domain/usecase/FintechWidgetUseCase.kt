@@ -48,7 +48,7 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
     private fun setAmountList(listofAmount: List<Double>): MutableList<WidgetRequestModel> {
         var listOfVariantDetail: MutableList<WidgetRequestModel> = ArrayList()
         for (i in listofAmount.indices) {
-            listOfVariantDetail.add(WidgetRequestModel(amount = listofAmount[i], ""))
+            listOfVariantDetail.add(WidgetRequestModel(amount = listofAmount[i],"" ))
         }
         return listOfVariantDetail
     }
