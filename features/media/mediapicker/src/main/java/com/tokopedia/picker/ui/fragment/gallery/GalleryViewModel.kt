@@ -16,8 +16,8 @@ class GalleryViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel(), LifecycleObserver {
 
-    private var _files = MutableLiveData<List<Media>>()
-    val files: LiveData<List<Media>> get() = _files
+    private var _mediaFiles = MutableLiveData<List<Media>>()
+    val mediaFiles: LiveData<List<Media>> get() = _mediaFiles
 
     private var _mediaRemoved = MutableLiveData<Media?>()
     val mediaRemoved: LiveData<Media?> get() = _mediaRemoved
@@ -27,13 +27,13 @@ class GalleryViewModel @Inject constructor(
             val result = repository(bucketId, param)
 
             withContext(dispatchers.main) {
-                _files.value = result
+                _mediaFiles.value = result
             }
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun getSelectedMedia() {
+    fun onMediaRemovedFromDrawer() {
         viewModelScope.launch {
             EventBusFactory.consumer {
                 if (it is EventState.SelectionRemoved) {

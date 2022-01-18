@@ -50,7 +50,7 @@ class GalleryAdapter(
         val isSelected = isSelected(media)
 
         holder.bind(media, isSelected) {
-            val shouldSelect = shouldSelectListener(isSelected)
+            val shouldSelect = shouldSelectListener(media, isSelected)
 
             if (isSelected) {
                 removeSelected(media, position)

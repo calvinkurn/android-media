@@ -5,13 +5,12 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.common.component.uiComponent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.picker.R
 import com.tokopedia.picker.common.PickerFragmentType
 import com.tokopedia.picker.common.PickerPageType
@@ -23,10 +22,10 @@ import com.tokopedia.picker.ui.PickerFragmentFactory
 import com.tokopedia.picker.ui.PickerFragmentFactoryImpl
 import com.tokopedia.picker.ui.PickerNavigator
 import com.tokopedia.picker.ui.PickerUiConfig
+import com.tokopedia.picker.ui.activity.main.component.NavToolbarComponent
 import com.tokopedia.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.picker.ui.widget.selectornav.MediaSelectionNavigationWidget
 import com.tokopedia.picker.utils.ActionType
-import com.tokopedia.picker.utils.Unify_G500
 import com.tokopedia.picker.utils.addOnTabSelected
 import com.tokopedia.picker.utils.delegates.permissionGranted
 import com.tokopedia.utils.view.binding.viewBinding
@@ -72,15 +71,13 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 open class PickerActivity : BaseActivity()
     , PermissionFragment.Listener
-    , MediaSelectionNavigationWidget.Listener {
+    , MediaSelectionNavigationWidget.Listener
+    , NavToolbarComponent.Listener {
 
     private val binding: ActivityPickerBinding? by viewBinding()
     private val hasPermissionGranted: Boolean by permissionGranted()
 
     private val param = PickerUiConfig.pickerParam()
-
-    // this the final collection data ready to passing into next page
-    private val selectedMedia: MutableList<Media> = mutableListOf()
 
     private val viewModel by lazy {
         ViewModelProvider(
@@ -97,15 +94,23 @@ open class PickerActivity : BaseActivity()
         )
     }
 
+    private val navToolbar by uiComponent {
+        NavToolbarComponent(
+            listener = this,
+            parent = it,
+            useArrowIcon = false
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_picker)
+        restoreDataState(savedInstanceState)
         setupQueryAndUIConfigBuilder()
 
         initInjector()
         initView()
         initObservable()
-        initToolbar()
     }
 
     override fun onResume() {
@@ -116,6 +121,19 @@ open class PickerActivity : BaseActivity()
     override fun onPause() {
         super.onPause()
         binding?.mediaPickerPreviewWidget?.removeListener()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        PickerUiConfig.reset()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelableArrayList(
+            LAST_MEDIA_SELECTION,
+            PickerUiConfig.mediaSelectionList()
+        )
     }
 
     override fun onPermissionGranted() {
@@ -132,12 +150,25 @@ open class PickerActivity : BaseActivity()
         when (action) {
             is ActionType.Add -> {}
             is ActionType.Remove -> {
-                viewModel.publishSelectionRemovedChanged(action.mediaToRemove)
+                viewModel.publishSelectionRemovedChanged(
+                    action.mediaToRemove,
+                    action.data
+                )
                 viewModel.publishSelectionDataChanged(action.data)
             }
             is ActionType.Reorder -> {
                 viewModel.publishSelectionDataChanged(action.data)
             }
+        }
+    }
+
+    override fun onCloseClicked() {
+        finish()
+    }
+
+    override fun onContinueClicked() {
+        PickerUiConfig.mediaSelectionList().forEach {
+            println("MEDIAPICKER -> ${it.path}")
         }
     }
 
@@ -147,6 +178,15 @@ open class PickerActivity : BaseActivity()
         PickerUiConfig.setupQueryPage(data)
         PickerUiConfig.setupQueryMode(data)
         PickerUiConfig.setupQuerySelectionType(data)
+    }
+
+    private fun restoreDataState(savedInstanceState: Bundle?) {
+        savedInstanceState?.let {
+            // restore the last media selection to the drawer
+            it.getParcelableArrayList<Media>(LAST_MEDIA_SELECTION)?.let { elements ->
+                viewModel.publishSelectionDataChanged(elements)
+            }
+        }
     }
 
     private fun initView() {
@@ -166,34 +206,20 @@ open class PickerActivity : BaseActivity()
         lifecycle.addObserver(viewModel)
 
         viewModel.finishButtonState.observe(this) {
-            binding?.toolbar?.btnDone?.showWithCondition(
-                it && selectedMedia.isNotEmpty()
+            navToolbar.showContinueButtonWithCondition(
+                it && PickerUiConfig.mediaSelectionList().isNotEmpty()
             )
         }
 
         viewModel.selectedMedia.observe(this) {
-            binding?.mediaPickerPreviewWidget?.setData(it)
-            updateSelectedMedia(it)
+            binding?.mediaPickerPreviewWidget?.addData(it)
+            PickerUiConfig.addAllMediaSelection(it)
         }
-    }
 
-    private fun initToolbar() {
-        // set green color of continue button
-
-        binding?.toolbar?.btnDone?.setTextColor(
-            ContextCompat.getColor(applicationContext, Unify_G500)
-        )
-
-        binding?.toolbar?.btnDone?.setOnClickListener {
-            selectedMedia.forEach {
-                println("MEDIAPICKER -> ${it.path}")
-            }
+        viewModel.cameraCaptured.observe(this) {
+            binding?.mediaPickerPreviewWidget?.addData(it)
+            PickerUiConfig.addMediaSelection(it)
         }
-    }
-
-    private fun updateSelectedMedia(list: List<Media>) {
-        selectedMedia.clear()
-        selectedMedia.addAll(list)
     }
 
     private fun permissionGrantedState() {
@@ -208,10 +234,16 @@ open class PickerActivity : BaseActivity()
 
     private fun navigateByPageType() {
         when (PickerUiConfig.paramPage) {
-            PickerPageType.CAMERA -> navigator?.start(PickerFragmentType.CAMERA)
-            PickerPageType.GALLERY -> navigator?.start(PickerFragmentType.GALLERY)
+            PickerPageType.CAMERA -> {
+                navToolbar.setNavToolbarColorState(true)
+                navigator?.start(PickerFragmentType.CAMERA)
+            }
+            PickerPageType.GALLERY -> {
+                navToolbar.setNavToolbarColorState(false)
+                navigator?.start(PickerFragmentType.GALLERY)
+            }
             else -> {
-                // show camera as first page
+                // show camera as initial page
                 navigator?.start(PickerFragmentType.CAMERA)
 
                 // display the tab navigation
@@ -221,20 +253,35 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun setupTabView() {
+        // setup as transparent tab layout background
         binding?.tabContainer?.tabLayout?.setBackgroundColor(Color.TRANSPARENT)
+
+        // set transparent of nav toolbar
+        navToolbar.setNavToolbarColorState(true)
+
         binding?.tabContainer?.addNewTab(getString(R.string.picker_title_camera))
         binding?.tabContainer?.addNewTab(getString(R.string.picker_title_gallery))
         binding?.tabContainer?.show()
 
         binding?.tabContainer?.tabLayout?.addOnTabSelected { position ->
             if (position == 0) {
-                binding?.mediaPickerPreviewWidget?.hide()
-                navigator?.onPageSelected(PickerFragmentType.CAMERA)
+                onCameraTabSelected()
             } else if (position == 1) {
-                binding?.mediaPickerPreviewWidget?.show()
-                navigator?.onPageSelected(PickerFragmentType.GALLERY)
+                onGalleryTabSelected()
             }
         }
+    }
+
+    private fun onCameraTabSelected() {
+        navToolbar.setNavToolbarColorState(true)
+        binding?.mediaPickerPreviewWidget?.hide()
+        navigator?.onPageSelected(PickerFragmentType.CAMERA)
+    }
+
+    private fun onGalleryTabSelected() {
+        navToolbar.setNavToolbarColorState(false)
+        binding?.mediaPickerPreviewWidget?.show()
+        navigator?.onPageSelected(PickerFragmentType.GALLERY)
     }
 
     protected open fun createFragmentFactory(): PickerFragmentFactory {
@@ -250,6 +297,8 @@ open class PickerActivity : BaseActivity()
     }
 
     companion object {
+        private const val LAST_MEDIA_SELECTION = "last_media_selection"
+
         //TODO remove
         fun start(context: Context) {
             context.startActivity(Intent(context, PickerActivity::class.java))

@@ -7,6 +7,7 @@ import android.provider.MediaStore
 import com.tokopedia.picker.utils.isVideoFormat
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
+import java.io.File
 
 @Parcelize
 data class Media(
@@ -50,6 +51,16 @@ data class Media(
         result = 31 * result + path.hashCode()
         result = 31 * result + (uriHolder?.hashCode() ?: 0)
         return result
+    }
+
+    companion object {
+        private const val SPECIAL_ID_CAMERA = -321L
+
+        fun File.createFoCameraCaptured() = Media(
+            id = SPECIAL_ID_CAMERA,
+            name = this.name,
+            path = this.path
+        )
     }
 
 }

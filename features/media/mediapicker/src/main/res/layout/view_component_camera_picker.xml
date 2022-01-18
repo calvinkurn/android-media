@@ -21,18 +21,35 @@
         tools:listitem="@layout/view_item_camera_mode_slider"
         tools:visibility="visible" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/lbl_countdown"
+    <LinearLayout
+        android:id="@+id/video_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lagi rekam"
-        android:textColor="@color/Unify_R500"
-        android:visibility="gone"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/action_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lst_camera_mode"
-        tools:visibility="visible" />
+        android:padding="8dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_countdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="00:12 /"
+            android:textColor="@color/Unify_Static_White" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_max_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            tools:text="00:30"
+            android:textColor="@color/Unify_R500" />
+
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/action_container"
@@ -41,7 +58,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lbl_countdown">
+        app:layout_constraintTop_toBottomOf="@+id/video_duration">
 
         <View
             android:layout_width="match_parent"
@@ -67,19 +84,19 @@
         app:layout_constraintStart_toEndOf="@+id/action_container"
         app:layout_constraintTop_toTopOf="@+id/action_container">
 
-        <com.tokopedia.iconunify.IconUnify
+        <ImageView
             android:id="@+id/btn_flash"
             android:layout_width="@dimen/unify_space_40"
             android:layout_height="@dimen/unify_space_40"
-            android:layout_marginEnd="@dimen/unify_space_8" />
+            android:layout_marginEnd="@dimen/unify_space_8"
+            android:src="@drawable/picker_ic_camera_flash_off"/>
 
         <ImageView
             android:id="@+id/btn_flip"
             android:layout_width="@dimen/unify_space_40"
             android:layout_height="@dimen/unify_space_40"
             android:layout_marginStart="@dimen/unify_space_8"
-            android:padding="@dimen/unify_space_4"
-            android:src="@drawable/ic_picker_camera_flip" />
+            android:src="@drawable/picker_ic_camera_flip_mode" />
 
     </LinearLayout>
 
@@ -88,6 +105,8 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="24dp"
+        android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/action_container"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/action_container"

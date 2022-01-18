@@ -8,8 +8,9 @@ import kotlinx.coroutines.withContext
 
 sealed class EventState {
     object Idle: EventState()
+    class CameraCaptured(val data: Media?): EventState()
     class SelectionChanged(val data: List<Media>): EventState()
-    class SelectionRemoved(val media: Media?): EventState()
+    class SelectionRemoved(val media: Media?, val data: List<Media>): EventState()
 }
 
 object EventBusFactory {

@@ -7,11 +7,11 @@ import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.otaliastudios.cameraview.CameraListener
-import com.otaliastudios.cameraview.CameraOptions
-import com.otaliastudios.cameraview.PictureResult
-import com.otaliastudios.cameraview.VideoResult
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import com.otaliastudios.cameraview.*
 import com.otaliastudios.cameraview.controls.Audio
+import com.otaliastudios.cameraview.controls.Facing
 import com.otaliastudios.cameraview.controls.Flash
 import com.otaliastudios.cameraview.controls.Mode
 import com.otaliastudios.cameraview.gesture.Gesture
@@ -21,27 +21,38 @@ import com.tokopedia.common.component.uiComponent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.picker.R
+import com.tokopedia.picker.data.entity.Media.Companion.createFoCameraCaptured
 import com.tokopedia.picker.databinding.FragmentCameraBinding
 import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.fragment.camera.component.CameraControllerComponent
+import com.tokopedia.picker.utils.EventBusFactory
+import com.tokopedia.picker.utils.EventState
+import com.tokopedia.picker.utils.MediaFileUtils
 import com.tokopedia.picker.utils.exceptionHandler
 import com.tokopedia.picker.utils.wrapper.FlingGestureWrapper
 import com.tokopedia.utils.view.binding.viewBinding
+import java.io.File
 
 open class CameraFragment : BaseDaggerFragment(), CameraControllerComponent.Listener {
 
+    private val binding: FragmentCameraBinding? by viewBinding()
     private val param = PickerUiConfig.pickerParam()
 
-    private val binding: FragmentCameraBinding? by viewBinding()
-    private val cameraView by lazy { binding?.cameraView }
-
-    private var flashList = arrayListOf<Flash>()
-    private var flashIndex = 0
-
     private var isPhotoMode = true
+    private var isFlashOn = false
+
+    private val viewModel by lazy {
+        ViewModelProvider(
+            this,
+        )[CameraViewModel::class.java]
+    }
 
     private val cameraController by uiComponent {
         CameraControllerComponent(param, this, it)
+    }
+
+    private val cameraView by lazy {
+        binding?.cameraView
     }
 
     val gestureDetector by lazy {
@@ -53,14 +64,6 @@ open class CameraFragment : BaseDaggerFragment(), CameraControllerComponent.List
                 cameraController.scrollToPhotoMode()
             }
         ))
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        savedInstanceState?.let {
-            flashIndex = it.getInt(CACHE_FLASH_INDEX, 0)
-        }
     }
 
     override fun onCreateView(
@@ -77,6 +80,7 @@ open class CameraFragment : BaseDaggerFragment(), CameraControllerComponent.List
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initObservable()
         setupCameraView()
         cameraController.setupView()
     }
@@ -107,106 +111,179 @@ open class CameraFragment : BaseDaggerFragment(), CameraControllerComponent.List
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt(CACHE_FLASH_INDEX, flashIndex)
-    }
-
-    private fun setupCameraView() {
-        binding?.cameraView?.apply {
-            mode = Mode.VIDEO
-            audio = Audio.ON
-
-            clearCameraListeners()
-            addCameraListener(initCameraViewListener())
-            mapGesture(Gesture.TAP, GestureAction.AUTO_FOCUS)
-        }
-    }
-
-    private fun initCameraViewListener() = object : CameraListener() {
-        override fun onCameraOpened(options: CameraOptions) {
-            super.onCameraOpened(options)
-            initCameraFlash()
-        }
-
-        override fun onVideoTaken(result: VideoResult) {
-            super.onVideoTaken(result)
-            cameraController.setThumbnailPreview(
-                result.file
-            )
-        }
-
-        override fun onPictureTaken(result: PictureResult) {
-            super.onPictureTaken(result)
-
-        }
+    override fun isFrontFacingCamera(): Boolean {
+        return cameraView?.facing == Facing.FRONT
     }
 
     override fun onFlashClicked() {
-        if (flashList.size > 0) {
-            flashIndex = (flashIndex + 1) % flashList.size
-
-            setCameraFlash()
+        if (isFlashOn) {
+            isFlashOn = false
+            cameraController.setFlashToggleUiState(isFlashOn)
+        } else {
+            isFlashOn = true
+            cameraController.setFlashToggleUiState(isFlashOn)
         }
     }
 
     override fun onFlipClicked() {
-        if (cameraView?.isTakingPicture == true || cameraView?.isTakingVideo == true) return
+        if (isTakingPicture() || isTakingVideo()) return
         cameraView?.toggleFacing()
     }
 
     override fun onTakeMediaClicked() {
+        if (isVideoMode() && isTakingVideo()) {
+            onStopRecordVideo()
+            return
+        }
+
+        showShutterEffect {
+            enableFlashTorch()
+
+            if (isPhotoMode) {
+                onCapturePhoto()
+            } else {
+                cameraController.startRecording()
+                onRecordVideo()
+            }
+        }
+    }
+
+    override fun hasReachedLimit() {
+        Toast.makeText(
+            requireContext(),
+            getString(R.string.picker_selection_limit_message, param.limit),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    override fun hasVideoAddedOnMediaSelection() {
+        Toast.makeText(
+            requireContext(),
+            getString(R.string.picker_selection_limit_video),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    private fun onCapturePhoto() {
+        cameraView?.set(Mode.PICTURE)
+        cameraView?.takePicture()
+    }
+
+    private fun onRecordVideo() {
+        cameraView?.set(Mode.VIDEO)
+        cameraView?.set(Audio.ON)
+
+        cameraController.onObserveVideoDuration { countDown ->
+            activity?.runOnUiThread {
+                cameraController.onChangeVideoDuration(countDown)
+            }
+        }
+
+        cameraView?.takeVideoSnapshot(
+            MediaFileUtils.createMediaFile(false),
+            param.maxVideoDuration
+        )
+    }
+
+    private fun onStopRecordVideo() {
+        disableFlashTorch()
+        cameraView?.stopVideo()
+        cameraController.stopRecording()
+    }
+
+    private fun initObservable() {
+        lifecycle.addObserver(viewModel)
+
+        viewModel.selectedMedia.observe(viewLifecycleOwner, {
+            if (it.isNotEmpty()) {
+                val lastItemOfDrawer = File(it.last().path)
+                cameraController.setThumbnailPreview(lastItemOfDrawer)
+            }
+        })
+
+        viewModel.mediaRemoved.observe(viewLifecycleOwner, {
+            cameraController.removeThumbnailPreview()
+        })
+    }
+
+    private fun setupCameraView() {
+        binding?.cameraView?.apply {
+            clearCameraListeners()
+            setLifecycleOwner(viewLifecycleOwner)
+            addCameraListener(cameraViewListener())
+            mapGesture(Gesture.TAP, GestureAction.AUTO_FOCUS)
+        }
+    }
+
+    private fun cameraViewListener() = object : CameraListener() {
+        override fun onCameraOpened(options: CameraOptions) {
+            super.onCameraOpened(options)
+            cameraController.isCameraFlashSupported(hasFlashFeatureOnCamera())
+            cameraController.isCameraHasFrontCamera(hasFrontCamera())
+        }
+
+        override fun onVideoTaken(result: VideoResult) {
+            super.onVideoTaken(result)
+            disableFlashTorch()
+
+            cameraController.setThumbnailPreview(result.file)
+            EventBusFactory.send(EventState.CameraCaptured(result.file.createFoCameraCaptured()))
+        }
+
+        override fun onPictureTaken(result: PictureResult) {
+            super.onPictureTaken(result)
+            disableFlashTorch()
+        }
+
+        override fun onCameraError(exception: CameraException) {
+            super.onCameraError(exception)
+            disableFlashTorch()
+        }
+    }
+
+    private fun showShutterEffect(action: () -> Unit) {
         binding?.containerBlink?.show()
 
         Handler(Looper.getMainLooper()).postDelayed({
             binding?.containerBlink?.hide()
-            cameraController.startRecording()
-
-            Handler(Looper.getMainLooper()).postDelayed({
-                cameraController.stopRecording()
-            }, 3000)
-        }, 200)
+            action()
+        }, OVERLAY_SHUTTER_DELAY)
     }
 
-    private fun initCameraFlash() {
-        if (cameraView == null || cameraView?.cameraOptions == null) return
+    private fun hasFrontCamera() = cameraView
+        ?.cameraOptions
+        ?.supportedFacing
+        ?.isNotEmpty() == true
 
-        val supportedFlashes = cameraView?.cameraOptions?.supportedFlash!!
+    private fun hasFlashFeatureOnCamera() = cameraView
+            ?.cameraOptions
+            ?.supportedFlash
+            ?.contains(Flash.TORCH) == true
 
-        for (flash: Flash in supportedFlashes) {
-            if (flash != Flash.TORCH) {
-                flashList.add(flash)
-            }
-        }
-
-        cameraController.setupFlashButtonState(flashList.isNotEmpty()) {
-            setCameraFlash()
+    private fun enableFlashTorch() {
+        if (hasFlashFeatureOnCamera() && isFlashOn) {
+            cameraView?.flash = Flash.TORCH
         }
     }
 
-    private fun setCameraFlash() {
-        if (flashIndex < 0 || flashList.size <= flashIndex) return
-
-        var flash = flashList[flashIndex]
-
-        if (flash.ordinal == Flash.TORCH.ordinal) {
-            flashIndex = (flashIndex + 1) % flashList.size
-            flash = flashList[flashIndex]
+    private fun disableFlashTorch() {
+        if (hasFlashFeatureOnCamera() && isFlashOn) {
+            cameraView?.flash = Flash.OFF
         }
-
-        cameraView?.set(flash)
-
-        cameraController.setCameraFlashUIState(
-            flash.ordinal
-        )
     }
+
+    private fun isVideoMode() = cameraView?.mode == Mode.VIDEO
+
+    private fun isTakingPicture() = cameraView?.isTakingPicture == true
+
+    private fun isTakingVideo() = cameraView?.isTakingVideo == true
 
     override fun initInjector() {}
 
     override fun getScreenName() = "Camera"
 
     companion object {
-        private const val CACHE_FLASH_INDEX = "flash_index"
+        private const val OVERLAY_SHUTTER_DELAY = 200L
     }
 
 }
