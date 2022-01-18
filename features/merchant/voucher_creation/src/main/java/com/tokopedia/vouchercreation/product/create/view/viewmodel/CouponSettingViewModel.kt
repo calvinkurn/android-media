@@ -123,7 +123,7 @@ class CouponSettingViewModel @Inject constructor(
     fun getMinimalPurchaseErrorMessage(selectedCouponType: CouponType, selectedMinimumPurchaseType: MinimumPurchaseType) : String {
         return when {
             selectedCouponType == CouponType.CASHBACK && selectedMinimumPurchaseType == MinimumPurchaseType.NOMINAL -> resourceProvider.getInvalidMinimalPurchaseNominalErrorMessage()
-            selectedCouponType == CouponType.CASHBACK && selectedMinimumPurchaseType == MinimumPurchaseType.QUANTITY -> resourceProvider.getInvalidMinimalPurchaseNominalErrorMessage()
+            selectedCouponType == CouponType.CASHBACK && selectedMinimumPurchaseType == MinimumPurchaseType.QUANTITY -> resourceProvider.getInvalidMinimalQuantityQuantityErrorMessage()
             selectedCouponType == CouponType.FREE_SHIPPING -> resourceProvider.getInvalidMinimalPurchaseNominalErrorMessage()
             else -> resourceProvider.getInvalidMinimalPurchaseNominalErrorMessage()
         }

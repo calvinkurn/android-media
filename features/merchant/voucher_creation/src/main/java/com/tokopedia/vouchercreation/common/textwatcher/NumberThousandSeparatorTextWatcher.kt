@@ -17,18 +17,20 @@ class NumberThousandSeparatorTextWatcher(
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
     override fun afterTextChanged(s: Editable?) {
-        view.removeTextChangedListener(this)
+        if (view.hasFocus()) {
+            view.removeTextChangedListener(this)
 
-        try {
-            val number = s.toString().digitsOnlyInt()
-            val formattedNumber = decimalFormatter.format(number)
-            afterTextChangedAction(number, formattedNumber)
+            try {
+                val number = s.toString().digitsOnlyInt()
+                val formattedNumber = decimalFormatter.format(number)
+                afterTextChangedAction(number, formattedNumber)
 
-        }  catch (e: Exception) {
-            e.printStackTrace()
+            }  catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            view.addTextChangedListener(this)
         }
-
-        view.addTextChangedListener(this)
     }
 
 }

@@ -227,7 +227,7 @@
 
             <!-- Quota (Coupon Type: Free Shipping)-->
             <com.tokopedia.unifycomponents.TextAreaUnify
-                android:id="@+id/textAreaQuotaFreeShipping"
+                android:id="@+id/textAreaFreeShippingQuota"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_16"
@@ -306,7 +306,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:constraint_referenced_ids="textAreaQuotaFreeShipping, textAreaFreeShippingDiscountAmount,textAreaFreeShippingMinimumPurchase" />
+                app:constraint_referenced_ids="textAreaFreeShippingQuota, textAreaFreeShippingDiscountAmount,textAreaFreeShippingMinimumPurchase" />
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/groupCashbackMinimumPurchase"
