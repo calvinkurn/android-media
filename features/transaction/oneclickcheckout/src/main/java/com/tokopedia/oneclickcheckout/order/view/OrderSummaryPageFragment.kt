@@ -346,7 +346,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         viewModel.eligibleForAnaRevamp.observe(viewLifecycleOwner) {
             when (it) {
                 is OccState.Success -> {
-                    if (it.data.eligibleForAddressFeature.eligibleForRevampAna.eligible) {
+                    if (it.data.eligibleForAddressFeatureResponse.data.eligibleForRevampAna.eligible) {
                         startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
                             putExtra(EXTRA_IS_FULL_FLOW, true)
                             putExtra(EXTRA_IS_LOGISTIC_LABEL, false)

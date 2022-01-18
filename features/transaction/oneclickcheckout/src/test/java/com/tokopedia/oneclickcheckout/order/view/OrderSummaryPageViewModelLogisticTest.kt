@@ -5,7 +5,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Error
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorServiceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeature
+import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureResponse
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
@@ -1744,7 +1744,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Eligible For Revamp Ana Success`() {
         // Given
-        val response = KeroAddrIsEligibleForAddressFeature()
+        val response = KeroAddrIsEligibleForAddressFeatureResponse()
         onCheckEligibility_thenReturn(response)
 
         // When
@@ -1769,11 +1769,11 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         assertEquals(OccState.Failed(expected), orderSummaryPageViewModel.eligibleForAnaRevamp.value)
     }
 
-    private fun onCheckEligibility_thenReturn(keroAddrIsEligibleForAddressFeature: KeroAddrIsEligibleForAddressFeature) {
+    private fun onCheckEligibility_thenReturn(keroAddrIsEligibleForAddressFeatureResponse: KeroAddrIsEligibleForAddressFeatureResponse) {
         coEvery {
             eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
         } answers {
-            firstArg<(KeroAddrIsEligibleForAddressFeature)-> Unit>().invoke(keroAddrIsEligibleForAddressFeature)
+            firstArg<(KeroAddrIsEligibleForAddressFeatureResponse)-> Unit>().invoke(keroAddrIsEligibleForAddressFeatureResponse)
         }
     }
 
