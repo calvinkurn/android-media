@@ -17,6 +17,10 @@ class HomePageBannerRepository @Inject constructor(
 ) : UseCase<HomeBannerData>(), HomeRepository<HomeBannerData> {
     private val params = RequestParams.create()
 
+    companion object {
+        const val BANNER_LOCATION_PARAM = "location"
+    }
+
     init {
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         graphqlUseCase.setTypeClass(HomeBannerData::class.java)

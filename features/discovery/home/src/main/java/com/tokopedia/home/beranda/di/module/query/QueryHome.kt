@@ -119,8 +119,7 @@ object QueryHome {
             "}"
 
     val homeQuery: String = "" +
-            "query homeData\n" +
-            "        {\n" +
+            "query homeData {\n" +
             "        status\n" +
             "          ticker {\n" +
             "            meta {\n" +
@@ -182,8 +181,7 @@ object QueryHome {
             "        }"
 
     val homeDataRevampQuery: String = "" +
-            "query homeData\n" +
-            "        {\n" +
+            "query homeData {\n" +
             "        status\n" +
             "          homeFlag{\n" +
             "                event_time\n" +
