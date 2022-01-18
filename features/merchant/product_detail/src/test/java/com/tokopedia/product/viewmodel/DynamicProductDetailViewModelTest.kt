@@ -938,8 +938,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_USER_LOCATION) as? UserLocationRequest) != null)
 
         Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.shopId == "456")
-        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.shopId == "789")
-        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.shopId == "now15")
+        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.warehouseId == "789")
+        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.serviceType == "now15")
     }
 
     @Test
@@ -967,8 +967,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_USER_LOCATION) as? UserLocationRequest)?.districtID == "123")
 
         Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.shopId == "456")
-        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.shopId == "789")
-        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.shopId == "now15")
+        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.warehouseId == "789")
+        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.serviceType == "now15")
     }
 
     @Test
