@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
+import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryPulsaBottomsheet
@@ -74,7 +75,7 @@ class DigitalPDPDataPlanFragment :
             ), listener = object : RechargeBuyWidgetListener {
                 override fun onClickedChevron(product: CatalogProduct) {
                     fragmentManager?.let {
-                        SummaryPulsaBottomsheet(product).show(it, "")
+                        SummaryPulsaBottomsheet(getString(R.string.summary_transaction), product).show(it, "")
                     }
                 }
 

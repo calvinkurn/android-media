@@ -8,18 +8,6 @@
     <com.tokopedia.unifyprinciples.Typography
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:id="@+id/tg_summary_price"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:typographyType="body_1"
-        app:typographyWeight="bold"
-        android:text="@string/summary_transaction"
-        />
-
-    <com.tokopedia.unifyprinciples.Typography
-        app:layout_constraintTop_toBottomOf="@+id/tg_summary_price"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="@dimen/unify_space_12"
         android:id="@+id/tg_total_price_title"
         android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
@@ -29,9 +17,8 @@
         />
 
     <com.tokopedia.unifyprinciples.Typography
-        app:layout_constraintTop_toBottomOf="@+id/tg_summary_price"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="@dimen/unify_space_12"
         android:id="@+id/tg_total_price"
         android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"

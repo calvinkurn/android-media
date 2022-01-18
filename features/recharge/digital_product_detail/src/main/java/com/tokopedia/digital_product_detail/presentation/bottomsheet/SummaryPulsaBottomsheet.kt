@@ -16,7 +16,7 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class SummaryPulsaBottomsheet(val product: CatalogProduct): BottomSheetUnify() {
+class SummaryPulsaBottomsheet(private val title:String, private val product: CatalogProduct): BottomSheetUnify() {
 
     init {
         isFullpage = false
@@ -24,16 +24,24 @@ class SummaryPulsaBottomsheet(val product: CatalogProduct): BottomSheetUnify() {
         showCloseIcon = false
     }
 
-    var binding by autoClearedNullable<BottomSheetSummaryPulsaBinding>()
+    private var binding by autoClearedNullable<BottomSheetSummaryPulsaBinding>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = BottomSheetSummaryPulsaBinding.inflate(LayoutInflater.from(context))
-        setChild(binding?.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         initView()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        bottomSheetBehaviorKnob(view, true)
     }
 
     private fun initView(){
+        binding = BottomSheetSummaryPulsaBinding.inflate(LayoutInflater.from(context))
         binding?.run{
             tgTotalPay.text = if (!product.attributes.promo?.newPrice.isNullOrEmpty()){
                 product.attributes.promo?.newPrice
@@ -48,5 +56,8 @@ class SummaryPulsaBottomsheet(val product: CatalogProduct): BottomSheetUnify() {
                 tgTotalDiscount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(((product.attributes.promo?.newPricePlain?:0).toLong() - product.attributes.pricePlain.toIntOrZero().toLong()), false)
             }
         }
+
+        setTitle(title)
+        setChild(binding?.root)
     }
 }
