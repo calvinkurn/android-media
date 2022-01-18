@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.common.component.uiComponent
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.picker.R
 import com.tokopedia.picker.data.entity.Album
@@ -14,11 +15,12 @@ import com.tokopedia.picker.di.DaggerPickerComponent
 import com.tokopedia.picker.di.module.PickerModule
 import com.tokopedia.picker.ui.PickerUiConfig
 import com.tokopedia.picker.ui.activity.album.adapter.AlbumAdapter
+import com.tokopedia.picker.ui.activity.main.component.NavToolbarComponent
 import com.tokopedia.picker.ui.fragment.OnAlbumClickListener
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-class AlbumActivity : BaseActivity() {
+class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
 
@@ -36,14 +38,26 @@ class AlbumActivity : BaseActivity() {
         )[AlbumViewModel::class.java]
     }
 
+    private val navToolbar by uiComponent {
+        NavToolbarComponent(
+            listener = this,
+            parent = it
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_album)
+
         initInjector()
         initObservable()
         initView()
 
         setupRecyclerView()
+    }
+
+    override fun onCloseClicked() {
+        finish()
     }
 
     private fun initObservable() {
@@ -59,6 +73,11 @@ class AlbumActivity : BaseActivity() {
     }
 
     private fun initView() {
+        // set toolbar as solid theme and toolbar title
+        navToolbar.setTitle(getString(R.string.picker_toolbar_album_title))
+        navToolbar.setNavToolbarColorState(false)
+
+        // fetch the album list
         viewModel.fetch(param)
     }
 
@@ -85,6 +104,8 @@ class AlbumActivity : BaseActivity() {
             .build()
             .inject(this)
     }
+
+    override fun onContinueClicked() {} // no-op
 
     companion object {
         const val INTENT_BUCKET_ID = "bucket_id"
