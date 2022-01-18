@@ -14,6 +14,7 @@ import com.tokopedia.vouchercreation.product.create.view.uimodel.CouponTargetUiM
 
 class CouponTargetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+    // TODO: Convert to ViewBinding
     var voucherTargetLayout: ViewGroup? = itemView.findViewById(R.id.voucherTargetItem)
     var voucherTargetItemRadioButton: RadioButtonUnify? = itemView.findViewById(R.id.voucherTargetItemRadioButton)
     private var voucherTargetItemTitle: Typography? = itemView.findViewById(R.id.voucherTargetItemTitle)
