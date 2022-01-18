@@ -21,7 +21,7 @@ data class MilestoneDataUiModel(
 ) : BaseDataUiModel {
 
     override fun shouldRemove(): Boolean {
-        return (!isFromCache && !showWidget) || milestoneMissions.isNullOrEmpty()
+        return !showWidget || milestoneMissions.isNullOrEmpty()
     }
 }
 
