@@ -327,7 +327,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
                 }
 
                 validateInput()
-
+                calculateMaxExpenseEstimation()
             })
         }
     }
@@ -396,6 +396,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
             showNominalDiscountTypeWidget()
             validateInput()
+            calculateMaxExpenseEstimation()
         }
 
         binding.chipDiscountTypePercentage.chip_container.setOnClickListener {
@@ -409,6 +410,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
             showPercentageDiscountTypeWidget()
             validateInput()
+            calculateMaxExpenseEstimation()
         }
 
         binding.chipMinimumPurchaseNominal.chip_container.setOnClickListener {
