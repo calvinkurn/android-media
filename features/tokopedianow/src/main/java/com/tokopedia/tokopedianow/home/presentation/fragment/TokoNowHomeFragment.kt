@@ -23,9 +23,6 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.home_component.listener.BannerComponentListener
-import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -108,6 +105,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomePageLoadTimeMonitoring
 import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home15mSwitcher
 import com.tokopedia.tokopedianow.home.presentation.view.coachmark.SwitcherCoachMark
+import com.tokopedia.tokopedianow.home.presentation.view.listener.BannerComponentCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeSwitcherListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
@@ -138,7 +136,6 @@ class TokoNowHomeFragment: Fragment(),
         HomeTickerViewHolder.HomeTickerListener,
         TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener,
         MiniCartWidgetListener,
-        BannerComponentListener,
         HomeProductRecomViewHolder.HomeProductRecomListener,
         TokoNowProductCardViewHolder.TokoNowProductCardListener,
         ShareBottomsheetListener,
@@ -188,7 +185,7 @@ class TokoNowHomeFragment: Fragment(),
                 homeTickerListener = this,
                 tokoNowChooseAddressWidgetListener = this,
                 tokoNowCategoryGridListener = this,
-                bannerComponentListener = this,
+                bannerComponentListener = createSlideBannerCallback(),
                 homeProductRecomListener = this,
                 tokoNowProductCardListener = this,
                 homeSharingEducationListener = this,
@@ -341,13 +338,6 @@ class TokoNowHomeFragment: Fragment(),
         screenshotDetector?.onRequestPermissionsResult(requestCode, grantResults, this)
     }
 
-    override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
-        analytics.onClickBannerPromo(position, userSession.userId, channelModel, channelGrid)
-        context?.let {
-            RouteManager.route(it, channelGrid.applink)
-        }
-    }
-
     override fun onChooseAddressWidgetRemoved() {
         if(rvHome?.isComputingLayout == false) {
             adapter.removeHomeChooseAddressWidget()
@@ -481,20 +471,6 @@ class TokoNowHomeFragment: Fragment(),
             shopId = data.shopId,
             startActivitResult = this::startActivityForResult
         )
-    }
-
-    override fun isMainViewVisible(): Boolean = true
-
-    override fun isBannerImpressed(id: String): Boolean = true
-
-    override fun onPromoScrolled(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {}
-
-    override fun onPageDragStateChanged(isDrag: Boolean) {}
-
-    override fun onPromoAllClick(channelModel: ChannelModel) {}
-
-    override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {
-        analytics.onImpressBannerPromo(userSession.userId, channelModel, localCacheModel?.warehouse_id.toLongOrZero().toString())
     }
 
     override fun onShareBtnSharingEducationClicked() {
@@ -1426,6 +1402,10 @@ class TokoNowHomeFragment: Fragment(),
 
             override fun onGetEventCategory(): String = EVENT_CATEGORY_HOME_PAGE
         }
+    }
+
+    private fun createSlideBannerCallback(): BannerComponentCallback {
+        return BannerComponentCallback(requireContext(), viewModelTokoNow, analytics, userSession.userId)
     }
 
     private fun createLegoBannerCallback(): DynamicLegoBannerCallback {

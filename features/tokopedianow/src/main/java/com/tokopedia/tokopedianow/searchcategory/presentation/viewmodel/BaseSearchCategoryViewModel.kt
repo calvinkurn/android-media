@@ -56,6 +56,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
+import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
@@ -1173,11 +1174,16 @@ abstract class BaseSearchCategoryViewModel(
         filter(option, false)
     }
 
-    open fun setUserPreference(serviceType: String) {
+    open fun setUserPreference(serviceType: String = "") {
         launchCatchError(
             block = {
-                chooseAddressData?.let {
-                    setUserPreferenceMutableLiveData.postValue(Success(setUserPreferenceUseCase.execute(it, serviceType)))
+                chooseAddressData?.let { currentChooseAddressData ->
+                    val type = if (serviceType.isNotBlank()) {
+                        serviceType
+                    } else {
+                        if(currentChooseAddressData.service_type == NOW_15M) NOW_2H else NOW_15M
+                    }
+                    setUserPreferenceMutableLiveData.postValue(Success(setUserPreferenceUseCase.execute(currentChooseAddressData, type)))
                 }
             },
             onError = {

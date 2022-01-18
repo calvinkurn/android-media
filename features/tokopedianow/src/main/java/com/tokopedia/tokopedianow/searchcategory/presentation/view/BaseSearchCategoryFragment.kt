@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.searchcategory.presentation.view
 
 import android.content.Context
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.SparseIntArray
@@ -120,6 +121,8 @@ abstract class BaseSearchCategoryFragment:
         protected const val OUT_OF_COVERAGE_CHOOSE_ADDRESS = "OUT_OF_COVERAGE_CHOOSE_ADDRESS"
         protected const val REQUEST_CODE_LOGIN = 69
         private const val DEFAULT_POSITION = 0
+
+        const val PARAM_TOKONOW_REFRESH = "tokonow_refresh"
     }
 
     private var binding by autoClearedNullable<FragmentTokopedianowSearchCategoryBinding>()
@@ -561,8 +564,14 @@ abstract class BaseSearchCategoryFragment:
         )
     }
 
-    override fun onBannerClick(channelModel: ChannelModel, applink: String) {
-        RouteManager.route(context, applink)
+    override fun onBannerClick(channelModel: ChannelModel, applink: String, param: String) {
+        val gridParams = Uri.parse("?${param}")
+        val tokoNowRefresh = gridParams.getQueryParameter(PARAM_TOKONOW_REFRESH).toBoolean()
+        if(tokoNowRefresh) {
+            getViewModel().setUserPreference()
+        } else {
+            RouteManager.route(context, applink)
+        }
     }
 
     override fun onBannerImpressed(channelModel: ChannelModel, position: Int) {
