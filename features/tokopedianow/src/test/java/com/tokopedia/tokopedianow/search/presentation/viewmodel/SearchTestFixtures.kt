@@ -10,6 +10,8 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
+import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
@@ -20,10 +22,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
-import io.mockk.CapturingSlot
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.slot
+import io.mockk.*
 import org.junit.Before
 import org.junit.Rule
 
@@ -46,6 +45,7 @@ open class SearchTestFixtures {
     protected val getRecommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
     protected val chooseAddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
     protected val abTestPlatformWrapper = mockk<ABTestPlatformWrapper>(relaxed = true)
+    protected val setUserPreferenceUseCase = mockk<SetUserPreferenceUseCase>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true).also {
         every { it.isLoggedIn } returns true
     }
@@ -83,6 +83,7 @@ open class SearchTestFixtures {
                 cartService,
                 getWarehouseUseCase,
                 getRecommendationUseCase,
+                setUserPreferenceUseCase,
                 chooseAddressWrapper,
                 abTestPlatformWrapper,
                 userSession,
@@ -120,5 +121,17 @@ open class SearchTestFixtures {
 
     protected fun `When view created`() {
         tokoNowSearchViewModel.onViewCreated()
+    }
+
+    protected fun verifySetUserPreferenceUseCaseCalled(localCacheModel: LocalCacheModel) {
+        coVerify { setUserPreferenceUseCase.execute(localCacheModel, any()) }
+    }
+
+    protected fun onSetUserPreference_thenReturn(userPreferenceData: SetUserPreference.SetUserPreferenceData) {
+        coEvery { setUserPreferenceUseCase.execute(any(), any()) } returns userPreferenceData
+    }
+
+    protected fun onSetUserPreference_thenReturn(error: Throwable) {
+        coEvery { setUserPreferenceUseCase.execute(any(), any()) } throws error
     }
 }
