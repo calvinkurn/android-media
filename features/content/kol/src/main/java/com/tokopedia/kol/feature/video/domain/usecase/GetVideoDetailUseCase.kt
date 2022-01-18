@@ -4,10 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
-import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 /**
@@ -30,14 +28,5 @@ class GetVideoDetailUseCase
 
     companion object {
         val DETAIL_ID = "detailID"
-        fun createRequestParams(userId: String, detailId: String): RequestParams {
-            val requestParams = GetDynamicFeedUseCase.createRequestParams(
-                    userId = userId,
-                    cursor = "",
-                    source = GetDynamicFeedUseCase.FeedV2Source.Detail
-            )
-            requestParams.putString(DETAIL_ID, detailId)
-            return requestParams
-        }
     }
 }

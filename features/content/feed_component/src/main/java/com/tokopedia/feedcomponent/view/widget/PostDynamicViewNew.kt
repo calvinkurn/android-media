@@ -27,6 +27,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -100,6 +101,9 @@ private const val DOT_SPACE = 2
 private const val SHOW_MORE = "Lihat Lainnya"
 private const val MAX_CHAR = 120
 private const val CAPTION_END = 120
+private const val VOD_VIDEO_RATIO = "4:5"
+private const val SQUARE_RATIO = "1:1"
+private const val LONG_VIDEO_RATIO = "1.91:1"
 private const val FOLLOW_COUNT_THRESHOLD = 100
 private const val TYPE_DISCOUNT = "discount"
 private const val TYPE_CASHBACK = "cashback"
@@ -1100,7 +1104,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     feedXCard.author.id,
                                     feedXCard.typename,
                                     feedXCard.followers.isFollowed,
-                                    feedXCard.author.name
+                                    feedXCard.author.name,
+                                    ratio
                             )?.let {
                                 addItem(
                                         it
@@ -1144,7 +1149,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private fun setVODLayout(feedXCard: FeedXCard){
             val media = feedXCard.media
-            val postId = feedXCard.id.toIntOrZero()
             val globalCardProductList = feedXCard.tags
             gridList.gone()
             carouselView.visible()
@@ -1158,6 +1162,15 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     pageControl.indicatorCurrentPosition = activeIndex
                 } else {
                     pageControl.hide()
+                }
+                var ratio = VOD_VIDEO_RATIO
+//                if (feedXCard.media.isNotEmpty() && feedXCard.media.first().type == TYPE_LONG_VIDEO) {
+                if (feedXCard.type == TYPE_FEED_X_CARD_LONG_VIDEO) {
+                    val orientation = getOrientation(feedXCard.mediaRatio)
+                    ratio = if (orientation == PORTRAIT)
+                        getRatioIfPortrait(feedXCard.mediaRatio)
+                    else
+                        getRatioIfLandscape(feedXCard.mediaRatio)
                 }
                 media.forEach { feedMedia ->
                     val tags = feedMedia.tagging
@@ -1188,7 +1201,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 feedXCard.author.id,
                                 feedXCard.typename,
                                 feedXCard.followers.isFollowed,
-                                feedXCard.author.name
+                                feedXCard.author.name,
+                                ratio
                         )?.let {
                             addItem(
                                     it
@@ -1207,13 +1221,31 @@ class PostDynamicViewNew @JvmOverloads constructor(
         id: String,
         type: String,
         isFollowed: Boolean,
-        shopName: String
+        shopName: String,
+        ratio: String
     ): View? {
         val postId = feedXCard.id
         val videoItem = getVideoItem()
         feedMedia.canPlay = false
         feedMedia.videoView = videoItem
         videoItem?.run {
+
+            val layoutVideo = findViewById<ConstraintLayout>(R.id.layout_main)
+            val videoPreviewImage = findViewById<ImageUnify>(R.id.videoPreviewImage)
+            val videoView = findViewById<View>(R.id.video_view)
+            val constraintSetForVideoCoveMedia = ConstraintSet()
+            constraintSetForVideoCoveMedia.clone(layoutVideo)
+            constraintSetForVideoCoveMedia.setDimensionRatio(videoPreviewImage.id, ratio)
+            constraintSetForVideoCoveMedia.setDimensionRatio(videoView.id, ratio)
+            constraintSetForVideoCoveMedia.applyTo(layoutVideo)
+
+            val layoutFrameView = findViewById<ConstraintLayout>(R.id.frame_video)
+            val layoutPlayerView = findViewById<PlayerView>(R.id.layout_video)
+            val constraintSetForVideoLayout = ConstraintSet()
+            constraintSetForVideoLayout.clone(layoutFrameView)
+            constraintSetForVideoLayout.setDimensionRatio(layoutPlayerView.id, ratio)
+            constraintSetForVideoLayout.applyTo(layoutFrameView)
+
             videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
             video_lihat_product?.setOnClickListener {
                 listener?.let { listener ->
@@ -1333,7 +1365,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
             id: String,
             type: String,
             isFollowed: Boolean,
-            shopName: String
+            shopName: String,
+            ratio: String
     ): View? {
         val postId = feedXCard.id
         val vodItem = getVODItem()
@@ -1341,6 +1374,23 @@ class PostDynamicViewNew @JvmOverloads constructor(
         feedMedia.videoView = vodItem
 
         vodItem?.run {
+
+            val layoutVideo = findViewById<ConstraintLayout>(R.id.vod_layout_main)
+            val videoPreviewImage = findViewById<ImageUnify>(R.id.vod_videoPreviewImage)
+            val videoView = findViewById<View>(R.id.vod_view)
+            val constraintSetForVideoCoveMedia = ConstraintSet()
+            constraintSetForVideoCoveMedia.clone(layoutVideo)
+            constraintSetForVideoCoveMedia.setDimensionRatio(videoPreviewImage.id, ratio)
+            constraintSetForVideoCoveMedia.setDimensionRatio(videoView.id, ratio)
+            constraintSetForVideoCoveMedia.applyTo(layoutVideo)
+
+            val layoutFrameView = findViewById<ConstraintLayout>(R.id.vod_frame_video)
+            val layoutPlayerView = findViewById<PlayerView>(R.id.vod_layout_video)
+            val constraintSetForVideoLayout = ConstraintSet()
+            constraintSetForVideoLayout.clone(layoutFrameView)
+            constraintSetForVideoLayout.setDimensionRatio(layoutPlayerView.id, ratio)
+            constraintSetForVideoLayout.applyTo(layoutFrameView)
+
             vod_videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
             vod_lihat_product?.setOnClickListener {
                 listener?.let { listener ->
@@ -1685,9 +1735,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             gridList.setPadding(0, 0, 0, 0)
         } else {
             gridList.setPadding(
-                gridList.getDimens(com.tokopedia.play_common.R.dimen.dp_3),
+                gridList.getDimens(R.dimen.dp_3),
                 0,
-                gridList.getDimens(com.tokopedia.play_common.R.dimen.dp_3),
+                gridList.getDimens(R.dimen.dp_3),
                 0
             )
         }
@@ -1966,30 +2016,30 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private fun sendHeaderTopadsEvent(positionInFeed: Int, appLink: String, cpmData: CpmData, isNewVariant: Boolean) {
         topAdsListener?.onTopAdsHeadlineAdsClick(positionInFeed, appLink, cpmData, isNewVariant)
     }
-    fun getOrientation(mediaRatio: FeedXMediaRatio): Int {
+    private fun getOrientation(mediaRatio: FeedXMediaRatio): Int {
         if (mediaRatio.width > mediaRatio.height)
             return LANDSCAPE
         return PORTRAIT
     }
-    fun getRatioIfPortrait(mediaRatio: FeedXMediaRatio):String{
+    private fun getRatioIfPortrait(mediaRatio: FeedXMediaRatio):String{
         val ratio = round((mediaRatio.width.toFloat() / mediaRatio.height) * 10) / 10
         return if (ratio <= 0.8)
-            "4:5"
+            VOD_VIDEO_RATIO
         else if (ratio > 0.8 && ratio < 1)
-            ratio.toString()
+            ratio.toString() //original ratio
         else
-            "1:1"
+            SQUARE_RATIO
 
     }
-    fun getRatioIfLandscape(mediaRatio: FeedXMediaRatio):String{
+    private fun getRatioIfLandscape(mediaRatio: FeedXMediaRatio):String{
 
         val ratio = round((mediaRatio.width.toFloat() / mediaRatio.height) * 10) / 10
         return if (ratio >= 1.91)
-            "1.91:1"
+            LONG_VIDEO_RATIO
         else if (ratio > 1 && ratio < 1.91)
-            ratio.toString()
+            ratio.toString() //original ratio
         else
-            "1:1"
+            SQUARE_RATIO
     }
 
 }
