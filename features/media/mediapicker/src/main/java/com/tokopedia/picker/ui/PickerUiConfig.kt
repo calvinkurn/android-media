@@ -63,10 +63,8 @@ object PickerUiConfig {
         mediaSelection.add(media)
     }
 
-    fun hasVideoAtLeastOneInMediaSelectionList(): Boolean {
-        return mediaSelection
-            .filter { isVideoFormat(it.path) }
-            .isNotEmpty()
+    fun hasAtLeastOneVideoOnGlobalSelection(): Boolean {
+        return mediaSelection.any { isVideoFormat(it.path) }
     }
 
     /**
