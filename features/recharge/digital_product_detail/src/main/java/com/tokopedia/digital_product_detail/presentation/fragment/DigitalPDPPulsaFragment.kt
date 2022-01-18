@@ -434,7 +434,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
         binding?.rechargePdpPulsaDynamicBannerSpacer?.layoutParams?.height =
             context?.resources?.getDimensionPixelSize(dynamicSpacerHeightRes)
                 ?: DEFAULT_SPACE_HEIGHT
-        println("tinggi : ${binding?.rechargePdpPulsaDynamicBannerSpacer?.layoutParams?.height}")
         binding?.rechargePdpPulsaDynamicBannerSpacer?.requestLayout()
     }
 
