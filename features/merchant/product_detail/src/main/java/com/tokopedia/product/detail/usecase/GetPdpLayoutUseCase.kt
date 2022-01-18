@@ -13,7 +13,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
-import com.tokopedia.product.detail.common.data.model.rates.TokoNow
+import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
@@ -328,7 +328,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
             layoutId: String,
             userLocationRequest: UserLocationRequest,
             extParam: String,
-            tokonow: TokoNow
+            tokonow: TokoNowParam
         ): RequestParams =
             RequestParams.create().apply {
                 putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)

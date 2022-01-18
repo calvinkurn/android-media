@@ -14,7 +14,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.pdplayout.OneLinersContent
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.Wholesale
-import com.tokopedia.product.detail.common.data.model.rates.TokoNow
+import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
@@ -349,8 +349,8 @@ object DynamicProductDetailMapper {
                 latlong)
     }
 
-    fun generateTokoNowRequest(localData: LocalCacheModel): TokoNow {
-        return TokoNow(
+    fun generateTokoNowRequest(localData: LocalCacheModel): TokoNowParam {
+        return TokoNowParam(
             shopId = localData.shop_id,
             warehouseId = localData.warehouse_id,
             serviceType = localData.service_type

@@ -10,7 +10,7 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.common.data.model.rates.TokoNow
+import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.ProductInfoP2Data
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
@@ -35,7 +35,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
     override val coroutineContext: CoroutineContext get() = Dispatchers.Main + SupervisorJob()
 
     companion object {
-        fun createParams(productId: String, pdpSession: String, deviceId: String, userLocationRequest: UserLocationRequest, affiliateUUIDRequest : AffiliateUIIDRequest?, tokonow: TokoNow): RequestParams =
+        fun createParams(productId: String, pdpSession: String, deviceId: String, userLocationRequest: UserLocationRequest, affiliateUUIDRequest : AffiliateUIIDRequest?, tokonow: TokoNowParam): RequestParams =
                 RequestParams.create().apply {
                     putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
                     putString(ProductDetailCommonConstant.PARAM_PDP_SESSION, pdpSession)

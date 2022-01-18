@@ -30,7 +30,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
-import com.tokopedia.product.detail.common.data.model.rates.TokoNow
+import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
@@ -920,7 +920,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val productId = "123"
         val productParams = ProductParams(productId, "", "", "", "", "")
         val userLocation = UserLocationRequest("123")
-        val tokoNow = TokoNow()
+        val tokoNow = TokoNowParam("456", "789", "now15")
         `co every p1 success`(dataP1)
 
         coEvery {
@@ -936,7 +936,10 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_KEY, "").isEmpty())
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_SHOP_DOMAIN, "").isEmpty())
         Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_USER_LOCATION) as? UserLocationRequest) != null)
-        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNow) != null)
+
+        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.shopId == "456")
+        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.shopId == "789")
+        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.shopId == "now15")
     }
 
     @Test
@@ -946,7 +949,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val productKey = "productYehez"
         val productParams = ProductParams("", shopDomain, productKey, "", "", "")
         val userLocation = UserLocationRequest("123")
-        val tokoNow = TokoNow("456")
+        val tokoNow = TokoNowParam("456","789", "now15")
 
         `co every p1 success`(dataP1)
         coEvery {
@@ -962,7 +965,10 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_KEY, "") == productKey)
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_SHOP_DOMAIN, "") == shopDomain)
         Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_USER_LOCATION) as? UserLocationRequest)?.districtID == "123")
-        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNow)?.shopId == "456")
+
+        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.shopId == "456")
+        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.shopId == "789")
+        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.shopId == "now15")
     }
 
     @Test
@@ -971,7 +977,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val productParams = ProductParams("", "", "", "", "", "")
         val userLocation = UserLocationRequest("")
         val extParam = anyString()
-        val tokoNow = TokoNow("123")
+        val tokoNow = TokoNowParam("123")
 
         `co every p1 success`(dataP1)
         coEvery {

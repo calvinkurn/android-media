@@ -15,7 +15,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregator
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorResponse
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
-import com.tokopedia.product.detail.common.data.model.rates.TokoNow
+import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -296,9 +296,9 @@ class GetProductVariantAggregatorUseCase @Inject constructor(
         )
     }
 
-    private fun generateTokoNow(): TokoNow{
+    private fun generateTokoNow(): TokoNowParam{
         val localCache = ChooseAddressUtils.getLocalizingAddressData(context)
-        return TokoNow(
+        return TokoNowParam(
             localCache.shop_id,
             localCache.warehouse_id,
             localCache.service_type
