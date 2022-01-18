@@ -75,13 +75,18 @@ class FintechWidgetAdapter(var widgetClickListner: WidgetClickListner) : Recycle
 
 
         private fun clickedWidgetData() {
-            chipsData[adapterPosition].cta?.bottomsheet?.buttons?.get(0)?.buttonUrl?.let { url ->
-                chipsData[adapterPosition].cta?.type?.let { ctaType ->
-                    widgetClickListner.clickedWidget(
-                        ctaType, url
-                    )
+            if(chipsData[adapterPosition].cta?.bottomsheet?.buttons?.size?:0 > 0)
+            {
+                chipsData[adapterPosition].cta?.bottomsheet?.buttons?.get(0)?.buttonUrl?.let { url ->
+                    chipsData[adapterPosition].cta?.type?.let { ctaType ->
+                        widgetClickListner.clickedWidget(
+                            ctaType, url
+                        )
+                    }
                 }
-            } ?: kotlin.run {
+            }
+            else
+            {
                 chipsData[adapterPosition].cta?.androidUrl?.let { url ->
                     chipsData[adapterPosition].cta?.type?.let { ctaType ->
                         widgetClickListner.clickedWidget(
@@ -90,9 +95,11 @@ class FintechWidgetAdapter(var widgetClickListner: WidgetClickListner) : Recycle
                     }
                 }
             }
+
+            }
         }
 
 
     }
-}
+
 
