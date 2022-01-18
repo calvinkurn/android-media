@@ -538,17 +538,23 @@ class CouponSettingFragment : BaseDaggerFragment() {
     }
 
     private fun calculateMaxExpenseEstimation() {
-        val discountAmount = if (selectedCouponType == CouponType.CASHBACK) {
-            binding.textAreaDiscountAmount.textAreaInput.text.toString().trim().digitsOnlyInt()
-        } else {
-            binding.textAreaFreeShippingDiscountAmount.textAreaInput.text.toString().trim().digitsOnlyInt()
+        with(binding) {
+            val cashbackDiscountAmount = textAreaDiscountAmount.textAreaInput.text.toString().trim().digitsOnlyInt()
+            val cashbackMaximumDiscountAmount = textAreaMaximumDiscount.textAreaInput.text.toString().trim().digitsOnlyInt()
+            val freeShippingDiscountAmount = textAreaFreeShippingDiscountAmount.textAreaInput.text.toString().trim().digitsOnlyInt()
+            val cashbackQuota = textAreaQuota.textAreaInput.text.toString().trim().digitsOnlyInt()
+            val freeShippingQuota = textAreaFreeShippingQuota.textAreaInput.text.toString().trim().digitsOnlyInt()
+
+            viewModel.calculateMaxExpenseEstimation(
+                selectedCouponType,
+                selectedDiscountType,
+                cashbackDiscountAmount,
+                cashbackMaximumDiscountAmount,
+                freeShippingDiscountAmount,
+                cashbackQuota,
+                freeShippingQuota
+            )
         }
-        val voucherQuota = if (selectedCouponType == CouponType.CASHBACK) {
-            binding.textAreaQuota.textAreaInput.text.toString().trim().digitsOnlyInt()
-        } else {
-            binding.textAreaFreeShippingQuota.textAreaInput.text.toString().trim().digitsOnlyInt()
-        }
-        viewModel.calculateMaxExpenseEstimation(discountAmount, voucherQuota)
     }
 
     private fun showErrorMessage(view: TextAreaUnify, errorMessage : String) {

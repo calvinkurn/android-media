@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.vouchercreation.common.extension.digitsOnlyInt
 import com.tokopedia.vouchercreation.common.utils.ResourceProvider
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
 import com.tokopedia.vouchercreation.product.create.domain.entity.DiscountType
@@ -201,8 +202,28 @@ class CouponSettingViewModel @Inject constructor(
         }
     }
 
-    fun calculateMaxExpenseEstimation(discountAmount: Int, voucherQuotaCount: Int) {
-        _maxExpenseEstimation.value = (discountAmount * voucherQuotaCount).toLong()
+    fun calculateMaxExpenseEstimation(
+        selectedCouponType: CouponType,
+        selectedDiscountType: DiscountType,
+        cashbackDiscountAmount: Int,
+        cashbackMaximumDiscountAmount : Int,
+        freeShippingDiscountAmount : Int,
+        cashbackQuota: Int,
+        freeShippingQuota: Int
+    ) {
+        val discount = when {
+            selectedCouponType == CouponType.CASHBACK && selectedDiscountType == DiscountType.NOMINAL -> cashbackDiscountAmount
+            selectedCouponType == CouponType.CASHBACK && selectedDiscountType == DiscountType.PERCENTAGE -> cashbackMaximumDiscountAmount
+            selectedCouponType == CouponType.FREE_SHIPPING -> freeShippingDiscountAmount
+            else -> ZERO
+        }
+
+        val quota = if (selectedCouponType == CouponType.CASHBACK) {
+            cashbackQuota
+        } else {
+            freeShippingQuota
+        }
+        _maxExpenseEstimation.value = (discount * quota).toLong()
     }
 
     fun saveCoupon() {
