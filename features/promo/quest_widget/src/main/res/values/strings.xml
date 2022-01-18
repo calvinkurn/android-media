@@ -6,4 +6,5 @@
     <string name="quest_widget_finished_desc">Cek hadiah kamu, yuk!</string>
     <string name="quest_widget_gagal_memuat">Gagal Memuat</string>
     <string name="quest_widget_klik_iconnya_untuk_muat_ulang">Klik iconnya untuk muat ulang</string>
+    <string name="quest_widget_nonlogin_banner">https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png</string>
 </resources>
