@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.empty_state.EmptyStateUnify
@@ -318,7 +319,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             RouteManager.route(requireContext(), ApplinkConst.SELLER_INFO)
             NavigationTracking.sendClickNotificationEvent()
         } else if (item.itemId == SEARCH_MENU_ID) {
-            RouteManager.route(requireContext(), ApplinkConst.SellerApp.SELLER_SEARCH)
+            RouteManager.route(requireContext(), ApplinkConstInternalSellerapp.SELLER_SEARCH)
             NavigationSearchTracking.sendClickSearchMenuEvent(userSession.userId.orEmpty())
         }
         return super.onOptionsItemSelected(item)
