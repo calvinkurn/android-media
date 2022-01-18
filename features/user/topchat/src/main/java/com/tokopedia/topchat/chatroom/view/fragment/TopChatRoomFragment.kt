@@ -1456,7 +1456,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         )
         resultProducts?.let { products ->
             val productIds = products.map { it.productId }
-            viewModel.loadProductPreview(productIds, amISeller)
+            viewModel.loadProductPreview(productIds)
             removeSrwBubble()
         }
     }

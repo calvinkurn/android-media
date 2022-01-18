@@ -995,10 +995,7 @@ class TopChatViewModel @Inject constructor(
         attachmentsPreview.add(sendablePreview)
     }
 
-    fun loadProductPreview(
-        productIds: List<String>,
-        amISeller: Boolean
-    ) {
+    fun loadProductPreview(productIds: List<String>) {
         if (productIds.isEmpty()) return
         if (productIds.isNotEmpty()) clearAttachmentPreview()
         launchCatchError(block = {
@@ -1006,7 +1003,7 @@ class TopChatViewModel @Inject constructor(
             if (!alreadyHasAttachmentData(productIds)) {
                 val param = GetChatPreAttachPayloadUseCase.Param(
                     ids = productIds.joinToString(separator = ","),
-                    isSeller = amISeller,
+                    msgId = roomMetaData.msgId.toLongOrZero(),
                     type = GetChatPreAttachPayloadUseCase.Param.TYPE_PRODUCT,
                     addressID = userLocationInfo.address_id.toLongOrZero(),
                     districtID = userLocationInfo.district_id.toLongOrZero(),

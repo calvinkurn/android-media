@@ -10,7 +10,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.preattach.PreAttachPayloadResp
 import com.tokopedia.topchat.chatroom.domain.usecase.GetChatPreAttachPayloadUseCase.Param.Companion.ADDRESS_ID
 import com.tokopedia.topchat.chatroom.domain.usecase.GetChatPreAttachPayloadUseCase.Param.Companion.DISTRICT_ID
 import com.tokopedia.topchat.chatroom.domain.usecase.GetChatPreAttachPayloadUseCase.Param.Companion.IDS
-import com.tokopedia.topchat.chatroom.domain.usecase.GetChatPreAttachPayloadUseCase.Param.Companion.IS_SELLER
+import com.tokopedia.topchat.chatroom.domain.usecase.GetChatPreAttachPayloadUseCase.Param.Companion.MSG_ID
 import com.tokopedia.topchat.chatroom.domain.usecase.GetChatPreAttachPayloadUseCase.Param.Companion.LAT_LON
 import com.tokopedia.topchat.chatroom.domain.usecase.GetChatPreAttachPayloadUseCase.Param.Companion.POSTAL_CODE
 import com.tokopedia.topchat.chatroom.domain.usecase.GetChatPreAttachPayloadUseCase.Param.Companion.TYPE
@@ -28,7 +28,7 @@ class GetChatPreAttachPayloadUseCase @Inject constructor(
     override fun graphqlQuery(): String = """
         query chatPreAttachPayload(
             $$IDS: String, 
-            $$IS_SELLER: Boolean,
+            $$MSG_ID: Int,
             $$TYPE: Int, 
             $$ADDRESS_ID: Int, 
             $$DISTRICT_ID: Int, 
@@ -37,7 +37,7 @@ class GetChatPreAttachPayloadUseCase @Inject constructor(
         ){
           chatPreAttachPayload(
             $IDS: $$IDS, 
-            $IS_SELLER: $$IS_SELLER,
+            $MSG_ID: $$MSG_ID,
             $TYPE: $$TYPE, 
             $ADDRESS_ID: $$ADDRESS_ID, 
             $DISTRICT_ID: $$DISTRICT_ID, 
@@ -60,8 +60,8 @@ class GetChatPreAttachPayloadUseCase @Inject constructor(
     class Param(
         @SerializedName(IDS)
         val ids: String = "",
-        @SerializedName(IS_SELLER)
-        val isSeller: Boolean = false,
+        @SerializedName(MSG_ID)
+        val msgId: Long = 0,
         @SerializedName(TYPE)
         val type: Int = TYPE_PRODUCT,
         @SerializedName(ADDRESS_ID)
@@ -75,7 +75,7 @@ class GetChatPreAttachPayloadUseCase @Inject constructor(
     ) : GqlParam {
         companion object {
             const val IDS = "ids"
-            const val IS_SELLER = "isSeller"
+            const val MSG_ID = "msgId"
             const val TYPE = "type"
             const val ADDRESS_ID = "addressID"
             const val DISTRICT_ID = "districtID"
