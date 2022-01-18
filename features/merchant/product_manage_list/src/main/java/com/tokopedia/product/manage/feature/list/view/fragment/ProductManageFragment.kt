@@ -24,6 +24,7 @@ import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -281,7 +282,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         get() = binding?.layoutFragmentProductManage?.multiSelectContainer
     private val checkBoxSelectAll: CheckboxUnify?
         get() = binding?.layoutFragmentProductManage?.checkBoxSelectAll
-    private val btnMultiEdit: CardUnify?
+    private val btnMultiEdit: CardView?
         get() = binding?.layoutFragmentProductManage?.btnMultiEdit
     private val recyclerView: VerticalRecyclerView?
         get() = binding?.layoutFragmentProductManage?.recyclerView
