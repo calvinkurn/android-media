@@ -5,18 +5,27 @@ import com.tokopedia.applink.ApplinkConst.MediaPicker
 import com.tokopedia.picker.common.PickerModeType
 import com.tokopedia.picker.common.PickerPageType
 import com.tokopedia.picker.common.PickerSelectionType
+import com.tokopedia.picker.data.entity.Media
+import com.tokopedia.picker.utils.isVideoFormat
 
 object PickerUiConfig {
 
     @PickerPageType
     var paramPage = PickerPageType.COMMON
+        private set
 
     @PickerModeType
     var paramMode = PickerModeType.COMMON
+        private set
 
     @PickerSelectionType
     var paramType = PickerSelectionType.MULTIPLE
+        private set
 
+    // the final collection data ready to passing into next page
+    private var mediaSelection = arrayListOf<Media>()
+
+    // picker global parameter
     private var pickerParam: PickerParam? = null
 
     fun pickerParam(): PickerParam {
@@ -31,6 +40,33 @@ object PickerUiConfig {
         ).also {
             pickerParam = it
         }
+    }
+
+    fun reset() {
+        mediaSelection.clear()
+        pickerParam = null
+    }
+
+    fun mediaSelectionList(): ArrayList<Media> {
+        return mediaSelection
+    }
+
+    fun addAllMediaSelection(list: List<Media>) {
+        mediaSelection.clear()
+        mediaSelection.addAll(list)
+    }
+
+    fun addMediaSelection(media: Media) {
+        val index = mediaSelection.indexOf(media)
+        if (index > 0) return
+
+        mediaSelection.add(media)
+    }
+
+    fun hasVideoAtLeastOneInMediaSelectionList(): Boolean {
+        return mediaSelection
+            .filter { isVideoFormat(it.path) }
+            .isNotEmpty()
     }
 
     /**
