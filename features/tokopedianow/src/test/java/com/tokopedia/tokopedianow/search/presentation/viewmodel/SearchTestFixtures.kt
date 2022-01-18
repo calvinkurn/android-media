@@ -45,9 +45,9 @@ open class SearchTestFixtures {
     protected val deleteCartUseCase = mockk<DeleteCartUseCase>(relaxed = true)
     protected val getWarehouseUseCase = mockk<GetChosenAddressWarehouseLocUseCase>(relaxed = true)
     protected val getRecommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
+    protected val setUserPreferenceUseCase = mockk<SetUserPreferenceUseCase>(relaxed = true)
     protected val chooseAddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
     protected val abTestPlatformWrapper = mockk<ABTestPlatformWrapper>(relaxed = true)
-    protected val setUserPreferenceUseCase = mockk<SetUserPreferenceUseCase>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true).also {
         every { it.isLoggedIn } returns true
     }

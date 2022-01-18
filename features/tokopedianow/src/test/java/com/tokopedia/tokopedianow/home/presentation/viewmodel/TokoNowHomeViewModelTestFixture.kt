@@ -231,8 +231,11 @@ abstract class TokoNowHomeViewModelTestFixture {
         verify { updateCartUseCase.execute(any(), any()) }
     }
 
-    protected fun verifySetUserPreferenceUseCaseCalled(localCacheModel: LocalCacheModel) {
-        coVerify { setUserPreferenceUseCase.execute(localCacheModel, any()) }
+    protected fun verifySetUserPreferenceUseCaseCalled(
+        localCacheModel: LocalCacheModel,
+        serviceType: String
+    ) {
+        coVerify { setUserPreferenceUseCase.execute(localCacheModel, serviceType) }
     }
 
     protected fun onGetTicker_thenReturn(tickerResponse: TickerResponse) {
