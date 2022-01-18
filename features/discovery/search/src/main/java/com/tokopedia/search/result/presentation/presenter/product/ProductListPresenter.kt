@@ -758,7 +758,7 @@ class ProductListPresenter @Inject constructor(
             getViewToShowProductList(searchParameter, searchProductModel, productDataView)
             processDefaultQuickFilter(searchProductModel)
             processQuickFilter(searchProductModel.quickFilterModel)
-            view.setSelectedSizeOption()
+            processSizeFilter()
         }
 
         view.updateScrollListener()
@@ -1534,6 +1534,11 @@ class ProductListPresenter @Inject constructor(
             view.hideQuickFilterShimmering()
             view.setQuickFilter(sortFilterItems)
         }
+    }
+
+    private fun processSizeFilter() {
+        view.setSizeOptionFilterOnFilterController(inspirationSizeDataView)
+        view.setSelectedSizeOption()
     }
 
     private fun convertToSortFilterItem(filter: Filter, options: List<Option>) =

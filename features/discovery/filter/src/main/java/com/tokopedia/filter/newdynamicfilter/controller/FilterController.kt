@@ -20,7 +20,7 @@ open class FilterController {
     val filterViewStateSet: Set<String>
         get() = filterViewState
 
-    val activeSizeOptionList = mutableListOf<String>()
+    var sizeOptionList = listOf<Option>()
 
     fun initFilterController(parameter: Map<String, String>? = mapOf(),
                              filterList: List<Filter>? = listOf()) {
@@ -79,6 +79,7 @@ open class FilterController {
     private fun loadFilterViewState(parameter: Map<String, String>?) {
         if(parameter == null) return
 
+        val param = parameter
         val optionsForFilterViewState = mutableListOf<Option>()
 
         loopOptionsInFilterList { _, option ->
@@ -90,13 +91,15 @@ open class FilterController {
             }
         }
 
+        sizeOptionList.forEach { option ->
+            if(isSizeOptionSelected(parameter, option)) {
+                optionsForFilterViewState.add(option)
+            }
+        }
+
         for(option in optionsForFilterViewState) {
             if(option.value == "" || option.isTypeTextBox) option.value = parameter[option.key].toString()
             filterViewState.add(option.uniqueId)
-        }
-
-        for (uniqueId in activeSizeOptionList) {
-            filterViewState.add(uniqueId)
         }
     }
 
@@ -108,6 +111,10 @@ open class FilterController {
                 else -> false
             }
         else false
+    }
+
+    private fun isSizeOptionSelected(parameter: Map<String, String>, option: Option): Boolean {
+        return parameter.containsKey(option.key) && parameter[option.key].equals(option.value)
     }
 
     private fun isOptionValuesExistsInFilterParameter(parameter: Map<String, String>, option: Option) : Boolean {
@@ -425,12 +432,4 @@ open class FilterController {
             val option = OptionHelper.generateOptionFromUniqueId(it)
             SavedOption.create(option, filterList)
         }
-
-    fun setActiveSizeOptionList(option: Option, isActive: Boolean) {
-        if (isActive && !activeSizeOptionList.contains(option.uniqueId)) {
-            activeSizeOptionList.add(option.uniqueId)
-        } else {
-            activeSizeOptionList.remove(option.uniqueId)
-        }
-    }
 }

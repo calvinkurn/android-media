@@ -1688,7 +1688,6 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun onInspirationSizeOptionClicked(option: Option, isActive: Boolean) {
-        filterController.setActiveSizeOptionList(option, isActive)
         filterController.setFilter(option, isActive)
 
         refreshSearchParameter(filterController.getParameter())
@@ -1696,13 +1695,32 @@ class ProductListFragment: BaseDaggerFragment(),
         reloadData()
     }
 
-    override fun onInspirationSizeClosed() {
-
+    override fun setSizeOptionFilterOnFilterController(dataView: MutableList<SizeDataView>) {
+        if (dataView.size > 0) {
+            filterController.sizeOptionList =
+                    dataView[0].data.optionSizeData.map {
+                        Option(
+                                it.filters.name,
+                                it.filters.key,
+                                it.filters.value
+                        )
+                    }
+        }
     }
 
     override fun setSelectedSizeOption() {
-        productListAdapter?.setSelectedSizeOption(filterController.activeSizeOptionList.map {
-            OptionHelper.generateOptionFromUniqueId(it).value
+        val selectedSizeOptions = mutableListOf<SavedOption>()
+
+        filterController.getActiveSavedOptionList().forEach { activeOption ->
+            filterController.sizeOptionList.forEach { availableSizeOption ->
+                if (activeOption.key == availableSizeOption.key && activeOption.value == availableSizeOption.value) {
+                    selectedSizeOptions.add(activeOption)
+                }
+            }
+        }
+
+        productListAdapter?.setSelectedSizeOption(selectedSizeOptions.map {
+            it.value
         })
     }
 
