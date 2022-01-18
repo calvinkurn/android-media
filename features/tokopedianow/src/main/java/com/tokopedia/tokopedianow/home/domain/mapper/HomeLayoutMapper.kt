@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
@@ -43,7 +44,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingEducationMapper.mapSharingEducationUiModel
-import com.tokopedia.tokopedianow.home.domain.mapper.SwitcherMapper.create15mSwitcherUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.SwitcherMapper.createSwitcherUiModel
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -89,8 +90,7 @@ object HomeLayoutMapper {
         hasTickerBeenRemoved: Boolean,
         hasSharingEducationBeenRemoved: Boolean,
         miniCartData: MiniCartSimplifiedData?,
-        serviceType: String,
-        onClickSwitcher: () -> Unit
+        localCacheModel: LocalCacheModel
     ) {
         val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
@@ -102,15 +102,22 @@ object HomeLayoutMapper {
 
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach {
             if (!(hasSharingEducationBeenRemoved && it.layout == SHARING_EDUCATION)) {
+                val serviceType = localCacheModel.service_type
                 mapToHomeUiModel(it, miniCartData = miniCartData, serviceType = serviceType)?.let { item ->
                     add(item)
                 }
-
-                // Temporary Hardcode Position
-                if (it.layout == EDUCATIONAL_INFORMATION) {
-                    add(create15mSwitcherUiModel(onClickSwitcher))
-                }
+                addSwitcherUiModel(it, localCacheModel)
             }
+        }
+    }
+
+    private fun MutableList<HomeLayoutItemUiModel>.addSwitcherUiModel(
+        response: HomeLayoutResponse,
+        localCacheModel: LocalCacheModel
+    ) {
+        if (response.layout == EDUCATIONAL_INFORMATION) {
+            val switcherUiModel = createSwitcherUiModel(localCacheModel)
+            switcherUiModel?.let { uiModel -> add(uiModel) }
         }
     }
 

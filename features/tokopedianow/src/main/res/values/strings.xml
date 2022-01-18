@@ -111,4 +111,11 @@
     <string name="tokopedianow_2h_switcher_subtitle">Tokopedia NOW! 2 jam tiba</string>
     <string name="tokopedianow_15m_coachmark_title">Baru! Pesanan bisa tiba ke lokasimu dalam 15 menit  🚀</string>
     <string name="tokopedianow_15m_coachmark_description">Lebih cepat, tetap gratis ongkir!</string>
+
+    <string name="tokopedianow_search_category_title">Belum nemu yang kamu cari?</string>
+    <string name="tokopedianow_search_category_description_fifteen_minutes"><![CDATA[Masih banyak produk lainnya yang bisa <b>15 menit tiba</b>, lho.]]></string>
+    <string name="tokopedianow_search_category_title_fifteen_minutes">Jelajahi Sekarang</string>
+    <string name="tokopedianow_search_category_description_two_hours"><![CDATA[Atau cek Tokopedia NOW! <b>2 jam tiba</b>, pilihan lebih lengkap!]]></string>
+    <string name="tokopedianow_search_category_title_two_hours">Belanja 2 Jam Tiba</string>
+    <string name="tokopedianow_search_category_subtitle">Tiba dalam %1$s</string>
 </resources>

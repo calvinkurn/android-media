@@ -9,6 +9,7 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.JumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.SearchCategoryJumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
@@ -42,22 +43,23 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class TokoNowSearchViewModel @Inject constructor (
-        baseDispatcher: CoroutineDispatchers,
-        @Named(SEARCH_QUERY_PARAM_MAP)
+    baseDispatcher: CoroutineDispatchers,
+    @Named(SEARCH_QUERY_PARAM_MAP)
         queryParamMap: Map<String, String>,
-        @param:Named(SEARCH_FIRST_PAGE_USE_CASE)
+    @param:Named(SEARCH_FIRST_PAGE_USE_CASE)
         private val getSearchFirstPageUseCase: UseCase<SearchModel>,
-        @param:Named(SEARCH_LOAD_MORE_PAGE_USE_CASE)
+    @param:Named(SEARCH_LOAD_MORE_PAGE_USE_CASE)
         private val getSearchLoadMorePageUseCase: UseCase<SearchModel>,
-        getFilterUseCase: UseCase<DynamicFilterModel>,
-        getProductCountUseCase: UseCase<String>,
-        getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
-        cartService: CartService,
-        getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
-        getRecommendationUseCase: GetRecommendationUseCase,
-        chooseAddressWrapper: ChooseAddressWrapper,
-        abTestPlatformWrapper: ABTestPlatformWrapper,
-        userSession: UserSessionInterface
+    getFilterUseCase: UseCase<DynamicFilterModel>,
+    getProductCountUseCase: UseCase<String>,
+    getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
+    cartService: CartService,
+    getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
+    getRecommendationUseCase: GetRecommendationUseCase,
+    setUserPreferenceUseCase: SetUserPreferenceUseCase,
+    chooseAddressWrapper: ChooseAddressWrapper,
+    abTestPlatformWrapper: ABTestPlatformWrapper,
+    userSession: UserSessionInterface
 ): BaseSearchCategoryViewModel(
         baseDispatcher,
         queryParamMap,
@@ -67,6 +69,7 @@ class TokoNowSearchViewModel @Inject constructor (
         cartService,
         getWarehouseUseCase,
         getRecommendationUseCase,
+        setUserPreferenceUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,
         userSession,
@@ -127,6 +130,7 @@ class TokoNowSearchViewModel @Inject constructor (
         return TitleDataView(
                 titleType = titleType,
                 hasSeeAllCategoryButton = hasSeeAllCategoryButton,
+                serviceType = chooseAddressData?.service_type.orEmpty()
         )
     }
 

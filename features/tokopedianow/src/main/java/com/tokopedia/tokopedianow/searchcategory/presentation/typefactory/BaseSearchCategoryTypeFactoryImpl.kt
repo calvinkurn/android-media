@@ -14,6 +14,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAdd
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BannerViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ChooseAddressDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
@@ -31,6 +32,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.Product
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.QuickFilterViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TitleViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProgressBarViewHolder
+import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.SwitcherWidgetViewHolder
 
 abstract class BaseSearchCategoryTypeFactoryImpl(
     protected val tokoNowEmptyStateOocListener: TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener,
@@ -40,6 +42,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     protected val quickFilterListener: QuickFilterListener,
     protected val categoryFilterListener: CategoryFilterListener,
     protected val productItemListener: ProductItemListener,
+    protected val switcherWidgetListener: SwitcherWidgetListener,
     protected val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
     private val recommendationCarouselListener: TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
     private val recommendationCarouselBindPageNameListener: TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener?
@@ -78,6 +81,8 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     override fun type(uiModel: TokoNowEmptyStateOocUiModel): Int = TokoNowEmptyStateOocViewHolder.LAYOUT
 
     override fun type(progressBarDataView: ProgressBarDataView): Int = ProgressBarViewHolder.LAYOUT
+
+    override fun type(switcherWidgetDataView: SwitcherWidgetDataView): Int = SwitcherWidgetViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -119,6 +124,10 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
                 itemView = view,
                 recommendationCarouselListener = recommendationCarouselListener,
                 recommendationCarouselWidgetBindPageNameListener = recommendationCarouselBindPageNameListener
+            )
+            SwitcherWidgetViewHolder.LAYOUT -> SwitcherWidgetViewHolder(
+                itemView = view,
+                listener = switcherWidgetListener
             )
             ProgressBarViewHolder.LAYOUT -> ProgressBarViewHolder(view)
             else -> super.createViewHolder(view, type)

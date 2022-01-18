@@ -10,12 +10,14 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ChannelStyle
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.*
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.data.*
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -23,6 +25,8 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.model.*
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
+import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.*
@@ -31,13 +35,13 @@ import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import org.junit.Assert.assertEquals
-import org.junit.Ignore
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyString
@@ -1967,7 +1971,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             .verifySuccessEquals(expected)
     }
 
-    @Ignore
     @Test
     fun `when removeSharingEducationWidget should remove education widget from home layout list`() {
         val channelId = "34923"
@@ -2036,7 +2039,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             TokoNowChooseAddressWidgetUiModel(id = "0"),
             HomeSharingEducationWidgetUiModel(
                 id = channelId,
-                HomeLayoutItemState.LOADED
+                HomeLayoutItemState.LOADED,
+                ""
             )
         )
 
@@ -2390,6 +2394,357 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         ))
 
         verifyGetHomeLayoutDataUseCaseCalled()
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `given current serviceType 15m when switchService success should switch service to 2h`() {
+        val currentServiceType = "15m"
+
+        val localCacheModel = LocalCacheModel(
+            service_type = currentServiceType
+        )
+
+        val userPreferenceData = SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "2",
+            serviceType = "2h",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "2h"
+                )
+            )
+        )
+
+        onSetUserPreference_thenReturn(userPreferenceData)
+
+        viewModel.switchService(localCacheModel)
+
+        val expectedResult = Success(SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "2",
+            serviceType = "2h",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "2h"
+                )
+            )
+        ))
+
+        verifySetUserPreferenceUseCaseCalled(
+            localCacheModel = localCacheModel,
+            serviceType = "2h"
+        )
+
+        viewModel.setUserPreference
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `given current serviceType 2h when switchService success should switch service to 15m`() {
+        val currentServiceType = "2h"
+
+        val localCacheModel = LocalCacheModel(
+            service_type = currentServiceType
+        )
+
+        val userPreferenceData = SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "2",
+            serviceType = "15m",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "15m"
+                )
+            )
+        )
+
+        onSetUserPreference_thenReturn(userPreferenceData)
+
+        viewModel.switchService(localCacheModel)
+
+        val expectedResult = Success(SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "2",
+            serviceType = "15m",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "15m"
+                )
+            )
+        ))
+
+        verifySetUserPreferenceUseCaseCalled(
+            localCacheModel = localCacheModel,
+            serviceType = "15m"
+        )
+
+        viewModel.setUserPreference
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when switchService error should set live data value fail`() {
+        val localCacheModel = LocalCacheModel(
+            service_type = "2h"
+        )
+        val error = NullPointerException()
+
+        onSetUserPreference_thenReturn(error)
+
+        viewModel.switchService(localCacheModel)
+
+        val expectedResult = Fail(NullPointerException())
+
+        verifySetUserPreferenceUseCaseCalled(
+            localCacheModel = localCacheModel,
+            serviceType = "15m"
+        )
+
+        viewModel.setUserPreference
+            .verifyErrorEquals(expectedResult)
+    }
+
+    @Test
+    fun `given eligible for NOW15 when getHomeLayout should add NOW15 switcher widget to layout list`() {
+        val serviceType = "2h"
+        val localCacheModel = LocalCacheModel(
+            warehouses = listOf(
+                LocalWarehouseModel(warehouse_id = 12530, service_type = "15m"),
+                LocalWarehouseModel(warehouse_id = 15021, service_type = "2h")
+            ),
+            service_type = serviceType
+        )
+
+        onGetHomeLayoutData_thenReturn(listOf(
+            HomeLayoutResponse(
+                id = "2",
+                layout = "tokonow_usp",
+                header = Header(
+                    name = "Tokonow USP",
+                    serverTimeUnix = 0
+                ),
+                token = ""
+            )
+        ), localCacheModel)
+
+        viewModel.getHomeLayout(
+            localCacheModel = localCacheModel,
+            hasSharingEducationBeenRemoved = false
+        )
+
+        val layoutList = listOf(
+            TokoNowChooseAddressWidgetUiModel("0"),
+            HomeEducationalInformationWidgetUiModel(
+                "2",
+                HomeLayoutItemState.LOADED,
+                ServiceType.NOW_2H
+            ),
+            HomeSwitcherUiModel.Home15mSwitcher
+        )
+
+        val expectedResult = Success(HomeLayoutListUiModel(
+            items = layoutList,
+            state = TokoNowLayoutState.SHOW
+        ))
+
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `given NOT eligible for NOW15 when getHomeLayout should NOT add NOW15 switcher widget to layout list`() {
+        val serviceType = "2h"
+        val localCacheModel = LocalCacheModel(
+            warehouses = listOf(
+                LocalWarehouseModel(warehouse_id = 0, service_type = "15m"),
+                LocalWarehouseModel(warehouse_id = 15021, service_type = "2h")
+            ),
+            service_type = serviceType
+        )
+
+        onGetHomeLayoutData_thenReturn(listOf(
+            HomeLayoutResponse(
+                id = "2",
+                layout = "tokonow_usp",
+                header = Header(
+                    name = "Tokonow USP",
+                    serverTimeUnix = 0
+                ),
+                token = ""
+            )
+        ), localCacheModel)
+
+        viewModel.getHomeLayout(
+            localCacheModel = localCacheModel,
+            hasSharingEducationBeenRemoved = false
+        )
+
+        val layoutList = listOf(
+            TokoNowChooseAddressWidgetUiModel("0"),
+            HomeEducationalInformationWidgetUiModel(
+                "2",
+                HomeLayoutItemState.LOADED,
+                ServiceType.NOW_2H
+            )
+        )
+
+        val expectedResult = Success(HomeLayoutListUiModel(
+            items = layoutList,
+            state = TokoNowLayoutState.SHOW
+        ))
+
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `given eligible for NOW2H when getHomeLayout should add NOW2H switcher widget to layout list`() {
+        val serviceType = "15m"
+        val localCacheModel = LocalCacheModel(
+            warehouses = listOf(
+                LocalWarehouseModel(warehouse_id = 12530, service_type = "15m"),
+                LocalWarehouseModel(warehouse_id = 15021, service_type = "2h")
+            ),
+            service_type = serviceType
+        )
+
+        onGetHomeLayoutData_thenReturn(listOf(
+            HomeLayoutResponse(
+                id = "2",
+                layout = "tokonow_usp",
+                header = Header(
+                    name = "Tokonow USP",
+                    serverTimeUnix = 0
+                ),
+                token = ""
+            )
+        ), localCacheModel)
+
+        viewModel.getHomeLayout(
+            localCacheModel = localCacheModel,
+            hasSharingEducationBeenRemoved = false
+        )
+
+        val layoutList = listOf(
+            TokoNowChooseAddressWidgetUiModel("0"),
+            HomeEducationalInformationWidgetUiModel(
+                "2",
+                HomeLayoutItemState.LOADED,
+                ServiceType.NOW_15M
+            ),
+            HomeSwitcherUiModel.Home2hSwitcher
+        )
+
+        val expectedResult = Success(HomeLayoutListUiModel(
+            items = layoutList,
+            state = TokoNowLayoutState.SHOW
+        ))
+
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `given NOT eligible for NOW2H when getHomeLayout should NOT add NOW2H switcher widget to layout list`() {
+        val serviceType = "15m"
+        val localCacheModel = LocalCacheModel(
+            warehouses = listOf(
+                LocalWarehouseModel(warehouse_id = 12521, service_type = "15m"),
+                LocalWarehouseModel(warehouse_id = 0, service_type = "2h")
+            ),
+            service_type = serviceType
+        )
+
+        onGetHomeLayoutData_thenReturn(listOf(
+            HomeLayoutResponse(
+                id = "2",
+                layout = "tokonow_usp",
+                header = Header(
+                    name = "Tokonow USP",
+                    serverTimeUnix = 0
+                ),
+                token = ""
+            )
+        ), localCacheModel)
+
+        viewModel.getHomeLayout(
+            localCacheModel = localCacheModel,
+            hasSharingEducationBeenRemoved = false
+        )
+
+        val layoutList = listOf(
+            TokoNowChooseAddressWidgetUiModel("0"),
+            HomeEducationalInformationWidgetUiModel(
+                "2",
+                HomeLayoutItemState.LOADED,
+                ServiceType.NOW_15M
+            )
+        )
+
+        val expectedResult = Success(HomeLayoutListUiModel(
+            items = layoutList,
+            state = TokoNowLayoutState.SHOW
+        ))
+
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `given EMPTY warehouses when getHomeLayout should NOT add home switcher widget to layout list`() {
+        val serviceType = "2h"
+        val localCacheModel = LocalCacheModel(
+            warehouses = emptyList(),
+            service_type = serviceType
+        )
+
+        onGetHomeLayoutData_thenReturn(listOf(
+            HomeLayoutResponse(
+                id = "2",
+                layout = "tokonow_usp",
+                header = Header(
+                    name = "Tokonow USP",
+                    serverTimeUnix = 0
+                ),
+                token = ""
+            )
+        ), localCacheModel)
+
+        viewModel.getHomeLayout(
+            localCacheModel = localCacheModel,
+            hasSharingEducationBeenRemoved = false
+        )
+
+        val layoutList = listOf(
+            TokoNowChooseAddressWidgetUiModel("0"),
+            HomeEducationalInformationWidgetUiModel(
+                "2",
+                HomeLayoutItemState.LOADED,
+                ServiceType.NOW_2H
+            )
+        )
+
+        val expectedResult = Success(HomeLayoutListUiModel(
+            items = layoutList,
+            state = TokoNowLayoutState.SHOW
+        ))
+
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
 
         viewModel.homeLayoutList
             .verifySuccessEquals(expectedResult)
