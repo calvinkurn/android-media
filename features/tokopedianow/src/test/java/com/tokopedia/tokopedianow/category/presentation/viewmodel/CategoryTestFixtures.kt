@@ -12,7 +12,6 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
-import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
@@ -23,7 +22,10 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
-import io.mockk.*
+import io.mockk.CapturingSlot
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.slot
 import org.junit.Before
 import org.junit.Rule
 
