@@ -122,7 +122,6 @@ class InboxReputationReportFragment : BaseDaggerFragment() {
                 checkedRadioId = reportRadioGroup?.checkedRadioButtonId ?: 0,
                 reasonText = otherReason?.text.toString()
             )
-            //TODO: Suf, tanya other reason kapan harus diisi, pas pilih other reason aja?
         }
         initProgressDialog()
     }
