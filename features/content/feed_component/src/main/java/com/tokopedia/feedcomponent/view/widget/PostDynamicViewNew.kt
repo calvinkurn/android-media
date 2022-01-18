@@ -75,7 +75,7 @@ import kotlin.math.round
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
 private const val TYPE_FEED_X_CARD_VOD: String = "FeedXCardPlay"
 private const val TYPE_FEED_X_CARD_LONG_VIDEO: String = "content-long-video"
-private const val TYPE_LONG_VIDEO: String = " long-video"
+private const val TYPE_LONG_VIDEO: String = "long-video"
 private const val TYPE_FEED_X_CARD_VOD_VIDEO: String = "play-channel-vod"
 private const val SPAN_SIZE_FULL = 6
 private const val SPAN_SIZE_HALF = 3
