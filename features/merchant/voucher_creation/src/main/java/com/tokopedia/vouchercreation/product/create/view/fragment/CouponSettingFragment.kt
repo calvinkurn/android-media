@@ -304,14 +304,10 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
         binding.chipDiscountTypeNominal.selectedChangeListener = {
             binding.chipDiscountTypeNominal.chipText = getString(R.string.in_rupiah)
-            binding.textAreaMinimumDiscount.textAreaWrapper.prefixText = getString(R.string.rupiah)
-            binding.textAreaMinimumDiscount.textAreaWrapper.suffixText = EMPTY_STRING
         }
 
         binding.chipMinimumPurchaseNominal.selectedChangeListener = {
             binding.chipMinimumPurchaseNominal.chipText = getString(R.string.in_nominal)
-            binding.textAreaMinimumPurchase.textAreaWrapper.prefixText = getString(R.string.rupiah)
-            binding.textAreaMinimumPurchase.textAreaWrapper.suffixText = EMPTY_STRING
         }
 
         binding.chipDiscountTypeNominal.chip_container.setOnClickListener {
@@ -320,6 +316,8 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
             binding.chipDiscountTypePercentage.chipText = getString(R.string.mvc_create_tips_subtitle_percentage)
             binding.chipDiscountTypePercentage.chipType = ChipsUnify.TYPE_NORMAL
+
+            binding.textAreaDiscountPercentage.textAreaWrapper.suffixText = getString(R.string.percent)
 
             selectedDiscountType = DiscountType.NOMINAL
 
