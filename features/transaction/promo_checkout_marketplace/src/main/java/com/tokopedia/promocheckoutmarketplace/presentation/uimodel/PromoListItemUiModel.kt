@@ -17,6 +17,7 @@ data class PromoListItemUiModel(
     }
 
     data class UiData(
+            var promoId: String = "",
             var uniqueId: String = "",
             var shopId: Int = 0,
             var parentIdentifierId: Int = 0,

@@ -151,6 +151,8 @@ data class SubSection(
 }
 
 data class Coupon(
+        @SerializedName("promo_id")
+        val promoId: String = "",
         @SerializedName("code")
         val code: String = "",
         @SerializedName("title")

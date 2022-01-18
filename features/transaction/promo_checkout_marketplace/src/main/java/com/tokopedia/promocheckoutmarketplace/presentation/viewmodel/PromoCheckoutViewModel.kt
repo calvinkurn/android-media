@@ -357,7 +357,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     }
 
     private fun sendAnalyticsOnErrorAttemptPromo(promoCode: String, errorMessage: String) {
-        analytics.eventViewErrorAfterClickTerapkanPromo(getPageSource(), errorMessage, 0, promoCode)
+        if (promoCode.isNotBlank()) {
+            analytics.eventViewErrorAfterClickTerapkanPromo(getPageSource(), errorMessage, 0, promoCode)
+        }
     }
 
     private fun initGetPromoListResponseAction() {

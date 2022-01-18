@@ -467,7 +467,7 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         val promotion = Promotion(
                 creativeName = "",
                 creativeSlot = index.toString(),
-                itemId = promoItem.uiData.promoCode,
+                itemId = promoItem.uiData.promoId,
                 itemName = promoItem.uiData.title
         )
 
@@ -508,7 +508,7 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         val promotion = Promotion(
                 creativeName = "",
                 creativeSlot = index.toString(),
-                itemId = promoItem.uiData.promoCode,
+                itemId = promoItem.uiData.promoId,
                 itemName = promoItem.uiData.title
         )
 
@@ -547,7 +547,7 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         val promotion = Promotion(
                 creativeName = "",
                 creativeSlot = index.toString(),
-                itemId = promoItem.uiData.promoCode,
+                itemId = promoItem.uiData.promoId,
                 itemName = promoItem.uiData.title
         )
 
@@ -586,7 +586,7 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         val promotion = Promotion(
                 creativeName = "",
                 creativeSlot = index.toString(),
-                itemId = promoItem.uiData.promoCode,
+                itemId = promoItem.uiData.promoId,
                 itemName = promoItem.uiData.title
         )
 
@@ -789,7 +789,7 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         val promotion = Promotion(
                 creativeName = "",
                 creativeSlot = index.toString(),
-                itemId = promoItem.uiData.promoCode,
+                itemId = promoItem.uiData.promoId,
                 itemName = promoItem.uiData.title
         )
 

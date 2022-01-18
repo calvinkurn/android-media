@@ -115,6 +115,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
         val promoItem = PromoListItemUiModel(
                 id = index.toString(),
                 uiData = PromoListItemUiModel.UiData().apply {
+                    promoId = couponItem.promoId
                     uniqueId = couponItem.uniqueId
                     shopId = couponItem.shopId.toInt()
                     title = couponItem.title

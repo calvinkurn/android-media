@@ -100,6 +100,7 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                     count
                                 }
                                 coupons {
+                                    promo_id
                                     code
                                     title
                                     message
