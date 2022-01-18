@@ -61,6 +61,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                 clearErrorState()
                 hideCheckIcon()
                 hideOperatorIcon()
+                mInputFieldListener?.onClearInput()
             }
         }
     }
@@ -379,6 +380,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
     interface ClientNumberInputFieldListener {
         fun onRenderOperator(isDelayed: Boolean)
+        fun onClearInput()
     }
 
     interface ClientNumberAutoCompleteListener {

@@ -19,6 +19,8 @@ import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.activity.DigitalPDPPulsaActivity
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPTelcoViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
@@ -50,6 +52,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
     private var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(
         RechargeCatalogPrefixSelect())
 
+    private var operatorId = ""
+
     override fun initInjector() {
         getComponent(DigitalPDPComponent::class.java).inject(this)
     }
@@ -71,6 +75,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClientNumberWidget()
+        initEmptyState()
         setAnimationAppBarLayout()
         getCatalogMenuDetail()
         getPrefixOperatorData()
@@ -89,16 +94,20 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
                     }
 
                 // [Misael] operatorId state & checker
-                if (rechargePdpPulsaClientNumberWidget.getInputNumber()
-                        .length in MINIMUM_VALID_NUMBER_LENGTH .. MAXIMUM_VALID_NUMBER_LENGTH) {
-
+                if (operatorId != selectedOperator.operator.id || rechargePdpPulsaClientNumberWidget.getInputNumber()
+                        .length in MINIMUM_VALID_NUMBER_LENGTH .. MAXIMUM_VALID_NUMBER_LENGTH
+                ) {
+                    operatorId = selectedOperator.operator.id
                     rechargePdpPulsaClientNumberWidget.run {
                         showOperatorIcon(selectedOperator.operator.attributes.imageUrl)
                     }
+                    hideEmptyState()
                     showDenomGrid()
                     showRecommendation()
                     showMCCM()
                     showTicker()
+                } else {
+                    showEmptyState()
                 }
 
                 // [Misael] add checkoutPassData and update checkoutPassData with new input number
@@ -156,9 +165,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
             setContactName(favoriteNumber[0].clientName)
             // -- end --
             setFilterChipShimmer(false, favoriteNumber.isEmpty())
-            setFavoriteNumber(favoriteNumber)
-            setAutoCompleteList(favoriteNumber)
-            dynamicSpacerHeightRes = R.dimen.dynamic_banner_space_extended
+            if (favoriteNumber.isNotEmpty()) {
+                setFavoriteNumber(favoriteNumber)
+                setAutoCompleteList(favoriteNumber)
+                dynamicSpacerHeightRes = R.dimen.dynamic_banner_space_extended
+            } else {
+                showEmptyState()
+            }
         }
     }
 
@@ -186,6 +199,11 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
                             binding?.rechargePdpPulsaClientNumberWidget?.setLoading(false)
                         }
                     }
+
+                    override fun onClearInput() {
+                        operatorId = ""
+                        showEmptyState()
+                    }
                 },
                 autoCompleteListener = object: RechargeClientNumberWidget.ClientNumberAutoCompleteListener {
                     override fun onClickAutoComplete(isFavoriteContact: Boolean) {
@@ -209,8 +227,16 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
         }
     }
 
+    private fun initEmptyState() {
+        // [Misael] replace with catalogMenuDetail.banners
+        binding?.rechargePdpPulsaEmptyStateWidget?.setImageUrl(
+            "https://images.tokopedia.net/img/android/recharge/recharge_component/empty_state_icon.png"
+        )
+    }
+
     private fun showDenomGrid(){
         binding?.let {
+            it.rechargePdpPulsaDenomGridWidget.show()
             it.rechargePdpPulsaDenomGridWidget.renderDenomGridLayout(denomGridListener = object:
                 RechargeDenomGridListener {
                 override fun onDenomGridClicked(denomGrid: DenomData, position: Int) {
@@ -292,6 +318,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
 
     fun showRecommendation() {
         binding?.let {
+            it.rechargePdpPulsaRecommendationWidget.show()
             it.rechargePdpPulsaRecommendationWidget.renderRecommendationLayout(recommendationListener = object :
                 RechargeRecommendationCardListener {
                     override fun onProductRecommendationCardClicked(applinkUrl: String) {
@@ -330,6 +357,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
 
     private fun showMCCM(){
         binding?.let {
+            it.rechargePdpPulsaPromoWidget.show()
             it.rechargePdpPulsaPromoWidget.renderMCCMGrid(
                 denomGridListener = object: RechargeDenomGridListener{
                     override fun onDenomGridClicked(denomGrid: DenomData, position: Int) {
@@ -396,6 +424,25 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
         binding?.rechargePdpPulsaTickerWidget?.run {
             setText("Transaksi selama <b>23:40-00:20 WIB</b> baru akan diproses pada <b>00:45 WIB</b>. <a href=\"\">Selengkapnya</a>")
             show()
+        }
+    }
+
+    private fun showEmptyState() {
+        binding?.run {
+            if (!rechargePdpPulsaEmptyStateWidget.isVisible) {
+                rechargePdpPulsaEmptyStateWidget.show()
+                rechargePdpPulsaPromoWidget.hide()
+                rechargePdpPulsaRecommendationWidget.hide()
+                rechargePdpPulsaDenomGridWidget.hide()
+                rechargePdpPulsaTickerWidget.hide()
+            }
+        }
+    }
+
+    private fun hideEmptyState() {
+        binding?.run {
+            if (rechargePdpPulsaEmptyStateWidget.isVisible)
+                rechargePdpPulsaEmptyStateWidget.hide()
         }
     }
 
