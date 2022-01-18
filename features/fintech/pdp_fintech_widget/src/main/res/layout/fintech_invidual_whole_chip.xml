@@ -75,7 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_marginRight="@dimen/unify_space_16"
                 android:layout_height="wrap_content"
-                android:src="@drawable/procced_seemore"
+                android:src="@drawable/fintechwidget_procced_icon"
                 android:visibility="gone"
                 android:layout_marginLeft="@dimen/unify_space_16"
                 app:layout_constraintBottom_toBottomOf="parent"
