@@ -163,7 +163,8 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
 
     @Test
     fun `check seller search appLink then should return empty in sellerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.SELLER_SEARCH, "")
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-search"
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.SELLER_SEARCH, expectedDeepLink)
     }
 
     @Test
