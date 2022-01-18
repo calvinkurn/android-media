@@ -29,6 +29,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
@@ -158,9 +159,38 @@ class TestRecomWidgetViewModel {
         runBlocking {
             coEvery { getRecommendationUseCase.getData(any()) } returns listOf()
 
-            viewModel.loadRecommendationCarousel(pageName = pageName, isTokonow = false)
+            viewModel.loadRecommendationCarousel(pageName = pageName)
             val errorRecom = viewModel.errorGetRecommendation.value
             Assert.assertEquals(pageName, errorRecom?.pageName)
+        }
+
+    @Test
+    fun `test load recommendation with some product id then check success recommendation chips available`() =
+        runBlocking {
+            coEvery { getRecommendationUseCase.getData(any()) } returns listOf(
+                RecommendationWidget(
+                    recommendationItemList = listOf(recomItem),
+                    isTokonow = false
+                )
+            )
+
+            every {
+                userSessionInterface.userId
+            } returns "1234"
+
+            val productIds = listOf("420356", "420358")
+
+            val recomFilterChip = RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Speaker")
+            val listFilterChip = listOf(
+                recomFilterChip)
+
+            coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listFilterChip
+            viewModel.loadRecommendationCarousel(pageName = PAGENAME_PDP_3, productIds = productIds)
+            val recomWidget = viewModel.getRecommendationLiveData.value
+            Assert.assertEquals(recomFilterChip,
+                recomWidget?.recommendationFilterChips?.get(0)
+                    ?: RecommendationFilterChipsEntity.RecommendationFilterChip()
+            )
         }
 
     @Test
