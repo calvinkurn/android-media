@@ -117,4 +117,5 @@
     <string name="tokopedianow_search_category_title_fifteen_minutes">Jelajahi Sekarang</string>
     <string name="tokopedianow_search_category_description_two_hours"><![CDATA[Atau cek Tokopedia NOW! <b>2 jam tiba</b>, pilihan lebih lengkap!]]></string>
     <string name="tokopedianow_search_category_title_two_hours">Belanja 2 Jam Tiba</string>
+    <string name="tokopedianow_search_category_subtitle">Tiba dalam %1$s</string>
 </resources>

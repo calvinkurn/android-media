@@ -6,6 +6,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSe
 data class TitleDataView(
         val titleType: TitleType,
         val hasSeeAllCategoryButton: Boolean = false,
+        val serviceType: String
 ): Visitable<BaseSearchCategoryTypeFactory> {
 
     override fun type(typeFactory: BaseSearchCategoryTypeFactory?) =
