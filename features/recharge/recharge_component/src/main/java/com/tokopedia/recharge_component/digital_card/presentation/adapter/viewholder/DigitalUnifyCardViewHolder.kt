@@ -115,7 +115,7 @@ class DigitalUnifyCardViewHolder(
             )
         }
 
-        val fullText = "$leftProductInfoText $rightProductInfoText"
+        val fullText = TextUtils.concat(leftProductInfoText, " ", rightProductInfoText)
 
         with(binding.dguProductInfo) {
             if (leftProductInfoText.isNotEmpty() || rightProductInfoText.isNotEmpty()) {
