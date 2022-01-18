@@ -119,7 +119,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
     }
 
     private fun setupViews() {
-        binding.textAreaMinimumDiscount.textAreaInput.inputType = InputType.TYPE_CLASS_NUMBER
+        binding.textAreaDiscountAmount.textAreaInput.inputType = InputType.TYPE_CLASS_NUMBER
         binding.textAreaQuota.textAreaInput.inputType = InputType.TYPE_CLASS_NUMBER
         binding.textAreaMinimumPurchase.textAreaInput.inputType = InputType.TYPE_CLASS_NUMBER
 
@@ -138,20 +138,20 @@ class CouponSettingFragment : BaseDaggerFragment() {
     private fun setupTextAreaFreeShippingListener(numberFormatter : DecimalFormat) {
         with(binding) {
 
-            textAreaMinimumDiscount.textAreaInput.addTextChangedListener(NumberThousandSeparatorTextWatcher(
-                textAreaMinimumDiscount.textAreaInput,
+            textAreaDiscountAmount.textAreaInput.addTextChangedListener(NumberThousandSeparatorTextWatcher(
+                textAreaDiscountAmount.textAreaInput,
                 numberFormatter
             ) { number, formattedNumber ->
 
-                textAreaMinimumDiscount.textAreaInput.setText(formattedNumber)
-                textAreaMinimumDiscount.textAreaInput.setSelection(textAreaMinimumDiscount.textAreaInput.text?.length ?: 0)
+                textAreaDiscountAmount.textAreaInput.setText(formattedNumber)
+                textAreaDiscountAmount.textAreaInput.setSelection(textAreaDiscountAmount.textAreaInput.text?.length ?: 0)
 
                 val isValidInput =
                     viewModel.isValidCashbackDiscountAmount(number)
                 if (isValidInput) {
-                    clearErrorMessage(textAreaMinimumDiscount, getString(R.string.error_message_minimum_discount))
+                    clearErrorMessage(textAreaDiscountAmount, getString(R.string.error_message_minimum_discount))
                 } else {
-                    showErrorMessage(textAreaMinimumDiscount, getString(R.string.error_message_minimum_discount))
+                    showErrorMessage(textAreaDiscountAmount, getString(R.string.error_message_minimum_discount))
                 }
                 validateInput()
                 calculateMaxExpenseEstimation()
@@ -165,7 +165,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
                 textAreaMinimumPurchase.textAreaInput.setText(formattedNumber)
                 textAreaMinimumPurchase.textAreaInput.setSelection(textAreaMinimumPurchase.textAreaInput.text?.length ?: 0)
 
-                val discountAmount = textAreaMinimumDiscount.textAreaInput.text.toString().trim().digitsOnlyInt()
+                val discountAmount = textAreaDiscountAmount.textAreaInput.text.toString().trim().digitsOnlyInt()
                 val isValidInput =
                     viewModel.isValidCashbackMinimumPurchase(number, discountAmount, selectedMinimumPurchaseType)
                 if (isValidInput) {
@@ -496,14 +496,16 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
     private fun clearCashbackSelection() {
         with(binding) {
-            textAreaMinimumDiscount.textAreaInput.text = null
+            textAreaDiscountAmount.textAreaInput.text = null
             textAreaQuota.textAreaInput.text = null
             textAreaMinimumPurchase.textAreaInput.text = null
+            textAreaMaximumDiscount.textAreaInput.text = null
+            textAreaDiscountPercentage.textAreaInput.text = null
         }
     }
 
     private fun validateInput() {
-        val cashbackDiscountAmount = binding.textAreaMinimumDiscount.textAreaInput.text.toString().trim().digitsOnlyInt()
+        val cashbackDiscountAmount = binding.textAreaDiscountAmount.textAreaInput.text.toString().trim().digitsOnlyInt()
         val cashbackMinimumPurchase = binding.textAreaMinimumPurchase.textAreaInput.text.toString().trim().digitsOnlyInt()
         val cashbackQuota = binding.textAreaQuota.textAreaInput.text.toString().trim().digitsOnlyInt()
 
@@ -531,7 +533,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
     private fun calculateMaxExpenseEstimation() {
         val discountAmount = if (selectedCouponType == CouponType.CASHBACK) {
-            binding.textAreaMinimumDiscount.textAreaInput.text.toString().trim().digitsOnlyInt()
+            binding.textAreaDiscountAmount.textAreaInput.text.toString().trim().digitsOnlyInt()
         } else {
             binding.textAreaFreeShippingDiscountAmount.textAreaInput.text.toString().trim().digitsOnlyInt()
         }
@@ -591,7 +593,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
     private fun showNominalDiscountTypeWidget() {
         binding.groupNominalDiscountType.visible()
         binding.groupPercentageDiscountType.gone()
-        adjustMinimumPurchaseConstraint(binding.textAreaMinimumDiscount.id)
+        adjustMinimumPurchaseConstraint(binding.textAreaDiscountAmount.id)
     }
 
     private fun showPercentageDiscountTypeWidget() {

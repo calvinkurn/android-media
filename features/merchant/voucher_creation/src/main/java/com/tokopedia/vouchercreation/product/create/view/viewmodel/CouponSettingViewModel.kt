@@ -200,4 +200,8 @@ class CouponSettingViewModel @Inject constructor(
         _maxExpenseEstimation.value = (discountAmount * voucherQuotaCount).toLong()
     }
 
+    fun saveCoupon() {
+
+    }
+
 }
