@@ -58,7 +58,8 @@ class GetCardDataUseCase(
         val errors: List<GraphqlError>? = gqlResponse.getError(classType)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetCardDataResponse>()
-            return mapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
+            val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
+            return mapper.mapRemoteDataToUiData(data, isFromCache)
         } else {
             throw MessageErrorException(errors.firstOrNull()?.message.orEmpty())
         }
