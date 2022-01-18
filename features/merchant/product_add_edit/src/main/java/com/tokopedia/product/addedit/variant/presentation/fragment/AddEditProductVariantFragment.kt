@@ -195,7 +195,6 @@ class AddEditProductVariantFragment :
         setupBaseCancelationDialog()
         setupButtonSave()
         setupToolbarActions()
-        showCoachmarkCustomVariantType()
 
         // sizechart onclick picture listener
         cardSizechart.setOnClickListener {
@@ -829,7 +828,9 @@ class AddEditProductVariantFragment :
     private fun observeGetVariantCategoryCombinationResult() {
         // start network PLT monitoring
         startNetworkRequestPerformanceMonitoring()
-        viewModel.getVariantCategoryCombinationResult.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.getVariantCategoryCombinationResult.observe(viewLifecycleOwner, { result ->
+            // highlight variant type feature
+            showCoachmarkCustomVariantType()
             // clear adapter before rendering
             variantTypeAdapter?.setData(emptyList())
             when (result) {
@@ -1143,11 +1144,10 @@ class AddEditProductVariantFragment :
     }
 
     private fun hideCoachmarkWhenTouchOutside(coachMark: CoachMark2) {
-        Handler(Looper.getMainLooper()).post {
-            buttonAddVariantType.requestFocusFromTouch()
-            buttonAddVariantType.setOnFocusChangeListener { _, _ ->
-                coachMark.dismissCoachMark()
-            }
+        buttonAddVariantType.requestFocus()
+        buttonAddVariantType.requestFocusFromTouch()
+        buttonAddVariantType.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) coachMark.dismissCoachMark()
         }
         coachMark.setOnDismissListener {
             buttonAddVariantType.clearFocus()
