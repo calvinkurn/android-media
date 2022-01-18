@@ -25,4 +25,8 @@ class SelectionOrder {
     fun clear(){
         itemSelectionOrderList.clear()
     }
+
+    fun getOrderList(): ArrayList<ImageAdapterData> {
+        return itemSelectionOrderList
+    }
 }
