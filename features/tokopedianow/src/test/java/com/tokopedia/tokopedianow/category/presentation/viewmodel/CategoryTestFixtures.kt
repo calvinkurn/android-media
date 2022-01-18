@@ -12,6 +12,7 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
@@ -47,6 +48,7 @@ open class CategoryTestFixtures {
     protected val getWarehouseUseCase = mockk<GetChosenAddressWarehouseLocUseCase>(relaxed = true)
     protected val getRecommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
     protected val getCategoryListUseCase = mockk<GetCategoryListUseCase>(relaxed = true)
+    protected val setUserPreferenceUseCase = mockk<SetUserPreferenceUseCase>(relaxed = true)
     protected val chooseAddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
     protected val abTestPlatformWrapper = mockk<ABTestPlatformWrapper>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true).also {
@@ -93,6 +95,7 @@ open class CategoryTestFixtures {
                 getWarehouseUseCase,
                 getRecommendationUseCase,
                 getCategoryListUseCase,
+                setUserPreferenceUseCase,
                 chooseAddressWrapper,
                 abTestPlatformWrapper,
                 userSession,

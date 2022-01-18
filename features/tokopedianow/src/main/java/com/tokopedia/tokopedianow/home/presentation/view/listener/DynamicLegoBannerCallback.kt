@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.home.presentation.view.listener
 
 import android.content.Context
+import android.net.Uri
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.model.ChannelGrid
@@ -14,8 +15,7 @@ class DynamicLegoBannerCallback(
 ): DynamicLegoBannerListener {
 
     companion object {
-        //To do -> adjust grid param value (waiting for contract)
-        private const val WIDGET_PARAM_TOKONOW_REFRESH = "tokonow-refresh"
+        private const val PARAM_TOKONOW_REFRESH = "tokonow_refresh"
     }
 
     override fun onSeeAllSixImage(channelModel: ChannelModel, position: Int) {
@@ -37,8 +37,10 @@ class DynamicLegoBannerCallback(
     }
 
     override fun onClickGridSixImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-        //To do -> change widget param to grid param (waiting for BE)
-        if(channelModel.widgetParam == WIDGET_PARAM_TOKONOW_REFRESH) {
+        val gridParams = Uri.parse("?${channelGrid.param}")
+        val tokoNowRefresh = gridParams.getQueryParameter(PARAM_TOKONOW_REFRESH).toBoolean()
+
+        if(tokoNowRefresh) {
             val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(context)
             viewModel.switchService(localCacheModel)
         } else {
