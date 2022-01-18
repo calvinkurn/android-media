@@ -8,7 +8,7 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/empty_state_widget_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/widget_banner_height"
         android:scaleType="centerCrop"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
