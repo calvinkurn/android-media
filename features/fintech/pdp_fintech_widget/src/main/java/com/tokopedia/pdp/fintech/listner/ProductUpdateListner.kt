@@ -4,6 +4,5 @@ interface ProductUpdateListner {
 
     fun removeWidget()
     fun showWidget()
-    fun showWebview()
-    fun showBottomSheet(ctaType: Int)
+    fun fintechRedirection(ctaType: Int,linkToRedirect: String)
 }

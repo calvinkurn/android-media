@@ -86,8 +86,7 @@ interface DynamicProductDetailListener {
     /**
      * Fintech Widget ViewHolder
      */
-    fun showWebView()
-    fun showBottomsheet(ctaType: Int)
+    fun fintechRedirection(ctaType: Int,redirectionLink:String)
 
     /**
      * ProductReviewViewHolder

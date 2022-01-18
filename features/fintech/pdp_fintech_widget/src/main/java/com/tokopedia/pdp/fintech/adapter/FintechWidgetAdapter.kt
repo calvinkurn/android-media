@@ -65,8 +65,30 @@ class FintechWidgetAdapter(var widgetClickListner: WidgetClickListner) : Recycle
         val headerPartner = itemView.findViewById<Typography>(R.id.chipHeader)
         val subheaderPartner = itemView.findViewById<Typography>(R.id.chipSubHeader)
         init {
+
+
             itemView.setOnClickListener {
-                widgetClickListner.clickedWidget(adapterPosition)
+                clickedWidgetData()
+
+            }
+        }
+
+
+        private fun clickedWidgetData() {
+            chipsData[adapterPosition].cta?.bottomsheet?.buttons?.get(0)?.buttonUrl?.let { url ->
+                chipsData[adapterPosition].cta?.type?.let { ctaType ->
+                    widgetClickListner.clickedWidget(
+                        ctaType, url
+                    )
+                }
+            } ?: kotlin.run {
+                chipsData[adapterPosition].cta?.androidUrl?.let { url ->
+                    chipsData[adapterPosition].cta?.type?.let { ctaType ->
+                        widgetClickListner.clickedWidget(
+                            ctaType, url
+                        )
+                    }
+                }
             }
         }
 

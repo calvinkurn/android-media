@@ -45,12 +45,9 @@ class FintechWidgetViewHolder(val view: View,val  listener: DynamicProductDetail
         itemView.layoutParams = params
     }
 
-    override fun showWebview() {
-        listener.showWebView()
-    }
 
-    override fun showBottomSheet(ctaType: Int) {
-        listener.showBottomsheet(ctaType)
+    override fun fintechRedirection(ctaType: Int, linkToRedirect: String) {
+        listener.fintechRedirection(ctaType,linkToRedirect)
     }
 
 
