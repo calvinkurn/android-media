@@ -1,6 +1,7 @@
 package com.tokopedia.pdpsimulation.common.presentation.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,9 +37,7 @@ import kotlinx.android.synthetic.main.product_detail.view.*
 import javax.inject.Inject
 
 
-class PdpSimulationFragment : BaseDaggerFragment(),
-    PdpSimulationCallback,
-    CompoundButton.OnCheckedChangeListener {
+class PdpSimulationFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -49,11 +48,6 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     private val payLaterViewModel: PayLaterViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
         viewModelProvider.get(PayLaterViewModel::class.java)
-    }
-
-    private val creditCardViewModel: CreditCardViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
-        viewModelProvider.get(CreditCardViewModel::class.java)
     }
 
     private val bottomSheetNavigator: BottomSheetNavigator by lazy(LazyThreadSafetyMode.NONE) {
@@ -98,39 +92,29 @@ class PdpSimulationFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getSimulationProductInfo()
-        setUpModeSwitcher()
-        renderTabAndViewPager()
+        payLaterViewModel.getProductDetail(productId)
         initListeners()
 
     }
 
-    override fun getSimulationProductInfo() {
-        payLaterViewModel.getProductDetail(productId = productId)
-        payLaterViewPager.visible()
-        when (paymentMode) {
-            is PayLater -> payLaterViewModel.getPayLaterAvailableDetail(productPrice)
-            is CreditCard -> creditCardViewModel.getCreditCardSimulationData(productPrice)
-        }
-    }
-
     private fun observeViewModel() {
-
-
         payLaterViewModel.productDetailLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> productDetailSuccess(it.data)
-                is Fail -> productDetailFail(it.throwable)
+                is Fail -> productDetailFail()
+            }
+        })
+
+        payLaterViewModel.payLaterOptionsDetailLiveData.observe(viewLifecycleOwner, {
+            when(it) {
+                is Success -> Log.d("", "")
+                is Fail -> Log.d("", "")
             }
         })
     }
 
-    /**
-     * THis method is called if the api fails
-     * @param throwable contains the error message
-     */
-
-    private fun productDetailFail(throwable: Throwable) {
+    private fun productDetailFail() {
+        payLaterViewModel.getPayLaterAvailableDetail(productPrice, productId)
         productInfoShimmer.gone()
         productDetail.gone()
     }
@@ -139,6 +123,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
      * THis method called on product detail api success
      */
     private fun productDetailSuccess(data: GetProductV3) {
+        payLaterViewModel.getPayLaterAvailableDetail(productPrice, productId)
         productInfoShimmer.gone()
         if (data.pictures?.size == 0 || data.productName.isNullOrEmpty() || data.price?.equals(0.0) == true)
             productDetail.gone()
@@ -194,24 +179,10 @@ class PdpSimulationFragment : BaseDaggerFragment(),
 
     }
 
-
-    private fun isPayLaterSimulationPage(): Boolean {
-        return (payLaterViewPager.currentItem == SIMULATION_TAB_INDEX &&
-                paymentMode == PayLater)
-    }
-
-
-    private fun setUpModeSwitcher() {
-        if (isCreditCardModeAvailable) {
-            modeSwitcher.visible()
-            modeSwitcher.setOnCheckedChangeListener(this)
-        } else modeSwitcher.gone()
-    }
-
     private fun initListeners() {
 
         // This analytics is here as for now the kardu credit is disabled so tab is also disable
-        sendAnalytics(PdpSimulationEvent.PayLater.SelectedPayLater)
+        /*sendAnalytics(PdpSimulationEvent.PayLater.SelectedPayLater)
         paylaterTabLayout.tabLayout.onTabSelected { tab ->
             if (paymentMode == PayLater) {
                 sendAnalytics(PdpSimulationEvent.PayLater.TabChangeEvent(tab.getCustomText()))
@@ -220,131 +191,16 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         }
         payLaterViewPager.onPageSelected { position ->
             handleRegisterWidgetVisibility(position)
-        }
-    }
-
-    private fun renderTabAndViewPager() {
-        context?.let {
-            setUpTabLayout()
-            if (pagerAdapter == null)
-                pagerAdapter = PayLaterPagerAdapter(it, childFragmentManager, 0)
-            pagerAdapter?.setList(getFragments())
-            payLaterViewPager.adapter = pagerAdapter
-        }
-    }
-
-    private fun setUpTabLayout() {
-        paylaterTabLayout?.run {
-            setupWithViewPager(payLaterViewPager)
-            getUnifyTabLayout().removeAllTabs()
-            when (paymentMode) {
-                is CreditCard -> {
-                    addNewTab(context.getString(R.string.pdp_simulation_tab_title))
-                    addNewTab(context.getString(R.string.pdp_simulation_credit_card_tnc_title))
-                }
-                else -> {
-                    this.getUnifyTabLayout().gone()
-                }
-            }
-        }
-    }
-
-    private fun getFragments(): List<Fragment> {
-        return when (paymentMode) {
-            is CreditCard -> {
-                listOf<Fragment>(
-                    CreditCardSimulationFragment.newInstance(this),
-                    CreditCardTncFragment.newInstance(this)
-                )
-            }
-            else -> {
-                val bundle = Bundle()
-                bundle.putLong(PRODUCT_PRICE, productPrice)
-                listOf<Fragment>(PayLaterOffersFragment.newInstance(this, bundle))
-            }
-        }
-    }
-
-    private fun handleRegisterWidgetVisibility(position: Int) {
-        if (position == SIMULATION_TAB_INDEX)
-            showRegisterWidget()
-        else {
-            payLaterBorder.gone()
-        }
-    }
-
-    override fun showRegisterWidget() {
-        if (isPayLaterSimulationPage()) {
-            payLaterBorder.visible()
-        } else {
-            payLaterBorder.gone()
-        }
-    }
-
-
-    override fun onCheckedChanged(modeButton: CompoundButton, isChecked: Boolean) {
-        if (isChecked) {
-            paymentMode = CreditCard
-            getSimulationProductInfo()
-        } else {
-            paymentMode = PayLater
-        }
-        renderTabAndViewPager()
-    }
-
-
-    private fun hideDataGroup() {
-        payLaterViewPager.gone()
-    }
-
-    override fun <T : Any> openBottomSheet(bundle: Bundle, modelClass: Class<T>) {
-        bottomSheetNavigator.showBottomSheet(modelClass, bundle, this, productId = productId)
-    }
-
-    override fun sendAnalytics(pdpSimulationEvent: PdpSimulationEvent) {
-        pdpSimulationAnalytics.get().sendPdpSimulationEvent(pdpSimulationEvent)
-    }
-
-    override fun switchPaymentMode() {
-        if (isCreditCardModeAvailable)
-            modeSwitcher.isChecked = !modeSwitcher.isChecked
-    }
-
-    override fun showNoNetworkView() {
-        hideDataGroup()
-    }
-
-
-    override fun reloadProductDetail() {
-        if (!productDetail.isVisible) {
-            productInfoShimmer.visible()
-            productDetail.visible()
-            payLaterViewModel.getProductDetail(productId = productId)
-        }
-
-    }
-
-    override fun setViewModelData(
-        updateViewModelVariable: Utils.UpdateViewModelVariable,
-        value: Any
-    ) {
-        when (updateViewModelVariable) {
-            Utils.UpdateViewModelVariable.SortPosition -> payLaterViewModel.sortPosition =
-                value as Int
-            Utils.UpdateViewModelVariable.PartnerPosition -> payLaterViewModel.partnerDisplayPosition =
-                value as Int
-            Utils.UpdateViewModelVariable.RefreshType -> payLaterViewModel.refreshData =
-                value as Boolean
-        }
+        }*/
     }
 
 
     override fun onResume() {
         super.onResume()
-        if (payLaterViewModel.refreshData) {
+        /*if (payLaterViewModel.refreshData) {
             payLaterViewModel.getPayLaterAvailableDetail(productPrice)
             payLaterViewModel.refreshData = false
-        }
+        }*/
     }
 
 

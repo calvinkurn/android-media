@@ -8,7 +8,7 @@ import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.pdpsimulation.paylater.domain.model.BaseProductDetailClass
 import com.tokopedia.pdpsimulation.paylater.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
-import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterSimulationV2UseCase
+import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterSimulationV3UseCase
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.ProductDetailUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -17,7 +17,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class PayLaterViewModel @Inject constructor(
-    private val paylaterGetSimulationV2usecase: PayLaterSimulationV2UseCase,
+    private val paylaterGetSimulationV3UseCase: PayLaterSimulationV3UseCase,
     private val productDetailUseCase: ProductDetailUseCase,
 
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
@@ -45,18 +45,15 @@ class PayLaterViewModel @Inject constructor(
         TkpdIdlingResourceProvider.provideIdlingResource("SIMULATION")
 
 
-    fun getPayLaterAvailableDetail(price: Long) {
+    fun getPayLaterAvailableDetail(price: Long, productId: String) {
         idlingResourceProvider?.increment()
-        paylaterGetSimulationV2usecase.cancelJobs()
-        paylaterGetSimulationV2usecase.getPayLaterProductDetails(
+        paylaterGetSimulationV3UseCase.cancelJobs()
+        paylaterGetSimulationV3UseCase.getPayLaterSimulationDetails(
             ::onAvailableDetailSuccess,
             ::onAvailableDetailFail,
-            price
+            price, productId
         )
-
-
     }
-
 
     fun getProductDetail(productId: String) {
         productDetailUseCase.cancelJobs()
@@ -78,7 +75,6 @@ class PayLaterViewModel @Inject constructor(
         _productDetailLiveData.value = Fail(throwable)
     }
 
-
     private fun onAvailableDetailFail(throwable: Throwable) {
         idlingResourceProvider?.decrement()
         _payLaterOptionsDetailLiveData.value = Fail(throwable)
@@ -91,9 +87,8 @@ class PayLaterViewModel @Inject constructor(
         }
     }
 
-
     override fun onCleared() {
-        paylaterGetSimulationV2usecase.cancelJobs()
+        paylaterGetSimulationV3UseCase.cancelJobs()
         productDetailUseCase.cancelJobs()
         super.onCleared()
     }

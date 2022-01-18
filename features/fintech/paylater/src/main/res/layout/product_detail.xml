@@ -31,6 +31,7 @@
         app:layout_constraintTop_toTopOf="@+id/productImage"
         app:typographyType="body_3"
         app:typographyWeight="bold"
+        android:textColor="@color/Unify_NN950"
         tools:text="Product name"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -42,6 +43,7 @@
         app:layout_constraintLeft_toRightOf="@+id/productImage"
         app:layout_constraintTop_toBottomOf="@+id/productName"
         app:typographyType="small"
+        android:textColor="@color/Unify_NN600"
         tools:text="0.5m" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -49,12 +51,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/unify_space_8"
-        android:layout_marginBottom="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/productImage"
         app:layout_constraintTop_toBottomOf="@+id/productVariant"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        tools:text="Rp 100" />
+        android:textColor="@color/Unify_NN950"
+        tools:text="Rp12.000.000" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
