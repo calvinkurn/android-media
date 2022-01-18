@@ -124,6 +124,8 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
     }
 
     private fun setDataToRV(data: ArrayList<Visitable<AffiliateAdapterTypeFactory>>?) {
+        view?.findViewById<RecyclerView>(R.id.social_link_rv)?.adapter = null
+        view?.findViewById<RecyclerView>(R.id.social_link_rv)?.adapter = affiliateAdapter
         affiliateAdapter.clearAllElements()
         affiliateAdapter.addMoreData(data)
     }
