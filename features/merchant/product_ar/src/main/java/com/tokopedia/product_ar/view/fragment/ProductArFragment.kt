@@ -333,14 +333,8 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     }
 
     private fun observeMakeUpLook() {
-        viewModel?.mfeMakeUpLook?.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    getMakeUpEngine()?.setMakeupLook(it.data)
-                }
-                is Fail -> {
-                }
-            }
+        viewModel?.selectedMfMakeUpLook?.observe(viewLifecycleOwner) {
+            getMakeUpEngine()?.setMakeupLook(it)
         }
     }
 
@@ -359,13 +353,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
 
     private fun observeBottomData() {
         viewModel?.selectedProductArData?.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    partialBottomArView?.renderBottomInfoText(it.data)
-                }
-                is Fail -> {
-                }
-            }
+            partialBottomArView?.renderBottomInfoText(it)
         }
     }
 
@@ -588,7 +576,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     }
 
     private fun getSelectedProductData(): ProductAr? {
-        return (viewModel?.selectedProductArData?.value as? Success)?.data
+        return viewModel?.selectedProductArData?.value
     }
 
     private fun onAddImageClick() {

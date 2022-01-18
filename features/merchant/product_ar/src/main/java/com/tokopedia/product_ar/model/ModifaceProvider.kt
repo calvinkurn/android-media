@@ -67,7 +67,7 @@ data class ModifaceProvider(
         @SerializedName("intensity")
         @Expose
         val intensity: Float? = null,
-        @SerializedName("envMappingIntensityintensity")
+        @SerializedName("envMappingIntensity")
         @Expose
         val envMappingIntensity: Float = 0.0F,
         @SerializedName("envMappingR")

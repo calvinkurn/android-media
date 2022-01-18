@@ -71,17 +71,17 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     private val _globalErrorState = MutableStateFlow(ArGlobalErrorState())
     val globalErrorState: StateFlow<ArGlobalErrorState> = _globalErrorState
 
-    private val _selectedProductArData = MutableLiveData<Result<ProductAr>>()
-    val selectedProductArData: LiveData<Result<ProductAr>>
+    private val _selectedProductArData = MutableLiveData<ProductAr>()
+    val selectedProductArData: LiveData<ProductAr>
         get() = _selectedProductArData
 
     private val _productArList = MutableLiveData<Result<List<ModifaceUiModel>>>()
     val productArList: LiveData<Result<List<ModifaceUiModel>>>
         get() = _productArList
 
-    private val _mfeMakeUpLook = MutableLiveData<Result<MFEMakeupLook>>()
-    val mfeMakeUpLook: LiveData<Result<MFEMakeupLook>>
-        get() = _mfeMakeUpLook
+    private val _selectedMfMakeUpLook = MutableLiveData<MFEMakeupLook>()
+    val selectedMfMakeUpLook: LiveData<MFEMakeupLook>
+        get() = _selectedMfMakeUpLook
 
     //Use shared flow to only trigger observe once, after fragment transaction
     private val _addToCartLiveData = MutableSharedFlow<Result<AddToCartDataModel>>(replay = 0)
@@ -109,10 +109,10 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                     listUiModel,
                     initialProductId)
 
-            _mfeMakeUpLook.postValue(Success(selectedProductMfeData))
+            _selectedMfMakeUpLook.postValue(selectedProductMfeData)
             _productArList.postValue(Success(listUiModel))
-            _selectedProductArData.postValue(Success(result.options[initialProductId]
-                    ?: ProductAr()))
+            _selectedProductArData.postValue(result.options[initialProductId]
+                    ?: ProductAr())
             _bottomLoadingState.update {
                 false
             }
@@ -138,10 +138,10 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         MFEMakeupLook().apply {
             lipLayers.add(MFEMakeupLayer(mfeMakeUpProduct))
         }.let {
-            _mfeMakeUpLook.postValue(Success(it))
+            _selectedMfMakeUpLook.postValue(it)
         }
         _productArList.postValue(Success(updatedData))
-        _selectedProductArData.postValue(Success(uiModel.options[productId] ?: ProductAr()))
+        _selectedProductArData.postValue(uiModel.options[productId] ?: ProductAr())
     }
 
     fun changeMode(modifaceViewMode: ModifaceViewMode,
@@ -173,7 +173,7 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
     fun doAtc() {
         viewModelScope.launchCatchError(block = {
             val requestParam = ProductArMapper.generateAtcRequestParam(
-                    (selectedProductArData.value as? Success)?.data,
+                    selectedProductArData.value,
                     shopId,
                     userSessionInterface.userId)
 

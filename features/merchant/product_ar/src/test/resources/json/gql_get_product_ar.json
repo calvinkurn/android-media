@@ -1,0 +1,148 @@
+{
+  "pdpGetARData": {
+    "optionBgImage": "https://images.tokopedia.net/img/pdp/icons/ar/bglipcolor.png",
+    "options": [
+      {
+        "button": {
+          "cart_type": "ar_atc",
+          "color": "primary_green",
+          "text": "+ Keranjang"
+        },
+        "campaignInfo": {
+          "campaignID": "0",
+          "campaignType": "0",
+          "campaignTypeName": "",
+          "discountPercentage": 0,
+          "discountPrice": 0,
+          "isActive": false,
+          "minOrder": 0,
+          "originalPrice": 0,
+          "stock": 0,
+          "stockSoldPercentage": 0
+        },
+        "name": "Merah",
+        "price": 50000,
+        "productID": "2684167590",
+        "providerData": "[{\"color_a\":255,\"gamma\":0,\"sparkle_a\":0,\"sparkle_r\":0,\"sparkle_g\":0,\"sparkle_b\":0,\"glossDetail\":0,\"color_r\":255,\"color_g\":0,\"color_b\":0,\"placement\":\"default\",\"lipPlumping\":0,\"sparkleColorVariation\":0,\"sparkleSizeVariation\":0,\"wetness\":0,\"finish\":\"\",\"sub_category\":\"\",\"matteness\":0}]",
+        "psku": "3600523643791",
+        "stock": "100",
+        "stockCopy": "Stok: 100",
+        "type": "lipcolor",
+        "unavailableCopy": ""
+      },
+      {
+        "button": {
+          "cart_type": "ar_atc",
+          "color": "primary_green",
+          "text": "+ Keranjang"
+        },
+        "campaignInfo": {
+          "campaignID": "0",
+          "campaignType": "0",
+          "campaignTypeName": "",
+          "discountPercentage": 0,
+          "discountPrice": 0,
+          "isActive": false,
+          "minOrder": 0,
+          "originalPrice": 0,
+          "stock": 0,
+          "stockSoldPercentage": 0
+        },
+        "name": "Merah Muda",
+        "price": 50000,
+        "productID": "2684167589",
+        "providerData": "[{ \"color_a\": 255, \"gamma\": 0.01, \"sparkle_a\": 0.01, \"sparkle_r\": 231, \"sparkle_g\": 234, \"sparkle_b\": 123, \"glossDetail\": 0.01, \"color_r\": 218, \"color_g\": 153, \"color_b\": 155, \"placement\": \"default\", \"lipPlumping\": 0.2, \"sparkleDensity\": 0.01, \"sparkleSize\": 0.01, \"sparkleColorVariation\": 0.01, \"sparkleSizeVariation\": 0.01, \"sparkleBaseReflectivity\": 0.01, \"wetness\": 0.01, \"finish\": \"\", \"sub_category\": \"\", \"matteness\": 1, \"envMappingIntensity\": 0.01, \"envMappingR\": 255, \"envMappingG\": 231, \"envMappingB\": 12, \"envMappingBumpIntensity\": 1, \"envMappingCurve\": 1, \"envMappingRotationY\": 1, \"metallicIntensity\": 1, \"vinylIntensity\": 1, \"intensity\": 0.01 }]",
+        "psku": "3600523643790",
+        "stock": "100",
+        "stockCopy": "Stok: 100",
+        "type": "lipcolor",
+        "unavailableCopy": ""
+      },
+      {
+        "button": {
+          "cart_type": "default_oos",
+          "color": "disabled",
+          "text": "Barang Tidak Tersedia"
+        },
+        "campaignInfo": {
+          "campaignID": "0",
+          "campaignType": "0",
+          "campaignTypeName": "",
+          "discountPercentage": 0,
+          "discountPrice": 0,
+          "isActive": false,
+          "minOrder": 0,
+          "originalPrice": 0,
+          "stock": 0,
+          "stockSoldPercentage": 0
+        },
+        "name": "Ungu",
+        "price": 60000,
+        "productID": "2684217811",
+        "providerData": "[ { \"color_a\": 255, \"gamma\": 0, \"sparkle_a\": 0, \"sparkle_r\": 0, \"sparkle_g\": 0, \"sparkle_b\": 0, \"glossDetail\": 0, \"color_r\": 191, \"color_g\": 0, \"color_b\": 255, \"placement\": \"default\", \"lipPlumping\": 0, \"sparkleColorVariation\": 0, \"sparkleSizeVariation\": 0, \"wetness\": 0, \"finish\": \"\", \"sub_category\": \"\", \"matteness\": 0 } ]",
+        "psku": "3600523643792",
+        "stock": "100",
+        "stockCopy": "Stok: 100",
+        "type": "lipcolor",
+        "unavailableCopy": "Barang ini sedang tidak dijual untuk sementara waktu."
+      },
+      {
+        "button": {
+          "cart_type": "ar_atc",
+          "color": "primary_green",
+          "text": "+ Keranjang"
+        },
+        "campaignInfo": {
+          "campaignID": "360448",
+          "campaignType": "74",
+          "campaignTypeName": "x_test_flashsale",
+          "discountPercentage": 99,
+          "discountPrice": 100,
+          "isActive": true,
+          "minOrder": 0,
+          "originalPrice": 50000,
+          "stock": 3,
+          "stockSoldPercentage": 0
+        },
+        "name": "Orange",
+        "price": 100,
+        "productID": "2684217809",
+        "providerData": "[ { \"color_a\": 255, \"gamma\": 0, \"sparkle_a\": 0, \"sparkle_r\": 0, \"sparkle_g\": 0, \"sparkle_b\": 0, \"glossDetail\": 0, \"color_r\": 255, \"color_g\": 165, \"color_b\": 0, \"placement\": \"default\", \"lipPlumping\": 0, \"sparkleColorVariation\": 0, \"sparkleSizeVariation\": 0, \"wetness\": 0, \"finish\": \"\", \"sub_category\": \"\", \"matteness\": 0 } ]",
+        "psku": "3600523643793",
+        "stock": "3",
+        "stockCopy": "Stok: 3",
+        "type": "lipcolor",
+        "unavailableCopy": ""
+      },
+      {
+        "button": {
+          "cart_type": "ar_atc",
+          "color": "primary_green",
+          "text": "+ Keranjang"
+        },
+        "campaignInfo": {
+          "campaignID": "0",
+          "campaignType": "0",
+          "campaignTypeName": "",
+          "discountPercentage": 0,
+          "discountPrice": 0,
+          "isActive": false,
+          "minOrder": 0,
+          "originalPrice": 0,
+          "stock": 0,
+          "stockSoldPercentage": 0
+        },
+        "name": "Cokelat",
+        "price": 50000,
+        "productID": "2684217810",
+        "providerData": "[ { \"color_a\": 255, \"gamma\": 0, \"sparkle_a\": 0, \"sparkle_r\": 0, \"sparkle_g\": 0, \"sparkle_b\": 0, \"glossDetail\": 0, \"color_r\": 194, \"color_g\": 114, \"color_b\": 107, \"placement\": \"default\", \"lipPlumping\": 0, \"sparkleColorVariation\": 0, \"sparkleSizeVariation\": 0, \"wetness\": 0, \"finish\": \"\", \"sub_category\": \"\", \"matteness\": 0 } ]",
+        "psku": "3600523643794",
+        "stock": "100",
+        "stockCopy": "Stok: 100",
+        "type": "lipcolor",
+        "unavailableCopy": ""
+      }
+    ],
+    "provider": "modiface"
+  }
+}
