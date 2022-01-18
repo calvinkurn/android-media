@@ -230,7 +230,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
     private fun initEmptyState() {
         // [Misael] replace with catalogMenuDetail.banners
         binding?.rechargePdpPulsaEmptyStateWidget?.setImageUrl(
-            "https://images.tokopedia.net/img/android/recharge/recharge_component/empty_state_icon.png"
+            "https://images.tokopedia.net/img/ULHhFV/2022/1/7/8324919c-fa15-46d9-84f7-426adb6994e0.jpg"
         )
     }
 
