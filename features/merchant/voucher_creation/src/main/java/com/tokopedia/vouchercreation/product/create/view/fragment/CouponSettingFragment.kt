@@ -257,18 +257,18 @@ class CouponSettingFragment : BaseDaggerFragment() {
                 when (viewModel.isValidQuota(number)) {
                     CouponSettingViewModel.QuotaState.BelowAllowedQuotaAmount -> {
                         showErrorMessage(
-                            textAreaQuota,
+                            textAreaFreeShippingQuota,
                             getString(R.string.error_message_quota_below_minimum)
                         )
                     }
                     CouponSettingViewModel.QuotaState.ExceedAllowedQuotaAmount -> {
                         showErrorMessage(
-                            textAreaQuota,
+                            textAreaFreeShippingQuota,
                             getString(R.string.error_message_quota_exceed_maximum)
                         )
                     }
                     CouponSettingViewModel.QuotaState.ValidQuota -> {
-                        clearErrorMessage(textAreaQuota,  EMPTY_STRING)
+                        clearErrorMessage(textAreaFreeShippingQuota,  EMPTY_STRING)
                     }
                 }
 
@@ -308,7 +308,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
                 textAreaMaximumDiscount.textAreaInput.setText(formattedNumber)
                 textAreaMaximumDiscount.textAreaInput.setSelection(textAreaMaximumDiscount.textAreaInput.text?.length ?: 0)
 
-                when (viewModel.isValidCashbackAmount(number)) {
+                when (viewModel.isValidMaximumCashbackAmount(number)) {
                     CouponSettingViewModel.CashbackAmountState.BelowAllowedMinimumAmount -> {
                         showErrorMessage(textAreaMaximumDiscount, getString(R.string.error_message_cashback_amount_below_minimum))
                     }
@@ -507,6 +507,9 @@ class CouponSettingFragment : BaseDaggerFragment() {
         val cashbackMinimumPurchase = binding.textAreaMinimumPurchase.textAreaInput.text.toString().trim().digitsOnlyInt()
         val cashbackQuota = binding.textAreaQuota.textAreaInput.text.toString().trim().digitsOnlyInt()
 
+        val cashbackDiscountPercentage = binding.textAreaDiscountPercentage.textAreaInput.text.toString().trim().digitsOnlyInt()
+        val cashbackMaxDiscount = binding.textAreaMaximumDiscount.textAreaInput.text.toString().trim().digitsOnlyInt()
+
         val freeShippingDiscountAmount = binding.textAreaFreeShippingDiscountAmount.textAreaInput.text.toString().trim().digitsOnlyInt()
         val freeShippingMinimumPurchase = binding.textAreaFreeShippingMinimumPurchase.textAreaInput.text.toString().trim().digitsOnlyInt()
         val freeShippingQuota = binding.textAreaFreeShippingQuota.textAreaInput.text.toString().trim().digitsOnlyInt()
@@ -515,6 +518,8 @@ class CouponSettingFragment : BaseDaggerFragment() {
             selectedCouponType,
             selectedDiscountType,
             selectedMinimumPurchaseType,
+            cashbackDiscountPercentage,
+            cashbackMaxDiscount,
             cashbackDiscountAmount,
             cashbackMinimumPurchase,
             cashbackQuota,
