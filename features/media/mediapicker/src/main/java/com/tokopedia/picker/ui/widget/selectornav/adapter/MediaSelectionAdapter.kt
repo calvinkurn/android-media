@@ -94,6 +94,12 @@ class MediaSelectionAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
+    fun setData(media: Media) {
+        this.medias.add(media)
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
     fun setData(medias: MutableList<Media>) {
         this.medias.clear()
         this.medias.addAll(medias)

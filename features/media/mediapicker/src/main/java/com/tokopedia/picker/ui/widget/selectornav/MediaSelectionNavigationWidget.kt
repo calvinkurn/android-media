@@ -120,7 +120,11 @@ class MediaSelectionNavigationWidget : FrameLayout {
         adapter?.canReorder = canReorder
     }
 
-    fun setData(medias: List<Media>) {
+    fun addData(media: Media) {
+        adapter?.setData(media)
+    }
+
+    fun addData(medias: List<Media>) {
         adapter?.setData(medias.toMutableList())
     }
 
