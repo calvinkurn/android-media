@@ -60,7 +60,9 @@ open class LoaderDataSource(private val context: Context) {
     fun medias(cursor: Cursor, param: PickerParam): Media? {
         val path = cursor.getString(cursor.getColumnIndex(projection[2]))
         val file = makeSafeFile(path) ?: return null
+
         if (param.excludedImages.contains(file)) return null
+        if (!file.exists()) return null
 
         // Exclude GIF when we don't want it
         if (!param.isIncludeAnimation) {
