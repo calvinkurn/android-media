@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:isScrollContainer="true"
+    android:fillViewport="true"
+    android:id="@+id/scrollViewCouponDetail">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/layoutCouponDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/layoutCouponTarget"
+            layout="@layout/partial_mvc_create_coupon_target"/>
+
+        <include
+            android:id="@+id/layoutCouponName"
+            layout="@layout/partial_mvc_create_coupon_name"/>
+
+        <include
+            android:id="@+id/layoutCouponDate"
+            layout="@layout/partial_mvc_create_coupon_date"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <com.tokopedia.vouchercreation.shop.create.view.customview.NextStepButton
+            android:id="@+id/btnCouponCreateNext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.core.widget.NestedScrollView>

@@ -25,4 +25,11 @@ class NextStepButton @JvmOverloads constructor(
             nextButton?.isLoading = value
         }
 
+    var isButtonEnabled = nextButton?.isEnabled ?: false
+        set(value) {
+            field = value
+            nextButton?.isEnabled = value
+            isEnabled = value
+        }
+
 }
