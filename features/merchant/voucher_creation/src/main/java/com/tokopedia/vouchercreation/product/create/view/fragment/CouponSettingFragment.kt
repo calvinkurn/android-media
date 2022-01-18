@@ -184,16 +184,24 @@ class CouponSettingFragment : BaseDaggerFragment() {
                 textAreaQuota.textAreaInput.setText(formattedNumber)
                 textAreaQuota.textAreaInput.setSelection(textAreaQuota.textAreaInput.text?.length ?: 0)
 
-                val isValidInput =
-                    viewModel.isValidCashbackQuota(number)
-                if (isValidInput) {
-                    clearErrorMessage(textAreaQuota,  getString(R.string.error_message_invalid_free_shipping_quota))
-                } else {
-                    showErrorMessage(
-                        textAreaQuota,
-                        getString(R.string.error_message_invalid_free_shipping_quota)
-                    )
+                when (viewModel.isValidQuota(number)) {
+                    CouponSettingViewModel.QuotaState.BelowAllowedQuotaAmount -> {
+                        showErrorMessage(
+                            textAreaQuota,
+                            getString(R.string.error_message_quota_below_minimum)
+                        )
+                    }
+                    CouponSettingViewModel.QuotaState.ExceedAllowedQuotaAmount -> {
+                        showErrorMessage(
+                            textAreaQuota,
+                            getString(R.string.error_message_quota_exceed_maximum)
+                        )
+                    }
+                    CouponSettingViewModel.QuotaState.ValidQuota -> {
+                        clearErrorMessage(textAreaQuota,  EMPTY_STRING)
+                    }
                 }
+
                 validateInput()
                 calculateMaxExpenseEstimation()
             })
@@ -246,16 +254,75 @@ class CouponSettingFragment : BaseDaggerFragment() {
                 textAreaFreeShippingQuota.textAreaInput.setText(formattedNumber)
                 textAreaFreeShippingQuota.textAreaInput.setSelection(textAreaFreeShippingQuota.textAreaInput.text?.length ?: 0)
 
-                val isValidInput = viewModel.isValidFreeShippingQuota(number)
-                if (isValidInput) {
-                    clearErrorMessage(textAreaFreeShippingQuota, getString(R.string.error_message_invalid_free_shipping_quota))
-                } else {
-                    showErrorMessage(textAreaFreeShippingQuota, getString(R.string.error_message_invalid_free_shipping_quota))
+                when (viewModel.isValidQuota(number)) {
+                    CouponSettingViewModel.QuotaState.BelowAllowedQuotaAmount -> {
+                        showErrorMessage(
+                            textAreaQuota,
+                            getString(R.string.error_message_quota_below_minimum)
+                        )
+                    }
+                    CouponSettingViewModel.QuotaState.ExceedAllowedQuotaAmount -> {
+                        showErrorMessage(
+                            textAreaQuota,
+                            getString(R.string.error_message_quota_exceed_maximum)
+                        )
+                    }
+                    CouponSettingViewModel.QuotaState.ValidQuota -> {
+                        clearErrorMessage(textAreaQuota,  EMPTY_STRING)
+                    }
                 }
+
                 validateInput()
                 calculateMaxExpenseEstimation()
             })
 
+            textAreaDiscountPercentage.textAreaInput.addTextChangedListener(NumberThousandSeparatorTextWatcher(
+                textAreaDiscountPercentage.textAreaInput,
+                numberFormatter
+            ) { number, formattedNumber ->
+
+                textAreaDiscountPercentage.textAreaInput.setText(formattedNumber)
+                textAreaDiscountPercentage.textAreaInput.setSelection(textAreaDiscountPercentage.textAreaInput.text?.length ?: 0)
+
+                when (viewModel.isValidCashbackPercentage(number)) {
+                    CouponSettingViewModel.CashbackPercentageState.BelowAllowedMinimumPercentage -> {
+                        showErrorMessage(textAreaDiscountPercentage, getString(R.string.error_message_discount_percentage_below_minimum))
+                    }
+                    CouponSettingViewModel.CashbackPercentageState.ExceedAllowedMaximumPercentage -> {
+                        showErrorMessage(textAreaDiscountPercentage, getString(R.string.error_message_discount_percentage_exceed_maximum))
+                    }
+                    CouponSettingViewModel.CashbackPercentageState.ValidPercentage -> {
+                        clearErrorMessage(textAreaDiscountPercentage, getString(R.string.error_message_discount_percentage_range))
+                    }
+                }
+
+                validateInput()
+
+            })
+
+            textAreaMaximumDiscount.textAreaInput.addTextChangedListener(NumberThousandSeparatorTextWatcher(
+                textAreaMaximumDiscount.textAreaInput,
+                numberFormatter
+            ) { number, formattedNumber ->
+
+                textAreaMaximumDiscount.textAreaInput.setText(formattedNumber)
+                textAreaMaximumDiscount.textAreaInput.setSelection(textAreaMaximumDiscount.textAreaInput.text?.length ?: 0)
+
+                when (viewModel.isValidCashbackAmount(number)) {
+                    CouponSettingViewModel.CashbackAmountState.BelowAllowedMinimumAmount -> {
+                        showErrorMessage(textAreaMaximumDiscount, getString(R.string.error_message_cashback_amount_below_minimum))
+                    }
+                    CouponSettingViewModel.CashbackAmountState.ExceedAllowedMinimumAmount -> {
+                        showErrorMessage(textAreaMaximumDiscount, getString(R.string.error_message_cashback_amount_exceed_maximum))
+                    }
+                    CouponSettingViewModel.CashbackAmountState.ValidAmount -> {
+                        clearErrorMessage(textAreaMaximumDiscount, EMPTY_STRING)
+                    }
+                }
+
+                validateInput()
+
+            })
         }
     }
 

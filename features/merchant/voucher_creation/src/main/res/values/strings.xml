@@ -359,8 +359,8 @@
     <string name="product_list">Daftar Produk</string>
     <string name="listed_product">Produk terdaftar</string>
     <string name="max_product">Maks. 100 Produk</string>
-    <string name="minimum_purchase">Minimum Pembelian</string>
-    <string name="minimum_purchase_type">Tipe Minimum Pembelian</string>
+    <string name="minimum_purchase">Minimum pembelian</string>
+    <string name="minimum_purchase_type">Tipe minimum pembelian</string>
     <string name="discount_amount">Nominal Diskon</string>
     <string name="discount_type">Tipe Diskon</string>
     <string name="copy_to_clipboard">Copy to clipboard</string>
@@ -381,15 +381,18 @@
     <string name="in_quantity">Dalam buah</string>
 
     <string name="error_message_minimum_discount">Diskon minimal Rp 5.000</string>
-    <string name="error_message_invalid_free_shipping_quota">Min. 1 voucher</string>
-    <string name="error_message_invalid_free_shipping_quota_exceed_max_value">Maks. 999 voucher</string>
+    <string name="error_message_quota_below_minimum">Min. 1 voucher</string>
+    <string name="error_message_quota_exceed_maximum">Maks. 999 voucher</string>
     <string name="error_message_invalid_cashback_minimum_purchase_nominal">Tidak boleh lebih kecil dari potongan harga</string>
     <string name="error_message_invalid_cashback_minimum_purchase_quantity">Minimum 1 buah</string>
     <string name="error_message_invalid_free_shipping_minimum_purchase">Nominal lebih kecil dari nominal gratis ongkir</string>
     <string name="placeholder_rupiah">Rp %s</string>
-    <string name="discount_percentage">Persentase diskon</string>
+    <string name="cashback_percentage">Persentase cashback</string>
     <string name="error_message_discount_percentage_range">Diskon minimal 2%, maksimal 100%</string>
-    <string name="error_message_discount_percentage">Min. 2%</string>
+    <string name="error_message_discount_percentage_below_minimum">Min. 2%</string>
+    <string name="error_message_discount_percentage_exceed_maximum">Maks. 100%</string>
+    <string name="error_message_cashback_amount_below_minimum">Min. Rp5.000</string>
+    <string name="error_message_cashback_amount_exceed_maximum">Maks. Rp99.999.999</string>
     <string name="error_message_maximum_price">Min Rp 5.000</string>
     <string name="max_discount">Maks. Potongan Harga</string>
     <string name="pcs">Pcs</string>

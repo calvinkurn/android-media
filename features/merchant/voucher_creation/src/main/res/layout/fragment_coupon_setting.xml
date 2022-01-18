@@ -139,7 +139,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/chipDiscountTypeNominal"
                 app:text_area_clearable="false"
-                app:text_area_label="@string/discount_percentage"
+                app:text_area_label="@string/cashback_percentage"
                 app:text_area_label_static="true"
                 app:text_area_message="@string/error_message_discount_percentage_range"/>
 

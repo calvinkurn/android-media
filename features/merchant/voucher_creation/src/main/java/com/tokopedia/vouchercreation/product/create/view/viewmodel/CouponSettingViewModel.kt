@@ -27,20 +27,34 @@ class CouponSettingViewModel @Inject constructor(
     val maxExpenseEstimation: LiveData<Long>
         get() = _maxExpenseEstimation
 
-    sealed class ValidationResult {
-        sealed class Cashback : ValidationResult() {
-            object BelowMinimalFreeShippingQuota : ValidationResult()
-            object ExceedMaximalFreeShippingQuota : ValidationResult()
-            object ValidMaximalFreeShippingQuota : ValidationResult()
-        }
 
+    sealed class CashbackPercentageState {
+        object BelowAllowedMinimumPercentage : CashbackPercentageState()
+        object ExceedAllowedMaximumPercentage : CashbackPercentageState()
+        object ValidPercentage : CashbackPercentageState()
     }
+
+    sealed class CashbackAmountState {
+        object BelowAllowedMinimumAmount : CashbackAmountState()
+        object ExceedAllowedMinimumAmount : CashbackAmountState()
+        object ValidAmount : CashbackAmountState()
+    }
+
+    sealed class QuotaState {
+        object BelowAllowedQuotaAmount : QuotaState()
+        object ExceedAllowedQuotaAmount : QuotaState()
+        object ValidQuota : QuotaState()
+    }
+
     companion object {
         private const val MINIMUM_CASHBACK_DISCOUNT_AMOUNT = 5_000
         private const val MINIMUM_FREE_SHIPPING_DISCOUNT_AMOUNT = 5_000
-        private const val MINIMUM_CASHBACK_QUOTA = 1
         private const val MINIMUM_FREE_SHIPPING_QUOTA = 1
-        private const val MAXIMAL_FREE_SHIPPING_QUOTA = 999
+        private const val MAXIMUM_FREE_SHIPPING_QUOTA = 999
+        private const val MINIMUM_CASHBACK_PERCENTAGE = 2
+        private const val MAXIMUM_CASHBACK_PERCENTAGE = 100
+        private const val MINIMUM_CASHBACK_AMOUNT = 5_000
+        private const val MAXIMUM_CASHBACK_AMOUNT = 99_999_999
         private const val ZERO = 0
     }
 
@@ -62,24 +76,31 @@ class CouponSettingViewModel @Inject constructor(
         }
 
         if (selectedCouponType == CouponType.CASHBACK) {
+            val discountTypeSelected = isDiscountTypeSelected(selectedDiscountType)
+            val minimumPurchaseSelected = isMinimumPurchaseSelected(selectedMinimumPurchaseType)
+            val validDiscountAmount = isValidCashbackDiscountAmount(cashbackDiscountAmount)
+            val validMinimumPurchase = isValidCashbackMinimumPurchase(
+                cashbackMinimumPurchase,
+                cashbackDiscountAmount,
+                selectedMinimumPurchaseType
+            )
+            val validQuota = isValidQuota(cashbackQuota) is QuotaState.ValidQuota
+
             val isValidCashback =
-                isDiscountTypeSelected(selectedDiscountType) && isMinimumPurchaseSelected(
-                    selectedMinimumPurchaseType
-                ) && isValidCashbackDiscountAmount(cashbackDiscountAmount) && isValidCashbackMinimumPurchase(
-                    cashbackMinimumPurchase,
-                    cashbackDiscountAmount,
-                    selectedMinimumPurchaseType
-                ) && isValidCashbackQuota(cashbackQuota)
+                discountTypeSelected && minimumPurchaseSelected && validDiscountAmount && validMinimumPurchase && validQuota
 
             _areInputValid.value = isValidCashback
         } else {
 
-            val isValidFreeShipping = isValidFreeShippingDiscountAmount(freeShippingDiscountAmount)
-                    && isValidFreeShippingMinimumPurchase(freeShippingMinimumPurchase, freeShippingDiscountAmount)
-                    && isValidFreeShippingQuota(freeShippingQuota)
+            val validDiscountAmount = isValidFreeShippingDiscountAmount(freeShippingDiscountAmount)
+            val validMinimumPurchase = isValidFreeShippingMinimumPurchase(
+                freeShippingMinimumPurchase,
+                freeShippingDiscountAmount
+            )
+            val validQuota = isValidQuota(freeShippingQuota) is QuotaState.ValidQuota
+            val isValidFreeShipping = validDiscountAmount && validMinimumPurchase && validQuota
 
             _areInputValid.value = isValidFreeShipping
-
         }
 
     }
@@ -110,13 +131,25 @@ class CouponSettingViewModel @Inject constructor(
         }
     }
 
-    fun isValidCashbackQuota(cashbackQuota: Int): Boolean {
-        return cashbackQuota >= MINIMUM_CASHBACK_QUOTA
+    fun isValidFreeShippingDiscountAmount(freeShippingDiscountAmount: Int): Boolean {
+        return freeShippingDiscountAmount >= MINIMUM_FREE_SHIPPING_DISCOUNT_AMOUNT
     }
 
 
-    fun isValidFreeShippingDiscountAmount(freeShippingDiscountAmount: Int): Boolean {
-        return freeShippingDiscountAmount >= MINIMUM_FREE_SHIPPING_DISCOUNT_AMOUNT
+    fun isValidCashbackPercentage(cashbackPercentage: Int): CashbackPercentageState {
+        return when {
+            cashbackPercentage < MINIMUM_CASHBACK_PERCENTAGE -> CashbackPercentageState.BelowAllowedMinimumPercentage
+            cashbackPercentage > MAXIMUM_CASHBACK_PERCENTAGE -> CashbackPercentageState.ExceedAllowedMaximumPercentage
+            else -> CashbackPercentageState.ValidPercentage
+        }
+    }
+
+    fun isValidCashbackAmount(cashbackDiscountAmount: Int): CashbackAmountState {
+        return when {
+            cashbackDiscountAmount < MINIMUM_CASHBACK_AMOUNT -> CashbackAmountState.BelowAllowedMinimumAmount
+            cashbackDiscountAmount > MAXIMUM_CASHBACK_AMOUNT -> CashbackAmountState.ExceedAllowedMinimumAmount
+            else -> CashbackAmountState.ValidAmount
+        }
     }
 
     fun isValidFreeShippingMinimumPurchase(
@@ -126,8 +159,12 @@ class CouponSettingViewModel @Inject constructor(
         return freeShippingMinimumPurchase > freeShippingDiscountAmount
     }
 
-    fun isValidFreeShippingQuota(freeShippingQuota: Int): Boolean {
-        return freeShippingQuota >= MINIMUM_FREE_SHIPPING_QUOTA
+    fun isValidQuota(quota: Int): QuotaState {
+        return when {
+            quota < MINIMUM_FREE_SHIPPING_QUOTA -> QuotaState.BelowAllowedQuotaAmount
+            quota > MAXIMUM_FREE_SHIPPING_QUOTA -> QuotaState.ExceedAllowedQuotaAmount
+            else -> QuotaState.ValidQuota
+        }
     }
 
     fun couponTypeChanged(selectedCouponType: CouponType) {
@@ -135,7 +172,10 @@ class CouponSettingViewModel @Inject constructor(
         _couponType.value = selectedCouponType
     }
 
-    fun getMinimalPurchaseErrorMessage(selectedCouponType: CouponType, selectedMinimumPurchaseType: MinimumPurchaseType) : String {
+    fun getMinimalPurchaseErrorMessage(
+        selectedCouponType: CouponType,
+        selectedMinimumPurchaseType: MinimumPurchaseType
+    ): String {
         return when {
             selectedCouponType == CouponType.CASHBACK && selectedMinimumPurchaseType == MinimumPurchaseType.NOMINAL -> resourceProvider.getInvalidMinimalPurchaseNominalErrorMessage()
             selectedCouponType == CouponType.CASHBACK && selectedMinimumPurchaseType == MinimumPurchaseType.QUANTITY -> resourceProvider.getInvalidMinimalQuantityQuantityErrorMessage()
@@ -144,7 +184,7 @@ class CouponSettingViewModel @Inject constructor(
         }
     }
 
-    fun calculateMaxExpenseEstimation(discountAmount : Int, voucherQuotaCount : Int) {
+    fun calculateMaxExpenseEstimation(discountAmount: Int, voucherQuotaCount: Int) {
         _maxExpenseEstimation.value = (discountAmount * voucherQuotaCount).toLong()
     }
 
