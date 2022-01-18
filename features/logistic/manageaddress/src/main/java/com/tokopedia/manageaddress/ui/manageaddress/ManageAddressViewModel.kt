@@ -151,7 +151,7 @@ class ManageAddressViewModel @Inject constructor(
     fun checkUserEligibilityForAnaRevamp() {
         eligibleForAddressUseCase.eligibleForAddressFeature(
             {
-                _eligibleForAnaRevamp.value = Success(it.data.eligibleForRevampAna)
+                _eligibleForAnaRevamp.value = Success(it.eligibleForRevampAna)
             },
             {
                 _eligibleForAnaRevamp.value = Fail(it)

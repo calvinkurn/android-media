@@ -98,7 +98,7 @@ class GetShipmentAddressFormSubscriber(private val shipmentPresenter: ShipmentPr
 
     private fun checkIsUserEligibleForRevampAna(cartShipmentAddressFormData: CartShipmentAddressFormData) {
         eligibleForAddressUseCase.eligibleForAddressFeature({
-            view.renderCheckoutPageNoAddress(cartShipmentAddressFormData, it.data.eligibleForRevampAna.eligible)
+            view.renderCheckoutPageNoAddress(cartShipmentAddressFormData, it.eligibleForRevampAna.eligible)
         }, { throwable: Throwable ->
                 var errorMessage = throwable.message
                 if (errorMessage == null) {

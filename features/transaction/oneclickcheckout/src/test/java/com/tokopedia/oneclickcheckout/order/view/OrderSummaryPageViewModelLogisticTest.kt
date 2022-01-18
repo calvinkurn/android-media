@@ -1751,7 +1751,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.checkUserEligibilityForAnaRevamp()
 
         // Then
-        val expected = OrderEnableAddressFeature(response)
+        val expected = OrderEnableAddressFeature(response.data)
         assertEquals(OccState.Success(expected), orderSummaryPageViewModel.eligibleForAnaRevamp.value)
     }
 

@@ -2182,7 +2182,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private void checkIsUserEligibleForRevampAna(CartShipmentAddressFormData cartShipmentAddressFormData) {
         eligibleForAddressUseCase.eligibleForAddressFeature(keroAddrIsEligibleForAddressFeature -> {
             if (getView() != null) {
-                getView().renderCheckoutPageNoAddress(cartShipmentAddressFormData, keroAddrIsEligibleForAddressFeature.getData().getEligibleForRevampAna().getEligible());
+                getView().renderCheckoutPageNoAddress(cartShipmentAddressFormData, keroAddrIsEligibleForAddressFeature.getEligibleForRevampAna().getEligible());
             }
             return Unit.INSTANCE;
         }, throwable -> {
