@@ -8,6 +8,7 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.filter.testutils.jsonToObject
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 internal class OnOptionClickTest: SortFilterBottomSheetViewModelTestFixtures() {
@@ -385,7 +386,7 @@ internal class OnOptionClickTest: SortFilterBottomSheetViewModelTestFixtures() {
     }
 
     @Test
-    fun `onOptionClick on BebasOngkir should apply BebasOngkir in offering too`() {
+    fun `onOptionClick will also select option on other filter sections`() {
         val dynamicFilterModel = "dynamic-filter-model-offering.json".jsonToObject<DynamicFilterModel>()
         val selectedFilter = dynamicFilterModel.data.filter.find { it.title == "Bebas Ongkir" }!!
         `Given SortFilterBottomSheet view is already created`(mapOf(), dynamicFilterModel)
@@ -394,24 +395,19 @@ internal class OnOptionClickTest: SortFilterBottomSheetViewModelTestFixtures() {
         val clickedOptionViewModel = filterViewModel!!.optionViewModelList[0]
         `When an Option is Clicked And Applied`(filterViewModel, clickedOptionViewModel)
 
-        `Then assert that two bebas ongkir filter option is selected`(clickedOptionViewModel)
-        `Then assert button apply is shown with loading`()
+        `Then assert the option is selected in other Filter section`(clickedOptionViewModel.option)
     }
 
-    private fun `Then assert that two bebas ongkir filter option is selected`(clickedOptionViewModel: OptionViewModel) {
-        val bebasOngkirOptionViewModelList =
-            sortFilterList!!.filterIsInstance(FilterViewModel::class.java)
-                .filter {
-                    clickedOptionViewModel.option in it.filter.options
-                }
-                .map { filter ->
-                    filter.optionViewModelList.first { it.option == clickedOptionViewModel.option }
-                }
-        assert(bebasOngkirOptionViewModelList.size == 2) {
-            "Bebas Ongkir option size should be 2 (two), but ${bebasOngkirOptionViewModelList.size} found "
-        }
-        bebasOngkirOptionViewModelList.forEach { optionViewModel ->
-            `Then assert option selected state`(optionViewModel, true)
-        }
+    private fun `Then assert the option is selected in other Filter section`(clickedOption: Option) {
+        val allOptionViewModelList = sortFilterList!!
+            .filterIsInstance<FilterViewModel>()
+            .filter { filterViewModel -> clickedOption in filterViewModel.filter.options }
+            .map { filterViewModel ->
+                filterViewModel.optionViewModelList.first { it.option == clickedOption }
+            }
+        assertTrue(allOptionViewModelList.isNotEmpty())
+        val allOptionViewModelListIsSelected = allOptionViewModelList
+            .all { it.isSelected }
+        assertTrue(allOptionViewModelListIsSelected)
     }
 }
