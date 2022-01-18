@@ -22,7 +22,6 @@ class PlayWidgetModule {
 
     @Provides
     fun providePlayWidgetConfigMapper(@ApplicationContext context: Context): SharedPreferences {
-        /** TODO("dont use deprecated way") */
         return PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
     }
 }
