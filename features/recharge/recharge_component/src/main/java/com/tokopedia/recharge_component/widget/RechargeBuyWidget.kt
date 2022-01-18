@@ -4,12 +4,12 @@ import android.content.Context
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.databinding.WidgetRechargeBuyWidgetBinding
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
+import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.unifycomponents.BaseCustomView
 import org.jetbrains.annotations.NotNull
 
@@ -19,13 +19,11 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
 
     private var rechargeBuyWidgetBinding = WidgetRechargeBuyWidgetBinding.inflate(LayoutInflater.from(context), this, true)
 
-    fun showBuyWidget(product: CatalogProduct, listener: RechargeBuyWidgetListener){
+    fun showBuyWidget(denom: DenomData, listener: RechargeBuyWidgetListener){
         with(rechargeBuyWidgetBinding){
             tgBuyWidgetTotalPrice.run {
-                if (!product.attributes.promo?.newPrice.isNullOrEmpty()){
-                    text = product.attributes.promo?.newPrice
-                } else {
-                    text = product.attributes.price
+                text = denom.price
+                if (denom.slashPrice.isNullOrEmpty()){
                     setMargin(
                         resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
                             .toInt(),
@@ -39,28 +37,28 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
                 }
 
                 setOnClickListener {
-                    listener.onClickedChevron(product)
+                    listener.onClickedChevron(denom)
                 }
             }
 
             tgBuyWidgetSlashPrice.run {
-                if (!product.attributes.promo?.newPrice.isNullOrEmpty()){
+                if (!denom.slashPrice.isNullOrEmpty()){
                     show()
-                    text = product.attributes.price
+                    text = denom.slashPrice
                     paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 } else hide()
 
                 setOnClickListener {
-                    listener.onClickedChevron(product)
+                    listener.onClickedChevron(denom)
                 }
             }
 
             iconBuyWidgetChevron.setOnClickListener {
-                listener.onClickedChevron(product)
+                listener.onClickedChevron(denom)
             }
 
             btnBuyWidget.setOnClickListener {
-                listener.onClickedButtonLanjutkan(product)
+                listener.onClickedButtonLanjutkan(denom)
             }
         }
     }

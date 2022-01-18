@@ -63,23 +63,20 @@ class DigitalPDPDataPlanFragment :
 
     private fun observeData() {
         binding?.let {
-            it.widgetBuyWidget.showBuyWidget(CatalogProduct(
-                "1", attributes = CatalogProduct.Attributes(
-                    price = "Rp50.000",
-                    pricePlain = "50000",
-                    promo = CatalogProduct.Promo(
-                        newPrice = "Rp49.500",
-                        newPricePlain = 49500
-                    )
-                )
+            it.widgetBuyWidget.showBuyWidget(
+                DenomData(
+                price = "Rp35.000",
+                    pricePlain = 35000,
+                    slashPrice = "Rp50.000",
+                    slashPricePlain = 50000
             ), listener = object : RechargeBuyWidgetListener {
-                override fun onClickedChevron(product: CatalogProduct) {
+                override fun onClickedChevron(product: DenomData) {
                     fragmentManager?.let {
                         SummaryPulsaBottomsheet(getString(R.string.summary_transaction), product).show(it, "")
                     }
                 }
 
-                override fun onClickedButtonLanjutkan(product: CatalogProduct) {
+                override fun onClickedButtonLanjutkan(product: DenomData) {
 
                 }
             })

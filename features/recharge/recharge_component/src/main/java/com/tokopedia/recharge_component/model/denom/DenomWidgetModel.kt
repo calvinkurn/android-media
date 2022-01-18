@@ -16,6 +16,7 @@ data class DenomData(
     val specialLabel: String = "",
     val discountLabel: String = "",
     val slashPrice: String = "",
+    val slashPricePlain: Int = 0,
     val flashSalePercentage: Int = 0,
     val flashSaleLabel: String = "",
     val price: String = "",

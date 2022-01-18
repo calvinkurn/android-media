@@ -1,8 +1,8 @@
 package com.tokopedia.recharge_component.listener
 
-import com.tokopedia.common.topupbills.data.product.CatalogProduct
+import com.tokopedia.recharge_component.model.denom.DenomData
 
 interface RechargeBuyWidgetListener {
-    fun onClickedButtonLanjutkan(product: CatalogProduct)
-    fun onClickedChevron(product: CatalogProduct)
+    fun onClickedButtonLanjutkan(denom: DenomData)
+    fun onClickedChevron(denom: DenomData)
 }
