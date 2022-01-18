@@ -231,8 +231,11 @@ abstract class TokoNowHomeViewModelTestFixture {
         verify { updateCartUseCase.execute(any(), any()) }
     }
 
-    protected fun verifySetUserPreferenceUseCaseCalled(localCacheModel: LocalCacheModel) {
-        coVerify { setUserPreferenceUseCase.execute(localCacheModel) }
+    protected fun verifySetUserPreferenceUseCaseCalled(
+        localCacheModel: LocalCacheModel,
+        serviceType: String
+    ) {
+        coVerify { setUserPreferenceUseCase.execute(localCacheModel, serviceType) }
     }
 
     protected fun onGetTicker_thenReturn(tickerResponse: TickerResponse) {
@@ -378,11 +381,11 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun onSetUserPreference_thenReturn(userPreferenceData: SetUserPreferenceData) {
-        coEvery { setUserPreferenceUseCase.execute(any()) } returns userPreferenceData
+        coEvery { setUserPreferenceUseCase.execute(any(), any()) } returns userPreferenceData
     }
 
     protected fun onSetUserPreference_thenReturn(error: Throwable) {
-        coEvery { setUserPreferenceUseCase.execute(any()) } throws error
+        coEvery { setUserPreferenceUseCase.execute(any(), any()) } throws error
     }
 
     protected fun addHomeLayoutItem(item: HomeLayoutItemUiModel) {

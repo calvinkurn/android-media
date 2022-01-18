@@ -2400,17 +2400,21 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `when switchService success should set live data value success`() {
-        val serviceType = "15m"
-        val localCacheModel = LocalCacheModel()
+    fun `given current serviceType 15m when switchService success should switch service to 2h`() {
+        val currentServiceType = "15m"
+
+        val localCacheModel = LocalCacheModel(
+            service_type = currentServiceType
+        )
+
         val userPreferenceData = SetUserPreferenceData(
             shopId = "1",
             warehouseId = "2",
-            serviceType = serviceType,
+            serviceType = "2h",
             warehouses = listOf(
                 WarehouseData(
                     warehouseId = "2",
-                    serviceType = serviceType
+                    serviceType = "2h"
                 )
             )
         )
@@ -2422,16 +2426,64 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         val expectedResult = Success(SetUserPreferenceData(
             shopId = "1",
             warehouseId = "2",
-            serviceType = serviceType,
+            serviceType = "2h",
             warehouses = listOf(
                 WarehouseData(
                     warehouseId = "2",
-                    serviceType = serviceType
+                    serviceType = "2h"
                 )
             )
         ))
 
-        verifySetUserPreferenceUseCaseCalled(localCacheModel)
+        verifySetUserPreferenceUseCaseCalled(
+            localCacheModel = localCacheModel,
+            serviceType = "2h"
+        )
+
+        viewModel.setUserPreference
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `given current serviceType 2h when switchService success should switch service to 15m`() {
+        val currentServiceType = "2h"
+
+        val localCacheModel = LocalCacheModel(
+            service_type = currentServiceType
+        )
+
+        val userPreferenceData = SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "2",
+            serviceType = "15m",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "15m"
+                )
+            )
+        )
+
+        onSetUserPreference_thenReturn(userPreferenceData)
+
+        viewModel.switchService(localCacheModel)
+
+        val expectedResult = Success(SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "2",
+            serviceType = "15m",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "15m"
+                )
+            )
+        ))
+
+        verifySetUserPreferenceUseCaseCalled(
+            localCacheModel = localCacheModel,
+            serviceType = "15m"
+        )
 
         viewModel.setUserPreference
             .verifySuccessEquals(expectedResult)
@@ -2439,7 +2491,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `when switchService error should set live data value fail`() {
-        val localCacheModel = LocalCacheModel()
+        val localCacheModel = LocalCacheModel(
+            service_type = "2h"
+        )
         val error = NullPointerException()
 
         onSetUserPreference_thenReturn(error)
@@ -2448,7 +2502,10 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         val expectedResult = Fail(NullPointerException())
 
-        verifySetUserPreferenceUseCaseCalled(localCacheModel)
+        verifySetUserPreferenceUseCaseCalled(
+            localCacheModel = localCacheModel,
+            serviceType = "15m"
+        )
 
         viewModel.setUserPreference
             .verifyErrorEquals(expectedResult)
