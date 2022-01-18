@@ -6,6 +6,7 @@ import java.io.File
 @SuppressLint("ResponseFieldAnnotation")
 data class PickerParam(
     var limit: Int = 5,
+    var maxVideoDuration: Int = 30000, // in interval, 30 sec
     var isFolderMode: Boolean = true,
     var isIncludeVideo: Boolean = true,
     var isOnlyVideo: Boolean = false,
