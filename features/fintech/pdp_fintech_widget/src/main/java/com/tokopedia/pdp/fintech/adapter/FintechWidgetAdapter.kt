@@ -28,6 +28,14 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+
+        chipsData[position].gatewayId?.let {
+            if(it == 0) {
+                holder.dummyView.visibility = View.GONE
+                holder.seeMoreIcon.visibility = View.VISIBLE
+            }
+        }
+
         chipsData[position].header?.let {
             if(it.isNotBlank())
                 holder.headerPartner.text = it.parseAsHtml()
@@ -38,30 +46,30 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
         }
 
         chipsData[position].subheaderColor?.let {
-            if(it.equals("green",true))
-            {
-                holder.subheaderPartner.setTextColor( ContextCompat.getColor(context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500))
+            when {
+                it.equals("green",true) -> {
+                    holder.subheaderPartner.setTextColor( ContextCompat.getColor(context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500))
 
-                holder.subheaderPartner.fontType = Typography.BOLD
-            }
-            else if(it.equals("red",true))
-            {
-                holder.subheaderPartner.setTextColor( ContextCompat.getColor(context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500))
-                holder.subheaderPartner.fontType = Typography.BOLD
+                    holder.subheaderPartner.fontType = Typography.BOLD
+                }
+                it.equals("red",true) -> {
+                    holder.subheaderPartner.setTextColor( ContextCompat.getColor(context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                    holder.subheaderPartner.fontType = Typography.BOLD
 
-            }
-            else {
-                holder.subheaderPartner.setTextColor(
-                    ContextCompat.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                }
+                else -> {
+                    holder.subheaderPartner.setTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                        )
+
                     )
+                    holder.subheaderPartner.fontType = Typography.REGULAR
 
-                )
-                holder.subheaderPartner.fontType = Typography.REGULAR
-
+                }
             }
         }
 
@@ -121,10 +129,11 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
 
-        val widegetCard = itemView.findViewById<ConstraintLayout>(R.id.cardContent)
         val partnerIcon = itemView.findViewById<ImageUnify>(R.id.partnerIcon)
         val headerPartner = itemView.findViewById<Typography>(R.id.chipHeader)
         val subheaderPartner = itemView.findViewById<Typography>(R.id.chipSubHeader)
+        val seeMoreIcon = itemView.findViewById<ImageUnify>(R.id.seeMore_Icon)
+        val dummyView = itemView.findViewById<View>(R.id.dummyViewForMargin)
         init {
 
 

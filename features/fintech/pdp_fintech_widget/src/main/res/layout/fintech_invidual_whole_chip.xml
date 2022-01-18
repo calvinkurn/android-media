@@ -10,9 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:id="@+id/card"
-        app:card_type="shadow"
-
-        >
+        app:card_type="shadow">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
@@ -35,35 +33,66 @@
                 android:id="@+id/chipHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/pdp_fintech_4_dp"
                 android:layout_marginTop="@dimen/pfp_fintech_10_dp"
                 app:layout_goneMarginLeft="@dimen/pfp_fintech_10_dp"
-                tools:text="Rp1.dsf250*10."
+                android:textAlignment="textStart"
                 android:textColor="@color/Unify_N700_96"
-                android:textStyle="normal"
+                app:layout_goneMarginStart="@dimen/unify_space_16"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:paddingRight="@dimen/pfp_fintech_10_dp"
-                app:layout_goneMarginBottom="@dimen/dp_10"
                 app:layout_constraintBottom_toTopOf="@+id/chipSubHeader"
                 app:layout_constraintLeft_toRightOf="@id/partnerIcon"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="body_3" />
+                app:layout_goneMarginBottom="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/unify_space_8"
+                app:typographyType="body_3"
+                tools:text="Rp1.dsf250*10." />
 
             <com.tokopedia.unifyprinciples.Typography
 
                 android:id="@+id/chipSubHeader"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/pdp_fintech_4_dp"
                 android:layout_marginBottom="@dimen/pdp_fintech_7_dp"
-                android:paddingRight="@dimen/pfp_fintech_10_dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/partnerIcon"
                 app:layout_constraintTop_toBottomOf="@+id/chipHeader"
                 app:layout_goneMarginLeft="@dimen/pfp_fintech_10_dp"
                 app:layout_goneMarginRight="@dimen/dp_40"
                 app:typographyType="small"
+                android:layout_marginLeft="@dimen/unify_space_8"
                 tools:text="credit available: Rp 9.500" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="right"
+                app:constraint_referenced_ids="chipHeader,chipSubHeader" />
+
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/seeMore_Icon"
+                android:layout_width="wrap_content"
+                android:layout_marginRight="@dimen/unify_space_16"
+                android:layout_height="wrap_content"
+                android:src="@drawable/procced_seemore"
+                android:visibility="gone"
+                android:layout_marginLeft="@dimen/unify_space_16"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/barrier"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/dummyViewForMargin"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/barrier"
+                android:layout_marginLeft="@dimen/unify_space_16"
+                />
 
 
 
