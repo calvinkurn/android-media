@@ -2,6 +2,7 @@ package com.tokopedia.promocheckoutmarketplace.presentation
 
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.promocheckoutmarketplace.data.response.PromoInfo
+import com.tokopedia.promocheckoutmarketplace.data.response.SubSection
 
 object IconHelper {
 
@@ -24,6 +25,21 @@ object IconHelper {
             }
             PromoInfo.ICON_TOKO_MEMBER -> {
                 return IconUnify.TOKOMEMBER
+            }
+            SubSection.ICON_COUPON -> {
+                return IconUnify.COUPON
+            }
+            SubSection.ICON_BADGE_OS_FILLED -> {
+                return IconUnify.BADGE_OS_FILLED
+            }
+            SubSection.ICON_BADGE_PMPRO_FILLED -> {
+                return IconUnify.BADGE_PMPRO_FILLED
+            }
+            SubSection.ICON_BADGE_PM_FILLED -> {
+                return IconUnify.BADGE_PM_FILLED
+            }
+            SubSection.ICON_SHOP_FILLED -> {
+                return IconUnify.SHOP_FILLED
             }
             else -> return -1
         }

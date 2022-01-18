@@ -87,29 +87,12 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                         coupon_sections {
                             title
                             sub_title
-                            icon_url
                             is_enabled
                             id
-                            coupon_groups {
-                                id
-                                count
-                            }
-                            coupons {
-                                code
-                                title
-                                message
-                                coupon_app_link
-                                unique_id
-                                shop_id
-                                benefit_amount
-                                is_recommended
-                                is_selected
-                                is_attempted
-                            }
                             sub_sections {
                                 title
                                 sub_title
-                                icon_url
+                                icon_unify
                                 is_enabled
                                 id
                                 coupon_groups {

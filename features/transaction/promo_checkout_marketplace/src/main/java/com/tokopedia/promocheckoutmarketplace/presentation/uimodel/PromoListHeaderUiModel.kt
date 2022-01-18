@@ -15,7 +15,7 @@ class PromoListHeaderUiModel(
     data class UiData(
             var title: String = "",
             var subTitle: String = "",
-            var iconUrl: String = "",
+            var iconUnify: String = "",
             var identifierId: Int = 0,
             var tabId: String = ""
     )

@@ -112,14 +112,10 @@ data class CouponSection(
         val title: String = "",
         @SerializedName("sub_title")
         val subTitle: String = "",
-        @SerializedName("icon_url")
-        val iconUrl: String = "",
         @SerializedName("is_enabled")
         val isEnabled: Boolean = false,
         @SerializedName("sub_sections")
-        val subSections: List<SubSection> = emptyList(),
-        @SerializedName("coupon_groups")
-        val couponGroups: List<CouponGroup> = emptyList()
+        val subSections: List<SubSection> = emptyList()
 )
 
 data class CouponGroup(
@@ -136,15 +132,23 @@ data class SubSection(
         val title: String = "",
         @SerializedName("sub_title")
         val subTitle: String = "",
-        @SerializedName("icon_url")
-        val iconUrl: String = "",
+        @SerializedName("icon_unify")
+        val iconUnify: String = "",
         @SerializedName("is_enabled")
         val isEnabled: Boolean = false,
         @SerializedName("coupons")
         val coupons: List<Coupon> = emptyList(),
         @SerializedName("coupon_groups")
         val couponGroups: List<CouponGroup> = emptyList()
-)
+) {
+    companion object {
+        const val ICON_COUPON = "COUPON"
+        const val ICON_BADGE_OS_FILLED = "BADGE_OS_FILLED"
+        const val ICON_BADGE_PMPRO_FILLED = "BADGE_PMPRO_FILLED"
+        const val ICON_BADGE_PM_FILLED = "BADGE_PM_FILLED"
+        const val ICON_SHOP_FILLED = "SHOP_FILLED"
+    }
+}
 
 data class Coupon(
         @SerializedName("code")

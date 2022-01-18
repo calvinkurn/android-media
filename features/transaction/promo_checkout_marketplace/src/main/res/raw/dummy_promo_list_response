@@ -49,7 +49,7 @@
             {
               "title": "Kupon saya",
               "sub_title": "Promo dipilih",
-              "icon_url": "https://ecs7.tokopedia.net/img/blog/promo/2021/12/My-Coupons.png",
+              "icon_unify": "COUPON",
               "is_enabled": true,
               "tags": [],
               "id": "my_coupons",
@@ -1488,7 +1488,7 @@
             {
               "title": "tokotokoan123456",
               "sub_title": "Promo dipilih",
-              "icon_url": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
+              "icon_unify": "BADGE_OS_FILLED",
               "is_enabled": true,
               "tags": [],
               "id": "merchant_vouchers",
@@ -1868,7 +1868,7 @@
             {
               "title": "Kupon saya",
               "sub_title": "Promo dipilih",
-              "icon_url": "https://ecs7.tokopedia.net/img/blog/promo/2021/12/My-Coupons.png",
+              "icon_unify": "COUPON",
               "is_enabled": false,
               "tags": [],
               "id": "ineligible_coupons",
