@@ -51,18 +51,12 @@ class RealTimeNotificationViewComponent(
     )
 
     private val showListener = object : DefaultAnimatorListener() {
-        override fun onAnimationStart(animation: Animator) {
-        }
-
         override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
             animation.removeListener(this)
         }
     }
 
     private val hideListener = object : DefaultAnimatorListener() {
-        override fun onAnimationStart(animation: Animator?, isReverse: Boolean) {
-        }
-
         override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
             animation.removeListener(this)
         }
