@@ -55,7 +55,7 @@ class WebSocketLoggingViewModel @Inject constructor(
 
     fun submitAction(action: WebSocketLoggingAction) {
         when(action) {
-            WebSocketLoggingAction.InitPage -> handleInitPage()
+            WebSocketLoggingAction.InitPage -> handleSearch("")
             is WebSocketLoggingAction.SearchLogAction -> handleSearch(action.query)
             WebSocketLoggingAction.LoadNextPageAction -> handleLoadNextPage()
             WebSocketLoggingAction.DeleteAllLogAction -> handleDeleteAllLog()
@@ -66,18 +66,9 @@ class WebSocketLoggingViewModel @Inject constructor(
     /**
      * Handling Action
      */
-    private fun handleInitPage() {
-        viewModelScope.launchCatchError(block = {
-            getSourceList()
-            searchData("")
-        }) {
-            setLoading(false)
-            emitErrorMessage(it.message)
-        }
-    }
-
     private fun handleSearch(query: String) {
         viewModelScope.launchCatchError(block = {
+            getSourceList()
             searchData(query)
         }) {
             setLoading(false)
@@ -165,7 +156,13 @@ class WebSocketLoggingViewModel @Inject constructor(
     private suspend fun getSourceList() {
         if(!isLoading()) {
             setLoading(true)
-            _chips.value = getSourcesLogUseCase.executeOnBackground()
+
+            val newChips = getSourcesLogUseCase.executeOnBackground()
+            val selectedChip = getSelectedSource()
+
+            newChips.forEach { it.selected = it.value == selectedChip }
+
+            _chips.value = newChips
             setLoading(false)
         }
     }

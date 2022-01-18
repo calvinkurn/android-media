@@ -206,21 +206,13 @@ abstract class BaseTopChatRoomPresenterTest {
         mockSingletonObject()
         presenter = spyk(
             TopChatRoomPresenter(
-                tkpdAuthInterceptor,
-                fingerprintInterceptor,
                 userSession,
-                webSocketUtil,
                 topChatRoomWebSocketMessageMapper,
                 getTemplateChatRoomUseCase,
-                replyChatUseCase,
-                compressImageUseCase,
-                uploadImageUseCase,
                 dispatchers,
-                remoteConfig
             )
         )
         presenter.attachView(view)
-        presenter.autoRetryConnectWs = false
         listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
         wsReconnect = WebSocketInfo.createReconnect("Some Error Comes Up")
         wsOpen = WebSocketInfo(webSocket, true)

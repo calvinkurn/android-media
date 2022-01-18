@@ -34,6 +34,7 @@ public class TkpdBaseInterceptor implements Interceptor {
             while (response.code() >= SERVER_ERROR_500 && response.code() <= SERVER_ERROR_599
                     && count < maxRetryAttempt) {
                 count++;
+                response.close();
                 response = chain.proceed(request);
             }
             return response;

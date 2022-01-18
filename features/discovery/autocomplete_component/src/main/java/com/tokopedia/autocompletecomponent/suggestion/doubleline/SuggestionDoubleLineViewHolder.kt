@@ -63,7 +63,14 @@ class SuggestionDoubleLineViewHolder(
     }
 
     private fun bindSubtitle(item: BaseSuggestionDataView) {
-        itemView.doubleLineSubtitle?.setTextAndCheckShow(MethodChecker.fromHtml(item.subtitle).toString())
+        itemView.doubleLineSubtitle?.setTextAndCheckShow(getSubtitle(item))
+    }
+
+    private fun getSubtitle(item: BaseSuggestionDataView): String {
+        val isAds = item.shopAdsDataView != null
+
+        return if (isAds) getString(com.tokopedia.topads.sdk.R.string.title_promote_by)
+        else MethodChecker.fromHtml(item.subtitle).toString()
     }
 
     private fun bindTextTitle(item: SuggestionDoubleLineDataDataView) {
@@ -115,7 +122,7 @@ class SuggestionDoubleLineViewHolder(
 
     private fun highlightTitleAfterKeyword(highlightedTitle: SpannableString, item: BaseSuggestionDataView) {
         val highlightAfterKeywordStartIndex = searchQueryStartIndexInKeyword + (item.searchTerm.length)
-        val highlightAfterKeywordEndIndex = item.title.length
+        val highlightAfterKeywordEndIndex = highlightedTitle.length
 
         highlightedTitle.safeSetSpan(
             StyleSpan(Typeface.BOLD),
