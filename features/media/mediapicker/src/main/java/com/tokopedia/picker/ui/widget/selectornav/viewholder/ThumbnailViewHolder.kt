@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.picker.R
 import com.tokopedia.picker.data.entity.Media
 import com.tokopedia.picker.databinding.ViewItemSelectionThumbnailBinding
-import com.tokopedia.picker.utils.getVideoDurationLabel
+import com.tokopedia.picker.utils.videoDurationFromUri
 import com.tokopedia.picker.utils.isVideoFormat
 import com.tokopedia.picker.utils.pickerLoadImage
 import com.tokopedia.utils.view.binding.viewBinding
@@ -29,7 +29,7 @@ class ThumbnailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         }
 
         if (isVideoFormat(media.path)) {
-            val durationVideo = getVideoDurationLabel(context, Uri.parse(media.path))
+            val durationVideo = videoDurationFromUri(context, Uri.parse(media.path))
             binding?.tvDuration?.text = durationVideo
             binding?.tvDuration?.show()
         } else {
