@@ -128,6 +128,8 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                          type
                                          title
                                          icon
+                                         validation_type
+                                         methods
                                     }
                                 }
                             }

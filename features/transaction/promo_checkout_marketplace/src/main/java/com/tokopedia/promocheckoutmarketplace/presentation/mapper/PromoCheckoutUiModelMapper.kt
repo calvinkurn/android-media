@@ -154,6 +154,12 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     } else {
                         couponSection.id
                     }
+                    promoInfos.firstOrNull { it.validationType == PromoInfo.VALIDATION_TYPE_SHIPPING }?.let {
+                        shippingOptions = it.methods.joinToString(",")
+                    }
+                    promoInfos.firstOrNull { it.validationType == PromoInfo.VALIDATION_TYPE_PAYMENT }?.let {
+                        paymentOptions = it.methods.joinToString(",")
+                    }
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
                     isParentEnabled = couponSubSection.isEnabled

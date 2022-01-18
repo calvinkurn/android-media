@@ -193,9 +193,16 @@ data class PromoInfo(
         @SerializedName("title")
         val title: String = "",
         @SerializedName("icon")
-        val icon: String = ""
+        val icon: String = "",
+        @SerializedName("validation_type")
+        val validationType: String = "",
+        @SerializedName("methods")
+        val methods: List<String> = emptyList()
 ) {
     companion object {
+        const val VALIDATION_TYPE_SHIPPING = "shipping"
+        const val VALIDATION_TYPE_PAYMENT = "payment"
+
         const val TYPE_TOP_BANNER = "top_banner"
         const val TYPE_PROMO_INFO = "promo_info"
         const val TYPE_BOTTOM_BANNER = "bottom_banner"
