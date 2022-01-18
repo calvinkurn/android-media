@@ -1,22 +1,17 @@
 package com.tokopedia.tokopedianow.home.presentation.view.listener
 
 import android.content.Context
-import android.net.Uri
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.tokopedianow.common.util.TokoNowSwitcherUtil.switchService
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 
 class DynamicLegoBannerCallback(
     private val context: Context,
     private val viewModel: TokoNowHomeViewModel
 ): DynamicLegoBannerListener {
-
-    companion object {
-        private const val PARAM_TOKONOW_REFRESH = "tokonow_refresh"
-    }
 
     override fun onSeeAllSixImage(channelModel: ChannelModel, position: Int) {
         RouteManager.route(context,
@@ -37,17 +32,16 @@ class DynamicLegoBannerCallback(
     }
 
     override fun onClickGridSixImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-        val gridParams = Uri.parse("?${channelGrid.param}")
-        val tokoNowRefresh = gridParams.getQueryParameter(PARAM_TOKONOW_REFRESH).toBoolean()
-
-        if(tokoNowRefresh) {
-            val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(context)
-            viewModel.switchService(localCacheModel)
-        } else {
-            RouteManager.route(context,
-                if (channelGrid.applink.isNotEmpty())
-                    channelGrid.applink else channelGrid.url)
-        }
+        switchService(
+            context = context,
+            param = channelGrid.param,
+            onRefresh = {
+                viewModel.switchService(it)
+            },
+            onMove = {
+                RouteManager.route(it, if (channelGrid.applink.isNotEmpty()) channelGrid.applink else channelGrid.url)
+            }
+        )
     }
 
     override fun onClickGridFourImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {

@@ -1,13 +1,13 @@
 package com.tokopedia.tokopedianow.home.presentation.view.listener
 
 import android.content.Context
-import android.net.Uri
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.tokopedianow.common.util.TokoNowSwitcherUtil.switchService
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 
@@ -18,10 +18,6 @@ class BannerComponentCallback(
     private val userId: String
 ): BannerComponentListener {
 
-    companion object {
-        private const val PARAM_TOKONOW_REFRESH = "tokonow_refresh"
-    }
-
     private val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(context)
 
     override fun onBannerClickListener(
@@ -31,14 +27,16 @@ class BannerComponentCallback(
     ) {
         analytics.onClickBannerPromo(position, userId, channelModel, channelGrid)
 
-        val gridParams = Uri.parse("?${channelGrid.param}")
-        val tokoNowRefresh = gridParams.getQueryParameter(PARAM_TOKONOW_REFRESH).toBoolean()
-        if(tokoNowRefresh) {
-            val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(context)
-            viewModel.switchService(localCacheModel)
-        } else {
-            RouteManager.route(context, channelGrid.applink)
-        }
+        switchService(
+            context = context,
+            param = channelGrid.param,
+            onRefresh = {
+                viewModel.switchService(it)
+            },
+            onMove = {
+                RouteManager.route(it, channelGrid.applink)
+            }
+        )
     }
 
     override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {

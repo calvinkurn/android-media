@@ -1,7 +1,6 @@
 package com.tokopedia.tokopedianow.searchcategory.presentation.view
 
 import android.content.Context
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.SparseIntArray
@@ -69,6 +68,7 @@ import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.util.TokoNowSwitcherUtil.switchService
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
@@ -565,12 +565,17 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onBannerClick(channelModel: ChannelModel, applink: String, param: String) {
-        val gridParams = Uri.parse("?${param}")
-        val tokoNowRefresh = gridParams.getQueryParameter(PARAM_TOKONOW_REFRESH).toBoolean()
-        if(tokoNowRefresh) {
-            getViewModel().setUserPreference()
-        } else {
-            RouteManager.route(context, applink)
+        context?.let { context ->
+            switchService(
+                context = context,
+                param = param,
+                onRefresh = {
+                    getViewModel().setUserPreference()
+                },
+                onMove = {
+                    RouteManager.route(it, applink)
+                }
+            )
         }
     }
 
