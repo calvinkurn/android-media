@@ -22,10 +22,12 @@ object PickerUiConfig {
     fun pickerParam(): PickerParam {
         val isOnlyVideo = paramMode == PickerModeType.VIDEO_ONLY
         val isIncludeVideo = paramMode == PickerModeType.COMMON
+        val isMultipleSelection = paramType == PickerSelectionType.MULTIPLE
 
         return pickerParam ?: PickerParam(
+            isOnlyVideo = isOnlyVideo,
             isIncludeVideo = isIncludeVideo,
-            isOnlyVideo = isOnlyVideo
+            isMultipleSelection = isMultipleSelection,
         ).also {
             pickerParam = it
         }

@@ -10,6 +10,7 @@ data class PickerParam(
     var isIncludeVideo: Boolean = true,
     var isOnlyVideo: Boolean = false,
     var isIncludeAnimation: Boolean = false,
+    var isMultipleSelection: Boolean = true,
     var excludedImages: List<File> = emptyList(),
     var cameraRatio: CameraRatio = CameraRatio.Full
 )

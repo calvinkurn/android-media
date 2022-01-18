@@ -3,9 +3,10 @@ package com.tokopedia.picker.ui.fragment.camera
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.*
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.view.GestureDetector
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraOptions
 import com.otaliastudios.cameraview.PictureResult
@@ -16,22 +17,18 @@ import com.otaliastudios.cameraview.controls.Mode
 import com.otaliastudios.cameraview.gesture.Gesture
 import com.otaliastudios.cameraview.gesture.GestureAction
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.common.component.uiComponent
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.picker.R
 import com.tokopedia.picker.databinding.FragmentCameraBinding
 import com.tokopedia.picker.ui.PickerUiConfig
-import com.tokopedia.picker.ui.fragment.camera.recyclers.adapter.CameraSliderAdapter
-import com.tokopedia.picker.ui.fragment.camera.recyclers.managers.SliderLayoutManager
+import com.tokopedia.picker.ui.fragment.camera.component.CameraControllerComponent
 import com.tokopedia.picker.utils.exceptionHandler
-import com.tokopedia.unifycomponents.dpToPx
+import com.tokopedia.picker.utils.wrapper.FlingGestureWrapper
 import com.tokopedia.utils.view.binding.viewBinding
-import kotlin.math.abs
 
-open class CameraFragment : BaseDaggerFragment()
-    , GestureDetector.OnGestureListener
-    , ViewTreeObserver.OnScrollChangedListener {
+open class CameraFragment : BaseDaggerFragment(), CameraControllerComponent.Listener {
 
     private val param = PickerUiConfig.pickerParam()
 
@@ -41,8 +38,21 @@ open class CameraFragment : BaseDaggerFragment()
     private var flashList = arrayListOf<Flash>()
     private var flashIndex = 0
 
+    private var isPhotoMode = true
+
+    private val cameraController by uiComponent {
+        CameraControllerComponent(param, this, it)
+    }
+
     val gestureDetector by lazy {
-        GestureDetector(requireContext(), this)
+        GestureDetector(requireContext(), FlingGestureWrapper(
+            swipeLeftToRight = {
+                cameraController.scrollToVideoMode()
+            },
+            swipeRightToLeft = {
+                cameraController.scrollToPhotoMode()
+            }
+        ))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,52 +77,9 @@ open class CameraFragment : BaseDaggerFragment()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
+        setupCameraView()
+        cameraController.setupView()
     }
-
-    override fun onDown(e: MotionEvent?) = true
-
-    override fun onFling(
-        start: MotionEvent,
-        finish: MotionEvent,
-        velocityX: Float,
-        velocityY: Float
-    ): Boolean {
-        val swipeMaxOff = 250
-        val swipeMinDistance = 120
-        val swipeThresholdVelocity = 200
-
-        if (abs(start.y - finish.y) > swipeMaxOff) return false
-
-        if ((start.x - finish.x) > swipeMinDistance && abs(velocityX) > swipeThresholdVelocity) {
-            swipeLeftToRight()
-        } else if ((finish.x - start.x) > swipeMinDistance && abs(velocityX) > swipeThresholdVelocity) {
-            swipeRightToLeft()
-        }
-
-        return true
-    }
-
-    private fun swipeLeftToRight() {
-        binding?.lstCameraMode?.smoothScrollToPosition(1)
-    }
-
-    private fun swipeRightToLeft() {
-        binding?.lstCameraMode?.smoothScrollToPosition(0)
-    }
-
-    override fun onScroll(
-        e1: MotionEvent?,
-        e2: MotionEvent?,
-        distanceX: Float,
-        distanceY: Float
-    ): Boolean = false
-
-    override fun onLongPress(e: MotionEvent?) {}
-
-    override fun onShowPress(e: MotionEvent?) {}
-
-    override fun onSingleTapUp(e: MotionEvent?) = true
 
     override fun onResume() {
         super.onResume()
@@ -128,85 +95,21 @@ open class CameraFragment : BaseDaggerFragment()
         }
     }
 
+    override fun onCameraModeChanged(mode: Int) {
+        isPhotoMode = mode == CameraControllerComponent.PHOTO_MODE
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         exceptionHandler {
             cameraView?.destroy()
-            if (param.isIncludeVideo) {
-                binding?.lstCameraMode?.viewTreeObserver?.removeOnScrollChangedListener(this)
-            }
+            cameraController.release()
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt(CACHE_FLASH_INDEX, flashIndex)
-    }
-
-    override fun onScrollChanged() {
-        val activePosition = (binding?.lstCameraMode?.layoutManager as LinearLayoutManager)
-            .findLastCompletelyVisibleItemPosition()
-
-        if (activePosition == -1) return
-
-        if (activePosition == 0) {
-            photoModeUi()
-        } else if (activePosition == 1) {
-            videoModeUi()
-        }
-    }
-
-    private fun initView() {
-        setupCameraView()
-        setupCameraModeUiState()
-
-        binding?.btnFlip?.setOnClickListener(::switchCameraClicked)
-        binding?.btnFlash?.setOnClickListener(::cameraFlashClicked)
-
-        binding?.btnTakeCamera?.setOnClickListener {
-            binding?.containerBlink?.show()
-            Handler(Looper.getMainLooper()).postDelayed({
-                binding?.containerBlink?.hide()
-            }, 200)
-        }
-    }
-
-    private fun setupCameraModeUiState() {
-        when {
-            param.isIncludeVideo -> horizontalPicker()
-            param.isOnlyVideo -> videoModeUi()
-            else -> photoModeUi()
-        }
-    }
-
-    private fun horizontalPicker() {
-        binding?.lstCameraMode?.show()
-        binding?.lstCameraMode?.viewTreeObserver?.addOnScrollChangedListener(this)
-
-        binding?.lstCameraMode?.also { recyclerView ->
-            // Camera mode element
-            val camerasMode = listOf("PHOTO", "VIDEO")
-
-            // Setting the padding such that the items will appear in the middle of the screen
-            val halfSizeOfItemWidth = 40f
-            val padding = (getScreenWidth() / 2 - halfSizeOfItemWidth.dpToPx()).toInt()
-
-            recyclerView.setPadding(padding, 0, padding, 0)
-
-            // Layout manager
-            recyclerView.layoutManager = SliderLayoutManager(requireContext())
-
-            recyclerView.adapter = CameraSliderAdapter(
-                camerasMode,
-                object : CameraSliderAdapter.Listener {
-                    override fun onItemClicked(view: View) {
-                        recyclerView.smoothScrollToPosition(
-                            recyclerView.getChildLayoutPosition(view)
-                        )
-                    }
-                }
-            )
-        }
     }
 
     private fun setupCameraView() {
@@ -220,14 +123,6 @@ open class CameraFragment : BaseDaggerFragment()
         }
     }
 
-    private fun photoModeUi() {
-        binding?.btnTakeCamera?.setBackgroundResource(R.drawable.bg_picker_camera_take_photo)
-    }
-
-    private fun videoModeUi() {
-        binding?.btnTakeCamera?.setBackgroundResource(R.drawable.bg_picker_camera_take_video)
-    }
-
     private fun initCameraViewListener() = object : CameraListener() {
         override fun onCameraOpened(options: CameraOptions) {
             super.onCameraOpened(options)
@@ -236,24 +131,41 @@ open class CameraFragment : BaseDaggerFragment()
 
         override fun onVideoTaken(result: VideoResult) {
             super.onVideoTaken(result)
+            cameraController.setThumbnailPreview(
+                result.file
+            )
         }
 
         override fun onPictureTaken(result: PictureResult) {
             super.onPictureTaken(result)
+
         }
     }
 
-    private fun switchCameraClicked(view: View) {
-        if (cameraView?.isTakingPicture == true || cameraView?.isTakingVideo == true) return
-        cameraView?.toggleFacing()
-    }
-
-    private fun cameraFlashClicked(view: View) {
+    override fun onFlashClicked() {
         if (flashList.size > 0) {
             flashIndex = (flashIndex + 1) % flashList.size
 
             setCameraFlash()
         }
+    }
+
+    override fun onFlipClicked() {
+        if (cameraView?.isTakingPicture == true || cameraView?.isTakingVideo == true) return
+        cameraView?.toggleFacing()
+    }
+
+    override fun onTakeMediaClicked() {
+        binding?.containerBlink?.show()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding?.containerBlink?.hide()
+            cameraController.startRecording()
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                cameraController.stopRecording()
+            }, 3000)
+        }, 200)
     }
 
     private fun initCameraFlash() {
@@ -267,7 +179,7 @@ open class CameraFragment : BaseDaggerFragment()
             }
         }
 
-        binding?.btnFlash?.shouldShowWithAction(flashList.isNotEmpty()) {
+        cameraController.setupFlashButtonState(flashList.isNotEmpty()) {
             setCameraFlash()
         }
     }
@@ -283,34 +195,10 @@ open class CameraFragment : BaseDaggerFragment()
         }
 
         cameraView?.set(flash)
-        setCameraFlashUIState(flash.ordinal)
-    }
 
-    private fun setCameraFlashUIState(enum: Int) {
-        val colorWhite = ContextCompat.getColor(
-            requireContext(),
-            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+        cameraController.setCameraFlashUIState(
+            flash.ordinal
         )
-
-        when (enum) {
-            Flash.AUTO.ordinal -> binding?.btnFlash?.setImageDrawable(
-                MethodChecker.getDrawable(activity, R.drawable.ic_picker_camera_flash)
-            )
-            Flash.ON.ordinal -> binding?.btnFlash?.setImage(
-                IconUnify.FLASH_ON,
-                colorWhite,
-                colorWhite,
-                colorWhite,
-                colorWhite
-            )
-            Flash.OFF.ordinal -> binding?.btnFlash?.setImage(
-                IconUnify.FLASH_OFF,
-                colorWhite,
-                colorWhite,
-                colorWhite,
-                colorWhite
-            )
-        }
     }
 
     override fun initInjector() {}
