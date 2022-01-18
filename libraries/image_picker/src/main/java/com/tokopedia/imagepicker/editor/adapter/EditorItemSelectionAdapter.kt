@@ -37,13 +37,8 @@ class EditorItemSelectionAdapter constructor(
         holder.bind(item)
 
         holder.itemView.setOnClickListener {
+            listener?.onItemSelected(position, item.placeholderBitmap, item.itemType)
             onItemSelected(position)
-
-            if (item.placeholderBitmap != null) {
-                listener?.onItemSelected(position, item.placeholderBitmap, item.itemType)
-            } else {
-                listener?.onItemSelected(position, null, item.itemType)
-            }
         }
     }
 
