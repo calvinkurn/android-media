@@ -13,12 +13,14 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecomErrorModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetViewModel
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGENAME_PDP_3
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -128,6 +130,46 @@ class TestRecomWidgetViewModel {
             Assert.assertTrue(viewModel.errorGetRecommendation.value?.pageName == pageName)
         }
 
+    @Test
+    fun `test load recommendation with chips then check success recommendation chips available`() =
+        runBlocking {
+            coEvery { getRecommendationUseCase.getData(any()) } returns listOf(
+                RecommendationWidget(
+                    recommendationItemList = listOf(recomItem),
+                    isTokonow = false
+                )
+            )
+
+            val recomFilterChip = RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Speaker")
+            val listFilterChip = listOf(
+                recomFilterChip)
+
+            coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listFilterChip
+            viewModel.loadRecommendationCarousel(pageName = PAGENAME_PDP_3, isTokonow = false)
+            val recomWidget = viewModel.getRecommendationLiveData.value
+            Assert.assertEquals(recomFilterChip,
+                recomWidget?.recommendationFilterChips?.get(0)
+                    ?: RecommendationFilterChipsEntity.RecommendationFilterChip()
+            )
+        }
+
+    @Test
+    fun `test load recommendation then check success recommendation chips available`() =
+        runBlocking {
+            coEvery { getRecommendationUseCase.getData(any()) } returns listOf()
+
+            val recomFilterChip = RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Speaker")
+            val listFilterChip = listOf(
+                recomFilterChip)
+
+            coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listFilterChip
+            viewModel.loadRecommendationCarousel(pageName = pageName, isTokonow = false)
+            val recomWidget = viewModel.getRecommendationLiveData.value
+            Assert.assertEquals(recomFilterChip,
+                recomWidget?.recommendationFilterChips?.get(0)
+                    ?: RecommendationFilterChipsEntity.RecommendationFilterChip()
+            )
+        }
 
     @Test
     fun `test add to cart non variant then return success cart data`() = runBlockingTest {
