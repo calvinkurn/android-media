@@ -1868,9 +1868,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     .appendQueryParameter(SOURCE_TYPE, VOD_POST)
                     .build().toString()
         }
-        //TODO enable this check
-//        if (feedXCard.media.isNotEmpty() && feedXCard.media.first().type == TYPE_LONG_VIDEO)
-        if (feedXCard.type == TYPE_FEED_X_CARD_LONG_VIDEO)
+
+        if (feedXCard.media.isNotEmpty() && feedXCard.media.first().type == TYPE_LONG_VIDEO)
             onVideoPlayerClicked(positionInFeed,0,feedXCard.id,feedXCard.media[0].mediaUrl,feedXCard.author.id,"",feedXCard.followers.isFollowed)
         else
             onGoToLink(finalApplink)

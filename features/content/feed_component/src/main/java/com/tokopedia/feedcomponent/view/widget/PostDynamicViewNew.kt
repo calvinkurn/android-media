@@ -850,7 +850,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     else
                         getRatioIfLandscape(feedXCard.mediaRatio)
 
-                    media.forEach { feedMedia ->
+                    media.forEachIndexed {  index, feedMedia ->
                         val tags = feedMedia.tagging
                         val tagProducts = mutableListOf<FeedXProduct>()
                         tags.map {
@@ -1105,7 +1105,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     feedXCard.typename,
                                     feedXCard.followers.isFollowed,
                                     feedXCard.author.name,
-                                    ratio
+                                    ratio,
+                                    index
+
                             )?.let {
                                 addItem(
                                         it
@@ -1164,8 +1166,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     pageControl.hide()
                 }
                 var ratio = VOD_VIDEO_RATIO
-//                if (feedXCard.media.isNotEmpty() && feedXCard.media.first().type == TYPE_LONG_VIDEO) {
-                if (feedXCard.type == TYPE_FEED_X_CARD_LONG_VIDEO) {
+
+                 if (feedXCard.media.isNotEmpty() && feedXCard.media.first().type == TYPE_LONG_VIDEO) {
                     val orientation = getOrientation(feedXCard.mediaRatio)
                     ratio = if (orientation == PORTRAIT)
                         getRatioIfPortrait(feedXCard.mediaRatio)
@@ -1222,7 +1224,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         type: String,
         isFollowed: Boolean,
         shopName: String,
-        ratio: String
+        ratio: String,
+        position: Int
     ): View? {
         val postId = feedXCard.id
         val videoItem = getVideoItem()
@@ -1230,6 +1233,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         feedMedia.videoView = videoItem
         videoItem?.run {
 
+            val playButtonVideo = findViewById<ImageView>(R.id.ic_play)
             val layoutVideo = findViewById<ConstraintLayout>(R.id.layout_main)
             val videoPreviewImage = findViewById<ImageUnify>(R.id.videoPreviewImage)
             val videoView = findViewById<View>(R.id.video_view)
@@ -1247,15 +1251,18 @@ class PostDynamicViewNew @JvmOverloads constructor(
             constraintSetForVideoLayout.applyTo(layoutFrameView)
 
             videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
-            video_lihat_product?.setOnClickListener {
-                listener?.let { listener ->
-                    listener.onTagClicked(
-                            postId.toIntOrZero(),
-                            products,
-                            listener,
-                            id,
-                            type,
-                            isFollowed,
+            playButtonVideo?.setOnClickListener {
+                playVideo(feedXCard, position)
+                }
+                video_lihat_product?.setOnClickListener {
+                    listener?.let { listener ->
+                        listener.onTagClicked(
+                                postId.toIntOrZero(),
+                                products,
+                                listener,
+                                id,
+                                type,
+                                isFollowed,
                             true,
                             positionInFeed,
                             shopName = shopName
@@ -1735,9 +1742,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             gridList.setPadding(0, 0, 0, 0)
         } else {
             gridList.setPadding(
-                gridList.getDimens(R.dimen.dp_3),
+                gridList.getDimens(com.tokopedia.feedcomponent.R.dimen.dp_3),
                 0,
-                gridList.getDimens(R.dimen.dp_3),
+                gridList.getDimens(com.tokopedia.feedcomponent.R.dimen.dp_3),
                 0
             )
         }
