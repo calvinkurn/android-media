@@ -33,12 +33,14 @@ class GetShopPenaltyDetailMergeUseCaseStub(
         val startDate =
             format(getPastDaysPenaltyTimeStamp().time, ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
         val endDate = format(getNowTimeStamp(), ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
+        val sortBy = 0
+        val typeId = 0
 
         return penaltyMapperStub.mapToPenaltyData(
             shopScorePenaltySummaryWrapper,
             penaltyDetailResponse,
-            0,
-            0,
+            sortBy,
+            typeId,
             Pair(startDate, endDate)
         )
     }
