@@ -60,8 +60,8 @@ abstract class BaseTopChatRoomPresenterTest {
     @RelaxedMockK
     protected lateinit var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase
 
-    @RelaxedMockK
-    protected lateinit var replyChatUseCase: ReplyChatUseCase
+//    @RelaxedMockK
+//    protected lateinit var replyChatUseCase: ReplyChatUseCase
 
     @RelaxedMockK
     protected lateinit var compressImageUseCase: CompressImageUseCase
@@ -95,7 +95,7 @@ abstract class BaseTopChatRoomPresenterTest {
     @SpyK
     protected var topChatRoomWebSocketMessageMapper = TopChatRoomWebSocketMessageMapper()
 
-    protected lateinit var presenter: TopChatRoomPresenter
+//    protected lateinit var presenter: TopChatRoomPresenter
 
     protected lateinit var listInterceptor: ArrayList<Interceptor>
 
@@ -204,15 +204,15 @@ abstract class BaseTopChatRoomPresenterTest {
         MockKAnnotations.init(this)
         UploadImageChatService.dummyMap.clear()
         mockSingletonObject()
-        presenter = spyk(
-            TopChatRoomPresenter(
-                userSession,
-                topChatRoomWebSocketMessageMapper,
-                getTemplateChatRoomUseCase,
-                dispatchers,
-            )
-        )
-        presenter.attachView(view)
+//        presenter = spyk(
+//            TopChatRoomPresenter(
+//                userSession,
+//                topChatRoomWebSocketMessageMapper,
+//                getTemplateChatRoomUseCase,
+//                dispatchers,
+//            )
+//        )
+//        presenter.attachView(view)
         listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
         wsReconnect = WebSocketInfo.createReconnect("Some Error Comes Up")
         wsOpen = WebSocketInfo(webSocket, true)

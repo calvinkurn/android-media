@@ -258,10 +258,6 @@ class TopChatViewModel @Inject constructor(
     val templateChat: LiveData<Result<ArrayList<Visitable<Any>>>>
         get() = _templateChat
 
-    private val _compressImageError = MutableLiveData<Int>()
-    val compressImageError: LiveData<Int>
-        get() = _compressImageError
-
     var attachProductWarehouseId = "0"
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     var roomMetaData: RoomMetaData = RoomMetaData()
@@ -1090,12 +1086,12 @@ class TopChatViewModel @Inject constructor(
                 }
             } else {
                 when (isValidImage.second) {
-                    ImageUtil.IMAGE_UNDERSIZE -> _compressImageError.value = R.string.undersize_image
-                    ImageUtil.IMAGE_EXCEED_SIZE_LIMIT -> _compressImageError.value = R.string.oversize_image
+                    ImageUtil.IMAGE_UNDERSIZE -> showErrorSnackbar(R.string.undersize_image)
+                    ImageUtil.IMAGE_EXCEED_SIZE_LIMIT -> showErrorSnackbar(R.string.oversize_image)
                 }
             }
         }, onError = {
-            _compressImageError.value = R.string.error_compress_image
+            showErrorSnackbar(R.string.error_compress_image)
         })
     }
 
