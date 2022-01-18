@@ -108,7 +108,14 @@
                 app:layout_constraintStart_toEndOf="@id/chipDiscountTypeNominal"
                 app:layout_constraintTop_toBottomOf="@id/tpgDiscountType" />
 
-            <!-- Discount Minimal -->
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupNominalDiscountType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="textAreaMinimumDiscount" />
+
+            <!-- Discount Minimal (Discount type : Nominal) -->
             <com.tokopedia.unifycomponents.TextAreaUnify
                 android:id="@+id/textAreaMinimumDiscount"
                 android:layout_width="0dp"
@@ -120,14 +127,49 @@
                 app:text_area_clearable="false"
                 app:text_area_label="@string/mvc_create_promo_type_cashback_textfield_discount_amount"
                 app:text_area_label_static="true"
-                app:text_area_message="@string/error_message_minimum_discount" />
+                app:text_area_message="@string/error_message_minimum_discount"/>
+
+            <!-- Discount Percentage (Discount type : Percentage) -->
+            <com.tokopedia.unifycomponents.TextAreaUnify
+                android:id="@+id/textAreaDiscountPercentage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/chipDiscountTypeNominal"
+                app:text_area_clearable="false"
+                app:text_area_label="@string/discount_percentage"
+                app:text_area_label_static="true"
+                app:text_area_message="@string/error_message_discount_percentage"/>
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupPercentageDiscountType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="textAreaDiscountPercentage,textAreaMaximumDiscount" />
+
+            <!-- Discount Maximum (Discount type : Percentage) -->
+            <com.tokopedia.unifycomponents.TextAreaUnify
+                android:id="@+id/textAreaMaximumDiscount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textAreaDiscountPercentage"
+                app:text_area_clearable="false"
+                app:text_area_label="@string/max_discount"
+                app:text_area_label_static="true"
+                app:text_area_message="@string/error_message_maximum_price" />
 
             <!-- Group Minimum Purchase -->
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tpgMinimumPurchase"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_marginTop="@dimen/unify_space_16"
                 android:text="@string/minimum_purchase_type"
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -299,7 +341,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:constraint_referenced_ids="tpgDiscountType,chipDiscountTypeNominal,chipDiscountTypePercentage,textAreaMinimumDiscount,tpgMinimumPurchase,chipMinimumPurchaseNominal,chipMinimumPurchaseQuantity,chipMinimumPurchaseNothing,textAreaMinimumPurchase, textAreaQuota" />
+                app:constraint_referenced_ids="tpgDiscountType,chipDiscountTypeNominal,chipDiscountTypePercentage,tpgMinimumPurchase,chipMinimumPurchaseNominal,chipMinimumPurchaseQuantity,chipMinimumPurchaseNothing,textAreaMinimumPurchase, textAreaQuota" />
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/groupFreeShipping"

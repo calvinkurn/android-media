@@ -38,6 +38,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
         private const val SCREEN_NAME = "Coupon Setting Page"
         private const val EMPTY_STRING = ""
         private const val ZERO = 0
+        private const val NUMBER_FORMAT_PATTERN = "#,###,###"
 
         fun newInstance():  CouponSettingFragment {
             val args = Bundle()
@@ -129,7 +130,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
     private fun setupTextAreaListener() {
         val numberFormatter = NumberFormat.getInstance(LocaleConstant.INDONESIA) as DecimalFormat
-        numberFormatter.applyPattern("#,###,###")
+        numberFormatter.applyPattern(NUMBER_FORMAT_PATTERN)
         setupTextAreaCashbackListener(numberFormatter)
         setupTextAreaFreeShippingListener(numberFormatter)
     }
@@ -262,19 +263,23 @@ class CouponSettingFragment : BaseDaggerFragment() {
         binding.chipCashback.chip_container.setOnClickListener {
             binding.chipCashback.chipType = ChipsUnify.TYPE_SELECTED
             binding.chipFreeShipping.chipType = ChipsUnify.TYPE_NORMAL
-            adjustExpenseEstimationConstraint(binding.textAreaQuota.id)
+            binding.chipDiscountTypeNominal.chipType = ChipsUnify.TYPE_SELECTED
+            binding.chipMinimumPurchaseNominal.chipType = ChipsUnify.TYPE_SELECTED
+
             selectedCouponType = CouponType.CASHBACK
             viewModel.couponTypeChanged(selectedCouponType)
-            binding.groupCashbackMinimumPurchase.visible()
+
+            showCashbackCouponTypeWidget()
         }
 
         binding.chipFreeShipping.chip_container.setOnClickListener {
             binding.chipCashback.chipType = ChipsUnify.TYPE_NORMAL
             binding.chipFreeShipping.chipType = ChipsUnify.TYPE_SELECTED
-            adjustExpenseEstimationConstraint(binding.textAreaFreeShippingQuota.id)
+
             selectedCouponType = CouponType.FREE_SHIPPING
             viewModel.couponTypeChanged(selectedCouponType)
-            binding.groupCashbackMinimumPurchase.gone()
+
+            showFreeShippingCouponTypeWidget()
         }
 
         binding.chipCashback.selectedChangeListener = { isActive ->
@@ -301,6 +306,8 @@ class CouponSettingFragment : BaseDaggerFragment() {
             binding.chipDiscountTypePercentage.chipType = ChipsUnify.TYPE_NORMAL
 
             selectedDiscountType = DiscountType.NOMINAL
+
+            showNominalDiscountTypeWidget()
             validateInput()
         }
 
@@ -312,6 +319,8 @@ class CouponSettingFragment : BaseDaggerFragment() {
             binding.chipDiscountTypePercentage.chipType = ChipsUnify.TYPE_SELECTED
 
             selectedDiscountType = DiscountType.PERCENTAGE
+
+            showPercentageDiscountTypeWidget()
             validateInput()
         }
 
@@ -361,6 +370,11 @@ class CouponSettingFragment : BaseDaggerFragment() {
         layoutParams.topToBottom = viewId
     }
 
+    private fun adjustMinimumPurchaseConstraint(@IdRes viewId : Int) {
+        val layoutParams = binding.tpgMinimumPurchase.layoutParams as ConstraintLayout.LayoutParams
+        layoutParams.topToBottom = viewId
+    }
+
 
     private fun clearFreeShippingSelection() {
         with(binding) {
@@ -385,7 +399,6 @@ class CouponSettingFragment : BaseDaggerFragment() {
             textAreaQuota.textAreaInput.text = null
             textAreaMinimumPurchase.textAreaInput.text = null
         }
-
     }
 
     private fun validateInput() {
@@ -448,6 +461,47 @@ class CouponSettingFragment : BaseDaggerFragment() {
         view.isError = false
         view.textAreaWrapper.error = EMPTY_STRING
         view.textAreaMessage = errorMessage
+    }
+
+    private fun showCashbackCouponTypeWidget() {
+        binding.groupCashbackMinimumPurchase.visible()
+        binding.groupNominalDiscountType.visible()
+
+        showNominalDiscountTypeWidget()
+
+        adjustExpenseEstimationConstraint(binding.textAreaQuota.id)
+    }
+
+    private fun showFreeShippingCouponTypeWidget() {
+        binding.groupCashbackMinimumPurchase.gone()
+        binding.groupNominalDiscountType.gone()
+        hideNominalDiscountTypeWidget()
+
+        hidePercentageDiscountTypeWidget()
+
+        adjustExpenseEstimationConstraint(binding.textAreaFreeShippingQuota.id)
+    }
+
+    private fun showNominalDiscountTypeWidget() {
+        binding.groupNominalDiscountType.visible()
+        binding.groupPercentageDiscountType.gone()
+        adjustMinimumPurchaseConstraint(binding.textAreaMinimumDiscount.id)
+    }
+
+    private fun showPercentageDiscountTypeWidget() {
+        binding.groupNominalDiscountType.gone()
+        binding.groupPercentageDiscountType.visible()
+        adjustMinimumPurchaseConstraint(binding.textAreaMaximumDiscount.id)
+    }
+
+    private fun hideNominalDiscountTypeWidget() {
+        binding.groupNominalDiscountType.gone()
+        binding.groupPercentageDiscountType.gone()
+    }
+
+    private fun hidePercentageDiscountTypeWidget() {
+        binding.groupNominalDiscountType.gone()
+        binding.groupPercentageDiscountType.gone()
     }
 
 }
