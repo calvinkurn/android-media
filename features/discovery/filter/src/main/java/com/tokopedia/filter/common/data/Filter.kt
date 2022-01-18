@@ -95,14 +95,6 @@ class Filter(@SerializedName("title")
         get() = TEMPLATE_NEGATIVE_KEYWORD == templateName
 
     fun getFlattenedOptions() : List<Option> {
-        return if (isCategoryFilter) {
-            getCategoryFilterFlattenedOptions()
-        } else {
-            options
-        }
-    }
-
-    private fun getCategoryFilterFlattenedOptions() : List<Option> {
         return options.flatMap { option ->
             option.levelTwoCategoryList.flatMap { levelTwoCategory ->
                 levelTwoCategory.levelThreeCategoryList.map { levelThreeCategory ->
