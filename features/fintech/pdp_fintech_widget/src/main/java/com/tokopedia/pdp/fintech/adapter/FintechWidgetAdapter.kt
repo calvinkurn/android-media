@@ -1,18 +1,22 @@
 package com.tokopedia.pdp.fintech.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter.MyViewHolder
 import com.tokopedia.pdp.fintech.domain.datamodel.ChipsData
 import com.tokopedia.pdp.fintech.listner.WidgetClickListner
 import com.tokopedia.pdp_fintech.R
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.resources.isDarkMode
 
-class FintechWidgetAdapter(var widgetClickListner: WidgetClickListner) : RecyclerView.Adapter<MyViewHolder>() {
+class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetClickListner) : RecyclerView.Adapter<MyViewHolder>() {
 
     private  var chipsData: ArrayList<ChipsData> = ArrayList()
 
@@ -26,29 +30,86 @@ class FintechWidgetAdapter(var widgetClickListner: WidgetClickListner) : Recycle
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         chipsData[position].header?.let {
             if(it.isNotBlank())
-                holder.headerPartner.text = it
+                holder.headerPartner.text = it.parseAsHtml()
             else
-                holder.headerPartner.visibility = View.GONE
+                removeViewVisibility(holder.headerPartner)
         }?:run {
-            holder.headerPartner.visibility = View.GONE
+            removeViewVisibility(holder.headerPartner)
         }
+
+        chipsData[position].subheaderColor?.let {
+            if(it.equals("green",true))
+            {
+                holder.subheaderPartner.setTextColor( ContextCompat.getColor(context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_G500))
+
+                holder.subheaderPartner.fontType = Typography.BOLD
+            }
+            else if(it.equals("red",true))
+            {
+                holder.subheaderPartner.setTextColor( ContextCompat.getColor(context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                holder.subheaderPartner.fontType = Typography.BOLD
+
+            }
+            else {
+                holder.subheaderPartner.setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    )
+
+                )
+                holder.subheaderPartner.fontType = Typography.REGULAR
+
+            }
+        }
+
         chipsData[position].subheader?.let {
             if(it.isNotBlank())
+            {
                 holder.subheaderPartner.text = it
+            }
             else
-                holder.subheaderPartner.visibility = View.GONE
+                removeViewVisibility(holder.subheaderPartner)
         }?:run {
-            holder.subheaderPartner.visibility = View.GONE
+            removeViewVisibility(holder.subheaderPartner)
+
         }
-        chipsData[position].productIconLight?.let {
-            if(it.isNotBlank())
-                holder.partnerIcon.setImageUrl(it)
-            else
-                holder.partnerIcon.visibility = View.GONE
-        }?:run {
-            holder.partnerIcon.visibility = View.GONE
+
+        setIcon(position, holder.partnerIcon)
+    }
+
+    private fun setIcon(
+        position: Int,
+        iconImageView: ImageUnify
+    ) {
+        if (!context.isDarkMode()) {
+            chipsData[position].productIconLight?.let {
+                if (it.isNotBlank())
+                    iconImageView.setImageUrl(it)
+                else
+                    iconImageView.visibility = View.GONE
+            } ?: run {
+                iconImageView.visibility = View.GONE
+            }
+        } else {
+            chipsData[position].productIconDark?.let {
+                if (it.isNotBlank())
+                    iconImageView.setImageUrl(it)
+                else
+                   iconImageView.visibility = View.GONE
+            } ?: run {
+                iconImageView.visibility = View.GONE
+            }
         }
     }
+
+    fun removeViewVisibility(view: View)
+    {
+        view.visibility = View.GONE
+    }
+    
     override fun getItemCount(): Int {
         return chipsData.size
     }

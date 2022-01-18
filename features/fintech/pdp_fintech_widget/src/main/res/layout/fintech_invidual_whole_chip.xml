@@ -21,11 +21,11 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/partnerIcon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="@dimen/pfp_fintech_10_dp"
-                android:layout_marginTop="@dimen/pdp_fintech_14_dp"
-                android:layout_marginBottom="@dimen/pdp_fintech_14_dp"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_marginStart="@dimen/pdp_fintech_16_dp"
+                android:layout_marginTop="@dimen/pdp_fintech_16_dp"
+                android:layout_marginBottom="@dimen/pdp_fintech_16_dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -64,6 +64,9 @@
                 app:layout_goneMarginRight="@dimen/dp_40"
                 app:typographyType="small"
                 tools:text="credit available: Rp 9.500" />
+
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
