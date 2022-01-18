@@ -1,0 +1,45 @@
+package com.tokopedia.kyc_centralized.util
+
+import android.app.Application
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
+import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
+import org.hamcrest.core.Is.`is`
+import org.junit.Assert.*
+import org.junit.Before
+
+import org.junit.Test
+
+class KycSharedPreferenceTest {
+
+    private val ctx = ApplicationProvider.getApplicationContext<Context>()
+    private val pref = ctx.getSharedPreferences("kyc_centralized", Context.MODE_PRIVATE)
+    lateinit var sut: KycSharedPreference
+
+    @Before
+    fun setup() {
+        sut = KycSharedPreference(pref)
+    }
+
+    @Test
+    fun whenSavingByteArray_ThenShouldReturnTheSameByteArray() {
+        val iv = generateIv()
+        sut.saveByteArrayCache(KYC_IV_KTP_CACHE, iv)
+
+        val actual = sut.getByteArrayCache(KYC_IV_KTP_CACHE)
+
+        assertThat(actual, `is`(iv))
+    }
+
+    @Test
+    fun whenRetrievingNullKey_ShouldReturnEmptyArray() {
+        val actual = sut.getByteArrayCache("shouldNullKey")
+
+        assertEquals(actual.size, 0)
+    }
+
+    private fun generateIv(): ByteArray {
+        val aes = ImageEncryptionUtil.initAesEncrypt()
+        return aes.iv
+    }
+}
