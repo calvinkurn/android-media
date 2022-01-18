@@ -11,14 +11,12 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.factory.TableItemFact
 data class TableDataUiModel(
         override var dataKey: String = "",
         override var error: String = "",
+        val dataSet: List<TablePageUiModel> = emptyList(),
         override var isFromCache: Boolean = false,
-        override val showWidget: Boolean = true,
-        val dataSet: List<TablePageUiModel> = emptyList()
+        override val showWidget: Boolean = false
 ) : BaseDataUiModel {
-
     override fun shouldRemove(): Boolean {
-        val isEmpty = dataSet.all { it.rows.isEmpty() }
-        return isEmpty || !showWidget
+        return dataSet.all { it.rows.isEmpty() }
     }
 }
 

@@ -5,13 +5,12 @@ package com.tokopedia.sellerhomecommon.presentation.model
  */
 
 data class TickerDataUiModel(
-    override var dataKey: String = "",
-    override var error: String = "",
-    override var isFromCache: Boolean = false,
-    override val showWidget: Boolean = true,
-    var tickers: List<TickerItemUiModel> = emptyList()
+        override var dataKey: String = "",
+        override var error: String = "",
+        var tickers: List<TickerItemUiModel> = emptyList(),
+        override var isFromCache: Boolean = false,
+        override val showWidget: Boolean = true
 ) : BaseDataUiModel {
-
     override fun shouldRemove(): Boolean {
         return tickers.isEmpty()
     }

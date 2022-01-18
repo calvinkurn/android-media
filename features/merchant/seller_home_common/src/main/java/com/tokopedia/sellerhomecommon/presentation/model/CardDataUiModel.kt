@@ -8,7 +8,7 @@ data class CardDataUiModel(
     override var dataKey: String = "",
     override var error: String = "",
     override var isFromCache: Boolean = false,
-    override val showWidget: Boolean = true,
+    override val showWidget: Boolean = false,
     val description: String = "",
     val state: State = State.NORMAL,
     val value: String = "",
@@ -16,7 +16,7 @@ data class CardDataUiModel(
 ) : BaseDataUiModel {
 
     override fun shouldRemove(): Boolean {
-        return !showWidget || value.filterIndexed { index, c ->
+        return value.filterIndexed { index, c ->
             (c == '.' && value.getOrNull(index - 1)?.isDigit() == true) || c.isDigit()
         }.toFloat() == 0f
     }
