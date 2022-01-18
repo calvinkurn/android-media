@@ -175,7 +175,6 @@ class ShopScorePenaltyTracking @Inject constructor(private val userSession: User
         sendShopScoreItemEventNewSeller(CLICK_WATCH_VIDEO)
     }
 
-    //json = done
     //shop performance - new seller
     fun clickLearnShopPerformanceNewSeller() {
         sendShopScoreItemEventNewSeller(CLICK_LEARN_SHOP_PERFORMANCE)
