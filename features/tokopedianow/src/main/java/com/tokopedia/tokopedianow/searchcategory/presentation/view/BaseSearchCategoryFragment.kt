@@ -118,11 +118,8 @@ abstract class BaseSearchCategoryFragment:
 
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
-        protected const val OUT_OF_COVERAGE_CHOOSE_ADDRESS = "OUT_OF_COVERAGE_CHOOSE_ADDRESS"
         protected const val REQUEST_CODE_LOGIN = 69
         private const val DEFAULT_POSITION = 0
-
-        const val PARAM_TOKONOW_REFRESH = "tokonow_refresh"
     }
 
     private var binding by autoClearedNullable<FragmentTokopedianowSearchCategoryBinding>()
