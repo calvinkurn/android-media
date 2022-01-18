@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Digital PDP</string>
+    <string name="summary_transaction">Ringkasan Transaksi</string>
+    <string name="total_price">Total Harga</string>
+    <string name="total_discount">Total Discount</string>
+    <string name="total_pay">Total Bayar</string>
 </resources>
