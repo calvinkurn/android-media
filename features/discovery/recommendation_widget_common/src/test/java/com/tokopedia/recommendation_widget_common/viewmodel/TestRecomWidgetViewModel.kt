@@ -154,21 +154,13 @@ class TestRecomWidgetViewModel {
         }
 
     @Test
-    fun `test load recommendation then check success recommendation chips available`() =
+    fun `test load recommendation with empty result then check error recommendation equals page name`() =
         runBlocking {
             coEvery { getRecommendationUseCase.getData(any()) } returns listOf()
 
-            val recomFilterChip = RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Speaker")
-            val listFilterChip = listOf(
-                recomFilterChip)
-
-            coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listFilterChip
             viewModel.loadRecommendationCarousel(pageName = pageName, isTokonow = false)
-            val recomWidget = viewModel.getRecommendationLiveData.value
-            Assert.assertEquals(recomFilterChip,
-                recomWidget?.recommendationFilterChips?.get(0)
-                    ?: RecommendationFilterChipsEntity.RecommendationFilterChip()
-            )
+            val errorRecom = viewModel.errorGetRecommendation.value
+            Assert.assertEquals(pageName, errorRecom?.pageName)
         }
 
     @Test
