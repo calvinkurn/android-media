@@ -4,10 +4,6 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
-import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
@@ -24,7 +20,9 @@ class PromoCheckoutDetailDealsFragment : BasePromoCheckoutDetailFragment() {
     lateinit var promoCheckoutDetailDealsPresenter: PromoCheckoutDetailDealsPresenter
 
     lateinit var promoCheckoutDetailComponent: PromoCheckoutDetailComponent
-    var checkoutData: String = ""
+    var categoryName: String = ""
+    var grandTotal: Int = 0
+    var metaData: String = ""
 
     @Inject
     lateinit var userSession: UserSession
@@ -34,7 +32,9 @@ class PromoCheckoutDetailDealsFragment : BasePromoCheckoutDetailFragment() {
         initView()
         codeCoupon = arguments?.getString(EXTRA_KUPON_CODE, "") ?: ""
         isUse = arguments?.getBoolean(EXTRA_IS_USE, false) ?: false
-        checkoutData = arguments?.getString(EXTRA_CHECKOUT_DATA) ?: ""
+        metaData = arguments?.getString(EXTRA_META_DATA, "") ?: ""
+        categoryName = arguments?.getString(EXTRA_CATEGORY_NAME) ?: ""
+        grandTotal = arguments?.getInt(EXTRA_GRAND_TOTAL, 0) ?: 0
     }
 
     fun initView() {
@@ -55,11 +55,7 @@ class PromoCheckoutDetailDealsFragment : BasePromoCheckoutDetailFragment() {
     }
 
     override fun onClickUse() {
-        var requestBody: JsonObject? = null
-        val jsonElement: JsonElement = JsonParser().parse(checkoutData).asJsonObject
-        requestBody = jsonElement.asJsonObject
-        requestBody.addProperty("promocode", codeCoupon)
-        promoCheckoutDetailDealsPresenter.processCheckDealPromoCode(codeCoupon, false, requestBody)
+        promoCheckoutDetailDealsPresenter.processCheckDealPromoCode(listOf(codeCoupon), categoryName, metaData, grandTotal)
     }
 
     override fun onClickCancel() {
@@ -102,18 +98,22 @@ class PromoCheckoutDetailDealsFragment : BasePromoCheckoutDetailFragment() {
 
     companion object {
         val EXTRA_IS_USE = "EXTRA_IS_USE"
-        val EXTRA_CHECKOUT_DATA = "checkoutdata"
+        val EXTRA_META_DATA = "EXTRA_META_DATA"
+        val EXTRA_GRAND_TOTAL = "EXTRA_GRAND_TOTAL"
+        val EXTRA_CATEGORY_NAME = "EXTRA_CATEGORY_NAME"
         val COUPON_MESSAGE = "coupon_message"
         val COUPON_AMOUNT = "coupon_amount"
         val COUPON_CODE = "coupon_code"
         val IS_CANCEL = "IS_CANCEL"
 
-        fun createInstance(codeCoupon: String, isUse: Boolean, checkoutData: String?): PromoCheckoutDetailDealsFragment {
+        fun createInstance(codeCoupon: String, isUse: Boolean, categoryName: String?, grandTotal:Int?, metaData: String?): PromoCheckoutDetailDealsFragment {
             val promoCheckoutDetailDealsFragment = PromoCheckoutDetailDealsFragment()
             val bundle = Bundle()
             bundle.putString(EXTRA_KUPON_CODE, codeCoupon)
             bundle.putBoolean(EXTRA_IS_USE, isUse)
-            bundle.putString(EXTRA_CHECKOUT_DATA, checkoutData ?: "")
+            bundle.putString(EXTRA_CATEGORY_NAME, categoryName.orEmpty())
+            bundle.putInt(EXTRA_GRAND_TOTAL, grandTotal ?: 0)
+            bundle.putString(EXTRA_META_DATA, metaData.orEmpty())
             promoCheckoutDetailDealsFragment.arguments = bundle
             return promoCheckoutDetailDealsFragment
         }

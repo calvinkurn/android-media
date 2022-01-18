@@ -133,6 +133,10 @@ class OfficialHomeAdapterTypeFactory(
 
     override fun type(campaignWidgetDataModel: CampaignWidgetDataModel): Int = 0
 
+    override fun type(questWidgetModel: QuestWidgetModel): Int {
+        return -1
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<Visitable<*>> {
         return when (type) {
             BestSellerViewHolder.LAYOUT -> BestSellerViewHolder(view, recommendationWidgetListener)

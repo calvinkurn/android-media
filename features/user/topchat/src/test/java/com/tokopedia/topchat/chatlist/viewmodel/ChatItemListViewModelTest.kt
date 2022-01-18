@@ -297,7 +297,7 @@ class ChatItemListViewModelTest {
         }
 
         coEvery {
-            moveChatToTrashUseCase.execute(exMessageId)
+            moveChatToTrashUseCase(exMessageId)
         } returns result
 
         // When
@@ -318,7 +318,7 @@ class ChatItemListViewModelTest {
         }
 
         coEvery {
-            moveChatToTrashUseCase.execute(exMessageId)
+            moveChatToTrashUseCase(exMessageId)
         } returns result
 
         // When
@@ -334,7 +334,7 @@ class ChatItemListViewModelTest {
         // Given
         val throwable = Throwable("Oops!")
         coEvery {
-            moveChatToTrashUseCase.execute(exMessageId)
+            moveChatToTrashUseCase(exMessageId)
         } throws throwable
 
         // When

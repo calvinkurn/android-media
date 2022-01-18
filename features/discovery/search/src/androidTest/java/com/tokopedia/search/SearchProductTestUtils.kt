@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
@@ -77,6 +78,8 @@ internal fun createProductItemListener(): ProductListener {
         override fun onThreeDotsClick(itemData: ProductItemDataView?, adapterPosition: Int) {}
         override fun onItemClicked(itemData: ProductItemDataView?, adapterPosition: Int) {}
         override fun onProductImpressed(itemData: ProductItemDataView?, adapterPosition: Int) {}
+        override val productCardLifecycleObserver: ProductCardLifecycleObserver?
+            get() = null
     }
 }
 
@@ -94,8 +97,8 @@ internal fun createInspirationCarouselListener(): InspirationCarouselListener {
         override fun onInspirationCarouselSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option) {}
         override fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselDataView.Option.Product) {}
         override fun onImpressedInspirationCarouselInfoProduct(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onImpressedInspirationCarouselListProduct(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onImpressedInspirationCarouselGridProduct(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onInspirationCarouselListProductImpressed(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onInspirationCarouselGridProductImpressed(product: InspirationCarouselDataView.Option.Product) {}
         override fun onInspirationCarouselGridProductClicked(product: InspirationCarouselDataView.Option.Product) {}
         override fun onInspirationCarouselGridBannerClicked(product: InspirationCarouselDataView.Option) {}
         override fun onInspirationCarouselChipsProductClicked(product: InspirationCarouselDataView.Option.Product) {}
@@ -108,11 +111,14 @@ internal fun createInspirationCarouselListener(): InspirationCarouselListener {
 
 internal fun createBroadMatchListener(): BroadMatchListener {
     return object: BroadMatchListener {
-        override fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
+        override fun onBroadMatchImpressed(broadMatchItemDataView: BroadMatchDataView) {}
         override fun onBroadMatchSeeMoreClicked(broadMatchDataView: BroadMatchDataView) {}
-        override fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
         override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {}
+        override fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
+        override fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
         override val carouselRecycledViewPool: RecyclerView.RecycledViewPool?
+            get() = null
+        override val productCardLifecycleObserver: ProductCardLifecycleObserver?
             get() = null
     }
 }
@@ -133,7 +139,11 @@ internal fun createBannerAdsListener(): BannerAdsListener {
 
 internal fun createSuggestionListener(): SuggestionListener {
     return object : SuggestionListener {
-        override fun onSuggestionClicked(suggestionDataView: SuggestionDataView?) {
+        override fun onSuggestionImpressed(suggestionDataView: SuggestionDataView) {
+
+        }
+
+        override fun onSuggestionClicked(suggestionDataView: SuggestionDataView) {
 
         }
     }

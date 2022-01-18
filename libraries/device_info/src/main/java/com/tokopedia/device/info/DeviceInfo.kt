@@ -138,6 +138,20 @@ object DeviceInfo {
         }
     }
 
+    @JvmStatic
+    fun getUserDeviceName(context: Context): String {
+        return try {
+            val bluetoothName = Settings.Secure.getString(context.contentResolver, "bluetooth_name")
+            if (bluetoothName.isNullOrEmpty()) {
+                Settings.Secure.getString(context.contentResolver, "device_name")
+            } else {
+                bluetoothName
+            }
+        } catch (e: Exception) {
+            ""
+        }
+    }
+
     suspend fun getlatestAdId(context: Context, timeOutInMillis: Long = 10000L): String {
         return withContext(Dispatchers.IO) {
             try {

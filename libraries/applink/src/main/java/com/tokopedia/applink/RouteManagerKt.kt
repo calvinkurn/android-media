@@ -58,9 +58,6 @@ object RouteManagerKt {
             DeepLinkChecker.HOT -> {
                 return DeepLinkChecker.openHot(url, activity)
             }
-            DeepLinkChecker.FIND -> {
-                return DeepLinkChecker.openFind(url, activity)
-            }
             DeepLinkChecker.CATALOG -> {
                 //TODO still use className
                 return DeepLinkChecker.openCatalog(url, activity)
@@ -85,7 +82,12 @@ object RouteManagerKt {
                 return RouteManager.route(activity, url)
             }
             DeepLinkChecker.ORDER_LIST -> {
-                return RouteManager.route(activity, url)
+                val intent = RouteManager.getIntentNoFallback(activity, ApplinkConst.MARKETPLACE_ORDER)
+                if (intent != null) {
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME
+                    activity.startActivity(intent)
+                }
+                return true
             }
             DeepLinkChecker.TRAVEL_HOMEPAGE -> {
                 return RouteManager.route(activity, url)

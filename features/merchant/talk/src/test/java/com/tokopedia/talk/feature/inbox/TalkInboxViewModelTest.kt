@@ -1,7 +1,11 @@
 package com.tokopedia.talk.feature.inbox
 
 import com.tokopedia.talk.common.constants.TalkConstants
-import com.tokopedia.talk.feature.inbox.data.*
+import com.tokopedia.talk.feature.inbox.data.DiscussionInbox
+import com.tokopedia.talk.feature.inbox.data.DiscussionInboxResponseWrapper
+import com.tokopedia.talk.feature.inbox.data.TalkInboxFilter
+import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
+import com.tokopedia.talk.feature.inbox.data.TalkInboxViewState
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -37,7 +41,7 @@ class TalkInboxViewModelTest : TalkInboxViewModelTestFixture() {
 
         onGetInboxListSuccess_thenReturn(expectedData)
 
-        viewModel.setFilter(expectedFilter, isSellerView = true, shouldTrack = true)
+        viewModel.setFilter(expectedFilter, isSellerView = true, shouldTrack = false)
 
         val expectedLiveDataValue = TalkInboxViewState.Success(expectedData.discussionInbox, expectedPage, expectedFilter)
 
@@ -66,6 +70,25 @@ class TalkInboxViewModelTest : TalkInboxViewModelTestFixture() {
     }
 
     @Test
+    fun `when setFilter() but shouldTrack = false with existing filter should make filter blank`() {
+        val expectedData = DiscussionInboxResponseWrapper(discussionInbox = DiscussionInbox(unrespondedTotal = 1))
+        val expectedFilter = TalkInboxFilter.TalkInboxNoFilter()
+        val expectedPage = TalkConstants.DEFAULT_INITIAL_PAGE
+
+        onGetInboxListSuccess_thenReturn(expectedData)
+
+        viewModel.setFilter(TalkInboxFilter.TalkInboxReadFilter(), isSellerView = false, shouldTrack = false)
+        viewModel.setFilter(TalkInboxFilter.TalkInboxReadFilter(), isSellerView = true, shouldTrack = false)
+
+        val expectedLiveDataValue = TalkInboxViewState.Success(expectedData.discussionInbox, expectedPage, expectedFilter)
+
+        verifyTalkInboxListUseCaseCalled()
+        verifyInboxListValueEquals(expectedLiveDataValue)
+        verifyFilterEquals(expectedFilter.filterParam)
+        verifyUnrespondedCount(expectedData.discussionInbox.unrespondedTotal)
+    }
+
+    @Test
     fun `when updatePage() should get data with expected page`() {
         val expectedData = DiscussionInboxResponseWrapper()
         val expectedFilter = TalkInboxFilter.TalkInboxNoFilter()
@@ -76,6 +99,38 @@ class TalkInboxViewModelTest : TalkInboxViewModelTestFixture() {
         viewModel.updatePage(expectedPage)
 
         val expectedLiveDataValue = TalkInboxViewState.Success(expectedData.discussionInbox, expectedPage, expectedFilter)
+
+        verifyTalkInboxListUseCaseCalled()
+        verifyInboxListValueEquals(expectedLiveDataValue)
+    }
+
+    @Test
+    fun `when updatePage() for old shop type should get data with expected page`() {
+        val expectedData = DiscussionInboxResponseWrapper()
+        val expectedFilter = TalkInboxFilter.TalkInboxNoFilter()
+        val expectedPage = TalkConstants.DEFAULT_INITIAL_PAGE + 1
+
+        onGetInboxListSuccess_thenReturn(expectedData)
+
+        viewModel.setInboxType(TalkInboxTab.SHOP_OLD)
+        viewModel.updatePage(expectedPage)
+
+        val expectedLiveDataValue = TalkInboxViewState.Success(expectedData.discussionInbox, expectedPage, expectedFilter)
+
+        verifyTalkInboxListUseCaseCalled()
+        verifyInboxListValueEquals(expectedLiveDataValue)
+    }
+
+    @Test
+    fun `when updatePage() error should return expected error`() {
+        val expectedData = Throwable()
+        val expectedPage = TalkConstants.DEFAULT_INITIAL_PAGE + 1
+
+        onGetInboxListError_thenReturn(expectedData)
+
+        viewModel.updatePage(expectedPage)
+
+        val expectedLiveDataValue = TalkInboxViewState.Fail<DiscussionInbox>(expectedData, expectedPage)
 
         verifyTalkInboxListUseCaseCalled()
         verifyInboxListValueEquals(expectedLiveDataValue)
@@ -105,7 +160,11 @@ class TalkInboxViewModelTest : TalkInboxViewModelTestFixture() {
         coEvery { talkInboxListUseCase.executeOnBackground() } returns discussionInboxResponseWrapper
     }
 
-    private fun verifyInboxListValueEquals(data: TalkInboxViewState.Success<DiscussionInbox>) {
+    private fun onGetInboxListError_thenReturn(throwable: Throwable) {
+        coEvery { talkInboxListUseCase.executeOnBackground() } throws throwable
+    }
+
+    private fun verifyInboxListValueEquals(data: TalkInboxViewState<DiscussionInbox>) {
         viewModel.inboxList.verifyValueEquals(data)
     }
 

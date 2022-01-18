@@ -30,9 +30,9 @@ import com.tokopedia.home_recom.HomeRecommendationActivity
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.analytics.SimilarProductRecommendationTracking
+import com.tokopedia.home_recom.databinding.FragmentSimillarRecommendationBinding
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.*
-import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.home_recom.util.*
 import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_PRODUCT_ID
 import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_REF
@@ -47,12 +47,14 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.searchbar.navigation_component.NavToolbar
-import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
-import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
+import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import kotlinx.android.synthetic.main.fragment_simillar_recommendation.view.*
+import com.tokopedia.utils.resources.isDarkMode
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 /**
@@ -63,6 +65,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         RecommendationErrorListener,
         RecommendationEmptyViewHolder.RecommendationEmptyStateListener,
         SortFilterBottomSheet.Callback {
+    private var binding: FragmentSimillarRecommendationBinding? by viewBinding()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -99,7 +102,6 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupToolbar()
         savedInstanceState?.let{
             productId = it.getString(SAVED_PRODUCT_ID) ?: ""
             ref = it.getString(SAVED_REF) ?: ""
@@ -116,6 +118,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let { trackingQueue = TrackingQueue(it) }
+        setupToolbar()
         sortFilterView = view.findViewById(R.id.filter_sort_recommendation)
         setupRecyclerView(view)
         setupBackToTop(view)
@@ -167,7 +170,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     override fun getSwipeRefreshLayoutResourceId(): Int = com.tokopedia.home_recom.R.id.swipe_refresh_layout
 
     private fun setupRecyclerView(view: View){
-        view.filter_sort_recommendation?.hide()
+        binding?.filterSortRecommendation?.hide()
         getRecyclerView(view)?.apply {
             if(this is VerticalRecyclerView) clearItemDecoration()
             layoutManager = recyclerViewLayoutManager
@@ -176,13 +179,14 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
                     super.onScrolled(recyclerView, dx, dy)
                     val lastItems = staggeredGrid.findFirstCompletelyVisibleItemPositions(null)
                     if (lastItems.isNotEmpty() && lastItems[0] >= 2) {
-                        if(!view.recom_back_to_top.isShown) {
-                            view.recom_back_to_top?.show()
-                            view.recom_back_to_top.visible()
+                        val shown = binding?.recomBackToTop?.isShown == true
+                        if(!shown) {
+                            binding?.recomBackToTop?.show()
+                            binding?.recomBackToTop?.visible()
                         }
                     } else {
-                        view.recom_back_to_top.gone()
-                        view.recom_back_to_top?.hide()
+                        binding?.recomBackToTop?.gone()
+                        binding?.recomBackToTop?.hide()
                     }
                 }
             })
@@ -200,8 +204,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
             activity?.let { actv ->
                 it.setupToolbarWithStatusBar(
                     activity = actv,
-                    applyPadding = false,
-                    applyPaddingNegative = true
+                    statusBarTheme = if (requireContext().isDarkMode()) TOOLBAR_LIGHT_TYPE else TOOLBAR_DARK_TYPE
                 )
             }
             it.setOnBackButtonClickListener { (activity as HomeRecommendationActivity).onBackPressed() }
@@ -209,8 +212,8 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     }
 
     private fun setupBackToTop(view: View){
-        view.recom_back_to_top?.circleMainMenu?.setOnClickListener {
-            view.recycler_view?.smoothScrollToPosition(0)
+        binding?.recomBackToTop?.circleMainMenu?.setOnClickListener {
+            binding?.recyclerView?.smoothScrollToPosition(0)
         }
     }
 
@@ -298,8 +301,8 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     }
 
     private fun showMessageSuccessAddWishlist() {
-        showToastSuccessWithAction(getString(R.string.recom_msg_success_add_wishlist), getString(R.string.home_recom_go_to_wishlist)){
-            View.OnClickListener { goToWishlist() }
+        showToastSuccessWithAction(getString(R.string.recom_msg_success_add_wishlist), getString(R.string.home_recom_go_to_wishlist)) {
+            goToWishlist()
         }
     }
 

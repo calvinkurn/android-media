@@ -1,6 +1,7 @@
 package com.tokopedia.play.di
 
 import android.content.Context
+import androidx.annotation.Nullable
 import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.google.android.gms.cast.framework.CastContext
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -16,6 +17,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.play.analytic.CastAnalyticHelper
 import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.util.PlayCastHelper
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.PlayWebSocketImpl
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
@@ -36,7 +38,6 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -143,19 +144,23 @@ class PlayModule(val mContext: Context) {
     }
 
     @Provides
-    fun provideWebSocket(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers): PlayWebSocket {
+    fun provideWebSocket(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers, localCacheHandler: LocalCacheHandler): PlayWebSocket {
         return PlayWebSocketImpl(
                 OkHttpClient.Builder(),
                 userSession,
-                dispatchers
+                dispatchers,
+                mContext,
+                localCacheHandler,
         )
     }
 
     @Provides
-    fun provideCastContext(@ApplicationContext context: Context): CastContext = CastContext.getSharedInstance(context)
+    @Nullable
+    fun provideCastContext(@ApplicationContext context: Context): CastContext? = PlayCastHelper.getCastContext(context)
 
     @Provides
-    fun provideCastPlayer(castContext: CastContext) = CastPlayer(castContext)
+    @Nullable
+    fun provideCastPlayer(castContext: CastContext?): CastPlayer? = castContext?.let { CastPlayer(it) }
 
     @PlayScope
     @Provides

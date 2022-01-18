@@ -1,7 +1,9 @@
 package com.tokopedia.buyerorderdetail.presentation.model
 
+import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
+import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
 import com.tokopedia.kotlin.extensions.view.orZero
 
 data class ProductListUiModel(
@@ -10,7 +12,6 @@ data class ProductListUiModel(
         val productListHeaderUiModel: ProductListHeaderUiModel
 ) {
     data class ProductListHeaderUiModel(
-            val header: String,
             val shopBadgeUrl: String,
             val shopId: String,
             val shopName: String,
@@ -22,8 +23,12 @@ data class ProductListUiModel(
             return typeFactory?.type(this).orZero()
         }
 
-        override fun shouldShow(): Boolean {
-            return header.isNotBlank()
+        override fun shouldShow(context: Context?): Boolean {
+            return true
+        }
+
+        override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {
+            return null
         }
     }
 
@@ -49,8 +54,12 @@ data class ProductListUiModel(
             return typeFactory?.type(this).orZero()
         }
 
-        override fun shouldShow(): Boolean {
+        override fun shouldShow(context: Context?): Boolean {
             return true
+        }
+
+        override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {
+            return null
         }
     }
 

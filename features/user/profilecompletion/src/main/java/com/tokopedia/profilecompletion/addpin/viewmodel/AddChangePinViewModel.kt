@@ -3,6 +3,7 @@ package com.tokopedia.profilecompletion.addpin.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.addpin.data.*
@@ -10,7 +11,6 @@ import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 /**
@@ -25,7 +25,8 @@ class AddChangePinViewModel @Inject constructor(
         private val validatePinUseCase: GraphqlUseCase<ValidatePinPojo>,
         private val skipOtpPinUseCase: GraphqlUseCase<SkipOtpPinPojo>,
         private val rawQueries: Map<String, String>,
-        dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher){
+        dispatcher: CoroutineDispatchers
+): BaseViewModel(dispatcher.main){
 
     private val mutableAddPinResponse = MutableLiveData<Result<AddChangePinData>>()
     val addPinResponse: LiveData<Result<AddChangePinData>>
@@ -136,11 +137,10 @@ class AddChangePinViewModel @Inject constructor(
     private fun onSuccessGetStatusPin(): (StatusPinPojo) -> Unit {
         loadingState.postValue(false)
         return {
-            when {
-                it.data.errorMessage.isEmpty() -> mutableGetStatusPinResponse.value = Success(it.data)
-                it.data.errorMessage.isNotEmpty() ->
-                    mutableGetStatusPinResponse.value = Fail(MessageErrorException(it.data.errorMessage))
-                else -> mutableGetStatusPinResponse.value = Fail(RuntimeException())
+            if(it.data.errorMessage.isNotEmpty()) {
+                mutableGetStatusPinResponse.value = Fail(MessageErrorException(it.data.errorMessage))
+            } else {
+                mutableGetStatusPinResponse.value = Success(it.data)
             }
         }
     }
@@ -211,15 +211,6 @@ class AddChangePinViewModel @Inject constructor(
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        addPinUseCase.cancelJobs()
-        checkPinUseCase.cancelJobs()
-        getStatusPinUseCase.cancelJobs()
-        validatePinUseCase.cancelJobs()
-        skipOtpPinUseCase.cancelJobs()
-    }
-  
     companion object {
         const val OTP_TYPE_SKIP_VALIDATION = 124
     }

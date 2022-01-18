@@ -138,6 +138,7 @@
     <string name="topads_common_maximum_daily_budget">Batas maksimum Rp%s</string>
     <string name="topads_common_minimum_daily_budget">Batas minimum Rp%s</string>
     <string name="topads_common_keyword_avg_cost">Biaya rata-rata kompetitor %s</string>
+    <string name="error_bid_multiple_50">Biaya harus kelipatan 50</string>
 
     <string name="topads_common_recommended_budget">Rekomendasi Biaya</string>
     <string name="topads_common_klik_">/klik</string>
@@ -216,7 +217,8 @@
 
     <string name="topads_edit_bid_pencerian">Tentukan sendiri biaya iklan pencarian sesuai \nstrategi beriklanmu.</string>
     <string name="topads_edit_bid_rekomendasi">Tentukan sendiri biaya iklan rekomendasi sesuai \nstrategi beriklanmu.</string>
-
+    <string name="top_ads_auto_bid_lebih_praktis">Lebih Praktis</string>
+    <string name="top_ads_auto_bid_learn_more">Pelajari Selengkapnya</string>
 
     <string-array name="sort_product_list_array">
         <item>Terlaris</item>
