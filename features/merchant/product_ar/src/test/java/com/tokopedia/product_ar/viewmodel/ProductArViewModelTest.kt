@@ -71,6 +71,7 @@ class ProductArViewModelTest {
         val mockData = TestUtil.getProductArDataMock(gson)
         val bottomLoadingState = viewModel.bottomLoadingState
         val animatedTextIconState = viewModel.animatedTextIconState.value
+        val modifaceLoadingState = viewModel.modifaceLoadingState.value
 
         coEvery {
             getProductArUseCase.executeOnBackground(any())
@@ -79,10 +80,12 @@ class ProductArViewModelTest {
         Assert.assertEquals(bottomLoadingState.value, true)
         Assert.assertEquals(animatedTextIconState.view1ClickMode, null)
         Assert.assertEquals(animatedTextIconState.view2ClickMode, null)
+        Assert.assertEquals(modifaceLoadingState, true)
 
         viewModel.getArData()
 
         coVerify { getProductArUseCase.executeOnBackground(any()) }
+        Assert.assertNotNull(viewModel.userSessionInterface)
     }
 
     @Test
@@ -143,6 +146,10 @@ class ProductArViewModelTest {
                 expectedButtonColor = "primary_green",
                 expectedCampaignActive = false
         )
+
+        viewModel.setLoadingState(false)
+        val modifaceLoadingState = viewModel.modifaceLoadingState.value
+        Assert.assertEquals(modifaceLoadingState, false)
     }
 
     @Test
@@ -277,9 +284,11 @@ class ProductArViewModelTest {
         `success change mode to image`()
 
         viewModel.changeMode(
-                modifaceViewMode = ModifaceViewMode.LIVE,
-                pathImageDrawable = "path_image"
+                modifaceViewMode = ModifaceViewMode.LIVE
         )
+
+        val modifaceLoadingState = viewModel.modifaceLoadingState.value
+        Assert.assertEquals(modifaceLoadingState, true)
 
         val modifaceViewState = viewModel.modifaceViewState.value
         Assert.assertEquals(modifaceViewState.mode, ModifaceViewMode.LIVE)

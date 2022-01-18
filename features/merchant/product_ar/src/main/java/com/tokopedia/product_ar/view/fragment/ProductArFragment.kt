@@ -612,7 +612,12 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     override fun onMFEMakeupFinishedDetection(p0: MFETrackingData?) {
         faceDetection(p0)
         activity?.runOnUiThread {
-            if (binding?.arLoader?.isShown == true) viewModel?.setLoadingState(false)
+            if (binding?.arLoader?.isShown == true) {
+                if (viewModel?.modifaceLoadingState?.value != null
+                        && viewModel?.modifaceLoadingState?.value == false) return@runOnUiThread
+
+                viewModel?.setLoadingState(false)
+            }
         }
     }
 }

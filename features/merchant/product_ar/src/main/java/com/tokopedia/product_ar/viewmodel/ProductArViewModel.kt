@@ -89,8 +89,6 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         get() = _addToCartLiveData
 
     fun setLoadingState(isLoading: Boolean) {
-        if (_modifaceLoadingState.value == isLoading) return
-
         _modifaceLoadingState.update {
             isLoading
         }
@@ -111,8 +109,7 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
 
             _selectedMfMakeUpLook.postValue(selectedProductMfeData)
             _productArList.postValue(Success(listUiModel))
-            _selectedProductArData.postValue(result.options[initialProductId]
-                    ?: ProductAr())
+            _selectedProductArData.postValue(result.getProductArDataByProductId(initialProductId))
             _bottomLoadingState.update {
                 false
             }
@@ -141,7 +138,7 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             _selectedMfMakeUpLook.postValue(it)
         }
         _productArList.postValue(Success(updatedData))
-        _selectedProductArData.postValue(uiModel.options[productId] ?: ProductAr())
+        _selectedProductArData.postValue(uiModel.getProductArDataByProductId(productId))
     }
 
     fun changeMode(modifaceViewMode: ModifaceViewMode,
