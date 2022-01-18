@@ -5,6 +5,7 @@ import android.graphics.Paint
 import android.graphics.drawable.GradientDrawable
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
@@ -114,11 +115,15 @@ class DigitalUnifyCardViewHolder(
             )
         }
 
+        val fullText = "$leftProductInfoText $rightProductInfoText"
+
         with(binding.dguProductInfo) {
             if (leftProductInfoText.isNotEmpty() || rightProductInfoText.isNotEmpty()) {
-                text = leftProductInfoText
-                append(" ")
-                append(rightProductInfoText)
+                text = fullText
+
+                ellipsize = TextUtils.TruncateAt.END
+                maxLines = 1
+
                 show()
             } else {
                 hide()
