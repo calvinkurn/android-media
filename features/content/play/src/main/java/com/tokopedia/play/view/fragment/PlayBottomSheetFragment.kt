@@ -182,11 +182,8 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     override fun onInfoVoucherClicked(
-        view: ProductSheetViewComponent,
-        vouchers: List<MerchantVoucherUiModel>
-    ) {
+        view: ProductSheetViewComponent) {
         playViewModel.showCouponSheet(variantSheetMaxHeight)
-        couponSheetView.setVoucherList(vouchers)
     }
 
     /**
@@ -527,6 +524,8 @@ class PlayBottomSheetFragment @Inject constructor(
                     state.channel.bottomSheetTitle,
                     state.partner.id
                 )
+
+                renderVoucherSheet(state.tagItems)
             }
         }
     }
@@ -566,6 +565,14 @@ class PlayBottomSheetFragment @Inject constructor(
             if (tagItem.product.productList != prevTagItem?.product?.productList) trackImpressedProduct()
         } else {
             productSheetView.showEmpty(partnerId)
+        }
+    }
+
+    private fun renderVoucherSheet(tagItem: TagItemUiModel) {
+        if (tagItem.voucher.voucherList.isNotEmpty()) {
+            couponSheetView.setVoucherList(
+                voucherList = tagItem.voucher.voucherList
+            )
         }
     }
 }
