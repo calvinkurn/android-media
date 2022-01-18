@@ -17,7 +17,7 @@ import com.tokopedia.picker.databinding.ViewItemGalleryPickerBinding
 import com.tokopedia.picker.ui.fragment.OnMediaClickListener
 import com.tokopedia.picker.ui.fragment.OnMediaSelectedListener
 import com.tokopedia.picker.ui.fragment.gallery.recyclers.utils.MediaDiffUtil
-import com.tokopedia.picker.utils.getVideoDurationLabel
+import com.tokopedia.picker.utils.videoDurationFromUri
 import com.tokopedia.picker.utils.isVideoFormat
 import com.tokopedia.picker.utils.pickerLoadImage
 import com.tokopedia.utils.view.binding.viewBinding
@@ -77,10 +77,13 @@ class GalleryAdapter(
 
     fun removeSelected(media: Media) {
         mutate {
-            val mainIndex = listDiffer.currentList.indexOf(media)
+            val elementIndex = listDiffer.currentList.indexOf(media)
             val selectedIndex = selectedMedias.indexOf(media)
-            selectedMedias.removeAt(selectedIndex)
-            notifyItemChanged(mainIndex)
+
+            if (selectedIndex != -1 && elementIndex != -1) {
+                selectedMedias.removeAt(selectedIndex)
+                notifyItemChanged(elementIndex)
+            }
         }
     }
 
@@ -137,7 +140,7 @@ class GalleryAdapter(
                     MediaStore.Files.getContentUri("external"), "" + element.id
                 )
 
-                binding?.viewLabel?.text = getVideoDurationLabel(context, uri)
+                binding?.viewLabel?.text = videoDurationFromUri(context, uri)
                 binding?.viewLabel?.show()
             } else {
                 binding?.viewLabel?.hide()
