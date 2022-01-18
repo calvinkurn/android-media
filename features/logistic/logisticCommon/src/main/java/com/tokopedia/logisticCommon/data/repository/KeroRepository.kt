@@ -86,10 +86,10 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
 
     }
 
-    suspend fun eligibleForAddressFeature(featureId: Int): EligibleForAddressFeatureResponse {
+    suspend fun eligibleForAddressFeature(featureId: Int): KeroAddrIsEligibleForAddressFeatureResponse {
         val gqlParam = mapOf("feature_id" to featureId, "device" to "android", "device_version" to GlobalConfig.VERSION_NAME)
         val request = GraphqlRequest(KeroLogisticQuery.eligible_for_address_feature,
-                EligibleForAddressFeatureResponse::class.java, gqlParam)
+            KeroAddrIsEligibleForAddressFeatureResponse::class.java, gqlParam)
         return gql.getResponse(request)
     }
 

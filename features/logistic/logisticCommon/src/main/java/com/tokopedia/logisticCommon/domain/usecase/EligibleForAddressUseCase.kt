@@ -1,18 +1,17 @@
 package com.tokopedia.logisticCommon.domain.usecase
 
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
-import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeatureResponse
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeature
+import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureResponse
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class EligibleForAddressUseCase @Inject constructor(private val repository: KeroRepository) : UseCase<EligibleForAddressFeatureResponse>() {
+class EligibleForAddressUseCase @Inject constructor(private val repository: KeroRepository) : UseCase<KeroAddrIsEligibleForAddressFeatureResponse>() {
 
     private var featureId = 0
 
-    fun eligibleForAddressFeature(success: (KeroAddrIsEligibleForAddressFeature) -> Unit, onFail: (Throwable) -> Unit, featureId: Int) {
+    fun eligibleForAddressFeature(success: (KeroAddrIsEligibleForAddressFeatureResponse) -> Unit, onFail: (Throwable) -> Unit, featureId: Int) {
         execute({
-            success(it.data)
+            success(it)
         }, {
             onFail(it)
         })
@@ -20,7 +19,7 @@ class EligibleForAddressUseCase @Inject constructor(private val repository: Kero
         this.featureId = featureId
     }
 
-    override suspend fun executeOnBackground(): EligibleForAddressFeatureResponse {
+    override suspend fun executeOnBackground(): KeroAddrIsEligibleForAddressFeatureResponse {
         return repository.eligibleForAddressFeature(featureId)
     }
 

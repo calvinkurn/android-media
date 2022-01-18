@@ -2,13 +2,12 @@ package com.tokopedia.logisticCommon.data.response
 
 import com.google.gson.annotations.SerializedName
 
-data class EligibleForAddressFeatureResponse(
-
-	@SerializedName("data")
-	val data: KeroAddrIsEligibleForAddressFeature = KeroAddrIsEligibleForAddressFeature()
+data class KeroAddrIsEligibleForAddressFeatureResponse(
+	@SerializedName("KeroAddrIsEligibleForAddressFeature")
+	val data: KeroAddrIsEligibleForAddressFeatureData = KeroAddrIsEligibleForAddressFeatureData()
 )
 
-data class KeroAddrIsEligibleForAddressFeature(
+data class KeroAddrIsEligibleForAddressFeatureData(
 
 	@SerializedName("kero_addr_error")
 	val keroAddrError: KeroAddrError = KeroAddrError(),
