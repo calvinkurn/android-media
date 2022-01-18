@@ -15,7 +15,7 @@ class DynamicLegoBannerCallback(
 ): DynamicLegoBannerListener {
 
     companion object {
-        private const val GRID_PARAM_TOKONOW_REFRESH = "tokonow_refresh"
+        private const val PARAM_TOKONOW_REFRESH = "tokonow_refresh"
     }
 
     override fun onSeeAllSixImage(channelModel: ChannelModel, position: Int) {
@@ -38,7 +38,7 @@ class DynamicLegoBannerCallback(
 
     override fun onClickGridSixImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
         val gridParams = Uri.parse("?${channelGrid.param}")
-        val tokoNowRefresh = gridParams.getQueryParameter(GRID_PARAM_TOKONOW_REFRESH).toBoolean()
+        val tokoNowRefresh = gridParams.getQueryParameter(PARAM_TOKONOW_REFRESH).toBoolean()
 
         if(tokoNowRefresh) {
             val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(context)
