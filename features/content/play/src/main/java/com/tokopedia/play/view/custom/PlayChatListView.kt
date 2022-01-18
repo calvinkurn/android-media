@@ -90,6 +90,12 @@ class PlayChatListView : ConstraintLayout {
         super.onAttachedToWindow()
         try {
             chatAdapter.registerAdapterDataObserver(adapterObserver)
+
+            rvChatList.apply {
+                addOnScrollListener(scrollListener)
+                addItemDecoration(ChatListItemDecoration(context))
+                addOnLayoutChangeListener(chatListOnLayoutChangeListener)
+            }
         } catch (ignored: java.lang.IllegalStateException) {}
     }
 
@@ -97,6 +103,12 @@ class PlayChatListView : ConstraintLayout {
         super.onDetachedFromWindow()
         try {
             chatAdapter.unregisterAdapterDataObserver(adapterObserver)
+
+            rvChatList.apply {
+                removeOnScrollListener(scrollListener)
+                removeItemDecoration(ChatListItemDecoration(context))
+                removeOnLayoutChangeListener(chatListOnLayoutChangeListener)
+            }
         } catch (ignored: IllegalStateException) {}
     }
 
@@ -143,9 +155,6 @@ class PlayChatListView : ConstraintLayout {
             itemAnimator = null
 
             adapter = chatAdapter
-            addOnScrollListener(scrollListener)
-            addItemDecoration(ChatListItemDecoration(context))
-            addOnLayoutChangeListener(chatListOnLayoutChangeListener)
         }
 
         csDownView.setOnClickListener {
