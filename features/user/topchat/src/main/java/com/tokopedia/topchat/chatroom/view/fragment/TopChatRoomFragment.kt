@@ -2114,10 +2114,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             stringProductPreviews,
             listType
         )
-        for (productPreview in productPreviews) {
-            if (productPreview.notEnoughRequiredData()) continue
-            val sendAbleProductPreview = SendableProductPreview(productPreview)
-            viewModel.addAttachmentPreview(sendAbleProductPreview)
+        val productIds = productPreviews.map { it.id }
+        if (productIds.isNotEmpty()) {
+            viewModel.loadProductPreview(productIds)
         }
     }
 
