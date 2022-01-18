@@ -161,6 +161,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     promoInfos.firstOrNull { it.validationType == PromoInfo.VALIDATION_TYPE_PAYMENT }?.let {
                         paymentOptions = it.methods.joinToString(",")
                     }
+                    benefitDetail = couponItem.benefitDetail.firstOrNull() ?: BenefitDetail()
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
                     isParentEnabled = couponSubSection.isEnabled

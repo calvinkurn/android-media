@@ -1,6 +1,7 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.promocheckoutmarketplace.data.response.BenefitDetail
 import com.tokopedia.promocheckoutmarketplace.data.response.ClashingInfo
 import com.tokopedia.promocheckoutmarketplace.data.response.PromoCoachmark
 import com.tokopedia.promocheckoutmarketplace.data.response.PromoInfo
@@ -38,8 +39,9 @@ data class PromoListItemUiModel(
             var promoInfos: List<PromoInfo> = emptyList(),
             var remainingPromoCount: Int = 0,
             var tabId: String = "",
-            var shippingOptions: String = "", // Todo : fill this field from BE
-            var paymentOptions: String = "" // Todo : fill this field from BE
+            var shippingOptions: String = "",
+            var paymentOptions: String = "",
+            var benefitDetail: BenefitDetail = BenefitDetail()
     )
 
     data class UiState(

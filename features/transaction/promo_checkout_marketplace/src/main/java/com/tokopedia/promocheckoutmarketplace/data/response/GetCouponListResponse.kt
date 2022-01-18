@@ -186,7 +186,18 @@ data class Coupon(
         @SerializedName("is_group_header")
         val isGroupHeader: Boolean = false,
         @SerializedName("promo_infos")
-        val promoInfos: List<PromoInfo> = emptyList()
+        val promoInfos: List<PromoInfo> = emptyList(),
+        @SerializedName("benefit_details")
+        val benefitDetail: List<BenefitDetail> = emptyList()
+)
+
+data class BenefitDetail(
+        @SerializedName("amount_idr")
+        val amountIdr: Double = 0.0,
+        @SerializedName("benefit_type")
+        val benefitType: String = "",
+        @SerializedName("data_type")
+        val dataType: String = ""
 )
 
 data class PromoInfo(

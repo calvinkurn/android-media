@@ -132,6 +132,11 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                          validation_type
                                          methods
                                     }
+                                    benefit_details {
+                                        amount_idr
+                                        benefit_type
+                                        data_type
+                                    }
                                 }
                             }
                         }

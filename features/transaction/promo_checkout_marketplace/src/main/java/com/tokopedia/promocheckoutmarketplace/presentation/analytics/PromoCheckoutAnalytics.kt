@@ -477,7 +477,8 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         sendEventEnhancedEcommerceByPage(
                 page = page,
                 eventAction = EventAction.IMPRESSION_ELIGIBLE_PROMO_SECTION,
-                eventLabel = "${promoItem.uiData.promoCode} - $index - ${promoItem.uiData.benefitAmount} - promo type - ${promoItem.uiData.remainingPromoCount} ",
+                eventLabel = "${promoItem.uiData.promoCode} - $index - ${promoItem.uiData.benefitDetail.amountIdr} - " +
+                        "${promoItem.uiData.benefitDetail.benefitType} - ${promoItem.uiData.remainingPromoCount} ",
                 bundle = bundle
         )
     }
