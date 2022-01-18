@@ -13,6 +13,7 @@ object TokoNowServiceTypeUtil {
     const val EDU_WIDGET_RESOURCE_ID = "edu_widget_resource_id"
     const val SHARING_WIDGET_RESOURCE_ID = "sharing_widget_resource_id"
     const val REPURCHASE_EMPTY_RESOURCE_ID = "repurchase_empty_resource_id"
+    const val SEARCH_CATEGORY_SUBTITLE_RESOURCE_ID = "search_category_subtitle_resource_id"
 
     /*
     * Create the key to access and wrap resourceId into TokoNowStringResource data class
@@ -33,6 +34,9 @@ object TokoNowServiceTypeUtil {
         REPURCHASE_EMPTY_RESOURCE_ID to TokoNowStringResource(
             resourceId2h = R.string.tokopedianow_repurchase_no_result_description_two_hours,
             resourceId15m = R.string.tokopedianow_repurchase_no_result_description_fifteen_minutes
+        ),
+        SEARCH_CATEGORY_SUBTITLE_RESOURCE_ID to TokoNowStringResource(
+            formattedResourceId = R.string.tokopedianow_search_category_subtitle
         )
     )
 

@@ -130,6 +130,7 @@ class TokoNowSearchViewModel @Inject constructor (
         return TitleDataView(
                 titleType = titleType,
                 hasSeeAllCategoryButton = hasSeeAllCategoryButton,
+                serviceType = chooseAddressData?.service_type.orEmpty()
         )
     }
 
