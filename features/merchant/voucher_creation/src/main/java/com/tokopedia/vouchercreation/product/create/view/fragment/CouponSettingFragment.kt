@@ -330,10 +330,14 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
             binding.groupCashbackMinimumPurchase.visible()
 
+            binding.textAreaMinimumPurchase.textAreaMessage = getString(R.string.error_message_invalid_cashback_minimum_purchase_nominal)
+
             binding.chipMinimumPurchaseNominal.chipType = ChipsUnify.TYPE_SELECTED
             binding.chipMinimumPurchaseQuantity.chipType = ChipsUnify.TYPE_NORMAL
             binding.chipMinimumPurchaseNothing.chipType = ChipsUnify.TYPE_NORMAL
+
             selectedMinimumPurchaseType = MinimumPurchaseType.NOMINAL
+
             validateInput()
         }
 
@@ -343,10 +347,14 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
             binding.groupCashbackMinimumPurchase.visible()
 
+            binding.textAreaMinimumPurchase.textAreaMessage = getString(R.string.error_message_invalid_cashback_minimum_purchase_quantity)
+
             binding.chipMinimumPurchaseNominal.chipType = ChipsUnify.TYPE_NORMAL
             binding.chipMinimumPurchaseQuantity.chipType = ChipsUnify.TYPE_SELECTED
             binding.chipMinimumPurchaseNothing.chipType = ChipsUnify.TYPE_NORMAL
+
             selectedMinimumPurchaseType = MinimumPurchaseType.QUANTITY
+
             validateInput()
         }
 
@@ -356,10 +364,14 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
             binding.groupCashbackMinimumPurchase.gone()
 
+            binding.textAreaMinimumPurchase.textAreaMessage = EMPTY_STRING
+
             binding.chipMinimumPurchaseNominal.chipType = ChipsUnify.TYPE_NORMAL
             binding.chipMinimumPurchaseQuantity.chipType = ChipsUnify.TYPE_NORMAL
             binding.chipMinimumPurchaseNothing.chipType = ChipsUnify.TYPE_SELECTED
+
             selectedMinimumPurchaseType = MinimumPurchaseType.NOTHING
+
             validateInput()
         }
     }
