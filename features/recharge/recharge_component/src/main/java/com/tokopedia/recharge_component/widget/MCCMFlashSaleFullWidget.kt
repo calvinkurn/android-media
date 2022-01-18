@@ -27,36 +27,47 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
 
     fun renderMCCMFull(denomFullListener: RechargeDenomFullListener, denomData: DenomWidgetModel){
         with(widgetRechargeMCCMFlashSaleFullWidget){
-            headerMccmFull.setChannel(DenomMCCMFlashSaleMapper.getChannelMCCM(denomData.mainTitle, denomData.textColor), object :
-                HeaderListener {
-                override fun onChannelExpired(channelModel: ChannelModel) {
+            if (!denomData.listDenomData.isNullOrEmpty()) {
+                root.show()
+                headerMccmFull.setChannel(
+                    DenomMCCMFlashSaleMapper.getChannelMCCM(
+                        denomData.mainTitle,
+                        denomData.textColor
+                    ), object :
+                        HeaderListener {
+                        override fun onChannelExpired(channelModel: ChannelModel) {
 
-                }
+                        }
 
-                override fun onSeeAllClick(link: String) {
+                        override fun onSeeAllClick(link: String) {
 
-                }
-            })
-            renderAdapter(denomFullListener, denomData.listDenomData)
+                        }
+                    })
+                renderAdapter(denomFullListener, denomData.listDenomData)
+            }
         }
     }
 
     fun renderFlashSaleFull(denomFullListener: RechargeDenomFullListener, denomData: DenomWidgetModel){
-        with(widgetRechargeMCCMFlashSaleFullWidget){
-            headerMccmFull.setChannel(DenomMCCMFlashSaleMapper.getChannelFlashSale(
-                denomData.mainTitle,
-                denomData.subTitle,
-                denomData.textColor), object :
-                HeaderListener {
-                override fun onChannelExpired(channelModel: ChannelModel) {
+        with(widgetRechargeMCCMFlashSaleFullWidget) {
+            if (!denomData.listDenomData.isNullOrEmpty()) {
+                root.show()
+                headerMccmFull.setChannel(DenomMCCMFlashSaleMapper.getChannelFlashSale(
+                    denomData.mainTitle,
+                    denomData.subTitle,
+                    denomData.textColor
+                ), object :
+                    HeaderListener {
+                    override fun onChannelExpired(channelModel: ChannelModel) {
 
-                }
+                    }
 
-                override fun onSeeAllClick(link: String) {
+                    override fun onSeeAllClick(link: String) {
 
-                }
-            })
-            renderAdapter(denomFullListener, denomData.listDenomData)
+                    }
+                })
+                renderAdapter(denomFullListener, denomData.listDenomData)
+            }
         }
     }
 

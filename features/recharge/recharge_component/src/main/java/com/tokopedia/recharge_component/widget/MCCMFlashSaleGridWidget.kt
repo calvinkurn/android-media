@@ -32,31 +32,46 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
 
     fun renderMCCMGrid(denomGridListener: RechargeDenomGridListener, denomData: DenomWidgetModel){
         with(widgetRechargeMCCMFlashSaleGridWidget){
-            headerMccmGrid.setChannel(DenomMCCMFlashSaleMapper.getChannelMCCM(denomData.mainTitle, denomData.textColor), object : HeaderListener {
-                override fun onChannelExpired(channelModel: ChannelModel) {
+            if (!denomData.listDenomData.isNullOrEmpty()) {
+                root.show()
+                headerMccmGrid.setChannel(
+                    DenomMCCMFlashSaleMapper.getChannelMCCM(
+                        denomData.mainTitle,
+                        denomData.textColor
+                    ), object : HeaderListener {
+                        override fun onChannelExpired(channelModel: ChannelModel) {
 
-                }
+                        }
 
-                override fun onSeeAllClick(link: String) {
+                        override fun onSeeAllClick(link: String) {
 
-                }
-            })
-            renderAdapter(denomGridListener, denomData.listDenomData)
+                        }
+                    })
+                renderAdapter(denomGridListener, denomData.listDenomData)
+            }
         }
     }
 
     fun renderFlashSaleGrid(denomGridListener: RechargeDenomGridListener, denomData: DenomWidgetModel){
         with(widgetRechargeMCCMFlashSaleGridWidget){
-            headerMccmGrid.setChannel(DenomMCCMFlashSaleMapper.getChannelFlashSale(denomData.mainTitle, denomData.subTitle, denomData.textColor), object : HeaderListener {
-                override fun onChannelExpired(channelModel: ChannelModel) {
+            if (!denomData.listDenomData.isNullOrEmpty()) {
+                root.show()
+                headerMccmGrid.setChannel(
+                    DenomMCCMFlashSaleMapper.getChannelFlashSale(
+                        denomData.mainTitle,
+                        denomData.subTitle,
+                        denomData.textColor
+                    ), object : HeaderListener {
+                        override fun onChannelExpired(channelModel: ChannelModel) {
 
-                }
+                        }
 
-                override fun onSeeAllClick(link: String) {
+                        override fun onSeeAllClick(link: String) {
 
-                }
-            })
-            renderAdapter(denomGridListener, denomData.listDenomData)
+                        }
+                    })
+                renderAdapter(denomGridListener, denomData.listDenomData)
+            }
         }
     }
 
