@@ -89,7 +89,7 @@ class ReadReviewViewHolder(view: View,
             setReview(message, feedbackID, element.productId)
             showAttachedImages(imageAttachments, this, element.shopId)
             if (isProductReview)
-                setLikeButton(feedbackID, element.shopId, likeDislike)
+                setLikeButton(feedbackID, likeDislike)
             else
                 setShopReviewLikeButton(feedbackID, element.shopId, element.productId, likeDislike)
             setReply(element.shopName, reviewResponse, feedbackID, element.productId)
@@ -213,7 +213,7 @@ class ReadReviewViewHolder(view: View,
         }
     }
 
-    private fun setLikeButton(reviewId: String, shopId: String, likeDislike: LikeDislike) {
+    private fun setLikeButton(reviewId: String, likeDislike: LikeDislike) {
         if (likeDislike.isLiked()) {
             setThumbLike(true)
             likeCount?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
@@ -222,7 +222,11 @@ class ReadReviewViewHolder(view: View,
             likeCount?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
         }
         likeImage?.setOnClickListener {
-            readReviewItemListener.onLikeButtonClicked(reviewId, shopId, likeDislike.likeStatus, adapterPosition)
+            readReviewItemListener.onLikeButtonClicked(
+                reviewId,
+                likeDislike.likeStatus,
+                adapterPosition
+            )
         }
         likeCount?.apply {
             text = if (likeDislike.totalLike == 0) {
@@ -231,7 +235,11 @@ class ReadReviewViewHolder(view: View,
                 String.format(getString(R.string.review_reading_like_count), likeDislike.totalLike)
             }
             setOnClickListener {
-                readReviewItemListener.onLikeButtonClicked(reviewId, shopId, likeDislike.likeStatus, adapterPosition)
+                readReviewItemListener.onLikeButtonClicked(
+                    reviewId,
+                    likeDislike.likeStatus,
+                    adapterPosition
+                )
             }
         }
     }
