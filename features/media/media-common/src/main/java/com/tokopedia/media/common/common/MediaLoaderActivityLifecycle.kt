@@ -11,15 +11,12 @@ import com.tokopedia.applink.RouteManager.getIntent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING
 import com.tokopedia.dev_monitoring_tools.session.SessionDataUsageLogger
 import com.tokopedia.device.info.DeviceConnectionInfo.getConnectionType
-import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.common.R
 import com.tokopedia.media.common.data.HIGH_QUALITY
 import com.tokopedia.media.common.data.MediaSettingPreferences
-import com.tokopedia.media.common.util.getDirSize
 import com.tokopedia.unifycomponents.Toaster
 import java.util.concurrent.TimeUnit
-import com.bumptech.glide.Glide.getPhotoCacheDir as getGlidePhotoCacheDir
 import com.tokopedia.media.common.util.NetworkManager.state as networkManagerState
 
 class MediaLoaderActivityLifecycle(
@@ -72,18 +69,13 @@ class MediaLoaderActivityLifecycle(
         if (logger.returnFromOtherActivity) logger.addJourney(activity)
         if (logger.running) return
 
-        val mediaAdditionalData = mapOf(
-            KEY_INTERNAL_CACHE_SIZE to activity.cacheDir.getDirSize().formattedToMB(),
-            KEY_GLIDE_CACHE_SIZE to getGlidePhotoCacheDir(context).getDirSize().formattedToMB()
-        )
-
         Thread {
-            logger.addLogItems(mediaAdditionalData)
-
-            logger.checkSession(
-                activityName = activity.javaClass.simpleName,
-                connectionType = getConnectionType(activity)
-            )
+            Runnable {
+                logger.checkSession(
+                    activityName = activity.javaClass.simpleName,
+                    connectionType = getConnectionType(activity)
+                )
+            }
         }.start()
     }
 
@@ -115,11 +107,6 @@ class MediaLoaderActivityLifecycle(
         // for data usage logger
         private const val ACTIVE_SESSION_NAME = "MEDIALOADER_ACTIVE_SESSION"
         private const val DATA_USAGE_NAME = "MEDIALOADER_DATA_USAGE"
-
-        // key for an additional data usage logger
-        private const val KEY_ACCUMULATIVE_SIZE = "accumulative_size"
-        private const val KEY_INTERNAL_CACHE_SIZE = "internal_cachedir_size"
-        private const val KEY_GLIDE_CACHE_SIZE = "glide_dir_size"
 
         private val INTERVAL_SESSION = TimeUnit.MINUTES.toMillis(1)
 
