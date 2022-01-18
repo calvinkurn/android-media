@@ -80,22 +80,27 @@ class CouponSettingViewModel @Inject constructor(
         if (selectedCouponType == CouponType.CASHBACK) {
             val discountTypeSelected = isDiscountTypeSelected(selectedDiscountType)
             val minimumPurchaseSelected = isMinimumPurchaseSelected(selectedMinimumPurchaseType)
-            val validDiscountAmount = isValidCashbackDiscountAmount(cashbackDiscountAmount)
-            val validMinimumPurchase = isValidCashbackMinimumPurchase(
-                cashbackMinimumPurchase,
-                cashbackDiscountAmount,
-                selectedMinimumPurchaseType
-            )
             val validQuota = isValidQuota(cashbackQuota) is QuotaState.ValidQuota
 
             val validCashback = when (selectedDiscountType) {
                 DiscountType.NOMINAL -> {
+                    val validMinimumPurchase = isValidCashbackMinimumPurchase(
+                        cashbackMinimumPurchase,
+                        cashbackDiscountAmount,
+                        selectedMinimumPurchaseType
+                    )
+                    val validDiscountAmount = isValidCashbackDiscountAmount(cashbackDiscountAmount)
                     discountTypeSelected && validDiscountAmount && minimumPurchaseSelected && validMinimumPurchase && validQuota
                 }
                 DiscountType.PERCENTAGE -> {
+                    val validMinimumPurchase = isValidCashbackMinimumPurchase(
+                        cashbackMinimumPurchase,
+                        cashbackMaximumAmount,
+                        selectedMinimumPurchaseType
+                    )
                     val validCashbackPercentage = isValidCashbackPercentage(cashbackPercentage) is CashbackPercentageState.ValidPercentage
                     val validMaxDiscountAmount = isValidMaximumCashbackAmount(cashbackMaximumAmount) is CashbackAmountState.ValidAmount
-                    discountTypeSelected && validDiscountAmount && validCashbackPercentage && validMaxDiscountAmount && minimumPurchaseSelected && validMinimumPurchase && validQuota
+                    discountTypeSelected && validCashbackPercentage && validMaxDiscountAmount && minimumPurchaseSelected && validMinimumPurchase && validQuota
                 }
                 DiscountType.NONE -> false
 
@@ -131,14 +136,14 @@ class CouponSettingViewModel @Inject constructor(
     }
 
     fun isValidCashbackMinimumPurchase(
-        cashbackMinimumPurchase: Int,
-        cashbackDiscountAmount: Int,
+        minimumPurchase: Int,
+        discountAmount: Int,
         selectedMinimumPurchaseType: MinimumPurchaseType
     ): Boolean {
         return when (selectedMinimumPurchaseType) {
             MinimumPurchaseType.NONE -> false
-            MinimumPurchaseType.NOMINAL -> cashbackMinimumPurchase >= cashbackDiscountAmount
-            MinimumPurchaseType.QUANTITY -> cashbackMinimumPurchase > ZERO
+            MinimumPurchaseType.NOMINAL -> minimumPurchase >= discountAmount
+            MinimumPurchaseType.QUANTITY -> minimumPurchase > ZERO
             MinimumPurchaseType.NOTHING -> true
         }
     }

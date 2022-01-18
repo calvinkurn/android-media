@@ -165,7 +165,13 @@ class CouponSettingFragment : BaseDaggerFragment() {
                 textAreaMinimumPurchase.textAreaInput.setText(formattedNumber)
                 textAreaMinimumPurchase.textAreaInput.setSelection(textAreaMinimumPurchase.textAreaInput.text?.length ?: 0)
 
-                val discountAmount = textAreaDiscountAmount.textAreaInput.text.toString().trim().digitsOnlyInt()
+
+                val discountAmount = if (selectedDiscountType == DiscountType.NOMINAL) {
+                    textAreaDiscountAmount.textAreaInput.text.toString().trim().digitsOnlyInt()
+                } else {
+                    textAreaMaximumDiscount.textAreaInput.text.toString().trim().digitsOnlyInt()
+                }
+
                 val isValidInput =
                     viewModel.isValidCashbackMinimumPurchase(number, discountAmount, selectedMinimumPurchaseType)
                 if (isValidInput) {
