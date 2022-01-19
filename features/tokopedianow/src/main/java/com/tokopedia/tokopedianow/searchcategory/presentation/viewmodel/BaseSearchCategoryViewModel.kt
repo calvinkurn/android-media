@@ -1177,8 +1177,8 @@ abstract class BaseSearchCategoryViewModel(
     open fun setUserPreference(serviceType: String) {
         launchCatchError(
             block = {
-                chooseAddressData?.let { currentChooseAddressData ->
-                    setUserPreferenceMutableLiveData.postValue(Success(setUserPreferenceUseCase.execute(currentChooseAddressData, serviceType)))
+                chooseAddressData?.let {
+                    setUserPreferenceMutableLiveData.postValue(Success(setUserPreferenceUseCase.execute(it, serviceType)))
                 }
             },
             onError = {
