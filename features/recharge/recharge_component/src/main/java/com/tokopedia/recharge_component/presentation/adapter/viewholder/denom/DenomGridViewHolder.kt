@@ -4,10 +4,7 @@ import android.graphics.Paint
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.ViewRechargeDenomGridBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
@@ -112,13 +109,17 @@ class DenomGridViewHolder (
                         resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
                             .toInt()
                     )
-                } else hide()
+                } else if (denomType == DenomWidgetEnum.MCCM_TYPE) invisible() else hide()
             }
 
             cardDenomGrid.run {
                 layoutParams.width = if (denomType == DenomWidgetEnum.GRID_TYPE){
                     ViewGroup.LayoutParams.MATCH_PARENT
                 } else resources.getDimension(R.dimen.widget_denom_grid_width).toInt()
+
+                layoutParams.height = if (denomType == DenomWidgetEnum.MCCM_TYPE){
+                    resources.getDimension(R.dimen.widget_denom_grid_height).toInt()
+                } else ViewGroup.LayoutParams.WRAP_CONTENT
 
                 setBackgroundColor(ContextCompat.getColor(rootView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
 
