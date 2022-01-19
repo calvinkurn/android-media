@@ -81,7 +81,9 @@ class ProductViewModelMapper {
             searchProductModel.searchInspirationWidget
         )
         productDataView.inspirationSizeDataView = convertToInspirationSizeViewModel(
-                searchProductModel.searchInspirationWidget
+                searchProductModel.searchInspirationWidget,
+                keyword,
+                dimension90
         )
         productDataView.additionalParams = searchProductHeader.additionalParams
         productDataView.autocompleteApplink = searchProductData.autocompleteApplink
@@ -425,7 +427,9 @@ class ProductViewModelMapper {
     }
 
     private fun convertToInspirationSizeViewModel(
-            searchInspirationWidget: SearchInspirationWidget
+            searchInspirationWidget: SearchInspirationWidget,
+            keyword: String,
+            dimension90: String
     ): List<SizeDataView> {
         return searchInspirationWidget.data.filter { it.type == SearchConstant.InspirationCard.TYPE_SIZE_PERSO }.map { data ->
             SizeDataView(
@@ -433,7 +437,12 @@ class ProductViewModelMapper {
                             title = data.title,
                             type = data.type,
                             position = data.position,
-                            optionSizeData = data.inspirationWidgetOptions.mapToInspirationSizeOptionDataView(data.type)
+                            optionSizeData = data.inspirationWidgetOptions.mapToInspirationSizeOptionDataView(
+                                    data.type,
+                                    keyword,
+                                    dimension90,
+                                    data.title
+                            )
                     )
             )
         }
@@ -453,7 +462,10 @@ class ProductViewModelMapper {
         }
 
     private fun List<InspirationCardOption>.mapToInspirationSizeOptionDataView(
-            inspirationCardType: String
+            inspirationCardType: String,
+            keyword: String,
+            dimension90: String,
+            title: String,
     ) = this.map { optionModel ->
         SizeOptionDataView(
                 optionModel.text,
@@ -462,7 +474,11 @@ class ProductViewModelMapper {
                 optionModel.color,
                 optionModel.applink,
                 optionModel.filters.toInspirationSizeOptionFiltersDataView(),
-                inspirationCardType
+                inspirationCardType,
+                optionModel.componentId,
+                keyword = keyword,
+                dimension90 = dimension90,
+                valueName = title + " - " +optionModel.text
         )
     }
 

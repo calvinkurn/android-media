@@ -887,7 +887,11 @@ data class SearchProductModel(
 
             @SerializedName("filters")
             @Expose
-            val filters: InspirationCardOptionFilter
+            val filters: InspirationCardOptionFilter,
+
+            @SerializedName("component_id")
+            @Expose
+            val componentId: String
     )
 
     data class InspirationCardOptionFilter (

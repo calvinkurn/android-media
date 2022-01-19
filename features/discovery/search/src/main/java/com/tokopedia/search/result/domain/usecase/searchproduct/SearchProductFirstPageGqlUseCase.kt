@@ -54,7 +54,6 @@ class SearchProductFirstPageGqlUseCase(
         val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String?, Any?>
         val paramsHashmap = HashMap(searchProductParams)
         paramsHashmap["bypass_experiment"] = "true"
-        paramsHashmap["hint"] = "test"
 
         val query = getQueryFromParameters(searchProductParams)
         val params = UrlParamUtils.generateUrlParamString(paramsHashmap)
@@ -369,6 +368,7 @@ class SearchProductFirstPageGqlUseCase(
                             url
                             color
                             applink
+                            component_id
                             filters {
                               title
                               key

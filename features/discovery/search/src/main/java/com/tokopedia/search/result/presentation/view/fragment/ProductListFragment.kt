@@ -1688,15 +1688,17 @@ class ProductListFragment: BaseDaggerFragment(),
         redirectionStartActivity(optionData.applink, optionData.url)
     }
 
-    override fun onInspirationSizeOptionClicked(option: Option, isActive: Boolean) {
+    override fun onInspirationSizeOptionClicked(sizeOptionDataView: SizeOptionDataView, option: Option, isActive: Boolean) {
         filterController.setFilter(option, isActive)
 
         refreshSearchParameter(filterController.getParameter())
 
         reloadData()
+
+        sizeOptionDataView.click(TrackApp.getInstance().gtm)
     }
 
-    override fun setSizeOptionFilterOnFilterController(dataView: MutableList<SizeDataView>) {
+    override fun initSizeOptionFilter(dataView: MutableList<SizeDataView>) {
         if (dataView.size > 0) {
             inspirationSizeFilter = Filter(
                     title = dataView[0].data.title,

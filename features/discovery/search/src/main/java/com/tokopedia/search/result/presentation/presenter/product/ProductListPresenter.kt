@@ -1543,7 +1543,7 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun processSizeFilter() {
-        view.setSizeOptionFilterOnFilterController(inspirationSizeDataView)
+        view.initSizeOptionFilter(inspirationSizeDataView)
         view.setSelectedSizeOption()
     }
 

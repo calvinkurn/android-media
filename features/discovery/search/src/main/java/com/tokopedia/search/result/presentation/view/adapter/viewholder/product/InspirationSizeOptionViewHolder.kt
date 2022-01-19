@@ -33,7 +33,7 @@ class InspirationSizeOptionViewHolder(
 
     private fun setListener(chipsUnify: ChipsUnify, optionData: SizeOptionDataView, isActive: Boolean) {
         chipsUnify.setOnClickListener {
-            inspirationOptionListener.onInspirationSizeOptionClicked(createOption(optionData), !isActive)
+            inspirationOptionListener.onInspirationSizeOptionClicked(optionData, createOption(optionData), !isActive)
         }
     }
 
