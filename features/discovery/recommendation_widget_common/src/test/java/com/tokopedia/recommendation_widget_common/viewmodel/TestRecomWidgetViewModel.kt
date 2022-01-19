@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.viewmodel
 
+import android.text.TextUtils
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -36,6 +37,7 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 
 /**
@@ -165,33 +167,57 @@ class TestRecomWidgetViewModel {
         }
 
     @Test
-    fun `test load recommendation with some product id then check success recommendation chips available`() =
-        runBlocking {
-            coEvery { getRecommendationUseCase.getData(any()) } returns listOf(
-                RecommendationWidget(
-                    recommendationItemList = listOf(recomItem),
-                    isTokonow = false
-                )
+    fun `test load recommendation with some product id then check success recommendation chips available`() = runBlocking {
+        coEvery { getRecommendationUseCase.getData(any()) } returns listOf(
+            RecommendationWidget(
+                recommendationItemList = listOf(recomItem),
+                isTokonow = false
             )
+        )
 
-            every {
-                userSessionInterface.userId
-            } returns "1234"
+        every {
+            userSessionInterface.userId
+        } returns "1234"
 
-            val productIds = listOf("420356", "420358")
+        val productIds = listOf("420356", "420358")
 
-            val recomFilterChip = RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Speaker")
-            val listFilterChip = listOf(
-                recomFilterChip)
+        val recomFilterChip =
+            RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Speaker")
+        val listFilterChip = listOf(
+            recomFilterChip
+        )
 
-            coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listFilterChip
-            viewModel.loadRecommendationCarousel(pageName = PAGENAME_PDP_3, productIds = productIds)
-            val recomWidget = viewModel.getRecommendationLiveData.value
-            Assert.assertEquals(recomFilterChip,
-                recomWidget?.recommendationFilterChips?.get(0)
-                    ?: RecommendationFilterChipsEntity.RecommendationFilterChip()
+        coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listFilterChip
+        every { TextUtils.join(",", productIds) } returns "420356,420358"
+        viewModel.loadRecommendationCarousel(pageName = PAGENAME_PDP_3, productIds = productIds)
+        val recomWidget = viewModel.getRecommendationLiveData.value
+        Assert.assertEquals(
+            recomFilterChip,
+            recomWidget?.recommendationFilterChips?.get(0)
+                ?: RecommendationFilterChipsEntity.RecommendationFilterChip()
+        )
+    }
+//        runBlocking {
+
+//        }
+
+    @Test
+    fun `test load recommendation then load again will do nothing`() = runBlocking {
+        coEvery { getRecommendationUseCase.getData(any()) } returns listOf(
+            RecommendationWidget(
+                recommendationItemList = listOf(recomItem),
+                isTokonow = true
             )
-        }
+        )
+        viewModel.loadRecommendationCarousel(isTokonow = true)
+        val recomWidget = viewModel.getRecommendationLiveData.value
+        val dataList = recomWidget?.recommendationItemList
+        Assert.assertTrue(recomWidget?.isTokonow == true)
+        Assert.assertTrue(dataList?.isNotEmpty() == true)
+
+        viewModel.loadRecommendationCarousel(isTokonow = true)
+        Assert.assertEquals(recomWidget, viewModel.getRecommendationLiveData.value)
+    }
 
     @Test
     fun `test add to cart non variant then return success cart data`() = runBlockingTest {
