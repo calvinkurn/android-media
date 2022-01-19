@@ -416,6 +416,44 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     }
 
     @Test
+    fun `WHEN should navigate to add new address page failed THEN should show toaster`() {
+        // Given
+        val data = CartShipmentAddressFormData().apply {
+            errorCode = CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS
+            groupAddress = listOf(
+                GroupAddress().apply {
+                    userAddress = UserAddress(state = UserAddress.STATE_NO_ADDRESS)
+                }
+            )
+        }
+
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(data)
+        }
+        coEvery {
+            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
+        } answers {
+            secondArg<(Throwable)-> Unit>().invoke(Throwable())
+        }
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.resetPromoBenefit()
+            view.clearTotalBenefitPromoStacking()
+            view.hideLoading()
+            view.showToastError(any())
+            view.stopTrace()
+        }
+    }
+
+
+
+    @Test
     fun `WHEN load checkout page get default value address state THEN should render checkout page`() {
         // Given
         val groupAddress = GroupAddress().apply {
