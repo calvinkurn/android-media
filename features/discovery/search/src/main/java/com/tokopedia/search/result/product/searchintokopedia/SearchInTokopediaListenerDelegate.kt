@@ -2,13 +2,16 @@ package com.tokopedia.search.result.product.searchintokopedia
 
 import android.content.Context
 import com.tokopedia.applink.RouteManager
+import java.lang.ref.WeakReference
 
 class SearchInTokopediaListenerDelegate(
-    private val context: Context?,
+    context: Context?,
 ): SearchInTokopediaListener {
 
+    private val weakContext: WeakReference<Context?> = WeakReference(context)
+
     override fun onSearchInTokopediaClick(applink: String) {
-        context ?: return
+        val context = weakContext.get() ?: return
 
         RouteManager.route(context, applink)
     }
