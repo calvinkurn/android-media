@@ -832,7 +832,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCheckoutPageNoAddress(CartShipmentAddressFormData cartShipmentAddressFormData, boolean isEligibleForRevampAna) {
+    public void renderCheckoutPageNoAddress(CartShipmentAddressFormData shipmentAddressFormData, boolean isEligibleForRevampAna) {
         Token token = new Token();
         token.setUt(shipmentAddressFormData.getKeroUnixTime());
         token.setDistrictRecommendation(shipmentAddressFormData.getKeroDiscomToken());
