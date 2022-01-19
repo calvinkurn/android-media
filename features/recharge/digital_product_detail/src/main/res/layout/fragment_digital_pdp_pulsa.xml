@@ -78,8 +78,8 @@
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginEnd="@dimen/spacing_lvl4">
 
-                <com.tokopedia.recharge_component.widget.RechargeTickerWidget
-                    android:id="@+id/recharge_pdp_pulsa_ticker_widget"
+                <com.tokopedia.recharge_component.widget.RechargeEmptyStateWidget
+                    android:id="@+id/recharge_pdp_pulsa_empty_state_widget"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
@@ -91,7 +91,7 @@
                     android:id="@+id/recharge_pdp_pulsa_recommendation_widget"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/recharge_pdp_pulsa_ticker_widget"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
 

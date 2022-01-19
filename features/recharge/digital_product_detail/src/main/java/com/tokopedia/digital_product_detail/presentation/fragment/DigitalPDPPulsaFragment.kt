@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.appbar.AppBarLayout
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
+import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
@@ -17,6 +19,8 @@ import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.activity.DigitalPDPPulsaActivity
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryPulsaBottomsheet
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
@@ -25,14 +29,14 @@ import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
+import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardEnum
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
-import com.tokopedia.recharge_component.widget.MCCMFlashSaleGridWidget
 import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import kotlin.math.abs
@@ -56,6 +60,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(
         RechargeCatalogPrefixSelect()
     )
+
+    private var operatorId = ""
 
     override fun initInjector() {
         getComponent(DigitalPDPComponent::class.java).inject(this)
@@ -81,10 +87,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClientNumberWidget()
+        initEmptyState()
         setAnimationAppBarLayout()
-        getCatalogMenuDetail()
-        getPrefixOperatorData()
         observeData()
+
+        getCatalogMenuDetail()
+        getFavoriteNumber()
+        getPrefixOperatorData()
     }
 
     private fun renderProduct() {
@@ -98,16 +107,17 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     }
 
                 // [Misael] operatorId state & checker
-                if (rechargePdpPulsaClientNumberWidget.getInputNumber()
-                        .length in MINIMUM_VALID_NUMBER_LENGTH..MAXIMUM_VALID_NUMBER_LENGTH
+                if (operatorId != selectedOperator.operator.id || rechargePdpPulsaClientNumberWidget.getInputNumber()
+                        .length in MINIMUM_VALID_NUMBER_LENGTH .. MAXIMUM_VALID_NUMBER_LENGTH
                 ) {
-
+                    operatorId = selectedOperator.operator.id
                     rechargePdpPulsaClientNumberWidget.run {
                         showOperatorIcon(selectedOperator.operator.attributes.imageUrl)
                     }
+                    hideEmptyState()
                     getCatalogProductInput(selectedOperator.key)
-                    showRecommendation()
-                    showTicker()
+                } else {
+                    showEmptyState()
                 }
 
                 // [Misael] add checkoutPassData and update checkoutPassData with new input number
@@ -116,6 +126,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun observeData() {
+        viewModel.menuDetailData.observe(viewLifecycleOwner, {
+            when (it) {
+                is RechargeNetworkResult.Success -> onSuccessGetMenuDetail(it.data)
+                is RechargeNetworkResult.Fail -> onFailedGetMenuDetail()
+                is RechargeNetworkResult.Loading -> {}
+            }
+        })
         viewModel.favoriteNumberData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetFavoriteNumber(it.data)
@@ -166,7 +183,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun getCatalogMenuDetail() {
-        getFavoriteNumber()
+        viewModel.getMenuDetail(MENU_ID)
     }
 
     private fun getPrefixOperatorData() {
@@ -180,6 +197,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         viewModel.getFavoriteNumber(listOf(categoryId))
     }
 
+    private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
+        (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
+        renderRecommendation(data.recommendations)
+        renderTicker(data.tickers)
+    }
+
     private fun onSuccessGetFavoriteNumber(favoriteNumber: List<TopupBillsSeamlessFavNumberItem>) {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             if (favoriteNumber.isNotEmpty()) {
@@ -191,6 +214,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 setFavoriteNumber(favoriteNumber)
                 setAutoCompleteList(favoriteNumber)
                 dynamicSpacerHeightRes = R.dimen.dynamic_banner_space_extended
+            } else {
+                showEmptyState()
             }
         }
     }
@@ -198,6 +223,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private fun onSuccessGetPrefixOperator(operatorList: TelcoCatalogPrefixSelect) {
         this.operatorData = operatorList
         renderProduct()
+    }
+
+    private fun onFailedGetMenuDetail() {
+
     }
 
     private fun onFailedGetFavoriteNumber() {
@@ -232,6 +261,11 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                             binding?.rechargePdpPulsaClientNumberWidget?.setLoading(false)
                         }
                     }
+
+                    override fun onClearInput() {
+                        operatorId = ""
+                        showEmptyState()
+                    }
                 },
                 autoCompleteListener = object :
                     RechargeClientNumberWidget.ClientNumberAutoCompleteListener {
@@ -257,9 +291,17 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun initEmptyState() {
+        // [Misael] replace with catalogMenuDetail.banners
+        binding?.rechargePdpPulsaEmptyStateWidget?.setImageUrl(
+            "https://images.tokopedia.net/img/ULHhFV/2022/1/7/8324919c-fa15-46d9-84f7-426adb6994e0.jpg"
+        )
+    }
+
     private fun onSuccessDenomGrid(denomData: DenomWidgetModel) {
         binding?.let {
             it.rechargePdpPulsaDenomGridWidget.renderDenomGridLayout(this, denomData)
+            it.rechargePdpPulsaDenomGridWidget.show()
         }
     }
 
@@ -281,47 +323,26 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    fun showRecommendation() {
+    fun renderRecommendation(recommendations: List<RecommendationCardWidgetModel>) {
         binding?.let {
-            it.rechargePdpPulsaRecommendationWidget.renderRecommendationLayout(
-                recommendationListener = object :
-                    RechargeRecommendationCardListener {
+            it.rechargePdpPulsaRecommendationWidget.show()
+            it.rechargePdpPulsaRecommendationWidget.renderRecommendationLayout(recommendationListener = object :
+                RechargeRecommendationCardListener {
                     override fun onProductRecommendationCardClicked(applinkUrl: String) {
                         context?.let {
                             //                        RouteManager.route(it, applinkUrl)
                         }
                     }
                 },
-                "Paling sering kamu beli",
-                listOf(
-                    RecommendationCardWidgetModel(
-                        RecommendationCardEnum.SMALL,
-                        "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png",
-                        "Token Listrik 100ribu",
-                        "Rp101.500",
-                        "tokopedia://deals"
-                    ),
-                    RecommendationCardWidgetModel(
-                        RecommendationCardEnum.SMALL,
-                        "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png",
-                        "Token Listrik 20 ribu",
-                        "Rp20.500",
-                        "tokopedia://deals"
-                    ),
-                    RecommendationCardWidgetModel(
-                        RecommendationCardEnum.SMALL,
-                        "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png",
-                        "Token Listrik 30 ribu",
-                        "Rp30.500",
-                        "tokopedia://deals"
-                    )
-                )
+                getString(R.string.digital_pdp_recommendation_title),
+                recommendations
             )
         }
     }
 
     private fun onSuccessMCCM(denomGrid: DenomWidgetModel) {
         binding?.let {
+            it.rechargePdpPulsaPromoWidget.show()
             it.rechargePdpPulsaPromoWidget.renderMCCMGrid(this, denomGrid, getString(com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
     }
@@ -344,10 +365,49 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun showTicker() {
-        binding?.rechargePdpPulsaTickerWidget?.run {
-            setText("Transaksi selama <b>23:40-00:20 WIB</b> baru akan diproses pada <b>00:45 WIB</b>. <a href=\"\">Selengkapnya</a>")
-            show()
+    private fun renderTicker(tickers: List<TopupBillsTicker>) {
+        if (tickers.isNotEmpty()) {
+            val messages = ArrayList<TickerData>()
+            for (item in tickers) {
+                messages.add(
+                    TickerData(
+                        item.name, item.content,
+                        when (item.type) {
+                            "warning" -> Ticker.TYPE_WARNING
+                            "info" -> Ticker.TYPE_INFORMATION
+                            "success" -> Ticker.TYPE_ANNOUNCEMENT
+                            "error" -> Ticker.TYPE_ERROR
+                            else -> Ticker.TYPE_INFORMATION
+                        }
+                    )
+                )
+            }
+            binding?.rechargePdpPulsaTicker?.run {
+                addPagerView(TickerPagerAdapter(
+                    this@DigitalPDPPulsaFragment.requireContext(), messages), messages)
+                show()
+            }
+        } else {
+            binding?.rechargePdpPulsaTicker?.hide()
+        }
+    }
+
+    private fun showEmptyState() {
+        binding?.run {
+            if (!rechargePdpPulsaEmptyStateWidget.isVisible) {
+                rechargePdpPulsaEmptyStateWidget.show()
+                rechargePdpPulsaPromoWidget.hide()
+                rechargePdpPulsaRecommendationWidget.hide()
+                rechargePdpPulsaDenomGridWidget.hide()
+            }
+        }
+    }
+
+    private fun hideEmptyState() {
+        binding?.run {
+            if (rechargePdpPulsaEmptyStateWidget.isVisible)
+                rechargePdpPulsaEmptyStateWidget.hide()
+                rechargePdpPulsaRecommendationWidget.show()
         }
     }
 

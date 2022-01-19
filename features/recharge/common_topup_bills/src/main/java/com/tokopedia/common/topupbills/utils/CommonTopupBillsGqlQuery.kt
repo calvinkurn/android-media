@@ -113,6 +113,7 @@ object CommonTopupBillsGqlQuery {
               clientNumber
               appLink
               webLink
+              productPrice
               type
               categoryId
               productId

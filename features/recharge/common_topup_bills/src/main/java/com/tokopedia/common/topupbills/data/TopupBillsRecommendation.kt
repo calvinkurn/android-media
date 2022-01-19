@@ -26,6 +26,9 @@ class TopupBillsRecommendation(
         @SerializedName("webLink")
         @Expose
         val weblink: String = "",
+        @SerializedName("productPrice")
+        @Expose
+        val productPrice: Int = 0,
         @SerializedName("type")
         @Expose
         val type: String = "",
