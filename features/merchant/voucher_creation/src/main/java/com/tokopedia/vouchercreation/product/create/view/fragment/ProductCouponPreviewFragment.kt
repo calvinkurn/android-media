@@ -8,9 +8,18 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.extension.splitByThousand
 import com.tokopedia.vouchercreation.databinding.FragmentProductCouponPreviewBinding
+import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
+import com.tokopedia.vouchercreation.product.create.domain.entity.DiscountType
+import com.tokopedia.vouchercreation.product.create.domain.entity.MinimumPurchaseType
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.ProductCouponPreviewViewModel
 import javax.inject.Inject
 
@@ -18,19 +27,51 @@ import javax.inject.Inject
 class ProductCouponPreviewFragment : BaseDaggerFragment() {
 
     companion object {
+        private const val EMPTY_STRING = ""
         private const val SCREEN_NAME = "Product coupon preview page"
+        private const val ZERO: Long = 0
         fun newInstance(): ProductCouponPreviewFragment {
             val args = Bundle()
             val fragment = ProductCouponPreviewFragment()
             fragment.arguments = args
             return fragment
         }
+
     }
 
-    private var binding: FragmentProductCouponPreviewBinding by autoCleared()
+    private var binding by autoClearedNullable<FragmentProductCouponPreviewBinding>()
     private var onNavigateToCouponInformationPage: () -> Unit = {}
     private var onNavigateToCouponSettingsPage: () -> Unit = {}
     private var onNavigateToProductListPage: () -> Unit = {}
+    private var couponSettingsData: Coupon? = null
+
+    val CouponType.label: String
+        get() {
+            return when (this) {
+                CouponType.CASHBACK -> getString(R.string.mvc_cashback)
+                CouponType.FREE_SHIPPING -> getString(R.string.mvc_free_shipping)
+                else -> EMPTY_STRING
+            }
+        }
+
+    val DiscountType.label: String
+        get() {
+            return when (this) {
+                DiscountType.NOMINAL -> getString(R.string.nominal)
+                DiscountType.PERCENTAGE -> getString(R.string.percentage)
+                else -> EMPTY_STRING
+            }
+        }
+
+    val MinimumPurchaseType.label: String
+        get() {
+            return when (this) {
+                MinimumPurchaseType.NOMINAL -> getString(R.string.nominal)
+                MinimumPurchaseType.QUANTITY -> getString(R.string.quantity)
+                MinimumPurchaseType.NOTHING -> getString(R.string.nothing)
+                else -> EMPTY_STRING
+            }
+        }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -46,12 +87,14 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             .inject(this)
     }
 
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentProductCouponPreviewBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -60,10 +103,10 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun setupViews() {
-        binding.tpgReadArticle.setOnClickListener { onNavigateToCouponInformationPage() }
-        binding.tpgCouponInformation.setOnClickListener { onNavigateToCouponInformationPage() }
-        binding.tpgCouponSetting.setOnClickListener { onNavigateToCouponSettingsPage() }
-        binding.tpgAddProduct.setOnClickListener { onNavigateToProductListPage() }
+        binding?.tpgReadArticle?.setOnClickListener { onNavigateToCouponInformationPage() }
+        binding?.tpgCouponInformation?.setOnClickListener { onNavigateToCouponInformationPage() }
+        binding?.tpgCouponSetting?.setOnClickListener { onNavigateToCouponSettingsPage() }
+        binding?.tpgAddProduct?.setOnClickListener { onNavigateToProductListPage() }
     }
 
     fun setOnNavigateToCouponInformationPageListener(onNavigateToCouponInformationPage: () -> Unit) {
@@ -77,4 +120,83 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     fun setOnNavigateToProductListPageListener(onNavigateToProductListPage: () -> Unit) {
         this.onNavigateToProductListPage = onNavigateToProductListPage
     }
+
+    fun setCouponSettingsData(couponSettingsData: Coupon) {
+        this.couponSettingsData = couponSettingsData
+    }
+
+    override fun onResume() {
+        super.onResume()
+        couponSettingsData?.let { coupon -> refreshCouponSettingsSection(coupon) }
+    }
+
+    private fun refreshCouponSettingsSection(coupon: Coupon) {
+        binding?.labelCouponSettingCompleteStatus?.setLabelType(Label.HIGHLIGHT_LIGHT_TEAL)
+        binding?.labelCouponSettingCompleteStatus?.setLabel(getString(R.string.completed))
+        binding?.tpgCouponType?.text = coupon.type.label
+        binding?.tpgDiscountType?.text = coupon.discountType.label
+
+        handleDiscountAmount(coupon.discountType, coupon.discountAmount)
+        handleMaximumDiscount(coupon.discountType, coupon.maxDiscount)
+
+        binding?.tpgMinimumPurchaseType?.text = coupon.minimumPurchaseType.label
+        binding?.tpgMinimumPurchase?.text =
+            getMinimumPurchaseAmount(coupon.minimumPurchaseType, coupon.minimumPurchase)
+        binding?.tpgCouponQouta?.text = coupon.quota.splitByThousand()
+        handleEstimatedMaxExpense(coupon.estimatedMaxExpense)
+    }
+
+    private fun handleDiscountAmount(discountType: DiscountType, discountAmount: Int) {
+        if (discountType == DiscountType.PERCENTAGE) {
+            binding?.tpgDiscountAmount?.text = String.format(
+                getString(R.string.placeholder_percent),
+                discountAmount.splitByThousand()
+            )
+        } else {
+            binding?.tpgDiscountAmount?.text = String.format(
+                getString(R.string.placeholder_rupiah),
+                discountAmount.splitByThousand()
+            )
+        }
+    }
+
+    private fun handleMaximumDiscount(discountType: DiscountType, maxDiscount: Int) {
+        if (discountType == DiscountType.PERCENTAGE) {
+            binding?.groupMaxDiscount?.visible()
+            binding?.tpgMaxDiscount?.text =
+                String.format(getString(R.string.placeholder_rupiah), maxDiscount.splitByThousand())
+        } else {
+            binding?.groupMaxDiscount?.gone()
+        }
+    }
+
+    private fun handleEstimatedMaxExpense(estimatedMaxExpense: Long) {
+        if (estimatedMaxExpense == ZERO) {
+            binding?.tpgExpenseAmount?.text = getString(R.string.hyphen)
+        } else {
+            binding?.tpgExpenseAmount?.text = String.format(
+                getString(R.string.placeholder_rupiah),
+                estimatedMaxExpense.splitByThousand()
+            )
+        }
+    }
+
+    private fun getMinimumPurchaseAmount(
+        minimumPurchaseType: MinimumPurchaseType,
+        minimumPurchase: Int
+    ): String {
+        return when (minimumPurchaseType) {
+            MinimumPurchaseType.NONE -> EMPTY_STRING
+            MinimumPurchaseType.NOMINAL -> String.format(
+                getString(R.string.placeholder_rupiah),
+                minimumPurchase.splitByThousand()
+            )
+            MinimumPurchaseType.QUANTITY -> String.format(
+                getString(R.string.placeholder_quantity),
+                minimumPurchase.splitByThousand()
+            )
+            MinimumPurchaseType.NOTHING -> getString(R.string.nothing)
+        }
+    }
+
 }

@@ -274,8 +274,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/unify_space_16"
-                android:src="@drawable/ic_copy"
                 android:contentDescription="@string/copy_to_clipboard"
+                android:src="@drawable/ic_copy"
                 app:layout_constraintBottom_toBottomOf="@+id/typography"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/typography" />
@@ -329,6 +329,19 @@
                 app:typographyType="body_2" />
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/typography18"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/spacing_lvl5"
+                android:text="@string/max_discount"
+                android:textColor="@color/Neutral_N700_96"
+                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/typography13"
+                app:typographyType="body_2" />
+
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/typography14"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -338,7 +351,7 @@
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintEnd_toStartOf="@+id/guideline2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/typography13"
+                app:layout_constraintTop_toBottomOf="@+id/typography18"
                 app:typographyType="body_2" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -448,6 +461,22 @@
                 tools:text="Nominal" />
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpgMaxDiscount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_24"
+                android:layout_marginEnd="@dimen/unify_space_24"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/hyphen"
+                android:textColor="@color/Neutral_N700_96"
+                app:layout_constraintBottom_toBottomOf="@+id/typography18"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline2"
+                app:layout_constraintTop_toTopOf="@+id/typography18"
+                tools:text="Rp 20.000" />
+
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tpgDiscountAmount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -518,10 +547,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
-                android:layout_marginEnd="@dimen/unify_space_16"
                 android:layout_marginTop="@dimen/unify_space_24"
-                android:padding="@dimen/unify_space_12"
+                android:layout_marginEnd="@dimen/unify_space_16"
                 android:background="@drawable/mvc_rectangle_grey_f8fafc_radius_4dp"
+                android:padding="@dimen/unify_space_12"
                 app:layout_constraintStart_toStartOf="@+id/typography21"
                 app:layout_constraintTop_toBottomOf="@+id/typography21">
 
@@ -541,7 +570,7 @@
                     android:layout_marginStart="@dimen/unify_space_4"
                     android:layout_toEndOf="@id/typography20"
                     android:contentDescription="@string/maximum_expense_estimation"
-                    android:src="@drawable/ic_info_outline"/>
+                    android:src="@drawable/ic_info_outline" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/typography30"
@@ -703,14 +732,22 @@
                 android:layout_marginTop="@dimen/unify_space_12"
                 android:layout_marginEnd="@dimen/layout_lvl2"
                 android:layout_marginBottom="@dimen/layout_lvl3"
-                android:gravity="center"
                 android:autoLink="web"
-                app:typographyType="body_3"
+                android:gravity="center"
                 android:text="@string/coupon_product_terms_and_condition"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnCreateCoupon" />
+                app:layout_constraintTop_toBottomOf="@+id/btnCreateCoupon"
+                app:typographyType="body_3" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupMaxDiscount"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="typography18,tpgMaxDiscount" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

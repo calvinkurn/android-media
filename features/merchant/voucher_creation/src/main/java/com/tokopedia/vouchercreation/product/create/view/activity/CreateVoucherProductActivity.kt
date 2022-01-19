@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.product.create.view.activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
@@ -36,7 +37,12 @@ class CreateVoucherProductActivity : AppCompatActivity() {
         couponPreviewFragment.setOnNavigateToProductListPageListener {
             //TODO : Replace with your fragment
         }
+        couponSettingFragment.setOnCouponSaved { coupon ->
+            popFragment()
+            couponPreviewFragment.setCouponSettingsData(coupon)
+        }
     }
+
 
     private fun displayCouponPreviewFragment() {
         supportFragmentManager
@@ -52,4 +58,9 @@ class CreateVoucherProductActivity : AppCompatActivity() {
             .addToBackStack(tag)
             .commitAllowingStateLoss()
     }
+
+    private fun popFragment() {
+        supportFragmentManager.popBackStack()
+    }
+
 }

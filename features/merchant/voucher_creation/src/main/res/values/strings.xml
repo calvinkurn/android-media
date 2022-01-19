@@ -387,6 +387,8 @@
     <string name="error_message_invalid_cashback_minimum_purchase_quantity">Minimum 1 buah</string>
     <string name="error_message_invalid_free_shipping_minimum_purchase">Nominal lebih kecil dari nominal gratis ongkir</string>
     <string name="placeholder_rupiah">Rp %s</string>
+    <string name="placeholder_quantity">%s buah</string>
+    <string name="placeholder_percent">%s %</string>
     <string name="cashback_percentage">Persentase cashback</string>
     <string name="error_message_discount_percentage_range">Diskon minimal 2%, maksimal 100%</string>
     <string name="error_message_discount_percentage_below_minimum">Min. 2%</string>
@@ -398,4 +400,5 @@
     <string name="pcs">Pcs</string>
     <string name="rupiah">Rp</string>
     <string name="percent">%</string>
+    <string name="percentage">Persentase</string>
 </resources>

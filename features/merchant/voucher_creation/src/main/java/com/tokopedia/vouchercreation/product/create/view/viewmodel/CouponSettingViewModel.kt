@@ -4,8 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.vouchercreation.common.extension.digitsOnlyInt
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.vouchercreation.common.utils.ResourceProvider
+import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
 import com.tokopedia.vouchercreation.product.create.domain.entity.DiscountType
 import com.tokopedia.vouchercreation.product.create.domain.entity.MinimumPurchaseType
@@ -27,6 +28,10 @@ class CouponSettingViewModel @Inject constructor(
     private val _maxExpenseEstimation = MutableLiveData<Long>()
     val maxExpenseEstimation: LiveData<Long>
         get() = _maxExpenseEstimation
+
+    private val _saveCoupon = SingleLiveEvent<Coupon>()
+    val saveCoupon: SingleLiveEvent<Coupon>
+        get() = _saveCoupon
 
 
     sealed class CashbackPercentageState {
@@ -226,8 +231,50 @@ class CouponSettingViewModel @Inject constructor(
         _maxExpenseEstimation.value = (discount * quota).toLong()
     }
 
-    fun saveCoupon() {
+    fun saveCoupon(
+        selectedCouponType: CouponType,
+        selectedDiscountType: DiscountType,
+        selectedMinimumPurchaseType: MinimumPurchaseType,
+        cashbackPercentage: Int,
+        cashbackMaximumAmount: Int,
+        cashbackDiscountAmount: Int,
+        cashbackMinimumPurchase: Int,
+        cashbackQuota: Int,
+        freeShippingDiscountAmount: Int,
+        freeShippingMinimumPurchase: Int,
+        freeShippingQuota: Int,
+        estimatedMaxExpense: Long
+    ) {
 
+        val discountAmount = if (selectedCouponType == CouponType.CASHBACK) {
+            cashbackDiscountAmount
+        } else {
+            freeShippingDiscountAmount
+        }
+
+        val quota = if (selectedCouponType == CouponType.CASHBACK) {
+            cashbackQuota
+        } else {
+            freeShippingQuota
+        }
+
+        val minimumPurchase = if (selectedCouponType == CouponType.CASHBACK) {
+            cashbackMinimumPurchase
+        } else {
+            freeShippingMinimumPurchase
+        }
+
+        _saveCoupon.value = Coupon(
+            selectedCouponType,
+            selectedDiscountType,
+            selectedMinimumPurchaseType,
+            discountAmount,
+            cashbackPercentage,
+            cashbackMaximumAmount,
+            quota,
+            minimumPurchase,
+            estimatedMaxExpense
+        )
     }
 
 }

@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.TextAreaUnify
@@ -19,10 +20,12 @@ import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.consts.LocaleConstant
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.extension.DECIMAL_FORMAT_PATTERN
 import com.tokopedia.vouchercreation.common.extension.digitsOnlyInt
 import com.tokopedia.vouchercreation.common.extension.splitByThousand
 import com.tokopedia.vouchercreation.common.textwatcher.NumberThousandSeparatorTextWatcher
 import com.tokopedia.vouchercreation.databinding.FragmentCouponSettingBinding
+import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
 import com.tokopedia.vouchercreation.product.create.domain.entity.DiscountType
 import com.tokopedia.vouchercreation.product.create.domain.entity.MinimumPurchaseType
@@ -38,7 +41,6 @@ class CouponSettingFragment : BaseDaggerFragment() {
         private const val SCREEN_NAME = "Coupon Setting Page"
         private const val EMPTY_STRING = ""
         private const val ZERO = 0
-        private const val NUMBER_FORMAT_PATTERN = "#,###,###"
 
         fun newInstance():  CouponSettingFragment {
             val args = Bundle()
@@ -53,6 +55,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
     private var selectedCouponType = CouponType.NONE
     private var selectedDiscountType = DiscountType.NONE
     private var selectedMinimumPurchaseType = MinimumPurchaseType.NONE
+    private var onCouponSaved : (Coupon) -> Unit = {}
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -85,6 +88,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
         observeInputValidationResult()
         observeCouponTypeChange()
         observeMaxExpenseEstimation()
+        observeSaveCoupon()
     }
 
     private fun observeMaxExpenseEstimation() {
@@ -118,19 +122,58 @@ class CouponSettingFragment : BaseDaggerFragment() {
         })
     }
 
-    private fun setupViews() {
-        binding.textAreaDiscountAmount.textAreaInput.inputType = InputType.TYPE_CLASS_NUMBER
-        binding.textAreaQuota.textAreaInput.inputType = InputType.TYPE_CLASS_NUMBER
-        binding.textAreaMinimumPurchase.textAreaInput.inputType = InputType.TYPE_CLASS_NUMBER
+    private fun observeSaveCoupon() {
+        viewModel.saveCoupon.observe(viewLifecycleOwner, { coupon ->
+            onCouponSaved(coupon)
+        })
+    }
 
-        binding.textAreaFreeShippingQuota.textAreaInput.inputType = InputType.TYPE_CLASS_NUMBER
-        binding.textAreaFreeShippingDiscountAmount.textAreaInput.inputType = InputType.TYPE_CLASS_NUMBER
-        binding.textAreaFreeShippingMinimumPurchase.textAreaInput.inputType = InputType.TYPE_CLASS_NUMBER
+    private fun setupViews() {
+        with(binding) {
+            textAreaDiscountAmount.textAreaInput.inputType = InputType.TYPE_CLASS_NUMBER
+            textAreaQuota.textAreaInput.inputType = InputType.TYPE_CLASS_NUMBER
+            textAreaMinimumPurchase.textAreaInput.inputType = InputType.TYPE_CLASS_NUMBER
+
+            textAreaFreeShippingQuota.textAreaInput.inputType = InputType.TYPE_CLASS_NUMBER
+            textAreaFreeShippingDiscountAmount.textAreaInput.inputType = InputType.TYPE_CLASS_NUMBER
+            textAreaFreeShippingMinimumPurchase.textAreaInput.inputType =
+                InputType.TYPE_CLASS_NUMBER
+
+            btnSave.setOnClickListener {
+                val cashbackDiscountAmount = binding.textAreaDiscountAmount.textAreaInput.text.toString().trim().digitsOnlyInt()
+                val cashbackMinimumPurchase = binding.textAreaMinimumPurchase.textAreaInput.text.toString().trim().digitsOnlyInt()
+                val cashbackQuota = binding.textAreaQuota.textAreaInput.text.toString().trim().digitsOnlyInt()
+
+                val cashbackDiscountPercentage = binding.textAreaDiscountPercentage.textAreaInput.text.toString().trim().digitsOnlyInt()
+                val cashbackMaxDiscount = binding.textAreaMaximumDiscount.textAreaInput.text.toString().trim().digitsOnlyInt()
+
+                val freeShippingDiscountAmount = binding.textAreaFreeShippingDiscountAmount.textAreaInput.text.toString().trim().digitsOnlyInt()
+                val freeShippingMinimumPurchase = binding.textAreaFreeShippingMinimumPurchase.textAreaInput.text.toString().trim().digitsOnlyInt()
+                val freeShippingQuota = binding.textAreaFreeShippingQuota.textAreaInput.text.toString().trim().digitsOnlyInt()
+                val estimatedMaxExpense = viewModel.maxExpenseEstimation.value.orZero()
+
+                viewModel.saveCoupon(
+                    selectedCouponType,
+                    selectedDiscountType,
+                    selectedMinimumPurchaseType,
+                    cashbackDiscountPercentage,
+                    cashbackMaxDiscount,
+                    cashbackDiscountAmount,
+                    cashbackMinimumPurchase,
+                    cashbackQuota,
+                    freeShippingDiscountAmount,
+                    freeShippingMinimumPurchase,
+                    freeShippingQuota,
+                    estimatedMaxExpense
+                )
+            }
+        }
+
     }
 
     private fun setupTextAreaListener() {
         val numberFormatter = NumberFormat.getInstance(LocaleConstant.INDONESIA) as DecimalFormat
-        numberFormatter.applyPattern(NUMBER_FORMAT_PATTERN)
+        numberFormatter.applyPattern(DECIMAL_FORMAT_PATTERN)
         setupTextAreaCashbackListener(numberFormatter)
         setupTextAreaFreeShippingListener(numberFormatter)
     }
@@ -626,4 +669,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
         binding.groupPercentageDiscountType.gone()
     }
 
+    fun setOnCouponSaved(onCouponSaved : (Coupon) -> Unit) {
+        this.onCouponSaved = onCouponSaved
+    }
 }
