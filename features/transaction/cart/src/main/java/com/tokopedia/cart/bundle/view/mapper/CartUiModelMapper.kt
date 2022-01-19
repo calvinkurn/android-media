@@ -138,7 +138,7 @@ object CartUiModelMapper {
                 latitude = availableGroup.shop.latitude
                 boMetadata = availableGroup.boMetadata
                 boAffordability = CartShopBoAffordabilityData(
-                        enable = availableGroup.shipmentInformation.enableBoAffordability,
+                        enable = true,
                         errorText = cartData.messages.errorBoAffordability
                 )
             }

@@ -31,9 +31,12 @@ class BoAffordabilityUseCase @Inject constructor(@ApplicationContext private val
 //        return gqlRepository.response(listOf(request))
 //                .getData<BoAffordabilityGqlResponse>(BoAffordabilityGqlResponse::class.java).response
 
-        return BoAffordabilityResponse(40_000, BoAffordabilityTexts(
-                "asdfasd fas <s>dfas</s> df", "asdfasd fas <s>dfas</s> df"
-        ))
+        return BoAffordabilityResponse(
+            40_000, BoAffordabilityTexts(
+                "<b>+Rp10.900</b> lagi untuk dapat potongan ongkir! +Rp10.900 lagi di toko ini, ongkir Rp10.000 <s>Rp30.000</s>",
+                "<b>+Rp10.900</b> lagi untuk dapat potongan ongkir! +Rp10.900 lagi di toko ini, ongkir Rp10.000 <s>Rp30.000</s>"
+            )
+        )
     }
 
     companion object {
