@@ -89,6 +89,7 @@ class CatalogDetailPageFragment : Fragment(),
 
     private var catalogId: String = ""
     private var catalogUrl: String = ""
+    private var catalogName : String = ""
     private var catalogImages  =  arrayListOf<CatalogImage>()
 
     private var navToolbar: NavToolbar? = null
@@ -198,6 +199,7 @@ class CatalogDetailPageFragment : Fragment(),
                     catalogUrl = catalogUiUpdater.productInfoMap?.url ?: ""
                     fullSpecificationDataModel = it.data.fullSpecificationDataModel
                     catalogImages = catalogUiUpdater.productInfoMap?.images ?: arrayListOf()
+                    catalogName = catalogUiUpdater.productInfoMap?.productName ?: ""
                     updateUi()
                     setCatalogUrlForTracking()
                 }
@@ -315,7 +317,7 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private fun generateCatalogShareData(catalogId: String, isUniversalShare: Boolean = false) {
-        val linkerShareData = linkerDataMapper(catalogId,getString(R.string.catalog_message_share_catalog),
+        val linkerShareData = linkerDataMapper(catalogId,"Description 1",
                 catalogUrl, catalogImages)
         onShareButtonClicked(isUniversalShare,linkerShareData)
     }
@@ -344,14 +346,14 @@ class CatalogDetailPageFragment : Fragment(),
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@CatalogDetailPageFragment)
             setUtmCampaignData(
-                    "CatalogPage",
+                    "Catalog",
                     if(UserSession(this@CatalogDetailPageFragment.context).userId.isNullOrEmpty()) "0"
                     else UserSession(this@CatalogDetailPageFragment.context).userId,
                     "",
                     ""
             )
             setMetaData(
-                    catalogDescription,
+                    catalogName,
                     catalogImages.firstOrNull()?.imageURL ?: "",
                     "",
                     CatalogUtil.getImagesFromCatalogImages(catalogImages)
@@ -364,7 +366,7 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
-        val linkerShareData = linkerDataMapper(catalogId, getString(R.string.catalog_message_share_catalog)
+        val linkerShareData = linkerDataMapper(catalogId, "Description 1"
                 , CatalogUtil.getShareURI(catalogUrl) , catalogImages )
         linkerShareData.linkerData.apply {
             feature = shareModel.feature
@@ -378,8 +380,8 @@ class CatalogDetailPageFragment : Fragment(),
         LinkerManager.getInstance().executeShareRequest(
                 LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                        val shareString = "${getString(R.string.catalog_message_share_catalog)} ${linkerShareData?.url}"
-                        shareModel.subjectName = getString(R.string.catalog_message_share_catalog)  ?: ""
+                        val shareString = "Message - URL"
+                        shareModel.subjectName = "Subject"
                         SharingUtil.executeShareIntent(
                                 shareModel,
                                 linkerShareData,
@@ -403,7 +405,7 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     override fun screenShotTaken() {
-        showUniversalShareBottomSheet(catalogId, getString(R.string.catalog_message_share_catalog) , CatalogUtil.getShareURI(catalogUrl) , catalogImages)
+        showUniversalShareBottomSheet(catalogId, "Description" , CatalogUtil.getShareURI(catalogUrl) , catalogImages)
     }
 
     private fun linkerDataMapper(catalogId: String, catalogDescription: String,
