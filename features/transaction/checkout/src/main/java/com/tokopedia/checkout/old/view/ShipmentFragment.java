@@ -810,12 +810,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCheckoutPageNoAddress(CartShipmentAddressFormData shipmentAddressFormData, boolean isEligibleForRevampAna) {
+    public void renderCheckoutPageNoAddress(CartShipmentAddressFormData shipmentAddressFormData) {
         Token token = new Token();
         token.setUt(shipmentAddressFormData.getKeroUnixTime());
         token.setDistrictRecommendation(shipmentAddressFormData.getKeroDiscomToken());
 
-        if (isEligibleForRevampAna) {
+        if (LogisticCommonUtil.INSTANCE.isRollOutUserANARevamp()) {
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V3);
             intent.putExtra(KERO_TOKEN, token);
             intent.putExtra(EXTRA_REF, SCREEN_NAME_CART_NEW_USER);

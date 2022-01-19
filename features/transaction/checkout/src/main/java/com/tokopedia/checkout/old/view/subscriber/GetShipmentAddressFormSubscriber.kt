@@ -1,14 +1,11 @@
 package com.tokopedia.checkout.old.view.subscriber
 
-import com.tokopedia.abstraction.R
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.old.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.old.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.old.view.ShipmentContract
 import com.tokopedia.checkout.old.view.ShipmentPresenter
-import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
@@ -19,8 +16,7 @@ class GetShipmentAddressFormSubscriber(private val shipmentPresenter: ShipmentPr
                                        private val view: ShipmentContract.View,
                                        private val isReloadData: Boolean,
                                        private val isReloadAfterPriceChangeHinger: Boolean,
-                                       private val isOneClickShipment: Boolean,
-                                       private val eligibleForAddressUseCase: EligibleForAddressUseCase) : Subscriber<CartShipmentAddressFormData?>() {
+                                       private val isOneClickShipment: Boolean) : Subscriber<CartShipmentAddressFormData?>() {
     override fun onCompleted() {}
 
     override fun onError(e: Throwable) {
@@ -76,7 +72,7 @@ class GetShipmentAddressFormSubscriber(private val shipmentPresenter: ShipmentPr
     private fun validateRenderCheckoutPage(cartShipmentAddressFormData: CartShipmentAddressFormData, userAddress: UserAddress?) {
         when (cartShipmentAddressFormData.errorCode) {
             CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS -> {
-                checkIsUserEligibleForRevampAna(cartShipmentAddressFormData)
+                view.renderCheckoutPageNoAddress(cartShipmentAddressFormData)
             }
             CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADDRESS_LIST -> {
                 view.renderCheckoutPageNoMatchedAddress(cartShipmentAddressFormData, userAddress?.state ?: 0)
@@ -96,16 +92,4 @@ class GetShipmentAddressFormSubscriber(private val shipmentPresenter: ShipmentPr
         }
     }
 
-    private fun checkIsUserEligibleForRevampAna(cartShipmentAddressFormData: CartShipmentAddressFormData) {
-        eligibleForAddressUseCase.eligibleForAddressFeature({
-            view.renderCheckoutPageNoAddress(cartShipmentAddressFormData, it.eligibleForRevampAna.eligible)
-        }, { throwable: Throwable ->
-                var errorMessage = throwable.message
-                if (errorMessage == null) {
-                    errorMessage = view.getActivityContext().getString(R.string.default_request_error_unknown_short)
-                }
-                view.showToastError(errorMessage)
-            }
-        , AddressConstant.ANA_REVAMP_FEATURE_ID)
-    }
 }
