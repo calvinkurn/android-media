@@ -16,6 +16,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatProductAttachmentPreviewUiModel
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.topchat.common.util.ViewUtil.ellipsizeLongText
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.toPx
 
 class ProductPreviewViewHolder(
@@ -34,6 +35,7 @@ class ProductPreviewViewHolder(
     private val productColorVariantValue = itemView.findViewById<TextView>(R.id.tv_variant_color)
     private val productSizeVariant = itemView.findViewById<LinearLayout>(R.id.ll_variant_size)
     private val productSizeVariantValue = itemView.findViewById<TextView>(R.id.tv_variant_size)
+    private val loader = itemView.findViewById<LoaderUnify>(R.id.lu_product_preview)
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
             view = container,
@@ -71,6 +73,7 @@ class ProductPreviewViewHolder(
     }
 
     private fun bindSuccessState(model: TopchatProductAttachmentPreviewUiModel) {
+        showLoading(false)
         bindImageThumbnail(model)
         bindProductName(model)
         bindProductPrice(model)
@@ -79,10 +82,17 @@ class ProductPreviewViewHolder(
 
     private fun bindLoadingState(model: TopchatProductAttachmentPreviewUiModel) {
         // TODO: implement based on design
+        showLoading(true)
     }
 
     private fun bindErrorState(model: TopchatProductAttachmentPreviewUiModel) {
         // TODO: implement based on design
+        showLoading(false)
+
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        loader?.showWithCondition(isLoading)
     }
 
     private fun bindProductName(model: TopchatProductAttachmentPreviewUiModel) {

@@ -118,6 +118,17 @@
         app:typographyWeight="bold"
         tools:text="Rp500.000" />
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/lu_product_preview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="rect"
+        tools:visibility="gone" />
+
     <ImageView
         android:id="@+id/iv_close"
         android:layout_width="@dimen/unify_space_24"
