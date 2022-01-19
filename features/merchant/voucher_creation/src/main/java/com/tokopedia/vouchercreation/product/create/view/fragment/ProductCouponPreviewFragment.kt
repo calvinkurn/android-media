@@ -30,6 +30,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         private const val EMPTY_STRING = ""
         private const val SCREEN_NAME = "Product coupon preview page"
         private const val ZERO: Long = 0
+
         fun newInstance(): ProductCouponPreviewFragment {
             val args = Bundle()
             val fragment = ProductCouponPreviewFragment()
@@ -45,7 +46,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     private var onNavigateToProductListPage: () -> Unit = {}
     private var couponSettingsData: Coupon? = null
 
-    val CouponType.label: String
+    private val CouponType.label: String
         get() {
             return when (this) {
                 CouponType.CASHBACK -> getString(R.string.mvc_cashback)
@@ -54,7 +55,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             }
         }
 
-    val DiscountType.label: String
+    private val DiscountType.label: String
         get() {
             return when (this) {
                 DiscountType.NOMINAL -> getString(R.string.nominal)
@@ -63,7 +64,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             }
         }
 
-    val MinimumPurchaseType.label: String
+    private val MinimumPurchaseType.label: String
         get() {
             return when (this) {
                 MinimumPurchaseType.NOMINAL -> getString(R.string.nominal)
@@ -135,22 +136,20 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         binding?.labelCouponSettingCompleteStatus?.setLabel(getString(R.string.completed))
         binding?.tpgCouponType?.text = coupon.type.label
         binding?.tpgDiscountType?.text = coupon.discountType.label
-
-        handleDiscountAmount(coupon.discountType, coupon.discountAmount)
-        handleMaximumDiscount(coupon.discountType, coupon.maxDiscount)
-
         binding?.tpgMinimumPurchaseType?.text = coupon.minimumPurchaseType.label
-        binding?.tpgMinimumPurchase?.text =
-            getMinimumPurchaseAmount(coupon.minimumPurchaseType, coupon.minimumPurchase)
         binding?.tpgCouponQouta?.text = coupon.quota.splitByThousand()
+
+        handleDiscountAmount(coupon.discountType, coupon.discountAmount, coupon.discountPercentage)
+        handleMaximumDiscount(coupon.discountType, coupon.maxDiscount)
+        handleMinimumPurchase(coupon.minimumPurchaseType, coupon.minimumPurchase)
         handleEstimatedMaxExpense(coupon.estimatedMaxExpense)
     }
 
-    private fun handleDiscountAmount(discountType: DiscountType, discountAmount: Int) {
+    private fun handleDiscountAmount(discountType: DiscountType, discountAmount: Int, discountPercentage: Int) {
         if (discountType == DiscountType.PERCENTAGE) {
             binding?.tpgDiscountAmount?.text = String.format(
                 getString(R.string.placeholder_percent),
-                discountAmount.splitByThousand()
+                discountPercentage.splitByThousand()
             )
         } else {
             binding?.tpgDiscountAmount?.text = String.format(
@@ -181,11 +180,11 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun getMinimumPurchaseAmount(
+    private fun handleMinimumPurchase(
         minimumPurchaseType: MinimumPurchaseType,
         minimumPurchase: Int
-    ): String {
-        return when (minimumPurchaseType) {
+    ) {
+        val text = when (minimumPurchaseType) {
             MinimumPurchaseType.NONE -> EMPTY_STRING
             MinimumPurchaseType.NOMINAL -> String.format(
                 getString(R.string.placeholder_rupiah),
@@ -197,6 +196,8 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             )
             MinimumPurchaseType.NOTHING -> getString(R.string.nothing)
         }
+
+        binding?.tpgMinimumPurchase?.text = text
     }
 
 }
