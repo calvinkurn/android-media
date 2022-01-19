@@ -352,7 +352,7 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test when get data recommendation selected by chips with empty recommendation then success with null recom widget`() {
+    fun `test when get data recommendation selected by chips with empty recommendation then success with not showing recom widget`() {
         coEvery { getRecommendationUseCase.getData(any()) } returns listOf()
         viewModel.loadRecomBySelectedChips(recomWidgetMetadata = recomWidgetMetadata, oldFilterList = listAnnotationChip, selectedChip = listAnnotationChip[0])
         val recomFilterResult = viewModel.recomFilterResultData.value
@@ -361,10 +361,16 @@ class TestRecomWidgetViewModel {
         Assert.assertEquals(true, recomFilterResult?.isSuccess)
     }
 
-//    @Test
-//    fun `test when failed load data recommendation by selected chips`() {
-//        coEvery { getRecommendationUseCase.getData(any()) } throws Throwable()
-//    }
+    @Test
+    fun `test when failed load data recommendation by selected chips then failed with not showing recom widget`() {
+        coEvery { getRecommendationUseCase.getData(any()) } throws Throwable()
+        viewModel.loadRecomBySelectedChips(recomWidgetMetadata = recomWidgetMetadata, oldFilterList = listAnnotationChip, selectedChip = listAnnotationChip[0])
+        val recomFilterResult = viewModel.recomFilterResultData.value
+        Assert.assertEquals(listAnnotationChip.size, recomFilterResult?.filterList?.size)
+        Assert.assertNull(recomFilterResult?.recomWidgetData)
+        Assert.assertNotNull(recomFilterResult?.throwable)
+        Assert.assertEquals(false, recomFilterResult?.isSuccess)
+    }
 
     private fun doCommonActionForATCRecom() {
         coEvery {
