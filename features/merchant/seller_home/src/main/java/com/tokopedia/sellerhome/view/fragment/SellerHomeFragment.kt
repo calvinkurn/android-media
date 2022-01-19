@@ -1572,6 +1572,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
 
+        logWidgetException(widgetType, this)
+
+        notifyWidgetWithSdkChecking {
+            updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        }
+        showErrorToaster()
+        view?.addOneTimeGlobalLayoutListener {
+            requestVisibleWidgetsData()
+            checkLoadingWidgets()
+        }
+    }
+
+    private fun logWidgetException(widgetType: String, throwable: Throwable) {
         // Log error to crashlytics and scalyr.
         // We define layoutId value as joined list of error layout id. Ex: (100, 150)
         // The extras will be defined as widget type + layout id as JSON object.
@@ -1584,26 +1597,17 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             SellerHomeErrorHandler.LAYOUT_ID_KEY to layoutId
         )
         SellerHomeErrorHandler.logException(
-            throwable = this,
+            throwable = throwable,
             message = "$ERROR_WIDGET $widgetType"
         )
 
         SellerHomeErrorHandler.logExceptionToServer(
             errorTag = SellerHomeErrorHandler.SELLER_HOME_TAG,
-            throwable = this,
+            throwable = throwable,
             errorType = SellerHomeErrorHandler.ErrorType.ERROR_WIDGET,
             deviceId = userSession.deviceId.orEmpty(),
             extras = widgetErrorExtraMap
         )
-
-        notifyWidgetWithSdkChecking {
-            updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
-        }
-        showErrorToaster()
-        view?.addOneTimeGlobalLayoutListener {
-            requestVisibleWidgetsData()
-            checkLoadingWidgets()
-        }
     }
 
     @Suppress("UNCHECKED_CAST")
