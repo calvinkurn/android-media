@@ -361,7 +361,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
         } else {
             activity?.setResult(Activity.RESULT_CANCELED)
         }
-        KeyboardHandler.hideSoftKeyboard(requireActivity())
+        KeyboardHandler.DropKeyboard(requireContext(), binding?.reviewReplyTextBoxWidget)
     }
 
     private fun updateReviewReplySuccess(data: ReviewReplyUpdateUiModel) {
@@ -379,7 +379,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
         } else {
             activity?.setResult(Activity.RESULT_CANCELED)
         }
-        KeyboardHandler.hideSoftKeyboard(requireActivity())
+        KeyboardHandler.DropKeyboard(requireContext(), binding?.reviewReplyTextBoxWidget)
     }
 
     private fun showData() {
