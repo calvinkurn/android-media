@@ -51,8 +51,8 @@ class CavPlayTrackingVodTest {
 
     private fun performLike() {
         register(idlResLike)
-        Espresso.onView(ViewMatchers.withId(R.id.animation_like)).perform(ViewActions.click()) // like
-        Espresso.onView(ViewMatchers.withId(R.id.animation_like)).perform(ViewActions.click()) // unlike
+        Espresso.onView(ViewMatchers.withId(R.id.icon_like)).perform(ViewActions.click()) // like
+        Espresso.onView(ViewMatchers.withId(R.id.icon_like)).perform(ViewActions.click()) // unlike
         unregister(idlResLike)
     }
 
@@ -68,7 +68,7 @@ class CavPlayTrackingVodTest {
 
         Espresso.onView(ViewMatchers.withId(R.id.rv_product_list))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<ProductLineViewHolder>(0 , clickOnViewChild(R.id.btn_product_buy))) // buy without variant
-                .perform(RecyclerViewActions.actionOnItemAtPosition<ProductLineViewHolder>(0 , clickOnViewChild(R.id.iv_product_atc))) // atc without variant
+                .perform(RecyclerViewActions.actionOnItemAtPosition<ProductLineViewHolder>(0 , clickOnViewChild(R.id.btn_product_atc))) // atc without variant
 
         register(idlResToaster)
         Espresso.onView(ViewMatchers.withId(R.id.snackbar_btn)).perform(ViewActions.click()) // lihat message ticker
@@ -86,7 +86,7 @@ class CavPlayTrackingVodTest {
 
         register(idlResBuyProduct)
         Espresso.onView(ViewMatchers.withId(R.id.rv_product_list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<ProductLineViewHolder>(1 , clickOnViewChild(R.id.iv_product_atc))) // atc => variant sheet
+                .perform(RecyclerViewActions.actionOnItemAtPosition<ProductLineViewHolder>(1 , clickOnViewChild(R.id.btn_product_buy))) // atc => variant sheet
         unregister(idlResBuyProduct)
 
         register(idlResVariants)
@@ -120,7 +120,7 @@ class CavPlayTrackingVodTest {
                     override fun getName(): String = "clickLike"
 
                     override fun idleState(): Boolean {
-                        val view = intentsTestRule.activity.findViewById<View>(R.id.animation_like)
+                        val view = intentsTestRule.activity.findViewById<View>(R.id.icon_like)
                         return view.isClickable
                     }
                 }
