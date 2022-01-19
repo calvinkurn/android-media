@@ -6,6 +6,7 @@ import android.preference.PreferenceManager
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.widget.domain.PlayWidgetUpdateChannelUseCase
+import com.tokopedia.play.widget.pref.PlayWidgetPreference
 import dagger.Module
 import dagger.Provides
 
@@ -21,7 +22,7 @@ class PlayWidgetModule {
     }
 
     @Provides
-    fun providePlayWidgetConfigMapper(@ApplicationContext context: Context): SharedPreferences {
+    fun provideSharedPreference(@ApplicationContext context: Context): SharedPreferences {
         return PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
     }
 }
