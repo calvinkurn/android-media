@@ -2,7 +2,7 @@ package com.tokopedia.quest_widget.tracker
 
 class QuestTracker {
 
-    private var trackerImpl: QuestTrackerImpl = DefaultQuestTrackerImpl()
+    var trackerImpl: QuestTrackerImpl = DefaultQuestTrackerImpl()
 
     fun viewQuestWidget(@QuestSource source: Int, id: String){
         trackerImpl.viewQuestWidget(source, id)

@@ -32,7 +32,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation projectOrAar(rootProject.ext.features.productCard)
     implementation projectOrAar(rootProject.ext.libraries.logger)
-
+    implementation projectOrAar(rootProject.ext.features.medialoader)
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)

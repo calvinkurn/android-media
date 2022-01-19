@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="@dimen/unify_space_16"
+    tools:context=".page.presentation.fragment.CampaignListFragment">
+
+    <com.tokopedia.unifycomponents.SearchBarUnify
+        android:id="@+id/sbu_campaign_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/unify_space_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:search_bar_placeholder="@string/search_active_campaign"
+        app:search_bar_show_icon="false" />
+
+    <com.tokopedia.sortfilter.SortFilter
+        android:id="@+id/sf_campaign_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sbu_campaign_list"
+        app:sort_filter_relationship="AND"
+        app:sort_filter_type="quick" />
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_campaign_type_wording"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:descriptionText="@string/another_campaign_type_wording"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sf_campaign_list"
+        app:tickerShapeType="loose"
+        app:tickerType="announcement" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_campaign_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:layout_marginTop="@dimen/unify_space_24"
+        android:paddingBottom="@dimen/unify_space_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ticker_campaign_type_wording" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

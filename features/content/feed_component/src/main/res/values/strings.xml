@@ -191,5 +191,8 @@
 
     <string name="feeds_sek_sekarang">Cek Sekarang</string>
     <string name="feeds_ads_text">Ad</string>
+    <string name="feeds_asgc_new_product_text">Produk Terbaru</string>
+    <string name="feeds_asgc_restock_text">Restock</string>
+
 
 </resources>

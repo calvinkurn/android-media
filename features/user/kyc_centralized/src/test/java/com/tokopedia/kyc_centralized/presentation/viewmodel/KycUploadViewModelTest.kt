@@ -6,6 +6,8 @@ import com.tokopedia.kyc_centralized.domain.KycUploadUseCase
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
+import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_FACE_CACHE
+import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -54,21 +56,15 @@ class KycUploadViewModelTest {
 
     private fun provideEverySuccessEncrypt() {
         coEvery {
-            viewModel.encryptImageKtp(any())
-        } answers {
-            Success(encryptedImagePath)
-        }
-
-        coEvery {
-            viewModel.encryptImageFace(any())
+            viewModel.encryptImage(any(), any())
         } answers {
             Success(encryptedImagePath)
         }
     }
 
     private fun uploadWithEncrypt() {
-        viewModel.encryptImageKtp(originalImagePath)
-        viewModel.encryptImageFace(originalImagePath)
+        viewModel.encryptImage(originalImagePath, KYC_IV_KTP_CACHE)
+        viewModel.encryptImage(originalImagePath, KYC_IV_FACE_CACHE)
         viewModel.uploadImages(ktpPath, facePath, projectId, true)
     }
 
@@ -88,7 +84,7 @@ class KycUploadViewModelTest {
         provideEveryUseCase(kycData)
 
         every {
-            sharedPreference.getCache<ByteArray>(any(), any())
+            sharedPreference.getByteArrayCache(any())
         } answers {
             encryptedImagePath.encodeToByteArray()
         }
@@ -105,7 +101,7 @@ class KycUploadViewModelTest {
         provideEverySuccessEncrypt()
 
         every {
-            sharedPreference.getCache<ByteArray>(any(), any())
+            sharedPreference.getByteArrayCache(any())
         } answers {
             encryptedImagePath.encodeToByteArray()
         }
@@ -132,7 +128,7 @@ class KycUploadViewModelTest {
         provideEverySuccessEncrypt()
 
         every {
-            sharedPreference.getCache<ByteArray>(any(), any())
+            sharedPreference.getByteArrayCache(any())
         } answers {
             encryptedImagePath.encodeToByteArray()
         }
@@ -178,7 +174,7 @@ class KycUploadViewModelTest {
 
     private fun provideEveryEncryptFail(ex: Exception) {
         coEvery {
-            viewModel.encryptImageKtp(any())
+            viewModel.encryptImage(any(), any())
         } answers {
             Fail(ex)
         }
@@ -210,7 +206,7 @@ class KycUploadViewModelTest {
     @Test
     fun `Failed to encrypt Image KTP`() {
         unmockkObject(ImageEncryptionUtil)
-        viewModel.encryptImageKtp(ktpPath)
+        viewModel.encryptImage(ktpPath, KYC_IV_KTP_CACHE)
         val encryptResult = viewModel.encryptImageLiveData.value
         Assert.assertTrue(encryptResult is Fail)
     }
@@ -218,7 +214,7 @@ class KycUploadViewModelTest {
     @Test
     fun `Failed to encrypt Image Face`() {
         unmockkObject(ImageEncryptionUtil)
-        viewModel.encryptImageFace(facePath)
+        viewModel.encryptImage(facePath, KYC_IV_FACE_CACHE)
         val encryptResult = viewModel.encryptImageLiveData.value
         Assert.assertTrue(encryptResult is Fail)
     }
@@ -267,7 +263,7 @@ class KycUploadViewModelTest {
         mockkObject(ImageEncryptionUtil)
         mockEncryptionUtil()
 
-        viewModel.encryptImageKtp(ktpPath)
+        viewModel.encryptImage(ktpPath, KYC_IV_KTP_CACHE)
 
         val result = viewModel.encryptImageLiveData.value
 
@@ -279,7 +275,7 @@ class KycUploadViewModelTest {
         mockkObject(ImageEncryptionUtil)
         mockEncryptionUtil()
 
-        viewModel.encryptImageKtp(facePath)
+        viewModel.encryptImage(facePath, KYC_IV_FACE_CACHE)
 
         val result = viewModel.encryptImageLiveData.value
 
@@ -293,7 +289,7 @@ class KycUploadViewModelTest {
         mockEncryptionUtil()
 
         every {
-            sharedPreference.getCache<ByteArray>(any(), any())
+            sharedPreference.getByteArrayCache(any())
         } answers {
             encryptedImagePath.encodeToByteArray()
         }

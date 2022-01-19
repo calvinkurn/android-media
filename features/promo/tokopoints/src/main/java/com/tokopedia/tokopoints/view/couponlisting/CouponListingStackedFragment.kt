@@ -285,14 +285,12 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (data != null ) {
-            val code = data.getStringExtra(CommonConstant.EXTRA_COUPON_CODE) ?: ""
+            val code = data?.getStringExtra(CommonConstant.EXTRA_COUPON_CODE) ?: ""
             if (requestCode == REQUEST_CODE_STACKED_ADAPTER && resultCode == Activity.RESULT_OK) {
                 mAdapter.couponCodeVisible(code, false)
             } else if (requestCode == REQUEST_CODE_STACKED_IN_ADAPTER && resultCode == Activity.RESULT_OK) {
                 mAdapter.couponStackedVisible()
             }
-        }
     }
 
     companion object {
