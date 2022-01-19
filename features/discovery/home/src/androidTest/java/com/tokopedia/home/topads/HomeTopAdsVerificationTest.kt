@@ -33,6 +33,7 @@ import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.test.application.annotations.TopAdsTest
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
@@ -47,6 +48,7 @@ import org.junit.*
  *
  * @see [Testing documentation](http://d.android.com/tools/testing)
  */
+@TopAdsTest
 class HomeTopAdsVerificationTest {
     companion object {
         private const val LIMIT_COUNT_TO_IDLE = 10
