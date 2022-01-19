@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
 
@@ -39,6 +41,8 @@ class CreateVoucherProductActivity : AppCompatActivity() {
         couponSettingFragment.setOnCouponSaved { coupon ->
             popFragment()
             couponPreviewFragment.setCouponSettingsData(coupon)
+            couponPreviewFragment.setCouponInformationData(CouponInformation("Khusus", "Kupon Kopi Kenangan", "KOPKEN", "3 Jan 2022 - 4 Feb 2022"))
+            couponPreviewFragment.setCouponProductsData(listOf(CouponProduct(1), CouponProduct(2)))
         }
     }
 

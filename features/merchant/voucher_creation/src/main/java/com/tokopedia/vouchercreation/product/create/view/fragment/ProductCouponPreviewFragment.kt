@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -43,7 +44,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     private var onNavigateToProductListPage: () -> Unit = {}
     private var couponSettings: CouponSettings? = null
     private var couponInformation: CouponInformation? = null
-    private var couponProducts: List<CouponProduct>? = emptyList()
+    private var couponProducts: List<CouponProduct> = emptyList()
 
     private val CouponType.label: String
         get() {
@@ -100,6 +101,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
+        observeValidCoupon()
     }
 
     private fun setupViews() {
@@ -107,6 +109,13 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         binding?.tpgCouponInformation?.setOnClickListener { onNavigateToCouponInformationPage() }
         binding?.tpgCouponSetting?.setOnClickListener { onNavigateToCouponSettingsPage() }
         binding?.tpgAddProduct?.setOnClickListener { onNavigateToProductListPage() }
+    }
+
+    private fun observeValidCoupon() {
+        viewModel.areInputValid.observe(viewLifecycleOwner, { areInputValid ->
+            binding?.btnCreateCoupon?.isEnabled = areInputValid
+            binding?.btnPreviewCouponImage?.isEnabled = areInputValid
+        })
     }
 
     fun setOnNavigateToCouponInformationPageListener(onNavigateToCouponInformationPage: () -> Unit) {
@@ -135,12 +144,27 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
 
     override fun onResume() {
         super.onResume()
+        couponInformation?.let { coupon ->  refreshCouponInformationSection(coupon) }
         couponSettings?.let { coupon -> refreshCouponSettingsSection(coupon) }
+        refreshProductsSection(couponProducts)
+
+        viewModel.validateCoupon(couponSettings, couponInformation, couponProducts)
+    }
+
+    private fun refreshCouponInformationSection(coupon: CouponInformation) {
+        binding?.labelCouponInformationCompleteStatus?.setLabelType(Label.HIGHLIGHT_LIGHT_TEAL)
+        binding?.labelCouponInformationCompleteStatus?.setLabel(getString(R.string.completed))
+
+        binding?.tpgCouponTarget?.text = coupon.target
+        binding?.tpgCouponName?.text = coupon.name
+        binding?.tpgCouponCode?.text = coupon.code
+        binding?.tpgCouponPeriod?.text = coupon.period
     }
 
     private fun refreshCouponSettingsSection(coupon: CouponSettings) {
         binding?.labelCouponSettingCompleteStatus?.setLabelType(Label.HIGHLIGHT_LIGHT_TEAL)
         binding?.labelCouponSettingCompleteStatus?.setLabel(getString(R.string.completed))
+
         binding?.tpgCouponType?.text = coupon.type.label
         binding?.tpgDiscountType?.text = coupon.discountType.label
         binding?.tpgMinimumPurchaseType?.text = coupon.minimumPurchaseType.label
@@ -150,6 +174,21 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         handleMaximumDiscount(coupon.discountType, coupon.maxDiscount)
         handleMinimumPurchase(coupon.minimumPurchaseType, coupon.minimumPurchase)
         handleEstimatedMaxExpense(coupon.estimatedMaxExpense)
+    }
+
+    private fun refreshProductsSection(products: List<CouponProduct>) {
+        binding?.tpgUpdateProduct?.isVisible = products.isNotEmpty()
+        if (products.isNotEmpty()) {
+            binding?.labelProductCompleteStatus?.setLabelType(Label.HIGHLIGHT_LIGHT_TEAL)
+            binding?.labelProductCompleteStatus?.setLabel(getString(R.string.completed))
+
+            binding?.tpgProductCount?.text = String.format(getString(R.string.placeholder_registered_product), products.size)
+        } else {
+            binding?.labelProductCompleteStatus?.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
+            binding?.labelProductCompleteStatus?.setLabel(getString(R.string.incomplete))
+
+            binding?.tpgProductCount?.text = getString(R.string.no_products)
+        }
     }
 
     private fun handleDiscountAmount(discountType: DiscountType, discountAmount: Int, discountPercentage: Int) {
