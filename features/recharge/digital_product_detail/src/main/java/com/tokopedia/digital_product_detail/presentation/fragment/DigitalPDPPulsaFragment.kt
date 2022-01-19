@@ -301,7 +301,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
                         }
                     }
                 },
-                "Paling sering kamu beli",
+                getString(R.string.digital_pdp_recommendation_title),
                 recommendations
             )
         }
