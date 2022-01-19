@@ -1,0 +1,129 @@
+{
+  "shopScorePenaltyTypes": {
+    "result": [
+      {
+        "id": 1,
+        "name": "Penalti di Pusat Resolusi",
+        "description": "Seller dinyatakan bersalah di Pusat Resolusi",
+        "penalty": -1
+      },
+      {
+        "id": 2,
+        "name": "Pesanan diabaikan",
+        "description": "Seller tidak merespon pesanan yang masuk selama 2 hari",
+        "penalty": -1
+      },
+      {
+        "id": 3,
+        "name": "Pengiriman diabaikan",
+        "description": "Seller menerima order tetapi tidak melakukan shipping / tidak memasukkan resi shipping",
+        "penalty": -1
+      },
+      {
+        "id": 4,
+        "name": "Pengiriman ditolak",
+        "description": "Seller membatalkan pesanan pada saat konfirmasi pengiriman",
+        "penalty": -1
+      },
+      {
+        "id": 5,
+        "name": "Penalti Gabungan di Pusat Resolusi",
+        "description": "Seller mencapai batas pelanggaran gabungan di Pusat Resolusi",
+        "penalty": -1
+      },
+      {
+        "id": 8,
+        "name": "Manipulasi transaksi",
+        "description": "Seller terindikasi melakukan manipulasi transaksi dengan pembeli yang dihitung setiap minggu.",
+        "penalty": -1
+      },
+      {
+        "id": 9,
+        "name": "Perpanjangan waktu pesanan",
+        "description": "Seller memperpanjang durasi waktu pesanan minggu ini yang sudah mencapai batas yang ditentukan.",
+        "penalty": -1
+      }
+    ],
+    "error": {
+      "message": ""
+    }
+  },
+  "shopScorePenaltySummary": {
+    "result": {
+      "penalty": 0,
+      "penaltyAmount": 0
+    },
+    "error": {
+      "message": ""
+    }
+  },
+  "shopScorePenaltyDetail": {
+    "result": [
+      {
+        "shopPenaltyID": "4139230",
+        "invoiceNumber": "INV/20211226/MPL/1888497413",
+        "reason": "Seller melakukan pengabaian pesanan pada transaksi INV/20211226/MPL/1888497413",
+        "score": -1,
+        "createTime": "2021-12-27",
+        "typeID": 2,
+        "typeName": "Pengabaian pesanan",
+        "penaltyStartDate": "2022-01-03",
+        "penaltyExpirationDate": "2022-01-30",
+        "status": "Poin belum terpotong"
+      },
+      {
+        "shopPenaltyID": "4139230",
+        "invoiceNumber": "INV/20211226/MPL/1888497413",
+        "reason": "Seller melakukan pengabaian pesanan pada transaksi INV/20211226/MPL/1888497413",
+        "score": -1,
+        "createTime": "2021-12-27",
+        "typeID": 2,
+        "typeName": "Pengabaian pesanan",
+        "penaltyStartDate": "2022-01-03",
+        "penaltyExpirationDate": "2022-01-30",
+        "status": "Poin belum terpotong"
+      },
+      {
+        "shopPenaltyID": "4139230",
+        "invoiceNumber": "INV/20211226/MPL/1888497413",
+        "reason": "Seller melakukan pengabaian pesanan pada transaksi INV/20211226/MPL/1888497413",
+        "score": -1,
+        "createTime": "2021-12-27",
+        "typeID": 2,
+        "typeName": "Pengabaian pesanan",
+        "penaltyStartDate": "2022-01-03",
+        "penaltyExpirationDate": "2022-01-30",
+        "status": "Poin belum terpotong"
+      },
+      {
+        "shopPenaltyID": "4139230",
+        "invoiceNumber": "INV/20211226/MPL/1888497413",
+        "reason": "Seller melakukan pengabaian pesanan pada transaksi INV/20211226/MPL/1888497413",
+        "score": -1,
+        "createTime": "2021-12-27",
+        "typeID": 2,
+        "typeName": "Pengabaian pesanan",
+        "penaltyStartDate": "2022-01-03",
+        "penaltyExpirationDate": "2022-01-30",
+        "status": "Poin belum terpotong"
+      },
+      {
+        "shopPenaltyID": "4139230",
+        "invoiceNumber": "INV/20211226/MPL/1888497413",
+        "reason": "Seller melakukan pengabaian pesanan pada transaksi INV/20211226/MPL/1888497413",
+        "score": -1,
+        "createTime": "2021-12-27",
+        "typeID": 2,
+        "typeName": "Pengabaian pesanan",
+        "penaltyStartDate": "2022-01-03",
+        "penaltyExpirationDate": "2022-01-30",
+        "status": "Poin belum terpotong"
+      }
+    ],
+    "hasNext": false,
+    "hasPrev": false,
+    "error": {
+      "message": ""
+    }
+  }
+}

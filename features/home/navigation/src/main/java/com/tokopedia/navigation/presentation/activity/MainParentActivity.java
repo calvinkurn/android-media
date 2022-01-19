@@ -565,7 +565,7 @@ public class MainParentActivity extends BaseActivity implements
             Toaster.INSTANCE.showErrorWithAction(this.findViewById(android.R.id.content),
                     intent.getStringExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS),
                     Snackbar.LENGTH_INDEFINITE,
-                    getString(R.string.general_label_ok), (v) -> {
+                    getString(com.tokopedia.home.R.string.general_label_ok), (v) -> {
                     });
         }
     }
@@ -693,7 +693,7 @@ public class MainParentActivity extends BaseActivity implements
         }
         isUserFirstTimeLogin = !userSession.get().isLoggedIn();
 
-        addShortcuts();
+        addShortcutsAsync();
 
         if (currentFragment != null) {
             configureStatusBarBasedOnFragment(currentFragment);
@@ -1094,8 +1094,15 @@ public class MainParentActivity extends BaseActivity implements
         this.presenter = (Lazy<MainParentPresenter>) presenter;
     }
 
-    @NotNull
-    private boolean addShortcuts() {
+    private void addShortcutsAsync() {
+        WeaveInterface mainDaggerWeave = () -> {
+            addShortcuts();
+            return true;
+        };
+        Weaver.Companion.executeWeaveCoRoutineNow(mainDaggerWeave);
+    }
+
+    private void addShortcuts() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             try {
                 ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
@@ -1182,7 +1189,6 @@ public class MainParentActivity extends BaseActivity implements
                 e.printStackTrace();
             }
         }
-        return true;
     }
 
     @Override

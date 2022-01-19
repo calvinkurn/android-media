@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.empty_state.EmptyStateUnify
@@ -318,7 +319,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             RouteManager.route(requireContext(), ApplinkConst.SELLER_INFO)
             NavigationTracking.sendClickNotificationEvent()
         } else if (item.itemId == SEARCH_MENU_ID) {
-            RouteManager.route(requireContext(), ApplinkConst.SellerApp.SELLER_SEARCH)
+            RouteManager.route(requireContext(), ApplinkConstInternalSellerapp.SELLER_SEARCH)
             NavigationSearchTracking.sendClickSearchMenuEvent(userSession.userId.orEmpty())
         }
         return super.onOptionsItemSelected(item)
@@ -996,6 +997,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     SellerHomeErrorHandler.logException(
                         result.throwable, SellerHomeErrorHandler.SHOP_LOCATION
                     )
+                    SellerHomeErrorHandler.logExceptionToServer(
+                        SellerHomeErrorHandler.SELLER_HOME_TAG,
+                        result.throwable,
+                        SellerHomeErrorHandler.SHOP_LOCATION,
+                        userSession.deviceId.orEmpty()
+                    )
                 }
             }
             setProgressBarVisibility(false)
@@ -1216,7 +1223,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         SellerHomeErrorHandler.logException(
             throwable = throwable,
-            message = ERROR_LAYOUT,
+            message = ERROR_LAYOUT
+        )
+        SellerHomeErrorHandler.logExceptionToServer(
+            errorTag = SellerHomeErrorHandler.SELLER_HOME_TAG,
+            throwable = throwable,
             errorType = SellerHomeErrorHandler.ErrorType.ERROR_LAYOUT,
             deviceId = userSession.deviceId.orEmpty()
         )
@@ -1334,6 +1345,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     SellerHomeErrorHandler.logException(
                         throwable = it.throwable,
                         message = ERROR_TICKER,
+                    )
+                    SellerHomeErrorHandler.logExceptionToServer(
+                        errorTag = SellerHomeErrorHandler.SELLER_HOME_TAG,
+                        throwable = it.throwable,
                         errorType = SellerHomeErrorHandler.ErrorType.ERROR_TICKER,
                         deviceId = userSession.deviceId.orEmpty()
                     )
@@ -1364,6 +1379,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     SellerHomeErrorHandler.logException(
                         it.throwable, SellerHomeErrorHandler.SHOP_SHARE_DATA
                     )
+                    SellerHomeErrorHandler.logExceptionToServer(
+                        errorTag = SellerHomeErrorHandler.SELLER_HOME_TAG,
+                        throwable = it.throwable,
+                        errorType = SellerHomeErrorHandler.SHOP_SHARE_DATA,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }
@@ -1374,6 +1395,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             if (it is Fail) {
                 SellerHomeErrorHandler.logException(
                     it.throwable, SellerHomeErrorHandler.SHOP_SHARE_TRACKING
+                )
+                SellerHomeErrorHandler.logExceptionToServer(
+                    SellerHomeErrorHandler.SELLER_HOME_TAG,
+                    it.throwable,
+                    SellerHomeErrorHandler.SHOP_SHARE_TRACKING,
+                    userSession.deviceId.orEmpty()
                 )
             }
         }
@@ -1559,7 +1586,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         )
         SellerHomeErrorHandler.logException(
             throwable = this,
-            message = "$ERROR_WIDGET $widgetType",
+            message = "$ERROR_WIDGET $widgetType"
+        )
+
+        SellerHomeErrorHandler.logExceptionToServer(
+            errorTag = SellerHomeErrorHandler.SELLER_HOME_TAG,
+            throwable = this,
             errorType = SellerHomeErrorHandler.ErrorType.ERROR_WIDGET,
             deviceId = userSession.deviceId.orEmpty(),
             extras = widgetErrorExtraMap

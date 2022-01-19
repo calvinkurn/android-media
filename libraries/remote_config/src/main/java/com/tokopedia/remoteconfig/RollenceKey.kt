@@ -39,9 +39,6 @@ object RollenceKey {
     const val RECOM_PAGE_CPM_VARIANT = "ShopAdsIMVariant"
     // end of Recommendation page section
 
-    //Home account
-    const val HOME_ACCOUNT_SHOW_VIEW_MORE_WALLET_TOGGLE = "akun_widget_button"
-
     //User
     const val USER_DARK_MODE_TOGGLE = "dark_mode_nakama_v2"
     const val EXPERIMENT_NAME_REVIEW_CREDIBILITY = "review_credibility"
