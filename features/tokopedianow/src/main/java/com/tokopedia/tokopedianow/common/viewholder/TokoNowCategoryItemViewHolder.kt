@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.common.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
@@ -37,7 +37,7 @@ class TokoNowCategoryItemViewHolder(
     private fun checkFirstData(isFirstCategory: Boolean, imageUrl: String) {
         binding?.apply {
             if (isFirstCategory) {
-                sivCategory.loadImage(ContextCompat.getDrawable(itemView.context, R.drawable.tokopedianow_bg_all_category))
+                sivCategory.loadImage(VectorDrawableCompat.create(itemView.resources, R.drawable.tokopedianow_bg_all_category, itemView.context.theme))
                 tpAllCategory.show()
                 iuChevron.show()
             } else {

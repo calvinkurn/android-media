@@ -57,7 +57,7 @@ class EditFormDefaultViewModel @Inject constructor(
     }
 
     fun getBidInfoDefault(suggestions: List<DataSuggestions>, onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit) {
-        bidInfoDefaultUseCase.setParams(suggestions, ParamObject.PRODUCT)
+        bidInfoDefaultUseCase.setParams(suggestions, ParamObject.GROUP)
         bidInfoDefaultUseCase.executeQuerySafeMode(
             {
                 onSuccess(it.topadsBidInfo.data)
