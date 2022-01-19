@@ -16,10 +16,12 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGENAME_PDP_3
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetView
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -59,6 +61,9 @@ class TestRecomWidgetViewModel {
         getRecommendationFilterChips = {getRecommendationFilterChips}
     )
     private val recomItem = RecommendationItem(productId = 1234, shopId = 123)
+    private val recomWidgetMetadata = RecommendationCarouselWidgetView.RecomWidgetMetadata()
+    private val listAnnotationChip = listOf(AnnotationChip(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Speaker", name = "Speaker")),
+        AnnotationChip(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "TV", name = "TV")))
     private val pageName = "testPageName"
     val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
     val miniCartSimplifiedDataMock = MiniCartSimplifiedData(miniCartItems = listOf(miniCart))
@@ -329,6 +334,20 @@ class TestRecomWidgetViewModel {
         Assert.assertTrue(viewModel.atcRecomTokonow.value?.error != null)
         Assert.assertTrue(viewModel.atcRecomTokonow.value?.recomItem == recomItemForUpdateDelete)
         Assert.assertTrue(viewModel.atcRecomTokonowResetCard.value == recomItemForUpdateDelete)
+    }
+
+    @Test
+    fun `test when get data recommendation selected by chips then return success filter result`() {
+        coEvery { getRecommendationUseCase.getData(any()) } returns listOf(
+            RecommendationWidget(
+                recommendationItemList = listOf(recomItem),
+                isTokonow = false
+            )
+        )
+        viewModel.loadRecomBySelectedChips(recomWidgetMetadata = recomWidgetMetadata, oldFilterList = listAnnotationChip, selectedChip = listAnnotationChip[0])
+        val recomFilterResult = viewModel.recomFilterResultData.value
+        Assert.assertEquals(listAnnotationChip.size, recomFilterResult?.filterList?.size)
+        Assert.assertEquals(true, recomFilterResult?.isSuccess)
     }
 
     private fun doCommonActionForATCRecom() {
