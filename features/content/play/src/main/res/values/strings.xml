@@ -21,6 +21,7 @@
     <string name="play_product_empty_action">Ke Halaman Toko</string>
     <string name="play_product_updated">Produk telah diupdate</string>
     <string name="play_link_copied">Link berhasil disalin</string>
+    <string name="play_product_atc">Keranjang</string>
 
     <!--Floating Window / PiP-->
     <string name="play_pip_permission_rationale_title">Mau perkecil layar Live?</string>
@@ -88,5 +89,25 @@
 
     <!--Pinned Product-->
     <string name="play_zero">0</string>
+    <string name="play_product_item_stock">Stok %1$s</string>
+
+    <!--Coupon Sheet-->
+    <string name="play_product_voucher_header_desc">Masih ada %1$s Kupon Toko lainnya!</string>
+    <string name="play_title_coupon">Daftar kupon toko</string>
+    <string name="play_voucher_sheet_coupon_expired">Berakhir dalam %1$s hari</string>
+    <string name="play_voucher_sheet_coupon_stock">Sisa %1$s kupon</string>
+
+    <!--Kebab Menu-->
+    <string name="play_kebab_report_title">Laporkan Video</string>
+
+    <!--User Report-->
+    <string name="play_user_report_footer"><![CDATA[<strong><span style="color:#03AC0E">Pelajari Selengkapnya</span></strong> tipe-tipe pelanggaran di Tokopedia.]]></string>
+    <string name="play_user_report_header">Pilih kategori pelanggaran yang terjadi pada video ini</string>
+    <string name="play_user_report_submission_button">Laporkan</string>
+    <string name="play_user_report_text_area_min">%1$s Min. %2$s karakter</string>
+    <string name="play_user_report_footer_weblink">https://www.tokopedia.com/help/article/tokopedia-play-live-streaming</string>
+    <string name="play_user_report_verification_dialog_title">Lanjutkan laporkan Produk</string>
+    <string name="play_user_report_verification_dialog_desc">Dengan klik \"Lapor\", saya menyatakan bahwa segala informasi yang dilaporkan memang benar dan bertanggung jawab atas informasi tersebut.</string>
+    <string name="play_user_report_verification_dialog_btn_ok">Lapor</string>
 
 </resources>

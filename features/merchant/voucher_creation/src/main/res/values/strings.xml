@@ -9,6 +9,7 @@
     <string name="mvc_voucher_history">Riwayat Voucher</string>
     <string name="mvc_share">Bagikan</string>
     <string name="mvc_used">Terpakai</string>
+    <string name="mvc_remaining_quota">Sisa kuota</string>
     <string name="mvc_edit_quota">Ubah Kuota</string>
     <string name="mvc_edit_shown_period">Ubah Periode Tampil</string>
     <string name="mvc_view_detail_and_edit_voucher">Lihat Detail &amp; Ubah Voucher</string>
@@ -252,6 +253,7 @@
     <string name="mvc_detail_ticker_cancel_promo">Untuk membatalkan promosi, klik di sini</string>
     <string name="mvc_detail_ticker_here">di sini</string>
     <string name="mvc_review_agreement">Dengan klik Tambah Voucher, saya menyetujui &lt;br>syarat dan ketentuan yang berlaku.</string>
+    <string name="mvc_check_tnc">Lihat syarat dan ketentuan</string>
     <string name="mvc_review_terms">syarat dan ketentuan</string>
     <string name="mvc_estimation_title">Estimasi Maks. Pengeluaran</string>
     <string name="mvc_estimation_description">Dipotong dari transaksi selesai</string>
@@ -309,6 +311,10 @@
     <string name="mvc_fail_download_voucher_suffix">. Cek koneksi internet.</string>
     <string name="mvc_voucher_type_image_content_desc">Gambar tipe voucher</string>
     <string name="mvc_btn_mvc_more_content_desc">tombol lebih banyak opsi</string>
+    <string name="mvc_vps">Paket Promosi</string>
+    <string name="mvc_subsidy">Dari Tokopedia</string>
+    <string name="mvc_voucher_source">Sumber voucher</string>
+    <string name="mvc_seller_created">Dibuat Penjual</string>
 
     <!-- voucher detail -->
     <string name="mvc_detail_total_quota">/%s</string>

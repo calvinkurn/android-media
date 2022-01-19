@@ -54,4 +54,8 @@ class RecommendationItemViewHolder (
             listener.onThreeDotsClick(recommendationItemDataView.recommendationItem, adapterPosition)
         }
     }
+
+    override fun onViewRecycled() {
+        binding?.productCardView?.recycle()
+    }
 }

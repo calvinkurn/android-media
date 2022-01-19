@@ -1,7 +1,6 @@
 package com.tokopedia.play.viewmodel.interactive
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play.extensions.isLeaderboardSheetShown
@@ -19,6 +18,7 @@ import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
@@ -62,7 +62,7 @@ class PlayWinnerBadgeInteractiveTest {
                     socketResponseBuilder.buildChannelInteractiveResponse(isExist = true)
             )
     )
-    private val socket: PlayChannelWebSocket = mockk(relaxed = true)
+    private val socket: PlayWebSocket = mockk(relaxed = true)
 
     private val interactiveRepo: PlayViewerRepository = mockk(relaxed = true)
 

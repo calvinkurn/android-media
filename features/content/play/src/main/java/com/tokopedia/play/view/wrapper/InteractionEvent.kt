@@ -23,4 +23,7 @@ sealed class InteractionEvent {
     object CartPage : InteractionEvent() {
         override val needLogin: Boolean = true
     }
+    object OpenUserReport : InteractionEvent() {
+        override val needLogin: Boolean = true
+    }
 }

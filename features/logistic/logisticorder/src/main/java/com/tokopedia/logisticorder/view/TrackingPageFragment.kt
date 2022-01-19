@@ -484,7 +484,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             binding?.imgProof?.let { imgProof ->
                 Glide.with(it.context)
                     .load(newUrl)
-                    .centerCrop()
                     .placeholder(it.context.getDrawable(R.drawable.ic_image_error))
                     .error(it.context.getDrawable(R.drawable.ic_image_error))
                     .dontAnimate()
