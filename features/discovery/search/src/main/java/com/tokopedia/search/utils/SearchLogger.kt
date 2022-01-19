@@ -23,12 +23,13 @@ open class SearchLogger {
     }
 
     private fun isExceptionExcluded(throwable: Throwable): Boolean {
-        if (throwable is UnknownHostException) return true
-        if (throwable is SocketException) return true
-        if (throwable is InterruptedIOException) return true
-        if (throwable is ConnectionShutdownException) return true
-
-        return false
+        return when(throwable){
+            is UnknownHostException -> true
+            is SocketException -> true
+            is InterruptedIOException -> true
+            is ConnectionShutdownException -> true
+            else -> false
+        }
     }
 
     protected open fun timberLogWarning(message: String, stackTrace: String) {

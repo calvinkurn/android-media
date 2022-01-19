@@ -12,6 +12,9 @@ import com.tokopedia.autocompletecomponent.suggestion.singleline.SuggestionSingl
 import com.tokopedia.autocompletecomponent.suggestion.title.SuggestionTitleDataView
 import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopCardDataView
 import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopWidgetDataView
+import com.tokopedia.topads.sdk.domain.model.CpmData
+import org.hamcrest.CoreMatchers
+import org.hamcrest.MatcherAssert
 
 internal fun SuggestionTitleDataView.assertSuggestionTitleDataView(item: SuggestionItem) {
     title shouldBe item.title
@@ -69,6 +72,32 @@ internal fun BaseSuggestionDataView.assertBaseSuggestionDataView(
     this.originalPrice shouldBe item.originalPrice
     this.dimension90 shouldBe dimension90
     this.searchTerm shouldBe expectedKeyword
+}
+
+internal fun BaseSuggestionDataView.assertShopAdsSuggestionData(
+    item: SuggestionItem,
+    cpmData: CpmData,
+    expectedPosition: Int,
+    dimension90: String,
+    expectedKeyword: String,
+) {
+    this.template shouldBe item.template
+    this.type shouldBe TYPE_SHOP
+    this.applink shouldBe cpmData.applinks
+    this.title shouldBe cpmData.cpm.name
+    this.iconTitle shouldBe cpmData.cpm.badges.first().imageUrl
+    this.imageUrl shouldBe cpmData.cpm.cpmImage.fullEcs
+    this.dimension90 shouldBe dimension90
+    this.componentId shouldBe item.componentId
+    this.trackingOption shouldBe item.trackingOption
+    this.position shouldBe expectedPosition
+    this.searchTerm shouldBe expectedKeyword
+
+    MatcherAssert.assertThat(this.shopAdsDataView, CoreMatchers.notNullValue())
+
+    this.shopAdsDataView!!.clickUrl shouldBe cpmData.adClickUrl
+    this.shopAdsDataView!!.impressionUrl shouldBe cpmData.cpm.cpmImage.fullUrl
+    this.shopAdsDataView!!.imageUrl shouldBe cpmData.cpm.cpmImage.fullEcs
 }
 
 internal fun SuggestionDoubleLineDataDataView.assertBoldText(expectedValue: Boolean) {

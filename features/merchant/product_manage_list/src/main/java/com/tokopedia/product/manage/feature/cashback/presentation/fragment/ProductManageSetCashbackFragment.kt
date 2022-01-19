@@ -34,6 +34,7 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -85,6 +86,9 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
 
     @Inject
     lateinit var viewModel: ProductManageSetCashbackViewModel
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var adapter: SetCashbackAdapter? = null
     private var productId = ""
@@ -244,6 +248,13 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
                 is Fail -> {
                     onErrorSetCashback(it.throwable as SetCashbackResult)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.SET_CASHBACK_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }
