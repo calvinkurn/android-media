@@ -244,7 +244,7 @@ class DynamicChannelHeaderView: FrameLayout {
                     }
 
                     visibility = View.VISIBLE
-                    channelTitleContainer.setPadding(channelTitleContainer.paddingLeft, channelTitleContainer.paddingTop, channelTitleContainer.paddingRight, 8f.toDpInt())
+//                    channelTitleContainer.setPadding(channelTitleContainer.paddingLeft, channelTitleContainer.paddingTop, channelTitleContainer.paddingRight, 8f.toDpInt())
                     // calculate date diff
                     targetDate = Calendar.getInstance().apply {
                         val currentDate = Date()

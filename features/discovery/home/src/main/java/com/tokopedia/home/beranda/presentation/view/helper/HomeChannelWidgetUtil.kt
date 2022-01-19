@@ -13,7 +13,8 @@ object HomeChannelWidgetUtil {
         dividerTop: DividerUnify?,
         dividerBottom: DividerUnify?
     ) {
-        when(channelModel?.dividerType) {
+//        when(channelModel?.dividerType) {
+        when(1) {
             ChannelConfig.DIVIDER_NO_DIVIDER -> {
                 dividerTop?.invisible()
                 dividerBottom?.gone()
