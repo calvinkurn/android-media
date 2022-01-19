@@ -872,6 +872,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
                 renderViewAllProductView(state.viewAllProduct)
+                renderKebabMenuView(state.kebabMenu)
             }
         }
     }
@@ -1587,6 +1588,11 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun renderViewAllProductView(viewAllProduct: PlayViewAllProductUiState) {
         if(viewAllProduct.shouldShow) productSeeMoreView?.show()
         else productSeeMoreView?.hide()
+    }
+
+    private fun renderKebabMenuView(kebabMenuUiState: PlayKebabMenuUiState) {
+        if(kebabMenuUiState.shouldShow) kebabMenuView?.show()
+        else kebabMenuView?.hide()
     }
 
     private fun castViewOnStateChanged(
