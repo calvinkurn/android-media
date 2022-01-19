@@ -567,7 +567,7 @@ abstract class BaseSearchCategoryFragment:
                 context = context,
                 param = param,
                 onRefreshPage = {
-                    getViewModel().setUserPreference()
+                    getViewModel().switchService()
                 },
                 onRedirectPage = {
                     RouteManager.route(it, applink)
