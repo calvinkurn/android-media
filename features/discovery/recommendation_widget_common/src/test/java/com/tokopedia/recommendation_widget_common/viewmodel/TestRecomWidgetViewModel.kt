@@ -62,8 +62,8 @@ class TestRecomWidgetViewModel {
     )
     private val recomItem = RecommendationItem(productId = 1234, shopId = 123)
     private val recomWidgetMetadata = RecommendationCarouselWidgetView.RecomWidgetMetadata()
-    private val listAnnotationChip = listOf(AnnotationChip(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Speaker", name = "Speaker")),
-        AnnotationChip(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "TV", name = "TV")))
+    private val listAnnotationChip = listOf(AnnotationChip(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Speaker", name = "Speaker", value = "Speaker", isActivated = true)),
+        AnnotationChip(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "TV", name = "TV", value = "TV", isActivated = true)))
     private val pageName = "testPageName"
     val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
     val miniCartSimplifiedDataMock = MiniCartSimplifiedData(miniCartItems = listOf(miniCart))
