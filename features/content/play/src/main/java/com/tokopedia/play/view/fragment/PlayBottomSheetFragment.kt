@@ -195,11 +195,8 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     override fun onInfoVoucherClicked(
-        view: ProductSheetViewComponent,
-        vouchers: List<MerchantVoucherUiModel>
-    ) {
+        view: ProductSheetViewComponent) {
         playViewModel.showCouponSheet(variantSheetMaxHeight)
-        couponSheetView.setVoucherList(vouchers)
     }
 
     /**
@@ -554,6 +551,8 @@ class PlayBottomSheetFragment @Inject constructor(
             if (it.productTags is PlayProductTagsUiModel.Complete) {
                 if (it.productTags.productList.isNotEmpty()) {
                     productSheetView.setProductSheet(it.productTags)
+                    val vouchers = it.productTags.voucherList.filterIsInstance<MerchantVoucherUiModel>()
+                    couponSheetView.setVoucherList(vouchers)
 
                     trackImpressedProduct()
                     return@observe
