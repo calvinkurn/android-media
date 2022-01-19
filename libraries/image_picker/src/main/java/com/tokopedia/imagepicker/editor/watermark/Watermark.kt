@@ -280,21 +280,26 @@ data class Watermark(
     }
 
     private fun mapWatermarkType(type: Int): Bitmap {
-        val widthMainBitmap = backgroundImg!!.width
-        val heightMainBitmap = backgroundImg!!.height
-        val resultBitmap = createBitmap(
-            widthMainBitmap,
-            heightMainBitmap,
-            backgroundImg!!.config
-        )
-        return when (type) {
-            Constant.TYPE_WATERMARK_TOPED -> {
-                tileWatermarkBitmap(resultBitmap)
+        try {
+            val widthMainBitmap = backgroundImg!!.width
+            val heightMainBitmap = backgroundImg!!.height
+            val resultBitmap = createBitmap(
+                widthMainBitmap,
+                heightMainBitmap,
+                backgroundImg!!.config
+            )
+            return when (type) {
+                Constant.TYPE_WATERMARK_TOPED -> {
+                    tileWatermarkBitmap(resultBitmap)
+                }
+                Constant.TYPE_WATERMARK_CENTER_TOPED -> {
+                    centerWatermarkBitmap(resultBitmap)
+                }
+                else -> throw IllegalArgumentException()
             }
-            Constant.TYPE_WATERMARK_CENTER_TOPED -> {
-                centerWatermarkBitmap(resultBitmap)
-            }
-            else -> throw IllegalArgumentException()
+        } catch(e: OutOfMemoryError) {
+            System.gc()
+            return backgroundImg!!
         }
     }
 }
