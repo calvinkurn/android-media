@@ -15,6 +15,7 @@ import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDat
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.model.denom.DenomData
+import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -118,7 +119,7 @@ class DigitalPDPDataPlanFragment :
     /**
      * DenomGrid Listener
      */
-    override fun onDenomGridClicked(denomGrid: DenomData, position: Int) {
+    override fun onDenomGridClicked(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int) {
 
     }
 

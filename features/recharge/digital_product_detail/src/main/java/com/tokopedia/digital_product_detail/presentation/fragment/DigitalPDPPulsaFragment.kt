@@ -21,6 +21,7 @@ import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
+import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardEnum
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
@@ -269,6 +270,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
         }
     }
 
+    private fun onClearSelectedDenomGrid(){
+        binding?.let {
+            it.rechargePdpPulsaDenomGridWidget.clearSelectedProduct()
+        }
+    }
+
     fun showRecommendation() {
         binding?.let {
             it.rechargePdpPulsaRecommendationWidget.renderRecommendationLayout(
@@ -311,6 +318,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
     private fun onSuccessMCCM(denomGrid: DenomWidgetModel) {
         binding?.let {
             it.rechargePdpPulsaPromoWidget.renderMCCMGrid(this, denomGrid, getString(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
+    }
+
+    private fun onClearSelectedMCCM(){
+        binding?.let {
+            it.rechargePdpPulsaPromoWidget.clearSelectedProduct()
         }
     }
 
@@ -382,8 +395,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
     /**
      * RechargeDenomGridListener
      */
-    override fun onDenomGridClicked(denomGrid: DenomData, position: Int) {
-
+    override fun onDenomGridClicked(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int) {
+        if (layoutType == DenomWidgetEnum.MCCM_TYPE){
+            onClearSelectedDenomGrid()
+        } else if (layoutType == DenomWidgetEnum.GRID_TYPE){
+            onClearSelectedMCCM()
+        }
     }
 
     companion object {

@@ -35,7 +35,7 @@ class DenomGridAdapter: RecyclerView.Adapter<DenomGridViewHolder>(), RechargeDen
         return DenomGridViewHolder(this, binding)
     }
 
-    override fun onDenomGridClicked(denomGrid: DenomData, position: Int) {
+    override fun onDenomGridClicked(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int) {
         if (selectedProductIndex == null){
             selectedProductIndex = position
             notifyItemChanged(position)
@@ -46,7 +46,7 @@ class DenomGridAdapter: RecyclerView.Adapter<DenomGridViewHolder>(), RechargeDen
             selectedProductIndex = position
             notifyItemChanged(position)
         }
-        listener?.onDenomGridClicked(denomGrid, position)
+        listener?.onDenomGridClicked(denomGrid, denomWidgetType, position)
     }
 
     fun setDenomGridList(listDenom: List<DenomData>) {
