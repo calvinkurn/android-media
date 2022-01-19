@@ -36,4 +36,15 @@
     <string name="title_setting_fingerprint_switch">Masuk dengan Sidik Jari</string>
     <string name="description_fingerprint_setting">Kalau kamu mematikan fitur ini atau mengatur ulang kata sandi, sidik jari di Tokopedia harus diaktifkan lagi.</string>
 
+
+    <string name="title_biometric_offering_dialog">Aktifkan Biometric untuk Login Lebih Mudah</string>
+    <string name="subtitle_biometric_offering_dialog">Sebelum keluar App, coba lakukan aktivasi Biometric, agar Loginmu nanti bisa lebih mudah dengan Fingerprint.</string>
+
+    <string name="button_primary_biometric_offering_dialog">Aktivasi Sekarang</string>
+    <string name="button_secondary_biometric_offering_dialog">Tetap Keluar</string>
+
+    <string name="title_biometric_offering_success_dialog">Biometric Tokopedia kamu berhasil disimpan</string>
+    <string name="subtitle_biometric_offering_success_dialog">Sekarang kamu bisa menggunakannya di semua proses Verifikasi dan Login</string>
+
+    <string name="button_primary_biometric_offering_success_dialog">Lanjut keluar akun</string>
 </resources>
