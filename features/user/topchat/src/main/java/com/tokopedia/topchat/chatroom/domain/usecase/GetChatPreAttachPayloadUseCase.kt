@@ -27,17 +27,17 @@ class GetChatPreAttachPayloadUseCase @Inject constructor(
 
     override fun graphqlQuery(): String = """
         query chatPreAttachPayload(
-            $$IDS: String, 
-            $$MSG_ID: Int,
-            $$TYPE: Int, 
+            $$MSG_ID: Int!,
+            $$IDS: String!, 
+            $$TYPE: Int!, 
             $$ADDRESS_ID: Int, 
             $$DISTRICT_ID: Int, 
             $$POSTAL_CODE: String, 
             $$LAT_LON: String
         ){
           chatPreAttachPayload(
-            $IDS: $$IDS, 
             $MSG_ID: $$MSG_ID,
+            $IDS: $$IDS, 
             $TYPE: $$TYPE, 
             $ADDRESS_ID: $$ADDRESS_ID, 
             $DISTRICT_ID: $$DISTRICT_ID, 
@@ -76,7 +76,7 @@ class GetChatPreAttachPayloadUseCase @Inject constructor(
         companion object {
             const val IDS = "ids"
             const val MSG_ID = "msgId"
-            const val TYPE = "type"
+            const val TYPE = "attachmentType"
             const val ADDRESS_ID = "addressID"
             const val DISTRICT_ID = "districtID"
             const val POSTAL_CODE = "postalCode"
