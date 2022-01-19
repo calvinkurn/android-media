@@ -107,7 +107,7 @@ class DeepLinkDFMapperSellerAppTest: DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `check seller search appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
-        val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://seller-search"
+        val appLink = "${ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP}/seller-search"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
     }
 

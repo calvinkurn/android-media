@@ -13,6 +13,7 @@ ext {
     lifeCycleExtensionsVersion = "2.2.0"
     archCoreVersion = "2.1.0"
     workManagerVersion = "2.6.0"
+    startupRuntimeVersion = "1.1.0"
 
     biometricVersion = "1.1.0"
     appCompatVersion = '1.2.0-rc01'
@@ -288,7 +289,8 @@ ext {
             embraceSwazzler       : "io.embrace:embrace-swazzler:$embraceVersion",
             window                : "androidx.window:window:$windowVersion",
             mp4Composer           : "com.github.MasayukiSuda:Mp4Composer-android:v0.4.1",
-            localBroadcastManager : "androidx.localbroadcastmanager:localbroadcastmanager:$localBroadcastManagerVersion"
+            localBroadcastManager : "androidx.localbroadcastmanager:localbroadcastmanager:$localBroadcastManagerVersion",
+            startupRuntime        : "androidx.startup:startup-runtime:$startupRuntimeVersion",
     ]
 
     testDependencies = [
