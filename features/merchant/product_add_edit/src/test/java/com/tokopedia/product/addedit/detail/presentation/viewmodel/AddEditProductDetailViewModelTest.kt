@@ -52,7 +52,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.mockito.ArgumentMatchers.any
 import java.io.IOException
-import java.lang.Exception
 import kotlin.reflect.KFunction0
 
 @FlowPreview
@@ -1466,8 +1465,8 @@ class AddEditProductDetailViewModelTest {
         viewModel.productPhotoPaths = mutableListOf("sss")
         assert(viewModel.productPhotoPaths[0] == "sss")
 
-        viewModel.specificationList = mutableListOf(SpecificationInputModel(id="123"))
-        assert(viewModel.specificationList[0].id == "123")
+        viewModel.selectedSpecificationList = mutableListOf(SpecificationInputModel(id="123"))
+        assert(viewModel.selectedSpecificationList[0].id == "123")
 
         viewModel.productInputModel = ProductInputModel(productId = 11L)
         assert(viewModel.productInputModel.productId == 11L)

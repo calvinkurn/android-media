@@ -16,7 +16,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -182,6 +181,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     // product specification
     private var productSpecificationLayout: ViewGroup? = null
     private var productSpecificationTextView: Typography? = null
+    private var productSpecificationHeaderTextView: Typography? = null
     private var addProductSpecificationButton: Typography? = null
     private var productSpecificationReloadLayout: View? = null
     private var productSpecificationReloadButton: Typography? = null
@@ -354,7 +354,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             if (viewModel.hasVariants) {
                 showImmutableCategoryDialog()
             } else {
-                if (viewModel.specificationList.isNotEmpty()) {
+                if (viewModel.selectedSpecificationList.isNotEmpty()) {
                     showChangeCategoryDialog {
                         startCategoryActivity(REQUEST_CODE_CATEGORY)
                     }
@@ -367,6 +367,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // add product specification button
         productSpecificationLayout = view.findViewById(R.id.add_edit_product_specification_layout)
         productSpecificationTextView = view.findViewById(R.id.tv_product_specification)
+        productSpecificationHeaderTextView = view.findViewById(R.id.tv_product_specification_header)
         addProductSpecificationButton = view.findViewById(R.id.tv_add_product_specification)
         productSpecificationReloadLayout = view.findViewById(R.id.reload_product_specification_layout)
         productSpecificationReloadButton = view.findViewById(R.id.tv_reload_specification_button)
@@ -699,6 +700,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         subscribeToShopShowCases()
         subscribeToSpecificationList()
         subscribeToSpecificationText()
+        subscribeToHasSpecificationSignalStatus()
         subscribeToInputStatus()
         subscribeToPriceRecommendation()
         subscribeToProductNameValidationFromNetwork()
@@ -953,7 +955,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
                     saveInstanceCacheManager.get(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT_MODEL,
                             ProductInputModel::class.java, viewModel.productInputModel)?.apply {
-                        viewModel.updateSpecification(detailInputModel.specifications.orEmpty())
+                        viewModel.updateSelectedSpecification(detailInputModel.specifications.orEmpty())
                     }
                 }
             }
@@ -1112,7 +1114,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
             wholesaleList = getWholesaleInput()
             productShowCases = viewModel.productShowCases
-            specifications = viewModel.specificationList
+            specifications = viewModel.selectedSpecificationList
         }
     }
 
@@ -1455,12 +1457,18 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun subscribeToSpecificationText() {
         viewModel.specificationText.observe(viewLifecycleOwner, Observer {
             productSpecificationTextView?.text = it
-            addProductSpecificationButton?.text = if (viewModel.specificationList.isEmpty()) {
+            addProductSpecificationButton?.text = if (viewModel.selectedSpecificationList.isEmpty()) {
                 getString(R.string.action_specification_add)
             } else {
                 getString(R.string.action_specification_change)
             }
         })
+    }
+
+    private fun subscribeToHasSpecificationSignalStatus() {
+        viewModel.hasSpecificationSignalStatus.observe(viewLifecycleOwner) {
+            productSpecificationHeaderTextView.displayRequiredAsterisk(it)
+        }
     }
 
     private fun subscribeToInputStatus() {
@@ -1623,7 +1631,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // get annotation category, if not already obtained from the server (specifications == null)
         val specifications = viewModel.productInputModel.detailInputModel.specifications
         if (specifications != null) {
-            viewModel.updateSpecification(specifications)
+            viewModel.updateSelectedSpecification(specifications)
         } else {
             getAnnotationCategory()
         }
@@ -1680,7 +1688,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             productInputModel.detailInputModel.apply {
                 if (productCategoryId.isNotBlank()) categoryId = productCategoryId
                 if (productCategoryName.isNotBlank()) categoryName = productCategoryName
-                specifications = viewModel.specificationList
+                specifications = viewModel.selectedSpecificationList
             }
 
             val cacheManager = SaveInstanceCacheManager(this, true)
@@ -1958,7 +1966,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 }
 
                 // display confirmation if product has a specs
-                if (viewModel.specificationList.isEmpty()) {
+                if (viewModel.selectedSpecificationList.isEmpty()) {
                     selectCategoryRecommendation(items, position)
                 } else {
                     showChangeCategoryDialog {

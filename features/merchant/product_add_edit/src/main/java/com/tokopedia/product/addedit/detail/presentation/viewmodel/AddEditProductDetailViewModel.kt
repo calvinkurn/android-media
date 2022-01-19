@@ -32,6 +32,7 @@ import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameU
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
+import com.tokopedia.product.addedit.specification.presentation.constant.AddEditProductSpecificationConstants.SIGNAL_STATUS_VARIANT
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -195,13 +196,16 @@ class AddEditProductDetailViewModel @Inject constructor(
     val shopShowCases: LiveData<Result<List<ShopEtalaseModel>>>
         get() = mShopShowCases
 
-    var specificationList: List<SpecificationInputModel> = emptyList()
+    var selectedSpecificationList: List<SpecificationInputModel> = emptyList()
     private val mAnnotationCategoryData = MutableLiveData<Result<List<AnnotationCategoryData>>>()
     val annotationCategoryData: LiveData<Result<List<AnnotationCategoryData>>>
         get() = mAnnotationCategoryData
     private val mSpecificationText = MutableLiveData<String>()
     val specificationText: LiveData<String>
         get() = mSpecificationText
+    private val mHasSpecificationSignalStatus = MutableLiveData<Boolean>()
+    val hasSpecificationSignalStatus: LiveData<Boolean>
+        get() = mHasSpecificationSignalStatus
 
     private val mProductPriceRecommendation = MutableLiveData<PriceSuggestionSuggestedPriceGet>()
     val productPriceRecommendation: LiveData<PriceSuggestionSuggestedPriceGet>
@@ -646,26 +650,33 @@ class AddEditProductDetailViewModel @Inject constructor(
         })
     }
 
-    fun updateSpecification(specificationList: List<SpecificationInputModel>) {
-        this.specificationList = specificationList
-        updateSpecificationText(specificationList)
-    }
-
     fun updateSpecificationByAnnotationCategory(annotationCategoryList: List<AnnotationCategoryData>) {
-        val result: MutableList<SpecificationInputModel> = mutableListOf()
+        val selectedSpecificationList = mutableListOf<SpecificationInputModel>()
         annotationCategoryList.forEach {
             val selectedValue = it.data.firstOrNull { value -> value.selected }
             selectedValue?.apply {
                 val specificationInputModel = SpecificationInputModel(id.toString(), name)
-                result.add(specificationInputModel)
+                selectedSpecificationList.add(specificationInputModel)
             }
         }
 
-        updateSpecification(result)
+        updateSelectedSpecification(selectedSpecificationList)
+        updateHasStatusSignal(annotationCategoryList)
     }
 
-    fun updateSpecificationText(specificationList: List<SpecificationInputModel>) {
-        val specificationNames = specificationList.map { it.data }
+    fun updateSelectedSpecification(selectedSpecificationList: List<SpecificationInputModel>) {
+        this.selectedSpecificationList = selectedSpecificationList
+        updateSpecificationText(selectedSpecificationList)
+    }
+
+    private fun updateHasStatusSignal(annotationCategoryList: List<AnnotationCategoryData>) {
+        mHasSpecificationSignalStatus.value = annotationCategoryList.any {
+            it.variant == SIGNAL_STATUS_VARIANT
+        }
+    }
+
+    fun updateSpecificationText(selectedSpecificationList: List<SpecificationInputModel>) {
+        val specificationNames = selectedSpecificationList.map { it.data }
         mSpecificationText.value = if (specificationNames.isEmpty()) {
             provider.getProductSpecificationTips()
         } else {

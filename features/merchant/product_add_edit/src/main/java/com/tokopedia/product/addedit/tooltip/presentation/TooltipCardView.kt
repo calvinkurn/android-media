@@ -16,8 +16,7 @@ class TooltipCardView : BaseCustomView, MotionLayout.TransitionListener {
 
     var text: String = ""
     var tvTipsText: Typography? = null
-    var ivTipsBulb: ImageView? = null
-    var layout_tips: LinearLayout? = null
+    var layoutTips: LinearLayout? = null
     var motionLayoutTips: MotionLayout? = null
 
     constructor(context: Context) : super(context) {
@@ -51,9 +50,8 @@ class TooltipCardView : BaseCustomView, MotionLayout.TransitionListener {
     private fun init(attrs: AttributeSet?) {
         val view = View.inflate(context, R.layout.add_edit_product_partial_tooltip_card, this)
         motionLayoutTips = view.findViewById(R.id.motion_layout_tips)
-        layout_tips = view.findViewById(R.id.layout_tips)
+        layoutTips = view.findViewById(R.id.layout_tips)
         tvTipsText = view.findViewById(R.id.tv_tips_text)
-        ivTipsBulb = view.findViewById(R.id.iv_tips_bulb)
 
         motionLayoutTips?.setTransitionListener(this)
         defineCustomAttributes(attrs)
@@ -66,8 +64,6 @@ class TooltipCardView : BaseCustomView, MotionLayout.TransitionListener {
 
             try {
                 text = styledAttributes.getString(R.styleable.TooltipCardView_text).orEmpty()
-                ivTipsBulb?.isVisible = styledAttributes
-                    .getBoolean(R.styleable.TooltipCardView_iconVisible, true)
             } finally {
                 styledAttributes.recycle()
             }
@@ -81,8 +77,8 @@ class TooltipCardView : BaseCustomView, MotionLayout.TransitionListener {
     private fun updateHeight() {
         val matchParentMeasureSpec = MeasureSpec.makeMeasureSpec((parent as View).width, MeasureSpec.EXACTLY)
         val wrapContentMeasureSpec = MeasureSpec.makeMeasureSpec(Int.ZERO, MeasureSpec.UNSPECIFIED)
-        layout_tips?.measure(matchParentMeasureSpec, wrapContentMeasureSpec)
-        val targetHeight = layout_tips?.measuredHeight
+        layoutTips?.measure(matchParentMeasureSpec, wrapContentMeasureSpec)
+        val targetHeight = layoutTips?.measuredHeight
 
         if (targetHeight != null) {
             motionLayoutTips?.layoutParams?.height = targetHeight
