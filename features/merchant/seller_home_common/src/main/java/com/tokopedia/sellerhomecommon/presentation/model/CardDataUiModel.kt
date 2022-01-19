@@ -15,7 +15,7 @@ data class CardDataUiModel(
     var previousValue: String? = null
 ) : BaseDataUiModel {
 
-    override fun shouldRemove(): Boolean {
+    override fun isWidgetEmpty(): Boolean {
         return value.filterIndexed { index, c ->
             (c == '.' && value.getOrNull(index - 1)?.isDigit() == true) || c.isDigit()
         }.toFloat() == 0f

@@ -90,7 +90,7 @@ class PostListViewHolder(
     }
 
     private fun onSuccessLoadData(postListWidgetUiModel: PostListWidgetUiModel) {
-        val isEmpty = postListWidgetUiModel.data?.isEmptyPost().orFalse()
+        val isEmpty = postListWidgetUiModel.data?.isWidgetEmpty().orFalse()
         when {
             isEmpty && !postListWidgetUiModel.isShowEmpty -> {
                 if (listener.getIsShouldRemoveWidget()) {
@@ -158,7 +158,7 @@ class PostListViewHolder(
             showListLayout()
             addImpressionTracker(element)
 
-            if (isEmptyPost()) {
+            if (isWidgetEmpty()) {
                 showEmptyState(element)
             } else {
                 setupPostPager(postPagers)

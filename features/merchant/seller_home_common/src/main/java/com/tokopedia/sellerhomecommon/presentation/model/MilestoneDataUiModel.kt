@@ -20,8 +20,8 @@ data class MilestoneDataUiModel(
     val milestoneCta: MilestoneCtaUiModel = MilestoneCtaUiModel()
 ) : BaseDataUiModel {
 
-    override fun shouldRemove(): Boolean {
-        return (!isFromCache && !showWidget) || milestoneMissions.isNullOrEmpty()
+    override fun isWidgetEmpty(): Boolean {
+        return milestoneMissions.isNullOrEmpty()
     }
 }
 

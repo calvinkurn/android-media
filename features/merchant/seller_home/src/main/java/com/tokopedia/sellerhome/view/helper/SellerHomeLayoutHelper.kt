@@ -305,7 +305,7 @@ class SellerHomeLayoutHelper @Inject constructor(
         widget: BaseWidgetUiModel<*>,
         widgetData: BaseDataUiModel
     ): Boolean {
-        return !widgetData.showWidget || (!widget.isShowEmpty && widgetData.shouldRemove())
+        return !widgetData.showWidget || (!widget.isShowEmpty && widgetData.isWidgetEmpty())
     }
 
     private fun removeEmptySections(
