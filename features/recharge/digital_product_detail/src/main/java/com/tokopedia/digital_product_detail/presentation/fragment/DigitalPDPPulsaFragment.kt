@@ -15,8 +15,10 @@ import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.activity.DigitalPDPPulsaActivity
+import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryPulsaBottomsheet
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
 import com.tokopedia.recharge_component.model.denom.DenomData
@@ -39,7 +41,10 @@ import kotlin.math.abs
  * @author by firmanda on 04/01/21
  */
 
-class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener {
+class DigitalPDPPulsaFragment : BaseDaggerFragment(),
+    RechargeDenomGridListener,
+    RechargeBuyWidgetListener
+{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -327,6 +332,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
         }
     }
 
+    private fun onShowBuyWidget(denomGrid: DenomData){
+        binding?.let {
+            it.rechargePdpPulsaBuyWidget.showBuyWidget(denomGrid, this)
+        }
+    }
+
     private fun showTicker() {
         binding?.rechargePdpPulsaTickerWidget?.run {
             setText("Transaksi selama <b>23:40-00:20 WIB</b> baru akan diproses pada <b>00:45 WIB</b>. <a href=\"\">Selengkapnya</a>")
@@ -401,7 +412,19 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
         } else if (layoutType == DenomWidgetEnum.GRID_TYPE){
             onClearSelectedMCCM()
         }
+        onShowBuyWidget(denomGrid)
     }
+
+    override fun onClickedButtonLanjutkan(denom: DenomData) {
+
+    }
+
+    override fun onClickedChevron(denom: DenomData) {
+        fragmentManager?.let {
+            SummaryPulsaBottomsheet(getString(R.string.summary_transaction), denom).show(it, "")
+        }
+    }
+
 
     companion object {
         fun newInstance() = DigitalPDPPulsaFragment()

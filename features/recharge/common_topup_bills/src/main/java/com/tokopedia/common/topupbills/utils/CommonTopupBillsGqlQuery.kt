@@ -83,6 +83,7 @@ object CommonTopupBillsGqlQuery {
                     promo {
                       id
                       new_price
+                      new_price_plain
                     }
                     product_labels
                     detail
