@@ -10,12 +10,16 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.time.DateFormatUtils
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.extension.splitByThousand
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
+import com.tokopedia.vouchercreation.common.utils.parseTo
 import com.tokopedia.vouchercreation.databinding.FragmentProductCouponPreviewBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.ProductCouponPreviewViewModel
@@ -158,7 +162,14 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         binding?.tpgCouponTarget?.text = coupon.target
         binding?.tpgCouponName?.text = coupon.name
         binding?.tpgCouponCode?.text = coupon.code
-        binding?.tpgCouponPeriod?.text = coupon.period
+
+        val startDate = coupon.period.startDate.parseTo(DateTimeUtils.DATE_FORMAT)
+        val startHour = coupon.period.startDate.parseTo(DateTimeUtils.HOUR_FORMAT)
+        val endDate = coupon.period.endDate.parseTo(DateTimeUtils.DATE_FORMAT)
+        val endHour = coupon.period.endDate.parseTo(DateTimeUtils.HOUR_FORMAT)
+
+        val period = String.format(getString(R.string.placeholder_coupon_period), startDate, startHour, endDate, endHour)
+        binding?.tpgCouponPeriod?.text = period
     }
 
     private fun refreshCouponSettingsSection(coupon: CouponSettings) {

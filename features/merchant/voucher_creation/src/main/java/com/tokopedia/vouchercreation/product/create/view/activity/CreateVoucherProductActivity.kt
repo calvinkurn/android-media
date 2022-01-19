@@ -8,6 +8,7 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformat
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
+import java.util.*
 
 class CreateVoucherProductActivity : AppCompatActivity() {
 
@@ -41,7 +42,14 @@ class CreateVoucherProductActivity : AppCompatActivity() {
         couponSettingFragment.setOnCouponSaved { coupon ->
             popFragment()
             couponPreviewFragment.setCouponSettingsData(coupon)
-            couponPreviewFragment.setCouponInformationData(CouponInformation("Khusus", "Kupon Kopi Kenangan", "KOPKEN", "3 Jan 2022 - 4 Feb 2022"))
+
+            //TODO : Please replace with your real implementation of CouponInformation instance
+            val startDate = Calendar.getInstance().apply { set(2022, 0, 17, 8, 30, 0) }
+            val endDate = Calendar.getInstance().apply {  set(2022, 0, 17, 22, 0, 0) }
+            val period = CouponInformation.Period(startDate.time, endDate.time)
+            couponPreviewFragment.setCouponInformationData(CouponInformation("Khusus", "Kupon Kopi Kenangan", "KOPKEN", period))
+
+            //TODO : Please replace with your real implementation of CouponProduct instance
             couponPreviewFragment.setCouponProductsData(listOf(CouponProduct(1), CouponProduct(2)))
         }
     }

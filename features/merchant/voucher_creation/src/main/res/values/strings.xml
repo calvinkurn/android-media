@@ -391,6 +391,7 @@
     <string name="placeholder_quantity">%s buah</string>
     <string name="placeholder_percent">%s\%%</string>
     <string name="placeholder_registered_product">(%s/100)</string>
+    <string name="placeholder_coupon_period">%s, %s WIB - %s, %s WIB</string>
     <string name="cashback_percentage">Persentase cashback</string>
     <string name="error_message_discount_percentage_range">Diskon minimal 2%, maksimal 100%</string>
     <string name="error_message_discount_percentage_below_minimum">Min. 2%</string>
