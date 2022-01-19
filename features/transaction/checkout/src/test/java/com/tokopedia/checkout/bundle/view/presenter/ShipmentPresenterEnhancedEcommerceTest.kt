@@ -12,7 +12,6 @@ import com.tokopedia.checkout.bundle.view.ShipmentContract
 import com.tokopedia.checkout.bundle.view.ShipmentPresenter
 import com.tokopedia.checkout.bundle.view.converter.ShipmentDataConverter
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData
@@ -94,9 +93,6 @@ class ShipmentPresenterEnhancedEcommerceTest {
     @MockK(relaxed = true)
     private lateinit var getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase
 
-    @MockK(relaxed = true)
-    private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
-
     private var shipmentDataConverter = ShipmentDataConverter()
 
     private lateinit var presenter: ShipmentPresenter
@@ -113,7 +109,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
                 ratesStatesConverter, shippingCourierConverter,
                 shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
                 checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
-                validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
+                validateUsePromoRevampUseCase, gson, TestSchedulers)
         presenter.attachView(view)
     }
 
