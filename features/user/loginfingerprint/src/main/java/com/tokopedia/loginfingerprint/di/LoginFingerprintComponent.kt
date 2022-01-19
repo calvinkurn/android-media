@@ -1,6 +1,7 @@
 package com.tokopedia.loginfingerprint.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.loginfingerprint.view.activity.RegisterFingerprintActivity
 import com.tokopedia.loginfingerprint.view.activity.VerifyFingerprintActivity
 import com.tokopedia.loginfingerprint.view.fragment.SettingFingerprintFragment
 import com.tokopedia.sessioncommon.di.SessionCommonScope
@@ -19,4 +20,5 @@ import dagger.Component
 interface LoginFingerprintComponent {
     fun inject(fingerprintFragment: SettingFingerprintFragment)
     fun inject(verifyFingerprintActivity: VerifyFingerprintActivity)
+    fun inject(registerFingerprintActivity: RegisterFingerprintActivity)
 }

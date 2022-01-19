@@ -85,6 +85,9 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
+import com.tokopedia.loginfingerprint.view.dialog.FingerprintDialogHelper
+import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -476,6 +479,15 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             REQUEST_CODE_LINK_ACCOUNT -> {
                 viewModel.refreshPhoneNo()
             }
+            REQUEST_CODE_REGISTER_BIOMETRIC -> {
+                if(resultCode == Activity.RESULT_OK) {
+                    FingerprintDialogHelper.createBiometricOfferingSuccessDialog(requireActivity(), onPrimaryBtnClicked = {
+                        doLogout()
+                    })
+                } else {
+                    showDialogLogout()
+                }
+            }
         }
 
         handleProductCardOptionsActivityResult(requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
@@ -595,6 +607,42 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             updateSafeModeSwitch(it)
         })
 
+        viewModel.checkFingerprintStatus.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> onSuccessGetFingerprintStatus(it.data)
+                is Fail -> onFailedGetFingerprintStatus(it.throwable)
+            }
+            hideLoading()
+        })
+    }
+
+    fun onSuccessGetFingerprintStatus(checkFingerprintResponse: CheckFingerprintResult) {
+        if(checkFingerprintResponse.isRegistered) {
+            showDialogLogout()
+        } else {
+            if(activity != null) {
+                if(BiometricPromptHelper.isBiometricAvailable(requireActivity())) {
+                    FingerprintDialogHelper.createBiometricOfferingDialog(
+                        requireActivity(),
+                        onPrimaryBtnClicked = {
+                            val intent = RouteManager.getIntent(
+                                requireContext(),
+                                ApplinkConstInternalGlobal.REGISTER_BIOMETRIC
+                            )
+                            startActivityForResult(intent, REQUEST_CODE_REGISTER_BIOMETRIC)
+                        },
+                        onSecondaryBtnClicked = {
+                            showDialogLogout()
+                        })
+                } else {
+                    showDialogLogout()
+                }
+            }
+        }
+    }
+
+    fun onFailedGetFingerprintStatus(throwable: Throwable) {
+        showDialogLogout()
     }
 
     private fun onSuccessGetCentralizedAssetConfig(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
@@ -1065,7 +1113,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             AccountConstants.SettingCode.SETTING_OUT_ID -> {
                 homeAccountAnalytic.eventClickSetting(LOGOUT)
                 homeAccountAnalytic.eventClickLogout()
-                showDialogLogout()
+                viewModel.getFingerprintStatus()
             }
             AccountConstants.SettingCode.SETTING_QUALITY_SETTING -> {
                 RouteManager.route(context, ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING)
@@ -1464,6 +1512,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         private const val REQUEST_CODE_PROFILE_SETTING = 301
         private const val REQUEST_FROM_PDP = 394
         private const val REQUEST_CODE_LINK_ACCOUNT = 302
+        private const val REQUEST_CODE_REGISTER_BIOMETRIC = 303
 
         private const val START_TRANSITION_PIXEL = 200
         private const val TOOLBAR_TRANSITION_RANNGE_PIXEL = 50
