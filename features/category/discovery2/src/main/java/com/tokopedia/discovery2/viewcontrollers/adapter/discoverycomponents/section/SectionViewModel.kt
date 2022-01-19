@@ -26,17 +26,26 @@ class SectionViewModel(
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
+        components.shouldRefreshComponent = false
         fetchChildComponents()
     }
 
     private fun fetchChildComponents() {
         launchCatchError(block = {
-                syncData.value = sectionUseCase.getChildComponents(components.id, components.pageEndPoint)
-
+            val shouldRefresh =
+                sectionUseCase.getChildComponents(components.id, components.pageEndPoint)
+            if (shouldRefresh) {
+                syncData.value = true
+                components.shouldRefreshComponent = true
+            }
         }, onError = {
 //            Todo:: Error Handling
-            Log.e("TEST_TAG","onError - ${components.sectionId}")
+            Log.e("TEST_TAG", "onError - ${components.sectionId}")
         })
+    }
+
+    fun shouldShowShimmer(): Boolean {
+        return components.noOfPagesLoaded != 1 && !components.verticalProductFailState
     }
 
 }
