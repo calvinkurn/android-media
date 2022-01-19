@@ -17,6 +17,7 @@ import com.tokopedia.additional_check.view.TwoFactorViewModel
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import javax.inject.Inject
 
@@ -121,6 +122,7 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
 
             if (result.popupType == POPUP_TYPE_NONE &&
                 showInterruptData.accountLinkReminderData.showReminder &&
+                !isOtherPopupShowing(activity) &&
                 !GlobalConfig.isSellerApp()) {
                     gotoLinkAccountReminder(activity)
             } else if (result.popupType == AdditionalCheckConstants.POPUP_TYPE_PHONE ||
@@ -132,6 +134,17 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
         }
     }
 
+    private fun isOtherPopupShowing(mActivity: Activity?): Boolean {
+        return try {
+            if (mActivity != null) {
+                CMInAppManager.getInstance().externalInAppCallback?.isInAppViewVisible(mActivity) ?: true
+            } else {
+                true
+            }
+        } catch (e: Exception) {
+            true
+        }
+    }
     private fun gotoLinkAccountReminder(mActivity: Activity?) {
         if(whiteListedPageAccountLinkReminder.contains(mActivity?.javaClass?.simpleName)) {
             val intent = RouteManager.getIntent(mActivity, ApplinkConstInternalGlobal.LINK_ACC_REMINDER)
