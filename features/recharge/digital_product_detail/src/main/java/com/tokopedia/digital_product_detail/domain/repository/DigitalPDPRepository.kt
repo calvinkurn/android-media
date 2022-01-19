@@ -1,3 +1,6 @@
 package com.tokopedia.digital_product_detail.domain.repository
 
-interface DigitalPDPRepository: RechargeCatalogRepository
+interface DigitalPDPRepository :
+        RechargeCatalogRepository,
+        RechargeFavoriteNumberRepository,
+        RechargeCatalogPrefixSelectRepository

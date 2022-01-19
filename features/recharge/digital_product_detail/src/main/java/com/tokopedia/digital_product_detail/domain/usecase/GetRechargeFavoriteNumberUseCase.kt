@@ -1,0 +1,58 @@
+package com.tokopedia.digital_product_detail.domain.usecase
+
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberData
+import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
+import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
+import com.tokopedia.digital_product_detail.data.model.param.FavoriteNumberParam
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.usecase.RequestParams
+import javax.inject.Inject
+
+class GetRechargeFavoriteNumberUseCase @Inject constructor(
+    private val graphqlRepository: GraphqlRepository
+): GraphqlUseCase<TopupBillsSeamlessFavNumberData>(graphqlRepository) {
+    
+    private var params: RequestParams = RequestParams.EMPTY
+
+    override suspend fun executeOnBackground(): TopupBillsSeamlessFavNumberData {
+        val gqlRequest = GraphqlRequest(
+            CommonTopupBillsGqlQuery.rechargeFavoriteNumber,
+            TopupBillsSeamlessFavNumberData::class.java,
+            params.parameters
+        )
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest))
+
+        val error = gqlResponse.getError(TopupBillsSeamlessFavNumberData::class.java)
+        if (error == null || error.isEmpty()) {
+            return gqlResponse.getData(TopupBillsSeamlessFavNumberData::class.java)
+        } else {
+            throw MessageErrorException(error.mapNotNull { it.message }.toString())
+        }
+    }
+
+    fun setRequestParams(categoryIds: List<String>){
+        var paramSource = if (categoryIds.contains(TopupBillsViewModel.CATEGORY_ID_PASCABAYAR.toString()))
+            TopupBillsViewModel.FAVORITE_NUMBER_PARAM_SOURCE_POSTPAID else TopupBillsViewModel.FAVORITE_NUMBER_PARAM_SOURCE_PREPAID
+
+        params = RequestParams.create().apply {
+            putObject(FAVORITE_NUMBER_PARAM_FIELDS, FavoriteNumberParam(
+                source = paramSource,
+                categoryIds = categoryIds,
+                minLastTransaction = "",
+                minTotalTransaction = "",
+                servicePlanType = "",
+                subscription = false,
+                limit = FAVORITE_NUMBER_LIMIT
+            ))
+        }
+    }
+
+    companion object {
+        const val FAVORITE_NUMBER_PARAM_FIELDS = "fields"
+        const val FAVORITE_NUMBER_LIMIT = 10
+    }
+}
