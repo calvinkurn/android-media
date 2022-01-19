@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AlphaAnimation
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -12,13 +11,11 @@ import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
-import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.activity.DigitalPDPPulsaActivity
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
-import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPTelcoViewModel
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
@@ -29,6 +26,7 @@ import com.tokopedia.recharge_component.model.recommendation_card.Recommendation
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_component.widget.MCCMFlashSaleGridWidget
+import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -46,7 +44,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: DigitalPDPPulsaViewModel
-    lateinit var telcoViewModel: DigitalPDPTelcoViewModel
 
     private var binding by autoClearedNullable<FragmentDigitalPdpPulsaBinding>()
 
@@ -65,7 +62,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
         super.onCreate(savedInstanceState)
         val viewModelProvider = ViewModelProvider(this, viewModelFactory)
         viewModel = viewModelProvider.get(DigitalPDPPulsaViewModel::class.java)
-        telcoViewModel = viewModelProvider.get(DigitalPDPTelcoViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -85,7 +81,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
         getCatalogMenuDetail()
         getPrefixOperatorData()
         observeData()
-        viewModel.getDelayedResponse()
     }
 
     private fun renderProduct() {
@@ -117,29 +112,19 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
     }
 
     private fun observeData() {
-        viewModel.dummy.observe(viewLifecycleOwner, {
-            binding?.rechargePdpPulsaClientNumberWidget?.run {
-                setLoading(false)
-            }
-        })
-
         viewModel.favoriteNumberData.observe(viewLifecycleOwner, {
             when (it) {
-                is Success -> onSuccessGetFavoriteNumber(it.data)
-                is Fail -> onFailedGetFavoriteNumber()
+                is RechargeNetworkResult.Success -> onSuccessGetFavoriteNumber(it.data)
+                is RechargeNetworkResult.Fail -> onFailedGetFavoriteNumber()
+                is RechargeNetworkResult.Loading -> {}
             }
         })
 
-        telcoViewModel.catalogPrefixSelect.observe(viewLifecycleOwner, {
+        viewModel.catalogPrefixSelect.observe(viewLifecycleOwner, {
             when (it) {
-                is Success -> {
-                    this.operatorData = it.data
-                    renderProduct()
-                    // [Misael] replace to renderProductFromCustomData(...)
-                }
-                is Fail -> {
-                    // [Misael] onErrorPrefix
-                }
+                is RechargeNetworkResult.Success -> onSuccessGetPrefixOperator(it.data)
+                is RechargeNetworkResult.Fail -> onFailedGetPrefixOperator()
+                is RechargeNetworkResult.Loading -> {}
             }
         })
 
@@ -185,30 +170,41 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
     }
 
     private fun getPrefixOperatorData() {
-        telcoViewModel.getPrefixOperator(CommonTopupBillsGqlQuery.prefixSelectTelco, MENU_ID)
+        viewModel.getPrefixOperator(MENU_ID)
     }
 
     private fun getFavoriteNumber(
         categoryId: String = TelcoCategoryType.CATEGORY_PULSA.toString(),
         shouldRefreshInputNumber: Boolean = true
     ) {
-        viewModel.getFavoriteNumber()
+        viewModel.getFavoriteNumber(listOf(categoryId))
     }
 
     private fun onSuccessGetFavoriteNumber(favoriteNumber: List<TopupBillsSeamlessFavNumberItem>) {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
-            // -- start -- TODO: Add shouldRefreshinputNumber
-            setInputNumber(favoriteNumber[0].clientNumber)
-            setContactName(favoriteNumber[0].clientName)
-            // -- end --
-            setFilterChipShimmer(false, favoriteNumber.isEmpty())
-            setFavoriteNumber(favoriteNumber)
-            setAutoCompleteList(favoriteNumber)
-            dynamicSpacerHeightRes = R.dimen.dynamic_banner_space_extended
+            if (favoriteNumber.isNotEmpty()) {
+                // -- start -- TODO: Add shouldRefreshinputNumber
+                setInputNumber(favoriteNumber[0].clientNumber)
+                setContactName(favoriteNumber[0].clientName)
+                // -- end --
+                setFilterChipShimmer(false, favoriteNumber.isEmpty())
+                setFavoriteNumber(favoriteNumber)
+                setAutoCompleteList(favoriteNumber)
+                dynamicSpacerHeightRes = R.dimen.dynamic_banner_space_extended
+            }
         }
     }
 
+    private fun onSuccessGetPrefixOperator(operatorList: TelcoCatalogPrefixSelect) {
+        this.operatorData = operatorList
+        renderProduct()
+    }
+
     private fun onFailedGetFavoriteNumber() {
+
+    }
+
+    private fun onFailedGetPrefixOperator() {
 
     }
 

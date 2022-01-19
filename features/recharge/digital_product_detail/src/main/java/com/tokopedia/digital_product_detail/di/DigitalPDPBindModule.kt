@@ -1,9 +1,13 @@
 package com.tokopedia.digital_product_detail.di
 
 import com.tokopedia.digital_product_detail.data.repository.DigitalPDPRepositoryImpl
+import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogPrefixSelectRepositoryImpl
 import com.tokopedia.digital_product_detail.data.repository.RechargeCatalogRepositoryImpl
+import com.tokopedia.digital_product_detail.data.repository.RechargeFavoriteNumberRepositoryImpl
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogPrefixSelectRepository
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogRepository
+import com.tokopedia.digital_product_detail.domain.repository.RechargeFavoriteNumberRepository
 import dagger.Binds
 import dagger.Module
 
@@ -17,6 +21,14 @@ abstract class DigitalPDPBindModule {
     @Binds
     @DigitalPDPScope
     abstract fun bindRechargeCatalogRepository(repo: RechargeCatalogRepositoryImpl): RechargeCatalogRepository
+
+    @Binds
+    @DigitalPDPScope
+    abstract fun bindRechargeFavoriteNumberRepository(repo: RechargeFavoriteNumberRepositoryImpl): RechargeFavoriteNumberRepository
+
+    @Binds
+    @DigitalPDPScope
+    abstract fun bindRechargeCatalogPrefixSelectRepository(repo: RechargeCatalogPrefixSelectRepositoryImpl): RechargeCatalogPrefixSelectRepository
 
     @Binds
     @DigitalPDPScope
