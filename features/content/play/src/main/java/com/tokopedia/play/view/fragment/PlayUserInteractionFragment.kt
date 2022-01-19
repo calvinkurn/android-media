@@ -813,7 +813,8 @@ class PlayUserInteractionFragment @Inject constructor(
                 pinnedView?.hide()
                 immersiveBoxView.hide()
                 playButtonView.hide()
-                shareLinkView?.setIsShareable(false)
+                shareLinkView?.hide()
+                kebabMenuView?.hide()
 
                 videoControlViewOnStateChanged(isFreezeOrBanned = true)
 
@@ -1540,7 +1541,12 @@ class PlayUserInteractionFragment @Inject constructor(
         share: PlayShareUiState
     ) {
         toolbarView.setTitle(title.title)
-        shareLinkView?.setIsShareable(share.shouldShow)
+
+        if(share.shouldShow){
+            shareLinkView?.show()
+        }else{
+            shareLinkView?.hide()
+        }
     }
 
     private fun renderPartnerInfoView(prevState: PlayPartnerUiState?, state: PlayPartnerUiState) {

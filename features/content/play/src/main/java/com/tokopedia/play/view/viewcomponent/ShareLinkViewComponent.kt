@@ -25,10 +25,6 @@ class ShareLinkViewComponent(
         }
     }
 
-    fun setIsShareable(isShow: Boolean) {
-        if (isShow) ivShareLink.show() else ivShareLink.hide()
-    }
-
     interface Listener {
         fun onShareIconClick(view: ShareLinkViewComponent)
     }
