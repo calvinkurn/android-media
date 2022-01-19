@@ -54,10 +54,10 @@ class ShipmentPresenterGetShippingRatesTest {
     @MockK
     private lateinit var saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase
 
-    @MockK
+    @MockK(relaxed = true)
     private lateinit var getRatesUseCase: GetRatesUseCase
 
-    @MockK
+    @MockK(relaxed = true)
     private lateinit var getRatesApiUseCase: GetRatesApiUseCase
 
     @MockK
@@ -370,4 +370,15 @@ class ShipmentPresenterGetShippingRatesTest {
         assertNull(presenter.getShippingCourierViewModelsState(0))
     }
 
+    @Test
+    fun `WHEN presenter detached THEN all usecases is unsubscribed`() {
+        // When
+        presenter.detachView()
+
+        // Then
+        verify {
+            getRatesUseCase.unsubscribe()
+            getRatesApiUseCase.unsubscribe()
+        }
+    }
 }
