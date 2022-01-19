@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
+import com.tokopedia.topads.common.data.response.GroupEditInput
 import com.tokopedia.topads.common.view.adapter.viewpager.KeywordEditPagerAdapter
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.common.data.response.KeySharedModel
@@ -177,6 +178,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         var editedKeywordsPos: ArrayList<KeySharedModel>? = arrayListOf()
         val strategies: ArrayList<String> = arrayListOf()
         var bidSettings: ArrayList<TopAdsBidSettingsModel>? = arrayListOf()
+        var bidInfoDataItem : List<GroupEditInput.Group.TopadsSuggestionBidSetting>? = null
         var bidGroup = 0
 
         if (bidStrategy.isEmpty()) {
@@ -188,7 +190,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
                 positivekeywordsAll = bundle.getParcelableArrayList(POSITIVE_KEYWORD_ALL)
                 bidGroup = bundle.getInt(Constants.PRICE_BID)
                 bidSettings = bundle.getParcelableArrayList(BID_TYPE)
-
+                bidInfoDataItem = (fragments[0] as EditKeywordsFragment).getSuggestedBidSettings()
             }
             if (fragments?.get(1) is EditNegativeKeywordsFragment) {
                 val bundle: Bundle = (fragments[1] as EditNegativeKeywordsFragment).sendData()
@@ -210,7 +212,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         dataMap[STRATEGIES] = strategies
         dataMap[Constants.PRICE_BID] = bidGroup
         dataMap[BID_TYPE] = bidSettings
-
+        dataMap[ParamObject.SUGGESTION_BID_SETTINGS] = bidInfoDataItem
         return dataMap
     }
 

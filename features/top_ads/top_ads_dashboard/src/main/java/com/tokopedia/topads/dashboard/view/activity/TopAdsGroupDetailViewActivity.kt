@@ -29,6 +29,7 @@ import com.tokopedia.topads.common.data.internal.ParamObject.DAILY_BUDGET
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
 import com.tokopedia.topads.common.data.internal.ParamObject.ISWHITELISTEDUSER
 import com.tokopedia.topads.common.data.model.DataSuggestions
+import com.tokopedia.topads.common.data.response.GroupEditInput
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.TopAdsBidSettingsModel
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
@@ -81,6 +82,8 @@ import kotlin.math.abs
  * Created by Pika on 1/6/20.
  */
 
+private const val PRODUCT_SEARCH = "product_search"
+private const val PRODUCT_BROWSE = "product_browse"
 private const val CLICK_DATE_FILTER = "click - date filter"
 private const val GROUP_DETAIL_PAGE = "android.group_detail"
 private const val VIEW_GROUP_IKLAN = "view - detail group iklan"
@@ -298,52 +301,33 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             dataMap[NAME_EDIT] = true
             if (this.bidType == "browse") {
                 bidTypeData?.clear()
-                bidTypeData?.add(
-                    TopAdsBidSettingsModel(
-                        "product_browse",
-                        bid.toFloat()
-                    )
-                )
-                bidTypeData?.add(
-                        TopAdsBidSettingsModel(
-                            "product_search",
-                            searchBid
-                        )
-                        )
-
+                bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_BROWSE, bid.toFloat()))
+                bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_SEARCH, searchBid))
             } else {
                 bidTypeData?.clear()
-                bidTypeData?.add(
-                    TopAdsBidSettingsModel(
-                        "product_search",
-                        bid.toFloat()
-                    )
-                )
-                if(isWhiteListedUser) {
-                    bidTypeData?.add(
-                        TopAdsBidSettingsModel(
-                            "product_browse",
-                            rekommendedBid
-                        )
-                    )
+                bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_SEARCH, bid.toFloat()))
+                if (isWhiteListedUser) {
+                    bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_BROWSE, rekommendedBid))
                 } else {
-                    bidTypeData?.add(
-                        TopAdsBidSettingsModel(
-                            "product_browse",
-                            bid.toFloat()
-                        )
-                    )
+                    bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_BROWSE, bid.toFloat()))
                 }
             }
             dataMap[BID_TYPE] = bidTypeData
         } catch (e: NumberFormatException) {
         }
-        viewModel.topAdsCreated(dataMap, ::onSuccesGroupEdit, ::onErrorGroupEdit)
+
+        val settings = listOf(
+            GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_SEARCH, suggestedBid.toFloat()),
+            GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_BROWSE, suggestedBid.toFloat())
+        )
+        val dataKey = HashMap<String,Any?>()
+        dataKey[ParamObject.SUGGESTION_BID_SETTINGS] = settings
+        viewModel.topAdsCreated(dataMap, dataKey, ::onSuccesGroupEdit, ::onErrorGroupEdit)
     }
 
 
     private fun onSuccesGroupEdit() {
-        var successMessage = if (bidType == "search") {
+        val successMessage = if (bidType == "search") {
             getString(com.tokopedia.topads.common.R.string.bid_edit_search_successful)
         } else {
             getString(com.tokopedia.topads.common.R.string.bid_edit_browse_successful)
@@ -406,10 +390,10 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             autoBidStatus = ""
             per_click.visibility = View.VISIBLE
             data.bidSettings?.forEach {
-                if(it.bidType.equals("product_search")) {
+                if(it.bidType.equals(PRODUCT_SEARCH)) {
                     budgetPerClick.text = "Rp " + it.priceBid?.toInt()
                     searchBid = it.priceBid
-                } else if(it.bidType.equals("product_browse")) {
+                } else if(it.bidType.equals(PRODUCT_BROWSE)) {
                     budgetPerClick_rekomendasi.text = "Rp " + it.priceBid?.toInt()
                     rekommendedBid = it.priceBid
                 }

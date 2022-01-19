@@ -108,7 +108,7 @@ object ParamObject {
     const val NEGATIVE_KEYWORDS_ADDED = "negative_keywords_added"
     const val NEGATIVE_KEYWORDS_DELETED = "negative_keywords_deleted"
     const val STRATEGIES = "strategies"
-    const val BID_SETTINGS = "suggestionBidSettings"
+    const val SUGGESTION_BID_SETTINGS = "suggestionBidSettings"
     const val DAILY_BUDGET = "daily_budget"
     const val BID_TYPE = "bidSettings"
     const val NAME_EDIT = "isNameEdit"

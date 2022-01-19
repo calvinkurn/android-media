@@ -23,18 +23,14 @@ import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_TYPE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.EXACT_POSITIVE
+import com.tokopedia.topads.common.data.internal.ParamObject.GROUP
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
 import com.tokopedia.topads.common.data.model.DataSuggestions
-import com.tokopedia.topads.common.data.response.GetKeywordResponse
-import com.tokopedia.topads.common.data.response.KeywordData
-import com.tokopedia.topads.common.data.response.KeywordDataItem
-import com.tokopedia.topads.common.data.response.TopadsBidInfo
+import com.tokopedia.topads.common.data.response.*
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.common.view.sheet.TopAdsEditKeywordBidSheet
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.common.data.response.KeySharedModel
 import com.tokopedia.topads.edit.data.SharedViewModel
-import com.tokopedia.topads.common.data.response.TopAdsBidSettingsModel
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.BID_TYPE
@@ -77,7 +73,10 @@ import javax.inject.Inject
  * Created by Pika on 12/4/20.
  */
 
-
+private const val PRODUCT_AUTO_SEARCH = "product_auto_search"
+private const val PRODUCT_SEARCH = "product_search"
+private const val PRODUCT_AUTO_BROWSE = "product_auto_browse"
+private const val PRODUCT_BROWSE = "product_browse"
 private const val CLICK_TAMBAH_KATA_KUNCI = "click - tambah kata kunci"
 private const val CLICK_DAILY_BUDGET_BOX = "click - box biaya iklan pencarian"
 private const val CLICK_DAILY_BUDGET_REKOMENDASI_BOX = "click - box biaya iklan manual di rekomendasi"
@@ -256,7 +255,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private fun getBidForKeywords() {
         val suggestions = java.util.ArrayList<DataSuggestions>()
         val dummyId: MutableList<String> = mutableListOf()
-        suggestions.add(DataSuggestions("group", dummyId))
+        suggestions.add(DataSuggestions(GROUP, dummyId))
         viewModel.getBidInfo(suggestions, this::onSuccessSuggestion)
     }
 
@@ -264,6 +263,13 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         val suggestionsDefault = java.util.ArrayList<DataSuggestions>()
         suggestionsDefault.add(DataSuggestions("", listOf(groupId.toString())))
         viewModel.getBidInfoDefault(suggestionsDefault, this::onBidSuccessSuggestion)
+    }
+
+    fun getSuggestedBidSettings() : List<GroupEditInput.Group.TopadsSuggestionBidSetting>{
+        return listOf(
+            GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_SEARCH, suggestBidPerClick.toFloat()),
+            GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_BROWSE, suggestBidPerClick.toFloat())
+        )
     }
 
     private fun onBidSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
@@ -274,9 +280,9 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         }
         sharedViewModel.getBidSettings().observe(viewLifecycleOwner, {
             it.forEach {
-                if (it.bidType.equals("product_auto_search")) {
+                if (it.bidType.equals(PRODUCT_AUTO_SEARCH)) {
                     budgetInput.textFieldInput.setText(suggestBidPerClick)
-                } else if (it.bidType.equals("product_auto_browse")) {
+                } else if (it.bidType.equals(PRODUCT_AUTO_BROWSE)) {
                     budgetInputRekomendasi.textFieldInput.setText(suggestBidPerClick)
                 }
             }
@@ -663,11 +669,11 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
         sharedViewModel.getBidSettings().observe(viewLifecycleOwner, {
             it.forEach {
-                if (it.bidType.equals("product_search")) {
+                if (it.bidType.equals(PRODUCT_SEARCH)) {
                     budgetInput.textFieldInput.setText(
                         ( it.priceBid?.toInt()?:suggestBidPerClick).toString()
                     )
-                } else if(it.bidType.equals("product_browse")) {
+                } else if(it.bidType.equals(PRODUCT_BROWSE)) {
                             budgetInputRekomendasi.textFieldInput.setText(( it.priceBid?.toInt()?:suggestBidPerClick).toString())
                 }
             }
@@ -827,20 +833,14 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             }
         }
         bidTypeData?.clear()
-        bidTypeData?.add(TopAdsBidSettingsModel("product_search", getCurrentBid().toFloat()))
-        if(sharedViewModel?.getIsWhiteListedUser()) {
+        bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_SEARCH, getCurrentBid().toFloat()))
+        if(sharedViewModel.getIsWhiteListedUser()) {
             bidTypeData?.add(
-                TopAdsBidSettingsModel(
-                    "product_browse",
-                    getCurrentRekommendedBid().toFloat()
-                )
+                TopAdsBidSettingsModel(PRODUCT_BROWSE, getCurrentRekommendedBid().toFloat())
             )
         } else {
             bidTypeData?.add(
-                TopAdsBidSettingsModel(
-                    "product_browse",
-                    getCurrentBid().toFloat()
-                )
+                TopAdsBidSettingsModel(PRODUCT_BROWSE, getCurrentBid().toFloat())
             )
         }
         bundle.putParcelableArrayList(BID_TYPE, bidTypeData)
