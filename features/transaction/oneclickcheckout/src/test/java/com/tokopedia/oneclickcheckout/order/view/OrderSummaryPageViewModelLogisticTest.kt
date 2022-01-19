@@ -5,6 +5,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Error
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorServiceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
+import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureResponse
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
@@ -1744,14 +1745,14 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Eligible For Revamp Ana Success`() {
         // Given
-        val response = KeroAddrIsEligibleForAddressFeatureResponse()
+        val response = KeroAddrIsEligibleForAddressFeatureData()
         onCheckEligibility_thenReturn(response)
 
         // When
         orderSummaryPageViewModel.checkUserEligibilityForAnaRevamp()
 
         // Then
-        val expected = OrderEnableAddressFeature(response.data)
+        val expected = OrderEnableAddressFeature(response)
         assertEquals(OccState.Success(expected), orderSummaryPageViewModel.eligibleForAnaRevamp.value)
     }
 
@@ -1769,11 +1770,11 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         assertEquals(OccState.Failed(expected), orderSummaryPageViewModel.eligibleForAnaRevamp.value)
     }
 
-    private fun onCheckEligibility_thenReturn(keroAddrIsEligibleForAddressFeatureResponse: KeroAddrIsEligibleForAddressFeatureResponse) {
+    private fun onCheckEligibility_thenReturn(keroAddrIsEligibleForAddressFeatureResponse: KeroAddrIsEligibleForAddressFeatureData) {
         coEvery {
             eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
         } answers {
-            firstArg<(KeroAddrIsEligibleForAddressFeatureResponse)-> Unit>().invoke(keroAddrIsEligibleForAddressFeatureResponse)
+            firstArg<(KeroAddrIsEligibleForAddressFeatureData)-> Unit>().invoke(keroAddrIsEligibleForAddressFeatureResponse)
         }
     }
 

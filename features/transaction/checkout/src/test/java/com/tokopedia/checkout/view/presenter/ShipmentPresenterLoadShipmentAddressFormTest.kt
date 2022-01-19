@@ -398,7 +398,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         coEvery {
             eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
         } answers {
-            firstArg<(KeroAddrIsEligibleForAddressFeatureResponse)-> Unit>().invoke(KeroAddrIsEligibleForAddressFeatureResponse())
+            firstArg<(KeroAddrIsEligibleForAddressFeatureData)-> Unit>().invoke(KeroAddrIsEligibleForAddressFeatureData())
         }
 
         // When
