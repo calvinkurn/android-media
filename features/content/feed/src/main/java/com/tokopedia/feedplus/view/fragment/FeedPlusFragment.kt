@@ -3329,22 +3329,26 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun hideTopadsView(position: Int) {
-        if (recyclerView.isComputingLayout ) {
-
-            if (adapter.getlist().size > position && adapter.getlist()[position] is TopadsHeadLineV2Model) {
-                adapter.getlist().removeAt(position)
-                recyclerView.post {
-                    adapter.notifyItemRemoved(position)
+        recyclerView.isComputingLayout.let {
+            if (isAllowedNotify(it, position)) {
+                if (adapter.getlist().size > position && adapter.getlist()[position] is TopadsHeadLineV2Model) {
+                    adapter.getlist().removeAt(position)
+                    recyclerView.post {
+                        adapter.notifyItemRemoved(position)
+                    }
                 }
-            }
 
-            if (adapter.getlist().size > position && adapter.getlist()[position] is TopadsHeadlineUiModel) {
-                adapter.getlist().removeAt(position)
-                recyclerView.post {
-                    adapter.notifyItemRemoved(position)
+                if (adapter.getlist().size > position && adapter.getlist()[position] is TopadsHeadlineUiModel) {
+                    adapter.getlist().removeAt(position)
+                    recyclerView.post {
+                        adapter.notifyItemRemoved(position)
+                    }
                 }
             }
         }
+    }
+    private fun isAllowedNotify(isComputingLayout: Boolean, position: Int): Boolean {
+        return !isComputingLayout && position >= 0
     }
 
     private fun sendTopadsUrlClick(adClickUrl: String,id:String="",uri: String="",fullEcs: String?="") {

@@ -646,6 +646,13 @@
         <package android:name="xyz.duit.saku" />
         <package android:name="xyz.rupiah.sigap.pinjol" />
         <package android:name="zone.bytesreverser.xposeddeviceidmaskerpro" />
+        <package android:name="com.instagram.android"/>
+        <package android:name="com.facebook.katana"/>
+        <package android:name="com.whatsapp"/>
+        <package android:name="jp.naver.line.android"/>
+        <package android:name="com.twitter.android"/>
+        <package android:name="org.telegram.messenger"/>
+        <package android:name="com.google.android.gm"/>
     </queries>
     <application
         android:name=".ConsumerMainApplication"
@@ -722,6 +729,18 @@
         <meta-data
             android:name="asset_statements"
             android:resource="@string/asset_statements" />
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <!-- If you are using androidx.startup to initialize other components -->
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
 
         <provider
             android:name="androidx.core.content.FileProvider"

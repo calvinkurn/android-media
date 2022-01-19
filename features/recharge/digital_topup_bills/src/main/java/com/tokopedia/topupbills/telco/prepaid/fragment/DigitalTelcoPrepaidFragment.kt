@@ -89,6 +89,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private val favNumberList = mutableListOf<TopupBillsFavNumberItem>()
     private val seamlessFavNumberList = mutableListOf<TopupBillsSeamlessFavNumberItem>()
 
+    private var dynamicSpacerHeightRes = R.dimen.telco_dynamic_banner_space
+
     private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -179,8 +181,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private fun showDynamicSpacer() {
         dynamicSpacer.layoutParams.height =
-                context?.resources?.getDimensionPixelSize(R.dimen.telco_dynamic_banner_space)
-                        ?: DEFAULT_SPACE_HEIGHT
+            context?.resources?.getDimensionPixelSize(dynamicSpacerHeightRes)
+                ?: DEFAULT_SPACE_HEIGHT
+
         dynamicSpacer.requestLayout()
     }
 
@@ -744,6 +747,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 setAutoCompleteList(favNumbers)
                 setFavoriteNumber(favNumbers)
                 showOnBoarding()
+
+                dynamicSpacerHeightRes = R.dimen.telco_dynamic_banner_space_extended
             }
         }
     }
