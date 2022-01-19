@@ -39,6 +39,7 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
+import com.tokopedia.checkout.domain.model.checkout.Prompt;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;

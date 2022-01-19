@@ -1,9 +1,6 @@
 package com.tokopedia.checkout.domain.mapper
 
 import com.google.gson.Gson
-import com.tokopedia.checkout.bundle.data.model.response.checkout.PromptResponse
-import com.tokopedia.checkout.bundle.domain.model.checkout.Prompt
-import com.tokopedia.checkout.bundle.domain.model.checkout.PromptButton
 import com.tokopedia.checkout.data.model.response.checkout.*
 import com.tokopedia.checkout.domain.model.checkout.*
 import java.util.*
