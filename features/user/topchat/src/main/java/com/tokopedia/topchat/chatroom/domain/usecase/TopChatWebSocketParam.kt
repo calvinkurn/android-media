@@ -93,7 +93,7 @@ object TopChatWebSocketParam {
         val data = JsonObject()
         data.addProperty("message_id", msgId.toLongOrZero())
         data.addProperty("local_id", localId)
-        data.addProperty("message", product.productName)
+        data.addProperty("message", product.productUrl)
         data.addProperty("start_time", startTime)
         data.addProperty("to_uid", toUid)
         data.addProperty(
