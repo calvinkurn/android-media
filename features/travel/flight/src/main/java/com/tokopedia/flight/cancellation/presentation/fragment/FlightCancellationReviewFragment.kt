@@ -34,7 +34,7 @@ import com.tokopedia.flight.cancellation.presentation.bottomsheet.FlightCancella
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationWrapperModel
 import com.tokopedia.flight.cancellation.presentation.viewmodel.FlightCancellationReviewViewModel
-import com.tokopedia.flight.orderlist.util.FlightErrorUtil
+import com.tokopedia.flight.common.util.FlightErrorUtil
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -44,8 +44,9 @@ import javax.inject.Inject
 /**
  * @author by furqan on 21/07/2020
  */
-class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationModel, FlightCancellationReviewAdapterTypeFactory>(),
-        FlightCancellationAttachmentAdapterTypeFactory.AdapterInteractionListener {
+class FlightCancellationReviewFragment :
+    BaseListFragment<FlightCancellationModel, FlightCancellationReviewAdapterTypeFactory>(),
+    FlightCancellationAttachmentAdapterTypeFactory.AdapterInteractionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -59,14 +60,17 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
 
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            flightCancellationReviewViewModel = viewModelProvider.get(FlightCancellationReviewViewModel::class.java)
+            flightCancellationReviewViewModel =
+                viewModelProvider.get(FlightCancellationReviewViewModel::class.java)
 
             arguments?.let {
                 if (it.containsKey(FlightCancellationReviewActivity.EXTRA_INVOICE_ID))
-                    flightCancellationReviewViewModel.invoiceId = it.getString(FlightCancellationReviewActivity.EXTRA_INVOICE_ID)
+                    flightCancellationReviewViewModel.invoiceId =
+                        it.getString(FlightCancellationReviewActivity.EXTRA_INVOICE_ID)
                             ?: ""
                 if (it.containsKey(FlightCancellationReviewActivity.EXTRA_CANCEL_WRAPPER))
-                    flightCancellationReviewViewModel.cancellationWrapperModel = it.getParcelable(FlightCancellationReviewActivity.EXTRA_CANCEL_WRAPPER)
+                    flightCancellationReviewViewModel.cancellationWrapperModel =
+                        it.getParcelable(FlightCancellationReviewActivity.EXTRA_CANCEL_WRAPPER)
                             ?: FlightCancellationWrapperModel()
             }
 
@@ -74,8 +78,12 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_flight_cancellation_review, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? =
+        inflater.inflate(R.layout.fragment_flight_cancellation_review, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -88,7 +96,8 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
 
         val adapterTypeFactory = FlightCancellationAttachmentAdapterTypeFactory(this, false)
         attachmentAdapter = FlightCancellationAttachmentAdapter(adapterTypeFactory)
-        rv_attachments.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        rv_attachments.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         rv_attachments.setHasFixedSize(true)
         rv_attachments.isNestedScrollingEnabled = false
         rv_attachments.adapter = attachmentAdapter
@@ -99,18 +108,23 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        flightCancellationReviewViewModel.estimateRefundFinish.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    renderView()
-                    renderRefundableView(it.data)
+        flightCancellationReviewViewModel.estimateRefundFinish.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        renderView()
+                        renderRefundableView(it.data)
+                    }
+                    is Fail -> {
+                        val errorData = FlightErrorUtil.getErrorIdAndTitleFromFlightError(
+                            requireContext(),
+                            it.throwable
+                        )
+                        showErrorFetchEstimateRefund(errorData.first, errorData.second)
+                    }
                 }
-                is Fail -> {
-                    val errorData = FlightErrorUtil.getErrorIdAndTitleFromFlightError(requireContext(), it.throwable)
-                    showErrorFetchEstimateRefund(errorData.first, errorData.second)
-                }
-            }
-        })
+            })
 
         flightCancellationReviewViewModel.requestCancel.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -136,7 +150,7 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
     }
 
     override fun getAdapterTypeFactory(): FlightCancellationReviewAdapterTypeFactory =
-            FlightCancellationReviewAdapterTypeFactory()
+        FlightCancellationReviewAdapterTypeFactory()
 
     override fun getScreenName(): String = ""
 
@@ -170,7 +184,8 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
         renderList(cancellationModel.cancellationList)
 
         if (cancellationModel.cancellationReasonAndAttachmentModel.reason.isNotEmpty()) {
-            txt_cancellation_reason.text = cancellationModel.cancellationReasonAndAttachmentModel.reason
+            txt_cancellation_reason.text =
+                cancellationModel.cancellationReasonAndAttachmentModel.reason
             container_additional_reason.visibility = View.VISIBLE
         } else {
             container_additional_reason.visibility = View.GONE
@@ -184,7 +199,8 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
         }
 
         if (cancellationModel.cancellationReasonAndAttachmentModel.reason.isEmpty() ||
-                cancellationModel.cancellationReasonAndAttachmentModel.attachmentList.size == 0) {
+            cancellationModel.cancellationReasonAndAttachmentModel.attachmentList.size == 0
+        ) {
             container_additional_data.visibility = View.GONE
         }
 
@@ -207,15 +223,23 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
     }
 
     private fun descriptionText(): SpannableString {
-        val color = requireContext().resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G600)
-        val startIndex = getString(R.string.flight_cancellation_refund_description).indexOf(LEARN_TEXT)
+        val color =
+            requireContext().resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G600)
+        val startIndex =
+            getString(R.string.flight_cancellation_refund_description).indexOf(LEARN_TEXT)
         val stopIndex = getString(R.string.flight_cancellation_refund_description).length
-        val description = SpannableString(requireContext().getString(
-                R.string.flight_cancellation_refund_description))
+        val description = SpannableString(
+            requireContext().getString(
+                R.string.flight_cancellation_refund_description
+            )
+        )
         val clickableSpan: ClickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
                 val bottomSheet = FlightCancellationRefundBottomSheet()
-                bottomSheet.show(childFragmentManager, getString(R.string.flight_cancellation_refund_bottom_sheet_tag))
+                bottomSheet.show(
+                    childFragmentManager,
+                    getString(R.string.flight_cancellation_refund_bottom_sheet_tag)
+                )
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -230,8 +254,10 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
     }
 
     private fun navigateToTermsAndConditionsPage() {
-        startActivityForResult(FlightCancellationTermsAndConditionsActivity.createIntent(requireContext()),
-                REQUEST_CANCELLATION_TNC)
+        startActivityForResult(
+            FlightCancellationTermsAndConditionsActivity.createIntent(requireContext()),
+            REQUEST_CANCELLATION_TNC
+        )
     }
 
     private fun closeCancellationReviewPage() {
@@ -240,9 +266,10 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
     }
 
     private fun showErrorFetchEstimateRefund(errorId: Int, message: String) {
-        NetworkErrorHelper.showEmptyState(requireContext(),
-                requireView(),
-                message
+        NetworkErrorHelper.showEmptyState(
+            requireContext(),
+            requireView(),
+            message
         ) {
             if (errorId == ERROR_ID_NO_MORE_ADULT) {
                 val intent = Intent().also {
@@ -282,7 +309,8 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
         }
         estimationNotesAdapter.setData(estimationNotes)
 
-        rvEstimationNotes.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        rvEstimationNotes.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         rvEstimationNotes.setHasFixedSize(true)
         rvEstimationNotes.adapter = estimationNotesAdapter
         rvEstimationNotes.visibility = View.VISIBLE
@@ -303,10 +331,12 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
     }
 
     private fun showCancellationError(t: Throwable) {
-        Toaster.build(requireView(),
-                FlightErrorUtil.getErrorIdAndTitleFromFlightError(requireContext(), t).second,
-                Toaster.LENGTH_SHORT,
-                Toaster.TYPE_ERROR).show()
+        Toaster.build(
+            requireView(),
+            FlightErrorUtil.getErrorIdAndTitleFromFlightError(requireContext(), t).second,
+            Toaster.LENGTH_SHORT,
+            Toaster.TYPE_ERROR
+        ).show()
     }
 
     companion object {
@@ -319,14 +349,19 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
 
         private const val LEARN_TEXT = "Pelajari"
 
-        fun createInstance(invoiceId: String,
-                           cancellationWrapperModel: FlightCancellationWrapperModel)
+        fun createInstance(
+            invoiceId: String,
+            cancellationWrapperModel: FlightCancellationWrapperModel
+        )
                 : FlightCancellationReviewFragment =
-                FlightCancellationReviewFragment().also {
-                    it.arguments = Bundle().apply {
-                        putString(FlightCancellationReviewActivity.EXTRA_INVOICE_ID, invoiceId)
-                        putParcelable(FlightCancellationReviewActivity.EXTRA_CANCEL_WRAPPER, cancellationWrapperModel)
-                    }
+            FlightCancellationReviewFragment().also {
+                it.arguments = Bundle().apply {
+                    putString(FlightCancellationReviewActivity.EXTRA_INVOICE_ID, invoiceId)
+                    putParcelable(
+                        FlightCancellationReviewActivity.EXTRA_CANCEL_WRAPPER,
+                        cancellationWrapperModel
+                    )
                 }
+            }
     }
 }
