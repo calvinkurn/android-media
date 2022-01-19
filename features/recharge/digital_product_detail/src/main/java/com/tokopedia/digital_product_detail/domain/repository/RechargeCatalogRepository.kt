@@ -1,7 +1,7 @@
 package com.tokopedia.digital_product_detail.domain.repository
 
-import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
+import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
 
 interface RechargeCatalogRepository {
-    suspend fun getDenomList(menuId: Int, operator: String): DenomWidgetModel
+    suspend fun getDenomGridList(menuId: Int, operator: String): DenomMCCMModel
 }

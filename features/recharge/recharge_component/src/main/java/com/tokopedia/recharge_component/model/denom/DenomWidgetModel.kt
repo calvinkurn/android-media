@@ -3,8 +3,8 @@ package com.tokopedia.recharge_component.model.denom
 data class DenomWidgetModel(
    val mainTitle: String = "",
    val subTitle: String = "",
-   val textColor: String = "",
-   val listDenomData: List<DenomData> = emptyList()
+   val listDenomData: List<DenomData> = emptyList(),
+   val isFlashSale: Boolean = false
 )
 
 data class DenomData(

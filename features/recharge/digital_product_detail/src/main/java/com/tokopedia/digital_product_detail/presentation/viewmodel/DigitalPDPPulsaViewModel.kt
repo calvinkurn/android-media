@@ -5,23 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberData
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
-import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment
-import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPRepository
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -47,9 +37,13 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     val catalogPrefixSelect: LiveData<RechargeNetworkResult<TelcoCatalogPrefixSelect>>
         get() = _catalogPrefixSelect
 
-    private val _errorMessage = MutableLiveData<Result<String>>()
-    val errorMessage: LiveData<Result<String>>
-        get() = _errorMessage
+    private val _observableDenomData = MutableLiveData<RechargeNetworkResult<DenomWidgetModel>>()
+    val observableDenomData: LiveData<RechargeNetworkResult<DenomWidgetModel>>
+        get() = _observableDenomData
+
+    private val _observableMCCMData = MutableLiveData<RechargeNetworkResult<DenomWidgetModel>>()
+    val observableMCCMData: LiveData<RechargeNetworkResult<DenomWidgetModel>>
+        get() = _observableMCCMData
 
     fun getMenuDetail(menuId: Int, isLoadFromCloud: Boolean = false) {
         _menuDetailData.postValue(RechargeNetworkResult.Loading)
@@ -58,6 +52,17 @@ class DigitalPDPPulsaViewModel @Inject constructor(
             _menuDetailData.postValue(RechargeNetworkResult.Success(menuDetail))
         }) {
             _menuDetailData.postValue(RechargeNetworkResult.Fail(it))
+        }
+    }
+
+    fun getRechargeCatalogInput(menuId: Int, operator: String){
+        _observableDenomData.postValue(RechargeNetworkResult.Loading)
+        launchCatchError(block = {
+            val denomGrid = repo.getDenomGridList(menuId, operator)
+            _observableDenomData.postValue(RechargeNetworkResult.Success(denomGrid.denomWidgetModel))
+            _observableMCCMData.postValue(RechargeNetworkResult.Success(denomGrid.mccmFlashSaleModel))
+        }){
+            _observableDenomData.postValue(RechargeNetworkResult.Fail(it))
         }
     }
 
