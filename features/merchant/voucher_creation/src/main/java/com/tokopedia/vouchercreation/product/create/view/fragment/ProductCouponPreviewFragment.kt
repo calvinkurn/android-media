@@ -16,10 +16,7 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.extension.splitByThousand
 import com.tokopedia.vouchercreation.databinding.FragmentProductCouponPreviewBinding
-import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
-import com.tokopedia.vouchercreation.product.create.domain.entity.DiscountType
-import com.tokopedia.vouchercreation.product.create.domain.entity.MinimumPurchaseType
+import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.ProductCouponPreviewViewModel
 import javax.inject.Inject
 
@@ -44,7 +41,9 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     private var onNavigateToCouponInformationPage: () -> Unit = {}
     private var onNavigateToCouponSettingsPage: () -> Unit = {}
     private var onNavigateToProductListPage: () -> Unit = {}
-    private var couponSettingsData: Coupon? = null
+    private var couponSettings: CouponSettings? = null
+    private var couponInformation: CouponInformation? = null
+    private var couponProducts: List<CouponProduct>? = emptyList()
 
     private val CouponType.label: String
         get() {
@@ -68,7 +67,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         get() {
             return when (this) {
                 MinimumPurchaseType.NOMINAL -> getString(R.string.nominal)
-                MinimumPurchaseType.QUANTITY -> getString(R.string.quantity)
+                MinimumPurchaseType.QUANTITY -> getString(R.string.item)
                 MinimumPurchaseType.NOTHING -> getString(R.string.nothing)
                 else -> EMPTY_STRING
             }
@@ -122,16 +121,24 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         this.onNavigateToProductListPage = onNavigateToProductListPage
     }
 
-    fun setCouponSettingsData(couponSettingsData: Coupon) {
-        this.couponSettingsData = couponSettingsData
+    fun setCouponSettingsData(couponSettings: CouponSettings) {
+        this.couponSettings = couponSettings
+    }
+
+    fun setCouponProductsData(couponProducts : List<CouponProduct>) {
+        this.couponProducts = couponProducts
+    }
+
+    fun setCouponInformationData(couponInformation : CouponInformation) {
+        this.couponInformation =  couponInformation
     }
 
     override fun onResume() {
         super.onResume()
-        couponSettingsData?.let { coupon -> refreshCouponSettingsSection(coupon) }
+        couponSettings?.let { coupon -> refreshCouponSettingsSection(coupon) }
     }
 
-    private fun refreshCouponSettingsSection(coupon: Coupon) {
+    private fun refreshCouponSettingsSection(coupon: CouponSettings) {
         binding?.labelCouponSettingCompleteStatus?.setLabelType(Label.HIGHLIGHT_LIGHT_TEAL)
         binding?.labelCouponSettingCompleteStatus?.setLabel(getString(R.string.completed))
         binding?.tpgCouponType?.text = coupon.type.label

@@ -25,7 +25,7 @@ import com.tokopedia.vouchercreation.common.extension.digitsOnlyInt
 import com.tokopedia.vouchercreation.common.extension.splitByThousand
 import com.tokopedia.vouchercreation.common.textwatcher.NumberThousandSeparatorTextWatcher
 import com.tokopedia.vouchercreation.databinding.FragmentCouponSettingBinding
-import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
 import com.tokopedia.vouchercreation.product.create.domain.entity.DiscountType
 import com.tokopedia.vouchercreation.product.create.domain.entity.MinimumPurchaseType
@@ -55,7 +55,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
     private var selectedCouponType = CouponType.NONE
     private var selectedDiscountType = DiscountType.NONE
     private var selectedMinimumPurchaseType = MinimumPurchaseType.NONE
-    private var onCouponSaved : (Coupon) -> Unit = {}
+    private var onCouponSaved : (CouponSettings) -> Unit = {}
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -669,7 +669,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
         binding.groupPercentageDiscountType.gone()
     }
 
-    fun setOnCouponSaved(onCouponSaved : (Coupon) -> Unit) {
+    fun setOnCouponSaved(onCouponSaved : (CouponSettings) -> Unit) {
         this.onCouponSaved = onCouponSaved
     }
 }

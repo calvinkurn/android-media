@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.vouchercreation.common.utils.ResourceProvider
-import com.tokopedia.vouchercreation.product.create.domain.entity.Coupon
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
 import com.tokopedia.vouchercreation.product.create.domain.entity.DiscountType
 import com.tokopedia.vouchercreation.product.create.domain.entity.MinimumPurchaseType
@@ -29,8 +29,8 @@ class CouponSettingViewModel @Inject constructor(
     val maxExpenseEstimation: LiveData<Long>
         get() = _maxExpenseEstimation
 
-    private val _saveCoupon = SingleLiveEvent<Coupon>()
-    val saveCoupon: SingleLiveEvent<Coupon>
+    private val _saveCoupon = SingleLiveEvent<CouponSettings>()
+    val saveCoupon: SingleLiveEvent<CouponSettings>
         get() = _saveCoupon
 
 
@@ -264,7 +264,7 @@ class CouponSettingViewModel @Inject constructor(
             freeShippingMinimumPurchase
         }
 
-        _saveCoupon.value = Coupon(
+        _saveCoupon.value = CouponSettings(
             selectedCouponType,
             selectedDiscountType,
             selectedMinimumPurchaseType,

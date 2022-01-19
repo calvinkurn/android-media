@@ -372,6 +372,7 @@
 
     <string name="nominal">Nominal</string>
     <string name="quantity">Buah</string>
+    <string name="item">Barang</string>
     <string name="nothing">Tidak ada</string>
     <string name="shipping_cost_amount">Nominal gratis ongkir</string>
 

@@ -1,6 +1,6 @@
 package com.tokopedia.vouchercreation.product.create.domain.entity
 
-data class Coupon(
+data class CouponSettings(
     val type: CouponType,
     val discountType: DiscountType,
     val minimumPurchaseType: MinimumPurchaseType,
