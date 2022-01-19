@@ -10,16 +10,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import com.tokopedia.utils.time.DateFormatUtils
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.extension.splitByThousand
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
-import com.tokopedia.vouchercreation.common.utils.parseTo
 import com.tokopedia.vouchercreation.databinding.FragmentProductCouponPreviewBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.ProductCouponPreviewViewModel
@@ -159,7 +157,12 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         binding?.labelCouponInformationCompleteStatus?.setLabelType(Label.HIGHLIGHT_LIGHT_TEAL)
         binding?.labelCouponInformationCompleteStatus?.setLabel(getString(R.string.completed))
 
-        binding?.tpgCouponTarget?.text = coupon.target
+        val target = when (coupon.target) {
+            CouponInformation.Target.PUBLIC -> getString(R.string.mvc_public)
+            CouponInformation.Target.SPECIAL -> getString(R.string.mvc_special)
+        }
+
+        binding?.tpgCouponTarget?.text = target
         binding?.tpgCouponName?.text = coupon.name
         binding?.tpgCouponCode?.text = coupon.code
 

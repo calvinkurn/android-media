@@ -47,7 +47,7 @@ class CreateVoucherProductActivity : AppCompatActivity() {
             val startDate = Calendar.getInstance().apply { set(2022, 0, 17, 8, 30, 0) }
             val endDate = Calendar.getInstance().apply {  set(2022, 0, 17, 22, 0, 0) }
             val period = CouponInformation.Period(startDate.time, endDate.time)
-            couponPreviewFragment.setCouponInformationData(CouponInformation("Khusus", "Kupon Kopi Kenangan", "KOPKEN", period))
+            couponPreviewFragment.setCouponInformationData(CouponInformation(CouponInformation.Target.PUBLIC, "Kupon Kopi Kenangan", "KOPKEN", period))
 
             //TODO : Please replace with your real implementation of CouponProduct instance
             couponPreviewFragment.setCouponProductsData(listOf(CouponProduct(1), CouponProduct(2)))

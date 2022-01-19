@@ -5,8 +5,6 @@ import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.kotlin.extensions.convertToDate
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.common.consts.LocaleConstant
-import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.DATE_FORMAT
 import timber.log.Timber
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -30,7 +28,6 @@ object DateTimeUtils {
     const val EXTRA_WEEK = 7
     const val EXTRA_DAYS = 30
     const val MINUTE_INTERVAL = 30
-
 
     private const val DISPLAYED_DATE_FORMAT = "dd MMM yyyy"
     private const val RAW_DATE_FORMAT = "yyyy-MM-dd"
@@ -167,15 +164,6 @@ object DateTimeUtils {
         return ""
     }
 
-}
-fun Date.parseTo(desiredOutputFormat : String) : String {
-    return try {
-        val outputFormat = SimpleDateFormat(desiredOutputFormat, LocaleConstant.INDONESIA)
-        val output = outputFormat.format(this)
-        output
-    } catch (e: Exception) {
-        ""
-    }
 }
 
 fun String.convertUnsafeDateTime(): Date {
