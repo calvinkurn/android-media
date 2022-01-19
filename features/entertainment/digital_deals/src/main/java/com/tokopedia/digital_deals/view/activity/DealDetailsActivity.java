@@ -2,15 +2,17 @@ package com.tokopedia.digital_deals.view.activity;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import android.view.View;
+
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
-import com.tokopedia.digital_deals.view.fragment.SelectDealQuantityFragment;
+import com.tokopedia.digital_deals.view.fragment.RevampSelecDealsQuantityFragment;
 import com.tokopedia.digital_deals.view.fragment.TncBottomSheetFragment;
 import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
@@ -74,7 +76,7 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
     public void replaceFragment(DealsDetailsResponse dealDetail, int flag) {
         this.dealDetail = dealDetail;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(com.tokopedia.digital_deals.R.id.deals_home_parent_view, SelectDealQuantityFragment.createInstance());
+        transaction.add(com.tokopedia.digital_deals.R.id.deals_home_parent_view, RevampSelecDealsQuantityFragment.Companion.createInstance());
         transaction.addToBackStack(null);
         transaction.commit();
     }

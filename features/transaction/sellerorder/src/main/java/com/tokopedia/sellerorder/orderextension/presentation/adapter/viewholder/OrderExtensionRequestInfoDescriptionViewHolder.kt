@@ -27,7 +27,7 @@ class OrderExtensionRequestInfoDescriptionViewHolder(
     override fun bind(element: OrderExtensionRequestInfoUiModel.DescriptionUiModel?) {
         super.bind(element)
         element?.run {
-            setupDescription(description)
+            setupDescription(description.compose(binding?.root?.context))
             setupAlignment(alignment)
             setupFont(fontColor, typographyType)
         }
