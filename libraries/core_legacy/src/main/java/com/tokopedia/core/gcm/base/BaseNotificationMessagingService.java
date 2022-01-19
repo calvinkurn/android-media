@@ -11,7 +11,7 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.FCMTokenReceiver;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.IFCMTokenReceiver;
-//import com.tokopedia.core.gcm.di.DaggerFcmServiceComponent;
+import com.tokopedia.core.gcm.di.DaggerFcmServiceComponent;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 import com.tokopedia.fcmcommon.FirebaseMessagingManager;
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent;
@@ -40,22 +40,22 @@ import timber.log.Timber;
 
 public abstract class BaseNotificationMessagingService extends FirebaseMessagingService {
 
-//    @Inject FirebaseMessagingManager fcmManager;
-//    private UserSessionInterface userSession;
-//    private RemoteConfig remoteConfig;
+    @Inject FirebaseMessagingManager fcmManager;
+    private UserSessionInterface userSession;
+    private RemoteConfig remoteConfig;
 
     @Override
     public void onCreate() {
         super.onCreate();
-//        FcmComponent fcmComponent = DaggerFcmComponent.builder()
-//                .fcmModule(new FcmModule(getApplicationContext()))
-//                .build();
-//        DaggerFcmServiceComponent.builder()
-//                .fcmComponent(fcmComponent)
-//                .build()
-//                .inject(this);
+        FcmComponent fcmComponent = DaggerFcmComponent.builder()
+                .fcmModule(new FcmModule(getApplicationContext()))
+                .build();
+        DaggerFcmServiceComponent.builder()
+                .fcmComponent(fcmComponent)
+                .build()
+                .inject(this);
 
-//        remoteConfig = new FirebaseRemoteConfigImpl(getBaseContext());
+        remoteConfig = new FirebaseRemoteConfigImpl(getBaseContext());
     }
 
     public BaseNotificationMessagingService() {
@@ -64,7 +64,7 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
 
     private void initUseSession() {
         try {
-//            userSession = new UserSession(this);
+            userSession = new UserSession(this);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -84,23 +84,23 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
 
     @Override
     public void onNewToken(String newToken) {
-//        fcmManager.onNewToken(newToken);
-//        propagateIDtoServer(newToken);
-//        Hansel.setNewToken(this, newToken);
-//        updateApsFlyerToken(newToken);
-//        ((TkpdCoreRouter) this.getApplicationContext()).refreshFCMFromInstantIdService(newToken);
-//        try {
-//            String messageType = "Notification New Token - " + newToken + " | "
-//                    + userSession.getUserId() + " | " + userSession.getAccessToken() + " | "
-//                    + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
-//                    + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
-//                    + " | " + Build.TAGS;
-//            Map<String, String> messageMap = new HashMap<>();
-//            messageMap.put("type", messageType);
-//            ServerLogger.log(Priority.P2, "TOKEN_REFRESH", messageMap);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        fcmManager.onNewToken(newToken);
+        propagateIDtoServer(newToken);
+        Hansel.setNewToken(this, newToken);
+        updateApsFlyerToken(newToken);
+        ((TkpdCoreRouter) this.getApplicationContext()).refreshFCMFromInstantIdService(newToken);
+        try {
+            String messageType = "Notification New Token - " + newToken + " | "
+                    + userSession.getUserId() + " | " + userSession.getAccessToken() + " | "
+                    + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
+                    + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
+                    + " | " + Build.TAGS;
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", messageType);
+            ServerLogger.log(Priority.P2, "TOKEN_REFRESH", messageMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -135,7 +135,6 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
     }
 
     private Boolean isOldGcmUpdate() {
-        return false;
-//        return remoteConfig.getBoolean(FirebaseMessagingManager.ENABLE_OLD_GCM_UPDATE_SERVICE, false);
+        return remoteConfig.getBoolean(FirebaseMessagingManager.ENABLE_OLD_GCM_UPDATE_SERVICE, false);
     }
 }
