@@ -232,12 +232,8 @@ open class RecomWidgetViewModel @Inject constructor(
 
 
     private fun getQueryParamBasedOnChips(queryParams: String, annotationChip: AnnotationChip): String {
-        var newQueryParams = ""
-        if (queryParams.isNotEmpty()) {
-            newQueryParams = queryParams
-        }
+        var newQueryParams = queryParams
         if (annotationChip.recommendationFilterChip.isActivated) {
-            if (newQueryParams.isNotEmpty()) newQueryParams += "&"
             newQueryParams = annotationChip.recommendationFilterChip.value
         }
         return newQueryParams
