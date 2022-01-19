@@ -1,7 +1,7 @@
-package com.tokopedia.cart.bundle.view.di
+package com.tokopedia.cart.view.di
 
-import com.tokopedia.cart.bundle.view.CartListPresenter
-import com.tokopedia.cart.bundle.view.ICartListPresenter
+import com.tokopedia.cart.view.CartListPresenter
+import com.tokopedia.cart.view.ICartListPresenter
 import dagger.Binds
 import dagger.Module
 

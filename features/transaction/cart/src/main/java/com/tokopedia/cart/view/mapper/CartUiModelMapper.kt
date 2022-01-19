@@ -155,7 +155,7 @@ object CartUiModelMapper {
                     shipCode = shipment.shipCode,
                     shipLogo = shipment.shipLogo,
                     shipProds = shipment.shipProds.map {
-                        ShipProd(
+                        com.tokopedia.logisticcart.shipping.model.ShipProd(
                                 shipProdId = it.shipProdId,
                                 shipProdName = it.shipProdName,
                                 shipGroupName = it.shipGroupName,

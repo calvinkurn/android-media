@@ -1,6 +1,8 @@
 package com.tokopedia.cart.view.uimodel
 
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopTypeInfo
+import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 import java.util.*
 
 data class CartShopHolderData(
