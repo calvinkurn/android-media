@@ -15,7 +15,7 @@ class RechargeCatalogRepositoryImpl @Inject constructor(
 
     override suspend fun getDenomGridList(menuId: Int, operator: String) = withContext(dispatchers.io) {
         val catalog = getRechargeCatalogUseCase.apply {
-            params = GetRechargeCatalogUseCase.createProductListParams(menuId, operator)
+            createProductListParams(menuId, operator)
         }.executeOnBackground()
 
         return@withContext mapper.mapCatalogDenom(catalog.response)

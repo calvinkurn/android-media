@@ -26,7 +26,6 @@ import com.tokopedia.recharge_component.model.recommendation_card.Recommendation
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_component.widget.MCCMFlashSaleGridWidget
-import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -101,7 +100,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
                     rechargePdpPulsaClientNumberWidget.run {
                         showOperatorIcon(selectedOperator.operator.attributes.imageUrl)
                     }
-                    getCatalogProductInput("17")
+                    getCatalogProductInput(selectedOperator.key)
                     showRecommendation()
                     showTicker()
                 }
@@ -151,7 +150,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
         viewModel.observableMCCMData.observe(viewLifecycleOwner, { mccmData ->
             when (mccmData) {
                 is RechargeNetworkResult.Success -> {
-                    showMCCM(mccmData.data)
+                    onSuccessMCCM(mccmData.data)
                 }
             }
         })
@@ -314,9 +313,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
         }
     }
 
-    private fun showMCCM(denomGrid: DenomWidgetModel) {
+    private fun onSuccessMCCM(denomGrid: DenomWidgetModel) {
         binding?.let {
-            it.rechargePdpPulsaPromoWidget.renderMCCMGrid(this, denomGrid)
+            it.rechargePdpPulsaPromoWidget.renderMCCMGrid(this, denomGrid, getString(com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
     }
 

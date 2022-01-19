@@ -30,14 +30,14 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
     private val widgetRechargeMCCMFlashSaleGridWidget = WidgetRechargeMccmGridBinding.inflate(
         LayoutInflater.from(context), this, true)
 
-    fun renderMCCMGrid(denomGridListener: RechargeDenomGridListener, denomData: DenomWidgetModel){
+    fun renderMCCMGrid(denomGridListener: RechargeDenomGridListener, denomData: DenomWidgetModel, textColor: String){
         with(widgetRechargeMCCMFlashSaleGridWidget){
             if (!denomData.listDenomData.isNullOrEmpty()) {
                 root.show()
                 headerMccmGrid.setChannel(
                     DenomMCCMFlashSaleMapper.getChannelMCCM(
                         denomData.mainTitle,
-                        denomData.textColor
+                        textColor
                     ), object : HeaderListener {
                         override fun onChannelExpired(channelModel: ChannelModel) {
 
@@ -52,7 +52,7 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
         }
     }
 
-    fun renderFlashSaleGrid(denomGridListener: RechargeDenomGridListener, denomData: DenomWidgetModel){
+    fun renderFlashSaleGrid(denomGridListener: RechargeDenomGridListener, denomData: DenomWidgetModel, textColor: String){
         with(widgetRechargeMCCMFlashSaleGridWidget){
             if (!denomData.listDenomData.isNullOrEmpty()) {
                 root.show()
@@ -60,7 +60,7 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
                     DenomMCCMFlashSaleMapper.getChannelFlashSale(
                         denomData.mainTitle,
                         denomData.subTitle,
-                        denomData.textColor
+                        textColor
                     ), object : HeaderListener {
                         override fun onChannelExpired(channelModel: ChannelModel) {
 

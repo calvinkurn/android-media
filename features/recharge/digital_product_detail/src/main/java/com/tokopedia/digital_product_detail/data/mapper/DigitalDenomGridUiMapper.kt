@@ -39,7 +39,6 @@ class DigitalDenomMCCMGridUiMapper @Inject constructor() {
 
         val mccmWidget =  DenomWidgetModel(
             mainTitle = catalogData.product.text,
-            textColor = "#FFFFFF", //TODO CHANGE to UnifyColor
             listDenomData = if (!productsDenom.isNullOrEmpty()){ //TODO Change to MCCM Data
                 productsDenom.map {
                     DenomData(

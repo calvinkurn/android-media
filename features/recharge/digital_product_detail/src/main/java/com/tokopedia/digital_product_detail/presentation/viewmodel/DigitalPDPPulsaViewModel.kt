@@ -8,17 +8,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPRepository
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment
-import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
-import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPRepository
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
-import com.tokopedia.recharge_component.result.RechargeNetworkResult
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -54,10 +46,10 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     private val _observableMCCMData = MutableLiveData<RechargeNetworkResult<DenomWidgetModel>>()
 
     fun setInitalWidget(){
-        _observableDenomData.postValue(RechargeNetworkResult.Loading)
     }
 
     fun getRechargeCatalogInput(menuId: Int, operator: String){
+        _observableDenomData.postValue(RechargeNetworkResult.Loading)
         launchCatchError(block = {
             val denomGrid = repo.getDenomGridList(menuId, operator)
             _observableDenomData.postValue(RechargeNetworkResult.Success(denomGrid.denomWidgetModel))
