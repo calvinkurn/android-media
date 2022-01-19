@@ -197,7 +197,7 @@
                   "benefit_amount": 0,
                   "is_recommended": false,
                   "is_selected": false,
-                  "is_attempted": false,
+                  "is_attempted": true,
                   "clashing_infos": [
                     {
                       "code": "AN12WDVN3Y",
@@ -261,11 +261,6 @@
                       "type": "promo_info",
                       "title": "Khusus pengiriman <b>Go-Send Instant</b>",
                       "icon": "COURIER"
-                    },
-                    {
-                      "type": "promo_validity",
-                      "title": "Berakhir 7 hari lagi!",
-                      "icon": "CLOCK"
                     }
                   ]
                 },

@@ -345,20 +345,37 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
                 } else {
                     iconTimeValidity.gone()
                 }
-                textTimeValidity.text = HtmlLinkHelper(itemView.context, timeValidityInfo.title).spannedString
+                if (timeValidityInfo.title.isNotBlank()) {
+                    textTimeValidity.text = HtmlLinkHelper(itemView.context, timeValidityInfo.title).spannedString
+                    textTimeValidity.show()
+                } else {
+                    textTimeValidity.gone()
+                }
+            } else {
+                iconTimeValidity.gone()
+                textTimeValidity.gone()
+            }
+
+            renderPromoDetailButton(viewBinding, element, timeValidityInfo)
+        }
+    }
+
+    private fun renderPromoDetailButton(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
+                                        element: PromoListItemUiModel, timeValidityInfo: PromoInfo?) {
+        with(viewBinding) {
+            if (!element.uiState.isAttempted) {
                 buttonPromoDetail.setOnClickListener {
                     listener.onClickPromoItemDetail(element)
                 }
-
                 val buttonPromoDetailLayoutParam = buttonPromoDetail.layoutParams as ViewGroup.MarginLayoutParams
-                if (timeValidityInfo.title.isNotBlank() || iconTimeValidity.visibility == View.VISIBLE) {
+                if (timeValidityInfo?.title?.isNotBlank() == true || iconTimeValidity.visibility == View.VISIBLE) {
                     buttonPromoDetailLayoutParam.leftMargin = itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_4).toInt()
                 } else {
                     buttonPromoDetailLayoutParam.leftMargin = itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_12).toInt()
                 }
-                containerTimeValidity.show()
+                buttonPromoDetail.show()
             } else {
-                containerTimeValidity.gone()
+                buttonPromoDetail.gone()
             }
         }
     }
