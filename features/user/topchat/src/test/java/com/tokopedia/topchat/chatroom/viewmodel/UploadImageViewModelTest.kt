@@ -31,6 +31,12 @@ class UploadImageViewModelTest: BaseTopChatViewModelTest() {
         mockkStatic(DeviceInfo::getModelName)
     }
 
+    private fun disableUploadByServiceByError() {
+        every {
+            remoteConfig.getBoolean(TopChatViewModel.ENABLE_UPLOAD_IMAGE_SERVICE)
+        } throws expectedThrowable
+    }
+
     @Test
     fun should_upload_image_through_ws_when_success_uploadpedia() {
         // Given
@@ -56,7 +62,7 @@ class UploadImageViewModelTest: BaseTopChatViewModelTest() {
     fun should_update_snackbar_value_if_error_uploadpedia_through_ws() {
         // Given
         val error = IllegalStateException()
-        disableUploadByService()
+        disableUploadByServiceByError()
         every { uploadImageUseCase.upload(imageUpload, any(), captureLambda()) } answers {
             val onError = lambda<(Throwable, ImageUploadUiModel) -> Unit>()
             onError.invoke(error, imageUpload)

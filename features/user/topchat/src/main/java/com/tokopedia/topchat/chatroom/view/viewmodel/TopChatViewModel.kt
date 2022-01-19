@@ -264,7 +264,6 @@ class TopChatViewModel @Inject constructor(
     val onGoingStockUpdate: ArrayMap<String, UpdateProductStockResult> = ArrayMap()
     private var userLocationInfo = LocalCacheModel()
     private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
-    private val compressImageSubscription = CompositeSubscription()
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
@@ -1030,6 +1029,7 @@ class TopChatViewModel @Inject constructor(
     fun clearAttachmentPreview() {
         attachmentsPreview.clear()
     }
+
     fun initAttachmentPreview() {
         _showableAttachmentPreviews.value = attachmentsPreview
     }
@@ -1060,7 +1060,7 @@ class TopChatViewModel @Inject constructor(
             remoteConfig.getBoolean(
                 ENABLE_UPLOAD_IMAGE_SERVICE, false
             ) && !isProblematicDevice()
-        } catch (ex: Exception) {
+        } catch (ex: Throwable) {
             false
         }
     }
@@ -1099,11 +1099,6 @@ class TopChatViewModel @Inject constructor(
         viewModelScope.launch(dispatcher.main) {
             liveData.value = value
         }
-    }
-
-    override fun onCleared() {
-        compressImageSubscription.unsubscribe()
-        super.onCleared()
     }
 
     private fun showErrorSnackbar(@StringRes stringId: Int) {

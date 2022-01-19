@@ -100,6 +100,28 @@ class ChatTemplateViewModelTest: BaseTopChatViewModelTest() {
     }
 
     @Test
+    fun should_get_template_list_when_success_get_template_but_empty() {
+        //Given
+        val expectedResponse = GetTemplateUiModel().also {
+            it.isSuccess = true
+            it.isEnabled = true
+            it.listTemplate = null
+        }
+        coEvery {
+            getTemplateChatRoomUseCase.getTemplateChat(any())
+        } returns expectedResponse
+
+        //When
+        viewModel.getTemplate(false)
+
+        //Then
+        Assert.assertEquals(
+            null,
+            (viewModel.templateChat.value as Success).data.firstOrNull()
+        )
+    }
+
+    @Test
     fun should_get_error_when_fail_to_get_template() {
         //Given
         coEvery {

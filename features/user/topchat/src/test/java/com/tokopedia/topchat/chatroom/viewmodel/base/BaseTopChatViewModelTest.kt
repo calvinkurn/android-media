@@ -182,7 +182,8 @@ abstract class BaseTopChatViewModelTest {
             topChatRoomWebSocketMessageMapper,
             payloadGenerator,
             uploadImageUseCase,
-            compressImageUseCase
+            compressImageUseCase,
+            getTemplateChatRoomUseCase
         )
     }
 
