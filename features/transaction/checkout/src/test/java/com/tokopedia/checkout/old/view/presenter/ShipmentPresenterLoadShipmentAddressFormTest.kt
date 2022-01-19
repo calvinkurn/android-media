@@ -14,7 +14,7 @@ import com.tokopedia.checkout.old.view.converter.ShipmentDataConverter
 import com.tokopedia.checkout.old.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.old.view.uimodel.ShipmentButtonPaymentModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureResponse
+import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeature
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
@@ -382,7 +382,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         coEvery {
             eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
         } answers {
-            firstArg<(KeroAddrIsEligibleForAddressFeatureResponse)-> Unit>().invoke(KeroAddrIsEligibleForAddressFeatureResponse())
+            firstArg<(KeroAddrIsEligibleForAddressFeature)-> Unit>().invoke(KeroAddrIsEligibleForAddressFeature())
         }
 
         // When
