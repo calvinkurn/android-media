@@ -31,14 +31,23 @@ class CreateVoucherProductActivity : AppCompatActivity() {
 
     private fun setupViews() {
         couponPreviewFragment.setOnNavigateToCouponInformationPageListener {
-            //TODO : Replace with your fragment
+            //TODO : @Faisal Replace with your coupon information fragment
         }
         couponPreviewFragment.setOnNavigateToCouponSettingsPageListener {
             replaceFragment(couponSettingFragment, TAG_FRAGMENT_COUPON_SETTINGS)
         }
         couponPreviewFragment.setOnNavigateToProductListPageListener {
-            //TODO : Replace with your fragment
+            //TODO : @Deyo Replace with your product list fragment
         }
+
+       /* couponInformationFragment.setOnCouponSaved { coupon ->
+            popFragment()
+
+            //TODO : @Faisal please map your coupon information data to CouponInformation model
+
+            couponPreviewFragment.setCouponInformationData(couponInformation)
+        }*/
+
         couponSettingFragment.setOnCouponSaved { coupon ->
             popFragment()
             couponPreviewFragment.setCouponSettingsData(coupon)
@@ -52,6 +61,13 @@ class CreateVoucherProductActivity : AppCompatActivity() {
             //TODO : Please replace with your real implementation of CouponProduct instance
             couponPreviewFragment.setCouponProductsData(listOf(CouponProduct(1), CouponProduct(2)))
         }
+
+        /*couponInformationFragment.setOnCouponSaved { products ->
+            popFragment()
+
+            //TODO : @Deyo please map your products data to List<CouponProduct>
+            //couponPreviewFragment.setCouponProductsData(products)
+        }*/
     }
 
 

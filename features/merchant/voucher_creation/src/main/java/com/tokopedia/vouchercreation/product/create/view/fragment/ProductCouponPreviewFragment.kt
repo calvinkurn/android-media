@@ -32,9 +32,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         private const val ZERO: Long = 0
 
         fun newInstance(): ProductCouponPreviewFragment {
-            val args = Bundle()
             val fragment = ProductCouponPreviewFragment()
-            fragment.arguments = args
             return fragment
         }
 
