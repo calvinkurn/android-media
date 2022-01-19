@@ -22,12 +22,11 @@ object ProductArMapper {
                                 userId: String): AddToCartRequestParams {
         return AddToCartRequestParams().apply {
             productId = productAr?.productID.toLongOrZero()
-            quantity = 1 //todo
+            quantity = productAr?.getFinalMinOrder() ?: 1
             notes = ""
             attribution = ""
             listTracker = ""
             productName = productAr?.name ?: ""
-            category = "" //todo
             price = productAr?.getFinalPrice().toString()
             this.shopId = shopId.toIntOrZero()
             this.userId = userId

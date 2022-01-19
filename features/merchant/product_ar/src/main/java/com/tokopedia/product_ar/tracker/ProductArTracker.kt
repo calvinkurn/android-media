@@ -1,6 +1,7 @@
 package com.tokopedia.product_ar.tracker
 
 import com.tokopedia.product.detail.common.ProductTrackingConstant
+import com.tokopedia.product_ar.model.ArMetaData
 import com.tokopedia.product_ar.model.ProductAr
 import com.tokopedia.track.TrackApp
 
@@ -93,8 +94,7 @@ object ProductArTracker {
 
     fun successAtc(arData: ProductAr?,
                    shopId: String,
-                   shopName: String,
-                   shopType: String,
+                   arMetaData: ArMetaData,
                    userId: String,
                    cartId: String) {
         val productId = arData?.productID ?: ""
@@ -112,9 +112,9 @@ object ProductArTracker {
                 "productId" to productId,
                 "userId" to userId,
                 "items" to listOf(mapOf(
-                        "category_id" to "category id",
+                        "category_id" to arMetaData.categoryID,
                         "dimension45" to cartId,
-                        "item_brand" to shopName,
+                        "item_brand" to arMetaData.shopName,
                         "item_category" to " name / level2 name / level3 name / child_cat_id",
                         "item_id" to productId,
                         "item_name" to productName,
@@ -122,8 +122,8 @@ object ProductArTracker {
                         "price" to price,
                         "quantity" to stock,
                         "shop_id" to shopId,
-                        "shop_name" to shopName,
-                        "shop_type" to shopType
+                        "shop_name" to arMetaData.shopName,
+                        "shop_type" to arMetaData.shopType
                 )
                 )
         )

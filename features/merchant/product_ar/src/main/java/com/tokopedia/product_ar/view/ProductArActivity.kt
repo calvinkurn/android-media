@@ -3,6 +3,7 @@ package com.tokopedia.product_ar.view
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -97,7 +98,11 @@ class ProductArActivity : BaseSimpleActivity(), HasComponent<ProductArComponent>
     private fun setupEngine() {
         mMakeupEngine = MFEMakeupEngine(this, MFEMakeupEngine.Region.US)
         mMakeupEngine?.setMakeupRenderingParameters(MFEMakeupRenderingParameters(false));
-        mMakeupEngine?.loadResources(this, null)
+        mMakeupEngine?.loadResources(this, object : MFEMakeupEngine.MFEMakeupEngineLoadResourcesCallback {
+            override fun onMFEMakeupFinishedLoadResources() {
+                Log.e("asd","masuk")
+            }
+        })
     }
 
     override fun getComponent(): ProductArComponent {

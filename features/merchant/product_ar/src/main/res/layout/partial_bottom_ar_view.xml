@@ -46,10 +46,8 @@
             app:layout_constraintTop_toTopOf="@+id/btn_atc_ar"
             android:layout_marginEnd="8dp"
             app:typographyType="small"
-            android:maxLines="2"
-            android:ellipsize="end"
             android:visibility="gone"
-            tools:visibility="gone"
+            tools:visibility="visible"
             tools:text="Barang ini sedang tidak dijual untuk sementara waktu. " />
 
         <com.tokopedia.unifyprinciples.Typography

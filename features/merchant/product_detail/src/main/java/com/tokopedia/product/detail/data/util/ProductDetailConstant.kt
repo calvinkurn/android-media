@@ -4,6 +4,7 @@ object ProductDetailConstant {
     const val ENABLE_VIDEO_PDP = "app_enable_video_pdp"
 
     const val PARAM_PRODUCT_ID = "product_id"
+    const val PARAM_SHOP_ID = "shopId"
 
     const val PARAM_DIRECTED_FROM_MANAGE_OR_PDP = "directed_from_manage_or_pdp"
 

@@ -41,6 +41,7 @@ import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.databinding.FragmentProductArBinding
+import com.tokopedia.product_ar.model.ArMetaData
 import com.tokopedia.product_ar.model.ProductAr
 import com.tokopedia.product_ar.model.state.AnimatedTextIconClickMode
 import com.tokopedia.product_ar.model.state.ArGlobalErrorMode
@@ -316,8 +317,8 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
                         ProductArTracker.successAtc(
                                 arData = getSelectedProductData(),
                                 shopId = data.data.data.shopId.toString(),
-                                shopName = "",
-                                shopType = "",
+                                arMetaData = viewModel?.getProductArUiModel()?.metaData
+                                        ?: ArMetaData(),
                                 userId = viewModel?.userSessionInterface?.userId ?: "",
                                 cartId = data.data.data.cartId
                         )

@@ -22,6 +22,12 @@ class GetProductArUseCase @Inject constructor(graphqlRepository: GraphqlReposito
             query pdpGetARData(${'$'}productID : String, ${'$'}shopID : String,  ${'$'}userLocation: pdpUserLocation) {
                   pdpGetARData(productID: ${'$'}productID, shopID: ${'$'}shopID,  userLocation: ${'$'}userLocation) {
                     provider
+                    metadata {
+                      shopName
+                      categoryID
+                      shopType
+                      categoryName
+                    }
                     options {
                       psku
                       name
@@ -29,6 +35,7 @@ class GetProductArUseCase @Inject constructor(graphqlRepository: GraphqlReposito
                       type
                       providerData
                       price
+                      minOrder
                       campaignInfo {
                         isActive
                         campaignID
@@ -94,7 +101,8 @@ class GetProductArUseCase @Inject constructor(graphqlRepository: GraphqlReposito
                             it.productID
                         }, {
                     it.copy(providerDataCompiled = convertToObject(it.providerData))
-                })
+                }),
+                metaData = response.data.metaData
         )
     }
 

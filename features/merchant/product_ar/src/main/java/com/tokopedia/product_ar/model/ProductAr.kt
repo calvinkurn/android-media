@@ -42,9 +42,16 @@ data class ProductAr(
         @SerializedName("unavailableCopy")
         @Expose
         val unavailableCopy: String = "",
+        @SerializedName("minOrder")
+        @Expose
+        val minOrder: Int = 0,
         @Transient
         val providerDataCompiled: ModifaceProvider? = null
 ) {
+    fun getFinalMinOrder(): Int {
+        return if (campaignInfo.isActive == true) campaignInfo.minOrder ?: 0 else minOrder
+    }
+
     fun getFinalPrice(): Double {
         return if (campaignInfo.isActive == true) campaignInfo.discountedPrice ?: 0.0 else price
     }

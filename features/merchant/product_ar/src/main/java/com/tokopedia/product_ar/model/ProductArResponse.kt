@@ -19,5 +19,23 @@ data class PdpGetARData(
         val productArs: List<ProductAr> = listOf(),
         @SerializedName("provider")
         @Expose
-        val provider: String = ""
+        val provider: String = "",
+        @SerializedName("metadata")
+        @Expose
+        val metaData: ArMetaData = ArMetaData()
+)
+
+data class ArMetaData(
+        @SerializedName("shopName")
+        @Expose
+        val shopName: String = "",
+        @SerializedName("categoryID")
+        @Expose
+        val categoryID: String = "",
+        @SerializedName("shopType")
+        @Expose
+        val shopType: String = "",
+        @SerializedName("categoryName")
+        @Expose
+        val categoryName: String = ""
 )
