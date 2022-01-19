@@ -4,6 +4,7 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.view.View
 import android.view.ViewTreeObserver
+import android.webkit.URLUtil
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.util.ContentNetworkListener
@@ -71,6 +72,7 @@ class VideoViewHolder(private val listener: VideoViewListener) :
     private fun playVideo(url: String) {
         if (!isPlaying) {
             itemView.frame_video.visibility = View.INVISIBLE
+            if (URLUtil.isValidUrl(url))
             itemView.layout_video.setVideoURI(Uri.parse(url))
             itemView.layout_video.setOnPreparedListener(object : MediaPlayer.OnPreparedListener {
                 override fun onPrepared(mp: MediaPlayer) {
