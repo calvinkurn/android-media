@@ -24,6 +24,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
@@ -187,27 +188,6 @@ class TestRecomWidgetViewModel {
             recomWidget?.recommendationFilterChips?.get(0)
                 ?: RecommendationFilterChipsEntity.RecommendationFilterChip()
         )
-    }
-//        runBlocking {
-
-//        }
-
-    @Test
-    fun `test load recommendation then load again will do nothing`() = runBlocking {
-        coEvery { getRecommendationUseCase.getData(any()) } returns listOf(
-            RecommendationWidget(
-                recommendationItemList = listOf(recomItem),
-                isTokonow = true
-            )
-        )
-        viewModel.loadRecommendationCarousel(isTokonow = true)
-        val recomWidget = viewModel.getRecommendationLiveData.value
-        val dataList = recomWidget?.recommendationItemList
-        Assert.assertTrue(recomWidget?.isTokonow == true)
-        Assert.assertTrue(dataList?.isNotEmpty() == true)
-
-        viewModel.loadRecommendationCarousel(isTokonow = true)
-        Assert.assertEquals(recomWidget, viewModel.getRecommendationLiveData.value)
     }
 
     @Test

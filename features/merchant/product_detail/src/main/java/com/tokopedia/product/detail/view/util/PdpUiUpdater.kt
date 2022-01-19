@@ -52,6 +52,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
+import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -813,9 +814,12 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     private fun mapToAnnotateChip(data: RecommendationWidget): List<AnnotationChip> {
-        return data.recommendationFilterChips.map {
-            AnnotationChip(it)
-        }
+//        return data.recommendationFilterChips.map {
+//            AnnotationChip(it)
+//        }
+        //todo hide hardcode
+        return listOf(AnnotationChip(RecommendationFilterChipsEntity.RecommendationFilterChip("tes1", "tes1", "tes1", "tes1", "tes1")),
+            AnnotationChip(RecommendationFilterChipsEntity.RecommendationFilterChip("tes2", "tes2", "tes2", "tes2", "tes2")))
     }
 
     private fun updateData(key: String, loadInitialData: Boolean = false, updateAction: () -> Unit) {
