@@ -112,10 +112,14 @@ class PdpFintechWidget @JvmOverloads constructor(
     private fun sendProductCategory(productDetailClass: ProductDetailClass) {
 
         val listOfAmount: MutableList<Double> = ArrayList()
-        productDetailClass.getProductV3?.variant?.products?.map { products ->
-            products.price
-        }?.toCollection(listOfAmount)
-            ?: instanceProductUpdateListner.removeWidget()
+        if(productDetailClass.getProductV3?.variant?.products?.size?:0 > 0) {
+            productDetailClass.getProductV3?.variant?.products?.map { products ->
+                products.price
+            }?.toCollection(listOfAmount)
+                ?: instanceProductUpdateListner.removeWidget()
+        }
+        else
+            productDetailClass.getProductV3?.price?.let { listOfAmount.add(it) }
 
         productDetailClass.getProductV3?.categoryDetail?.categoryId?.let {
             fintechWidgetViewModel.getWidgetData(it, listOfAmount)
@@ -128,12 +132,18 @@ class PdpFintechWidget @JvmOverloads constructor(
     private fun setIdToPriceMap(productDetailData: ProductDetailClass) {
         productPrice = productDetailData.getProductV3?.price.toString()
         productUrl = productDetailData.getProductV3?.url.toString()
-        productDetailData.getProductV3?.variant?.products?.let { productList ->
-            for (i in productList.indices) {
-                productList[i].productID?.let { productId ->
-                    idToPriceMap.put(productId, productList[i].price.toString())
+        if(productDetailData.getProductV3?.variant?.products?.size?:0 > 0) {
+            productDetailData.getProductV3?.variant?.products?.let { productList ->
+                for (i in productList.indices) {
+                    productList[i].productID?.let { productId ->
+                        idToPriceMap.put(productId, productList[i].price.toString())
+                    }
                 }
             }
+        }
+        else
+        {
+            idToPriceMap.put(productID, productDetailData.getProductV3?.price.toString())
         }
 
     }
@@ -179,7 +189,6 @@ class PdpFintechWidget @JvmOverloads constructor(
             else
                 fintechWidgetViewModel.getProductDetail(productID)
         }
-
 
     }
 
