@@ -23,7 +23,7 @@ class CheckoutMapper @Inject constructor(private val gson: Gson) {
                 callbackSuccessUrl = checkoutDataResponse.data.callbackUrl
                 callbackFailedUrl = checkoutDataResponse.data.callbackUrl
             } else {
-                prompt = mapPrompt(checkoutResponse.prompt)
+                prompt = mapPrompt(checkoutResponse.data.prompt)
             }
         }
     }

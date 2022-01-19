@@ -4,7 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class CheckoutResponse(
         @SerializedName("data")
-        val data: CheckoutDataResponse = CheckoutDataResponse(),
-        @SerializedName("prompt")
-        val prompt: PromptResponse = PromptResponse()
+        val data: CheckoutDataResponse = CheckoutDataResponse()
 )

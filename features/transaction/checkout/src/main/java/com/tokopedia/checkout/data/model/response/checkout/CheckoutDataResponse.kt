@@ -10,5 +10,7 @@ data class CheckoutDataResponse(
         @SerializedName("message")
         val message: String = "",
         @SerializedName("data")
-        val data: Data = Data()
+        val data: Data = Data(),
+        @SerializedName("prompt")
+        val prompt: PromptResponse = PromptResponse()
 )

@@ -32,16 +32,16 @@ mutation checkout($carts: CheckoutParams) {
           }
         }
       }
-    }
-    prompt {
-      type
-      title
-      description
-      buttons {
-        text
-        link
-        color
-        action
+      prompt {
+        type
+        title
+        description
+        buttons {
+          text
+          link
+          color
+          action
+        }
       }
     }
   }
