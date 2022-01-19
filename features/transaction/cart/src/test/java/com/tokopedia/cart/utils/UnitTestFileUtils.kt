@@ -1,4 +1,4 @@
-package com.tokopedia.cart.view.utils
+package com.tokopedia.cart.utils
 
 import java.io.IOException
 import java.nio.charset.Charset

@@ -1,6 +1,6 @@
 package com.tokopedia.cart.view.presenter
 
-import com.tokopedia.cart.view.utils.DataProvider
+import com.tokopedia.cart.utils.DataProvider
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData

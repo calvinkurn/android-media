@@ -1,6 +1,6 @@
 package com.tokopedia.cart.view.presenter
 
-import com.tokopedia.cart.view.utils.DataProvider
+import com.tokopedia.cart.utils.DataProvider
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.network.exception.ResponseErrorException
