@@ -178,7 +178,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                 when (currentIndex) {
                     1 -> {
-                        if (currentCoachIndex == 2) onBackPressed()
+                        if (currentCoachIndex == 2) handleBackButton(true)
                     }
                     2 -> {
                         getPromoFragmentView()?.let {
@@ -399,11 +399,15 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         if (currentFragment != null && currentFragment.isVisible) {
             (currentFragment as? AffiliatePromoFragment)?.handleBack()
         } else {
-            handleBackButton()
+            handleBackButton(false)
         }
     }
 
-    override fun handleBackButton() {
+    override fun handleBackButton(fromCoacher:Boolean) {
+        if (!fromCoacher) {
+            coachMark?.isDismissed = true
+            coachMark?.dismiss()
+        }
         if (!fragmentStack.empty()) {
             fragmentStack.pop()
             if (!fragmentStack.empty()) {

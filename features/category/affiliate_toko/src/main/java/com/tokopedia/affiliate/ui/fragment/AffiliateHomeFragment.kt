@@ -143,7 +143,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
             )
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text = getString(R.string.label_affiliate)
             setOnBackButtonClickListener {
-                (activity as? AffiliateActivity)?.handleBackButton()
+                (activity as? AffiliateActivity)?.handleBackButton(false)
             }
         }
         affiliateActitvityInterface?.showCoachMarker()

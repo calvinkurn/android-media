@@ -128,7 +128,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
         view?.findViewById<com.tokopedia.header.HeaderUnify>(R.id.affiliate_login_toolbar)?.apply {
             customView(customView)
             setNavigationOnClickListener {
-                affiliateNavigationInterface.handleBackButton()
+                affiliateNavigationInterface.handleBackButton(false)
             }
             actionTextView?.setOnClickListener {
                 AffiliateWebViewBottomSheet.newInstance("", AFFILIATE_MICRO_SITE_LINK).show(childFragmentManager,"")
