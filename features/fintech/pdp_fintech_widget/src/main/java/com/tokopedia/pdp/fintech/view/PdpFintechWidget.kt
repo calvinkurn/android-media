@@ -199,6 +199,7 @@ class PdpFintechWidget @JvmOverloads constructor(
         productPrice?.let {
             priceToChip[it]?.let { chipList ->
                 loader.visibility = View.GONE
+                instanceProductUpdateListner.showWidget()
                 fintechWidgetAdapter.setData(chipList)
 
             } ?: run {
