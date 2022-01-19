@@ -2,23 +2,37 @@ package com.tokopedia.product_ar.viewmodel
 
 import android.graphics.Color
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.modiface.mfemakeupkit.effects.MFEMakeupProduct
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product_ar.model.state.AnimatedTextIconClickMode
 import com.tokopedia.product_ar.model.state.ArGlobalErrorMode
 import com.tokopedia.product_ar.model.state.ModifaceViewMode
 import com.tokopedia.product_ar.usecase.GetProductArUseCase
 import com.tokopedia.product_ar.util.ProductArAssertAssistant
 import com.tokopedia.product_ar.util.TestUtil
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.slot
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -44,6 +58,9 @@ class ProductArViewModelTest {
     private val gson = Gson()
     private val assertAssistant = ProductArAssertAssistant()
 
+    @ExperimentalCoroutinesApi
+    private val dispatchers = CoroutineTestDispatchers
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
@@ -56,7 +73,7 @@ class ProductArViewModelTest {
 
     private val viewModel by lazy {
         ProductArViewModel(
-                dispatchers = CoroutineTestDispatchersProvider,
+                dispatchers = dispatchers,
                 initialProductId = INITIAL_PRODUCT_ID,
                 shopId = INITIAL_SHOP_ID,
                 addToCartUseCase = addToCartUseCase,
@@ -299,4 +316,137 @@ class ProductArViewModelTest {
         Assert.assertEquals(animatedTextIconState.view2ClickMode, AnimatedTextIconClickMode.CHOOSE_FROM_GALLERY)
     }
 
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `success atc`() = runBlocking {
+        `success get ar data`()
+        val mockAtcData = AddToCartDataModel(
+                errorMessage = arrayListOf("sukses"),
+                status = "OK",
+                data = DataModel(
+                        success = 1,
+                        cartId = "123",
+                        productId = INITIAL_PRODUCT_ID.toLong())
+        )
+
+        val reqParams = slot<AddToCartRequestParams>()
+
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } returns mockAtcData
+
+        val scope = CoroutineScope(dispatchers.coroutineDispatcher)
+        val addToCartLiveDataTemp = MutableLiveData<Result<AddToCartDataModel>>()
+        scope.launch {
+            viewModel.addToCartLiveData.collect {
+                addToCartLiveDataTemp.value = it
+            }
+        }
+
+        viewModel.doAtc()
+
+        coVerify {
+            addToCartUseCase.setParams(capture(reqParams))
+        }
+
+        //Assert req params should be contains product "Merah"
+        val capturedParams = reqParams.captured
+        Assert.assertEquals(capturedParams.productId, INITIAL_PRODUCT_ID.toLong())
+        Assert.assertEquals(capturedParams.shopId, INITIAL_SHOP_ID.toInt())
+        Assert.assertEquals(capturedParams.price, "50000.0")
+        Assert.assertEquals(capturedParams.quantity, 5)
+        Assert.assertEquals(capturedParams.productName, "Merah")
+
+        Assert.assertTrue(addToCartLiveDataTemp.value is Success)
+        val successValue = (addToCartLiveDataTemp.value as Success).data
+        Assert.assertEquals(successValue.errorMessage.firstOrNull(), "sukses")
+        Assert.assertEquals(successValue.isDataError(), false)
+        Assert.assertEquals(successValue.data.cartId, "123")
+        Assert.assertEquals(successValue.data.productId, INITIAL_PRODUCT_ID.toLong())
+
+        scope.cancel()
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `fail atc from throwable`() = runBlocking {
+        `success get ar data`()
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } throws Throwable("error gan")
+
+        val scope = CoroutineScope(dispatchers.coroutineDispatcher)
+        val addToCartLiveDataTemp = MutableLiveData<Result<AddToCartDataModel>>()
+        scope.launch {
+            viewModel.addToCartLiveData.collect {
+                addToCartLiveDataTemp.value = it
+            }
+        }
+
+        viewModel.doAtc()
+        Assert.assertTrue(addToCartLiveDataTemp.value is Fail)
+        Assert.assertEquals((addToCartLiveDataTemp.value as Fail).throwable.message, "error gan")
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `fail atc from backend status not OK`() = runBlocking {
+        `success get ar data`()
+        val mockAtcData = AddToCartDataModel(
+                errorMessage = arrayListOf("error gan"),
+                status = "ERROR",
+                data = DataModel(
+                        success = 1,
+                        cartId = "123",
+                        productId = INITIAL_PRODUCT_ID.toLong())
+        )
+
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } returns mockAtcData
+
+        val scope = CoroutineScope(dispatchers.coroutineDispatcher)
+        val addToCartLiveDataTemp = MutableLiveData<Result<AddToCartDataModel>>()
+        scope.launch {
+            viewModel.addToCartLiveData.collect {
+                addToCartLiveDataTemp.value = it
+            }
+        }
+
+        viewModel.doAtc()
+        Assert.assertTrue(addToCartLiveDataTemp.value is Fail)
+        Assert.assertTrue((addToCartLiveDataTemp.value as Fail).throwable is MessageErrorException)
+        Assert.assertEquals(((addToCartLiveDataTemp.value as Fail).throwable as MessageErrorException).message, "error gan")
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `fail atc from backend success is 0`() = runBlocking {
+        `success get ar data`()
+        val mockAtcData = AddToCartDataModel(
+                errorMessage = arrayListOf("error gan"),
+                status = "OK",
+                data = DataModel(
+                        success = 0,
+                        cartId = "123",
+                        productId = INITIAL_PRODUCT_ID.toLong())
+        )
+
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } returns mockAtcData
+
+        val scope = CoroutineScope(dispatchers.coroutineDispatcher)
+        val addToCartLiveDataTemp = MutableLiveData<Result<AddToCartDataModel>>()
+        scope.launch {
+            viewModel.addToCartLiveData.collect {
+                addToCartLiveDataTemp.value = it
+            }
+        }
+
+        viewModel.doAtc()
+        Assert.assertTrue(addToCartLiveDataTemp.value is Fail)
+        Assert.assertTrue((addToCartLiveDataTemp.value as Fail).throwable is MessageErrorException)
+        Assert.assertEquals(((addToCartLiveDataTemp.value as Fail).throwable as MessageErrorException).message, "error gan")
+    }
 }

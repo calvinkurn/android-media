@@ -178,15 +178,12 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
             val result = addToCartUseCase.executeOnBackground()
 
             if (result.isDataError()) {
-                val errorMessage = result.errorMessage.firstOrNull() ?: ""
-                _addToCartLiveData.emit(Fail(MessageErrorException(errorMessage)))
+                _addToCartLiveData.emit(Fail(MessageErrorException(result.getAtcErrorMessageSafely())))
             } else {
                 _addToCartLiveData.emit(Success(result))
             }
         }) {
-            it.cause?.let { cause ->
-                _addToCartLiveData.emit(Fail(cause))
-            } ?: _addToCartLiveData.emit(Fail(it))
+            _addToCartLiveData.emit(Fail(it))
         }
     }
 }

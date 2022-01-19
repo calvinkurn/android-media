@@ -28,7 +28,8 @@
         "stock": "100",
         "stockCopy": "Stok: 100",
         "type": "lipcolor",
-        "unavailableCopy": ""
+        "unavailableCopy": "",
+        "minOrder": 5
       },
       {
         "button": {

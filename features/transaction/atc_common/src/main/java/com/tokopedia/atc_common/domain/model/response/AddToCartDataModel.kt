@@ -33,6 +33,10 @@ data class AddToCartDataModel(
         return errorMessage.firstOrNull() ?: data.message.firstOrNull()
     }
 
+    fun getAtcErrorMessageSafely(): String {
+        return errorMessage.firstOrNull() ?: data.message.firstOrNull() ?: ""
+    }
+
     companion object {
         const val STATUS_OK = "OK"
         const val STATUS_ERROR = "ERROR"

@@ -429,7 +429,9 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     }
 
     private fun onFailAtc(throwable: Throwable) {
-        throwable.run {
+        val cause = throwable.cause ?: throwable
+
+        cause.run {
             if (this is AkamaiErrorException && message != null) {
                 view?.showToasterError(
                         message ?: "",
