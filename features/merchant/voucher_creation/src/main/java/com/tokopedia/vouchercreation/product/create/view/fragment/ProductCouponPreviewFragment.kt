@@ -12,6 +12,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
@@ -32,8 +34,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         private const val ZERO: Long = 0
 
         fun newInstance(): ProductCouponPreviewFragment {
-            val fragment = ProductCouponPreviewFragment()
-            return fragment
+            return ProductCouponPreviewFragment()
         }
 
     }
@@ -102,19 +103,39 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         observeValidCoupon()
+        observeCreateCouponResult()
     }
+
+
 
     private fun setupViews() {
         binding?.tpgReadArticle?.setOnClickListener { onNavigateToCouponInformationPage() }
         binding?.tpgCouponInformation?.setOnClickListener { onNavigateToCouponInformationPage() }
         binding?.tpgCouponSetting?.setOnClickListener { onNavigateToCouponSettingsPage() }
         binding?.tpgAddProduct?.setOnClickListener { onNavigateToProductListPage() }
+        binding?.btnCreateCoupon?.setOnClickListener {
+            viewModel.createCoupon(
+                couponInformation ?: return@setOnClickListener,
+                couponSettings ?: return@setOnClickListener,
+                couponProducts
+            )
+        }
     }
 
     private fun observeValidCoupon() {
         viewModel.areInputValid.observe(viewLifecycleOwner, { areInputValid ->
             binding?.btnCreateCoupon?.isEnabled = areInputValid
             binding?.btnPreviewCouponImage?.isEnabled = areInputValid
+        })
+    }
+
+    private fun observeCreateCouponResult() {
+        viewModel.createCoupon.observe(viewLifecycleOwner, { result ->
+            if (result is Success) {
+
+            } else {
+
+            }
         })
     }
 

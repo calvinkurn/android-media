@@ -4,22 +4,31 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
-import rx.Scheduler
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.vouchercreation.common.base.VoucherSource
+import com.tokopedia.vouchercreation.common.extension.parseTo
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
+import com.tokopedia.vouchercreation.product.create.data.CreateCouponProductParams
+import com.tokopedia.vouchercreation.product.create.domain.entity.*
+import com.tokopedia.vouchercreation.product.create.domain.usecase.CreateCouponProductUseCase
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Named
 
 class ProductCouponPreviewViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    @Named("io") private val ioScheduler: Scheduler,
-    @Named("main") private val mainThreadScheduler: Scheduler,
+    private val createCouponProductUseCase: CreateCouponProductUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _areInputValid = MutableLiveData<Boolean>()
     val areInputValid: LiveData<Boolean>
         get() = _areInputValid
+
+    private val _createCoupon = MutableLiveData<Result<Int>>()
+    val createCoupon: LiveData<Result<Int>>
+        get() = _createCoupon
 
     fun validateCoupon(couponSettings: CouponSettings? , couponInformation: CouponInformation?, couponProducts: List<CouponProduct>) {
         if (couponSettings == null) {
@@ -41,4 +50,65 @@ class ProductCouponPreviewViewModel @Inject constructor(
     }
 
 
+    fun createCoupon(
+        couponInformation: CouponInformation,
+        couponSettings: CouponSettings,
+        couponProducts: List<CouponProduct>
+    ) {
+
+        val isPublic = if (couponInformation.target == CouponInformation.Target.PUBLIC) 1 else 0
+        val startDate = couponInformation.period.startDate.parseTo(DateTimeUtils.DASH_DATE_FORMAT)
+        val startHour = couponInformation.period.startDate.parseTo(DateTimeUtils.HOUR_FORMAT)
+        val endDate = couponInformation.period.endDate.parseTo(DateTimeUtils.DASH_DATE_FORMAT)
+        val endHour = couponInformation.period.endDate.parseTo(DateTimeUtils.HOUR_FORMAT)
+
+        val benefitType = when (couponSettings.discountType) {
+            DiscountType.NONE -> ""
+            DiscountType.NOMINAL -> "idr"
+            DiscountType.PERCENTAGE -> "percent"
+        }
+        val couponType = when (couponSettings.type) {
+            CouponType.NONE -> ""
+            CouponType.CASHBACK -> "cashback"
+            CouponType.FREE_SHIPPING -> "shipping"
+        }
+
+        val params = CreateCouponProductParams(
+            benefitIdr = couponSettings.discountAmount,
+            benefitMax = couponSettings.maxDiscount,
+            benefitPercent = couponSettings.discountPercentage,
+            benefitType = benefitType,
+            code = couponInformation.code,
+            couponName = couponInformation.name,
+            couponType = couponType,
+            dateStart = startDate,
+            dateEnd = endDate,
+            hourStart = startHour,
+            hourEnd = endHour,
+            image = "",
+            imageSquare = "",
+            isPublic = isPublic,
+            minPurchase = couponSettings.minimumPurchase,
+            quota = couponSettings.quota,
+            token = "",
+            source = VoucherSource.SELLERAPP,
+            targetBuyer = 0,
+            minimumTierLevel = 0,
+            isLockToProduct = 1,
+            productIds = couponProducts.joinToString { "," }
+        )
+
+        launchCatchError(
+            block = {
+                val result = withContext(dispatchers.io) {
+                    createCouponProductUseCase.setRequestParams(params)
+                    createCouponProductUseCase.executeOnBackground()
+                }
+                _createCoupon.value = Success(result)
+            },
+            onError = {
+                _createCoupon.value = Fail(it)
+            }
+        )
+    }
 }
