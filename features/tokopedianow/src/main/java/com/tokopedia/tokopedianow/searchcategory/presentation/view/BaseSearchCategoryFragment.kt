@@ -68,6 +68,7 @@ import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.util.TokoNowSwitcherUtil.switchService
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
@@ -117,7 +118,6 @@ abstract class BaseSearchCategoryFragment:
 
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
-        protected const val OUT_OF_COVERAGE_CHOOSE_ADDRESS = "OUT_OF_COVERAGE_CHOOSE_ADDRESS"
         protected const val REQUEST_CODE_LOGIN = 69
         private const val DEFAULT_POSITION = 0
     }
@@ -561,8 +561,19 @@ abstract class BaseSearchCategoryFragment:
         )
     }
 
-    override fun onBannerClick(channelModel: ChannelModel, applink: String) {
-        RouteManager.route(context, applink)
+    override fun onBannerClick(channelModel: ChannelModel, applink: String, param: String) {
+        context?.let { context ->
+            switchService(
+                context = context,
+                param = param,
+                onRefreshPage = {
+                    getViewModel().switchService()
+                },
+                onRedirectPage = {
+                    RouteManager.route(it, applink)
+                }
+            )
+        }
     }
 
     override fun onBannerImpressed(channelModel: ChannelModel, position: Int) {

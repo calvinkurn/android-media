@@ -257,7 +257,7 @@ class TokoNowSearchFragment :
         return TOKONOW_SEARCH_PRODUCT_ATC_VARIANT
     }
 
-    override fun onBannerClick(channelModel: ChannelModel, applink: String) {
+    override fun onBannerClick(channelModel: ChannelModel, applink: String, param: String) {
         val queryParam = getQueryParamWithoutExcludes()
         val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
 
@@ -268,7 +268,7 @@ class TokoNowSearchFragment :
                 sortFilterParams,
         )
 
-        super.onBannerClick(channelModel, applink)
+        super.onBannerClick(channelModel, applink, param)
     }
 
     override fun onBannerImpressed(channelModel: ChannelModel, position: Int) {
