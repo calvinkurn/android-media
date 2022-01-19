@@ -11,8 +11,6 @@ import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper
 import com.tokopedia.home.beranda.data.model.*
-import com.tokopedia.home.beranda.data.repository.HomeRevampRepository
-import com.tokopedia.home.beranda.data.repository.HomeRevampRepositoryImpl
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.interactor.repository.*
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -33,8 +31,6 @@ import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntit
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.network.exception.MessageErrorException
@@ -79,7 +75,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
         private val homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository,
         private val homeChooseAddressRepository: HomeChooseAddressRepository,
         private val userSessionInterface: UserSessionInterface
-): HomeRevampRepository {
+) {
 
     private var CHANNEL_LIMIT_FOR_PAGINATION = 1
     companion object{
@@ -102,7 +98,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     @FlowPreview
     @ExperimentalCoroutinesApi
-    override fun getHomeDataFlow(): Flow<HomeDynamicChannelModel?> {
+    fun getHomeDataFlow(): Flow<HomeDynamicChannelModel?> {
         var isCache = true
 
         val homeAtfCacheFlow = getHomeRoomDataSource.getCachedAtfData().flatMapConcat {
@@ -515,7 +511,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
      *    7.1 Emit error pagination only when atf is empty
      *      Because there is no content that we can show, we showing error page
      */
-    override fun updateHomeData(): Flow<Result<Any>> = flow{
+    fun updateHomeData(): Flow<Result<Any>> = flow{
         coroutineScope {
 
             /**
@@ -834,7 +830,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
     }
 
-    override suspend fun onDynamicChannelExpired(groupId: String): List<Visitable<*>> {
+    suspend fun onDynamicChannelExpired(groupId: String): List<Visitable<*>> {
         val dynamicChannelResponse = homeDynamicChannelsRepository.getRemoteData(
                 Bundle().apply {
                     putString(
@@ -881,7 +877,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
         return homeDataResponse
     }
 
-    override fun deleteHomeData() {
+    fun deleteHomeData() {
         getHomeRoomDataSource.deleteHomeData()
     }
 
