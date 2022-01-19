@@ -117,6 +117,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     hideEmptyState()
                     getCatalogProductInput(selectedOperator.key)
                 } else {
+                    onHideBuyWidget()
                     showEmptyState()
                 }
 
@@ -405,9 +406,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private fun hideEmptyState() {
         binding?.run {
-            if (rechargePdpPulsaEmptyStateWidget.isVisible)
+            if (rechargePdpPulsaEmptyStateWidget.isVisible) {
                 rechargePdpPulsaEmptyStateWidget.hide()
                 rechargePdpPulsaRecommendationWidget.show()
+            }
         }
     }
 
