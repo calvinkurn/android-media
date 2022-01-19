@@ -317,15 +317,13 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private fun generateCatalogShareData(catalogId: String, isUniversalShare: Boolean = false) {
-        val linkerShareData = linkerDataMapper(catalogId,"Description 1",
-                catalogUrl, catalogImages)
+        val linkerShareData = linkerDataMapper(catalogId)
         onShareButtonClicked(isUniversalShare,linkerShareData)
     }
 
     private fun onShareButtonClicked(isUniversalShare : Boolean = false , linkerShareData : LinkerShareData) {
         if(isUniversalShare){
-            showUniversalShareBottomSheet(catalogId, linkerShareData.linkerData.description ,
-                    linkerShareData.linkerData.uri , catalogImages)
+            showUniversalShareBottomSheet(catalogImages)
         }else {
             CatalogDetailAnalytics.sendEvent(
                     CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
@@ -341,8 +339,7 @@ class CatalogDetailPageFragment : Fragment(),
     private var screenshotDetector: ScreenshotDetector? = null
     private var shareType: Int = 1
 
-    private fun showUniversalShareBottomSheet(catalogId: String, catalogDescription: String,
-                                              catalogURL :String, catalogImages : ArrayList<CatalogImage>  ) {
+    private fun showUniversalShareBottomSheet(catalogImages : ArrayList<CatalogImage>  ) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@CatalogDetailPageFragment)
             setUtmCampaignData(
@@ -366,8 +363,7 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
-        val linkerShareData = linkerDataMapper(catalogId, "Description 1"
-                , CatalogUtil.getShareURI(catalogUrl) , catalogImages )
+        val linkerShareData = linkerDataMapper(catalogId)
         linkerShareData.linkerData.apply {
             feature = shareModel.feature
             channel = shareModel.channel
@@ -380,8 +376,8 @@ class CatalogDetailPageFragment : Fragment(),
         LinkerManager.getInstance().executeShareRequest(
                 LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                        val shareString = "Message - URL"
-                        shareModel.subjectName = "Subject"
+                        val shareString = "Coba cek ini, deh: Katalog ${catalogName} di Tokopedia. Infonya lengkap, dari spesifikasi sampai ulasan, ada semua! ${CatalogUtil.getShareURI(catalogUrl)}"
+                        //shareModel.subjectName = "Subject"
                         SharingUtil.executeShareIntent(
                                 shareModel,
                                 linkerShareData,
@@ -405,16 +401,15 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     override fun screenShotTaken() {
-        showUniversalShareBottomSheet(catalogId, "Description" , CatalogUtil.getShareURI(catalogUrl) , catalogImages)
+        showUniversalShareBottomSheet(catalogImages)
     }
 
-    private fun linkerDataMapper(catalogId: String, catalogDescription: String,
-                                 catalogURL :String, catalogImages : ArrayList<CatalogImage>): LinkerShareData {
+    private fun linkerDataMapper(catalogId: String): LinkerShareData {
         val linkerData = LinkerData()
         linkerData.id = catalogId
-        linkerData.name = getString(R.string.catalog_message_share_catalog)
+        linkerData.name = "Info Lengkap ${catalogName} | Tokopedia"
         linkerData.uri  = CatalogUtil.getShareURI(catalogUrl)
-        linkerData.description = catalogDescription
+        linkerData.description = "Temukan semua info tentang produk ini di halaman Katalog Tokopedia, lengkap sampai rekomendasi produknya!"
         linkerData.isThrowOnError = true
         val linkerShareData = LinkerShareData()
         linkerShareData.linkerData = linkerData
