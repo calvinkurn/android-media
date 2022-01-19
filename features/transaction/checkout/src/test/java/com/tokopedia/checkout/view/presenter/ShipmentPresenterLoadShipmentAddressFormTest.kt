@@ -14,7 +14,10 @@ import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
+import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
+import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureResponse
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
@@ -87,6 +90,9 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     @MockK(relaxed = true)
     private lateinit var getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase
 
+    @MockK
+    private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
     private var shipmentMapper = ShipmentMapper()
 
@@ -104,7 +110,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
                 ratesStatesConverter, shippingCourierConverter,
                 shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
                 checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
-                validateUsePromoRevampUseCase, gson, TestSchedulers)
+                validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
         presenter.attachView(view)
     }
 
@@ -389,6 +395,11 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
             firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(data)
         }
+        coEvery {
+            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
+        } answers {
+            firstArg<(KeroAddrIsEligibleForAddressFeatureResponse)-> Unit>().invoke(KeroAddrIsEligibleForAddressFeatureResponse())
+        }
 
         // When
         presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
@@ -399,7 +410,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             view.resetPromoBenefit()
             view.clearTotalBenefitPromoStacking()
             view.hideLoading()
-            view.renderCheckoutPageNoAddress(any())
+            view.renderCheckoutPageNoAddress(any(), any())
             view.stopTrace()
         }
     }

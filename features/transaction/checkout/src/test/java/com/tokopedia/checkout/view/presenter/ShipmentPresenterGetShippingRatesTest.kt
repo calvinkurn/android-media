@@ -10,6 +10,7 @@ import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
@@ -83,6 +84,9 @@ class ShipmentPresenterGetShippingRatesTest {
     @MockK(relaxed = true)
     private lateinit var getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase
 
+    @MockK
+    private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
     private var ratesStatesConverter = RatesResponseStateConverter()
     private var shippingCourierConverter = ShippingCourierConverter()
@@ -102,7 +106,7 @@ class ShipmentPresenterGetShippingRatesTest {
                 ratesStatesConverter, shippingCourierConverter,
                 shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
                 checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
-                validateUsePromoRevampUseCase, gson, TestSchedulers)
+                validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
         presenter.attachView(view)
     }
 
