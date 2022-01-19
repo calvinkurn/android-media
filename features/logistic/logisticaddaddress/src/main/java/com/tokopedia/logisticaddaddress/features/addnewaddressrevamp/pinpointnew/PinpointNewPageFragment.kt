@@ -258,6 +258,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
     private fun initData() {
         arguments?.let {
+            // TODO disini hrus investigate sesuatu
+            // yg bedain dr searchpage apa dr formpage
             currentPlaceId = it.getString(EXTRA_PLACE_ID)
             currentLat = it.getDouble(EXTRA_LAT)
             currentLong = it.getDouble(EXTRA_LONG)
@@ -459,9 +461,14 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             }
 
             bottomsheetLocation.btnSecondary.setOnClickListener {
+                // TODO disini harusnya saveaddressdatamodel nya diapus
+                // tapi kalo misalnya diapus, misalnya dia pinpoint dari addressform
+                // nanti address formnya kosong lg, data sblm dia pinpoint (yg dibawa dr addressform)
+                // gak balik lg
                 AddNewAddressRevampAnalytics.onClickIsiAlamatManual(userSession.userId)
                 if (isPositiveFlow) {
                     isPositiveFlow = false
+                    viewModel.setAddress(SaveAddressDataModel())
                     goToAddressForm()
                 } else {
                     activity?.run {
