@@ -337,18 +337,34 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test when get data recommendation selected by chips then return success filter result`() {
-        coEvery { getRecommendationUseCase.getData(any()) } returns listOf(
-            RecommendationWidget(
-                recommendationItemList = listOf(recomItem),
-                isTokonow = false
-            )
+    fun `test when get data recommendation selected by chips then return success filter result with new recom widget data`() {
+        val recomWidget = RecommendationWidget(
+            recommendationItemList = listOf(recomItem),
+            isTokonow = false
+        )
+        coEvery { getRecommendationUseCase.getData(any()) } returns listOf(recomWidget
         )
         viewModel.loadRecomBySelectedChips(recomWidgetMetadata = recomWidgetMetadata, oldFilterList = listAnnotationChip, selectedChip = listAnnotationChip[0])
         val recomFilterResult = viewModel.recomFilterResultData.value
         Assert.assertEquals(listAnnotationChip.size, recomFilterResult?.filterList?.size)
+        Assert.assertEquals(recomWidget, recomFilterResult?.recomWidgetData)
         Assert.assertEquals(true, recomFilterResult?.isSuccess)
     }
+
+    @Test
+    fun `test when get data recommendation selected by chips with empty recommendation then success with null recom widget`() {
+        coEvery { getRecommendationUseCase.getData(any()) } returns listOf()
+        viewModel.loadRecomBySelectedChips(recomWidgetMetadata = recomWidgetMetadata, oldFilterList = listAnnotationChip, selectedChip = listAnnotationChip[0])
+        val recomFilterResult = viewModel.recomFilterResultData.value
+        Assert.assertEquals(listAnnotationChip.size, recomFilterResult?.filterList?.size)
+        Assert.assertNull(recomFilterResult?.recomWidgetData)
+        Assert.assertEquals(true, recomFilterResult?.isSuccess)
+    }
+
+//    @Test
+//    fun `test when failed load data recommendation by selected chips`() {
+//        coEvery { getRecommendationUseCase.getData(any()) } throws Throwable()
+//    }
 
     private fun doCommonActionForATCRecom() {
         coEvery {
