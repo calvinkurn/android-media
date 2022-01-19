@@ -17,7 +17,6 @@ import com.tokopedia.checkout.bundle.view.ShipmentFragment
 import com.tokopedia.checkout.bundle.view.ShipmentPresenter
 import com.tokopedia.checkout.bundle.view.converter.ShipmentDataConverter
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.domain.executor.MainScheduler
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
@@ -91,7 +90,6 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  shipmentDataConverter: ShipmentDataConverter,
                                  releaseBookingUseCase: ReleaseBookingUseCase,
                                  validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
-                                 eligibleForAddressUseCase: EligibleForAddressUseCase,
                                  gson: Gson,
                                  executorSchedulers: ExecutorSchedulers): ShipmentContract.Presenter {
         return ShipmentPresenter(compositeSubscription,
@@ -103,7 +101,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                 stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
                 analyticsPurchaseProtection, checkoutAnalytics,
                 shipmentDataConverter, releaseBookingUseCase, validateUsePromoRevampUseCase, gson,
-                executorSchedulers, eligibleForAddressUseCase)
+                executorSchedulers)
     }
 
     @Provides
