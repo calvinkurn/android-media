@@ -63,10 +63,26 @@ class ProductPreviewViewHolder(
     override fun bind(model: TopchatProductAttachmentPreviewUiModel) {
         super.bind(model)
         bindBackground()
+        when {
+            model.isLoading -> bindLoadingState(model)
+            model.isError -> bindErrorState(model)
+            else -> bindSuccessState(model)
+        }
+    }
+
+    private fun bindSuccessState(model: TopchatProductAttachmentPreviewUiModel) {
         bindImageThumbnail(model)
         bindProductName(model)
         bindProductPrice(model)
         bindProductVariant(model)
+    }
+
+    private fun bindLoadingState(model: TopchatProductAttachmentPreviewUiModel) {
+        // TODO: implement based on design
+    }
+
+    private fun bindErrorState(model: TopchatProductAttachmentPreviewUiModel) {
+        // TODO: implement based on design
     }
 
     private fun bindProductName(model: TopchatProductAttachmentPreviewUiModel) {
