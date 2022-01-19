@@ -45,7 +45,7 @@ class PayLaterViewModel @Inject constructor(
         TkpdIdlingResourceProvider.provideIdlingResource("SIMULATION")
 
 
-    fun getPayLaterAvailableDetail(price: Long, productId: String) {
+    fun getPayLaterAvailableDetail(price: Double, productId: String) {
         idlingResourceProvider?.increment()
         paylaterGetSimulationV3UseCase.cancelJobs()
         paylaterGetSimulationV3UseCase.getPayLaterSimulationDetails(

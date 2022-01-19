@@ -1,32 +1,26 @@
 package com.tokopedia.pdpsimulation.paylater.domain.model
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import com.tokopedia.pdpsimulation.common.presentation.adapter.PayLaterAdapterFactory
 
 
-@Parcelize
 data class PayLaterSimulationData(
     @SerializedName("paylater_getSimulationV3") val paylaterGetSimulation: PayLaterGetSimulation
-) : Parcelable
+)
 
-
-@Parcelize
 data class PayLaterGetSimulation(
-
     @SerializedName("data") val productList: List<PayLaterAllData>?
-) : Parcelable
+)
 
-@Parcelize
 data class PayLaterAllData(
 
     @SerializedName("tenure") val tenure: Int?,
     @SerializedName("text") val text: String?,
     @SerializedName("small_text") val smallText: String?,
-    @SerializedName("sections") val detail: List<GatewaySection?>
-) : Parcelable
+    @SerializedName("sections") val detail: List<GatewaySection>
+)
 
-@Parcelize
+
 data class GatewaySection(
 
     @SerializedName("title") val title: String?,
@@ -34,14 +28,14 @@ data class GatewaySection(
     @SerializedName("detail") val detail: List<Detail>
 )
 
-@Parcelize
+
 data class Benefit(
 
     @SerializedName("content") val content: String?,
     @SerializedName("is_highlight") val is_highlight: Boolean?
-) : Parcelable
+)
 
-@Parcelize
+
 data class Cta(
 
     @SerializedName("name") val name: String?,
@@ -51,9 +45,9 @@ data class Cta(
     @SerializedName("is_redirect_url") val is_redirect_url: Int?,
     @SerializedName("button_color") val button_color: String?,
     @SerializedName("bottom_sheet") val bottomSheet: BottomSheetDetail?
-) : Parcelable
+)
 
-@Parcelize
+
 data class BottomSheetDetail(
 
     @SerializedName("show") val isShow: Boolean?,
@@ -61,13 +55,13 @@ data class BottomSheetDetail(
     @SerializedName("title") val bottomSheetTitle: String?,
     @SerializedName("description") val bottomSheetDescription: String?,
     @SerializedName("button_text") val bottomSheetButtonText: String?,
-) : Parcelable
+)
 
-@Parcelize
+
 data class Detail(
 
     @SerializedName("gateway_detail") val gatewayDetail: GatewayModel?,
-    @SerializedName("installment_per_month") val installment_per_month: Double?,
+    @SerializedName("installment_per_month") val installment_per_month: Float?,
     @SerializedName("installment_per_month_ceil") val installment_per_month_ceil: Int?,
     @SerializedName("tenure") val tenure: Int?,
     @SerializedName("subheader") val subheader: String?,
@@ -76,41 +70,45 @@ data class Detail(
     @SerializedName("disable") val paylaterDisableDetail: DisableDetail?,
     @SerializedName("cta") val cta: Cta,
     @SerializedName("installment_details") val installementDetails: InstallmentDetails?,
-) : Parcelable
+) : BasePayLaterWidgetUiModel {
+    override fun type(typeFactory: PayLaterAdapterFactory): Int {
+        return typeFactory.type(this)
+    }
+}
 
-@Parcelize
+
 data class RecommendationDetail(
 
     @SerializedName("flag") val flag: Boolean?,
     @SerializedName("text") val text: String?,
     @SerializedName("color") val color: String?,
-    ): Parcelable
+)
 
-@Parcelize
+
 data class DisableDetail(
 
     @SerializedName("status") val status: Boolean?,
     @SerializedName("header") val header: String?,
     @SerializedName("description") val description: String?
-) : Parcelable
+)
 
-@Parcelize
+
 data class GatewayModel(
 
     @SerializedName("id") val gateway_id: String?,
     @SerializedName("name") val name: String?,
     @SerializedName("img_light_url") val img_light_url: String?,
     @SerializedName("img_dark_url") val img_dark_url: String?
-) : Parcelable
+)
 
-@Parcelize
+
 data class InstallmentDetails(
 
     @SerializedName("header") val header: String?,
-    @SerializedName("content") val content: Content?,
-    )
+    @SerializedName("content") val content: List<Content>?,
+)
 
-@Parcelize
+
 data class Content(
 
     @SerializedName("title") val title: String?,

@@ -55,8 +55,8 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
         } else {
             val bundle = Bundle()
             intent.extras?.let {
-                bundle.putString(PRODUCT_PRICE, it.getString(PRODUCT_PRICE))
-                bundle.putString(PARAM_PRODUCT_URL, it.getString(PARAM_PRODUCT_URL))
+                //bundle.putString(PRODUCT_PRICE, it.getString(PRODUCT_PRICE))
+                //bundle.putString(PARAM_PRODUCT_URL, it.getString(PARAM_PRODUCT_URL))
                 bundle.putString(PARAM_PRODUCT_ID, it.getString(PARAM_PRODUCT_ID))
             }
             PdpSimulationFragment.newInstance(bundle)

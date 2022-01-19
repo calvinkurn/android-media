@@ -47,41 +47,15 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPayLaterOption"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_12"
         android:layout_marginBottom="@dimen/unify_space_8"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/seeMore"
         app:layout_constraintTop_toBottomOf="@+id/rvPayLaterSimulation"
         app:layout_constraintVertical_bias="0.0"
-        tools:itemCount="2"
+        tools:itemCount="3"
         tools:listitem="@layout/paylater_partner_card_item" />
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/seeMore"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginEnd="@dimen/unify_space_16"
-        android:layout_marginBottom="@dimen/unify_space_12"
-        android:text="Lihat 3 lainnya"
-        app:layout_constraintBottom_toTopOf="@+id/superVisorSeparator"
-        app:unifyButtonSize="medium"
-        app:unifyButtonType="alternate"
-        app:unifyButtonVariant="ghost" />
-
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/superVisorSeparator"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/unify_space_8"
-        app:layout_constraintBottom_toTopOf="@id/supervisorWidget" />
-
-    <include
-        android:id="@+id/supervisorWidget"
-        layout="@layout/paylater_supervisor_widget"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+ </androidx.constraintlayout.widget.ConstraintLayout>
 
 

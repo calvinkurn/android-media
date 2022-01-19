@@ -33,7 +33,7 @@
             android:id="@+id/clPartnerCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_credit_card_border_recommendation">
+            android:background="@drawable/bg_paylater_card_border_recommendation">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/recommendationTitle"
