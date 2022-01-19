@@ -1,9 +1,10 @@
 package com.tokopedia.autocompletecomponent.suggestion
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.autocompletecomponent.*
+import com.tokopedia.autocompletecomponent.jsonToObject
 import com.tokopedia.autocompletecomponent.shouldBe
 import com.tokopedia.autocompletecomponent.shouldBeInstanceOf
+import com.tokopedia.autocompletecomponent.shouldNotContain
 import com.tokopedia.autocompletecomponent.suggestion.chips.SuggestionChipWidgetDataView
 import com.tokopedia.autocompletecomponent.suggestion.domain.model.SuggestionUniverse
 import com.tokopedia.autocompletecomponent.suggestion.doubleline.SuggestionDoubleLineDataDataView
@@ -13,8 +14,16 @@ import com.tokopedia.autocompletecomponent.suggestion.separator.SuggestionSepara
 import com.tokopedia.autocompletecomponent.suggestion.singleline.SuggestionSingleLineDataDataView
 import com.tokopedia.autocompletecomponent.suggestion.title.SuggestionTitleDataView
 import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopWidgetDataView
-import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_ADDRESS_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_CITY_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_DISTRICT_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_LAT
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_LONG
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_POST_CODE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_WAREHOUSE_ID
+import com.tokopedia.discovery.common.constants.SearchConstant.CustomDimension.DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL
+import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.usecase.RequestParams
 import io.mockk.confirmVerified
@@ -22,12 +31,14 @@ import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
 import org.junit.Test
-import rx.Subscriber
 
 private const val suggestionCommonResponse = "autocomplete/suggestion/suggestion-common-response.json"
 private const val suggestionTopShopResponse = "autocomplete/suggestion/suggestion-top-shop-response.json"
 private const val suggestionCampaignResponse = "autocomplete/suggestion/local-global-response.json"
 private const val suggestionCampaignAtTopResponse = "autocomplete/suggestion/local-global-at-top-response.json"
+private const val suggestionShopAdsResponse = "autocomplete/suggestion/shopads/suggestion-shop-ads-response.json"
+private const val suggestionWithoutShopAdsResponse = "autocomplete/suggestion/shopads/suggestion-without-shop-ads-response.json"
+private const val suggestionWithoutShopAdsTemplateResponse = "autocomplete/suggestion/shopads/suggestion-shop-ads-without-template.json"
 
 internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
@@ -39,66 +50,22 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         SearchApiConst.SRP_PAGE_TITLE to searchProductPageTitle,
         SearchApiConst.SRP_PAGE_ID to "1234"
     )
-    private val expectedDefaultDimension90 = SearchConstant.CustomDimension.DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL
-    private val expectedLocalDimension90 =
-            "${searchParameter[SearchApiConst.SRP_PAGE_TITLE]}.${searchParameter[SearchApiConst.NAVSOURCE]}." +
-                    "local_search.${searchParameter[SearchApiConst.SRP_PAGE_ID]}"
+    private val expectedDefaultDimension90 = DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL
+    private val expectedLocalDimension90 = Dimension90Utils.getDimension90(searchParameter)
 
     private val requestParamsSlot = slot<RequestParams>()
+    private val requestParams by lazy { requestParamsSlot.captured }
 
     @Test
-    fun `Test suggestion presenter has set parameter`() {
-        val warehouseId = "2216"
-        val dummyChooseAddressData = LocalCacheModel(
-                address_id = "123",
-                city_id = "45",
-                district_id = "123",
-                lat = "10.2131",
-                long = "12.01324",
-                postal_code = "12345",
-                warehouse_id = warehouseId
-        )
-        `Given chosen address data`(dummyChooseAddressData)
-        `Given getSuggestionUseCase will be successful`(suggestionCommonResponse.jsonToObject())
-
-        `when presenter get suggestion data`()
-
-        `Then verify search parameter has warehouseId`(warehouseId)
-    }
-
-    private fun `Given chosen address data`(chooseAddressModel: LocalCacheModel?) {
-        every { suggestionView.chooseAddressData } returns chooseAddressModel
-    }
-
-    private fun `Given getSuggestionUseCase will be successful`(suggestionUniverse: SuggestionUniverse) {
-        every { getSuggestionUseCase.execute(capture(requestParamsSlot), any()) }.answers {
-            secondArg<Subscriber<SuggestionUniverse>>().complete(suggestionUniverse)
-        }
-    }
-
-    private fun `Then verify search parameter has warehouseId`(warehouseId: String) {
-        val requestParams = requestParamsSlot.captured
-
-        requestParams.parameters[SearchApiConst.USER_WAREHOUSE_ID] shouldBe warehouseId
-    }
-
-    @Test
-    fun `test get suggestion data`() {
+    fun `get suggestion data success will show suggestion`() {
         val suggestionUniverse = suggestionCommonResponse.jsonToObject<SuggestionUniverse>()
-        `given suggestion use case capture request params`(suggestionUniverse)
+        `Given Suggestion API will return SuggestionUniverse`(suggestionUniverse, requestParamsSlot)
 
         `when presenter get suggestion data`()
 
         `then verify suggestion API is called`()
-        `then verify suggestion view will call showSuggestionResult behavior`()
+        `then verify suggestion view will call showSuggestionResult`()
         `then verify visitable list`(suggestionUniverse)
-    }
-
-    private fun `given suggestion use case capture request params`(suggestionUniverse: SuggestionUniverse) {
-        every { getSuggestionUseCase.execute(any(), any()) }.answers {
-            secondArg<Subscriber<SuggestionUniverse>>().onStart()
-            secondArg<Subscriber<SuggestionUniverse>>().onNext(suggestionUniverse)
-        }
     }
 
     private fun `when presenter get suggestion data`(
@@ -110,10 +77,10 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
     }
 
     private fun `then verify suggestion API is called`() {
-        verify { getSuggestionUseCase.execute(any(), any()) }
+        verify { getSuggestionUseCase.execute(any(), any(), any()) }
     }
 
-    private fun `then verify suggestion view will call showSuggestionResult behavior`() {
+    private fun `then verify suggestion view will call showSuggestionResult`() {
         verify {
             suggestionView.showSuggestionResult(capture(slotVisitableList))
         }
@@ -186,21 +153,20 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
     }
 
     @Test
-    fun `test fail to get suggestion data`() {
+    fun `get suggestion data error will not show anything`() {
         `given suggestion API will return error`()
         `when presenter get suggestion data`()
         `then verify suggestion API is called`()
-        `then verify view interaction for load data failed with exception`()
+        `then verify view not showing anything`()
     }
 
     private fun `given suggestion API will return error`() {
-        every { getSuggestionUseCase.execute(any(), any()) }.answers {
-            secondArg<Subscriber<SuggestionUniverse>>().onStart()
-            secondArg<Subscriber<SuggestionUniverse>>().onError(testException)
+        every { getSuggestionUseCase.execute(any(), any(), any()) }.answers {
+            secondArg<(Throwable) -> Unit>().invoke(testException)
         }
     }
 
-    private fun `then verify view interaction for load data failed with exception`() {
+    private fun `then verify view not showing anything`() {
         verify {
             suggestionView.chooseAddressData
         }
@@ -210,20 +176,13 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
     @Test
     fun `test get suggestion data with top shop`() {
         val suggestionUniverse = suggestionTopShopResponse.jsonToObject<SuggestionUniverse>()
-        `given suggestion use case capture request params with top shop`(suggestionUniverse)
+        `Given Suggestion API will return SuggestionUniverse`(suggestionUniverse)
 
         `when presenter get suggestion data`()
 
         `then verify suggestion API is called`()
-        `then verify suggestion view will call showSuggestionResult behavior`()
+        `then verify suggestion view will call showSuggestionResult`()
         `then verify visitable list with top shop`(suggestionUniverse)
-    }
-
-    private fun `given suggestion use case capture request params with top shop`(suggestionUniverse: SuggestionUniverse) {
-        every { getSuggestionUseCase.execute(any(), any()) }.answers {
-            secondArg<Subscriber<SuggestionUniverse>>().onStart()
-            secondArg<Subscriber<SuggestionUniverse>>().onNext(suggestionUniverse)
-        }
     }
 
     private fun `then verify visitable list with top shop`(suggestionUniverse: SuggestionUniverse) {
@@ -247,12 +206,12 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
     @Test
     fun `test get suggestion data with campaign local global component`() {
         val suggestionUniverse = suggestionCampaignResponse.jsonToObject<SuggestionUniverse>()
-        `given suggestion use case capture request params`(suggestionUniverse)
+        `Given Suggestion API will return SuggestionUniverse`(suggestionUniverse, requestParamsSlot)
 
         `when presenter get suggestion data`(searchParameter)
 
         `then verify suggestion API is called`()
-        `then verify suggestion view will call showSuggestionResult behavior`()
+        `then verify suggestion view will call showSuggestionResult`()
         `then verify visitable list should have SuggestionDoubleLineWithoutImageDataView`(suggestionUniverse)
     }
 
@@ -278,12 +237,12 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
     @Test
     fun `test get suggestion data with campaign local global component at the top`() {
         val suggestionUniverse = suggestionCampaignAtTopResponse.jsonToObject<SuggestionUniverse>()
-        `given suggestion use case capture request params`(suggestionUniverse)
+        `Given Suggestion API will return SuggestionUniverse`(suggestionUniverse, requestParamsSlot)
 
         `when presenter get suggestion data`(searchParameter)
 
         `then verify suggestion API is called`()
-        `then verify suggestion view will call showSuggestionResult behavior`()
+        `then verify suggestion view will call showSuggestionResult`()
         `then verify visitable list should only have SuggestionDoubleLineWithoutImageDataView`(suggestionUniverse)
     }
 
@@ -298,18 +257,113 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
     }
 
     @Test
-    fun `Test suggestion presenter has set parameter and no warehouseId`() {
-        `Given chosen address data`(LocalCacheModel())
-        `Given getSuggestionUseCase will be successful`(suggestionCommonResponse.jsonToObject())
+    fun `Suggestion request will include choose address params if exists`() {
+        val warehouseId = "2216"
+        val dummyChooseAddressData = LocalCacheModel(
+            address_id = "123",
+            city_id = "45",
+            district_id = "123",
+            lat = "10.2131",
+            long = "12.01324",
+            postal_code = "12345",
+            warehouse_id = warehouseId
+        )
+        val suggestionUniverse = suggestionCommonResponse.jsonToObject<SuggestionUniverse>()
+
+        `Given chosen address data`(dummyChooseAddressData)
+        `Given Suggestion API will return SuggestionUniverse`(suggestionUniverse, requestParamsSlot)
 
         `when presenter get suggestion data`()
 
-        `Then verify search parameter has no warehouseId`()
+        `Then verify search parameter has choose address params`(dummyChooseAddressData)
     }
 
-    private fun `Then verify search parameter has no warehouseId`() {
-        val requestParams = requestParamsSlot.captured
+    private fun `Given chosen address data`(chooseAddressModel: LocalCacheModel?) {
+        every { suggestionView.chooseAddressData } returns chooseAddressModel
+    }
 
-        requestParams.parameters.shouldNotContain(SearchApiConst.USER_WAREHOUSE_ID)
+    private fun `Then verify search parameter has choose address params`(
+        localCacheModel: LocalCacheModel
+    ) {
+        val suggestionParams = requestParams.parameters
+        suggestionParams[USER_LAT] shouldBe localCacheModel.lat
+        suggestionParams[USER_LONG] shouldBe localCacheModel.long
+        suggestionParams[USER_ADDRESS_ID] shouldBe localCacheModel.address_id
+        suggestionParams[USER_CITY_ID] shouldBe localCacheModel.city_id
+        suggestionParams[USER_DISTRICT_ID] shouldBe localCacheModel.district_id
+        suggestionParams[USER_POST_CODE] shouldBe localCacheModel.postal_code
+        suggestionParams[USER_WAREHOUSE_ID] shouldBe localCacheModel.warehouse_id
+    }
+
+    @Test
+    fun `Suggestion request will not include choose address params if not exists`() {
+        val suggestionUniverse = suggestionCommonResponse.jsonToObject<SuggestionUniverse>()
+
+        `Given chosen address data`(LocalCacheModel())
+        `Given Suggestion API will return SuggestionUniverse`(suggestionUniverse, requestParamsSlot)
+
+        `when presenter get suggestion data`()
+
+        `Then verify search parameter has no choose address params`()
+    }
+
+    private fun `Then verify search parameter has no choose address params`() {
+        val suggestionParams = requestParams.parameters
+        suggestionParams.shouldNotContain(USER_LAT)
+        suggestionParams.shouldNotContain(USER_LONG)
+        suggestionParams.shouldNotContain(USER_ADDRESS_ID)
+        suggestionParams.shouldNotContain(USER_CITY_ID)
+        suggestionParams.shouldNotContain(USER_DISTRICT_ID)
+        suggestionParams.shouldNotContain(USER_POST_CODE)
+        suggestionParams.shouldNotContain(USER_WAREHOUSE_ID)
+    }
+
+    @Test
+    fun `Suggestion will show shop ads if both template and shop ads GQL is successful`() {
+        val suggestionUniverse = suggestionShopAdsResponse.jsonToObject<SuggestionUniverse>()
+        `Given Suggestion API will return SuggestionUniverse`(suggestionUniverse, requestParamsSlot)
+
+        `when presenter get suggestion data`()
+
+        `then verify suggestion view will call showSuggestionResult`()
+        `Then verify shop ads double line data view`(suggestionUniverse)
+    }
+
+    private fun `Then verify shop ads double line data view`(suggestionUniverse: SuggestionUniverse) {
+        val shopAdsDoubleLineDataView = (visitableList.first() as SuggestionDoubleLineDataDataView)
+
+        shopAdsDoubleLineDataView.data.assertShopAdsSuggestionData(
+            suggestionUniverse.data.items.first(),
+            suggestionUniverse.cpmModel.data.first(),
+            1,
+            expectedDefaultDimension90,
+            keyword,
+        )
+    }
+
+    @Test
+    fun `Suggestion will not show shop ads if shop ads GQL is not successful`() {
+        val suggestionUniverse = suggestionWithoutShopAdsResponse.jsonToObject<SuggestionUniverse>()
+        `Given Suggestion API will return SuggestionUniverse`(suggestionUniverse, requestParamsSlot)
+
+        `when presenter get suggestion data`()
+
+        `then verify suggestion view will call showSuggestionResult`()
+        `then verify visitable list is empty`()
+    }
+
+    private fun `then verify visitable list is empty`() {
+        visitableList.size shouldBe 0
+    }
+
+    @Test
+    fun `Suggestion will not show shop ads if there is no shop ads template`() {
+        val suggestionUniverse = suggestionWithoutShopAdsTemplateResponse.jsonToObject<SuggestionUniverse>()
+        `Given Suggestion API will return SuggestionUniverse`(suggestionUniverse, requestParamsSlot)
+
+        `when presenter get suggestion data`()
+
+        `then verify suggestion view will call showSuggestionResult`()
+        `then verify visitable list is empty`()
     }
 }

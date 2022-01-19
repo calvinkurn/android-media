@@ -1550,7 +1550,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun subscribeToProductNameValidationFromNetwork() {
-        observe(viewModel.productNameValidationFromNetwork) {
+        viewModel.productNameValidationFromNetwork.observe(viewLifecycleOwner, Observer {
             submitTextView?.show()
             submitLoadingIndicator?.hide()
             when(it) {
@@ -1572,7 +1572,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     viewModel.setIsProductNameInputError(true)
                 }
             }
-        }
+        })
     }
 
     private fun createAddProductPhotoButtonOnClickListener(): View.OnClickListener {

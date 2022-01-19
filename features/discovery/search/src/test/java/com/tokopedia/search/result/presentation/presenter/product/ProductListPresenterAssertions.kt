@@ -103,6 +103,7 @@ internal fun WishlistTrackingModel.assert(
     keyword shouldBe keyword
 }
 
+@Suppress("LongParameterList")
 internal fun List<InspirationCarouselDataView.Option.Product>.assert(
     expectedInspirationCarouselProduct: List<InspirationCarouselProduct>,
     inspirationCarouselTitle: String,

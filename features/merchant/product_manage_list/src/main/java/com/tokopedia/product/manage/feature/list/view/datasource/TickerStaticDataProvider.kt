@@ -19,21 +19,9 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
         }
     }
 
-    private fun MutableList<TickerData>.addGoPayCoinsCashbackInfo() {
-        add(
-            TickerData(
-                title = resourceProvider.getTickerGoPayCoinsCashbackInfoTitle(),
-                description = resourceProvider.getTickerGoPayCoinsCashbackInfoDescription(),
-                type = Ticker.TYPE_ANNOUNCEMENT,
-                isFromHtml = true
-            )
-        )
-    }
-
     fun getTickers(multiLocationSeller: Boolean): List<TickerData> {
         return mutableListOf<TickerData>().apply {
             addMultiLocationTicker(multiLocationSeller)
-            addGoPayCoinsCashbackInfo()
         }.filter { it.description.isNotBlank() }
     }
 }

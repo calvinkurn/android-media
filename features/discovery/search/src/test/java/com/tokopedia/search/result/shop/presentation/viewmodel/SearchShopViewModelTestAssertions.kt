@@ -19,7 +19,7 @@ internal inline fun <reified T> Any?.shouldBeInstanceOf(customMessage: String = 
     }
 }
 
-internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithLoadingMoreViewModel(query: String) {
+internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithLoadingMoreViewModel(ignored: String) {
     val lastIndex = this?.data?.lastIndex ?: 0
 
     this.shouldNotBeNull()
@@ -29,7 +29,7 @@ internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithLoadin
     this.shouldHaveLoadingMoreViewModel(lastIndex)
 }
 
-internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithoutLoadingMoreViewModel(query: String) {
+internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithoutLoadingMoreViewModel(ignored: String) {
     val lastIndex = this?.data?.lastIndex ?: 0
 
     this.shouldNotBeNull()

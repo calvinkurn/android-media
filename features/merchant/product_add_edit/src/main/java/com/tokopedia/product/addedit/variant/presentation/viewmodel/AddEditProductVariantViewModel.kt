@@ -6,8 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.data.model.GetVariantCategoryCombinationResponse
@@ -23,6 +25,7 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_COUNT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
+import com.tokopedia.product.addedit.variant.presentation.extension.getValueOrDefault
 import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -75,17 +78,13 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
         addSource(mSelectedVariantUnitValuesLevel1) {
-            val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty()
-                    ?: true
-            val isVariantUnitValuesLevel2Empty = mSelectedVariantUnitValuesLevel2.value?.isEmpty()
-                    ?: true
+            val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty().orTrue()
+            val isVariantUnitValuesLevel2Empty = mSelectedVariantUnitValuesLevel2.value?.isEmpty().orTrue()
             this.value = isInputValid(isVariantUnitValuesLevel1Empty, isVariantUnitValuesLevel2Empty, isSingleVariantTypeIsSelected)
         }
         addSource(mSelectedVariantUnitValuesLevel2) {
-            val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty()
-                    ?: true
-            val isVariantUnitValuesLevel2Empty = mSelectedVariantUnitValuesLevel2.value?.isEmpty()
-                    ?: true
+            val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty().orTrue()
+            val isVariantUnitValuesLevel2Empty = mSelectedVariantUnitValuesLevel2.value?.isEmpty().orTrue()
             this.value = isInputValid(isVariantUnitValuesLevel1Empty, isVariantUnitValuesLevel2Empty, isSingleVariantTypeIsSelected)
         }
     }
@@ -208,7 +207,7 @@ class AddEditProductVariantViewModel @Inject constructor(
             }
         }
 
-        productInputModel.value?.variantInputModel?.apply {
+        productInputModel.getValueOrDefault().variantInputModel.apply {
             products = mapProducts(selectedVariantDetails, variantPhotos, sortedVariantUnitValuesMap)
             selections =  mapSelections(selectedVariantDetails, sortedVariantUnitValuesMap, sortedSelectedVariantUnitMap)
             sizecharts = mapSizechart(variantSizechart.value)
@@ -328,10 +327,11 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     fun removeVariant() {
         mIsRemovingVariant.value = true
-        val isRemoteDataHasVariant = productInputModel.value?.variantInputModel?.isRemoteDataHasVariant
-                ?: false // keep isRemoteDataHasVariant old data
+        // keep isRemoteDataHasVariant old data
+        val isRemoteDataHasVariant =
+            productInputModel.getValueOrDefault().variantInputModel.isRemoteDataHasVariant
         // keep the selections before being cleared
-        val selections = productInputModel.value?.variantInputModel?.selections?: listOf()
+        val selections = productInputModel.getValueOrDefault().variantInputModel.selections
         productInputModel.value?.variantInputModel = VariantInputModel(
                 isRemoteDataHasVariant = isRemoteDataHasVariant)
         selectedVariantDetails = mutableListOf()
@@ -342,7 +342,7 @@ class AddEditProductVariantViewModel @Inject constructor(
         selectedVariantUnitMap = HashMap()
         mIsVariantPhotosVisible.value = false
 
-        productInputModel.value?.detailInputModel?.categoryId?.let {
+        productInputModel.getValueOrDefault().detailInputModel.categoryId.let {
             val categoryId = it.toIntOrNull()
             categoryId?.run { getVariantCategoryCombination(this, selections) }
         }
@@ -456,8 +456,7 @@ class AddEditProductVariantViewModel @Inject constructor(
             variantPicture: List<PictureVariantInputModel>,
             combination: List<Int>
     ): ProductVariantInputModel {
-        val products =
-                productInputModel.value?.variantInputModel?.products.orEmpty()
+        val products = productInputModel.getValueOrDefault().variantInputModel.products
         val productVariant = products.firstOrNull {
             it.combination == combination
         }
@@ -465,7 +464,7 @@ class AddEditProductVariantViewModel @Inject constructor(
         return if (productVariant == null) {
             // condition if adding new product variant (product variant combination not listed in products)
             ProductVariantInputModel(
-                    price = productInputModel.value?.detailInputModel?.price.orZero(),
+                    price = productInputModel.getValueOrDefault().detailInputModel.price,
                     stock = MIN_PRODUCT_STOCK_LIMIT,
                     pictures = variantPicture,
                     combination = combination,
@@ -506,20 +505,20 @@ class AddEditProductVariantViewModel @Inject constructor(
         val selectedVariantDetails = mutableListOf<VariantDetail>()
         selectedVariantInputModels.forEach { inputModel ->
             // selected variant types
-            val id = inputModel.variantId.toIntOrNull() ?: 0
+            val id = inputModel.variantId.toIntSafely()
             val identifier = inputModel.identifier
             val name = inputModel.variantName
             // selected variant unit values
             val unitValues = mutableListOf<UnitValue>()
             val optionInputModels = inputModel.options
             optionInputModels.forEach {
-                val unitValueId = it.unitValueID.toIntOrNull() ?: 0
+                val unitValueId = it.unitValueID.toIntSafely()
                 val unitValueName = it.value
                 val unitValue = UnitValue(variantUnitValueID = unitValueId, value = unitValueName)
                 unitValues.add(unitValue)
             }
             // selected variant unit
-            val unitId = inputModel.unitID.toIntOrNull() ?: 0
+            val unitId = inputModel.unitID.toIntSafely()
             val unitName = inputModel.unitName
             val unit = Unit(variantUnitID = unitId, unitName = unitName, unitValues = unitValues)
             // selected variant detail
