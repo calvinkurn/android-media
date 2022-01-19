@@ -89,6 +89,9 @@
         <include
             android:id="@+id/include_layout"
             layout="@layout/view_recharge_client_number_simplified"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl5"
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"

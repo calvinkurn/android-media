@@ -15,16 +15,21 @@ import com.tokopedia.recharge_component.presentation.adapter.DenomFullAdapter
 import com.tokopedia.unifycomponents.BaseCustomView
 import org.jetbrains.annotations.NotNull
 
-class DenomFullWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
-                                                defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+class DenomFullWidget @JvmOverloads constructor(
+    @NotNull context: Context, attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : BaseCustomView(context, attrs, defStyleAttr) {
 
-        private var rechargeDenomFullWidgetBinding = WidgetRechargeDenomFullBinding.inflate(LayoutInflater.from(context), this, true)
+    private var rechargeDenomFullWidgetBinding =
+        WidgetRechargeDenomFullBinding.inflate(LayoutInflater.from(context), this, true)
 
-        fun renderDenomFullLayout(denomFullListener: RechargeDenomFullListener,
-                                  denomData: DenomWidgetModel){
+    fun renderDenomFullLayout(
+        denomFullListener: RechargeDenomFullListener,
+        denomData: DenomWidgetModel
+    ) {
+        if (!denomData.listDenomData.isNullOrEmpty()) {
             val adapterDenomFull = DenomFullAdapter()
-            with(rechargeDenomFullWidgetBinding){
+            with(rechargeDenomFullWidgetBinding) {
                 denomFullShimmering.root.hide()
                 tgDenomFullWidgetTitle.run {
                     show()
@@ -32,7 +37,7 @@ class DenomFullWidget @JvmOverloads constructor(@NotNull context: Context, attrs
                 }
                 rvDenomFullCard.run {
                     show()
-                    with(adapterDenomFull){
+                    with(adapterDenomFull) {
                         clearDenomFullData()
                         setDenomFullList(denomData.listDenomData)
                         listener = denomFullListener
@@ -43,14 +48,19 @@ class DenomFullWidget @JvmOverloads constructor(@NotNull context: Context, attrs
                     }
                 }
             }
-        }
-
-        fun renderDenomFullShimmering(){
-            with(rechargeDenomFullWidgetBinding){
-                tgDenomFullWidgetTitle.hide()
-                denomFullShimmering.root.show()
-                rvDenomFullCard.hide()
-            }
-        }
-
+        } else renderFailDenomFull()
     }
+
+    fun renderDenomFullShimmering() {
+        with(rechargeDenomFullWidgetBinding) {
+            tgDenomFullWidgetTitle.hide()
+            denomFullShimmering.root.show()
+            rvDenomFullCard.hide()
+        }
+    }
+
+    fun renderFailDenomFull() {
+        rechargeDenomFullWidgetBinding.root.hide()
+    }
+
+}

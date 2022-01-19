@@ -21,24 +21,26 @@ class DenomGridWidget @JvmOverloads constructor(@NotNull context: Context, attrs
     private var rechargeDenomGridViewBinding = WidgetRechargeDenomGridBinding.inflate(LayoutInflater.from(context), this, true)
 
     fun renderDenomGridLayout(denomGridListener: RechargeDenomGridListener, denomData: DenomWidgetModel){
-        val adapterDenomGrid = DenomGridAdapter()
-        with(rechargeDenomGridViewBinding){
-            denomGridShimmering.root.hide()
-            tgDenomGridWidgetTitle.run {
-                show()
-                text = denomData.mainTitle
+        if (!denomData.listDenomData.isNullOrEmpty()) {
+            val adapterDenomGrid = DenomGridAdapter()
+            with(rechargeDenomGridViewBinding) {
+                denomGridShimmering.root.hide()
+                tgDenomGridWidgetTitle.run {
+                    show()
+                    text = denomData.mainTitle
+                }
+                rvDenomGridCard.run {
+                    show()
+                    adapterDenomGrid.clearDenomGridData()
+                    adapterDenomGrid.setDenomGridList(denomData.listDenomData)
+                    adapterDenomGrid.listener = denomGridListener
+                    adapterDenomGrid.selectedProductIndex = null
+                    adapterDenomGrid.denomWidgetType = DenomWidgetEnum.GRID_TYPE
+                    adapter = adapterDenomGrid
+                    layoutManager = GridLayoutManager(context, GRID_SIZE)
+                }
             }
-            rvDenomGridCard.run {
-                show()
-                adapterDenomGrid.clearDenomGridData()
-                adapterDenomGrid.setDenomGridList(denomData.listDenomData)
-                adapterDenomGrid.listener = denomGridListener
-                adapterDenomGrid.selectedProductIndex = null
-                adapterDenomGrid.denomWidgetType = DenomWidgetEnum.GRID_TYPE
-                adapter = adapterDenomGrid
-                layoutManager = GridLayoutManager(context, GRID_SIZE)
-            }
-        }
+        } else renderFailDenomGrid()
     }
 
     fun renderFailDenomGrid(){

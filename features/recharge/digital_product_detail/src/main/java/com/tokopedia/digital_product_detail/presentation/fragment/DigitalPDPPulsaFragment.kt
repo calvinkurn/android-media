@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AlphaAnimation
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -12,15 +11,13 @@ import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
-import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.activity.DigitalPDPPulsaActivity
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
-import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPTelcoViewModel
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
@@ -28,9 +25,8 @@ import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardEnum
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
+import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import kotlin.math.abs
@@ -39,18 +35,18 @@ import kotlin.math.abs
  * @author by firmanda on 04/01/21
  */
 
-class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
+class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: DigitalPDPPulsaViewModel
-    lateinit var telcoViewModel: DigitalPDPTelcoViewModel
 
     private var binding by autoClearedNullable<FragmentDigitalPdpPulsaBinding>()
 
     private var dynamicSpacerHeightRes = R.dimen.dynamic_banner_space
     private var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(
-        RechargeCatalogPrefixSelect())
+        RechargeCatalogPrefixSelect()
+    )
 
     private var operatorId = ""
 
@@ -64,10 +60,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
         super.onCreate(savedInstanceState)
         val viewModelProvider = ViewModelProvider(this, viewModelFactory)
         viewModel = viewModelProvider.get(DigitalPDPPulsaViewModel::class.java)
-        telcoViewModel = viewModelProvider.get(DigitalPDPTelcoViewModel::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentDigitalPdpPulsaBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -80,7 +79,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
         getCatalogMenuDetail()
         getPrefixOperatorData()
         observeData()
-        viewModel.getDelayedResponse()
     }
 
     private fun renderProduct() {
@@ -102,9 +100,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
                         showOperatorIcon(selectedOperator.operator.attributes.imageUrl)
                     }
                     hideEmptyState()
-                    showDenomGrid()
+                    getCatalogProductInput(selectedOperator.key)
                     showRecommendation()
-                    showMCCM()
                     showTicker()
                 } else {
                     showEmptyState()
@@ -116,31 +113,53 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
     }
 
     private fun observeData() {
-        viewModel.dummy.observe(viewLifecycleOwner, {
-            binding?.rechargePdpPulsaClientNumberWidget?.run {
-                setLoading(false)
-            }
-        })
-
         viewModel.favoriteNumberData.observe(viewLifecycleOwner, {
             when (it) {
-                is Success -> onSuccessGetFavoriteNumber(it.data)
-                is Fail -> onFailedGetFavoriteNumber()
+                is RechargeNetworkResult.Success -> onSuccessGetFavoriteNumber(it.data)
+                is RechargeNetworkResult.Fail -> onFailedGetFavoriteNumber()
+                is RechargeNetworkResult.Loading -> {}
             }
         })
 
-        telcoViewModel.catalogPrefixSelect.observe(viewLifecycleOwner, {
+        viewModel.catalogPrefixSelect.observe(viewLifecycleOwner, {
             when (it) {
-                is Success -> {
-                    this.operatorData = it.data
-                    renderProduct()
-                    // [Misael] replace to renderProductFromCustomData(...)
+                is RechargeNetworkResult.Success -> onSuccessGetPrefixOperator(it.data)
+                is RechargeNetworkResult.Fail -> onFailedGetPrefixOperator()
+                is RechargeNetworkResult.Loading -> {}
+            }
+        })
+
+
+        viewModel.observableDenomData.observe(viewLifecycleOwner, { denomData ->
+            when (denomData) {
+                is RechargeNetworkResult.Success -> {
+                    onSuccessDenomGrid(denomData.data)
                 }
-                is Fail -> {
-                    // [Misael] onErrorPrefix
+
+                is RechargeNetworkResult.Fail -> {
+                    view?.let {
+                        onFailedDenomGrid()
+                        //TODO add fail
+                    }
+                }
+
+                is RechargeNetworkResult.Loading -> {
+                    onShimmeringDenomGrid()
                 }
             }
         })
+
+        viewModel.observableMCCMData.observe(viewLifecycleOwner, { mccmData ->
+            when (mccmData) {
+                is RechargeNetworkResult.Success -> {
+                    onSuccessMCCM(mccmData.data)
+                }
+            }
+        })
+    }
+
+    private fun getCatalogProductInput(selectedOperatorKey: String) {
+        viewModel.getRechargeCatalogInput(MENU_ID, selectedOperatorKey)
     }
 
     private fun getCatalogMenuDetail() {
@@ -148,24 +167,24 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
     }
 
     private fun getPrefixOperatorData() {
-        telcoViewModel.getPrefixOperator(CommonTopupBillsGqlQuery.prefixSelectTelco, MENU_ID)
+        viewModel.getPrefixOperator(MENU_ID)
     }
 
     private fun getFavoriteNumber(
         categoryId: String = TelcoCategoryType.CATEGORY_PULSA.toString(),
         shouldRefreshInputNumber: Boolean = true
     ) {
-       viewModel.getFavoriteNumber()
+        viewModel.getFavoriteNumber(listOf(categoryId))
     }
 
     private fun onSuccessGetFavoriteNumber(favoriteNumber: List<TopupBillsSeamlessFavNumberItem>) {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
-            // -- start -- TODO: Add shouldRefreshinputNumber
-            setInputNumber(favoriteNumber[0].clientNumber)
-            setContactName(favoriteNumber[0].clientName)
-            // -- end --
-            setFilterChipShimmer(false, favoriteNumber.isEmpty())
             if (favoriteNumber.isNotEmpty()) {
+                // -- start -- TODO: Add shouldRefreshinputNumber
+                setInputNumber(favoriteNumber[0].clientNumber)
+                setContactName(favoriteNumber[0].clientName)
+                // -- end --
+                setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
                 setAutoCompleteList(favoriteNumber)
                 dynamicSpacerHeightRes = R.dimen.dynamic_banner_space_extended
@@ -175,19 +194,32 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
         }
     }
 
+    private fun onSuccessGetPrefixOperator(operatorList: TelcoCatalogPrefixSelect) {
+        this.operatorData = operatorList
+        renderProduct()
+    }
+
     private fun onFailedGetFavoriteNumber() {
+
+    }
+
+    private fun onFailedGetPrefixOperator() {
 
     }
 
     private fun initClientNumberWidget() {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
 
-            setInputFieldStaticLabel(getString(
-                com.tokopedia.recharge_component.R.string.label_recharge_client_number))
+            setInputFieldStaticLabel(
+                getString(
+                    com.tokopedia.recharge_component.R.string.label_recharge_client_number
+                )
+            )
             setInputFieldType(RechargeClientNumberWidget.InputFieldType.Telco)
             setInputNumberValidator { true }
             setListener(
-                inputFieldListener = object: RechargeClientNumberWidget.ClientNumberInputFieldListener {
+                inputFieldListener = object :
+                    RechargeClientNumberWidget.ClientNumberInputFieldListener {
                     override fun onRenderOperator(isDelayed: Boolean) {
                         binding?.rechargePdpPulsaClientNumberWidget?.setLoading(true)
                         operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty().let {
@@ -205,12 +237,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
                         showEmptyState()
                     }
                 },
-                autoCompleteListener = object: RechargeClientNumberWidget.ClientNumberAutoCompleteListener {
+                autoCompleteListener = object :
+                    RechargeClientNumberWidget.ClientNumberAutoCompleteListener {
                     override fun onClickAutoComplete(isFavoriteContact: Boolean) {
                         // do nothing
                     }
                 },
-                filterChipListener = object: RechargeClientNumberWidget.ClientNumberFilterChipListener {
+                filterChipListener = object :
+                    RechargeClientNumberWidget.ClientNumberFilterChipListener {
                     override fun onShowFilterChip(isLabeled: Boolean) {
                         // do nothing
                     }
@@ -234,85 +268,21 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
         )
     }
 
-    private fun showDenomGrid(){
+    private fun onSuccessDenomGrid(denomData: DenomWidgetModel) {
         binding?.let {
-            it.rechargePdpPulsaDenomGridWidget.show()
-            it.rechargePdpPulsaDenomGridWidget.renderDenomGridLayout(denomGridListener = object:
-                RechargeDenomGridListener {
-                override fun onDenomGridClicked(denomGrid: DenomData, position: Int) {
-                    // TODO("Not yet implemented")
-                }
-            }, DenomWidgetModel(
-                mainTitle = "Diskon Rp15.000 buat pengguna baru, nih!",
-                listDenomData = listOf(
-                    DenomData(
-                        title="15 ribu",
-                        specialLabel = "Any campaign label",
-                        price = "Rp500",
-                        slashPrice = "Rp16.500",
-                    ),
-                    DenomData(
-                        title="15 ribu",
-                        specialLabel = "Any campaign label",
-                        price = "Rp500",
-                        discountLabel = "10%",
-                        slashPrice = "Rp16.500",
-                        appLink = "tokopedia://deals",
-                        expiredDate = "December 2021",
-                        flashSaleLabel = "Segera Habis",
-                        flashSalePercentage = 80
-                    ),
-                    DenomData(
-                        title="50 ribu",
-                        price = "Rp35.500",
-                    ),
-                    DenomData(
-                        title="50 ribu",
-                        price = "Rp35.500",
-                        slashPrice = "75.000"
-                    ),
-                    DenomData(
-                        title="100 ribu",
-                        price = "Rp85.500",
-                        slashPrice = "105.000"
-                    ),
-                    DenomData(
-                        title="50 ribu",
-                        specialLabel = "Any campaign label",
-                        price = "Rp35.500",
-                    ),
-                    DenomData(
-                        title="50 ribu",
-                        price = "Rp35.500",
-                    ),
-                    DenomData(
-                        title="50 ribu",
-                        price = "Rp35.500",
-                    ),
-                    DenomData(
-                        title="15 ribu",
-                        //specialLabel = "Any campaign label",
-                        specialLabel = "Any campaign label",
-                        price = "Rp500",
-//                        discountLabel = "10%",
-                        discountLabel = "10%",
-                        slashPrice = "Rp16.500",
-                        appLink = "tokopedia://deals",
-                        expiredDate = "December 2021",
-                        flashSaleLabel = "Segera Habis",
-                        flashSalePercentage = 80
-                    ),
-                    DenomData(
-                        title="50 ribu",
-                        price = "Rp35.500",
-                        slashPrice = "Rp16.500",
-//                        appLink = "tokopedia://deals",
-//                        expiredDate = "December 2021",
-//                        flashSaleLabel = "Segera Habis",
-//                        flashSalePercentage = 80
-                    )
-                )
-            ))
+            it.rechargePdpPulsaDenomGridWidget.renderDenomGridLayout(this, denomData)
+        }
+    }
+
+    private fun onFailedDenomGrid() {
+        binding?.let {
+            it.rechargePdpPulsaDenomGridWidget.renderFailDenomGrid()
+        }
+    }
+
+    private fun onShimmeringDenomGrid() {
+        binding?.let {
+            it.rechargePdpPulsaDenomGridWidget.renderDenomGridShimmering()
         }
     }
 
@@ -323,7 +293,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
                 RechargeRecommendationCardListener {
                     override fun onProductRecommendationCardClicked(applinkUrl: String) {
                         context?.let {
-    //                        RouteManager.route(it, applinkUrl)
+                            //                        RouteManager.route(it, applinkUrl)
                         }
                     }
                 },
@@ -355,68 +325,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
         }
     }
 
-    private fun showMCCM(){
+    private fun onSuccessMCCM(denomGrid: DenomWidgetModel) {
         binding?.let {
             it.rechargePdpPulsaPromoWidget.show()
-            it.rechargePdpPulsaPromoWidget.renderMCCMGrid(
-                denomGridListener = object: RechargeDenomGridListener{
-                    override fun onDenomGridClicked(denomGrid: DenomData, position: Int) {
-                        // TODO("Not yet implemented")
-                    }
-                }, DenomWidgetModel(
-                    mainTitle = "Diskon Rp15.000 buat pengguna baru, nih!",
-                    listDenomData = listOf(
-                        DenomData(
-                            title="15 ribu",
-                            specialLabel = "Any campaign label",
-                            price = "Rp500",
-                            discountLabel = "10%",
-                            slashPrice = "Rp16.500",
-                            appLink = "tokopedia://deals",
-                        ),
-                        DenomData(
-                            title="15 ribu",
-                            specialLabel = "Any campaign label",
-                            price = "Rp500",
-                            discountLabel = "10%",
-                            slashPrice = "Rp16.500",
-                            appLink = "tokopedia://deals",
-                        ),
-                        DenomData(
-                            title="15 ribu",
-                            specialLabel = "Any campaign label",
-                            price = "Rp500",
-                            discountLabel = "10%",
-                            slashPrice = "Rp16.500",
-                            appLink = "tokopedia://deals",
-                        ),
-                        DenomData(
-                            title="15 ribu",
-                            specialLabel = "Any campaign label",
-                            price = "Rp500",
-                            discountLabel = "10%",
-                            slashPrice = "Rp16.500",
-                            appLink = "tokopedia://deals",
-                        ),
-                        DenomData(
-                            title="15 ribu",
-                            specialLabel = "Any campaign label",
-                            price = "Rp500",
-                            discountLabel = "10%",
-                            slashPrice = "Rp16.500",
-                            appLink = "tokopedia://deals",
-                        ),
-                        DenomData(
-                            title="15 ribu",
-                            specialLabel = "Any campaign label",
-                            price = "Rp500",
-                            discountLabel = "10%",
-                            slashPrice = "Rp16.500",
-                            appLink = "tokopedia://deals",
-                        )
-                    )
-                )
-            )
+            it.rechargePdpPulsaPromoWidget.renderMCCMGrid(this, denomGrid, getString(com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
     }
 
@@ -461,7 +373,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
                     lastOffset = verticalOffSet
                     if (abs(verticalOffSet) >= totalScrollRange && !lastIsCollapsed) {
                         if (binding?.rechargePdpPulsaClientNumberWidget?.isErrorMessageShown() == false
-                            && binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber()?.isNotEmpty() == true
+                            && binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber()
+                                ?.isNotEmpty() == true
                         ) {
                             //Collapsed
                             lastIsCollapsed = true
@@ -481,7 +394,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
         binding?.rechargePdpPulsaDynamicBannerSpacer?.layoutParams?.height =
             context?.resources?.getDimensionPixelSize(dynamicSpacerHeightRes)
                 ?: DEFAULT_SPACE_HEIGHT
-        println("tinggi : ${binding?.rechargePdpPulsaDynamicBannerSpacer?.layoutParams?.height}")
         binding?.rechargePdpPulsaDynamicBannerSpacer?.requestLayout()
     }
 
@@ -502,6 +414,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment()  {
             rechargePdpPulsaClientNumberWidget.setVisibleSimplifiedLayout(false)
             hideDynamicSpacer()
         }
+    }
+
+    /**
+     * RechargeDenomGridListener
+     */
+    override fun onDenomGridClicked(denomGrid: DenomData, position: Int) {
+
     }
 
     companion object {
