@@ -8,13 +8,13 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 object TokoNowSwitcherUtil {
     private const val PARAM_TOKONOW_REFRESH = "tokonow_refresh"
 
-    fun switchService(context: Context, param: String, onRefresh: (LocalCacheModel) -> Unit, onMove: (Context) -> Unit) {
+    fun switchService(context: Context, param: String, onRefreshPage: (LocalCacheModel) -> Unit, onRedirectPage: (Context) -> Unit) {
         val gridParams = Uri.parse("?${param}")
         val tokoNowRefresh = gridParams.getQueryParameter(PARAM_TOKONOW_REFRESH).toBoolean()
         if(tokoNowRefresh) {
-            onRefresh(ChooseAddressUtils.getLocalizingAddressData(context))
+            onRefreshPage(ChooseAddressUtils.getLocalizingAddressData(context))
         } else {
-            onMove(context)
+            onRedirectPage(context)
         }
     }
 }

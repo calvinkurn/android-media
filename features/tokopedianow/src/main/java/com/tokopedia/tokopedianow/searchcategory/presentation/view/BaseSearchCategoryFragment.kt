@@ -566,10 +566,10 @@ abstract class BaseSearchCategoryFragment:
             switchService(
                 context = context,
                 param = param,
-                onRefresh = {
+                onRefreshPage = {
                     getViewModel().setUserPreference()
                 },
-                onMove = {
+                onRedirectPage = {
                     RouteManager.route(it, applink)
                 }
             )

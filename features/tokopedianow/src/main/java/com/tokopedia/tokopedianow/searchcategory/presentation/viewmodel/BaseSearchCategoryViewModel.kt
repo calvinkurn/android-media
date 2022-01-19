@@ -1178,11 +1178,7 @@ abstract class BaseSearchCategoryViewModel(
         launchCatchError(
             block = {
                 chooseAddressData?.let { currentChooseAddressData ->
-                    val type = if (serviceType.isNotBlank()) {
-                        serviceType
-                    } else {
-                        if(currentChooseAddressData.service_type == NOW_15M) NOW_2H else NOW_15M
-                    }
+                    val type = getServiceType(serviceType)
                     setUserPreferenceMutableLiveData.postValue(Success(setUserPreferenceUseCase.execute(currentChooseAddressData, type)))
                 }
             },
@@ -1190,6 +1186,20 @@ abstract class BaseSearchCategoryViewModel(
                 setUserPreferenceMutableLiveData.postValue(Fail(it))
             },
         )
+    }
+
+    private fun getServiceType(serviceType: String) : String {
+        return when {
+            serviceType.isNotBlank() -> {
+                serviceType
+            }
+            chooseAddressData?.service_type == NOW_15M -> {
+                NOW_2H
+            }
+            else -> {
+                NOW_15M
+            }
+        }
     }
 
     open fun onBindRecommendationCarousel(

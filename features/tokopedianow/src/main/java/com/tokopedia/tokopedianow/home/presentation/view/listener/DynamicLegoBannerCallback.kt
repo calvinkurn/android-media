@@ -35,10 +35,10 @@ class DynamicLegoBannerCallback(
         switchService(
             context = context,
             param = channelGrid.param,
-            onRefresh = {
+            onRefreshPage = {
                 viewModel.switchService(it)
             },
-            onMove = {
+            onRedirectPage = {
                 RouteManager.route(it, if (channelGrid.applink.isNotEmpty()) channelGrid.applink else channelGrid.url)
             }
         )
