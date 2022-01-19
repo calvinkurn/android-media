@@ -1201,7 +1201,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 val newWidgetList = adapter.data.toMutableList()
                 forEach { section ->
                     newWidgetList.indexOf(section).takeIf { it > -1 }?.let { index ->
-                        newWidgetList[index] = section.copy().apply { isLoaded = true }
+                        newWidgetList[index] = section.copyWidget().apply { isLoaded = true }
                     }
                 }
                 updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
@@ -1501,7 +1501,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         newWidgetList.removeAt(index)
                         removeEmptySections(newWidgetList, index)
                     } else {
-                        val copiedWidget = widget.copy()
+                        val copiedWidget = widget.copyWidget()
                         copiedWidget.data = widgetData
                         copiedWidget.isLoading = widget.data?.isFromCache ?: false
 
@@ -1562,7 +1562,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val newWidgetList = adapter.data.map { widget ->
             val isSameWidgetType = widget.widgetType == widgetType
             if (widget is W && widget.data == null && widget.isLoaded && isSameWidgetType) {
-                widget.copy().apply {
+                widget.copyWidget().apply {
                     data = D::class.java.newInstance().apply {
                         error = message
                     }
@@ -1707,7 +1707,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 !is TickerWidgetUiModel,
                 !is WhiteSpaceUiModel -> {
                     if (isInvoked) {
-                        widget.copy().apply { impressHolder = ImpressHolder() }
+                        widget.copyWidget().apply { impressHolder = ImpressHolder() }
                     } else {
                         widget
                     }
