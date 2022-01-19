@@ -35,10 +35,16 @@ class DenomGridAdapter: RecyclerView.Adapter<DenomGridViewHolder>(), RechargeDen
         return DenomGridViewHolder(this, binding)
     }
 
-    override fun onDenomGridClicked(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int) {
+    override fun onDenomGridClicked(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int, isShowBuyWidget: Boolean) {
+        var isNeedtoShowBuyWidget = isShowBuyWidget
+
         if (selectedProductIndex == null){
             selectedProductIndex = position
             notifyItemChanged(position)
+        } else if (selectedProductIndex == position) {
+            selectedProductIndex = null
+            notifyItemChanged(position)
+            isNeedtoShowBuyWidget = false
         } else {
             selectedProductIndex?.let { selectedPos ->
                 notifyItemChanged(selectedPos)
@@ -46,7 +52,7 @@ class DenomGridAdapter: RecyclerView.Adapter<DenomGridViewHolder>(), RechargeDen
             selectedProductIndex = position
             notifyItemChanged(position)
         }
-        listener?.onDenomGridClicked(denomGrid, denomWidgetType, position)
+        listener?.onDenomGridClicked(denomGrid, denomWidgetType, position, isNeedtoShowBuyWidget)
     }
 
     fun setDenomGridList(listDenom: List<DenomData>) {

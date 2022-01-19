@@ -4,5 +4,6 @@ import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 
 interface RechargeDenomGridListener {
-    fun onDenomGridClicked(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int)
+    fun onDenomGridClicked(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int,
+                           isShowBuyWidget: Boolean)
 }

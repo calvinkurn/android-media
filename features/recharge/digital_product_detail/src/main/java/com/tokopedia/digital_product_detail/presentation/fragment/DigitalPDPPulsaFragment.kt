@@ -338,6 +338,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun onHideBuyWidget(){
+        binding?.let {
+            it.rechargePdpPulsaBuyWidget.hideBuyWidget()
+        }
+    }
+
     private fun showTicker() {
         binding?.rechargePdpPulsaTickerWidget?.run {
             setText("Transaksi selama <b>23:40-00:20 WIB</b> baru akan diproses pada <b>00:45 WIB</b>. <a href=\"\">Selengkapnya</a>")
@@ -406,13 +412,19 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     /**
      * RechargeDenomGridListener
      */
-    override fun onDenomGridClicked(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int) {
+    override fun onDenomGridClicked(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int,
+                                    isShowBuyWidget: Boolean) {
         if (layoutType == DenomWidgetEnum.MCCM_TYPE){
             onClearSelectedDenomGrid()
         } else if (layoutType == DenomWidgetEnum.GRID_TYPE){
             onClearSelectedMCCM()
         }
-        onShowBuyWidget(denomGrid)
+
+        if (isShowBuyWidget) {
+            onShowBuyWidget(denomGrid)
+        } else {
+            onHideBuyWidget()
+        }
     }
 
     override fun onClickedButtonLanjutkan(denom: DenomData) {
@@ -438,6 +450,5 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         const val FADE_OUT_DURATION: Long = 300
 
         const val DEFAULT_SPACE_HEIGHT = 81
-
     }
 }
