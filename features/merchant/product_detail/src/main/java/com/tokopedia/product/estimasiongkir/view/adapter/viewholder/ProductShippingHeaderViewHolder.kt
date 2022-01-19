@@ -49,7 +49,7 @@ class ProductShippingHeaderViewHolder(view: View,
     }
 
     private fun renderTokoCabang(element: ProductShippingHeaderDataModel) = with(itemView) {
-        if (element.boType == ProductDetailCommonConstant.BO_TOKONOW) {
+        if (element.boType == ProductDetailCommonConstant.BO_TOKONOW || element.boType == ProductDetailCommonConstant.BO_TOKONOW_15) {
             icShippingLine?.setMargin(0, 0, 0, 0)
             txtShippingFrom?.text = context.getString(R.string.pdp_shipping_from_builder, element.tokoCabangTitle).boldOrLinkText(false, context, element.tokoCabangTitle to {})
             renderGeneralContentTokoCabang(element.tokoCabangContent)
