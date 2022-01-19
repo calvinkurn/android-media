@@ -45,9 +45,6 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     private val _observableDenomData = MutableLiveData<RechargeNetworkResult<DenomWidgetModel>>()
     private val _observableMCCMData = MutableLiveData<RechargeNetworkResult<DenomWidgetModel>>()
 
-    fun setInitalWidget(){
-    }
-
     fun getRechargeCatalogInput(menuId: Int, operator: String){
         _observableDenomData.postValue(RechargeNetworkResult.Loading)
         launchCatchError(block = {

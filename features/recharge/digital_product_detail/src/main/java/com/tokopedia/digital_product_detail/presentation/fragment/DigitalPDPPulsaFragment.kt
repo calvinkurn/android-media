@@ -75,7 +75,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClientNumberWidget()
-        initInitalLayout()
         setAnimationAppBarLayout()
         getCatalogMenuDetail()
         getPrefixOperatorData()
@@ -154,10 +153,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
                 }
             }
         })
-    }
-
-    private fun initInitalLayout() {
-        viewModel.setInitalWidget()
     }
 
     private fun getCatalogProductInput(selectedOperatorKey: String) {
