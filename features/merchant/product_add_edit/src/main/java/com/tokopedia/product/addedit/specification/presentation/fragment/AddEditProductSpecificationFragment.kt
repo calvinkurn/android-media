@@ -29,6 +29,7 @@ import com.tokopedia.product.addedit.specification.di.DaggerAddEditProductSpecif
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.presentation.adapter.SpecificationValueAdapter
 import com.tokopedia.product.addedit.specification.presentation.dialog.NewUserSpecificationBottomSheet
+import com.tokopedia.product.addedit.specification.presentation.dialog.SignalStatusSpecificationBottomSheet
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.product.addedit.specification.presentation.viewmodel.AddEditProductSpecificationViewModel
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -95,6 +96,7 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
         setupToolbarActions()
         setupSubmitButton()
         setupTicker()
+        SignalStatusSpecificationBottomSheet().show(childFragmentManager)
 
         // setup observers
         observeProductInputModel()

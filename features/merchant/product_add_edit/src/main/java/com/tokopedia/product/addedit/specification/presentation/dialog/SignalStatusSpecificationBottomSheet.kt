@@ -6,18 +6,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_NEW_USER_SPECIFICATION
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifyprinciples.Typography
 
-class NewUserSpecificationBottomSheet: BottomSheetUnify() {
+class SignalStatusSpecificationBottomSheet: BottomSheetUnify() {
 
     companion object {
-        const val TAG = "Tag New User Specification Bottom Sheet"
+        const val TAG = "Signal Status Specification Bottom Sheet"
     }
 
-    private var ivNewUser: AppCompatImageView? = null
+    private var ivSignalStatus: AppCompatImageView? = null
+    private var tvTipsText1: Typography? = null
+    private var tvTipsText2: Typography? = null
 
     init {
         setCloseClickListener {
@@ -36,7 +40,7 @@ class NewUserSpecificationBottomSheet: BottomSheetUnify() {
     }
 
     private fun setupImageView() {
-        ivNewUser?.loadImage(PHOTO_NEW_USER_SPECIFICATION)
+        ivSignalStatus?.loadImage(PHOTO_NEW_USER_SPECIFICATION)
     }
 
     fun show(manager: FragmentManager?) {
@@ -48,8 +52,12 @@ class NewUserSpecificationBottomSheet: BottomSheetUnify() {
     private fun initChildLayout() {
         overlayClickDismiss = true
         val contentView: View? = View.inflate(context,
-                R.layout.add_edit_product_specification_new_user_bottom_sheet_content, null)
-        ivNewUser = contentView?.findViewById(R.id.ivNewUser)
+                R.layout.add_edit_product_specification_signal_status_bottom_sheet_content, null)
+        ivSignalStatus = contentView?.findViewById(R.id.ivSignalStatus)
+        tvTipsText1 = contentView?.findViewById(R.id.tvTipsText1)
+        tvTipsText2 = contentView?.findViewById(R.id.tvTipsText2)
+        tvTipsText1?.text = MethodChecker.fromHtml(getString(R.string.label_specification_imei_tips1))
+        tvTipsText2?.text = MethodChecker.fromHtml(getString(R.string.label_specification_imei_tips2))
         setChild(contentView)
     }
 }

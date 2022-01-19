@@ -379,7 +379,10 @@
     <string name="label_specification_info_point2">Produk dengan Spesifikasi yang lengkap akan lebih disukai pembeli.</string>
     <string name="label_specification_item_imei_required">Isi status sinyal sesuai kondisi saat ini. Pengisian yang tidak sesuai bisa menimbulkan kendala bagi pembeli. <![CDATA[<font color=\'#42b549\'>Pelajari Selengkapnya</font>.]]></string>
     <string name="label_specification_imei_required">Isi status sinyal pada spesifikasi produkmu, ya.</string>
+    <string name="label_specification_imei_tips1"><![CDATA[<b>Sinyal Aktif</b><br/>]]>Perangkat elektronik yang bisa terhubung ke jaringan operator di Indonesia. <![CDATA[<b>Jika terjadi kendala</b>]]>, pembelimu bisa mengajukan refund atau retur melalui Tokopedia Care.</string>
+    <string name="label_specification_imei_tips2"><![CDATA[<b>Sinyal Belum Aktif</b><br/>]]>Perangkat elektronik yang belum dipastikan bisa terhubung ke jaringan operator di Indonesia. Pastikan kamu sudah mengingatkan calon pembeli.</string>
     <string name="action_specification_save">Simpan</string>
+    <string name="action_specification_learn">Pelajari Selengkapnya</string>
     <string name="action_specification_add">Tambah</string>
     <string name="action_specification_change">Ubah</string>
     <string name="action_specification_refresh">Muat Ulang</string>
