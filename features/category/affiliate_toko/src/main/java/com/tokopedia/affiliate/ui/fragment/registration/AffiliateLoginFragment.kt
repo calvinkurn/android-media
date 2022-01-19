@@ -264,7 +264,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
             tickerType = Ticker.TYPE_ERROR
             setDescriptionClickEvent(object: TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-
+                    AffiliateWebViewBottomSheet.newInstance("", AFFILIATE_FRAUD_URL).show(childFragmentManager,"")
                 }
                 override fun onDismiss() {}
             })
