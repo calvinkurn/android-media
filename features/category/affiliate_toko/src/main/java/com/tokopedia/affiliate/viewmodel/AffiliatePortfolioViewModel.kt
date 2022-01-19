@@ -25,6 +25,7 @@ class AffiliatePortfolioViewModel@Inject constructor(
     :BaseViewModel() {
     var affiliatePortfolioData = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var updateListItem = MutableLiveData<Int>()
+    private var isError = MutableLiveData<Boolean>()
 
     fun createDefaultListForSm() {
         val itemList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
@@ -34,15 +35,16 @@ class AffiliatePortfolioViewModel@Inject constructor(
         itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(13,"youtube","Link Youtube","","Contoh: youtube.com/tokopedia","Link tidak valid.",false,regex =
         AFFILIATE_YT_REGEX)))
         itemList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData("Tambah Sosial Media", UnifyButton.Type.ALTERNATE,UnifyButton.Variant.GHOST)))
-        itemList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData("Selanjutnya", UnifyButton.Type.MAIN,UnifyButton.Variant.FILLED,true)))
         affiliatePortfolioData.value = itemList
     }
     fun updateList(position: Int, text: String) {
         (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.text = text
         if(text.isNotEmpty()){
             (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.isError = !isValidUrl(text,(affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel))
+            isError.value = !isValidUrl(text,(affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel))
         }else {
             (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.isError = false
+            isError.value = !checkDataForAtLeastOne()
         }
     }
 
@@ -90,6 +92,7 @@ class AffiliatePortfolioViewModel@Inject constructor(
 
     fun getPortfolioUrlList() : LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = affiliatePortfolioData
     fun getUpdateItemIndex() : LiveData<Int> = updateListItem
+    fun isError() : LiveData<Boolean> = isError
 
     fun finEditTextModelWithId(id : Int?) : AffiliatePortfolioUrlInputData?{
         affiliatePortfolioData.value?.forEach {

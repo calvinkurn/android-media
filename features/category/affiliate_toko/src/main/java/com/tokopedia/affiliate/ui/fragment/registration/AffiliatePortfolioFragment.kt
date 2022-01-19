@@ -88,6 +88,7 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
     }
 
     private fun afterViewCreated() {
+        initButton()
         setUpNavBar()
         view?.findViewById<RecyclerView>(R.id.social_link_rv)?.run {
             val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -95,6 +96,12 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
             adapter = affiliateAdapter
         }
         affiliatePortfolioViewModel.createDefaultListForSm()
+    }
+
+    private fun initButton() {
+        view?.findViewById<UnifyButton>(R.id.next_button)?.setOnClickListener {
+            nextButtonClicked()
+        }
     }
 
     private fun setUpNavBar() {
@@ -120,6 +127,11 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
         affiliatePortfolioViewModel.getUpdateItemIndex().observe(this,{
             index->
             affiliateAdapter.notifyItemChanged(index)
+        })
+        affiliatePortfolioViewModel.isError().observe(this ,{ isError ->
+                view?.findViewById<UnifyButton>(R.id.next_button)?.apply {
+                    isEnabled = !isError
+                }
         })
     }
 
@@ -188,8 +200,7 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
             }
         }
         updateList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData(getString(com.tokopedia.affiliate_toko.R.string.affiliate_tambah_sosial_media), UnifyButton.Type.ALTERNATE, UnifyButton.Variant.GHOST)))
-        updateList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData(getString(com.tokopedia.affiliate_toko.R.string.affiliate_portfolio_confirm_btn), UnifyButton.Type.MAIN,UnifyButton.Variant.FILLED,true)))
-        affiliatePortfolioViewModel.affiliatePortfolioData.value = updateList
+         affiliatePortfolioViewModel.affiliatePortfolioData.value = updateList
     }
 
     override fun addSocialMediaButtonClicked() {
@@ -203,7 +214,7 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
 
     }
 
-    override fun nextButtonClicked() {
+    private fun nextButtonClicked() {
         if(affiliatePortfolioViewModel.checkDataForAtLeastOne()){
             val arrayListOfChannels = arrayListOf<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>()
             affiliatePortfolioViewModel.affiliatePortfolioData.value?.forEach { channelItem ->
