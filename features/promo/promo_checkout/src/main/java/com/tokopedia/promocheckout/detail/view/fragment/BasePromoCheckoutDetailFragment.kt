@@ -5,12 +5,11 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.network.constant.ErrorNetMessage
@@ -19,7 +18,11 @@ import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
-import com.tokopedia.promocheckout.common.util.*
+import com.tokopedia.promocheckout.common.util.EXTRA_INPUT_TYPE
+import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
+import com.tokopedia.promocheckout.common.util.INPUT_TYPE_COUPON
+import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
+import com.tokopedia.promocheckout.common.util.mapToVariantPromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
@@ -321,12 +324,10 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
     }
 
     private fun getFormattedHtml(content: String?): String {
-        return context?.let {
-            String.format(getString(R.string.promo_label_html_tnc_promo),
-                "#${Integer.toHexString(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))}",
-                content
-            )
-        } ?: ""
+        return String.format(
+            getString(R.string.promo_label_html_tnc_promo),
+            content
+        )
     }
 
     override fun onErroGetDetail(e: Throwable) {

@@ -9,40 +9,64 @@
         android:id="@+id/affiliate_portfolio_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationMode="normal"
         app:unify_header_is_show_back_button="true"
         app:unify_header_is_show_shadow="false"
-        app:layout_constraintTop_toTopOf="parent"
         app:unify_header_title="@string/daftar_affiliate"
-        app:navigationMode="normal"
 
         />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/vertical_guide"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5"
-        />
 
-    <View
-        android:layout_width="0dp"
-        android:layout_height="@dimen/spacing_lvl2"
-        app:layout_constraintTop_toBottomOf="@id/affiliate_portfolio_toolbar"
-        app:layout_constraintEnd_toEndOf="@id/vertical_guide"
-        android:background="@color/Unify_G500"
-        />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/social_link_rv"
+    <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/spacing_lvl2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/affiliate_portfolio_toolbar"
-        tools:listitem="@layout/affiliate_input_portfolio_text_field_item"
-        />
+        app:layout_constraintTop_toBottomOf="@id/affiliate_portfolio_toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/vertical_guide"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spacing_lvl2"
+                android:background="@color/Unify_G500"
+                app:layout_constraintEnd_toEndOf="@id/vertical_guide"
+                app:layout_constraintTop_toBottomOf="@id/affiliate_portfolio_toolbar" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/social_link_rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                tools:listitem="@layout/affiliate_input_portfolio_text_field_item" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/next_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                android:layout_marginVertical="@dimen/dp_24"
+                android:text="@string/affiliate_selanjutnya"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:unifyButtonSize="medium"
+                app:unifyButtonType="main"
+                android:enabled="false"
+                app:unifyButtonVariant="filled" />
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

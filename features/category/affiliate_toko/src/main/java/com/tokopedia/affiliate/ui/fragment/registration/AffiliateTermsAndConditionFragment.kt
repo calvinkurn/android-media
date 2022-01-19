@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.affiliate.AFFILIATE_HELP_URL
+import com.tokopedia.affiliate.AFFILIATE_TANDC_URL
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
@@ -101,7 +101,7 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
             affiliateTermsAndConditionViewModel.affiliateOnBoarding(channels)
         }
         view?.findViewById<Typography>(R.id.syarat_text)?.setOnClickListener {
-            AffiliateWebViewBottomSheet.newInstance("HELP", AFFILIATE_HELP_URL).show(childFragmentManager,"")
+            AffiliateWebViewBottomSheet.newInstance(getString(R.string.terms_and_condition_upper), AFFILIATE_TANDC_URL).show(childFragmentManager,"")
         }
     }
 

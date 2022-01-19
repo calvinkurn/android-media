@@ -1592,7 +1592,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private fun setNewASGCLayout(feedXCard: FeedXCard){
         val postId = feedXCard.id.toIntOrZero()
         val products = feedXCard.products
-        val totalProducts = feedXCard.totalProducts
+        val totalProducts = feedXCard.products.size
         gridList.gone()
         carouselView.visible()
         commentButton.gone()
