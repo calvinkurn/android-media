@@ -77,6 +77,15 @@
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginEnd="@dimen/spacing_lvl4">
 
+                <com.tokopedia.recharge_component.widget.RechargeEmptyStateWidget
+                    android:id="@+id/recharge_pdp_pulsa_empty_state_widget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
                 <com.tokopedia.recharge_component.widget.RechargeRecommendationCardWidget
                     android:id="@+id/recharge_pdp_pulsa_recommendation_widget"
                     android:layout_width="match_parent"

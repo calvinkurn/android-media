@@ -18,18 +18,17 @@ import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaB
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.activity.DigitalPDPPulsaActivity
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
 import com.tokopedia.recharge_component.model.denom.DenomData
-import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardEnum
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
-import com.tokopedia.recharge_component.widget.MCCMFlashSaleGridWidget
 import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -55,6 +54,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
         RechargeCatalogPrefixSelect()
     )
 
+    private var operatorId = ""
+
     override fun initInjector() {
         getComponent(DigitalPDPComponent::class.java).inject(this)
     }
@@ -79,6 +80,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClientNumberWidget()
+        initEmptyState()
         setAnimationAppBarLayout()
         observeData()
 
@@ -98,14 +100,17 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
                     }
 
                 // [Misael] operatorId state & checker
-                if (rechargePdpPulsaClientNumberWidget.getInputNumber()
-                        .length in MINIMUM_VALID_NUMBER_LENGTH..MAXIMUM_VALID_NUMBER_LENGTH
+                if (operatorId != selectedOperator.operator.id || rechargePdpPulsaClientNumberWidget.getInputNumber()
+                        .length in MINIMUM_VALID_NUMBER_LENGTH .. MAXIMUM_VALID_NUMBER_LENGTH
                 ) {
-
+                    operatorId = selectedOperator.operator.id
                     rechargePdpPulsaClientNumberWidget.run {
                         showOperatorIcon(selectedOperator.operator.attributes.imageUrl)
                     }
+                    hideEmptyState()
                     getCatalogProductInput(selectedOperator.key)
+                } else {
+                    showEmptyState()
                 }
 
                 // [Misael] add checkoutPassData and update checkoutPassData with new input number
@@ -202,6 +207,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
                 setFavoriteNumber(favoriteNumber)
                 setAutoCompleteList(favoriteNumber)
                 dynamicSpacerHeightRes = R.dimen.dynamic_banner_space_extended
+            } else {
+                showEmptyState()
             }
         }
     }
@@ -247,6 +254,11 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
                             binding?.rechargePdpPulsaClientNumberWidget?.setLoading(false)
                         }
                     }
+
+                    override fun onClearInput() {
+                        operatorId = ""
+                        showEmptyState()
+                    }
                 },
                 autoCompleteListener = object :
                     RechargeClientNumberWidget.ClientNumberAutoCompleteListener {
@@ -272,9 +284,17 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
         }
     }
 
+    private fun initEmptyState() {
+        // [Misael] replace with catalogMenuDetail.banners
+        binding?.rechargePdpPulsaEmptyStateWidget?.setImageUrl(
+            "https://images.tokopedia.net/img/ULHhFV/2022/1/7/8324919c-fa15-46d9-84f7-426adb6994e0.jpg"
+        )
+    }
+
     private fun onSuccessDenomGrid(denomData: DenomWidgetModel) {
         binding?.let {
             it.rechargePdpPulsaDenomGridWidget.renderDenomGridLayout(this, denomData)
+            it.rechargePdpPulsaDenomGridWidget.show()
         }
     }
 
@@ -292,9 +312,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
 
     fun renderRecommendation(recommendations: List<RecommendationCardWidgetModel>) {
         binding?.let {
-            it.rechargePdpPulsaRecommendationWidget.renderRecommendationLayout(
-                recommendationListener = object :
-                    RechargeRecommendationCardListener {
+            it.rechargePdpPulsaRecommendationWidget.show()
+            it.rechargePdpPulsaRecommendationWidget.renderRecommendationLayout(recommendationListener = object :
+                RechargeRecommendationCardListener {
                     override fun onProductRecommendationCardClicked(applinkUrl: String) {
                         context?.let {
                             //                        RouteManager.route(it, applinkUrl)
@@ -309,6 +329,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
 
     private fun onSuccessMCCM(denomGrid: DenomWidgetModel) {
         binding?.let {
+            it.rechargePdpPulsaPromoWidget.show()
             it.rechargePdpPulsaPromoWidget.renderMCCMGrid(this, denomGrid, getString(com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
     }
@@ -337,6 +358,25 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
             }
         } else {
             binding?.rechargePdpPulsaTicker?.hide()
+        }
+    }
+
+    private fun showEmptyState() {
+        binding?.run {
+            if (!rechargePdpPulsaEmptyStateWidget.isVisible) {
+                rechargePdpPulsaEmptyStateWidget.show()
+                rechargePdpPulsaPromoWidget.hide()
+                rechargePdpPulsaRecommendationWidget.hide()
+                rechargePdpPulsaDenomGridWidget.hide()
+            }
+        }
+    }
+
+    private fun hideEmptyState() {
+        binding?.run {
+            if (rechargePdpPulsaEmptyStateWidget.isVisible)
+                rechargePdpPulsaEmptyStateWidget.hide()
+                rechargePdpPulsaRecommendationWidget.show()
         }
     }
 
