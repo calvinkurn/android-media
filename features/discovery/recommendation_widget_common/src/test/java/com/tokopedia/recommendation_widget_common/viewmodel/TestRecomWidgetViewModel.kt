@@ -25,7 +25,11 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.Recommendation
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
+import io.mockk.every
+import io.mockk.mockkStatic
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
@@ -333,7 +337,7 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test when get data recommendation selected by chips then return success filter result with new recom widget data`() {
+    fun `test given data recommendation return success recom chip widget in live data`() {
         coEvery { getRecommendationUseCase.getData(any()) } returns listOf(mockRecomWidgetFalseTokonow)
         viewModel.loadRecomBySelectedChips(recomWidgetMetadata = recomWidgetMetadata, oldFilterList = listAnnotationChip, selectedChip = listAnnotationChip[0])
         val recomFilterResult = viewModel.recomFilterResultData.value
@@ -343,7 +347,7 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test when get data recommendation selected by chips with empty recommendation then success with not showing recom widget`() {
+    fun `test given empty recommendation return success null recom chip widget in live data`() {
         coEvery { getRecommendationUseCase.getData(any()) } returns listOf()
         viewModel.loadRecomBySelectedChips(recomWidgetMetadata = recomWidgetMetadata, oldFilterList = listAnnotationChip, selectedChip = listAnnotationChip[0])
         val recomFilterResult = viewModel.recomFilterResultData.value
@@ -353,7 +357,7 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test when failed load data recommendation by selected chips then failed with not showing recom widget`() {
+    fun `test given error recommendation return failed recom chips in live data`() {
         coEvery { getRecommendationUseCase.getData(any()) } throws Throwable()
         viewModel.loadRecomBySelectedChips(recomWidgetMetadata = recomWidgetMetadata, oldFilterList = listAnnotationChip, selectedChip = listAnnotationChip[0])
         val recomFilterResult = viewModel.recomFilterResultData.value

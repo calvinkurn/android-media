@@ -342,7 +342,7 @@ open class RecomWidgetViewModel @Inject constructor(
         message: String,
         isAtc: Boolean = false,
         isDeleteCart: Boolean = false,
-        recomItem: RecommendationItem = RecommendationItem()
+        recomItem: RecommendationItem
     ) {
         if (isAtc) {
             _atcRecomTokonowSendTracker.postValue(recomItem.asSuccess())
