@@ -104,9 +104,14 @@ class PdpFintechWidget @JvmOverloads constructor(
     private fun initRecycler() {
         val recyclerView = baseView.findViewById<RecyclerView>(R.id.recycler_items)
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-        fintechWidgetAdapter = FintechWidgetAdapter(context,object : WidgetClickListner {
-            override fun clickedWidget(cta: Int,url:String) {
-               instanceProductUpdateListner.fintechRedirection(FintechRedirectionWidgetDataClass(cta,url))
+        fintechWidgetAdapter = FintechWidgetAdapter(context, object : WidgetClickListner {
+            override fun clickedWidget(cta: Int, url: String) {
+                instanceProductUpdateListner.fintechRedirection(
+                    FintechRedirectionWidgetDataClass(
+                        cta,
+                        url
+                    )
+                )
             }
 
 
@@ -124,21 +129,31 @@ class PdpFintechWidget @JvmOverloads constructor(
         productID: String,
         fintechWidgetViewHolder: ProductUpdateListner
     ) {
-        this.productID = productID
-        this.instanceProductUpdateListner = fintechWidgetViewHolder
-        loader.visibility = View.VISIBLE
-        if (counter == 0) {
-            counter++
-            categoryId?.let { fintechWidgetViewModel.getWidgetData(it,listOfPrice,listOfUrls) }
-        } else {
-            if (priceToChip.size != 0 && idToPriceMap.size != 0)
-                getChipDataAndUpdate(idToPriceMap[productID])
-            else
+        try {
+            this.productID = productID
+            this.instanceProductUpdateListner = fintechWidgetViewHolder
+            loader.visibility = View.VISIBLE
+            if (counter == 0) {
+                counter++
                 categoryId?.let {
-                    fintechWidgetViewModel.getWidgetData(it,listOfPrice,listOfUrls)
+                    fintechWidgetViewModel.getWidgetData(
+                        it,
+                        listOfPrice,
+                        listOfUrls
+                    )
                 }
-        }
+            } else {
+                if (priceToChip.size != 0 && idToPriceMap.size != 0)
+                    getChipDataAndUpdate(idToPriceMap[productID])
+                else
+                    categoryId?.let {
+                        fintechWidgetViewModel.getWidgetData(it, listOfPrice, listOfUrls)
+                    }
+            }
 
+        } catch (e: Exception) {
+            instanceProductUpdateListner.removeWidget()
+        }
     }
 
     private fun getChipDataAndUpdate(productPrice: String?) {
@@ -150,6 +165,7 @@ class PdpFintechWidget @JvmOverloads constructor(
                 loader.visibility = View.GONE
                 instanceProductUpdateListner.showWidget()
                 fintechWidgetAdapter.setData(chipList)
+                fintechWidgetAdapter.notifyItemRangeChanged(0, fintechWidgetAdapter.itemCount)
 
             } ?: run {
                 instanceProductUpdateListner.removeWidget()

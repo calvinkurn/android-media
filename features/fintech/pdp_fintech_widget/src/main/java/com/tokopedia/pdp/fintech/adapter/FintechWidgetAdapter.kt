@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
@@ -16,7 +15,8 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
 
-class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetClickListner) : RecyclerView.Adapter<MyViewHolder>() {
+class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetClickListner) :
+    RecyclerView.Adapter<MyViewHolder>() {
 
     private var chipsData: ArrayList<ChipsData> = ArrayList()
 
@@ -33,13 +33,17 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
             if (it == 0) {
                 holder.dummyView.visibility = View.GONE
                 holder.seeMoreIcon.visibility = View.VISIBLE
+            } else {
+                holder.dummyView.visibility = View.VISIBLE
+                holder.seeMoreIcon.visibility = View.GONE
             }
         }
 
         chipsData[position].header?.let {
-            if (it.isNotBlank())
+            if (it.isNotBlank()) {
+                holder.headerPartner.visibility = View.VISIBLE
                 holder.headerPartner.text = it.parseAsHtml()
-            else
+            } else
                 removeViewVisibility(holder.headerPartner)
         } ?: run {
             removeViewVisibility(holder.headerPartner)
@@ -57,16 +61,6 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
 
                     holder.subheaderPartner.fontType = Typography.BOLD
                 }
-                it.equals("red", true) -> {
-                    holder.subheaderPartner.setTextColor(
-                        ContextCompat.getColor(
-                            context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G500
-                        )
-                    )
-                    holder.subheaderPartner.fontType = Typography.BOLD
-
-                }
                 else -> {
                     holder.subheaderPartner.setTextColor(
                         ContextCompat.getColor(
@@ -83,6 +77,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
 
         chipsData[position].subheader?.let {
             if (it.isNotBlank()) {
+                holder.subheaderPartner.visibility = View.VISIBLE
                 holder.subheaderPartner.text = it
             } else
                 removeViewVisibility(holder.subheaderPartner)
@@ -100,18 +95,21 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
     ) {
         if (!context.isDarkMode()) {
             chipsData[position].productIconLight?.let {
-                if (it.isNotBlank())
+                if (it.isNotBlank()) {
+                    iconImageView.visibility = View.VISIBLE
                     iconImageView.setImageUrl(it)
-                else
+                } else
                     iconImageView.visibility = View.GONE
             } ?: run {
                 iconImageView.visibility = View.GONE
             }
         } else {
             chipsData[position].productIconDark?.let {
-                if (it.isNotBlank())
+                if (it.isNotBlank()) {
+                    iconImageView.visibility = View.VISIBLE
+
                     iconImageView.setImageUrl(it)
-                else
+                } else
                     iconImageView.visibility = View.GONE
             } ?: run {
                 iconImageView.visibility = View.GONE
@@ -119,7 +117,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
         }
     }
 
-    fun removeViewVisibility(view: View) {
+    private fun removeViewVisibility(view: View) {
         view.visibility = View.GONE
     }
 
@@ -129,7 +127,6 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
 
     fun setData(chips: ArrayList<ChipsData>) {
         this.chipsData = chips
-        notifyDataSetChanged()
     }
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

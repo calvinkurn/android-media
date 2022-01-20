@@ -32,7 +32,7 @@ class FintechWidgetViewModel @Inject constructor
         fintchWidgetUseCase.cancelJobs()
         fintchWidgetUseCase.getWidgetData(
             ::onSuccessWidgetData,
-            ::onFailWidgetData, productCategory, listOfAmount,listOfUrls
+            ::onFailWidgetData, productCategory, listOfAmount, listOfUrls
         )
     }
 
