@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -145,15 +146,23 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             val phoneNumberOnly = removeSpecialChars(contact?.contactNumber.toString())
             binding.formAccount.etNomorHp.textFieldInput.setText(phoneNumberOnly)
         } else if (requestCode == REQUEST_PINPONT_PAGE && resultCode == Activity.RESULT_OK) {
+            val isResetToSearchPage = data?.getBooleanExtra(EXTRA_RESET_TO_SEARCH_PAGE, false) ?: false
+            if (isResetToSearchPage) {
+                activity?.run {
+                    setResult(Activity.RESULT_OK, Intent())
+                    finish()
+                }
+//                RouteManager.route(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+            }
             val isNegativeFullFlow = data?.getBooleanExtra(EXTRA_NEGATIVE_FULL_FLOW, false)
             val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
             saveDataModel = data?.getParcelableExtra(EXTRA_SAVE_DATA_UI_MODEL)
             if (saveDataModel == null) {
                 saveDataModel = data?.getParcelableExtra(EXTRA_ADDRESS_NEW)
             }
-            if (isNegativeFullFlow == true && isFromAddressForm == false) {
-                finishActivity(saveDataModel)
-            } else {
+//            if (isNegativeFullFlow == true && isFromAddressForm == false) {
+//                finishActivity(saveDataModel)
+//            } else {
                 currentKotaKecamatan = data?.getStringExtra(EXTRA_KOTA_KECAMATAN)
                 binding.formAddressNegative.etKotaKecamatan.textFieldInput.setText(currentKotaKecamatan)
                 saveDataModel?.let {
@@ -165,7 +174,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                         if (saveDataModel?.postalCode?.isEmpty() == true) saveDataModel?.postalCode = currentPostalCode
                     }
                 }
-            }
+//            }
 
         }
     }

@@ -471,6 +471,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                     viewModel.setAddress(SaveAddressDataModel())
                     goToAddressForm()
                 } else {
+//                    if (isFromAddressForm) {}
                     activity?.run {
                         setResult(Activity.RESULT_OK, Intent().apply {
                             putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
@@ -502,6 +503,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             chipsSearch.chipImageResource = context?.let { getIconUnifyDrawable(it, IconUnify.SEARCH) }
             chipsSearch.setOnClickListener {
                 AddNewAddressRevampAnalytics.onClickCariUlangAlamat(userSession.userId)
+                // harusnya disini reset semua?? krn kan ngulang lagi
                 goToSearchPage()
             }
         }
@@ -721,6 +723,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
         val saveAddress = saveAddressMapper.map(data, zipCodes)
         viewModel.setAddress(saveAddress)
+        val debug = viewModel.getAddress()
         updateGetDistrictBottomSheet(saveAddress)
     }
 
@@ -769,14 +772,28 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private fun goToSearchPage() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
         if (!isPositiveFlow) {
-            intent.putExtra(EXTRA_IS_POLYGON, isPolygon)
-            intent.putExtra(EXTRA_FROM_PINPOINT, true)
-            intent.putExtra(EXTRA_DISTRICT_ID, districtId)
+            activity?.run {
+                setResult(Activity.RESULT_OK, Intent().apply {
+                    putExtra(EXTRA_RESET_TO_SEARCH_PAGE, true)
+                })
+                finish()
+            }
+        } else {
+//            startActivity(intent)
+            activity?.finish()
         }
-        intent.putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
-        intent.putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
-        intent.putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
-        startActivityForResult(intent, REQUEST_SEARCH_PAGE)
+//        if (!isPositiveFlow) {
+//            intent.putExtra(EXTRA_IS_POLYGON, isPolygon)
+//            intent.putExtra(EXTRA_FROM_PINPOINT, true)
+//            intent.putExtra(EXTRA_DISTRICT_ID, districtId)
+//        }
+//        intent.putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
+//        intent.putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
+//        intent.putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
+        // ini harus di oper ke addressform dulu terus baru move ke add_address_v3
+//        RouteManager.route(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+//        activity?.finish()
+//        startActivityForResult(intent, REQUEST_SEARCH_PAGE)
     }
 
     private fun goToAddressForm() {
@@ -784,8 +801,11 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         Intent(context, AddressFormActivity::class.java).apply {
             putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveModel)
             putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
+            // ini jg kenapa for result?? kan dia kalo balik lg kesini ntr yg minta result address form dong?.. T_T
             startActivityForResult(this, REQUEST_ADDRESS_FORM_PAGE)
+//            startActivity(this)
         }
+//        activity?.finish()
     }
 
     private fun setResultAddressFormNegative() {
