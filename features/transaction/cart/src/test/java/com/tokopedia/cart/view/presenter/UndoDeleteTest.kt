@@ -25,7 +25,7 @@ class UndoDeleteTest : BaseCartTest() {
         }
 
         // WHEN
-        cartListPresenter?.processUndoDeleteCartItem(listOf("123"))
+        cartListPresenter.processUndoDeleteCartItem(listOf("123"))
 
         // THEN
         verify {
@@ -45,7 +45,7 @@ class UndoDeleteTest : BaseCartTest() {
         }
 
         // WHEN
-        cartListPresenter?.processUndoDeleteCartItem(listOf("123"))
+        cartListPresenter.processUndoDeleteCartItem(listOf("123"))
 
         // THEN
         verify {
@@ -56,10 +56,10 @@ class UndoDeleteTest : BaseCartTest() {
     @Test
     fun `WHEN undo delete with view is detached THEN should not render view`() {
         // GIVEN
-        cartListPresenter?.detachView()
+        cartListPresenter.detachView()
 
         // WHEN
-        cartListPresenter?.processUndoDeleteCartItem(listOf("123"))
+        cartListPresenter.processUndoDeleteCartItem(listOf("123"))
 
         // THEN
         verify(inverse = true) {

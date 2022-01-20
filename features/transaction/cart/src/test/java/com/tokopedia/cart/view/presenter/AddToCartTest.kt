@@ -39,7 +39,7 @@ class AddToCartTest : BaseCartTest() {
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
-        cartListPresenter?.processAddToCart(productModel)
+        cartListPresenter.processAddToCart(productModel)
 
         // THEN
         verifyOrder {
@@ -64,7 +64,7 @@ class AddToCartTest : BaseCartTest() {
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
-        cartListPresenter?.processAddToCart(CartWishlistItemHolderData(id = "0", shopId = "0"))
+        cartListPresenter.processAddToCart(CartWishlistItemHolderData(id = "0", shopId = "0"))
 
         // THEN
         verify {
@@ -95,7 +95,7 @@ class AddToCartTest : BaseCartTest() {
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
-        cartListPresenter?.processAddToCart(productModel)
+        cartListPresenter.processAddToCart(productModel)
 
         // THEN
         verifyOrder {
@@ -119,7 +119,7 @@ class AddToCartTest : BaseCartTest() {
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
-        cartListPresenter?.processAddToCart(CartRecentViewItemHolderData(id = "0", shopId = "0"))
+        cartListPresenter.processAddToCart(CartRecentViewItemHolderData(id = "0", shopId = "0"))
 
         // THEN
         verify {
@@ -136,7 +136,7 @@ class AddToCartTest : BaseCartTest() {
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
-        cartListPresenter?.processAddToCart(CartRecentViewItemHolderData(id = "0", shopId = "0"))
+        cartListPresenter.processAddToCart(CartRecentViewItemHolderData(id = "0", shopId = "0"))
 
         // THEN
         verify {
@@ -168,7 +168,7 @@ class AddToCartTest : BaseCartTest() {
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
-        cartListPresenter?.processAddToCart(productModel)
+        cartListPresenter.processAddToCart(productModel)
 
         // THEN
         verifyOrder {
@@ -195,7 +195,7 @@ class AddToCartTest : BaseCartTest() {
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
-        cartListPresenter?.processAddToCart(productModel)
+        cartListPresenter.processAddToCart(productModel)
 
         // THEN
         verify {
@@ -234,7 +234,7 @@ class AddToCartTest : BaseCartTest() {
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
-        cartListPresenter?.processAddToCart(productModel)
+        cartListPresenter.processAddToCart(productModel)
 
         // THEN
         verifyOrder {
@@ -267,7 +267,7 @@ class AddToCartTest : BaseCartTest() {
         every { userSessionInterface.userId } returns "123"
 
         // WHEN
-        cartListPresenter?.processAddToCart(productModel)
+        cartListPresenter.processAddToCart(productModel)
 
         // THEN
         verify {
@@ -297,10 +297,10 @@ class AddToCartTest : BaseCartTest() {
         }
         every { userSessionInterface.userId } returns "123"
 
-        cartListPresenter?.detachView()
+        cartListPresenter.detachView()
 
         // WHEN
-        cartListPresenter?.processAddToCart(productModel)
+        cartListPresenter.processAddToCart(productModel)
 
         // THEN
         verify(inverse = true) {

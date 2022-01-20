@@ -85,7 +85,7 @@ class WeightCalculationTest : BaseCartTest() {
         }
 
         // WHEN
-        cartListPresenter?.reCalculateSubTotal(cartShops)
+        cartListPresenter.reCalculateSubTotal(cartShops)
 
         // THEN
         assert(cartShops[0].totalWeight == 0.0)
@@ -109,7 +109,7 @@ class WeightCalculationTest : BaseCartTest() {
         }
 
         // WHEN
-        cartListPresenter?.reCalculateSubTotal(cartShops)
+        cartListPresenter.reCalculateSubTotal(cartShops)
 
         // THEN
         assert(cartShops[0].totalWeight == 1.0)
@@ -117,7 +117,7 @@ class WeightCalculationTest : BaseCartTest() {
     }
 
     @Test
-    fun `WHEN some item selected THEN should have 10 gram in first shop and 20 gram in second shop`() {
+    fun `WHEN all item selected THEN should have 10 gram in first shop and 20 gram in second shop`() {
         // GIVEN
         initializeData()
         firstProductFirstShop.isSelected = true
@@ -135,7 +135,7 @@ class WeightCalculationTest : BaseCartTest() {
         }
 
         // WHEN
-        cartListPresenter?.reCalculateSubTotal(cartShops)
+        cartListPresenter.reCalculateSubTotal(cartShops)
 
         // THEN
         assert(cartShops[0].totalWeight == 10.0)

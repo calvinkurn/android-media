@@ -29,7 +29,7 @@ class FollowShopTest : BaseCartTest() {
         }
 
         // WHEN
-        cartListPresenter?.followShop("1")
+        cartListPresenter.followShop("1")
 
         // THEN
         verifyOrder {
@@ -51,7 +51,7 @@ class FollowShopTest : BaseCartTest() {
         }
 
         // WHEN
-        cartListPresenter?.followShop("1")
+        cartListPresenter.followShop("1")
 
         // THEN
         verifyOrder {
@@ -77,10 +77,10 @@ class FollowShopTest : BaseCartTest() {
             firstArg<(CartData) -> Unit>().invoke(CartData())
         }
 
-        cartListPresenter?.detachView()
+        cartListPresenter.detachView()
 
         // WHEN
-        cartListPresenter?.followShop("1")
+        cartListPresenter.followShop("1")
 
         // THEN
         verify(inverse = true) {

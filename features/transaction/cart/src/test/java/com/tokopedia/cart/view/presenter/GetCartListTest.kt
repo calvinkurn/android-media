@@ -1,13 +1,11 @@
 package com.tokopedia.cart.view.presenter
 
-import com.google.gson.Gson
 import com.tokopedia.cart.data.model.response.promo.CartPromoData
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
 import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cart.data.model.response.promo.VoucherOrders
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import io.mockk.*
 import org.junit.Test
 import rx.Observable
@@ -27,7 +25,7 @@ class GetCartListTest : BaseCartTest() {
         every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
 
         // WHEN
-        cartListPresenter?.processInitialGetCartData("", true, false)
+        cartListPresenter.processInitialGetCartData("", true, false)
 
         // THEN
         verifyOrder {
@@ -42,27 +40,15 @@ class GetCartListTest : BaseCartTest() {
         // GIVEN
         val exception = ResponseErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
 
-        val recommendationWidgetStringData = """
-                {
-                    "recommendationItemList": []
-                }
-            """.trimIndent()
-
-        val response = mutableListOf<RecommendationWidget>().apply {
-            val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
-            add(recommendationWidget)
-        }
-
         coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
         coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(exception)
         }
-        every { getRecentViewUseCase.createObservable(any()) } answers { Observable.just(response) }
 
         every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
 
         // WHEN
-        cartListPresenter?.processInitialGetCartData("", true, true)
+        cartListPresenter.processInitialGetCartData("", true, true)
 
         // THEN
         verify {
@@ -84,7 +70,7 @@ class GetCartListTest : BaseCartTest() {
         every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
 
         // WHEN
-        cartListPresenter?.processInitialGetCartData("", false, false)
+        cartListPresenter.processInitialGetCartData("", false, false)
 
         // THEN
         verify {
@@ -99,27 +85,15 @@ class GetCartListTest : BaseCartTest() {
         // GIVEN
         val exception = ResponseErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
 
-        val recommendationWidgetStringData = """
-                {
-                    "recommendationItemList": []
-                }
-            """.trimIndent()
-
-        val response = mutableListOf<RecommendationWidget>().apply {
-            val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
-            add(recommendationWidget)
-        }
-
         coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
         coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(exception)
         }
-        every { getRecentViewUseCase.createObservable(any()) } answers { Observable.just(response) }
 
         every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
 
         // WHEN
-        cartListPresenter?.processInitialGetCartData("", false, true)
+        cartListPresenter.processInitialGetCartData("", false, true)
 
         // THEN
         verify {
@@ -141,7 +115,7 @@ class GetCartListTest : BaseCartTest() {
         every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
 
         // WHEN
-        cartListPresenter?.processInitialGetCartData("", true, false)
+        cartListPresenter.processInitialGetCartData("", true, false)
 
         // THEN
         verifyOrder {
@@ -152,14 +126,33 @@ class GetCartListTest : BaseCartTest() {
     }
 
     @Test
+    fun `WHEN initial load cart list success with promo last apply data THEN is last apply valid flag should be true`() {
+        // GIVEN
+        val cartData = CartData(promo = CartPromoData(lastApplyPromo = LastApplyPromo(lastApplyPromoData = LastApplyPromoData(codes = listOf("ABC"), listVoucherOrders = listOf(VoucherOrders())))))
+
+        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
+        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartData) -> Unit>().invoke(cartData)
+        }
+
+        every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
+
+        // WHEN
+        cartListPresenter.processInitialGetCartData("", true, false)
+
+        // THEN
+        assert(cartListPresenter.isLastApplyValid() == true)
+    }
+
+    @Test
     fun `WHEN initial load cart list with view is not attached THEN should not render view`() {
         // GIVEN
         val cartData = CartData()
 
-        cartListPresenter?.detachView()
+        cartListPresenter.detachView()
 
         // WHEN
-        cartListPresenter?.processInitialGetCartData("", true, false)
+        cartListPresenter.processInitialGetCartData("", true, false)
 
         // THEN
         verify(inverse = true) {

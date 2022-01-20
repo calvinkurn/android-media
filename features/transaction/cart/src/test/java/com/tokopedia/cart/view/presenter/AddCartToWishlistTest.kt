@@ -1,6 +1,5 @@
 package com.tokopedia.cart.view.presenter
 
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.domain.model.cartlist.AddCartToWishlistData
 import com.tokopedia.network.exception.ResponseErrorException
 import io.mockk.every
@@ -28,7 +27,7 @@ class AddCartToWishlistTest : BaseCartTest() {
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
 
         // When
-        cartListPresenter?.processAddCartToWishlist(productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
+        cartListPresenter.processAddCartToWishlist(productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
 
         // Then
         verify {
@@ -54,7 +53,7 @@ class AddCartToWishlistTest : BaseCartTest() {
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
 
         // When
-        cartListPresenter?.processAddCartToWishlist(productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
+        cartListPresenter.processAddCartToWishlist(productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
 
         // Then
         verify {
@@ -72,16 +71,11 @@ class AddCartToWishlistTest : BaseCartTest() {
         val forceExpandCollapsedUnavailableItems = false
         val exception = ResponseErrorException("Error")
 
-        val addToCartWishlistData = AddCartToWishlistData().apply {
-            isSuccess = false
-            message = "failed"
-        }
-
         every { addCartToWishlistUseCase.createObservable(any()) } returns Observable.error(exception)
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
 
         // When
-        cartListPresenter?.processAddCartToWishlist(productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
+        cartListPresenter.processAddCartToWishlist(productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
 
         // Then
         verify {
@@ -98,10 +92,10 @@ class AddCartToWishlistTest : BaseCartTest() {
         val source = "source"
         val forceExpandCollapsedUnavailableItems = false
 
-        cartListPresenter?.detachView()
+        cartListPresenter.detachView()
 
         // WHEN
-        cartListPresenter?.processAddCartToWishlist(productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
+        cartListPresenter.processAddCartToWishlist(productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
 
         // THEN
         verify(inverse = true) {

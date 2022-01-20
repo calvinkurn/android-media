@@ -13,51 +13,51 @@ class WishlistImpressionAnalyticsTest : BaseCartTest() {
     @Test
     fun `WHEN generate wishlist impression data analytics with 1 item selected and cart is not empty THEN should be containing 1 product`() {
         // GIVEN
-        var result: Map<String, Any>? = null
+        val result: Map<String, Any>?
 
         val wishlistDataList = mutableListOf<CartWishlistItemHolderData>().apply {
             add(CartWishlistItemHolderData())
         }
 
         // WHEN
-        result = cartListPresenter?.generateWishlistDataImpressionAnalytics(wishlistDataList, false)
+        result = cartListPresenter.generateWishlistDataImpressionAnalytics(wishlistDataList, false)
 
         // THEN
-        val impression = result?.get(EnhancedECommerceCartMapData.KEY_IMPRESSIONS) as List<Any>
+        val impression = result[EnhancedECommerceCartMapData.KEY_IMPRESSIONS] as List<Any>
         assertEquals(1, impression.size)
     }
 
     @Test
     fun `WHEN generate wishlist impression data analytics with 1 item selected and cart is not empty THEN key 'list' value should be 'cart'`() {
         // GIVEN
-        var result: Map<String, Any>? = null
+        val result: Map<String, Any>?
 
         val wishlistDataList = mutableListOf<CartWishlistItemHolderData>().apply {
             add(CartWishlistItemHolderData())
         }
 
         // WHEN
-        result = cartListPresenter?.generateWishlistDataImpressionAnalytics(wishlistDataList, false)
+        result = cartListPresenter.generateWishlistDataImpressionAnalytics(wishlistDataList, false)
 
         // THEN
-        val impression = result?.get(EnhancedECommerceCartMapData.KEY_IMPRESSIONS) as List<Map<String, Any>>
+        val impression = result[EnhancedECommerceCartMapData.KEY_IMPRESSIONS] as List<Map<String, Any>>
         assertTrue((impression[0][EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_WISHLIST)
     }
 
     @Test
     fun `WHEN generate wishlist impression data analytics with 1 item selected and cart is empty THEN key 'list' value should be 'empty cart'`() {
         // GIVEN
-        var result: Map<String, Any>? = null
+        val result: Map<String, Any>?
 
         val wishlistDataList = mutableListOf<CartWishlistItemHolderData>().apply {
             add(CartWishlistItemHolderData())
         }
 
         // WHEN
-        result = cartListPresenter?.generateWishlistDataImpressionAnalytics(wishlistDataList, true)
+        result = cartListPresenter.generateWishlistDataImpressionAnalytics(wishlistDataList, true)
 
         // THEN
-        val impression = result?.get(EnhancedECommerceCartMapData.KEY_IMPRESSIONS) as List<Map<String, Any>>
+        val impression = result[EnhancedECommerceCartMapData.KEY_IMPRESSIONS] as List<Map<String, Any>>
         assertTrue((impression[0][EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_WISHLIST_ON_EMPTY_CART)
     }
 }

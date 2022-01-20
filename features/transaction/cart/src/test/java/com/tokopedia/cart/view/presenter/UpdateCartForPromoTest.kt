@@ -28,7 +28,7 @@ class UpdateCartForPromoTest : BaseCartTest() {
         }
 
         // WHEN
-        cartListPresenter?.doUpdateCartForPromo()
+        cartListPresenter.doUpdateCartForPromo()
 
         // THEN
         verifyOrder {
@@ -57,7 +57,7 @@ class UpdateCartForPromoTest : BaseCartTest() {
         }
 
         // WHEN
-        cartListPresenter?.doUpdateCartForPromo()
+        cartListPresenter.doUpdateCartForPromo()
 
         // THEN
         verify {
@@ -71,7 +71,7 @@ class UpdateCartForPromoTest : BaseCartTest() {
         every { view.getAllSelectedCartDataList() } answers { emptyList() }
 
         // WHEN
-        cartListPresenter?.doUpdateCartForPromo()
+        cartListPresenter.doUpdateCartForPromo()
 
         // THEN
         verify(inverse = true) {
@@ -82,10 +82,10 @@ class UpdateCartForPromoTest : BaseCartTest() {
     @Test
     fun `WHEN update cart for promo with view detached THEN should not render view`() {
         // GIVEN
-        cartListPresenter?.detachView()
+        cartListPresenter.detachView()
 
         // WHEN
-        cartListPresenter?.doUpdateCartForPromo()
+        cartListPresenter.doUpdateCartForPromo()
 
         // THEN
         verify(inverse = true) {

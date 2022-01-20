@@ -10,13 +10,13 @@ class ClickRecentViewAnalyticsTest : BaseCartTest() {
     @Test
     fun `WHEN generate recent view data click analytics there's 1 item selected and cart is not empty THEN should be containing 1 product`() {
         // GIVEN
-        var result: Map<String, Any>? = null
+        val result: Map<String, Any>?
 
         // WHEN
-        result = cartListPresenter?.generateRecentViewProductClickDataLayer(CartRecentViewItemHolderData(), 0)
+        result = cartListPresenter.generateRecentViewProductClickDataLayer(CartRecentViewItemHolderData(), 0)
 
         // THEN
-        val add = result?.get(EnhancedECommerceAdd.KEY_ADD) as Map<String, Any>
+        val add = result[EnhancedECommerceAdd.KEY_ADD] as Map<String, Any>
         val productList = add[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
         Assert.assertEquals(1, productList.size)
     }
@@ -24,13 +24,13 @@ class ClickRecentViewAnalyticsTest : BaseCartTest() {
     @Test
     fun `WHEN generate recent view data click analytics there's 1 item selected and cart is not empty THEN key list value should be cart`() {
         // GIVEN
-        var result: Map<String, Any>? = null
+        val result: Map<String, Any>?
 
         // WHEN
-        result = cartListPresenter?.generateRecentViewProductClickDataLayer(CartRecentViewItemHolderData(), 0)
+        result = cartListPresenter.generateRecentViewProductClickDataLayer(CartRecentViewItemHolderData(), 0)
 
         // THEN
-        val add = result?.get(EnhancedECommerceAdd.KEY_ADD) as Map<String, Any>
+        val add = result[EnhancedECommerceAdd.KEY_ADD] as Map<String, Any>
         val actionField = add[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
         Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW)
 
@@ -39,13 +39,13 @@ class ClickRecentViewAnalyticsTest : BaseCartTest() {
     @Test
     fun `WHEN generate recent view data click analytics there's 1 item selected and cart is empty THEN should be containing 1 product`() {
         // GIVEN
-        var result: Map<String, Any>? = null
+        val result: Map<String, Any>?
 
         // WHEN
-        result = cartListPresenter?.generateRecentViewProductClickEmptyCartDataLayer(CartRecentViewItemHolderData(), 0)
+        result = cartListPresenter.generateRecentViewProductClickEmptyCartDataLayer(CartRecentViewItemHolderData(), 0)
 
         // THEN
-        val click = result?.get(EnhancedECommerceCartMapData.KEY_CLICK) as Map<String, Any>
+        val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
         val productList = click[EnhancedECommerceCheckout.KEY_PRODUCT] as ArrayList<Map<String, Any>>
         Assert.assertEquals(1, productList.size)
 
@@ -54,13 +54,13 @@ class ClickRecentViewAnalyticsTest : BaseCartTest() {
     @Test
     fun `WHEN generate recent view data click analytics there's 1 item selected and cart is empty THEN key list value should be cart`() {
         // GIVEN
-        var result: Map<String, Any>? = null
+        val result: Map<String, Any>?
 
         // WHEN
-        result = cartListPresenter?.generateRecentViewProductClickEmptyCartDataLayer(CartRecentViewItemHolderData(), 0)
+        result = cartListPresenter.generateRecentViewProductClickEmptyCartDataLayer(CartRecentViewItemHolderData(), 0)
 
         // THEN
-        val click = result?.get(EnhancedECommerceCartMapData.KEY_CLICK) as Map<String, Any>
+        val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
         val actionField = click[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
         Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW_ON_EMPTY_CART)
     }

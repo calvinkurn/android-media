@@ -10,8 +10,6 @@ class LocalDataChangeTest : BaseCartTest() {
     @Test
     fun `WHEN quantity is changed THEN local data state should be changed`() {
         // GIVEN
-        var result = false
-
         val cartDataList = mutableListOf<CartItemHolderData>().apply {
             add(CartItemHolderData().apply {
                 originalQty = 1
@@ -22,7 +20,7 @@ class LocalDataChangeTest : BaseCartTest() {
         every { view.getAllCartDataList() } returns cartDataList
 
         // WHEN
-        result = cartListPresenter?.dataHasChanged() ?: false
+        val result = cartListPresenter.dataHasChanged()
 
         // THEN
         Assert.assertTrue(result)
@@ -32,8 +30,6 @@ class LocalDataChangeTest : BaseCartTest() {
     @Test
     fun `WHEN notes is changed THEN local data state should be changed`() {
         // GIVEN
-        var result = false
-
         val cartDataList = mutableListOf<CartItemHolderData>().apply {
             add(CartItemHolderData().apply {
                 originalNotes = "nnn"
@@ -44,7 +40,7 @@ class LocalDataChangeTest : BaseCartTest() {
         every { view.getAllCartDataList() } returns cartDataList
 
         // WHEN
-        result = cartListPresenter?.dataHasChanged() ?: false
+        val result = cartListPresenter.dataHasChanged()
 
         // THEN
         Assert.assertTrue(result)
@@ -54,8 +50,6 @@ class LocalDataChangeTest : BaseCartTest() {
     @Test
     fun `WHEN quantity and notes are changed THEN local data state should be changed`() {
         // GIVEN
-        var result = false
-
         val cartDataList = mutableListOf<CartItemHolderData>().apply {
             add(CartItemHolderData().apply {
                 originalNotes = "nnn"
@@ -68,7 +62,7 @@ class LocalDataChangeTest : BaseCartTest() {
         every { view.getAllCartDataList() } returns cartDataList
 
         // WHEN
-        result = cartListPresenter?.dataHasChanged() ?: false
+        val result = cartListPresenter.dataHasChanged()
 
         // THEN
         Assert.assertTrue(result)
@@ -78,8 +72,6 @@ class LocalDataChangeTest : BaseCartTest() {
     @Test
     fun `WHEN quantity and notes did not changed THEN local data state should be changed`() {
         // GIVEN
-        var result = false
-
         val cartDataList = mutableListOf<CartItemHolderData>().apply {
             add(CartItemHolderData().apply {
                 originalNotes = "nnn"
@@ -92,7 +84,7 @@ class LocalDataChangeTest : BaseCartTest() {
         every { view.getAllCartDataList() } returns cartDataList
 
         // WHEN
-        result = cartListPresenter?.dataHasChanged() ?: false
+        val result = cartListPresenter.dataHasChanged()
 
         // THEN
         Assert.assertFalse(result)

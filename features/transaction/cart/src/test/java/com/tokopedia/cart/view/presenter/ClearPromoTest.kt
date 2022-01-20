@@ -20,7 +20,7 @@ class ClearPromoTest : BaseCartTest() {
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(clearPromoModel)
 
         // WHEN
-        cartListPresenter?.doClearRedPromosBeforeGoToCheckout(ArrayList())
+        cartListPresenter.doClearRedPromosBeforeGoToCheckout(ArrayList())
 
         // THEN
         verify {
@@ -38,7 +38,7 @@ class ClearPromoTest : BaseCartTest() {
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.error(exception)
 
         // WHEN
-        cartListPresenter?.doClearRedPromosBeforeGoToCheckout(ArrayList())
+        cartListPresenter.doClearRedPromosBeforeGoToCheckout(ArrayList())
 
         // THEN
         verify {
@@ -55,10 +55,10 @@ class ClearPromoTest : BaseCartTest() {
         every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(clearPromoModel)
 
-        cartListPresenter?.detachView()
+        cartListPresenter.detachView()
 
         // WHEN
-        cartListPresenter?.doClearRedPromosBeforeGoToCheckout(ArrayList())
+        cartListPresenter.doClearRedPromosBeforeGoToCheckout(ArrayList())
 
         // THEN
         verify(inverse = true) {

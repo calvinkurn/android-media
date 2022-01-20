@@ -23,7 +23,7 @@ class ValidateUseTest : BaseCartTest() {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(validateUseModel)
 
         // WHEN
-        cartListPresenter?.doValidateUse(ValidateUsePromoRequest())
+        cartListPresenter.doValidateUse(ValidateUsePromoRequest())
 
         // THEN
         verify {
@@ -39,7 +39,7 @@ class ValidateUseTest : BaseCartTest() {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(exception)
 
         // WHEN
-        cartListPresenter?.doValidateUse(ValidateUsePromoRequest())
+        cartListPresenter.doValidateUse(ValidateUsePromoRequest())
 
         // THEN
         verify {
@@ -55,7 +55,7 @@ class ValidateUseTest : BaseCartTest() {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(exception)
 
         // WHEN
-        cartListPresenter?.doValidateUse(ValidateUsePromoRequest())
+        cartListPresenter.doValidateUse(ValidateUsePromoRequest())
 
         // THEN
         verifyOrder {

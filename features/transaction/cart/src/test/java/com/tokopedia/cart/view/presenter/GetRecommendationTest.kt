@@ -34,7 +34,7 @@ class GetRecommendationTest : BaseCartTest() {
         every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
 
         // WHEN
-        cartListPresenter?.processGetRecommendationData(1, emptyList())
+        cartListPresenter.processGetRecommendationData(1, emptyList())
 
         // THEN
         verifyOrder {
@@ -64,7 +64,7 @@ class GetRecommendationTest : BaseCartTest() {
         every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
 
         // WHEN
-        cartListPresenter?.processGetRecommendationData(1, emptyList())
+        cartListPresenter.processGetRecommendationData(1, emptyList())
 
         // THEN
         verify(inverse = true) {
@@ -84,7 +84,7 @@ class GetRecommendationTest : BaseCartTest() {
         every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
 
         // WHEN
-        cartListPresenter?.processGetRecommendationData(1, emptyList())
+        cartListPresenter.processGetRecommendationData(1, emptyList())
 
         // THEN
         // THEN
@@ -121,10 +121,10 @@ class GetRecommendationTest : BaseCartTest() {
         every { getRecommendationUseCase.createObservable(any()) } returns Observable.just(response)
         every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
 
-        cartListPresenter?.detachView()
+        cartListPresenter.detachView()
 
         // WHEN
-        cartListPresenter?.processGetRecommendationData(1, emptyList())
+        cartListPresenter.processGetRecommendationData(1, emptyList())
 
         // THEN
         verify(inverse = true) {

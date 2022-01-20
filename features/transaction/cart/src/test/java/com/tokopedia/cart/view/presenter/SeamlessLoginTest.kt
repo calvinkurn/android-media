@@ -25,7 +25,7 @@ class SeamlessLoginTest : BaseCartTest() {
         every { view.getAdsId() } returns adsId
 
         // WHEN
-        cartListPresenter?.redirectToLite(url)
+        cartListPresenter.redirectToLite(url)
 
         // THEN
         verifyOrder {
@@ -53,7 +53,7 @@ class SeamlessLoginTest : BaseCartTest() {
         every { view.getAdsId() } returns adsId
 
         // WHEN
-        cartListPresenter?.redirectToLite(url)
+        cartListPresenter.redirectToLite(url)
 
         // THEN
         verifyOrder {
@@ -81,7 +81,7 @@ class SeamlessLoginTest : BaseCartTest() {
         every { view.getAdsId() } returns adsId
 
         // WHEN
-        cartListPresenter?.redirectToLite(url)
+        cartListPresenter.redirectToLite(url)
 
         // THEN
         verifyOrder {
@@ -97,10 +97,10 @@ class SeamlessLoginTest : BaseCartTest() {
         // GIVEN
         val url = "http://"
 
-        cartListPresenter?.detachView()
+        cartListPresenter.detachView()
 
         // WHEN
-        cartListPresenter?.redirectToLite(url)
+        cartListPresenter.redirectToLite(url)
 
         // THEN
         verify(inverse = true) {

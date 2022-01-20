@@ -25,7 +25,7 @@ class GetWishlistTest : BaseCartTest() {
         every { getWishlistUseCase.createObservable(any()) } returns Observable.just(response)
 
         // WHEN
-        cartListPresenter?.processGetWishlistData()
+        cartListPresenter.processGetWishlistData()
 
         // THEN
         verifyOrder {
@@ -47,7 +47,7 @@ class GetWishlistTest : BaseCartTest() {
         every { getWishlistUseCase.createObservable(any()) } returns Observable.just(response)
 
         // WHEN
-        cartListPresenter?.processGetWishlistData()
+        cartListPresenter.processGetWishlistData()
 
         // THEN
         verify(inverse = true) {
@@ -66,7 +66,7 @@ class GetWishlistTest : BaseCartTest() {
         every { getWishlistUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
 
         // WHEN
-        cartListPresenter?.processGetWishlistData()
+        cartListPresenter.processGetWishlistData()
 
         // THEN
         verifyOrder {

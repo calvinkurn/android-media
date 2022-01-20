@@ -56,7 +56,7 @@ class UpdateCartTest : BaseCartTest() {
         every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
 
         // WHEN
-        cartListPresenter?.processUpdateCartData(false)
+        cartListPresenter.processUpdateCartData(false)
 
         // THEN
         verify {
@@ -84,7 +84,7 @@ class UpdateCartTest : BaseCartTest() {
         every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
 
         // WHEN
-        cartListPresenter?.processUpdateCartData(false)
+        cartListPresenter.processUpdateCartData(false)
 
         // THEN
         verify {
@@ -112,7 +112,7 @@ class UpdateCartTest : BaseCartTest() {
         every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
 
         // WHEN
-        cartListPresenter?.processUpdateCartData(false)
+        cartListPresenter.processUpdateCartData(false)
 
         // THEN
         verify {
@@ -128,11 +128,11 @@ class UpdateCartTest : BaseCartTest() {
         coEvery { updateCartUseCase.execute(any(), any()) } answers {
             firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
         }
-        cartListPresenter?.setHasPerformChecklistChange(false)
+        cartListPresenter.setHasPerformChecklistChange(false)
         every { view.getAllSelectedCartDataList() } answers { listOf(CartItemHolderData()) }
 
         // WHEN
-        cartListPresenter?.processUpdateCartData(false)
+        cartListPresenter.processUpdateCartData(false)
 
         // THEN
         verify {
@@ -148,11 +148,11 @@ class UpdateCartTest : BaseCartTest() {
         coEvery { updateCartUseCase.execute(any(), any()) } answers {
             firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
         }
-        cartListPresenter?.setHasPerformChecklistChange(true)
+        cartListPresenter.setHasPerformChecklistChange(true)
         every { view.getAllSelectedCartDataList() } answers { listOf(CartItemHolderData()) }
 
         // WHEN
-        cartListPresenter?.processUpdateCartData(false)
+        cartListPresenter.processUpdateCartData(false)
 
         // THEN
         verify {
@@ -182,7 +182,7 @@ class UpdateCartTest : BaseCartTest() {
         every { view.getAllSelectedCartDataList() } answers { listOf(CartItemHolderData()) }
 
         // WHEN
-        cartListPresenter?.processUpdateCartData(false)
+        cartListPresenter.processUpdateCartData(false)
 
         // THEN
         verify {
@@ -222,7 +222,7 @@ class UpdateCartTest : BaseCartTest() {
         every { view.getAllSelectedCartDataList() } answers { listOf(CartItemHolderData()) }
 
         // WHEN
-        cartListPresenter?.processUpdateCartData(false)
+        cartListPresenter.processUpdateCartData(false)
 
         // THEN
         verify {
@@ -265,7 +265,7 @@ class UpdateCartTest : BaseCartTest() {
         every { view.getAllSelectedCartDataList() } answers { listOf(CartItemHolderData()) }
 
         // WHEN
-        cartListPresenter?.processUpdateCartData(false)
+        cartListPresenter.processUpdateCartData(false)
 
         // THEN
         verify {
@@ -294,7 +294,7 @@ class UpdateCartTest : BaseCartTest() {
         every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
 
         // WHEN
-        cartListPresenter?.processUpdateCartData(false)
+        cartListPresenter.processUpdateCartData(false)
 
         // THEN
         verify {
@@ -323,7 +323,7 @@ class UpdateCartTest : BaseCartTest() {
         every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
 
         // WHEN
-        cartListPresenter?.processUpdateCartData(false)
+        cartListPresenter.processUpdateCartData(false)
 
         // THEN
         verify {
@@ -353,7 +353,7 @@ class UpdateCartTest : BaseCartTest() {
         every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
 
         // WHEN
-        cartListPresenter?.processUpdateCartData(false)
+        cartListPresenter.processUpdateCartData(false)
 
         // THEN
         verify {
@@ -373,7 +373,7 @@ class UpdateCartTest : BaseCartTest() {
         }
 
         // WHEN
-        cartListPresenter?.processUpdateCartData(false)
+        cartListPresenter.processUpdateCartData(false)
 
         // THEN
         verify {
@@ -387,7 +387,7 @@ class UpdateCartTest : BaseCartTest() {
         every { view.getAllSelectedCartDataList() } answers { emptyList() }
 
         // WHEN
-        cartListPresenter?.processUpdateCartData(false)
+        cartListPresenter.processUpdateCartData(false)
 
         // THEN
         verify(inverse = true) {
@@ -401,7 +401,7 @@ class UpdateCartTest : BaseCartTest() {
         every { view.getAllAvailableCartDataList() } answers { emptyList() }
 
         // WHEN
-        cartListPresenter?.processUpdateCartData(true)
+        cartListPresenter.processUpdateCartData(true)
 
         // THEN
         verify(inverse = true) {
@@ -429,7 +429,7 @@ class UpdateCartTest : BaseCartTest() {
         every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
 
         // WHEN
-        cartListPresenter?.processUpdateCartData(true)
+        cartListPresenter.processUpdateCartData(true)
 
         // THEN
         verify {
@@ -457,7 +457,7 @@ class UpdateCartTest : BaseCartTest() {
         every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
 
         // WHEN
-        cartListPresenter?.processUpdateCartData(true)
+        cartListPresenter.processUpdateCartData(true)
 
         // THEN
         verify(inverse = true) {
@@ -469,10 +469,10 @@ class UpdateCartTest : BaseCartTest() {
     @Test
     fun `WHEN update cart for checkout with view is detached THEN should not render view`() {
         // GIVEN
-        cartListPresenter?.detachView()
+        cartListPresenter.detachView()
 
         // WHEN
-        cartListPresenter?.processUpdateCartData(false)
+        cartListPresenter.processUpdateCartData(false)
 
         // THEN
         verify(inverse = true) {

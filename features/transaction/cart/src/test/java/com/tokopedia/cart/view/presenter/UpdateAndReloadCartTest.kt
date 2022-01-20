@@ -18,7 +18,7 @@ class UpdateAndReloadCartTest : BaseCartTest() {
         every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
 
         // WHEN
-        cartListPresenter?.processToUpdateAndReloadCartData("0")
+        cartListPresenter.processToUpdateAndReloadCartData("0")
 
         // THEN
         verify {
@@ -46,7 +46,7 @@ class UpdateAndReloadCartTest : BaseCartTest() {
         }
 
         // WHEN
-        cartListPresenter?.processToUpdateAndReloadCartData("0")
+        cartListPresenter.processToUpdateAndReloadCartData("0")
 
         // THEN
         verify {
@@ -69,7 +69,7 @@ class UpdateAndReloadCartTest : BaseCartTest() {
         every { view.getAllAvailableCartDataList() } returns arrayListOf(cartItemData)
 
         // WHEN
-        cartListPresenter?.processToUpdateAndReloadCartData("0")
+        cartListPresenter.processToUpdateAndReloadCartData("0")
 
         // THEN
         verifyOrder {
@@ -81,10 +81,10 @@ class UpdateAndReloadCartTest : BaseCartTest() {
     @Test
     fun `WHEN update cart and reload with view is detched THEN should not render view`() {
         // GIVEN
-        cartListPresenter?.detachView()
+        cartListPresenter.detachView()
 
         // WHEN
-        cartListPresenter?.processToUpdateAndReloadCartData("0")
+        cartListPresenter.processToUpdateAndReloadCartData("0")
 
         // THEN
         verify(inverse = true) {

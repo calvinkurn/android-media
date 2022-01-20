@@ -24,7 +24,7 @@ class SaveCheckboxStateTest : BaseCartTest() {
         every { setCartlistCheckboxStateUseCase.buildRequestParams(any()) } returns RequestParams.EMPTY
 
         // WHEN
-        cartListPresenter?.saveCheckboxState(cartItemDataList)
+        cartListPresenter.saveCheckboxState(cartItemDataList)
 
         // THEN
         assert(true)

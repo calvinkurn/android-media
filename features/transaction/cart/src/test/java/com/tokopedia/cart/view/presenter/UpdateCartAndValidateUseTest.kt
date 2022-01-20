@@ -35,7 +35,7 @@ class UpdateCartAndValidateUseTest : BaseCartTest() {
         every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
 
         // WHEN
-        cartListPresenter?.doUpdateCartAndValidateUse(ValidateUsePromoRequest())
+        cartListPresenter.doUpdateCartAndValidateUse(ValidateUsePromoRequest())
 
         // THEN
         verify {
@@ -55,7 +55,7 @@ class UpdateCartAndValidateUseTest : BaseCartTest() {
         every { updateCartAndValidateUseUseCase.createObservable(any()) } returns Observable.error(exception)
 
         // WHEN
-        cartListPresenter?.doUpdateCartAndValidateUse(ValidateUsePromoRequest())
+        cartListPresenter.doUpdateCartAndValidateUse(ValidateUsePromoRequest())
 
         // THEN
         verify {
@@ -77,7 +77,7 @@ class UpdateCartAndValidateUseTest : BaseCartTest() {
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(ClearPromoUiModel())
 
         // WHEN
-        cartListPresenter?.doUpdateCartAndValidateUse(ValidateUsePromoRequest())
+        cartListPresenter.doUpdateCartAndValidateUse(ValidateUsePromoRequest())
 
         // THEN
         verify {
@@ -92,7 +92,7 @@ class UpdateCartAndValidateUseTest : BaseCartTest() {
         every { view.getAllSelectedCartDataList() } answers { emptyList() }
 
         // WHEN
-        cartListPresenter?.doUpdateCartAndValidateUse(ValidateUsePromoRequest())
+        cartListPresenter.doUpdateCartAndValidateUse(ValidateUsePromoRequest())
 
         // THEN
         verify(inverse = true) {
@@ -106,10 +106,10 @@ class UpdateCartAndValidateUseTest : BaseCartTest() {
     @Test
     fun `WHEN update and validate with view is detached THEN should not render view`() {
         // GIVEN
-        cartListPresenter?.detachView()
+        cartListPresenter.detachView()
 
         // WHEN
-        cartListPresenter?.doUpdateCartAndValidateUse(ValidateUsePromoRequest())
+        cartListPresenter.doUpdateCartAndValidateUse(ValidateUsePromoRequest())
 
         // THEN
         verify(inverse = true) {

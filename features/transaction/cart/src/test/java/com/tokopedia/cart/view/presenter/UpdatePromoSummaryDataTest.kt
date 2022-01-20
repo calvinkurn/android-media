@@ -19,13 +19,13 @@ class UpdatePromoSummaryDataTest : BaseCartTest() {
                 LastApplyUsageSummariesUiModel()
         )))
         val cartData = CartData(promo = CartPromoData(lastApplyPromo = LastApplyPromo(lastApplyPromoData = LastApplyPromoData(codes = listOf("ABC"), listVoucherOrders = listOf(VoucherOrders())))))
-        cartListPresenter?.setCartListData(cartData)
+        cartListPresenter.setCartListData(cartData)
 
         // WHEN
-        cartListPresenter?.updatePromoSummaryData(lastApplyUiModel)
+        cartListPresenter.updatePromoSummaryData(lastApplyUiModel)
 
         // THEN
-        assert(cartListPresenter?.getPromoSummaryUiModel() != null)
+        assert(cartListPresenter.getPromoSummaryUiModel() != null)
     }
 
 }

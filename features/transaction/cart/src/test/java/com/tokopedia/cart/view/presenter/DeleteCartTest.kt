@@ -29,7 +29,7 @@ class DeleteCartTest : BaseCartTest() {
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
 
         // WHEN
-        cartListPresenter?.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), false, false, true, false)
+        cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), false, false, true, false)
 
         // THEN
         verify {
@@ -53,7 +53,7 @@ class DeleteCartTest : BaseCartTest() {
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
 
         // WHEN
-        cartListPresenter?.processDeleteCartItem(arrayListOf(firstCartItemData, secondCartItemData),
+        cartListPresenter.processDeleteCartItem(arrayListOf(firstCartItemData, secondCartItemData),
                 arrayListOf(secondCartItemData), false, false)
 
         // THEN
@@ -81,7 +81,7 @@ class DeleteCartTest : BaseCartTest() {
         every { view.checkHitValidateUseIsNeeded(any()) } returns true
 
         // WHEN
-        cartListPresenter?.processDeleteCartItem(arrayListOf(firstCartItemData, secondCartItemData),
+        cartListPresenter.processDeleteCartItem(arrayListOf(firstCartItemData, secondCartItemData),
                 arrayListOf(secondCartItemData), false, false)
 
         // THEN
@@ -105,7 +105,7 @@ class DeleteCartTest : BaseCartTest() {
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
 
         // WHEN
-        cartListPresenter?.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), false, false)
+        cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), false, false)
 
         // THEN
         verify {
@@ -127,10 +127,11 @@ class DeleteCartTest : BaseCartTest() {
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
 
         // WHEN
-        cartListPresenter?.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), false, true)
+        cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), false, true)
 
         // THEN
-        verify {
+        verifyOrder {
+            view.reCollapseExpandedDeletedUnavailableItems()
             view.showToastMessageRed(throwable)
         }
     }
@@ -140,10 +141,10 @@ class DeleteCartTest : BaseCartTest() {
         // GIVEN
         val cartItemData = CartItemHolderData(cartId = "0")
 
-        cartListPresenter?.detachView()
+        cartListPresenter.detachView()
 
         // WHEN
-        cartListPresenter?.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), false, false, true, false)
+        cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), false, false, true, false)
 
         // THEN
         verify(inverse = true) {

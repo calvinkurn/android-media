@@ -13,51 +13,51 @@ class RecentViewImpressionAnalyticsTest : BaseCartTest() {
     @Test
     fun `WHEN generate recent view impression data analytics with 1 item selected and cart is not empty THEN should be containing 1 product`() {
         // GIVEN
-        var result: Map<String, Any>? = null
+        val result: Map<String, Any>?
 
         val recentViewDataList = mutableListOf<CartRecentViewItemHolderData>().apply {
             add(CartRecentViewItemHolderData())
         }
 
         // WHEN
-        result = cartListPresenter?.generateRecentViewDataImpressionAnalytics(recentViewDataList, false)
+        result = cartListPresenter.generateRecentViewDataImpressionAnalytics(recentViewDataList, false)
 
         // THEN
-        val impression = result?.get(EnhancedECommerceCartMapData.KEY_IMPRESSIONS) as List<Any>
+        val impression = result[EnhancedECommerceCartMapData.KEY_IMPRESSIONS] as List<Any>
         assertEquals(1, impression.size)
     }
 
     @Test
     fun `WHEN generate recent view impression data analytics with 1 item selected and cart is not empty THEN key 'list' value should be 'cart'`() {
         // GIVEN
-        var result: Map<String, Any>? = null
+        val result: Map<String, Any>?
 
         val recentViewDataList = mutableListOf<CartRecentViewItemHolderData>().apply {
             add(CartRecentViewItemHolderData())
         }
 
         // WHEN
-        result = cartListPresenter?.generateRecentViewDataImpressionAnalytics(recentViewDataList, false)
+        result = cartListPresenter.generateRecentViewDataImpressionAnalytics(recentViewDataList, false)
 
         // THEN
-        val impression = result?.get(EnhancedECommerceCartMapData.KEY_IMPRESSIONS) as List<Map<String, Any>>
+        val impression = result[EnhancedECommerceCartMapData.KEY_IMPRESSIONS] as List<Map<String, Any>>
         assertTrue((impression[0][EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW)
     }
 
     @Test
     fun `WHEN generate recent view impression data analytics with 1 item selected and cart is empty THEN key 'list' value should be 'empty cart'`() {
         // GIVEN
-        var result: Map<String, Any>? = null
+        val result: Map<String, Any>?
 
         val recentViewDataList = mutableListOf<CartRecentViewItemHolderData>().apply {
             add(CartRecentViewItemHolderData())
         }
 
         // WHEN
-        result = cartListPresenter?.generateRecentViewDataImpressionAnalytics(recentViewDataList, true)
+        result = cartListPresenter.generateRecentViewDataImpressionAnalytics(recentViewDataList, true)
 
         // THEN
-        val impression = result?.get(EnhancedECommerceCartMapData.KEY_IMPRESSIONS) as List<Map<String, Any>>
+        val impression = result[EnhancedECommerceCartMapData.KEY_IMPRESSIONS] as List<Map<String, Any>>
         assertTrue((impression[0][EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_RECENT_VIEW_ON_EMPTY_CART)
 
     }

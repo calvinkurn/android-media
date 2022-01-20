@@ -54,7 +54,7 @@ abstract class BaseCartTest {
     var setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
     var followShopUseCase: FollowShopUseCase = mockk()
     var view: ICartListView = mockk(relaxed = true)
-    var cartListPresenter: ICartListPresenter? = null
+    lateinit var cartListPresenter: ICartListPresenter
 
     @get: Rule
     var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
@@ -72,12 +72,12 @@ abstract class BaseCartTest {
         )
         every { addWishListUseCase.unsubscribe() } just Runs
         every { removeWishListUseCase.unsubscribe() } just Runs
-        cartListPresenter?.attachView(view)
+        cartListPresenter.attachView(view)
     }
 
     @After
     fun tearDown() {
-        cartListPresenter?.detachView()
+        cartListPresenter.detachView()
     }
 
 }

@@ -105,7 +105,7 @@ class SubTotalCalculationTest : BaseCartTest() {
         }
 
         // WHEN
-        cartListPresenter?.reCalculateSubTotal(cartShops)
+        cartListPresenter.reCalculateSubTotal(cartShops)
 
         // THEN
         verifyOrder {
@@ -130,7 +130,7 @@ class SubTotalCalculationTest : BaseCartTest() {
             }
         }
 
-        cartListPresenter?.reCalculateSubTotal(cartShops)
+        cartListPresenter.reCalculateSubTotal(cartShops)
 
         verifyOrder {
             view.updateCashback(100.0)
@@ -157,7 +157,7 @@ class SubTotalCalculationTest : BaseCartTest() {
         }
 
         // WHEN
-        cartListPresenter?.reCalculateSubTotal(cartShops)
+        cartListPresenter.reCalculateSubTotal(cartShops)
 
         // THEN
         verifyOrder {
@@ -189,7 +189,7 @@ class SubTotalCalculationTest : BaseCartTest() {
         }
 
         // WHEN
-        cartListPresenter?.reCalculateSubTotal(cartShops)
+        cartListPresenter.reCalculateSubTotal(cartShops)
 
         // THEN
         verifyOrder {
@@ -220,7 +220,7 @@ class SubTotalCalculationTest : BaseCartTest() {
         }
 
         // WHEN
-        cartListPresenter?.reCalculateSubTotal(cartShops)
+        cartListPresenter.reCalculateSubTotal(cartShops)
 
         // THEN
         verifyOrder {
@@ -252,7 +252,7 @@ class SubTotalCalculationTest : BaseCartTest() {
         }
 
         // WHEN
-        cartListPresenter?.reCalculateSubTotal(cartShops)
+        cartListPresenter.reCalculateSubTotal(cartShops)
 
         // THEN
         verifyOrder {
@@ -295,7 +295,7 @@ class SubTotalCalculationTest : BaseCartTest() {
         }
 
         // WHEN
-        cartListPresenter?.reCalculateSubTotal(cartShops)
+        cartListPresenter.reCalculateSubTotal(cartShops)
 
         // THEN
         verifyOrder {
@@ -338,7 +338,7 @@ class SubTotalCalculationTest : BaseCartTest() {
         }
 
         // WHEN
-        cartListPresenter?.reCalculateSubTotal(cartShops)
+        cartListPresenter.reCalculateSubTotal(cartShops)
 
         // THEN
         verifyOrder {
@@ -369,7 +369,7 @@ class SubTotalCalculationTest : BaseCartTest() {
         }
 
         // WHEN
-        cartListPresenter?.reCalculateSubTotal(cartShopsIncludingBundleItems)
+        cartListPresenter.reCalculateSubTotal(cartShopsIncludingBundleItems)
 
         // THEN
         verify {
@@ -394,7 +394,7 @@ class SubTotalCalculationTest : BaseCartTest() {
             }
         }
 
-        cartListPresenter?.reCalculateSubTotal(cartShops)
+        cartListPresenter.reCalculateSubTotal(cartShops)
 
         verifyOrder {
             view.updateCashback(100.0)

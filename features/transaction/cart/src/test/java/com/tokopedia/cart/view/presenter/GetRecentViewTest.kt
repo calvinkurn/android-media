@@ -33,7 +33,7 @@ class GetRecentViewTest : BaseCartTest() {
         every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
 
         // WHEN
-        cartListPresenter?.processGetRecentViewData(emptyList())
+        cartListPresenter.processGetRecentViewData(emptyList())
 
         // THEN
         verifyOrder {
@@ -62,7 +62,7 @@ class GetRecentViewTest : BaseCartTest() {
         every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
 
         // WHEN
-        cartListPresenter?.processGetRecentViewData(emptyList())
+        cartListPresenter.processGetRecentViewData(emptyList())
 
         // THEN
         verify(inverse = true) {
@@ -81,7 +81,7 @@ class GetRecentViewTest : BaseCartTest() {
         every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
 
         // WHEN
-        cartListPresenter?.processGetRecentViewData(emptyList())
+        cartListPresenter.processGetRecentViewData(emptyList())
 
         // THEN
         verify(inverse = true) {
@@ -115,10 +115,10 @@ class GetRecentViewTest : BaseCartTest() {
         every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
         every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
 
-        cartListPresenter?.detachView()
+        cartListPresenter.detachView()
 
         // WHEN
-        cartListPresenter?.processGetRecentViewData(emptyList())
+        cartListPresenter.processGetRecentViewData(emptyList())
 
         // THEN
         verify(inverse = true) {

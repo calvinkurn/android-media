@@ -15,7 +15,7 @@ class AddAndRemoveWishlistTest : BaseCartTest() {
         every { addWishListUseCase.createObservable(any(), any(), any()) } just Runs
 
         // WHEN
-        cartListPresenter?.processAddToWishlist("1", "1", object : WishListActionListener {
+        cartListPresenter.processAddToWishlist("1", "1", object : WishListActionListener {
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                 /* No-op */
             }
@@ -45,7 +45,7 @@ class AddAndRemoveWishlistTest : BaseCartTest() {
         every { removeWishListUseCase.createObservable(any(), any(), any()) } just Runs
 
         // WHEN
-        cartListPresenter?.processRemoveFromWishlist("1", "1", object : WishListActionListener {
+        cartListPresenter.processRemoveFromWishlist("1", "1", object : WishListActionListener {
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                 /* No-op */
             }

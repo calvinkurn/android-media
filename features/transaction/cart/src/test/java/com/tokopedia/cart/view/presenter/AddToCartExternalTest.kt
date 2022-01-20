@@ -24,7 +24,7 @@ class AddToCartExternalTest : BaseCartTest() {
         every { userSessionInterface.userId } returns "123"
 
         // When
-        cartListPresenter?.processAddToCartExternal(1)
+        cartListPresenter.processAddToCartExternal(1)
 
         // Then
         verifyOrder {
@@ -45,7 +45,7 @@ class AddToCartExternalTest : BaseCartTest() {
         every { userSessionInterface.userId } returns "123"
 
         // When
-        cartListPresenter?.processAddToCartExternal(1)
+        cartListPresenter.processAddToCartExternal(1)
 
         // Then
         verifyOrder {
@@ -69,10 +69,10 @@ class AddToCartExternalTest : BaseCartTest() {
         every { addToCartExternalUseCase.createObservable(any()) } returns Observable.just(addToCartExternalModel)
         every { userSessionInterface.userId } returns "123"
 
-        cartListPresenter?.detachView()
+        cartListPresenter.detachView()
 
         // When
-        cartListPresenter?.processAddToCartExternal(1)
+        cartListPresenter.processAddToCartExternal(1)
 
         // Then
         verify(inverse = true) {
