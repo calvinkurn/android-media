@@ -73,7 +73,7 @@ class RecommendationCardWidgetAdapter(private val recommendationListener: Rechar
                         .toInt(),
                     resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
                         .toInt(),
-                    resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
+                    resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
                         .toInt(),
                     resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
                         .toInt()

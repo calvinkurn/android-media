@@ -25,13 +25,17 @@ import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaB
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.activity.DigitalPDPPulsaActivity
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoUtil
+import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryPulsaBottomsheet
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
 import com.tokopedia.recharge_component.model.denom.DenomData
+import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
+import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
@@ -49,7 +53,10 @@ import kotlin.math.abs
  * @author by firmanda on 04/01/21
  */
 
-class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener {
+class DigitalPDPPulsaFragment : BaseDaggerFragment(),
+    RechargeDenomGridListener,
+    RechargeBuyWidgetListener
+{
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -105,28 +112,38 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
 
     private fun renderProduct() {
         binding?.run {
-            if (rechargePdpPulsaClientNumberWidget.getInputNumber().length >= MINIMUM_OPERATOR_PREFIX) {
+            try {
+                if (rechargePdpPulsaClientNumberWidget.getInputNumber().length >= MINIMUM_OPERATOR_PREFIX) {
 
-                /* operator check */
-                val selectedOperator =
-                    operatorData.rechargeCatalogPrefixSelect.prefixes.single {
-                        rechargePdpPulsaClientNumberWidget.getInputNumber().startsWith(it.value)
+                    /* operator check */
+                    val selectedOperator =
+                        operatorData.rechargeCatalogPrefixSelect.prefixes.single {
+                            rechargePdpPulsaClientNumberWidget.getInputNumber().startsWith(it.value)
+                        }
+
+                    // [Misael] operatorId state & checker
+                    if (operatorId != selectedOperator.operator.id || rechargePdpPulsaClientNumberWidget.getInputNumber()
+                            .length in MINIMUM_VALID_NUMBER_LENGTH .. MAXIMUM_VALID_NUMBER_LENGTH
+                    ) {
+                        operatorId = selectedOperator.operator.id
+                        rechargePdpPulsaClientNumberWidget.run {
+                            showOperatorIcon(selectedOperator.operator.attributes.imageUrl)
+                        }
+                        hideEmptyState()
+                        getCatalogProductInput(selectedOperator.key)
+                    } else {
+                        onHideBuyWidget()
                     }
 
-                if (operatorId != selectedOperator.operator.id || rechargePdpPulsaClientNumberWidget.getInputNumber()
-                        .length in MINIMUM_VALID_NUMBER_LENGTH .. MAXIMUM_VALID_NUMBER_LENGTH
-                ) {
-                    operatorId = selectedOperator.operator.id
-                    rechargePdpPulsaClientNumberWidget.run {
-                        showOperatorIcon(selectedOperator.operator.attributes.imageUrl)
-                    }
-                    hideEmptyState()
-                    getCatalogProductInput(selectedOperator.key)
+                    // [Misael] add checkoutPassData and update checkoutPassData with new input number
                 } else {
                     showEmptyState()
                 }
-
-                // [Misael] add checkoutPassData and update checkoutPassData with new input number
+            } catch (exception: NoSuchElementException) {
+                operatorId = ""
+                rechargePdpPulsaClientNumberWidget.setErrorInputField(
+                    getString(com.tokopedia.recharge_component.R.string.client_number_prefix_error),
+                )
             }
         }
     }
@@ -136,7 +153,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetMenuDetail(it.data)
                 is RechargeNetworkResult.Fail -> onFailedGetMenuDetail()
-                is RechargeNetworkResult.Loading -> {}
+                is RechargeNetworkResult.Loading -> {
+                    onShimmeringRecommendation()
+                }
             }
         })
         viewModel.favoriteNumberData.observe(viewLifecycleOwner, {
@@ -381,6 +400,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
         }
     }
 
+    private fun onClearSelectedDenomGrid(){
+        binding?.let {
+            it.rechargePdpPulsaDenomGridWidget.clearSelectedProduct()
+        }
+    }
+
     fun renderRecommendation(recommendations: List<RecommendationCardWidgetModel>) {
         binding?.let {
             it.rechargePdpPulsaRecommendationWidget.show()
@@ -398,10 +423,35 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
         }
     }
 
+    private fun onShimmeringRecommendation(){
+        binding?.let {
+            it.rechargePdpPulsaRecommendationWidget.show()
+            it.rechargePdpPulsaRecommendationWidget.renderShimmering()
+        }
+    }
+
     private fun onSuccessMCCM(denomGrid: DenomWidgetModel) {
         binding?.let {
             it.rechargePdpPulsaPromoWidget.show()
             it.rechargePdpPulsaPromoWidget.renderMCCMGrid(this, denomGrid, getString(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
+    }
+
+    private fun onClearSelectedMCCM(){
+        binding?.let {
+            it.rechargePdpPulsaPromoWidget.clearSelectedProduct()
+        }
+    }
+
+    private fun onShowBuyWidget(denomGrid: DenomData){
+        binding?.let {
+            it.rechargePdpPulsaBuyWidget.showBuyWidget(denomGrid, this)
+        }
+    }
+
+    private fun onHideBuyWidget(){
+        binding?.let {
+            it.rechargePdpPulsaBuyWidget.hideBuyWidget()
         }
     }
 
@@ -439,15 +489,17 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
                 rechargePdpPulsaPromoWidget.hide()
                 rechargePdpPulsaRecommendationWidget.hide()
                 rechargePdpPulsaDenomGridWidget.hide()
+                rechargePdpPulsaClientNumberWidget.hideOperatorIcon()
             }
         }
     }
 
     private fun hideEmptyState() {
         binding?.run {
-            if (rechargePdpPulsaEmptyStateWidget.isVisible)
+            if (rechargePdpPulsaEmptyStateWidget.isVisible) {
                 rechargePdpPulsaEmptyStateWidget.hide()
                 rechargePdpPulsaRecommendationWidget.show()
+            }
         }
     }
 
@@ -473,9 +525,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
     }
 
     private fun setAnimationAppBarLayout() {
-        //initial appBar state is expanded
-        (activity as? DigitalPDPPulsaActivity)?.setupAppBar()
-
         binding?.rechargePdpPulsaAppbar?.run {
             addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
                 var lastOffset = -1
@@ -533,7 +582,22 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
     /**
      * RechargeDenomGridListener
      */
-    override fun onDenomGridClicked(denomGrid: DenomData, position: Int) {
+    override fun onDenomGridClicked(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int,
+                                    isShowBuyWidget: Boolean) {
+        if (layoutType == DenomWidgetEnum.MCCM_TYPE){
+            onClearSelectedDenomGrid()
+        } else if (layoutType == DenomWidgetEnum.GRID_TYPE){
+            onClearSelectedMCCM()
+        }
+
+        if (isShowBuyWidget) {
+            onShowBuyWidget(denomGrid)
+        } else {
+            onHideBuyWidget()
+        }
+    }
+
+    override fun onClickedButtonLanjutkan(denom: DenomData) {
 
     }
 
@@ -574,6 +638,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
                 // [Misael] shouldRefreshInputNumber nnti gaperlu karena prefill ambil dari tempat lain
                 getFavoriteNumber(shouldRefreshInputNumber = false)
             }
+        }
+    }
+
+    override fun onClickedChevron(denom: DenomData) {
+        fragmentManager?.let {
+            SummaryPulsaBottomsheet(getString(R.string.summary_transaction), denom).show(it, "")
         }
     }
 

@@ -326,6 +326,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         with (binding) {
             clientNumberWidgetOperatorGroup.show()
             clientNumberWidgetOperatorIcon.loadImage(url)
+            includeLayout.clientNumberSimplifiedOperatorIcon.loadImage(url)
         }
     }
 

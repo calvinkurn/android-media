@@ -29,6 +29,7 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
 
     private val widgetRechargeMCCMFlashSaleGridWidget = WidgetRechargeMccmGridBinding.inflate(
         LayoutInflater.from(context), this, true)
+    private val adapterDenomGrid = DenomGridAdapter()
 
     fun renderMCCMGrid(denomGridListener: RechargeDenomGridListener, denomData: DenomWidgetModel, textColor: String){
         with(widgetRechargeMCCMFlashSaleGridWidget){
@@ -75,8 +76,14 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
         }
     }
 
+    fun clearSelectedProduct(){
+        adapterDenomGrid.run {
+            selectedProductIndex = null
+            notifyDataSetChanged()
+        }
+    }
+
     private fun renderAdapter(denomGridListener: RechargeDenomGridListener, listDenomGrid: List<DenomData>){
-        val adapterDenomGrid = DenomGridAdapter()
         with(widgetRechargeMCCMFlashSaleGridWidget){
             rvMccmGrid.apply {
                 show()

@@ -74,14 +74,16 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginEnd="@dimen/spacing_lvl4">
+                android:paddingBottom="@dimen/layout_lvl7">
 
                 <com.tokopedia.recharge_component.widget.RechargeEmptyStateWidget
                     android:id="@+id/recharge_pdp_pulsa_empty_state_widget"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
+                    android:layout_marginStart="@dimen/empty_state_margin"
+                    android:layout_marginEnd="@dimen/empty_state_margin"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
@@ -113,4 +115,11 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <com.tokopedia.recharge_component.widget.RechargeBuyWidget
+        android:id="@+id/recharge_pdp_pulsa_buy_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        />
 </RelativeLayout>
