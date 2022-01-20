@@ -8,6 +8,7 @@ import com.tokopedia.vouchercreation.common.di.module.VoucherCreationViewModelMo
 import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
 import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingFragment
 import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
+import com.tokopedia.vouchercreation.product.create.view.fragment.CreateCouponDetailFragment
 import com.tokopedia.vouchercreation.shop.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.shop.create.view.fragment.bottomsheet.CreatePromoCodeBottomSheetFragment
 import com.tokopedia.vouchercreation.shop.create.view.fragment.bottomsheet.TipsAndTrickBottomSheetFragment
@@ -47,4 +48,6 @@ interface VoucherCreationComponent {
     fun inject(tipsTrickBottomSheet: TipsTrickBottomSheet)
     fun inject(productCouponPreviewFragment: ProductCouponPreviewFragment)
     fun inject(couponSettingFragment: CouponSettingFragment)
+
+    fun inject(createCouponDetailFragment: CreateCouponDetailFragment)
 }

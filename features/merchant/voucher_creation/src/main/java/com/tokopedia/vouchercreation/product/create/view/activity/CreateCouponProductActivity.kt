@@ -10,7 +10,7 @@ import com.tokopedia.vouchercreation.product.create.view.fragment.CouponSettingF
 import com.tokopedia.vouchercreation.product.create.view.fragment.ProductCouponPreviewFragment
 import java.util.*
 
-class CreateVoucherProductActivity : AppCompatActivity() {
+class CreateCouponProductActivity : AppCompatActivity() {
 
     private val couponPreviewFragment by lazy { ProductCouponPreviewFragment.newInstance() }
     private val couponSettingFragment = CouponSettingFragment()
@@ -24,7 +24,7 @@ class CreateVoucherProductActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_mvc_create_voucher_product)
+        setContentView(R.layout.activity_mvc_create_coupon)
         displayCouponPreviewFragment()
         setupViews()
     }
@@ -81,14 +81,14 @@ class CreateVoucherProductActivity : AppCompatActivity() {
     private fun displayCouponPreviewFragment() {
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.frameLayout, couponPreviewFragment)
+            .replace(R.id.parent_view, couponPreviewFragment)
             .commitAllowingStateLoss()
     }
 
     private fun replaceFragment(fragment: Fragment, tag : String) {
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.frameLayout, fragment, tag)
+            .replace(R.id.parent_view, fragment, tag)
             .addToBackStack(tag)
             .commitAllowingStateLoss()
     }
