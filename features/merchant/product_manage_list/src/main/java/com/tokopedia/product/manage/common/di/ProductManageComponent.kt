@@ -23,7 +23,7 @@ interface ProductManageComponent {
     fun getCoroutineDispatcher(): CoroutineDispatcher
     fun httpLoggingInterceptor(): HttpLoggingInterceptor
     fun retrofitBuilder(): Retrofit.Builder
-    fun abstractionRouter(): AbstractionRouter
+    fun abstractionRouter(): AbstractionRouter?
     fun graphqlRepository(): GraphqlRepository
     fun userSession(): UserSessionInterface
     fun coroutineDispatchers(): CoroutineDispatchers
