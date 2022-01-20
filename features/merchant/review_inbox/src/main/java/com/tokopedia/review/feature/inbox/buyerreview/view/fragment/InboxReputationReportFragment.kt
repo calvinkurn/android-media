@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.AppScreen
@@ -96,7 +97,14 @@ class InboxReputationReportFragment : BaseDaggerFragment() {
     }
 
     private fun prepareView() {
-        reportRadioGroup?.setOnCheckedChangeListener { _: RadioGroup?, _: Int -> setSendButton() }
+        reportRadioGroup?.setOnCheckedChangeListener { _: RadioGroup?, id: Int ->
+            if (id != otherRadioButton?.id) {
+                context?.let { context ->
+                    KeyboardHandler.DropKeyboard(context, otherReason)
+                }
+            }
+            setSendButton()
+        }
         otherReason?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
             }
@@ -114,6 +122,9 @@ class InboxReputationReportFragment : BaseDaggerFragment() {
         sendButton?.setOnClickListener { v: View? ->
             tracking.onSubmitReportAbuse(feedbackId)
             showLoadingProgress()
+            context?.let { context ->
+                KeyboardHandler.DropKeyboard(context, otherReason)
+            }
             viewModel.reportReview(
                 feedbackId = arguments?.getString(
                     InboxReputationReportActivity.ARGS_REVIEW_ID,
