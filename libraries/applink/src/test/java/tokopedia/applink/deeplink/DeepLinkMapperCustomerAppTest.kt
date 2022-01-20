@@ -16,7 +16,6 @@ import com.tokopedia.applink.purchaseplatform.DeeplinkMapperPurchasePlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import io.mockk.*
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -388,17 +387,8 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check shop mvc locked to product shop id then should return tokopedia internal mvc locked to product shop id in customerapp`() {
         val mockShopId = "12345"
         val mockVoucherId = "6789"
-        val expectedDeepLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_MVC_LOCKED_TO_PRODUCT_SHOP_ID, mockShopId, mockVoucherId)
-        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT_SHOP_ID, mockShopId, mockVoucherId)
-        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
-    }
-
-    @Test
-    fun `check shop mvc locked to product shop domain then should return tokopedia internal mvc locked to product shop domain in customerapp`() {
-        val mockShopDomain = "shop_domain"
-        val mockVoucherId = "6789"
-        val expectedDeepLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_MVC_LOCKED_TO_PRODUCT_SHOP_DOMAIN, mockShopDomain, mockVoucherId)
-        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT_SHOP_DOMAIN, mockShopDomain, mockVoucherId)
+        val expectedDeepLink = UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_MVC_LOCKED_TO_PRODUCT, mockShopId, mockVoucherId)
+        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT, mockShopId, mockVoucherId)
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 

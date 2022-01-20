@@ -579,6 +579,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                                     bundle,
                                     ApplinkConst.SHOP_FEED,
                                     shopId);
+                        } else  if(isShopMvcLockedToProduct(linkSegment)) {
+                          RouteManager.route(context,
+                                  bundle,
+                                  ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT,
+                                  shopId);
                         } else {
                             Intent intent = RouteManager.getIntent(context, ApplinkConst.SHOP,
                                     shopId);
@@ -637,6 +642,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private boolean isShopFeed(List<String> linkSegment) {
         String lastSegment = linkSegment.get(linkSegment.size() - 1);
         return lastSegment.equalsIgnoreCase("feed");
+    }
+
+    private boolean isShopMvcLockedToProduct(List<String> linkSegment) {
+        String ggzSegment = linkSegment.get(1);
+        return ggzSegment.equalsIgnoreCase("voucher");
     }
 
     private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData, Bundle bundle) {

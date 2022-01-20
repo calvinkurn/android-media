@@ -61,11 +61,7 @@ object DeeplinkMapperMarketplace {
     }
 
     fun getShopMvcLockedToProductShopIdInternalAppLink(shopId: String, voucherId: String):String {
-        return UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_MVC_LOCKED_TO_PRODUCT_SHOP_ID, shopId, voucherId)
-    }
-
-    fun getShopMvcLockedToProductShopDomainInternalAppLink(shopDomain: String, voucherId: String):String {
-        return UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_MVC_LOCKED_TO_PRODUCT_SHOP_DOMAIN, shopDomain, voucherId)
+        return UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_MVC_LOCKED_TO_PRODUCT, shopId, voucherId)
     }
 
     private fun isSpecialShop(shopId: String): Boolean {
