@@ -66,7 +66,22 @@ class CreateCouponProductActivity : AppCompatActivity() {
             )
 
             //Stub the products data for testing purpose
-            couponPreviewFragment.setCouponProductsData(listOf(CouponProduct(1), CouponProduct(2)))
+            couponPreviewFragment.setCouponProductsData(
+                listOf(
+                    CouponProduct(
+                        1,
+                        18000,
+                        5,
+                        "https://ecs7.tokopedia.net/img/attachment/2019/1/18/8966386/8966386_0c4342da-e028-497d-8e2a-1f30c46a7bf7"
+                    ),
+                    CouponProduct(
+                        2,
+                        25000,
+                        4,
+                        "https://ecs7.tokopedia.net/img/attachment/2019/1/18/8966386/8966386_0c4342da-e028-497d-8e2a-1f30c46a7bf7"
+                    )
+                )
+            )
         }
 
         /*couponProducts.setOnCouponSaved { products ->

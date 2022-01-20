@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.product.create.domain.usecase
 
+import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
@@ -88,6 +89,7 @@ class CreateCouponProductUseCase @Inject constructor(private val gqlRepository: 
             productIdsCsvUrl = ""
         )
 
+        val json = Gson().toJson(params)
         return RequestParams.create().apply {
             putObject(CREATE_PARAM_KEY, params)
         }

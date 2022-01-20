@@ -12,8 +12,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
@@ -103,8 +103,10 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         observeValidCoupon()
+
+        observeCouponImageUrl()
+        observeCouponEligibility()
         observeCreateCouponResult()
-        observeVoucherEligibility()
     }
 
     private fun setupViews() {
@@ -112,18 +114,26 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         binding?.tpgCouponInformation?.setOnClickListener { onNavigateToCouponInformationPage() }
         binding?.tpgCouponSetting?.setOnClickListener { onNavigateToCouponSettingsPage() }
         binding?.tpgAddProduct?.setOnClickListener { onNavigateToProductListPage() }
-        binding?.btnCreateCoupon?.setOnClickListener { viewModel.checkVoucherEligibility() }
+        binding?.btnCreateCoupon?.setOnClickListener {
+            viewModel.generateImage(
+                ImageGeneratorConstants.ImageGeneratorSourceId.RILISAN_SPESIAL, couponProducts
+            )
+        }
     }
 
-    private fun observeValidCoupon() {
-        viewModel.areInputValid.observe(viewLifecycleOwner, { areInputValid ->
-            binding?.btnCreateCoupon?.isEnabled = areInputValid
-            binding?.btnPreviewCouponImage?.isEnabled = areInputValid
+    private fun observeCouponImageUrl() {
+        viewModel.couponImageUrl.observe(viewLifecycleOwner, { imageUrl ->
+            if (imageUrl == null ) {
+                //error
+            } else {
+                viewModel.checkVoucherEligibility()
+            }
         })
     }
 
-    private fun observeVoucherEligibility() {
-        viewModel.voucherEligibility.observe(viewLifecycleOwner, { result ->
+
+    private fun observeCouponEligibility() {
+        viewModel.couponEligibility.observe(viewLifecycleOwner, { result ->
             if (result is Success) {
                 viewModel.createCoupon(
                     couponInformation ?: return@observe,
@@ -134,6 +144,13 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             } else {
 
             }
+        })
+    }
+
+    private fun observeValidCoupon() {
+        viewModel.areInputValid.observe(viewLifecycleOwner, { areInputValid ->
+            binding?.btnCreateCoupon?.isEnabled = areInputValid
+            binding?.btnPreviewCouponImage?.isEnabled = areInputValid
         })
     }
 
