@@ -74,9 +74,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingBottom="@dimen/layout_lvl7"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginEnd="@dimen/spacing_lvl4">
+                android:paddingBottom="@dimen/layout_lvl7">
 
                 <com.tokopedia.recharge_component.widget.RechargeEmptyStateWidget
                     android:id="@+id/recharge_pdp_pulsa_empty_state_widget"
