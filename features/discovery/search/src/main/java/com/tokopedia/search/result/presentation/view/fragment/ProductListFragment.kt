@@ -1870,14 +1870,6 @@ class ProductListFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun isFiltersContainsSameTitle(filterList: List<Filter>?, title: String): Boolean {
-        filterList?.forEach {
-            if (it.title == title) return true
-        }
-
-        return false
-    }
-
     override fun setDynamicFilter(dynamicFilterModel: DynamicFilterModel) {
         val searchParameterMap = searchParameter?.getSearchParameterHashMap() ?: mapOf()
 
