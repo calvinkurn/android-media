@@ -33,6 +33,9 @@ class HomePageBannerRepository @Inject constructor(
     }
 
     override suspend fun getRemoteData(bundle: Bundle): HomeBannerData {
+        bundle.getString(BANNER_LOCATION_PARAM, "")?.let {
+            params.putString(BANNER_LOCATION_PARAM, it)
+        }
         return executeOnBackground()
     }
 
