@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.view.WindowManager
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
@@ -33,6 +34,7 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -145,6 +147,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     private var currentCoachIndex: Int = 0
     private var viewFound: Boolean = false
     override fun showCoachMarker() {
+        disableTouch()
         coachMark = CoachMark2(this)
         getHomeFragmentView()?.let { firstView ->
             coachMarkItemList.add(
@@ -176,6 +179,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         coachMark?.showCoachMark(coachMarkItemList, null)
         coachMark?.setStepListener(object : CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                disableTouch()
                 when (currentIndex) {
                     1 -> {
                         if (currentCoachIndex == 2) handleBackButton(true)
@@ -193,7 +197,20 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
                 currentCoachIndex = currentIndex
             }
         })
+        coachMark?.setOnDismissListener{
+            CoachMarkPreference.setShown(this, COACHMARK_TAG,true)
+            enableTouch()
+        }
 
+    }
+
+    private fun disableTouch() {
+        window?.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+    }
+    private fun enableTouch(){
+        window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     private fun getPromoFragmentView(): AffiliateLinkTextField? {
