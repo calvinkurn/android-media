@@ -238,7 +238,7 @@ ext {
 
             pushNotificationCommon          : ":features:communication:push-notification-common",
 
-            attachproduct                   : ":features:user:attachproduct",
+            attachproduct                   : ":features:communication:attachproduct",
             attachinvoice                   : ":features:communication:attachinvoice",
             attachvoucher                   : ":features:user:attachvoucher",
             attachcommon                    : ":features:communication:attachcommon",
