@@ -38,6 +38,7 @@ object GqlGetLayout : GqlQueryInterface {
               applink
               dataKey
               ctaText
+              gridSize
               maxData
               maxDisplay
               emptyState {
