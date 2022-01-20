@@ -91,29 +91,36 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
 
     private fun renderProduct() {
         binding?.run {
-            if (rechargePdpPulsaClientNumberWidget.getInputNumber().length >= MINIMUM_OPERATOR_PREFIX) {
+            try {
+                if (rechargePdpPulsaClientNumberWidget.getInputNumber().length >= MINIMUM_OPERATOR_PREFIX) {
 
-                /* operator check */
-                val selectedOperator =
-                    operatorData.rechargeCatalogPrefixSelect.prefixes.single {
-                        rechargePdpPulsaClientNumberWidget.getInputNumber().startsWith(it.value)
+                    /* operator check */
+                    val selectedOperator =
+                        operatorData.rechargeCatalogPrefixSelect.prefixes.single {
+                            rechargePdpPulsaClientNumberWidget.getInputNumber().startsWith(it.value)
+                        }
+
+                    // [Misael] operatorId state & checker
+                    if (operatorId != selectedOperator.operator.id || rechargePdpPulsaClientNumberWidget.getInputNumber()
+                            .length in MINIMUM_VALID_NUMBER_LENGTH .. MAXIMUM_VALID_NUMBER_LENGTH
+                    ) {
+                        operatorId = selectedOperator.operator.id
+                        rechargePdpPulsaClientNumberWidget.run {
+                            showOperatorIcon(selectedOperator.operator.attributes.imageUrl)
+                        }
+                        hideEmptyState()
+                        getCatalogProductInput(selectedOperator.key)
+                    } else {
+                        showEmptyState()
                     }
 
-                // [Misael] operatorId state & checker
-                if (operatorId != selectedOperator.operator.id || rechargePdpPulsaClientNumberWidget.getInputNumber()
-                        .length in MINIMUM_VALID_NUMBER_LENGTH .. MAXIMUM_VALID_NUMBER_LENGTH
-                ) {
-                    operatorId = selectedOperator.operator.id
-                    rechargePdpPulsaClientNumberWidget.run {
-                        showOperatorIcon(selectedOperator.operator.attributes.imageUrl)
-                    }
-                    hideEmptyState()
-                    getCatalogProductInput(selectedOperator.key)
-                } else {
-                    showEmptyState()
+                    // [Misael] add checkoutPassData and update checkoutPassData with new input number
                 }
-
-                // [Misael] add checkoutPassData and update checkoutPassData with new input number
+            } catch (exception: NoSuchElementException) {
+                operatorId = ""
+                rechargePdpPulsaClientNumberWidget.setErrorInputField(
+                    getString(com.tokopedia.recharge_component.R.string.client_number_prefix_error),
+                )
             }
         }
     }
