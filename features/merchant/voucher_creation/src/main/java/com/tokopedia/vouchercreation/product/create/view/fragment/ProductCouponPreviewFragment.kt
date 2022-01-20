@@ -213,7 +213,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         binding?.tpgCouponQouta?.text = coupon.quota.splitByThousand()
 
         handleDiscountAmount(coupon.discountType, coupon.discountAmount, coupon.discountPercentage)
-        handleMaximumDiscount(coupon.discountType, coupon.maxDiscount)
+        handleMaximumDiscount(coupon.type, coupon.discountType, coupon.maxDiscount)
         handleMinimumPurchase(coupon.minimumPurchaseType, coupon.minimumPurchase)
         handleEstimatedMaxExpense(coupon.estimatedMaxExpense)
     }
@@ -247,8 +247,8 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleMaximumDiscount(discountType: DiscountType, maxDiscount: Int) {
-        if (discountType == DiscountType.PERCENTAGE) {
+    private fun handleMaximumDiscount(couponType : CouponType, discountType: DiscountType, maxDiscount: Int) {
+        if (couponType == CouponType.CASHBACK && discountType == DiscountType.PERCENTAGE) {
             binding?.groupMaxDiscount?.visible()
             binding?.tpgMaxDiscount?.text =
                 String.format(getString(R.string.placeholder_rupiah), maxDiscount.splitByThousand())

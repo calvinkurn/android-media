@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant
 import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCase
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
@@ -32,7 +33,7 @@ class ProductCouponPreviewViewModel @Inject constructor(
     val areInputValid: LiveData<Boolean>
         get() = _areInputValid
 
-    private val _createCoupon = MutableLiveData<Result<Int>>()
+    private val _createCoupon = SingleLiveEvent<Result<Int>>()
     val createCoupon: LiveData<Result<Int>>
         get() = _createCoupon
 
@@ -69,14 +70,19 @@ class ProductCouponPreviewViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val result = withContext(dispatchers.io) {
-                    val params = createCouponProductUseCase.createRequestParam(couponInformation, couponSettings, couponProducts, token)
+                    val params = createCouponProductUseCase.createRequestParam(
+                        couponInformation,
+                        couponSettings,
+                        couponProducts,
+                        token
+                    )
                     createCouponProductUseCase.params = params
                     createCouponProductUseCase.executeOnBackground()
                 }
-                _createCoupon.value = Success(result)
+                _createCoupon.setValue(Success(result))
             },
             onError = {
-                _createCoupon.value = Fail(it)
+                _createCoupon.setValue(Fail(it))
             }
         )
     }
