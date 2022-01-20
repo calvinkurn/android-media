@@ -778,8 +778,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 //                fintechRedirectionWidgetDataClass.redirectionUrl?.let { openWebViewUrl(it) }
 //            }
 
-        if(fintechRedirectionWidgetDataClass.cta == 2)
-            openWebViewUrl(fintechRedirectionWidgetDataClass.redirectionUrl!!)
+        if(fintechRedirectionWidgetDataClass.cta == 2) {
+            fintechRedirectionWidgetDataClass.redirectionUrl?.let { openWebViewUrl(it) }
+        }
 
     }
 
@@ -2039,6 +2040,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun onSuccessGetDataP1(data: List<DynamicPdpDataModel>) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             updateProductId()
+
+            pdpUiUpdater?.updateFintechData(viewModel.variantData,productInfo)
             renderVariant(viewModel.variantData, pdpUiUpdater?.productSingleVariant != null)
             val hint = if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {
                 String.format(getString(R.string.pdp_search_hint_tokonow), productInfo.basic.category.name)

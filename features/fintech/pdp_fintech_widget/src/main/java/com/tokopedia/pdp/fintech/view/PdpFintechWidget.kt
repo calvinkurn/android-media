@@ -14,7 +14,6 @@ import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter
 import com.tokopedia.pdp.fintech.di.components.DaggerFintechWidgetComponent
 import com.tokopedia.pdp.fintech.domain.datamodel.ChipsData
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
-import com.tokopedia.pdp.fintech.domain.datamodel.ProductDetailClass
 import com.tokopedia.pdp.fintech.domain.datamodel.WidgetDetail
 import com.tokopedia.pdp.fintech.listner.ProductUpdateListner
 import com.tokopedia.pdp.fintech.listner.WidgetClickListner
@@ -35,8 +34,10 @@ class PdpFintechWidget @JvmOverloads constructor(
 
     private var idToPriceMap = HashMap<String, String>()
     private var priceToChip = HashMap<String, ArrayList<ChipsData>>()
+    private var listOfPrice: ArrayList<Double> = ArrayList()
+    private var listOfUrls: ArrayList<String?> = ArrayList()
+    private var categoryId: String? = null
     private lateinit var productID: String
-    private lateinit var productUrl: String
     private lateinit var productPrice: String
 
 
@@ -66,7 +67,6 @@ class PdpFintechWidget @JvmOverloads constructor(
             ViewModelProvider(parentViewModelStore, viewModelFactory.get()).get(
                 FintechWidgetViewModel::class.java
             )
-        observeProductInfo(parentLifeCycleOwner)
         observeWidgetInfo(parentLifeCycleOwner)
 
     }
@@ -95,59 +95,6 @@ class PdpFintechWidget @JvmOverloads constructor(
     }
 
 
-    private fun observeProductInfo(parentLifeCycleOwner: LifecycleOwner) {
-        fintechWidgetViewModel.productDetailLiveData.observe(parentLifeCycleOwner, {
-            when (it) {
-                is Success -> {
-                    setIdToPriceMap(it.data)
-                    sendProductCategory(it.data)
-                }
-                is Fail -> {
-                    instanceProductUpdateListner.removeWidget()
-                }
-            }
-        })
-    }
-
-    private fun sendProductCategory(productDetailClass: ProductDetailClass) {
-
-        val listOfAmount: MutableList<Double> = ArrayList()
-        if(productDetailClass.getProductV3?.variant?.products?.size?:0 > 0) {
-            productDetailClass.getProductV3?.variant?.products?.map { products ->
-                products.price
-            }?.toCollection(listOfAmount)
-                ?: instanceProductUpdateListner.removeWidget()
-        }
-        else
-            productDetailClass.getProductV3?.price?.let { listOfAmount.add(it) }
-
-        productDetailClass.getProductV3?.categoryDetail?.categoryId?.let {
-            fintechWidgetViewModel.getWidgetData(it, listOfAmount)
-        } ?: run {
-            instanceProductUpdateListner.removeWidget()
-        }
-    }
-
-
-    private fun setIdToPriceMap(productDetailData: ProductDetailClass) {
-        productPrice = productDetailData.getProductV3?.price.toString()
-        productUrl = productDetailData.getProductV3?.url.toString()
-        if(productDetailData.getProductV3?.variant?.products?.size?:0 > 0) {
-            productDetailData.getProductV3?.variant?.products?.let { productList ->
-                for (i in productList.indices) {
-                    productList[i].productID?.let { productId ->
-                        idToPriceMap.put(productId, productList[i].price.toString())
-                    }
-                }
-            }
-        }
-        else
-        {
-            idToPriceMap.put(productID, productDetailData.getProductV3?.price.toString())
-        }
-
-    }
-
     private fun initInjector() {
         DaggerFintechWidgetComponent.builder()
             .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
@@ -157,9 +104,14 @@ class PdpFintechWidget @JvmOverloads constructor(
     private fun initRecycler() {
         val recyclerView = baseView.findViewById<RecyclerView>(R.id.recycler_items)
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-        fintechWidgetAdapter = FintechWidgetAdapter(context,object : WidgetClickListner {
-            override fun clickedWidget(cta: Int,url:String) {
-               instanceProductUpdateListner.fintechRedirection(FintechRedirectionWidgetDataClass(cta,url,productUrl,productPrice,productID))
+        fintechWidgetAdapter = FintechWidgetAdapter(context, object : WidgetClickListner {
+            override fun clickedWidget(cta: Int, url: String) {
+                instanceProductUpdateListner.fintechRedirection(
+                    FintechRedirectionWidgetDataClass(
+                        cta,
+                        url
+                    )
+                )
             }
 
 
@@ -177,19 +129,31 @@ class PdpFintechWidget @JvmOverloads constructor(
         productID: String,
         fintechWidgetViewHolder: ProductUpdateListner
     ) {
-        this.productID = productID
-        this.instanceProductUpdateListner = fintechWidgetViewHolder
-        loader.visibility = View.VISIBLE
-        if (counter == 0) {
-            counter++
-            fintechWidgetViewModel.getProductDetail(productID)
-        } else {
-            if (priceToChip.size != 0 && idToPriceMap.size != 0)
-                getChipDataAndUpdate(idToPriceMap[productID])
-            else
-                fintechWidgetViewModel.getProductDetail(productID)
-        }
+        try {
+            this.productID = productID
+            this.instanceProductUpdateListner = fintechWidgetViewHolder
+            loader.visibility = View.VISIBLE
+            if (counter == 0) {
+                counter++
+                categoryId?.let {
+                    fintechWidgetViewModel.getWidgetData(
+                        it,
+                        listOfPrice,
+                        listOfUrls
+                    )
+                }
+            } else {
+                if (priceToChip.size != 0 && idToPriceMap.size != 0)
+                    getChipDataAndUpdate(idToPriceMap[productID])
+                else
+                    categoryId?.let {
+                        fintechWidgetViewModel.getWidgetData(it, listOfPrice, listOfUrls)
+                    }
+            }
 
+        } catch (e: Exception) {
+            instanceProductUpdateListner.removeWidget()
+        }
     }
 
     private fun getChipDataAndUpdate(productPrice: String?) {
@@ -201,6 +165,7 @@ class PdpFintechWidget @JvmOverloads constructor(
                 loader.visibility = View.GONE
                 instanceProductUpdateListner.showWidget()
                 fintechWidgetAdapter.setData(chipList)
+                fintechWidgetAdapter.notifyItemRangeChanged(0, fintechWidgetAdapter.itemCount)
 
             } ?: run {
                 instanceProductUpdateListner.removeWidget()
@@ -210,5 +175,16 @@ class PdpFintechWidget @JvmOverloads constructor(
         }
     }
 
+    fun updateidToPriceMap(
+        productIdToPrice: HashMap<String, String>,
+        listofProductUrl: ArrayList<String?>,
+        productCategoryId: String?
+    ) {
+        idToPriceMap = productIdToPrice
+        categoryId = productCategoryId
+        listOfUrls = listofProductUrl
+        productIdToPrice.values.map { it.toDouble() }.toCollection(listOfPrice)
+
+    }
 
 }

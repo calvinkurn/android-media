@@ -12,6 +12,7 @@ import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirIma
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
@@ -147,8 +148,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            updateData(ProductDetailConstant.FINTECH_WIDGET_NAME){}
-
             updateData(ProductDetailConstant.VARIANT_OPTIONS, loadInitialData) {
                 productNewVariantDataModel?.run {
                     isRefreshing = false
@@ -271,6 +270,36 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     context?.getString(com.tokopedia.common_tradein.R.string.trade_in_exchange)
                             ?: ""
                 }
+            }
+        }
+    }
+
+    fun updateFintechData(variantData: ProductVariant?, productInfo: DynamicProductInfoP1) {
+         var productIdToPriceMap = HashMap<String, String>()
+         var productlistofUrls: ArrayList<String?> = ArrayList()
+         var productCategoryId: String = productInfo.basic.category.id
+        if (variantData == null) {
+            productIdToPriceMap[productInfo.basic.productID] = productInfo.data.price.value.toString()
+            productlistofUrls.add(productInfo.basic.url)
+
+        } else {
+            variantData.children.map { it.url }.toCollection(productlistofUrls)
+            for(i in variantData.children.indices) {
+                productIdToPriceMap[variantData.children[i].productId] = variantData.children[i].price.toString()
+                variantData.children[i].url?.let {
+                    productlistofUrls.add(it)
+                }
+            }
+        }
+
+        updateData(ProductDetailConstant.FINTECH_WIDGET_NAME)
+        {
+            fintechWidgetMap?.run {
+                categoryId = productCategoryId
+                listofProductUrl = productlistofUrls
+               idToPriceMap = productIdToPriceMap
+
+
             }
         }
     }

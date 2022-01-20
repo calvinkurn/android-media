@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
@@ -16,9 +15,10 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
 
-class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetClickListner) : RecyclerView.Adapter<MyViewHolder>() {
+class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetClickListner) :
+    RecyclerView.Adapter<MyViewHolder>() {
 
-    private  var chipsData: ArrayList<ChipsData> = ArrayList()
+    private var chipsData: ArrayList<ChipsData> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder(
@@ -30,34 +30,36 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
         chipsData[position].gatewayId?.let {
-            if(it == 0) {
+            if (it == 0) {
                 holder.dummyView.visibility = View.GONE
                 holder.seeMoreIcon.visibility = View.VISIBLE
+            } else {
+                holder.dummyView.visibility = View.VISIBLE
+                holder.seeMoreIcon.visibility = View.GONE
             }
         }
 
         chipsData[position].header?.let {
-            if(it.isNotBlank())
+            if (it.isNotBlank()) {
+                holder.headerPartner.visibility = View.VISIBLE
                 holder.headerPartner.text = it.parseAsHtml()
-            else
+            } else
                 removeViewVisibility(holder.headerPartner)
-        }?:run {
+        } ?: run {
             removeViewVisibility(holder.headerPartner)
         }
 
         chipsData[position].subheaderColor?.let {
             when {
-                it.equals("green",true) -> {
-                    holder.subheaderPartner.setTextColor( ContextCompat.getColor(context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                it.equals("green", true) -> {
+                    holder.subheaderPartner.setTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        )
+                    )
 
                     holder.subheaderPartner.fontType = Typography.BOLD
-                }
-                it.equals("red",true) -> {
-                    holder.subheaderPartner.setTextColor( ContextCompat.getColor(context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500))
-                    holder.subheaderPartner.fontType = Typography.BOLD
-
                 }
                 else -> {
                     holder.subheaderPartner.setTextColor(
@@ -74,13 +76,12 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
         }
 
         chipsData[position].subheader?.let {
-            if(it.isNotBlank())
-            {
+            if (it.isNotBlank()) {
+                holder.subheaderPartner.visibility = View.VISIBLE
                 holder.subheaderPartner.text = it
-            }
-            else
+            } else
                 removeViewVisibility(holder.subheaderPartner)
-        }?:run {
+        } ?: run {
             removeViewVisibility(holder.subheaderPartner)
 
         }
@@ -94,48 +95,49 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
     ) {
         if (!context.isDarkMode()) {
             chipsData[position].productIconLight?.let {
-                if (it.isNotBlank())
+                if (it.isNotBlank()) {
+                    iconImageView.visibility = View.VISIBLE
                     iconImageView.setImageUrl(it)
-                else
+                } else
                     iconImageView.visibility = View.GONE
             } ?: run {
                 iconImageView.visibility = View.GONE
             }
         } else {
             chipsData[position].productIconDark?.let {
-                if (it.isNotBlank())
+                if (it.isNotBlank()) {
+                    iconImageView.visibility = View.VISIBLE
+
                     iconImageView.setImageUrl(it)
-                else
-                   iconImageView.visibility = View.GONE
+                } else
+                    iconImageView.visibility = View.GONE
             } ?: run {
                 iconImageView.visibility = View.GONE
             }
         }
     }
 
-    fun removeViewVisibility(view: View)
-    {
+    private fun removeViewVisibility(view: View) {
         view.visibility = View.GONE
     }
-    
+
     override fun getItemCount(): Int {
         return chipsData.size
     }
 
     fun setData(chips: ArrayList<ChipsData>) {
         this.chipsData = chips
-        notifyDataSetChanged()
     }
 
-    inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+    inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         val partnerIcon = itemView.findViewById<ImageUnify>(R.id.partnerIcon)
         val headerPartner = itemView.findViewById<Typography>(R.id.chipHeader)
         val subheaderPartner = itemView.findViewById<Typography>(R.id.chipSubHeader)
         val seeMoreIcon = itemView.findViewById<ImageUnify>(R.id.seeMore_Icon)
         val dummyView = itemView.findViewById<View>(R.id.dummyViewForMargin)
-        init {
 
+        init {
 
             itemView.setOnClickListener {
                 clickedWidgetData()
@@ -145,31 +147,16 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
 
 
         private fun clickedWidgetData() {
-            if(chipsData[adapterPosition].cta?.bottomsheet?.buttons?.size?:0 > 0)
-            {
-                chipsData[adapterPosition].cta?.bottomsheet?.buttons?.get(0)?.buttonUrl?.let { url ->
-                    chipsData[adapterPosition].cta?.type?.let { ctaType ->
-                        widgetClickListner.clickedWidget(
-                            ctaType, url,
-                        )
-                    }
+            chipsData[adapterPosition].cta?.androidUrl?.let { url ->
+                chipsData[adapterPosition].cta?.type?.let { ctaType ->
+                    widgetClickListner.clickedWidget(
+                        ctaType, url
+                    )
                 }
-            }
-            else
-            {
-                chipsData[adapterPosition].cta?.androidUrl?.let { url ->
-                    chipsData[adapterPosition].cta?.type?.let { ctaType ->
-                        widgetClickListner.clickedWidget(
-                            ctaType, url
-                        )
-                    }
-                }
-            }
-
             }
         }
 
-
     }
+}
 
 

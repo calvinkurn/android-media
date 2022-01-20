@@ -84,6 +84,7 @@ object VariantMapper {
         val basic = oldData.basic.copy(
                 productID = newData?.productId ?: "",
                 sku = newData?.sku ?: "",
+
                 minOrder = newData?.getFinalMinOrder() ?: 0,
                 status = if (newData?.isBuyable == true) {
                     ProductStatusTypeDef.ACTIVE
