@@ -21,10 +21,10 @@ class RechargeRecommendationCardWidget @JvmOverloads constructor(@NotNull contex
     private var rechargeRecommendationViewBinding: WidgetRechargeRecommendationCardBinding = WidgetRechargeRecommendationCardBinding.inflate(LayoutInflater.from(context), this, true)
 
     fun renderRecommendationLayout(recommendationListener: RechargeRecommendationCardListener, titleRecommendation:String, listRecommendation: List<RecommendationCardWidgetModel>){
-        if (!listRecommendation.isNullOrEmpty()) {
             val adapterRecommendation = RecommendationCardWidgetAdapter(recommendationListener)
             with(rechargeRecommendationViewBinding) {
                 shimmeringRecommendation.root.hide()
+                if (!listRecommendation.isNullOrEmpty()) {
                 tgRechargeRecommendationCardTitle.show()
                 rvRechargeRecommendationCardTitle.show()
                 tgRechargeRecommendationCardTitle.text = titleRecommendation
