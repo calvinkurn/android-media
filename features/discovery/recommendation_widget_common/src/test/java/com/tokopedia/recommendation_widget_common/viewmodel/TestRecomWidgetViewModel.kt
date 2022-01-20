@@ -80,6 +80,13 @@ class TestRecomWidgetViewModel {
     private val mockListFilterChip = listOf(
         mockRecomFilterChip
     )
+    private val mockAtcResponseSuccess = AddToCartDataModel(
+        data = DataModel(
+            success = 1,
+            cartId = "12345",
+            message = arrayListOf("sukses broh")
+        ), status = "OK"
+    )
     val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
     val miniCartSimplifiedDataMock = MiniCartSimplifiedData(miniCartItems = listOf(miniCart))
 
@@ -215,6 +222,17 @@ class TestRecomWidgetViewModel {
         Assert.assertTrue(viewModel.atcRecomTokonowSendTracker.value is Success)
         Assert.assertTrue(viewModel.atcRecomTokonow.value?.recomItem == recomItemForAtc)
         Assert.assertTrue(viewModel.refreshMiniCartDataTriggerByPageName.value == recomItemForAtc.pageName)
+    }
+
+    @Test
+    fun `test add to cart non variant given failed get minicart then show error mini cart`() = runBlockingTest {
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } returns mockAtcResponseSuccess
+
+        doCommonActionFailedMiniCartForATCRecom()
+
+        Assert.assertNotNull(viewModel.minicartError.value)
     }
 
     @Test
@@ -375,6 +393,26 @@ class TestRecomWidgetViewModel {
         coEvery {
             miniCartListSimplifiedUseCase.executeOnBackground()
         } returns miniCartSimplifiedDataMock
+
+        viewModel.getMiniCart("", "")
+        viewModel.onAtcRecomNonVariantQuantityChanged(recomItemForAtc, updatedQuantityForAtc)
+
+        coVerify {
+            miniCartListSimplifiedUseCase.executeOnBackground()
+        }
+        coVerify {
+            addToCartUseCase.executeOnBackground()
+        }
+    }
+
+    private fun doCommonActionFailedMiniCartForATCRecom() {
+        coEvery {
+            userSessionInterface.isLoggedIn
+        } returns true
+
+        coEvery {
+            miniCartListSimplifiedUseCase.executeOnBackground()
+        } throws Throwable("Time out")
 
         viewModel.getMiniCart("", "")
         viewModel.onAtcRecomNonVariantQuantityChanged(recomItemForAtc, updatedQuantityForAtc)
