@@ -1,7 +1,10 @@
 package com.tokopedia.tkpd;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.Lifecycle;
@@ -9,11 +12,14 @@ import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.preference.PreferenceManager;
+import androidx.work.Configuration;
 
 import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.analytics.performance.util.AppStartPerformanceTracker;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -22,13 +28,17 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.embrace.android.embracesdk.Embrace;
 
 /**
  * Created by ricoharisin on 11/11/16.
  */
 
-public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMainApplication {
+public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMainApplication
+        implements Configuration.Provider {
 
     @Override
     public void initConfigValues() {
@@ -143,4 +153,17 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         }
     }
 
+
+    @SuppressLint("RestrictedApi")
+    @NonNull
+    @Override
+    public Configuration getWorkManagerConfiguration() {
+        return new Configuration.Builder().setInitializationExceptionHandler(throwable -> {
+            Map<String, String> map = new HashMap<>();
+            map.put("type", "init");
+            map.put("error", Log.getStackTraceString(throwable));
+            ServerLogger.log(Priority.P1, "WORK_MANAGER", map);
+            throw new RuntimeException("WorkManager failed to initialize", throwable);
+        }).build();
+    }
 }

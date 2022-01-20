@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.play.R
 import com.tokopedia.play.view.uimodel.PlayMoreActionUiModel
 
@@ -16,7 +17,9 @@ class PlayMoreActionViewHolder(itemView: View) : BaseViewHolder(itemView) {
     private val tvSubtitle = itemView.findViewById<TextView>(R.id.tv_subtitle)
 
     fun bind(item: PlayMoreActionUiModel) {
-        ivIcon.setImageResource(item.iconRes)
+        ivIcon.shouldShowWithAction(item.isIconAvailable){
+            ivIcon.setImageResource(item.iconRes)
+        }
         tvSubtitle.text = getString(item.subtitleRes)
         itemView.setOnClickListener { item.onClick(item) }
     }
