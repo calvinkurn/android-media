@@ -12,6 +12,7 @@ import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirIma
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
@@ -273,15 +274,19 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateFintechData(fintechWidgetDataModel: FintechWidgetDataModel)
+    fun updateFintechData(variantData: ProductVariant?, productInfo: DynamicProductInfoP1)
     {
+        if(variantData == null)
+        {
+
+        }
         updateData(ProductDetailConstant.FINTECH_WIDGET_NAME)
         {
-            fintechWidgetMap?.run {
-                categoryId = fintechWidgetDataModel.categoryId
-                listofPrice = fintechWidgetDataModel.listofPrice
-                listofProductUrl = fintechWidgetDataModel.listofProductUrl
-            }
+//            fintechWidgetMap?.run {
+//                categoryId = fintechWidgetDataModel.categoryId
+//                listofPrice = fintechWidgetDataModel.listofPrice
+//                listofProductUrl = fintechWidgetDataModel.listofProductUrl
+//            }
         }
     }
 

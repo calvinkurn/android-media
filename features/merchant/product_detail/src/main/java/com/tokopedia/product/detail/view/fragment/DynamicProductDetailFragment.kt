@@ -2036,7 +2036,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun onSuccessGetDataP1(data: List<DynamicPdpDataModel>) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             updateProductId()
-            renderFintechWidget(viewModel.variantData,productInfo)
+
+            pdpUiUpdater?.updateFintechData(viewModel.variantData,productInfo)
             renderVariant(viewModel.variantData, pdpUiUpdater?.productSingleVariant != null)
             val hint = if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {
                 String.format(getString(R.string.pdp_search_hint_tokonow), productInfo.basic.category.name)
@@ -2067,16 +2068,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
             submitInitialList(pdpUiUpdater?.mapOfData?.values?.toList() ?: listOf())
         }
-    }
-
-    private fun renderFintechWidget(variantData: ProductVariant?, productInfo: DynamicProductInfoP1) {
-        var arrayListOfPrice : ArrayList<Double>  = ArrayList()
-        var arrayListOfUrl :ArrayList<String> = ArrayList()
-        arrayListOfPrice.add(productInfo.data.price.value)
-        arrayListOfUrl.add(productInfo.basic.url)
-
-        pdpUiUpdater?.updateFintechData(FintechWidgetDataModel(categoryId = productInfo.basic.category.id, listofPrice = arrayListOfPrice, listofProductUrl =  arrayListOfUrl))
-
     }
 
     private fun setupProductVideoCoordinator() {
