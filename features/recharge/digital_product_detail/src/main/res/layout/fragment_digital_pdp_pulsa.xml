@@ -81,6 +81,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
+                    android:layout_marginStart="@dimen/empty_state_margin"
+                    android:layout_marginEnd="@dimen/empty_state_margin"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>

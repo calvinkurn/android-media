@@ -400,6 +400,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 rechargePdpPulsaPromoWidget.hide()
                 rechargePdpPulsaRecommendationWidget.hide()
                 rechargePdpPulsaDenomGridWidget.hide()
+                rechargePdpPulsaClientNumberWidget.hideOperatorIcon()
             }
         }
     }
