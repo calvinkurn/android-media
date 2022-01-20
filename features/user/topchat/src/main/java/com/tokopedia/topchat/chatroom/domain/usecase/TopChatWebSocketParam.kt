@@ -10,6 +10,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.WebsocketEvent
 import com.tokopedia.attachcommon.preview.ProductPreview
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.data.parentreply.ParentReplyWsRequest
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
@@ -96,14 +97,25 @@ object TopChatWebSocketParam {
         data.addProperty("message", product.productUrl)
         data.addProperty("start_time", startTime)
         data.addProperty("to_uid", toUid)
-        data.addProperty(
-            "attachment_type",
-            Integer.parseInt(AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT)
-        )
+        data.addProperty("attachment_type", TYPE_PRODUCT_ATTACHMENT.toInt())
         data.addProperty("product_id", product.productId.toLongOrZero())
 
+        val productProfile = createProductProfilePayload(product, message)
+        val extras = createProductExtrasAttachments(userLocationInfo)
+
+        data.add("extras", extras)
+        data.add("product_profile", productProfile)
+        json.add("data", data)
+        return json
+    }
+
+    private fun createProductProfilePayload(
+            product: TopchatProductAttachmentPreviewUiModel,
+            message: String
+    ): JsonObject {
         val productProfile = JsonObject()
         productProfile.addProperty("name", product.productName)
+        productProfile.addProperty("parent_id", product.parentId.toLongOrZero())
         productProfile.addProperty("price", product.productPrice)
         productProfile.addProperty("price_before", product.priceBefore)
         productProfile.addProperty("drop_percentage", product.dropPercentage)
@@ -123,13 +135,7 @@ object TopChatWebSocketParam {
         freeShipping.addProperty("is_active", product.freeShipping.isActive)
         freeShipping.addProperty("image_url", product.freeShipping.imageUrl)
         productProfile.add("free_ongkir", freeShipping)
-
-        val extras = createProductExtrasAttachments(userLocationInfo)
-        data.add("extras", extras)
-
-        data.add("product_profile", productProfile)
-        json.add("data", data)
-        return json
+        return productProfile
     }
 
     fun generateParamSendProductAttachment(
