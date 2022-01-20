@@ -221,7 +221,7 @@
 
 /features/communication/attachcommon/                   @tokopedia/android-minionkevin-dev
 /features/communication/attachinvoice/                  @tokopedia/android-minionkevin-dev
-/features/communication/attachproduct/                   		@tokopedia/android-minionkevin-dev
+/features/communication/attachproduct/                  @tokopedia/android-minionkevin-dev
 
 /features/operational/contact_us        				@tokopedia/android-minionsolo-dev
 /features/operational/csat_rating        				@tokopedia/android-minionsolo-dev
