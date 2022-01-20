@@ -6,7 +6,10 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 
 data class FintechWidgetDataModel(
     val name: String = "",
-    val type: String = ""
+    val type: String = "",
+    var categoryId: String? = null,
+    var listofPrice : ArrayList<Double> = ArrayList(),
+    var listofProductUrl : ArrayList<String> = ArrayList()
 ): DynamicPdpDataModel
 {
     override fun type() = type

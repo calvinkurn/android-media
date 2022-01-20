@@ -147,8 +147,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            updateData(ProductDetailConstant.FINTECH_WIDGET_NAME){}
-
             updateData(ProductDetailConstant.VARIANT_OPTIONS, loadInitialData) {
                 productNewVariantDataModel?.run {
                     isRefreshing = false
@@ -271,6 +269,18 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     context?.getString(com.tokopedia.common_tradein.R.string.trade_in_exchange)
                             ?: ""
                 }
+            }
+        }
+    }
+
+    fun updateFintechData(fintechWidgetDataModel: FintechWidgetDataModel)
+    {
+        updateData(ProductDetailConstant.FINTECH_WIDGET_NAME)
+        {
+            fintechWidgetMap?.run {
+                categoryId = fintechWidgetDataModel.categoryId
+                listofPrice = fintechWidgetDataModel.listofPrice
+                listofProductUrl = fintechWidgetDataModel.listofProductUrl
             }
         }
     }
