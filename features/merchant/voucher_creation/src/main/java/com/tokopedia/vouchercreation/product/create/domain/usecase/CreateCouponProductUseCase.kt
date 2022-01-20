@@ -5,11 +5,16 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
+import com.tokopedia.vouchercreation.common.base.VoucherSource
+import com.tokopedia.vouchercreation.common.extension.parseTo
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.product.create.data.CreateCouponProductParams
 import com.tokopedia.vouchercreation.product.create.data.CreateCouponProductResponse
+import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import javax.inject.Inject
 
-class CreateCouponProductUseCase  @Inject constructor(private val gqlRepository: GraphqlRepository): BaseGqlUseCase<Int>() {
+class CreateCouponProductUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) :
+    BaseGqlUseCase<Int>() {
 
 
     companion object {
@@ -30,17 +35,67 @@ class CreateCouponProductUseCase  @Inject constructor(private val gqlRepository:
         const val STATUS_SUCCESS = "Success"
 
         private const val CREATE_PARAM_KEY = "merchantVoucherData"
+    }
 
-        @JvmStatic
-        fun createRequestParam(param: CreateCouponProductParams) : RequestParams {
-            return RequestParams.create().apply {
-                putObject(CREATE_PARAM_KEY, param)
-            }
+    fun createRequestParam(
+        couponInformation: CouponInformation,
+        couponSettings: CouponSettings,
+        couponProducts: List<CouponProduct>,
+        token: String
+    ): RequestParams {
+        val isPublic = if (couponInformation.target == CouponInformation.Target.PUBLIC) 1 else 0
+        val startDate =
+            couponInformation.period.startDate.parseTo(DateTimeUtils.DASH_DATE_FORMAT)
+        val startHour = couponInformation.period.startDate.parseTo(DateTimeUtils.HOUR_FORMAT)
+        val endDate = couponInformation.period.endDate.parseTo(DateTimeUtils.DASH_DATE_FORMAT)
+        val endHour = couponInformation.period.endDate.parseTo(DateTimeUtils.HOUR_FORMAT)
+
+        val benefitType = when (couponSettings.discountType) {
+            DiscountType.NONE -> ""
+            DiscountType.NOMINAL -> "idr"
+            DiscountType.PERCENTAGE -> "percent"
+        }
+        val couponType = when (couponSettings.type) {
+            CouponType.NONE -> ""
+            CouponType.CASHBACK -> "cashback"
+            CouponType.FREE_SHIPPING -> "shipping"
+        }
+
+        val params = CreateCouponProductParams(
+            benefitIdr = couponSettings.discountAmount,
+            benefitMax = couponSettings.maxDiscount,
+            benefitPercent = couponSettings.discountPercentage,
+            benefitType = benefitType,
+            code = couponInformation.code,
+            couponName = couponInformation.name,
+            couponType = couponType,
+            dateStart = startDate,
+            dateEnd = endDate,
+            hourStart = startHour,
+            hourEnd = endHour,
+            image = "819f5677-e6c7-49b9-872c-fe994c94dc9",
+            imageSquare = "819f5677-e6c7-49b9-872c-fe994c94dc9b",
+            imagePortrait = "819f5677-e6c7-49b9-872c-fe994c94dc9b",
+            isPublic = isPublic,
+            minPurchase = couponSettings.minimumPurchase,
+            quota = couponSettings.quota,
+            token = token,
+            source = VoucherSource.SELLERAPP,
+            targetBuyer = 0,
+            minimumTierLevel = 0,
+            isLockToProduct = 1,
+            productIds = couponProducts.joinToString(separator = ",") { it.id.toString() },
+            productIdsCsvUrl = ""
+        )
+
+        return RequestParams.create().apply {
+            putObject(CREATE_PARAM_KEY, params)
         }
     }
 
     override suspend fun executeOnBackground(): Int {
-        val request = GraphqlRequest(MUTATION, CreateCouponProductResponse::class.java, params.parameters)
+        val request =
+            GraphqlRequest(MUTATION, CreateCouponProductResponse::class.java, params.parameters)
         val response = gqlRepository.response(listOf(request))
 
         val error = response.getError(CreateCouponProductResponse::class.java)

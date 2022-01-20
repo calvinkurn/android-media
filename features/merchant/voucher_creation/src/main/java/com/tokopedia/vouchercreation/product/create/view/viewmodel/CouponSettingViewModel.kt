@@ -266,13 +266,19 @@ class CouponSettingViewModel @Inject constructor(
             else -> cashbackMinimumPurchase
         }
 
+        val cashbackMax = when (selectedDiscountType) {
+            DiscountType.NONE -> discountAmount
+            DiscountType.NOMINAL -> discountAmount
+            DiscountType.PERCENTAGE -> cashbackMaximumAmount
+        }
+
         _saveCoupon.value = CouponSettings(
             selectedCouponType,
             selectedDiscountType,
             selectedMinimumPurchaseType,
             discountAmount,
             cashbackPercentage,
-            cashbackMaximumAmount,
+            cashbackMax,
             quota,
             minimumPurchase,
             estimatedMaxExpense

@@ -8,13 +8,11 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.common.base.VoucherSource
 import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant
 import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCase
-import com.tokopedia.vouchercreation.common.extension.parseTo
-import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
-import com.tokopedia.vouchercreation.product.create.data.CreateCouponProductParams
-import com.tokopedia.vouchercreation.product.create.domain.entity.*
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.usecase.CreateCouponProductUseCase
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
 import kotlinx.coroutines.withContext
@@ -68,62 +66,40 @@ class ProductCouponPreviewViewModel @Inject constructor(
         token: String
     ) {
 
-        val isPublic = if (couponInformation.target == CouponInformation.Target.PUBLIC) 1 else 0
-        val startDate = couponInformation.period.startDate.parseTo(DateTimeUtils.DASH_DATE_FORMAT)
-        val startHour = couponInformation.period.startDate.parseTo(DateTimeUtils.HOUR_FORMAT)
-        val endDate = couponInformation.period.endDate.parseTo(DateTimeUtils.DASH_DATE_FORMAT)
-        val endHour = couponInformation.period.endDate.parseTo(DateTimeUtils.HOUR_FORMAT)
-
-        val benefitType = when (couponSettings.discountType) {
-            DiscountType.NONE -> ""
-            DiscountType.NOMINAL -> "idr"
-            DiscountType.PERCENTAGE -> "percent"
-        }
-        val couponType = when (couponSettings.type) {
-            CouponType.NONE -> ""
-            CouponType.CASHBACK -> "cashback"
-            CouponType.FREE_SHIPPING -> "shipping"
-        }
-
-        val params = CreateCouponProductParams(
-            benefitIdr = couponSettings.discountAmount,
-            benefitMax = couponSettings.maxDiscount,
-            benefitPercent = couponSettings.discountPercentage,
-            benefitType = benefitType,
-            code = couponInformation.code,
-            couponName = couponInformation.name,
-            couponType = couponType,
-            dateStart = startDate,
-            dateEnd = endDate,
-            hourStart = startHour,
-            hourEnd = endHour,
-            image = "819f5677-e6c7-49b9-872c-fe994c94dc9",
-            imageSquare = "819f5677-e6c7-49b9-872c-fe994c94dc9b",
-            imagePortrait = "819f5677-e6c7-49b9-872c-fe994c94dc9b",
-            isPublic = isPublic,
-            minPurchase = couponSettings.minimumPurchase,
-            quota = couponSettings.quota,
-            token = token,
-            source = VoucherSource.SELLERAPP,
-            targetBuyer = 0,
-            minimumTierLevel = 0,
-            isLockToProduct = 1,
-            productIds = couponProducts.joinToString(separator = ",") { it.id.toString() },
-            productIdsCsvUrl = ""
-        )
-
         launchCatchError(
             block = {
-                _createCoupon.value = Success(withContext(dispatchers.io) {
-                    createCouponProductUseCase.params = CreateCouponProductUseCase.createRequestParam(params)
+                val result = withContext(dispatchers.io) {
+                    val params = createCouponProductUseCase.createRequestParam(couponInformation, couponSettings, couponProducts, token)
+                    createCouponProductUseCase.params = params
                     createCouponProductUseCase.executeOnBackground()
-                })
+                }
+                _createCoupon.value = Success(result)
             },
             onError = {
                 _createCoupon.value = Fail(it)
             }
         )
     }
+
+
+   /* fun uploadCoupon(bannerBitmap: Bitmap,
+                      squareBitmap: Bitmap,
+                      createVoucherParam: CreateVoucherParam) {
+        launchCatchError(
+            block = {
+                val bannerImagePath = async {
+                    saveBannerVoucherUseCase.bannerBitmap = bannerBitmap
+                    saveBannerVoucherUseCase.executeOnBackground()}
+                val squareImagePath = async {
+                    saveSquareVoucherUseCase.squareBitmap = squareBitmap
+                    saveSquareVoucherUseCase.executeOnBackground()
+                }
+                uploadAndCreateVoucher(bannerImagePath.await(), squareImagePath.await(), createVoucherParam)
+            },
+            onError = {
+                mCreateVoucherResponseLiveData.value = Fail(it)
+            })
+    }*/
 
 
     fun checkVoucherEligibility() {
