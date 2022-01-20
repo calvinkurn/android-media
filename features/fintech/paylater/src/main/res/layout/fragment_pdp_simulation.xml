@@ -47,13 +47,12 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPayLaterOption"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/unify_space_12"
-        android:layout_marginBottom="@dimen/unify_space_8"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/rvPayLaterSimulation"
-        app:layout_constraintVertical_bias="0.0"
-        tools:itemCount="3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:itemCount="6"
         tools:listitem="@layout/paylater_partner_card_item" />
 
  </androidx.constraintlayout.widget.ConstraintLayout>

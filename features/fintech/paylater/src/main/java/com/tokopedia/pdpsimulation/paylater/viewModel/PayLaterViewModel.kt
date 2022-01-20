@@ -8,7 +8,9 @@ import com.tokopedia.pdpsimulation.common.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.pdpsimulation.paylater.domain.model.BaseProductDetailClass
 import com.tokopedia.pdpsimulation.paylater.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
+import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterSimulationV3UseCase
+import com.tokopedia.pdpsimulation.paylater.domain.usecase.PayLaterUiMapperUseCase
 import com.tokopedia.pdpsimulation.paylater.domain.usecase.ProductDetailUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -19,23 +21,13 @@ import javax.inject.Inject
 class PayLaterViewModel @Inject constructor(
     private val paylaterGetSimulationV3UseCase: PayLaterSimulationV3UseCase,
     private val productDetailUseCase: ProductDetailUseCase,
-
+    private val mapperUseCase: PayLaterUiMapperUseCase,
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
 
-
-    private val _payLaterOptionsDetailLiveData = MutableLiveData<Result<PayLaterGetSimulation>>()
-    val payLaterOptionsDetailLiveData: LiveData<Result<PayLaterGetSimulation>> =
+    private val _payLaterOptionsDetailLiveData = MutableLiveData<Result<ArrayList<SimulationUiModel>>>()
+    val payLaterOptionsDetailLiveData: LiveData<Result<ArrayList<SimulationUiModel>>> =
         _payLaterOptionsDetailLiveData
-
-    /**
-     * @param refreshData -> This parameter is to check when to refresh data in on resume
-     * @param sortPosition -> Give the old filter position when so after refresh can go to previous state
-     * @param partnerDisplayPosition -> Give the old viewpager position so after refresh can go to previous state
-     */
-    var refreshData = false
-    var sortPosition = 0
-    var partnerDisplayPosition = 0
 
     private val _productDetailLiveData = MutableLiveData<Result<GetProductV3>>()
     val productDetailLiveData: LiveData<Result<GetProductV3>> = _productDetailLiveData
@@ -82,9 +74,12 @@ class PayLaterViewModel @Inject constructor(
 
     private fun onAvailableDetailSuccess(paylaterGetSimulation: PayLaterGetSimulation?) {
         idlingResourceProvider?.decrement()
-        paylaterGetSimulation?.let {
+        mapperUseCase.mapResponseToUi({
             _payLaterOptionsDetailLiveData.value = Success(it)
-        }
+        }, {
+            _payLaterOptionsDetailLiveData.value = Fail(it)
+
+        }, paylaterGetSimulation)
     }
 
     override fun onCleared() {

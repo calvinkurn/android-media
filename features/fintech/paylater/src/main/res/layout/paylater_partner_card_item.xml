@@ -7,16 +7,6 @@
     android:background="@drawable/bg_paylater_recommended_gradient"
     android:paddingBottom="@dimen/pay_later_benefit_margin_dp_6">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/sectionTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_16"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_4"
-        tools:text="PayLater aktif, siap dipakai!" />
-
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/payLaterPartnerCard"
         android:layout_width="match_parent"
@@ -27,7 +17,7 @@
         android:layout_marginEnd="@dimen/pay_later_margin_dp_10"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sectionTitle">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clPartnerCard"
@@ -36,7 +26,7 @@
             android:background="@drawable/bg_paylater_card_border_recommendation">
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/recommendationTitle"
+                android:id="@+id/recomrecommendationTitlemendationTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -89,7 +79,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_4"
                 android:textColor="@color/Unify_NN600"
-                app:layout_constraintTop_toTopOf="@+id/tvInstallmentAmount"
                 app:layout_constraintBottom_toBottomOf="@+id/tvInstallmentAmount"
                 app:layout_constraintStart_toEndOf="@id/tvInstallmentAmount"
                 app:typographyType="body_3"

@@ -5,8 +5,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteraction
 import com.tokopedia.pdpsimulation.paylater.domain.model.SeeMoreOptionsUiModel
+import kotlinx.android.synthetic.main.paylater_see_more_item.view.*
 
-class PayLaterSeeMoreViewHolder(itemView: View, val interaction: PayLaterOptionInteraction) :
+class PayLaterSeeMoreViewHolder(itemView: View, private val interaction: PayLaterOptionInteraction) :
     AbstractViewHolder<SeeMoreOptionsUiModel>(itemView) {
 
 
@@ -14,5 +15,10 @@ class PayLaterSeeMoreViewHolder(itemView: View, val interaction: PayLaterOptionI
         val LAYOUT = R.layout.paylater_see_more_item
     }
 
-    override fun bind(element: SeeMoreOptionsUiModel?) {}
+    override fun bind(element: SeeMoreOptionsUiModel?) {
+        itemView.seeMoreButton.text = "Lihat ${element?.remainingItems?.size?: 0} Lainnya"
+        itemView.setOnClickListener {
+            interaction.seeMoreOptions(adapterPosition)
+        }
+    }
 }

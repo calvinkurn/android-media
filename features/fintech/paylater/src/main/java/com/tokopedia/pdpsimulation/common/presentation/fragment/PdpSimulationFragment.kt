@@ -1,12 +1,14 @@
 package com.tokopedia.pdpsimulation.common.presentation.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.pdpsimulation.R
@@ -18,12 +20,15 @@ import com.tokopedia.pdpsimulation.common.presentation.adapter.PayLaterAdapterFa
 import com.tokopedia.pdpsimulation.common.presentation.adapter.PayLaterSimulationAdapter
 import com.tokopedia.pdpsimulation.paylater.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteraction
+import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
+import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterSimulationTenureAdapter
 import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.fragment_pdp_simulation.*
 import kotlinx.android.synthetic.main.product_detail.view.*
+import java.util.*
 import javax.inject.Inject
 
 
@@ -51,6 +56,12 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     private val simulationAdapter: PayLaterSimulationAdapter by lazy {
         PayLaterSimulationAdapter(getAdapterTypeFactory())
     }
+    private val tenureAdapter: PayLaterSimulationTenureAdapter by lazy {
+        PayLaterSimulationTenureAdapter { payLaterList ->
+            simulationAdapter.addAllElements(payLaterList)
+            rvPayLaterOption.scrollToPosition(0)
+        }
+    }
 
     private fun getAdapterTypeFactory() = PayLaterAdapterFactoryImpl(
         interaction = PayLaterOptionInteraction(
@@ -59,6 +70,10 @@ class PdpSimulationFragment : BaseDaggerFragment() {
             },
             installementDetails = {
 
+            },
+            seeMoreOptions = { adapterPosition ->
+                if (adapterPosition != RecyclerView.NO_POSITION)
+                simulationAdapter.updateOptionList(adapterPosition)
             }
         )
     )
@@ -78,8 +93,13 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         payLaterViewModel.getProductDetail(productId)
+        rvPayLaterSimulation.adapter = tenureAdapter
+        rvPayLaterSimulation.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        rvPayLaterOption.adapter = simulationAdapter
+        rvPayLaterOption.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         initListeners()
-
     }
 
     private fun observeViewModel() {
@@ -92,10 +112,18 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
         payLaterViewModel.payLaterOptionsDetailLiveData.observe(viewLifecycleOwner, {
             when (it) {
-                is Success -> Log.d("", "")
-                is Fail -> Log.d("", "")
+                is Success -> setSimulationView(it.data)
+                is Fail -> Toast.makeText(context, "failed", Toast.LENGTH_LONG).show()
             }
         })
+    }
+
+    private fun setSimulationView(data: ArrayList<SimulationUiModel>) {
+        // hide loading
+        tenureAdapter.setData(data)
+        data[0].isSelected = true
+        simulationAdapter.addAllElements(data[0].simulationList?: arrayListOf())
+
     }
 
     private fun productDetailFail() {

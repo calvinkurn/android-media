@@ -2,9 +2,11 @@ package com.tokopedia.pdpsimulation.paylater.domain.usecase
 
 import com.tokopedia.pdpsimulation.common.helper.PdpSimulationException
 import com.tokopedia.pdpsimulation.paylater.domain.model.*
+import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel.Companion.DATA_FAILURE
 import com.tokopedia.usecase.coroutines.UseCase
+import javax.inject.Inject
 
-class PayLaterUiMapperUseCase: UseCase<ArrayList<SimulationUiModel>>() {
+class PayLaterUiMapperUseCase @Inject constructor(): UseCase<ArrayList<SimulationUiModel>>() {
 
     private var payLaterGetSimulation: PayLaterGetSimulation? = null
 
@@ -17,7 +19,7 @@ class PayLaterUiMapperUseCase: UseCase<ArrayList<SimulationUiModel>>() {
         this.execute({
             onSuccess(it)
         }, {
-            onError(PdpSimulationException.PayLaterNullDataException("NO data"))
+            onError(PdpSimulationException.PayLaterNullDataException(DATA_FAILURE))
         })
 
     }
@@ -28,7 +30,7 @@ class PayLaterUiMapperUseCase: UseCase<ArrayList<SimulationUiModel>>() {
     private fun mapSimulationToUi(gatewaySectionList: List<GatewaySection>): ArrayList<BasePayLaterWidgetUiModel> {
         val simulationUiList = arrayListOf<BasePayLaterWidgetUiModel>()
         gatewaySectionList.forEach { gatewaySection ->
-            if (gatewaySection.title?.isNotEmpty() == false) {
+            if (gatewaySection.title?.isNotEmpty() == true) {
                 simulationUiList.add(SectionTitleUiModel(gatewaySection.title.orEmpty()))
             }
             if (gatewaySection.isCollapsible == true && gatewaySection.detail.isNotEmpty()) {
@@ -48,6 +50,7 @@ class PayLaterUiMapperUseCase: UseCase<ArrayList<SimulationUiModel>>() {
             }
 
         }
+        simulationUiList.add(SupervisorUiModel)
         return simulationUiList
     }
 
