@@ -3,13 +3,14 @@ package com.tokopedia.cart.view.presenter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
+import io.mockk.verify
 import org.junit.Test
 import rx.Observable
 
 class SaveCheckboxStateTest : BaseCartTest() {
 
     @Test
-    fun `WHEN save checkbox state success THEN `() {
+    fun `WHEN trigger save checkbox state THEN use case should be called`() {
         // GIVEN
         val cartItemDataList = ArrayList<CartItemHolderData>().apply {
             add(
@@ -27,7 +28,9 @@ class SaveCheckboxStateTest : BaseCartTest() {
         cartListPresenter.saveCheckboxState(cartItemDataList)
 
         // THEN
-        assert(true)
+        verify {
+            setCartlistCheckboxStateUseCase.createObservable(any())
+        }
     }
 
 }
