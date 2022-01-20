@@ -146,7 +146,7 @@ includeIfEnabled("features:ordermanagement:orderhistory")
 includeIfEnabled("features:communication:push-notification-common")
 
 includeIfEnabled("features:user:attachproduct")
-includeIfEnabled("features:user:attachcommon")
+includeIfEnabled("features:communication:attachcommon")
 includeIfEnabled("features:user:chat_common")
 includeIfEnabled("features:user:attachinvoice")
 includeIfEnabled("features:user:attachvoucher")

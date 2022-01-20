@@ -241,7 +241,7 @@ ext {
             attachproduct                   : ":features:user:attachproduct",
             attachinvoice                   : ":features:user:attachinvoice",
             attachvoucher                   : ":features:user:attachvoucher",
-            attachcommon                    : ":features:user:attachcommon",
+            attachcommon                    : ":features:communication:attachcommon",
             changePhoneNumber               : ":features:user:changephonenumber",
             chatbot                         : ":features:user:chatbot",
             chatcommon                      : ":features:user:chat_common",

@@ -126,7 +126,6 @@ import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_S
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.custom.TopChatKeyboardHandler
-import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.util.TopChatSellerReviewHelper
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.unifycomponents.Toaster
