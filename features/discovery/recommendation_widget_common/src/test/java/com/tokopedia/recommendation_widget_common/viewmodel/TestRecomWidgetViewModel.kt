@@ -71,6 +71,8 @@ class TestRecomWidgetViewModel {
     private val mockUserId = "2345"
     private val mockRecomFilterChip =
         RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Speaker")
+    private val productIds = listOf("420356", "420358")
+    private val mockJoinProductIds = "420356,420358"
     val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
     val miniCartSimplifiedDataMock = MiniCartSimplifiedData(miniCartItems = listOf(miniCart))
 
@@ -136,30 +138,26 @@ class TestRecomWidgetViewModel {
         }
 
     @Test
-    fun `test load recommendation with chips then check success recommendation chips available`() =
+    fun `test given getRecommendationUseCase return success when load recommendation chips then recommendation chips is available in livedata`() =
         runBlocking {
             coEvery { getRecommendationUseCase.getData(any()) } returns listOf(
-                RecommendationWidget(
-                    recommendationItemList = listOf(recomItem),
-                    isTokonow = false
-                )
+                mockRecomWidgetFalseTokonow
             )
 
-            val recomFilterChip = RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Speaker")
-            val listFilterChip = listOf(
-                recomFilterChip)
+            val listFilterChip = listOf(mockRecomFilterChip)
 
             coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listFilterChip
             viewModel.loadRecommendationCarousel(pageName = PAGENAME_PDP_3, isTokonow = false)
             val recomWidget = viewModel.getRecommendationLiveData.value
-            Assert.assertEquals(recomFilterChip,
+            Assert.assertEquals(
+                mockRecomFilterChip,
                 recomWidget?.recommendationFilterChips?.get(0)
                     ?: RecommendationFilterChipsEntity.RecommendationFilterChip()
             )
         }
 
     @Test
-    fun `test load recommendation with empty result then check error recommendation equals page name`() =
+    fun `test given empty recommendation return error by pageName`() =
         runBlocking {
             coEvery { getRecommendationUseCase.getData(any()) } returns listOf()
 
@@ -169,7 +167,7 @@ class TestRecomWidgetViewModel {
         }
 
     @Test
-    fun `test load recommendation with some product id then check success recommendation chips available`() = runBlocking {
+    fun `test given recommendation with some product id then check success recommendation chips available`() = runBlocking {
         coEvery { getRecommendationUseCase.getData(any()) } returns listOf(
             mockRecomWidgetFalseTokonow
         )
@@ -178,15 +176,13 @@ class TestRecomWidgetViewModel {
             userSessionInterface.userId
         } returns mockUserId
 
-        val productIds = listOf("420356", "420358")
-
         val listFilterChip = listOf(
             mockRecomFilterChip
         )
 
         coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listFilterChip
         mockkStatic(TextUtils::class)
-        every { TextUtils.join(",", productIds) } returns "420356,420358"
+        every { TextUtils.join(",", productIds) } returns mockJoinProductIds
         viewModel.loadRecommendationCarousel(pageName = PAGENAME_PDP_3, productIds = productIds)
         val recomWidget = viewModel.getRecommendationLiveData.value
         Assert.assertEquals(
@@ -339,13 +335,11 @@ class TestRecomWidgetViewModel {
 
     @Test
     fun `test when get data recommendation selected by chips then return success filter result with new recom widget data`() {
-        val recomWidget = mockRecomWidgetFalseTokonow
-        coEvery { getRecommendationUseCase.getData(any()) } returns listOf(recomWidget
-        )
+        coEvery { getRecommendationUseCase.getData(any()) } returns listOf(mockRecomWidgetFalseTokonow)
         viewModel.loadRecomBySelectedChips(recomWidgetMetadata = recomWidgetMetadata, oldFilterList = listAnnotationChip, selectedChip = listAnnotationChip[0])
         val recomFilterResult = viewModel.recomFilterResultData.value
         Assert.assertEquals(listAnnotationChip.size, recomFilterResult?.filterList?.size)
-        Assert.assertEquals(recomWidget, recomFilterResult?.recomWidgetData)
+        Assert.assertEquals(mockRecomWidgetFalseTokonow, recomFilterResult?.recomWidgetData)
         Assert.assertEquals(true, recomFilterResult?.isSuccess)
     }
 
