@@ -73,6 +73,9 @@ class TestRecomWidgetViewModel {
         RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Speaker")
     private val productIds = listOf("420356", "420358")
     private val mockJoinProductIds = "420356,420358"
+    private val mockListFilterChip = listOf(
+        mockRecomFilterChip
+    )
     val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
     val miniCartSimplifiedDataMock = MiniCartSimplifiedData(miniCartItems = listOf(miniCart))
 
@@ -157,7 +160,7 @@ class TestRecomWidgetViewModel {
         }
 
     @Test
-    fun `test given empty recommendation return error by pageName`() =
+    fun `test given empty recommendation return error by pageName in livedata`() =
         runBlocking {
             coEvery { getRecommendationUseCase.getData(any()) } returns listOf()
 
@@ -167,7 +170,7 @@ class TestRecomWidgetViewModel {
         }
 
     @Test
-    fun `test given recommendation with some product id then check success recommendation chips available`() = runBlocking {
+    fun `test given recommendation with user id and list product id return success filter chip in live data`() = runBlocking {
         coEvery { getRecommendationUseCase.getData(any()) } returns listOf(
             mockRecomWidgetFalseTokonow
         )
@@ -176,11 +179,7 @@ class TestRecomWidgetViewModel {
             userSessionInterface.userId
         } returns mockUserId
 
-        val listFilterChip = listOf(
-            mockRecomFilterChip
-        )
-
-        coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listFilterChip
+        coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns mockListFilterChip
         mockkStatic(TextUtils::class)
         every { TextUtils.join(",", productIds) } returns mockJoinProductIds
         viewModel.loadRecommendationCarousel(pageName = PAGENAME_PDP_3, productIds = productIds)
