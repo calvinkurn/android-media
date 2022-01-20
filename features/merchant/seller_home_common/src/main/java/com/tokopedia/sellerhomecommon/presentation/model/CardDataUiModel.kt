@@ -1,5 +1,7 @@
 package com.tokopedia.sellerhomecommon.presentation.model
 
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
+
 /**
  * Created By @ilhamsuaib on 19/05/20
  */
@@ -18,7 +20,7 @@ data class CardDataUiModel(
     override fun isWidgetEmpty(): Boolean {
         return value.filterIndexed { index, c ->
             (c == '.' && value.getOrNull(index - 1)?.isDigit() == true) || c.isDigit()
-        }.toFloat() == 0f
+        }.toFloatOrZero() == 0f
     }
 
     enum class State {

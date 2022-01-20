@@ -8,10 +8,9 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
 object GqlGetCardData : GqlQueryInterface {
 
-    private const val TOP_OPERATION_NAME = "getCardWidgetData"
     private const val OPERATION_NAME = "fetchCardWidgetData"
     val QUERY = """
-        query $TOP_OPERATION_NAME(${'$'}dataKeys : [dataKey!]!) {
+        query $OPERATION_NAME(${'$'}dataKeys : [dataKey!]!) {
           $OPERATION_NAME(dataKeys: ${'$'}dataKeys) {
             data {
               dataKey
@@ -32,5 +31,5 @@ object GqlGetCardData : GqlQueryInterface {
 
     override fun getQuery(): String = QUERY
 
-    override fun getTopOperationName(): String = TOP_OPERATION_NAME
+    override fun getTopOperationName(): String = OPERATION_NAME
 }
