@@ -40,7 +40,7 @@ class SummaryPulsaBottomsheet(private val title:String, private val denom: Denom
         binding = BottomSheetSummaryPulsaBinding.inflate(LayoutInflater.from(context))
         binding?.run{
             tgTotalPay.text = denom.price
-            tgTotalPrice.text = denom.slashPrice
+            tgTotalPrice.text = if (!denom.slashPrice.isNullOrEmpty()) denom.slashPrice else denom.price
 
             if (denom.pricePlain.isMoreThanZero() &&
                 denom.slashPricePlain.isMoreThanZero()){
