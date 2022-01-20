@@ -136,15 +136,15 @@ object TopChatWebSocketParam {
         productProfile.addProperty("wishlist", product.wishList)
         productProfile.addProperty("is_fulfillment", product.isFulfillment)
         productProfile.addProperty("icon_tokocabang", product.urlTokocabang)
-
-        val playstoreProductData = JsonObject().apply {
-            addProperty("playstore_status", product.playStoreData.status)
-        }
+        val locationStock = gson.toJsonTree(product.locationStock)
+        productProfile.add("location_stock", locationStock)
+        val images = gson.toJsonTree(product.images)
+        productProfile.add("list_image_url", images)
+        val rating = gson.toJsonTree(product.rating)
+        productProfile.add("rating", rating)
+        val playstoreProductData = gson.toJsonTree(product.playStoreData)
         productProfile.add("playstore_product_data", playstoreProductData)
-
-        val freeShipping = JsonObject()
-        freeShipping.addProperty("is_active", product.freeShipping.isActive)
-        freeShipping.addProperty("image_url", product.freeShipping.imageUrl)
+        val freeShipping = gson.toJsonTree(product.freeShipping)
         productProfile.add("free_ongkir", freeShipping)
         return productProfile
     }
