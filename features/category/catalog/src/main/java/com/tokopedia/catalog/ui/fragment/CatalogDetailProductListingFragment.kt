@@ -456,7 +456,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     private fun removeWishList(productId: String, userId: String, adapterPosition: Int) {
         CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                 CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS,
                 "$catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_REMOVE_WISHLIST}",userSession.userId)
@@ -466,10 +466,10 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     private fun addWishList(productId: String, userId: String, adapterPosition: Int) {
         CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                 CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS,
-                "$catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_ADD_WISHLIST}",userSession.userId)
+                "$catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_ADD_WISHLIST}",userSession.userId,catalogId)
         addWishlistActionUseCase.createObservable(productId, userId,
                 this)
     }
@@ -577,11 +577,11 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         reloadData()
         if(isQuickFilterSelectedReversed){
             CatalogDetailAnalytics.sendEvent(
-                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                     CatalogDetailAnalytics.ActionKeys.CLICK_QUICK_FILTER,
                     "$catalogId - ${CatalogUtil.getSortFilterAnalytics(viewModel.searchParametersMap.value)}",
-                    userSession.userId)
+                    userSession.userId,catalogId)
         }
     }
 
@@ -710,11 +710,11 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private fun openBottomSheetFilterRevamp(){
         activity?.supportFragmentManager?.let{
             CatalogDetailAnalytics.sendEvent(
-                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                     CatalogDetailAnalytics.ActionKeys.CLICK_DYNAMIC_FILTER,
                     "$catalogId - ${CatalogUtil.getSortFilterAnalytics(viewModel.searchParametersMap.value)}",
-                    userSession.userId)
+                    userSession.userId,catalogId)
             sortFilterBottomSheet?.show(
                     it,
                     viewModel.searchParametersMap.value,

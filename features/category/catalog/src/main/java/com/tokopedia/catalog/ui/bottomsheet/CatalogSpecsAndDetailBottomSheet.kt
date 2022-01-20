@@ -117,18 +117,18 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
                         adapter.setOnSelectView(tabLayout,position)
                         if(position == PAGE_DESCRIPTION){
                             CatalogDetailAnalytics.sendEvent(
-                                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                                     CatalogDetailAnalytics.ActionKeys.CLICK_TAB_DESCRIPTION,
-                                    catalogId,session.userId)
+                                    catalogId,session.userId,catalogId)
                             openPage = DESCRIPTION
                         } else if (position == PAGE_SPECIFICATIONS){
                             if(openPage != SPECIFICATION) {
                                 CatalogDetailAnalytics.sendEvent(
-                                        CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                                        CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                                         CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                                         CatalogDetailAnalytics.ActionKeys.CLICK_TAB_SPECIFICATIONS,
-                                        catalogId, session.userId)
+                                        catalogId, session.userId,catalogId)
                             }
                         }
                     }
