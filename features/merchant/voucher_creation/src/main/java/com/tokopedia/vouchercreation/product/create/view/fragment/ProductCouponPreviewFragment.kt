@@ -12,8 +12,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Label
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
@@ -81,6 +81,9 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductCouponPreviewViewModel::class.java) }
 
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+
     override fun getScreenName() = SCREEN_NAME
     override fun initInjector() {
         DaggerVoucherCreationComponent.builder()
@@ -117,7 +120,8 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             viewModel.createCoupon(
                 couponInformation ?: return@setOnClickListener,
                 couponSettings ?: return@setOnClickListener,
-                couponProducts
+                couponProducts,
+                userSessionInterface.accessToken
             )
         }
     }

@@ -258,10 +258,12 @@ class CouponSettingViewModel @Inject constructor(
             freeShippingQuota
         }
 
-        val minimumPurchase = if (selectedCouponType == CouponType.CASHBACK) {
-            cashbackMinimumPurchase
-        } else {
-            freeShippingMinimumPurchase
+
+        val minimumPurchase = when {
+            selectedCouponType == CouponType.CASHBACK && selectedMinimumPurchaseType == MinimumPurchaseType.NOTHING -> ZERO
+            selectedCouponType == CouponType.CASHBACK -> cashbackMinimumPurchase
+            selectedCouponType == CouponType.FREE_SHIPPING -> freeShippingMinimumPurchase
+            else -> cashbackMinimumPurchase
         }
 
         _saveCoupon.value = CouponSettings(

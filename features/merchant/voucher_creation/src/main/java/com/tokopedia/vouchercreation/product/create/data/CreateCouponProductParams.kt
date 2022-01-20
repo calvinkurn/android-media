@@ -43,6 +43,9 @@ data class CreateCouponProductParams(
     @SerializedName("image_square")
     @Expose
     var imageSquare: String = "",
+    @SerializedName("image_portrait")
+    @Expose
+    var imagePortrait: String = "",
     @SerializedName("is_public")
     @Expose
     val isPublic: Int = 0,
@@ -69,5 +72,8 @@ data class CreateCouponProductParams(
     val isLockToProduct: Int = 0,
     @SerializedName("product_ids")
     @Expose
-    val productIds: String = ""
+    val productIds: String = "",
+    @SerializedName("product_ids_csv_url")
+    @Expose
+    val productIdsCsvUrl: String = ""
 )

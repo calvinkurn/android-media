@@ -53,8 +53,8 @@ class CreateVoucherProductActivity : AppCompatActivity() {
             couponPreviewFragment.setCouponSettingsData(coupon)
 
             //Stub the coupon preview data for testing purpose
-            val startDate = Calendar.getInstance().apply { set(2022, 0, 17, 8, 30, 0) }
-            val endDate = Calendar.getInstance().apply {  set(2022, 0, 17, 22, 0, 0) }
+            val startDate = Calendar.getInstance().apply { set(2022, 0, 18, 8, 30, 0) }
+            val endDate = Calendar.getInstance().apply {  set(2022, 0, 20, 22, 0, 0) }
             val period = CouponInformation.Period(startDate.time, endDate.time)
             couponPreviewFragment.setCouponInformationData(
                 CouponInformation(
