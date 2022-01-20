@@ -74,7 +74,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         }
     }
 
-    // [Misael] di digital_topup_bills ada layout yg sama (dupe)
     private fun initAutoComplete() {
         binding.clientNumberWidgetInputField.run {
             editText.run {
@@ -306,7 +305,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
             } else {
                 includeLayout.clientNumberWidgetSimplifiedLayout.hide()
                 clientNumberWidgetMainLayout.show()
-                // [Misael] next step handle showing operator icon with condition
                 clientNumberWidgetOperatorGroup.show()
             }
         }
@@ -337,7 +335,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         }
     }
 
-    private fun clearFocusAutoComplete() {
+    fun clearFocusAutoComplete() {
         binding.clientNumberWidgetInputField.editText.clearFocus()
     }
 

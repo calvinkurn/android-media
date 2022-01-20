@@ -25,8 +25,8 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     val menuDetailData: LiveData<RechargeNetworkResult<MenuDetailModel>>
         get() = _menuDetailData
 
-    private val _favoriteNumberData = MutableLiveData<RechargeNetworkResult<List<TopupBillsSeamlessFavNumberItem>>>()
-    val favoriteNumberData: LiveData<RechargeNetworkResult<List<TopupBillsSeamlessFavNumberItem>>>
+    private val _favoriteNumberData = MutableLiveData<RechargeNetworkResult<Pair<List<TopupBillsSeamlessFavNumberItem>, Boolean>>>()
+    val favoriteNumberData: LiveData<RechargeNetworkResult<Pair<List<TopupBillsSeamlessFavNumberItem>, Boolean>>>
         get() = _favoriteNumberData
 
     private val _catalogProductInput = MutableLiveData<Result<List<DenomWidgetModel>>>()
@@ -66,12 +66,12 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }
     }
 
-    fun getFavoriteNumber(categoryIds: List<String>) {
+    fun getFavoriteNumber(categoryIds: List<String>, shouldRefreshInputNumber: Boolean) {
         _favoriteNumberData.postValue(RechargeNetworkResult.Loading)
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val favoriteNumber = repo.getFavoriteNumber(categoryIds)
             _favoriteNumberData.postValue(RechargeNetworkResult.Success(
-                favoriteNumber.seamlessFavoriteNumber.favoriteNumbers))
+                favoriteNumber.seamlessFavoriteNumber.favoriteNumbers to shouldRefreshInputNumber))
         }) {
             _favoriteNumberData.postValue(RechargeNetworkResult.Fail(it))
         }

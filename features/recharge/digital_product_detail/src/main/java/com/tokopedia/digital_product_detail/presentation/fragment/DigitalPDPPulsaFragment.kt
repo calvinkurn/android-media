@@ -1,6 +1,9 @@
 package com.tokopedia.digital_product_detail.presentation.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +18,8 @@ import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSavedNumberActivity
+import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
+import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
@@ -108,7 +113,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
                         rechargePdpPulsaClientNumberWidget.getInputNumber().startsWith(it.value)
                     }
 
-                // [Misael] operatorId state & checker
                 if (operatorId != selectedOperator.operator.id || rechargePdpPulsaClientNumberWidget.getInputNumber()
                         .length in MINIMUM_VALID_NUMBER_LENGTH .. MAXIMUM_VALID_NUMBER_LENGTH
                 ) {
@@ -137,7 +141,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
         })
         viewModel.favoriteNumberData.observe(viewLifecycleOwner, {
             when (it) {
-                is RechargeNetworkResult.Success -> onSuccessGetFavoriteNumber(it.data)
+                is RechargeNetworkResult.Success -> onSuccessGetFavoriteNumber(it.data.first, it.data.second)
                 is RechargeNetworkResult.Fail -> onFailedGetFavoriteNumber()
                 is RechargeNetworkResult.Loading -> {}
             }
@@ -196,7 +200,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
         categoryId: String = this.categoryId.toString(),
         shouldRefreshInputNumber: Boolean = true
     ) {
-        viewModel.getFavoriteNumber(listOf(categoryId))
+        viewModel.getFavoriteNumber(listOf(categoryId), shouldRefreshInputNumber)
     }
 
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
@@ -205,19 +209,20 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
         renderTicker(data.tickers)
     }
 
-    private fun onSuccessGetFavoriteNumber(favoriteNumber: List<TopupBillsSeamlessFavNumberItem>) {
+    private fun onSuccessGetFavoriteNumber(
+        favoriteNumber: List<TopupBillsSeamlessFavNumberItem>,
+        shouldRefreshInputNumber: Boolean
+    ) {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             if (favoriteNumber.isNotEmpty()) {
-                // -- start -- TODO: Add shouldRefreshinputNumber
-                setInputNumber(favoriteNumber[0].clientNumber)
-                setContactName(favoriteNumber[0].clientName)
-                // -- end --
+                if (shouldRefreshInputNumber) {
+                    setInputNumber(favoriteNumber[0].clientNumber)
+                    setContactName(favoriteNumber[0].clientName)
+                }
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
                 setAutoCompleteList(favoriteNumber)
                 dynamicSpacerHeightRes = R.dimen.dynamic_banner_space_extended
-            } else {
-                showEmptyState()
             }
         }
     }
@@ -446,6 +451,27 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
         }
     }
 
+    private fun handleCallbackSavedNumber(
+        clientName: String,
+        clientNumber: String,
+        productId: String,
+        categoryId: String,
+        inputNumberActionTypeIndex: Int
+    ) {
+        // [Misael] handle InputNumberAction type for tracker
+
+        // [Firman] handle checkout pass data
+
+        binding?.rechargePdpPulsaClientNumberWidget?.run {
+            setContactName(clientName)
+            setInputNumber(clientNumber)
+        }
+    }
+
+    private fun handleCallbackAnySavedNumberCancel() {
+        binding?.rechargePdpPulsaClientNumberWidget?.clearFocusAutoComplete()
+    }
+
     private fun setAnimationAppBarLayout() {
         //initial appBar state is expanded
         (activity as? DigitalPDPPulsaActivity)?.setupAppBar()
@@ -524,6 +550,30 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
                 permissions,
                 grantResults
             )
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_CODE_DIGITAL_SAVED_NUMBER) {
+                if (data != null) {
+                    val orderClientNumber =
+                        data.getParcelableExtra<Parcelable>(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSavedNumber
+
+                    handleCallbackSavedNumber(
+                        orderClientNumber.clientName,
+                        orderClientNumber.clientNumber,
+                        orderClientNumber.productId,
+                        orderClientNumber.categoryId,
+                        orderClientNumber.inputNumberActionTypeIndex
+                    )
+                } else {
+                    handleCallbackAnySavedNumberCancel()
+                }
+                // [Misael] shouldRefreshInputNumber nnti gaperlu karena prefill ambil dari tempat lain
+                getFavoriteNumber(shouldRefreshInputNumber = false)
+            }
         }
     }
 
