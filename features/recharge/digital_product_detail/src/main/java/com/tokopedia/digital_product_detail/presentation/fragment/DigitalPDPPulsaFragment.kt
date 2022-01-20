@@ -13,6 +13,11 @@ import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
+import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
+import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
+import com.tokopedia.common_digital.atc.utils.DeviceUtil
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
@@ -37,6 +42,7 @@ import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import kotlin.math.abs
@@ -53,6 +59,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: DigitalPDPPulsaViewModel
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var binding by autoClearedNullable<FragmentDigitalPdpPulsaBinding>()
 
@@ -507,7 +516,31 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     override fun onClickedButtonLanjutkan(denom: DenomData) {
+        val checkoutPassData = DigitalCheckoutPassData.Builder()
+            .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+            .instantCheckout("0")
+            .utmContent(GlobalConfig.VERSION_NAME)
+            .idemPotencyKey(userSession.userId.generateRechargeCheckoutToken())
+            .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
+            .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+            .voucherCodeCopied("")
+            .isFromPDP(true)
+            .categoryId(denom.categoryId)
+            .clientNumber(binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: "")
+            .isPromo(denom.promoStatus)
+            .operatorId(operatorId)
+            .productId(denom.id)
+            .utmCampaign(denom.categoryId)
+            .isSpecialProduct(denom.isSpecialPromo)
+            .build()
 
+        checkoutPassData.idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
+        viewModel.addToCart(
+            checkoutPassData,
+            DeviceUtil.getDigitalIdentifierParam(requireActivity()),
+            DigitalSubscriptionParams(),
+            userSession.userId
+        )
     }
 
     override fun onClickedChevron(denom: DenomData) {

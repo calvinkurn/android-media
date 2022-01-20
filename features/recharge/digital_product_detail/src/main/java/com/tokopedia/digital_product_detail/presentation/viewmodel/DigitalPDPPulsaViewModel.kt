@@ -8,6 +8,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPRepository
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
+import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
@@ -44,6 +47,10 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     private val _observableMCCMData = MutableLiveData<RechargeNetworkResult<DenomWidgetModel>>()
     val observableMCCMData: LiveData<RechargeNetworkResult<DenomWidgetModel>>
         get() = _observableMCCMData
+
+    private val _addToCartResult = MutableLiveData<RechargeNetworkResult<String>>()
+    val addToCartResult: LiveData<RechargeNetworkResult<String>>
+        get() = _addToCartResult
 
     fun getMenuDetail(menuId: Int, isLoadFromCloud: Boolean = false) {
         _menuDetailData.postValue(RechargeNetworkResult.Loading)
@@ -85,6 +92,20 @@ class DigitalPDPPulsaViewModel @Inject constructor(
             _catalogPrefixSelect.postValue(RechargeNetworkResult.Success(operatorList))
         }) {
             _catalogPrefixSelect.postValue(RechargeNetworkResult.Fail(it))
+        }
+    }
+
+    fun addToCart(digitalCheckoutPassData: DigitalCheckoutPassData,
+                  digitalIdentifierParam: RequestBodyIdentifier,
+                  digitalSubscriptionParams: DigitalSubscriptionParams,
+                  userId: String
+    ){
+        _addToCartResult.postValue(RechargeNetworkResult.Loading)
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            val categoryIdAtc = repo.addToCart(digitalCheckoutPassData, digitalIdentifierParam, digitalSubscriptionParams, userId)
+            _addToCartResult.postValue(RechargeNetworkResult.Success(categoryIdAtc))
+        }) {
+            _addToCartResult.postValue(RechargeNetworkResult.Fail(it))
         }
     }
 

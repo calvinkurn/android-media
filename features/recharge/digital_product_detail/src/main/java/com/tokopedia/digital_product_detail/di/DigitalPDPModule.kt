@@ -3,8 +3,14 @@ package com.tokopedia.digital_product_detail.di
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
+import com.tokopedia.common.network.coroutines.RestRequestInteractor
+import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
+import com.tokopedia.common_digital.common.di.DigitalAddToCartQualifier
+import com.tokopedia.common_digital.common.di.DigitalCommonScope
+import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -93,5 +99,25 @@ class DigitalPDPModule {
     @DigitalPDPScope
     fun provideRemoteConfig(@ApplicationContext context: Context): FirebaseRemoteConfigImpl {
         return FirebaseRemoteConfigImpl(context)
+    }
+
+    @Provides
+    @DigitalPDPScope
+    @DigitalAddToCartQualifier
+    fun provideRestRepository(@DigitalAddToCartQualifier interceptors: ArrayList<Interceptor>,
+                              @ApplicationContext context: Context): RestRepository {
+        return RestRequestInteractor.getInstance().restRepository.apply {
+            updateInterceptors(interceptors, context)
+        }
+    }
+
+    @Provides
+    @DigitalPDPScope
+    @DigitalAddToCartQualifier
+    fun provideDigitalInterceptors(digitalInterceptor: DigitalInterceptor): ArrayList<Interceptor> {
+        val listInterceptor = arrayListOf<Interceptor>()
+        listInterceptor.add(digitalInterceptor)
+        listInterceptor.add(ErrorResponseInterceptor(TkpdDigitalResponse.DigitalErrorResponse::class.java))
+        return listInterceptor
     }
 }
