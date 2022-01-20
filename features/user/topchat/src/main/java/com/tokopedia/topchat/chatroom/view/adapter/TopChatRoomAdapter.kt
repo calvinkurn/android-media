@@ -74,16 +74,47 @@ class TopChatRoomAdapter constructor(
         return localId != null && replyMap.contains(localId)
     }
 
-    fun updatePreviewFromWs(
+    fun removePreviewMsg(localId: String) {
+        if (!hasPreviewOnList(localId)) return
+        val chatBubblePosition = getLocalIdMsgPosition(localId)
+        if (chatBubblePosition == RecyclerView.NO_POSITION) return
+        visitables.removeAt(chatBubblePosition)
+        notifyItemRemoved(chatBubblePosition)
+        replyMap.remove(localId)
+    }
+
+    fun updatePreviewUiModel(
         visitable: Visitable<*>,
         localId: String
     ) {
-        val chatBubblePosition = visitables.indexOfFirst {
-            it is BaseChatUiModel && it.localId == localId
-        }
+        val chatBubblePosition = getLocalIdMsgPosition(localId)
         if (chatBubblePosition == RecyclerView.NO_POSITION) return
         visitables[chatBubblePosition] = visitable
         notifyItemChanged(chatBubblePosition, Payload.REBIND)
+    }
+
+    fun updatePreviewState(
+        localId: String
+    ) {
+        val chatBubblePosition = getLocalIdMsgPosition(localId)
+        if (chatBubblePosition == RecyclerView.NO_POSITION) return
+        notifyItemChanged(chatBubblePosition, Payload.REBIND)
+    }
+
+    fun deleteMsg(replyTimeNano: String) {
+        val chatBubblePosition = visitables.indexOfFirst {
+            it is BaseChatUiModel && it.replyTime == replyTimeNano
+        }
+        if (chatBubblePosition == RecyclerView.NO_POSITION) return
+        val msg = visitables[chatBubblePosition] as? BaseChatUiModel ?: return
+        val deletedBubbleUiModel = MessageUiModel.Builder()
+            .withBaseChatUiModel(msg)
+            .withSafelySendableUiModel(msg)
+            .withMarkAsDeleted()
+            .build()
+        visitables.removeAt(chatBubblePosition)
+        visitables.add(chatBubblePosition, deletedBubbleUiModel)
+        notifyItemChanged(chatBubblePosition)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -123,14 +154,16 @@ class TopChatRoomAdapter constructor(
 
     fun getBubblePosition(localId: String, replyTime: String): Int {
         return if (replyMap.contains(localId)) {
-            visitables.indexOfFirst {
-                it is BaseChatUiModel && it.localId == localId
-            }
+            getLocalIdMsgPosition(localId)
         } else {
             visitables.indexOfFirst {
                 it is BaseChatUiModel && it.replyTime == replyTime
             }
         }
+    }
+
+    private fun getLocalIdMsgPosition(localId: String) = visitables.indexOfFirst {
+        it is BaseChatUiModel && it.localId == localId
     }
 
     override fun isOpposite(adapterPosition: Int, isSender: Boolean): Boolean {

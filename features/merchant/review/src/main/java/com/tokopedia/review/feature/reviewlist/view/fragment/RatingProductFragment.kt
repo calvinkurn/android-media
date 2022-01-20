@@ -61,7 +61,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 
-class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTypeFactory>(),
+open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTypeFactory>(),
     HasComponent<ReviewProductListComponent>,
     ReviewSummaryViewHolder.ReviewSummaryViewListener,
     SellerReviewListViewHolder.SellerReviewListListener,
@@ -69,10 +69,10 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     companion object {
         const val TAG_COACH_MARK_RATING_PRODUCT = "coachMarkRatingProduct"
+        const val BOTTOM_SHEET_FILTER_TAG = "bottomSheetFilterTag"
+        const val BOTTOM_SHEET_SORT_TAG = "bottomSheetSortTag"
         private const val searchQuery = "search"
         private const val MAX_LENGTH_SEARCH = 3
-        private const val BOTTOM_SHEET_SORT_TAG = "bottomSheetSortTag"
-        private const val BOTTOM_SHEET_FILTER_TAG = "bottomSheetFilterTag"
 
         private const val IS_DIRECTLY_GO_TO_RATING = "is_directly_go_to_rating"
 
@@ -102,7 +102,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private val prefKey = this.javaClass.name + ".pref"
 
-    private var prefs: SharedPreferences? = null
+    protected var prefs: SharedPreferences? = null
 
     private val coachMarkItems: ArrayList<CoachMarkItem> = arrayListOf()
 

@@ -39,6 +39,8 @@ val nonFilterParameterKeyList = setOf(
     SearchApiConst.UNIQUE_ID,
     SearchApiConst.START,
     SearchApiConst.USER_ID,
+    SearchApiConst.TYPO,
+    SearchApiConst.PAGE,
 )
 
 fun getSortFilterCount(mapParameter: Map<String, Any>): Int {

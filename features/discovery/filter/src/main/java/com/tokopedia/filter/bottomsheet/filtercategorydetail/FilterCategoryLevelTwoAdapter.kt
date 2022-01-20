@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.filter.R
 import com.tokopedia.filter.common.helper.addItemDecorationIfNotExists
-import com.tokopedia.filter.common.helper.createFilterDividerItemDecoration
+import com.tokopedia.filter.common.helper.createFilterChildDividerItemDecoration
 import com.tokopedia.filter.databinding.FilterCategoryDetailLevelTwoViewHolderBinding
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.utils.view.binding.viewBinding
@@ -90,7 +90,7 @@ internal class FilterCategoryLevelTwoAdapter(
         private fun bindLevelThreeCategoryRecyclerView(filterCategoryLevelTwoViewModel: FilterCategoryLevelTwoViewModel) {
             binding?.filterCategoryDetailLevelThreeRecyclerView?.let {
                 val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.VERTICAL, false)
-                val itemDecoration = createFilterDividerItemDecoration(itemView.context, layoutManager.orientation, 0)
+                val itemDecoration = createFilterChildDividerItemDecoration(itemView.context, layoutManager.orientation, 0)
 
                 it.adapter = createLevelThreeCategoryAdapter(filterCategoryLevelTwoViewModel)
                 it.layoutManager = layoutManager

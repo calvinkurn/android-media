@@ -31,7 +31,7 @@ fun createChooseAddressLayout(): List<Visitable<*>> {
     return layoutList
 }
 
-fun createCategoryGridLayout(): List<Visitable<*>> {
+fun createCategoryGridLayout(warehouseId: String): List<Visitable<*>> {
     val layoutList: MutableList<Visitable<*>> = mutableListOf()
     layoutList.addCategoryGrid(listOf(
             CategoryResponse(
@@ -43,7 +43,8 @@ fun createCategoryGridLayout(): List<Visitable<*>> {
                 parentId = "5",
                 childList = listOf()
             )
-        )
+        ),
+        warehouseId = warehouseId
     )
     return layoutList
 }

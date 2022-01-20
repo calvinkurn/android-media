@@ -72,7 +72,9 @@ import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MAIN_QUEST
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
@@ -102,13 +104,16 @@ import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowHomeBinding
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_HOME_PAGE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.analytic.HomePageLoadTimeMonitoring
+import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home15mSwitcher
 import com.tokopedia.tokopedianow.home.presentation.view.coachmark.SwitcherCoachMark
 import com.tokopedia.tokopedianow.home.presentation.view.listener.BannerComponentCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeSwitcherListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingEducationWidgetViewHolder.*
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
@@ -142,7 +147,8 @@ class TokoNowHomeFragment: Fragment(),
         ScreenShotListener,
         HomeSharingEducationListener,
         HomeEducationalInformationListener,
-        ServerErrorListener
+        ServerErrorListener,
+        HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 {
 
     companion object {
@@ -160,6 +166,7 @@ class TokoNowHomeFragment: Fragment(),
         const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/tokonow/og_tokonow.jpg"
         const val PAGE_SHARE_NAME = "TokoNow"
         const val SHARE = "Share"
+        const val SUCCESS_CODE = "200"
 
         fun newInstance() = TokoNowHomeFragment()
     }
@@ -192,6 +199,7 @@ class TokoNowHomeFragment: Fragment(),
                 homeEducationalInformationListener = this,
                 serverErrorListener = this,
                 tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(),
+                homeQuestSequenceWidgetListener = this,
                 dynamicLegoBannerCallback = createLegoBannerCallback(),
                 homeSwitcherListener = createHomeSwitcherListener()
             ),
@@ -480,7 +488,7 @@ class TokoNowHomeFragment: Fragment(),
 
     override fun onCloseBtnSharingEducationClicked(id: String) {
         SharedPreferencesUtil.setSharingEducationState(activity)
-        viewModelTokoNow.removeSharingEducationWidget(id)
+        viewModelTokoNow.removeWidget(id)
     }
 
     override fun isEducationInformationLottieStopped(): Boolean = SharedPreferencesUtil.isEducationalInformationStopped(activity)
@@ -1148,14 +1156,21 @@ class TokoNowHomeFragment: Fragment(),
         localCacheModel?.let {
             val layoutManager = rvHome?.layoutManager as? LinearLayoutManager
             val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
-            viewModelTokoNow.onScrollTokoMartHome(lastVisibleItemIndex, it, false)
+            val removeAbleWidgets = listOf(
+                HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
+                HomeRemoveAbleWidget(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
+            )
+            viewModelTokoNow.onScrollTokoMartHome(lastVisibleItemIndex, it, removeAbleWidgets)
         }
     }
 
     private fun getHomeLayout() {
         localCacheModel?.let {
-            val isSharingRemoved = SharedPreferencesUtil.isSharingEducationRemoved(activity)
-            viewModelTokoNow.getHomeLayout(it, isSharingRemoved)
+            val removeAbleWidgets = listOf(
+                HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
+                HomeRemoveAbleWidget(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
+            )
+            viewModelTokoNow.getHomeLayout(it, removeAbleWidgets)
         }
     }
 
@@ -1355,12 +1370,18 @@ class TokoNowHomeFragment: Fragment(),
     private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareHomeTokonow?) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@TokoNowHomeFragment)
-            setUtmCampaignData(PAGE_SHARE_NAME, shareHomeTokonow?.userId ?: "", shareHomeTokonow?.pageId ?: "", SHARE)
+            setUtmCampaignData(
+                    pageName = PAGE_SHARE_NAME,
+                    userId = shareHomeTokonow?.userId ?: "",
+                    pageId = shareHomeTokonow?.pageId ?: "",
+                    feature = SHARE
+            )
             setMetaData(
-                shareHomeTokonow?.thumbNailTitle ?: "", shareHomeTokonow?.thumbNailImage ?: ""
+                    tnTitle = shareHomeTokonow?.thumbNailTitle ?: "",
+                    tnImage = shareHomeTokonow?.thumbNailImage ?: "",
             )
             //set the Image Url of the Image that represents page
-            setOgImageUrl(shareHomeTokonow?.ogImageUrl ?: "")
+            setOgImageUrl(imgUrl = shareHomeTokonow?.ogImageUrl ?: "")
         }
         universalShareBottomSheet?.show(childFragmentManager, this, screenshotDetector)
     }
@@ -1402,6 +1423,18 @@ class TokoNowHomeFragment: Fragment(),
 
             override fun onGetEventCategory(): String = EVENT_CATEGORY_HOME_PAGE
         }
+    }
+
+    override fun onClickRefreshQuestWidget() {
+        val item = adapter.getItem(HomeQuestSequenceWidgetUiModel::class.java)
+        if (item is HomeQuestSequenceWidgetUiModel) {
+            viewModelTokoNow.getQuestList(item)
+        }
+    }
+
+    override fun onCloseQuestAllClaimedBtnClicked(id: String) {
+        SharedPreferencesUtil.setQuestAllClaimedRemoved(activity)
+        viewModelTokoNow.removeWidget(id)
     }
 
     private fun createSlideBannerCallback(): BannerComponentCallback {

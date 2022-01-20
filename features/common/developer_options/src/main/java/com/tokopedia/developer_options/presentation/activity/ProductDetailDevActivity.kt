@@ -2,10 +2,12 @@ package com.tokopedia.developer_options.presentation.activity
 
 import android.os.Bundle
 import android.view.View
+import android.widget.CheckBox
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
 import com.tokopedia.unifycomponents.TextFieldUnify
@@ -44,6 +46,25 @@ class ProductDetailDevActivity : BaseActivity() {
         val productIdEditText = findViewById<TextFieldUnify>(R.id.pdp_productid_text)
         findViewById<UnifyButton>(R.id.pdp_route_to_pdp_btn).setOnClickListener {
             RouteManager.route(this, ApplinkConst.PRODUCT_INFO, productIdEditText.textFieldInput.text.toString())
+        }
+
+        val productIdVbsEditText = findViewById<TextFieldUnify>(R.id.pdp_productid_vbs)
+        val shopIdVbsEditText = findViewById<TextFieldUnify>(R.id.pdp_shopid_vbs)
+        val pageSourceVbsEditText = findViewById<TextFieldUnify>(R.id.pdp_pagesource_vbs)
+        val toggleTokoNow = findViewById<CheckBox>(R.id.toggle_is_tokonow)
+
+        findViewById<UnifyButton>(R.id.pdp_vbs_btn).setOnClickListener {
+            val isTokonow = toggleTokoNow.isChecked
+
+            val intent = RouteManager.getIntent(this,
+                    ApplinkConstInternalMarketplace.ATC_VARIANT,
+                    productIdVbsEditText.textFieldInput.text.toString(),
+                    shopIdVbsEditText.textFieldInput.text.toString(),
+                    pageSourceVbsEditText.textFieldInput.text.toString(),
+                    isTokonow.toString(),
+                    "")
+
+            startActivityForResult(intent, 19202)
         }
     }
 }
