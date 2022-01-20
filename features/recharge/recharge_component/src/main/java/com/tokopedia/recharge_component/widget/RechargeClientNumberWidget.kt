@@ -172,7 +172,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                 type = ChipsUnify.TYPE_ALTERNATE
             )
             sortFilterItem.listener = {
-                mFilterChipListener?.onClickIcon()
+                mFilterChipListener?.onClickIcon(true)
             }
             sortFilter.add(sortFilterItem)
         }
@@ -212,6 +212,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                 }
                 icon2.run {
                     setImageDrawable(getIconUnifyDrawable(context, type.iconUnifyId))
+                    setOnClickListener { mFilterChipListener?.onClickIcon(false) }
                     show()
                 }
             }
@@ -388,7 +389,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     }
 
     interface ClientNumberFilterChipListener {
-        fun onClickIcon()
+        fun onClickIcon(isSwitchChecked: Boolean)
         fun onShowFilterChip(isLabeled: Boolean)
         fun onClickFilterChip(isLabeled: Boolean)
     }

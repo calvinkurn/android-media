@@ -8,15 +8,18 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
+import com.tokopedia.common.topupbills.view.activity.TopupBillsSavedNumberActivity
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.activity.DigitalPDPPulsaActivity
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoUtil
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.hide
@@ -26,7 +29,6 @@ import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListe
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
-import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardEnum
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
@@ -34,6 +36,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -42,6 +45,9 @@ import kotlin.math.abs
  */
 
 class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener {
+
+    @Inject
+    lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -53,8 +59,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
     private var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(
         RechargeCatalogPrefixSelect()
     )
-
     private var operatorId = ""
+    private val categoryId = TelcoCategoryType.CATEGORY_PULSA
+
+    private lateinit var localCacheHandler: LocalCacheHandler
 
     override fun initInjector() {
         getComponent(DigitalPDPComponent::class.java).inject(this)
@@ -66,6 +74,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
         super.onCreate(savedInstanceState)
         val viewModelProvider = ViewModelProvider(this, viewModelFactory)
         viewModel = viewModelProvider.get(DigitalPDPPulsaViewModel::class.java)
+        localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
     }
 
     override fun onCreateView(
@@ -184,7 +193,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
     }
 
     private fun getFavoriteNumber(
-        categoryId: String = TelcoCategoryType.CATEGORY_PULSA.toString(),
+        categoryId: String = this.categoryId.toString(),
         shouldRefreshInputNumber: Boolean = true
     ) {
         viewModel.getFavoriteNumber(listOf(categoryId))
@@ -276,11 +285,68 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
                         // do nothing
                     }
 
-                    override fun onClickIcon() {
-                        // do nothing
+                    override fun onClickIcon(isSwitchChecked: Boolean) {
+                        binding?.run {
+                            val clientNumber = rechargePdpPulsaClientNumberWidget.getInputNumber()
+                            val dgCategoryIds = arrayListOf(categoryId.toString())
+                            navigateToContact(
+                                clientNumber, dgCategoryIds,
+                                DigitalPDPTelcoUtil.getCategoryName(categoryId),
+                                isSwitchChecked
+                            )
+                        }
                     }
                 }
             )
+        }
+    }
+
+    private fun navigateToContact(
+        clientNumber: String,
+        dgCategoryIds: ArrayList<String>,
+        categoryName: String,
+        isSwitchChecked: Boolean
+    ) {
+        val isDeniedOnce = localCacheHandler.getBoolean(FAVNUM_PERMISSION_CHECKER_IS_DENIED, false)
+        if (!isDeniedOnce && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            permissionCheckerHelper.checkPermission(this,
+                PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
+                object : PermissionCheckerHelper.PermissionCheckListener {
+                    override fun onPermissionDenied(permissionText: String) {
+                        navigateSavedNumber(clientNumber, dgCategoryIds, categoryName, isSwitchChecked)
+                        localCacheHandler.run {
+                            putBoolean(FAVNUM_PERMISSION_CHECKER_IS_DENIED, true)
+                            applyEditor()
+                        }
+                    }
+
+                    override fun onNeverAskAgain(permissionText: String) {
+                        permissionCheckerHelper.onNeverAskAgain(requireContext(), permissionText)
+                    }
+
+                    override fun onPermissionGranted() {
+                        navigateSavedNumber(clientNumber, dgCategoryIds, categoryName, isSwitchChecked)
+                    }
+                }
+            )
+        } else {
+            navigateSavedNumber(clientNumber, dgCategoryIds, categoryName, isSwitchChecked)
+        }
+    }
+
+    private fun navigateSavedNumber(
+        clientNumber: String,
+        dgCategoryIds: ArrayList<String>,
+        categoryName: String,
+        isSwitchChecked: Boolean = false
+    ) {
+        context?.let {
+            val intent = TopupBillsSavedNumberActivity.createInstance(
+                it, clientNumber, mutableListOf(), dgCategoryIds, categoryName, operatorData, isSwitchChecked
+            )
+
+            val requestCode = REQUEST_CODE_DIGITAL_SAVED_NUMBER
+            startActivityForResult(intent, requestCode)
         }
     }
 
@@ -445,6 +511,22 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
 
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        context?.run {
+            permissionCheckerHelper.onRequestPermissionsResult(
+                this,
+                requestCode,
+                permissions,
+                grantResults
+            )
+        }
+    }
+
     companion object {
         fun newInstance() = DigitalPDPPulsaFragment()
 
@@ -458,5 +540,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
 
         const val DEFAULT_SPACE_HEIGHT = 81
 
+        const val PREFERENCES_NAME = "pdp_pulsa_preferences"
+        const val FAVNUM_PERMISSION_CHECKER_IS_DENIED = "favnum_permission_checker_is_denied"
+
+        const val REQUEST_CODE_DIGITAL_SAVED_NUMBER = 77
     }
 }
