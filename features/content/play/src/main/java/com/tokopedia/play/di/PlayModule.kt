@@ -182,6 +182,6 @@ class PlayModule(val mContext: Context) {
      */
     @PlayScope
     @Provides
-    fun providePlayShareExperience(): PlayShareExperience =
-        PlayShareExperienceImpl(mContext)
+    fun providePlayShareExperience(@ApplicationContext context: Context): PlayShareExperience =
+        PlayShareExperienceImpl(context)
 }
