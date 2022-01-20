@@ -38,7 +38,6 @@ class PdpFintechWidget @JvmOverloads constructor(
     private var listOfUrls: ArrayList<String?> = ArrayList()
     private var categoryId: String? = null
     private lateinit var productID: String
-    private lateinit var productUrl: String
     private lateinit var productPrice: String
 
 
@@ -107,7 +106,7 @@ class PdpFintechWidget @JvmOverloads constructor(
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         fintechWidgetAdapter = FintechWidgetAdapter(context,object : WidgetClickListner {
             override fun clickedWidget(cta: Int,url:String) {
-               instanceProductUpdateListner.fintechRedirection(FintechRedirectionWidgetDataClass(cta,url,productUrl,productPrice,productID))
+               instanceProductUpdateListner.fintechRedirection(FintechRedirectionWidgetDataClass(cta,url))
             }
 
 
