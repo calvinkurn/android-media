@@ -1702,12 +1702,11 @@ class ProductListFragment: BaseDaggerFragment(),
         if (dataView.size > 0) {
             inspirationSizeFilter = Filter(
                     title = dataView[0].data.title,
-                    options = dataView[0].data.optionSizeData.map {
+                    options = dataView[0].data.optionSizeData.mapIndexed { index, option ->
                         Option(
-                                name = it.filters.name,
-                                key = it.filters.key,
-                                value = it.filters.value,
-                                isPopular = true
+                                name = option.filters.name,
+                                key = option.filters.key,
+                                value = option.filters.value,
                         )
                     }
             )
@@ -1882,13 +1881,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun setDynamicFilter(dynamicFilterModel: DynamicFilterModel) {
         val searchParameterMap = searchParameter?.getSearchParameterHashMap() ?: mapOf()
 
-        val filterList = dynamicFilterModel.data.filter.toMutableList()
-        inspirationSizeFilter?.let {
-            if (!isFiltersContainsSameTitle(filterList, it.title)) filterList.add(it)
-        }
-
-        dynamicFilterModel.data.filter = filterList.toList()
-        filterController.appendFilterList(searchParameterMap, filterList)
+        filterController.appendFilterList(searchParameterMap, dynamicFilterModel.data.filter)
 
         sortFilterBottomSheet?.setDynamicFilterModel(dynamicFilterModel)
     }

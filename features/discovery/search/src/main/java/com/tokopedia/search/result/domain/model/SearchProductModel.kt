@@ -861,7 +861,11 @@ data class SearchProductModel(
 
             @SerializedName("options")
             @Expose
-            val inspirationWidgetOptions: List<InspirationCardOption> = listOf()
+            val inspirationWidgetOptions: List<InspirationCardOption> = listOf(),
+
+            @SerializedName("tracking_option")
+            @Expose
+            val trackingOption: Int = 0
     )
 
     data class InspirationCardOption (

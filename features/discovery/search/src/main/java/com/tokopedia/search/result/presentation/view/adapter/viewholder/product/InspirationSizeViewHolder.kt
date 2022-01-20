@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -48,11 +49,8 @@ internal class InspirationSizeViewHolder(
         }
     }
 
-    private fun createLayoutManager(): ChipsLayoutManager {
-        return ChipsLayoutManager.newBuilder(itemView.context)
-                .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                .build()
+    private fun createLayoutManager(): LinearLayoutManager {
+        return LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     }
 
     private fun createAdapter(element: SizeDataView) {

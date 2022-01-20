@@ -441,8 +441,9 @@ class ProductViewModelMapper {
                                     data.type,
                                     keyword,
                                     dimension90,
-                                    data.title
-                            )
+                                    data.title,
+                                    data.trackingOption
+                            ),
                     )
             )
         }
@@ -466,6 +467,7 @@ class ProductViewModelMapper {
             keyword: String,
             dimension90: String,
             title: String,
+            trackingOption: Int
     ) = this.map { optionModel ->
         SizeOptionDataView(
                 optionModel.text,
@@ -478,7 +480,8 @@ class ProductViewModelMapper {
                 optionModel.componentId,
                 keyword = keyword,
                 dimension90 = dimension90,
-                valueName = title + " - " +optionModel.text
+                valueName = title + " - " +optionModel.text,
+                trackingOption = trackingOption
         )
     }
 

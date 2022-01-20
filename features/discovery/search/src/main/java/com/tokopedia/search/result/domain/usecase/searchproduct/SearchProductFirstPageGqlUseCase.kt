@@ -376,6 +376,7 @@ class SearchProductFirstPageGqlUseCase(
                               value
                             }
                         }
+                        tracking_option
                     }
                 }
             }
