@@ -29,7 +29,6 @@ object DateTimeUtils {
     const val EXTRA_DAYS = 30
     const val MINUTE_INTERVAL = 30
 
-
     private const val DISPLAYED_DATE_FORMAT = "dd MMM yyyy"
     private const val RAW_DATE_FORMAT = "yyyy-MM-dd"
 
