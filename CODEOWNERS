@@ -243,6 +243,7 @@
 /features/promo/promotions_target					    @tokopedia/android-minionsolo-dev
 /features/promo/promo_ui_common					        @tokopedia/android-minionsolo-dev
 /features/promo/mvc_widget  					        @tokopedia/android-minionsolo-dev
+/features/promo/quest_widget  					        @tokopedia/android-minionsolo-dev
 /features/fintech/merchant_lending_widget               @tokopedia/android-minionyoda-dev
 
 
