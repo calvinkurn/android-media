@@ -140,7 +140,7 @@ class ProductListTypeFactoryImpl(
     override fun type(lastFilterDataView: LastFilterDataView): Int =
         LastFilterViewHolder.LAYOUT
 
-    override fun type(sizeDataView: SizeDataView): Int {
+    override fun type(sizeDataView: InspirationSizeDataView): Int {
         return InspirationSizeViewHolder.LAYOUT
     }
     @Suppress("ComplexMethod")

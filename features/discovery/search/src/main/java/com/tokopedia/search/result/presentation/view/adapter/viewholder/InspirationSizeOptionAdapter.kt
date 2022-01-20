@@ -3,8 +3,8 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.search.result.presentation.model.SizeDataView
-import com.tokopedia.search.result.presentation.model.SizeOptionDataView
+import com.tokopedia.search.result.presentation.model.InspirationSizeDataView
+import com.tokopedia.search.result.presentation.model.InspirationSizeOptionDataView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationSizeOptionViewHolder
 import com.tokopedia.search.result.presentation.view.listener.InspirationSizeOptionListener
 
@@ -12,17 +12,17 @@ class InspirationSizeOptionAdapter(
         private val inspirationSizeOptionListener: InspirationSizeOptionListener,
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>()  {
 
-    private val itemList = mutableListOf<SizeOptionDataView>()
-    private var inspirationSizedataView: SizeDataView? = null
+    private val itemList = mutableListOf<InspirationSizeOptionDataView>()
+    private var inspirationSizedataView: InspirationSizeDataView? = null
 
-    fun setItemList(itemList: List<SizeOptionDataView>) {
+    fun setItemList(itemList: List<InspirationSizeOptionDataView>) {
         this.itemList.clear()
         this.itemList.addAll(itemList)
 
         notifyItemRangeInserted(0, itemList.size)
     }
 
-    fun setInspirationSizeDataView(dataview: SizeDataView) {
+    fun setInspirationSizeDataView(dataview: InspirationSizeDataView) {
         inspirationSizedataView = dataview
     }
 

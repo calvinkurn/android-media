@@ -176,7 +176,7 @@ class ProductListPresenter @Inject constructor(
     private var productList = mutableListOf<Visitable<*>>()
     private var inspirationCarouselDataView = mutableListOf<InspirationCarouselDataView>()
     private var inspirationCardDataView = mutableListOf<InspirationCardDataView>()
-    private var inspirationSizeDataView = mutableListOf<SizeDataView>()
+    private var inspirationSizeDataView = mutableListOf<InspirationSizeDataView>()
     private var topAdsImageViewModelList = mutableListOf<TopAdsImageViewModel>()
     private var suggestionDataView: SuggestionDataView? = null
     private var relatedDataView: RelatedDataView? = null

@@ -117,7 +117,7 @@ interface ProductListSectionContract {
             inspirationCarouselOption: InspirationCarouselDataView.Option,
         )
         fun modifyApplinkToSearchResult(applink: String): String
-        fun initSizeOptionFilter(dataView: MutableList<SizeDataView>)
+        fun initSizeOptionFilter(dataView: MutableList<InspirationSizeDataView>)
         fun setSelectedSizeOption()
     }
 

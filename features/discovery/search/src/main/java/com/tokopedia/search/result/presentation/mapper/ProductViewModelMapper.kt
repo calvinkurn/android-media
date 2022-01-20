@@ -430,9 +430,9 @@ class ProductViewModelMapper {
             searchInspirationWidget: SearchInspirationWidget,
             keyword: String,
             dimension90: String
-    ): List<SizeDataView> {
+    ): List<InspirationSizeDataView> {
         return searchInspirationWidget.data.filter { it.type == SearchConstant.InspirationCard.TYPE_SIZE_PERSO }.map { data ->
-            SizeDataView(
+            InspirationSizeDataView(
                     InspirationData(
                             title = data.title,
                             type = data.type,
@@ -469,7 +469,7 @@ class ProductViewModelMapper {
             title: String,
             trackingOption: Int
     ) = this.map { optionModel ->
-        SizeOptionDataView(
+        InspirationSizeOptionDataView(
                 optionModel.text,
                 optionModel.img,
                 optionModel.url,

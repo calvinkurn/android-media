@@ -4,7 +4,7 @@ import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
 
-data class SizeOptionDataView(
+class InspirationSizeOptionDataView(
         val text: String = "",
         val img: String = "",
         val url: String = "",
@@ -29,7 +29,7 @@ data class SizeOptionDataView(
         dimension90 = dimension90,
         trackingOption = trackingOption
 ) {
-        companion object {
-                private const val VALUE_ID = "0"
-        }
+    companion object {
+        private const val VALUE_ID = "0"
+    }
 }

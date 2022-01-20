@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -56,7 +55,6 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
-import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper.combinePriceFilterIfExists
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper.generateOptionFromUniqueId
 import com.tokopedia.iris.Iris
@@ -1688,7 +1686,7 @@ class ProductListFragment: BaseDaggerFragment(),
         redirectionStartActivity(optionData.applink, optionData.url)
     }
 
-    override fun onInspirationSizeOptionClicked(sizeOptionDataView: SizeOptionDataView, option: Option, isActive: Boolean) {
+    override fun onInspirationSizeOptionClicked(sizeOptionDataView: InspirationSizeOptionDataView, option: Option, isActive: Boolean) {
         filterController.setFilter(option, isActive)
 
         refreshSearchParameter(filterController.getParameter())
@@ -1700,7 +1698,7 @@ class ProductListFragment: BaseDaggerFragment(),
         }
     }
 
-    override fun initSizeOptionFilter(dataView: MutableList<SizeDataView>) {
+    override fun initSizeOptionFilter(dataView: MutableList<InspirationSizeDataView>) {
         if (dataView.size > 0) {
             inspirationSizeFilter = Filter(
                     title = dataView[0].data.title,

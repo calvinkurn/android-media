@@ -240,7 +240,7 @@ class ProductListAdapter(
 
     fun setSelectedSizeOption(options: List<String>) {
         list.forEachIndexed { i, element ->
-            if (element is SizeDataView) {
+            if (element is InspirationSizeDataView) {
                 element.activeOptions = options
 
                 notifyItemChanged(i)

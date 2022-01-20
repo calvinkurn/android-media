@@ -5,5 +5,5 @@ data class InspirationData(
         val type: String = "",
         val position: Int = 0,
         val optionCardData: List<InspirationCardOptionDataView> = listOf(),
-        val optionSizeData: List<SizeOptionDataView> = listOf(),
+        val optionSizeData: List<InspirationSizeOptionDataView> = listOf(),
 )

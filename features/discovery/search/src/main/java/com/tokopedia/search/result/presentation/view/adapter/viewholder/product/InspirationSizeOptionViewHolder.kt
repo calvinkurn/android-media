@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductInspirationSizeOptionChipLayoutBinding
-import com.tokopedia.search.result.presentation.model.SizeOptionDataView
+import com.tokopedia.search.result.presentation.model.InspirationSizeOptionDataView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.InspirationSizeOptionAdapter
 import com.tokopedia.search.result.presentation.view.listener.InspirationSizeOptionListener
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -22,7 +22,7 @@ class InspirationSizeOptionViewHolder(
 
     private var binding: SearchResultProductInspirationSizeOptionChipLayoutBinding? by viewBinding()
 
-    internal fun bind(optionData: SizeOptionDataView, isActive: Boolean) {
+    internal fun bind(optionData: InspirationSizeOptionDataView, isActive: Boolean) {
         val binding = binding ?: return
         val chipsUnify =  binding.inspirationSizeOptionChip
         chipsUnify.chipText = optionData.text
@@ -31,13 +31,13 @@ class InspirationSizeOptionViewHolder(
         setListener(chipsUnify, optionData, isActive)
     }
 
-    private fun setListener(chipsUnify: ChipsUnify, optionData: SizeOptionDataView, isActive: Boolean) {
+    private fun setListener(chipsUnify: ChipsUnify, optionData: InspirationSizeOptionDataView, isActive: Boolean) {
         chipsUnify.setOnClickListener {
             inspirationOptionListener.onInspirationSizeOptionClicked(optionData, createOption(optionData), !isActive)
         }
     }
 
-    private fun createOption(optionData: SizeOptionDataView) = Option(
+    private fun createOption(optionData: InspirationSizeOptionDataView) = Option(
             optionData.filters.name,
             optionData.filters.key,
             optionData.filters.value
