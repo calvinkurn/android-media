@@ -856,6 +856,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             postImage.setImageUrl(feedMedia.mediaUrl)
                             val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
                             val layoutLihatProdukParent = findViewById<TextView>(R.id.tv_lihat_product)
+                            layoutLihatProdukParent.showWithCondition(tagProducts.isNotEmpty())
 
                             like_anim.setImageDrawable(
                                 MethodChecker.getDrawable(
@@ -1666,6 +1667,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         postImage.setImageUrl(feedXMedia.mediaUrl)
                         val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
                         val layoutLihatProdukParent = findViewById<TextView>(R.id.tv_lihat_product)
+                        layoutLihatProdukParent.showWithCondition(tagProducts.isNotEmpty())
 
                         like_anim.setImageDrawable(
                                 MethodChecker.getDrawable(
