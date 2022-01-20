@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -15,6 +14,7 @@ import com.tokopedia.seamless_login_common.domain.usecase.GetKeygenUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.di.ChatScope
+import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
@@ -22,7 +22,6 @@ import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.stub.chatroom.usecase.*
 import com.tokopedia.topchat.stub.chatroom.usecase.api.ChatRoomApiStub
 import com.tokopedia.topchat.stub.common.GraphqlRepositoryStub
-import com.tokopedia.topchat.stub.common.GraphqlUseCaseStub
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.topchat.stub.common.usecase.MutationMoveChatToTrashUseCaseStub
 import dagger.Module
@@ -64,9 +63,10 @@ class ChatRoomFakeUseCaseModule {
     @ChatScope
     fun provideGetTemplateChatRoomUseCaseStub(
         api: ChatRoomApiStub,
-        mapper: GetTemplateChatRoomMapper
+        mapper: GetTemplateChatRoomMapper,
+        dispatchers: CoroutineDispatchers
     ): GetTemplateChatRoomUseCaseStub {
-        return GetTemplateChatRoomUseCaseStub(api, mapper)
+        return GetTemplateChatRoomUseCaseStub(api, mapper, dispatchers)
     }
 
     // -- separator -- //
@@ -89,20 +89,6 @@ class ChatRoomFakeUseCaseModule {
             chatImageServerUseCase,
             dispatchers
         )
-    }
-
-    // -- separator -- //
-
-    @Provides
-    @ChatScope
-    fun provideChatReplyGQLUseCase(stub: ReplyChatGQLUseCaseStub): ReplyChatGQLUseCase = stub
-
-    @Provides
-    @ChatScope
-    fun provideChatReplyGQLUseCaseStub(
-        gqlUseCase: GraphqlUseCaseStub<ChatReplyPojo>
-    ): ReplyChatGQLUseCaseStub {
-        return ReplyChatGQLUseCaseStub(gqlUseCase)
     }
 
     // -- separator -- //
@@ -438,5 +424,55 @@ class ChatRoomFakeUseCaseModule {
         return UnsendReplyUseCaseStub(
             repository, dispatchers
         )
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideChatReplyGQLUseCase(
+        stub: ReplyChatGQLUseCaseStub
+    ): ReplyChatGQLUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideChatReplyGQLUseCaseStub(
+        repository: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
+    ): ReplyChatGQLUseCaseStub {
+        return ReplyChatGQLUseCaseStub(repository, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideChatToggleBlockChatUseCase(
+        stub: ChatToggleBlockChatUseCaseStub
+    ): ChatToggleBlockChatUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideChatToggleBlockChatUseCaseStub(
+        repository: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
+    ): ChatToggleBlockChatUseCaseStub {
+        return ChatToggleBlockChatUseCaseStub(repository, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideCompressImageUseCase(
+        stub: CompressImageUseCaseStub
+    ): CompressImageUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideCompressImageUseCaseStub(
+        dispatchers: CoroutineDispatchers
+    ): CompressImageUseCaseStub {
+        return CompressImageUseCaseStub(dispatchers)
     }
 }

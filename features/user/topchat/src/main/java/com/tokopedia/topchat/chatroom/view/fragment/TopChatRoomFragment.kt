@@ -1400,7 +1400,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 } else {
                     viewModel.startCompressImages(model)
                 }
-                viewModel.startCompressImages(model)
                 sellerReviewHelper.hasRepliedChat = true
             }
         }

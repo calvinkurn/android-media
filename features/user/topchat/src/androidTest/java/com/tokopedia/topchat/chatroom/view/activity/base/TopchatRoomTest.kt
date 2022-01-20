@@ -36,6 +36,7 @@ import com.tokopedia.imagepicker.common.PICKER_RESULT_PATHS
 import com.tokopedia.imagepicker.common.RESULT_IMAGES_FED_INTO_IMAGE_PICKER
 import com.tokopedia.imagepicker.common.RESULT_PREVIOUS_IMAGE
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
@@ -68,6 +69,7 @@ import com.tokopedia.topchat.stub.chatroom.di.ChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.di.DaggerChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.usecase.*
 import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
+import com.tokopedia.topchat.stub.chatroom.view.viewmodel.TopChatRoomViewModelStub
 import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
 import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 import com.tokopedia.topchat.stub.common.usecase.MutationMoveChatToTrashUseCaseStub
@@ -173,6 +175,9 @@ abstract class TopchatRoomTest {
     protected lateinit var unsendReplyUseCase: UnsendReplyUseCaseStub
 
     @Inject
+    protected lateinit var chatToggleBlockChatUseCase: ChatToggleBlockChatUseCaseStub
+
+    @Inject
     protected lateinit var cacheManager: TopchatCacheManager
 
     @Inject
@@ -183,6 +188,9 @@ abstract class TopchatRoomTest {
 
     @Inject
     lateinit var remoteConfig: RemoteConfig
+
+    @Inject
+    lateinit var viewModel: TopChatRoomViewModelStub
 
     protected open lateinit var activity: TopChatRoomActivityStub
 
@@ -230,6 +238,18 @@ abstract class TopchatRoomTest {
     protected open fun disableUploadImageByService() {
         remoteConfig.setString(
             TopChatViewModel.ENABLE_UPLOAD_IMAGE_SERVICE, "false"
+        )
+    }
+
+    protected open fun enableCompressImage() {
+        remoteConfig.setString(
+            RemoteConfigKey.TOPCHAT_COMPRESS, "true"
+        )
+    }
+
+    protected open fun disableCompressImage() {
+        remoteConfig.setString(
+            RemoteConfigKey.TOPCHAT_COMPRESS, "false"
         )
     }
 

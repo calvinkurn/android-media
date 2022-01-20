@@ -67,6 +67,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
             "50%",
             false
         )
+        addToCartUseCase.isError = false
     }
 
     @Test
@@ -339,6 +340,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         // Given
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = getZeroStockAttachment()
+        addWishListUseCase.isFail = false
         launchChatRoomActivity()
 
         //When
@@ -380,6 +382,41 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
         //Then
         intended(hasData(ApplinkConst.NEW_WISHLIST))
+    }
+
+    @Test
+    fun should_show_error_toaster_when_user_click_beli_but_error() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        addToCartUseCase.isError = true
+        launchChatRoomActivity()
+
+        //When
+        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        doScrollChatToPosition(4)
+        clickBuyButtonAt(4)
+
+        // Then
+        hasFailedToasterWithMsg("Oops!")
+    }
+
+    @Test
+    fun should_show_error_toaster_when_user_click_beli_but_failed() {
+        // Given
+        val errorMsg = "Error Test"
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        addToCartUseCase.errorMessage = arrayListOf(errorMsg)
+        launchChatRoomActivity()
+
+        //When
+        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        doScrollChatToPosition(4)
+        clickBuyButtonAt(4)
+
+        // Then
+        hasFailedToasterWithMsg(errorMsg)
     }
 
     // TODO: assert attach product, stock info seller, and tokocabang is not displayed on buyer side

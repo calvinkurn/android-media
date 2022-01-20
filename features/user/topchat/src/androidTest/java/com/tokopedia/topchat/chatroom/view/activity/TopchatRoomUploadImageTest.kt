@@ -29,9 +29,49 @@ import org.junit.Test
 @UiTest
 class TopchatRoomUploadImageTest : TopchatRoomTest() {
 
+    override fun before() {
+        super.before()
+        enableCompressImage()
+    }
+
     @Test
-    fun upload_image_and_stay_in_chatroom() {
+    fun upload_image_with_compress_and_with_service() {
         // Given
+        openChatRoom()
+        // When
+        openImagePicker()
+        // Then
+        assertImageContainerAtPosition(0, matches(isDisplayed()))
+    }
+
+    @Test
+    fun upload_image_with_compress_and_without_service() {
+        // Given
+        disableUploadImageByService()
+        openChatRoom()
+        // When
+        openImagePicker()
+        // Then
+        assertImageContainerAtPosition(0, matches(isDisplayed()))
+    }
+
+    @Test
+    fun upload_image_without_compress_and_with_service() {
+        // Given
+        disableCompressImage()
+        enableUploadImageByService()
+        openChatRoom()
+        // When
+        openImagePicker()
+        // Then
+        assertImageContainerAtPosition(0, matches(isDisplayed()))
+    }
+
+    @Test
+    fun upload_image_without_compress_and_without_service() {
+        // Given
+        disableCompressImage()
+        disableUploadImageByService()
         openChatRoom()
         // When
         openImagePicker()

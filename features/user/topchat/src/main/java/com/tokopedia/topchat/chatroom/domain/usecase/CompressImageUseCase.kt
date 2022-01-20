@@ -8,9 +8,9 @@ import javax.inject.Inject
 /**
  * @author : Steven 2019-08-27
  */
-class CompressImageUseCase @Inject constructor(private val dispatcher: CoroutineDispatchers) {
+open class CompressImageUseCase @Inject constructor(private val dispatcher: CoroutineDispatchers) {
 
-    suspend fun compressImage(imageUrl: String): String {
+    open suspend fun compressImage(imageUrl: String): String {
         return withContext(dispatcher.io) {
             val file = ImageProcessingUtil.compressImageFile(imageUrl, QUALITY_COMPRESS)
             file.absolutePath

@@ -77,13 +77,12 @@ import kotlinx.coroutines.withContext
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
-import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class TopChatViewModel @Inject constructor(
+open class TopChatViewModel @Inject constructor(
     private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
     private var getShopFollowingUseCase: GetShopFollowingUseCase,
     private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
@@ -1077,7 +1076,7 @@ class TopChatViewModel @Inject constructor(
 
     fun startCompressImages(imageUploadUiModel: ImageUploadUiModel) {
         launchCatchError(block = {
-            val isValidImage = ImageUtil.validateImageAttachment(imageUploadUiModel.imageUrl)
+            val isValidImage = validateImageAttachment(imageUploadUiModel)
             if (isValidImage.first) {
                 imageUploadUiModel.imageUrl?.let { imageUrl ->
                     val compressedImageUrl = compressImageUseCase.compressImage(imageUrl)
@@ -1093,6 +1092,10 @@ class TopChatViewModel @Inject constructor(
         }, onError = {
             showErrorSnackbar(R.string.error_compress_image)
         })
+    }
+
+    protected open fun validateImageAttachment(imageUploadUiModel: ImageUploadUiModel): Pair<Boolean, Int> {
+        return ImageUtil.validateImageAttachment(imageUploadUiModel.imageUrl)
     }
 
     private fun <T> updateLiveDataOnMainThread(liveData: MutableLiveData<T>, value: T) {

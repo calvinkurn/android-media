@@ -10,13 +10,13 @@ import javax.inject.Inject
 /**
  * @author : Steven 03/01/19
  */
-class GetTemplateChatRoomUseCase @Inject constructor(
+open class GetTemplateChatRoomUseCase @Inject constructor(
     private val api: ChatRoomApi,
     private val mapper: GetTemplateChatRoomMapper,
     private val dispatcher: CoroutineDispatchers
 ) {
 
-    suspend fun getTemplateChat(isSeller: Boolean): GetTemplateUiModel {
+    open suspend fun getTemplateChat(isSeller: Boolean): GetTemplateUiModel {
         return withContext(dispatcher.io) {
             val params = generateParam(isSeller)
             val response = api.getTemplateSuspend(params)
