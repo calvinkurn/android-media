@@ -130,6 +130,17 @@ object TopChatWebSocketParam {
         productProfile.addProperty("is_preorder", product.isPreOrder)
         productProfile.addProperty("price_int", product.priceInt)
         productProfile.addProperty("category_id", product.categoryId)
+        productProfile.addProperty("is_upcoming_campaign_product", product.isUpcomingCampaign)
+        productProfile.addProperty("shop_id", product.shopId)
+        productProfile.addProperty("min_order", product.minOrder)
+        productProfile.addProperty("wishlist", product.wishList)
+        productProfile.addProperty("is_fulfillment", product.isFulfillment)
+        productProfile.addProperty("icon_tokocabang", product.urlTokocabang)
+
+        val playstoreProductData = JsonObject().apply {
+            addProperty("playstore_status", product.playStoreData.status)
+        }
+        productProfile.add("playstore_product_data", playstoreProductData)
 
         val freeShipping = JsonObject()
         freeShipping.addProperty("is_active", product.freeShipping.isActive)
