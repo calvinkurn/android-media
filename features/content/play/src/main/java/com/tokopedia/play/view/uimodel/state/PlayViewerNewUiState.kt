@@ -20,6 +20,7 @@ data class PlayViewerNewUiState(
     val rtn: PlayRtnUiState,
     val title: PlayTitleUiState,
     val viewAllProduct: PlayViewAllProductUiState,
+    val kebabMenu: PlayKebabMenuUiState
 )
 
 data class PlayInteractiveViewUiState(
@@ -95,6 +96,10 @@ data class PlayTitleUiState(
 )
 
 data class PlayViewAllProductUiState(
+    val shouldShow: Boolean
+)
+
+data class PlayKebabMenuUiState(
     val shouldShow: Boolean
 )
 

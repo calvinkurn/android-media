@@ -612,7 +612,7 @@ class PlayBottomSheetFragment @Inject constructor(
                 is PlayResult.Failure -> doShowToaster(
                     bottomSheetType = BottomInsetsType.UserReportSubmissionSheet,
                     toasterType = Toaster.TYPE_ERROR,
-                    message = generalErrorMessage
+                    message = ErrorHandler.getErrorMessage(requireContext(), it.error)
                 )
             }
         })
