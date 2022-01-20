@@ -239,7 +239,7 @@ ext {
             pushNotificationCommon          : ":features:communication:push-notification-common",
 
             attachproduct                   : ":features:user:attachproduct",
-            attachinvoice                   : ":features:user:attachinvoice",
+            attachinvoice                   : ":features:communication:attachinvoice",
             attachvoucher                   : ":features:user:attachvoucher",
             attachcommon                    : ":features:communication:attachcommon",
             changePhoneNumber               : ":features:user:changephonenumber",

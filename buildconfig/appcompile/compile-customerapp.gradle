@@ -217,7 +217,7 @@ includeIfEnabled("features:transaction:wishlist")
 includeIfEnabled("features:communication:push-notification-common")
 
 includeIfEnabled("features:user:attachproduct")
-includeIfEnabled("features:user:attachinvoice")
+includeIfEnabled("features:communication:attachinvoice")
 includeIfEnabled("features:user:attachvoucher")
 includeIfEnabled("features:communication:attachcommon")
 includeIfEnabled("features:user:campaign_shake_landing")
