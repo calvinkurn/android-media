@@ -2,7 +2,6 @@ package com.tokopedia.vouchercreation.product.create.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -15,7 +14,6 @@ import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCas
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.product.create.data.CreateCouponProductParams
-import com.tokopedia.vouchercreation.product.create.data.CreateCouponProductResponse
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.domain.usecase.CreateCouponProductUseCase
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
@@ -36,8 +34,8 @@ class ProductCouponPreviewViewModel @Inject constructor(
     val areInputValid: LiveData<Boolean>
         get() = _areInputValid
 
-    private val _createCoupon = MutableLiveData<Result<CreateCouponProductResponse>>()
-    val createCoupon: LiveData<Result<CreateCouponProductResponse>>
+    private val _createCoupon = MutableLiveData<Result<Int>>()
+    val createCoupon: LiveData<Result<Int>>
         get() = _createCoupon
 
     private val _voucherEligibility = MutableLiveData<Result<InitiateVoucherUiModel>>()
@@ -110,15 +108,16 @@ class ProductCouponPreviewViewModel @Inject constructor(
             targetBuyer = 0,
             minimumTierLevel = 0,
             isLockToProduct = 1,
-            productIds = couponProducts.joinToString(separator = ","){ it.id.toString() },
+            productIds = couponProducts.joinToString(separator = ",") { it.id.toString() },
             productIdsCsvUrl = ""
         )
 
-        val json = Gson().toJson(params)
         launchCatchError(
             block = {
-                val result = withContext(dispatchers.io) { createCouponProductUseCase.execute(params) }
-                _createCoupon.value = Success(result)
+                _createCoupon.value = Success(withContext(dispatchers.io) {
+                    createCouponProductUseCase.params = CreateCouponProductUseCase.createRequestParam(params)
+                    createCouponProductUseCase.executeOnBackground()
+                })
             },
             onError = {
                 _createCoupon.value = Fail(it)
