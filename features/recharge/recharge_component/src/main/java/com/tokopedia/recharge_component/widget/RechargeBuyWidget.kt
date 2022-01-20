@@ -21,6 +21,7 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
 
     fun showBuyWidget(denom: DenomData, listener: RechargeBuyWidgetListener){
         with(rechargeBuyWidgetBinding){
+            root.show()
             tgBuyWidgetTotalPrice.run {
                 text = denom.price
                 if (denom.slashPrice.isNullOrEmpty()){
@@ -34,8 +35,18 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
                         resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
                             .toInt()
                     )
+                } else {
+                    setMargin(
+                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+                            .toInt(),
+                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            .toInt(),
+                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            .toInt(),
+                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+                            .toInt()
+                    )
                 }
-
                 setOnClickListener {
                     listener.onClickedChevron(denom)
                 }
@@ -60,6 +71,12 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
             btnBuyWidget.setOnClickListener {
                 listener.onClickedButtonLanjutkan(denom)
             }
+        }
+    }
+
+    fun hideBuyWidget(){
+        with(rechargeBuyWidgetBinding){
+            root.hide()
         }
     }
 }

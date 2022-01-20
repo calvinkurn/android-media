@@ -17,13 +17,17 @@ import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.activity.DigitalPDPPulsaActivity
+import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryPulsaBottomsheet
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
 import com.tokopedia.recharge_component.model.denom.DenomData
+import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
+import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardEnum
@@ -41,7 +45,10 @@ import kotlin.math.abs
  * @author by firmanda on 04/01/21
  */
 
-class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener {
+class DigitalPDPPulsaFragment : BaseDaggerFragment(),
+    RechargeDenomGridListener,
+    RechargeBuyWidgetListener
+{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -110,6 +117,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
                     hideEmptyState()
                     getCatalogProductInput(selectedOperator.key)
                 } else {
+                    onHideBuyWidget()
                     showEmptyState()
                 }
 
@@ -310,6 +318,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
         }
     }
 
+    private fun onClearSelectedDenomGrid(){
+        binding?.let {
+            it.rechargePdpPulsaDenomGridWidget.clearSelectedProduct()
+        }
+    }
+
     fun renderRecommendation(recommendations: List<RecommendationCardWidgetModel>) {
         binding?.let {
             it.rechargePdpPulsaRecommendationWidget.show()
@@ -331,6 +345,24 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
         binding?.let {
             it.rechargePdpPulsaPromoWidget.show()
             it.rechargePdpPulsaPromoWidget.renderMCCMGrid(this, denomGrid, getString(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
+    }
+
+    private fun onClearSelectedMCCM(){
+        binding?.let {
+            it.rechargePdpPulsaPromoWidget.clearSelectedProduct()
+        }
+    }
+
+    private fun onShowBuyWidget(denomGrid: DenomData){
+        binding?.let {
+            it.rechargePdpPulsaBuyWidget.showBuyWidget(denomGrid, this)
+        }
+    }
+
+    private fun onHideBuyWidget(){
+        binding?.let {
+            it.rechargePdpPulsaBuyWidget.hideBuyWidget()
         }
     }
 
@@ -374,9 +406,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
 
     private fun hideEmptyState() {
         binding?.run {
-            if (rechargePdpPulsaEmptyStateWidget.isVisible)
+            if (rechargePdpPulsaEmptyStateWidget.isVisible) {
                 rechargePdpPulsaEmptyStateWidget.hide()
                 rechargePdpPulsaRecommendationWidget.show()
+            }
         }
     }
 
@@ -441,9 +474,31 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
     /**
      * RechargeDenomGridListener
      */
-    override fun onDenomGridClicked(denomGrid: DenomData, position: Int) {
+    override fun onDenomGridClicked(denomGrid: DenomData, layoutType: DenomWidgetEnum, position: Int,
+                                    isShowBuyWidget: Boolean) {
+        if (layoutType == DenomWidgetEnum.MCCM_TYPE){
+            onClearSelectedDenomGrid()
+        } else if (layoutType == DenomWidgetEnum.GRID_TYPE){
+            onClearSelectedMCCM()
+        }
+
+        if (isShowBuyWidget) {
+            onShowBuyWidget(denomGrid)
+        } else {
+            onHideBuyWidget()
+        }
+    }
+
+    override fun onClickedButtonLanjutkan(denom: DenomData) {
 
     }
+
+    override fun onClickedChevron(denom: DenomData) {
+        fragmentManager?.let {
+            SummaryPulsaBottomsheet(getString(R.string.summary_transaction), denom).show(it, "")
+        }
+    }
+
 
     companion object {
         fun newInstance() = DigitalPDPPulsaFragment()
@@ -457,6 +512,5 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
         const val FADE_OUT_DURATION: Long = 300
 
         const val DEFAULT_SPACE_HEIGHT = 81
-
     }
 }

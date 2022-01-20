@@ -2,6 +2,7 @@ package com.tokopedia.digital_product_detail.data.mapper
 
 import com.tokopedia.common.topupbills.data.product.CatalogData
 import com.tokopedia.digital_product_detail.di.DigitalPDPScope
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
@@ -28,10 +29,10 @@ class DigitalDenomMCCMGridUiMapper @Inject constructor() {
                     DenomData(
                         title = it.attributes.desc,
                         price = if(!it.attributes.promo?.newPrice.isNullOrEmpty()) it.attributes.promo?.newPrice ?: "0" else it.attributes.price,
-                        pricePlain = if(!it.attributes.promo?.newPrice.isNullOrEmpty()) it.attributes.promo?.newPricePlain ?: 0 else it.attributes.pricePlain.toIntOrZero(),
+                        pricePlain = if(it.attributes.promo?.newPricePlain.isMoreThanZero()) it.attributes.promo?.newPricePlain ?: 0 else it.attributes.pricePlain.toIntOrZero(),
                         specialLabel = it.attributes.productLabels.firstOrNull() ?: "",
                         slashPrice = if(!it.attributes.promo?.newPrice.isNullOrEmpty()) it.attributes.price  else "",
-                        slashPricePlain = if(!it.attributes.promo?.newPrice.isNullOrEmpty()) it.attributes.pricePlain.toIntOrZero() ?: 0 else 0
+                        slashPricePlain = if(it.attributes.promo?.newPricePlain.isMoreThanZero()) it.attributes.pricePlain.toIntOrZero() ?: 0 else 0
                     )
                 }
             } else emptyList()
@@ -45,10 +46,10 @@ class DigitalDenomMCCMGridUiMapper @Inject constructor() {
                         title = it.attributes.desc,
                         discountLabel = "10%", //TODO Change to real data
                         price = if(!it.attributes.promo?.newPrice.isNullOrEmpty()) it.attributes.promo?.newPrice ?: "0" else it.attributes.price,
-                        pricePlain = if(!it.attributes.promo?.newPrice.isNullOrEmpty()) it.attributes.promo?.newPricePlain ?: 0 else it.attributes.pricePlain.toIntOrZero(),
+                        pricePlain = if(it.attributes.promo?.newPricePlain.isMoreThanZero()) it.attributes.promo?.newPricePlain ?: 0 else it.attributes.pricePlain.toIntOrZero(),
                         specialLabel = it.attributes.productLabels.firstOrNull() ?: "",
                         slashPrice = if(!it.attributes.promo?.newPrice.isNullOrEmpty()) it.attributes.price  else "",
-                        slashPricePlain = if(!it.attributes.promo?.newPrice.isNullOrEmpty()) it.attributes.pricePlain.toIntOrZero() ?: 0 else 0
+                        slashPricePlain = if(it.attributes.promo?.newPricePlain.isMoreThanZero()) it.attributes.pricePlain.toIntOrZero() ?: 0 else 0
                     )
                 }
             } else emptyList()
