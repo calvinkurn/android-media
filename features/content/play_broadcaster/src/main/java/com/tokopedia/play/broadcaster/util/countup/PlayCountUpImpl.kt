@@ -23,7 +23,7 @@ class PlayCountUpImpl @Inject constructor(
 
         job?.cancel()
         job = CoroutineScope(dispatcher.io).launch {
-            while(duration < maxDuration) {
+            while(currentDuration < maxDuration) {
 
                 delay(DEFAULT_INTERVAL)
                 currentDuration += DEFAULT_INTERVAL
