@@ -4,4 +4,5 @@
     <string name="label_recharge_client_number">Nama Kontak atau Nomor HP</string>
     <string name="buy_widget_total_price">Total Bayar</string>
     <string name="buy_widget_total_price_btn">Lanjutkan</string>
+    <string name="client_number_prefix_error">Hmm, nggak ketemu provider-nya. Cek lagi, ya.</string>
 </resources>
