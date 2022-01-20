@@ -731,6 +731,18 @@
             android:resource="@string/asset_statements" />
 
         <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <!-- If you are using androidx.startup to initialize other components -->
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+
+        <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.tokopedia.tkpd.provider"
             android:grantUriPermissions="true"

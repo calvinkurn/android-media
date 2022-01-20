@@ -15,6 +15,13 @@ import com.tokopedia.autocompletecomponent.suggestion.singleline.SuggestionSingl
 import com.tokopedia.autocompletecomponent.suggestion.title.SuggestionTitleDataView
 import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopWidgetDataView
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_ADDRESS_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_CITY_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_DISTRICT_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_LAT
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_LONG
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_POST_CODE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_WAREHOUSE_ID
 import com.tokopedia.discovery.common.constants.SearchConstant.CustomDimension.DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -250,7 +257,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
     }
 
     @Test
-    fun `Suggestion request will include warehouse id if exists`() {
+    fun `Suggestion request will include choose address params if exists`() {
         val warehouseId = "2216"
         val dummyChooseAddressData = LocalCacheModel(
             address_id = "123",
@@ -268,19 +275,28 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
         `when presenter get suggestion data`()
 
-        `Then verify search parameter has warehouseId`(warehouseId)
+        `Then verify search parameter has choose address params`(dummyChooseAddressData)
     }
 
     private fun `Given chosen address data`(chooseAddressModel: LocalCacheModel?) {
         every { suggestionView.chooseAddressData } returns chooseAddressModel
     }
 
-    private fun `Then verify search parameter has warehouseId`(warehouseId: String) {
-        requestParams.parameters[SearchApiConst.USER_WAREHOUSE_ID] shouldBe warehouseId
+    private fun `Then verify search parameter has choose address params`(
+        localCacheModel: LocalCacheModel
+    ) {
+        val suggestionParams = requestParams.parameters
+        suggestionParams[USER_LAT] shouldBe localCacheModel.lat
+        suggestionParams[USER_LONG] shouldBe localCacheModel.long
+        suggestionParams[USER_ADDRESS_ID] shouldBe localCacheModel.address_id
+        suggestionParams[USER_CITY_ID] shouldBe localCacheModel.city_id
+        suggestionParams[USER_DISTRICT_ID] shouldBe localCacheModel.district_id
+        suggestionParams[USER_POST_CODE] shouldBe localCacheModel.postal_code
+        suggestionParams[USER_WAREHOUSE_ID] shouldBe localCacheModel.warehouse_id
     }
 
     @Test
-    fun `Suggestion request will not include warehouse id if not exists`() {
+    fun `Suggestion request will not include choose address params if not exists`() {
         val suggestionUniverse = suggestionCommonResponse.jsonToObject<SuggestionUniverse>()
 
         `Given chosen address data`(LocalCacheModel())
@@ -288,11 +304,18 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
         `when presenter get suggestion data`()
 
-        `Then verify search parameter has no warehouseId`()
+        `Then verify search parameter has no choose address params`()
     }
 
-    private fun `Then verify search parameter has no warehouseId`() {
-        requestParams.parameters.shouldNotContain(SearchApiConst.USER_WAREHOUSE_ID)
+    private fun `Then verify search parameter has no choose address params`() {
+        val suggestionParams = requestParams.parameters
+        suggestionParams.shouldNotContain(USER_LAT)
+        suggestionParams.shouldNotContain(USER_LONG)
+        suggestionParams.shouldNotContain(USER_ADDRESS_ID)
+        suggestionParams.shouldNotContain(USER_CITY_ID)
+        suggestionParams.shouldNotContain(USER_DISTRICT_ID)
+        suggestionParams.shouldNotContain(USER_POST_CODE)
+        suggestionParams.shouldNotContain(USER_WAREHOUSE_ID)
     }
 
     @Test
