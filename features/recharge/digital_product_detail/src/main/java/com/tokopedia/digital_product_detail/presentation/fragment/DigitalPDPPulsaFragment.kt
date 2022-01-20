@@ -138,7 +138,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetMenuDetail(it.data)
                 is RechargeNetworkResult.Fail -> onFailedGetMenuDetail()
-                is RechargeNetworkResult.Loading -> {}
+                is RechargeNetworkResult.Loading -> {
+                    onShimmeringRecommendation()
+                }
             }
         })
         viewModel.favoriteNumberData.observe(viewLifecycleOwner, {
@@ -348,6 +350,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun onShimmeringRecommendation(){
+        binding?.let {
+            it.rechargePdpPulsaRecommendationWidget.show()
+            it.rechargePdpPulsaRecommendationWidget.renderShimmering()
+        }
+    }
+
     private fun onSuccessMCCM(denomGrid: DenomWidgetModel) {
         binding?.let {
             it.rechargePdpPulsaPromoWidget.show()
@@ -407,6 +416,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 rechargePdpPulsaPromoWidget.hide()
                 rechargePdpPulsaRecommendationWidget.hide()
                 rechargePdpPulsaDenomGridWidget.hide()
+                rechargePdpPulsaClientNumberWidget.hideOperatorIcon()
             }
         }
     }
