@@ -53,7 +53,6 @@ class SearchProductFirstPageGqlUseCase(
     override fun createObservable(requestParams: RequestParams): Observable<SearchProductModel> {
         val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String?, Any?>
         val paramsHashmap = HashMap(searchProductParams)
-        paramsHashmap["bypass_experiment"] = "true"
 
         val query = getQueryFromParameters(searchProductParams)
         val params = UrlParamUtils.generateUrlParamString(paramsHashmap)

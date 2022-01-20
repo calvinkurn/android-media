@@ -1695,7 +1695,9 @@ class ProductListFragment: BaseDaggerFragment(),
 
         reloadData()
 
-        sizeOptionDataView.click(TrackApp.getInstance().gtm)
+        if (isActive) {
+            sizeOptionDataView.click(TrackApp.getInstance().gtm)
+        }
     }
 
     override fun initSizeOptionFilter(dataView: MutableList<SizeDataView>) {
