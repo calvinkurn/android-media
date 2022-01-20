@@ -463,7 +463,7 @@ class CatalogDetailPageFragment : Fragment(),
                 CatalogDetailAnalytics.CategoryKeys.TOP_NAV_CATALOG,
                 catalogId,
                 catalogId,
-                "${CatalogConstant.CATALOG}.$catalogId", // TODO
+                "${CatalogConstant.CATALOG_PAGE}.${CatalogConstant.NULL_STRING}.${CatalogConstant.NULL_STRING}.$catalogId",
                 userSession.userId
         )
     }
