@@ -8,8 +8,8 @@ data class FintechWidgetDataModel(
     val name: String = "",
     val type: String = "",
     var categoryId: String? = null,
-    var listofPrice : ArrayList<Double> = ArrayList(),
-    var listofProductUrl : ArrayList<String> = ArrayList()
+    var listofProductUrl : ArrayList<String?> = ArrayList(),
+    var idToPriceMap: HashMap<String, String> = HashMap()
 ): DynamicPdpDataModel
 {
     override fun type() = type

@@ -778,6 +778,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 //                fintechRedirectionWidgetDataClass.redirectionUrl?.let { openWebViewUrl(it) }
 //            }
 
+        if(fintechRedirectionWidgetDataClass.cta == 2) {
+            fintechRedirectionWidgetDataClass.redirectionUrl?.let { openWebViewUrl(it) }
+        }
+
     }
 
     /**

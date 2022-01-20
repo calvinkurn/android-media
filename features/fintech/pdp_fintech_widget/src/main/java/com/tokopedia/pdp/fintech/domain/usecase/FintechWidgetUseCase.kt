@@ -18,10 +18,11 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
         onError: (Throwable) -> Unit,
         productCategory: String,
         listofAmount: List<Double>,
+        listOfUrls: ArrayList<String?>,
     ) {
         try {
             this.setTypeClass(WidgetDetail::class.java)
-            this.setRequestParams(getRequestParams(productCategory, listofAmount))
+            this.setRequestParams(getRequestParams(productCategory, listofAmount,listOfUrls))
             this.setGraphqlQuery(PayLaterGetPdpWidget.GQL_QUERY)
             this.execute(
                 { result ->
@@ -37,18 +38,18 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
 
 
     private fun getRequestParams(
-        productCategory: String, listofAmount: List<Double>
+        productCategory: String, listofAmount: List<Double>,  listOfUrls: ArrayList<String?>
     ): MutableMap<String, Any?> {
 
-        var listOfVariantDetail: MutableList<WidgetRequestModel> = setAmountList(listofAmount)
+        var listOfVariantDetail: MutableList<WidgetRequestModel> = setAmountList(listofAmount,listOfUrls)
 
         return mutableMapOf("request" to setProductDetailMap(productCategory, listOfVariantDetail))
     }
 
-    private fun setAmountList(listofAmount: List<Double>): MutableList<WidgetRequestModel> {
+    private fun setAmountList(listofAmount: List<Double>, listOfUrls: ArrayList<String?>): MutableList<WidgetRequestModel> {
         var listOfVariantDetail: MutableList<WidgetRequestModel> = ArrayList()
         for (i in listofAmount.indices) {
-            listOfVariantDetail.add(WidgetRequestModel(amount = listofAmount[i],"" ))
+            listOfVariantDetail.add(WidgetRequestModel(amount = listofAmount[i], redirectionUrl =  listOfUrls[i]))
         }
         return listOfVariantDetail
     }

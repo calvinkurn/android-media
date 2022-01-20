@@ -274,19 +274,33 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateFintechData(variantData: ProductVariant?, productInfo: DynamicProductInfoP1)
-    {
-        if(variantData == null)
-        {
+    fun updateFintechData(variantData: ProductVariant?, productInfo: DynamicProductInfoP1) {
+         var productIdToPriceMap = HashMap<String, String>()
+         var productlistofUrls: ArrayList<String?> = ArrayList()
+         var productCategoryId: String = productInfo.basic.category.id
+        if (variantData == null) {
+            productIdToPriceMap[productInfo.basic.productID] = productInfo.data.price.value.toString()
+            productlistofUrls.add(productInfo.basic.url)
 
+        } else {
+            variantData.children.map { it.url }.toCollection(productlistofUrls)
+            for(i in variantData.children.indices) {
+                productIdToPriceMap[variantData.children[i].productId] = variantData.children[i].price.toString()
+                variantData.children[i].url?.let {
+                    productlistofUrls.add(it)
+                }
+            }
         }
+
         updateData(ProductDetailConstant.FINTECH_WIDGET_NAME)
         {
-//            fintechWidgetMap?.run {
-//                categoryId = fintechWidgetDataModel.categoryId
-//                listofPrice = fintechWidgetDataModel.listofPrice
-//                listofProductUrl = fintechWidgetDataModel.listofProductUrl
-//            }
+            fintechWidgetMap?.run {
+                categoryId = productCategoryId
+                listofProductUrl = productlistofUrls
+               idToPriceMap = productIdToPriceMap
+
+
+            }
         }
     }
 
