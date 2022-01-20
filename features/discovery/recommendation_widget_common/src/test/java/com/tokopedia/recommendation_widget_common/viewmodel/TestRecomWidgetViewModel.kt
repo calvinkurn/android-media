@@ -60,10 +60,17 @@ class TestRecomWidgetViewModel {
         getRecommendationFilterChips = {getRecommendationFilterChips}
     )
     private val recomItem = RecommendationItem(productId = 1234, shopId = 123)
+    private val mockRecomWidgetFalseTokonow = RecommendationWidget(
+        recommendationItemList = listOf(recomItem),
+        isTokonow = false
+    )
     private val recomWidgetMetadata = RecommendationCarouselWidgetView.RecomWidgetMetadata()
     private val listAnnotationChip = listOf(AnnotationChip(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Speaker", name = "Speaker", value = "Speaker", isActivated = true)),
         AnnotationChip(RecommendationFilterChipsEntity.RecommendationFilterChip(title = "TV", name = "TV", value = "TV", isActivated = false)))
     private val pageName = "testPageName"
+    private val mockUserId = "2345"
+    private val mockRecomFilterChip =
+        RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Speaker")
     val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
     val miniCartSimplifiedDataMock = MiniCartSimplifiedData(miniCartItems = listOf(miniCart))
 
@@ -164,22 +171,17 @@ class TestRecomWidgetViewModel {
     @Test
     fun `test load recommendation with some product id then check success recommendation chips available`() = runBlocking {
         coEvery { getRecommendationUseCase.getData(any()) } returns listOf(
-            RecommendationWidget(
-                recommendationItemList = listOf(recomItem),
-                isTokonow = false
-            )
+            mockRecomWidgetFalseTokonow
         )
 
         every {
             userSessionInterface.userId
-        } returns "1234"
+        } returns mockUserId
 
         val productIds = listOf("420356", "420358")
 
-        val recomFilterChip =
-            RecommendationFilterChipsEntity.RecommendationFilterChip(title = "Speaker")
         val listFilterChip = listOf(
-            recomFilterChip
+            mockRecomFilterChip
         )
 
         coEvery { getRecommendationFilterChips.executeOnBackground().filterChip } returns listFilterChip
@@ -188,7 +190,7 @@ class TestRecomWidgetViewModel {
         viewModel.loadRecommendationCarousel(pageName = PAGENAME_PDP_3, productIds = productIds)
         val recomWidget = viewModel.getRecommendationLiveData.value
         Assert.assertEquals(
-            recomFilterChip,
+            mockRecomFilterChip,
             recomWidget?.recommendationFilterChips?.get(0)
                 ?: RecommendationFilterChipsEntity.RecommendationFilterChip()
         )
@@ -337,10 +339,7 @@ class TestRecomWidgetViewModel {
 
     @Test
     fun `test when get data recommendation selected by chips then return success filter result with new recom widget data`() {
-        val recomWidget = RecommendationWidget(
-            recommendationItemList = listOf(recomItem),
-            isTokonow = false
-        )
+        val recomWidget = mockRecomWidgetFalseTokonow
         coEvery { getRecommendationUseCase.getData(any()) } returns listOf(recomWidget
         )
         viewModel.loadRecomBySelectedChips(recomWidgetMetadata = recomWidgetMetadata, oldFilterList = listAnnotationChip, selectedChip = listAnnotationChip[0])
