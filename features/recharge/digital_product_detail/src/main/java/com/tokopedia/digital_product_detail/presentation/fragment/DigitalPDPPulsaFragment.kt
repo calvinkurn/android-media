@@ -381,9 +381,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(), RechargeDenomGridListener 
     }
 
     private fun setAnimationAppBarLayout() {
-        //initial appBar state is expanded
-        (activity as? DigitalPDPPulsaActivity)?.setupAppBar()
-
         binding?.rechargePdpPulsaAppbar?.run {
             addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
                 var lastOffset = -1
