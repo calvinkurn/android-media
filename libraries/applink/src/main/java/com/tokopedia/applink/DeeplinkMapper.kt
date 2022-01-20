@@ -364,7 +364,7 @@ object DeeplinkMapper {
                 val voucherId = idList?.getOrNull(1).orEmpty()
                 DeeplinkMapperMarketplace.getShopMvcLockedToProductShopIdInternalAppLink(shopId, voucherId)
             },
-            DLP.matchPattern(ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT_SHOP_ID) { _, uri, _, idList ->
+            DLP.matchPattern(ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT_SHOP_DOMAIN) { _, uri, _, idList ->
                 val shopDomain = idList?.getOrNull(0).orEmpty()
                 val voucherId = idList?.getOrNull(1).orEmpty()
                 DeeplinkMapperMarketplace.getShopMvcLockedToProductShopDomainInternalAppLink(shopDomain, voucherId)

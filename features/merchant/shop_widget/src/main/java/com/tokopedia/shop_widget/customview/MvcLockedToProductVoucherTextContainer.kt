@@ -8,17 +8,22 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import com.bumptech.glide.Glide
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop_widget.R
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.htmltags.HtmlUtil
+import java.lang.reflect.Method
 
 class MvcLockedToProductVoucherTextContainer @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
     private var textVoucherTitle: Typography? = null
-    private var textExpiredTime: Typography? = null
-    private var textVoucherStock: Typography? = null
+    private var textLeftSubtitle: Typography? = null
+    private var textRightSubtitle: Typography? = null
+    private var textDot: Typography? = null
     private var imageCoupon: ImageUnify? = null
 
     init {
@@ -28,26 +33,27 @@ class MvcLockedToProductVoucherTextContainer @JvmOverloads constructor(
 
     private fun initViews() {
         textVoucherTitle = this.findViewById(R.id.text_voucher_title)
-        textExpiredTime = this.findViewById(R.id.text_expired_time)
-        textVoucherStock = this.findViewById(R.id.text_voucher_stock)
+        textLeftSubtitle = this.findViewById(R.id.text_left_subtitle)
+        textRightSubtitle = this.findViewById(R.id.text_right_subtitle)
+        textDot = this.findViewById(R.id.text_dot)
         imageCoupon = this.findViewById(R.id.image_coupon)
     }
 
     fun setData(
         title: String,
-        expiredTime: String,
-        voucherStock: String,
+        leftSubtitle: String,
+        rightSubtitle: String,
         imageUrl: String
     ) {
-        textVoucherTitle?.apply {
-            text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                HtmlUtil.fromHtml(title).trim()
-            } else {
-                Html.fromHtml(title).trim()
-            }
+        textVoucherTitle?.text = getHtmlText(title)
+        textLeftSubtitle?.text = getHtmlText(leftSubtitle)
+        if(rightSubtitle.isEmpty()){
+            textDot?.gone()
+            textRightSubtitle?.text = ""
+        } else {
+            textDot?.visible()
+            textRightSubtitle?.text = rightSubtitle
         }
-        textExpiredTime?.text = expiredTime
-        textVoucherStock?.text = voucherStock
         if (imageUrl.isEmpty()) return
 
         if (!(context as Activity).isFinishing) {
@@ -58,5 +64,9 @@ class MvcLockedToProductVoucherTextContainer @JvmOverloads constructor(
                     .into(it)
             }
         }
+    }
+
+    private fun getHtmlText(text: String): CharSequence {
+        return MethodChecker.fromHtml(text)
     }
 }

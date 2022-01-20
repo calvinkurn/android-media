@@ -4,24 +4,36 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.viewholder.MvcLockedToProductProductGridViewHolder
-import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.viewholder.MvcLockedToProductTotalProductAndSortViewHolder
-import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.viewholder.MvcLockedToProductVoucherViewHolder
-import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductVoucherUiModel
-import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductProductGridUiModel
-import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductTotalProductAndSortUiModel
+import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.viewholder.*
+import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.*
 
-class MvcLockedToProductTypeFactory : BaseAdapterTypeFactory() {
-    fun type(mvcLockedToProductProductGridUiModel: MvcLockedToProductProductGridUiModel): Int {
-        return MvcLockedToProductProductGridViewHolder.LAYOUT
+class MvcLockedToProductTypeFactory(
+    private val globalErrorViewListener: MvcLockedToProductGlobalErrorViewHolder.Listener,
+    private val sortListener: MvcLockedToProductTotalProductAndSortViewHolder.Listener,
+    private val productCardListener: MvcLockedToProductGridViewHolder.Listener
+) : BaseAdapterTypeFactory() {
+    fun type(uiModel: MvcLockedToProductGridProductUiModel): Int {
+        return MvcLockedToProductGridViewHolder.LAYOUT
     }
 
-    fun type(mvcLockedToProductVoucherUiModel: MvcLockedToProductVoucherUiModel): Int {
+    fun type(uiModel: MvcLockedToProductVoucherUiModel): Int {
         return MvcLockedToProductVoucherViewHolder.LAYOUT
     }
 
-    fun type(mvcLockedToProductTotalProductAndSortUiModel: MvcLockedToProductTotalProductAndSortUiModel): Int {
+    fun type(uiModel: MvcLockedToProductTotalProductAndSortUiModel): Int {
         return MvcLockedToProductTotalProductAndSortViewHolder.LAYOUT
+    }
+
+    fun type(uiModel: MvcLockedToProductVoucherSortPlaceholderUiModel): Int {
+        return MvcLockedToProductVoucherSortPlaceholderViewHolder.LAYOUT
+    }
+
+    fun type(uiModel: MvcLockedToProductGridListPlaceholderUiModel): Int {
+        return MvcLockedToProductGridListPlaceholderViewHolder.LAYOUT
+    }
+
+    fun type(uiModel: MvcLockedToProductGlobalErrorUiModel): Int {
+        return MvcLockedToProductGlobalErrorViewHolder.LAYOUT
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -30,10 +42,19 @@ class MvcLockedToProductTypeFactory : BaseAdapterTypeFactory() {
                 MvcLockedToProductVoucherViewHolder(view)
             }
             MvcLockedToProductTotalProductAndSortViewHolder.LAYOUT -> {
-                MvcLockedToProductTotalProductAndSortViewHolder(view)
+                MvcLockedToProductTotalProductAndSortViewHolder(view, sortListener)
             }
-            MvcLockedToProductProductGridViewHolder.LAYOUT -> {
-                MvcLockedToProductProductGridViewHolder(view)
+            MvcLockedToProductGridViewHolder.LAYOUT -> {
+                MvcLockedToProductGridViewHolder(view, productCardListener)
+            }
+            MvcLockedToProductVoucherSortPlaceholderViewHolder.LAYOUT -> {
+                MvcLockedToProductVoucherSortPlaceholderViewHolder(view)
+            }
+            MvcLockedToProductGridListPlaceholderViewHolder.LAYOUT -> {
+                MvcLockedToProductGridListPlaceholderViewHolder(view)
+            }
+            MvcLockedToProductGlobalErrorViewHolder.LAYOUT -> {
+                MvcLockedToProductGlobalErrorViewHolder(view, globalErrorViewListener)
             }
             else -> {
                 super.createViewHolder(view, type)

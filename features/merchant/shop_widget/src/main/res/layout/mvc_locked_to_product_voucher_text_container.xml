@@ -16,7 +16,9 @@
         android:layout_width="36dp"
         android:layout_height="36dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/image_time_expired"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.5"
@@ -28,56 +30,65 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
+        android:ellipsize="end"
         android:lines="1"
         android:textColor="@color/Unify_N700"
         app:layout_constraintLeft_toRightOf="@id/image_coupon"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
-        tools:text="Ada Cashback hingga Rp100.000" />
+        tools:text="Cashback 20% hingga Rp100.000 " />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image_time_expired"
         android:layout_width="15dp"
         android:layout_height="15dp"
-        app:srcCompat="@drawable/ic_mvc_locked_to_product_voucher_time"
-        app:layout_constraintLeft_toLeftOf="@id/text_voucher_title"
-        app:layout_constraintTop_toBottomOf="@id/text_voucher_title"
         app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toLeftOf="@id/text_voucher_title"
+        app:layout_constraintRight_toLeftOf="@id/text_left_subtitle"
+        app:layout_constraintTop_toBottomOf="@id/text_voucher_title"
+        app:srcCompat="@drawable/ic_mvc_locked_to_product_saldo" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_expired_time"
+        android:id="@+id/text_left_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginStart="5dp"
-        app:layout_goneMarginStart="0dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_NN600"
         app:layout_constraintLeft_toRightOf="@id/image_time_expired"
+        app:layout_constraintRight_toLeftOf="@id/text_dot"
         app:layout_constraintTop_toBottomOf="@+id/text_voucher_title"
+        app:layout_goneMarginStart="0dp"
         app:typographyType="body_3"
-        tools:text="Berakhir 10 hari lagi" />
+        tools:text="Min. transaksi Rp1.000.000" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_dot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/mvc_locked_to_product_voucher_dot"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/text_expired_time"
-        app:layout_constraintTop_toBottomOf="@+id/text_voucher_title"
-        app:typographyType="body_3"
-        android:text=" • " />
+        app:layout_constraintBottom_toBottomOf="@id/text_left_subtitle"
+        app:layout_constraintLeft_toRightOf="@id/text_left_subtitle"
+        app:layout_constraintRight_toLeftOf="@id/text_right_subtitle"
+        app:layout_constraintTop_toTopOf="@id/text_left_subtitle"
+        app:typographyType="body_3" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_voucher_stock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/Unify_R600_68"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/text_dot"
-        app:layout_constraintTop_toBottomOf="@+id/text_voucher_title"
-        app:typographyType="body_3"
-        tools:text="Sisa 7 kupon" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_right_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_R600_68"
+            app:layout_constraintBottom_toBottomOf="@id/text_left_subtitle"
+            app:layout_constraintLeft_toRightOf="@id/text_dot"
+            app:layout_constraintTop_toTopOf="@id/text_left_subtitle"
+            app:typographyType="body_3"
+            tools:text="Sisa 19 Kupon"
+            app:layout_constraintRight_toRightOf="parent"
+            />
 </androidx.constraintlayout.widget.ConstraintLayout>
