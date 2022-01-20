@@ -105,6 +105,8 @@ object AffiliateAnalytics {
 
             const val KEY_ECOMMERCE = "ecommerce"
             const val EVENT_PROMO_CLICK = "promoClick"
+
+            const val CLICK_REGISTER = "clickRegister"
         }
     }
 
@@ -117,6 +119,7 @@ object AffiliateAnalytics {
             const val PROMOSIKAN_PAGE = "promosikan page"
             const val PROMOSIKAN_BOTTOM_SHEET = "promosikan page - bottom sheet"
             const val PENDAPATAN_PAGE = "pendapatan page"
+            const val REGISTRATION_PAGE = "registration page"
         }
     }
 
@@ -141,12 +144,17 @@ object AffiliateAnalytics {
             const val CLICK_PROMOSIKAN_PERNAH_DIABEL = "click - promosikan - pernah dibeli"
             const val CLICK_PROMOSIKAN_PERNAH_DILIHAT = "click - promosikan - pernah dilihat"
             const val CLICK_TRANSACTION_CARD = "click - transaction card"
+            const val CLICK_DAFTAR_SEKARANG = "click - daftar sekarang"
+            const val CLICK_SELANJUTNYA = "click - selanjutnya"
+            const val CLICK_DAFTAR = "click - daftar"
+            const val CLICK_TARIK_SALDO = "click - tarik saldo"
         }
     }
 
     interface ScreenKeys{
         companion object{
             const val AFFILIATE_HOME_SCREEN_NAME = "/affiliate portal - home page"
+            const val AFFILIATE_LOGIN_SCREEN_NAME = "/affiliate portal - registration page - "
         }
     }
 

@@ -36,14 +36,10 @@ class KycUploadViewModel @Inject constructor(
                 var finalKtp = ktpPath
                 var finalFace = facePath
                 if(isUsingEncrypt) {
-                    val ivKtp = kycSharedPreference.getCache<ByteArray>(
-                        KYC_IV_KTP_CACHE, ByteArray::class.java)
-                    finalKtp = decryptImageKtp(ktpPath, ivKtp)
-
-                    val ivFace = kycSharedPreference.getCache<ByteArray>(
-                        KYC_IV_FACE_CACHE, ByteArray::class.java
-                    )
-                    finalFace = decryptImageFace(facePath, ivFace)
+                    val ivKtp = kycSharedPreference.getByteArrayCache(KYC_IV_KTP_CACHE)
+                    finalKtp = decryptImage(ktpPath, ivKtp, KYC_IV_KTP_CACHE)
+                    val ivFace = kycSharedPreference.getByteArrayCache(KYC_IV_FACE_CACHE)
+                    finalFace = decryptImage(facePath, ivFace, KYC_IV_FACE_CACHE)
                 }
                 val kycUploadResult = kycUploadUseCase.uploadImages(finalKtp, finalFace, tkpdProjectId)
                 _kycResponse.postValue(Success(kycUploadResult))
@@ -53,29 +49,13 @@ class KycUploadViewModel @Inject constructor(
         }
     }
 
-    fun encryptImageKtp(originalFilePath: String) {
+    fun encryptImage(originalFilePath: String, ivCache: String) {
         launchCatchError(block = {
             withContext(dispatcher.io) {
                 val encryptedImagePath = ImageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)
                 val aes = ImageEncryptionUtil.initAesEncrypt()
                 //save the Ktp IV for decrypt
-                kycSharedPreference.saveCache(KYC_IV_KTP_CACHE, aes.iv)
-                val createdFile = writeEncryptedResult(originalFilePath, encryptedImagePath, aes)
-                _encryptImage.postValue(Success(createdFile))
-            }
-        }, onError = {
-            it.printStackTrace()
-            _encryptImage.postValue(Fail(it))
-        })
-    }
-
-    fun encryptImageFace(originalFilePath: String) {
-        launchCatchError(block = {
-            withContext(dispatcher.io) {
-                val encryptedImagePath = ImageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)
-                val aes = ImageEncryptionUtil.initAesEncrypt()
-                //save the Face IV for decrypt
-                kycSharedPreference.saveCache(KYC_IV_FACE_CACHE, aes.iv)
+                kycSharedPreference.saveByteArrayCache(ivCache, aes.iv)
                 val createdFile = writeEncryptedResult(originalFilePath, encryptedImagePath, aes)
                 _encryptImage.postValue(Success(createdFile))
             }
@@ -97,21 +77,12 @@ class KycUploadViewModel @Inject constructor(
         return ImageEncryptionUtil.renameImageToOriginalFileName(resultFilePath)
     }
 
-    private fun decryptImageKtp(originalFilePath: String, iv: ByteArray): String {
+    private fun decryptImage(originalFilePath: String, iv: ByteArray, ivCache: String): String {
         val decryptedFilePath = ImageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)
         val aes = ImageEncryptionUtil.initAesDecrypt(iv)
         val resultPath = writeDecryptedResult(originalFilePath, decryptedFilePath, aes)
         //delete the IV
-        kycSharedPreference.removeCache(KYC_IV_KTP_CACHE)
-        return resultPath
-    }
-
-    private fun decryptImageFace(originalFilePath: String, iv: ByteArray): String {
-        val decryptedFilePath = ImageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)
-        val aes = ImageEncryptionUtil.initAesDecrypt(iv)
-        val resultPath = writeDecryptedResult(originalFilePath, decryptedFilePath, aes)
-        //delete the IV
-        kycSharedPreference.removeCache(KYC_IV_FACE_CACHE)
+        kycSharedPreference.removeCache(ivCache)
         return resultPath
     }
 

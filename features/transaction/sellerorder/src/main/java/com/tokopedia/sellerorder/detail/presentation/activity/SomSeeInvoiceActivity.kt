@@ -4,6 +4,7 @@ import android.annotation.TargetApi
 import android.os.Build
 import android.os.Bundle
 import android.print.PrintAttributes
+import android.print.PrintJob
 import android.print.PrintManager
 import android.view.Menu
 import android.view.MenuItem
@@ -19,6 +20,7 @@ import com.tokopedia.webview.BaseWebViewFragment
 open class SomSeeInvoiceActivity : BaseSimpleWebViewActivity() {
     private var orderCode: String = ""
     private var invoice: String = ""
+    private var printJob: PrintJob? = null
 
     @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,30 +58,32 @@ open class SomSeeInvoiceActivity : BaseSimpleWebViewActivity() {
     @Suppress("DEPRECATION")
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private fun onPrintClicked(webView: WebView) {
-        val printManager = ContextCompat.getSystemService(this, PrintManager::class.java)
+        if (printJob == null || printJob?.isCompleted == true || printJob?.isFailed == true || printJob?.isCancelled == true) {
+            val printManager = ContextCompat.getSystemService(this, PrintManager::class.java)
 
-        var lastNoInvoice = ""
-        if (invoice.isNotEmpty()) {
-            val splitInvoice = invoice.split("/")
-            if (splitInvoice.isNotEmpty()) {
-                lastNoInvoice = splitInvoice[splitInvoice.size-1]
+            var lastNoInvoice = ""
+            if (invoice.isNotEmpty()) {
+                val splitInvoice = invoice.split("/")
+                if (splitInvoice.isNotEmpty()) {
+                    lastNoInvoice = splitInvoice[splitInvoice.size - 1]
+                }
             }
-        }
-        val jobName = "Invoice $lastNoInvoice"
+            val jobName = "Invoice $lastNoInvoice"
 
-        val printAdapter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            webView.createPrintDocumentAdapter(jobName)
-        } else {
-            webView.createPrintDocumentAdapter()
+            val printAdapter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                webView.createPrintDocumentAdapter(jobName)
+            } else {
+                webView.createPrintDocumentAdapter()
+            }
+            val builder = PrintAttributes.Builder()
+            builder.setMediaSize(PrintAttributes.MediaSize.ISO_A4)
+            try {
+                printJob = printManager?.print(jobName, printAdapter, builder.build())
+            } catch (e: Throwable) {
+                e.printStackTrace()
+            }
+            SomAnalytics.eventClickButtonDownloadInvoice(orderCode)
         }
-        val builder = PrintAttributes.Builder()
-        builder.setMediaSize(PrintAttributes.MediaSize.ISO_A4)
-        try {
-            printManager?.print(jobName, printAdapter, builder.build())
-        } catch (e: Throwable) {
-            e.printStackTrace()
-        }
-        SomAnalytics.eventClickButtonDownloadInvoice(orderCode)
     }
 
 }

@@ -4,6 +4,7 @@ import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailParams
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
@@ -148,7 +149,25 @@ BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         coVerify { atcUseCase.execute(userId, "", atcExpectedParams) }
 
         val result = viewModel.multiAtcResult.value
-        assert(result != null && result is Success)
+        assert(result != null && result is MultiATCState.Success)
+    }
+
+    @Test
+    fun `addMultipleToCart should failed when atc use case return fail`() {
+        val buyerOrderDetailResult = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
+            every { productListUiModel.productListHeaderUiModel.shopId } returns shopId
+            every { productListUiModel.productList } returns listOf(product)
+        }
+
+        coEvery { atcUseCase.execute(any(), any(), any()) } returns Fail(mockk())
+
+        createSuccessBuyerOrderDetailResult(buyerOrderDetailResult)
+        viewModel.addMultipleToCart()
+
+        coVerify { atcUseCase.execute(userId, "", atcExpectedParams) }
+
+        val result = viewModel.multiAtcResult.value
+        assert(result != null && result is MultiATCState.Fail)
     }
 
     @Test
@@ -166,7 +185,7 @@ BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         coVerify { atcUseCase.execute(userId, "", atcExpectedParams) }
 
         val result = viewModel.multiAtcResult.value
-        assert(result != null && result is Fail)
+        assert(result != null && result is MultiATCState.Fail)
     }
 
     @Test
@@ -179,7 +198,7 @@ BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         coVerify(inverse = true) { atcUseCase.execute(any(), any(), any()) }
 
         val result = viewModel.multiAtcResult.value
-        assert(result != null && result is Fail)
+        assert(result != null && result is MultiATCState.Fail)
     }
 
     @Test

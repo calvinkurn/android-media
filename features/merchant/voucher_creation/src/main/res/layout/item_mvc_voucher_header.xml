@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,7 +9,7 @@
         android:id="@+id/headerContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -39,25 +38,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/mvc_dimen_20dp"
-            android:layout_marginLeft="@dimen/mvc_dimen_20dp"
+            android:layout_marginBottom="@dimen/mvc_dimen_10dp"
             android:visibility="gone"
             app:labelType="general_dark_green"
-            app:layout_constraintBottom_toTopOf="@+id/voucherStatus"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/imgMvcVoucherDetail"
             app:layout_constraintTop_toTopOf="@+id/imgMvcVoucherDetail"
             tools:text="14 hari : 23j : 59m : 59d"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/voucherStatus"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/mvc_dimen_20dp"
-            android:layout_marginLeft="@dimen/mvc_dimen_20dp"
             android:maxLines="1"
-            app:layout_constraintBottom_toTopOf="@+id/startEndVoucher"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/imgMvcVoucherDetail"
@@ -70,7 +66,6 @@
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/mvc_dimen_20dp"
-            android:layout_marginLeft="@dimen/mvc_dimen_20dp"
             app:layout_constraintBottom_toBottomOf="@+id/imgMvcVoucherDetail"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -82,11 +77,12 @@
             android:id="@+id/label_vps"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/mvc_dimen_20dp"
             android:layout_marginTop="@dimen/mvc_dimen_10dp"
             android:text="@string/mvc_vps"
             android:visibility="gone"
             app:labelType="general_light_blue"
-            app:layout_constraintStart_toStartOf="@id/startEndVoucher"
+            app:layout_constraintStart_toEndOf="@+id/imgMvcVoucherDetail"
             app:layout_constraintTop_toBottomOf="@+id/startEndVoucher"
             tools:visibility="visible" />
 
@@ -106,11 +102,12 @@
             android:id="@+id/label_subsidy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/mvc_dimen_20dp"
             android:layout_marginTop="@dimen/mvc_dimen_10dp"
             android:text="@string/mvc_subsidy"
             android:visibility="gone"
             app:labelType="general_light_blue"
-            app:layout_constraintStart_toStartOf="@id/startEndVoucher"
+            app:layout_constraintStart_toEndOf="@+id/imgMvcVoucherDetail"
             app:layout_constraintTop_toBottomOf="@+id/startEndVoucher" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -118,17 +115,16 @@
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/mvc_dimen_20dp"
-            android:layout_marginLeft="@dimen/mvc_dimen_20dp"
+            android:layout_marginTop="@dimen/mvc_dimen_12dp"
             android:textColor="@color/Neutral_N700_96"
             android:visibility="gone"
-            app:typographyType="body_3"
-            app:typographyWeight="reguler"
-            app:layout_constraintBottom_toBottomOf="@+id/imgMvcVoucherDetail"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/imgMvcVoucherDetail"
             app:layout_constraintTop_toBottomOf="@+id/voucherStatus"
-            tools:text="Dibatalkan pada 20 Jan 2020"/>
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="Dibatalkan pada 20 Jan 2020" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

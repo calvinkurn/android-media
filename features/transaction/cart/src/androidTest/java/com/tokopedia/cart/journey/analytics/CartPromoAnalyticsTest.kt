@@ -8,8 +8,8 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.cart.CartActivity
-import com.tokopedia.cart.bundle.view.CartIdlingResource
+import com.tokopedia.cart.view.CartActivity
+import com.tokopedia.cart.view.CartIdlingResource
 import com.tokopedia.cart.robot.cartPage
 import com.tokopedia.cart.test.R
 import com.tokopedia.cassavatest.CassavaTestRule
