@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.product_ar.viewmodel.ProductArComparisonViewModel
+import com.tokopedia.product_ar.viewmodel.ProductArComparissonViewModel
 import com.tokopedia.product_ar.viewmodel.ProductArViewModel
 import dagger.Binds
 import dagger.Module
@@ -24,7 +24,7 @@ abstract class ProductArViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(ProductArComparisonViewModel::class)
-    internal abstract fun provideProductArComparisonViewModel(viewModel: ProductArComparisonViewModel): ViewModel
+    @ViewModelKey(ProductArComparissonViewModel::class)
+    internal abstract fun provideProductArComparisonViewModel(viewModel: ProductArComparissonViewModel): ViewModel
 
 }

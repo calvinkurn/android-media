@@ -14,9 +14,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
-class ProductArComparisonViewModel @Inject constructor() : ViewModel() {
+class ProductArComparissonViewModel @Inject constructor() : ViewModel() {
 
-    var counter = 0
+    private var counter = 0
+    private var latestSelectedProductName = ""
 
     private val _processedVariantData = MutableLiveData<List<ModifaceUiModel>>()
     val processedVariantData: LiveData<List<ModifaceUiModel>>
@@ -30,7 +31,18 @@ class ProductArComparisonViewModel @Inject constructor() : ViewModel() {
     val generateMakeUpBackground: LiveData<MFEMakeupLook>
         get() = _generateMakeUpBackground
 
-    private var latestSelectedProductName = ""
+    fun renderInitialData(
+            processedImage: Bitmap,
+            data: List<ModifaceUiModel>) {
+        try {
+            val intialSelectedProductName = ProductArMapper.getInitialSelectedProductName(data)
+            latestSelectedProductName = intialSelectedProductName
+            addGridImages(processedImage, listOf())
+            renderInitialVariantData(data)
+        } catch (e: Throwable) {
+
+        }
+    }
 
     fun addGridImages(processedImage: Bitmap,
                       currentList: List<ComparissonImageUiModel>) {
@@ -45,16 +57,6 @@ class ProductArComparisonViewModel @Inject constructor() : ViewModel() {
                         spanSize = if (updatedData.size == 1) 1 else 2
                 )
             }
-        } catch (e: Throwable) {
-
-        }
-    }
-
-    fun renderInitialData(data: List<ModifaceUiModel>) {
-        try {
-            counter++
-            val updatedData = ProductArMapper.updateInitialListWithCounter(data)
-            _processedVariantData.value = updatedData
         } catch (e: Throwable) {
 
         }
@@ -103,6 +105,13 @@ class ProductArComparisonViewModel @Inject constructor() : ViewModel() {
 
         }
     }
+
+    private fun renderInitialVariantData(data: List<ModifaceUiModel>) {
+        counter++
+        val updatedData = ProductArMapper.updateInitialListWithCounter(data)
+        _processedVariantData.value = updatedData
+    }
+
 
     private fun processImageWithModify(updatedVariants: List<ModifaceUiModel>,
                                        selectedProductId: String,

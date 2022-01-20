@@ -23,7 +23,6 @@ import com.tokopedia.product.detail.common.SingleClick
 import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product_ar.R
 import com.tokopedia.product_ar.di.ProductArComponent
-import com.tokopedia.product_ar.model.ComparissonImageUiModel
 import com.tokopedia.product_ar.model.state.ImageMapMode
 import com.tokopedia.product_ar.tracker.ProductArTracker
 import com.tokopedia.product_ar.util.ArGridImageDownloader
@@ -32,7 +31,7 @@ import com.tokopedia.product_ar.view.ProductArActivity
 import com.tokopedia.product_ar.view.ProductArListener
 import com.tokopedia.product_ar.view.adapter.PhotoComparisonAdapter
 import com.tokopedia.product_ar.view.partialview.PartialBottomArComparisonView
-import com.tokopedia.product_ar.viewmodel.ProductArComparisonViewModel
+import com.tokopedia.product_ar.viewmodel.ProductArComparissonViewModel
 import com.tokopedia.product_ar.viewmodel.ProductArSharedViewModel
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -52,7 +51,7 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private var viewModel: ProductArComparisonViewModel? = null
+    private var viewModel: ProductArComparissonViewModel? = null
     private var sharedViewModel: ProductArSharedViewModel? = null
 
     private var rvComparison: RecyclerView? = null
@@ -75,7 +74,7 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(ProductArComparisonViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(ProductArComparissonViewModel::class.java)
         activity?.let { activity ->
             sharedViewModel = ViewModelProvider(activity).get(ProductArSharedViewModel::class.java)
         }
@@ -123,9 +122,12 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
         observeInitialData()
         observeVariantRvData()
         observeGenerateMakeUpLook()
+        observeAddRemoveImageGrid()
+    }
 
+    private fun observeAddRemoveImageGrid() {
         viewLifecycleOwner.lifecycleScope.launch {
-
+            loader?.hide()
             viewModel?.addRemoveImageGrid?.collectLatest {
                 if (it.imagesBitmap.isEmpty()) return@collectLatest
 
@@ -167,14 +169,8 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
             isSelectVariant(getInitialProductId())
 
             it.processedPhoto?.let { processedPhoto ->
-                comparisonAdapter.setData(listOf(ComparissonImageUiModel(
-                        processedPhoto,
-                        getInitialProductName()))
-                )
-                loader?.hide()
+                viewModel?.renderInitialData(processedPhoto, it.modifaceUiModel)
             }
-
-            viewModel?.renderInitialData(it.modifaceUiModel)
         }
     }
 

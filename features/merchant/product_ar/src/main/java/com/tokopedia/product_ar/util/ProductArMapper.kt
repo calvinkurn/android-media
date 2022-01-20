@@ -97,12 +97,8 @@ object ProductArMapper {
 
     fun decideSpanSize(listImages: List<ComparissonImageUiModel>,
                        mode: ImageMapMode): Int {
-        return if (mode == ImageMapMode.APPEND) {
-            return if (listImages.size > 1) {
-                2
-            } else {
-                1
-            }
+        return if (listImages.size > 1) {
+            2
         } else {
             1
         }
@@ -118,7 +114,12 @@ object ProductArMapper {
         } else {
             -1
         }
+    }
 
+    fun getInitialSelectedProductName(source: List<ModifaceUiModel>): String {
+        return source.firstOrNull {
+            it.isSelected
+        }?.productName ?: ""
     }
 
     fun updateListAfterSelectedCounter(data: List<ModifaceUiModel>,
