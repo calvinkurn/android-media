@@ -16,14 +16,7 @@ import com.tokopedia.tkpd.testgql.TestGqlUseCase
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.main_testapp.devOptButton
-import kotlinx.android.synthetic.main.main_testapp.etAppLink
-import kotlinx.android.synthetic.main.main_testapp.goToButton
-import kotlinx.android.synthetic.main.main_testapp.loginButton
-import kotlinx.android.synthetic.main.main_testapp.logoutButton
-import kotlinx.android.synthetic.main.main_testapp.testGqlButton
-import kotlinx.android.synthetic.main.main_testapp.testapp_environment
-import kotlinx.android.synthetic.main.main_testapp.toggle_dark_mode
+import kotlinx.android.synthetic.main.main_testapp.*
 
 class MainActivity : AppCompatActivity() {
 
