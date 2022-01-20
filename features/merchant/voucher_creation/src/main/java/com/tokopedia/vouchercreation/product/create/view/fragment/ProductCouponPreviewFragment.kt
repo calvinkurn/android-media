@@ -81,9 +81,6 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductCouponPreviewViewModel::class.java) }
 
-    @Inject
-    lateinit var userSessionInterface: UserSessionInterface
-
     override fun getScreenName() = SCREEN_NAME
     override fun initInjector() {
         DaggerVoucherCreationComponent.builder()
@@ -107,23 +104,15 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         setupViews()
         observeValidCoupon()
         observeCreateCouponResult()
+        observeVoucherEligibility()
     }
-
-
 
     private fun setupViews() {
         binding?.tpgReadArticle?.setOnClickListener { onNavigateToCouponInformationPage() }
         binding?.tpgCouponInformation?.setOnClickListener { onNavigateToCouponInformationPage() }
         binding?.tpgCouponSetting?.setOnClickListener { onNavigateToCouponSettingsPage() }
         binding?.tpgAddProduct?.setOnClickListener { onNavigateToProductListPage() }
-        binding?.btnCreateCoupon?.setOnClickListener {
-            viewModel.createCoupon(
-                couponInformation ?: return@setOnClickListener,
-                couponSettings ?: return@setOnClickListener,
-                couponProducts,
-                userSessionInterface.accessToken
-            )
-        }
+        binding?.btnCreateCoupon?.setOnClickListener { viewModel.checkVoucherEligibility() }
     }
 
     private fun observeValidCoupon() {
@@ -132,6 +121,22 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
             binding?.btnPreviewCouponImage?.isEnabled = areInputValid
         })
     }
+
+    private fun observeVoucherEligibility() {
+        viewModel.voucherEligibility.observe(viewLifecycleOwner, { result ->
+            if (result is Success) {
+                viewModel.createCoupon(
+                    couponInformation ?: return@observe,
+                    couponSettings ?: return@observe,
+                    couponProducts,
+                    result.data.token
+                )
+            } else {
+
+            }
+        })
+    }
+
 
     private fun observeCreateCouponResult() {
         viewModel.createCoupon.observe(viewLifecycleOwner, { result ->

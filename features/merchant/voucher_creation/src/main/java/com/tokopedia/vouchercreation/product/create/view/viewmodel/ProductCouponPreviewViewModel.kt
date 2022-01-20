@@ -10,19 +10,27 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.common.base.VoucherSource
+import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant
+import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCase
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.product.create.data.CreateCouponProductParams
 import com.tokopedia.vouchercreation.product.create.data.CreateCouponProductResponse
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.domain.usecase.CreateCouponProductUseCase
+import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProductCouponPreviewViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val createCouponProductUseCase: CreateCouponProductUseCase
+    private val createCouponProductUseCase: CreateCouponProductUseCase,
+    private val initiateVoucherUseCase: InitiateVoucherUseCase
 ) : BaseViewModel(dispatchers.main) {
+
+    companion object {
+        private const val IS_UPDATE_MODE = false
+    }
 
     private val _areInputValid = MutableLiveData<Boolean>()
     val areInputValid: LiveData<Boolean>
@@ -31,6 +39,9 @@ class ProductCouponPreviewViewModel @Inject constructor(
     private val _createCoupon = MutableLiveData<Result<CreateCouponProductResponse>>()
     val createCoupon: LiveData<Result<CreateCouponProductResponse>>
         get() = _createCoupon
+
+    private val _voucherEligibility = MutableLiveData<Result<InitiateVoucherUiModel>>()
+    val voucherEligibility: LiveData<Result<InitiateVoucherUiModel>> get() = _voucherEligibility
 
     fun validateCoupon(couponSettings: CouponSettings? , couponInformation: CouponInformation?, couponProducts: List<CouponProduct>) {
         if (couponSettings == null) {
@@ -56,7 +67,7 @@ class ProductCouponPreviewViewModel @Inject constructor(
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         couponProducts: List<CouponProduct>,
-        token : String
+        token: String
     ) {
 
         val isPublic = if (couponInformation.target == CouponInformation.Target.PUBLIC) 1 else 0
@@ -113,5 +124,17 @@ class ProductCouponPreviewViewModel @Inject constructor(
                 _createCoupon.value = Fail(it)
             }
         )
+    }
+
+
+    fun checkVoucherEligibility() {
+        launchCatchError(block = {
+            initiateVoucherUseCase.query = GqlQueryConstant.GET_INIT_VOUCHER_ELIGIBILITY_QUERY
+            initiateVoucherUseCase.params = InitiateVoucherUseCase.createRequestParam(IS_UPDATE_MODE)
+            val result = withContext(dispatchers.io) { initiateVoucherUseCase.executeOnBackground() }
+            _voucherEligibility.value = Success(result)
+        }, onError = {
+            _voucherEligibility.value = Fail(it)
+        })
     }
 }
