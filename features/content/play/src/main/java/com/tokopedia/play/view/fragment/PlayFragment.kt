@@ -23,9 +23,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
-import com.tokopedia.play.extensions.isAnyBottomSheetsShown
-import com.tokopedia.play.extensions.isAnyShown
-import com.tokopedia.play.extensions.isKeyboardShown
+import com.tokopedia.play.extensions.*
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.activity.PlayActivity
@@ -600,6 +598,12 @@ class PlayFragment @Inject constructor(
         if (isFreezeOrBanned && !bottomInsets.isAnyBottomSheetsShown) {
             fragmentBottomSheetView.safeRelease()
             fragmentBottomSheetView.hide()
+        }
+
+        if(bottomInsets.isAnyUserReportBottomSheetShown && playViewModel.videoPlayer.isYouTube){
+            fragmentBottomSheetView.rootView.translationZ = 1.0f
+        }else if(playViewModel.videoPlayer.isYouTube){
+            fragmentBottomSheetView.rootView.translationZ = 0.0f
         }
     }
 
