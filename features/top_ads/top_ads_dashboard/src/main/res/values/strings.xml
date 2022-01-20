@@ -345,8 +345,8 @@
     <string name="max_times_month">Potensi tampil maks. <![CDATA["<font color='#000000'><b>+%d</b></font>]]> kali/bulan</string>
 
     <string name="error_bid_not_multiple_50">Harus kelipatan Rp50</string>
-    <string name="min_bid_error_new">Biaya min. Rp%d</string>
-    <string name="max_bid_error_new">Biaya maks. Rp%d</string>
+    <string name="min_bid_error_number">Biaya min. Rp%d</string>
+    <string name="max_bid_error_number">Biaya maks. Rp%d</string>
     <string name="new_keyword_subtitle2">Biaya kata kunci</string>
 
     <string name="title_current_cost">Biaya saat ini</string>

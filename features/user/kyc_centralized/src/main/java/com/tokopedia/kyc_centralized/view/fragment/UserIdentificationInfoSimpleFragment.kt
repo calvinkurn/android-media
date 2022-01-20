@@ -13,6 +13,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.KycUrl
 import com.tokopedia.kyc_centralized.R
@@ -30,6 +31,7 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
     private var loader: LoaderUnify? = null
     private var defaultStatusBarColor = 0
     private var showWrapperLayout = false
+    private var redirectUrl = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,11 +48,13 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
         projectId = activity?.intent?.data?.getQueryParameter(
                 ApplinkConstInternalGlobal.PARAM_PROJECT_ID).toIntOrZero()
         showWrapperLayout = activity?.intent?.data?.getQueryParameter(
-            ApplinkConstInternalGlobal.PARAM_LAYOUT).toBoolean()
-        initViews(view)
+            ApplinkConstInternalGlobal.PARAM_SHOW_INTRO).toBoolean()
+        redirectUrl = activity?.intent?.data?.getQueryParameter(
+            ApplinkConstInternalGlobal.PARAM_REDIRECT_URL).toEmptyStringIfNull()
+        initViews(view, savedInstanceState)
     }
 
-    private fun initViews(view: View) {
+    private fun initViews(view: View, savedInstanceState: Bundle?) {
         mainView = view.findViewById(R.id.uii_simple_main_view)
         val mainImage: ImageUnify? = view.findViewById(R.id.uii_simple_main_image)
         val button: UnifyButton? = view.findViewById(R.id.uii_simple_button)
@@ -63,12 +67,15 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
             layoutBenefit?.show()
             mainImage?.loadImage(KycUrl.ICON_WAITING)
             button?.setOnClickListener { _ ->
-                successKyc()
+                finishAndRedirectKycResult()
             }
             setupKycBenefitView(view)
         } else {
             loader?.show()
-            startKyc()
+            //If savedInstanceState is null, then first time open (solve problem in ONE UI 3.1)
+            if (savedInstanceState == null) {
+                startKyc()
+            }
         }
     }
 
@@ -84,12 +91,14 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
     private fun startKyc() {
         val intent = RouteManager.getIntent(requireContext(),
                 ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM, projectId.toString())
-        intent.putExtra("", "")
         startActivityForResult(intent, KYC_REQUEST_CODE)
     }
 
-    private fun successKyc() {
-        activity?.setResult(Activity.RESULT_OK)
+    private fun finishAndRedirectKycResult() {
+        val intent = Intent().also {
+            it.putExtra(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL, redirectUrl)
+        }
+        activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }
 
@@ -103,7 +112,7 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
                         mainView?.show()
                         KycOnBoardingViewInflater.restoreStatusBar(activity, defaultStatusBarColor)
                     } else {
-                        successKyc()
+                        finishAndRedirectKycResult()
                     }
                 }
                 else -> {
