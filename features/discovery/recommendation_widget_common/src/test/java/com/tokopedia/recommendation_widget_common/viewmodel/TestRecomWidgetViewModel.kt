@@ -98,7 +98,8 @@ class TestRecomWidgetViewModel {
         status = "",
         errorMessage = arrayListOf()
     )
-    private val mockThrowableTimeOut = Throwable("Time out")
+    private val timeOut = "Time out"
+    private val mockThrowableTimeOut = Throwable(timeOut)
     val miniCart = MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
     val miniCartSimplifiedDataMock = MiniCartSimplifiedData(miniCartItems = listOf(miniCart))
 
@@ -238,14 +239,24 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test add to cart non variant given failed get minicart then show error mini cart`() = runBlockingTest {
+    fun `test given time out add to cart return error on mini cart error live data when add to cart non variant`() = runBlockingTest {
         coEvery {
             addToCartUseCase.executeOnBackground()
         } returns mockAtcResponseSuccess
 
-        doCommonActionFailedMiniCartForATCRecom()
+        coEvery {
+            userSessionInterface.isLoggedIn
+        } returns mockUserLoggedIn
+
+        coEvery {
+            miniCartListSimplifiedUseCase.executeOnBackground()
+        } throws mockThrowableTimeOut
+
+        viewModel.getMiniCart("", "")
+        viewModel.onAtcRecomNonVariantQuantityChanged(recomItemForAtc, updatedQuantityForAtc)
 
         Assert.assertNotNull(viewModel.minicartError.value)
+        Assert.assertEquals(timeOut, viewModel.minicartError.value?.message)
     }
 
     @Test
@@ -333,7 +344,7 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test atc recom non variant given atc with error empty message return success atc tokonow with selected add to cart`() = runBlockingTest {
+    fun `test atc recom non variant given atc with error empty message return success atc tokonow with selected recom item when add to cart non variant`() = runBlockingTest {
         coEvery {
             addToCartUseCase.executeOnBackground()
         } returns mockAtcRecomErrorWithEmptyErrorMessage
@@ -445,7 +456,7 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test given data recommendation return success recom chip widget in live data`() {
+    fun `test given data recommendation return success recom chip widget in live data when load recom by selected chips`() {
         coEvery { getRecommendationUseCase.getData(any()) } returns listOf(mockRecomWidgetFalseTokonow)
         viewModel.loadRecomBySelectedChips(recomWidgetMetadata = recomWidgetMetadata, oldFilterList = listAnnotationChip, selectedChip = listAnnotationChip[0])
         val recomFilterResult = viewModel.recomFilterResultData.value
@@ -455,7 +466,7 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test given empty recommendation return success recom chip widget with null data in live data`() {
+    fun `test given empty recommendation return success recom chip widget with null data in live data when load recom by selected chips`() {
         coEvery { getRecommendationUseCase.getData(any()) } returns listOf()
         viewModel.loadRecomBySelectedChips(recomWidgetMetadata = recomWidgetMetadata, oldFilterList = listAnnotationChip, selectedChip = listAnnotationChip[0])
         val recomFilterResult = viewModel.recomFilterResultData.value
@@ -465,7 +476,7 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
-    fun `test given error recommendation return failed recom chips in live data`() {
+    fun `test given error recommendation return failed recom chips in live data when load recom by selected chips`() {
         coEvery { getRecommendationUseCase.getData(any()) } throws Throwable()
         viewModel.loadRecomBySelectedChips(recomWidgetMetadata = recomWidgetMetadata, oldFilterList = listAnnotationChip, selectedChip = listAnnotationChip[0])
         val recomFilterResult = viewModel.recomFilterResultData.value
@@ -493,26 +504,6 @@ class TestRecomWidgetViewModel {
         coVerify {
             addToCartUseCase.executeOnBackground()
         }
-    }
-
-    private fun doCommonActionForATCRecomNoUpdate() {
-
-    }
-
-    private fun doCommonActionForATCRecomNonLoggedInUser() {
-    }
-
-    private fun doCommonActionFailedMiniCartForATCRecom() {
-        coEvery {
-            userSessionInterface.isLoggedIn
-        } returns mockUserLoggedIn
-
-        coEvery {
-            miniCartListSimplifiedUseCase.executeOnBackground()
-        } throws mockThrowableTimeOut
-
-        viewModel.getMiniCart("", "")
-        viewModel.onAtcRecomNonVariantQuantityChanged(recomItemForAtc, updatedQuantityForAtc)
     }
 
     private fun doCommonActionForUpdateCartRecom() {
