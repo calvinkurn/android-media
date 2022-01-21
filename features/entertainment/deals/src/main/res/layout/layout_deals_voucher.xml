@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:id="@+id/voucher_deals_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:layout_marginLeft="@dimen/spacing_lvl3"
     android:layout_marginRight="@dimen/spacing_lvl3"
     android:paddingTop="@dimen/spacing_lvl2"
@@ -100,7 +100,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_simple_item"
         />
 
-    <TextView
+    <com.tokopedia.unifycomponents.Label
         android:id="@+id/tv_off"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -112,7 +112,7 @@
         android:paddingLeft="@dimen/spacing_lvl3"
         android:paddingRight="@dimen/spacing_lvl3"
         android:paddingTop="@dimen/spacing_lvl1"
-        android:textColor="@color/Unify_R500"
+        app:labelType="general_light_red"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_simple_item"

@@ -5,7 +5,6 @@ import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -28,6 +27,8 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.view.AtcVariantListener
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.variant_common.util.VariantCommonMapper
@@ -48,13 +49,13 @@ class VariantSheetViewComponent(
     private val phBtnAction: View = findViewById(R.id.ph_btn_action)
     private val btnContainer: ConstraintLayout = findViewById(R.id.btn_container)
     private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
-    private val ivProductImage: ImageView = findViewById(R.id.iv_product_image)
-    private val tvProductTitle: TextView = findViewById(R.id.tv_product_title)
-    private val llProductDiscount: LinearLayout = findViewById(R.id.ll_product_discount)
+    private val ivProductImage: ImageUnify = findViewById(R.id.iv_product_image)
     private val tvProductDiscount: TextView = findViewById(R.id.tv_product_discount)
     private val tvOriginalPrice: TextView = findViewById(R.id.tv_original_price)
     private val tvCurrentPrice: TextView = findViewById(R.id.tv_current_price)
-    private val ivFreeShipping: ImageView = findViewById(R.id.iv_free_shipping)
+    private val tvProductStock: TextView = findViewById(R.id.tv_product_stock)
+    private val labelVariant1: Label = findViewById(R.id.label_variant1)
+    private val labelVariant2: Label = findViewById(R.id.label_variant2)
 
     private val globalErrorContainer: ScrollView = findViewById(R.id.global_error_variant_container)
     private val globalError: GlobalError = findViewById(R.id.global_error_variant)
@@ -119,6 +120,17 @@ class VariantSheetViewComponent(
                 isPartialSelected
         )
 
+        val findVariant = variantSheetUiModel?.mapOfSelectedVariants?.keys?.indexOf(variantOptions.variantCategoryKey)
+        val indexOf = variantSheetUiModel?.mapOfSelectedVariants?.keys
+        labelVariant1.shouldShowWithAction(listOfVariants?.getOrNull(0)?.variantOptions?.isNotEmpty() == true &&
+                variantSheetUiModel?.mapOfSelectedVariants?.getValue(indexOf?.first().orEmpty()) != "0"){
+            if(findVariant == 0) labelVariant1.text = variantOptions.variantName
+        }
+        labelVariant2.shouldShowWithAction(listOfVariants?.getOrNull(1)?.variantOptions?.isNotEmpty() == true &&
+                variantSheetUiModel?.mapOfSelectedVariants?.getValue(indexOf?.last().orEmpty()) != "0"){
+            if(findVariant == 1) labelVariant2.text = variantOptions.variantName
+        }
+
         if (!listOfVariants.isNullOrEmpty()) {
             val pairSelectedProduct = VariantCommonMapper.selectedProductData(
                     variantSheetUiModel?.parentVariant?: ProductVariant())
@@ -149,6 +161,11 @@ class VariantSheetViewComponent(
                 )
                 variantSheetUiModel?.stockWording = stock?.stockWordingHTML
                 variantSheetUiModel?.product = product
+
+                tvProductStock.shouldShowWithAction(stock != null){
+                    val stockInString = stock?.stock.toString()
+                    tvProductStock.text = getString(R.string.play_product_item_stock, ": $stockInString")
+                }
                 setProduct(product)
 
                 btnAction.isEnabled = variantSheetUiModel?.isPartialySelected() == false
@@ -203,6 +220,9 @@ class VariantSheetViewComponent(
                 else listener.onAddToCartClicked(this, product)
             }
         }
+
+        labelVariant1.gone()
+        labelVariant2.gone()
     }
 
     fun showPlaceholder() {
@@ -235,23 +255,21 @@ class VariantSheetViewComponent(
 
     private fun setProduct(product: PlayProductUiModel.Product) {
         ivProductImage.loadImageRounded(product.imageUrl, imageRadius)
-        tvProductTitle.text = product.title
 
         when (product.price) {
             is DiscountedPrice -> {
-                llProductDiscount.show()
+                tvProductDiscount.show()
+                tvOriginalPrice.show()
                 tvProductDiscount.text = getString(R.string.play_discount_percent, product.price.discountPercent)
                 tvOriginalPrice.text = product.price.originalPrice
                 tvCurrentPrice.text = product.price.discountedPrice
             }
             is OriginalPrice -> {
-                llProductDiscount.hide()
+                tvProductDiscount.hide()
+                tvOriginalPrice.hide()
                 tvCurrentPrice.text = product.price.price
             }
         }
-
-        if (product.isFreeShipping) ivFreeShipping.show()
-        else ivFreeShipping.hide()
     }
 
     private fun showContent(shouldShow: Boolean, withPlaceholder: Boolean) {

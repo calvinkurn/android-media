@@ -20,7 +20,6 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
-import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource
@@ -49,7 +48,7 @@ class ProductManageListModule(private val context: Context) {
 
     @Provides
     @ProductManageListScope
-    fun provideGmCommonRepository(gmCommonDataSource: GMCommonDataSource?): GMCommonRepository {
+    fun provideGmCommonRepository(gmCommonDataSource: GMCommonDataSource): GMCommonRepository {
         return GMCommonRepositoryImpl(gmCommonDataSource)
     }
 
@@ -102,16 +101,6 @@ class ProductManageListModule(private val context: Context) {
               }
             }
         """.trimIndent()
-    }
-
-    @ProductManageListScope
-    @Provides
-    @Named(ShopCommonParamApiConstant.GQL_PRODUCT_LIST)
-    fun provideProductListQuery(): String {
-        return GraphqlHelper.loadRawString(
-            context.resources,
-            com.tokopedia.shop.common.R.raw.gql_get_product_list
-        )
     }
 
     @ProductManageListScope

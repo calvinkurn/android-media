@@ -15,8 +15,10 @@ import com.tokopedia.utils.R
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION
+import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_CALL_PHONE
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_CAMERA
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_NFC
+import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_READ_CALL_LOG
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_RECORD_AUDIO
@@ -151,6 +153,8 @@ class PermissionCheckerHelper {
             PERMISSION_READ_EXTERNAL_STORAGE -> context.getString(R.string.permission_read_storage)
             PERMISSION_READ_CONTACT -> context.getString(R.string.permission_contacts)
             PERMISSION_NFC -> context.getString(R.string.permission_nfc)
+            PERMISSION_CALL_PHONE -> context.getString(R.string.permission_phone)
+            PERMISSION_READ_CALL_LOG -> context.getString(R.string.permission_call_log)
             else -> ""
         }
     }
@@ -335,7 +339,7 @@ class PermissionCheckerHelper {
     fun onRequestPermissionsResult(context: Context?, requestCode: Int,
                                    permissions: Array<String>,
                                    grantResults: IntArray) {
-        if (context == null) {
+        if (context == null || !this::listener.isInitialized) {
             return
         }
         var permissionsDenied: Array<String> = arrayOf()
@@ -368,6 +372,10 @@ class PermissionCheckerHelper {
                 (permissionsDeniedNeedToShowRationale))
             }
         }
+    }
+
+    fun setListener(listener: PermissionCheckListener) {
+        this.listener = listener
     }
 
     fun onPermissionDenied(@NonNull context: Context, @NonNull permissionText: String) {

@@ -173,15 +173,6 @@ class PlayAnalytic(
         )
     }
 
-    fun clickCartIcon() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK cart icon",
-                "$mChannelId - ${mChannelType.value}"
-        )
-    }
-
     fun impressBottomSheetProducts(products: List<Pair<PlayProductUiModel.Product, Int>>) {
         if (products.isEmpty()) return
 
@@ -769,6 +760,67 @@ class PlayAnalytic(
                     KEY_PRODUCT_URL to product.applink.toString(),
                     KEY_CHANNEL to mChannelName
                 )
+        )
+    }
+
+    fun clickKebabMenu(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_EVENT_ACTION to "$KEY_TRACK_CLICK - three dots menu",
+                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                KEY_EVENT_LABEL to "$mChannelId - $userId",
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId
+                )
+        )
+    }
+
+    fun clickUserReport(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_EVENT_ACTION to "$KEY_TRACK_CLICK - laporkan video",
+                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                KEY_EVENT_LABEL to "$mChannelId - $userId",
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId
+            )
+        )
+    }
+
+    fun clickUserReportSubmissionBtnSubmit(isUse: Boolean){
+        val useValue = if(isUse) "use" else "not use"
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_EVENT_ACTION to "$KEY_TRACK_CLICK - laporkan on bottom sheet",
+                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                KEY_EVENT_LABEL to "$mChannelId - $userId - $useValue",
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId
+            )
+        )
+    }
+
+    fun clickUserReportSubmissionDialogSubmit(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_EVENT_ACTION to "$KEY_TRACK_CLICK - laporkan on pop up",
+                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                KEY_EVENT_LABEL to "$mChannelId - $userId",
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId
+            )
         )
     }
 

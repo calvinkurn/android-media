@@ -332,7 +332,7 @@ data class DataItem(
         val stock: String? = "",
 
         @SerializedName("stock_sold_percentage")
-        val stockSoldPercentage: String? = "",
+        val stockSoldPercentage: Double? = null,
 
         @SerializedName("topads_click_url")
         var topadsClickUrl: String? = "",

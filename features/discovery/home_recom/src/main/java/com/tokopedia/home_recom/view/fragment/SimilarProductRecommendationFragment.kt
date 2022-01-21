@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -25,9 +26,11 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.home_recom.HomeRecommendationActivity
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.analytics.SimilarProductRecommendationTracking
+import com.tokopedia.home_recom.databinding.FragmentSimillarRecommendationBinding
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.*
 import com.tokopedia.home_recom.util.*
@@ -43,10 +46,15 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
+import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import kotlinx.android.synthetic.main.fragment_simillar_recommendation.view.*
+import com.tokopedia.utils.resources.isDarkMode
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 /**
@@ -57,6 +65,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         RecommendationErrorListener,
         RecommendationEmptyViewHolder.RecommendationEmptyStateListener,
         SortFilterBottomSheet.Callback {
+    private var binding: FragmentSimillarRecommendationBinding? by viewBinding()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -73,6 +82,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     private var productId: String = ""
     private var internalRef: String = ""
     private var hasNextPage: Boolean = true
+    private var navToolbar: NavToolbar? = null
 
     companion object{
         private const val SPAN_COUNT = 2
@@ -92,9 +102,6 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activity?.run{
-            (this as AppCompatActivity).supportActionBar?.title = getString(R.string.recom_similar_recommendation)
-        }
         savedInstanceState?.let{
             productId = it.getString(SAVED_PRODUCT_ID) ?: ""
             ref = it.getString(SAVED_REF) ?: ""
@@ -103,12 +110,15 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_simillar_recommendation, container, false)
+        val view = inflater.inflate(R.layout.fragment_simillar_recommendation, container, false)
+        navToolbar = view.findViewById(R.id.navToolbar)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let { trackingQueue = TrackingQueue(it) }
+        setupToolbar()
         sortFilterView = view.findViewById(R.id.filter_sort_recommendation)
         setupRecyclerView(view)
         setupBackToTop(view)
@@ -160,7 +170,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     override fun getSwipeRefreshLayoutResourceId(): Int = com.tokopedia.home_recom.R.id.swipe_refresh_layout
 
     private fun setupRecyclerView(view: View){
-        view.filter_sort_recommendation?.hide()
+        binding?.filterSortRecommendation?.hide()
         getRecyclerView(view)?.apply {
             if(this is VerticalRecyclerView) clearItemDecoration()
             layoutManager = recyclerViewLayoutManager
@@ -169,23 +179,41 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
                     super.onScrolled(recyclerView, dx, dy)
                     val lastItems = staggeredGrid.findFirstCompletelyVisibleItemPositions(null)
                     if (lastItems.isNotEmpty() && lastItems[0] >= 2) {
-                        if(!view.recom_back_to_top.isShown) {
-                            view.recom_back_to_top?.show()
-                            view.recom_back_to_top.visible()
+                        val shown = binding?.recomBackToTop?.isShown == true
+                        if(!shown) {
+                            binding?.recomBackToTop?.show()
+                            binding?.recomBackToTop?.visible()
                         }
                     } else {
-                        view.recom_back_to_top.gone()
-                        view.recom_back_to_top?.hide()
+                        binding?.recomBackToTop?.gone()
+                        binding?.recomBackToTop?.hide()
                     }
                 }
             })
         }
         RecommendationPageTracking.sendScreenSimilarProductRecommendationPage("/rekomendasi/d", ref, productId)
     }
+    private fun setupToolbar() {
+        activity?.let {
+            (it as? HomeRecommendationActivity)?.findViewById<Toolbar>(R.id.recom_toolbar)?.gone()
+            (it as? AppCompatActivity)?.supportActionBar?.hide()
+        }
+        navToolbar?.let {
+            it.setShowShadowEnabled(true)
+            navToolbar?.setToolbarTitle(getString(R.string.recom_similar_recommendation))
+            activity?.let { actv ->
+                it.setupToolbarWithStatusBar(
+                    activity = actv,
+                    statusBarTheme = if (requireContext().isDarkMode()) TOOLBAR_LIGHT_TYPE else TOOLBAR_DARK_TYPE
+                )
+            }
+            it.setOnBackButtonClickListener { (activity as HomeRecommendationActivity).onBackPressed() }
+        }
+    }
 
     private fun setupBackToTop(view: View){
-        view.recom_back_to_top?.circleMainMenu?.setOnClickListener {
-            view.recycler_view?.smoothScrollToPosition(0)
+        binding?.recomBackToTop?.circleMainMenu?.setOnClickListener {
+            binding?.recyclerView?.smoothScrollToPosition(0)
         }
     }
 
@@ -205,9 +233,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
                             val recommendationItems = pair.first
                             if (recommendationItems.isNotEmpty()) {
                                 recommendationItems.getOrNull(0)?.let {
-                                    activity?.run {
-                                        (this as AppCompatActivity).supportActionBar?.title = if (it.header.isNotEmpty()) it.header else getString(R.string.recom_similar_recommendation)
-                                    }
+                                    navToolbar?.setToolbarTitle(if (it.header.isNotEmpty()) it.header else getString(R.string.recom_similar_recommendation))
                                 }
                                 hasNextPage = pair.second
                                 renderList(mapDataModel(recommendationItems), pair.second)
@@ -275,8 +301,8 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     }
 
     private fun showMessageSuccessAddWishlist() {
-        showToastSuccessWithAction(getString(R.string.recom_msg_success_add_wishlist), getString(R.string.home_recom_go_to_wishlist)){
-            View.OnClickListener { goToWishlist() }
+        showToastSuccessWithAction(getString(R.string.recom_msg_success_add_wishlist), getString(R.string.home_recom_go_to_wishlist)) {
+            goToWishlist()
         }
     }
 

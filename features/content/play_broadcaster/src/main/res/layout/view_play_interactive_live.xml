@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
-        android:background="@color/Neutral_N75"
+        android:background="@color/play_dms_Neutral_N75"
         app:rcl_cornerRadius="@dimen/play_interactive_time_radius"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

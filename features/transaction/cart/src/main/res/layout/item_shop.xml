@@ -5,13 +5,16 @@
     android:id="@+id/ll_shop_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:orientation="vertical">
 
-    <include
-        android:id="@+id/ll_warning_and_error"
-        layout="@layout/layout_item_warning_and_error"
-        tools:visibility="gone" />
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_warning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp" />
 
     <RelativeLayout
         android:id="@+id/rl_shop_header"
@@ -28,6 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
             android:paddingStart="0dp"
+            tools:visibility="gone"
             android:paddingEnd="10dp" />
 
         <LinearLayout

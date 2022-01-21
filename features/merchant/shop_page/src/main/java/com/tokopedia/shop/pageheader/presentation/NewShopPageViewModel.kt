@@ -39,7 +39,6 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Compani
 import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase.Companion.SOURCE_SHOP_PAGE
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
@@ -79,7 +78,6 @@ class NewShopPageViewModel @Inject constructor(
         private val getShopPageHeaderLayoutUseCase: Lazy<GetShopPageHeaderLayoutUseCase>,
         private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
         private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
-        private val gqlGetShopOperationalHoursListUseCase: Lazy<GqlGetShopOperationalHoursListUseCase>,
         private val dispatcherProvider: CoroutineDispatchers)
     : BaseViewModel(dispatcherProvider.main) {
 
@@ -135,12 +133,8 @@ class NewShopPageViewModel @Inject constructor(
     val shopPageShopShareData: LiveData<Result<ShopInfo>>
         get() = _shopPageShopShareData
 
-    private val _shopOperationalHoursListData = MutableLiveData<Result<ShopOperationalHoursListResponse>>()
-    val shopOperationalHoursListData: LiveData<Result<ShopOperationalHoursListResponse>>
-        get() = _shopOperationalHoursListData
-
     fun getShopPageTabData(
-            shopId: Int,
+            shopId: String,
             shopDomain: String,
             page: Int,
             itemPerPage: Int,
@@ -216,9 +210,9 @@ class NewShopPageViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getShopPageHeaderData(shopId: Int, isRefresh: Boolean): ShopPageHeaderLayoutResponse {
+    private suspend fun getShopPageHeaderData(shopId: String, isRefresh: Boolean): ShopPageHeaderLayoutResponse {
         val useCase = getShopPageHeaderLayoutUseCase.get()
-        useCase.params = GetShopPageHeaderLayoutUseCase.createParams(shopId.toString())
+        useCase.params = GetShopPageHeaderLayoutUseCase.createParams(shopId)
         useCase.isFromCloud = isRefresh
         return useCase.executeOnBackground()
     }
@@ -255,7 +249,7 @@ class NewShopPageViewModel @Inject constructor(
     }
 
     private suspend fun getShopP1Data(
-            shopId: Int,
+            shopId: String,
             shopDomain: String,
             isRefresh: Boolean
     ): ShopPageHeaderP1 {
@@ -436,17 +430,4 @@ class NewShopPageViewModel @Inject constructor(
         return useCase.executeOnBackground()
     }
 
-    fun getShopOperationalHoursList(shopId: String) {
-        launchCatchError(dispatcherProvider.io, block =  {
-
-            val useCase = gqlGetShopOperationalHoursListUseCase.get().apply {
-                params = GqlGetShopOperationalHoursListUseCase.createRequestParams(shopId)
-            }
-            val response = useCase.executeOnBackground()
-            _shopOperationalHoursListData.postValue(Success(response))
-
-        }) {
-            _shopOperationalHoursListData.postValue(Fail(it))
-        }
-    }
 }

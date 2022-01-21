@@ -36,16 +36,23 @@ android {
             testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         }
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
+    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.homeComponent)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.features.productCard)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
 
     // Unify
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.icons
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)

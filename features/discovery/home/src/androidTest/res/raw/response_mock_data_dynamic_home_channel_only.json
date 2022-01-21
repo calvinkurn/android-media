@@ -1095,7 +1095,7 @@
                     "persona": "Fashion Muslim",
                     "brand_id": "",
                     "category_persona": "1889,1901,1904,1771,1921,1902,69,500,425,1764",
-                    "name": "Android Test - List carousel",
+                    "name": "Android Test List Carousel",
                     "layout": "list_carousel",
                     "type": "inspiration",
                     "showPromoBadge": true,
@@ -1105,7 +1105,7 @@
                     "has_close_button": true,
                     "header": {
                         "id": 25833,
-                        "name": "Android Test - List carousel",
+                        "name": "Android Test List Carousel",
                         "subtitle": "",
                         "url": "https://www.tokopedia.com/discovery/produk-baru?source=homepage.list_carousel.0.25744",
                         "applink": "tokopedia://discovery/produk-baru?source=homepage.list_carousel.0.25744",
@@ -1173,7 +1173,7 @@
                     ],
                     "banner": {
                         "id": 2313,
-                        "title": "Android Test - List carousel",
+                        "title": "Android Test List Carousel",
                         "description": "",
                         "url": "https://www.tokopedia.com/discovery/produk-baru?source=homepage.list_carousel.0.25744",
                         "back_color": "red",

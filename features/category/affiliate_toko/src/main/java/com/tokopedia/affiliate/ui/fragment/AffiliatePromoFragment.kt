@@ -22,7 +22,7 @@ import com.tokopedia.affiliate.adapter.AffiliateRecommendedAdapter
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
-import com.tokopedia.affiliate.model.AffiliateSearchData
+import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
@@ -263,8 +263,9 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
         affiliatePromoViewModel = viewModel as AffiliatePromoViewModel
     }
 
-    override fun onPromotionClick(productId: String, productName: String, productImage: String, productUrl: String, productIdentifier: String) {
-        AffiliatePromotionBottomSheet.newInstance(productId, productName, productImage, productUrl,
+    override fun onPromotionClick(productId: String, shopId : String, productName: String, productImage: String, productUrl: String, productIdentifier: String, position: Int) {
+        AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
+                null,null,productId, productName, productImage, productUrl,
                 productIdentifier, AffiliatePromotionBottomSheet.ORIGIN_PROMOSIKAN).show(childFragmentManager, "")
     }
 
@@ -291,7 +292,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
         if (context != null && tabLayout != null) {
             val tabOne = Typography(context)
             tabOne.apply {
-                text = context.getString(R.string.pernah_dibeli)
+                text = context.getString(R.string.affiliate_pernah_dibeli)
                 setType(Typography.HEADING_5)
                 gravity = Gravity.CENTER
                 setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
@@ -299,7 +300,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
 
             val tabTwo = Typography(context)
             tabTwo.apply {
-                text = context.getString(R.string.terakhir_dilihat)
+                text = context.getString(R.string.affiliate_terakhir_dilihat)
                 setType(Typography.HEADING_5)
                 gravity = Gravity.CENTER
                 setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))

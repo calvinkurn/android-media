@@ -16,12 +16,13 @@
 
     <color name="play_dms_product_sheet_divider">#E0E0E0</color>
     <color name="play_dms_variant_sheet_divider">#F3F4F5</color>
+    <color name="play_dms_user_report_sheet_divider">#E5E7E9</color>
 
     <color name="play_dms_atc_image_disabled">#DBDEE2</color>
 
     <color name="play_dms_pip_control_bg">#AD31353B</color>
 
-    <color name="play_dms_discount_badge">#FFEAEF</color>
+
     <color name="play_dms_discount_price">#FF5C84</color>
 
     <color name="play_dms_icon_cart">#6C727C</color>
@@ -50,6 +51,7 @@
     <color name="play_dms_N600">#40454C</color>
     <color name="play_dms_N700">#31353B</color>
     <color name="play_dms_N700_32">#5231353B</color>
+    <color name="play_dms_N700_96">#F531353B</color>
     <color name="play_dms_transparent">#00FFFFFF</color>
 
     <color name="play_dms_dark_N700_96">#F5FFFFFF</color>
@@ -58,5 +60,16 @@
     <color name="play_dms_multiplelike_red">#F94D63</color>
     <color name="play_dms_multiplelike_green">#00AA5B</color>
     <color name="play_dms_multiplelike_purple">#9342ED</color>
+
+    <!--Pinned Message -->
+    <color name="play_dms_pinned_link">#00AA5B</color>
+    <color name="play_dms_pinned_icon">#FFC400</color>
+
+    <!--Partner Info-->
+    <color name="play_dms_partner_icon_placeholder">#AD31353B</color>
+
+    <!-- Product Icon See More -->
+    <color name="play_dms_product_count_background">#FFC400</color>
+    <color name="play_dms_product_count_color">#212121</color>
 
 </resources>

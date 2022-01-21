@@ -82,6 +82,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
     private int imageIndex;
     private int[] widthHeight;
+    private Bitmap[] listOutputWatermark;
 
     private UserSessionInterface userSession;
     private Bitmap lastStateImage;
@@ -505,6 +506,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
     @Override
     public void onSuccessGetWatermarkImage(Bitmap[] bitmap) {
+        listOutputWatermark = bitmap;
         gestureCropImageView.setImageBitmap(bitmap[0]);
         onImageEditPreviewFragmentListener.itemSelectionWidgetPreview(bitmap);
     }
@@ -671,6 +673,11 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     }
 
     public void cancelWatermark() {
+        if (listOutputWatermark != null) {
+            for(Bitmap bitmap: listOutputWatermark) {
+                bitmap.recycle();
+            }
+        }
         if (lastStateImage == null) return;
         gestureCropImageView.setImageBitmap(lastStateImage);
     }

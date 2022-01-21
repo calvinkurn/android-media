@@ -7,9 +7,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingChat
 import com.tokopedia.topchat.chatlist.domain.websocket.PendingMessageHandler
-import com.tokopedia.topchat.chatlist.domain.websocket.TopchatWebSocket
-import com.tokopedia.topchat.chatlist.domain.websocket.WebSocketParser
-import com.tokopedia.topchat.chatlist.domain.websocket.WebSocketStateHandler
+import com.tokopedia.topchat.common.websocket.TopchatWebSocket
+import com.tokopedia.topchat.common.websocket.WebSocketParser
+import com.tokopedia.topchat.common.websocket.WebSocketStateHandler
 import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -18,12 +18,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ChatListWebSocketViewModel @Inject constructor(
-        webSocket: TopchatWebSocket,
-        webSocketParser: WebSocketParser,
-        webSocketStateHandler: WebSocketStateHandler,
-        private val userSession: UserSessionInterface,
-        dispatchers: CoroutineDispatchers,
-        private val pendingMessageHandler: PendingMessageHandler
+    webSocket: TopchatWebSocket,
+    webSocketParser: WebSocketParser,
+    webSocketStateHandler: WebSocketStateHandler,
+    private val userSession: UserSessionInterface,
+    dispatchers: CoroutineDispatchers,
+    private val pendingMessageHandler: PendingMessageHandler
 ) : WebSocketViewModel(
         webSocket,
         webSocketParser,

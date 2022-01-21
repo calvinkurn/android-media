@@ -41,7 +41,6 @@
 
     <string name="notif_settings_title">Pengaturan Notifikasi</string>
     <string name="payment_settings_title">Pengaturan Pembayaran</string>
-    <string name="payment_instant_debit_bca_title">Instant Debit BCA</string>
     <string name="title_wishlist">Wishlist</string>
     <string name="recom_home_recommendation">Pilihan Tokopedia</string>
     <string name="title_recent_view">Terakhir Dilihat</string>
@@ -97,6 +96,9 @@
     <!-- Shop Page -->
     <string name="title_shop_page">Shop Page</string>
 
+    <!-- Shop Page Showcase Tab -->
+    <string name="shop_showcase_tab">Shop Page Showcase Tab</string>
+
     <!-- Statistic -->
     <string name="title_statistic">Statistic</string>
 
@@ -144,4 +146,8 @@
     <string name="title_revamped_buyer_order_detail">Detail Pesanan</string>
 
     <string name="title_feed_create_post">Create Post</string>
+
+    <!-- Buyer Order Request Cancel -->
+    <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
+
 </resources>

@@ -7,7 +7,8 @@
             android:label="@string/title_add_name_empty"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

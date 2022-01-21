@@ -159,10 +159,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_HOME_HOTLIST;
                     openHomepageHot(defaultBundle);
                     break;
-                case DeepLinkChecker.FIND:
-                    screenName = AppScreen.SCREEN_FIND;
-                    DeepLinkChecker.openFind(uriData.toString(), context);
-                    break;
                 case DeepLinkChecker.CATALOG:
                     openCatalogDetail(linkSegment);
                     screenName = AppScreen.SCREEN_CATALOG;

@@ -86,7 +86,7 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
         messageId = intent.getStringExtra(MESSAGE_ID,)?: ""
         val imageUploadService = intent.getParcelableExtra<ImageUploadServiceModel>(IMAGE)
         imageUploadService?.let {
-            image =  ImageUploadMapper.mapToImageUploadViewModel(it)
+            image =  ImageUploadMapper.mapToImageUploadUiModel(it)
         }
     }
 

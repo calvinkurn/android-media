@@ -3,6 +3,7 @@ package com.tokopedia.profilecompletion.changegender.viewmodel
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
@@ -14,11 +15,10 @@ import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class ChangeGenderViewModel @Inject constructor(private val graphqlUseCase:  GraphqlUseCase<ChangeGenderPojo>,
-                                                val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+                                                val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.main) {
 
     val mutateChangeGenderResponse = MutableLiveData<Result<ChangeGenderResult>>()
 

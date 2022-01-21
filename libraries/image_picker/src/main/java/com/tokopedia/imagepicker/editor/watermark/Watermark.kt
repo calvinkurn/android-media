@@ -83,6 +83,8 @@ data class Watermark(
             bitmap = combinedBitmap,
             config = watermark
         )
+        logoBitmap.recycle()
+        textBitmap.recycle()
     }
 
     /**
@@ -233,6 +235,9 @@ data class Watermark(
 
         // merge the main bitmap with scaled watermark bitmap
         outputImage = mapWatermarkType(this.type)
+
+        watermarkBitmap?.recycle()
+        scaledWatermarkBitmap?.recycle()
 
         return outputImage!!
     }

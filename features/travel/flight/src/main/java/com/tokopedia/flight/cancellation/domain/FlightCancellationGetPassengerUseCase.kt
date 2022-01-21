@@ -6,10 +6,10 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellation.data.FlightCancellationGQLQuery
 import com.tokopedia.flight.cancellation.data.FlightCancellationPassengerEntity
 import com.tokopedia.flight.cancellation.data.FlightCancellationReasonDataCacheSource
+import com.tokopedia.flight.cancellation.data.FlightCancellationResponseEntity
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationPassengerModel
 import com.tokopedia.flight.common.view.enum.FlightPassengerTitle
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
@@ -21,20 +21,26 @@ import javax.inject.Inject
  * @author by furqan on 15/07/2020
  */
 class FlightCancellationGetPassengerUseCase @Inject constructor(
-        @ApplicationContext
-        private val context: Context,
-        private val useCase: MultiRequestGraphqlUseCase,
-        private val cancellationReasonsCache: FlightCancellationReasonDataCacheSource) {
+    @ApplicationContext
+    private val context: Context,
+    private val useCase: MultiRequestGraphqlUseCase,
+    private val cancellationReasonsCache: FlightCancellationReasonDataCacheSource
+) {
 
     suspend fun fetchCancellablePassenger(invoiceId: String): List<FlightCancellationModel> {
         useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         useCase.clearRequest()
 
         val params = mapOf(PARAM_INVOICE_ID to invoiceId)
-        val graphqlRequest = GraphqlRequest(FlightCancellationGQLQuery.CANCEL_PASSENGER, FlightCancellationPassengerEntity.Response::class.java, params)
+        val graphqlRequest = GraphqlRequest(
+            FlightCancellationGQLQuery.CANCEL_PASSENGER,
+            FlightCancellationPassengerEntity.Response::class.java,
+            params
+        )
         useCase.addRequest(graphqlRequest)
 
-        val flightCancellablePassengerList = useCase.executeOnBackground().getSuccessData<FlightCancellationPassengerEntity.Response>().flightCancelPassenger
+        val flightCancellablePassengerList = useCase.executeOnBackground()
+            .getSuccessData<FlightCancellationPassengerEntity.Response>().flightCancelPassenger
         val processedData = processIncludedData(flightCancellablePassengerList)
 
         cancellationReasonsCache.saveCache(processedData.formattedReasons)
@@ -66,7 +72,7 @@ class FlightCancellationGetPassengerUseCase @Inject constructor(
         val cancellationModelList = arrayListOf<FlightCancellationModel>()
         for ((key, value) in journeyMap) {
             cancellationModelList.add(FlightCancellationModel().apply {
-                flightCancellationJourney = FlightCancellationJourney(journeyId = key)
+                flightCancellationJourney = FlightCancellationResponseEntity(journeyId = key)
                 passengerModelList = value
             })
         }
@@ -74,18 +80,18 @@ class FlightCancellationGetPassengerUseCase @Inject constructor(
     }
 
     private fun transformPassenger(passenger: FlightCancellationPassengerEntity.Passenger): FlightCancellationPassengerModel =
-            FlightCancellationPassengerModel(
-                    passengerId = passenger.passengerId,
-                    type = passenger.type,
-                    title = passenger.title,
-                    titleString = getTitleString(passenger.title),
-                    firstName = passenger.firstName,
-                    lastName = passenger.lastName,
-                    relationId = passenger.relationId,
-                    relations = passenger.relations,
-                    status = passenger.status,
-                    statusString = passenger.statusString
-            )
+        FlightCancellationPassengerModel(
+            passengerId = passenger.passengerId,
+            type = passenger.type,
+            title = passenger.title,
+            titleString = getTitleString(passenger.title),
+            firstName = passenger.firstName,
+            lastName = passenger.lastName,
+            relationId = passenger.relationId,
+            relations = passenger.relations,
+            status = passenger.status,
+            statusString = passenger.statusString
+        )
 
     private fun processIncludedData(flightCancellationPassengerEntity: FlightCancellationPassengerEntity): FlightCancellationPassengerEntity {
         val reasonList = arrayListOf<FlightCancellationPassengerEntity.Reason>()
@@ -93,13 +99,14 @@ class FlightCancellationGetPassengerUseCase @Inject constructor(
         for (item in flightCancellationPassengerEntity.included) {
             if (item.type == TYPE_REASON) {
                 val reason = FlightCancellationPassengerEntity.Reason(
-                        id = item.key,
-                        title = item.attributes.title,
-                        requiredDocs = item.attributes.requiredDocs
+                    id = item.key,
+                    title = item.attributes.title,
+                    requiredDocs = item.attributes.requiredDocs
                 )
                 reasonList.add(reason)
             } else if (item.type == TYPE_DOCS) {
-                docsMap[item.key] = FlightCancellationPassengerEntity.RequiredDoc(item.key, item.attributes.title)
+                docsMap[item.key] =
+                    FlightCancellationPassengerEntity.RequiredDoc(item.key, item.attributes.title)
             }
         }
 
@@ -111,8 +118,10 @@ class FlightCancellationGetPassengerUseCase @Inject constructor(
         return flightCancellationPassengerEntity
     }
 
-    private fun processRequiredDocsData(docsMap: Map<String, FlightCancellationPassengerEntity.RequiredDoc>,
-                                        reasonRequiredDocList: List<String>)
+    private fun processRequiredDocsData(
+        docsMap: Map<String, FlightCancellationPassengerEntity.RequiredDoc>,
+        reasonRequiredDocList: List<String>
+    )
             : List<FlightCancellationPassengerEntity.RequiredDoc> {
 
         val requiredDocsList = arrayListOf<FlightCancellationPassengerEntity.RequiredDoc>()

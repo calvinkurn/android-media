@@ -63,7 +63,6 @@ ext {
 
             commonTravel                    : ":features:travel:common_travel",
             flight                          : ":features:travel:flight",
-            flightOrderList                 : ":features:travel:flight_orderlist",
             hotel                           : ":features:travel:hotel",
             travelHomepage                  : ":features:travel:travel_homepage",
             travelCountryCode               : ":features:travel:travel_country_code",
@@ -72,7 +71,6 @@ ext {
             deals                           : ":features:entertainment:deals",
             digitalDeals                    : ":features:entertainment:digital_deals",
             event                           : ":features:entertainment:event",
-            instantDebitBca                 : ":features:digital:instant_debit_bca",
 
             umrah                           : ":features:salam:umrah",
 
@@ -108,7 +106,6 @@ ext {
             layanan                         : ":features:fintech:layanan_finansial",
             paylater                        : ":features:fintech:paylater",
 
-            accountHome                     : ":features:home:account-home",
             dynamicBanner                   : ":features:home:dynamicbanner",
             navigation                      : ":features:home:navigation",
             navigationCommon                : ":features:home:navigation-common",
@@ -170,11 +167,13 @@ ext {
             shopScore                       : ":features:merchant:shop_score",
             shopShowcase                    : ":features:merchant:shop_showcase",
             shopPage                        : ":features:merchant:shop_page",
+            shopPageWidget                  : ":features:merchant:shop_widget",
             shopSettings                    : ":features:merchant:shop_settings",
             statistic                       : ":features:merchant:statistic",
             officialStore                  : ":features:merchant:official_store",
             voucherCreation                 : ":features:merchant:voucher_creation",
             brandlist                       : ":features:merchant:brandlist",
+            campaignList                    : ":features:merchant:campaign_list",
             favorite                        : ":features:merchant:favorite",
             youtubeCommon                   : ":features:merchant:youtube_common",
             onboarding                      : ":features:user:onboarding",
@@ -202,6 +201,7 @@ ext {
             promoGamificationCommon         : ":features:promo:promo_gamification_common",
             promoUiCommon                   : ":features:promo:promo_ui_common",
             promoMvcWidget                  : ":features:promo:mvc_widget",
+            questWidget                     : ":features:promo:quest_widget",
 
             topAdsDashboard                 : ":features:top_ads:top_ads_dashboard",
             topAdsFreeClaim                 : ":features:top_ads:top_ads_free_claim",
@@ -213,6 +213,7 @@ ext {
             topAdsManagementCommon          : ":features:top_ads:top_ads_management_common",
             topAdsManagementSourceTagging   : ":features:top_ads:top_ads_management_sourcetagging",
             topAdsHeadline                  : ":features:top_ads:top_ads_headline",
+            topAdsHeadlineUseCase           : ":features:top_ads:top_ads_headline_usecase",
 
             atc_common                      : ":features:transaction:atc_common",
             transactiondata                 : ":features:transaction:transactiondata",
@@ -229,9 +230,11 @@ ext {
             buyerorder                      : ":features:transaction:buyerorder",
             oneclickcheckout                : ":features:transaction:oneclickcheckout",
             unifyorderhistory               : ":features:transaction:unifyorderhistory",
+            wishlist                        : ":features:transaction:wishlist",
             snapshot                        : ":features:ordermanagement:snapshot",
             ordermanagementhistory          : ":features:ordermanagement:orderhistory",
             buyerorderdetail                : ":features:ordermanagement:buyer_order_detail",
+            buyercancellationorder          : ":features:ordermanagement:buyercancellationorder",
 
             pushNotificationCommon          : ":features:communication:push-notification-common",
 

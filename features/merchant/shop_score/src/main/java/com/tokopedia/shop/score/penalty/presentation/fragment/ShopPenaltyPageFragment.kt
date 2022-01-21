@@ -39,7 +39,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>(),
+open class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>(),
     PenaltyDateFilterBottomSheet.CalenderListener,
     PenaltyFilterBottomSheet.PenaltyFilterFinishListener,
     ItemDetailPenaltyListener, ItemHeaderCardPenaltyListener,
@@ -58,7 +58,8 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
             this, this, this, this
         )
     }
-    private val penaltyPageAdapter by lazy { PenaltyPageAdapter(penaltyPageAdapterFactory) }
+
+    open val penaltyPageAdapter by lazy { PenaltyPageAdapter(penaltyPageAdapterFactory) }
 
     private val binding: FragmentPenaltyPageBinding? by viewBinding()
 
@@ -87,7 +88,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
             activity?.window?.decorView?.setBackgroundColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
                 )
             )
         }
@@ -302,7 +303,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         }
     }
 
-    private fun onSuccessGetPenaltyListData(data: List<ItemPenaltyUiModel>, hasNext: Boolean) {
+    protected open fun onSuccessGetPenaltyListData(data: List<ItemPenaltyUiModel>, hasNext: Boolean) {
         val penaltyList = penaltyPageAdapter.list.filterIsInstance<ItemPenaltyUiModel>()
         if (penaltyList.isEmpty() && data.isEmpty()) {
             penaltyPageAdapter.setEmptyStatePenalty()
@@ -315,9 +316,12 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
     private fun setupActionBar() {
         (activity as? AppCompatActivity)?.run {
             supportActionBar?.hide()
-            setSupportActionBar(binding?.penaltyPageToolbar)
-            supportActionBar?.run {
+            binding?.penaltyPageToolbar?.run {
                 title = getString(R.string.title_penalty_shop_score)
+                setNavigationOnClickListener {
+                    onBackPressed()
+                }
+                isShowBackButton = true
             }
         }
     }

@@ -9,8 +9,8 @@ import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
-import kotlinx.android.synthetic.main.add_edit_product_variant_custom_input_layout.view.*
-import kotlinx.android.synthetic.main.add_edit_product_variant_custom_input_layout.view.buttonSave
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.UnifyButton
 
 class CustomVariantUnitValueForm : LinearLayout {
 
@@ -19,10 +19,14 @@ class CustomVariantUnitValueForm : LinearLayout {
     constructor(context: Context, layoutPosition: Int, variantUnitValues: List<UnitValue>,
                 onCustomVariantUnitAddListener: OnCustomVariantUnitAddListener) : super(context) {
         inflateVariantCustomInputLayout(context)
+        setupViews()
         this.layoutPosition = layoutPosition
         this.variantUnitValues = variantUnitValues
         this.onCustomVariantUnitAddListener = onCustomVariantUnitAddListener
     }
+
+    private var textFieldUnifyCustomValue: TextFieldUnify? = null
+    private var buttonSave: UnifyButton? = null
 
     private var layoutPosition: Int = 0
     private var variantUnitValues: List<UnitValue> = listOf()
@@ -32,11 +36,16 @@ class CustomVariantUnitValueForm : LinearLayout {
         View.inflate(context, R.layout.add_edit_product_variant_custom_input_layout, this)
     }
 
+    private fun setupViews() {
+        textFieldUnifyCustomValue = findViewById(R.id.textFieldUnifyCustomValue)
+        buttonSave = findViewById(R.id.buttonSave)
+    }
+
     fun setupVariantCustomInputLayout(selectedVariantUnit: Unit, selectedVariantUnitValues: MutableList<UnitValue>) {
         setupButtonSaveClickListener(layoutPosition, selectedVariantUnit, variantUnitValues, selectedVariantUnitValues)
 
-        textFieldUnifyCustomValue.textFieldInput.afterTextChanged {
-            buttonSave.isEnabled = it.isNotBlank()
+        textFieldUnifyCustomValue?.textFieldInput?.afterTextChanged {
+            buttonSave?.isEnabled = it.isNotBlank()
         }
     }
 
@@ -45,15 +54,15 @@ class CustomVariantUnitValueForm : LinearLayout {
                                              selectedVariantUnit: Unit,
                                              variantUnitValues: List<UnitValue>,
                                              selectedVariantUnitValues: MutableList<UnitValue>) {
-        buttonSave.setOnClickListener {
+        buttonSave?.setOnClickListener {
             val customVariantUnitValueName = textFieldUnifyCustomValue.getText().trim()
             val isVariantUnitValueExist = variantUnitValues.any { variantUnitValue ->
                 variantUnitValue.value.toLowerCase() == customVariantUnitValueName.toLowerCase()
             }
             if (isVariantUnitValueExist) {
                 val errorMessage = context.getString(R.string.error_variant_exist)
-                textFieldUnifyCustomValue.setMessage(errorMessage)
-                textFieldUnifyCustomValue.setError(true)
+                textFieldUnifyCustomValue?.setMessage(errorMessage)
+                textFieldUnifyCustomValue?.setError(true)
                 return@setOnClickListener
             } else {
                 val customVariantUnitValue = UnitValue(value = customVariantUnitValueName)

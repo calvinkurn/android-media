@@ -14,9 +14,6 @@ object ApplinkConstInternalMarketplace {
 
     const val INTERNAL_MARKETPLACE = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_MARKETPLACE}"
 
-    // StoreSettingActivity
-    const val STORE_SETTING = "$INTERNAL_MARKETPLACE/store-setting"
-
     // QrScannerActivity
     const val QR_SCANNEER = "$INTERNAL_MARKETPLACE/qr-scanner/{need_result}/"
 
@@ -66,13 +63,17 @@ object ApplinkConstInternalMarketplace {
     const val REVIEW_CREDIBILITY = "$INTERNAL_MARKETPLACE/review/credibility/{userId}/{source}/"
 
     // StockReminderActivity
-    const val STOCK_REMINDER = "$INTERNAL_MARKETPLACE/stock-reminder/{productId}/{productName}/{stock}/"
+    const val STOCK_REMINDER_BASE = "$INTERNAL_MARKETPLACE/stock-reminder/"
+
+    const val STOCK_REMINDER = "$STOCK_REMINDER_BASE{productId}/{productName}/{stock}/"
 
     // SetCashbackActivity
     const val SET_CASHBACK = "$INTERNAL_MARKETPLACE/set-cashback/{productId}/"
 
     // CampaignStockActivity
-    const val RESERVED_STOCK = "$INTERNAL_MARKETPLACE/reserved-stock/{productId}/{shopId}/"
+    const val RESERVED_STOCK_BASE = "$INTERNAL_MARKETPLACE/reserved-stock"
+
+    const val RESERVED_STOCK = "$RESERVED_STOCK_BASE/{productId}/{shopId}/"
 
     // CreateReviewActivity
     const val CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/create/{reputation_id}/{product_id}/"
@@ -263,4 +264,7 @@ object ApplinkConstInternalMarketplace {
     const val ARGS_CACHE_MANAGER_ID = "cache_manager_id"
 
     const val ARGS_IS_UPGRADE = "is_upgrade"
+
+    const val SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET = "$INTERNAL_MARKETPLACE/shop/widget/operational-hour/{shop_id}/"
+
 }

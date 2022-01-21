@@ -2,9 +2,9 @@ package com.tokopedia.product.addedit.variant.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.unifycomponents.ChipsUnify
-import kotlinx.android.synthetic.main.item_variant_type.view.*
 
 class VariantTypeViewHolder(itemView: View, clickListener: OnVariantTypeViewHolderClickListener)
     : RecyclerView.ViewHolder(itemView) {
@@ -20,10 +20,11 @@ class VariantTypeViewHolder(itemView: View, clickListener: OnVariantTypeViewHold
         DISABLED
     }
 
-    var viewHolderState = ViewHolderState.NORMAL
+    private val chipsVariantTypeName: ChipsUnify? = itemView.findViewById(R.id.chipsVariantTypeName)
+    private var viewHolderState = ViewHolderState.NORMAL
 
     init {
-        itemView.chipsVariantTypeName.setOnClickListener {
+        chipsVariantTypeName?.setOnClickListener {
             when (viewHolderState) {
                 // from selected to normal state (deselection)
                 ViewHolderState.SELECTED -> {
@@ -40,21 +41,21 @@ class VariantTypeViewHolder(itemView: View, clickListener: OnVariantTypeViewHold
                     viewHolderState = ViewHolderState.SELECTED
                 }
                 ViewHolderState.DISABLED ->
-                    itemView.chipsVariantTypeName.chipType = ChipsUnify.TYPE_DISABLE
+                    chipsVariantTypeName.chipType = ChipsUnify.TYPE_DISABLE
             }
         }
     }
 
     fun bindData(variantDetail: VariantDetail, state: ViewHolderState) {
-        itemView.chipsVariantTypeName.chip_text.text = variantDetail.name
+        chipsVariantTypeName?.chip_text?.text = variantDetail.name
         viewHolderState = state
         when (state) {
             ViewHolderState.SELECTED ->
-                itemView.chipsVariantTypeName.chipType = ChipsUnify.TYPE_SELECTED
+                chipsVariantTypeName?.chipType = ChipsUnify.TYPE_SELECTED
             ViewHolderState.NORMAL ->
-                itemView.chipsVariantTypeName.chipType = ChipsUnify.TYPE_NORMAL
+                chipsVariantTypeName?.chipType = ChipsUnify.TYPE_NORMAL
             ViewHolderState.DISABLED ->
-                itemView.chipsVariantTypeName.chipType = ChipsUnify.TYPE_DISABLE
+                chipsVariantTypeName?.chipType = ChipsUnify.TYPE_DISABLE
         }
     }
 }
