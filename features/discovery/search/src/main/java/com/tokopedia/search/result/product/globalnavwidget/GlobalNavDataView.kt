@@ -1,23 +1,24 @@
-package com.tokopedia.search.result.presentation.model
+package com.tokopedia.search.result.product.globalnavwidget
 
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 
 @Suppress("LongParameterList")
 class GlobalNavDataView(
-        val source: String = "",
-        val title: String = "",
-        val keyword: String = "",
-        val navTemplate: String = "",
-        val background: String = "",
-        val seeAllApplink: String = "",
-        val seeAllUrl: String = "",
-        val isShowTopAds: Boolean = false,
-        val itemList: List<Item> = listOf(),
-) : Parcelable, Visitable<ProductListTypeFactory?> {
+    val source: String = "",
+    val title: String = "",
+    val keyword: String = "",
+    val navTemplate: String = "",
+    val background: String = "",
+    val seeAllApplink: String = "",
+    val seeAllUrl: String = "",
+    val isShowTopAds: Boolean = false,
+    val itemList: List<Item> = listOf(),
+) : Parcelable, Visitable<ProductListTypeFactory?>, ImpressHolder() {
 
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
