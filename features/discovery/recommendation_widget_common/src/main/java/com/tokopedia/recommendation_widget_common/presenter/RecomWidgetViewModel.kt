@@ -219,12 +219,18 @@ open class RecomWidgetViewModel @Inject constructor(
             _atcRecomTokonowNonLogin.value = recomItem
         } else {
             if (recomItem.quantity == quantity) return
-            if (quantity == 0) {
-                deleteRecomItemFromCart(recomItem)
-            } else if (recomItem.quantity == 0) {
-                atcRecomNonVariant(recomItem, quantity)
-            } else {
-                updateRecomCartNonVariant(recomItem, quantity)
+            else {
+                when {
+                    quantity == 0 -> {
+                        deleteRecomItemFromCart(recomItem)
+                    }
+                    recomItem.quantity == 0 -> {
+                        atcRecomNonVariant(recomItem, quantity)
+                    }
+                    else -> {
+                        updateRecomCartNonVariant(recomItem, quantity)
+                    }
+                }
             }
         }
     }

@@ -80,6 +80,10 @@ class TestRecomWidgetViewModel {
     private val mockListFilterChip = listOf(
         mockRecomFilterChip
     )
+    private val miniCartItem = MiniCartItem(productId = "Sukses")
+    private val mockMiniCartWithPageData = MiniCartSimplifiedData(
+        miniCartItems = listOf(miniCartItem)
+    )
     private val mockAtcResponseSuccess = AddToCartDataModel(
         data = DataModel(
             success = 1,
@@ -217,7 +221,6 @@ class TestRecomWidgetViewModel {
         } returns atcResponseSuccess
 
         doCommonActionForATCRecom()
-
         Assert.assertTrue(!atcResponseSuccess.isStatusError())
         Assert.assertTrue(viewModel.atcRecomTokonowSendTracker.value is Success)
         Assert.assertTrue(viewModel.atcRecomTokonow.value?.recomItem == recomItemForAtc)
@@ -233,6 +236,42 @@ class TestRecomWidgetViewModel {
         doCommonActionFailedMiniCartForATCRecom()
 
         Assert.assertNotNull(viewModel.minicartError.value)
+    }
+
+    @Test
+    fun `test update mini cart on tokonow with given specific product id will update data mini cart`() = runBlockingTest {
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } returns mockAtcResponseSuccess
+
+        doCommonActionForATCRecom()
+
+        viewModel.updateMiniCartWithPageData(mockMiniCartWithPageData)
+
+        Assert.assertTrue(!mockAtcResponseSuccess.isStatusError())
+        Assert.assertNotNull(viewModel.miniCartData.value?.get(miniCartItem.productId))
+    }
+
+    @Test
+    fun `test `() = runBlockingTest {
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } returns mockAtcResponseSuccess
+
+        doCommonActionForATCRecomNonLoggedInUser()
+
+        Assert.assertEquals(recomItemForAtc, viewModel.atcRecomTokonowNonLogin.value)
+    }
+
+    @Test
+    fun `test 2`() = runBlockingTest {
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } returns mockAtcResponseSuccess
+
+        doCommonActionForATCRecomNoUpdate()
+
+        Assert.assertTrue(!mockAtcResponseSuccess.isStatusError())
     }
 
     @Test
@@ -402,6 +441,40 @@ class TestRecomWidgetViewModel {
         }
         coVerify {
             addToCartUseCase.executeOnBackground()
+        }
+    }
+
+    private fun doCommonActionForATCRecomNoUpdate() {
+        coEvery {
+            userSessionInterface.isLoggedIn
+        } returns true
+
+        coEvery {
+            miniCartListSimplifiedUseCase.executeOnBackground()
+        } returns miniCartSimplifiedDataMock
+
+        viewModel.getMiniCart("", "")
+        viewModel.onAtcRecomNonVariantQuantityChanged(recomItemForAtc, updatedQuantityForDelete)
+
+        coVerify {
+            miniCartListSimplifiedUseCase.executeOnBackground()
+        }
+    }
+
+    private fun doCommonActionForATCRecomNonLoggedInUser() {
+        coEvery {
+            userSessionInterface.isLoggedIn
+        } returns false
+
+        coEvery {
+            miniCartListSimplifiedUseCase.executeOnBackground()
+        } returns miniCartSimplifiedDataMock
+
+        viewModel.getMiniCart("", "")
+        viewModel.onAtcRecomNonVariantQuantityChanged(recomItemForAtc, updatedQuantityForAtc)
+
+        coVerify {
+            miniCartListSimplifiedUseCase.executeOnBackground()
         }
     }
 
