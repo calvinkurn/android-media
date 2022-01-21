@@ -86,25 +86,25 @@ class ShareExperienceViewComponent(
     }
 
     fun saveBitmap() {
-        bitmap?.let {
-            scope.launch {
-                val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
-                    it, Bitmap.CompressFormat.PNG
-                )
+        val image = this.bitmap ?: return
 
-                if(savedFile != null) {
-                    imgSaveFilePath = savedFile.absolutePath
-                    universalShareBottomSheet.apply {
-                        imageSaved(imgSaveFilePath)
-                    }
-                    withContext(Dispatchers.Main) {
-                        listener.onShareOpenBottomSheet(this@ShareExperienceViewComponent)
-                    }
+        scope.launch {
+            val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
+                image, Bitmap.CompressFormat.PNG
+            )
+
+            if(savedFile != null) {
+                imgSaveFilePath = savedFile.absolutePath
+                universalShareBottomSheet.apply {
+                    imageSaved(imgSaveFilePath)
                 }
-                else {
-                    withContext(Dispatchers.Main) {
-                        listener.onHandleShareFallback(this@ShareExperienceViewComponent)
-                    }
+                withContext(Dispatchers.Main) {
+                    listener.onShareOpenBottomSheet(this@ShareExperienceViewComponent)
+                }
+            }
+            else {
+                withContext(Dispatchers.Main) {
+                    listener.onHandleShareFallback(this@ShareExperienceViewComponent)
                 }
             }
         }
