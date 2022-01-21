@@ -205,6 +205,7 @@ class ProductListPresenter @Inject constructor(
     private var inspirationCarouselDataView = mutableListOf<InspirationCarouselDataView>()
     private var inspirationCardDataView = mutableListOf<InspirationCardDataView>()
     private var inspirationSizeDataView = mutableListOf<InspirationSizeDataView>()
+    private var processedInspirationSizeDataView = mutableListOf<InspirationSizeDataView>()
     private var topAdsImageViewModelList = mutableListOf<TopAdsImageViewModel>()
     private var suggestionDataView: SuggestionDataView? = null
     private var relatedDataView: RelatedDataView? = null
@@ -551,6 +552,7 @@ class ProductListPresenter @Inject constructor(
         processHeadlineAdsLoadMore(searchProductModel, list)
         processTopAdsImageViewModel(searchParameter, list)
         processInspirationCardPosition(searchParameter, list)
+        processInspirationSizePosition(searchParameter, list)
         processInspirationCarouselPosition(searchParameter, list)
         processBannerAndBroadmatchInSamePosition(searchProduct, list)
         processBanner(searchProduct, list)
@@ -1096,7 +1098,8 @@ class ProductListPresenter @Inject constructor(
         processInspirationCardPosition(searchParameter, list)
 
         inspirationSizeDataView = productDataView.inspirationSizeDataView.toMutableList()
-        processInspirationSizePosition(list)
+        processedInspirationSizeDataView = productDataView.inspirationSizeDataView.toMutableList()
+        processInspirationSizePosition(searchParameter, list)
 
         processBannerAndBroadmatchInSamePosition(searchProduct, list)
         processBanner(searchProduct, list)
@@ -1266,17 +1269,39 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
-    private fun processInspirationSizePosition(list: MutableList<Visitable<*>>) {
-        if (inspirationSizeDataView.isEmpty()) return
+    private fun processInspirationSizePosition(searchParameter: Map<String, Any>, list: MutableList<Visitable<*>>) {
+        if (processedInspirationSizeDataView.isEmpty()) return
 
-        val inspirationSizeVisitableList = arrayListOf<Visitable<ProductListTypeFactory>>()
+        val inspirationSizeViewModelIterator = processedInspirationSizeDataView.iterator()
 
-        inspirationSizeDataView.forEach {
-            inspirationSizeVisitableList.add(SeparatorDataView())
-            inspirationSizeVisitableList.add(it)
-            inspirationSizeVisitableList.add(SeparatorDataView())
+        while(inspirationSizeViewModelIterator.hasNext()) {
+            val data = inspirationSizeViewModelIterator.next()
 
-            list.addAll(list.indexOf(productList[it.data.position]), inspirationSizeVisitableList)
+            val dataViewPosition = data.data.position
+            if (dataViewPosition <= productList.size && shouldShowInspirationCard(data.data.type)) {
+                val inspirationSizeVisitableList = arrayListOf<Visitable<ProductListTypeFactory>>()
+
+                inspirationSizeVisitableList.add(SeparatorDataView())
+                inspirationSizeVisitableList.add(data)
+                inspirationSizeVisitableList.add(SeparatorDataView())
+
+                if (dataViewPosition < 0)  {
+                    inspirationSizeViewModelIterator.remove()
+                    continue
+                }
+
+                try {
+                    val productListPosition = maxOf(dataViewPosition, 1)
+                    val product = productList[productListPosition - 1]
+                    val addIndex = minOf(dataViewPosition, 1)
+
+                    list.addAll(list.indexOf(product) + addIndex, inspirationSizeVisitableList)
+                    inspirationSizeViewModelIterator.remove()
+                } catch (exception: Throwable) {
+                    Timber.w(exception)
+                    view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), exception)
+                }
+            }
         }
     }
 
