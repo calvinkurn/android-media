@@ -94,7 +94,7 @@
             android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name=".orderdetail.presentation.activity.FlightOrderDetailActivity"
-            android:label="@string/flight_order_list"
+            android:label="@string/flight_order_detail_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
             android:exported="false">
@@ -123,12 +123,12 @@
         </activity>
         <activity
             android:name=".orderdetail.presentation.activity.FlightOrderDetailWebCheckInActivity"
-            android:label="@string/flight_order_list"
+            android:label="@string/flight_order_detail_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name=".orderdetail.presentation.activity.FlightOrderDetailBrowserActivity"
-            android:label="@string/flight_order_list"
+            android:label="@string/flight_order_detail_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
         <activity

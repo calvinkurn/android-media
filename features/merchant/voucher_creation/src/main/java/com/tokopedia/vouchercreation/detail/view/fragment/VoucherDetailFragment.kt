@@ -54,6 +54,7 @@ import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherS
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.enums.getVoucherImageType
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.GeneralExpensesInfoBottomSheetFragment
+import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.TermsAndConditionBottomSheetFragment
 import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.detail.view.viewmodel.VoucherDetailViewModel
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
@@ -120,6 +121,16 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
 
     private val generalExpenseBottomSheet by lazy {
         GeneralExpensesInfoBottomSheetFragment.createInstance(context)
+    }
+
+    private val termsAndConditionBottomSheet by lazy {
+        context?.run {
+            TermsAndConditionBottomSheetFragment.createInstance(this).apply {
+                setCloseClickListener {
+                    this.dismiss()
+                }
+            }
+        }
     }
 
     private var shareVoucherBottomSheet: ShareVoucherBottomSheet? = null
@@ -248,20 +259,26 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                 userId = userSession.userId
         )
         voucherUiModel?.run {
-            when(status) {
-                VoucherStatusConst.NOT_STARTED -> {
-                    CancelVoucherDialog(context ?: return)
-                            .setOnPrimaryClickListener {
-                                viewModel.cancelVoucher(id, CancelVoucherUseCase.CancelStatus.DELETE)
-                            }
-                            .show(this)
-                }
-                VoucherStatusConst.ONGOING -> {
-                    StopVoucherDialog(context ?: return)
-                            .setOnPrimaryClickListener {
-                                viewModel.cancelVoucher(id, CancelVoucherUseCase.CancelStatus.STOP)
-                            }
-                            .show(this)
+            if (voucherUiModel?.isSubsidy == true || voucherUiModel?.isVps == true ) {
+                termsAndConditionBottomSheet?.setHtmlTncDesc(voucherUiModel?.tnc ?: "")
+                termsAndConditionBottomSheet?.show(childFragmentManager, TermsAndConditionBottomSheetFragment.TAG)
+            } else {
+                when(status) {
+                    VoucherStatusConst.NOT_STARTED -> {
+                        CancelVoucherDialog(context ?: return)
+                                .setOnPrimaryClickListener {
+                                    viewModel.cancelVoucher(id, CancelVoucherUseCase.CancelStatus.DELETE)
+                                }
+                                .show(this)
+                    }
+                    VoucherStatusConst.ONGOING -> {
+                        StopVoucherDialog(context ?: return)
+                                .setOnPrimaryClickListener {
+                                    viewModel.cancelVoucher(id, CancelVoucherUseCase.CancelStatus.STOP)
+                                }
+                                .show(this)
+                    }
+                    else -> {}
                 }
             }
         }
@@ -490,6 +507,9 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
 
             val voucherDetailInfoList: MutableList<VoucherDetailUiModel> = mutableListOf(
                     VoucherHeaderUiModel(
+                            isVps = isVps,
+                            isSubsidy = isSubsidy,
+                            packageName = packageName,
                             status = status,
                             voucherImageUrl = imageSquare,
                             startTime = startTime,
@@ -532,7 +552,9 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                         } else {
                             VoucherTargetType.PRIVATE
                         }
-                val voucherInfoHasCta = voucherUiModel.status == VoucherStatusConst.NOT_STARTED && voucherUiModel.type != VoucherTypeConst.FREE_ONGKIR
+                val voucherInfoHasCta = voucherUiModel.status == VoucherStatusConst.NOT_STARTED &&
+                        voucherUiModel.type != VoucherTypeConst.FREE_ONGKIR && !voucherUiModel.isVps && !voucherUiModel.isSubsidy
+
                 addAll(listOf(
                         DividerUiModel(DividerUiModel.THICK),
                         getVoucherInfoSection(voucherTargetType, name, code, voucherInfoHasCta).apply {
@@ -560,11 +582,19 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                 if (type != VoucherTypeConst.FREE_ONGKIR) {
                     add(DividerUiModel(DividerUiModel.THICK))
                 }
-                getButtonUiModel(status, type)?.let { button ->
-                    add(button)
-                }
-                getFooterUiModel(status)?.let { footer ->
-                    add(footer)
+                // no duplicate button , cancel button for vps & subsidy voucher
+                if (!voucherUiModel.isSubsidy && !voucherUiModel.isVps) {
+                    getButtonUiModel(status, type)?.let { button -> add(button) }
+                    getFooterUiModel(status)?.let { footer -> add(footer) }
+                } else {
+                    if (type == VoucherTypeConst.CASHBACK && status == VoucherStatusConst.ONGOING) {
+                        add(shareButtonUiModel)
+                    }
+                    val tncFooterUiModel = FooterUiModel(
+                            context?.getString(R.string.mvc_check_tnc).toBlankOrString(),
+                            context?.getString(R.string.mvc_review_terms).toBlankOrString()
+                    )
+                    add(tncFooterUiModel)
                 }
             }
 

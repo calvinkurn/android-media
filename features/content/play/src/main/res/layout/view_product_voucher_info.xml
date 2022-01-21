@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <FrameLayout
+        android:id="@+id/cl_product_voucher_info"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl7">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_product_voucher_content"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl6"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:elevation="@dimen/play_offset_6"
+            android:translationY="@dimen/play_voucher_info_translationY">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_voucher_intersect"
+                android:layout_width="@dimen/layout_lvl6"
+                android:layout_height="@dimen/layout_lvl0"
+                android:translationZ="@dimen/dp_1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_voucher_intersect" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_voucher_substract"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitXY"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_voucher_substract" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/iv_promo"
+                android:layout_width="@dimen/layout_lvl3"
+                android:layout_height="@dimen/layout_lvl3"
+                android:translationZ="@dimen/dp_1"
+                app:icon_color_light_enable="@color/Unify_N0"
+                app:icon_color_night_enable="@color/Unify_N0"
+                app:icon_name="PROMO"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_voucher_intersect"
+                app:layout_constraintEnd_toEndOf="@+id/iv_voucher_intersect"
+                app:layout_constraintStart_toStartOf="@+id/iv_voucher_intersect"
+                app:layout_constraintTop_toTopOf="@+id/iv_voucher_intersect" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/iv_chevron_right"
+                android:layout_width="@dimen/dp_20"
+                android:layout_height="@dimen/dp_20"
+                android:layout_marginTop="@dimen/play_offset_18"
+                android:layout_marginEnd="@dimen/layout_lvl2"
+                app:icon_color_light_enable="@color/Neutral_N700"
+                app:icon_color_night_enable="@color/Neutral_N700"
+                app:icon_name="CHEVRON_RIGHT"
+                app:layout_constraintEnd_toEndOf="@+id/iv_voucher_substract"
+                app:layout_constraintTop_toTopOf="@+id/iv_voucher_substract" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_first_voucher_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/play_offset_12"
+                android:layout_marginTop="@dimen/play_offset_6"
+                android:layout_marginEnd="@dimen/layout_lvl1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:layout_constraintEnd_toStartOf="@+id/iv_chevron_right"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/iv_voucher_intersect"
+                app:layout_constraintTop_toTopOf="@+id/iv_voucher_substract"
+                app:typographyType="heading_5"
+                app:typographyWeight="bold"
+                tools:text="Ada cashback hingga Rp100.000" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_voucher_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl1"
+                android:layout_marginBottom="@dimen/play_offset_6"
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_voucher_substract"
+                app:layout_constraintEnd_toEndOf="@+id/tv_first_voucher_title"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/tv_first_voucher_title"
+                app:layout_constraintTop_toBottomOf="@+id/tv_first_voucher_title"
+                app:typographyType="body_3"
+                tools:text="Masih ada 6 Kupon Toko lainnya!" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+</merge>
