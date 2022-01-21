@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
@@ -16,6 +18,7 @@ import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.consts.UrlConstant
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.common.extension.splitByThousand
@@ -23,6 +26,7 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.databinding.FragmentProductCouponPreviewBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.ProductCouponPreviewViewModel
+import java.net.URLEncoder
 import javax.inject.Inject
 
 
@@ -110,7 +114,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun setupViews() {
-        binding?.tpgReadArticle?.setOnClickListener { onNavigateToCouponInformationPage() }
+        binding?.tpgReadArticle?.setOnClickListener { redirectToSellerEduPage() }
         binding?.tpgCouponInformation?.setOnClickListener { onNavigateToCouponInformationPage() }
         binding?.tpgCouponSetting?.setOnClickListener { onNavigateToCouponSettingsPage() }
         binding?.tpgAddProduct?.setOnClickListener { onNavigateToProductListPage() }
@@ -305,4 +309,11 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         binding?.tpgMinimumPurchase?.text = text
     }
 
+    private fun redirectToSellerEduPage() {
+        if (!isAdded) return
+        val url = UrlConstant.SELLER_HOSTNAME + UrlConstant.SELLER_EDU
+        val encodedUrl = URLEncoder.encode(url, "utf-8")
+        val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
+        RouteManager.route(requireActivity(), route)
+    }
 }
