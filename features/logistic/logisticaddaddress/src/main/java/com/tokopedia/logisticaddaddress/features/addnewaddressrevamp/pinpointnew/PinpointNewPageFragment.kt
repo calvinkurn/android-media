@@ -715,7 +715,6 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
         val saveAddress = saveAddressMapper.map(data, zipCodes)
         viewModel.setAddress(saveAddress)
-        val debug = viewModel.getAddress()
         updateGetDistrictBottomSheet(saveAddress)
     }
 
