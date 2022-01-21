@@ -193,6 +193,10 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
 
     override fun showBackButton(): Boolean = false
 
+    override fun doOnResume() {
+        // noop
+    }
+
     fun setOrderIdToShow(orderId: String) {
         if (orderId != this.orderId) {
             bottomSheetManager?.dismissBottomSheets()

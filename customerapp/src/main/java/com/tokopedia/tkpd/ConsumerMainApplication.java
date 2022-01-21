@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
@@ -20,7 +21,10 @@ import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.remoteconfig.RollenceKey;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 
@@ -109,7 +113,16 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     }
 
     private boolean checkForceLightMode() {
-        if (remoteConfig.getBoolean(RemoteConfigKey.FORCE_LIGHT_MODE, false)) {
+        AbTestPlatform abTest = getAbTestPlatform();
+
+        boolean forceLightRollence = false;
+        if (abTest != null) {
+            forceLightRollence = abTest
+                    .getString(RollenceKey.USER_DARK_MODE_TOGGLE, "")
+                    .isEmpty();
+        }
+
+        if (remoteConfig.getBoolean(RemoteConfigKey.FORCE_LIGHT_MODE, false) || forceLightRollence) {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             sharedPreferences.edit().putBoolean(TkpdCache.Key.KEY_DARK_MODE, false).apply();
             return true;
@@ -130,6 +143,16 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         }
         AppCompatDelegate.setDefaultNightMode(screenMode);
     }
+
+    @Nullable
+    private AbTestPlatform getAbTestPlatform() {
+        try {
+            return RemoteConfigInstance.getInstance().getABTestPlatform();
+        } catch (java.lang.IllegalStateException e) {
+            return null;
+        }
+    }
+
 
     @SuppressLint("RestrictedApi")
     @NonNull

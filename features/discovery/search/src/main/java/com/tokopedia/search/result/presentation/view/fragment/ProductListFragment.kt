@@ -110,7 +110,6 @@ import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
-import com.tokopedia.search.result.presentation.view.listener.SearchInTokopediaListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener
@@ -118,6 +117,7 @@ import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl
+import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
@@ -142,8 +142,7 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import org.json.JSONArray
 import timber.log.Timber
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 import javax.inject.Inject
 
 class ProductListFragment: BaseDaggerFragment(),
@@ -161,7 +160,6 @@ class ProductListFragment: BaseDaggerFragment(),
         InspirationCardListener,
         QuickFilterElevation,
         SortFilterBottomSheet.Callback,
-        SearchInTokopediaListener,
         SearchNavigationClickListener,
         TopAdsImageViewListener,
         ChooseAddressListener,
@@ -387,24 +385,24 @@ class ProductListFragment: BaseDaggerFragment(),
         val topAdsConfig = topAdsConfig ?: return
 
         val productListTypeFactory = ProductListTypeFactoryImpl(
-                productListener = this,
-                tickerListener = this,
-                suggestionListener = this,
-                globalNavListener = this,
-                bannerAdsListener = this,
-                emptyStateListener = this,
-                recommendationListener = this,
-                inspirationCarouselListener = this,
-                broadMatchListener = this,
-                inspirationCardListener = this,
-                searchInTokopediaListener = this,
-                searchNavigationListener = this,
-                topAdsImageViewListener = this,
-                chooseAddressListener = this,
-                bannerListener = this,
-                lastFilterListener = this,
-                topAdsConfig = topAdsConfig,
-                violationListener = ViolationListenerDelegate(activity)
+            productListener = this,
+            tickerListener = this,
+            suggestionListener = this,
+            globalNavListener = this,
+            bannerAdsListener = this,
+            emptyStateListener = this,
+            recommendationListener = this,
+            inspirationCarouselListener = this,
+            broadMatchListener = this,
+            inspirationCardListener = this,
+            searchInTokopediaListener = SearchInTokopediaListenerDelegate(activity),
+            searchNavigationListener = this,
+            topAdsImageViewListener = this,
+            chooseAddressListener = this,
+            bannerListener = this,
+            lastFilterListener = this,
+            topAdsConfig = topAdsConfig,
+            violationListener = ViolationListenerDelegate(activity)
         )
 
         productListAdapter = ProductListAdapter(itemChangeView = this, typeFactory = productListTypeFactory)
@@ -2107,12 +2105,6 @@ class ProductListFragment: BaseDaggerFragment(),
                 getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text),
                 productCountText
         ))
-    }
-    //endregion
-
-    //region Search in Tokopedia Widget
-    override fun onSearchInTokopediaClick(applink: String) {
-        RouteManager.route(activity, applink)
     }
     //endregion
 

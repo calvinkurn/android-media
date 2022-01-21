@@ -7,7 +7,6 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 object DataProvider {
 
     private val gson = Gson()
-    private val fileUtil = UnitTestFileUtils
 
     fun provideUpdateCartSuccess(): UpdateCartV2Data {
         val json = gson.fromJson(UnitTestFileUtils.getJsonFromAsset("assets/update_cart_success"), UpdateCartGqlResponse::class.java)
