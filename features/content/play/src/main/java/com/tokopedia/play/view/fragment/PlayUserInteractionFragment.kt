@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
@@ -297,7 +296,6 @@ class PlayUserInteractionFragment @Inject constructor(
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        Log.d("<LOG>", "onRequestPermissionsResult UserInteraction")
         shareExperienceView?.handleRequestPermissionResult(requestCode, grantResults)
     }
 
