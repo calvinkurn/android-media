@@ -41,6 +41,9 @@ object IconHelper {
             SubSection.ICON_SHOP_FILLED -> {
                 return IconUnify.SHOP_FILLED
             }
+            SubSection.ICON_BADGE_NOW_FILLED -> {
+                return IconUnify.BADGE_NOW_FILLED
+            }
             else -> return IconUnify.IMAGE_BROKEN
         }
     }

@@ -147,6 +147,7 @@ data class SubSection(
         const val ICON_BADGE_PMPRO_FILLED = "BADGE_PMPRO_FILLED"
         const val ICON_BADGE_PM_FILLED = "BADGE_PM_FILLED"
         const val ICON_SHOP_FILLED = "SHOP_FILLED"
+        const val ICON_BADGE_NOW_FILLED = "BADGE_NOW_FILLED"
     }
 }
 
