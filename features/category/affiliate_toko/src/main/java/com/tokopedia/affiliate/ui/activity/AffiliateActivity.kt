@@ -216,7 +216,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     private fun getPromoFragmentView(): AffiliateLinkTextField? {
         openFragment(AffiliatePromoFragment.getFragmentInstance())
         val currentFragment =
-            supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.simpleName)
+            supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.name)
         currentFragment?.let { fragment ->
             return (fragment as? AffiliatePromoFragment)?.view?.findViewById<AffiliateLinkTextField>(
                 R.id.product_link_et
@@ -227,7 +227,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
     private fun getHomeFragmentView(): Typography? {
         val currentFragment =
-            supportFragmentManager.findFragmentByTag(AffiliateHomeFragment::class.java.simpleName)
+            supportFragmentManager.findFragmentByTag(AffiliateHomeFragment::class.java.name)
         currentFragment?.let { fragment ->
             return (fragment as? AffiliateHomeFragment)?.view?.findViewById<Typography>(R.id.user_name)
         }
@@ -320,11 +320,11 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
     private fun showFraudTicker() {
         var currentFragment =
-            supportFragmentManager.findFragmentByTag(AffiliateLoginFragment::class.java.simpleName)
+            supportFragmentManager.findFragmentByTag(AffiliateLoginFragment::class.java.name)
         if (currentFragment == null) {
             showLoginPortal()
             currentFragment =
-                supportFragmentManager.findFragmentByTag(AffiliateLoginFragment::class.java.simpleName)
+                supportFragmentManager.findFragmentByTag(AffiliateLoginFragment::class.java.name)
         }
         currentFragment?.let { fragment ->
             (fragment as? AffiliateLoginFragment)?.showFraudTicker()
@@ -350,7 +350,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun openFragment(fragment: Fragment) {
-        val backStackName = fragment.javaClass.simpleName
+        val backStackName = fragment.javaClass.name
         val ft = supportFragmentManager.beginTransaction()
         val currentFrag: Fragment? = supportFragmentManager.findFragmentByTag(backStackName)
         if (currentFrag != null && supportFragmentManager.fragments.size > 0) {
@@ -412,7 +412,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
     override fun onBackPressed() {
         val currentFragment =
-            supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.simpleName)
+            supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.name)
         if (currentFragment != null && currentFragment.isVisible) {
             (currentFragment as? AffiliatePromoFragment)?.handleBack()
         } else {
@@ -478,7 +478,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
             setChannels(channels)
         })
         val currentFragment =
-            supportFragmentManager.findFragmentByTag(AffiliateTermsAndConditionFragment::class.java.simpleName)
+            supportFragmentManager.findFragmentByTag(AffiliateTermsAndConditionFragment::class.java.name)
         if (currentFragment != null) {
             (currentFragment as? AffiliateTermsAndConditionFragment)?.setChannels(channels)
         }
