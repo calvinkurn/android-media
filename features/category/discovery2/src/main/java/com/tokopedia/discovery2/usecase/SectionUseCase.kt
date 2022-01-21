@@ -82,9 +82,9 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
                                 Utils.updateProductAddedInCart(productListData, getCartData(pageEndPoint))
                             comp.pageLoadedCounter = 2
                             comp.verticalProductFailState = false
-                            it.showVerticalLoader = true
+                            comp.showVerticalLoader = true
                         }else{
-                            it.showVerticalLoader = false
+                            comp.showVerticalLoader = false
                         }
                     }
 
