@@ -1,5 +1,7 @@
 package com.tokopedia.vouchercreation.product.create.view.fragment
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
@@ -15,7 +17,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
+import com.tokopedia.universal_sharing.view.bottomsheet.ClipboardHandler
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
@@ -39,6 +43,10 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         private const val SCREEN_NAME = "Product coupon preview page"
         private const val ZERO: Long = 0
 
+        private const val ALPHA_VISIBLE : Float  = 1.0f
+        private const val ALPHA_NOT_VISIBLE : Float  = 0.0f
+        private const val NO_TRANSLATION : Float  = 0.0f
+
         fun newInstance(): ProductCouponPreviewFragment {
             return ProductCouponPreviewFragment()
         }
@@ -52,6 +60,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     private var couponSettings: CouponSettings? = null
     private var couponInformation: CouponInformation? = null
     private var couponProducts: List<CouponProduct> = emptyList()
+    private var isCardExpanded = true
 
     private val CouponType.label: String
         get() {
@@ -127,6 +136,11 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         }
         binding?.imgExpenseEstimationDescription?.setOnClickListener { displayExpenseEstimationDescription() }
         binding?.tpgTermAndConditions?.movementMethod = LinkMovementMethod.getInstance()
+        binding?.imgDropdown?.setOnClickListener { handleCouponProductInformationVisibility() }
+        binding?.imgCopyToClipboard?.setOnClickListener {
+            val content = binding?.tpgCouponCode?.text.toString().trim()
+            copyToClipboard(content)
+        }
     }
 
     private fun observeCouponImageUrl() {
@@ -325,5 +339,63 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         if (!isAdded) return
         val bottomSheet = ExpenseEstimationBottomSheet.newInstance()
         bottomSheet.show(childFragmentManager)
+    }
+
+    private fun handleCouponProductInformationVisibility() {
+        if (isCardExpanded) {
+            expandCouponProductDescription()
+        } else {
+            collapseCouponProductDescription()
+        }
+
+        isCardExpanded = !isCardExpanded
+    }
+
+    private fun copyToClipboard(content : String) {
+        if (content.isNotEmpty()) {
+            ClipboardHandler().copyToClipboard(requireActivity(), content)
+            Toaster.build(
+                binding?.root ?: return,
+                getString(R.string.coupon_code_copied_to_clipboard)
+            ).show()
+        }
+    }
+
+    private fun expandCouponProductDescription() {
+        animateExpand()
+        binding?.imgDropdown?.setImageResource(R.drawable.ic_chevron_up)
+    }
+
+    private fun collapseCouponProductDescription() {
+        binding?.imgDropdown?.setImageResource(R.drawable.ic_mvc_chevron_down)
+        animateCollapse()
+    }
+
+    private fun animateCollapse() {
+        val view = binding?.groupCouponProductInformation ?: return
+        view.animate()
+            .translationY(NO_TRANSLATION)
+            .alpha(ALPHA_NOT_VISIBLE)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    super.onAnimationEnd(animation)
+                    view.gone()
+                }
+            })
+    }
+
+    private fun animateExpand() {
+        val view = binding?.groupCouponProductInformation ?: return
+        view.alpha = ALPHA_NOT_VISIBLE
+
+        view.animate()
+            .translationY(view.height.toFloat())
+            .alpha(ALPHA_VISIBLE)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    super.onAnimationEnd(animation)
+                    view.visible()
+                }
+            })
     }
 }

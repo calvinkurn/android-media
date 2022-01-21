@@ -412,5 +412,6 @@
     <string name="mvc_create_coupon_target_public_desc">Kupon akan tampil di tokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.</string>
     <string name="mvc_create_coupon_target_private_desc">Kode promo hanya dapat digunakan oleh pembeli yang <b>menerima kode khusus</b> dari tokomu.</string>
     <string name="mvc_create_coupon_date_desc"><b>Maks. 10 Kupon</b> per bulan</string>
+    <string name="coupon_code_copied_to_clipboard">Kode kupon berhasil disalin</string>
 
 </resources>
