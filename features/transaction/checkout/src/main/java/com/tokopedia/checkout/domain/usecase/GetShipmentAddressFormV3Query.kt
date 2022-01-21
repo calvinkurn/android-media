@@ -47,14 +47,14 @@ fun getQueryShipmentAddressFormV3(): String {
                   state
                   state_detail
                   tokonow {
-                    #is_modified
+                    is_modified
                     shop_id
                     warehouse_id
-                    #warehouses {
-                      #warehouse_id
-                      #service_type
-                    #}
-                    #service_type
+                    warehouses {
+                      warehouse_id
+                      service_type
+                    }
+                    service_type
                   }
                 }
                 group_shop {
@@ -126,7 +126,7 @@ fun getQueryShipmentAddressFormV3(): String {
                     is_gold
                     is_official
                     shop_ticker
-                    #shop_ticker_title
+                    shop_ticker_title
                     shop_type_info {
                       shop_tier
                       shop_grade

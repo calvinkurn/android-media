@@ -37,14 +37,14 @@ fun getQueryCartRevampV3(): String {
                 state
                 state_detail
                 tokonow {
-                  #is_modified
+                  is_modified
                   shop_id
                   warehouse_id
-                  #warehouses {
-                    #warehouse_id
-                    #service_type
-                  #}
-                  #service_type
+                  warehouses {
+                    warehouse_id
+                    service_type
+                  }
+                  service_type
                 }
               }
               empty_cart {
