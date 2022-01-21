@@ -1,7 +1,7 @@
 package com.tokopedia.imagepicker.editor.domain
 
 import com.tokopedia.imagepicker.editor.data.NetworkServices
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -18,7 +18,7 @@ class SetRemoveBackgroundUseCase @Inject constructor(
     }
 
     private fun File.fileBody(): MultipartBody.Part {
-        val contentType = MediaType.parse(SUPPORTED_CONTENT_TYPE)
+        val contentType = SUPPORTED_CONTENT_TYPE.toMediaType()
         val requestBody = RequestBody.create(contentType, this)
         return MultipartBody.Part.createFormData(BODY_FILE_UPLOAD, this.name, requestBody)
     }
