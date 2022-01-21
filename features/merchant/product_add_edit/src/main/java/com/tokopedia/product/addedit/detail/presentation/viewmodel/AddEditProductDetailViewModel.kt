@@ -452,7 +452,8 @@ class AddEditProductDetailViewModel @Inject constructor(
     fun validateProductNameInputFromNetwork(productName: String) {
         launchCatchError(block = {
             val response = withContext(dispatchers.io) {
-                validateProductNameUseCase.setParamsProductName(productName)
+                validateProductNameUseCase.setParamsProductName(
+                    productInputModel.productId.toString(), productName)
                 validateProductNameUseCase.executeOnBackground()
             }
             val validationMessage = response.productValidateV3.data.validationResults.joinToString("\n")

@@ -9,9 +9,11 @@ import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 class WishlistV2EmptyStateNotFoundViewHolder(private val binding: WishlistV2EmptyStateNotFoundItemBinding, private val actionListener: WishlistV2Adapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: WishlistV2TypeLayoutData) {
-        binding.emptyState.emptyStateDescriptionID.text = itemView.context.getString(R.string.empty_state_not_found_description, item.dataObject as String)
-        binding.emptyState.setPrimaryCTAClickListener {  
-            actionListener?.onNotFoundButtonClicked(item.dataObject)
+        if (item.dataObject is String) {
+            binding.emptyState.emptyStateDescriptionID.text = itemView.context.getString(R.string.empty_state_not_found_description, item.dataObject)
+            binding.emptyState.setPrimaryCTAClickListener {
+                actionListener?.onNotFoundButtonClicked(item.dataObject)
+            }
         }
     }
 }

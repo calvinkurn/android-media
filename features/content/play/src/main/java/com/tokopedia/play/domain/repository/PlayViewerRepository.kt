@@ -6,4 +6,5 @@ package com.tokopedia.play.domain.repository
 interface PlayViewerRepository : PlayViewerCartRepository,
         PlayViewerInteractiveRepository,
         PlayViewerLikeRepository,
-        PlayViewerPartnerRepository
+        PlayViewerPartnerRepository,
+        PlayViewerUserReportRepository

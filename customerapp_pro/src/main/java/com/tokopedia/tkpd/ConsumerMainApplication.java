@@ -1,11 +1,14 @@
 package com.tokopedia.tkpd;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.work.Configuration;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -14,10 +17,15 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.intl.BuildConfig;
 import com.tokopedia.intl.R;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.screenshot_observer.Screenshot;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import kotlin.Pair;
 
@@ -25,7 +33,8 @@ import kotlin.Pair;
  * Created by ricoharisin on 11/11/16.
  */
 
-public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMainApplication {
+public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMainApplication
+    implements Configuration.Provider{
 
     protected void setVersionName() {
         Pair<String, String> versions = AuthHelper.getVersionName(BuildConfig.VERSION_NAME);
@@ -121,5 +130,18 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         intent.putExtra("EXTRA_IS_CLASS_NAME", className);
         intent.putExtra("EXTRA_IS_FROM_SCREENSHOT", isFromScreenshot);
         getApplicationContext().startActivity(intent);
+    }
+
+    @SuppressLint("RestrictedApi")
+    @NonNull
+    @Override
+    public Configuration getWorkManagerConfiguration() {
+        return new Configuration.Builder().setInitializationExceptionHandler(throwable -> {
+            Map<String, String> map = new HashMap<>();
+            map.put("type", "init");
+            map.put("error", Log.getStackTraceString(throwable));
+            ServerLogger.log(Priority.P1, "WORK_MANAGER", map);
+            throw new RuntimeException("WorkManager failed to initialize", throwable);
+        }).build();
     }
 }

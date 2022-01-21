@@ -67,13 +67,17 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.IProductCardView
+import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_MPC_LIFECYCLE_OBSERVER
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
+import com.tokopedia.search.analytics.InspirationCarouselAnalyticsData
 import com.tokopedia.search.analytics.InspirationCarouselTrackingUnification
+import com.tokopedia.search.analytics.ProductClickAnalyticsData
 import com.tokopedia.search.analytics.RecommendationTracking
 import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
@@ -106,7 +110,6 @@ import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
-import com.tokopedia.search.result.presentation.view.listener.SearchInTokopediaListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener
@@ -114,6 +117,7 @@ import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl
+import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.applyQuickFilterElevation
@@ -136,8 +140,8 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import org.json.JSONArray
-import java.util.ArrayList
-import java.util.HashMap
+import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 class ProductListFragment: BaseDaggerFragment(),
@@ -155,7 +159,6 @@ class ProductListFragment: BaseDaggerFragment(),
         InspirationCardListener,
         QuickFilterElevation,
         SortFilterBottomSheet.Callback,
-        SearchInTokopediaListener,
         SearchNavigationClickListener,
         TopAdsImageViewListener,
         ChooseAddressListener,
@@ -174,7 +177,6 @@ class ProductListFragment: BaseDaggerFragment(),
         private const val SHOP = "shop"
         private const val DEFAULT_SPAN_COUNT = 2
         private const val ON_BOARDING_DELAY_MS: Long = 200
-        private const val ENABLE_REVAMP_WISHLIST_V2 = "android_revamp_wishlist_v2"
 
         fun newInstance(searchParameter: SearchParameter?): ProductListFragment {
             val args = Bundle().apply {
@@ -195,6 +197,9 @@ class ProductListFragment: BaseDaggerFragment(),
 
     @Inject
     lateinit var inspirationCarouselTrackingUnification: InspirationCarouselTrackingUnification
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var refreshLayout: SwipeRefreshLayout? = null
@@ -223,12 +228,16 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override val carouselRecycledViewPool = RecyclerView.RecycledViewPool()
+    override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
+        private set
 
+    //region onCreate Fragments
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         loadDataFromArguments()
         initTrackingQueue()
+        initProductCardLifecycleObserver()
     }
 
     private fun loadDataFromArguments() {
@@ -249,6 +258,15 @@ class ProductListFragment: BaseDaggerFragment(),
         }
     }
 
+    private fun initProductCardLifecycleObserver() {
+        if (!remoteConfig.getBoolean(ENABLE_MPC_LIFECYCLE_OBSERVER)) return
+
+        ProductCardLifecycleObserver().also {
+            productCardLifecycleObserver = it
+            lifecycle.addObserver(it)
+        }
+    }
+
     override fun initInjector() {
         activity?.let {
             DaggerProductListViewComponent.builder()
@@ -258,8 +276,9 @@ class ProductListFragment: BaseDaggerFragment(),
                     .inject(this)
         }
     }
+    //endregion
 
-
+    //region onCreateView
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -272,7 +291,9 @@ class ProductListFragment: BaseDaggerFragment(),
 
         return inflater.inflate(R.layout.search_result_product_fragment_layout, null)
     }
+    //endregion
 
+    //region onViewCreated
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -289,6 +310,14 @@ class ProductListFragment: BaseDaggerFragment(),
         copySearchParameter(savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER))
     }
 
+    private fun addDefaultSelectedSort() {
+        val searchParameter = searchParameter ?: return
+        if (searchParameter.get(SearchApiConst.OB).isEmpty())
+            searchParameter.set(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
+    }
+    //endregion
+
+    //region View Related stuff (recycler view, layout managers, load more, shimmering, etc
     private fun initViews(view: View) {
         initRecyclerView(view)
         initLayoutManager()
@@ -325,6 +354,10 @@ class ProductListFragment: BaseDaggerFragment(),
         refreshLayout?.setOnRefreshListener(this::onSwipeToRefresh)
     }
 
+    private fun onSwipeToRefresh() {
+        reloadData()
+    }
+
     private fun initTopAdsConfig() {
         topAdsConfig = Config.Builder()
                 .setSessionId(getRegistrationId())
@@ -351,23 +384,23 @@ class ProductListFragment: BaseDaggerFragment(),
         val topAdsConfig = topAdsConfig ?: return
 
         val productListTypeFactory = ProductListTypeFactoryImpl(
-                productListener = this,
-                tickerListener = this,
-                suggestionListener = this,
-                globalNavListener = this,
-                bannerAdsListener = this,
-                emptyStateListener = this,
-                recommendationListener = this,
-                inspirationCarouselListener = this,
-                broadMatchListener = this,
-                inspirationCardListener = this,
-                searchInTokopediaListener = this,
-                searchNavigationListener = this,
-                topAdsImageViewListener = this,
-                chooseAddressListener = this,
-                bannerListener = this,
-                lastFilterListener = this,
-                topAdsConfig = topAdsConfig,
+            productListener = this,
+            tickerListener = this,
+            suggestionListener = this,
+            globalNavListener = this,
+            bannerAdsListener = this,
+            emptyStateListener = this,
+            recommendationListener = this,
+            inspirationCarouselListener = this,
+            broadMatchListener = this,
+            inspirationCardListener = this,
+            searchInTokopediaListener = SearchInTokopediaListenerDelegate(activity),
+            searchNavigationListener = this,
+            topAdsImageViewListener = this,
+            chooseAddressListener = this,
+            bannerListener = this,
+            lastFilterListener = this,
+            topAdsConfig = topAdsConfig,
         )
 
         productListAdapter = ProductListAdapter(itemChangeView = this, typeFactory = productListTypeFactory)
@@ -423,11 +456,6 @@ class ProductListFragment: BaseDaggerFragment(),
         return ProductItemDecoration(spacing)
     }
 
-    override val isFirstActiveTab
-        get() = getActiveTab() == SearchConstant.ActiveTab.PRODUCT
-
-    private fun getActiveTab() = searchParameter?.get(SearchApiConst.ACTIVE_TAB) ?: ""
-
     override fun showRefreshLayout() {
         refreshLayout?.isRefreshing = true
     }
@@ -435,7 +463,35 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun hideRefreshLayout() {
         refreshLayout?.isRefreshing = false
     }
+    //endregion
 
+    //region Search parameter related stuff
+    override val isFirstActiveTab
+        get() = getActiveTab() == SearchConstant.ActiveTab.PRODUCT
+
+    private fun getActiveTab() = searchParameter?.get(SearchApiConst.ACTIVE_TAB) ?: ""
+
+    override val queryKey: String
+        get() = searchParameter?.getSearchQuery() ?: ""
+
+    override val previousKeyword: String
+        get() = searchParameter?.get(SearchApiConst.PREVIOUS_KEYWORD) ?: ""
+
+    override val isLandingPage: Boolean
+        get() = searchParameter?.getBoolean(SearchApiConst.LANDING_PAGE) ?: false
+
+    private fun getSearchParameter(): SearchParameter? {
+        return searchParameter
+    }
+
+    private fun getDimension90(): String =
+        Dimension90Utils.getDimension90(getSearchParameterMap())
+
+    private fun getSearchParameterMap(): Map<String, Any> =
+        searchParameter?.getSearchParameterMap() ?: mapOf()
+    //endregion
+
+    //region onAttach
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
@@ -455,6 +511,7 @@ class ProductListFragment: BaseDaggerFragment(),
     private fun castContextToSearchPerformanceMonitoring(context: Context): SearchPerformanceMonitoringListener? {
         return if (context is SearchPerformanceMonitoringListener) context else null
     }
+    //endregion
 
     override fun onResume() {
         super.onResume()
@@ -468,6 +525,7 @@ class ProductListFragment: BaseDaggerFragment(),
         presenter?.onViewVisibilityChanged(isVisibleToUser, isAdded)
     }
 
+    //region Setup Search Navigation (layout switching small grid, list, and big grid)
     override fun setupSearchNavigation() {
         searchNavigationListener?.setupSearchNavigation(object : SearchNavigationListener.ClickListener {
             override fun onChangeGridClick() {
@@ -527,12 +585,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 productListAdapter.getIconTypeRecyclerView()
         )
     }
-
-    private fun addDefaultSelectedSort() {
-        val searchParameter = searchParameter ?: return
-        if (searchParameter.get(SearchApiConst.OB).isEmpty())
-            searchParameter.set(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
-    }
+    //endregion
 
     override fun trackScreenAuthenticated() {
         if (userVisibleHint
@@ -542,6 +595,7 @@ class ProductListFragment: BaseDaggerFragment(),
         }
     }
 
+    //region adding visitable list to recycler view adapter
     override fun addProductList(list: List<Visitable<*>>) {
         productListAdapter?.appendItems(list)
     }
@@ -557,54 +611,29 @@ class ProductListFragment: BaseDaggerFragment(),
         productListAdapter?.appendItems(list)
     }
 
-    private fun stopSearchResultPagePerformanceMonitoring() {
-        recyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                searchPerformanceMonitoringListener?.let {
-                    it.stopRenderPerformanceMonitoring()
-                    it.stopPerformanceMonitoring()
-                }
-
-                recyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-            }
-        })
+    override fun setEmptyProduct(globalNavDataView: GlobalNavDataView?, emptySearchProductDataView: EmptySearchProductDataView) {
+        productListAdapter?.showEmptyState(globalNavDataView, emptySearchProductDataView)
     }
 
-    override fun sendProductImpressionTrackingEvent(
-            item: ProductItemDataView,
-            suggestedRelatedKeyword: String,
-    ) {
-        val userId = getUserId()
-        val eventLabel = getSearchProductTrackingEventLabel(item, suggestedRelatedKeyword)
-        val dataLayerList = mutableListOf<Any>()
-        val productItemDataViews = mutableListOf<ProductItemDataView>()
-        val irisSessionId = irisSession?.getSessionId() ?: ""
-        val filterSortParams = searchParameter?.let {
-            getSortFilterParamsString(it.getSearchParameterMap() as Map<String?, Any?>)
-        } ?: ""
-        val pageComponentId = presenter?.pageComponentId ?: ""
-
-        dataLayerList.add(item.getProductAsObjectDataLayer(filterSortParams, pageComponentId))
-        productItemDataViews.add(item)
-
-        trackingQueue?.let {
-            SearchTracking.eventImpressionSearchResultProduct(
-                it,
-                dataLayerList,
-                eventLabel,
-                irisSessionId,
-                userId
-            )
-        }
+    override fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>) {
+        productListAdapter?.appendItems(bannedProductsErrorMessageAsList)
     }
 
-    private fun getSearchProductTrackingEventLabel(item: ProductItemDataView, suggestedRelatedKeyword: String): String {
-        val keyword = if (suggestedRelatedKeyword.isEmpty()) queryKey else suggestedRelatedKeyword
-        val pageTitle = item.pageTitle ?: ""
-
-        return if (pageTitle.isEmpty()) keyword else pageTitle
+    override fun addLoading() {
+        productListAdapter?.addLoading()
     }
 
+    override fun removeLoading() {
+        removeSearchPageLoading()
+        productListAdapter?.removeLoading()
+    }
+
+    override fun addLocalSearchRecommendation(visitableList: List<Visitable<*>>) {
+        productListAdapter?.appendItems(visitableList)
+    }
+    //endregion
+
+    //region network error handler
     override fun showNetworkError(startRow: Int, throwable: Throwable?) {
         val productListAdapter = productListAdapter ?: return
 
@@ -649,9 +678,9 @@ class ProductListFragment: BaseDaggerFragment(),
             }.showRetrySnackbar()
         }
     }
+    //endregion
 
-    private fun getScreenNameId() = SCREEN_SEARCH_PAGE_PRODUCT_TAB
-
+    //region onActivityResult
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -698,6 +727,7 @@ class ProductListFragment: BaseDaggerFragment(),
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
         presenter?.handleWishlistAction(productCardOptionsModel)
     }
+    //endregion
 
     override fun onPause() {
         super.onPause()
@@ -705,8 +735,44 @@ class ProductListFragment: BaseDaggerFragment(),
         trackingQueue?.sendAll()
     }
 
+    //region product item (organic and topads) impression, click, and 3 dots click
     override fun onProductImpressed(item: ProductItemDataView?, adapterPosition: Int) {
         presenter?.onProductImpressed(item, adapterPosition)
+    }
+
+    override fun sendProductImpressionTrackingEvent(
+        item: ProductItemDataView,
+        suggestedRelatedKeyword: String,
+    ) {
+        val userId = getUserId()
+        val eventLabel = getSearchProductTrackingEventLabel(item, suggestedRelatedKeyword)
+        val dataLayerList = ArrayList<Any>()
+        val productItemDataViews = mutableListOf<ProductItemDataView>()
+        val irisSessionId = irisSession?.getSessionId() ?: ""
+        val filterSortParams = searchParameter?.let {
+            getSortFilterParamsString(it.getSearchParameterMap() as Map<String?, Any?>)
+        } ?: ""
+        val pageComponentId = presenter?.pageComponentId ?: ""
+
+        dataLayerList.add(item.getProductAsObjectDataLayer(filterSortParams, pageComponentId))
+        productItemDataViews.add(item)
+
+        trackingQueue?.let {
+            SearchTracking.eventImpressionSearchResultProduct(
+                it,
+                dataLayerList,
+                eventLabel,
+                irisSessionId,
+                userId
+            )
+        }
+    }
+
+    private fun getSearchProductTrackingEventLabel(item: ProductItemDataView, suggestedRelatedKeyword: String): String {
+        val keyword = if (suggestedRelatedKeyword.isEmpty()) queryKey else suggestedRelatedKeyword
+        val pageTitle = item.pageTitle ?: ""
+
+        return if (pageTitle.isEmpty()) keyword else pageTitle
     }
 
     override fun sendTopAdsGTMTrackingProductImpression(item: ProductItemDataView) {
@@ -751,38 +817,6 @@ class ProductListFragment: BaseDaggerFragment(),
         } else null
     }
 
-    override fun onGlobalNavWidgetClicked(item: GlobalNavDataView.Item?, keyword: String?) {
-        if (item == null) return
-
-        redirectionStartActivity(item.applink, item.url)
-
-        SearchTracking.trackEventClickGlobalNavWidgetItem(
-                item.getGlobalNavItemAsObjectDataLayer(item.name),
-                keyword ?: "",
-                item.name,
-                item.applink
-        )
-    }
-
-    override fun onGlobalNavWidgetClickSeeAll(model: GlobalNavDataView?) {
-        if (model == null) return
-
-        redirectionStartActivity(model.seeAllApplink, model.seeAllUrl)
-
-        SearchTracking.eventUserClickSeeAllGlobalNavWidget(
-                model.keyword,
-                model.title,
-                model.seeAllApplink
-        )
-    }
-
-    override fun redirectionStartActivity(applink: String?, url: String?) {
-        if (!applink.isNullOrEmpty())
-            redirectionListener?.startActivityWithApplink(applink.decodeQueryParameter())
-        else
-            redirectionListener?.startActivityWithUrl(url)
-    }
-
     override fun onItemClicked(item: ProductItemDataView?, adapterPosition: Int) {
         presenter?.onProductClick(item, adapterPosition)
     }
@@ -805,9 +839,9 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun sendGTMTrackingProductClick(
-            item: ProductItemDataView,
-            userId: String,
-            suggestedRelatedKeyword: String,
+        item: ProductItemDataView,
+        userId: String,
+        suggestedRelatedKeyword: String,
     ) {
         val eventLabel = getSearchProductTrackingEventLabel(item, suggestedRelatedKeyword)
         val filterSortParams = searchParameter?.let {
@@ -815,14 +849,17 @@ class ProductListFragment: BaseDaggerFragment(),
         } ?: ""
         val pageComponentId = presenter?.pageComponentId ?: ""
 
+        val productAnalyticsData = ProductClickAnalyticsData(
+            isOrganicAds = item.isOrganicAds,
+            topadsTag = item.topadsTag,
+            filterSortParams = filterSortParams,
+            componentId = pageComponentId
+        )
         SearchTracking.trackEventClickSearchResultProduct(
             item.getProductAsObjectDataLayer(filterSortParams, pageComponentId),
-            item.isOrganicAds,
-            item.topadsTag,
             eventLabel,
-            filterSortParams,
             userId,
-            pageComponentId,
+            productAnalyticsData,
         )
     }
 
@@ -853,6 +890,67 @@ class ProductListFragment: BaseDaggerFragment(),
         }
     }
 
+    override fun onThreeDotsClick(item: ProductItemDataView?, adapterPosition: Int) {
+        if (getSearchParameter() == null || item == null) return
+
+        presenter?.onThreeDotsClick(item, adapterPosition)
+    }
+
+    override fun trackEventLongPress(productID: String) {
+        SearchTracking.trackEventProductLongPress(queryKey, productID)
+    }
+
+    override fun showProductCardOptions(productCardOptionsModel: ProductCardOptionsModel) {
+        showProductCardOptions(this, productCardOptionsModel)
+    }
+    //endregion
+
+    //region Global Nav Widget
+    override fun onGlobalNavWidgetClicked(item: GlobalNavDataView.Item?, keyword: String?) {
+        if (item == null) return
+
+        redirectionStartActivity(item.applink, item.url)
+
+        SearchTracking.trackEventClickGlobalNavWidgetItem(
+                item.getGlobalNavItemAsObjectDataLayer(item.name),
+                keyword ?: "",
+                item.name,
+                item.applink
+        )
+    }
+
+    override fun onGlobalNavWidgetClickSeeAll(model: GlobalNavDataView?) {
+        if (model == null) return
+
+        redirectionStartActivity(model.seeAllApplink, model.seeAllUrl)
+
+        SearchTracking.eventUserClickSeeAllGlobalNavWidget(
+                model.keyword,
+                model.title,
+                model.seeAllApplink
+        )
+    }
+
+    override fun sendImpressionGlobalNav(globalNavDataView: GlobalNavDataView) {
+        val dataLayerList = ArrayList<Any>()
+        globalNavDataView.itemList.forEach { item ->
+            dataLayerList.add(item.getGlobalNavItemAsObjectDataLayer(item.applink))
+        }
+
+        trackingQueue?.let {
+            SearchTracking.trackEventImpressionGlobalNavWidgetItem(it, dataLayerList, globalNavDataView.keyword)
+        }
+    }
+    //endregion
+
+    override fun redirectionStartActivity(applink: String?, url: String?) {
+        if (!applink.isNullOrEmpty())
+            redirectionListener?.startActivityWithApplink(applink.decodeQueryParameter())
+        else
+            redirectionListener?.startActivityWithUrl(url)
+    }
+
+    //region RecommendationItem (during empty state) impression, click, and 3 dots wishlist
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
         val intent = getProductIntent(item.productId.toString(), "0") ?: return
         intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, item.position)
@@ -896,21 +994,9 @@ class ProductListFragment: BaseDaggerFragment(),
 
         return productCardOptionsModel
     }
+    //endregion
 
-    override fun onThreeDotsClick(item: ProductItemDataView?, adapterPosition: Int) {
-        if (getSearchParameter() == null || item == null) return
-
-        presenter?.onThreeDotsClick(item, adapterPosition)
-    }
-
-    override fun trackEventLongPress(productID: String) {
-        SearchTracking.trackEventProductLongPress(queryKey, productID)
-    }
-
-    override fun showProductCardOptions(productCardOptionsModel: ProductCardOptionsModel) {
-        showProductCardOptions(this, productCardOptionsModel)
-    }
-
+    //region Ticker
     override fun onTickerImpressed(tickerDataView: TickerDataView) {
         tickerDataView.impress(iris)
     }
@@ -930,22 +1016,6 @@ class ProductListFragment: BaseDaggerFragment(),
         reloadData()
     }
 
-    private fun Map<String, String>.addFilterOrigin(): Map<String, String> =
-        toMutableMap().also {
-            it[SearchApiConst.ORIGIN_FILTER] = DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
-        }
-
-    private fun refreshSearchParameter(queryParams: Map<String, String>) {
-        searchParameter?.resetParams(queryParams)
-        searchNavigationListener?.updateSearchParameter(searchParameter)
-        filterController.refreshMapParameter(queryParams)
-    }
-
-    private fun SearchParameter.resetParams(queryParams: Map<String, String>) {
-        getSearchParameterHashMap().clear()
-        getSearchParameterHashMap().putAll(queryParams)
-    }
-
     override fun onTickerDismissed() {
         presenter?.onPriceFilterTickerDismissed()
         productListAdapter?.removePriceFilterTicker()
@@ -953,7 +1023,9 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override val isTickerHasDismissed
         get() = presenter?.isTickerHasDismissed ?: false
+    //endregion
 
+    //region Suggestion
     override fun onSuggestionImpressed(suggestionDataView: SuggestionDataView) {
         suggestionDataView.impress(iris)
     }
@@ -969,6 +1041,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
         redirectionListener?.startActivityWithApplink(modifiedApplinkToSearchResult)
     }
+    //endregion
 
     override fun modifyApplinkToSearchResult(applink: String): String {
         val urlParser = URLParser(applink)
@@ -979,6 +1052,7 @@ class ProductListFragment: BaseDaggerFragment(),
         return ApplinkConstInternalDiscovery.SEARCH_RESULT + "?" + UrlParamUtils.generateUrlParamString(params)
     }
 
+    //region Quick Filter
     override fun isQuickFilterSelected(option: Option?): Boolean {
         option ?: return false
 
@@ -1010,6 +1084,61 @@ class ProductListFragment: BaseDaggerFragment(),
         SearchTracking.trackEventClickQuickFilter(filterName, filterValue, isSelected, getUserId())
     }
 
+    override fun initFilterControllerForQuickFilter(quickFilterList: List<Filter>) {
+        filterController.initFilterController(searchParameter?.getSearchParameterHashMap(), quickFilterList)
+    }
+
+    override fun hideQuickFilterShimmering() {
+        shimmeringView?.gone()
+    }
+
+    override fun setQuickFilter(items: List<SortFilterItem>) {
+        searchSortFilter?.let {
+            it.sortFilterItems.removeAllViews()
+            it.visibility = View.VISIBLE
+            it.sortFilterHorizontalScrollView.scrollX = 0
+            it.addItem(items as ArrayList<SortFilterItem>)
+            it.textView?.text = getString(R.string.search_filter)
+            it.parentListener = { this.openBottomSheetFilterRevamp() }
+
+            setSortFilterNewNotification(items)
+        }
+    }
+
+    private fun setSortFilterNewNotification(items: List<SortFilterItem>) {
+        val quickFilterOptionList = presenter?.quickFilterOptionList ?: listOf()
+        for (i in items.indices) {
+            if (i >= quickFilterOptionList.size) break
+            val item = items[i]
+            val quickFilterOption = quickFilterOptionList[i]
+
+            sortFilterItemShowNew(item, quickFilterOption.isNew)
+        }
+    }
+
+    private fun sortFilterItemShowNew(item: SortFilterItem, isNew: Boolean) {
+        item.refChipUnify.showNewNotification = isNew
+    }
+
+    override fun configure(shouldRemove: Boolean) {
+        if (shouldRemove)
+            removeQuickFilterElevation(searchSortFilter)
+        else
+            applyQuickFilterElevation(context, searchSortFilter)
+    }
+
+    private fun hideSearchSortFilter() {
+        searchSortFilter?.gone()
+        shimmeringView?.visible()
+    }
+
+    private fun setSortFilterIndicatorCounter() {
+        val searchParameter = searchParameter ?: return
+        searchSortFilter?.indicatorCounter = getSortFilterCount(searchParameter.getSearchParameterMap())
+    }
+    //endregion
+
+    //region Empty state related (also has remove filter functionality)
     override fun onSelectedFilterRemoved(uniqueId: String?) {
         removeSelectedFilter(uniqueId ?: "")
     }
@@ -1070,38 +1199,16 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onEmptySearchToGlobalSearchClicked(applink: String?) {
         redirectionListener?.startActivityWithApplink(applink)
     }
+    //endregion
 
-    override fun stopTracePerformanceMonitoring() {
-        performanceMonitoring?.stopTrace()
-    }
-
-    override fun getUserId() = presenter?.userId ?: "0"
-
-    override val queryKey: String
-        get() = searchParameter?.getSearchQuery() ?: ""
-
-    override val previousKeyword: String
-        get() = searchParameter?.get(SearchApiConst.PREVIOUS_KEYWORD) ?: ""
-
-    override fun setEmptyProduct(globalNavDataView: GlobalNavDataView?, emptySearchProductDataView: EmptySearchProductDataView) {
-        productListAdapter?.showEmptyState(globalNavDataView, emptySearchProductDataView)
-    }
-
-    private fun setSortFilterIndicatorCounter() {
-        val searchParameter = searchParameter ?: return
-        searchSortFilter?.indicatorCounter = getSortFilterCount(searchParameter.getSearchParameterMap())
-    }
-
-    override fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>) {
-        productListAdapter?.appendItems(bannedProductsErrorMessageAsList)
-    }
-
+    //region banned products
     override fun trackEventImpressionBannedProducts(isEmptySearch: Boolean) {
         if (isEmptySearch)
             SearchTracking.trackEventImpressionBannedProductsEmptySearch(queryKey)
         else
             SearchTracking.trackEventImpressionBannedProductsWithResult(queryKey)
     }
+    //endregion
 
     override fun reloadData() {
         val searchParameter = getSearchParameter() ?: return
@@ -1120,13 +1227,44 @@ class ProductListFragment: BaseDaggerFragment(),
         setSortFilterIndicatorCounter()
     }
 
-    private fun hideSearchSortFilter() {
-        searchSortFilter?.gone()
-        shimmeringView?.visible()
+    //region Change product card layout
+    override fun setDefaultLayoutType(defaultView: Int) {
+        when (defaultView) {
+            SearchConstant.DefaultViewType.SMALL_GRID -> switchLayoutTypeTo(SearchConstant.ViewType.SMALL_GRID)
+            SearchConstant.DefaultViewType.LIST -> switchLayoutTypeTo(SearchConstant.ViewType.LIST)
+            else -> switchLayoutTypeTo(SearchConstant.ViewType.SMALL_GRID)
+        }
     }
 
-    private fun onSwipeToRefresh() {
-        reloadData()
+    override fun onChangeViewClicked(position: Int) {
+        val currentLayoutType = productListAdapter?.getCurrentLayoutType() ?: SearchConstant.ViewType.SMALL_GRID
+        presenter?.handleChangeView(position, currentLayoutType)
+    }
+
+    override fun trackEventSearchResultChangeView(viewType: String) {
+        SearchTracking.eventSearchResultChangeGrid(viewType, screenName)
+    }
+
+    override fun switchSearchNavigationLayoutTypeToListView(position: Int) {
+        if (!userVisibleHint) return
+
+        staggeredGridLayoutManager?.spanCount = 1
+        productListAdapter?.changeSearchNavigationListView(position)
+    }
+
+    override fun switchSearchNavigationLayoutTypeToBigGridView(position: Int) {
+        if (!userVisibleHint) return
+
+        staggeredGridLayoutManager?.spanCount = 1
+        productListAdapter?.changeSearchNavigationSingleGridView(position)
+    }
+
+
+    override fun switchSearchNavigationLayoutTypeToSmallGridView(position: Int) {
+        if (!userVisibleHint) return
+
+        staggeredGridLayoutManager?.spanCount = 2
+        productListAdapter?.changeSearchNavigationDoubleGridView(position)
     }
 
     override fun onChangeList() {
@@ -1140,10 +1278,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onChangeSingleGrid() {
         recyclerView?.requestLayout()
     }
-
-    private fun getSearchParameter(): SearchParameter? {
-        return searchParameter
-    }
+    //endregion
 
     override fun backToTop() {
         smoothScrollRecyclerView()
@@ -1151,6 +1286,10 @@ class ProductListFragment: BaseDaggerFragment(),
 
     private fun smoothScrollRecyclerView() {
         recyclerView?.smoothScrollToPosition(0)
+    }
+
+    override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        savedInstanceState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter)
     }
 
     override fun onDestroyView() {
@@ -1162,14 +1301,7 @@ class ProductListFragment: BaseDaggerFragment(),
         return getScreenNameId()
     }
 
-    override fun addLoading() {
-        productListAdapter?.addLoading()
-    }
-
-    override fun removeLoading() {
-        removeSearchPageLoading()
-        productListAdapter?.removeLoading()
-    }
+    private fun getScreenNameId() = SCREEN_SEARCH_PAGE_PRODUCT_TAB
 
     private fun removeSearchPageLoading() {
         if (isFirstActiveTab)
@@ -1179,66 +1311,6 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun setAutocompleteApplink(autocompleteApplink: String?) {
         redirectionListener?.setAutocompleteApplink(autocompleteApplink)
     }
-
-    override fun sendTrackingEventAppsFlyerViewListingSearch(
-        afProdIds: JSONArray?,
-        query: String?,
-        prodIdArray: ArrayList<String?>?,
-        allProdIdArray: ArrayList<String?>?
-    ) {
-        SearchTracking.eventAppsFlyerViewListingSearch(afProdIds!!, query!!, prodIdArray!!, allProdIdArray)
-    }
-
-    override fun sendTrackingEventMoEngageSearchAttempt(
-            query: String?,
-            hasProductList: Boolean,
-            category: HashMap<String?, String?>?,
-    ) {
-        SearchTracking.trackMoEngageSearchAttempt(query, hasProductList, category)
-    }
-
-    override fun sendTrackingGTMEventSearchAttempt(generalSearchTrackingModel: GeneralSearchTrackingModel) {
-        SearchTracking.trackGTMEventSearchAttempt(generalSearchTrackingModel)
-    }
-
-    override fun sendImpressionGlobalNav(globalNavDataView: GlobalNavDataView) {
-        val dataLayerList = globalNavDataView.itemList.map { item ->
-            item.getGlobalNavItemAsObjectDataLayer(item.applink)
-        }
-
-        trackingQueue?.let {
-            SearchTracking.trackEventImpressionGlobalNavWidgetItem(it, dataLayerList, globalNavDataView.keyword)
-        }
-    }
-
-    override val isAnyFilterActive: Boolean
-        get() = filterController.isFilterActive()
-
-    override val isAnySortActive: Boolean
-        get() {
-            val mapParameter = searchParameter?.getSearchParameterMap() ?: mapOf()
-            return !isSortHasDefaultValue(mapParameter)
-        }
-
-    override fun clearLastProductItemPositionFromCache() {
-        activity?.applicationContext?.let {
-            LocalCacheHandler.clearCache(it, SEARCH_RESULT_ENHANCE_ANALYTIC)
-        }
-    }
-
-    override fun saveLastProductItemPositionToCache(lastProductItemPositionToCache: Int) {
-        activity?.applicationContext?.let {
-            val cache = LocalCacheHandler(it, SEARCH_RESULT_ENHANCE_ANALYTIC)
-            cache.putInt(LAST_POSITION_ENHANCE_PRODUCT, lastProductItemPositionToCache)
-            cache.applyEditor()
-        }
-    }
-
-    override val lastProductItemPositionFromCache: Int
-        get() = activity?.applicationContext?.let {
-                val cache = LocalCacheHandler(it, SEARCH_RESULT_ENHANCE_ANALYTIC)
-                return cache.getInt(LAST_POSITION_ENHANCE_PRODUCT, 0)
-            } ?: 0
 
     override fun updateScrollListener() {
         staggeredGridLayoutLoadMoreTriggerListener?.updateStateAfterGetData()
@@ -1265,6 +1337,57 @@ class ProductListFragment: BaseDaggerFragment(),
         activity?.finish()
     }
 
+    override fun getUserId() = presenter?.userId ?: "0"
+
+    override fun getRegistrationId() = presenter?.deviceId ?: ""
+
+    override val abTestRemoteConfig: RemoteConfig?
+        get() = RemoteConfigInstance.getInstance().abTestPlatform
+
+    override fun logWarning(message: String?, throwable: Throwable?) {
+        SearchLogger().logWarning(message, throwable)
+    }
+
+    override val className: String
+        get() = activity?.javaClass?.name ?: ""
+
+    override fun refreshItemAtIndex(index: Int) {
+        productListAdapter?.refreshItemAtIndex(index)
+    }
+
+    //region Tracking General Search (tracker after finished get product list from BE)
+    override fun sendTrackingEventAppsFlyerViewListingSearch(
+        afProdIds: JSONArray?,
+        query: String?,
+        prodIdArray: ArrayList<String?>?,
+        allProdIdArray: ArrayList<String?>?
+    ) {
+        SearchTracking.eventAppsFlyerViewListingSearch(afProdIds!!, query!!, prodIdArray!!, allProdIdArray)
+    }
+
+    override fun sendTrackingEventMoEngageSearchAttempt(
+            query: String?,
+            hasProductList: Boolean,
+            category: HashMap<String?, String?>?,
+    ) {
+        SearchTracking.trackMoEngageSearchAttempt(query, hasProductList, category)
+    }
+
+    override fun sendTrackingGTMEventSearchAttempt(generalSearchTrackingModel: GeneralSearchTrackingModel) {
+        SearchTracking.trackGTMEventSearchAttempt(generalSearchTrackingModel)
+    }
+    //endregion
+
+    //region Filter related
+    override val isAnyFilterActive: Boolean
+        get() = filterController.isFilterActive()
+
+    override val isAnySortActive: Boolean
+        get() {
+            val mapParameter = searchParameter?.getSearchParameterMap() ?: mapOf()
+            return !isSortHasDefaultValue(mapParameter)
+        }
+
     @Suppress("UNCHECKED_CAST")
     override val filterParamString: String
         get() {
@@ -1276,14 +1399,52 @@ class ProductListFragment: BaseDaggerFragment(),
             return UrlParamUtils.generateUrlParamString(filterParam)
         }
 
-    override fun setDefaultLayoutType(defaultView: Int) {
-        when (defaultView) {
-            SearchConstant.DefaultViewType.SMALL_GRID -> switchLayoutTypeTo(SearchConstant.ViewType.SMALL_GRID)
-            SearchConstant.DefaultViewType.LIST -> switchLayoutTypeTo(SearchConstant.ViewType.LIST)
-            else -> switchLayoutTypeTo(SearchConstant.ViewType.SMALL_GRID)
+    private fun getSortFilterParamStringFromSearchParameter() =
+        searchParameter?.let {
+            @Suppress("UNCHECKED_CAST")
+            getSortFilterParamsString(it.getSearchParameterMap() as Map<String?, String?>)
+        } ?: ""
+
+    private fun Map<String, String>.addFilterOrigin(): Map<String, String> =
+        toMutableMap().also {
+            it[SearchApiConst.ORIGIN_FILTER] = DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
+        }
+
+    private fun refreshSearchParameter(queryParams: Map<String, String>) {
+        searchParameter?.resetParams(queryParams)
+        searchNavigationListener?.updateSearchParameter(searchParameter)
+        filterController.refreshMapParameter(queryParams)
+    }
+
+    private fun SearchParameter.resetParams(queryParams: Map<String, String>) {
+        getSearchParameterHashMap().clear()
+        getSearchParameterHashMap().putAll(queryParams)
+    }
+    //endregion
+
+    //region Product Item Position (probably not used anymore)
+    override fun clearLastProductItemPositionFromCache() {
+        activity?.applicationContext?.let {
+            LocalCacheHandler.clearCache(it, SEARCH_RESULT_ENHANCE_ANALYTIC)
         }
     }
 
+    override fun saveLastProductItemPositionToCache(lastProductItemPositionToCache: Int) {
+        activity?.applicationContext?.let {
+            val cache = LocalCacheHandler(it, SEARCH_RESULT_ENHANCE_ANALYTIC)
+            cache.putInt(LAST_POSITION_ENHANCE_PRODUCT, lastProductItemPositionToCache)
+            cache.applyEditor()
+        }
+    }
+
+    override val lastProductItemPositionFromCache: Int
+        get() = activity?.applicationContext?.let {
+                val cache = LocalCacheHandler(it, SEARCH_RESULT_ENHANCE_ANALYTIC)
+                return cache.getInt(LAST_POSITION_ENHANCE_PRODUCT, 0)
+            } ?: 0
+    //endregion
+
+    //region Headline Ads
     override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
         if (applink == null || data == null) return
 
@@ -1307,12 +1468,16 @@ class ProductListFragment: BaseDaggerFragment(),
         TopAdsGtmTracker.eventTopAdsHeadlineShopView(position, data, queryKey, getUserId())
     }
 
-    override fun getRegistrationId() = presenter?.deviceId ?: ""
+    override fun onTopAdsCarouselItemImpressionListener(impressionCount: Int) {
+        presenter?.shopAdsImpressionCount(impressionCount)
+    }
+    //endregion
 
+    //region Inspiration Carousel
     override fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselDataView.Option.Product) {
         redirectionStartActivity(product.applink, product.url)
 
-        val products: MutableList<Any> = ArrayList()
+        val products = ArrayList<Any>()
         products.add(product.getInspirationCarouselInfoProductAsObjectDataLayer())
 
         SearchTracking.trackEventClickInspirationCarouselInfoProduct(product.inspirationCarouselType, queryKey, products)
@@ -1350,7 +1515,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onImpressedInspirationCarouselInfoProduct(product: InspirationCarouselDataView.Option.Product) {
         val trackingQueue = trackingQueue ?: return
 
-        val products: MutableList<Any> = ArrayList()
+        val products = ArrayList<Any>()
         products.add(product.getInspirationCarouselInfoProductAsObjectDataLayer())
 
         SearchTracking.trackImpressionInspirationCarouselInfo(
@@ -1368,7 +1533,7 @@ class ProductListFragment: BaseDaggerFragment(),
         val data = createCarouselTrackingUnificationData(product)
 
         inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data) {
-            val products: MutableList<Any> = ArrayList()
+            val products = ArrayList<Any>()
             products.add(product.getInspirationCarouselListProductImpressionAsObjectDataLayer())
 
             SearchTracking.trackImpressionInspirationCarouselList(
@@ -1397,7 +1562,7 @@ class ProductListFragment: BaseDaggerFragment(),
         val data = createCarouselTrackingUnificationData(product)
 
         inspirationCarouselTrackingUnification.trackCarouselClick(data) {
-            val products: MutableList<Any> = ArrayList()
+            val products = ArrayList<Any>()
             products.add(product.getInspirationCarouselListProductAsObjectDataLayer())
 
             SearchTracking.trackEventClickInspirationCarouselListProduct(
@@ -1415,7 +1580,7 @@ class ProductListFragment: BaseDaggerFragment(),
         val data = createCarouselTrackingUnificationData(product)
 
         inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data) {
-            val products: MutableList<Any> = ArrayList()
+            val products = ArrayList<Any>()
             products.add(product.getInspirationCarouselListProductImpressionAsObjectDataLayer())
 
             SearchTracking.trackImpressionInspirationCarouselList(
@@ -1435,7 +1600,7 @@ class ProductListFragment: BaseDaggerFragment(),
         val data = createCarouselTrackingUnificationData(product)
 
         inspirationCarouselTrackingUnification.trackCarouselClick(data) {
-            val products: MutableList<Any> = ArrayList()
+            val products = ArrayList<Any>()
             products.add(product.getInspirationCarouselListProductAsObjectDataLayer())
 
             SearchTracking.trackEventClickInspirationCarouselListProduct(
@@ -1468,19 +1633,13 @@ class ProductListFragment: BaseDaggerFragment(),
 
     private fun createInspirationCarouselChipsProductDataLayer(
         product: InspirationCarouselDataView.Option.Product
-    ): List<Any> {
+    ): ArrayList<Any> {
         val filterSortParams = getSortFilterParamStringFromSearchParameter()
         val productDataLayer =
             product.getInspirationCarouselChipsProductAsObjectDataLayer(filterSortParams)
 
-        return listOf(productDataLayer)
+        return arrayListOf(productDataLayer)
     }
-
-    private fun getSortFilterParamStringFromSearchParameter() =
-            searchParameter?.let {
-                @Suppress("UNCHECKED_CAST")
-                getSortFilterParamsString(it.getSearchParameterMap() as Map<String?, String?>)
-            } ?: ""
 
     override fun onImpressedInspirationCarouselChipsProduct(
         product: InspirationCarouselDataView.Option.Product,
@@ -1491,13 +1650,17 @@ class ProductListFragment: BaseDaggerFragment(),
         inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data) {
             val productDataLayerList = createInspirationCarouselChipsProductDataLayer(product)
 
+            val inspirationCarouselAnalyticsData = InspirationCarouselAnalyticsData(
+                type = product.inspirationCarouselType,
+                chipsValue = product.optionTitle
+            )
+
             SearchTracking.trackImpressionInspirationCarouselChips(
                 trackingQueue,
-                product.inspirationCarouselType,
                 queryKey,
-                product.optionTitle,
                 getUserId(),
-                productDataLayerList
+                productDataLayerList,
+                inspirationCarouselAnalyticsData,
             )
         }
     }
@@ -1524,15 +1687,15 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun onInspirationCarouselChipsClicked(
-            inspirationCarouselAdapterPosition: Int,
-            inspirationCarouselViewModel: InspirationCarouselDataView,
-            inspirationCarouselOption: InspirationCarouselDataView.Option,
+        inspirationCarouselAdapterPosition: Int,
+        inspirationCarouselViewModel: InspirationCarouselDataView,
+        inspirationCarouselOption: InspirationCarouselDataView.Option,
     ) {
         presenter?.onInspirationCarouselChipsClick(
-                adapterPosition = inspirationCarouselAdapterPosition,
-                inspirationCarouselViewModel = inspirationCarouselViewModel,
-                clickedInspirationCarouselOption = inspirationCarouselOption,
-                searchParameter = getSearchParameter()?.getSearchParameterMap() ?: mapOf()
+            adapterPosition = inspirationCarouselAdapterPosition,
+            inspirationCarouselViewModel = inspirationCarouselViewModel,
+            clickedInspirationCarouselOption = inspirationCarouselOption,
+            searchParameter = getSearchParameter()?.getSearchParameterMap() ?: mapOf()
         )
     }
 
@@ -1547,9 +1710,67 @@ class ProductListFragment: BaseDaggerFragment(),
         }
     }
 
-    override val abTestRemoteConfig: RemoteConfig?
-        get() = RemoteConfigInstance.getInstance().abTestPlatform
+    override fun trackDynamicProductCarouselImpression(
+        dynamicProductCarousel: BroadMatchItemDataView,
+        type: String,
+        inspirationCarouselProduct: InspirationCarouselDataView.Option.Product
+    ) {
+        val trackingQueue = trackingQueue ?: return
+        val data = createCarouselTrackingUnificationData(inspirationCarouselProduct)
 
+        inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data) {
+            val broadMatchItemAsObjectDataLayer = ArrayList<Any>()
+            broadMatchItemAsObjectDataLayer.add(dynamicProductCarousel.asImpressionObjectDataLayer())
+
+            SearchTracking.trackEventImpressionDynamicProductCarousel(
+                trackingQueue = trackingQueue,
+                type = type,
+                keyword = queryKey,
+                userId = getUserId(),
+                broadMatchItems = broadMatchItemAsObjectDataLayer,
+            )
+        }
+    }
+
+    override fun trackDynamicProductCarouselClick(
+        dynamicProductCarousel: BroadMatchItemDataView,
+        type: String,
+        inspirationCarouselProduct: InspirationCarouselDataView.Option.Product,
+    ) {
+        val data = createCarouselTrackingUnificationData(inspirationCarouselProduct)
+
+        inspirationCarouselTrackingUnification.trackCarouselClick(data) {
+            val broadMatchItem = ArrayList<Any>()
+            broadMatchItem.add(dynamicProductCarousel.asClickObjectDataLayer())
+
+            SearchTracking.trackEventClickDynamicProductCarousel(
+                type = type,
+                keyword = queryKey,
+                userId = getUserId(),
+                broadMatchItems = broadMatchItem,
+            )
+        }
+    }
+
+    override fun trackEventClickSeeMoreDynamicProductCarousel(
+        dynamicProductCarousel: BroadMatchDataView,
+        type: String,
+        inspirationCarouselOption: InspirationCarouselDataView.Option
+    ) {
+        inspirationCarouselTrackingUnification.trackCarouselClickSeeAll(
+            queryKey,
+            inspirationCarouselOption
+        ) {
+            SearchTracking.trackEventClickDynamicProductCarouselSeeMore(
+                type,
+                queryKey,
+                dynamicProductCarousel.keyword
+            )
+        }
+    }
+    //endregion
+
+    //region Wishlist
     override fun trackWishlistRecommendationProductLoginUser(isAddWishlist: Boolean) {
         RecommendationTracking.eventUserClickProductToWishlistForUserLogin(isAddWishlist)
     }
@@ -1575,6 +1796,10 @@ class ProductListFragment: BaseDaggerFragment(),
             Toaster.build(view, getString(R.string.msg_remove_wishlist), Snackbar.LENGTH_SHORT, TYPE_NORMAL).show()
     }
 
+    private fun goToWishlistPage() {
+        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
+    }
+
     override fun showMessageFailedWishlistAction(isWishlisted: Boolean) {
         val view = view ?: return
 
@@ -1583,16 +1808,20 @@ class ProductListFragment: BaseDaggerFragment(),
         else
             Toaster.build(view, ErrorHandler.getErrorMessage(context, MessageErrorException(getString(R.string.msg_remove_wishlist_failed))), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
     }
+    //endregion
 
-    override val isLandingPage: Boolean
-        get() = searchParameter?.getBoolean(SearchApiConst.LANDING_PAGE) ?: false
+    //region Performance Monitoring stuff
+    private fun stopSearchResultPagePerformanceMonitoring() {
+        recyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                searchPerformanceMonitoringListener?.let {
+                    it.stopRenderPerformanceMonitoring()
+                    it.stopPerformanceMonitoring()
+                }
 
-    override fun onSaveInstanceState(savedInstanceState: Bundle) {
-        savedInstanceState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter)
-    }
-
-    override fun logWarning(message: String?, throwable: Throwable?) {
-        SearchLogger().logWarning(message, throwable)
+                recyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     override fun stopPreparePagePerformanceMonitoring() {
@@ -1611,6 +1840,12 @@ class ProductListFragment: BaseDaggerFragment(),
         searchPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
     }
 
+    override fun stopTracePerformanceMonitoring() {
+        performanceMonitoring?.stopTrace()
+    }
+    //endregion
+
+    //region Broad Match
     override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {
         presenter?.onBroadMatchItemImpressed(broadMatchItemDataView)
     }
@@ -1620,7 +1855,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun trackEventClickBroadMatchItem(broadMatchItemDataView: BroadMatchItemDataView) {
-        val broadMatchItem: MutableList<Any> = ArrayList()
+        val broadMatchItem = ArrayList<Any>()
         broadMatchItem.add(broadMatchItemDataView.asClickObjectDataLayer())
 
         SearchTracking.trackEventClickBroadMatchItem(
@@ -1663,7 +1898,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun trackEventImpressionBroadMatchItem(broadMatchItemDataView: BroadMatchItemDataView) {
         val trackingQueue = trackingQueue ?: return
-        val broadMatchItemAsObjectDataLayer: MutableList<Any> = ArrayList()
+        val broadMatchItemAsObjectDataLayer = ArrayList<Any>()
         broadMatchItemAsObjectDataLayer.add(broadMatchItemDataView.asImpressionObjectDataLayer())
 
         SearchTracking.trackEventImpressionBroadMatch(
@@ -1675,6 +1910,24 @@ class ProductListFragment: BaseDaggerFragment(),
         )
     }
 
+    override fun trackEventImpressionBroadMatch(broadMatchDataView: BroadMatchDataView) {
+        SearchTracking.trackEventImpressionBroadMatch(
+            iris,
+            broadMatchDataView,
+        )
+    }
+
+    override fun trackEventClickSeeMoreBroadMatch(broadMatchDataView: BroadMatchDataView) {
+        SearchTracking.trackEventClickBroadMatchSeeMore(
+            broadMatchDataView,
+            queryKey,
+            broadMatchDataView.keyword,
+            broadMatchDataView.dimension90,
+        )
+    }
+    //endregion
+
+    //region Inspiration Cards / Inspiration Widget
     override fun onInspirationCardOptionClicked(optionData: InspirationCardOptionDataView) {
         trackEventClickInspirationCardOption(optionData)
 
@@ -1685,43 +1938,9 @@ class ProductListFragment: BaseDaggerFragment(),
         val label = option.inspirationCardType + " - " + queryKey + " - " + option.text
         SearchTracking.trackEventClickInspirationCardOption(label)
     }
+    //endregion
 
-    override fun initFilterControllerForQuickFilter(quickFilterList: List<Filter>) {
-        filterController.initFilterController(searchParameter?.getSearchParameterHashMap(), quickFilterList)
-    }
-
-    override fun hideQuickFilterShimmering() {
-        shimmeringView?.gone()
-    }
-
-    override fun setQuickFilter(items: List<SortFilterItem>) {
-        searchSortFilter?.let {
-            it.sortFilterItems.removeAllViews()
-            it.visibility = View.VISIBLE
-            it.sortFilterHorizontalScrollView.scrollX = 0
-            it.addItem(items as ArrayList<SortFilterItem>)
-            it.textView?.text = getString(R.string.search_filter)
-            it.parentListener = { this.openBottomSheetFilterRevamp() }
-
-            setSortFilterNewNotification(items)
-        }
-    }
-
-    private fun setSortFilterNewNotification(items: List<SortFilterItem>) {
-        val quickFilterOptionList = presenter?.quickFilterOptionList ?: listOf()
-        for (i in items.indices) {
-            if (i >= quickFilterOptionList.size) break
-            val item = items[i]
-            val quickFilterOption = quickFilterOptionList[i]
-
-            sortFilterItemShowNew(item, quickFilterOption.isNew)
-        }
-    }
-
-    private fun sortFilterItemShowNew(item: SortFilterItem, isNew: Boolean) {
-        item.refChipUnify.showNewNotification = isNew
-    }
-
+    //region on boarding / coachmark
     override fun showOnBoarding(firstProductPositionWithBOELabel: Int) {
         val productWithBOELabel = getFirstProductWithBOELabel(firstProductPositionWithBOELabel)
 
@@ -1795,7 +2014,9 @@ class ProductListFragment: BaseDaggerFragment(),
                 CoachMark2.POSITION_TOP
         )
     }
+    //endregion
 
+    //region Bottom Sheet Filter
     private fun openBottomSheetFilterRevamp() {
         presenter?.openFilterPage(getSearchParameter()?.getSearchParameterMap())
     }
@@ -1879,57 +2100,9 @@ class ProductListFragment: BaseDaggerFragment(),
                 productCountText
         ))
     }
+    //endregion
 
-    override val className: String
-        get() = activity?.javaClass?.name ?: ""
-
-
-    override fun configure(shouldRemove: Boolean) {
-        if (shouldRemove)
-            removeQuickFilterElevation(searchSortFilter)
-        else
-            applyQuickFilterElevation(context, searchSortFilter)
-    }
-
-    override fun onSearchInTokopediaClick(applink: String) {
-        RouteManager.route(activity, applink)
-    }
-
-    override fun addLocalSearchRecommendation(visitableList: List<Visitable<*>>) {
-        productListAdapter?.appendItems(visitableList)
-    }
-
-    override fun onChangeViewClicked(position: Int) {
-        val currentLayoutType = productListAdapter?.getCurrentLayoutType() ?: SearchConstant.ViewType.SMALL_GRID
-        presenter?.handleChangeView(position, currentLayoutType)
-    }
-
-    override fun trackEventSearchResultChangeView(viewType: String) {
-        SearchTracking.eventSearchResultChangeGrid(viewType, screenName)
-    }
-
-    override fun switchSearchNavigationLayoutTypeToListView(position: Int) {
-        if (!userVisibleHint) return
-
-        staggeredGridLayoutManager?.spanCount = 1
-        productListAdapter?.changeSearchNavigationListView(position)
-    }
-
-    override fun switchSearchNavigationLayoutTypeToBigGridView(position: Int) {
-        if (!userVisibleHint) return
-
-        staggeredGridLayoutManager?.spanCount = 1
-        productListAdapter?.changeSearchNavigationSingleGridView(position)
-    }
-
-
-    override fun switchSearchNavigationLayoutTypeToSmallGridView(position: Int) {
-        if (!userVisibleHint) return
-
-        staggeredGridLayoutManager?.spanCount = 2
-        productListAdapter?.changeSearchNavigationDoubleGridView(position)
-    }
-
+    //region TopAdsImageView / TDN
     override fun onTopAdsImageViewImpressed(
             className: String?,
             searchTopAdsImageDataView: SearchProductTopAdsImageDataView,
@@ -1950,7 +2123,9 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onTopAdsImageViewClick(searchTopAdsImageDataView: SearchProductTopAdsImageDataView) {
         RouteManager.route(context, searchTopAdsImageDataView.topAdsImageViewModel.applink)
     }
+    //endregion
 
+    //region Choose Address / Localizing Address / LCA
     override fun onLocalizingAddressSelected() {
         presenter?.onLocalizingAddressSelected()
     }
@@ -1964,6 +2139,7 @@ class ProductListFragment: BaseDaggerFragment(),
             try {
                 ChooseAddressUtils.getLocalizingAddressData(it)
             } catch (e: Throwable) {
+                Timber.w(e)
                 emptyAddress
             }
         } ?: emptyAddress
@@ -1973,94 +2149,20 @@ class ProductListFragment: BaseDaggerFragment(),
             try {
                 ChooseAddressUtils.isLocalizingAddressHasUpdated(it, currentChooseAddressData)
             } catch (e: Throwable) {
+                Timber.w(e)
                 false
             }
         } ?: false
     }
+    //endregion
 
-    override fun refreshItemAtIndex(index: Int) {
-        productListAdapter?.refreshItemAtIndex(index)
-    }
-
+    //region Banner
     override fun onBannerClicked(bannerDataView: BannerDataView) {
         redirectionStartActivity(bannerDataView.applink, "")
     }
+    //endregion
 
-    override fun trackDynamicProductCarouselImpression(
-        dynamicProductCarousel: BroadMatchItemDataView,
-        type: String,
-        inspirationCarouselProduct: InspirationCarouselDataView.Option.Product
-    ) {
-        val trackingQueue = trackingQueue ?: return
-        val data = createCarouselTrackingUnificationData(inspirationCarouselProduct)
-
-        inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data) {
-            val broadMatchItemAsObjectDataLayer: MutableList<Any> = ArrayList()
-            broadMatchItemAsObjectDataLayer.add(dynamicProductCarousel.asImpressionObjectDataLayer())
-
-            SearchTracking.trackEventImpressionDynamicProductCarousel(
-                trackingQueue = trackingQueue,
-                type = type,
-                keyword = queryKey,
-                userId = getUserId(),
-                broadMatchItems = broadMatchItemAsObjectDataLayer,
-            )
-        }
-    }
-
-    override fun trackDynamicProductCarouselClick(
-        dynamicProductCarousel: BroadMatchItemDataView,
-        type: String,
-        inspirationCarouselProduct: InspirationCarouselDataView.Option.Product,
-    ) {
-        val data = createCarouselTrackingUnificationData(inspirationCarouselProduct)
-
-        inspirationCarouselTrackingUnification.trackCarouselClick(data) {
-            val broadMatchItem: MutableList<Any> = ArrayList()
-            broadMatchItem.add(dynamicProductCarousel.asClickObjectDataLayer())
-
-            SearchTracking.trackEventClickDynamicProductCarousel(
-                type = type,
-                keyword = queryKey,
-                userId = getUserId(),
-                broadMatchItems = broadMatchItem,
-            )
-        }
-    }
-
-    override fun trackEventImpressionBroadMatch(broadMatchDataView: BroadMatchDataView) {
-        SearchTracking.trackEventImpressionBroadMatch(
-            iris,
-            broadMatchDataView,
-        )
-    }
-
-    override fun trackEventClickSeeMoreBroadMatch(broadMatchDataView: BroadMatchDataView) {
-        SearchTracking.trackEventClickBroadMatchSeeMore(
-            broadMatchDataView,
-            queryKey,
-            broadMatchDataView.keyword,
-            broadMatchDataView.dimension90,
-        )
-    }
-
-    override fun trackEventClickSeeMoreDynamicProductCarousel(
-        dynamicProductCarousel: BroadMatchDataView,
-        type: String,
-        inspirationCarouselOption: InspirationCarouselDataView.Option
-    ) {
-        inspirationCarouselTrackingUnification.trackCarouselClickSeeAll(
-            queryKey,
-            inspirationCarouselOption
-        ) {
-            SearchTracking.trackEventClickDynamicProductCarouselSeeMore(
-                type,
-                queryKey,
-                dynamicProductCarousel.keyword
-            )
-        }
-    }
-
+    //region Last Filter Widget
     override fun onImpressedLastFilter(lastFilterDataView: LastFilterDataView) {
         SearchTracking.trackEventLastFilterImpression(
             iris,
@@ -2069,12 +2171,6 @@ class ProductListFragment: BaseDaggerFragment(),
             getDimension90()
         )
     }
-
-    private fun getDimension90(): String =
-        Dimension90Utils.getDimension90(getSearchParameterMap())
-
-    private fun getSearchParameterMap(): Map<String, Any> =
-        searchParameter?.getSearchParameterMap() ?: mapOf()
 
     override fun applyLastFilter(lastFilterDataView: LastFilterDataView) {
         SearchTracking.trackEventLastFilterClickApply(
@@ -2104,8 +2200,5 @@ class ProductListFragment: BaseDaggerFragment(),
 
         presenter?.closeLastFilter(searchParameterMap)
     }
-
-    private fun goToWishlistPage() {
-        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
-    }
+    //endregion
 }

@@ -394,6 +394,13 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 is Fail -> {
                     it.throwable.showGlobalError()
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_DETAIL)
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.GET_ORDER_DETAIL_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                     stopLoadTimeMonitoring()
                 }
             }
@@ -415,8 +422,15 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_ACCEPTING_ORDER)
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.ACCEPT_ORDER_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                     SomAnalytics.eventClickAcceptOrderPopup(false)
-                    it.throwable.showErrorToaster(binding?.containerBtnDetail)
+                    it.throwable.showErrorToaster()
                 }
             }
         })
@@ -428,7 +442,14 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 is Success -> onSuccessRejectReason(it.data)
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_REJECT_REASONS)
-                    it.throwable.showErrorToaster(binding?.containerBtnDetail)
+                    it.throwable.showErrorToaster()
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.GET_REJECT_REASON_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -445,7 +466,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 is Success -> onSuccessSetDelivered(it.data.setDelivered)
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_WHEN_SET_DELIVERED)
-                    it.throwable.showErrorToaster(binding?.containerBtnDetail)
+                    it.throwable.showErrorToaster()
                     bottomSheetManager?.getSomBottomSheetSetDelivered()?.onFailedSetDelivered()
                 }
             }
@@ -468,7 +489,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(result.throwable, String.format(SomConsts.ERROR_GET_USER_ROLES, PAGE_NAME))
-                    result.throwable.showErrorToaster(binding?.containerBtnDetail)
+                    result.throwable.showErrorToaster()
                     result.throwable.showGlobalError()
                 }
             }
@@ -486,7 +507,14 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(result.throwable, SomConsts.ERROR_REJECT_CANCEL_ORDER)
-                    result.throwable.showErrorToaster(binding?.containerBtnDetail)
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.REJECT_CANCEL_REQUEST_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
+                    result.throwable.showErrorToaster()
                 }
             }
         })
@@ -983,8 +1011,15 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     if (failEditAwbResponse.message.isNotEmpty()) {
                         showToaster(failEditAwbResponse.message, view, TYPE_ERROR)
                     } else {
-                        it.throwable.showErrorToaster(binding?.containerBtnDetail)
+                        it.throwable.showErrorToaster()
                     }
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.CHANGE_AWB_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -1081,7 +1116,14 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 is Success -> onSuccessRejectOrder(it.data.rejectOrder)
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_REJECT_ORDER)
-                    it.throwable.showErrorToaster(binding?.containerBtnDetail)
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.REJECT_ORDER_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
+                    it.throwable.showErrorToaster()
                 }
             }
         })
@@ -1156,7 +1198,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         showErrorState(type)
     }
 
-    private fun Throwable.showErrorToaster(anchorView: View?) {
+    protected fun Throwable.showErrorToaster() {
         if (this is UnknownHostException || this is SocketTimeoutException) {
             showNoInternetConnectionToaster()
         } else {
@@ -1303,19 +1345,31 @@ open class SomDetailFragment : BaseDaggerFragment(),
         somDetailViewModel.validateOrderResult.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> onSuccessValidateOrder(result.data)
-                is Fail -> onFailedValidateOrder()
+                is Fail -> {
+                    onFailedValidateOrder()
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.VALIDATE_ORDER_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
+                }
             }
         })
     }
 
     protected open fun observeOrderExtensionRequestInfo() {
         orderExtensionViewModel.orderExtensionRequestInfo.observe(viewLifecycleOwner) { result ->
-            if (result.message.isNotBlank()) {
+            if (result.message.isNotBlank() || result.throwable != null) {
                 if (result.success) {
                     showCommonToaster(result.message)
-                }
-                else {
-                    showErrorToaster(result.message)
+                } else {
+                    if (result.throwable == null) {
+                        showErrorToaster(result.message)
+                    } else {
+                        result.throwable?.showErrorToaster()
+                    }
                 }
             }
             if (result.completed && result.refreshOnDismiss) {

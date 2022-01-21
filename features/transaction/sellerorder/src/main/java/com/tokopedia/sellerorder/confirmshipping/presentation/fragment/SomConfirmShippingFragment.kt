@@ -42,6 +42,7 @@ import com.tokopedia.sellerorder.databinding.FragmentSomConfirmShippingBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import javax.inject.Inject
 
@@ -51,6 +52,9 @@ import javax.inject.Inject
 class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierListAdapter.ActionListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var currOrderId = ""
     private var currShipmentId = 0L
@@ -264,6 +268,13 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                     context?.run {
                         Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
                     }
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.CONFIRM_SHIPPING_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -301,6 +312,13 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_COURIER_LIST)
                     Utils.showToasterError(getString(R.string.global_error), view)
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.GET_COURIER_LIST_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -323,6 +341,13 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                     context?.run {
                         Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
                     }
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.CHANGE_COURIER_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })

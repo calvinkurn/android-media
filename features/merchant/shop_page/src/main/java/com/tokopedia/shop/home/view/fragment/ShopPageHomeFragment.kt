@@ -975,11 +975,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
-    private fun onErrorAddToCart(
-            exception: Throwable
-    ) {
+    private fun onErrorAddToCart(exception: Throwable) {
         view?.let { view ->
-            val errorMessage = ErrorHandler.getErrorMessage(context, exception)
+            val errorMessage = if (exception is MessageErrorException) {
+                exception.message
+            } else {
+                ErrorHandler.getErrorMessage(context, exception)
+            }
             NetworkErrorHelper.showRedCloseSnackbar(view, errorMessage)
         }
     }

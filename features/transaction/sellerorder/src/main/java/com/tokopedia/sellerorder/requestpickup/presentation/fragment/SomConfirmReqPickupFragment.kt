@@ -41,6 +41,7 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import javax.inject.Inject
 
@@ -50,6 +51,9 @@ import javax.inject.Inject
 class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePickupAdapter.SomConfirmSchedulePickupAdapterListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var currOrderId = ""
     private var currSchedulePickupKey = ""
@@ -149,6 +153,13 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                         it.throwable,
                         ERROR_GET_CONFIRM_REQUEST_PICKUP_DATA
                     )
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.GET_REQUEST_PICKUP_DATA_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                     context?.run {
                         Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
                     }
@@ -172,6 +183,13 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                     SomErrorHandler.logExceptionToCrashlytics(
                         it.throwable,
                         ERROR_PROCESSING_REQUEST_PICKUP
+                    )
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.REQUEST_PICKUP_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
                     )
                     context?.run {
                         Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
