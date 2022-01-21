@@ -81,11 +81,11 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
 
     private fun setupKycBenefitView(view: View) {
         KycOnBoardingViewInflater.setupKycBenefitToolbar(activity)
-        KycOnBoardingViewInflater.setupKycBenefitView(view, mainAction = {
+        KycOnBoardingViewInflater.setupKycBenefitView(requireActivity(), view, mainAction = {
             startKyc()
         }, closeButtonAction = {
             activity?.onBackPressed()
-        })
+        }, onCheckedChanged = {})
     }
 
     private fun startKyc() {

@@ -20,7 +20,7 @@
 
     <string name="kyc_intro_title">Mari verifikasi data dirimu</string>
     <string name="kyc_intro_text">Kamu hanya perlu upload foto KTP dan\n verifikasi wajah.</string>
-    <string name="kyc_intro_button">Mulai</string>
+    <string name="kyc_intro_button">Mulai Verifikasi</string>
 
     <string name="kyc_pending_title">Dokumen sedang kami proses</string>
     <string name="kyc_pending_text">Tunggu hasil prosesnya lewat e-mail\ndalam 1x24 jam ya.</string>
@@ -155,18 +155,21 @@
     <string name="kyc_desc_verifikasi_wajah_result">Result verifikasi wajah</string>
 
     <string name="kyc_benefit_onboarding_title">Verifikasi datamu, yuk!</string>
-    <string name="kyc_benefit_onboarding_subtitle">Dapatkan akses ke berbagai layanan ini dengan upload foto KTP dan wajah:</string>
+    <string name="kyc_benefit_onboarding_subtitle">Upload foto KTP dan wajah biar dapat keuntungan ini:</string>
 
-    <string name="kyc_benefit_one_title">Bisa jadi Power Merchant</string>
-    <string name="kyc_benefit_one_desc">Upgrade status toko &amp; tingkatkan penjualan dengan berbagai fitur khusus.</string>
+    <string name="kyc_benefit_one_title">Akunmu makin aman</string>
+    <string name="kyc_benefit_one_desc">Datamu akan digunakan untuk mengamankan akses ke akun atau tokomu.</string>
 
-    <string name="kyc_benefit_two_title">Tambah skor Performa Toko</string>
-    <string name="kyc_benefit_two_desc">Performa Toko kamu akan meningkat setelah KTP berhasil diverifikasi.</string>
+    <string name="kyc_benefit_two_title">Akses semua fitur di Tokopedia</string>
+    <string name="kyc_benefit_two_desc">Bisa dapat hadiah Referral, beli produk khusus, dan nikmatin fitur lainnya secara lengkap.</string>
 
-    <string name="kyc_benefit_three_title">Tingkatkan keamanan toko</string>
-    <string name="kyc_benefit_three_desc">Datamu akan digunakan untuk mengamankan akses ke tokomu.</string>
+    <string name="kyc_benefit_three_title">Dapatkan manfaat Power Merchant</string>
+    <string name="kyc_benefit_three_desc">Dapatkan fitur-fitur khusus yang bisa menaikkan penjualan dan kepercayaan pembeli.</string>
 
     <string name="uii_simple_title">Silakan lanjut ke pengisian formulir</string>
     <string name="uii_simple_desc">Dokumen KTPmu sedang kami proses</string>
     <string name="uii_simple_button">Lanjut Isi Formulir</string>
+
+    <string name="kyc_consent_text"><![CDATA[Saya setuju untuk bagikan data KTP & foto wajah ke Tokopedia sesuai Syarat & Ketentuan.]]></string>
+
 </resources>

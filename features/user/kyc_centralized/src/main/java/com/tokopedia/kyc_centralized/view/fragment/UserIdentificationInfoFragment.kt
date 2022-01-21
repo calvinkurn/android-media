@@ -209,11 +209,13 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         KycOnBoardingViewInflater.setupKycBenefitToolbar(activity)
         mainView?.hide()
         kycBenefitLayout?.show()
-        KycOnBoardingViewInflater.setupKycBenefitView(view, mainAction = {
+        KycOnBoardingViewInflater.setupKycBenefitView(requireActivity(), view, mainAction = {
             analytics?.eventClickOnNextOnBoarding()
             goToFormActivity()
         }, closeButtonAction = {
             activity?.onBackPressed()
+        }, onCheckedChanged = {
+            analytics?.eventClickKycTnc(it)
         })
         analytics?.eventViewOnKYCOnBoarding()
     }

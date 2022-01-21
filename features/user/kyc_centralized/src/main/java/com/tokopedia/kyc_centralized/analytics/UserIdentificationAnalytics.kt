@@ -14,6 +14,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
         const val CLICK_KYC = "clickKYC"
         const val VIEW_TRADEIN = "viewTradeIn"
         const val CLICK_TRADEIN = "clickTradeIn"
+        const val CLICK_VERIFICATION = "clickVerification"
     }
 
     private object Action {
@@ -22,6 +23,8 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
         const val CLICK_NEXT_ONBOARDING = "click on lanjut kyc onboarding"
         const val CLICK_ON_MULAI_ONBOARDING = "click on button mulai"
         const val VIEW_PENDING_PAGE = "view on menunggu verifikasi"
+
+        const val CLICK_ON_TNC_KYC = "click on tnc kyc"
 
         const val CLICK_ON_MENGERTI_PENDING_PAGE = "click on button mengerti"
         const val VIEW_SUCCESS_SNACKBAR_PENDING_PAGE = "view on success message verifikasi"
@@ -45,6 +48,9 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
         const val labelTwo = "2"
         const val labelThree = "3"
         const val labelFour = "4"
+
+        const val LABEL_CHECK = "check"
+        const val LABEL_UNCHECK = "uncheck"
     }
 
     fun eventViewOnKYCOnBoarding() {
@@ -63,6 +69,20 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Action.CLICK_ON_BUTTON_BACK,
                 Label.labelOne
         ))
+    }
+
+    fun eventClickKycTnc(isChecked: Boolean) {
+        val data = TrackAppUtils.gtmData(
+            Event.CLICK_VERIFICATION,
+            Category.KYC_PAGE,
+            Action.CLICK_ON_TNC_KYC,
+            if(isChecked) Label.LABEL_CHECK else Label.LABEL_UNCHECK
+        )
+
+        data[KEY_BUSINESS_UNIT] = BUSSINESS_UNIT
+        data[KEY_CURRENT_SITE] = CURRENT_SITE
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
     fun eventClickOnNextOnBoarding() {
@@ -200,6 +220,12 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
         fun createInstance(projectID: Int): UserIdentificationAnalytics {
             return UserIdentificationAnalytics(projectID)
         }
+
+        private const val KEY_BUSINESS_UNIT = "businessUnit"
+        private const val KEY_CURRENT_SITE = "currentSite"
+
+        private const val BUSSINESS_UNIT = "user platform"
+        private const val CURRENT_SITE = "tokopediamarketplace"
     }
 
 }
