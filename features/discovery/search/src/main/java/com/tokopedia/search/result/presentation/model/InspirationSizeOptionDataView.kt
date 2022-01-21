@@ -10,11 +10,7 @@ class InspirationSizeOptionDataView(
     val url: String = "",
     val hexColor: String = "",
     val applink: String = "",
-    val filters: InspirationSizeOptionFiltersDataView = InspirationSizeOptionFiltersDataView(
-            "",
-            "",
-            ""
-    ),
+    val filters: InspirationSizeOptionFiltersDataView = InspirationSizeOptionFiltersDataView(),
     val inspirationCardType: String = "",
     val componentId: String = "",
     val keyword: String = "",
