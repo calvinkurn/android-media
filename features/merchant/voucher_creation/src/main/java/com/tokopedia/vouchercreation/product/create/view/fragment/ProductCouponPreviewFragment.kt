@@ -221,6 +221,7 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
     }
 
     private fun refreshCouponInformationSection(coupon: CouponInformation) {
+        binding?.imgCopyToClipboard?.visible()
         binding?.labelCouponInformationCompleteStatus?.setLabelType(Label.HIGHLIGHT_LIGHT_TEAL)
         binding?.labelCouponInformationCompleteStatus?.setLabel(getString(R.string.completed))
 
@@ -351,14 +352,12 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         isCardExpanded = !isCardExpanded
     }
 
-    private fun copyToClipboard(content : String) {
-        if (content.isNotEmpty()) {
-            ClipboardHandler().copyToClipboard(requireActivity(), content)
-            Toaster.build(
-                binding?.root ?: return,
-                getString(R.string.coupon_code_copied_to_clipboard)
-            ).show()
-        }
+    private fun copyToClipboard(content: String) {
+        ClipboardHandler().copyToClipboard(requireActivity(), content)
+        Toaster.build(
+            binding?.root ?: return,
+            getString(R.string.coupon_code_copied_to_clipboard)
+        ).show()
     }
 
     private fun expandCouponProductDescription() {
