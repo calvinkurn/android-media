@@ -170,6 +170,7 @@ import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.AR
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_FINISH_ERROR;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_ERROR;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.PAGE_CHECKOUT;
+import static java.util.Collections.emptyList;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -3221,7 +3222,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         String.format("%s %s", userAddress.getAddressName(), userAddress.getReceiverName()),
                         userAddress.getPostalCode(),
                         userAddress.getShopId(),
-                        userAddress.getWarehouseId()
+                        userAddress.getWarehouseId(),
+                        //TODO: 21/12/21 UPDATE AFTER BE ADJUSTMENT
+                        emptyList(),
+                        ""
                 );
             }
         }
@@ -3240,7 +3244,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     String.format("%s %s", saveAddressDataModel.getAddressName(), saveAddressDataModel.getReceiverName()),
                     saveAddressDataModel.getPostalCode(),
                     String.valueOf(saveAddressDataModel.getShopId()),
-                    String.valueOf(saveAddressDataModel.getWarehouseId())
+                    String.valueOf(saveAddressDataModel.getWarehouseId()),
+                    //TODO: 21/12/21 UPDATE AFTER BE ADJUSTMENT
+                    emptyList(),
+                    ""
             );
         }
     }
