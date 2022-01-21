@@ -109,5 +109,8 @@
     <string name="review_create_rating_condition_challenge">Kasih rating\nbuat belanjaanmu</string>
     <string name="review_create_photo_condition">Lanjut foto\nbarang, min. 1</string>
     <string name="review_create_review_condition">Tulis ulasan\nmin. 40 karakter</string>
+    <string name="review_report_unknown_error">Terjadi kesalahan ketika mengirim laporan ulasan. Ulangi beberapa saat lagi</string>
+    <string name="review_reply_unknown_error">Terjadi kesalahan ketika mengirim balasan ulasan. Ulangi beberapa saat lagi</string>
+    <string name="review_delete_unknown_error">Terjadi kesalahan ketika menghapus balasan ulasan. Ulangi beberapa saat lagi</string>
 
 </resources>

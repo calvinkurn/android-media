@@ -5,14 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.review.feature.reviewreply.update.domain.mapper.ReviewReplyUpdateMapper
-import com.tokopedia.review.feature.reviewreply.update.domain.usecase.ReviewReplyUpdateUseCase
-import com.tokopedia.review.feature.reviewreply.update.presenter.model.ReviewReplyUpdateUiModel
+import com.tokopedia.review.feature.reviewreply.domain.GetReviewTemplateListUseCase
+import com.tokopedia.review.feature.reviewreply.domain.InsertTemplateReviewReplyUseCase
 import com.tokopedia.review.feature.reviewreply.insert.domain.mapper.ReviewReplyInsertMapper
 import com.tokopedia.review.feature.reviewreply.insert.domain.usecase.ReviewReplyInsertUseCase
 import com.tokopedia.review.feature.reviewreply.insert.presentation.model.ReviewReplyInsertUiModel
-import com.tokopedia.review.feature.reviewreply.domain.GetReviewTemplateListUseCase
-import com.tokopedia.review.feature.reviewreply.domain.InsertTemplateReviewReplyUseCase
+import com.tokopedia.review.feature.reviewreply.update.domain.mapper.ReviewReplyUpdateMapper
+import com.tokopedia.review.feature.reviewreply.update.domain.usecase.ReviewReplyUpdateUseCase
+import com.tokopedia.review.feature.reviewreply.update.presenter.model.ReviewReplyUpdateUiModel
 import com.tokopedia.review.feature.reviewreply.util.mapper.SellerReviewReplyMapper
 import com.tokopedia.review.feature.reviewreply.view.model.InsertTemplateReplyUiModel
 import com.tokopedia.review.feature.reviewreply.view.model.ReplyTemplateUiModel
@@ -37,7 +37,7 @@ class SellerReviewReplyViewModel @Inject constructor(
         get() = SimpleDateFormat(DATE_REVIEW_FORMAT, Locale.getDefault()).format(Calendar.getInstance().time)
 
     private val _updateReviewReply = MutableLiveData<Result<ReviewReplyUpdateUiModel>>()
-    val reviewReviewReply: LiveData<Result<ReviewReplyUpdateUiModel>>
+    val updateReviewReply: LiveData<Result<ReviewReplyUpdateUiModel>>
         get() = _updateReviewReply
 
     private val _insertReviewReply = MutableLiveData<Result<ReviewReplyInsertUiModel>>()

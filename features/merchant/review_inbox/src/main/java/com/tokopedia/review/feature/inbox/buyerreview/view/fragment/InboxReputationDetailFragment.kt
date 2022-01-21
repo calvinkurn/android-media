@@ -31,6 +31,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.imagepreview.ImagePreviewActivity.Companion.getCallingIntent
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.review.common.util.ClipboardHandler
 import com.tokopedia.review.common.util.ReviewErrorHandler.getErrorMessage
@@ -569,9 +570,15 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
             when (it) {
                 is Success -> {
                     finishLoadingDialog()
-                    if (it.data.success) onSuccessReplyReview() else onErrorReplyReview(
-                        getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
-                    )
+                    if (it.data.success) {
+                        onSuccessReplyReview()
+                    } else {
+                        val message = ErrorHandler.getErrorMessage(
+                            context,
+                            MessageErrorException(getString(R.string.review_reply_unknown_error))
+                        )
+                        onErrorReplyReview(message)
+                    }
                 }
                 is Fail -> {
                     finishLoadingDialog()
@@ -588,9 +595,13 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
                     finishLoadingDialog()
                     if (it.data.success) {
                         onSuccessDeleteReviewResponse()
-                    } else onErrorDeleteReviewResponse(
-                        getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
-                    )
+                    } else {
+                        val message = ErrorHandler.getErrorMessage(
+                            context,
+                            MessageErrorException(getString(R.string.review_delete_unknown_error))
+                        )
+                        onErrorDeleteReviewResponse(message)
+                    }
                 }
                 is Fail -> {
                     finishLoadingDialog()

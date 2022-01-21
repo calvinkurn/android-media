@@ -177,7 +177,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
 
     override fun onDestroy() {
         viewModelReviewReply?.reviewTemplate?.removeObservers(this)
-        viewModelReviewReply?.reviewReviewReply?.removeObservers(this)
+        viewModelReviewReply?.updateReviewReply?.removeObservers(this)
         viewModelReviewReply?.insertTemplateReply?.removeObservers(this)
         viewModelReviewReply?.insertReviewReply?.removeObservers(this)
         super.onDestroy()
@@ -272,7 +272,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
     }
 
     private fun observeUpdateReviewReply() {
-        viewModelReviewReply?.reviewReviewReply?.observe(viewLifecycleOwner, {
+        viewModelReviewReply?.updateReviewReply?.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     updateReviewReplySuccess(it.data)

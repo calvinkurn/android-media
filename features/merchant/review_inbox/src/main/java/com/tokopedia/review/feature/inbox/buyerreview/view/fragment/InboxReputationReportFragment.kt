@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.AppScreen
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTracking
@@ -213,8 +214,12 @@ class InboxReputationReportFragment : BaseDaggerFragment() {
                     if (it.data.success) {
                         onSuccessReportReview()
                     } else {
+                        val message = ErrorHandler.getErrorMessage(
+                            context,
+                            MessageErrorException(getString(R.string.review_report_unknown_error))
+                        )
                         onErrorReportReview(
-                            getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
+                            message
                         )
                     }
                 }
