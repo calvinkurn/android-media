@@ -8,7 +8,7 @@ import com.tokopedia.logger.datasource.cloud.LoggerCloudEmbraceImpl
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicImpl
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerDao
-import com.tokopedia.logger.model.EmbraceBody
+import com.tokopedia.logger.model.embrace.EmbraceBody
 import com.tokopedia.logger.model.LoggerCloudModelWrapper
 import com.tokopedia.logger.model.newrelic.NewRelicConfig
 import com.tokopedia.logger.model.scalyr.ScalyrConfig
@@ -71,6 +71,14 @@ class LoggerRepository(
             Constants.SEVERITY_MEDIUM,
             logDao.getServerChannel(LoggerReporting.P2, queryLimits[1])
         )
+    }
+
+    override suspend fun getLoggerList(): List<Logger> {
+        return logDao.getLoggerList()
+    }
+
+    override suspend fun getLoggerFilterList(serverChannel: String): List<Logger> {
+        return logDao.getLoggerListFilter(serverChannel)
     }
 
     private suspend fun sendLogToServer(priorityScalyr: Int, logs: List<Logger>) {

@@ -14,6 +14,15 @@ interface LoggerDao {
     @Query("SELECT * FROM LOG_TABLE WHERE server_channel == :serverChannel ORDER BY post_priority ASC, timestamp ASC LIMIT :limit")
     suspend fun getServerChannel(serverChannel: String, limit: Int): List<Logger>
 
+    @Query("SELECT * FROM LOG_TABLE ORDER BY timestamp DESC")
+    suspend fun getLoggerList(): List<Logger>
+
+    @Query("SELECT * FROM LOG_TABLE WHERE server_channel == :serverChannel ORDER BY timestamp DESC")
+    suspend fun getLoggerListFilter(serverChannel: String): List<Logger>
+
+    @Query("SELECT DISTINCT server_channel FROM LOG_TABLE")
+    suspend fun getLoggerListFilter(): List<String>
+
     @Query("SELECT * FROM LOG_TABLE WHERE post_priority == 1 ORDER BY timestamp ASC LIMIT :limit")
     suspend fun getHighPostPrio(limit: Int): List<Logger>
 

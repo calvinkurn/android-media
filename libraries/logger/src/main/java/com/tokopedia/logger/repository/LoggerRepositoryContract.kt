@@ -10,4 +10,7 @@ interface LoggerRepositoryContract {
     suspend fun deleteExpiredData()
 
     suspend fun sendLogToServer(queryLimits: List<Int>)
+
+    suspend fun getLoggerList(): List<Logger>
+    suspend fun getLoggerFilterList(serverChannel: String): List<Logger>
 }
