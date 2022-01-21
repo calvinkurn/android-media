@@ -16,6 +16,7 @@ import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.di.DaggerDigitalPDPComponent
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.fragment.DigitalPDPPulsaFragment
+import com.tokopedia.digital_product_detail.presentation.utils.setupOrderListIcon
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -29,8 +30,6 @@ import com.tokopedia.kotlin.extensions.view.toBitmap
 
 
 class DigitalPDPPulsaActivity: BaseSimpleActivity(), HasComponent<DigitalPDPComponent> {
-
-    lateinit var menuPdp: Menu
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,44 +59,14 @@ class DigitalPDPPulsaActivity: BaseSimpleActivity(), HasComponent<DigitalPDPComp
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menu?.let {
-            menuPdp = menu
-            menuInflater.inflate(R.menu.menu_pdp, menu)
-            val iconUnify = getIconUnifyDrawable(
-                this,
-                IconUnify.LIST_TRANSACTION,
-                ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
-            )
-            iconUnify?.toBitmap()?.let {
-                menuPdp.getItem(0).icon = BitmapDrawable(
-                    resources,
-                    Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true))
-
-            }
+        menu?.run {
+            setupOrderListIcon(this@DigitalPDPPulsaActivity)
             return true
         }
         return false
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_order_list_menu -> {
-                navigateToOrderList()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     private fun setupAppBar() {
         (toolbar as HeaderUnify).transparentMode = true
-    }
-
-    private fun navigateToOrderList() {
-        RouteManager.route(this, ApplinkConst.DIGITAL_ORDER)
-    }
-
-    companion object {
-        private const val TOOLBAR_ICON_SIZE = 64
     }
 }
