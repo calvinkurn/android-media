@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.model
 
+import android.content.Context
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
 import com.tokopedia.buyerorderdetail.presentation.coachmark.DriverTippingCoachMarkManager
@@ -19,10 +20,10 @@ data class ShipmentInfoUiModel(
     data class AwbInfoUiModel(
         val orderId: String,
         val orderStatusId: String,
-        override val copyMessage: String,
+        override val copyMessage: StringRes,
         override val copyableText: String,
-        override val label: String,
-        override val copyLabel: String
+        override val label: StringRes,
+        override val copyLabel: StringRes
     ) : CopyableKeyValueUiModel() {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
@@ -45,7 +46,7 @@ data class ShipmentInfoUiModel(
             return typeFactory?.type(this).orZero()
         }
 
-        override fun shouldShow(): Boolean {
+        override fun shouldShow(context: Context?): Boolean {
             return courierNameAndProductName.isNotBlank()
         }
 
@@ -64,7 +65,7 @@ data class ShipmentInfoUiModel(
             return typeFactory?.type(this).orZero()
         }
 
-        override fun shouldShow(): Boolean {
+        override fun shouldShow(context: Context?): Boolean {
             return name.isNotBlank()
         }
 
@@ -78,7 +79,7 @@ data class ShipmentInfoUiModel(
         val title: String,
         val description: String
     ): BaseVisitableUiModel {
-        override fun shouldShow(): Boolean {
+        override fun shouldShow(context: Context?): Boolean {
             return imageUrl.isNotBlank() && title.isNotBlank() && description.isNotBlank()
         }
 

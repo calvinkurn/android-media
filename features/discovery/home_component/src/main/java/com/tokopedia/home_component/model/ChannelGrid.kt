@@ -42,5 +42,9 @@ data class ChannelGrid(
         val campaignCode: String = "",
         val badges: List<ChannelGridBadges> = listOf(),
         val productImageUrl: String = "", //used for image featured brand, otherwise please use imageUrl
+        val persona: String = "",
+        val categoryPersona: String = "",
+        val brandId: String = "",
+        val categoryId: String = "",
         val param: String = ""
 ): ImpressHolder()

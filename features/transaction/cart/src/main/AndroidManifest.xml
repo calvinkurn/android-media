@@ -6,7 +6,7 @@
         android:allowBackup="true"
         android:supportsRtl="true">
         <activity
-            android:name="com.tokopedia.cart.CartActivity"
+            android:name="com.tokopedia.cart.view.CartActivity"
             android:label="@string/checkout_module_title_activity_cart"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"

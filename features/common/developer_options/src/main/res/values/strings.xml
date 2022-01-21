@@ -18,9 +18,12 @@
     <string name="remote_config_delete_btn_key">Delete Key</string>
 
     <string name="pdp_layout_id">Change Layout ID PDP</string>
+    <string name="pdp_vbs">Go To Variant Bottom Sheet</string>
     <string name="pdp_route">Route to PDP</string>
     <string name="pdp_layout_id_edittext_placeholder">Layout ID PDP</string>
     <string name="pdp_product_id_edittext_placeholder">Product Id</string>
+    <string name="pdp_shop_id_edittext_placeholder">Shop Id</string>
+    <string name="pdp_page_source_edittext_placeholder">Page Source</string>
 
     <string name="ab_test_rollence_start_button">List AB Test Rollence Keys</string>
     <string name="ab_test_rollence_edit_text_search_hint">Search key</string>
@@ -92,5 +95,6 @@
     <string name="play_websocket_and_sse_logging_title">Play - Web Socket and SSE Logging</string>
     <string name="view_sse_logging">View SSE Logging</string>
     <string name="list_ab_test_rollence_keys">List AB Test Rollence Keys</string>
+    <string name="view_websocket_logging">View Web Socket Logging</string>
 
 </resources>

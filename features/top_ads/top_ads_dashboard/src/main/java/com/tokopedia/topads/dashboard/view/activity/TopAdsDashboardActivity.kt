@@ -19,6 +19,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
@@ -45,12 +47,14 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARA
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_PRODUCT_AD
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_SHOP_AD
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_TAB
+import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.fragment.BerandaTabFragment
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
+import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightShopKeywordRecommendationFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.NoProductBottomSheet
@@ -158,10 +162,15 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                             VIEW_IKLAN_PRODUK, "")
                     }
                     INSIGHT_PAGE -> {
-                        bottom?.gone()
-                        multiActionBtn.buttonSize = UnifyButton.Size.MEDIUM
-                        multiActionBtn?.text = getString(com.tokopedia.topads.common.R.string.topads_iklankan_button)
-                        checkVisibility()
+                        if (TopAdsInsightShopKeywordRecommendationFragment.expandedPosi != TopAdsInsightShopKeywordRecommendationFragment.NOT_EXPANDED) {
+                            bottom?.visible()
+                        } else {
+                            bottom?.gone()
+                            multiActionBtn.buttonSize = UnifyButton.Size.MEDIUM
+                            multiActionBtn?.text =
+                                getString(com.tokopedia.topads.common.R.string.topads_iklankan_button)
+                            checkVisibility()
+                        }
                     }
                     HEADLINE_ADS_TAB -> {
                         removeBtn()
@@ -407,4 +416,27 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             startActivityForResult(intent, AUTO_ADS_DISABLED)
         }
     }
+
+    fun toggleMultiActionButton(show: Boolean) {
+        if(show) bottom.show()
+        else bottom.hide()
+    }
+
+    fun updateMultiActionButton(type: Int, count: Int) {
+        multiActionBtn.text = when (type) {
+            TopAdsInsightConstants.BID_KEYWORD -> {
+                String.format(resources.getString(R.string.bid_keyword_btn_text), count)
+            }
+            TopAdsInsightConstants.NEW_KEYWORD -> {
+                String.format(resources.getString(R.string.new_keyword_btn_text), count)
+            }
+            TopAdsInsightConstants.NEGATIVE_KEYWORD -> {
+                String.format(resources.getString(R.string.neg_keyword_btn_text), count)
+            }
+            else -> ""
+        }
+        multiActionBtn.isEnabled = count > 0
+    }
+
+    fun disableMultiActionButton() { multiActionBtn.isEnabled = false}
 }

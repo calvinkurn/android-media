@@ -1,37 +1,64 @@
 package com.tokopedia.autocompletecomponent.suggestion.domain.getsuggestion
 
 import com.tokopedia.autocompletecomponent.suggestion.domain.SuggestionRequestUtils.SUGGESTION_QUERY
+import com.tokopedia.autocompletecomponent.suggestion.domain.SuggestionRequestUtils.prepare
+import com.tokopedia.autocompletecomponent.suggestion.domain.model.ShopAdsModel
 import com.tokopedia.autocompletecomponent.suggestion.domain.model.SuggestionResponse
 import com.tokopedia.autocompletecomponent.suggestion.domain.model.SuggestionUniverse
 import com.tokopedia.autocompletecomponent.util.UrlParamHelper
-import com.tokopedia.discovery.common.constants.SearchConstant.GQL
+import com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_PARAMS
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
-import rx.Observable
+import com.tokopedia.usecase.coroutines.UseCase
 
 open class SuggestionUseCase(
-    protected val graphqlUseCase: GraphqlUseCase
+    protected val suggestionGraphqlUseCase: GraphqlUseCase<SuggestionResponse>,
+    protected val getShopAdsSuggestionUseCase: UseCase<ShopAdsModel>? = null
 ) : UseCase<SuggestionUniverse>() {
 
-    override fun createObservable(requestParams: RequestParams): Observable<SuggestionUniverse> {
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(createGraphqlRequest(requestParams))
+    private var shopAdsModel = ShopAdsModel()
 
-        return graphqlUseCase
-                .createObservable(RequestParams.EMPTY)
-                .map(::getSuggestionUniverse)
+    override suspend fun executeOnBackground(): SuggestionUniverse {
+        getHeadlineAds()
+
+        return getSuggestion()
     }
 
-    protected open fun createGraphqlRequest(requestParams: RequestParams): GraphqlRequest {
-        return GraphqlRequest(
+    private fun getHeadlineAds() {
+        shopAdsModel = ShopAdsModel()
+
+        getShopAdsSuggestionUseCase?.execute(
+            ::onSuccessGetShopAds,
+            ::onErrorGetShopAds,
+            useCaseRequestParams,
+        )
+    }
+
+    private fun onSuccessGetShopAds(shopAdsModel: ShopAdsModel) {
+        this.shopAdsModel = shopAdsModel
+    }
+
+    private fun onErrorGetShopAds(throwable: Throwable) { }
+
+    private suspend fun getSuggestion(): SuggestionUniverse {
+        val suggestionResponse = getSuggestionResponse()
+
+        val suggestionUniverse = suggestionResponse.suggestionUniverse
+
+        suggestionUniverse.cpmModel = shopAdsModel.cpmModel
+
+        return suggestionUniverse
+    }
+
+    private suspend fun getSuggestionResponse(): SuggestionResponse {
+        suggestionGraphqlUseCase.prepare(
             getGraphqlQuery(),
             SuggestionResponse::class.java,
-            createGraphqlRequestParams(requestParams)
+            createGraphqlRequestParams(useCaseRequestParams),
         )
+
+        return suggestionGraphqlUseCase.executeOnBackground()
     }
 
     @GqlQuery("SuggestionUseCaseQuery", SUGGESTION_QUERY)
@@ -40,12 +67,6 @@ open class SuggestionUseCase(
     protected open fun createGraphqlRequestParams(requestParams: RequestParams): Map<String, String> {
         val params = UrlParamHelper.generateUrlParamString(requestParams.parameters)
 
-        return mapOf(GQL.KEY_PARAMS to params)
+        return mapOf(KEY_PARAMS to params)
     }
-
-    protected open fun getSuggestionUniverse(graphqlResponse: GraphqlResponse): SuggestionUniverse =
-        graphqlResponse
-            .getData<SuggestionResponse>(SuggestionResponse::class.java)
-            ?.suggestionUniverse
-            ?: SuggestionUniverse()
 }
