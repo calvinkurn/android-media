@@ -761,7 +761,6 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun goToSearchPage() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
         if (!isPositiveFlow) {
             // back to addressform, reset ana state to search page
             activity?.run {
