@@ -9,7 +9,9 @@ import com.tokopedia.product_ar.util.ProductArComparissonAssertAssistant
 import com.tokopedia.product_ar.util.ProductArUseCaseMapperTest
 import com.tokopedia.product_ar.util.TestUtil
 import io.mockk.MockKAnnotations
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.spyk
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -25,6 +27,10 @@ class ProductArComparissonViewModelTest {
 
     private val viewModel by lazy {
         ProductArComparissonViewModel()
+    }
+
+    private val spykViewModel by lazy {
+        spyk(ProductArComparissonViewModel())
     }
 
     private val gson = Gson()
@@ -180,5 +186,14 @@ class ProductArComparissonViewModelTest {
                 expectedSelectedValue = listOf("Merah"),
                 expectedRemovedPosition = -1
         )
+    }
+
+    @Test
+    fun `render initial data return throw`() {
+        every {
+            spykViewModel.addGridImages(mockBitmap, listOf())
+        } throws Throwable()
+
+        spykViewModel.renderInitialData(mockBitmap, listOf())
     }
 }
