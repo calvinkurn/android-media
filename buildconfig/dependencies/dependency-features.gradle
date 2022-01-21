@@ -259,7 +259,7 @@ ext {
             managename                      : ":features:user:managename",
             managepassword                  : ":features:user:managepassword",
             notifTroubleshooter             : ":features:user:notif-troubleshooter",
-            notifCenter                     : ":features:user:notifcenter",
+            notifCenter                     : ":features:communication:notifcenter",
             orderhistory                    : ":features:communication:orderhistory",
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
