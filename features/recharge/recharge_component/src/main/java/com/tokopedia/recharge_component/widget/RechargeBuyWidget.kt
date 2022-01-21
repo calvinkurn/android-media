@@ -83,10 +83,8 @@ class RechargeBuyWidget @JvmOverloads constructor(@NotNull context: Context, att
     fun isLoadingButton(isLoadingActive: Boolean){
         with(rechargeBuyWidgetBinding){
             btnBuyWidget.run {
-                loadingText = ""
                 isLoading = isLoadingActive
             }
-
         }
     }
 }

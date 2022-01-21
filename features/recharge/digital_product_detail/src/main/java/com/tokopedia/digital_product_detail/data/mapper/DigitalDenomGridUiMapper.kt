@@ -28,7 +28,7 @@ class DigitalDenomMCCMGridUiMapper @Inject constructor() {
                 productsDenom.map {
                     DenomData(
                         id = it.id,
-                        promoStatus = if (it.attributes.promo != null) "1" else "0",
+                        promoStatus = if (it.attributes.promo != null) PROMO_STATUS_TRUE else PROMO_STATUS_FALSE,
                         categoryId = it.attributes.categoryId,
                         operatorId = it.attributes.operatorId,
                         isSpecialPromo = if (it.attributes.productLabels.isNotEmpty())
@@ -51,7 +51,7 @@ class DigitalDenomMCCMGridUiMapper @Inject constructor() {
                 productsDenom.map {
                     DenomData(
                         id = it.id,
-                        promoStatus = if (it.attributes.promo != null) "1" else "0",
+                        promoStatus = if (it.attributes.promo != null) PROMO_STATUS_TRUE else PROMO_STATUS_FALSE,
                         categoryId = it.attributes.categoryId,
                         operatorId = it.attributes.operatorId,
                         isSpecialPromo = if (it.attributes.productLabels.isNotEmpty())
@@ -75,6 +75,7 @@ class DigitalDenomMCCMGridUiMapper @Inject constructor() {
     companion object {
         const val CLUSTER_MCCM_TYPE = "MCCM"
         const val SPECIAL_PROMO_LABEL: String = "Traktiran Pengguna Baru"
-
+        const val PROMO_STATUS_TRUE = "1"
+        const val PROMO_STATUS_FALSE = "0"
     }
 }
