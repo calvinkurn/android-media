@@ -52,10 +52,9 @@ class SearchProductFirstPageGqlUseCase(
 
     override fun createObservable(requestParams: RequestParams): Observable<SearchProductModel> {
         val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String?, Any?>
-        val paramsHashmap = HashMap(searchProductParams)
 
         val query = getQueryFromParameters(searchProductParams)
-        val params = UrlParamUtils.generateUrlParamString(paramsHashmap)
+        val params = UrlParamUtils.generateUrlParamString(searchProductParams)
         val headlineAdsParams = com.tokopedia.topads.sdk.utils.TopAdsHeadlineViewParams.createHeadlineParams(
                 requestParams.parameters[SEARCH_PRODUCT_PARAMS] as? Map<String, Any?>,
                 HEADLINE_ITEM_VALUE_FIRST_PAGE, "0")
