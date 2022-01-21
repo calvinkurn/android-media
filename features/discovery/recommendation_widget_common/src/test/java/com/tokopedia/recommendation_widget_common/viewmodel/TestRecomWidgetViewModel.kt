@@ -294,6 +294,25 @@ class TestRecomWidgetViewModel {
     }
 
     @Test
+    fun `test 4`() = runBlockingTest {
+        val atcResponseError = AddToCartDataModel(
+            data = DataModel(success = 0),
+            status = "",
+            errorMessage = arrayListOf()
+        )
+
+        coEvery {
+            addToCartUseCase.executeOnBackground()
+        } returns atcResponseError
+
+        doCommonActionForATCRecom()
+
+        Assert.assertTrue(viewModel.atcRecomTokonow.value?.error != null)
+        Assert.assertTrue(viewModel.atcRecomTokonow.value?.recomItem == recomItemForAtc)
+        Assert.assertTrue(viewModel.atcRecomTokonowResetCard.value == recomItemForAtc)
+    }
+
+    @Test
     fun `test add to cart non variant then return failed with throwable`() = runBlockingTest {
         coEvery {
             addToCartUseCase.executeOnBackground()
