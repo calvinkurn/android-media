@@ -74,7 +74,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         }
     }
 
-    // [Misael] di digital_topup_bills ada layout yg sama (dupe)
     private fun initAutoComplete() {
         binding.clientNumberWidgetInputField.run {
             editText.run {
@@ -172,7 +171,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                 type = ChipsUnify.TYPE_ALTERNATE
             )
             sortFilterItem.listener = {
-                mFilterChipListener?.onClickIcon()
+                mFilterChipListener?.onClickIcon(true)
             }
             sortFilter.add(sortFilterItem)
         }
@@ -212,6 +211,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                 }
                 icon2.run {
                     setImageDrawable(getIconUnifyDrawable(context, type.iconUnifyId))
+                    setOnClickListener { mFilterChipListener?.onClickIcon(false) }
                     show()
                 }
             }
@@ -305,7 +305,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
             } else {
                 includeLayout.clientNumberWidgetSimplifiedLayout.hide()
                 clientNumberWidgetMainLayout.show()
-                // [Misael] next step handle showing operator icon with condition
                 clientNumberWidgetOperatorGroup.show()
             }
         }
@@ -337,7 +336,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         }
     }
 
-    private fun clearFocusAutoComplete() {
+    fun clearFocusAutoComplete() {
         binding.clientNumberWidgetInputField.editText.clearFocus()
     }
 
@@ -389,7 +388,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     }
 
     interface ClientNumberFilterChipListener {
-        fun onClickIcon()
+        fun onClickIcon(isSwitchChecked: Boolean)
         fun onShowFilterChip(isLabeled: Boolean)
         fun onClickFilterChip(isLabeled: Boolean)
     }
