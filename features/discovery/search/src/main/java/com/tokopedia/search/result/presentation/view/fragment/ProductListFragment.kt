@@ -118,6 +118,7 @@ import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl
+import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.applyQuickFilterElevation
@@ -403,6 +404,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 bannerListener = this,
                 lastFilterListener = this,
                 topAdsConfig = topAdsConfig,
+                violationListener = ViolationListenerDelegate(activity)
         )
 
         productListAdapter = ProductListAdapter(itemChangeView = this, typeFactory = productListTypeFactory)
@@ -619,6 +621,10 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>) {
         productListAdapter?.appendItems(bannedProductsErrorMessageAsList)
+    }
+
+    override fun setViolationProductsErrorMessage(violationProductsErrorMessageAsList: List<Visitable<*>>) {
+        productListAdapter?.appendItems(violationProductsErrorMessageAsList)
     }
 
     override fun addLoading() {

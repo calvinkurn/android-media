@@ -40,6 +40,8 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RelatedDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
+import com.tokopedia.search.result.product.violation.ViolationDataView
+import com.tokopedia.unifycomponents.UnifyButton
 
 class ProductViewModelMapper {
 
@@ -103,6 +105,7 @@ class ProductViewModelMapper {
         productDataView.bannerDataView = convertToBannerDataView(searchProductData.banner)
         productDataView.lastFilterDataView = convertToLastFilterDataView(searchProductModel)
         productDataView.categoryIdL2 = searchProductModel.lastFilter.data.categoryIdL2
+        productDataView.violation = convertToViolationView(searchProductData.violation)
 
         return productDataView
     }
@@ -465,5 +468,40 @@ class ProductViewModelMapper {
             filterList = lastFilterData.filters,
             title = lastFilterData.title,
         )
+    }
+
+    private fun convertToViolationView(violation: SearchProductModel.Violation?) : ViolationDataView? {
+        return violation?.let {
+            if(it.headerText.isNotEmpty() && it.descriptionText.isNotEmpty()) {
+                val (buttonType, buttonVariant) = convertViolationButtonTypeToUnifyButtonTypeVariant(it.buttonType)
+                ViolationDataView(
+                    it.headerText,
+                    it.descriptionText,
+                    it.imageUrl,
+                    it.ctaUrl,
+                    it.buttonText,
+                    buttonType,
+                    buttonVariant
+                )
+            } else null
+        }
+    }
+
+    private fun convertViolationButtonTypeToUnifyButtonTypeVariant(violationButtonType: String): Pair<Int, Int> {
+        var buttonType = UnifyButton.Type.MAIN
+        var buttonVariant = UnifyButton.Variant.GHOST
+        if(violationButtonType.isNotBlank()) {
+            when(violationButtonType.toLowerCase()) {
+                "ghostmain" -> {
+                    buttonType = UnifyButton.Type.MAIN
+                    buttonVariant = UnifyButton.Variant.GHOST
+                }
+                "filledmain" -> {
+                    buttonType = UnifyButton.Type.MAIN
+                    buttonVariant = UnifyButton.Variant.FILLED
+                }
+            }
+        }
+        return Pair(buttonType, buttonVariant)
     }
 }

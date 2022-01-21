@@ -1,0 +1,56 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "totalData": 0,
+      "totalDataText": "",
+      "defaultView": 0,
+      "responseCode": 2,
+      "errorMessage": "",
+      "additionalParams": "",
+      "keywordProcess": "",
+      "componentId": ""
+    },
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": "",
+        "typeId": 0,
+        "componentId": "",
+        "trackingOption": 0
+      },
+      "banner": {
+        "position": 0,
+        "text": "",
+        "applink": "",
+        "imageUrl": ""
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "trackingOption": 0,
+        "otherRelated": []
+      },
+      "suggestion": {
+        "suggestion": "",
+        "query": "",
+        "text": "",
+        "componentId": "",
+        "trackingOption": 0
+      },
+      "products": [],
+      "violation": {
+        "headerText": "Oops, barang ini nggak bisa dibeli",
+        "descriptionText": "Coba periksa lagi kata kuncinya, atau cek rekomendasi lainnya.",
+        "imageURL": "https://images.tokopedia.net/img/jbZAUJ/2022/1/14/401ff07b-464e-4898-b46e-7ee5a1552b8d.png",
+        "ctaURL": "https://seller.tokopedia.com/edu/produk-yang-dilarang/",
+        "buttonText": "Pelajari Selengkapnya",
+        "buttonType": "ghostMain"
+      }
+    }
+  }
+}

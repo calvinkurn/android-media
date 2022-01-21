@@ -21,7 +21,8 @@ import com.tokopedia.search.result.presentation.model.InspirationCarouselDataVie
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
-import java.util.*
+import java.util.ArrayList
+import java.util.HashMap
 
 interface ProductListSectionContract {
     interface View : CustomerView {
@@ -33,6 +34,7 @@ interface ProductListSectionContract {
         val queryKey: String
         fun setEmptyProduct(globalNavDataView: GlobalNavDataView?, emptySearchProductDataView: EmptySearchProductDataView)
         fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>)
+        fun setViolationProductsErrorMessage(violationProductsErrorMessageAsList: List<Visitable<*>>)
         fun trackEventImpressionBannedProducts(isEmptySearch: Boolean)
         fun backToTop()
         fun addLoading()
