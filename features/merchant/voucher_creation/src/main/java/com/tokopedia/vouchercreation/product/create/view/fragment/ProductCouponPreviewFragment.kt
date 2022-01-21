@@ -1,6 +1,7 @@
 package com.tokopedia.vouchercreation.product.create.view.fragment
 
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,7 @@ import com.tokopedia.vouchercreation.common.extension.splitByThousand
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.databinding.FragmentProductCouponPreviewBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
+import com.tokopedia.vouchercreation.product.create.view.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.ProductCouponPreviewViewModel
 import java.net.URLEncoder
 import javax.inject.Inject
@@ -123,6 +125,8 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
                 ImageGeneratorConstants.ImageGeneratorSourceId.RILISAN_SPESIAL, couponProducts
             )
         }
+        binding?.imgExpenseEstimationDescription?.setOnClickListener { displayExpenseEstimationDescription() }
+        binding?.tpgTermAndConditions?.movementMethod = LinkMovementMethod.getInstance()
     }
 
     private fun observeCouponImageUrl() {
@@ -315,5 +319,11 @@ class ProductCouponPreviewFragment : BaseDaggerFragment() {
         val encodedUrl = URLEncoder.encode(url, "utf-8")
         val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
         RouteManager.route(requireActivity(), route)
+    }
+
+    private fun displayExpenseEstimationDescription() {
+        if (!isAdded) return
+        val bottomSheet = ExpenseEstimationBottomSheet.newInstance()
+        bottomSheet.show(childFragmentManager)
     }
 }

@@ -15,6 +15,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
     private val couponPreviewFragment by lazy { ProductCouponPreviewFragment.newInstance() }
     private val couponSettingFragment = CouponSettingFragment()
 
+
     companion object {
         private const val TAG_FRAGMENT_COUPON_INFORMATION = "coupon_information"
         private const val TAG_FRAGMENT_COUPON_SETTINGS = "coupon_settings"
@@ -27,6 +28,7 @@ class CreateCouponProductActivity : AppCompatActivity() {
         setContentView(R.layout.activity_mvc_create_coupon)
         displayCouponPreviewFragment()
         setupViews()
+
     }
 
     private fun setupViews() {
@@ -72,13 +74,13 @@ class CreateCouponProductActivity : AppCompatActivity() {
                         1,
                         18000,
                         5,
-                        "https://ecs7.tokopedia.net/img/attachment/2019/1/18/8966386/8966386_0c4342da-e028-497d-8e2a-1f30c46a7bf7"
+                        "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg"
                     ),
                     CouponProduct(
                         2,
                         25000,
                         4,
-                        "https://ecs7.tokopedia.net/img/attachment/2019/1/18/8966386/8966386_0c4342da-e028-497d-8e2a-1f30c46a7bf7"
+                        "https://images.tokopedia.net/img/VqbcmM/2021/4/15/16087191-6556-40b5-9150-36944b73f85e.jpg"
                     )
                 )
             )
@@ -111,5 +113,4 @@ class CreateCouponProductActivity : AppCompatActivity() {
     private fun popFragment() {
         supportFragmentManager.popBackStack()
     }
-
 }

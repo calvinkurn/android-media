@@ -29,6 +29,7 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
 import com.tokopedia.vouchercreation.product.create.domain.entity.DiscountType
 import com.tokopedia.vouchercreation.product.create.domain.entity.MinimumPurchaseType
+import com.tokopedia.vouchercreation.product.create.view.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.vouchercreation.product.create.view.viewmodel.CouponSettingViewModel
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -139,6 +140,7 @@ class CouponSettingFragment : BaseDaggerFragment() {
             textAreaFreeShippingMinimumPurchase.textAreaInput.inputType =
                 InputType.TYPE_CLASS_NUMBER
 
+            imgExpenseEstimationDescription.setOnClickListener { displayExpenseEstimationDescription() }
             btnSave.setOnClickListener {
                 val cashbackDiscountAmount = binding.textAreaDiscountAmount.textAreaInput.text.toString().trim().digitsOnlyInt()
                 val cashbackMinimumPurchase = binding.textAreaMinimumPurchase.textAreaInput.text.toString().trim().digitsOnlyInt()
@@ -683,5 +685,11 @@ class CouponSettingFragment : BaseDaggerFragment() {
 
     fun setOnCouponSaved(onCouponSaved : (CouponSettings) -> Unit) {
         this.onCouponSaved = onCouponSaved
+    }
+
+    private fun displayExpenseEstimationDescription() {
+        if (!isAdded) return
+        val bottomSheet = ExpenseEstimationBottomSheet.newInstance()
+        bottomSheet.show(childFragmentManager)
     }
 }
