@@ -7,25 +7,16 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class FavoriteNumberParam(
-    @SerializedName("source")
+    @SerializedName("channelName")
     @Expose
-    var source: String? = null,
-    @SerializedName("category_ids")
+    val channelName: String,
+    @SerializedName("clientNumbers")
     @Expose
-    var categoryIds: List<String>? = null,
-    @SerializedName("min_last_transaction")
+    val clientNumbers: List<String>,
+    @SerializedName("dgCategoryIDs")
     @Expose
-    var minLastTransaction: String? = null,
-    @SerializedName("min_total_transaction")
+    val dgCategoryIDs: List<Int>,
+    @SerializedName("pgCategoryIDs")
     @Expose
-    var minTotalTransaction: String? = null,
-    @SerializedName("service_plan_type")
-    @Expose
-    var servicePlanType: String? = null,
-    @SerializedName("subscription")
-    @Expose
-    var subscription: Boolean? = null,
-    @SerializedName("limit")
-    @Expose
-    var limit: Int? = null,
-): Parcelable
+    val pgCategoryIDs: List<Int>
+) :Parcelable

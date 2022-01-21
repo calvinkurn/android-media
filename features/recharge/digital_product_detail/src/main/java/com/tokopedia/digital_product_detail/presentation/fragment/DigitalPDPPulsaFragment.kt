@@ -12,9 +12,9 @@ import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
+import com.tokopedia.common.topupbills.data.favorite_number_perso.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSavedNumberActivity
@@ -23,7 +23,6 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
-import com.tokopedia.digital_product_detail.presentation.activity.DigitalPDPPulsaActivity
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPTelcoUtil
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryPulsaBottomsheet
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
@@ -216,7 +215,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun getFavoriteNumber(
-        categoryId: String = this.categoryId.toString(),
+        categoryId: Int = this.categoryId,
         shouldRefreshInputNumber: Boolean = true
     ) {
         viewModel.getFavoriteNumber(listOf(categoryId), shouldRefreshInputNumber)
@@ -229,7 +228,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetFavoriteNumber(
-        favoriteNumber: List<TopupBillsSeamlessFavNumberItem>,
+        favoriteNumber: List<TopupBillsPersoFavNumberItem>,
         shouldRefreshInputNumber: Boolean
     ) {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
