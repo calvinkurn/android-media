@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
+import android.util.Log
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -184,7 +185,7 @@ class BroadcastInteractiveSetupViewComponent(
 
     override fun show() {
         super.show()
-        if (!isPickerSheetVisible()) setFocusOnEditTextTitle()
+        if (!isPickerSheetVisible()) showKeyboard(true)
     }
 
     private fun setupLabelGuideline(showPickerSheet: Boolean) {
@@ -216,7 +217,6 @@ class BroadcastInteractiveSetupViewComponent(
     }
 
     private fun setFocusOnEditTextTitle() {
-        showKeyboard(true)
         editTextTitle.apply {
             isFocusable = true
             isFocusableInTouchMode = true
@@ -226,6 +226,7 @@ class BroadcastInteractiveSetupViewComponent(
     }
 
     private fun showKeyboard(shouldShow: Boolean) {
+        Log.d("<LOG>", "showKeyboard: $shouldShow")
         val imm = editTextTitle.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (shouldShow) imm.showSoftInput(editTextTitle, InputMethodManager.SHOW_IMPLICIT)
         else imm.hideSoftInputFromWindow(editTextTitle.windowToken, 0)
@@ -237,6 +238,7 @@ class BroadcastInteractiveSetupViewComponent(
 
     private fun showSetupTitleLayout() {
         setFocusOnEditTextTitle()
+        showKeyboard(true)
         showPickerSheet(false)
         setupLabelGuideline(false)
     }
