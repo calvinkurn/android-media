@@ -124,7 +124,7 @@ interface ProductListSectionContract {
         )
         fun modifyApplinkToSearchResult(applink: String): String
         fun initSizeOptionFilter(dataView: MutableList<InspirationSizeDataView>)
-        fun setSelectedSizeOption()
+        fun setSelectedSizeOption(dataView: MutableList<InspirationSizeDataView>)
     }
 
     interface Presenter : CustomerPresenter<View> {

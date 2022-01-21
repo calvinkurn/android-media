@@ -33,8 +33,7 @@ class InspirationSizeOptionAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val isActive = inspirationSizedataView?.activeOptions?.contains(itemList[position].filters.value) ?: false
-        (holder as InspirationSizeOptionViewHolder).bind(itemList[position], isActive)
+        (holder as InspirationSizeOptionViewHolder).bind(itemList[position])
     }
 
     override fun getItemCount(): Int {

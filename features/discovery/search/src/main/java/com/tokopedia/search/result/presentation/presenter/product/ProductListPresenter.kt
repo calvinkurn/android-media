@@ -1585,7 +1585,7 @@ class ProductListPresenter @Inject constructor(
 
     private fun processSizeFilter() {
         view.initSizeOptionFilter(inspirationSizeDataView)
-        view.setSelectedSizeOption()
+        view.setSelectedSizeOption(inspirationSizeDataView)
     }
 
     private fun convertToSortFilterItem(filter: Filter, options: List<Option>) =

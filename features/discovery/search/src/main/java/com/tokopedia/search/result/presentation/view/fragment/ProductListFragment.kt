@@ -1944,14 +1944,15 @@ class ProductListFragment: BaseDaggerFragment(),
         redirectionStartActivity(optionData.applink, optionData.url)
     }
 
-    override fun onInspirationSizeOptionClicked(sizeOptionDataView: InspirationSizeOptionDataView, option: Option, isActive: Boolean) {
-        filterController.setFilter(option, isActive)
+    override fun onInspirationSizeOptionClicked(sizeOptionDataView: InspirationSizeOptionDataView, option: Option) {
+        val isQuickFilterSelectedReversed = !isQuickFilterSelected(option)
+        filterController.setFilter(option, isQuickFilterSelectedReversed)
 
         refreshSearchParameter(filterController.getParameter())
 
         reloadData()
 
-        if (isActive) {
+        if (isQuickFilterSelectedReversed) {
             sizeOptionDataView.click(TrackApp.getInstance().gtm)
         }
     }
@@ -1971,18 +1972,19 @@ class ProductListFragment: BaseDaggerFragment(),
         }
     }
 
-    override fun setSelectedSizeOption() {
-        val selectedSizeOptions = mutableListOf<SavedOption>()
+    override fun setSelectedSizeOption(dataView: MutableList<InspirationSizeDataView>) {
+        dataView.forEach { element ->
+            element.data.optionSizeData.forEach {
+                val option = Option(
+                    key = it.filters.key,
+                    value = it.filters.value,
+                    name = it.filters.name,
+                    inputState = true.toString(),
+                )
 
-        filterController.getActiveSavedOptionList().forEach { activeOption ->
-            if (activeOption.key == Option.KEY_VARIANTS) {
-                selectedSizeOptions.add(activeOption)
+                it.isSelected = isQuickFilterSelected(option)
             }
         }
-
-        productListAdapter?.setSelectedSizeOption(selectedSizeOptions.map {
-            it.value
-        })
     }
 
     private fun trackEventClickInspirationCardOption(option: InspirationCardOptionDataView) {

@@ -22,18 +22,18 @@ class InspirationSizeOptionViewHolder(
 
     private var binding: SearchResultProductInspirationSizeOptionChipLayoutBinding? by viewBinding()
 
-    internal fun bind(optionData: InspirationSizeOptionDataView, isActive: Boolean) {
+    internal fun bind(optionData: InspirationSizeOptionDataView) {
         val binding = binding ?: return
         val chipsUnify =  binding.inspirationSizeOptionChip
         chipsUnify.chipText = optionData.text
-        chipsUnify.chipType = if (isActive) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+        chipsUnify.chipType = if (optionData.isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
 
-        setListener(chipsUnify, optionData, isActive)
+        setListener(chipsUnify, optionData)
     }
 
-    private fun setListener(chipsUnify: ChipsUnify, optionData: InspirationSizeOptionDataView, isActive: Boolean) {
+    private fun setListener(chipsUnify: ChipsUnify, optionData: InspirationSizeOptionDataView) {
         chipsUnify.setOnClickListener {
-            inspirationOptionListener.onInspirationSizeOptionClicked(optionData, createOption(optionData), !isActive)
+            inspirationOptionListener.onInspirationSizeOptionClicked(optionData, createOption(optionData))
         }
     }
 

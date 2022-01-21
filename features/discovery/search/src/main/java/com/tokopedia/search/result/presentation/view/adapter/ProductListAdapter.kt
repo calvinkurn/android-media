@@ -245,16 +245,6 @@ class ProductListAdapter(
         removeItem(lastFilterWidgetIndex)
     }
 
-    fun setSelectedSizeOption(options: List<String>) {
-        list.forEachIndexed { i, element ->
-            if (element is InspirationSizeDataView) {
-                element.activeOptions = options
-
-                notifyItemChanged(i)
-            }
-        }
-    }
-
     private fun removeItem(index: Int) {
         if (index !in list.indices) return
 
