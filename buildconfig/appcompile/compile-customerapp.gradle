@@ -250,7 +250,7 @@ includeIfEnabled("features:user:user_identification_common")
 includeIfEnabled("features:user:kyc_centralized")
 includeIfEnabled("features:user:home_account")
 includeIfEnabled("features:user:seamless_login_common")
-includeIfEnabled("features:user:inbox")
+includeIfEnabled("features:communication:inbox")
 includeIfEnabled("features:user:inbox_common")
 
 includeIfEnabled("features:user:vote")
