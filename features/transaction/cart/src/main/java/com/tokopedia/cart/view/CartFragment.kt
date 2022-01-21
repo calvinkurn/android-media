@@ -2000,7 +2000,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     label = String.format("%s %s", localizationChooseAddress.addressName, localizationChooseAddress.receiverName),
                     postalCode = localizationChooseAddress.postalCode,
                     shopId = localizationChooseAddress.tokoNow.shopId,
-                    warehouseId = localizationChooseAddress.tokoNow.warehouseId)
+                    warehouseId = localizationChooseAddress.tokoNow.warehouseId,
+                    // TODO: 21/12/21 UPDATE AFTER BE ADJUSTMENT
+                    warehouses = listOf(),
+                    serviceType = "")
         }
     }
 
