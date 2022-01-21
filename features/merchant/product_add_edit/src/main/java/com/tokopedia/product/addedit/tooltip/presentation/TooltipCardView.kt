@@ -1,20 +1,21 @@
 package com.tokopedia.product.addedit.tooltip.presentation
 
 import android.content.Context
+import android.text.Spanned
 import android.util.AttributeSet
 import android.view.View
-import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.core.text.toSpanned
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.product.addedit.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
 
 class TooltipCardView : BaseCustomView, MotionLayout.TransitionListener {
 
-    var text: String = ""
+    var text: Spanned = "".toSpanned()
     var tvTipsText: Typography? = null
     var layoutTips: LinearLayout? = null
     var motionLayoutTips: MotionLayout? = null
@@ -63,7 +64,8 @@ class TooltipCardView : BaseCustomView, MotionLayout.TransitionListener {
             val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.TooltipCardView, 0, 0)
 
             try {
-                text = styledAttributes.getString(R.styleable.TooltipCardView_text).orEmpty()
+                val htmlText: String = styledAttributes.getString(R.styleable.TooltipCardView_text).orEmpty()
+                text = MethodChecker.fromHtml(htmlText)
             } finally {
                 styledAttributes.recycle()
             }

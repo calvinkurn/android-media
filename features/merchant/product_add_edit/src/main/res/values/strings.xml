@@ -377,16 +377,18 @@
     <string name="label_specification_info_title_points">Mengapa perlu tambah Spesifikasi?</string>
     <string name="label_specification_info_point1">Semakin besar kemungkinan produkmu muncul dalam hasil pencarian.</string>
     <string name="label_specification_info_point2">Produk dengan Spesifikasi yang lengkap akan lebih disukai pembeli.</string>
-    <string name="label_specification_item_imei_required">Isi status sinyal sesuai kondisi saat ini. Pengisian yang tidak sesuai bisa menimbulkan kendala bagi pembeli. <![CDATA[<font color=\'#42b549\'>Pelajari Selengkapnya</font>.]]></string>
-    <string name="label_specification_imei_required">Isi status sinyal pada spesifikasi produkmu, ya.</string>
-    <string name="label_specification_imei_tips1"><![CDATA[<b>Sinyal Aktif</b><br/>]]>Perangkat elektronik yang bisa terhubung ke jaringan operator di Indonesia. <![CDATA[<b>Jika terjadi kendala</b>]]>, pembelimu bisa mengajukan refund atau retur melalui Tokopedia Care.</string>
-    <string name="label_specification_imei_tips2"><![CDATA[<b>Sinyal Belum Aktif</b><br/>]]>Perangkat elektronik yang belum dipastikan bisa terhubung ke jaringan operator di Indonesia. Pastikan kamu sudah mengingatkan calon pembeli.</string>
+    <string name="label_specification_item_imei_required">Isi status sinyal sesuai kondisi saat ini. Pengisian yang tidak sesuai bisa menimbulkan kendala bagi pembeli. <![CDATA[<font color=\'#42b549\'><b>Pelajari Selengkapnya</b></font>.]]></string>
+    <string name="label_specification_signal_status_required">Isi status sinyal pada spesifikasi produkmu, ya.</string>
+    <string name="label_specification_signal_status_bottomsheet">Apa saja status sinyal?</string>
+    <string name="label_specification_signal_status_tips1"><![CDATA[<b>Sinyal Aktif</b><br/>]]>Perangkat elektronik yang bisa terhubung ke jaringan operator di Indonesia. <![CDATA[<b>Jika terjadi kendala</b>]]>, pembelimu bisa mengajukan refund atau retur melalui Tokopedia Care.</string>
+    <string name="label_specification_signal_status_tips2"><![CDATA[<b>Sinyal Belum Aktif</b><br/>]]>Perangkat elektronik yang belum dipastikan bisa terhubung ke jaringan operator di Indonesia. Pastikan kamu sudah mengingatkan calon pembeli.</string>
     <string name="action_specification_save">Simpan</string>
     <string name="action_specification_learn">Pelajari Selengkapnya</string>
     <string name="action_specification_add">Tambah</string>
     <string name="action_specification_change">Ubah</string>
     <string name="action_specification_refresh">Muat Ulang</string>
     <string name="action_specification_counter">, +%1$d lainnya</string>
+    <string name="error_specification_signal_status_empty">Status sinyal wajib diisi, ya.</string>
 
     <!-- Product Limitation -->
     <string name="label_product_limitation_start_date">10 Mei 2021</string>
