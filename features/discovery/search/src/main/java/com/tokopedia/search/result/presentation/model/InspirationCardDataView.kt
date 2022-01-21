@@ -5,13 +5,13 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 
 data class InspirationCardDataView(
-        val data: InspirationData = InspirationData(
-                title = "",
-                type = "",
-                position = 0,
-                optionCardData = listOf(),
-                optionSizeData = listOf()
-        )
+    val data: InspirationData = InspirationData(
+        title = "",
+        type = "",
+        position = 0,
+        optionCardData = listOf(),
+        optionSizeData = listOf()
+    )
 ) : Visitable<ProductListTypeFactory> {
 
     override fun type(typeFactory: ProductListTypeFactory): Int {

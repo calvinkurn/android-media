@@ -1959,14 +1959,14 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun initSizeOptionFilter(dataView: MutableList<InspirationSizeDataView>) {
         if (dataView.size > 0) {
             inspirationSizeFilter = Filter(
-                    title = dataView[0].data.title,
-                    options = dataView[0].data.optionSizeData.mapIndexed { index, option ->
-                        Option(
-                                name = option.filters.name,
-                                key = option.filters.key,
-                                value = option.filters.value,
-                        )
-                    }
+                title = dataView[0].data.title,
+                options = dataView[0].data.optionSizeData.mapIndexed { index, option ->
+                    Option(
+                        name = option.filters.name,
+                        key = option.filters.key,
+                        value = option.filters.value,
+                    )
+                }
             )
         }
     }

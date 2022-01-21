@@ -38,8 +38,8 @@ class InspirationSizeOptionViewHolder(
     }
 
     private fun createOption(optionData: InspirationSizeOptionDataView) = Option(
-            optionData.filters.name,
-            optionData.filters.key,
-            optionData.filters.value
+        optionData.filters.name,
+        optionData.filters.key,
+        optionData.filters.value
     )
 }
