@@ -28,6 +28,7 @@ object FeedScrollListenerNew {
     private const val TOTAL_VIDEO_HEIGHT_PERCENT = 100
     private const val PAYLOAD_POST_TOPADS_VISIBLE= 77
     private const val TYPE_VIDEO = "video"
+    private const val TYPE_LONG_VIDEO = "long-video"
     fun  onFeedScrolled(recyclerView: RecyclerView, list: List<Visitable<*>>) {
         if (canAutoplayVideo(recyclerView)) {
             val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
@@ -185,7 +186,7 @@ object FeedScrollListenerNew {
         return (list.size > position && list[position] is DynamicPostUiModel
                 && (list[position] as DynamicPostUiModel).feedXCard.typename == TYPE_FEED_X_CARD_POST
                 && (list[position] as DynamicPostUiModel).feedXCard.media.isNotEmpty() && ((list[position] as DynamicPostUiModel).feedXCard.media.find {
-            it.type == TYPE_VIDEO
+            it.type == TYPE_VIDEO || it.type == TYPE_LONG_VIDEO
         } != null))
     }
     private fun isVODCard(list: List<Visitable<*>>, position: Int): Boolean {
