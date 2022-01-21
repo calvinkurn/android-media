@@ -9,8 +9,8 @@ import javax.inject.Named
 
 @Module
 class DispatcherModule {
-    @Provides
+   /* @Provides
     @Named(IO)
     fun provideWorkerDispatcher(): CoroutineDispatcher = Dispatchers.IO
-
+*/
 }

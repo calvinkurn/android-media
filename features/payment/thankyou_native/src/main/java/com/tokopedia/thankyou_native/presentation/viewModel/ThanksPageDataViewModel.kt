@@ -10,6 +10,8 @@ import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.domain.usecase.*
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
 import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
+import com.tokopedia.tokomember.model.MembershipRegister
+import com.tokopedia.tokomember.usecase.MembershipRegisterUseCase
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -25,6 +27,7 @@ class ThanksPageDataViewModel @Inject constructor(
     private val topTickerDataUseCase: TopTickerUseCase,
     private val getDefaultAddressUseCase: GetDefaultAddressUseCase,
     private val thankYouTopAdsViewModelUseCase: ThankYouTopAdsViewModelUseCase,
+    private val membershipRegisterUseCase: MembershipRegisterUseCase,
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
 
@@ -32,6 +35,7 @@ class ThanksPageDataViewModel @Inject constructor(
     val gyroRecommendationLiveData = MutableLiveData<GyroRecommendation>()
     val topTickerLiveData = MutableLiveData<Result<List<TickerData>>>()
     val defaultAddressLiveData = MutableLiveData<Result<GetDefaultChosenAddressResponse>>()
+    val memberShipRegisterData = MutableLiveData<Result<MembershipRegister>>()
 
     val topAdsDataLiveData = MutableLiveData<TopAdsRequestParams>()
 
@@ -117,6 +121,16 @@ class ThanksPageDataViewModel @Inject constructor(
             defaultAddressLiveData.postValue(Success(it))
         }, {
             defaultAddressLiveData.postValue(Fail(it))
+        })
+    }
+
+    fun registerTokomember(membershipCardID:String) {
+        membershipRegisterUseCase.registerMembership(membershipCardID ,{
+            it?.let {
+                memberShipRegisterData.postValue(Success(it))
+            }
+        },{
+            memberShipRegisterData.postValue(Fail(it))
         })
     }
 

@@ -4,7 +4,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.mvcwidget.usecases.CatalogMVCListUseCase
 import com.tokopedia.mvcwidget.usecases.FollowShopUseCase
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
-import com.tokopedia.mvcwidget.usecases.MembershipRegisterUseCase
+import com.tokopedia.tokomember.usecase.MembershipRegisterUseCase
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineDispatcher
@@ -47,19 +49,21 @@ class MvcDetailViewModel @Inject constructor(@Named(IO) workerDispatcher: Corout
     }
 
     fun registerMembership() {
-
-        launchCatchError(block = {
+            membershipRegisterUseCase.cancelJobs()
             membershipLiveData.postValue(LiveDataResult.loading())
-            val response = membershipRegisterUseCase.getResponse(
-                    membershipRegisterUseCase.getQueryParams(membershipCardID))
-            if (response?.data?.resultStatus?.code == "200") {
-                membershipLiveData.postValue(LiveDataResult.success(membershipRegistrationSuccessMessage))
-                getMvcSummary()
-                getListData(shopId)
-            } else {
-                membershipLiveData.postValue(LiveDataResult.error(Exception(ERROR_MSG)))
-            }
-        }, onError = {
+            membershipRegisterUseCase.registerMembership(membershipCardID, {
+                if (it?.resultStatus?.code == "200") {
+                    membershipLiveData.postValue(
+                        LiveDataResult.success(
+                            membershipRegistrationSuccessMessage
+                        )
+                    )
+                    getMvcSummary()
+                    getListData(shopId)
+                } else {
+                    membershipLiveData.postValue(LiveDataResult.error(Exception(ERROR_MSG)))
+                }
+            },{
             membershipLiveData.postValue(LiveDataResult.error(Exception(ERROR_MSG)))
         })
     }
