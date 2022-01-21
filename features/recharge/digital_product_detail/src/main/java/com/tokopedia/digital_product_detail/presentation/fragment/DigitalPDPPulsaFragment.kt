@@ -8,16 +8,18 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
+import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment.Companion.REQUEST_CODE_CART_DIGITAL
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
-import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
-import com.tokopedia.config.GlobalConfig
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
@@ -31,11 +33,9 @@ import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
 import com.tokopedia.recharge_component.model.denom.DenomData
-import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
-import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardEnum
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_component.widget.RechargeClientNumberWidget
@@ -192,6 +192,22 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             when (mccmData) {
                 is RechargeNetworkResult.Success -> {
                     onSuccessMCCM(mccmData.data)
+                }
+            }
+        })
+
+        viewModel.addToCartResult.observe(viewLifecycleOwner,{ atcData ->
+            when(atcData) {
+                is RechargeNetworkResult.Success -> {
+                    navigateToCart(atcData.data)
+                }
+
+                is RechargeNetworkResult.Fail -> {
+                    //TODO Fail
+                }
+
+                is RechargeNetworkResult.Loading -> {
+                    //TODO LOading
                 }
             }
         })
@@ -497,6 +513,16 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun navigateToCart(categoryId: String) {
+        context?.let { context ->
+                val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.CHECKOUT_DIGITAL)
+                viewModel.updateCategoryCheckoutPassData(categoryId)
+                intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, viewModel.digitalCheckoutPassData)
+                startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
+        }
+    }
+
+
     /**
      * RechargeDenomGridListener
      */
@@ -516,27 +542,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     override fun onClickedButtonLanjutkan(denom: DenomData) {
-        val checkoutPassData = DigitalCheckoutPassData.Builder()
-            .action(DigitalCheckoutPassData.DEFAULT_ACTION)
-            .instantCheckout("0")
-            .utmContent(GlobalConfig.VERSION_NAME)
-            .idemPotencyKey(userSession.userId.generateRechargeCheckoutToken())
-            .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
-            .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
-            .voucherCodeCopied("")
-            .isFromPDP(true)
-            .categoryId(denom.categoryId)
-            .clientNumber(binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: "")
-            .isPromo(denom.promoStatus)
-            .operatorId(operatorId)
-            .productId(denom.id)
-            .utmCampaign(denom.categoryId)
-            .isSpecialProduct(denom.isSpecialPromo)
-            .build()
+        viewModel.updateCheckoutPassData(
+            denom, userSession.userId.generateRechargeCheckoutToken(),
+            binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?:"",
+            operatorId
+        )
 
-        checkoutPassData.idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
         viewModel.addToCart(
-            checkoutPassData,
+            viewModel.digitalCheckoutPassData,
             DeviceUtil.getDigitalIdentifierParam(requireActivity()),
             DigitalSubscriptionParams(),
             userSession.userId
